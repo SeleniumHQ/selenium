@@ -221,7 +221,9 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver-org.openqa.selenium.Capabilities-">EdgeDriver</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
-<div class="block">Creates a new EdgeDriver instance.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver-org.openqa.selenium.edge.EdgeOptions-"><code>EdgeDriver(EdgeOptions)</code></a></span></div>
+</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -232,7 +234,9 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver-org.openqa.selenium.edge.EdgeDriverService-org.openqa.selenium.Capabilities-">EdgeDriver</a></span>(<a href="../../../../org/openqa/selenium/edge/EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a>&nbsp;service,
           <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
-<div class="block">Creates a new EdgeDriver instance.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver-org.openqa.selenium.edge.EdgeDriverService-org.openqa.selenium.edge.EdgeOptions-"><code>EdgeDriver(EdgeDriverService, EdgeOptions)</code></a></span></div>
+</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -321,7 +325,9 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <ul class="blockList">
 <li class="blockList">
 <h4>EdgeDriver</h4>
-<pre>public&nbsp;EdgeDriver(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<pre>@Deprecated
+public&nbsp;EdgeDriver(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver-org.openqa.selenium.edge.EdgeOptions-"><code>EdgeDriver(EdgeOptions)</code></a></span></div>
 <div class="block">Creates a new EdgeDriver instance. The <code>capabilities</code> will be passed to the
  edgedriver service.</div>
 <dl>
@@ -371,8 +377,10 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <ul class="blockListLast">
 <li class="blockList">
 <h4>EdgeDriver</h4>
-<pre>public&nbsp;EdgeDriver(<a href="../../../../org/openqa/selenium/edge/EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a>&nbsp;service,
-                  <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<pre>@Deprecated
+public&nbsp;EdgeDriver(<a href="../../../../org/openqa/selenium/edge/EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a>&nbsp;service,
+                              <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver-org.openqa.selenium.edge.EdgeDriverService-org.openqa.selenium.edge.EdgeOptions-"><code>EdgeDriver(EdgeDriverService, EdgeOptions)</code></a></span></div>
 <div class="block">Creates a new EdgeDriver instance. The <code>service</code> will be started along with the
  driver, and shutdown upon calling <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--"><code>RemoteWebDriver.quit()</code></a>.</div>
 <dl>

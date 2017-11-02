@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/common/keyboard.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/common/keyboard.rb</dd>
   </dl>
   
 </div>
@@ -266,12 +266,12 @@
       <pre class="lines">
 
 
-27
-28
-29</pre>
+25
+26
+27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keyboard.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/keyboard.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -325,14 +325,14 @@
       <pre class="lines">
 
 
+39
+40
 41
 42
-43
-44
-45</pre>
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keyboard.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/keyboard.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_press'>press</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_modifier'>assert_modifier</span> <span class='id identifier rubyid_key'>key</span>
@@ -381,14 +381,14 @@
       <pre class="lines">
 
 
+51
+52
 53
 54
-55
-56
-57</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keyboard.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/keyboard.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release'>release</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_modifier'>assert_modifier</span> <span class='id identifier rubyid_key'>key</span>
@@ -428,12 +428,12 @@
       <pre class="lines">
 
 
-31
-32
-33</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keyboard.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/keyboard.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_send_keys_to_active_element'>send_keys_to_active_element</span> <span class='const'><span class='object_link'><a href="Keys.html" title="Selenium::WebDriver::Keys (module)">Keys</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="Keys.html#encode-class_method" title="Selenium::WebDriver::Keys.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
@@ -448,9 +448,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:57 2017 by
+  Generated on Thu Nov  2 22:56:38 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

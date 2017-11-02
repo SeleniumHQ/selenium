@@ -105,10 +105,15 @@ var activeTableTab = "activeTableTab";
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html" title="interface in org.openqa.selenium.remote.server">SessionFactory</a></dd>
+</dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">ActiveSessionFactory</span>
-extends java.lang.Object</pre>
+extends java.lang.Object
+implements <a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html" title="interface in org.openqa.selenium.remote.server">SessionFactory</a></pre>
 <div class="block">Used to create new <a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server"><code>ActiveSession</code></a> instances as required.</div>
 </li>
 </ul>
@@ -146,13 +151,14 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html" title="class in org.openqa.selenium.remote.server">ActiveSessionFactory</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html#bind-java.util.function.Predicate-org.openqa.selenium.remote.server.SessionFactory-">bind</a></span>(java.util.function.Predicate&lt;<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;onThis,
-    org.openqa.selenium.remote.server.SessionFactory&nbsp;useThis)</code>&nbsp;</td>
+<td class="colFirst"><code>java.util.Optional&lt;<a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html#apply-java.util.Set-org.openqa.selenium.Capabilities-">apply</a></span>(java.util.Set&lt;<a href="../../../../../org/openqa/selenium/remote/Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;&nbsp;downstreamDialects,
+     <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;caps)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html#createSession-org.openqa.selenium.remote.server.NewSessionPayload-">createSession</a></span>(<a href="../../../../../org/openqa/selenium/remote/server/NewSessionPayload.html" title="class in org.openqa.selenium.remote.server">NewSessionPayload</a>&nbsp;newSessionPayload)</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html" title="class in org.openqa.selenium.remote.server">ActiveSessionFactory</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html#bind-java.util.function.Predicate-org.openqa.selenium.remote.server.SessionFactory-">bind</a></span>(java.util.function.Predicate&lt;<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;onThis,
+    <a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html" title="interface in org.openqa.selenium.remote.server">SessionFactory</a>&nbsp;useThis)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>protected java.lang.Iterable&lt;<a href="../../../../../org/openqa/selenium/remote/server/DriverProvider.html" title="interface in org.openqa.selenium.remote.server">DriverProvider</a>&gt;</code></td>
@@ -204,7 +210,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>bind</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html" title="class in org.openqa.selenium.remote.server">ActiveSessionFactory</a>&nbsp;bind(java.util.function.Predicate&lt;<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;onThis,
-                                 org.openqa.selenium.remote.server.SessionFactory&nbsp;useThis)</pre>
+                                 <a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html" title="interface in org.openqa.selenium.remote.server">SessionFactory</a>&nbsp;useThis)</pre>
 </li>
 </ul>
 <a name="loadDriverProviders--">
@@ -216,17 +222,17 @@ extends java.lang.Object</pre>
 <pre>protected&nbsp;java.lang.Iterable&lt;<a href="../../../../../org/openqa/selenium/remote/server/DriverProvider.html" title="interface in org.openqa.selenium.remote.server">DriverProvider</a>&gt;&nbsp;loadDriverProviders()</pre>
 </li>
 </ul>
-<a name="createSession-org.openqa.selenium.remote.server.NewSessionPayload-">
+<a name="apply-java.util.Set-org.openqa.selenium.Capabilities-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>createSession</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a>&nbsp;createSession(<a href="../../../../../org/openqa/selenium/remote/server/NewSessionPayload.html" title="class in org.openqa.selenium.remote.server">NewSessionPayload</a>&nbsp;newSessionPayload)
-                            throws java.io.IOException</pre>
+<h4>apply</h4>
+<pre>public&nbsp;java.util.Optional&lt;<a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a>&gt;&nbsp;apply(java.util.Set&lt;<a href="../../../../../org/openqa/selenium/remote/Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;&nbsp;downstreamDialects,
+                                               <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;caps)</pre>
 <dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html#apply-java.util.Set-org.openqa.selenium.Capabilities-">apply</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html" title="interface in org.openqa.selenium.remote.server">SessionFactory</a></code></dd>
 </dl>
 </li>
 </ul>

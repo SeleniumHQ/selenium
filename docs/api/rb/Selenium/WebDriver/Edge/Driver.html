@@ -101,7 +101,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/edge/driver.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/edge/driver.rb</dd>
   </dl>
   
 </div>
@@ -281,6 +281,8 @@
       <pre class="lines">
 
 
+30
+31
 32
 33
 34
@@ -312,12 +314,10 @@
 60
 61
 62
-63
-64
-65</pre>
+63</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/driver.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/edge/driver.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Remote/W3C.html" title="Selenium::WebDriver::Remote::W3C (module)">W3C</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Remote/W3C/Capabilities.html" title="Selenium::WebDriver::Remote::W3C::Capabilities (class)">Capabilities</a></span></span><span class='period'>.</span><span class='id identifier rubyid_edge'><span class='object_link'><a href="../Remote/W3C/Capabilities.html#edge-class_method" title="Selenium::WebDriver::Remote::W3C::Capabilities.edge (method)">edge</a></span></span>
@@ -393,12 +393,12 @@
       <pre class="lines">
 
 
-67
-68
-69</pre>
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/driver.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/edge/driver.rb', line 65</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='symbol'>:edge</span>
@@ -436,14 +436,14 @@
       <pre class="lines">
 
 
+69
+70
 71
 72
-73
-74
-75</pre>
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/driver.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/edge/driver.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
@@ -460,9 +460,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:55 2017 by
+  Generated on Thu Nov  2 22:56:35 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

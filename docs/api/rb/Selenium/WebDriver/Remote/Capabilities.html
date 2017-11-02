@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/remote/capabilities.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/remote/capabilities.rb</dd>
   </dl>
   
 </div>
@@ -477,6 +477,32 @@ the server is being asked to create.</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#javascript_enabled-instance_method" title="#javascript_enabled (instance method)">#<strong>javascript_enabled</strong>  &#x21d2; Object </a>
+    
+
+    
+      (also: #javascript_enabled?)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns javascript_enabled capability.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#merge!-instance_method" title="#merge! (instance method)">#<strong>merge!</strong>(other)  &#x21d2; Object </a>
     
 
@@ -724,13 +750,13 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-174
-175
-176
-177</pre>
+182
+183
+184
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 182</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#DEFAULTS-constant" title="Selenium::WebDriver::Remote::Capabilities::DEFAULTS (constant)">DEFAULTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
@@ -763,16 +789,16 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-62
-63
-64
-65
-66
-67
-68</pre>
+69
+70
+71
+72
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_chrome'>chrome</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -801,18 +827,18 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-70
-71
-72
-73
-74
-75
-76
 77
-78</pre>
+78
+79
+80
+81
+82
+83
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_edge'>edge</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -843,17 +869,17 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-80
-81
-82
-83
-84
-85
-86
-87</pre>
+87
+88
+89
+90
+91
+92
+93
+94</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_firefox'>firefox</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -883,14 +909,14 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-89
-90
-91
-92
-93</pre>
+96
+97
+98
+99
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 96</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_htmlunit'>htmlunit</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -917,15 +943,15 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-95
-96
-97
-98
-99
-100</pre>
+102
+103
+104
+105
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_htmlunitwithjs'>htmlunitwithjs</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -957,18 +983,18 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-102
-103
-104
-105
-106
-107
-108
 109
-110</pre>
+110
+111
+112
+113
+114
+115
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_internet_explorer'>internet_explorer</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -1012,14 +1038,6 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-136
-137
-138
-139
-140
-141
-142
-143
 144
 145
 146
@@ -1030,10 +1048,18 @@ the server is being asked to create.</p>
 151
 152
 153
-154</pre>
+154
+155
+156
+157
+158
+159
+160
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 144</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_json_create'>json_create</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
@@ -1074,19 +1100,21 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-113
-114
-115
-116
-117
-118
-119
-120</pre>
+120
+121
+122
+123
+124
+125
+126
+127
+128</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 113</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 120</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_phantomjs'>phantomjs</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Selenium support for PhantomJS</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>headless Chrome/Firefox or HTMLUnit</span><span class='tstring_end'>&#39;</span></span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
     <span class='label'>browser_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>phantomjs</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
     <span class='label'>javascript_enabled:</span> <span class='kw'>true</span><span class='comma'>,</span>
@@ -1114,18 +1142,18 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-122
-123
-124
-125
-126
-127
-128
-129
-130</pre>
+130
+131
+132
+133
+134
+135
+136
+137
+138</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 122</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 130</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_safari'>safari</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -1166,13 +1194,13 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-243
-244
-245
-246</pre>
+251
+252
+253
+254</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 243</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 251</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span>
@@ -1198,12 +1226,12 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-187
-188
-189</pre>
+195
+196
+197</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 187</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 195</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span>
@@ -1239,12 +1267,12 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-183
-184
-185</pre>
+191
+192
+193</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 191</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -1282,14 +1310,6 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-216
-217
-218
-219
-220
-221
-222
-223
 224
 225
 226
@@ -1303,10 +1323,18 @@ the server is being asked to create.</p>
 234
 235
 236
-237</pre>
+237
+238
+239
+240
+241
+242
+243
+244
+245</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 216</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 224</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_hash'>hash</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -1336,6 +1364,53 @@ the server is being asked to create.</p>
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="javascript_enabled-instance_method">
+  
+    #<strong>javascript_enabled</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='javascript_enabled?-instance_method'>javascript_enabled?</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns javascript_enabled capability. It is true if not set explicitly.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55
+56</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 53</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_javascript_enabled'>javascript_enabled</span>
+  <span class='id identifier rubyid_javascript_enabled'>javascript_enabled</span> <span class='op'>=</span> <span class='ivar'>@capabilities</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:javascript_enabled</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_javascript_enabled'>javascript_enabled</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='kw'>true</span> <span class='op'>:</span> <span class='id identifier rubyid_javascript_enabled'>javascript_enabled</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="merge!-instance_method">
   
     #<strong>merge!</strong>(other)  &#x21d2; <tt>Object</tt> 
@@ -1350,18 +1425,18 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-191
-192
-193
-194
-195
-196
-197
-198
-199</pre>
+199
+200
+201
+202
+203
+204
+205
+206
+207</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 191</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 199</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:capabilities</span><span class='comma'>,</span> <span class='kw'>true</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
@@ -1392,19 +1467,19 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-201
-202
-203
-204
-205
-206
-207
-208
 209
-210</pre>
+210
+211
+212
+213
+214
+215
+216
+217
+218</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 201</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 209</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_proxy='>proxy=</span><span class='lparen'>(</span><span class='id identifier rubyid_proxy'>proxy</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_proxy'>proxy</span>
@@ -1436,12 +1511,12 @@ the server is being asked to create.</p>
       <pre class="lines">
 
 
-239
-240
-241</pre>
+247
+248
+249</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/capabilities.rb', line 239</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 247</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span> <span class='id identifier rubyid_as_json'>as_json</span>
@@ -1456,9 +1531,9 @@ the server is being asked to create.</p>
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:59 2017 by
+  Generated on Thu Nov  2 22:56:39 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/common/action_builder.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/common/action_builder.rb</dd>
   </dl>
   
 </div>
@@ -524,17 +524,17 @@ source element, moves by a given offset, then releases the mouse.</p>
       <pre class="lines">
 
 
+41
+42
 43
 44
 45
 46
 47
-48
-49
-50</pre>
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_mouse'>mouse</span><span class='comma'>,</span> <span class='id identifier rubyid_keyboard'>keyboard</span><span class='rparen'>)</span>
   <span class='ivar'>@devices</span> <span class='op'>=</span> <span class='lbrace'>{</span>
@@ -649,13 +649,13 @@ source element, moves by a given offset, then releases the mouse.</p>
       <pre class="lines">
 
 
+201
+202
 203
-204
-205
-206</pre>
+204</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 203</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 201</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -750,13 +750,13 @@ equivalent to:</p>
       <pre class="lines">
 
 
+160
+161
 162
-163
-164
-165</pre>
+163</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 162</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 160</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:down</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -848,13 +848,13 @@ move_to to the location of the element.</p>
       <pre class="lines">
 
 
+297
+298
 299
-300
-301
-302</pre>
+300</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 299</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 297</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context_click'>context_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:context_click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -948,13 +948,13 @@ move_to to the location of the element.</p>
       <pre class="lines">
 
 
+220
+221
 222
-223
-224
-225</pre>
+223</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 222</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 220</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double_click'>double_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:double_click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -1062,16 +1062,16 @@ the mouse.</p>
       <pre class="lines">
 
 
+319
+320
 321
 322
 323
 324
-325
-326
-327</pre>
+325</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 321</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 319</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_drag_and_drop'>drag_and_drop</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_click_and_hold'>click_and_hold</span> <span class='id identifier rubyid_source'>source</span>
@@ -1196,16 +1196,16 @@ source element, moves by a given offset, then releases the mouse.</p>
       <pre class="lines">
 
 
+342
+343
 344
 345
 346
 347
-348
-349
-350</pre>
+348</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 344</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 342</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_drag_and_drop_by'>drag_and_drop_by</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_click_and_hold'>click_and_hold</span> <span class='id identifier rubyid_source'>source</span>
@@ -1408,15 +1408,15 @@ modifier key is never released implicitly - either #key_up(key) or
       <pre class="lines">
 
 
+78
+79
 80
 81
 82
-83
-84
-85</pre>
+83</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_shift'>shift</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Element</a></span></span>
@@ -1609,15 +1609,15 @@ will yield undefined behaviour.</p>
       <pre class="lines">
 
 
+107
+108
 109
 110
 111
-112
-113
-114</pre>
+112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 107</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_up'>key_up</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_shift'>shift</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Element</a></span></span>
@@ -1743,13 +1743,13 @@ outside the browser window) then the viewport is scrolled to match.</p>
       <pre class="lines">
 
 
+279
+280
 281
-282
-283
-284</pre>
+282</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 281</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 279</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move_by'>move_by</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:move_by</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -1885,18 +1885,18 @@ coordinates above the element.</p>
       <pre class="lines">
 
 
+250
+251
 252
 253
 254
 255
 256
 257
-258
-259
-260</pre>
+258</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 252</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 250</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='kw'>if</span> <span class='id identifier rubyid_right_by'>right_by</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_down_by'>down_by</span>
@@ -1938,16 +1938,16 @@ coordinates above the element.</p>
       <pre class="lines">
 
 
+354
+355
 356
 357
 358
 359
-360
-361
-362</pre>
+360</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 356</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 354</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_perform'>perform</span>
   <span class='ivar'>@actions</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_receiver'>receiver</span><span class='comma'>,</span> <span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='id identifier rubyid_args'>args</span><span class='op'>|</span>
@@ -2019,13 +2019,13 @@ coordinates above the element.</p>
       <pre class="lines">
 
 
+176
+177
 178
-179
-180
-181</pre>
+179</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 178</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 176</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release'>release</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:up</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -2204,15 +2204,15 @@ switching elements should work.</p>
       <pre class="lines">
 
 
+138
+139
 140
 141
 142
-143
-144
-145</pre>
+143</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/action_builder.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/action_builder.rb', line 138</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_shift'>shift</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Element</a></span></span>
@@ -2230,9 +2230,9 @@ switching elements should work.</p>
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:59 2017 by
+  Generated on Thu Nov  2 22:56:40 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

@@ -125,6 +125,16 @@
 </tr>
 <tbody>
 <tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/json/BeanToJsonConverter.html" title="class in org.openqa.selenium.json">org.openqa.selenium.json.BeanToJsonConverter</a>
+<div class="block"><span class="deprecationComment">Visisibility will be reduced.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/BeanToJsonConverter.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.BeanToJsonConverter</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/json/Json.html#toJson-java.lang.Object-"><code>Json.toJson(Object)</code></a>.</span></div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/interactions/ButtonReleaseAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.ButtonReleaseAction</a>
 <div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#release--"><code>Actions.release()</code></a></span></div>
 </td>
@@ -162,6 +172,16 @@
 <tr class="rowColor">
 <td class="colOne"><a href="com/thoughtworks/selenium/HttpCommandProcessor.html" title="class in com.thoughtworks.selenium">com.thoughtworks.selenium.HttpCommandProcessor</a>
 <div class="block"><span class="deprecationComment">The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/json/JsonToBeanConverter.html" title="class in org.openqa.selenium.json">org.openqa.selenium.json.JsonToBeanConverter</a>
+<div class="block"><span class="deprecationComment">Visibility will be reduced. Use <a href="org/openqa/selenium/json/Json.html#toType-java.lang.Object-java.lang.reflect.Type-"><code>Json.toType(Object, Type)</code></a>.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/JsonToBeanConverter.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.JsonToBeanConverter</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/json/Json.html#toType-java.lang.Object-java.lang.reflect.Type-"><code>Json.toType(Object, Type)</code></a>.</span></div>
 </td>
 </tr>
 <tr class="altColor">
@@ -283,13 +303,31 @@
 </td>
 </tr>
 <tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/safari/SafariDriverService.html#createDefaultService-org.openqa.selenium.safari.SafariOptions-">org.openqa.selenium.safari.SafariDriverService.createDefaultService(SafariOptions)</a></td>
+</tr>
+<tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/chrome/ChromeOptions.html#getExperimentalOption-java.lang.String-">org.openqa.selenium.chrome.ChromeOptions.getExperimentalOption(String)</a>
 <div class="block"><span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxBinary.html#getExtraEnv--">org.openqa.selenium.firefox.FirefoxBinary.getExtraEnv()</a>
 <div class="block"><span class="deprecationComment">No replacement. Environment should be configured in <a href="org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> instance.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/safari/SafariOptions.html#getPort--">org.openqa.selenium.safari.SafariOptions.getPort()</a>
+<div class="block"><span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/safari/SafariOptions.html#getUseCleanSession--">org.openqa.selenium.safari.SafariOptions.getUseCleanSession()</a>
+<div class="block"><span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/safari/SafariOptions.html#getUseTechnologyPreview--">org.openqa.selenium.safari.SafariOptions.getUseTechnologyPreview()</a>
+<div class="block"><span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
 </td>
 </tr>
 <tr class="altColor">
@@ -323,6 +361,37 @@
 <tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxOptions.html#setLogLevel-java.util.logging.Level-">org.openqa.selenium.firefox.FirefoxOptions.setLogLevel(Level)</a>
 <div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxOptions.html#setLogLevel-org.openqa.selenium.firefox.FirefoxDriverLogLevel-"><code>FirefoxOptions.setLogLevel(FirefoxDriverLogLevel)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/safari/SafariOptions.html#setUseCleanSession-boolean-">org.openqa.selenium.safari.SafariOptions.setUseCleanSession(boolean)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/safari/SafariOptions.html#useCleanSession-boolean-"><code>SafariOptions.useCleanSession(boolean)</code></a> instead</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/safari/SafariOptions.html#setUseTechnologyPreview-boolean-">org.openqa.selenium.safari.SafariOptions.setUseTechnologyPreview(boolean)</a>
+<div class="block"><span class="deprecationComment">Create a <a href="org/openqa/selenium/safari/SafariDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariDriverService</code></a> to specify what Safari flavour should be used
+ and pass the service instance to a <a href="org/openqa/selenium/safari/SafariDriver.html" title="class in org.openqa.selenium.safari"><code>SafariDriver</code></a> constructor.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#startClient--">org.openqa.selenium.remote.RemoteWebDriver.startClient()</a>
+<div class="block"><span class="deprecationComment">No longer used, as behaviour is now in <a href="org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote"><code>CommandExecutor</code></a> instances.</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-">org.openqa.selenium.remote.RemoteWebDriver.startClient(Capabilities)</a>
+<div class="block"><span class="deprecationComment">No longer used, as behaviour is now in <a href="org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote"><code>CommandExecutor</code></a> instances.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#stopClient--">org.openqa.selenium.remote.RemoteWebDriver.stopClient()</a>
+<div class="block"><span class="deprecationComment">No longer used, as behaviour is now in <a href="org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote"><code>CommandExecutor</code></a> instances.</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-">org.openqa.selenium.remote.RemoteWebDriver.stopClient(Capabilities)</a>
+<div class="block"><span class="deprecationComment">No longer used, as behaviour is now in <a href="org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote"><code>CommandExecutor</code></a> instances.</span></div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -378,6 +447,16 @@
 <tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/server/DefaultDriverProvider.html#DefaultDriverProvider-org.openqa.selenium.Capabilities-java.lang.String-">org.openqa.selenium.remote.server.DefaultDriverProvider(Capabilities, String)</a>
 <div class="block"><span class="deprecationComment">Replace with a call to <a href="org/openqa/selenium/remote/server/DefaultDriverProvider.html#createProvider-org.openqa.selenium.Capabilities-java.lang.String-"><code>DefaultDriverProvider.createProvider(Capabilities, String)</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver-org.openqa.selenium.Capabilities-">org.openqa.selenium.edge.EdgeDriver(Capabilities)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver-org.openqa.selenium.edge.EdgeOptions-"><code>EdgeDriver.EdgeDriver(EdgeOptions)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver-org.openqa.selenium.edge.EdgeDriverService-org.openqa.selenium.Capabilities-">org.openqa.selenium.edge.EdgeDriver(EdgeDriverService, Capabilities)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/edge/EdgeDriver.html#EdgeDriver-org.openqa.selenium.edge.EdgeDriverService-org.openqa.selenium.edge.EdgeOptions-"><code>EdgeDriver.EdgeDriver(EdgeDriverService, EdgeOptions)</code></a></span></div>
 </td>
 </tr>
 <tr class="altColor">

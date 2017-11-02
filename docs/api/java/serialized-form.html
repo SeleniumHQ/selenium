@@ -103,6 +103,10 @@
 <h3>Serialized Fields</h3>
 <ul class="blockList">
 <li class="blockList">
+<h4>pipeline</h4>
+<pre><a href="org/openqa/selenium/remote/server/NewSessionPipeline.html" title="class in org.openqa.selenium.remote.server">NewSessionPipeline</a> pipeline</pre>
+</li>
+<li class="blockList">
 <h4>sessions</h4>
 <pre><a href="org/openqa/selenium/remote/server/ActiveSessions.html" title="class in org.openqa.selenium.remote.server">ActiveSessions</a> sessions</pre>
 </li>
@@ -356,22 +360,11 @@
 <li class="blockList"><a name="org.openqa.selenium.ImmutableCapabilities">
 <!--   -->
 </a>
-<h3>Class <a href="org/openqa/selenium/ImmutableCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.ImmutableCapabilities</a> extends java.lang.Object implements Serializable</h3>
+<h3>Class <a href="org/openqa/selenium/ImmutableCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.ImmutableCapabilities</a> extends org.openqa.selenium.AbstractCapabilities implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>665766108972704060L</dd>
 </dl>
-<ul class="blockList">
-<li class="blockList">
-<h3>Serialized Fields</h3>
-<ul class="blockList">
-<li class="blockListLast">
-<h4>caps</h4>
-<pre>java.util.Map&lt;K,V&gt; caps</pre>
-</li>
-</ul>
-</li>
-</ul>
 </li>
 <li class="blockList"><a name="org.openqa.selenium.InvalidArgumentException">
 <!--   -->
@@ -401,22 +394,11 @@
 <li class="blockList"><a name="org.openqa.selenium.MutableCapabilities">
 <!--   -->
 </a>
-<h3>Class <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.MutableCapabilities</a> extends java.lang.Object implements Serializable</h3>
+<h3>Class <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.MutableCapabilities</a> extends org.openqa.selenium.AbstractCapabilities implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>-112816287184979465L</dd>
 </dl>
-<ul class="blockList">
-<li class="blockList">
-<h3>Serialized Fields</h3>
-<ul class="blockList">
-<li class="blockListLast">
-<h4>caps</h4>
-<pre>java.util.Map&lt;K,V&gt; caps</pre>
-</li>
-</ul>
-</li>
-</ul>
 </li>
 <li class="blockList"><a name="org.openqa.selenium.NoAlertPresentException">
 <!--   -->
@@ -665,6 +647,16 @@
 </ul>
 </li>
 <li class="blockList">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.json</h2>
+<ul class="blockList">
+<li class="blockList"><a name="org.openqa.selenium.json.JsonException">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/json/JsonException.html" title="class in org.openqa.selenium.json">org.openqa.selenium.json.JsonException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
+</li>
+</ul>
+</li>
+<li class="blockList">
 <h2 title="Package">Package&nbsp;org.openqa.selenium.logging</h2>
 <ul class="blockList">
 <li class="blockList"><a name="org.openqa.selenium.logging.LoggingPreferences">
@@ -737,16 +729,6 @@
 </ul>
 </li>
 <li class="blockList">
-<h2 title="Package">Package&nbsp;org.openqa.selenium.os</h2>
-<ul class="blockList">
-<li class="blockList"><a name="org.openqa.selenium.os.ProcessUtils.ProcessStillAliveException">
-<!--   -->
-</a>
-<h3>Class <a href="org/openqa/selenium/os/ProcessUtils.ProcessStillAliveException.html" title="class in org.openqa.selenium.os">org.openqa.selenium.os.ProcessUtils.ProcessStillAliveException</a> extends java.lang.RuntimeException implements Serializable</h3>
-</li>
-</ul>
-</li>
-<li class="blockList">
 <h2 title="Package">Package&nbsp;org.openqa.selenium.remote</h2>
 <ul class="blockList">
 <li class="blockList"><a name="org.openqa.selenium.remote.DesiredCapabilities">
@@ -758,11 +740,6 @@
 <!--   -->
 </a>
 <h3>Class <a href="org/openqa/selenium/remote/ErrorHandler.UnknownServerException.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.ErrorHandler.UnknownServerException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
-</li>
-<li class="blockList"><a name="org.openqa.selenium.remote.JsonException">
-<!--   -->
-</a>
-<h3>Class <a href="org/openqa/selenium/remote/JsonException.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.JsonException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
 </li>
 <li class="blockList"><a name="org.openqa.selenium.remote.ScreenshotException">
 <!--   -->

@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":10,"i5":10,"i6":42,"i7":42,"i8":42,"i9":10,"i10":10,"i11":10,"i12":42,"i13":42,"i14":10,"i15":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -158,7 +158,7 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#CAPABILITY">CAPABILITY</a></span></code>
-<div class="block">Key used to store SafariOptions in a <a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote"><code>DesiredCapabilities</code></a> object.</div>
+<div class="block">Key used to store SafariOptions in a <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> object.</div>
 </td>
 </tr>
 </table>
@@ -178,6 +178,9 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#SafariOptions--">SafariOptions</a></span>()</code>&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#SafariOptions-org.openqa.selenium.Capabilities-">SafariOptions</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;source)</code>&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -188,40 +191,102 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>protected int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#amendHashCode--">amendHashCode</a></span>()</code>
+<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.Object&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#asMap--">asMap</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#equals-java.lang.Object-">equals</a></span>(java.lang.Object&nbsp;o)</code>&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#fromCapabilities-org.openqa.selenium.Capabilities-">fromCapabilities</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
 <div class="block">Construct a <a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a> instance from given capabilites.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getPort--">getPort</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getUseCleanSession--">getUseCleanSession</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getUseTechnologyPreview--">getUseTechnologyPreview</a></span>()</code>&nbsp;</td>
-</tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setUseCleanSession-boolean-">setUseCleanSession</a></span>(boolean&nbsp;useCleanSession)</code>
-<div class="block">Instruct the SafariDriver to delete all existing session data when starting a new session.</div>
-</td>
+<td class="colFirst"><code>java.lang.Object</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getCapability-java.lang.String-">getCapability</a></span>(java.lang.String&nbsp;capabilityName)</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getPlatform--">getPlatform</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getPort--">getPort</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
+</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getUseCleanSession--">getUseCleanSession</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
+</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getUseTechnologyPreview--">getUseTechnologyPreview</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
+</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#merge-org.openqa.selenium.Capabilities-">merge</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</code>
+<div class="block">Merges the extra capabilities provided into this DesiredCapabilities instance.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setProxy-org.openqa.selenium.Proxy-">setProxy</a></span>(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</code>&nbsp;</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setUseCleanSession-boolean-">setUseCleanSession</a></span>(boolean&nbsp;useCleanSession)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/safari/SafariOptions.html#useCleanSession-boolean-"><code>useCleanSession(boolean)</code></a> instead</span></div>
+</div>
+</td>
+</tr>
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setUseTechnologyPreview-boolean-">setUseTechnologyPreview</a></span>(boolean&nbsp;useTechnologyPreview)</code>
-<div class="block">Instruct the SafariDriver to use the Safari Technology Preview if true, otherwise use the
- release version of Safari.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Create a <a href="../../../../org/openqa/selenium/safari/SafariDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariDriverService</code></a> to specify what Safari flavour should be used
+ and pass the service instance to a <a href="../../../../org/openqa/selenium/safari/SafariDriver.html" title="class in org.openqa.selenium.safari"><code>SafariDriver</code></a> constructor.</span></div>
+</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#toString--">toString</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i15" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#useCleanSession-boolean-">useCleanSession</a></span>(boolean&nbsp;useCleanSession)</code>
+<div class="block">Instruct the SafariDriver to delete all existing session data when starting a new session.</div>
 </td>
 </tr>
 </table>
@@ -230,7 +295,7 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></h3>
-<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#amendHashCode--">amendHashCode</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#asMap--">asMap</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#equals-java.lang.Object-">equals</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#getCapability-java.lang.String-">getCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#hashCode--">hashCode</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-">merge</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-boolean-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.Object-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-org.openqa.selenium.Platform-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.String-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#toString--">toString</a></code></li>
+<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-boolean-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.Object-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-org.openqa.selenium.Platform-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.String-">setCapability</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -244,7 +309,7 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <!--   -->
 </a>
 <h3>Methods inherited from interface&nbsp;org.openqa.selenium.<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></h3>
-<code><a href="../../../../org/openqa/selenium/Capabilities.html#getBrowserName--">getBrowserName</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#getPlatform--">getPlatform</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#getVersion--">getVersion</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#is-java.lang.String-">is</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#isJavascriptEnabled--">isJavascriptEnabled</a></code></li>
+<code><a href="../../../../org/openqa/selenium/Capabilities.html#getBrowserName--">getBrowserName</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#getVersion--">getVersion</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#is-java.lang.String-">is</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#isJavascriptEnabled--">isJavascriptEnabled</a></code></li>
 </ul>
 </li>
 </ul>
@@ -267,7 +332,7 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <li class="blockList">
 <h4>CAPABILITY</h4>
 <pre>public static final&nbsp;java.lang.String CAPABILITY</pre>
-<div class="block">Key used to store SafariOptions in a <a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote"><code>DesiredCapabilities</code></a> object.</div>
+<div class="block">Key used to store SafariOptions in a <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> object.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.safari.SafariOptions.CAPABILITY">Constant Field Values</a></dd>
@@ -285,10 +350,19 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <a name="SafariOptions--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>SafariOptions</h4>
 <pre>public&nbsp;SafariOptions()</pre>
+</li>
+</ul>
+<a name="SafariOptions-org.openqa.selenium.Capabilities-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>SafariOptions</h4>
+<pre>public&nbsp;SafariOptions(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;source)</pre>
 </li>
 </ul>
 </li>
@@ -299,6 +373,29 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="merge-org.openqa.selenium.Capabilities-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>merge</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;merge(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-">MutableCapabilities</a></code></span></div>
+<div class="block">Merges the extra capabilities provided into this DesiredCapabilities instance. If capabilities
+ with the same name exist in this instance, they will be overridden by the values from the
+ extraCapabilities object.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/Capabilities.html#merge-org.openqa.selenium.Capabilities-">merge</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-">merge</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>extraCapabilities</code> - Additional capabilities to be added.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>DesiredCapabilities after the merge</dd>
+</dl>
+</li>
+</ul>
 <a name="fromCapabilities-org.openqa.selenium.Capabilities-">
 <!--   -->
 </a>
@@ -319,13 +416,13 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 </dl>
 </li>
 </ul>
-<a name="setUseCleanSession-boolean-">
+<a name="useCleanSession-boolean-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setUseCleanSession</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;setUseCleanSession(boolean&nbsp;useCleanSession)</pre>
+<h4>useCleanSession</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;useCleanSession(boolean&nbsp;useCleanSession)</pre>
 <div class="block">Instruct the SafariDriver to delete all existing session data when starting a new session.
  This includes browser history, cache, cookies, HTML5 local storage, and HTML5 databases.
 
@@ -338,13 +435,27 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 </dl>
 </li>
 </ul>
+<a name="setUseCleanSession-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setUseCleanSession</h4>
+<pre>@Deprecated
+public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;setUseCleanSession(boolean&nbsp;useCleanSession)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/safari/SafariOptions.html#useCleanSession-boolean-"><code>useCleanSession(boolean)</code></a> instead</span></div>
+</li>
+</ul>
 <a name="setUseTechnologyPreview-boolean-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>setUseTechnologyPreview</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;setUseTechnologyPreview(boolean&nbsp;useTechnologyPreview)</pre>
+<pre>@Deprecated
+public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;setUseTechnologyPreview(boolean&nbsp;useTechnologyPreview)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Create a <a href="../../../../org/openqa/selenium/safari/SafariDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariDriverService</code></a> to specify what Safari flavour should be used
+ and pass the service instance to a <a href="../../../../org/openqa/selenium/safari/SafariDriver.html" title="class in org.openqa.selenium.safari"><code>SafariDriver</code></a> constructor.</span></div>
 <div class="block">Instruct the SafariDriver to use the Safari Technology Preview if true, otherwise use the
  release version of Safari. Defaults to using the release version of Safari.</div>
 <dl>
@@ -354,13 +465,24 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 </dl>
 </li>
 </ul>
+<a name="setProxy-org.openqa.selenium.Proxy-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setProxy</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;setProxy(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</pre>
+</li>
+</ul>
 <a name="getPort--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getPort</h4>
-<pre>public&nbsp;int&nbsp;getPort()</pre>
+<pre>@Deprecated
+public&nbsp;int&nbsp;getPort()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The port the <a href="../../../../org/openqa/selenium/safari/SafariDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariDriverService</code></a> should be started on.
@@ -376,7 +498,9 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <ul class="blockList">
 <li class="blockList">
 <h4>getUseCleanSession</h4>
-<pre>public&nbsp;boolean&nbsp;getUseCleanSession()</pre>
+<pre>@Deprecated
+public&nbsp;boolean&nbsp;getUseCleanSession()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Whether the SafariDriver should erase all session data before launching Safari.</dd>
@@ -388,10 +512,111 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <a name="getUseTechnologyPreview--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getUseTechnologyPreview</h4>
-<pre>public&nbsp;boolean&nbsp;getUseTechnologyPreview()</pre>
+<pre>@Deprecated
+public&nbsp;boolean&nbsp;getUseTechnologyPreview()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
+</li>
+</ul>
+<a name="amendHashCode--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>amendHashCode</h4>
+<pre>protected&nbsp;int&nbsp;amendHashCode()</pre>
+<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a name="asMap--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asMap</h4>
+<pre>public&nbsp;java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;asMap()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/Capabilities.html#asMap--">asMap</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The capabilities as a Map</dd>
+</dl>
+</li>
+</ul>
+<a name="getPlatform--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPlatform</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;getPlatform()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/Capabilities.html#getPlatform--">getPlatform</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="getCapability-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCapability</h4>
+<pre>public&nbsp;java.lang.Object&nbsp;getCapability(java.lang.String&nbsp;capabilityName)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/Capabilities.html#getCapability-java.lang.String-">getCapability</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>capabilityName</code> - The capability to return.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The value, or null if not set.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote"><code>CapabilityType</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="hashCode--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hashCode</h4>
+<pre>public&nbsp;int&nbsp;hashCode()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>hashCode</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+</dl>
+</li>
+</ul>
+<a name="equals-java.lang.Object-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public&nbsp;boolean&nbsp;equals(java.lang.Object&nbsp;o)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>equals</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+</dl>
+</li>
+</ul>
+<a name="toString--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>toString</h4>
+<pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+</dl>
 </li>
 </ul>
 </li>

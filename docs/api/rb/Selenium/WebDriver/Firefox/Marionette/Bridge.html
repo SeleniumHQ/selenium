@@ -78,7 +78,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/firefox/marionette/bridge.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/firefox/marionette/bridge.rb</dd>
   </dl>
   
 </div>
@@ -201,12 +201,12 @@
       <pre class="lines">
 
 
-31
-32
-33</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/marionette/bridge.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/marionette/bridge.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commands'>commands</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="#COMMANDS-constant" title="Selenium::WebDriver::Firefox::Marionette::Bridge::COMMANDS (constant)">COMMANDS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>super</span>
@@ -231,18 +231,18 @@
       <pre class="lines">
 
 
+33
+34
 35
 36
-37
-38
-39</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/marionette/bridge.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/marionette/bridge.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_install_addon'>install_addon</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='id identifier rubyid_temporary'>temporary</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>path:</span> <span class='id identifier rubyid_path'>path</span><span class='rbrace'>}</span>
-  <span class='id identifier rubyid_payload'>payload</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='label'>temporary:</span> <span class='id identifier rubyid_temporary'>temporary</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_temporary'>temporary</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='id identifier rubyid_payload'>payload</span><span class='lbracket'>[</span><span class='symbol'>:temporary</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_temporary'>temporary</span> <span class='kw'>unless</span> <span class='id identifier rubyid_temporary'>temporary</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:install_addon</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_payload'>payload</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -265,12 +265,12 @@
       <pre class="lines">
 
 
-41
-42
-43</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/marionette/bridge.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/marionette/bridge.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uninstall_addon'>uninstall_addon</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:uninstall_addon</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>id:</span> <span class='id identifier rubyid_id'>id</span><span class='rbrace'>}</span>
@@ -285,9 +285,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:54 2017 by
+  Generated on Thu Nov  2 22:56:34 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

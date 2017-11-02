@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/remote/http/common.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/remote/http/common.rb</dd>
   </dl>
   
 </div>
@@ -334,12 +334,12 @@
       <pre class="lines">
 
 
-32
-33
-34</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/http/common.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span>
   <span class='ivar'>@timeout</span> <span class='op'>=</span> <span class='kw'>nil</span>
@@ -402,12 +402,12 @@
       <pre class="lines">
 
 
-30
-31
-32</pre>
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/http/common.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_server_url='>server_url=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@server_url</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -445,12 +445,12 @@
       <pre class="lines">
 
 
-29
-30
-31</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/http/common.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeout'>timeout</span>
   <span class='ivar'>@timeout</span>
@@ -482,6 +482,8 @@
       <pre class="lines">
 
 
+42
+43
 44
 45
 46
@@ -498,12 +500,10 @@
 57
 58
 59
-60
-61
-62</pre>
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/http/common.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='id identifier rubyid_command_hash'>command_hash</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_url'>url</span>      <span class='op'>=</span> <span class='id identifier rubyid_server_url'>server_url</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_url'>url</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>URI</span><span class='rparen'>)</span>
@@ -544,12 +544,12 @@
       <pre class="lines">
 
 
-40
-41
-42</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/http/common.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='comment'># hook for subclasses - will be called on Driver#quit
@@ -574,12 +574,12 @@
       <pre class="lines">
 
 
-36
-37
-38</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/common.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/http/common.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit_errors'>quit_errors</span>
   <span class='lbracket'>[</span><span class='const'>IOError</span><span class='rbracket'>]</span>
@@ -594,9 +594,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:59 2017 by
+  Generated on Thu Nov  2 22:56:39 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

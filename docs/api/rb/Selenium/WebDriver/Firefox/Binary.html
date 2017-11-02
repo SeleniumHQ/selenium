@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/firefox/binary.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/firefox/binary.rb</dd>
   </dl>
   
 </div>
@@ -409,6 +409,8 @@
       <pre class="lines">
 
 
+117
+118
 119
 120
 121
@@ -428,12 +430,10 @@
 135
 136
 137
-138
-139
-140</pre>
+138</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 119</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/binary.rb', line 117</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='kw'>case</span> <span class='const'><span class='object_link'><a href="../Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_os'><span class='object_link'><a href="../Platform.html#os-class_method" title="Selenium::WebDriver::Platform.os (method)">os</a></span></span>
@@ -497,13 +497,13 @@
       <pre class="lines">
 
 
+108
+109
 110
-111
-112
-113</pre>
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/binary.rb', line 108</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path='>path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'><span class='object_link'><a href="../Platform.html#assert_executable-class_method" title="Selenium::WebDriver::Platform.assert_executable (method)">assert_executable</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
@@ -542,12 +542,12 @@
       <pre class="lines">
 
 
-115
-116
-117</pre>
+113
+114
+115</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/binary.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reset_path!'>reset_path!</span>
   <span class='ivar'>@path</span> <span class='op'>=</span> <span class='kw'>nil</span>
@@ -585,6 +585,8 @@
       <pre class="lines">
 
 
+140
+141
 142
 143
 144
@@ -594,12 +596,10 @@
 148
 149
 150
-151
-152
-153</pre>
+151</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 142</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/binary.rb', line 140</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_version'>version</span>
   <span class='ivar'>@version</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='const'><span class='object_link'><a href="../Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_os'><span class='object_link'><a href="../Platform.html#os-class_method" title="Selenium::WebDriver::Platform.os (method)">os</a></span></span>
@@ -652,16 +652,16 @@
       <pre class="lines">
 
 
+54
+55
 56
 57
 58
 59
-60
-61
-62</pre>
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/binary.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@process</span>
@@ -703,6 +703,8 @@
       <pre class="lines">
 
 
+34
+35
 36
 37
 38
@@ -719,12 +721,10 @@
 49
 50
 51
-52
-53
-54</pre>
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/binary.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start_with'>start_with</span><span class='lparen'>(</span><span class='id identifier rubyid_profile'>profile</span><span class='comma'>,</span> <span class='id identifier rubyid_profile_path'>profile_path</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="../Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_cygwin?'><span class='object_link'><a href="../Platform.html#cygwin%3F-class_method" title="Selenium::WebDriver::Platform.cygwin? (method)">cygwin?</a></span></span>
@@ -778,6 +778,8 @@
       <pre class="lines">
 
 
+62
+63
 64
 65
 66
@@ -785,12 +787,10 @@
 68
 69
 70
-71
-72
-73</pre>
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/binary.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wait'>wait</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@process</span>
@@ -812,9 +812,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:57 2017 by
+  Generated on Thu Nov  2 22:56:37 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

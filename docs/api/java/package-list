@@ -14,6 +14,7 @@ org.openqa.selenium.interactions.internal
 org.openqa.selenium.interactions.touch
 org.openqa.selenium.internal
 org.openqa.selenium.io
+org.openqa.selenium.json
 org.openqa.selenium.lift
 org.openqa.selenium.lift.find
 org.openqa.selenium.lift.match
@@ -39,6 +40,7 @@ org.openqa.selenium.remote.server.log
 org.openqa.selenium.remote.server.rest
 org.openqa.selenium.remote.server.xdrpc
 org.openqa.selenium.remote.service
+org.openqa.selenium.remote.session
 org.openqa.selenium.safari
 org.openqa.selenium.security
 org.openqa.selenium.server.htmlrunner

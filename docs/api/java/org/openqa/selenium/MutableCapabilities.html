@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -117,7 +117,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public class <span class="typeNameLabel">MutableCapabilities</span>
 extends java.lang.Object
-implements <a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>, java.io.Serializable</pre>
+implements java.io.Serializable</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../serialized-form.html#org.openqa.selenium.MutableCapabilities">Serialized Form</a></dd>
@@ -170,7 +170,7 @@ implements <a href="../../../org/openqa/selenium/Capabilities.html" title="inter
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.util.Map&lt;java.lang.String,?&gt;</code></td>
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.Object&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/MutableCapabilities.html#asMap--">asMap</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
@@ -182,36 +182,40 @@ implements <a href="../../../org/openqa/selenium/Capabilities.html" title="inter
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/MutableCapabilities.html#getCapability-java.lang.String-">getCapability</a></span>(java.lang.String&nbsp;capabilityName)</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/MutableCapabilities.html#getPlatform--">getPlatform</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/MutableCapabilities.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-">merge</a></span>(<a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</code>
 <div class="block">Merges the extra capabilities provided into this DesiredCapabilities instance.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-boolean-">setCapability</a></span>(java.lang.String&nbsp;capabilityName,
              boolean&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.Object-">setCapability</a></span>(java.lang.String&nbsp;key,
              java.lang.Object&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-org.openqa.selenium.Platform-">setCapability</a></span>(java.lang.String&nbsp;capabilityName,
              <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.String-">setCapability</a></span>(java.lang.String&nbsp;capabilityName,
              java.lang.String&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/MutableCapabilities.html#toString--">toString</a></span>()</code>&nbsp;</td>
 </tr>
@@ -228,7 +232,7 @@ implements <a href="../../../org/openqa/selenium/Capabilities.html" title="inter
 <!--   -->
 </a>
 <h3>Methods inherited from interface&nbsp;org.openqa.selenium.<a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></h3>
-<code><a href="../../../org/openqa/selenium/Capabilities.html#getBrowserName--">getBrowserName</a>, <a href="../../../org/openqa/selenium/Capabilities.html#getPlatform--">getPlatform</a>, <a href="../../../org/openqa/selenium/Capabilities.html#getVersion--">getVersion</a>, <a href="../../../org/openqa/selenium/Capabilities.html#is-java.lang.String-">is</a>, <a href="../../../org/openqa/selenium/Capabilities.html#isJavascriptEnabled--">isJavascriptEnabled</a></code></li>
+<code><a href="../../../org/openqa/selenium/Capabilities.html#getBrowserName--">getBrowserName</a>, <a href="../../../org/openqa/selenium/Capabilities.html#getVersion--">getVersion</a>, <a href="../../../org/openqa/selenium/Capabilities.html#is-java.lang.String-">is</a>, <a href="../../../org/openqa/selenium/Capabilities.html#isJavascriptEnabled--">isJavascriptEnabled</a></code></li>
 </ul>
 </li>
 </ul>
@@ -279,79 +283,6 @@ implements <a href="../../../org/openqa/selenium/Capabilities.html" title="inter
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getCapability-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCapability</h4>
-<pre>public&nbsp;java.lang.Object&nbsp;getCapability(java.lang.String&nbsp;capabilityName)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../org/openqa/selenium/Capabilities.html#getCapability-java.lang.String-">getCapability</a></code>&nbsp;in interface&nbsp;<code><a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>capabilityName</code> - The capability to return.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The value, or null if not set.</dd>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote"><code>CapabilityType</code></a></dd>
-</dl>
-</li>
-</ul>
-<a name="asMap--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>asMap</h4>
-<pre>public&nbsp;java.util.Map&lt;java.lang.String,?&gt;&nbsp;asMap()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../org/openqa/selenium/Capabilities.html#asMap--">asMap</a></code>&nbsp;in interface&nbsp;<code><a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The capabilities as a Map</dd>
-</dl>
-</li>
-</ul>
-<a name="equals-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>equals</h4>
-<pre>public&nbsp;boolean&nbsp;equals(java.lang.Object&nbsp;o)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>equals</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
-</li>
-</ul>
-<a name="hashCode--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>hashCode</h4>
-<pre>public&nbsp;int&nbsp;hashCode()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>hashCode</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
-</li>
-</ul>
-<a name="amendHashCode--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>amendHashCode</h4>
-<pre>protected&nbsp;int&nbsp;amendHashCode()</pre>
-<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-</dl>
-</li>
-</ul>
 <a name="merge-org.openqa.selenium.Capabilities-">
 <!--   -->
 </a>
@@ -410,6 +341,92 @@ implements <a href="../../../org/openqa/selenium/Capabilities.html" title="inter
 <h4>setCapability</h4>
 <pre>public&nbsp;void&nbsp;setCapability(java.lang.String&nbsp;key,
                           java.lang.Object&nbsp;value)</pre>
+</li>
+</ul>
+<a name="getPlatform--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPlatform</h4>
+<pre>public&nbsp;<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;getPlatform()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../org/openqa/selenium/Capabilities.html#getPlatform--">getPlatform</a></code>&nbsp;in interface&nbsp;<code><a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="getCapability-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCapability</h4>
+<pre>public&nbsp;java.lang.Object&nbsp;getCapability(java.lang.String&nbsp;capabilityName)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../org/openqa/selenium/Capabilities.html#getCapability-java.lang.String-">getCapability</a></code>&nbsp;in interface&nbsp;<code><a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>capabilityName</code> - The capability to return.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The value, or null if not set.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote"><code>CapabilityType</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="asMap--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asMap</h4>
+<pre>public&nbsp;java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;asMap()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../org/openqa/selenium/Capabilities.html#asMap--">asMap</a></code>&nbsp;in interface&nbsp;<code><a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The capabilities as a Map</dd>
+</dl>
+</li>
+</ul>
+<a name="amendHashCode--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>amendHashCode</h4>
+<pre>protected&nbsp;int&nbsp;amendHashCode()</pre>
+<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a name="hashCode--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hashCode</h4>
+<pre>public&nbsp;int&nbsp;hashCode()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>hashCode</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+</dl>
+</li>
+</ul>
+<a name="equals-java.lang.Object-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public&nbsp;boolean&nbsp;equals(java.lang.Object&nbsp;o)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>equals</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+</dl>
 </li>
 </ul>
 <a name="toString--">

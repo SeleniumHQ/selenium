@@ -78,7 +78,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/common/keys.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/common/keys.rb</dd>
   </dl>
   
 </div>
@@ -102,7 +102,7 @@
     
       <li><span class='object_link'><a href="Element.html#send_keys-instance_method" title="Selenium::WebDriver::Element#send_keys (method)">Element#send_keys</a></span></li>
     
-      <li><a href="http://www.google.com.au/search?&q=unicode+pua&btnG=Search" target="_parent" title="http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnG=Search">http://www.google.com.au/search?&q=unicode+pua&btnG=Search</a></li>
+      <li><a href="http://www.google.com.au/search?&q=unicode+pua&btnK=Search" target="_parent" title="http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnK=Search">http://www.google.com.au/search?&q=unicode+pua&btnK=Search</a></li>
     
   </ul>
 
@@ -321,13 +321,13 @@
       <pre class="lines">
 
 
+111
+112
 113
-114
-115
-116</pre>
+114</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keys.rb', line 113</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/keys.rb', line 111</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='const'><span class='object_link'><a href="#KEYS-constant" title="Selenium::WebDriver::Keys::KEYS (constant)">KEYS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="#KEYS-constant" title="Selenium::WebDriver::Keys::KEYS (constant)">KEYS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span>
@@ -366,12 +366,12 @@
       <pre class="lines">
 
 
-122
-123
-124</pre>
+120
+121
+122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keys.rb', line 122</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/keys.rb', line 120</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_encode'>encode</span><span class='lparen'>(</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span> <span class='id identifier rubyid_encode_key'>encode_key</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -409,6 +409,8 @@
       <pre class="lines">
 
 
+128
+129
 130
 131
 132
@@ -419,12 +421,10 @@
 137
 138
 139
-140
-141
-142</pre>
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/keys.rb', line 130</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/keys.rb', line 128</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_encode_key'>encode_key</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_key'>key</span>
@@ -449,9 +449,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:54 2017 by
+  Generated on Thu Nov  2 22:56:34 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/common/target_locator.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/common/target_locator.rb</dd>
   </dl>
   
 </div>
@@ -322,12 +322,12 @@ page contains iframes.</p>
       <pre class="lines">
 
 
-27
-28
-29</pre>
+25
+26
+27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/target_locator.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -383,12 +383,12 @@ page contains iframes.</p>
       <pre class="lines">
 
 
-90
-91
-92</pre>
+88
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/target_locator.rb', line 90</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 88</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_active_element'>active_element</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_active_element'>switch_to_active_element</span>
@@ -425,12 +425,12 @@ instance</p>
       <pre class="lines">
 
 
-106
-107
-108</pre>
+104
+105
+106</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/target_locator.rb', line 106</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert'>alert</span>
   <span class='const'><span class='object_link'><a href="Alert.html" title="Selenium::WebDriver::Alert (class)">Alert</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Alert.html#initialize-instance_method" title="Selenium::WebDriver::Alert#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -467,12 +467,12 @@ page contains iframes.</p>
       <pre class="lines">
 
 
-98
-99
-100</pre>
+96
+97
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/target_locator.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 96</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_content'>default_content</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_default_content'>switch_to_default_content</span>
@@ -508,12 +508,12 @@ page contains iframes.</p>
       <pre class="lines">
 
 
-35
-36
-37</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/target_locator.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_frame'>frame</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_frame'>switch_to_frame</span> <span class='id identifier rubyid_id'>id</span>
@@ -549,12 +549,12 @@ page contains iframes.</p>
       <pre class="lines">
 
 
-43
-44
-45</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/target_locator.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parent_frame'>parent_frame</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_parent_frame'>switch_to_parent_frame</span>
@@ -613,6 +613,8 @@ block execution.</p>
       <pre class="lines">
 
 
+55
+56
 57
 58
 59
@@ -636,12 +638,10 @@ block execution.</p>
 77
 78
 79
-80
-81
-82</pre>
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/target_locator.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window'>window</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
@@ -679,9 +679,9 @@ block execution.</p>
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:59 2017 by
+  Generated on Thu Nov  2 22:56:40 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/common/wait.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/common/wait.rb</dd>
   </dl>
   
 </div>
@@ -300,15 +300,15 @@
       <pre class="lines">
 
 
+34
+35
 36
 37
 38
-39
-40
-41</pre>
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/wait.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/wait.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='ivar'>@timeout</span>  <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:timeout</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#DEFAULT_TIMEOUT-constant" title="Selenium::WebDriver::Wait::DEFAULT_TIMEOUT (constant)">DEFAULT_TIMEOUT</a></span></span><span class='rparen'>)</span>
@@ -385,6 +385,8 @@
       <pre class="lines">
 
 
+48
+49
 50
 51
 52
@@ -407,12 +409,10 @@
 69
 70
 71
-72
-73
-74</pre>
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/wait.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/wait.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='kw'>until</span>
   <span class='id identifier rubyid_end_time'>end_time</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span> <span class='op'>+</span> <span class='ivar'>@timeout</span>
@@ -449,9 +449,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:55 2017 by
+  Generated on Thu Nov  2 22:56:35 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

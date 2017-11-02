@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/common/service.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/common/service.rb</dd>
   </dl>
   
 </div>
@@ -451,17 +451,17 @@ starting and stopping driver implementations.</p>
       <pre class="lines">
 
 
+46
+47
 48
 49
 50
 51
 52
-53
-54
-55</pre>
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/service.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_executable_path'>executable_path</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_driver_opts'>driver_opts</span><span class='rparen'>)</span>
   <span class='ivar'>@executable_path</span> <span class='op'>=</span> <span class='id identifier rubyid_binary_path'>binary_path</span><span class='lparen'>(</span><span class='id identifier rubyid_executable_path'>executable_path</span><span class='rparen'>)</span>
@@ -511,12 +511,12 @@ starting and stopping driver implementations.</p>
       <pre class="lines">
 
 
-43
-44
-45</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/service.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_executable'>executable</span>
   <span class='ivar'>@executable</span>
@@ -556,12 +556,12 @@ starting and stopping driver implementations.</p>
       <pre class="lines">
 
 
-43
-44
-45</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/service.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_missing_text'>missing_text</span>
   <span class='ivar'>@missing_text</span>
@@ -606,12 +606,12 @@ starting and stopping driver implementations.</p>
       <pre class="lines">
 
 
-46
-47
-48</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/service.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_host'>host</span>
   <span class='ivar'>@host</span>
@@ -669,15 +669,15 @@ starting and stopping driver implementations.</p>
       <pre class="lines">
 
 
+55
+56
 57
 58
 59
-60
-61
-62</pre>
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/service.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_binary_path'>binary_path</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_find_binary'><span class='object_link'><a href="Platform.html#find_binary-class_method" title="Selenium::WebDriver::Platform.find_binary (method)">find_binary</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_executable'>executable</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -718,6 +718,8 @@ starting and stopping driver implementations.</p>
       <pre class="lines">
 
 
+62
+63
 64
 65
 66
@@ -728,12 +730,10 @@ starting and stopping driver implementations.</p>
 71
 72
 73
-74
-75
-76</pre>
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/service.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_process_running?'>process_running?</span>
@@ -781,16 +781,16 @@ starting and stopping driver implementations.</p>
       <pre class="lines">
 
 
+76
+77
 78
 79
 80
 81
-82
-83
-84</pre>
+82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/service.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='id identifier rubyid_stop_server'>stop_server</span>
@@ -832,12 +832,12 @@ starting and stopping driver implementations.</p>
       <pre class="lines">
 
 
-86
-87
-88</pre>
+84
+85
+86</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/service.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 84</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uri'>uri</span>
   <span class='ivar'>@uri</span> <span class='op'>||=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -852,9 +852,9 @@ starting and stopping driver implementations.</p>
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:57 2017 by
+  Generated on Thu Nov  2 22:56:37 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

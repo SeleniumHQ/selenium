@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/ie/options.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/ie/options.rb</dd>
   </dl>
   
 </div>
@@ -537,14 +537,14 @@
       <pre class="lines">
 
 
+86
+87
 88
 89
-90
-91
-92</pre>
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/ie/options.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/options.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='ivar'>@args</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -589,12 +589,12 @@
       <pre class="lines">
 
 
-55
-56
-57</pre>
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/ie/options.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/options.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_args'>args</span>
   <span class='ivar'>@args</span>
@@ -632,12 +632,12 @@
       <pre class="lines">
 
 
-55
-56
-57</pre>
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/ie/options.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/options.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
   <span class='ivar'>@options</span>
@@ -700,12 +700,12 @@
       <pre class="lines">
 
 
-100
-101
-102</pre>
+98
+99
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/ie/options.rb', line 100</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/options.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_argument'>add_argument</span><span class='lparen'>(</span><span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='ivar'>@args</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_arg'>arg</span>
@@ -786,12 +786,12 @@
       <pre class="lines">
 
 
-115
-116
-117</pre>
+113
+114
+115</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/ie/options.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/options.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_option'>add_option</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -829,6 +829,8 @@
       <pre class="lines">
 
 
+121
+122
 123
 124
 125
@@ -838,12 +840,10 @@
 129
 130
 131
-132
-133
-134</pre>
+132</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/ie/options.rb', line 123</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/options.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -867,9 +867,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:55 2017 by
+  Generated on Thu Nov  2 22:56:35 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

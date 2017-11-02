@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/common/window.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/common/window.rb</dd>
   </dl>
   
 </div>
@@ -449,12 +449,12 @@
       <pre class="lines">
 
 
-31
-32
-33</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -497,12 +497,12 @@
       <pre class="lines">
 
 
-158
-159
-160</pre>
+156
+157
+158</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 156</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_full_screen'>full_screen</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_full_screen_window'>full_screen_window</span>
@@ -538,12 +538,12 @@
       <pre class="lines">
 
 
-142
-143
-144</pre>
+140
+141
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 142</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 140</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_maximize'>maximize</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_maximize_window'>maximize_window</span>
@@ -579,12 +579,12 @@
       <pre class="lines">
 
 
-150
-151
-152</pre>
+148
+149
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 150</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 148</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_minimize'>minimize</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_minimize_window'>minimize_window</span>
@@ -629,12 +629,12 @@
       <pre class="lines">
 
 
-134
-135
-136</pre>
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 132</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_reposition_window'>reposition_window</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
@@ -688,12 +688,12 @@
       <pre class="lines">
 
 
-81
-82
-83</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_position'>position</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_position'>window_position</span>
@@ -749,17 +749,17 @@
       <pre class="lines">
 
 
+64
+65
 66
 67
 68
 69
 70
-71
-72
-73</pre>
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_position='>position=</span><span class='lparen'>(</span><span class='id identifier rubyid_point'>point</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_point'>point</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:x</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_point'>point</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:y</span><span class='rparen'>)</span>
@@ -818,12 +818,12 @@
       <pre class="lines">
 
 
-109
-110
-111</pre>
+107
+108
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 107</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rect'>rect</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_rect'>window_rect</span>
@@ -879,6 +879,8 @@
       <pre class="lines">
 
 
+89
+90
 91
 92
 93
@@ -887,12 +889,10 @@
 96
 97
 98
-99
-100
-101</pre>
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 91</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 89</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rect='>rect=</span><span class='lparen'>(</span><span class='id identifier rubyid_rectangle'>rectangle</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='qwords_beg'>%w[</span><span class='tstring_content'>x</span><span class='words_sep'> </span><span class='tstring_content'>y</span><span class='words_sep'> </span><span class='tstring_content'>width</span><span class='words_sep'> </span><span class='tstring_content'>height</span><span class='words_sep'>]</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_val'>val</span><span class='op'>|</span> <span class='id identifier rubyid_rectangle'>rectangle</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span> <span class='id identifier rubyid_val'>val</span> <span class='rbrace'>}</span>
@@ -950,12 +950,12 @@
       <pre class="lines">
 
 
-122
-123
-124</pre>
+120
+121
+122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 122</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 120</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_resize_to'>resize_to</span><span class='lparen'>(</span><span class='id identifier rubyid_width'>width</span><span class='comma'>,</span> <span class='id identifier rubyid_height'>height</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_resize_window'>resize_window</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_width'>width</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_height'>height</span><span class='rparen'>)</span>
@@ -1009,12 +1009,12 @@
       <pre class="lines">
 
 
-56
-57
-58</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_size'>size</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_size'>window_size</span>
@@ -1070,17 +1070,17 @@
       <pre class="lines">
 
 
+39
+40
 41
 42
 43
 44
 45
-46
-47
-48</pre>
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/window.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/window.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_size='>size=</span><span class='lparen'>(</span><span class='id identifier rubyid_dimension'>dimension</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_dimension'>dimension</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:width</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_dimension'>dimension</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:height</span><span class='rparen'>)</span>
@@ -1100,9 +1100,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:56 2017 by
+  Generated on Thu Nov  2 22:56:37 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

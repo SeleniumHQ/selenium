@@ -572,3 +572,15 @@ div.block div.block span.interfaceName {
 div.contentContainer ul.blockList li.blockList h2{
     padding-bottom:0px;
 }
+
+/* Custom selenium-specific styling */
+.blink {
+  animation: 2s cubic-bezier(0.5, 0, 0.85, 0.85) infinite blink;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+

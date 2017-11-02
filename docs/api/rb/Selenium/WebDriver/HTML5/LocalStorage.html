@@ -99,7 +99,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/common/html5/local_storage.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/common/html5/local_storage.rb</dd>
   </dl>
   
 </div>
@@ -325,12 +325,12 @@
       <pre class="lines">
 
 
-29
-30
-31</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -362,12 +362,12 @@
       <pre class="lines">
 
 
-33
-34
-35</pre>
+31
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_local_storage_item'>local_storage_item</span> <span class='id identifier rubyid_key'>key</span>
@@ -392,12 +392,12 @@
       <pre class="lines">
 
 
-37
-38
-39</pre>
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_local_storage_item'>local_storage_item</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span>
@@ -422,12 +422,12 @@
       <pre class="lines">
 
 
-45
-46
-47</pre>
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear'>clear</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_clear_local_storage'>clear_local_storage</span>
@@ -452,12 +452,12 @@
       <pre class="lines">
 
 
-41
-42
-43</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_remove_local_storage_item'>remove_local_storage_item</span> <span class='id identifier rubyid_key'>key</span>
@@ -482,12 +482,12 @@
       <pre class="lines">
 
 
-53
-54
-55</pre>
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_keys'>keys</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_local_storage_keys'>local_storage_keys</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span>
@@ -512,12 +512,12 @@
       <pre class="lines">
 
 
-49
-50
-51</pre>
+47
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/local_storage.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/html5/local_storage.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_size'>size</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_local_storage_size'>local_storage_size</span>
@@ -532,9 +532,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:59 2017 by
+  Generated on Thu Nov  2 22:56:40 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

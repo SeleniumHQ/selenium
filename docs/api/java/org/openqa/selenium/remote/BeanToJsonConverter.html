@@ -17,12 +17,6 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -75,13 +69,13 @@ var activeTableTab = "activeTableTab";
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.org.openqa.selenium.json.BeanToJsonConverter">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -98,7 +92,12 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/openqa/selenium/json/BeanToJsonConverter.html" title="class in org.openqa.selenium.json">org.openqa.selenium.json.BeanToJsonConverter</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.remote.BeanToJsonConverter</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -106,9 +105,13 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/json/Json.html#toJson-java.lang.Object-"><code>Json.toJson(Object)</code></a>.</span></div>
+</div>
 <br>
-<pre>public class <span class="typeNameLabel">BeanToJsonConverter</span>
-extends java.lang.Object</pre>
+<pre>@Deprecated
+public class <span class="typeNameLabel">BeanToJsonConverter</span>
+extends <a href="../../../../org/openqa/selenium/json/BeanToJsonConverter.html" title="class in org.openqa.selenium.json">BeanToJsonConverter</a></pre>
 <div class="block">Utility class for converting between JSON and Java Objects.</div>
 </li>
 </ul>
@@ -128,7 +131,9 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/BeanToJsonConverter.html#BeanToJsonConverter--">BeanToJsonConverter</a></span>()</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/BeanToJsonConverter.html#BeanToJsonConverter--">BeanToJsonConverter</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -139,27 +144,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Method and Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/BeanToJsonConverter.html#convert-java.lang.Object-">convert</a></span>(java.lang.Object&nbsp;object)</code>
-<div class="block">Convert an object that may or may not be a JsonElement into its JSON string
- representation, handling the case where it is neither in a graceful way.</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>com.google.gson.JsonElement</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/BeanToJsonConverter.html#convertObject-java.lang.Object-">convertObject</a></span>(java.lang.Object&nbsp;object)</code>
-<div class="block">Convert an object that may or may not be a JsonElement into its JSON object
- representation, handling the case where it is neither in a graceful way.</div>
-</td>
-</tr>
-</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.json.BeanToJsonConverter">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.json.<a href="../../../../org/openqa/selenium/json/BeanToJsonConverter.html" title="class in org.openqa.selenium.json">BeanToJsonConverter</a></h3>
+<code><a href="../../../../org/openqa/selenium/json/BeanToJsonConverter.html#convert-java.lang.Object-">convert</a>, <a href="../../../../org/openqa/selenium/json/BeanToJsonConverter.html#convertObject-java.lang.Object-">convertObject</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -188,48 +179,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>BeanToJsonConverter</h4>
 <pre>public&nbsp;BeanToJsonConverter()</pre>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ============ METHOD DETAIL ========== -->
-<ul class="blockList">
-<li class="blockList"><a name="method.detail">
-<!--   -->
-</a>
-<h3>Method Detail</h3>
-<a name="convert-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>convert</h4>
-<pre>public&nbsp;java.lang.String&nbsp;convert(java.lang.Object&nbsp;object)</pre>
-<div class="block">Convert an object that may or may not be a JsonElement into its JSON string
- representation, handling the case where it is neither in a graceful way.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>object</code> - which needs conversion</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the JSON string representation of object</dd>
-</dl>
-</li>
-</ul>
-<a name="convertObject-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>convertObject</h4>
-<pre>public&nbsp;com.google.gson.JsonElement&nbsp;convertObject(java.lang.Object&nbsp;object)</pre>
-<div class="block">Convert an object that may or may not be a JsonElement into its JSON object
- representation, handling the case where it is neither in a graceful way.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>object</code> - which needs conversion</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the JSON object representation of object</dd>
-</dl>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -287,13 +237,13 @@ extends java.lang.Object</pre>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.org.openqa.selenium.json.BeanToJsonConverter">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">

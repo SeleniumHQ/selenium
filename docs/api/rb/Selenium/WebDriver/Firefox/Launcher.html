@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/firefox/launcher.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/firefox/launcher.rb</dd>
   </dl>
   
 </div>
@@ -463,6 +463,8 @@
       <pre class="lines">
 
 
+26
+27
 28
 29
 30
@@ -475,12 +477,10 @@
 37
 38
 39
-40
-41
-42</pre>
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_binary'>binary</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_profile'>profile</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='id identifier rubyid_binary'>binary</span>
@@ -550,12 +550,12 @@
       <pre class="lines">
 
 
-100
-101
-102</pre>
+98
+99
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 100</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_profile'>assert_profile</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>must create_profile first</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='ivar'>@profile</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@profile_dir</span>
@@ -606,17 +606,17 @@
       <pre class="lines">
 
 
+81
+82
 83
 84
 85
 86
 87
-88
-89
-90</pre>
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_connect_until_stable'>connect_until_stable</span>
   <span class='id identifier rubyid_poller'>poller</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../SocketPoller.html" title="Selenium::WebDriver::SocketPoller (class)">SocketPoller</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../SocketPoller.html#initialize-instance_method" title="Selenium::WebDriver::SocketPoller#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@host</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#STABLE_CONNECTION_TIMEOUT-constant" title="Selenium::WebDriver::Firefox::Launcher::STABLE_CONNECTION_TIMEOUT (constant)">STABLE_CONNECTION_TIMEOUT</a></span></span><span class='rparen'>)</span>
@@ -659,18 +659,18 @@
       <pre class="lines">
 
 
+66
+67
 68
 69
 70
 71
 72
 73
-74
-75
-76</pre>
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_profile'>create_profile</span>
   <span class='id identifier rubyid_fetch_profile'>fetch_profile</span> <span class='kw'>unless</span> <span class='ivar'>@profile</span>
@@ -714,23 +714,23 @@
       <pre class="lines">
 
 
+90
+91
 92
 93
 94
 95
-96
-97
-98</pre>
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 92</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fetch_profile'>fetch_profile</span>
-  <span class='kw'>if</span> <span class='ivar'>@profile_name</span>
-    <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></span><span class='period'>.</span><span class='id identifier rubyid_from_name'><span class='object_link'><a href="Profile.html#from_name-class_method" title="Selenium::WebDriver::Firefox::Profile.from_name (method)">from_name</a></span></span> <span class='ivar'>@profile_name</span>
-  <span class='kw'>else</span>
-    <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Profile.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::Profile#initialize (method)">new</a></span></span>
-  <span class='kw'>end</span>
+  <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ivar'>@profile_name</span>
+               <span class='const'><span class='object_link'><a href="Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></span><span class='period'>.</span><span class='id identifier rubyid_from_name'><span class='object_link'><a href="Profile.html#from_name-class_method" title="Selenium::WebDriver::Firefox::Profile.from_name (method)">from_name</a></span></span> <span class='ivar'>@profile_name</span>
+             <span class='kw'>else</span>
+               <span class='const'><span class='object_link'><a href="Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Profile.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::Profile#initialize (method)">new</a></span></span>
+             <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -765,12 +765,12 @@
       <pre class="lines">
 
 
-64
-65
-66</pre>
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_free_port'>find_free_port</span>
   <span class='ivar'>@port</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../PortProber.html" title="Selenium::WebDriver::PortProber (class)">PortProber</a></span></span><span class='period'>.</span><span class='id identifier rubyid_above'><span class='object_link'><a href="../PortProber.html#above-class_method" title="Selenium::WebDriver::PortProber.above (method)">above</a></span></span> <span class='ivar'>@port</span>
@@ -808,6 +808,8 @@
       <pre class="lines">
 
 
+46
+47
 48
 49
 50
@@ -815,12 +817,10 @@
 52
 53
 54
-55
-56
-57</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_launch'>launch</span>
   <span class='id identifier rubyid_socket_lock'>socket_lock</span><span class='period'>.</span><span class='id identifier rubyid_locked'>locked</span> <span class='kw'>do</span>
@@ -865,13 +865,13 @@
       <pre class="lines">
 
 
+57
+58
 59
-60
-61
-62</pre>
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 57</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='ivar'>@binary</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span>
@@ -910,12 +910,12 @@
       <pre class="lines">
 
 
-104
-105
-106</pre>
+102
+103
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_socket_lock'>socket_lock</span>
   <span class='ivar'>@socket_lock</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../SocketLock.html" title="Selenium::WebDriver::SocketLock (class)">SocketLock</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../SocketLock.html#initialize-instance_method" title="Selenium::WebDriver::SocketLock#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@port</span> <span class='op'>-</span> <span class='int'>1</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#SOCKET_LOCK_TIMEOUT-constant" title="Selenium::WebDriver::Firefox::Launcher::SOCKET_LOCK_TIMEOUT (constant)">SOCKET_LOCK_TIMEOUT</a></span></span><span class='rparen'>)</span>
@@ -953,13 +953,13 @@
       <pre class="lines">
 
 
+76
+77
 78
-79
-80
-81</pre>
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='id identifier rubyid_assert_profile'>assert_profile</span>
@@ -998,12 +998,12 @@
       <pre class="lines">
 
 
-44
-45
-46</pre>
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/launcher.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_url'>url</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>/hub</span><span class='tstring_end'>&quot;</span></span>
@@ -1018,9 +1018,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:57 2017 by
+  Generated on Thu Nov  2 22:56:38 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

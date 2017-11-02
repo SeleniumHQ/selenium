@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -184,6 +184,10 @@ implements java.io.Serializable</pre>
 <td class="colFirst"><code>java.util.logging.Level</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html#getLevel-java.lang.String-">getLevel</a></span>(java.lang.String&nbsp;logType)</code>&nbsp;</td>
 </tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.Object&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html#toJson--">toJson</a></span>()</code>&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -271,7 +275,7 @@ implements java.io.Serializable</pre>
 <a name="addPreferences-org.openqa.selenium.logging.LoggingPreferences-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>addPreferences</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a>&nbsp;addPreferences(<a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a>&nbsp;prefs)</pre>
@@ -283,6 +287,16 @@ implements java.io.Serializable</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A references to this object.</dd>
 </dl>
+</li>
+</ul>
+<a name="toJson--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>toJson</h4>
+<pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
+public&nbsp;java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;toJson()</pre>
 </li>
 </ul>
 </li>

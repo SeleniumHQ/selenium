@@ -17,12 +17,6 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -47,7 +41,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/remote/JsonException.html" title="class in org.openqa.selenium.remote"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/JdkAugmenter.html" title="class in org.openqa.selenium.remote"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../org/openqa/selenium/remote/LocalFileDetector.html" title="class in org.openqa.selenium.remote"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -75,13 +69,13 @@ var activeTableTab = "activeTableTab";
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.org.openqa.selenium.json.JsonToBeanConverter">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -98,7 +92,12 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/openqa/selenium/json/JsonToBeanConverter.html" title="class in org.openqa.selenium.json">org.openqa.selenium.json.JsonToBeanConverter</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.remote.JsonToBeanConverter</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -106,9 +105,13 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/json/Json.html#toType-java.lang.Object-java.lang.reflect.Type-"><code>Json.toType(Object, Type)</code></a>.</span></div>
+</div>
 <br>
-<pre>public class <span class="typeNameLabel">JsonToBeanConverter</span>
-extends java.lang.Object</pre>
+<pre>@Deprecated
+public class <span class="typeNameLabel">JsonToBeanConverter</span>
+extends <a href="../../../../org/openqa/selenium/json/JsonToBeanConverter.html" title="class in org.openqa.selenium.json">JsonToBeanConverter</a></pre>
 </li>
 </ul>
 </div>
@@ -127,7 +130,9 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/JsonToBeanConverter.html#JsonToBeanConverter--">JsonToBeanConverter</a></span>()</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/JsonToBeanConverter.html#JsonToBeanConverter--">JsonToBeanConverter</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -138,18 +143,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Method and Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/JsonToBeanConverter.html#convert-java.lang.Class-java.lang.Object-">convert</a></span>(java.lang.Class&lt;T&gt;&nbsp;clazz,
-       java.lang.Object&nbsp;source)</code>&nbsp;</td>
-</tr>
-</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.json.JsonToBeanConverter">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.json.<a href="../../../../org/openqa/selenium/json/JsonToBeanConverter.html" title="class in org.openqa.selenium.json">JsonToBeanConverter</a></h3>
+<code><a href="../../../../org/openqa/selenium/json/JsonToBeanConverter.html#convert-java.lang.Class-java.lang.Object-">convert</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -178,29 +178,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>JsonToBeanConverter</h4>
 <pre>public&nbsp;JsonToBeanConverter()</pre>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ============ METHOD DETAIL ========== -->
-<ul class="blockList">
-<li class="blockList"><a name="method.detail">
-<!--   -->
-</a>
-<h3>Method Detail</h3>
-<a name="convert-java.lang.Class-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>convert</h4>
-<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;convert(java.lang.Class&lt;T&gt;&nbsp;clazz,
-                     java.lang.Object&nbsp;source)
-              throws <a href="../../../../org/openqa/selenium/remote/JsonException.html" title="class in org.openqa.selenium.remote">JsonException</a></pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/remote/JsonException.html" title="class in org.openqa.selenium.remote">JsonException</a></code></dd>
-</dl>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -230,7 +208,7 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/remote/JsonException.html" title="class in org.openqa.selenium.remote"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/JdkAugmenter.html" title="class in org.openqa.selenium.remote"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../org/openqa/selenium/remote/LocalFileDetector.html" title="class in org.openqa.selenium.remote"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -258,13 +236,13 @@ extends java.lang.Object</pre>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.org.openqa.selenium.json.JsonToBeanConverter">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">

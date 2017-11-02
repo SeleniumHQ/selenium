@@ -96,8 +96,8 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/remote/w3c/bridge.rb<span class="defines">,<br />
-  lib/selenium/webdriver/remote/w3c/commands.rb</span>
+    <dd>build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb<span class="defines">,<br />
+  build/rb/lib/selenium/webdriver/remote/w3c/commands.rb</span>
 </dd>
   </dl>
   
@@ -2475,14 +2475,14 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+33
+34
 35
 36
-37
-38
-39</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='comma'>,</span> <span class='id identifier rubyid_session_id'>session_id</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_capabilities'>capabilities</span>
@@ -2531,12 +2531,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-79
-80
-81</pre>
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accept_alert'>accept_alert</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:accept_alert</span>
@@ -2580,15 +2580,15 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+333
+334
 335
 336
 337
-338
-339
-340</pre>
+338</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 335</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 333</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_action'>action</span><span class='lparen'>(</span><span class='id identifier rubyid_async'>async</span> <span class='op'>=</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../../W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../../W3CActionBuilder.html#initialize-instance_method" title="Selenium::WebDriver::W3CActionBuilder#initialize (method)">new</a></span></span> <span class='kw'>self</span><span class='comma'>,</span>
@@ -2635,12 +2635,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-505
-506
-507</pre>
+503
+504
+505</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 505</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 503</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_active_element'>active_element</span>
   <span class='const'><span class='object_link'><a href="../../Element.html" title="Selenium::WebDriver::Element (class)">Element</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../../Element.html#initialize-instance_method" title="Selenium::WebDriver::Element#initialize (method)">new</a></span></span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:get_active_element</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -2678,12 +2678,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-311
-312
-313</pre>
+309
+310
+311</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 311</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 309</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_cookie'>add_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_cookie'>cookie</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:add_cookie</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>cookie:</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='rbrace'>}</span>
@@ -2721,12 +2721,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-87
-88
-89</pre>
+85
+86
+87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 87</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 85</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert='>alert=</span><span class='lparen'>(</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:send_alert_text</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>value:</span> <span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span><span class='comma'>,</span> <span class='label'>text:</span> <span class='id identifier rubyid_keys'>keys</span><span class='rbrace'>}</span>
@@ -2764,12 +2764,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-91
-92
-93</pre>
+89
+90
+91</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 91</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 89</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert_text'>alert_text</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_alert_text</span>
@@ -2807,12 +2807,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-370
-371
-372</pre>
+368
+369
+370</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 370</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 368</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_element'>clear_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:element_clear</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -2850,12 +2850,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-241
-242
-243</pre>
+239
+240
+241</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 241</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 239</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_local_storage'>clear_local_storage</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>localStorage.clear()</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -2893,12 +2893,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-265
-266
-267</pre>
+263
+264
+265</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 265</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 263</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_session_storage'>clear_session_storage</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sessionStorage.clear()</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -2936,12 +2936,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-359
-360
-361</pre>
+357
+358
+359</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 359</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 357</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click_element'>click_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:element_click</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -2979,12 +2979,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-146
-147
-148</pre>
+144
+145
+146</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 146</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 144</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:close_window</span>
@@ -3022,17 +3022,17 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+43
+44
 45
 46
 47
 48
 49
-50
-51
-52</pre>
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commands'>commands</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_command'>command</span>
@@ -3075,12 +3075,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-319
-320
-321</pre>
+317
+318
+319</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 319</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 317</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_cookie</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span>
@@ -3118,12 +3118,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-323
-324
-325</pre>
+321
+322
+323</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 323</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 321</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookies'>cookies</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_all_cookies</span>
@@ -3161,12 +3161,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-327
-328
-329</pre>
+325
+326
+327</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 327</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 325</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:delete_all_cookies</span>
@@ -3204,12 +3204,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-315
-316
-317</pre>
+313
+314
+315</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 315</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 313</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_cookie'>delete_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:delete_cookie</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span>
@@ -3247,12 +3247,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-41
-42
-43</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_dialect'>dialect</span>
   <span class='symbol'>:w3c</span>
@@ -3290,12 +3290,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-83
-84
-85</pre>
+81
+82
+83</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_dismiss_alert'>dismiss_alert</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:dismiss_alert</span>
@@ -3333,12 +3333,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-381
-382
-383</pre>
+379
+380
+381</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 381</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 379</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_drag_element'>drag_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:drag_element</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>x:</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='rbrace'>}</span>
@@ -3376,12 +3376,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-446
-447
-448</pre>
+444
+445
+446</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 446</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 444</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_attribute'>element_attribute</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_atom'>execute_atom</span> <span class='symbol'>:getAttribute</span><span class='comma'>,</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span>
@@ -3432,12 +3432,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-493
-494
-495</pre>
+491
+492
+493</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 493</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 491</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_displayed?'>element_displayed?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:is_element_displayed</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3488,12 +3488,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-485
-486
-487</pre>
+483
+484
+485</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 485</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 483</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_enabled?'>element_enabled?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:is_element_enabled</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3531,14 +3531,14 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+460
+461
 462
 463
-464
-465
-466</pre>
+464</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 462</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 460</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_location'>element_location</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_rect</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3578,13 +3578,13 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+472
+473
 474
-475
-476
-477</pre>
+475</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 474</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 472</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_location_once_scrolled_into_view'>element_location_once_scrolled_into_view</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_send_keys_to_element'>send_keys_to_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -3623,12 +3623,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-450
-451
-452</pre>
+448
+449
+450</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 450</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 448</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_property'>element_property</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_property</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span>
@@ -3666,14 +3666,14 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+466
+467
 468
 469
-470
-471
-472</pre>
+470</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 468</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 466</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_rect'>element_rect</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_rect</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3726,12 +3726,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-489
-490
-491</pre>
+487
+488
+489</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 489</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 487</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_selected?'>element_selected?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:is_element_selected</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3769,14 +3769,14 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+477
+478
 479
 480
-481
-482
-483</pre>
+481</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 479</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 477</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_size'>element_size</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_rect</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3818,12 +3818,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-442
-443
-444</pre>
+440
+441
+442</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 442</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 440</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_tag_name'>element_tag_name</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_tag_name</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3861,12 +3861,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-458
-459
-460</pre>
+456
+457
+458</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 458</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 456</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_text'>element_text</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_text</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3904,12 +3904,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-454
-455
-456</pre>
+452
+453
+454</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 454</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 452</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_value'>element_value</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_element_property'>element_property</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>value</span><span class='tstring_end'>&#39;</span></span>
@@ -3947,12 +3947,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-497
-498
-499</pre>
+495
+496
+497</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 497</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 495</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_value_of_css_property'>element_value_of_css_property</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_prop'>prop</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_css_value</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>property_name:</span> <span class='id identifier rubyid_prop'>prop</span>
@@ -3990,13 +3990,13 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+296
+297
 298
-299
-300
-301</pre>
+299</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 298</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 296</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execute_async_script'>execute_async_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:execute_async_script</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>script:</span> <span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='label'>args:</span> <span class='id identifier rubyid_args'>args</span><span class='rbrace'>}</span>
@@ -4037,13 +4037,13 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+291
+292
 293
-294
-295
-296</pre>
+294</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 293</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 291</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:execute_script</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>script:</span> <span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='label'>args:</span> <span class='id identifier rubyid_args'>args</span><span class='rbrace'>}</span>
@@ -4082,6 +4082,8 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+509
+510
 511
 512
 513
@@ -4089,12 +4091,10 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
 515
 516
 517
-518
-519
-520</pre>
+518</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 511</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 509</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_element_by'>find_element_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span> <span class='op'>=</span> <span class='id identifier rubyid_convert_locators'>convert_locators</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='rparen'>)</span>
@@ -4139,6 +4139,8 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+520
+521
 522
 523
 524
@@ -4147,12 +4149,10 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
 527
 528
 529
-530
-531
-532</pre>
+530</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 522</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 520</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_elements_by'>find_elements_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span> <span class='op'>=</span> <span class='id identifier rubyid_convert_locators'>convert_locators</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='rparen'>)</span>
@@ -4198,12 +4198,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-193
-194
-195</pre>
+191
+192
+193</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 193</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 191</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_full_screen_window'>full_screen_window</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:fullscreen_window</span>
@@ -4241,12 +4241,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-58
-59
-60</pre>
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>url:</span> <span class='id identifier rubyid_url'>url</span><span class='rbrace'>}</span>
@@ -4286,12 +4286,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-99
-100
-101</pre>
+97
+98
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 97</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_go_back'>go_back</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:back</span>
@@ -4329,12 +4329,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-103
-104
-105</pre>
+101
+102
+103</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 103</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 101</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_go_forward'>go_forward</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:forward</span>
@@ -4372,12 +4372,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-62
-63
-64</pre>
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_implicit_wait_timeout='>implicit_wait_timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_timeout'>timeout</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>implicit</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rparen'>)</span>
@@ -4428,12 +4428,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-347
-348
-349</pre>
+345
+346
+347</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 347</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 345</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_keyboard'>keyboard</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#keyboard is no longer supported, use #action instead</span><span class='tstring_end'>&#39;</span></span>
@@ -4473,16 +4473,16 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+223
+224
 225
 226
 227
 228
-229
-230
-231</pre>
+229</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 225</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 223</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_local_storage_item'>local_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span>
@@ -4524,12 +4524,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-237
-238
-239</pre>
+235
+236
+237</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 237</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 235</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_local_storage_keys'>local_storage_keys</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return Object.keys(localStorage)</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -4567,12 +4567,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-245
-246
-247</pre>
+243
+244
+245</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 245</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 243</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_local_storage_size'>local_storage_size</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return localStorage.length</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -4623,12 +4623,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-273
-274
-275</pre>
+271
+272
+273</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 273</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 271</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The W3C standard does not currently support getting location</span><span class='tstring_end'>&#39;</span></span>
@@ -4666,15 +4666,15 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+184
+185
 186
 187
 188
-189
-190
-191</pre>
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 186</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 184</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_maximize_window'>maximize_window</span><span class='lparen'>(</span><span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_handle'>handle</span> <span class='op'>==</span> <span class='symbol'>:current</span>
@@ -4715,12 +4715,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-182
-183
-184</pre>
+180
+181
+182</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 182</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 180</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_minimize_window'>minimize_window</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:minimize_window</span>
@@ -4771,12 +4771,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-343
-344
-345</pre>
+341
+342
+343</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 343</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 341</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mouse'>mouse</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#mouse is no longer supported, use #action instead</span><span class='tstring_end'>&#39;</span></span>
@@ -4827,12 +4827,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-281
-282
-283</pre>
+279
+280
+281</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 281</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 279</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_connection'>network_connection</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The W3C standard does not currently support getting network connection</span><span class='tstring_end'>&#39;</span></span>
@@ -4883,12 +4883,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-285
-286
-287</pre>
+283
+284
+285</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 285</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 283</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_connection='>network_connection=</span><span class='lparen'>(</span><span class='id identifier rubyid__type'>_type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The W3C standard does not currently support setting network connection</span><span class='tstring_end'>&#39;</span></span>
@@ -4928,12 +4928,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-307
-308
-309</pre>
+305
+306
+307</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 307</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 305</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
   <span class='ivar'>@options</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../W3COptions.html" title="Selenium::WebDriver::W3COptions (class)">W3COptions</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../../Options.html#initialize-instance_method" title="Selenium::WebDriver::Options#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
@@ -4971,14 +4971,14 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+113
+114
 115
 116
-117
-118
-119</pre>
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_page_source'>page_source</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>var source = document.documentElement.outerHTML;</span><span class='tstring_end'>&#39;</span></span> \
@@ -5018,14 +5018,14 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+138
+139
 140
 141
-142
-143
-144</pre>
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 138</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:delete_session</span>
@@ -5065,12 +5065,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-150
-151
-152</pre>
+148
+149
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 150</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 148</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_refresh'>refresh</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:refresh</span>
@@ -5108,12 +5108,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-355
-356
-357</pre>
+353
+354
+355</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 355</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 353</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release_actions'>release_actions</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:release_actions</span>
@@ -5151,12 +5151,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-233
-234
-235</pre>
+231
+232
+233</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 233</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 231</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_local_storage_item'>remove_local_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>localStorage.removeItem(&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;)</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -5194,12 +5194,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-257
-258
-259</pre>
+255
+256
+257</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 257</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 255</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_session_storage_item'>remove_session_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sessionStorage.removeItem(&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;)</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -5237,12 +5237,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-197
-198
-199</pre>
+195
+196
+197</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 197</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 195</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reposition_window'>reposition_window</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_set_window_rect'>set_window_rect</span><span class='lparen'>(</span><span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
@@ -5280,15 +5280,15 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+164
+165
 166
 167
 168
-169
-170
-171</pre>
+169</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 166</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 164</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_resize_window'>resize_window</span><span class='lparen'>(</span><span class='id identifier rubyid_width'>width</span><span class='comma'>,</span> <span class='id identifier rubyid_height'>height</span><span class='comma'>,</span> <span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_handle'>handle</span> <span class='op'>==</span> <span class='symbol'>:current</span>
@@ -5329,12 +5329,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-434
-435
-436</pre>
+432
+433
+434</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 434</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 432</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_screen_orientation'>screen_orientation</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_screen_orientation</span>
@@ -5372,12 +5372,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-430
-431
-432</pre>
+428
+429
+430</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 430</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 428</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_screen_orientation='>screen_orientation=</span><span class='lparen'>(</span><span class='id identifier rubyid_orientation'>orientation</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_screen_orientation</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>orientation:</span> <span class='id identifier rubyid_orientation'>orientation</span><span class='rbrace'>}</span>
@@ -5415,12 +5415,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-217
-218
-219</pre>
+215
+216
+217</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 217</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 215</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_screenshot'>screenshot</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:take_screenshot</span>
@@ -5458,12 +5458,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-66
-67
-68</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_script_timeout='>script_timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_timeout'>timeout</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>script</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rparen'>)</span>
@@ -5501,12 +5501,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-351
-352
-353</pre>
+349
+350
+351</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 351</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 349</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_actions'>send_actions</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:actions</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>actions:</span> <span class='id identifier rubyid_data'>data</span><span class='rbrace'>}</span>
@@ -5546,14 +5546,14 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+362
+363
 364
 365
-366
-367
-368</pre>
+366</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 364</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 362</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys_to_element'>send_keys_to_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
   <span class='comment'># Keep .split(//) for backward compatibility for now
@@ -5593,16 +5593,16 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+247
+248
 249
 250
 251
 252
-253
-254
-255</pre>
+253</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 249</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 247</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_storage_item'>session_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span>
@@ -5644,12 +5644,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-261
-262
-263</pre>
+259
+260
+261</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 261</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 259</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_storage_keys'>session_storage_keys</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return Object.keys(sessionStorage)</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -5687,12 +5687,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-269
-270
-271</pre>
+267
+268
+269</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 269</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 267</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_storage_size'>session_storage_size</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return sessionStorage.length</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -5743,12 +5743,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-277
-278
-279</pre>
+275
+276
+277</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 277</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 275</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_location'>set_location</span><span class='lparen'>(</span><span class='id identifier rubyid__lat'>_lat</span><span class='comma'>,</span> <span class='id identifier rubyid__lon'>_lon</span><span class='comma'>,</span> <span class='id identifier rubyid__alt'>_alt</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The W3C standard does not currently support setting location</span><span class='tstring_end'>&#39;</span></span>
@@ -5786,14 +5786,14 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+204
+205
 206
 207
-208
-209
-210</pre>
+208</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 206</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 204</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_window_rect'>set_window_rect</span><span class='lparen'>(</span><span class='label'>x:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>width:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>height:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='label'>width:</span> <span class='id identifier rubyid_width'>width</span><span class='comma'>,</span> <span class='label'>height:</span> <span class='id identifier rubyid_height'>height</span><span class='rbrace'>}</span>
@@ -5833,12 +5833,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-54
-55
-56</pre>
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_status'>status</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:status</span>
@@ -5876,15 +5876,15 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+372
+373
 374
 375
 376
-377
-378
-379</pre>
+377</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 374</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 372</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit_element'>submit_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_form'>form</span> <span class='op'>=</span> <span class='id identifier rubyid_find_element_by'>find_element_by</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>xpath</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>./ancestor-or-self::form</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
@@ -5925,12 +5925,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-134
-135
-136</pre>
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 132</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_switch_to_default_content'>switch_to_default_content</span>
   <span class='id identifier rubyid_switch_to_frame'>switch_to_frame</span> <span class='kw'>nil</span>
@@ -5968,13 +5968,13 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+123
+124
 125
-126
-127
-128</pre>
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 123</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_switch_to_frame'>switch_to_frame</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_id'>id</span> <span class='op'>=</span> <span class='id identifier rubyid_find_element_by'>find_element_by</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_id'>id</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>String</span>
@@ -6013,12 +6013,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-130
-131
-132</pre>
+128
+129
+130</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 130</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 128</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_switch_to_parent_frame'>switch_to_parent_frame</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:switch_to_parent_frame</span>
@@ -6056,12 +6056,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-121
-122
-123</pre>
+119
+120
+121</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 119</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_switch_to_window'>switch_to_window</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:switch_to_window</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>handle:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span>
@@ -6099,13 +6099,13 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+68
+69
 70
-71
-72
-73</pre>
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeout'>timeout</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>pageLoad</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_type'>type</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>page load</span><span class='tstring_end'>&#39;</span></span>
@@ -6144,12 +6144,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-111
-112
-113</pre>
+109
+110
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 111</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_title'>title</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_title</span>
@@ -6187,12 +6187,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-389
-390
-391</pre>
+387
+388
+389</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 389</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 387</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_double_tap'>touch_double_tap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_double_tap</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='rbrace'>}</span>
@@ -6230,12 +6230,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-397
-398
-399</pre>
+395
+396
+397</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 397</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 395</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_down'>touch_down</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_down</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='rbrace'>}</span>
@@ -6273,15 +6273,15 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+421
+422
 423
 424
 425
-426
-427
-428</pre>
+426</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 423</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 421</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_element_flick'>touch_element_flick</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='comma'>,</span> <span class='id identifier rubyid_speed'>speed</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_flick</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span>
@@ -6322,12 +6322,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-419
-420
-421</pre>
+417
+418
+419</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 419</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 417</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_flick'>touch_flick</span><span class='lparen'>(</span><span class='id identifier rubyid_xspeed'>xspeed</span><span class='comma'>,</span> <span class='id identifier rubyid_yspeed'>yspeed</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_flick</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>xspeed:</span> <span class='id identifier rubyid_xspeed'>xspeed</span><span class='comma'>,</span> <span class='label'>yspeed:</span> <span class='id identifier rubyid_yspeed'>yspeed</span><span class='rbrace'>}</span>
@@ -6365,12 +6365,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-393
-394
-395</pre>
+391
+392
+393</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 393</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 391</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_long_press'>touch_long_press</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_long_press</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='rbrace'>}</span>
@@ -6408,12 +6408,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-405
-406
-407</pre>
+403
+404
+405</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 405</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 403</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_move'>touch_move</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_move</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='rbrace'>}</span>
@@ -6451,18 +6451,18 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+407
+408
 409
 410
 411
 412
 413
 414
-415
-416
-417</pre>
+415</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 409</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 407</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_scroll'>touch_scroll</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
@@ -6506,12 +6506,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-385
-386
-387</pre>
+383
+384
+385</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 385</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 383</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_single_tap'>touch_single_tap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_single_tap</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='rbrace'>}</span>
@@ -6549,12 +6549,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-401
-402
-403</pre>
+399
+400
+401</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 401</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 399</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_up'>touch_up</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_up</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='rbrace'>}</span>
@@ -6592,12 +6592,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-107
-108
-109</pre>
+105
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 107</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 105</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_url'>url</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_current_url</span>
@@ -6635,12 +6635,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-162
-163
-164</pre>
+160
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 162</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 160</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_handle'>window_handle</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_window_handle</span>
@@ -6680,12 +6680,12 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
-158
-159
-160</pre>
+156
+157
+158</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 156</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_handles'>window_handles</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_window_handles</span>
@@ -6723,13 +6723,13 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+199
+200
 201
-202
-203
-204</pre>
+202</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 201</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 199</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_position'>window_position</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_window_rect</span>
@@ -6768,13 +6768,13 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+210
+211
 212
-213
-214
-215</pre>
+213</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 212</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 210</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_rect'>window_rect</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_window_rect</span>
@@ -6813,17 +6813,17 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
       <pre class="lines">
 
 
+171
+172
 173
 174
 175
 176
 177
-178
-179
-180</pre>
+178</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/bridge.rb', line 173</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/w3c/bridge.rb', line 171</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_size'>window_size</span><span class='lparen'>(</span><span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_handle'>handle</span> <span class='op'>==</span> <span class='symbol'>:current</span>
@@ -6843,9 +6843,9 @@ href="http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints">www.w3
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:58 2017 by
+  Generated on Thu Nov  2 22:56:39 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>

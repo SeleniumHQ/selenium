@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10};
+var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -153,7 +153,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#fromJSON-com.google.gson.JsonObject-">fromJSON</a></span>(com.google.gson.JsonObject&nbsp;rawSessionLogs)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#fromJSON-java.util.Map-">fromJSON</a></span>(java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;rawSessionLogs)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&gt;</code></td>
@@ -166,6 +166,10 @@ extends java.lang.Object</pre>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#getLogTypes--">getLogTypes</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#toJson--">toJson</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -243,13 +247,23 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&gt;&nbsp;getAll()</pre>
 </li>
 </ul>
-<a name="fromJSON-com.google.gson.JsonObject-">
+<a name="fromJSON-java.util.Map-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>fromJSON</h4>
+<pre>public static&nbsp;<a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a>&nbsp;fromJSON(java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;rawSessionLogs)</pre>
+</li>
+</ul>
+<a name="toJson--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>fromJSON</h4>
-<pre>public static&nbsp;<a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a>&nbsp;fromJSON(com.google.gson.JsonObject&nbsp;rawSessionLogs)</pre>
+<h4>toJson</h4>
+<pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
+public&nbsp;java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&gt;&nbsp;toJson()</pre>
 </li>
 </ul>
 </li>

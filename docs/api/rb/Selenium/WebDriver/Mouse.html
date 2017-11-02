@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/selenium/webdriver/common/mouse.rb</dd>
+    <dd>build/rb/lib/selenium/webdriver/common/mouse.rb</dd>
   </dl>
   
 </div>
@@ -352,12 +352,12 @@
       <pre class="lines">
 
 
-28
-29
-30</pre>
+26
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/mouse.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -402,13 +402,13 @@
       <pre class="lines">
 
 
+30
+31
 32
-33
-34
-35</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/mouse.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_if_needed'>move_if_needed</span> <span class='id identifier rubyid_element'>element</span>
@@ -447,13 +447,13 @@
       <pre class="lines">
 
 
+40
+41
 42
-43
-44
-45</pre>
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/mouse.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context_click'>context_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_if_needed'>move_if_needed</span> <span class='id identifier rubyid_element'>element</span>
@@ -492,13 +492,13 @@
       <pre class="lines">
 
 
+35
+36
 37
-38
-39
-40</pre>
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/mouse.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double_click'>double_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_if_needed'>move_if_needed</span> <span class='id identifier rubyid_element'>element</span>
@@ -537,13 +537,13 @@
       <pre class="lines">
 
 
+45
+46
 47
-48
-49
-50</pre>
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/mouse.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_if_needed'>move_if_needed</span> <span class='id identifier rubyid_element'>element</span>
@@ -582,12 +582,12 @@
       <pre class="lines">
 
 
-72
-73
-74</pre>
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/mouse.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move_by'>move_by</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_mouse_move_to'>mouse_move_to</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span>
@@ -633,14 +633,14 @@
       <pre class="lines">
 
 
+64
+65
 66
 67
-68
-69
-70</pre>
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/mouse.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_element'>assert_element</span> <span class='id identifier rubyid_element'>element</span>
@@ -680,13 +680,13 @@
       <pre class="lines">
 
 
+50
+51
 52
-53
-54
-55</pre>
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/mouse.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_if_needed'>move_if_needed</span> <span class='id identifier rubyid_element'>element</span>
@@ -702,9 +702,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 10 10:15:55 2017 by
+  Generated on Thu Nov  2 22:56:36 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.4.0).
+  0.9.9 (ruby-2.3.3).
 </div>
 
     </div>
