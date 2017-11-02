@@ -8,6 +8,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/firefox:firefox",
     ],
     visibility = [
+        "//java/server/src/org/openqa/grid/selenium:classes",
         "//java/server/test/org/openqa/grid/selenium/node:",
     ],
 )

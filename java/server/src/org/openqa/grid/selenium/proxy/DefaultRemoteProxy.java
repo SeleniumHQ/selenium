@@ -30,14 +30,10 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.HtmlRenderer;
+import org.openqa.grid.selenium.node.ChromeMutator;
 import org.openqa.grid.selenium.node.FirefoxMutator;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.ImmutableCapabilities;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -224,35 +220,12 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     if (session.getSlot().getProtocol() == SeleniumProtocol.WebDriver) {
       Map<String, Object> cap = session.getRequestedCapabilities();
 
-      if (BrowserType.FIREFOX.equals(cap.get(CapabilityType.BROWSER_NAME)) &&
-          session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null) {
-        String binary = (String) session.getSlot().getCapabilities().get(FirefoxDriver.BINARY);
+      ImmutableCapabilities caps = new ImmutableCapabilities(cap);
+      caps = new ChromeMutator(session.getSlot().getCapabilities()).apply(caps);
+      caps = new FirefoxMutator(session.getSlot().getCapabilities()).apply(caps);
 
-        if (cap.get(FirefoxDriver.BINARY) == null) {
-          session.getRequestedCapabilities().put(FirefoxDriver.BINARY, binary);
-        }
-
-        if (cap.get(FirefoxOptions.FIREFOX_OPTIONS) instanceof Map) {
-          @SuppressWarnings("unchecked") Map<String, Object> options =
-              (Map<String, Object>) cap.get(FirefoxOptions.FIREFOX_OPTIONS);
-          if (options.get("binary") == null) {
-            options.put("binary", session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
-          }
-        }
-      }
-
-      if (BrowserType.CHROME.equals(cap.get(CapabilityType.BROWSER_NAME))) {
-        if (session.getSlot().getCapabilities().get("chrome_binary") != null) {
-          Map<String, Object> options = (Map<String, Object>) cap.get(ChromeOptions.CAPABILITY);
-          if (options == null) {
-            options = new HashMap<>();
-          }
-          if (!options.containsKey("binary")) {
-            options.put("binary", session.getSlot().getCapabilities().get("chrome_binary"));
-          }
-          cap.put(ChromeOptions.CAPABILITY, options);
-        }
-      }
+      cap.clear();
+      cap.putAll(caps.asMap());
     }
   }
 
