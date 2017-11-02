@@ -1,3 +1,15 @@
+Selenium 3.7.0
+
+* need to pass applicable environment variables to tox
+* Fix active_element for w3c drivers (#3979)
+* add support for minimize command
+* add support for fullscreen command
+* window rect commands should fail on firefox and remote (legacy)
+* Fix python backward compatibility for window commands (#4937)
+* Update docstrings to specify the type of path needed to install firefox addons. (#4881)
+* Update python chromeOptions key for capabilities (#4622)
+* Fix python pause action implementation (#4795)
+
 Selenium 3.6.0
 
 * Fix package name in python webelement module (#4670)
