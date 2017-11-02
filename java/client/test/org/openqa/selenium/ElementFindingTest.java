@@ -36,7 +36,6 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 
@@ -445,7 +444,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(SAFARI)
   @Ignore(CHROME)
-  @NotYetImplemented(value = MARIONETTE, reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1410799")
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);
     WebElement element = driver.findElement(By.xpath("//foo"));
