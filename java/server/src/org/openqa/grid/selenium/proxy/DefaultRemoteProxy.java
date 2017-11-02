@@ -30,6 +30,7 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.HtmlRenderer;
+import org.openqa.grid.selenium.node.FirefoxMutator;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;

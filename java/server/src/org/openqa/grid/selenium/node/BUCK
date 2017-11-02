@@ -1,0 +1,13 @@
+# BUILD FILE SYNTAX: SKYLARK
+
+java_library(
+    name = "node",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/firefox:firefox",
+    ],
+    visibility = [
+        "//java/server/test/org/openqa/grid/selenium/node:",
+    ],
+)
