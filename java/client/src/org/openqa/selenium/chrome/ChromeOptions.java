@@ -272,7 +272,7 @@ public class ChromeOptions extends MutableCapabilities {
   }
 
   @Override
-  public Map<String, ?> asMap() {
+  public Map<String, Object> asMap() {
     Map<String, Object> toReturn = new TreeMap<>();
     toReturn.putAll(super.asMap());
 

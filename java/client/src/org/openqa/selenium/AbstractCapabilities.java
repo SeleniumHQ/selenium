@@ -98,7 +98,7 @@ abstract class AbstractCapabilities implements Capabilities {
   }
 
   @Override
-  public Map<String, ?> asMap() {
+  public Map<String, Object> asMap() {
     return Collections.unmodifiableMap(caps);
   }
 

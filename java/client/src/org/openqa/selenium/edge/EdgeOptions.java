@@ -94,7 +94,7 @@ public class EdgeOptions extends MutableCapabilities {
   }
 
   @Override
-  public Map<String, ?> asMap() {
+  public Map<String, Object> asMap() {
     return ImmutableMap.of(CAPABILITY, super.asMap());
   }
 }

@@ -257,7 +257,7 @@ public class SafariOptions extends MutableCapabilities {
   }
 
   @Override
-  public Map<String, ?> asMap() {
+  public Map<String, Object> asMap() {
     return ImmutableSortedMap.<String, Object>naturalOrder()
         .putAll(super.asMap())
         .put(CAPABILITY, options)

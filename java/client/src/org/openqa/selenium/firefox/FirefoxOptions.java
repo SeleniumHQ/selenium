@@ -338,7 +338,7 @@ public class FirefoxOptions extends MutableCapabilities {
   }
 
   @Override
-  public Map<String, ?> asMap() {
+  public Map<String, Object> asMap() {
     TreeMap<String, Object> toReturn = new TreeMap<>();
     toReturn.putAll(super.asMap());
 
