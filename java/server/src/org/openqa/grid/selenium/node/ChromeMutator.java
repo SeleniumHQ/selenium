@@ -18,8 +18,8 @@
 package org.openqa.grid.selenium.node;
 
 import static org.openqa.selenium.chrome.ChromeOptions.CAPABILITY;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 
 import java.util.HashMap;
@@ -30,9 +30,9 @@ public class ChromeMutator implements Function<ImmutableCapabilities, ImmutableC
 
   private final Object binary;
 
-  public ChromeMutator(Map<String, Object> config) {
-    if ("chrome".equals(config.get(BROWSER_NAME))) {
-      this.binary = config.get("chrome_binary");
+  public ChromeMutator(Capabilities config) {
+    if ("chrome".equals(config.getBrowserName())) {
+      this.binary = config.getCapability("chrome_binary");
     } else {
       this.binary = null;
     }

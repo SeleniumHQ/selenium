@@ -20,8 +20,8 @@ package org.openqa.grid.selenium.node;
 import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 
 import java.util.HashMap;
@@ -33,10 +33,10 @@ public class FirefoxMutator implements Function<ImmutableCapabilities, Immutable
   private final Object binary;
   private final Object marionette;
 
-  public FirefoxMutator(Map<String, Object> config) {
-    if ("firefox".equals(config.get(BROWSER_NAME))) {
-      this.binary = config.get(BINARY);
-      this.marionette = config.get(MARIONETTE);
+  public FirefoxMutator(Capabilities config) {
+    if ("firefox".equals(config.getBrowserName())) {
+      this.binary = config.getCapability(BINARY);
+      this.marionette = config.getCapability(MARIONETTE);
     } else {
       this.binary = null;
       this.marionette = null;

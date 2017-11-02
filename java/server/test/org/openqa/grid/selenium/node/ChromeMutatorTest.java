@@ -24,7 +24,6 @@ import static org.openqa.selenium.chrome.ChromeOptions.CAPABILITY;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -39,7 +38,7 @@ public class ChromeMutatorTest {
   public void shouldDoNothingIfBrowserNameIsNotChrome() {
     ImmutableCapabilities caps = new ImmutableCapabilities("browserName", "cake");
 
-    ImmutableCapabilities seen = new ChromeMutator(defaultConfig.asMap()).apply(caps);
+    ImmutableCapabilities seen = new ChromeMutator(defaultConfig).apply(caps);
 
     // Make sure we return exactly the same instance of the capabilities, and not just a copy.
     assertSame(caps, seen);
@@ -52,7 +51,7 @@ public class ChromeMutatorTest {
         CAPABILITY, ImmutableMap.of("binary", "cake"));
 
     ImmutableCapabilities caps = new ImmutableCapabilities("browserName", "chrome");
-    ImmutableCapabilities seen = new FirefoxMutator(config.asMap()).apply(caps);
+    ImmutableCapabilities seen = new FirefoxMutator(config).apply(caps);
 
     assertSame(caps, seen);
   }
@@ -60,7 +59,7 @@ public class ChromeMutatorTest {
   @Test
   public void shouldInjectBinaryIfNotSpecified() {
     ImmutableCapabilities caps = new ImmutableCapabilities(new ChromeOptions());
-    ImmutableCapabilities seen = new ChromeMutator(defaultConfig.asMap()).apply(caps);
+    ImmutableCapabilities seen = new ChromeMutator(defaultConfig).apply(caps);
 
     @SuppressWarnings("unchecked")
     Map<String, Object> options = (Map<String, Object>) seen.getCapability(CAPABILITY);

@@ -18,7 +18,6 @@
 package org.openqa.grid.selenium.proxy;
 
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.RemoteException;
 import org.openqa.grid.common.exception.RemoteNotReachableException;
 import org.openqa.grid.common.exception.RemoteUnregisterException;
@@ -30,9 +29,6 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.HtmlRenderer;
-import org.openqa.grid.selenium.node.ChromeMutator;
-import org.openqa.grid.selenium.node.FirefoxMutator;
-import org.openqa.selenium.ImmutableCapabilities;
 
 import java.util.List;
 import java.util.Map;
@@ -217,16 +213,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
    * level.
    */
   public void beforeSession(TestSession session) {
-    if (session.getSlot().getProtocol() == SeleniumProtocol.WebDriver) {
-      Map<String, Object> cap = session.getRequestedCapabilities();
-
-      ImmutableCapabilities caps = new ImmutableCapabilities(cap);
-      caps = new ChromeMutator(session.getSlot().getCapabilities()).apply(caps);
-      caps = new FirefoxMutator(session.getSlot().getCapabilities()).apply(caps);
-
-      cap.clear();
-      cap.putAll(caps.asMap());
-    }
+    // Nothing to do by default
   }
 
   public void afterSession(TestSession session) {

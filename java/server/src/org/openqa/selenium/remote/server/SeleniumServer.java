@@ -198,9 +198,8 @@ public class SeleniumServer implements GridNodeServer {
     if (configuration instanceof GridNodeConfiguration) {
       ((GridNodeConfiguration) configuration).capabilities.forEach(
           caps -> {
-            Map<String, Object> mapified = caps.asMap();
-            builder.addCapabilitiesMutator(new ChromeMutator(mapified));
-            builder.addCapabilitiesMutator(new FirefoxMutator(mapified));
+            builder.addCapabilitiesMutator(new ChromeMutator(caps));
+            builder.addCapabilitiesMutator(new FirefoxMutator(caps));
           }
       );
     }
