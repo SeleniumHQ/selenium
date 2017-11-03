@@ -33,14 +33,16 @@ also find the tests for selenium-webdriver informative.
 
     const {Builder, By, Key, until} = require('selenium-webdriver');
 
-    let driver = new Builder()
-        .forBrowser('firefox')
-        .build();
-
-    driver.get('http://www.google.com/ncr');
-    driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
-    driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-    driver.quit();
+    (async function example() {
+      let driver = await new Builder().forBrowser('firefox').build();
+      try {
+        await driver.get('http://www.google.com/ncr');
+        await driver.findElement(By.name('q'));.sendKeys('webdriver', Key.RETURN);
+        await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+      } finall {
+        await driver.quit();
+      }
+    })();
 
 ### Using the Builder API
 
@@ -49,11 +51,11 @@ instances. Rather than clutter your code with branches for the various browsers,
 the builder lets you set all options in one flow. When you call
 `Builder#build()`, all options irrelevant to the selected browser are dropped:
 
-    var webdriver = require('selenium-webdriver'),
-        chrome = require('selenium-webdriver/chrome'),
-        firefox = require('selenium-webdriver/firefox');
+    const webdriver = require('selenium-webdriver');
+    const chrome = require('selenium-webdriver/chrome');
+    const firefox = require('selenium-webdriver/firefox');
 
-    var driver = new webdriver.Builder()
+    let driver = new webdriver.Builder()
         .forBrowser('firefox')
         .setChromeOptions(/* ... */)
         .setFirefoxOptions(/* ... */)
@@ -90,7 +92,7 @@ server with
 You may configure your tests to run against a remote server through the Builder
 API:
 
-    var driver = new webdriver.Builder()
+    let driver = new webdriver.Builder()
         .forBrowser('firefox')
         .usingServer('http://localhost:4444/wd/hub')
         .build();
@@ -160,11 +162,11 @@ months, the support window for selenium-webdriver will be roughly:
 
 | Date      | LTS  | Stable |
 | --------- | ---: | -----: |
-| (current) |  6.9 |    7.5 |
-| 2017-04   |  6.0 |    8.0 |
-| 2017-10   |  8.0 |    9.0 |
-| 2018-04   |  8.0 |   10.0 |
-| 2018-10   | 10.0 |   11.0 |
+| (current) |  8.9 |    9.0 |
+| 2018-04   |  8.x |   10.0 |
+| 2018-10   | 10.x |   11.0 |
+| 2019-04   | 10.x |   12.0 |
+| 2019-10   | 12.x |   13.0 |
 
 ## Issues
 
