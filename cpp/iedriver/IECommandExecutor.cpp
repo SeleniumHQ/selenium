@@ -511,7 +511,7 @@ void IECommandExecutor::DispatchCommand() {
       this->is_waiting_ = browser->wait_required();
       if (this->is_waiting_) {
         if (this->page_load_timeout_ >= 0) {
-          this->wait_timeout_ = clock() + (this->page_load_timeout_ / 1000 * CLOCKS_PER_SEC);
+          this->wait_timeout_ = clock() + (static_cast<int>(this->page_load_timeout_) / 1000 * CLOCKS_PER_SEC);
         }
         ::PostMessage(this->m_hWnd, WD_WAIT, NULL, NULL);
       }
