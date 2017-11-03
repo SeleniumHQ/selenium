@@ -2,7 +2,7 @@
 
 ### Notice
 
-*  The minimum supported version of Node is now 8.6.0
+*  The minimum supported version of Node is now 8.9.0 LTS
 
 ### Changes to Supported Browsers
 
