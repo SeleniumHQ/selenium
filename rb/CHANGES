@@ -1,3 +1,16 @@
+3.7.0 (2017-11-03)
+==================
+
+Ruby:
+  * Added //rb:lint task to check codebase using RuboCop (thanks @RustyNail)
+  * Fixed codebase to comply more to Ruby community style guide (thanks @RustyNail)
+  * Packaged all dependencies to Selenium repository so that non-Ruby committers
+    can build and test Ruby bindings easier
+  * Update errors list according to latest changes of specification (thanks @jaysonesmith)
+
+Firefox:
+  * Added Firefox::Options#headless! shortcut to enable headless mode (thanks @franzliedke)
+
 3.6.0 (2017-09-25)
 ==================
 
@@ -28,7 +41,7 @@ Firefox:
   * Fixed a bug when GeckoDriver error stacktrace was not displayed (issue #3683)
 
 Chrome:
-  * Added workardound for the case when findElements call returns null (issue #4555)
+  * Added workaround for the case when findElements call returns null (issue #4555)
   * Chrome::Driver now includes touch actions by default
 
 3.5.1 (2017-08-15)
