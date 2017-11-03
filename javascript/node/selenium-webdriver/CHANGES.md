@@ -106,6 +106,8 @@ mode.
    -   Removed
        -  ElementNotVisibleError
        -  InvalidElementCoordinatesError
+*  Changes to `lib/webdriver.WebDriver`:
+   -  Dropped support for "requiredCapabilities" from WebDriver.createSession
 *  Changes to `lib/webdriver.Options` (`driver.manage()`):
    -  Removed timeouts (use get/setTimeouts)
 *  Changes to `lib/webdriver.Window` (`driver.manage().window()`):

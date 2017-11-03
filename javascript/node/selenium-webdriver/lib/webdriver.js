@@ -590,6 +590,23 @@ class IWebDriver {
 
 
 /**
+ * @param {!Capabilities} capabilities A capabilities object.
+ * @return {!Capabilities} A copy of the parameter capabilities, omitting
+ *     capability names that are not valid W3C names.
+ */
+function filterNonW3CCaps(capabilities) {
+  let newCaps = new Capabilities(capabilities);
+  for (let k of newCaps.keys()) {
+    // Any key containing a colon is a vendor-prefixed capability.
+    if (!(W3C_CAPABILITY_NAMES.has(k) || k.indexOf(':') >= 0)) {
+      newCaps.delete(k);
+    }
+  }
+  return newCaps;
+}
+
+
+/**
  * Each WebDriver instance provides automated control over a browser session.
  *
  * @implements {IWebDriver}
@@ -625,23 +642,6 @@ class WebDriver {
   /**
    * Creates a new WebDriver session.
    *
-   * By default, the requested session `capabilities` are merely "desired" and
-   * the remote end will still create a new session even if it cannot satisfy
-   * all of the requested capabilities. You can query which capabilities a
-   * session actually has using the
-   * {@linkplain #getCapabilities() getCapabilities()} method on the returned
-   * WebDriver instance.
-   *
-   * To define _required capabilities_, provide the `capabilities` as an object
-   * literal with `required` and `desired` keys. The `desired` key may be
-   * omitted if all capabilities are required, and vice versa. If the server
-   * cannot create a session with all of the required capabilities, it will
-   * return an {@linkplain error.SessionNotCreatedError}.
-   *
-   *     let required = new Capabilities().set('browserName', 'firefox');
-   *     let desired = new Capabilities().set('version', '45');
-   *     let driver = WebDriver.createSession(executor, {required, desired});
-   *
    * This function will always return a WebDriver instance. If there is an error
    * creating the session, such as the aforementioned SessionNotCreatedError,
    * the driver will have a rejected {@linkplain #getSession session} promise.
@@ -657,10 +657,8 @@ class WebDriver {
    *
    * @param {!command.Executor} executor The executor to create the new session
    *     with.
-   * @param {(!Capabilities|
-   *          {desired: (Capabilities|undefined),
-   *           required: (Capabilities|undefined)})} capabilities The desired
-   *     capabilities for the new session.
+   * @param {!Capabilities} capabilities The desired capabilities for the new
+   *     session.
    * @param {(function(this: void): ?)=} onQuit A callback to invoke when
    *    the newly created session is terminated. This should be used to clean
    *    up any resources associated with the session.
@@ -669,24 +667,12 @@ class WebDriver {
   static createSession(executor, capabilities, onQuit = undefined) {
     let cmd = new command.Command(command.Name.NEW_SESSION);
 
-    if (capabilities && (capabilities.desired || capabilities.required)) {
-      // For OSS remote ends.
-      cmd.setParameter('desiredCapabilities', capabilities.desired);
-      cmd.setParameter('requiredCapabilities', capabilities.required);
-      // For W3C remote ends.
-      let merged = new Capabilities(capabilities.desired);
-      merged.merge(capabilities.required);
-      cmd.setParameter('capabilities', {
-        alwaysMatch: WebDriver.filterNonW3CCaps_(merged),
-      });
-    } else {
-      // For OSS remote ends.
-      cmd.setParameter('desiredCapabilities', capabilities);
-      // For W3C remote ends.
-      cmd.setParameter('capabilities', {
-        alwaysMatch: WebDriver.filterNonW3CCaps_(capabilities),
-      });
-    }
+    // For OSS remote ends.
+    cmd.setParameter('desiredCapabilities', capabilities);
+    // For W3C remote ends.
+    cmd.setParameter('capabilities', {
+      alwaysMatch: filterNonW3CCaps(capabilities),
+    });
 
     let session = executeCommand(executor, cmd);
     if (typeof onQuit === 'function') {
@@ -695,23 +681,6 @@ class WebDriver {
       });
     }
     return new this(session, executor, onQuit);
-  }
-
-  /**
-   * @param {!Capabilities} capabilities A capabilities object.
-   * @return {!Capabilities} A copy of the parameter capabilities, omitting
-   *     capability names that are not valid W3C names.
-   * @private
-   */
-  static filterNonW3CCaps_(capabilities) {
-    let newCaps = new Capabilities(capabilities);
-    for (let k of newCaps.keys()) {
-      // Any key containing a colon is a vendor-prefixed capability.
-      if (!(W3C_CAPABILITY_NAMES.has(k) || k.indexOf(':') >= 0)) {
-        newCaps.delete(k);
-      }
-    }
-    return newCaps;
   }
 
   /** @override */

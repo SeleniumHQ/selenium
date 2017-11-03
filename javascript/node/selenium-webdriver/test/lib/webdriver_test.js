@@ -222,26 +222,6 @@ describe('WebDriver', function() {
       return driver.getSession().then(v => assert.strictEqual(v, aSession));
     });
 
-    it('handles desired and required capabilities', function() {
-      let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
-      let executor = new FakeExecutor().
-          expect(CName.NEW_SESSION).
-          withParameters({
-            'desiredCapabilities': {'foo:x': 'bar'},
-            'requiredCapabilities': {'bim:x': 'baz'},
-            'capabilities': {
-              'alwaysMatch': {'foo:x': 'bar', 'bim:x': 'baz'},
-            },
-          }).
-          andReturnSuccess(aSession).
-          end();
-
-      let desired = new Capabilities().set('foo:x', 'bar');
-      let required = new Capabilities().set('bim:x', 'baz');
-      var driver = WebDriver.createSession(executor, {desired, required});
-      return driver.getSession().then(v => assert.strictEqual(v, aSession));
-    });
-
     it('drops non-W3C capability names from W3C capabilities', function() {
       let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
       let executor = new FakeExecutor().
