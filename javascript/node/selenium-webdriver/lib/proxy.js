@@ -182,7 +182,10 @@ exports.manual = function({ftp, http, https, bypass}) {
  *     const proxy = require('selenium-webdriver/lib/proxy');
  *
  *     let capabilities = new Capabilities();
- *     capabilities.setProxy(proxy.socks('localhost:1234', 'bob', 'password'));
+ *     capabilities.setProxy(proxy.socks('localhost:1234'));
+ *
+ *     // Or, to include authentication.
+ *     capabilities.setProxy(proxy.socks('bob:password@localhost:1234'));
  *
  *
  * @param {string} socksProxy The proxy host, in the form `hostname:port`.
