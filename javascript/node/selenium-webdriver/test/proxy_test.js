@@ -104,6 +104,7 @@ test.suite(function(env) {
         // clearing the network.proxy.no_proxies_on preference.
         .setFirefoxOptions(
             new firefox.Options()
+                .setBinary(firefox.Channel.AURORA)
                 .setPreference('network.proxy.no_proxies_on', ''))
         .setProxy(proxy)
         .build();
@@ -124,15 +125,10 @@ test.suite(function(env) {
           'This is the proxy landing page');
     });
 
-    // geckodriver does not support the bypass option, this must be configured
-    // through profile preferences.
-    test.ignore(env.browsers(
-        Browser.FIREFOX,
-        'legacy-' + Browser.FIREFOX)).
     it('can bypass proxy for specific hosts', async function() {
       await createDriver(proxy.manual({
         http: proxyServer.host(),
-        bypass: helloServer.host()
+        bypass: [helloServer.host()]
       }));
 
       await driver.get(helloServer.url());
@@ -141,7 +137,9 @@ test.suite(function(env) {
           await driver.findElement({tagName: 'h3'}).getText(),
           'Hello, world!');
 
-      await driver.get(goodbyeServer.url());
+      // For firefox the no proxy settings appear to match on hostname only.
+      let url = goodbyeServer.url().replace(/127\.0\.0\.1/, 'localhost');
+      await driver.get(url);
       assert.equal(await driver.getTitle(), 'Proxy page');
       assert.equal(
           await driver.findElement({tagName: 'h3'}).getText(),

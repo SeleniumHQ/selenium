@@ -766,6 +766,16 @@ class Driver extends webdriver.WebDriver {
         opt_config instanceof Options ? opt_config.toCapabilities() :
         (opt_config || Capabilities.chrome());
 
+    // W3C spec requires noProxy value to be an array of strings, but Chrome
+    // expects a single host as a string.
+    let proxy = caps.get(Capability.PROXY);
+    if (proxy && Array.isArray(proxy.noProxy)) {
+      proxy.noProxy = proxy.noProxy[0];
+      if (!proxy.noProxy) {
+        proxy.noProxy = undefined;
+      }
+    }
+
     return /** @type {!Driver} */(super.createSession(executor, caps));
   }
 
