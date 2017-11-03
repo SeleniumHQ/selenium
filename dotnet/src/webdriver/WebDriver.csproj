@@ -95,7 +95,7 @@
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxPreferences</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\webdriver\atoms\getAttribute.js">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\webdriver\atoms\get-attribute.js">
       <Visible>False</Visible>
       <LogicalName>getAttribute.js</LogicalName>
     </EmbeddedResource>
