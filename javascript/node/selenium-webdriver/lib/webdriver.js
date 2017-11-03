@@ -32,6 +32,20 @@ const Symbols = require('./symbols');
 const promise = require('./promise');
 
 
+// Capability names that are defined in the W3C spec.
+const W3C_CAPABILITY_NAMES = new Set([
+    'acceptInsecureCerts',
+    'browserName',
+    'browserVersion',
+    'platformName',
+    'pageLoadStrategy',
+    'proxy',
+    'setWindowRect',
+    'timeouts',
+    'unhandledPromptBehavior',
+]);
+
+
 /**
  * Defines a condition for use with WebDriver's {@linkplain WebDriver#wait wait
  * command}.
@@ -656,10 +670,22 @@ class WebDriver {
     let cmd = new command.Command(command.Name.NEW_SESSION);
 
     if (capabilities && (capabilities.desired || capabilities.required)) {
+      // For OSS remote ends.
       cmd.setParameter('desiredCapabilities', capabilities.desired);
       cmd.setParameter('requiredCapabilities', capabilities.required);
+      // For W3C remote ends.
+      let merged = new Capabilities(capabilities.desired);
+      merged.merge(capabilities.required);
+      cmd.setParameter('capabilities', {
+        alwaysMatch: WebDriver.filterNonW3CCaps_(merged),
+      });
     } else {
+      // For OSS remote ends.
       cmd.setParameter('desiredCapabilities', capabilities);
+      // For W3C remote ends.
+      cmd.setParameter('capabilities', {
+        alwaysMatch: WebDriver.filterNonW3CCaps_(capabilities),
+      });
     }
 
     let session = executeCommand(executor, cmd);
@@ -669,6 +695,23 @@ class WebDriver {
       });
     }
     return new this(session, executor, onQuit);
+  }
+
+  /**
+   * @param {!Capabilities} capabilities A capabilities object.
+   * @return {!Capabilities} A copy of the parameter capabilities, omitting
+   *     capability names that are not valid W3C names.
+   * @private
+   */
+  static filterNonW3CCaps_(capabilities) {
+    let newCaps = new Capabilities(capabilities);
+    for (let k of newCaps.keys()) {
+      // Any key containing a colon is a vendor-prefixed capability.
+      if (!(W3C_CAPABILITY_NAMES.has(k) || k.indexOf(':') >= 0)) {
+        newCaps.delete(k);
+      }
+    }
+    return newCaps;
   }
 
   /** @override */
