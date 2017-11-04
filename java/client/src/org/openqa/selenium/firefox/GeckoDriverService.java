@@ -97,6 +97,11 @@ public class GeckoDriverService extends DriverService {
     PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
   }
 
+  @Override
+  protected boolean hasShutdownEndpoint() {
+    return false;
+  }
+
   /**
    * Builder used to configure new {@link GeckoDriverService} instances.
    */
