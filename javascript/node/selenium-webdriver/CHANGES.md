@@ -66,6 +66,7 @@ mode.
    -  when (use Promise.resolve)
 *  Renamed `WebDriver#schedule()` to `WebDriver#execute()`
 *  Changes to the `Builder` class:
+   -  Added setChromeService, setEdgeService, & setFirefoxService
    -  Removed setEnableNativeEvents
    -  Removed setScrollBehavior
 *  Changes to `firefox.Driver`

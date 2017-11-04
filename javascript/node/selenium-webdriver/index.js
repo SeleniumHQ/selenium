@@ -212,8 +212,14 @@ class Builder {
     /** @private {chrome.Options} */
     this.chromeOptions_ = null;
 
+    /** @private {chrome.ServiceBuilder} */
+    this.chromeService_ = null;
+
     /** @private {firefox.Options} */
     this.firefoxOptions_ = null;
+
+    /** @private {firefox.ServiceBuilder} */
+    this.firefoxService_ = null;
 
     /** @private {ie.Options} */
     this.ieOptions_ = null;
@@ -223,6 +229,9 @@ class Builder {
 
     /** @private {edge.Options} */
     this.edgeOptions_ = null;
+
+    /** @private {remote.DriverService.Builder} */
+    this.edgeService_ = null;
 
     /** @private {boolean} */
     this.ignoreEnv_ = false;
@@ -409,6 +418,29 @@ class Builder {
   }
 
   /**
+   * @return {chrome.Options} the Chrome specific options currently configured
+   *     for this builder.
+   */
+  getChromeOptions() {
+    return this.chromeOptions_;
+  }
+
+  /**
+   * Sets the service builder to use for managing the chromedriver child process
+   * when creating new Chrome sessions.
+   *
+   * @param {chrome.ServiceBuilder} service the service to use.
+   * @return {!Builder} A self reference.
+   */
+  setChromeService(service) {
+    if (service && !(service instanceof chrome.ServiceBuilder)) {
+      throw TypeError('not a chrome.ServiceBuilder object');
+    }
+    this.chromeService_ = service;
+    return this;
+  }
+
+  /**
    * Sets Firefox specific {@linkplain firefox.Options options} for drivers
    * created by this builder. Any logging or proxy settings defined on the given
    * options will take precedence over those set through
@@ -428,6 +460,21 @@ class Builder {
    */
   getFirefoxOptions() {
     return this.firefoxOptions_;
+  }
+
+  /**
+   * Sets the {@link firefox.ServiceBuilder} to use to manage the geckodriver
+   * child process when creating Firefox sessions locally.
+   *
+   * @param {firefox.ServiceBuilder} service the service to use.
+   * @return {!Builder} a self reference.
+   */
+  setFirefoxService(service) {
+    if (service && !(service instanceof firefox.ServiceBuilder)) {
+      throw TypeError('not a firefox.ServiceBuilder object');
+    }
+    this.firefoxService_ = service;
+    return this;
   }
 
   /**
@@ -454,6 +501,21 @@ class Builder {
    */
   setEdgeOptions(options) {
     this.edgeOptions_ = options;
+    return this;
+  }
+
+  /**
+   * Sets the {@link edge.ServiceBuilder} to use to manage the
+   * MicrosoftEdgeDriver child process when creating sessions locally.
+   *
+   * @param {edge.ServiceBuilder} service the service to use.
+   * @return {!Builder} a self reference.
+   */
+  setEdgeService(service) {
+    if (service && !(service instanceof edge.ServiceBuilder)) {
+      throw TypeError('not a edge.ServiceBuilder object');
+    }
+    this.edgeService_ = service;
     return this;
   }
 
@@ -569,17 +631,32 @@ class Builder {
 
     // Check for a native browser.
     switch (browser) {
-      case Browser.CHROME:
-        return createDriver(chrome.Driver, capabilities, null);
+      case Browser.CHROME: {
+        let service = null;
+        if (this.chromeService_) {
+          service = this.chromeService_.build();
+        }
+        return createDriver(chrome.Driver, capabilities, service);
+      }
 
-      case Browser.FIREFOX:
-        return createDriver(firefox.Driver, capabilities, null);
+      case Browser.FIREFOX: {
+        let service = null;
+        if (this.firefoxService_) {
+          service = this.firefoxService_.build();
+        }
+        return createDriver(firefox.Driver, capabilities, service);
+      }
 
       case Browser.INTERNET_EXPLORER:
         return createDriver(ie.Driver, capabilities);
 
-      case Browser.EDGE:
-        return createDriver(edge.Driver, capabilities, null);
+      case Browser.EDGE: {
+        let service = null;
+        if (this.edgeService_) {
+          service = this.edgeService_.build();
+        }
+        return createDriver(edge.Driver, capabilities, service);
+      }
 
       case Browser.SAFARI:
         return createDriver(safari.Driver, capabilities);

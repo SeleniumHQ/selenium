@@ -230,6 +230,14 @@ class ServiceBuilder extends remote.DriverService.Builder {
     // (or can we?), force the DriverService to use "localhost".
     this.setHostname('localhost');
   }
+
+  /**
+   * Enables verbose logging.
+   * @return {!ServiceBuilder} A self reference.
+   */
+  enableVerboseLogging() {
+    return this.addArguments('--verbose');
+  }
 }
 
 
