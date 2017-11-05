@@ -30,9 +30,10 @@ class Service(service.Service):
         protocol to Marionette.
 
         :param executable_path: Path to the GeckoDriver binary.
-        :param port: Run the remote service on a specified port.
-            Defaults to 0, which binds to a random open port of the
-            system's choosing.
+        :param port: (Deprecated) This parameter should be passed as part
+            of service_args: ["--port", port].
+            Run the remote service on a specified port. Defaults to 0,
+            which binds to a random open port of the system's choosing.
         :param service_args: Optional list of arguments to pass to the
             GeckoDriver binary.
         :param log_path: Optional path for the GeckoDriver to log to.
@@ -43,12 +44,26 @@ class Service(service.Service):
         """
         log_file = open(log_path, "a+") if log_path is not None and log_path != "" else None
 
+        if port != 0:
+            import warnings
+
+            warnings.warn(
+                "The 'port' parameter has been deprecated. Please pass in the port through "\
+                "service_args instead: ['--port', port]",
+                DeprecationWarning)
+        if service_args is not None and "--port" in service_args:
+            if port != 0:
+                raise ValueError("Deprecated parameter 'port' specified "\
+                    "simultaneously with '--port' argument in service_args")
+            else:
+                port = int(service_args[service_args.index("--port") + 1])
+
         service.Service.__init__(
             self, executable_path, port=port, log_file=log_file, env=env)
         self.service_args = service_args or []
 
     def command_line_args(self):
-        return ["--port", "%d" % self.port] + self.service_args
+        return self.service_args + ([] if "--port" in self.service_args else ["--port", "%d" % self.port])
 
     def send_remote_shutdown_command(self):
         pass
