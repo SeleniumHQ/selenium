@@ -988,7 +988,7 @@ class WebDriver(object):
         if size.get('value', None) is not None:
             size = size['value']
 
-        return {k: size[k] for k in ('width', 'height')}
+        return dict((k, size[k]) for k in ('width', 'height'))
 
     def set_window_position(self, x, y, windowHandle='current'):
         """
@@ -1028,7 +1028,7 @@ class WebDriver(object):
             position = self.execute(Command.GET_WINDOW_POSITION,
                                     {'windowHandle': windowHandle})['value']
 
-        return {k: position[k] for k in ('x', 'y')}
+        return dict((k, position[k]) for k in ('x', 'y'))
 
     def get_window_rect(self):
         """
