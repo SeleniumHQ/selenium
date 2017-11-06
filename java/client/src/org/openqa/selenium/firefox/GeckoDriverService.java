@@ -178,7 +178,7 @@ public class GeckoDriverService extends DriverService {
             // TODO: This stream is leaked.
             service.sendOutputTo(new FileOutputStream(getLogFile()));
           } else {
-            service.sendOutputTo(ByteStreams.nullOutputStream());
+            service.sendOutputTo(System.err);
           }
         }
         return service;
