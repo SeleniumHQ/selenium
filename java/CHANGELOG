@@ -1,3 +1,15 @@
+v3.7.1
+======
+
+* Including httpcore in the packaged libs.
+* Sending geckodriver logs to stderr by default. The default log level
+  is low enough that the log does not look polluted. Geckodriver does
+  not allow to separate its own log from the browser logs, so messages
+  from the browser log can appear in the log even on the lowest level.
+* Avoid sending the shutdown command to driver services that don't
+  support it.
+* Add support for customizing the Grid Registry.
+
 v3.7.0
 ======
 
