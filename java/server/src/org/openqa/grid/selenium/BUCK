@@ -93,6 +93,6 @@ zip_file(
 genrule(
   name = 'server-libs',
   out = 'server-libs-sources.jar',
-  bash = 'mkdir libs && python -c "import sys,shutil;map(lambda f:shutil.copy(f,\'libs\'),[l for l in open(sys.argv[1][1:]).read().split(\':\') if l.endswith(\'.jar\') and \'third_party/java\' in l])" $(@classpath :selenium) && jar cMf $OUT libs/*',
-  cmd_exe = 'mkdir libs && python -c "import sys,shutil;map(lambda f:shutil.copy(f,\'libs\'),[l for l in open(sys.argv[1][1:]).read().split(\';\') if l.endswith(\'.jar\') and \'third_party\\java\' in l])" $(@classpath :selenium) && jar cMf $OUT libs/*',
+  bash = 'mkdir libs && python -c "import sys,shutil;map(lambda f:shutil.copy(f,\'libs\'),[l for l in open(sys.argv[1][1:]).read().strip(\'\\\'\').split(\':\') if l.endswith(\'.jar\') and \'third_party/java\' in l])" $(@classpath :selenium) && jar cMf $OUT libs/*',
+  cmd_exe = 'mkdir libs && python -c "import sys,shutil;map(lambda f:shutil.copy(f,\'libs\'),[l for l in open(sys.argv[1][1:]).read().strip(\'\\\'\').split(\';\') if l.endswith(\'.jar\') and \'third_party\\java\' in l])" $(@classpath :selenium) && jar cMf $OUT libs/*',
 )
