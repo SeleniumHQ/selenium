@@ -219,8 +219,7 @@ public class NewSessionPayload implements Closeable {
 
       Map<String, Object> first = getOss();
       if (first == null) {
-        //noinspection unchecked
-        first = (Map<String, Object>) stream().findFirst()
+        first = stream().findFirst()
             .orElse(new ImmutableCapabilities())
             .asMap();
       }
@@ -246,7 +245,33 @@ public class NewSessionPayload implements Closeable {
       json.endArray();
 
       json.endObject();  // Close "capabilities" object
+
+      writeMetaData(json);
+
       json.endObject();
+    }
+  }
+
+  private void writeMetaData(JsonOutput out) throws IOException {
+    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
+    try (Reader reader = charSource.openBufferedStream();
+         JsonInput input = json.newInput(reader)) {
+      input.beginObject();
+      while (input.hasNext()) {
+        String name = input.nextName();
+        switch (name) {
+          case "capabilities":
+          case "desiredCapabilities":
+          case "requiredCapabilities":
+            input.skipValue();
+            break;
+
+          default:
+            out.name(name);
+            out.write(input.<Object>read(Object.class), Object.class);
+            break;
+        }
+      }
     }
   }
 

@@ -19,7 +19,9 @@ package org.openqa.selenium.remote.server;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -209,6 +211,34 @@ public class NewSessionPayloadTest {
         new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
         new ImmutableCapabilities("browserName", "firefox", "platformName", "macos")),
                  capabilities);
+  }
+
+  @Test
+  public void forwardsMetaDataAssociatedWithARequest() throws IOException {
+    try (NewSessionPayload payload = NewSessionPayload.create(    ImmutableMap.of(
+        "desiredCapabilities", ImmutableMap.of(),
+        "cloud:user", "bob",
+        "cloud:key", "there is no cake"))) {
+      StringBuilder toParse = new StringBuilder();
+      payload.writeTo(toParse);
+      Map<String, Object> seen = new Json().toType(toParse.toString(), MAP_TYPE);
+
+      assertEquals("bob", seen.get("cloud:user"));
+      assertEquals("there is no cake", seen.get("cloud:key"));
+    }
+  }
+
+  @Test
+  public void doesNotForwardRequiredCapabilitiesAsTheseAreVeryLegacy() throws IOException {
+    try (NewSessionPayload payload = NewSessionPayload.create(    ImmutableMap.of(
+        "capabilities", ImmutableMap.of(),
+        "requiredCapabilities", ImmutableMap.of("key", "so it's not empty")))) {
+      StringBuilder toParse = new StringBuilder();
+      payload.writeTo(toParse);
+      Map<String, Object> seen = new Json().toType(toParse.toString(), MAP_TYPE);
+
+      assertNull(seen.get("requiredCapabilities"));
+    }
   }
 
   private List<Capabilities> create(Map<String, ?> source) throws IOException {
