@@ -66,6 +66,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -563,9 +564,11 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415067")
   public void testFirefoxCanNativelyClickOverlappingElements() {
-    Capabilities caps = new ImmutableCapabilities(CapabilityType.OVERLAPPING_CHECK_DISABLED, true);
-    WebDriver secondDriver = new FirefoxDriver(caps);
+    FirefoxOptions options = new FirefoxOptions();
+    options.setCapability(CapabilityType.OVERLAPPING_CHECK_DISABLED, true);
+    WebDriver secondDriver = new FirefoxDriver(options);
     try {
       secondDriver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
       secondDriver.findElement(By.id("under")).click();
