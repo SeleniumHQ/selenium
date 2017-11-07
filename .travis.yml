@@ -125,9 +125,6 @@ matrix:
     - env: MARIONETTE=1 TOXENV=py27-marionette
       <<: *python
       <<: *firefox-nightly
-    - env: TOXENV=py33-unit
-      <<: *python
-      python: 3.3
     - env: TOXENV=flake8
       <<: *python
       python: 3.6

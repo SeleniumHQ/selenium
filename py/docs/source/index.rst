@@ -26,8 +26,7 @@ Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer, Phan
 Supported Python Versions
 =========================
 
-* Python 2.6, 2.7
-* Python 3.3+
+* Python 2.7, 3.4+
 
 Installing
 ==========
@@ -40,7 +39,7 @@ Alternately, you can download the source distribution from `PyPI <http://pypi.py
 
     python setup.py install
 
-Note: both of the methods described above install `selenium` as a system-wide package  That will require administrative/root access to their machine.  You may consider using a `virtualenv <http://www.virtualenv.org/>`_ to create isolated Python environments instead.
+Note: You may want to consider using `virtualenv <http://www.virtualenv.org/>`_ to create isolated Python environments.
 
 Drivers
 =======

@@ -129,7 +129,7 @@ Note that all Selenium Java artifacts are **built with Java 8
 
 ### Optional Requirements
 
-* Python 2.6.x to 2.7 (without this, Python tests will be skipped)
+* Python 2.7, Python 3.4+ (without these, Python and Python3 tests will be skipped)
 * Ruby 2.0
 
 ### Internet Explorer Driver
