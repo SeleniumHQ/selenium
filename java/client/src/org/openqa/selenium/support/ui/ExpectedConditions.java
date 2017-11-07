@@ -30,6 +30,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -242,6 +243,19 @@ public class ExpectedConditions {
         return "visibility of all elements located by " + locator;
       }
     };
+  }
+
+  /**
+   * An expectation for checking that all elements present on the web page that match the locator
+   * are visible. Visibility means that the elements are not only displayed but also have a height
+   * and width that is greater than 0.
+   *
+   * @param elements list of WebElements
+   * @return the list of WebElements once they are located
+   */
+  public static ExpectedCondition<List<WebElement>> visibilityOfAllElements(
+    final WebElement... elements) {
+    return visibilityOfAllElements(Arrays.asList(elements));
   }
 
   /**
@@ -1330,6 +1344,17 @@ public class ExpectedConditions {
         return String.format("visibility of element located by %s -> %s", parent, childLocator);
       }
     };
+  }
+
+  /**
+   * An expectation for checking all elements from given list to be invisible
+   *
+   * @param elements used to check their invisibility
+   * @return Boolean true when all elements are not visible anymore
+   */
+  public static ExpectedCondition<Boolean> invisibilityOfAllElements(
+    final WebElement... elements) {
+    return invisibilityOfAllElements(Arrays.asList(elements));
   }
 
   /**
