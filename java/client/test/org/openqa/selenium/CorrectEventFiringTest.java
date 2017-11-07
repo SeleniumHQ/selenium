@@ -510,6 +510,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, reason = "Checks overlapping by default")
   public void testNativelyClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
