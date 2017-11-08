@@ -23,14 +23,14 @@ from selenium.webdriver import FirefoxProfile
 from selenium.webdriver.firefox.options import Options
 
 
-@pytest.fixture(params=['capabilities', 'firefox_profile', 'firefox_options'])
+@pytest.fixture(params=['capabilities', 'firefox_profile', 'options'])
 def driver_kwargs(request, driver_kwargs, profile):
     if request.param == 'capabilities':
         options = {'profile': profile}
         driver_kwargs[request.param].setdefault('moz:firefoxOptions', options)
     elif request.param == 'firefox_profile':
         driver_kwargs[request.param] = profile
-    elif request.param == 'firefox_options':
+    elif request.param == 'options':
         options = Options()
         options.profile = profile
         driver_kwargs[request.param] = options
