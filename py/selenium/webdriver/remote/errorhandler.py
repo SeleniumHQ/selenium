@@ -15,22 +15,34 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.common.exceptions import (ElementNotInteractableException,
+from selenium.common.exceptions import (ElementClickInterceptedException,
+                                        ElementNotInteractableException,
                                         ElementNotSelectableException,
                                         ElementNotVisibleException,
                                         ErrorInResponseException,
+                                        InsecureCertificateException,
+                                        InvalidCoordinatesException,
                                         InvalidElementStateException,
+                                        InvalidSessionIdException,
                                         InvalidSelectorException,
                                         ImeNotAvailableException,
                                         ImeActivationFailedException,
+                                        InvalidArgumentException,
+                                        InvalidCookieDomainException,
+                                        JavascriptException,
                                         MoveTargetOutOfBoundsException,
+                                        NoSuchCookieException,
                                         NoSuchElementException,
                                         NoSuchFrameException,
                                         NoSuchWindowException,
                                         NoAlertPresentException,
+                                        ScreenshotException,
+                                        SessionNotCreatedException,
                                         StaleElementReferenceException,
                                         TimeoutException,
+                                        UnableToSetCookieException,
                                         UnexpectedAlertPresentException,
+                                        UnknownMethodException,
                                         WebDriverException)
 
 try:
@@ -52,7 +64,6 @@ class ErrorCode(object):
     ELEMENT_NOT_VISIBLE = [11, 'element not visible']
     INVALID_ELEMENT_STATE = [12, 'invalid element state']
     UNKNOWN_ERROR = [13, 'unknown error']
-    ELEMENT_NOT_INTERACTABLE = ["element not interactable"]
     ELEMENT_IS_NOT_SELECTABLE = [15, 'element not selectable']
     JAVASCRIPT_ERROR = [17, 'javascript error']
     XPATH_LOOKUP_ERROR = [19, 'invalid selector']
@@ -67,9 +78,21 @@ class ErrorCode(object):
     IME_NOT_AVAILABLE = [30, 'ime not available']
     IME_ENGINE_ACTIVATION_FAILED = [31, 'ime engine activation failed']
     INVALID_SELECTOR = [32, 'invalid selector']
+    SESSION_NOT_CREATED = [33, 'session not created']
     MOVE_TARGET_OUT_OF_BOUNDS = [34, 'move target out of bounds']
     INVALID_XPATH_SELECTOR = [51, 'invalid selector']
     INVALID_XPATH_SELECTOR_RETURN_TYPER = [52, 'invalid selector']
+
+    ELEMENT_NOT_INTERACTABLE = [60, 'element not interactable']
+    INSECURE_CERTIFICATE = ['insecure certificate']
+    INVALID_ARGUMENT = [61, 'invalid argument']
+    INVALID_COORDINATES = ['invalid coordinates']
+    INVALID_SESSION_ID = ['invalid session id']
+    NO_SUCH_COOKIE = [62, 'no such cookie']
+    UNABLE_TO_CAPTURE_SCREEN = [63, 'unable to capture screen']
+    ELEMENT_CLICK_INTERCEPTED = [64, 'element click intercepted']
+    UNKNOWN_METHOD = ['unknown method exception']
+
     METHOD_NOT_ALLOWED = [405, 'unsupported operation']
 
 
@@ -136,9 +159,9 @@ class ErrorHandler(object):
         elif status in ErrorCode.ELEMENT_NOT_INTERACTABLE:
             exception_class = ElementNotInteractableException
         elif status in ErrorCode.INVALID_COOKIE_DOMAIN:
-            exception_class = WebDriverException
+            exception_class = InvalidCookieDomainException
         elif status in ErrorCode.UNABLE_TO_SET_COOKIE:
-            exception_class = WebDriverException
+            exception_class = UnableToSetCookieException
         elif status in ErrorCode.TIMEOUT:
             exception_class = TimeoutException
         elif status in ErrorCode.SCRIPT_TIMEOUT:
@@ -155,6 +178,26 @@ class ErrorHandler(object):
             exception_class = ImeActivationFailedException
         elif status in ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:
             exception_class = MoveTargetOutOfBoundsException
+        elif status in ErrorCode.JAVASCRIPT_ERROR:
+            exception_class = JavascriptException
+        elif status in ErrorCode.SESSION_NOT_CREATED:
+            exception_class = SessionNotCreatedException
+        elif status in ErrorCode.INVALID_ARGUMENT:
+            exception_class = InvalidArgumentException
+        elif status in ErrorCode.NO_SUCH_COOKIE:
+            exception_class = NoSuchCookieException
+        elif status in ErrorCode.UNABLE_TO_CAPTURE_SCREEN:
+            exception_class = ScreenshotException
+        elif status in ErrorCode.ELEMENT_CLICK_INTERCEPTED:
+            exception_class = ElementClickInterceptedException
+        elif status in ErrorCode.INSECURE_CERTIFICATE:
+            exception_class = InsecureCertificateException
+        elif status in ErrorCode.INVALID_COORDINATES:
+            exception_class = InvalidCoordinatesException
+        elif status in ErrorCode.INVALID_SESSION_ID:
+            exception_class = InvalidSessionIdException
+        elif status in ErrorCode.UNKNOWN_METHOD:
+            exception_class = UnknownMethodException
         else:
             exception_class = WebDriverException
         if value == '' or value is None:
