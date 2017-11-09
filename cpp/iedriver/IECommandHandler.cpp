@@ -47,14 +47,8 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
   ElementHandle candidate_wrapper;
   int result = executor.GetManagedElement(element_id, &candidate_wrapper);
   if (result != WD_SUCCESS) {
-    // This bears some explanation. Technically, passing an invalid ID in the
-    // URL for an element command should result in a 404. However, since the
-    // language bindings don't make up their own element IDs, any call from
-    // a language binding is more than likely an ID that the IE driver assigned
-    // it, and it was at one time valid. Therefore, we'll assume that not finding
-    // the element ID in the cache means it's stale.
-    LOG(WARN) << "Unable to get managed element, element not found, assuming stale";
-    return EOBSOLETEELEMENT;
+    LOG(WARN) << "Unable to get managed element, element not found";
+    return ENOSUCHELEMENT;
   } else {
     if (!candidate_wrapper->IsAttachedToDom()) {
       LOG(WARN) << "Found managed element is no longer valid";

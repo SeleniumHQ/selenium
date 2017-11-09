@@ -50,6 +50,9 @@ void IsElementEnabledCommandHandler::ExecuteInternal(
     status_code = this->GetElement(executor, element_id, &element_wrapper);
     if (status_code == WD_SUCCESS) {
       response->SetSuccessResponse(element_wrapper->IsEnabled());
+    } else if (status_code == ENOSUCHELEMENT) {
+      response->SetErrorResponse(ERROR_NO_SUCH_ELEMENT, "Invalid internal element ID requested: " + element_id);
+      return;
     } else {
       response->SetErrorResponse(ERROR_STALE_ELEMENT_REFERENCE, "Element is no longer valid");
       return;

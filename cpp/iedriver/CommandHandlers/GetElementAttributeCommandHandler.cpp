@@ -57,8 +57,8 @@ void GetElementAttributeCommandHandler::ExecuteInternal(
       std::string value = "";
       bool is_null;
       status_code = element_wrapper->GetAttributeValue(name,
-                                                       &value,
-                                                       &is_null);
+        &value,
+        &is_null);
       if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get attribute");
         return;
@@ -71,6 +71,9 @@ void GetElementAttributeCommandHandler::ExecuteInternal(
           return;
         }
       }
+    } else if (status_code == ENOSUCHELEMENT) {
+      response->SetErrorResponse(ERROR_NO_SUCH_ELEMENT, "Invalid internal element ID requested: " + element_id);
+      return;
     } else {
       response->SetErrorResponse(ERROR_STALE_ELEMENT_REFERENCE, "Element is no longer valid");
       return;

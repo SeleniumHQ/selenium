@@ -82,6 +82,9 @@ void ClearElementCommandHandler::ExecuteInternal(
                                     "A JavaScript error was encountered clearing the element. The driver assumes this is because the element is hidden, disabled or read-only, and it must not be to clear the element.");
         return;
       }
+    } else if (status_code == ENOSUCHELEMENT) {
+      response->SetErrorResponse(ERROR_NO_SUCH_ELEMENT, "Invalid internal element ID requested: " + element_id);
+      return;
     } else {
       response->SetErrorResponse(status_code, "Element is no longer valid");
       return;
