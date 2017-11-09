@@ -38,8 +38,16 @@ void GetElementTagNameCommandHandler::ExecuteInternal(
     return;
   } else {
     std::string element_id = id_parameter_iterator->second.asString();
+
+    BrowserHandle browser_wrapper;
+    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+    if (status_code != WD_SUCCESS) {
+      response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to get browser");
+      return;
+    }
+
     ElementHandle element_wrapper;
-    int status_code = this->GetElement(executor, element_id, &element_wrapper);
+    status_code = this->GetElement(executor, element_id, &element_wrapper);
     if (status_code == WD_SUCCESS) {
       std::string return_value = element_wrapper->GetTagName();
       response->SetSuccessResponse(return_value);
