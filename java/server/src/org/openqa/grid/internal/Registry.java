@@ -80,7 +80,7 @@ public class Registry implements GridRegistry {
   @Deprecated
   public static Registry newInstance(Hub hub, GridHubConfiguration config) {
     Registry registry = new Registry(hub);
-    if (hub.getConfiguration() != config) {
+    if (registry.getHub() != null && registry.getHub().getConfiguration() != config) {
       registry.setConfiguration(config);
     }
     registry.start();

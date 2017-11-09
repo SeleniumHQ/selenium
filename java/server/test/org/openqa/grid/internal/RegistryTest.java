@@ -19,6 +19,7 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
@@ -234,6 +236,12 @@ public class RegistryTest {
     } finally {
       registry.stop();
     }
+  }
+
+  @Test
+  public void testLegacyNewInstanceCanReceiveNullHub() {
+    GridRegistry registry = Registry.newInstance(null, new GridHubConfiguration());
+    assertNull(registry.getHub());
   }
 
 }
