@@ -736,6 +736,21 @@ class WebDriver(object):
 
     @property
     def switch_to(self):
+        """
+        :Returns:
+            - SwitchTo: an object containing all options to switch focus into
+        into:
+
+        :Usage:
+            element = driver.switch_to.active_element
+            alert = driver.switch_to.alert
+            driver.switch_to.default_content()
+            driver.switch_to.frame('frame_name')
+            driver.switch_to.frame(1)
+            driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
+            driver.switch_to.parent_frame()
+            driver.switch_to.window('main')
+        """
         return self._switch_to
 
     # Target Locators
