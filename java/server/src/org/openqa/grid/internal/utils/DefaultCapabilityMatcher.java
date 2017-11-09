@@ -17,12 +17,17 @@
 
 package org.openqa.grid.internal.utils;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 /**
  * Default (naive) implementation of the capability matcher.
@@ -34,69 +39,75 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
 
   private static final String GRID_TOKEN = "_";
 
-  protected final List<String> toConsider = new ArrayList<>();
+  interface Validator extends BiFunction<Map<String, Object>, Map<String, Object>, Boolean> {}
 
-  public DefaultCapabilityMatcher() {
-    toConsider.add(CapabilityType.PLATFORM);
-    toConsider.add(CapabilityType.BROWSER_NAME);
-    toConsider.add(CapabilityType.VERSION);
-    toConsider.add(CapabilityType.BROWSER_VERSION);
-    toConsider.add(CapabilityType.APPLICATION_NAME);
+  private boolean anything(Object requested) {
+    return requested == null
+           || ImmutableList.of("any", "", "*").contains(requested.toString().toLowerCase());
   }
 
-  /**
-   * @param capabilityName capability name to have grid match requested with test slot
-   */
-  public void addToConsider(String capabilityName) {
-    toConsider.add(capabilityName);
-  }
-
-  public boolean matches(Map<String, Object> nodeCapability, Map<String, Object> requestedCapability) {
-    if (nodeCapability == null || requestedCapability == null) {
+  class PlatformValidator implements Validator {
+    @Override
+    public Boolean apply(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
+      if (anything(requestedCapabilities.get(CapabilityType.PLATFORM))) {
+        return true;
+      }
+      Platform requested = extractPlatform(requestedCapabilities.get(CapabilityType.PLATFORM));
+      if (requested != null) {
+        Platform provided = extractPlatform(providedCapabilities.get(CapabilityType.PLATFORM));
+        return provided != null && provided.is(requested);
+      }
       return false;
     }
-    for (String key : requestedCapability.keySet()) {
-      // ignore capabilities that are targeted at grid internal for the
-      // matching
-      if (!key.startsWith(GRID_TOKEN) && toConsider.contains(key)) {
-        if (requestedCapability.get(key) != null) {
-          String value = requestedCapability.get(key).toString();
-          // ignore matching 'ANY' or '*" or empty string cases
-          if (!("ANY".equalsIgnoreCase(value) || "".equals(value) || "*".equals(value))) {
-            switch (key) {
-              case CapabilityType.PLATFORM:
-                Platform requested = extractPlatform(requestedCapability.get(key));
-                if (requested != null) {
-                  Platform node = extractPlatform(nodeCapability.get(key));
-                  if (node == null) {
-                    return false;
-                  }
-                  if (!node.is(requested)) {
-                    return false;
-                  }
-                }
-                break;
+  }
 
-              case CapabilityType.BROWSER_VERSION:
-              case CapabilityType.VERSION:
-                // w3c uses 'browserVersion' but 2.X / 3.X use 'version'
-                // w3c name takes precedence
-                Object nodeVersion = nodeCapability.getOrDefault(CapabilityType.BROWSER_VERSION, nodeCapability.get(CapabilityType.VERSION));
-                if (!value.equals(nodeVersion)) {
-                  return false;
-                }
-                break;
+  class AliasedPropertyValidator implements Validator {
+    private String[] propertyAliases;
 
-              default:
-                if (!requestedCapability.get(key).equals(nodeCapability.get(key))) {
-                  return false;
-                }
-            }
-          }
-        }
-      }
+    AliasedPropertyValidator(String... propertyAliases) {
+      this.propertyAliases = propertyAliases;
     }
-    return true;
+
+    @Override
+    public Boolean apply(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
+      Object requested = Stream.of(propertyAliases)
+          .map(requestedCapabilities::get).filter(Objects::nonNull).findFirst().orElse(null);
+      if (anything(requested)) {
+        return true;
+      }
+      Object provided = Stream.of(propertyAliases)
+          .map(providedCapabilities::get).filter(Objects::nonNull).findFirst().orElse(null);
+      return Objects.equals(requested, provided);
+    }
+  }
+
+  class SimplePropertyValidator implements Validator {
+    private List<String> toConsider;
+
+    SimplePropertyValidator(String... toConsider) {
+      this.toConsider = Arrays.asList(toConsider);
+    }
+
+    @Override
+    public Boolean apply(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
+      return requestedCapabilities.entrySet().stream()
+          .filter(entry -> ! entry.getKey().startsWith(GRID_TOKEN))
+          .filter(entry -> toConsider.contains(entry.getKey()))
+          .filter(entry -> ! anything(entry.getValue()))
+          .allMatch(entry -> entry.getValue().equals(providedCapabilities.get(entry.getKey())));
+    }
+  }
+
+  private final List<Validator> validators = ImmutableList.of(
+      new PlatformValidator(),
+      new AliasedPropertyValidator(CapabilityType.BROWSER_NAME, "browser"),
+      new AliasedPropertyValidator(CapabilityType.BROWSER_VERSION, CapabilityType.VERSION),
+      new SimplePropertyValidator(CapabilityType.APPLICATION_NAME)
+  );
+
+  public boolean matches(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
+    return providedCapabilities != null && requestedCapabilities != null
+           && validators.stream().allMatch(v -> v.apply(providedCapabilities, requestedCapabilities));
   }
 
   private Platform extractPlatform(Object o) {
@@ -105,25 +116,10 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     }
     if (o instanceof Platform) {
       return (Platform) o;
-    } else if (o instanceof String) {
-      String name = o.toString();
-      try {
-        return Platform.valueOf(name);
-      } catch (IllegalArgumentException e) {
-        // no exact match, continue to look for a partial match
-      }
-      for (Platform os : Platform.values()) {
-        for (String matcher : os.getPartOfOsName()) {
-          if ("".equals(matcher))
-            continue;
-          if (name.equalsIgnoreCase(matcher)) {
-            return os;
-          }
-        }
-      }
-      return null;
-    } else {
-      return null;
     }
+    if (o instanceof String) {
+      return Platform.fromString(o.toString());
+    }
+    return null;
   }
 }
