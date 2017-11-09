@@ -103,7 +103,6 @@ class WebElement(object):
 
         Example::
 
-            # Check if the "active" CSS class is applied to an element.
             text_length = target_element.get_property("text_length")
         """
         try:
