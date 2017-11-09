@@ -42,7 +42,6 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     toConsider.add(CapabilityType.VERSION);
     toConsider.add(CapabilityType.BROWSER_VERSION);
     toConsider.add(CapabilityType.APPLICATION_NAME);
-
   }
 
   /**
@@ -100,7 +99,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     return true;
   }
 
-  Platform extractPlatform(Object o) {
+  private Platform extractPlatform(Object o) {
     if (o == null) {
       return null;
     }
