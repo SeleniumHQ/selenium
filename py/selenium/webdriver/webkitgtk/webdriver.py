@@ -30,8 +30,7 @@ class WebDriver(RemoteWebDriver):
     Controls the WebKitGTKDriver and allows you to drive the browser.
     """
 
-    def __init__(self, executable_path="WebKitWebDriver", port=0,
-                 browser_options=None,
+    def __init__(self, executable_path="WebKitWebDriver", port=0, options=None,
                  desired_capabilities=DesiredCapabilities.WEBKITGTK,
                  service_log_path=None):
         """
@@ -42,12 +41,12 @@ class WebDriver(RemoteWebDriver):
         :Args:
          - executable_path : path to the executable. If the default is used it assumes the executable is in the $PATH.
          - port : port you would like the service to run, if left as 0, a free port will be found.
-         - browser_options : an instance of WebKitGTKOptions
+         - options : an instance of WebKitGTKOptions
          - desired_capabilities : Dictionary object with desired capabilities
          - service_log_path : Path to write service stdout and stderr output.
         """
-        if browser_options is not None:
-            capabilities = browser_options.to_capabilities()
+        if options is not None:
+            capabilities = options.to_capabilities()
             capabilities.update(desired_capabilities)
             desired_capabilities = capabilities
 

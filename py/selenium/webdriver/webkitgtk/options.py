@@ -19,6 +19,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Options(object):
+    KEY = 'webkitgtk:browserOptions'
 
     def __init__(self):
         self._browser_executable_path = ''
@@ -91,6 +92,6 @@ class Options(object):
         browser_options["args"] = self.browser_arguments
         browser_options["useOverlayScrollbars"] = self.overlay_scrollbars_enabled
 
-        webkitgtk["webkitgtk:browserOptions"] = browser_options
+        webkitgtk[Options.KEY] = browser_options
 
         return webkitgtk
