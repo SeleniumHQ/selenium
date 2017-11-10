@@ -305,4 +305,13 @@ public class GridNodeConfigurationTest {
     // is not a merged value
     assertNull(gnc.nodeConfigFile);
   }
+
+  @Test
+  public void testFixupCapabilitiesAddsUUID() {
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    gnc.fixUpCapabilities();
+    assertTrue(gnc.capabilities.stream()
+        .allMatch(cap -> cap.getCapability(GridNodeConfiguration.CONFIG_UUID_CAPABILITY) != null));
+  }
+
 }

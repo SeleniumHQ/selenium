@@ -51,9 +51,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GridNodeConfiguration extends GridConfiguration {
   public static final String DEFAULT_NODE_CONFIG_FILE = "defaults/DefaultNodeWebDriver.json";
+  public static final String CONFIG_UUID_CAPABILITY = "_CONFIG_UUID";
 
   /*
    * IMPORTANT - Keep these constant values in sync with the ones specified in
@@ -520,6 +522,7 @@ public class GridNodeConfiguration extends GridConfiguration {
       if (cap.getCapability(RegistrationRequest.SELENIUM_PROTOCOL) == null) {
         cap.setCapability(RegistrationRequest.SELENIUM_PROTOCOL, SeleniumProtocol.WebDriver.toString());
       }
+      cap.setCapability(CONFIG_UUID_CAPABILITY, UUID.randomUUID().toString());
     }
   }
 

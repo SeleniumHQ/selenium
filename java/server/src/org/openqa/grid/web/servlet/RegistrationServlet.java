@@ -178,6 +178,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
         MutableCapabilities cap = converter.toType(capabilities.get(i), DesiredCapabilities.class);
         configuration.capabilities.add(cap);
       }
+      configuration.fixUpCapabilities();
     }
   }
 

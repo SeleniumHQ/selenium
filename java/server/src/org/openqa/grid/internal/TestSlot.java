@@ -23,6 +23,7 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -132,6 +133,8 @@ public class TestSlot {
       }
       if (matches(desiredCapabilities)) {
         log.info("Trying to create a new session on test slot " + this.capabilities);
+        desiredCapabilities.put(GridNodeConfiguration.CONFIG_UUID_CAPABILITY,
+                                capabilities.get(GridNodeConfiguration.CONFIG_UUID_CAPABILITY));
         TestSession session = new TestSession(this, desiredCapabilities, Clock.systemUTC());
         currentSession = session;
         lastSessionStart = System.currentTimeMillis();

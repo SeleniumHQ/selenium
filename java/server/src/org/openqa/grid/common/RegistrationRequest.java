@@ -29,9 +29,6 @@ import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesDeSerializer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesSerializer;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.List;
 
@@ -103,9 +100,9 @@ public class RegistrationRequest {
     this.description = description;
 
     // make sure we have something that looks like a valid host
-    fixUpHost();
+    this.configuration.fixUpHost();
     // make sure the capabilities are updated with required fields
-    fixUpCapabilities();
+    this.configuration.fixUpCapabilities();
   }
 
   public String getName() {
@@ -239,31 +236,6 @@ public class RegistrationRequest {
     pendingRequest.configuration.fixUpCapabilities();
 
     return pendingRequest;
-  }
-
-  private void fixUpCapabilities() {
-    if (configuration.capabilities == null) {
-      return; // assumes the caller set it/wants it this way
-    }
-
-    Platform current = Platform.getCurrent();
-    for (MutableCapabilities cap : configuration.capabilities) {
-      if (cap.getPlatform() == null) {
-        cap.setCapability(CapabilityType.PLATFORM, current);
-      }
-      if (cap.getCapability(SELENIUM_PROTOCOL) == null) {
-        cap.setCapability(SELENIUM_PROTOCOL, SeleniumProtocol.WebDriver.toString());
-      }
-    }
-  }
-
-  private void fixUpHost() {
-    NetworkUtils util = new NetworkUtils();
-    if (configuration.host == null || "ip".equalsIgnoreCase(configuration.host)) {
-      configuration.host = util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-    } else if ("host".equalsIgnoreCase(configuration.host)) {
-      configuration.host = util.getIp4NonLoopbackAddressOfThisMachine().getHostName();
-    }
   }
 
   /**

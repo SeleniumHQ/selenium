@@ -166,6 +166,7 @@ public class SelfRegisteringRemote {
     }
     cap.setCapability(RegistrationRequest.MAX_INSTANCES, instances);
     registrationRequest.getConfiguration().capabilities.add(cap);
+    registrationRequest.getConfiguration().fixUpCapabilities();
   }
 
   /**
