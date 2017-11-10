@@ -20,6 +20,7 @@ package org.openqa.grid.internal.utils;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Arrays;
@@ -49,15 +50,19 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   class PlatformValidator implements Validator {
     @Override
     public Boolean apply(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
-      if (anything(requestedCapabilities.get(CapabilityType.PLATFORM))) {
+      Object requested = requestedCapabilities.get(CapabilityType.PLATFORM);
+      if (anything(requested)) {
         return true;
       }
-      Platform requested = extractPlatform(requestedCapabilities.get(CapabilityType.PLATFORM));
-      if (requested != null) {
-        Platform provided = extractPlatform(providedCapabilities.get(CapabilityType.PLATFORM));
-        return provided != null && provided.is(requested);
+      Object provided = providedCapabilities.get(CapabilityType.PLATFORM);
+
+      Platform requestedPlatform = extractPlatform(requested);
+      if (requestedPlatform != null) {
+        Platform providedPlatform = extractPlatform(provided);
+        return providedPlatform != null && providedPlatform.is(requestedPlatform);
       }
-      return false;
+
+      return provided != null && Objects.equals(requested.toString(), provided.toString());
     }
   }
 
@@ -117,9 +122,10 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     if (o instanceof Platform) {
       return (Platform) o;
     }
-    if (o instanceof String) {
+    try {
       return Platform.fromString(o.toString());
+    } catch (WebDriverException ex) {
+      return null;
     }
-    return null;
   }
 }

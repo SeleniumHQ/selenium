@@ -94,6 +94,16 @@ public class DefaultCapabilityMatcherTest {
   }
 
   @Test
+  public void unknownPlatformMatchingTest() {
+    Map<String, Object> requested = ImmutableMap.of(CapabilityType.PLATFORM, "ms-dos");
+
+    assertTrue(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM, "ms-dos"), requested));
+
+    assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM, "windows"), requested));
+    assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM, "PS/2"), requested));
+  }
+
+  @Test
   public void nullEmptyValues() {
     Map<String, Object> requested = new HashMap<>();
     requested.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
