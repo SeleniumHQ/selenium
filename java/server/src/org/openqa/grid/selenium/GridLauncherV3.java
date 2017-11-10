@@ -58,15 +58,11 @@ public class GridLauncherV3 {
     "org.openqa.selenium.server.htmlrunner.HTMLLauncher";
   private static final BuildInfo buildInfo = new BuildInfo();
 
-  private static abstract class GridItemLauncher {
-    protected StandaloneConfiguration configuration;
-    protected boolean helpRequested;
-    protected boolean versionRequested;
-    abstract void setConfiguration(String[] args);
-    abstract void launch() throws Exception;
-    void printUsage() {
-      new JCommander(configuration).usage();
-    }
+  private interface GridItemLauncher {
+    void setConfiguration(String[] args);
+    StandaloneConfiguration getConfiguration();
+    void launch() throws Exception;
+    default void printUsage() { new JCommander(getConfiguration()).usage(); }
   }
 
   private static ImmutableMap<String, Supplier<GridItemLauncher>> LAUNCHERS = buildLaunchers();
@@ -77,19 +73,7 @@ public class GridLauncherV3 {
       return;
     }
 
-    if (launcher.versionRequested) {
-      System.out.println(String.format("Selenium server version: %s, revision: %s",
-                                       buildInfo.getReleaseLabel(),
-                                       buildInfo.getBuildRevision()));
-      return;
-    }
-
-    if (launcher.helpRequested) {
-      launcher.printUsage();
-      return;
-    }
-
-    configureLogging(launcher.configuration);
+    configureLogging(launcher.getConfiguration());
 
     log.info(String.format(
         "Selenium build info: version: '%s', revision: '%s'",
@@ -153,6 +137,19 @@ public class GridLauncherV3 {
     }
     GridItemLauncher toReturn = supplier.get();
     toReturn.setConfiguration(args);
+
+    if (toReturn.getConfiguration().help) {
+      toReturn.printUsage();
+      return null;
+    }
+
+    if (toReturn.getConfiguration().version) {
+      System.out.println(String.format("Selenium server version: %s, revision: %s",
+                                       buildInfo.getReleaseLabel(),
+                                       buildInfo.getBuildRevision()));
+      return null;
+    }
+
     return toReturn;
   }
 
@@ -222,11 +219,14 @@ public class GridLauncherV3 {
     ImmutableMap.Builder<String, Supplier<GridItemLauncher>> launchers =
       ImmutableMap.<String, Supplier<GridItemLauncher>>builder()
         .put(GridRole.NOT_GRID.toString(), () -> new GridItemLauncher() {
+          StandaloneConfiguration configuration;
+          public StandaloneConfiguration getConfiguration() {
+            return configuration;
+          }
+
           public void setConfiguration(String[] args) {
             configuration = new StandaloneConfiguration();
             new JCommander(configuration, args);
-            versionRequested = configuration.version;
-            helpRequested = configuration.help;
           }
 
           public void launch() throws Exception {
@@ -240,6 +240,11 @@ public class GridLauncherV3 {
           }
         })
         .put(GridRole.HUB.toString(), () -> new GridItemLauncher() {
+          GridHubConfiguration configuration;
+          public StandaloneConfiguration getConfiguration() {
+            return configuration;
+          }
+
           public void setConfiguration(String[] args) {
             GridHubConfiguration pending = new GridHubConfiguration();
             new JCommander(pending, args);
@@ -249,19 +254,22 @@ public class GridLauncherV3 {
               configuration = GridHubConfiguration.loadFromJSON(pending.hubConfig);
               new JCommander(configuration, args); //args take precedence
             }
-            versionRequested = configuration.version;
-            helpRequested = configuration.help;
           }
 
           public void launch() throws Exception {
             log.info("Launching Selenium Grid hub");
-            Hub h = new Hub((GridHubConfiguration) configuration);
+            Hub h = new Hub(configuration);
             h.start();
             log.info("Nodes should register to " + h.getRegistrationURL());
             log.info("Selenium Grid hub is up and running");
           }
         })
         .put(GridRole.NODE.toString(), () -> new GridItemLauncher() {
+          GridNodeConfiguration configuration;
+          public StandaloneConfiguration getConfiguration() {
+            return configuration;
+          }
+
           public void setConfiguration(String[] args) {
             GridNodeConfiguration pending = new GridNodeConfiguration();
             new JCommander(pending, args);
@@ -271,8 +279,6 @@ public class GridLauncherV3 {
               configuration = GridNodeConfiguration.loadFromJSON(pending.nodeConfigFile);
               new JCommander(configuration, args); //args take precedence
             }
-            versionRequested = configuration.version;
-            helpRequested = configuration.help;
             if (configuration.port == null) {
               configuration.port = 5555;
             }
@@ -281,7 +287,7 @@ public class GridLauncherV3 {
           public void launch() throws Exception {
             log.info("Launching a Selenium Grid node");
             RegistrationRequest c =
-                RegistrationRequest.build((GridNodeConfiguration) configuration);
+                RegistrationRequest.build(configuration);
             SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
             remote.setRemoteServer(new SeleniumServer(c.getConfiguration()));
             remote.startRemoteServer();
@@ -294,21 +300,24 @@ public class GridLauncherV3 {
       Class.forName(CORE_RUNNER_CLASS, false, GridLauncherV3.class.getClassLoader());
 
       launchers.put("corerunner", () -> new GridItemLauncher() {
-        @Override
-        void setConfiguration(String[] args) {
-          configuration = new CoreRunnerConfiguration();
-          new JCommander(configuration, args);
-          versionRequested = configuration.version;
-          helpRequested = configuration.help;
+        CoreRunnerConfiguration configuration;
+        public StandaloneConfiguration getConfiguration() {
+          return configuration;
         }
 
         @Override
-        void launch() throws Exception {
+        public void setConfiguration(String[] args) {
+          configuration = new CoreRunnerConfiguration();
+          new JCommander(configuration, args);
+        }
+
+        @Override
+        public void launch() throws Exception {
           Class<?> coreRunnerClass = Class.forName(CORE_RUNNER_CLASS);
           Object coreRunner = coreRunnerClass.newInstance();
           Method mainInt = coreRunnerClass.getMethod("mainInt", String[].class);
 
-          CoreRunnerConfiguration runnerConfig = (CoreRunnerConfiguration) this.configuration;
+          CoreRunnerConfiguration runnerConfig = this.configuration;
           String[] args = new String[] {
             /* Results file */ runnerConfig.htmlSuite.get(3),
             /* suite */ runnerConfig.htmlSuite.get(2),
