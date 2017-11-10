@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableMap;
 import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.internal.utils.configuration.CoreRunnerConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
@@ -286,10 +285,8 @@ public class GridLauncherV3 {
 
           public void launch() throws Exception {
             log.info("Launching a Selenium Grid node");
-            RegistrationRequest c =
-                RegistrationRequest.build(configuration);
-            SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
-            remote.setRemoteServer(new SeleniumServer(c.getConfiguration()));
+            SelfRegisteringRemote remote = new SelfRegisteringRemote(configuration);
+            remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
             remote.startRemoteServer();
             log.info("Selenium Grid node is up and ready to register to the hub");
             remote.startRegistrationProcess();

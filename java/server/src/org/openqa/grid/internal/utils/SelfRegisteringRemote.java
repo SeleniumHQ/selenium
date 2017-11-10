@@ -68,6 +68,10 @@ public class SelfRegisteringRemote {
 
   private boolean hasId;
 
+  public SelfRegisteringRemote(GridNodeConfiguration configuration) {
+    this(RegistrationRequest.build(configuration));
+  }
+
   public SelfRegisteringRemote(RegistrationRequest request) {
     this.registrationRequest = request;
     this.httpClientFactory = new HttpClientFactory();

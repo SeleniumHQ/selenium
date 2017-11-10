@@ -234,9 +234,9 @@ public class RegistrationRequest {
     }
 
     // make sure we have a valid host
-    pendingRequest.fixUpHost();
+    pendingRequest.configuration.fixUpHost();
     // make sure the capabilities are updated with required fields
-    pendingRequest.fixUpCapabilities();
+    pendingRequest.configuration.fixUpCapabilities();
 
     return pendingRequest;
   }
