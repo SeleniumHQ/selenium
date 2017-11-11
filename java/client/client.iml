@@ -40,8 +40,8 @@
     <orderEntry type="library" name="jetty" level="project" />
     <orderEntry type="library" scope="TEST" name="little_proxy" level="project" />
     <orderEntry type="library" scope="TEST" name="slf4j" level="project" />
-    <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
-    <orderEntry type="library" name="objenesis-1.0" level="project" />
+    <orderEntry type="library" name="mockito-core" level="project" />
+    <orderEntry type="library" name="objenesis" level="project" />
     <orderEntry type="library" name="commons-httpclient" level="project" />
     <orderEntry type="library" scope="TEST" name="websocket" level="project" />
     <orderEntry type="library" scope="TEST" name="jetty-util" level="project" />

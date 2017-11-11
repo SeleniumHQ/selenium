@@ -1,8 +1,8 @@
 # BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(name = 'objenesis',
-  binary_jar = 'objenesis-1.0.jar',
+  binary_jar = 'objenesis-2.6.jar',
   visibility = [
-    '//third_party/java/...',
+    '//third_party/java/mockito:mockito',
   ],
 )
 
