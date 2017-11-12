@@ -26,27 +26,26 @@ import org.openqa.selenium.ImmutableCapabilities;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 public class FirefoxMutator implements Function<ImmutableCapabilities, ImmutableCapabilities> {
 
-  private final Object binary;
-  private final Object marionette;
+  private static final String CONFIG_UUID_CAPABILITY = "_CONFIG_UUID";
+
+  private final Capabilities config;
 
   public FirefoxMutator(Capabilities config) {
-    if ("firefox".equals(config.getBrowserName())) {
-      this.binary = config.getCapability(BINARY);
-      this.marionette = config.getCapability(MARIONETTE);
-    } else {
-      this.binary = null;
-      this.marionette = null;
-    }
+    this.config = "firefox".equals(config.getBrowserName()) ? config : null;
   }
 
   @Override
   public ImmutableCapabilities apply(ImmutableCapabilities capabilities) {
-    if ((binary == null && marionette == null) ||
-        !"firefox".equals(capabilities.getBrowserName())) {
+    if (config == null || !"firefox".equals(capabilities.getBrowserName())) {
+      return capabilities;
+    }
+    if (!Objects.equals(config.getCapability(CONFIG_UUID_CAPABILITY),
+                        capabilities.getCapability(CONFIG_UUID_CAPABILITY))) {
       return capabilities;
     }
 
@@ -61,17 +60,17 @@ public class FirefoxMutator implements Function<ImmutableCapabilities, Immutable
     Map<String, Object> toReturn = new HashMap<>();
     toReturn.putAll(capabilities.asMap());
 
-    if (binary != null) {
+    if (config.getCapability(BINARY) != null) {
       if (!(capabilities.getCapability(BINARY) instanceof String)) {
-        toReturn.put(BINARY, binary);
+        toReturn.put(BINARY, config.getCapability(BINARY));
       }
       if (!(options.get("binary") instanceof String)) {
-        options.put("binary", binary);
+        options.put("binary", config.getCapability(BINARY));
       }
     }
 
-    if (marionette != null) {
-      toReturn.put(MARIONETTE, marionette);
+    if (config.getCapability(MARIONETTE) != null) {
+      toReturn.put(MARIONETTE, config.getCapability(MARIONETTE));
     }
 
     if (!options.isEmpty()) {
