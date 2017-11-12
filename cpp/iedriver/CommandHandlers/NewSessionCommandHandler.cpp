@@ -584,6 +584,11 @@ bool NewSessionCommandHandler::ValidateCapabilities(
   for (; name_iterator != capability_names.end(); ++name_iterator) {
     std::string capability_name = *name_iterator;
     std::string capability_error_message;
+    if (capabilities[capability_name].isNull()) {
+      // Cast away the const modifier only in this case.
+      const_cast<Json::Value&>(capabilities).removeMember(capability_name);
+      continue;
+    }
     if (capability_name == ACCEPT_INSECURE_CERTS_CAPABILITY) {
       LOG(DEBUG) << "Found " << ACCEPT_INSECURE_CERTS_CAPABILITY << " capability."
                  << " Validating value type is boolean.";
@@ -676,12 +681,10 @@ bool NewSessionCommandHandler::ValidateCapabilities(
       std::string page_load_strategy = "";
       LOG(DEBUG) << "Found " << PAGE_LOAD_STRATEGY_CAPABILITY << " capability."
                  << " Validating value type is string.";
-      if (capabilities[capability_name].isNull()) {
-        page_load_strategy = "normal";
-      } else if (!this->ValidateCapabilityType(capabilities,
-                                             capability_name,
-                                             Json::ValueType::stringValue,
-                                             &capability_error_message)) {
+      if (!this->ValidateCapabilityType(capabilities,
+                                        capability_name,
+                                        Json::ValueType::stringValue,
+                                        &capability_error_message)) {
         *error_message = "Invalid capabilities in " +
                          capability_set_name + ": " + capability_error_message;
         return false;
@@ -717,6 +720,12 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                    << " object contains correct property names.";
         Json::Value timeouts = capabilities[capability_name];
         std::vector<std::string> timeout_names = timeouts.getMemberNames();
+        if (timeout_names.size() == 0) {
+          *error_message = "Invalid capabilities in " +
+                           capability_set_name + ": " +
+                           "no timeouts specified";
+          return false;
+        }
         std::vector<std::string>::const_iterator timeout_name_iterator = timeout_names.begin();
         for (; timeout_name_iterator != timeout_names.end(); ++timeout_name_iterator) {
           std::string timeout_name = *timeout_name_iterator;
