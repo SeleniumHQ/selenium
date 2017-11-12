@@ -34,6 +34,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsById;
@@ -182,6 +183,7 @@ public class DefaultFieldDecoratorTest {
     final Mouse mouse = mock(Mouse.class);
 
     when(driver.getMouse()).thenReturn(mouse);
+    when(element.getCoordinates()).thenReturn(mock(Coordinates.class));
     when(driver.findElement(By.id("foo"))).thenReturn(element);
 
     Page page = new Page();
@@ -200,7 +202,7 @@ public class DefaultFieldDecoratorTest {
   }
 
   private interface AllDriver extends WebDriver, FindsById, FindsByLinkText, FindsByName,
-      FindsByXPath, HasInputDevices {
+                                      FindsByXPath, HasInputDevices {
     // Place holder
   }
 
