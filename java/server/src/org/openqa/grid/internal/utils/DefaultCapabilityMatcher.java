@@ -19,8 +19,11 @@ package org.openqa.grid.internal.utils;
 
 import com.google.common.collect.ImmutableList;
 
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Arrays;
@@ -103,11 +106,29 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     }
   }
 
+  class FirefoxSpecificValidator implements Validator {
+    @Override
+    public Boolean apply(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
+      if (! "firefox".equals(requestedCapabilities.get(CapabilityType.BROWSER_NAME))) {
+        return true;
+      }
+      FirefoxOptions requestedOptions = new FirefoxOptions(new ImmutableCapabilities(requestedCapabilities));
+      if (requestedOptions.isLegacy()) {
+        return providedCapabilities.get("marionette") != null
+               && !Boolean.valueOf(providedCapabilities.get("marionette").toString());
+      } else {
+        return providedCapabilities.get("marionette") == null
+               || Boolean.valueOf(providedCapabilities.get("marionette").toString());
+      }
+    }
+  }
+
   private final List<Validator> validators = ImmutableList.of(
       new PlatformValidator(),
       new AliasedPropertyValidator(CapabilityType.BROWSER_NAME, "browser"),
       new AliasedPropertyValidator(CapabilityType.BROWSER_VERSION, CapabilityType.VERSION),
-      new SimplePropertyValidator(CapabilityType.APPLICATION_NAME)
+      new SimplePropertyValidator(CapabilityType.APPLICATION_NAME),
+      new FirefoxSpecificValidator()
   );
 
   public boolean matches(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {

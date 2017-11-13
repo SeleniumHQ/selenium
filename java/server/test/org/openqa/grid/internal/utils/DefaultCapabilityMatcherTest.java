@@ -24,6 +24,8 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
@@ -140,4 +142,43 @@ public class DefaultCapabilityMatcherTest {
     assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.BROWSER_VERSION, "45"),
                                 ImmutableMap.of(CapabilityType.BROWSER_VERSION, "50")));
   }
+
+  @Test
+  public void shouldMatchLegacyFirefoxDriverOnly() {
+    Map<String, Object> requested = new FirefoxOptions().setLegacy(true).asMap();
+
+    Map<String, Object> legacyNode = new HashMap<>();
+    legacyNode.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    legacyNode.put(CapabilityType.PLATFORM, Platform.LINUX);
+    legacyNode.put(CapabilityType.VERSION, "52");
+    legacyNode.put(FirefoxDriver.MARIONETTE, false);
+
+    Map<String, Object> mNode = new HashMap<>();
+    mNode.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    mNode.put(CapabilityType.PLATFORM, Platform.LINUX);
+    mNode.put(CapabilityType.VERSION, "58");
+
+    assertTrue(matcher.matches(legacyNode, requested));
+    assertFalse(matcher.matches(mNode, requested));
+  }
+
+  @Test
+  public void shouldMatchMarionetteFirefoxDriverOnly() {
+    Map<String, Object> requested = new FirefoxOptions().asMap();
+
+    Map<String, Object> legacyNode = new HashMap<>();
+    legacyNode.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    legacyNode.put(CapabilityType.PLATFORM, Platform.LINUX);
+    legacyNode.put(CapabilityType.VERSION, "52");
+    legacyNode.put(FirefoxDriver.MARIONETTE, false);
+
+    Map<String, Object> mNode = new HashMap<>();
+    mNode.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    mNode.put(CapabilityType.PLATFORM, Platform.LINUX);
+    mNode.put(CapabilityType.VERSION, "58");
+
+    assertFalse(matcher.matches(legacyNode, requested));
+    assertTrue(matcher.matches(mNode, requested));
+  }
+
 }
