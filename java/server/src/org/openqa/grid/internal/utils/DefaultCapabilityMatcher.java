@@ -22,9 +22,9 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.safari.SafariOptions;
 
 import java.util.Arrays;
 import java.util.List;
@@ -123,12 +123,30 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     }
   }
 
+  class SafariSpecificValidator implements Validator {
+    @Override
+    public Boolean apply(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
+      if (! "safari".equals(requestedCapabilities.get(CapabilityType.BROWSER_NAME))) {
+        return true;
+      }
+      SafariOptions requestedOptions = new SafariOptions(new ImmutableCapabilities(requestedCapabilities));
+      if (requestedOptions.getUseTechnologyPreview()) {
+        return providedCapabilities.get("technologyPreview") != null
+               && Boolean.valueOf(providedCapabilities.get("technologyPreview").toString());
+      } else {
+        return providedCapabilities.get("technologyPreview") == null
+               || !Boolean.valueOf(providedCapabilities.get("technologyPreview").toString());
+      }
+    }
+  }
+
   private final List<Validator> validators = ImmutableList.of(
       new PlatformValidator(),
       new AliasedPropertyValidator(CapabilityType.BROWSER_NAME, "browser"),
       new AliasedPropertyValidator(CapabilityType.BROWSER_VERSION, CapabilityType.VERSION),
       new SimplePropertyValidator(CapabilityType.APPLICATION_NAME),
-      new FirefoxSpecificValidator()
+      new FirefoxSpecificValidator(),
+      new SafariSpecificValidator()
   );
 
   public boolean matches(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {

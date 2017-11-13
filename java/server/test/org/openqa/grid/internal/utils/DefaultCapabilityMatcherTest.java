@@ -28,6 +28,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -149,14 +151,10 @@ public class DefaultCapabilityMatcherTest {
 
     Map<String, Object> legacyNode = new HashMap<>();
     legacyNode.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
-    legacyNode.put(CapabilityType.PLATFORM, Platform.LINUX);
-    legacyNode.put(CapabilityType.VERSION, "52");
     legacyNode.put(FirefoxDriver.MARIONETTE, false);
 
     Map<String, Object> mNode = new HashMap<>();
     mNode.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
-    mNode.put(CapabilityType.PLATFORM, Platform.LINUX);
-    mNode.put(CapabilityType.VERSION, "58");
 
     assertTrue(matcher.matches(legacyNode, requested));
     assertFalse(matcher.matches(mNode, requested));
@@ -168,17 +166,47 @@ public class DefaultCapabilityMatcherTest {
 
     Map<String, Object> legacyNode = new HashMap<>();
     legacyNode.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
-    legacyNode.put(CapabilityType.PLATFORM, Platform.LINUX);
-    legacyNode.put(CapabilityType.VERSION, "52");
     legacyNode.put(FirefoxDriver.MARIONETTE, false);
 
     Map<String, Object> mNode = new HashMap<>();
     mNode.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
-    mNode.put(CapabilityType.PLATFORM, Platform.LINUX);
-    mNode.put(CapabilityType.VERSION, "58");
 
     assertFalse(matcher.matches(legacyNode, requested));
     assertTrue(matcher.matches(mNode, requested));
+  }
+
+  @Test
+  public void shouldMatchSafariTechnologyPreviewOnly() {
+    Map<String, Object> requested = new SafariOptions().setUseTechnologyPreview(true).asMap();
+
+    Map<String, Object> tpNode = new HashMap<>();
+    tpNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
+    tpNode.put(CapabilityType.PLATFORM, Platform.MAC);
+    tpNode.put("technologyPreview", true);
+
+    Map<String, Object> regularNode = new HashMap<>();
+    regularNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
+    regularNode.put(CapabilityType.PLATFORM, Platform.MAC);
+
+    assertTrue(matcher.matches(tpNode, requested));
+    assertFalse(matcher.matches(regularNode, requested));
+  }
+
+  @Test
+  public void shouldMatchRegularSafariOnly() {
+    Map<String, Object> requested = new SafariOptions().asMap();
+
+    Map<String, Object> tpNode = new HashMap<>();
+    tpNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
+    tpNode.put(CapabilityType.PLATFORM, Platform.MAC);
+    tpNode.put("technologyPreview", true);
+
+    Map<String, Object> regularNode = new HashMap<>();
+    regularNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
+    regularNode.put(CapabilityType.PLATFORM, Platform.MAC);
+
+    assertFalse(matcher.matches(tpNode, requested));
+    assertTrue(matcher.matches(regularNode, requested));
   }
 
 }
