@@ -100,8 +100,7 @@ module Selenium
         expect(new_rect.height).to eq(target_height)
       end
 
-      # TODO: - Create Window Manager guard
-      it 'can maximize the current window', except: [{platform: :linux}, {browser: %i[ie safari]}] do
+      it 'can maximize the current window', except: [{window_manager: false}, {browser: %i[ie safari]}] do
         window.size = old_size = Dimension.new(200, 200)
 
         window.maximize
@@ -113,9 +112,8 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1189749
       # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-      it 'can make window full screen', only: {browser: :ie} do
+      it 'can make window full screen', only: {window_manager: true, browser: [:ie, :firefox]} do
         window.maximize
         old_size = window.size
 
@@ -125,12 +123,10 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      # Firefox - Not implemented yet, no bug to track
       # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-      it 'can minimize the window', only: {browser: :ie} do
-        driver.execute_script('window.minimized = false; window.onblur = function(){ window.minimized = true };')
+      it 'can minimize the window', only: {window_manager: true, browser: [:ie, :firefox]} do
         window.minimize
-        expect(driver.execute_script('return window.minimized;')).to be true
+        expect(driver.execute_script('return document.hidden;')).to be true
       end
     end
   end # WebDriver

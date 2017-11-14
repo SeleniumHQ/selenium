@@ -27,6 +27,7 @@ module Selenium
             @browsers = []
             @platforms = []
 
+            set_window_manager(guard)
             expand_drivers(guard)
             expand_browsers(guard)
             expand_platforms(guard)
@@ -41,10 +42,15 @@ module Selenium
           end
 
           def satisfied?
-            satisfies_driver? && satisfies_browser? && satisfies_platform?
+            satisfies_driver? && satisfies_browser? && satisfies_platform? && satisfies_window_manager?
           end
 
           private
+
+          def set_window_manager(guard)
+            return unless guard.key?(:window_manager)
+            @window_manager = guard[:window_manager]
+          end
 
           def expand_drivers(guard)
             return unless guard[:driver]
@@ -71,6 +77,10 @@ module Selenium
 
           def satisfies_platform?
             @platforms.empty? || @platforms.include?(Platform.os)
+          end
+
+          def satisfies_window_manager?
+            @window_manager.nil? || (@window_manager == (!Selenium::WebDriver::Platform.linux? || !ENV['DESKTOP_SESSION'].nil?))
           end
         end # Guard
       end # Guards
