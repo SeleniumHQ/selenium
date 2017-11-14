@@ -1,4 +1,4 @@
-require 'childprocess'
+require 'open3'
 require 'rake-tasks/checks'
 
 module Buck
@@ -46,55 +46,32 @@ module Buck
     )
   end
 
-  def self.buck_cmd
-    (
-      lambda { |command, args, &block|
-        buck = []
-        pex = Buck::download
-        buck.push(*pex)
+  def self.buck_cmd(command, args, &block)
+    buck = []
+    pex = Buck.download
+    buck.push(*pex)
 
-        args ||= []
-        buck.push(command)
-        buck.push(*args)
+    args ||= []
+    buck.push(command)
+    buck.push(*args)
 
-        pump_class = Class.new(Java::java.io.OutputStream) {
-          attr_writer :stream
+    output = ''
+    Open3.popen3(*buck) do |stdin, stdout, stderr, wait|
+      stdin.close
 
-          def initialize
-            @output = ''
-          end
+      while (error = stderr.gets)
+        STDERR.print(error)
+      end
 
-          def write(b)
-            if @stream
-              @stream.write(b)
-            end
-            @output += b
-          end
+      while (line = stdout.gets)
+        output << line
+        STDOUT.print line
+      end
 
-          def output
-            @output
-          end
-        }
+      raise "#{buck.join(' ')} failed with exit code: #{wait.value.exitstatus}" unless wait.value.success?
+    end
 
-        err = ''
-        proc = ChildProcess.build(*buck)
-        proc.io.stdout = pump_class.new()
-        proc.io.stderr = pump_class.new()
-        if command == 'build' || command == 'publish' || command == 'test'
-          proc.io.stderr.stream = $stdout
-        end
-        proc.start
-        proc.wait
-
-        if proc.exit_code != 0
-          raise "Buck build failed with exit code: #{proc.exit_code}
-stdout: #{proc.io.stdout.output}"
-        end
-
-        block.call(proc.io.stdout.output) if block
-      }
-    )
-
+    block.call(output) if block
   end
 
   def self.enhance_task(task)
@@ -115,7 +92,7 @@ stdout: #{proc.io.stdout.output}"
   def self.find_buck_out(target)
     out = nil
 
-    Buck::buck_cmd.call('targets', ['--show-output', target]) do |output|
+    Buck.buck_cmd('targets', ['--show-output', target]) do |output|
       sections = output.chomp.split
       # Not all buck rules have an output file.
       if sections.size > 1
@@ -150,7 +127,7 @@ def buck(*args, &block)
 
   task = Rake::Task.task_defined?(name) ? Rake::Task[name] : Rake::Task.define_task(name)
   task.enhance prereqs do
-    Buck::buck_cmd.call('build', [name])
+    Buck.buck_cmd('build', [name])
     block.call if block
   end
 
@@ -164,13 +141,13 @@ rule /\/\/.*:run/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
 
   task.enhance do
     # Figure out if this is an executable or a test target.
-    Buck::buck_cmd.call('query', [short, '--output-attributes', 'buck.type']) do |output|
+    Buck.buck_cmd('query', [short, '--output-attributes', 'buck.type']) do |output|
       hash = JSON.parse(output)
       type = hash[short]['buck.type']
       if type =~ /.*_test/
-        Buck::buck_cmd.call('test', [short])
+        Buck.buck_cmd('test', [short])
       else
-        Buck::buck_cmd.call('run', ['--verbose', '5', short])
+        Buck.buck_cmd('run', ['--verbose', '5', short])
       end
     end
   end
@@ -187,7 +164,7 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
     working_dir = "buck-out/crazy-fun/#{dir}/#{target}_zip"
 
     # Build the source zip
-    Buck::buck_cmd.call('query', ["kind(java_library, deps(#{short}))"]) do |output|
+    Buck.buck_cmd('query', ["kind(java_library, deps(#{short}))"]) do |output|
       # Collect all the targets
       to_build = []
       output.lines do |line|
@@ -205,7 +182,7 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
       mkdir_p "#{working_dir}/lib"
       mkdir_p "#{working_dir}/uber"
 
-      Buck::buck_cmd.call('build', ['--show-output'] + to_build) do |built|
+      Buck.buck_cmd('build', ['--show-output'] + to_build) do |built|
         built.lines do |line|
           line.chomp!
           line.split[1].each do |file|
@@ -218,7 +195,7 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
     end
 
     # Figure out if this is an executable or a test target.
-    Buck::buck_cmd.call('audit', ['classpath', short]) do |output|
+    Buck.buck_cmd('audit', ['classpath', short]) do |output|
       third_party = []
       first_party = []
 
@@ -266,7 +243,7 @@ rule /\/\/.*/ do |task|
 
   if task.class == Rake::FileTask && !task.out && File.exists?(buck_file)
     task.enhance do
-      Buck::buck_cmd.call('build', ['--deep', task.name])
+      Buck.buck_cmd('build', ['--deep', task.name])
     end
 
     Buck::enhance_task(task)

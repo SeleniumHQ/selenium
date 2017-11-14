@@ -163,11 +163,11 @@ class RubyMappings
 
       desc "Build #{args[:gemspec]}"
       task "//#{dir}:gem:build" => deps do
-        require 'rubygems/builder'
+        require 'rubygems/package'
 
         file = Dir.chdir(spec_dir) do
           spec = eval(File.read(gemspec))
-          Gem::Builder.new(spec).build
+          Gem::Package.build(spec)
         end
 
         mv File.join(spec_dir, file), "build/"

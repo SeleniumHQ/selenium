@@ -310,7 +310,7 @@ module Javascript
 
       result_list = [File.join(@closure_dir, "base.js")]
       seen_list = []
-      files.each do |file|
+      Array(files).each do |file|
         file = File.expand_path(file)
         parse_file(file)
         info = @files[file]
@@ -403,7 +403,7 @@ module Javascript
 
     def calc_deps(src_files, js_files)
       deps = ClosureDeps.new
-      js_files.each {|f| deps.parse_file(f)}
+      Array(js_files).each {|f| deps.parse_file(f)}
       deps.calc_deps(src_files).uniq
     end
 

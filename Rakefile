@@ -20,6 +20,7 @@ require 'rake-tasks/crazy_fun/mappings/export'
 require 'rake-tasks/crazy_fun/mappings/folder'
 require 'rake-tasks/crazy_fun/mappings/gcc'
 require 'rake-tasks/crazy_fun/mappings/javascript'
+require 'rake-tasks/crazy_fun/mappings/jruby'
 require 'rake-tasks/crazy_fun/mappings/mozilla'
 require 'rake-tasks/crazy_fun/mappings/python'
 require 'rake-tasks/crazy_fun/mappings/rake'
@@ -38,7 +39,7 @@ require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/ci'
 require 'rake-tasks/copyright'
 
-$DEBUG = orig_verbose != :default ? true : false
+$DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
 if (ENV['debug'] == 'true')
   $DEBUG = true
 end
@@ -75,6 +76,7 @@ ExportMappings.new.add_all(crazy_fun)
 FolderMappings.new.add_all(crazy_fun)
 GccMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
+JRubyMappings.new.add_all(crazy_fun)
 MozillaMappings.new.add_all(crazy_fun)
 PythonMappings.new.add_all(crazy_fun)
 RakeMappings.new.add_all(crazy_fun)
@@ -623,6 +625,6 @@ end
 
 at_exit do
   if File.exist?(".git") && !Platform.windows?
-    sh "sh .git-fixfiles"
+    system "sh", ".git-fixfiles"
   end
 end
