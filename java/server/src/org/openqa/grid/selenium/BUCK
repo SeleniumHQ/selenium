@@ -45,6 +45,7 @@ java_library(name = 'classes',
   ],
   visibility = [
     '//java/server/test/org/openqa/grid/e2e:tests',
+    '//java/server/test/org/openqa/grid/selenium/proxy:proxy',
   ],
 )
 

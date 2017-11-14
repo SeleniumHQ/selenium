@@ -259,6 +259,8 @@ task :test_java_small_tests => [
   "//java/client/test/org/openqa/selenium/support:small-tests:run",
   "//java/client/test/org/openqa/selenium/remote:common-tests:run",
   "//java/client/test/org/openqa/selenium/remote:client-tests:run",
+  "//java/server/test/org/openqa/grid/selenium/node:node:run",
+  "//java/server/test/org/openqa/grid/selenium/proxy:proxy:run",
   "//java/server/test/org/openqa/selenium/remote/server:small-tests:run",
   "//java/server/test/org/openqa/selenium/remote/server/log:test:run",
 ]
