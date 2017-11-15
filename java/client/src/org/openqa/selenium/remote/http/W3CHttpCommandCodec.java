@@ -295,7 +295,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         PointerInput.Origin origin = PointerInput.Origin.pointer();
         if (parameters.containsKey("element")) {
           RemoteWebElement element = new RemoteWebElement();
-          element.setId((String) parameters.get("id"));
+          element.setId((String) parameters.get("element"));
           origin = PointerInput.Origin.fromElement(element);
         }
         int x = parameters.containsKey("xoffset") ? ((Number) parameters.get("xoffset")).intValue() : 0;
