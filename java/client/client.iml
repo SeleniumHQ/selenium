@@ -30,7 +30,6 @@
     <orderEntry type="library" name="htmlunit" level="project" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="library" name="netty" level="project" />
-    <orderEntry type="library" name="phantomjsdriver" level="project" />
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="testng" level="project" />
     <orderEntry type="library" name="xml-apis" level="project" />

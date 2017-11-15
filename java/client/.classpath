@@ -15,7 +15,6 @@
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-repacked.jar"/>
 	<classpathentry kind="lib" path="/third_party/java/jetty/jetty-util-9.4.7.v20170914.jar" sourcepath="/third-party/java/jetty/jetty-util-9.4.7.v20170914-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/servlet/javax.servlet-api-3.1.0.jar" sourcepath="/third-party/java/servlet/javax.servlet-api-3.1.0-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/phantomjs-driver/phantomjsdriver-1.4.0.jar" sourcepath="/third-party/java/phantomjs-driver/phantomjsdriver-1.4.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/httpcomponents/httpclient-4.5.3.jar" sourcepath="/third-party/java/httpcomponents/httpclient-4.5.3-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/httpcomponents/httpcore-4.4.6.jar" sourcepath="/third-party/java/httpcomponents/httpcore-4.4.6-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-logging/commons-logging-1.2.jar"/>
