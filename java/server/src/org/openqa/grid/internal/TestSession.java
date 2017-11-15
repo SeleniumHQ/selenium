@@ -45,6 +45,10 @@ import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
+import org.openqa.selenium.remote.server.jmx.ManagedOperation;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -67,6 +71,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -76,6 +82,7 @@ import javax.servlet.http.HttpServletResponse;
  * timed out)
  */
 @SuppressWarnings("JavaDoc")
+@ManagedService
 public class TestSession {
 
   private static final Logger log = Logger.getLogger(TestSession.class.getName());
@@ -115,6 +122,7 @@ public class TestSession {
    * @return the capabilities the client requested. It will match the TestSlot capabilities, but is not
    * equals.
    */
+  @ManagedAttribute
   public Map<String, Object> getRequestedCapabilities() {
     return requestedCapabilities;
   }
@@ -145,6 +153,7 @@ public class TestSession {
    * @return time in millis
    * @see TestSession#setIgnoreTimeout(boolean)
    */
+  @ManagedAttribute
   public long getInactivityTime() {
     if (ignoreTimeout) {
       return 0;
@@ -152,6 +161,7 @@ public class TestSession {
     return clock.millis() - lastActivity;
   }
 
+  @ManagedAttribute
   public boolean isOrphaned() {
     final long elapsedSinceCreation = clock.millis() - sessionCreatedAt;
 
@@ -669,4 +679,17 @@ public class TestSession {
   public boolean isForwardingRequest() {
     return forwardingRequest;
   }
+
+  public ObjectName getObjectName() {
+    try {
+      return new ObjectName(
+          String.format("org.seleniumhq.qrid:type=TestSession,nodeHost=%s,nodePort=%s,browser=%s,id=%s",
+                        getSlot().getRemoteURL().getHost(), getSlot().getRemoteURL().getPort(),
+                        getRequestedCapabilities().get("browserName"), getInternalKey()));
+    } catch (MalformedObjectNameException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
 }

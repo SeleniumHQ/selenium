@@ -34,7 +34,11 @@ import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.servlet.TestSessionStatusServlet;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.Server;
@@ -54,6 +58,7 @@ import javax.servlet.Servlet;
  * Jetty server. Main entry point for everything about the grid. <p> Except for unit tests, this
  * should be a singleton.
  */
+@ManagedService(objectName = "org.seleniumhq.qrid:type=Hub", description = "Selenium Grid Hub")
 public class Hub {
 
   private static final Logger log = Logger.getLogger(Hub.class.getName());
@@ -110,6 +115,8 @@ public class Hub {
 
     // start the registry, now that 'config' is all setup
     registry.start();
+
+    new JMXHelper().register(this);
   }
 
   private void addDefaultServlets(ServletContextHandler handler) {
@@ -196,6 +203,12 @@ public class Hub {
     return config;
   }
 
+  @ManagedAttribute(name = "Configuration")
+  public Map<?,?> getConfigurationForJMX() {
+    Json json = new Json();
+    return json.toType(json.toJson(config.toJson()), Map.class);
+  }
+
   public void start() throws Exception {
     initServer();
     server.start();
@@ -206,6 +219,7 @@ public class Hub {
     server.stop();
   }
 
+  @ManagedAttribute(name= "URL")
   public URL getUrl() {
     return getUrl("");
   }

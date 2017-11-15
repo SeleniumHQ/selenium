@@ -39,6 +39,7 @@ import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -273,10 +274,12 @@ public class BaseRemoteProxy implements RemoteProxy {
     return request;
   }
 
+  @ManagedAttribute
   public int getMaxNumberOfConcurrentTestSessions() {
     return config.maxSession;
   }
 
+  @ManagedAttribute
   public URL getRemoteHost() {
     return remoteHost;
   }
@@ -304,6 +307,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return null;
   }
 
+  @ManagedAttribute
   public int getTotalUsed() {
     int totalUsed = 0;
 
@@ -316,6 +320,11 @@ public class BaseRemoteProxy implements RemoteProxy {
     return totalUsed;
   }
 
+  @ManagedAttribute
+  public int getTotal() {
+    return getTestSlots().size();
+  }
+
   public boolean hasCapability(Map<String, Object> requestedCapability) {
     for (TestSlot slot : getTestSlots()) {
       if (slot.matches(requestedCapability)) {
@@ -326,6 +335,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return false;
   }
 
+  @ManagedAttribute
   public boolean isBusy() {
     return getTotalUsed() != 0;
   }
@@ -489,11 +499,12 @@ public class BaseRemoteProxy implements RemoteProxy {
     return new JsonParser().parse(s.toString()).getAsJsonObject();
   }
 
-
+  @ManagedAttribute
   public float getResourceUsageInPercent() {
     return 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
   }
 
+  @ManagedAttribute
   public long getLastSessionStart() {
     long last = -1;
     for (TestSlot slot : getTestSlots()) {

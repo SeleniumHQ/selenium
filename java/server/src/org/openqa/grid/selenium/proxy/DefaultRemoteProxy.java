@@ -29,18 +29,24 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.HtmlRenderer;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * Default remote proxy for selenium, handling both selenium1 and webdriver requests.
  */
+@ManagedService(description = "Selenium Grid Hub TestSlot")
 public class DefaultRemoteProxy extends BaseRemoteProxy
     implements
       TimeoutListener,
@@ -64,6 +70,8 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     pollingInterval = config.nodePolling != null ? config.nodePolling : DEFAULT_POLLING_INTERVAL;
     unregisterDelay = config.unregisterIfStillDownAfter != null ? config.unregisterIfStillDownAfter : DEFAULT_UNREGISTER_DELAY;
     downPollingLimit = config.downPollingLimit != null ? config.downPollingLimit : DEFAULT_DOWN_POLLING_LIMIT;
+
+    new JMXHelper().register(this);
   }
 
   public void beforeRelease(TestSession session) {
@@ -104,6 +112,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   private List<RemoteException> errors = new CopyOnWriteArrayList<>();
   private Thread pollingThread = null;
 
+  @ManagedAttribute
   public boolean isAlive() {
     try {
       getStatus();
@@ -191,6 +200,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     return super.getNewSession(requestedCapability);
   }
 
+  @ManagedAttribute
   public boolean isDown() {
     return down;
   }
@@ -225,4 +235,16 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     super.teardown();
     stopPolling();
   }
+
+  public ObjectName getObjectName() {
+    try {
+      return new ObjectName(
+          String.format("org.seleniumhq.qrid:type=RemoteProxy,nodeHost=%s,nodePort=%s",
+                        getRemoteHost().getHost(), getRemoteHost().getPort()));
+    } catch (MalformedObjectNameException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
 }
