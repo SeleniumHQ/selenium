@@ -94,7 +94,6 @@ import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
 import org.openqa.selenium.remote.server.handler.Rotate;
 import org.openqa.selenium.remote.server.handler.SendKeys;
-import org.openqa.selenium.remote.server.handler.SetAlertCredentials;
 import org.openqa.selenium.remote.server.handler.SetAlertText;
 import org.openqa.selenium.remote.server.handler.SetScriptTimeout;
 import org.openqa.selenium.remote.server.handler.SetWindowPosition;
@@ -249,7 +248,6 @@ public class JsonHttpCommandHandler {
     addNewMapping(ACCEPT_ALERT, AcceptAlert.class);
     addNewMapping(GET_ALERT_TEXT, GetAlertText.class);
     addNewMapping(SET_ALERT_VALUE, SetAlertText.class);
-    addNewMapping(SET_ALERT_CREDENTIALS, SetAlertCredentials.class);
 
     addNewMapping(GET, ChangeUrl.class);
     addNewMapping(GET_CURRENT_URL, GetCurrentUrl.class);

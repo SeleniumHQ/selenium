@@ -42,7 +42,6 @@ import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
-import org.openqa.selenium.security.Credentials;
 import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
 import org.openqa.selenium.support.events.internal.EventFiringMouse;
 import org.openqa.selenium.support.events.internal.EventFiringTouch;
@@ -715,14 +714,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public void sendKeys(String keysToSend) {
       alert.sendKeys(keysToSend);
-    }
-
-    public void setCredentials(Credentials credentials) {
-      alert.setCredentials(credentials);
-    }
-
-    public void authenticateUsing(Credentials credentials) {
-      alert.authenticateUsing(credentials);
     }
   }
 }

@@ -36,7 +36,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 @Suite.SuiteClasses({
     AlertsTest.class,
     AtomsInjectionTest.class,
-    AuthenticatedPageLoadingTest.class,
     AvailableLogsTest.class,
     ByTest.class,
     ChildrenFindingTest.class,
