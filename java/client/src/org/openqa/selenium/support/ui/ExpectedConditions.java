@@ -25,6 +25,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -561,6 +562,33 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return "frame to be available: " + frameLocator;
+      }
+    };
+  }
+
+  /**
+   * An expectation for checking whether the given window is available to switch to. <p> If the
+   * window is available it switches the given driver to the specified window.
+   *
+   * @param nameOrHandle The name of the window or the handle as returned by
+   *        {@link WebDriver#getWindowHandle()}
+   * @return WebDriver instance after window has been switched
+   */
+  public static ExpectedCondition<WebDriver> windowToBeAvailableAndSwitchToIt(
+    final String nameOrHandle) {
+    return new ExpectedCondition<WebDriver>() {
+      @Override
+      public WebDriver apply(WebDriver driver) {
+        try {
+          return driver.switchTo().window(nameOrHandle);
+        } catch (NoSuchWindowException e) {
+          return null;
+        }
+      }
+
+      @Override
+      public String toString() {
+        return "window to be available: " + nameOrHandle;
       }
     };
   }

@@ -52,6 +52,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfNestedElementsLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.windowToBeAvailableAndSwitchToIt;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -64,6 +65,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -92,6 +94,8 @@ public class ExpectedConditionsTest {
   private Sleeper mockSleeper;
   @Mock
   private GenericCondition mockCondition;
+  @Mock
+  WebDriver.TargetLocator mockTargetLocator;
 
   private FluentWait<WebDriver> wait;
 
@@ -918,6 +922,17 @@ public class ExpectedConditionsTest {
     when(mockDriver.getWindowHandles()).thenThrow(WebDriverException.class);
 
     wait.until(numberOfWindowsToBe(2));
+
+    // then TimeoutException is thrown
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingWindowToBeAvailableAndSwitchToItThrowsTimeoutExceptionWhenNoSuchWindowExceptionIsThrown() {
+    String nameOrHandle = "noh";
+    when(mockDriver.switchTo()).thenReturn(mockTargetLocator);
+    when(mockTargetLocator.window(nameOrHandle)).thenThrow(NoSuchWindowException.class);
+
+    wait.until(windowToBeAvailableAndSwitchToIt(nameOrHandle));
 
     // then TimeoutException is thrown
   }
