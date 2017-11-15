@@ -28,7 +28,7 @@ public interface Alert {
 
   void sendKeys(String keysToSend);
 
-  @Beta
+  @Deprecated
   void setCredentials(Credentials credentials);
 
   /**
@@ -38,6 +38,6 @@ public interface Alert {
    *        "secretGouda"));
    * @param credentials - the credentials that will be passed to the Authentication prompt
    */
-  @Beta
+  @Deprecated
   void authenticateUsing(Credentials credentials);
 }
