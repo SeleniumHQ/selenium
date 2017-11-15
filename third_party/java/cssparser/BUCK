@@ -1,9 +1,9 @@
 # BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'cssparser',
-  maven_coords = 'net.sourceforge.cssparser:cssparser:jar:0.9.23',
-  binary_jar = 'cssparser-0.9.23.jar',
-  source_jar = 'cssparser-0.9.23-sources.jar',
+  maven_coords = 'net.sourceforge.cssparser:cssparser:jar:0.9.24',
+  binary_jar = 'cssparser-0.9.24.jar',
+  source_jar = 'cssparser-0.9.24-sources.jar',
   deps = [
     '//third_party/java/css:sac'
   ],

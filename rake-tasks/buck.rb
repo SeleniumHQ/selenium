@@ -30,7 +30,7 @@ module Buck
       require "third_party/java/httpcomponents/httpcore-4.4.6"
       require "third_party/java/httpcomponents/httpclient-4.5.3"
       require "third_party/java/commons-logging/commons-logging-1.2"
-      require "third_party/java/commons-io/commons-io-2.5"
+      require "third_party/java/commons-io/commons-io-2.6"
 
       httpclient = org.apache.http.impl.client.HttpClients.custom().setRedirectStrategy(org.apache.http.impl.client.LaxRedirectStrategy.new()).build()
       httpget = org.apache.http.client.methods.HttpGet.new(url)

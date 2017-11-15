@@ -1,9 +1,9 @@
 # BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'htmlunit-driver',
-  maven_coords = 'org.seleniumhq.selenium:htmlunit-driver:jar:2.27',
-  binary_jar = 'htmlunit-driver-2.27.jar',
-  source_jar = 'htmlunit-driver-2.27-sources.jar',
+  maven_coords = 'org.seleniumhq.selenium:htmlunit-driver:jar:2.28',
+  binary_jar = 'htmlunit-driver-2.28.jar',
+  source_jar = 'htmlunit-driver-2.28-sources.jar',
   deps = [
     '//java/client/src/org/openqa/selenium/support:support',
     '//third_party/java/htmlunit:htmlunit'
