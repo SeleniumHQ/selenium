@@ -51,6 +51,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAnyElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfNestedElementsLocatedBy;
 
 import com.google.common.collect.Lists;
@@ -291,6 +292,64 @@ public class ExpectedConditionsTest {
       // Do nothing.
     }
     verify(mockSleeper, times(1)).sleep(new Duration(250, TimeUnit.MILLISECONDS));
+  }
+
+  @Test
+  public void waitingForVisibilityOfAnyElementsLocatedByReturnsListOfElements() {
+    List<WebElement> webElements = Lists.newArrayList(mockElement);
+    String testSelector = "testSelector";
+
+    when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
+    when(mockElement.isDisplayed()).thenReturn(true);
+
+    List<WebElement> returnedElements =
+      wait.until(visibilityOfAnyElementsLocatedBy(By.cssSelector(testSelector)));
+    assertEquals(webElements, returnedElements);
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForVisibilityOfAnyElementsLocatedByThrowsTimeoutExceptionWhenElementNotDisplayed() {
+    List<WebElement> webElements = Lists.newArrayList(mockElement);
+    String testSelector = "testSelector";
+
+    when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
+    when(mockElement.isDisplayed()).thenReturn(false);
+
+    wait.until(visibilityOfAnyElementsLocatedBy(By.cssSelector(testSelector)));
+  }
+
+  @Test(expected = StaleElementReferenceException.class)
+  public void waitingForVisibilityOfAnyElementsLocatedByThrowsStaleExceptionWhenElementIsStale() {
+    List<WebElement> webElements = Lists.newArrayList(mockElement);
+    String testSelector = "testSelector";
+
+    when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
+    when(mockElement.isDisplayed()).thenThrow(new StaleElementReferenceException("Stale element"));
+
+    wait.until(visibilityOfAnyElementsLocatedBy(By.cssSelector(testSelector)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForVisibilityOfAnyElementsLocatedByThrowsTimeoutExceptionWhenNoElementsFound() {
+    List<WebElement> webElements = Lists.newArrayList();
+    String testSelector = "testSelector";
+
+    when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
+
+    wait.until(visibilityOfAnyElementsLocatedBy(By.cssSelector(testSelector)));
+  }
+
+  @Test
+  public void waitingForVisibilityOfAnyElementsLocatedByReturnsOnlyDisplayedElements() {
+    List<WebElement> webElements = Lists.newArrayList(mockElement, mockElement);
+    String testSelector = "testSelector";
+
+    when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
+    when(mockElement.isDisplayed()).thenReturn(false, true);
+
+    List<WebElement> returnedElements =
+        wait.until(visibilityOfAnyElementsLocatedBy(By.cssSelector(testSelector)));
+    assertTrue(returnedElements.size() == 1);
   }
 
   @Test

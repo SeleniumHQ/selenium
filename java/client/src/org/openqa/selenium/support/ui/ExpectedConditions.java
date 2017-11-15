@@ -36,6 +36,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Canned {@link ExpectedCondition}s which are generally useful within webdriver tests.
@@ -186,6 +188,30 @@ public class ExpectedConditions {
       public String toString() {
         return "presence of element located by: " + locator;
       }
+    };
+  }
+
+  /**
+   * An expectation for checking that any elements present on the web page that match the locator
+   * are visible. Visibility means that the elements are not only displayed but also have a height
+   * and width that is greater than 0.
+   *
+   * @param locator used to find the element
+   * @return the list of WebElements once they are located
+   */
+  public static ExpectedCondition<List<WebElement>> visibilityOfAnyElementsLocatedBy(final By locator) {
+    return new ExpectedCondition<List<WebElement>>() {
+      @Override
+      public List<WebElement> apply(WebDriver driver) {
+        List<WebElement> elements = findElements(locator, driver);
+        List<WebElement> visible = elements.stream()
+                                           .filter(element -> element.isDisplayed())
+                                           .collect(Collectors.toList());
+        return visible.size() > 0 ? visible : null;
+      }
+
+      @Override
+      public String toString() { return "visibility of any elements located by " + locator; }
     };
   }
 
