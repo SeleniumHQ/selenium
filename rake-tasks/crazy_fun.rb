@@ -74,29 +74,3 @@ class CrazyFun
     end
   end
 end
-
-if __FILE__ == $0
-  require "rubygems"
-  require "spec/autorun"
-
-  describe CrazyFun do
-    let(:fun) { CrazyFun.new }
-
-    it "finds prebuilts with normal paths" do
-      fun.prebuilt_roots << "firefox/prebuilt"
-      expected_result = "firefox/prebuilt/i386/libnoblur.so"
-      File.should_receive(:exists?).with(expected_result).and_return(true)
-
-      fun.find_prebuilt("build/firefox/i386/libnoblur.so").should == expected_result
-    end
-
-    it "finds prebuilts with windows paths" do
-      fun.prebuilt_roots << "firefox/prebuilt"
-      expected_result = "firefox/prebuilt/i386/libnoblur.so"
-      File.should_receive(:exists?).with(expected_result).and_return(true)
-
-      fun.find_prebuilt("build\\firefox\\i386\\libnoblur.so").should == expected_result
-    end
-  end
-
-end
