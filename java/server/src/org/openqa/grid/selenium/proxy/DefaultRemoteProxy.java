@@ -239,8 +239,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   public ObjectName getObjectName() {
     try {
       return new ObjectName(
-          String.format("org.seleniumhq.qrid:type=RemoteProxy,nodeHost=%s,nodePort=%s",
-                        getRemoteHost().getHost(), getRemoteHost().getPort()));
+          String.format("org.seleniumhq.qrid:type=RemoteProxy,node=\"%s\"", getRemoteHost()));
     } catch (MalformedObjectNameException e) {
       e.printStackTrace();
       return null;
