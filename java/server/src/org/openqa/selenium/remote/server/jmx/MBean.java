@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.management.Attribute;
@@ -213,7 +214,13 @@ public class MBean implements DynamicMBean {
   public Object getAttribute(String attribute)
       throws AttributeNotFoundException, MBeanException, ReflectionException {
     try {
-      return attributeMap.get(attribute).getter.invoke(bean);
+      Object res = attributeMap.get(attribute).getter.invoke(bean);
+      if (res instanceof Map<?,?>) {
+        return ((Map<?,?>) res).entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey, e -> e.getValue().toString()));
+      } else {
+        return res;
+      }
     } catch (IllegalAccessException|InvocationTargetException e) {
       e.printStackTrace();
       return null;
