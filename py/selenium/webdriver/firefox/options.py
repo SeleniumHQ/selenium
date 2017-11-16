@@ -110,6 +110,25 @@ class Options(object):
             raise ValueError()
         self._arguments.append(argument)
 
+    @property
+    def headless(self):
+        """
+        Returns whether or not the headless argument is set
+        """
+        return '-headless' in self._arguments
+
+    def set_headless(self, headless=True):
+        """
+        Sets the headless argument
+
+        Args:
+          headless: boolean value indicating to set the headless option
+        """
+        if headless:
+            self._arguments.append('-headless')
+        elif '-headless' in self._arguments:
+            self._arguments.remove('-headless')
+
     def to_capabilities(self):
         """Marshals the Firefox options to a `moz:firefoxOptions`
         object.
