@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class AddingProxyAgainFreesResources {
 
-  private Registry registry;
+  private GridRegistry registry;
 
   private Map<String, Object> ff = new HashMap<>();
   private RemoteProxy p1;
@@ -56,7 +56,7 @@ public class AddingProxyAgainFreesResources {
    */
   @Before
   public void setup() throws Exception {
-    registry = Registry.newInstance();
+    registry = DefaultGridRegistry.newInstance();
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);

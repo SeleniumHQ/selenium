@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.instanceOf;
@@ -32,9 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Proxy.ProxyType;
-import org.openqa.selenium.remote.BeanToJsonConverter;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.json.Json;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -368,8 +365,7 @@ public class ProxyTest {
     rawProxy.put("ftpProxy", null);
     rawProxy.put("httpProxy", "http://www.example.com");
     rawProxy.put("autodetect", null);
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(PROXY, rawProxy);
+    Capabilities caps = new ImmutableCapabilities(PROXY, rawProxy);
 
     Proxy proxy = Proxy.extractFrom(caps);
 
@@ -384,11 +380,10 @@ public class ProxyTest {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://www.example.com/config.pac");
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(PROXY, proxy);
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
-    String rawJson = new BeanToJsonConverter().convert(caps);
-    Capabilities converted = new JsonToBeanConverter().convert(Capabilities.class, rawJson);
+    String rawJson = new Json().toJson(caps);
+    Capabilities converted = new Json().toType(rawJson, Capabilities.class);
 
     Object returnedProxy = converted.getCapability(PROXY);
     assertTrue(returnedProxy instanceof Proxy);

@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -64,19 +62,17 @@ module Selenium
         expect(File.read(File.join(unzipped, base_file_name))).to eq(file_content)
       end
 
-      not_compliant_on platform: :windows do
-        it 'follows symlinks when zipping' do
-          filename = create_file
-          File.symlink(filename, File.join(dir_to_zip, 'link'))
+      it 'follows symlinks when zipping', except: {platform: :windows} do
+        filename = create_file
+        File.symlink(filename, File.join(dir_to_zip, 'link'))
 
-          zip_file = File.join(Dir.tmpdir, 'test.zip')
-          File.open(zip_file, 'wb') do |io|
-            io << Base64.decode64(Zipper.zip(dir_to_zip))
-          end
-
-          unzipped = Zipper.unzip(zip_file)
-          expect(File.read(File.join(unzipped, 'link'))).to eq(file_content)
+        zip_file = File.join(Dir.tmpdir, 'test.zip')
+        File.open(zip_file, 'wb') do |io|
+          io << Base64.decode64(Zipper.zip(dir_to_zip))
         end
+
+        unzipped = Zipper.unzip(zip_file)
+        expect(File.read(File.join(unzipped, 'link'))).to eq(file_content)
       end
     end
   end # WebDriver

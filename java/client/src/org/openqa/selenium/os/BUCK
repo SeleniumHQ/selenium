@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_library(
   name = 'os',
   srcs = glob(['*.java']),
@@ -8,7 +9,6 @@ java_library(
     '//java/client/src/org/openqa/selenium/io:io',
     '//third_party/java/commons:commons-exec',
     '//third_party/java/guava:guava',
-    '//third_party/java/jna:jna',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:selenium',

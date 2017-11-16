@@ -17,13 +17,12 @@
 
 'use strict';
 
-const assert = require('../testing/assert');
+const assert = require('assert');
+
 const chrome = require('../chrome');
 const edge = require('../edge');
 const firefox = require('../firefox');
 const ie = require('../ie');
-const opera = require('../opera');
-const phantomjs = require('../phantomjs');
 const safari = require('../safari');
 const test = require('../lib/test');
 const {Browser} = require('../lib/capabilities');
@@ -32,68 +31,41 @@ const {WebDriver} = require('..');
 
 
 test.suite(function(env) {
-  var browsers = env.browsers;
+  const browsers = (...args) => env.browsers(...args);
 
   const BROWSER_MAP = new Map([
     [Browser.CHROME, chrome.Driver],
     [Browser.EDGE, edge.Driver],
     [Browser.FIREFOX, firefox.Driver],
     [Browser.INTERNET_EXPLORER, ie.Driver],
-    [Browser.OPERA, opera.Driver],
-    [Browser.PHANTOM_JS, phantomjs.Driver],
     [Browser.SAFARI, safari.Driver],
   ]);
 
-  if (BROWSER_MAP.has(env.currentBrowser())) {
+  if (BROWSER_MAP.has(env.browser.name)) {
     describe('builder creates thenable driver instances', function() {
       let driver;
 
       after(() => driver && driver.quit());
 
-      it(env.currentBrowser(), function() {
+      it(env.browser.name, function() {
         driver = env.builder().build();
 
-        const want = BROWSER_MAP.get(env.currentBrowser());
-        assert(driver).instanceOf(want,
+        const want = BROWSER_MAP.get(env.browser.name);
+        assert.ok(
+            driver instanceof want,
             `want ${want.name}, but got ${driver.name}`);
-        assert(typeof driver.then).equalTo('function');
+        assert.equal(typeof driver.then, 'function');
 
         return driver
             .then(
-                d => assert(d)
-                    .instanceOf(want, `want ${want.name}, but got ${d.name}`))
+                d =>
+                    assert.ok(
+                        d instanceof want,
+                        `want ${want.name}, but got ${d.name}`))
             // Load something so the safari driver doesn't crash from starting and
             // stopping in short time.
             .then(() => driver.get(Pages.echoPage));
       });
     });
   }
-
-  describe('session management', function() {
-    var driver;
-    test.before(function*() {
-      driver = yield env.builder().build();
-    });
-
-    test.after(function() {
-      return driver.quit();
-    });
-
-    test.it('can connect to an existing session', function*() {
-      yield driver.get(Pages.simpleTestPage);
-      yield assert(driver.getTitle()).equalTo('Hello WebDriver');
-
-      return driver.getSession().then(session1 => {
-        let driver2 = WebDriver.attachToSession(
-            driver.getExecutor(),
-            session1.getId());
-
-        return assert(driver2.getTitle()).equalTo('Hello WebDriver')
-            .then(_ => {
-              let session2Id = driver2.getSession().then(s => s.getId());
-              return assert(session2Id).equalTo(session1.getId());
-            });
-      });
-    });
-  });
 });

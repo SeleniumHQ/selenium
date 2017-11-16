@@ -65,7 +65,7 @@ public class RegistryStateTest {
 
   @Test
   public void sessionIsRemoved() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
 
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
@@ -76,7 +76,7 @@ public class RegistryStateTest {
       newSessionRequest.process();
       TestSession session = newSessionRequest.getSession();
 
-      registry.terminateSynchronousFOR_TEST_ONLY(session);
+      ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
       assertEquals(0, registry.getActiveSessions().size());
     } finally {
       registry.stop();
@@ -85,7 +85,7 @@ public class RegistryStateTest {
 
   @Test(timeout = 5000)
   public void basicChecks() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
@@ -103,7 +103,7 @@ public class RegistryStateTest {
       assertEquals(1, registry.getAllProxies().size());
       assertEquals(1, registry.getUsedProxies().size());
 
-      registry.terminateSynchronousFOR_TEST_ONLY(session);
+      ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
       assertEquals(0, registry.getActiveSessions().size());
       assertEquals(1, registry.getAllProxies().size());
       assertEquals(0, registry.getUsedProxies().size());
@@ -114,7 +114,7 @@ public class RegistryStateTest {
 
   @Test(timeout = 4000)
   public void sessionIsRemoved2() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
@@ -123,7 +123,7 @@ public class RegistryStateTest {
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
       newSessionRequest.process();
       TestSession session = newSessionRequest.getSession();
-      registry.terminateSynchronousFOR_TEST_ONLY(session);
+      ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
       assertEquals(0, registry.getActiveSessions().size());
 
     } finally {
@@ -133,7 +133,7 @@ public class RegistryStateTest {
 
   @Test(timeout = 4000)
   public void sessionByExtKey() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
@@ -148,7 +148,7 @@ public class RegistryStateTest {
       TestSession s = registry.getSession(externalKey);
       assertNotNull(s);
       assertEquals(s, session);
-      registry.terminateSynchronousFOR_TEST_ONLY(session);
+      ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
       assertEquals(0, registry.getActiveSessions().size());
 
       TestSession s2 = registry.getSession(externalKey);
@@ -162,7 +162,7 @@ public class RegistryStateTest {
 
   @Test
   public void sessionByExtKeyNull() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {

@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -93,6 +91,18 @@ module Selenium
 
         def add_preference(name, value)
           prefs[name] = value
+        end
+
+        #
+        # Run Firefox in headless mode.
+        #
+        # @example Enable headless mode
+        #   options = Selenium::WebDriver::Firefox::Options.new
+        #   options.headless!
+        #
+
+        def headless!
+          add_argument '-headless'
         end
 
         #

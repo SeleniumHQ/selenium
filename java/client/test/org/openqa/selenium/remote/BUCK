@@ -1,9 +1,8 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_test(name = 'common-tests',
   srcs = [
-    'BeanToJsonConverterTest.java',
     'DesiredCapabilitiesTest.java',
     'HttpRequest.java',
-    'JsonToBeanConverterTest.java',
     'RemoteCommonTests.java',
     'http/JsonHttpCommandCodecTest.java',
     'http/JsonHttpResponseCodecTest.java',
@@ -40,6 +39,7 @@ java_test(name = 'client-tests',
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/test/org/openqa/selenium:helpers',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
     '//third_party/java/gson:gson',
     '//third_party/java/guava:guava',
     '//third_party/java/hamcrest:hamcrest-library',

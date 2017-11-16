@@ -24,7 +24,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import org.openqa.grid.common.exception.GridException;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 
 import java.io.BufferedReader;
@@ -49,7 +49,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     this(null);
   }
 
-  public ProxyStatusServlet(Registry registry) {
+  public ProxyStatusServlet(GridRegistry registry) {
     super(registry);
   }
 

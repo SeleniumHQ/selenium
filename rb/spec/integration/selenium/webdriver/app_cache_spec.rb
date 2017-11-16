@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,42 +20,40 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     module DriverExtensions
-      compliant_on browser: nil do
-        describe 'HasApplicationCache' do
-          it 'gets the app cache status' do
-            expect(driver.application_cache.status).to eq(:uncached)
+      describe 'HasApplicationCache', pending: 'Not supported in any driver.' do
+        it 'gets the app cache status' do
+          expect(driver.application_cache.status).to eq(:uncached)
 
-            driver.online = false
-            driver.navigate.to url_for('html5Page.html')
+          driver.online = false
+          driver.navigate.to url_for('html5Page.html')
 
-            expect(browser.application_cache.status).to eq(:idle)
-          end
+          expect(browser.application_cache.status).to eq(:idle)
+        end
 
-          it 'loads from cache when offline' do
-            driver.get url_for('html5Page.html')
-            driver.get url_for('formPage.html')
+        it 'loads from cache when offline' do
+          driver.get url_for('html5Page.html')
+          driver.get url_for('formPage.html')
 
-            driver.online = false
+          driver.online = false
 
-            driver.get url_for('html5Page.html')
-            expect(driver.title).to eq('HTML5')
-          end
+          driver.get url_for('html5Page.html')
+          expect(driver.title).to eq('HTML5')
+        end
 
-          it 'gets the app cache entries' do
-            # dependant on spec above?!
+        it 'gets the app cache entries' do
+          # dependant on spec above?!
 
-            driver.get url_for('html5Page')
+          driver.get url_for('html5Page')
 
-            entries = driver.application_cache.to_a
-            expect(entries.size).to be > 2
+          entries = driver.application_cache.to_a
+          expect(entries.size).to be > 2
 
-            entries.each do |e|
-              case e.url
-              when /red\.jpg/
-                expect(e.type.value).to eq(:master)
-              when /yellow\.jpg/
-                expect(e.type.value).to eq(:explicit)
-              end
+          entries.each do |e|
+            case e.url
+            when /red\.jpg/
+              expect(e.type.value).to eq(:master)
+            when /yellow\.jpg/
+              expect(e.type.value).to eq(:explicit)
             end
           end
         end

@@ -68,9 +68,15 @@ public class GridTestHelper {
   }
 
   public static Hub getHub() throws Exception {
-    GridHubConfiguration config = new GridHubConfiguration();
-    config.host = "localhost";
-    config.port = PortProber.findFreePort();
+    return getHub(new GridHubConfiguration(), true);
+  }
+
+  public static Hub getHub(GridHubConfiguration config, boolean dynamicallyAllocatePortOnLocalHost)
+      throws Exception {
+    if (dynamicallyAllocatePortOnLocalHost) {
+      config.host = "localhost";
+      config.port = PortProber.findFreePort();
+    }
     return getHub(config);
   }
 

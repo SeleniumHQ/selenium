@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(name = 'servlet-api',
   maven_coords = 'javax.servlet:javax.servlet-api:jar:3.1.0',
   binary_jar = 'javax.servlet-api-3.1.0.jar',

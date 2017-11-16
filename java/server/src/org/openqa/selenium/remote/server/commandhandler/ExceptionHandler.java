@@ -25,7 +25,7 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -43,7 +43,7 @@ import java.util.stream.Stream;
 public class ExceptionHandler implements CommandHandler {
 
   private final static ErrorCodes ERRORS = new ErrorCodes();
-  private final static BeanToJsonConverter toJson = new BeanToJsonConverter();
+  private final static Json toJson = new Json();
 
   private final Throwable exception;
 
@@ -87,7 +87,7 @@ public class ExceptionHandler implements CommandHandler {
 
     toSerialise.put("value", value);
 
-    byte[] bytes = toJson.convert(toSerialise).getBytes(UTF_8);
+    byte[] bytes = toJson.toJson(toSerialise).getBytes(UTF_8);
     resp.setStatus(HTTP_INTERNAL_ERROR);
 
     resp.setHeader("Content-Type", JSON_UTF_8.toString());

@@ -33,7 +33,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.interactions.PointerInput.Kind;
 import org.openqa.selenium.interactions.PointerInput.Origin;
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.RemoteWebElement;
 
 /**
@@ -53,7 +53,7 @@ public class PointerInputTest {
         Duration.ofMillis(100), Origin.fromElement(element), 0, 0);
     Sequence sequence = new Sequence(move.getSource(), 0).addAction(move);
 
-    String rawJson = new BeanToJsonConverter().convert(sequence);
+    String rawJson = new Json().toJson(sequence);
     ActionSequenceJson json = new Gson().fromJson(rawJson, ActionSequenceJson.class);
 
     assertEquals(json.actions.size(), 1);

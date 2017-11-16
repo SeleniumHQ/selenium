@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote;
 
 import static org.junit.Assert.assertEquals;
@@ -130,7 +129,8 @@ public class DesiredCapabilitiesTest {
     }};
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
-    assertEquals(caps.toString().length(), 53);
+    String expected = "key: " + createString(27) + "...";
+    assertTrue(caps.toString(), caps.toString().contains(expected));
   }
 
   @Test
@@ -142,7 +142,8 @@ public class DesiredCapabilitiesTest {
     }};
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
-    assertEquals(caps.toString().length(), 62);
+    String expected = "{subkey: " + createString(27) + "..." + "}";
+    assertTrue(caps.toString(), caps.toString().contains(expected));
   }
 
   @Test

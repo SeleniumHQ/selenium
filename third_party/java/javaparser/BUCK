@@ -1,0 +1,11 @@
+# BUILD FILE SYNTAX: SKYLARK
+prebuilt_jar(
+  name = 'javaparser-core',
+  maven_coords = 'com.github.javaparser:javaparser-core:jar:3.4.0',
+  binary_jar = 'javaparser-core-3.4.0.jar',
+  source_jar = 'javaparser-core-3.4.0-sources.jar',
+  visibility = [
+    '//java/client/src/org/openqa/selenium/tools:',
+  ],
+)
+

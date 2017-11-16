@@ -38,8 +38,10 @@ try:
 except ImportError:  # 3+
     from io import BytesIO as IOStream
 
-getAttribute_js = pkgutil.get_data(__package__, 'getAttribute.js').decode('utf8')
-isDisplayed_js = pkgutil.get_data(__package__, 'isDisplayed.js').decode('utf8')
+# not relying on __package__ here as it can be `None` in some situations (see #4558)
+_pkg = '.'.join(__name__.split('.')[:-1])
+getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
+isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
 class WebElement(object):

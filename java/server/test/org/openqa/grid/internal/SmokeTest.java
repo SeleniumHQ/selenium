@@ -33,7 +33,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class SmokeTest {
-  private Registry registry;
+  private GridRegistry registry;
 
   private Map<String, Object> ie = new HashMap<>();
   private Map<String, Object> ff = new HashMap<>();
@@ -47,7 +47,7 @@ public class SmokeTest {
    */
   @Before
   public void setup() throws Exception {
-    registry = Registry.newInstance();
+    registry = DefaultGridRegistry.newInstance();
     ie.put(CapabilityType.APPLICATION_NAME, "IE");
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
 

@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'annotations',
   srcs = [
     'Driver.java',

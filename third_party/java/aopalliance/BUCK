@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'aopalliance',
   maven_coords = 'aopalliance:aopalliance:jar:1.0',

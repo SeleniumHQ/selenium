@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -82,7 +80,7 @@ module Selenium
         end
 
         it 'deprecates `service_log_path`' do
-          message = /\[DEPRECATION\] `:service_log_path` is deprecated. Use `driver_opts: {log_path: \/path\/to\/log}`/
+          message = %r{\[DEPRECATION\] `:service_log_path` is deprecated. Use `driver_opts: {log_path: \/path\/to\/log}`}
 
           expect(WebDriver.logger).to receive(:deprecate).with(':service_log_path', "driver_opts: {log_path: '/path/to/log'}")
           @driver = Driver.new(http_client: http, service_log_path: "/path/to/log")

@@ -91,7 +91,6 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Edge, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Firefox, "Not implemented in driver")]
@@ -117,7 +116,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Edge, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Firefox, "Not implemented in driver")]

@@ -130,20 +130,20 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
                      const std::string& criteria,
                      Json::Value* found_elements) const;
 
-  int implicit_wait_timeout(void) const { 
+  unsigned long long implicit_wait_timeout(void) const {
     return this->implicit_wait_timeout_; 
   }
-  void set_implicit_wait_timeout(const int timeout) { 
+  void set_implicit_wait_timeout(const unsigned long long timeout) {
     this->implicit_wait_timeout_ = timeout; 
   }
 
-  int async_script_timeout(void) const { return this->async_script_timeout_;  }
-  void set_async_script_timeout(const int timeout) {
+  unsigned long long  async_script_timeout(void) const { return this->async_script_timeout_;  }
+  void set_async_script_timeout(const unsigned long long timeout) {
     this->async_script_timeout_ = timeout;
   }
 
-  int page_load_timeout(void) const { return this->page_load_timeout_;  }
-  void set_page_load_timeout(const int timeout) {
+  unsigned long long page_load_timeout(void) const { return this->page_load_timeout_;  }
+  void set_page_load_timeout(const unsigned long long timeout) {
     this->page_load_timeout_ = timeout;
   }
 
@@ -220,9 +220,9 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   ElementFinder* element_finder_;
 
-  int implicit_wait_timeout_;
-  int async_script_timeout_;
-  int page_load_timeout_;
+  unsigned long long implicit_wait_timeout_;
+  unsigned long long  async_script_timeout_;
+  unsigned long long  page_load_timeout_;
   clock_t wait_timeout_;
 
   std::string session_id_;

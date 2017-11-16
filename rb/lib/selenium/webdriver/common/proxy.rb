@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -39,7 +37,7 @@ module Selenium
                  socks_username: 'socksUsername',
                  socks_password: 'socksPassword'}.freeze
 
-      ALLOWED.keys.each { |t| attr_reader t }
+      ALLOWED.each_key { |t| attr_reader t }
 
       def self.json_create(data)
         data['proxyType'] = data['proxyType'].downcase.to_sym

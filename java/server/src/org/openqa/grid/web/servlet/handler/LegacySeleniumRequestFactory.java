@@ -17,12 +17,12 @@
 
 package org.openqa.grid.web.servlet.handler;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class LegacySeleniumRequestFactory implements SeleniumBasedRequestFactory {
-  public SeleniumBasedRequest createFromRequest(HttpServletRequest request, Registry registry) {
+  public SeleniumBasedRequest createFromRequest(HttpServletRequest request, GridRegistry registry) {
     if (! "/selenium-server/driver".equals(request.getServletPath())) {
       return null;
     }

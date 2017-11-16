@@ -1,96 +1,48 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7091550C-32F3-419D-A79F-99C787E33543}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WebDriver.Support.Tests</RootNamespace>
+    <TargetFrameworks>net45;netcoreapp2.0</TargetFrameworks>
     <AssemblyName>WebDriver.Support.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\..\build\cli\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  
   <ItemGroup>
-    <Reference Include="NMock2, Version=2.0.0.44, Culture=neutral, PublicKeyToken=37d3be0adc87c2b7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\third_party\dotnet\nmock-2.0.0.44\NMock2.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.6.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\third_party\dotnet\nunit-3.6.0\net-4.5\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Events\EventFiringWebDriverTest.cs" />
-    <Compile Include="Extensions\ExecuteJavaScriptTest.cs" />
-    <Compile Include="PageObjects\ByAllTests.cs" />
-    <Compile Include="PageObjects\ByChainedBrowserTests.cs" />
-    <Compile Include="PageObjects\ByChainedTests.cs" />
-    <Compile Include="PageObjects\FindsByAttributeTests.cs" />
-    <Compile Include="PageObjects\IAllDriver.cs" />
-    <Compile Include="PageObjects\PageFactoryBrowserTest.cs" />
-    <Compile Include="PageObjects\PageFactoryTest.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\DefaultWaitTest.cs" />
-    <Compile Include="UI\FakeClock.cs" />
-    <Compile Include="UI\LoadableComponentTests.cs" />
-    <Compile Include="UI\PopupWindowFinderTest.cs" />
-    <Compile Include="UI\SelectBrowserTests.cs" />
-    <Compile Include="UI\SelectTests.cs" />
-    <Compile Include="UI\SlowLoadableComponentTest.cs" />
-    <Compile Include="UI\WebDriverWaitTest.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="WebDriver.Support.Tests.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="WebDriver.Support.Tests.nunit">
+    <None Remove="build.desc" />
+    <None Remove="Settings.StyleCop" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NMock3" Version="3.5.44" />
+    <PackageReference Include="NUnit" Version="3.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\webdriver\WebDriver.csproj" />
+    <ProjectReference Include="..\..\src\support\WebDriver.Support.csproj" />
+    <ProjectReference Include="..\common\WebDriver.Common.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="WebDriver.Support.Tests.nunit">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\support\WebDriver.Support.csproj">
-      <Project>{3568c959-d714-46c7-b2fe-97ba9482e1e0}</Project>
-      <Name>WebDriver.Support</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\webdriver\WebDriver.csproj">
-      <Project>{ea31f748-5e32-476d-ab6d-fea245b4af1e}</Project>
-      <Name>WebDriver</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\common\WebDriver.Common.Tests.csproj">
-      <Project>{2967ba10-6b5a-4321-bb56-6c2aac72d4c9}</Project>
-      <Name>WebDriver.Common.Tests</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

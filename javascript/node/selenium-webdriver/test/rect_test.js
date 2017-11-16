@@ -27,15 +27,15 @@ test.suite(function(env) {
     let driver;
     let el;
 
-    test.before(function*() {
-      driver = yield env.builder().build();
-      yield driver.get(
+    before(async function() {
+      driver = await env.builder().build();
+      await driver.get(
             'data:text/html,<!DOCTYPE html><style>'
                 + '*{padding:0; margin:0}'
                 + 'div{position: absolute; top: 50px; left: 50px;'
                 + 'height: 50px;width:50px;background: green;}'
                 + '</style><div>Hello</div>');
-      el = yield driver.findElement(By.css('div'));
+      el = await driver.findElement(By.css('div'));
     });
 
     after(function() {
@@ -44,14 +44,14 @@ test.suite(function(env) {
       }
     });
 
-    test.it('WebElement.getLocation()', function*() {
-      let location = yield el.getLocation();
+    it('WebElement.getLocation()', async function() {
+      let location = await el.getLocation();
       assert.equal(location.x, 50);
       assert.equal(location.y, 50);
     });
 
-    test.it('WebElement.getSize()', function*() {
-      let size = yield el.getSize();
+    it('WebElement.getSize()', async function() {
+      let size = await el.getSize();
       assert.equal(size.width, 50);
       assert.equal(size.height, 50);
     });

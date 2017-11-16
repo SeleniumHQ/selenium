@@ -1,0 +1,20 @@
+This package contains the following components:
+
+NUnit.ConsoleRunner - 3.7.0
+Console runner for the NUnit 3 unit-testing framework, without any extensions.
+
+NUnit.Extension.NUnitProjectLoader - 3.5.0
+NUnit Engine extension for loading NUnit projects.
+
+NUnit.Extension.NUnitV2Driver - 3.6.0
+NUnit Engine extension allowing execution of tests using NUnit 2.x.
+
+NUnit.Extension.NUnitV2ResultWriter - 3.5.0
+NUnit Engine extension for writing test result files in NUnit V2 format.
+
+NUnit.Extension.TeamCityEventListener - 1.0.2
+NUnit Team City Event Listener extension for TeamCity.
+
+NUnit.Extension.VSProjectLoader - 3.5.0
+NUnit Engine extension for loading Visual Studio formatted projects.
+

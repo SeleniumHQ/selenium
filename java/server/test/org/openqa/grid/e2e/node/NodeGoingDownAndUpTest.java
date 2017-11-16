@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
@@ -39,7 +39,7 @@ import org.openqa.selenium.support.ui.Wait;
 public class NodeGoingDownAndUpTest {
 
   private Hub hub;
-  private Registry registry;
+  private GridRegistry registry;
   private SelfRegisteringRemote remote;
   private Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
 

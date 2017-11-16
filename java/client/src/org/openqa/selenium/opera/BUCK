@@ -1,14 +1,15 @@
-include_defs('//SELENIUM_VERSION')
+# BUILD FILE SYNTAX: SKYLARK
+load("//:selenium-version.bzl", "SE_VERSION")
 
 java_library(
   name = 'opera',
   maven_coords = 'org.seleniumhq.selenium:selenium-opera-driver:' + SE_VERSION,
   maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(['*.java']),
-  deps = [
-    '//java/client/src/org/openqa/selenium:selenium',
+  exported_deps = [
     '//java/client/src/org/openqa/selenium/remote:remote',
-    '//third_party/java/gson:gson',
+  ],
+  deps = [
     '//third_party/java/guava:guava',
   ],
   visibility = [ 'PUBLIC' ],

@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'ant',
   maven_coords = 'org.apache.ant:ant:jar:1.9.6',

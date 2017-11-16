@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/common/w3c_error'
 require 'selenium/webdriver/common/error'
 require 'selenium/webdriver/common/platform'
 require 'selenium/webdriver/common/proxy'

@@ -44,6 +44,7 @@ drivers = (
     'PhantomJS',
     'Remote',
     'Safari',
+    'WebKitGTK',
 )
 
 

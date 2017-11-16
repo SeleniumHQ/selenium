@@ -48,6 +48,8 @@ namespace OpenQA.Selenium.Firefox
     /// </example>
     public class FirefoxOptions : DriverOptions
     {
+        private const string BrowserNameValue = "firefox";
+
         private const string IsMarionetteCapability = "marionette";
         private const string FirefoxLegacyProfileCapability = "firefox_profile";
         private const string FirefoxLegacyBinaryCapability = "firefox_binary";
@@ -62,7 +64,6 @@ namespace OpenQA.Selenium.Firefox
         private string browserBinaryLocation;
         private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel.Default;
         private FirefoxProfile profile;
-        private Proxy proxy;
         private List<string> firefoxArguments = new List<string>();
         private Dictionary<string, object> profilePreferences = new Dictionary<string, object>();
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
@@ -74,6 +75,20 @@ namespace OpenQA.Selenium.Firefox
         public FirefoxOptions()
             : base()
         {
+            this.BrowserName = BrowserNameValue;
+            /*capabilityName == IsMarionetteCapability ||
+                            capabilityName == FirefoxLegacyProfileCapability ||
+                            capabilityName == FirefoxLegacyBinaryCapability ||
+                            capabilityName == FirefoxOptionsCapability)*/
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxOptionsCapability, "current FirefoxOptions class instance");
+            this.AddKnownCapabilityName(FirefoxOptions.IsMarionetteCapability, "UseLegacyImplementation property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxProfileCapability, "Profile property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxBinaryCapability, "BrowserExecutableLocation property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxArgumentsCapability, "AddArguments method");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxPrefsCapability, "SetPreference method");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxLogCapability, "LogLevel property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyProfileCapability, "Profile property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyBinaryCapability, "BrowserExecutableLocation property");
         }
 
         /// <summary>
@@ -83,6 +98,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="binary">The <see cref="FirefoxBinary"/> to use in the options.</param>
         internal FirefoxOptions(FirefoxProfile profile, FirefoxBinary binary)
         {
+            this.BrowserName = BrowserNameValue;
             if (profile != null)
             {
                 this.profile = profile;
@@ -119,15 +135,6 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.browserBinaryLocation; }
             set { this.browserBinaryLocation = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="Proxy"/> to be used with Firefox.
-        /// </summary>
-        public Proxy Proxy
-        {
-            get { return this.proxy; }
-            set { this.proxy = value; }
         }
 
         /// <summary>
@@ -277,18 +284,10 @@ namespace OpenQA.Selenium.Firefox
         /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
         public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
-            if (capabilityName == IsMarionetteCapability ||
-                capabilityName == FirefoxProfileCapability ||
-                capabilityName == FirefoxBinaryCapability ||
-                capabilityName == CapabilityType.Proxy ||
-                capabilityName == FirefoxLegacyProfileCapability ||
-                capabilityName == FirefoxLegacyBinaryCapability ||
-                capabilityName == FirefoxArgumentsCapability ||
-                capabilityName == FirefoxLogCapability ||
-                capabilityName == FirefoxPrefsCapability ||
-                capabilityName == FirefoxOptionsCapability)
+            if (this.IsKnownCapabilityName(capabilityName))
             {
-                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
+                string typeSafeOptionName = this.GetTypeSafeOptionName(capabilityName);
+                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
                 throw new ArgumentException(message, "capabilityName");
             }
 
@@ -315,29 +314,19 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>The DesiredCapabilities for Firefox with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = DesiredCapabilities.Firefox();
+            DesiredCapabilities capabilities = GenerateDesiredCapabilities(this.isMarionette);
             if (this.isMarionette)
             {
-                if (this.proxy != null)
-                {
-                    Dictionary<string, object> proxyCapabiity = this.proxy.ToCapability();
-                    if (proxyCapabiity != null)
-                    {
-                        capabilities.SetCapability(CapabilityType.Proxy, proxyCapabiity);
-                    }
-                }
-
                 Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
                 capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
             }
             else
             {
-                capabilities.SetCapability(IsMarionetteCapability, this.isMarionette);
                 if (this.profile != null)
                 {
-                    if (this.proxy != null)
+                    if (this.Proxy != null)
                     {
-                        this.profile.InternalSetProxyPreferences(this.proxy);
+                        this.profile.InternalSetProxyPreferences(this.Proxy);
                     }
 
                     capabilities.SetCapability(FirefoxProfileCapability, this.profile.ToBase64String());

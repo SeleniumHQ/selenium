@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.logging;
 
+import org.openqa.selenium.Beta;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -84,7 +86,8 @@ public class LogEntry {
                          DATE_FORMAT.get().format(new Date(timestamp)), level, message);
   }
 
-  public Map<String, Object> toMap() {
+  @Beta
+  public Map<String, Object> toJson() {
     Map<String, Object> map = new HashMap<>();
     map.put("timestamp", timestamp);
     map.put("level", level);

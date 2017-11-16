@@ -15,16 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.grid.web.servlet.handler;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.server.NewSessionPayload;
+import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -35,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class WebDriverRequest extends SeleniumBasedRequest {
 
-  public WebDriverRequest(HttpServletRequest httpServletRequest, Registry registry) {
+  public WebDriverRequest(HttpServletRequest httpServletRequest, GridRegistry registry) {
     super(httpServletRequest, registry);
   }
 
@@ -66,7 +63,7 @@ public class WebDriverRequest extends SeleniumBasedRequest {
     String json = getBody();
 
     try (Reader in = new StringReader(json);
-         NewSessionPayload payload = new NewSessionPayload(json.getBytes(UTF_8).length, in)) {
+         NewSessionPayload payload = NewSessionPayload.create(in)) {
       Capabilities caps = payload.stream()
           .findFirst()
           .orElseThrow(() -> new GridException("No capabilities found in request: " + json));

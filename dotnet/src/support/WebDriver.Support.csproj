@@ -1,95 +1,83 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3568C959-D714-46C7-B2FE-97BA9482E1E0}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
+    <TargetFrameworks>net45;net40;net35;netstandard2.0</TargetFrameworks>
     <AssemblyName>WebDriver.Support</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
+    <BuildSystem>visual-studio</BuildSystem>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\build\cli\Debug\WebDriver.Support.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>WebDriver.Support.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\..\build\cli\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\build\cli\Release\WebDriver.Support.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>WebDriver.Support.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <FrameworkPathOverride Condition="'$(TargetFramework)'=='net35'">C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
+    <AssemblyTitle>Selenium WebDriver Support</AssemblyTitle>
+    <Description>Selenium WebDriver .NET Bindings support classes</Description>
+    <Company>Selenium Committers</Company>
+    <Copyright>Copyright © Software Freedom Conservancy 2017</Copyright>
+    <Product>Selenium</Product>
+    <Version>3</Version>
+    <PackageId>Selenium.Support</PackageId>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net35\WebDriver.Support.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net35|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net35\WebDriver.Support.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net40\WebDriver.Support.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net40\WebDriver.Support.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net45\WebDriver.Support.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net45\WebDriver.Support.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.0\WebDriver.Support.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.0\WebDriver.Support.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Events\EventFiringWebDriver.cs" />
-    <Compile Include="Events\FindElementEventArgs.cs" />
-    <Compile Include="Events\WebDriverExceptionEventArgs.cs" />
-    <Compile Include="Events\WebDriverNavigationEventArgs.cs" />
-    <Compile Include="Events\WebDriverScriptEventArgs.cs" />
-    <Compile Include="Events\WebElementEventArgs.cs" />
-    <Compile Include="Extensions\WebDriverExtensions.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="PageObjects\ByAll.cs" />
-    <Compile Include="PageObjects\ByChained.cs" />
-    <Compile Include="PageObjects\ByFactory.cs" />
-    <Compile Include="PageObjects\ByIdOrName.cs" />
-    <Compile Include="PageObjects\CacheLookupAttribute.cs" />
-    <Compile Include="PageObjects\DefaultElementLocator.cs" />
-    <Compile Include="PageObjects\DefaultPageObjectMemberDecorator.cs" />
-    <Compile Include="PageObjects\FindsByAllAttribute.cs" />
-    <Compile Include="PageObjects\FindsByAttribute.cs" />
-    <Compile Include="PageObjects\FindsBySequenceAttribute.cs" />
-    <Compile Include="PageObjects\How.cs" />
-    <Compile Include="PageObjects\IElementLocator.cs" />
-    <Compile Include="PageObjects\IPageObjectMemberDecorator.cs" />
-    <Compile Include="PageObjects\PageFactory.cs" />
-    <Compile Include="PageObjects\RetryingElementLocator.cs" />
-    <Compile Include="PageObjects\WebDriverObjectProxy.cs" />
-    <Compile Include="PageObjects\WebElementListProxy.cs" />
-    <Compile Include="PageObjects\WebElementProxy.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\ExpectedConditions.cs" />
-    <Compile Include="UI\ILoadableComponent.cs" />
-    <Compile Include="UI\LoadableComponentException.cs" />
-    <Compile Include="UI\LoadableComponent{T}.cs" />
-    <Compile Include="UI\PopupWindowFinder.cs" />
-    <Compile Include="UI\SelectElement.cs" />
-    <Compile Include="UI\SlowLoadableComponent{T}.cs" />
-    <Compile Include="UI\UnexpectedTagNameException.cs" />
+    <None Remove="build.desc" />
+    <None Remove="Settings.StyleCop" />
+    <None Remove="WebDriver.Support.ruleset" />
   </ItemGroup>
+
   <ItemGroup>
-    <Analyzer Include="..\..\..\third_party\dotnet\stylecop\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\..\..\third_party\dotnet\stylecop\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+    <ProjectReference Include="..\webdriver\WebDriver.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\webdriver\WebDriver.csproj">
-      <Project>{ea31f748-5e32-476d-ab6d-fea245b4af1e}</Project>
-      <Name>WebDriver</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

@@ -24,8 +24,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.DefaultGridRegistry;
 import org.openqa.grid.internal.DetachedRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -43,7 +44,7 @@ public class RegistrationListenerTest {
 
   private class MyRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
 
-    public MyRemoteProxy(RegistrationRequest request, Registry registry) {
+    public MyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -71,7 +72,7 @@ public class RegistrationListenerTest {
 
   @Test(timeout = 5000)
   public void testRegistration() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     registry.add(new MyRemoteProxy(req, registry));
 
     RequestHandler request = GridHelper.createNewSessionHandler(registry, app1);
@@ -91,7 +92,7 @@ public class RegistrationListenerTest {
    */
   private class MyBuggyRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
 
-    public MyBuggyRemoteProxy(RegistrationRequest request, Registry registry) {
+    public MyBuggyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -110,7 +111,7 @@ public class RegistrationListenerTest {
    */
   @Test
   public void testBugRegistration() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     registry.add(new MyBuggyRemoteProxy(req, registry));
     registry.add(new MyBuggyRemoteProxy(req, registry));
 
@@ -121,7 +122,7 @@ public class RegistrationListenerTest {
 
   private class MySlowRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
 
-    public MySlowRemoteProxy(RegistrationRequest request, Registry registry) {
+    public MySlowRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -143,7 +144,7 @@ public class RegistrationListenerTest {
    */
   @Test(timeout = 2000)
   public void registerSomeSlow() {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     try {
       registry.add(new DetachedRemoteProxy(req, registry));
       new Thread(new Runnable() { // Thread safety reviewed

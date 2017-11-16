@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>$packageid$</id>
+    <version>$version$</version>
+    <authors>Selenium Committers</authors>
+    <copyright>Copyright © 2017 Software Freedom Conservancy</copyright>
+    <owners>selenium</owners>
+    <title>Selenium WebDriver</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>.NET bindings for the Selenium WebDriver API</summary>
+    <description>
+      Selenium is a set of different software tools each with a different approach
+      to supporting browser automation. These tools are highly flexible, allowing
+      many options for locating and manipulating elements within a browser, and one
+      of its key features is the support for automating multiple browser platforms.
+      This package contains the .NET bindings for the concise and object-based
+      Selenium WebDriver API, which uses native OS-level events to manipulate the
+      browser, bypassing the JavaScript sandbox, and does not require the Selenium
+      Server to automate the browser.
+    </description>
+    <projectUrl>https://www.seleniumhq.org</projectUrl>
+    <repository url="https://github.com/SeleniumHQ/selenium" />
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <iconUrl>http://seleniumhq.org/images/big-logo.png</iconUrl>
+    <tags>selenium webdriver browser automation</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework3.5" />
+      <group targetFramework=".NETFramework4.0" />
+      <group targetFramework=".NETFramework4.5" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Newtonsoft.Json" version="10.0.3" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Drawing" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="**" target="lib" />
+  </files>
+</package>

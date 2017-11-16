@@ -26,8 +26,7 @@ Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer, Phan
 Supported Python Versions
 =========================
 
-* Python 2.6, 2.7
-* Python 3.3+
+* Python 2.7, 3.4+
 
 Installing
 ==========
@@ -36,11 +35,11 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-3.5.0.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-3.7.0.tar.gz), unarchive it, and run::
 
     python setup.py install
 
-Note: both of the methods described above install `selenium` as a system-wide package  That will require administrative/root access to their machine.  You may consider using a `virtualenv <http://www.virtualenv.org/>`_ to create isolated Python environments instead.
+Note: You may want to consider using `virtualenv <http://www.virtualenv.org/>`_ to create isolated Python environments.
 
 Drivers
 =======
@@ -68,7 +67,7 @@ Example 0:
 * open a new Firefox browser
 * load the page at the given URL
 
-::
+.. code-block:: python
 
     from selenium import webdriver
 
@@ -83,7 +82,7 @@ Example 1:
 * search for "seleniumhq"
 * close the browser
 
-::
+.. code-block:: python
 
     from selenium import webdriver
     from selenium.webdriver.common.keys import Keys
@@ -91,7 +90,7 @@ Example 1:
     browser = webdriver.Firefox()
 
     browser.get('http://www.yahoo.com')
-    assert 'Yahoo!' in browser.title
+    assert 'Yahoo' in browser.title
 
     elem = browser.find_element_by_name('p')  # Find the search box
     elem.send_keys('seleniumhq' + Keys.RETURN)
@@ -103,9 +102,10 @@ Example 2:
 
 Selenium WebDriver is often used as a basis for testing web applications.  Here is a simple example uisng Python's standard `unittest <http://docs.python.org/3/library/unittest.html>`_ library:
 
-::
+.. code-block:: python
 
     import unittest
+    from selenium import webdriver
 
     class GoogleTestCase(unittest.TestCase):
 
@@ -127,11 +127,11 @@ For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
 However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
 
-Download the server separately, from: http://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.0.jar
+Download the server separately, from: http://selenium-release.storage.googleapis.com/3.7/selenium-server-standalone-3.7.0.jar
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-3.5.0.jar
+    java -jar selenium-server-standalone-3.7.0.jar
 
 Then run your Python client scripts.
 

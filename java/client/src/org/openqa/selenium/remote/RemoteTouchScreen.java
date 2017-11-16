@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import com.google.common.collect.Maps;
+
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
@@ -32,7 +34,7 @@ public class RemoteTouchScreen implements TouchScreen {
   }
 
   public void singleTap(Coordinates where) {
-    Map<String, Object> singleTapParams = CoordinatesUtils.paramsFromCoordinates(where);
+    Map<String, Object> singleTapParams = paramsFromCoordinates(where);
     executeMethod.execute(DriverCommand.TOUCH_SINGLE_TAP, singleTapParams);
   }
 
@@ -58,19 +60,19 @@ public class RemoteTouchScreen implements TouchScreen {
   }
 
   public void scroll(Coordinates where, int xOffset, int yOffset) {
-    Map<String, Object> scrollParams = CoordinatesUtils.paramsFromCoordinates(where);
+    Map<String, Object> scrollParams = paramsFromCoordinates(where);
     scrollParams.put("xoffset", xOffset);
     scrollParams.put("yoffset", yOffset);
     executeMethod.execute(DriverCommand.TOUCH_SCROLL, scrollParams);
   }
 
   public void doubleTap(Coordinates where) {
-    Map<String, Object> doubleTapParams = CoordinatesUtils.paramsFromCoordinates(where);
+    Map<String, Object> doubleTapParams = paramsFromCoordinates(where);
     executeMethod.execute(DriverCommand.TOUCH_DOUBLE_TAP, doubleTapParams);
   }
 
   public void longPress(Coordinates where) {
-    Map<String, Object> longPressParams = CoordinatesUtils.paramsFromCoordinates(where);
+    Map<String, Object> longPressParams = paramsFromCoordinates(where);
     executeMethod.execute(DriverCommand.TOUCH_LONG_PRESS, longPressParams);
   }
 
@@ -89,10 +91,21 @@ public class RemoteTouchScreen implements TouchScreen {
   }
 
   public void flick(Coordinates where, int xOffset, int yOffset, int speed) {
-    Map<String, Object> flickParams = CoordinatesUtils.paramsFromCoordinates(where);
+    Map<String, Object> flickParams = paramsFromCoordinates(where);
     flickParams.put("xoffset", xOffset);
     flickParams.put("yoffset", yOffset);
     flickParams.put("speed", speed);
     executeMethod.execute(DriverCommand.TOUCH_FLICK, flickParams);
+  }
+
+  private static Map<String, Object> paramsFromCoordinates(Coordinates where) {
+    Map<String, Object> params = Maps.newHashMap();
+
+    if (where != null) {
+      String id = (String) where.getAuxiliary();
+      params.put("element", id);
+    }
+
+    return params;
   }
 }

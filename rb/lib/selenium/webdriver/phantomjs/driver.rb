@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -30,6 +28,8 @@ module Selenium
         include DriverExtensions::TakesScreenshot
 
         def initialize(opts = {})
+          WebDriver.logger.deprecate 'Selenium support for PhantomJS', 'headless Chrome/Firefox or HTMLUnit'
+
           opts[:desired_capabilities] ||= Remote::Capabilities.phantomjs
 
           unless opts.key?(:url)

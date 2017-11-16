@@ -71,4 +71,8 @@ public class LogEntries implements Iterable<LogEntry> {
     return entries.iterator();
   }
 
+  @Beta
+  public List<LogEntry> toJson() {
+    return getAll();
+  }
 }

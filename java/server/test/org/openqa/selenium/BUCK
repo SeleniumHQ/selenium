@@ -1,3 +1,5 @@
+# BUILD FILE SYNTAX: SKYLARK
+
 java_binary(
   name = 'server-with-tests',
   main_class = 'org.openqa.selenium.Main',

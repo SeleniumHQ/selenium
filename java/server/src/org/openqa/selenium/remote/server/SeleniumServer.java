@@ -17,9 +17,14 @@
 
 package org.openqa.selenium.remote.server;
 
+import static org.openqa.selenium.remote.server.WebDriverServlet.NEW_SESSION_PIPELINE_KEY;
+
 import com.beust.jcommander.JCommander;
 
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
+import org.openqa.grid.selenium.node.ChromeMutator;
+import org.openqa.grid.selenium.node.FirefoxMutator;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
@@ -134,6 +139,10 @@ public class SeleniumServer implements GridNodeServer {
         new DefaultDriverFactory(Platform.getCurrent()),
         TimeUnit.SECONDS.toMillis(inactiveSessionTimeoutSeconds));
     handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
+
+    NewSessionPipeline pipeline = createPipeline(configuration);
+    handler.setAttribute(NEW_SESSION_PIPELINE_KEY, pipeline);
+
     handler.setContextPath("/");
     if (configuration.enablePassThrough) {
       LOG.info("Using the passthrough mode handler");
@@ -183,16 +192,19 @@ public class SeleniumServer implements GridNodeServer {
     }
   }
 
-  private class ShutDownHook implements Runnable {
-    private final SeleniumServer selenium;
+  private NewSessionPipeline createPipeline(StandaloneConfiguration configuration) {
+    NewSessionPipeline.Builder builder = DefaultPipeline.createPipelineWithDefaultFallbacks();
 
-    ShutDownHook(SeleniumServer selenium) {
-      this.selenium = selenium;
+    if (configuration instanceof GridNodeConfiguration) {
+      ((GridNodeConfiguration) configuration).capabilities.forEach(
+          caps -> {
+            builder.addCapabilitiesMutator(new ChromeMutator(caps));
+            builder.addCapabilitiesMutator(new FirefoxMutator(caps));
+          }
+      );
     }
 
-    public void run() {
-      selenium.stop();
-    }
+    return builder.create();
   }
 
   /**

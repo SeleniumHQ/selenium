@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,33 +20,15 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      compliant_on browser: :ff_esr do
-        describe Driver do
-          describe '.new' do
-            before do
-              @opt = {}
-              @opt[:url] = GlobalTestEnv.remote_server.webdriver_url if GlobalTestEnv.driver == :remote
-            end
+      describe Driver, only: {browser: :ff_esr} do
+        it 'takes a Firefox::Profile instance as argument', except: {driver: :remote} do
+          profile = Selenium::WebDriver::Firefox::Profile.new
 
-            not_compliant_on driver: :remote do
-              it 'takes a Firefox::Profile instance as argument' do
-                begin
-                  @opt[:desired_capabilities] = Remote::Capabilities.firefox(marionette: false)
-                  profile = Selenium::WebDriver::Firefox::Profile.new
-                  @opt[:profile] = profile
-                  driver2 = Selenium::WebDriver.for :firefox, @opt
-
-                  stored_profile = driver2.instance_variable_get('@launcher')
-                                          .instance_variable_get('@profile')
-                  expect(stored_profile).to be == profile
-                ensure
-                  driver2.quit if driver2
-                end
-              end
-            end
+          create_driver!(profile: profile) do |driver|
+            stored_profile = driver.instance_variable_get('@launcher')
+                                   .instance_variable_get('@profile')
+            expect(stored_profile).to be == profile
           end
-
-          it_behaves_like 'driver that can be started concurrently', :ff_esr
         end
       end
     end # Firefox

@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,43 +19,47 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    compliant_on driver: :ff_nightly do
-      describe W3CActionBuilder do
-        describe 'Key actions' do
-          it 'can release pressed keys via release action' do
-            driver.navigate.to url_for('javascriptPage.html')
+    describe W3CActionBuilder, only: {browser: %i[firefox ie]} do
+      after do
+        if driver.action.respond_to?(:clear_all_actions)
+          driver.action.clear_all_actions
+        else
+          driver.action.instance_variable_set(:@actions, [])
+        end
+      end
 
-            event_input = driver.find_element(id: 'theworks')
-            keylogger = driver.find_element(id: 'result')
+      describe 'Key actions' do
+        it 'can release pressed keys via release action' do
+          driver.navigate.to url_for('javascriptPage.html')
 
-            event_input.click
+          event_input = driver.find_element(id: 'theworks')
+          keylogger = driver.find_element(id: 'result')
 
-            driver.action.key_down(:shift).perform
-            wait.until { keylogger.text.include? 'down' }
-            expect(keylogger.text).to match(/keydown *$/)
+          event_input.click
 
-            driver.action.release_actions
-            wait.until { keylogger.text.include? 'up' }
-            expect(keylogger.text).to match(/keyup *$/)
-          end
-        end # Key actions
+          driver.action.key_down(:shift).perform
+          wait.until { keylogger.text.include? 'down' }
+          expect(keylogger.text).to match(/keydown *$/)
 
-        describe 'Pointer actions' do
-          not_compliant_on driver: :ff_nightly do
-            it 'can release pressed buttons via release action' do
-              driver.navigate.to url_for('javascriptPage.html')
+          driver.action.release_actions
+          wait.until { keylogger.text.include? 'up' }
+          expect(keylogger.text).to match(/keyup *$/)
+        end
+      end # Key actions
 
-              event_input = driver.find_element(id: 'clickField')
+      describe 'Pointer actions' do
+        it 'can release pressed buttons via release action', except: {browser: :ie} do
+          driver.navigate.to url_for('javascriptPage.html')
 
-              driver.action.pointer_down(event_input).perform
-              expect(event_input.attribute(:value)).to eq('Hello')
+          event_input = driver.find_element(id: 'clickField')
 
-              driver.action.release_actions
-              expect(event_input.attribute(:value)).to eq('Clicked')
-            end
-          end # Guard
-        end # Pointer actions
-      end # ActionBuilder
-    end # Guard
+          driver.action.move_to(event_input).pointer_down(:left).perform
+          expect(event_input.attribute(:value)).to eq('Hello')
+
+          driver.action.release_actions
+          expect(event_input.attribute(:value)).to eq('Clicked')
+        end
+      end
+    end # W3CActionBuilder
   end # WebDriver
 end # Selenium

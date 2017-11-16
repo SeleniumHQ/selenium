@@ -34,9 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
@@ -113,8 +113,7 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
   }
 
   private void configureCapability(String capability, boolean isEnabled) {
-    DesiredCapabilities desiredCaps = new DesiredCapabilities();
-    desiredCaps.setCapability(capability, isEnabled);
+    Capabilities desiredCaps = new ImmutableCapabilities(capability, isEnabled);
     WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(desiredCaps);
     localDriver = builder.get();
     Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();

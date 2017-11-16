@@ -194,7 +194,7 @@ public class DriverService {
   }
 
   /**
-   * Stops this service is it is currently running. This method will attempt to block until the
+   * Stops this service if it is currently running. This method will attempt to block until the
    * server has been fully shutdown.
    *
    * @see #start()
@@ -208,13 +208,15 @@ public class DriverService {
         return;
       }
 
-      try {
-        URL killUrl = new URL(url.toString() + "/shutdown");
-        new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
-      } catch (MalformedURLException e) {
-        toThrow = new WebDriverException(e);
-      } catch (UrlChecker.TimeoutException e) {
-        toThrow = new WebDriverException("Timed out waiting for driver server to shutdown.", e);
+      if (hasShutdownEndpoint()) {
+        try {
+          URL killUrl = new URL(url.toString() + "/shutdown");
+          new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
+        } catch (MalformedURLException e) {
+          toThrow = new WebDriverException(e);
+        } catch (UrlChecker.TimeoutException e) {
+          toThrow = new WebDriverException("Timed out waiting for driver server to shutdown.", e);
+        }
       }
 
       process.destroy();
@@ -228,6 +230,14 @@ public class DriverService {
     }
   }
 
+  protected boolean hasShutdownEndpoint() {
+    return true;
+  }
+
+  /**
+   * @deprecated Visibility will be restricted to 'protected' soon.
+   */
+  @Deprecated
   public void sendOutputTo(OutputStream outputStream) {
     this.outputStream = Preconditions.checkNotNull(outputStream);
   }

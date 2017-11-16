@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 namespace OpenQA.Selenium
 {
     [TestFixture]
-    //[IgnoreBrowser(Browser.Safari)]
     public class ExecutingAsyncJavascriptTest : DriverTestFixture
     {
         private IJavaScriptExecutor executor;
@@ -236,9 +235,9 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
-		[IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
-		[IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
-        public void ThrowsIfScriptTriggersAlert()
+        [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
+		public void ThrowsIfScriptTriggersAlert()
         {
             driver.Url = simpleTestPage;
             driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(5);
@@ -319,8 +318,8 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
-		[IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
-		[IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
+        [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
         public void ThrowsIfAlertHappensDuringScriptWhichTimesOut()
         {
             driver.Url = slowLoadingAlertPage;
@@ -347,8 +346,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
-		[IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
-		[IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
+        [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
         public void IncludesAlertTextInUnhandledAlertException()
         {
             driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(5);

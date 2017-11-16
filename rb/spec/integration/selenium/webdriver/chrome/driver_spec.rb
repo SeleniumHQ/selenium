@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,27 +20,18 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      compliant_on browser: :chrome do
-        describe Driver do
-          it 'should accept an array of custom command line arguments' do
-            begin
-              driver = Selenium::WebDriver.for :chrome, args: ['--user-agent=foo;bar']
-              driver.navigate.to url_for('click_jacker.html')
+      describe Driver, only: {driver: :chrome} do
+        it 'should accept an array of custom command line arguments' do
+          create_driver!(args: ['--user-agent=foo;bar']) do |driver|
+            driver.navigate.to url_for('click_jacker.html')
 
-              ua = driver.execute_script 'return window.navigator.userAgent'
-              expect(ua).to eq('foo;bar')
-            ensure
-              driver.quit if driver
-            end
+            ua = driver.execute_script 'return window.navigator.userAgent'
+            expect(ua).to eq('foo;bar')
           end
+        end
 
-          it 'should raise ArgumentError if :args is not an Array' do
-            expect do
-              Selenium::WebDriver.for(:chrome, args: '--foo')
-            end.to raise_error(ArgumentError)
-          end
-
-          it_behaves_like 'driver that can be started concurrently', :chrome
+        it 'should raise ArgumentError if :args is not an Array' do
+          expect { create_driver!(args: '--foo') }.to raise_error(ArgumentError, ':args must be an Array of Strings')
         end
       end
     end # Chrome

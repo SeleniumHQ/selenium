@@ -21,7 +21,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.opera.OperaDriverService;
 import org.openqa.selenium.opera.OperaOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -65,8 +64,7 @@ public class TestOperaBlinkDriver extends RemoteWebDriver {
     return service.getUrl();
   }
 
-  private static DesiredCapabilities operaWithCustomCapabilities(
-      Capabilities originalCapabilities) {
+  private static Capabilities operaWithCustomCapabilities(Capabilities originalCapabilities) {
     OperaOptions options = new OperaOptions();
     options.addArguments("disable-extensions");
     String operaPath = System.getProperty("webdriver.opera.binary");
@@ -74,14 +72,11 @@ public class TestOperaBlinkDriver extends RemoteWebDriver {
       options.setBinary(new File(operaPath));
     }
 
-    DesiredCapabilities capabilities = DesiredCapabilities.operaBlink();
-    capabilities.setCapability(OperaOptions.CAPABILITY, options);
-
     if (originalCapabilities != null) {
-      capabilities.merge(originalCapabilities);
+      options.merge(originalCapabilities);
     }
 
-    return capabilities;
+    return options;
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.server.rest;
 
-import org.openqa.selenium.remote.SimplePropertyDescriptor;
+import org.openqa.selenium.json.SimplePropertyDescriptor;
 
 import java.lang.reflect.Method;
 

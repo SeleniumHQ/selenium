@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using NMock2;
+using NMock;
 using NUnit.Framework;
 using System.Reflection;
 using System;
@@ -10,354 +10,347 @@ namespace OpenQA.Selenium.Support.UI
     [TestFixture]
     public class SelectTests
     {
-        private Mockery mocks;
-        private IWebElement webElement;
+        private MockFactory mocks;
+        private Mock<IWebElement> webElement;
 
         [SetUp]
         public void SetUp()
         {
-            mocks = new Mockery();
-            webElement = mocks.NewMock<IWebElement>();
+            mocks = new MockFactory();
+            webElement = mocks.CreateMock<IWebElement>();
         }
 
         [Test]
         public void ThrowUnexpectedTagNameExceptionWhenNotSelectTag()
         {
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("form"));
-            Assert.Throws<UnexpectedTagNameException>(() => new SelectElement(webElement));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("form");
+            Assert.Throws<UnexpectedTagNameException>(() => new SelectElement(webElement.MockObject));
         }
 
         [Test]
         public void CanCreateNewInstanceOfSelectWithNormalSelectElement()
         {
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn(null);
 
-            Assert.IsFalse(new SelectElement(webElement).IsMultiple);
+            Assert.IsFalse(new SelectElement(webElement.MockObject).IsMultiple);
         }
 
         [Test]
         public void CanCreateNewInstanceOfSelectWithMultipleSelectElement()
         {
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
 
-            Assert.IsTrue(new SelectElement(webElement).IsMultiple);
+            Assert.IsTrue(new SelectElement(webElement.MockObject).IsMultiple);
         }
 
         [Test]
         public void CanGetListOfOptions()
         {
             IList<IWebElement> options = new List<IWebElement>();
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-            Assert.AreEqual(options, new SelectElement(webElement).Options);
+            Assert.AreEqual(options, new SelectElement(webElement.MockObject).Options);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanGetSingleSelectedOption()
         {
-            IWebElement selected = mocks.NewMock<IWebElement>();
-            IWebElement notSelected = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> selected = mocks.CreateMock<IWebElement>();
+            Mock<IWebElement> notSelected = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(selected = mocks.NewMock<IWebElement>());
-            options.Add(notSelected = mocks.NewMock<IWebElement>());
+            options.Add(notSelected.MockObject);
+            options.Add(selected.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Stub.On(selected).GetProperty("Selected").Will(Return.Value(true));
-            Stub.On(notSelected).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            notSelected.Expects.One.GetProperty<bool>(_ => _.Selected).WillReturn(false);
+            selected.Expects.One.GetProperty<bool>(_ => _.Selected).WillReturn(true);
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-            IWebElement option = new SelectElement(webElement).SelectedOption;
-            Assert.AreEqual(selected, option);
+            IWebElement option = new SelectElement(webElement.MockObject).SelectedOption;
+            Assert.AreEqual(selected.MockObject, option);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanGetAllSelectedOptions()
         {
-            IWebElement selected = mocks.NewMock<IWebElement>();
-            IWebElement notSelected = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> selected = mocks.CreateMock<IWebElement>();
+            Mock<IWebElement> notSelected = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(selected = mocks.NewMock<IWebElement>());
-            options.Add(notSelected = mocks.NewMock<IWebElement>());
+            options.Add(selected.MockObject);
+            options.Add(notSelected.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Stub.On(selected).GetProperty("Selected").Will(Return.Value(true));
-            Stub.On(notSelected).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            selected.Expects.One.GetProperty<bool>(_ => _.Selected).WillReturn(true);
+            notSelected.Expects.One.GetProperty<bool>(_ => _.Selected).WillReturn(false);
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-            IList<IWebElement> returnedOption = new SelectElement(webElement).AllSelectedOptions;
+            IList<IWebElement> returnedOption = new SelectElement(webElement.MockObject).AllSelectedOptions;
             Assert.That(returnedOption.Count == 1);
-            Assert.AreEqual(selected, returnedOption[0]);
+            Assert.AreEqual(selected.MockObject, returnedOption[0]);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanSetSingleOptionSelectedByText()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").With(By.XPath(".//option[normalize-space(.) = \"Select Me\"]")).Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn(null);
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(false);
+            option1.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).With(By.XPath(".//option[normalize-space(.) = \"Select Me\"]")).WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
 
-            new SelectElement(webElement).SelectByText("Select Me");
+            new SelectElement(webElement.MockObject).SelectByText("Select Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanSetSingleOptionSelectedByValue()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
-
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            options.Add(option1.MockObject);
 
 
-            new SelectElement(webElement).SelectByValue("Select Me");
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn(null);
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(false);
+            option1.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
+
+            new SelectElement(webElement.MockObject).SelectByValue("Select Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanSetSingleOptionSelectedByIndex()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Expect.Once.On(option1).Method("GetAttribute").Will(Return.Value("2"));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn(null);
+            option1.Expects.One.Method(_ => _.GetAttribute(null)).WithAnyArguments().WillReturn("2");
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(false);
+            option1.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-
-            new SelectElement(webElement).SelectByIndex(2);
+            new SelectElement(webElement.MockObject).SelectByIndex(2);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanSetMultipleOptionSelectedByText()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
-            IWebElement option2 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
+            Mock<IWebElement> option2 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
-            options.Add(option2 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
+            options.Add(option2.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(option2).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(false);
+            option1.Expects.One.Method(_ => _.Click());
+            option2.Expects.One.GetProperty(_ => _.Selected).WillReturn(false);
+            option2.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-
-            new SelectElement(webElement).SelectByText("Select Me");
+            new SelectElement(webElement.MockObject).SelectByText("Select Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanSetMultipleOptionSelectedByValue()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
-            IWebElement option2 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
+            Mock<IWebElement> option2 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
-            options.Add(option2 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
+            options.Add(option2.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(option2).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(false);
+            option1.Expects.One.Method(_ => _.Click());
+            option2.Expects.One.GetProperty(_ => _.Selected).WillReturn(false);
+            option2.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-
-            new SelectElement(webElement).SelectByValue("Select Me");
+            new SelectElement(webElement.MockObject).SelectByValue("Select Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanSetMultipleOptionSelectedByIndex()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
-            IWebElement option2 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
+            Mock<IWebElement> option2 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
-            options.Add(option2 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
+            options.Add(option2.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(option1).Method("GetAttribute").Will(Return.Value("2"));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(option2).Method("GetAttribute").Will(Return.Value("2"));
-            Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(option2).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            option1.Expects.One.Method(_ => _.GetAttribute(null)).WithAnyArguments().WillReturn("2");
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(false);
+            option1.Expects.One.Method(_ => _.Click());
+            option2.Expects.One.Method(_ => _.GetAttribute(null)).WithAnyArguments().WillReturn("2");
+            option2.Expects.One.GetProperty(_ => _.Selected).WillReturn(false);
+            option2.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
 
-            new SelectElement(webElement).SelectByIndex(2);
+            new SelectElement(webElement.MockObject).SelectByIndex(2);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanDeselectSingleOptionSelectedByText()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(true));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(true);
+            option1.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
 
-            new SelectElement(webElement).DeselectByText("Deselect Me");
+            new SelectElement(webElement.MockObject).DeselectByText("Deselect Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanDeselectSingleOptionSelectedByValue()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(true));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(true);
+            option1.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-
-            new SelectElement(webElement).DeselectByValue("Deselect Me");
+            new SelectElement(webElement.MockObject).DeselectByValue("Deselect Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanDeselectSingleOptionSelectedByIndex()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            Expect.Once.On(option1).Method("GetAttribute").Will(Return.Value("2"));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(true));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            option1.Expects.One.Method(_ => _.GetAttribute(null)).WithAnyArguments().WillReturn("2");
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(true);
+            option1.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-
-            new SelectElement(webElement).DeselectByIndex(2);
+            new SelectElement(webElement.MockObject).DeselectByIndex(2);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanDeselectMultipleOptionSelectedByText()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
-            IWebElement option2 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
+            Mock<IWebElement> option2 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
-            options.Add(option2 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
+            options.Add(option2.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(true));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(true));
-            Expect.Once.On(option2).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(true);
+            option1.Expects.One.Method(_ => _.Click());
+            option2.Expects.One.GetProperty(_ => _.Selected).WillReturn(true);
+            option2.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
 
-            new SelectElement(webElement).DeselectByText("Deselect Me");
+            new SelectElement(webElement.MockObject).DeselectByText("Deselect Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanDeselectMultipleOptionSelectedByValue()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
-            IWebElement option2 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
+            Mock<IWebElement> option2 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
-            options.Add(option2 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
+            options.Add(option2.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(true));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(true));
-            Expect.Once.On(option2).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(true);
+            option1.Expects.One.Method(_ => _.Click());
+            option2.Expects.One.GetProperty(_ => _.Selected).WillReturn(true);
+            option2.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-
-            new SelectElement(webElement).DeselectByValue("Deselect Me");
+            new SelectElement(webElement.MockObject).DeselectByValue("Deselect Me");
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void CanDeselectMultipleOptionSelectedByIndex()
         {
-            IWebElement option1 = mocks.NewMock<IWebElement>();
-            IWebElement option2 = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> option1 = mocks.CreateMock<IWebElement>();
+            Mock<IWebElement> option2 = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(option1 = mocks.NewMock<IWebElement>());
-            options.Add(option2 = mocks.NewMock<IWebElement>());
+            options.Add(option1.MockObject);
+            options.Add(option2.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Expect.Once.On(option1).Method("GetAttribute").Will(Return.Value("2"));
-            Expect.Once.On(option1).GetProperty("Selected").Will(Return.Value(true));
-            Expect.Once.On(option1).Method("Click");
-            Expect.Once.On(option2).Method("GetAttribute").Will(Return.Value("2"));
-            Expect.Once.On(option2).GetProperty("Selected").Will(Return.Value(true));
-            Expect.Once.On(option2).Method("Click");
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            option1.Expects.One.Method(_ => _.GetAttribute(null)).WithAnyArguments().WillReturn("2");
+            option1.Expects.One.GetProperty(_ => _.Selected).WillReturn(true);
+            option1.Expects.One.Method(_ => _.Click());
+            option2.Expects.One.Method(_ => _.GetAttribute(null)).WithAnyArguments().WillReturn("2");
+            option2.Expects.One.GetProperty(_ => _.Selected).WillReturn(true);
+            option2.Expects.One.Method(_ => _.Click());
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-
-            new SelectElement(webElement).DeselectByIndex(2);
+            new SelectElement(webElement.MockObject).DeselectByIndex(2);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void SelectedOptionPropertyShouldThrowExceptionWhenNoOptionSelected()
         {
-            IWebElement selected = mocks.NewMock<IWebElement>();
-            IWebElement notSelected = mocks.NewMock<IWebElement>();
+            Mock<IWebElement> selected = mocks.CreateMock<IWebElement>();
+            Mock<IWebElement> notSelected = mocks.CreateMock<IWebElement>();
             IList<IWebElement> options = new List<IWebElement>();
-            options.Add(notSelected = mocks.NewMock<IWebElement>());
+            options.Add(notSelected.MockObject);
 
-            Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
-            Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            Stub.On(notSelected).GetProperty("Selected").Will(Return.Value(false));
-            Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
+            webElement.Expects.Any.GetProperty<string>(_ => _.TagName).WillReturn("select");
+            webElement.Expects.Any.Method(_ => _.GetAttribute(null)).With("multiple").WillReturn("true");
+            notSelected.Expects.One.GetProperty(_ => _.Selected).WillReturn(false);
+            webElement.Expects.One.Method(_ => _.FindElements(null)).WithAnyArguments().WillReturn(new ReadOnlyCollection<IWebElement>(options));
 
-            SelectElement element = new SelectElement(webElement);
+            SelectElement element = new SelectElement(webElement.MockObject);
             Assert.Throws<NoSuchElementException>(() => { IWebElement selectedOption = element.SelectedOption; });
         }
 

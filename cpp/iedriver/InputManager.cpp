@@ -958,6 +958,10 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool 
   this->UpdatePressedKeys(character, !key_up);
 
   KeyInfo key_info = this->GetKeyInfo(window_handle, character);
+  if (key_info.is_ignored_key) {
+    return;
+  }
+
   if (!key_info.is_webdriver_key) {
     if (!key_info.scan_code || (key_info.key_code == 0xFFFFU)) {
       LOG(WARN) << "No translation for key. Assuming unicode input: " << character;
@@ -1046,8 +1050,11 @@ bool InputManager::IsModifierKey(wchar_t character) {
 
 KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
   KeyInfo key_info;
+  key_info.is_ignored_key = false;
   key_info.is_extended_key = false;
   key_info.is_webdriver_key = true;
+  key_info.key_code = 0;
+  key_info.scan_code = 0;
   DWORD process_id = 0;
   DWORD thread_id = ::GetWindowThreadProcessId(window_handle, &process_id);
   HKL layout = ::GetKeyboardLayout(thread_id);
@@ -1283,7 +1290,7 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
     key_info.scan_code = VK_RETURN;
   }
   else if (character == L'\r') {    // carriage return
-                                    // skip it
+    key_info.is_ignored_key = true; // skip it
   } else {
     key_info.key_code = VkKeyScanExW(character, layout);
     key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);

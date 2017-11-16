@@ -27,11 +27,12 @@ import com.google.gson.JsonParser;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.BaseRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
     this(null);
   }
 
-  public RegistrationServlet(Registry registry) {
+  public RegistrationServlet(GridRegistry registry) {
     super(registry);
   }
 
@@ -172,11 +173,12 @@ public class RegistrationServlet extends RegistryBasedServlet {
     if (json.has("capabilities")) {
       configuration.capabilities.clear();
       JsonArray capabilities = json.get("capabilities").getAsJsonArray();
+      Json converter = new Json();
       for (int i = 0; i < capabilities.size(); i++) {
-        DesiredCapabilities cap = new JsonToBeanConverter()
-          .convert(DesiredCapabilities.class, capabilities.get(i));
+        MutableCapabilities cap = converter.toType(capabilities.get(i), DesiredCapabilities.class);
         configuration.capabilities.add(cap);
       }
+      configuration.fixUpCapabilities();
     }
   }
 

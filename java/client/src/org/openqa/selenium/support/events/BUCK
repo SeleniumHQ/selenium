@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'events',
   srcs = glob(['**/*.java']),
   deps = [

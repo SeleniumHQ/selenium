@@ -90,7 +90,6 @@ const Name = {
 
   NEW_SESSION: 'newSession',
   GET_SESSIONS: 'getSessions',
-  DESCRIBE_SESSION: 'getSessionCapabilities',
 
   CLOSE: 'close',
   QUIT: 'quit',
@@ -124,7 +123,11 @@ const Name = {
   SET_WINDOW_POSITION: 'setWindowPosition',
   GET_WINDOW_SIZE: 'getWindowSize',
   SET_WINDOW_SIZE: 'setWindowSize',
+  GET_WINDOW_RECT: 'getWindowRect',
+  SET_WINDOW_RECT: 'setWindowRect',
   MAXIMIZE_WINDOW: 'maximizeWindow',
+  MINIMIZE_WINDOW: 'minimizeWindow',
+  FULLSCREEN_WINDOW: 'fullscreenWindow',
 
   SWITCH_TO_WINDOW: 'switchToWindow',
   SWITCH_TO_FRAME: 'switchToFrame',
@@ -160,21 +163,8 @@ const Name = {
   SET_ALERT_TEXT: 'setAlertValue',
   SET_ALERT_CREDENTIALS: 'setAlertCredentials',
 
-  EXECUTE_SQL: 'executeSQL',
   GET_LOCATION: 'getLocation',
   SET_LOCATION: 'setLocation',
-  GET_APP_CACHE: 'getAppCache',
-  GET_APP_CACHE_STATUS: 'getStatus',
-  CLEAR_APP_CACHE: 'clearAppCache',
-  IS_BROWSER_ONLINE: 'isBrowserOnline',
-  SET_BROWSER_ONLINE: 'setBrowserOnline',
-
-  GET_LOCAL_STORAGE_ITEM: 'getLocalStorageItem',
-  GET_LOCAL_STORAGE_KEYS: 'getLocalStorageKeys',
-  SET_LOCAL_STORAGE_ITEM: 'setLocalStorageItem',
-  REMOVE_LOCAL_STORAGE_ITEM: 'removeLocalStorageItem',
-  CLEAR_LOCAL_STORAGE: 'clearLocalStorage',
-  GET_LOCAL_STORAGE_SIZE: 'getLocalStorageSize',
 
   GET_SESSION_STORAGE_ITEM: 'getSessionStorageItem',
   GET_SESSION_STORAGE_KEYS: 'getSessionStorageKey',
@@ -186,31 +176,15 @@ const Name = {
   SET_SCREEN_ORIENTATION: 'setScreenOrientation',
   GET_SCREEN_ORIENTATION: 'getScreenOrientation',
 
-  // These belong to the Advanced user interactions - an element is
-  // optional for these commands.
-  CLICK: 'mouseClick',
-  DOUBLE_CLICK: 'mouseDoubleClick',
-  MOUSE_DOWN: 'mouseButtonDown',
-  MOUSE_UP: 'mouseButtonUp',
-  MOVE_TO: 'mouseMoveTo',
-  SEND_KEYS_TO_ACTIVE_ELEMENT: 'sendKeysToActiveElement',
-
-  // These belong to the Advanced Touch API
-  TOUCH_SINGLE_TAP: 'touchSingleTap',
-  TOUCH_DOWN: 'touchDown',
-  TOUCH_UP: 'touchUp',
-  TOUCH_MOVE: 'touchMove',
-  TOUCH_SCROLL: 'touchScroll',
-  TOUCH_DOUBLE_TAP: 'touchDoubleTap',
-  TOUCH_LONG_PRESS: 'touchLongPress',
-  TOUCH_FLICK: 'touchFlick',
-
   GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
   GET_LOG: 'getLog',
   GET_SESSION_LOGS: 'getSessionLogs',
 
   // Non-standard commands used by the standalone Selenium server.
-  UPLOAD_FILE: 'uploadFile'
+  UPLOAD_FILE: 'uploadFile',
+
+  ACTIONS: 'actions',
+  CLEAR_ACTIONS: 'clearActions',
 };
 
 

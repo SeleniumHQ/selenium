@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,7 +20,7 @@ module Selenium
     module Keys
       #
       # @see Element#send_keys
-      # @see http://www.google.com.au/search?&q=unicode+pua&btnG=Search
+      # @see http://www.google.com.au/search?&q=unicode+pua&btnK=Search
       #
 
       KEYS = {

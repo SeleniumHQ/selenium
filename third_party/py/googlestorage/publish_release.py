@@ -151,7 +151,7 @@ def _authenticate(secrets_file):
     storage = oauthfile.Storage(OAUTH_CREDENTIALS_FILE)
     credentials = storage.get()
     if credentials is None or credentials.invalid:
-        credentials = oauthtools.run(flow, storage)
+        credentials = oauthtools.run_flow(flow, storage, oauthtools.argparser.parse_args(args=[]))
     http = httplib2.Http()
     return credentials.authorize(http)
 

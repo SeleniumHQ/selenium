@@ -18,7 +18,6 @@
 package org.openqa.selenium.chrome;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Test;
@@ -55,9 +54,9 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
   public void optionsStayEqualAfterSerialization() throws Exception {
     ChromeOptions options1 = new ChromeOptions();
     ChromeOptions options2 = new ChromeOptions();
-    assertTrue("empty chrome options should be equal", options1.equals(options2));
-    options1.toJson();
-    assertTrue("empty chrome options after one is .toJson() should be equal",
-               options1.equals(options2));
+    assertEquals("empty chrome options should be equal", options1, options2);
+    options1.asMap();
+    assertEquals("empty chrome options after one is .toJson() should be equal",
+               options1, options2);
   }
 }

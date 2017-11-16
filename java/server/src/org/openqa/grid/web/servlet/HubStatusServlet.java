@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.grid.web.servlet;
 
 import com.google.common.io.CharStreams;
@@ -26,7 +25,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import org.openqa.grid.common.exception.GridException;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 
 import java.io.BufferedReader;
@@ -67,7 +66,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
     super(null);
   }
 
-  public HubStatusServlet(Registry registry) {
+  public HubStatusServlet(GridRegistry registry) {
     super(registry);
   }
 
@@ -109,7 +108,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
           keysToReturn = new Gson().fromJson(requestJSON.getAsJsonArray("configuration"), ArrayList.class);
         }
 
-        Registry registry = getRegistry();
+        GridRegistry registry = getRegistry();
         JsonElement config = registry.getConfiguration().toJson();
         for (Map.Entry<String, JsonElement> entry : config.getAsJsonObject().entrySet()) {
           if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains(entry.getKey())) {

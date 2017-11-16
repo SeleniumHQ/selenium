@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,59 +20,51 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     # Firefox - "Actions Endpoint Not Yet Implemented"
-    not_compliant_on browser: [:safari, :firefox, :ff_nightly, :ie] do
-      describe Mouse do
-        it 'clicks an element' do
-          allow($stderr).to receive(:write)
-          driver.navigate.to url_for('formPage.html')
-          original_title = driver.title
-          driver.mouse.click driver.find_element(id: 'imageButton')
-          Wait.new.until { driver.title != original_title }
-          expect(driver.title).to eq 'We Arrive Here'
+    describe Mouse, except: {browser: %i[edge firefox ie safari]} do
+      it 'clicks an element' do
+        driver.navigate.to url_for('formPage.html')
+        original_title = driver.title
+        driver.mouse.click driver.find_element(id: 'imageButton')
+        Wait.new.until { driver.title != original_title }
+        expect(driver.title).to eq 'We Arrive Here'
+      end
+
+      it 'can drag and drop' do
+        driver.navigate.to url_for('droppableItems.html')
+
+        draggable = long_wait.until do
+          driver.find_element(id: 'draggable')
         end
 
-        it 'can drag and drop' do
-          allow($stderr).to receive(:write)
-          driver.navigate.to url_for('droppableItems.html')
+        droppable = driver.find_element(id: 'droppable')
 
-          draggable = long_wait.until do
-            driver.find_element(id: 'draggable')
-          end
+        driver.mouse.down draggable
+        driver.mouse.move_to droppable
+        driver.mouse.up droppable
 
-          droppable = driver.find_element(id: 'droppable')
+        text = droppable.find_element(tag_name: 'p').text
+        expect(text).to eq('Dropped!')
+      end
 
-          driver.mouse.down draggable
-          driver.mouse.move_to droppable
-          driver.mouse.up droppable
+      it 'double clicks an element' do
+        driver.navigate.to url_for('javascriptPage.html')
+        element = driver.find_element(id: 'doubleClickField')
 
-          text = droppable.find_element(tag_name: 'p').text
-          expect(text).to eq('Dropped!')
+        driver.mouse.double_click element
+
+        wait(5).until do
+          element.attribute(:value) == 'DoubleClicked'
         end
+      end
 
-        it 'double clicks an element' do
-          allow($stderr).to receive(:write)
-          driver.navigate.to url_for('javascriptPage.html')
-          element = driver.find_element(id: 'doubleClickField')
+      it 'context clicks an element' do
+        driver.navigate.to url_for('javascriptPage.html')
+        element = driver.find_element(id: 'doubleClickField')
 
-          driver.mouse.double_click element
+        driver.mouse.context_click element
 
-          wait(5).until do
-            element.attribute(:value) == 'DoubleClicked'
-          end
-        end
-
-        not_compliant_on browser: :phantomjs do
-          it 'context clicks an element' do
-            allow($stderr).to receive(:write)
-            driver.navigate.to url_for('javascriptPage.html')
-            element = driver.find_element(id: 'doubleClickField')
-
-            driver.mouse.context_click element
-
-            wait(5).until do
-              element.attribute(:value) == 'ContextClicked'
-            end
-          end
+        wait(5).until do
+          element.attribute(:value) == 'ContextClicked'
         end
       end
     end

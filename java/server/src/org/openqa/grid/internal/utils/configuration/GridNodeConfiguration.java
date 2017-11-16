@@ -33,22 +33,29 @@ import com.google.gson.annotations.Expose;
 import com.beust.jcommander.Parameter;
 
 import org.openqa.grid.common.JSONConfigurationUtils;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.converters.BrowserDesiredCapabilityConverter;
 import org.openqa.grid.internal.utils.configuration.converters.NoOpParameterSplitter;
 import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GridNodeConfiguration extends GridConfiguration {
   public static final String DEFAULT_NODE_CONFIG_FILE = "defaults/DefaultNodeWebDriver.json";
+  public static final String CONFIG_UUID_CAPABILITY = "_CONFIG_UUID";
 
   /*
    * IMPORTANT - Keep these constant values in sync with the ones specified in
@@ -114,7 +121,7 @@ public class GridNodeConfiguration extends GridConfiguration {
    * Default DesiredCapabilites
    */
   static final class DefaultDesiredCapabilitiesBuilder {
-    static final List<DesiredCapabilities> getCapabilities() {
+    static final List<MutableCapabilities> getCapabilities() {
       DesiredCapabilities chrome = new DesiredCapabilities();
       chrome.setBrowserName("chrome");
       chrome.setCapability("maxInstances", 5);
@@ -152,8 +159,15 @@ public class GridNodeConfiguration extends GridConfiguration {
    * config parameters which do not serialize to json
    */
 
-  // remoteHost is a generated value based on host / port specified, or read from JSON.
-  @Expose( serialize = false )
+  /**
+   * The address to report to the hub. By default it's generated based on the host and port specified.
+   * Setting a value overrides the default (http://<host>:<port>).
+   */
+  @Expose
+  @Parameter(
+    names = "-remoteHost",
+    description = "<String> URL: Address to report to the hub. Used to override default (http://<host>:<port>)."
+  )
   String remoteHost;
 
   // used to read a Selenium 2.x nodeConfig.json file and throw a friendly exception
@@ -208,7 +222,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     converter = BrowserDesiredCapabilityConverter.class,
     splitter = NoOpParameterSplitter.class
   )
-  public List<DesiredCapabilities> capabilities = DefaultDesiredCapabilitiesBuilder.getCapabilities();
+  public List<MutableCapabilities> capabilities = DefaultDesiredCapabilitiesBuilder.getCapabilities();
 
   /**
    * The down polling limit for the node. Defaults to {@code null}.
@@ -453,45 +467,71 @@ public class GridNodeConfiguration extends GridConfiguration {
   }
 
   protected static void staticAddJsonTypeAdapter(GsonBuilder builder) {
-    builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
+    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
                                 new CollectionOfDesiredCapabilitiesSerializer());
-    builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
+    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
                                 new CollectionOfDesiredCapabilitiesDeSerializer());
   }
 
   public static class CollectionOfDesiredCapabilitiesSerializer
-    implements JsonSerializer<List<DesiredCapabilities>> {
+    implements JsonSerializer<List<MutableCapabilities>> {
 
     @Override
-    public JsonElement serialize(List<DesiredCapabilities> desiredCapabilities, Type type,
+    public JsonElement serialize(List<MutableCapabilities> desiredCapabilities, Type type,
                                  JsonSerializationContext jsonSerializationContext) {
 
       JsonArray capabilities = new JsonArray();
-      BeanToJsonConverter converter = new BeanToJsonConverter();
-      for (DesiredCapabilities dc : desiredCapabilities) {
-        capabilities.add(converter.convertObject(dc));
+      Json json = new Json();
+      for (MutableCapabilities dc : desiredCapabilities) {
+        capabilities.add(json.toJsonElement(dc));
       }
       return capabilities;
     }
   }
 
   public  static class CollectionOfDesiredCapabilitiesDeSerializer
-    implements JsonDeserializer<List<DesiredCapabilities>> {
+    implements JsonDeserializer<List<MutableCapabilities>> {
 
     @Override
-    public List<DesiredCapabilities> deserialize(JsonElement jsonElement, Type type,
+    public List<MutableCapabilities> deserialize(JsonElement jsonElement, Type type,
                                                  JsonDeserializationContext jsonDeserializationContext)
       throws JsonParseException {
 
       if (jsonElement.isJsonArray()) {
-        List<DesiredCapabilities> desiredCapabilities = new ArrayList<>();
-        JsonToBeanConverter converter = new JsonToBeanConverter();
+        List<MutableCapabilities> desiredCapabilities = new ArrayList<>();
+        Json json = new Json();
         for (JsonElement arrayElement : jsonElement.getAsJsonArray()) {
-          desiredCapabilities.add(converter.convert(DesiredCapabilities.class, arrayElement));
+          desiredCapabilities.add(json.toType(arrayElement, DesiredCapabilities.class));
         }
         return desiredCapabilities;
       }
       throw new JsonParseException("capabilities should be expressed as an array of objects.");
+    }
+  }
+
+  public void fixUpCapabilities() {
+    if (capabilities == null) {
+      return; // assumes the caller set it/wants it this way
+    }
+
+    Platform current = Platform.getCurrent();
+    for (MutableCapabilities cap : capabilities) {
+      if (cap.getPlatform() == null) {
+        cap.setCapability(CapabilityType.PLATFORM, current);
+      }
+      if (cap.getCapability(RegistrationRequest.SELENIUM_PROTOCOL) == null) {
+        cap.setCapability(RegistrationRequest.SELENIUM_PROTOCOL, SeleniumProtocol.WebDriver.toString());
+      }
+      cap.setCapability(CONFIG_UUID_CAPABILITY, UUID.randomUUID().toString());
+    }
+  }
+
+  public void fixUpHost() {
+    NetworkUtils util = new NetworkUtils();
+    if (host == null || "ip".equalsIgnoreCase(host)) {
+      host = util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+    } else if ("host".equalsIgnoreCase(host)) {
+      host = util.getIp4NonLoopbackAddressOfThisMachine().getHostName();
     }
   }
 }

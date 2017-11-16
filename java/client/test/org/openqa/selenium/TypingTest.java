@@ -505,7 +505,7 @@ public class TypingTest extends JUnit4TestBase {
     element.sendKeys("done" + Keys.HOME);
     assertThat(element.getAttribute("value"), is("done"));
 
-    element.sendKeys("" + Keys.SHIFT + "ALL " + Keys.HOME);
+    element.sendKeys(Keys.SHIFT + "ALL " + Keys.HOME);
     assertThat(element.getAttribute("value"), is("ALL done"));
 
     element.sendKeys(Keys.DELETE);
@@ -516,7 +516,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat( // Note: trailing SHIFT up here
                 result.getText().trim(), containsString(" up: 16"));
 
-    element.sendKeys("" + Keys.DELETE);
+    element.sendKeys(Keys.DELETE);
     assertThat(element.getAttribute("value"), is(""));
   }
 
@@ -659,7 +659,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE)
   public void canClearNumberInputAfterTypingInvalidInput() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("age"));

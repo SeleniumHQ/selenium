@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,16 +20,14 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Remote
-      compliant_on driver: :remote do
-        describe Driver do
-          it 'should expose session_id' do
-            expect(driver.session_id).to be_kind_of(String)
-          end
+      describe Driver, only: {driver: :remote} do
+        it 'should expose session_id' do
+          expect(driver.session_id).to be_kind_of(String)
+        end
 
-          it 'should expose remote status' do
-            expect(driver).to be_kind_of(DriverExtensions::HasRemoteStatus)
-            expect(driver.remote_status).to be_kind_of(Hash)
-          end
+        it 'should expose remote status' do
+          expect(driver).to be_kind_of(DriverExtensions::HasRemoteStatus)
+          expect(driver.remote_status).to be_kind_of(Hash)
         end
       end
     end # Remote

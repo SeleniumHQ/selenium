@@ -1,3 +1,30 @@
+Selenium 3.7.0
+
+* need to pass applicable environment variables to tox
+* Fix active_element for w3c drivers (#3979)
+* add support for minimize command
+* add support for fullscreen command
+* window rect commands should fail on firefox and remote (legacy)
+* Fix python backward compatibility for window commands (#4937)
+* Update docstrings to specify the type of path needed to install firefox addons. (#4881)
+* Update python chromeOptions key for capabilities (#4622)
+* Fix python pause action implementation (#4795)
+
+Selenium 3.6.0
+
+* Fix package name in python webelement module (#4670)
+* Fix python driver examples (#3872)
+* No need to multiply pause by 1000
+* Add pause to action chains
+* only check for proxyType once
+* lowercase proxy type for w3c payload in python #4574
+* guarding against null return value from find_elements in python #4555
+* remove unnecessary pytest marking, address flake8 issues
+* allow IE WebDriver to accept IE Options
+* add IE Options class
+* convert OSS capabilities to W3C equivalent for W3C payload
+* Add Safari to API docs
+
 Selenium 3.5.0
 
 * Numerous test fixes
@@ -553,7 +580,3 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
-commit 470eacc265d8d1e2aa2153a32131e80029989723
-Author: Alexei Barantsev <barancev@gmail.com>
-Date:   Thu Aug 10 12:26:45 2017 +0300
-

@@ -18,7 +18,6 @@
 package org.openqa.selenium.environment.webserver;
 
 import static com.google.common.base.Charsets.UTF_8;
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static org.openqa.selenium.net.PortProber.findFreePort;
@@ -27,6 +26,7 @@ import static org.openqa.selenium.testing.InProject.locate;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -54,9 +54,7 @@ import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -167,8 +165,14 @@ public class JettyAppServer implements AppServer {
   @Override
   public String getAlternateHostName() {
     String alternativeHostnameFromProperty = System.getenv(ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME);
-    return alternativeHostnameFromProperty == null ?
-           networkUtils.getPrivateLocalAddress() : alternativeHostnameFromProperty;
+    if (alternativeHostnameFromProperty != null) {
+      return alternativeHostnameFromProperty;
+    }
+    try {
+      return networkUtils.getNonLoopbackAddressOfThisMachine();
+    } catch (WebDriverException e) {
+      return networkUtils.getPrivateLocalAddress();
+    }
   }
 
   @Override
@@ -233,7 +237,7 @@ public class JettyAppServer implements AppServer {
     Path keystore = getKeyStore();
     if (!Files.exists(keystore)) {
       throw new RuntimeException(
-        "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
+          "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
     }
 
     SslContextFactory sslContextFactory = new SslContextFactory();
@@ -245,9 +249,9 @@ public class JettyAppServer implements AppServer {
     httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
     ServerConnector https = new ServerConnector(
-      server,
-      new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
-      new HttpConnectionFactory(httpsConfig));
+        server,
+        new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
+        new HttpConnectionFactory(httpsConfig));
     https.setPort(securePort);
     https.setIdleTimeout(500000);
 

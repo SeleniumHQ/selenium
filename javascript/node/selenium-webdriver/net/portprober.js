@@ -17,9 +17,9 @@
 
 'use strict';
 
-var exec = require('child_process').exec,
-    fs = require('fs'),
-    net = require('net');
+const fs = require('fs');
+const net = require('net');
+const {exec} = require('child_process');
 
 
 /**
@@ -34,9 +34,9 @@ const DEFAULT_IANA_RANGE = {min: 49152, max: 65535};
 /**
  * The epheremal port range for the current system. Lazily computed on first
  * access.
- * @type {Promise.<{min: number, max: number}>}
+ * @type {Promise<{min: number, max: number}>}
  */
-var systemRange = null;
+let systemRange = null;
 
 
 /**
@@ -49,11 +49,10 @@ function findSystemPortRange() {
   if (systemRange) {
     return systemRange;
   }
-  var range = process.platform === 'win32' ?
-      findWindowsPortRange() : findUnixPortRange();
-  return systemRange = range.catch(function() {
-    return DEFAULT_IANA_RANGE;
-  });
+  let range =
+      process.platform === 'win32'
+          ? findWindowsPortRange() : findUnixPortRange();
+  return systemRange = range.catch(() => DEFAULT_IANA_RANGE);
 }
 
 
@@ -81,7 +80,7 @@ function execute(cmd) {
  * @return {!Promise<{min: number, max: number}>} A promise that will resolve
  *     with the ephemeral port range on the current system.
  */
-function findUnixPortRange() {
+async function findUnixPortRange() {
   var cmd;
   if (process.platform === 'sunos') {
     cmd =
@@ -94,12 +93,17 @@ function findUnixPortRange() {
         ' | sed -e "s/.*:\\s*//"';
   }
 
-  return execute(cmd).then(function(stdout) {
-    if (!stdout || !stdout.length) return DEFAULT_IANA_RANGE;
-    var range = stdout.trim().split(/\s+/).map(Number);
-    if (range.some(isNaN)) return DEFAULT_IANA_RANGE;
-    return {min: range[0], max: range[1]};
-  });
+  let stdout = await execute(cmd);
+  if (!stdout || !stdout.length) {
+    return DEFAULT_IANA_RANGE;
+  };
+
+  let range = stdout.trim().split(/\s+/).map(Number);
+  if (range.some(isNaN)) {
+    return DEFAULT_IANA_RANGE;
+  };
+
+  return {min: range[0], max: range[1]};
 }
 
 
@@ -108,35 +112,29 @@ function findUnixPortRange() {
  * @return {!Promise<{min: number, max: number}>} A promise that will resolve
  *     with the ephemeral port range on the current system.
  */
-function findWindowsPortRange() {
+async function findWindowsPortRange() {
   // First, check if we're running on XP.  If this initial command fails,
   // we just fallback on the default IANA range.
-  return execute('cmd.exe /c ver').then(function(stdout) {
-    if (/Windows XP/.test(stdout)) {
-      // TODO: Try to read these values from the registry.
-      return {min: 1025, max: 5000};
-    } else {
-      return execute('netsh int ipv4 show dynamicport tcp').
-          then(function(stdout) {
-            /* > netsh int ipv4 show dynamicport tcp
-              Protocol tcp Dynamic Port Range
-              ---------------------------------
-              Start Port : 49152
-              Number of Ports : 16384
-             */
-            var range = stdout.split(/\n/).filter(function(line) {
-              return /.*:\s*\d+/.test(line);
-            }).map(function(line) {
-              return Number(line.split(/:\s*/)[1]);
-            });
-
-            return {
-              min: range[0],
-              max: range[0] + range[1]
-            };
-          });
-    }
-  });
+  let stdout = await execute('cmd.exe /c ver');
+  if (/Windows XP/.test(stdout)) {
+    // TODO: Try to read these values from the registry.
+    return {min: 1025, max: 5000};
+  } else {
+    stdout = await execute('netsh int ipv4 show dynamicport tcp');
+    /* > netsh int ipv4 show dynamicport tcp
+      Protocol tcp Dynamic Port Range
+      ---------------------------------
+      Start Port : 49152
+      Number of Ports : 16384
+     */
+    let range = stdout.split(/\n/)
+        .filter((line) => /.*:\s*\d+/.test(line))
+        .map((line) => Number(line.split(/:\s*/)[1]));
+    return {
+      min: range[0],
+      max: range[0] + range[1]
+    };
+  }
 }
 
 
@@ -171,30 +169,15 @@ function isFree(port, opt_host) {
  * @return {!Promise<number>} A promise that will resolve to a free port. If a
  *     port cannot be found, the promise will be rejected.
  */
-function findFreePort(opt_host) {
-  return findSystemPortRange().then(function(range) {
-    var attempts = 0;
-    return new Promise((resolve, reject) => {
-      findPort();
-
-      function findPort() {
-        attempts += 1;
-        if (attempts > 10) {
-          reject(Error('Unable to find a free port'));
-        }
-
-        var port = Math.floor(
-            Math.random() * (range.max - range.min) + range.min);
-        isFree(port, opt_host).then(function(isFree) {
-          if (isFree) {
-            resolve(port);
-          } else {
-            findPort();
-          }
-        }, findPort);
-      }
-    });
-  });
+async function findFreePort(opt_host) {
+  let range = await findSystemPortRange();
+  for (let i = 0; i < 100; i++) {
+    let port = Math.floor(Math.random() * (range.max - range.min) + range.min);
+    if (await isFree(port, opt_host)) {
+      return port;
+    }
+  }
+  throw Error('Unable to find a free port');
 }
 
 

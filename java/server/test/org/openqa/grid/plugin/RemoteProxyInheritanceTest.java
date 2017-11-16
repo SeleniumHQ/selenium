@@ -23,7 +23,8 @@ import org.junit.After;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.DefaultGridRegistry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.remote.CapabilityType;
@@ -34,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RemoteProxyInheritanceTest {
-  private Registry registry = Registry.newInstance();
+  private GridRegistry registry = DefaultGridRegistry.newInstance();
 
   @Test
   public void defaultToRemoteProxy() {

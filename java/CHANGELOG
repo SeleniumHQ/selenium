@@ -1,3 +1,69 @@
+v3.7.1
+======
+
+* Including httpcore in the packaged libs.
+* Sending geckodriver logs to stderr by default. The default log level
+  is low enough that the log does not look polluted. Geckodriver does
+  not allow to separate its own log from the browser logs, so messages
+  from the browser log can appear in the log even on the lowest level.
+* Avoid sending the shutdown command to driver services that don't
+  support it.
+* Add support for customizing the Grid Registry.
+
+v3.7.0
+======
+
+* Firefox and Chrome binary paths specified in Grid Node configs are
+  now honoured.
+* W3C spec compliant drivers need not return RGBA values for colours
+  defined in CSS.
+* Minimise disk usage when starting new remote sessions.
+* SafariDriver and legacy FirefoxDriver can now be configured when
+  using the remote server through Capabilities. Notably, this allows
+  the Safari Technology Preview to be used if it's installed.
+* Implemented the ability to configure the firefox log target using
+  the driver service builder or a system property. Logs are sent to
+  the null output stream by default. Fixes #4136
+* Simulate some w3c Actions commands using the old APIs. This allows a
+  local end that only speaks the JSON Wire Protocol to use
+  "Actions.moveTo" when communicating with a W3C compliant remote
+  end. Apparently, people need this.
+* More fluent APIs in `*Options` classes.
+* Moving some safari config options from `SafariOptions` to the
+  `SafariDriverService`.
+* In Grid and Remote, force the use of the legacy Firefox driver when
+  marionette flag is set.
+* The protocol handshake now uses a `CapabilityTransform` to convert
+  an JSON Wire Protocol capability to one or more w3c
+  capabilities. These are located using the standard Java
+  ServiceLoader framework.
+* The protocol handshake also uses a `CapabilitiesFilter` that
+  extracts keys and values specific to a browser from a JSON Wire
+  Protocol capabilities map. Again, these are loaded using the
+  `ServiceLoader` framework.
+* `requiredCapabilities` are now no longer sent across the wire.
+* Fixed handling of unrecognized platform names returned by remote
+  end. #4781
+* Better error messages from the htmlrunner.
+* Migrated from using `DesiredCapabilities` to either
+  `MutableCapabilities` or (preferably) `ImmutableCapabilities`.
+* Move building of locators to How enum
+
+
+v3.6.0
+======
+
+* Remove direct dependency on HTMLUnit and PhantomJS from Maven
+  artifacts.
+* All `*Option` classes now extend `MutableCapbilities`
+  `new RemoteWebDriver(new ChromeOptions());`
+* Deprecating constructors that don't take strongly-typed `*Options`. 
+* Improved exceptions when a `Wait` times out when using a
+  `WrappedWebDriver`.
+* Added `Interactive` interface to EventFiringWebDriver. Fixes #4589
+* Add options to start Firefox and Chrome in headless modes.
+
+
 v3.5.3
 ======
 

@@ -29,7 +29,9 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
 import com.google.common.base.Preconditions;
@@ -41,8 +43,11 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.internal.ElementScrollBehavior;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -100,8 +105,17 @@ public class InternetExplorerOptions extends MutableCapabilities {
     super();
 
     setCapability(IE_OPTIONS, ieOptions);
+    setCapability(BROWSER_NAME, BrowserType.IE);
+    setCapability(PLATFORM, Platform.WINDOWS);
+    setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
 
     merge(source);
+  }
+
+  @Override
+  public InternetExplorerOptions merge(Capabilities extraCapabilities) {
+    super.merge(extraCapabilities);
+    return this;
   }
 
   public InternetExplorerOptions withAttachTimeout(long duration, TimeUnit unit) {
@@ -214,6 +228,11 @@ public class InternetExplorerOptions extends MutableCapabilities {
 
   public InternetExplorerOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     return amend(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
+  }
+
+  public InternetExplorerOptions setProxy(Proxy proxy) {
+    setCapability(CapabilityType.PROXY, proxy);
+    return this;
   }
 
   private InternetExplorerOptions amend(String optionName, Object value) {

@@ -197,6 +197,17 @@ function configureExecutor(executor) {
 
 
 /**
+ * _Synchronously_ attempts to locate the chromedriver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
+ */
+function locateSynchronously() {
+  return io.findInPath(CHROMEDRIVER_EXE, true);
+}
+
+
+/**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
  * a [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)
  * server in a child process.
@@ -210,7 +221,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || io.findInPath(CHROMEDRIVER_EXE, true);
+    let exe = opt_exe || locateSynchronously();
     if (!exe) {
       throw Error(
           'The ChromeDriver could not be found on the current PATH. Please ' +
@@ -324,7 +335,7 @@ class Options {
     /** @private {?logging.Preferences} */
     this.logPrefs_ = null;
 
-    /** @private {?./lib/capabilities.ProxyConfig} */
+    /** @private {?./lib/proxy.Config} */
     this.proxy_ = null;
   }
 
@@ -675,7 +686,7 @@ class Options {
 
   /**
    * Sets the proxy settings for the new session.
-   * @param {./lib/capabilities.ProxyConfig} proxy The proxy configuration to
+   * @param {./lib/proxy.Config} proxy The proxy configuration to
    *    use.
    * @return {!Options} A self reference.
    */
@@ -739,11 +750,9 @@ class Driver extends webdriver.WebDriver {
    *     for an externally managed endpoint. If neither is provided, the
    *     {@linkplain ##getDefaultService default service} will be used by
    *     default.
-   * @param {promise.ControlFlow=} opt_flow The control flow to use, or `null`
-   *     to use the currently active flow.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config, opt_serviceExecutor, opt_flow) {
+  static createSession(opt_config, opt_serviceExecutor) {
     let executor;
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor;
@@ -757,8 +766,17 @@ class Driver extends webdriver.WebDriver {
         opt_config instanceof Options ? opt_config.toCapabilities() :
         (opt_config || Capabilities.chrome());
 
-    return /** @type {!Driver} */(
-        super.createSession(executor, caps, opt_flow));
+    // W3C spec requires noProxy value to be an array of strings, but Chrome
+    // expects a single host as a string.
+    let proxy = caps.get(Capability.PROXY);
+    if (proxy && Array.isArray(proxy.noProxy)) {
+      proxy.noProxy = proxy.noProxy[0];
+      if (!proxy.noProxy) {
+        proxy.noProxy = undefined;
+      }
+    }
+
+    return /** @type {!Driver} */(super.createSession(executor, caps));
   }
 
   /**
@@ -771,24 +789,21 @@ class Driver extends webdriver.WebDriver {
   /**
    * Schedules a command to launch Chrome App with given ID.
    * @param {string} id ID of the App to launch.
-   * @return {!promise.Thenable<void>} A promise that will be resolved
+   * @return {!Promise<void>} A promise that will be resolved
    *     when app is launched.
    */
   launchApp(id) {
-    return this.schedule(
-        new command.Command(Command.LAUNCH_APP).setParameter('id', id),
-        'Driver.launchApp()');
+    return this.execute(
+        new command.Command(Command.LAUNCH_APP).setParameter('id', id));
   }
 
   /**
    * Schedules a command to get Chrome network emulation settings.
-   * @return {!promise.Thenable<T>} A promise that will be resolved
-   *     when network emulation settings are retrievied.
+   * @return {!Promise} A promise that will be resolved when network
+   *     emulation settings are retrievied.
    */
   getNetworkConditions() {
-    return this.schedule(
-        new command.Command(Command.GET_NETWORK_CONDITIONS),
-        'Driver.getNetworkConditions()');
+    return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS));
   }
 
   /**
@@ -804,17 +819,16 @@ class Driver extends webdriver.WebDriver {
    * });
    *
    * @param {Object} spec Defines the network conditions to set
-   * @return {!promise.Thenable<void>} A promise that will be resolved
-   *     when network emulation settings are set.
+   * @return {!Promise<void>} A promise that will be resolved when network
+   *     emulation settings are set.
    */
   setNetworkConditions(spec) {
     if (!spec || typeof spec !== 'object') {
       throw TypeError('setNetworkConditions called with non-network-conditions parameter');
     }
-
-    return this.schedule(
-        new command.Command(Command.SET_NETWORK_CONDITIONS).setParameter('network_conditions', spec),
-        'Driver.setNetworkConditions(' + JSON.stringify(spec) + ')');
+    return this.execute(
+        new command.Command(Command.SET_NETWORK_CONDITIONS)
+            .setParameter('network_conditions', spec));
   }
 }
 
@@ -827,3 +841,4 @@ exports.Options = Options;
 exports.ServiceBuilder = ServiceBuilder;
 exports.getDefaultService = getDefaultService;
 exports.setDefaultService = setDefaultService;
+exports.locateSynchronously = locateSynchronously;

@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_binary(
   name = 'selenium-runner',
   main_class = 'org.openqa.selenium.server.htmlrunner.HTMLLauncher',

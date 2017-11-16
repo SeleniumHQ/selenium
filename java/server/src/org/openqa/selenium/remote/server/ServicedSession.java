@@ -22,16 +22,20 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
+import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
@@ -50,13 +54,14 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
-class ServicedSession implements ActiveSession {
+public class ServicedSession implements ActiveSession {
 
   private final DriverService service;
   private final SessionId id;
@@ -143,36 +148,62 @@ class ServicedSession implements ActiveSession {
 
   public static class Factory implements SessionFactory {
 
-    private final Supplier<? extends DriverService> createService;
+    private final Function<Capabilities, ? extends DriverService> createService;
     private final String serviceClassName;
 
-    Factory(String serviceClassName) {
+    public Factory(String serviceClassName) {
       this.serviceClassName = serviceClassName;
       try {
         Class<? extends DriverService> driverClazz =
             Class.forName(serviceClassName).asSubclass(DriverService.class);
 
-        Method serviceMethod = driverClazz.getMethod("createDefaultService");
-        serviceMethod.setAccessible(true);
+        Function<Capabilities, ? extends DriverService> factory =
+            get(driverClazz, "createDefaultService", Capabilities.class);
+        if (factory == null) {
+          factory = get(driverClazz, "createDefaultService");
+        }
 
-        this.createService = () -> {
+        if (factory == null) {
+          throw new IllegalArgumentException(
+              "DriverService has no mechansim to create a default instance");
+        }
+
+        this.createService = factory;
+      } catch (ReflectiveOperationException e) {
+        throw new IllegalArgumentException(
+            "DriverService class does not exist: " + serviceClassName);
+      }
+    }
+
+    private Function<Capabilities, ? extends DriverService> get(
+        Class<? extends DriverService> driverServiceClazz,
+        String methodName,
+        Class... args) {
+      try {
+        Method serviceMethod = driverServiceClazz.getDeclaredMethod(methodName, args);
+        serviceMethod.setAccessible(true);
+        return caps -> {
           try {
-            return (DriverService) serviceMethod.invoke(null);
+            if (args.length > 0) {
+              return (DriverService) serviceMethod.invoke(null, caps);
+            } else {
+              return (DriverService) serviceMethod.invoke(null);
+            }
           } catch (ReflectiveOperationException e) {
             throw new SessionNotCreatedException(
-                "Unable to create new service: " + driverClazz.getSimpleName(), e);
+                "Unable to create new service: " + driverServiceClazz.getSimpleName(), e);
           }
         };
       } catch (ReflectiveOperationException e) {
-        throw new SessionNotCreatedException("Cannot find service factory method", e);
+        return null;
       }
     }
 
     @Override
-    public ActiveSession apply(NewSessionPayload payload) {
-      DriverService service = createService.get();
+    public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities capabilities) {
+      DriverService service = createService.apply(capabilities);
 
-      try (InputStream in = payload.getPayload().get()) {
+      try {
         service.start();
 
         PortProber.waitForPortUp(service.getUrl().getPort(), 30, SECONDS);
@@ -181,18 +212,19 @@ class ServicedSession implements ActiveSession {
 
         HttpClient client = new ApacheHttpClient.Factory().createClient(url);
 
-        ProtocolHandshake.Result result = new ProtocolHandshake()
-            .createSession(client, in, payload.getPayloadSize())
-            .orElseThrow(() -> new SessionNotCreatedException("Unable to create session"));
+        Command command = new Command(null, DriverCommand.NEW_SESSION,
+                                      ImmutableMap.of("desiredCapabilities", capabilities));
+
+        ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
         SessionCodec codec;
         Dialect upstream = result.getDialect();
         Dialect downstream;
-        if (payload.getDownstreamDialects().contains(result.getDialect())) {
+        if (downstreamDialects.contains(result.getDialect())) {
           codec = new Passthrough(url);
           downstream = upstream;
         } else {
-          downstream = payload.getDownstreamDialects().iterator().next();
+          downstream = downstreamDialects.iterator().next();
 
           codec = new ProtocolConverter(
               url,
@@ -204,14 +236,14 @@ class ServicedSession implements ActiveSession {
 
         Response response = result.createResponse();
         //noinspection unchecked
-        return new ServicedSession(
+        return Optional.of(new ServicedSession(
             service,
             downstream,
             upstream,
             codec,
             new SessionId(response.getSessionId()),
-            (Map<String, Object>) response.getValue());
-      } catch (IOException|IllegalStateException|NullPointerException e) {
+            (Map<String, Object>) response.getValue()));
+      } catch (IOException | IllegalStateException | NullPointerException e) {
         throw new SessionNotCreatedException("Cannot establish new session", e);
       }
     }

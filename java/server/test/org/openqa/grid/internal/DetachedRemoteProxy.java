@@ -23,7 +23,7 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
 
 public class DetachedRemoteProxy extends BaseRemoteProxy {
-  public DetachedRemoteProxy(RegistrationRequest request, Registry registry) {
+  public DetachedRemoteProxy(RegistrationRequest request, GridRegistry registry) {
     super(request, registry);
   }
 

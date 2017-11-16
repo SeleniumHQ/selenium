@@ -20,8 +20,8 @@ package org.openqa.selenium.testing.drivers;
 import com.google.common.collect.Lists;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -47,8 +47,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   public WebDriver get() {
     Capabilities standardCapabilities = BrowserToCapabilities.of(browser);
-    Capabilities desiredCaps = new DesiredCapabilities(standardCapabilities,
-        desiredCapabilities);
+    Capabilities desiredCaps = new MutableCapabilities(standardCapabilities).merge(desiredCapabilities);
 
     List<Supplier<WebDriver>> suppliers = getSuppliers(desiredCaps);
 

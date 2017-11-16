@@ -243,7 +243,7 @@ class FirefoxProfile(object):
         """
             Installs addon from a filepath, url
             or directory of addons in the profile.
-            - path: url, path to .xpi, or directory of addons
+            - path: url, absolute path to .xpi, or directory of addons
             - unpack: whether to unpack unless specified otherwise in the install.rdf
         """
         if addon == WEBDRIVER_EXT:

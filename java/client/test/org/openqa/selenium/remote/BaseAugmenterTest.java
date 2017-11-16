@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
@@ -57,8 +58,7 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldAddInterfaceFromCapabilityIfNecessary() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("magic.numbers", true);
+    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
     BaseAugmenter augmenter = getAugmenter();
@@ -71,8 +71,7 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldNotAddInterfaceWhenBooleanValueForItIsFalse() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("magic.numbers", false);
+    Capabilities caps = new ImmutableCapabilities("magic.numbers", false);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
     BaseAugmenter augmenter = getAugmenter();
@@ -85,8 +84,7 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldDelegateToHandlerIfAdded() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("foo", true);
+    Capabilities caps = new ImmutableCapabilities("foo", true);
 
     BaseAugmenter augmenter = getAugmenter();
     augmenter.addDriverAugmentation("foo", new AugmenterProvider() {
@@ -113,10 +111,9 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldDelegateUnmatchedMethodCallsToDriverImplementation() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("magic.numbers", true);
+    Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
     StubExecutor stubExecutor = new StubExecutor(caps);
-    stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<String, Object>(), "Title");
+    stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<>(), "Title");
     WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
     BaseAugmenter augmenter = getAugmenter();
@@ -128,9 +125,8 @@ public abstract class BaseAugmenterTest {
 
   @Test(expected = NoSuchElementException.class)
   public void proxyShouldNotAppearInStackTraces() {
-    final DesiredCapabilities caps = new DesiredCapabilities();
     // This will force the class to be enhanced
-    caps.setCapability("magic.numbers", true);
+    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
 
     DetonatingDriver driver = new DetonatingDriver();
     driver.setCapabilities(caps);
@@ -169,8 +165,7 @@ public abstract class BaseAugmenterTest {
       }
     });
 
-    final DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("foo", true);
+    final Capabilities caps = new ImmutableCapabilities("foo", true);
 
     StubExecutor executor = new StubExecutor(caps);
     RemoteWebDriver parent = new RemoteWebDriver(executor, caps) {
@@ -212,9 +207,7 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldBeAbleToAugmentMultipleTimes() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("canRotate", true);
-    caps.setCapability("magic.numbers", true);
+    Capabilities caps = new ImmutableCapabilities("canRotate", true, "magic.numbers", true);
 
     StubExecutor stubExecutor = new StubExecutor(caps);
     stubExecutor.expect(DriverCommand.GET_SCREEN_ORIENTATION,
@@ -340,7 +333,7 @@ public abstract class BaseAugmenterTest {
 
     @Override
     public Capabilities getCapabilities() {
-      return new DesiredCapabilities();
+      return new ImmutableCapabilities();
     }
   }
 

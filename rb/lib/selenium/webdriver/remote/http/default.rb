@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -26,7 +24,7 @@ module Selenium
       module Http
         # @api private
         class Default < Common
-          attr_accessor :proxy
+          attr_writer :proxy
 
           attr_accessor :open_timeout
           attr_accessor :read_timeout
@@ -94,7 +92,6 @@ module Selenium
               retries += 1
               sleep 2
               retry
-
             rescue Errno::ECONNREFUSED => ex
               raise ex.class, "using proxy: #{proxy.http}" if use_proxy?
               raise

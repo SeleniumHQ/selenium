@@ -28,7 +28,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.testing.TestUtilities;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;

@@ -19,7 +19,6 @@ import pytest
 
 from selenium.common.exceptions import (
     ElementNotSelectableException,
-    InvalidElementStateException,
     NoSuchElementException,
     UnexpectedTagNameException)
 from selenium.webdriver.support.ui import Select
@@ -46,7 +45,7 @@ def testSelectByIndexSingle(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_marionette(raises=InvalidElementStateException)
+@pytest.mark.xfail_marionette
 @pytest.mark.xfail_phantomjs
 @pytest.mark.xfail_safari
 def testSelectDisabledByIndexShouldThrowException(driver, pages):
@@ -69,7 +68,7 @@ def testSelectByValueSingle(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_marionette(raises=InvalidElementStateException)
+@pytest.mark.xfail_marionette
 @pytest.mark.xfail_phantomjs
 @pytest.mark.xfail_safari
 def testSelectDisabledByValueShouldThrowException(driver, pages):
@@ -107,7 +106,7 @@ def testSelectByVisibleTextShouldNormalizeSpaces(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_marionette(raises=InvalidElementStateException)
+@pytest.mark.xfail_marionette
 @pytest.mark.xfail_phantomjs
 @pytest.mark.xfail_safari
 def testSelectDisabledByVisibleTextShouldThrowException(driver, pages):

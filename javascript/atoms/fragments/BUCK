@@ -26,6 +26,7 @@ closure_fragment(name = 'is-displayed',
     '//javascript/atoms:dom',
   ],
   visibility = [
+    '//dotnet/src/webdriver:webdriver_deps',
     '//java/client/src/org/openqa/selenium/remote:is-displayed',
     '//javascript/chrome-driver:is_element_displayed',
   ],

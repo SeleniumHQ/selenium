@@ -27,20 +27,16 @@ const edge = require('./edge');
 const firefox = require('./firefox');
 const _http = require('./http');
 const ie = require('./ie');
-const actions = require('./lib/actions');
 const by = require('./lib/by');
 const capabilities = require('./lib/capabilities');
 const command = require('./lib/command');
 const error = require('./lib/error');
-const events = require('./lib/events');
 const input = require('./lib/input');
 const logging = require('./lib/logging');
 const promise = require('./lib/promise');
 const session = require('./lib/session');
 const until = require('./lib/until');
 const webdriver = require('./lib/webdriver');
-const opera = require('./opera');
-const phantomjs = require('./phantomjs');
 const remote = require('./remote');
 const safari = require('./safari');
 
@@ -107,7 +103,7 @@ function ensureFileDetectorsAreEnabled(ctor) {
  * every issued command will fail.
  *
  * @extends {webdriver.IWebDriver}
- * @extends {promise.CancellableThenable<!webdriver.IWebDriver>}
+ * @extends {IThenable<!webdriver.IWebDriver>}
  * @interface
  */
 class ThenableWebDriver {
@@ -147,24 +143,13 @@ function createDriver(ctor, ...args) {
           return new ctor(session, ...rest);
         });
 
-        /**
-         * @param {(string|Error)=} opt_reason
-         * @override
-         */
-        this.cancel = function(opt_reason) {
-          if (promise.CancellableThenable.isImplementation(pd)) {
-            /** @type {!promise.CancellableThenable} */(pd).cancel(opt_reason);
-          }
-        };
-
         /** @override */
         this.then = pd.then.bind(pd);
 
         /** @override */
-        this.catch = pd.then.bind(pd);
+        this.catch = pd.catch.bind(pd);
       }
     };
-    promise.CancellableThenable.addImplementation(thenableWebDriverProxy);
     THENABLE_DRIVERS.set(ctor, thenableWebDriverProxy);
   }
   return thenableWebDriverProxy.createSession(...args);
@@ -215,9 +200,6 @@ class Builder {
     /** @private @const */
     this.log_ = logging.getLogger('webdriver.Builder');
 
-    /** @private {promise.ControlFlow} */
-    this.flow_ = null;
-
     /** @private {string} */
     this.url_ = '';
 
@@ -232,9 +214,6 @@ class Builder {
 
     /** @private {firefox.Options} */
     this.firefoxOptions_ = null;
-
-    /** @private {opera.Options} */
-    this.operaOptions_ = null;
 
     /** @private {ie.Options} */
     this.ieOptions_ = null;
@@ -358,18 +337,22 @@ class Builder {
    * environment variable. If set, this environment variable should be of the
    * form `browser[:[version][:platform]]`.
    *
-   * @param {(string|Browser)} name The name of the target browser;
+   * @param {(string|!Browser)} name The name of the target browser;
    *     common defaults are available on the {@link webdriver.Browser} enum.
    * @param {string=} opt_version A desired version; may be omitted if any
    *     version should be used.
-   * @param {string=} opt_platform The desired platform; may be omitted if any
-   *     version may be used.
+   * @param {(string|!capabilities.Platform)=} opt_platform
+   *     The desired platform; may be omitted if any platform may be used.
    * @return {!Builder} A self reference.
    */
   forBrowser(name, opt_version, opt_platform) {
-    this.capabilities_.set(Capability.BROWSER_NAME, name);
-    this.capabilities_.set(Capability.VERSION, opt_version || null);
-    this.capabilities_.set(Capability.PLATFORM, opt_platform || null);
+    this.capabilities_.setBrowserName(name);
+    if (opt_version) {
+      this.capabilities_.setBrowserVersion(opt_version);
+    }
+    if (opt_platform) {
+      this.capabilities_.setPlatform(opt_platform);
+    }
     return this;
   }
 
@@ -378,7 +361,7 @@ class Builder {
    * Any calls to {@link #withCapabilities} after this function will
    * overwrite these settings.
    *
-   * @param {!capabilities.ProxyConfig} config The configuration to use.
+   * @param {!./lib/proxy.Config} config The configuration to use.
    * @return {!Builder} A self reference.
    */
   setProxy(config) {
@@ -399,32 +382,12 @@ class Builder {
   }
 
   /**
-   * Sets whether native events should be used.
-   * @param {boolean} enabled Whether to enable native events.
-   * @return {!Builder} A self reference.
-   */
-  setEnableNativeEvents(enabled) {
-    this.capabilities_.setEnableNativeEvents(enabled);
-    return this;
-  }
-
-  /**
-   * Sets how elements should be scrolled into view for interaction.
-   * @param {number} behavior The desired scroll behavior: either 0 to align
-   *     with the top of the viewport or 1 to align with the bottom.
-   * @return {!Builder} A self reference.
-   */
-  setScrollBehavior(behavior) {
-    this.capabilities_.setScrollBehavior(behavior);
-    return this;
-  }
-
-  /**
    * Sets the default action to take with an unexpected alert before returning
    * an error.
-   * @param {string} behavior The desired behavior; should be "accept",
-   *     "dismiss", or "ignore". Defaults to "dismiss".
+   *
+   * @param {?capabilities.UserPromptHandler} behavior The desired behavior.
    * @return {!Builder} A self reference.
+   * @see capabilities.Capabilities#setAlertBehavior
    */
   setAlertBehavior(behavior) {
     this.capabilities_.setAlertBehavior(behavior);
@@ -465,20 +428,6 @@ class Builder {
    */
   getFirefoxOptions() {
     return this.firefoxOptions_;
-  }
-
-  /**
-   * Sets Opera specific {@linkplain opera.Options options} for drivers created
-   * by this builder. Any logging or proxy settings defined on the given options
-   * will take precedence over those set through {@link #setLoggingPrefs} and
-   * {@link #setProxy}, respectively.
-   *
-   * @param {!opera.Options} options The OperaDriver options to use.
-   * @return {!Builder} A self reference.
-   */
-  setOperaOptions(options) {
-    this.operaOptions_ = options;
-    return this;
   }
 
   /**
@@ -530,19 +479,6 @@ class Builder {
   }
 
   /**
-   * Sets the control flow that created drivers should execute actions in. If
-   * the flow is never set, or is set to {@code null}, it will use the active
-   * flow at the time {@link #build()} is called.
-   * @param {promise.ControlFlow} flow The control flow to use, or
-   *     {@code null} to
-   * @return {!Builder} A self reference.
-   */
-  setControlFlow(flow) {
-    this.flow_ = flow;
-    return this;
-  }
-
-  /**
    * Creates a new WebDriver client based on this builder's current
    * configuration.
    *
@@ -564,9 +500,10 @@ class Builder {
     if (!this.ignoreEnv_ && process.env.SELENIUM_BROWSER) {
       this.log_.fine(`SELENIUM_BROWSER=${process.env.SELENIUM_BROWSER}`);
       browser = process.env.SELENIUM_BROWSER.split(/:/, 3);
-      capabilities.set(Capability.BROWSER_NAME, browser[0]);
-      capabilities.set(Capability.VERSION, browser[1] || null);
-      capabilities.set(Capability.PLATFORM, browser[2] || null);
+      capabilities.setBrowserName(browser[0]);
+
+      browser[1] && capabilities.setBrowserVersion(browser[1]);
+      browser[2] && capabilities.setPlatform(browser[2]);
     }
 
     browser = capabilities.get(Capability.BROWSER_NAME);
@@ -590,9 +527,6 @@ class Builder {
 
     } else if (browser === Browser.INTERNET_EXPLORER && this.ieOptions_) {
       capabilities.merge(this.ieOptions_.toCapabilities());
-
-    } else if (browser === Browser.OPERA && this.operaOptions_) {
-      capabilities.merge(this.operaOptions_.toCapabilities());
 
     } else if (browser === Browser.SAFARI && this.safariOptions_) {
       capabilities.merge(this.safariOptions_.toCapabilities());
@@ -623,41 +557,32 @@ class Builder {
 
       if (browser === Browser.CHROME) {
         const driver = ensureFileDetectorsAreEnabled(chrome.Driver);
-        return createDriver(
-            driver, capabilities, executor, this.flow_);
+        return createDriver(driver, capabilities, executor);
       }
 
       if (browser === Browser.FIREFOX) {
         const driver = ensureFileDetectorsAreEnabled(firefox.Driver);
-        return createDriver(
-            driver, capabilities, executor, this.flow_);
+        return createDriver(driver, capabilities, executor);
       }
-      return createDriver(
-          WebDriver, executor, capabilities, this.flow_);
+      return createDriver(WebDriver, executor, capabilities);
     }
 
     // Check for a native browser.
     switch (browser) {
       case Browser.CHROME:
-        return createDriver(chrome.Driver, capabilities, null, this.flow_);
+        return createDriver(chrome.Driver, capabilities, null);
 
       case Browser.FIREFOX:
-        return createDriver(firefox.Driver, capabilities, null, this.flow_);
+        return createDriver(firefox.Driver, capabilities, null);
 
       case Browser.INTERNET_EXPLORER:
-        return createDriver(ie.Driver, capabilities, this.flow_);
+        return createDriver(ie.Driver, capabilities);
 
       case Browser.EDGE:
-        return createDriver(edge.Driver, capabilities, null, this.flow_);
-
-      case Browser.OPERA:
-        return createDriver(opera.Driver, capabilities, null, this.flow_);
-
-      case Browser.PHANTOM_JS:
-        return createDriver(phantomjs.Driver, capabilities, this.flow_);
+        return createDriver(edge.Driver, capabilities, null);
 
       case Browser.SAFARI:
-        return createDriver(safari.Driver, capabilities, this.flow_);
+        return createDriver(safari.Driver, capabilities);
 
       default:
         throw new Error('Do not know how to build driver: ' + browser
@@ -670,7 +595,7 @@ class Builder {
 // PUBLIC API
 
 
-exports.ActionSequence = actions.ActionSequence;
+exports.ActionSequence = webdriver.ActionSequence;
 exports.Browser = capabilities.Browser;
 exports.Builder = Builder;
 exports.Button = input.Button;
@@ -678,12 +603,10 @@ exports.By = by.By;
 exports.Capabilities = capabilities.Capabilities;
 exports.Capability = capabilities.Capability;
 exports.Condition = webdriver.Condition;
-exports.EventEmitter = events.EventEmitter;
 exports.FileDetector = input.FileDetector;
 exports.Key = input.Key;
 exports.Session = session.Session;
 exports.ThenableWebDriver = ThenableWebDriver;
-exports.TouchSequence = actions.TouchSequence;
 exports.WebDriver = webdriver.WebDriver;
 exports.WebElement = webdriver.WebElement;
 exports.WebElementCondition = webdriver.WebElementCondition;

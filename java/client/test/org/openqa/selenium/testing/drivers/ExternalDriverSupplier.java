@@ -22,9 +22,9 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import com.google.common.base.Suppliers;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -67,7 +67,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
   private final Capabilities desiredCapabilities;
 
   ExternalDriverSupplier(Capabilities desiredCapabilities) {
-    this.desiredCapabilities = new DesiredCapabilities(desiredCapabilities);
+    this.desiredCapabilities = new ImmutableCapabilities(desiredCapabilities);
   }
 
   @Override
@@ -99,9 +99,9 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
   }
 
   private static Optional<Supplier<WebDriver>> createDelegate(Capabilities desiredCapabilities) {
-    Optional<Class<? extends Supplier>> supplierClass = getDelegateClass();
+    Optional<Class<? extends Supplier<WebDriver>>> supplierClass = getDelegateClass();
     if (supplierClass.isPresent()) {
-      Class<? extends Supplier> clazz = supplierClass.get();
+      Class<? extends Supplier<WebDriver>> clazz = supplierClass.get();
       logger.info("Using delegate supplier: " + clazz.getName());
       try {
         @SuppressWarnings("unchecked")
@@ -118,13 +118,13 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
   }
 
   @SuppressWarnings("unchecked")
-  private static Optional<Class<? extends Supplier>> getDelegateClass() {
+  private static Optional<Class<? extends Supplier<WebDriver>>> getDelegateClass() {
     String delegateClassName = System.getProperty(DELEGATE_SUPPLIER_CLASS_PROPERTY);
     if (delegateClassName != null) {
       try {
         logger.info("Loading custom supplier: " + delegateClassName);
-        Class<? extends Supplier> clazz =
-            (Class<? extends Supplier>) Class.forName(delegateClassName);
+        Class<? extends Supplier<WebDriver>> clazz =
+            (Class<? extends Supplier<WebDriver>>) Class.forName(delegateClassName);
         return Optional.of(clazz);
       } catch (Exception e) {
         throw new RuntimeException(e);

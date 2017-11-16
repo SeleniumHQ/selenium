@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -48,7 +46,7 @@ module Selenium
         end
 
         def run
-          handler.run @app, Host: @host, Port: @port, AccessLog: []
+          handler.run @app, Host: @host, Port: @port, AccessLog: [], Logger: WEBrick::Log.new(nil, 0)
         end
 
         def where_is(file)
@@ -133,6 +131,6 @@ module Selenium
   end # WebDriver
 end # Selenium
 
-if __FILE__ == $PROGRAM_NAME
+if $PROGRAM_NAME == __FILE__
   Selenium::WebDriver::SpecSupport::RackServer.new(ARGV[0], ARGV[1]).run
 end

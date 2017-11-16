@@ -135,7 +135,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             string binary = string.Empty;
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {
-#if !NETCOREAPP2_0
+#if !NETCOREAPP2_0 && !NETSTANDARD2_0
                 // NOTE: This code is legacy, and will be removed. It will not be
                 // fixed for the .NET Core case.
                 // Look first in HKEY_LOCAL_MACHINE, then in HKEY_CURRENT_USER
@@ -164,7 +164,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                     };
 
                     binary = GetExecutablePathUsingDefaultInstallLocations(windowsDefaultInstallLocations, "Firefox.exe");
-#if !NETCOREAPP2_0
+#if !NETCOREAPP2_0 && !NETSTANDARD2_0
                 }
 #endif
             }
@@ -206,7 +206,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             return FindBinary(new string[] { "firefox3", "firefox" });
         }
 
-#if !NETCOREAPP2_0
+#if !NETCOREAPP2_0 && !NETSTANDARD2_0
         private static string GetExecutablePathUsingRegistry(RegistryKey mozillaKey)
         {
             // NOTE: This code is legacy, and will be removed. It will not be

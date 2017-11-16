@@ -18,7 +18,7 @@ _bindings:
     python: "2.7"
   ruby: &ruby
     language: ruby
-    rvm: 2.3.3
+    rvm: 2.0.0-p648
     jdk: oraclejdk8
 
 _browsers:
@@ -125,9 +125,6 @@ matrix:
     - env: MARIONETTE=1 TOXENV=py27-marionette
       <<: *python
       <<: *firefox-nightly
-    - env: TOXENV=py33-unit
-      <<: *python
-      python: 3.3
     - env: TOXENV=flake8
       <<: *python
       python: 3.6
@@ -157,9 +154,6 @@ matrix:
     - env: MARIONETTE=1 TASK=//rb:firefox-test
       <<: *ruby
       <<: *firefox-latest
-    - env: MARIONETTE=1 TASK=//rb:ff-nightly-test
-      <<: *ruby
-      <<: *firefox-nightly
     - env: TASK=//rb:ff-esr-test
       <<: *ruby
       <<: *firefox-esr
@@ -169,13 +163,12 @@ matrix:
     - env: MARIONETTE=1 TASK=//rb:remote-firefox-test
       <<: *ruby
       <<: *firefox-latest
-    - env: MARIONETTE=1 TASK=//rb:remote-ff-nightly-test
-      <<: *ruby
-      <<: *firefox-nightly
     - env: TASK=//rb:remote-ff-esr-test
       <<: *ruby
       <<: *firefox-esr
     - env: TASK=//rb:docs
+      <<: *ruby
+    - env: TASK=//rb:lint
       <<: *ruby
   allow_failures:
     - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run

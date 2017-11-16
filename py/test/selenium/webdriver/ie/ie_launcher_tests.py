@@ -46,7 +46,7 @@ def test_launch_ie_with_options(pages):
     opts = Options()
     expected = "clicks.html"
     opts.initial_browser_url = pages.url(expected)
-    driver = Ie(ie_options=opts)
+    driver = Ie(options=opts)
     actual = driver.current_url
     driver.quit()
     assert expected in actual

@@ -15,10 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.grid.internal.mock;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
@@ -33,7 +32,7 @@ public class MockedRequestHandler extends RequestHandler {
   public MockedRequestHandler(
     SeleniumBasedRequest request,
     HttpServletResponse response,
-    Registry registry) {
+    GridRegistry registry) {
     super(request, response, registry);
   }
 

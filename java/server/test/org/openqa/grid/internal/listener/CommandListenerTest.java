@@ -35,8 +35,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.DefaultGridRegistry;
 import org.openqa.grid.internal.DetachedRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -67,7 +68,7 @@ public class CommandListenerTest {
 
   static class MyRemoteProxy extends DetachedRemoteProxy implements CommandListener {
 
-    public MyRemoteProxy(RegistrationRequest request, Registry registry) {
+    public MyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -147,7 +148,7 @@ public class CommandListenerTest {
 
   @Test
   public void canModifyResponseWithListener() throws IOException {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     registry.add(new MyRemoteProxy(req, registry));
 
     RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);

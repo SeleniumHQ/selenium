@@ -29,21 +29,21 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.profiler.EventType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
@@ -117,7 +117,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   private void startLoggingDriver() {
     if (loggingDriver == null) {
       WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(
-        getCapabilitiesWithProfilerOn(true));
+          new ImmutableCapabilities(ENABLE_PROFILING_CAPABILITY, true));
       loggingDriver = builder.get();
     }
   }
@@ -128,16 +128,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
 
   private ImmutableList<LogEntry> getProfilerEntriesOfType(final LogEntries entries,
       final EventType eventType) {
-    return ImmutableList.copyOf(Iterables.filter(entries, new Predicate<LogEntry>() {
-      public boolean apply(LogEntry entry) {
-        return entry.getMessage().contains(eventType.toString());
-      }
-    }));
-  }
-
-  private static DesiredCapabilities getCapabilitiesWithProfilerOn(boolean enabled) {
-    DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-    capabilities.setCapability(ENABLE_PROFILING_CAPABILITY, enabled);
-    return capabilities;
+    return ImmutableList.copyOf(StreamSupport.stream(entries.spliterator(), false).filter(
+        entry -> entry.getMessage().contains(eventType.toString())).collect(Collectors.toList()));
   }
 }

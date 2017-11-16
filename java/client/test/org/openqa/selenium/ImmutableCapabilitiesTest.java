@@ -20,18 +20,55 @@ package org.openqa.selenium;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 @RunWith(JUnit4.class)
 public class ImmutableCapabilitiesTest {
 
   @Test
+  public void canCreateEmptyCapabilities() {
+    Capabilities empty = new ImmutableCapabilities();
+    assertEquals(empty.asMap(), ImmutableMap.of());
+  }
+
+  @Test
+  public void canCreateSinglePairCapabilities() {
+    Capabilities empty = new ImmutableCapabilities("c1", "v1");
+    assertEquals(empty.asMap(), ImmutableMap.of("c1", "v1"));
+  }
+
+  @Test
+  public void canCreateTwoPairCapabilities() {
+    Capabilities empty = new ImmutableCapabilities("c1", "v1", "c2", 2);
+    assertEquals(empty.asMap(), ImmutableMap.of("c1", "v1", "c2", 2));
+  }
+
+  @Test
+  public void canCreateThreePairCapabilities() {
+    Capabilities empty = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true);
+    assertEquals(empty.asMap(), ImmutableMap.of("c1", "v1", "c2", 2, "c3", true));
+  }
+
+  @Test
+  public void canCreateFourPairCapabilities() {
+    Capabilities empty = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true, "c4", "v4");
+    assertEquals(empty.asMap(), ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4"));
+  }
+
+  @Test
+  public void canCreateFivePairCapabilities() {
+    Capabilities empty = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5");
+    assertEquals(empty.asMap(), ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5"));
+  }
+
+  @Test
   public void canCompareCapabilities() {
-    DesiredCapabilities caps1 = new DesiredCapabilities();
-    DesiredCapabilities caps2 = new DesiredCapabilities();
+    MutableCapabilities caps1 = new MutableCapabilities();
+    MutableCapabilities caps2 = new MutableCapabilities();
     assertEquals(new ImmutableCapabilities(caps1), new ImmutableCapabilities(caps2));
 
     caps1.setCapability("xxx", "yyy");

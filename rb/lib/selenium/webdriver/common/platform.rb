@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -117,7 +115,7 @@ module Selenium
       end
 
       def make_writable(file)
-        File.chmod 0766, file
+        File.chmod 0o766, file
       end
 
       def assert_file(path)
@@ -208,7 +206,7 @@ module Selenium
   end # WebDriver
 end # Selenium
 
-if __FILE__ == $PROGRAM_NAME
+if $PROGRAM_NAME == __FILE__
   p engine: Selenium::WebDriver::Platform.engine,
     os: Selenium::WebDriver::Platform.os,
     ruby_version: Selenium::WebDriver::Platform.ruby_version,

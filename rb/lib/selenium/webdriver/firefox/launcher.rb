@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -90,11 +88,11 @@ module Selenium
         end
 
         def fetch_profile
-          if @profile_name
-            @profile = Profile.from_name @profile_name
-          else
-            @profile = Profile.new
-          end
+          @profile = if @profile_name
+                       Profile.from_name @profile_name
+                     else
+                       Profile.new
+                     end
         end
 
         def assert_profile

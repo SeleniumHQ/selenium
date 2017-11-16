@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,7 +20,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver do
-      context 'sql database' do
+      context 'sql database', pending: 'Not supported in any driver.' do
         let(:select) { 'SELECT * FROM docs' }
         let(:insert) { 'INSERT INTO docs(docname) VALUES (?)' }
         let(:delete) { 'DELETE from docs' }
@@ -33,46 +31,44 @@ module Selenium
           wait.until { driver.find_element(id: 'db_completed') }
         end
 
-        compliant_on browser: nil do
-          it 'includes inserted rows in the result set' do
-            driver.execute_sql insert, 'DocFoo'
-            driver.execute_sql insert, 'DocFooBar'
+        it 'includes inserted rows in the result set' do
+          driver.execute_sql insert, 'DocFoo'
+          driver.execute_sql insert, 'DocFooBar'
 
-            result = driver.execute_sql select
-            expect(result.rows.size).to eq(2)
+          result = driver.execute_sql select
+          expect(result.rows.size).to eq(2)
 
-            expect(result.rows[0]['docname']).to eq('DocFoo')
-            expect(result.rows[1]['docname']).to eq('DocFooBar')
+          expect(result.rows[0]['docname']).to eq('DocFoo')
+          expect(result.rows[1]['docname']).to eq('DocFooBar')
 
-            driver.execute_sql delete
-            result = driver.execute_sql select
-            expect(result.rows.size).to eq(0)
-          end
+          driver.execute_sql delete
+          result = driver.execute_sql select
+          expect(result.rows.size).to eq(0)
+        end
 
-          it 'knows the number of rows affected' do
-            result = driver.execute_sql insert, 'DocFooBar'
-            expect(result.rows_affected).to eq(1)
+        it 'knows the number of rows affected' do
+          result = driver.execute_sql insert, 'DocFooBar'
+          expect(result.rows_affected).to eq(1)
 
-            result = driver.execute_sql select
-            expect(result.rows_affected).to eq(0)
+          result = driver.execute_sql select
+          expect(result.rows_affected).to eq(0)
 
-            driver.execute_sql update
-            expect(result.rows.affected).to eq(1)
-          end
+          driver.execute_sql update
+          expect(result.rows.affected).to eq(1)
+        end
 
-          it 'returns last inserted row id' do
-            result = driver.execute_sql select
-            expect(result.last_inserted_row_id).to eq(-1)
+        it 'returns last inserted row id' do
+          result = driver.execute_sql select
+          expect(result.last_inserted_row_id).to eq(-1)
 
-            driver.execute_sql insert, 'DocFoo'
-            expect(result.last_inserted_row_id).not_to eq(-1)
+          driver.execute_sql insert, 'DocFoo'
+          expect(result.last_inserted_row_id).not_to eq(-1)
 
-            result = driver.execute_sql select
-            expect(result.last_inserted_row_id).to eq(-1)
+          result = driver.execute_sql select
+          expect(result.last_inserted_row_id).to eq(-1)
 
-            result = driver.execute_sql delete
-            expect(result.last_inserted_row_id).to eq(-1)
-          end
+          result = driver.execute_sql delete
+          expect(result.last_inserted_row_id).to eq(-1)
         end
       end
     end

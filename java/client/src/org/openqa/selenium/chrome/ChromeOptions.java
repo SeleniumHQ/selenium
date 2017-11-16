@@ -19,28 +19,33 @@ package org.openqa.selenium.chrome;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  * Class to manage options specific to {@link ChromeDriver}.
@@ -54,24 +59,18 @@ import java.util.Map;
  * // For use with ChromeDriver:
  * ChromeDriver driver = new ChromeDriver(options);
  *
- * // or alternatively:
- * DesiredCapabilities capabilities = DesiredCapabilities.chrome();
- * capabilities.setCapability(ChromeOptions.CAPABILITY, options);
- * ChromeDriver driver = new ChromeDriver(capabilities);
- *
  * // For use with RemoteWebDriver:
- * DesiredCapabilities capabilities = DesiredCapabilities.chrome();
- * capabilities.setCapability(ChromeOptions.CAPABILITY, options);
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"), capabilities);
+ *     new URL("http://localhost:4444/wd/hub"),
+ *     new ChromeOptions());
  * </code></pre>
  *
  * @since Since chromedriver v17.0.963.0
  */
-public class ChromeOptions {
+public class ChromeOptions extends MutableCapabilities {
 
   /**
-   * Key used to store a set of ChromeOptions in a {@link DesiredCapabilities}
+   * Key used to store a set of ChromeOptions in a {@link Capabilities}
    * object.
    */
   public static final String CAPABILITY = "goog:chromeOptions";
@@ -81,17 +80,15 @@ public class ChromeOptions {
   private List<File> extensionFiles = Lists.newArrayList();
   private List<String> extensions = Lists.newArrayList();
   private Map<String, Object> experimentalOptions = Maps.newHashMap();
-  private MutableCapabilities capabilities = new MutableCapabilities();
 
-  /**
-   * Sets the path to the Chrome executable. This path should exist on the
-   * machine which will launch Chrome. The path should either be absolute or
-   * relative to the location of running ChromeDriver server.
-   *
-   * @param path Path to Chrome executable.
-   */
-  public void setBinary(File path) {
-    binary = checkNotNull(path).getPath();
+  public ChromeOptions() {
+    setCapability(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
+  }
+
+  @Override
+  public ChromeOptions merge(Capabilities extraCapabilities) {
+    super.merge(extraCapabilities);
+    return this;
   }
 
   /**
@@ -101,16 +98,30 @@ public class ChromeOptions {
    *
    * @param path Path to Chrome executable.
    */
-  public void setBinary(String path) {
+  public ChromeOptions setBinary(File path) {
+    binary = checkNotNull(path).getPath();
+    return this;
+  }
+
+  /**
+   * Sets the path to the Chrome executable. This path should exist on the
+   * machine which will launch Chrome. The path should either be absolute or
+   * relative to the location of running ChromeDriver server.
+   *
+   * @param path Path to Chrome executable.
+   */
+  public ChromeOptions setBinary(String path) {
     binary = checkNotNull(path);
+    return this;
   }
 
   /**
    * @param arguments The arguments to use when starting Chrome.
    * @see #addArguments(java.util.List)
    */
-  public void addArguments(String... arguments) {
+  public ChromeOptions addArguments(String... arguments) {
     addArguments(ImmutableList.copyOf(arguments));
+    return this;
   }
 
   /**
@@ -128,16 +139,18 @@ public class ChromeOptions {
    *
    * @param arguments The arguments to use when starting Chrome.
    */
-  public void addArguments(List<String> arguments) {
+  public ChromeOptions addArguments(List<String> arguments) {
     args.addAll(arguments);
+    return this;
   }
 
   /**
    * @param paths Paths to the extensions to install.
    * @see #addExtensions(java.util.List)
    */
-  public void addExtensions(File... paths) {
+  public ChromeOptions addExtensions(File... paths) {
     addExtensions(ImmutableList.copyOf(paths));
+    return this;
   }
 
   /**
@@ -146,7 +159,7 @@ public class ChromeOptions {
    *
    * @param paths Paths to the extensions to install.
    */
-  public void addExtensions(List<File> paths) {
+  public ChromeOptions addExtensions(List<File> paths) {
     for (File path : paths) {
       checkNotNull(path);
       checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
@@ -154,14 +167,16 @@ public class ChromeOptions {
           path.getAbsolutePath());
     }
     extensionFiles.addAll(paths);
+    return this;
   }
 
   /**
    * @param encoded Base64 encoded data of the extensions to install.
    * @see #addEncodedExtensions(java.util.List)
    */
-  public void addEncodedExtensions(String... encoded) {
+  public ChromeOptions addEncodedExtensions(String... encoded) {
     addEncodedExtensions(ImmutableList.copyOf(encoded));
+    return this;
   }
 
   /**
@@ -170,11 +185,12 @@ public class ChromeOptions {
    *
    * @param encoded Base64 encoded data of the extensions to install.
    */
-  public void addEncodedExtensions(List<String> encoded) {
+  public ChromeOptions addEncodedExtensions(List<String> encoded) {
     for (String extension : encoded) {
       checkNotNull(extension);
     }
     extensions.addAll(encoded);
+    return this;
   }
 
   /**
@@ -185,8 +201,9 @@ public class ChromeOptions {
    * @param value Value of the experimental option, which must be convertible
    *     to JSON.
    */
-  public void setExperimentalOption(String name, Object value) {
+  public ChromeOptions setExperimentalOption(String name, Object value) {
     experimentalOptions.put(checkNotNull(name), value);
+    return this;
   }
 
   /**
@@ -194,50 +211,41 @@ public class ChromeOptions {
    *
    * @param name The option name.
    * @return The option value, or {@code null} if not set.
+   * @deprecated Getters are not needed in browser Options classes.
    */
+  @Deprecated
   public Object getExperimentalOption(String name) {
     return experimentalOptions.get(checkNotNull(name));
   }
 
-  public void setPageLoadStrategy(PageLoadStrategy strategy) {
-    capabilities.setCapability(PAGE_LOAD_STRATEGY, strategy);
+  public ChromeOptions setPageLoadStrategy(PageLoadStrategy strategy) {
+    setCapability(PAGE_LOAD_STRATEGY, strategy);
+    return this;
   }
 
-  public void setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
-    capabilities.setCapability(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
-    capabilities.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
+  public ChromeOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
+    setCapability(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
+    setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
+    return this;
   }
 
-  /**
-   * Converts this instance to its JSON representation.
-   *
-   * @return The JSON representation of these options.
-   * @throws IOException If an error occurs while reading the
-   *     {@link #addExtensions(java.util.List) extension files} from disk.
-   */
-  public JsonElement toJson() throws IOException {
-    Map<String, Object> options = Maps.newHashMap();
+  public ChromeOptions setAcceptInsecureCerts(boolean acceptInsecureCerts) {
+    setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
+    return this;
+  }
 
-    for (String key : experimentalOptions.keySet()) {
-      options.put(key, experimentalOptions.get(key));
+  public ChromeOptions setHeadless(boolean headless) {
+    args.remove("--headless");
+    if (headless) {
+      args.add("--headless");
+      args.add("--disable-gpu");
     }
+    return this;
+  }
 
-    if (binary != null) {
-      options.put("binary", binary);
-    }
-
-    options.put("args", ImmutableList.copyOf(args));
-
-    List<String> encoded_extensions = Lists.newArrayListWithExpectedSize(
-        extensionFiles.size() + extensions.size());
-    for (File path : extensionFiles) {
-      String encoded = Base64.getEncoder().encodeToString(Files.toByteArray(path));
-      encoded_extensions.add(encoded);
-    }
-    encoded_extensions.addAll(extensions);
-    options.put("extensions", encoded_extensions);
-
-    return new Gson().toJsonTree(options);
+  public ChromeOptions setProxy(Proxy proxy) {
+    setCapability(CapabilityType.PROXY, proxy);
+    return this;
   }
 
   /**
@@ -246,29 +254,51 @@ public class ChromeOptions {
    * reflected in the returned capabilities.
    *
    * @return DesiredCapabilities for Chrome with these options.
+   * @deprecated This class is already an instance of {@link MutableCapabilities}.
    */
-  DesiredCapabilities toCapabilities() {
-    DesiredCapabilities capabilities = DesiredCapabilities.chrome().merge(this.capabilities);
-    capabilities.setCapability(CAPABILITY, this);
-    return capabilities;
+  @Deprecated
+  MutableCapabilities toCapabilities() {
+    return this;
   }
 
   @Override
-  public boolean equals(Object other) {
-    if (!(other instanceof ChromeOptions)) {
-      return false;
+  protected int amendHashCode() {
+    return Objects.hash(
+        args,
+        binary,
+        experimentalOptions,
+        extensionFiles,
+        extensions);
+  }
+
+  @Override
+  public Map<String, Object> asMap() {
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.putAll(super.asMap());
+
+    Map<String, Object> options = new TreeMap<>();
+    experimentalOptions.forEach(options::put);
+
+    if (binary != null) {
+      options.put("binary", binary);
     }
-    ChromeOptions that = (ChromeOptions) other;
-    return Objects.equal(this.binary, that.binary)
-        && Objects.equal(this.args, that.args)
-        && Objects.equal(this.extensionFiles, that.extensionFiles)
-        && Objects.equal(this.experimentalOptions, that.experimentalOptions)
-        && Objects.equal(this.extensions, that.extensions);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(this.binary, this.args, this.extensionFiles, this.experimentalOptions,
-        this.extensions);
+    options.put("args", ImmutableList.copyOf(args));
+
+    options.put(
+        "extensions",
+        extensionFiles.stream()
+            .map(file -> {
+              try {
+                return Base64.getEncoder().encodeToString(Files.toByteArray(file));
+              } catch (IOException e) {
+                throw new SessionNotCreatedException(e.getMessage(), e);
+              }
+            })
+            .collect(ImmutableList.toImmutableList()));
+
+    toReturn.put(CAPABILITY, options);
+
+    return Collections.unmodifiableMap(toReturn);
   }
 }

@@ -21,7 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.stub;
+import static org.mockito.Mockito.when;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
@@ -31,14 +31,12 @@ import com.google.gson.Gson;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.ErrorHandler;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -50,7 +48,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-@RunWith(JUnit4.class)
 public class UploadFileTest {
 
   private TemporaryFilesystem tempFs;
@@ -71,23 +68,23 @@ public class UploadFileTest {
   @Test
   public void shouldWriteABase64EncodedZippedFileToDiskAndKeepName() throws Exception {
     ActiveSession session = mock(ActiveSession.class);
-    stub(session.getId()).toReturn(new SessionId("1234567"));
-    stub(session.getFileSystem()).toReturn(tempFs);
-    stub(session.getDownstreamDialect()).toReturn(Dialect.OSS);
+    when(session.getId()).thenReturn(new SessionId("1234567"));
+    when(session.getFileSystem()).thenReturn(tempFs);
+    when(session.getDownstreamDialect()).thenReturn(Dialect.OSS);
 
     File tempFile = touch(null, "foo");
     String encoded = Zip.zip(tempFile);
 
     Gson gson = new Gson();
-    UploadFile uploadFile = new UploadFile(new JsonToBeanConverter(), session);
+    UploadFile uploadFile = new UploadFile(new Json(), session);
     Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
     request.setContent(gson.toJson(args).getBytes(UTF_8));
     HttpResponse response = new HttpResponse();
     uploadFile.execute(request, response);
 
-    String path = (String) new JsonToBeanConverter()
-        .convert(Response.class, response.getContentString())
+    String path = (String) new Json()
+        .toType(response.getContentString(), Response.class)
         .getValue();
     assertTrue(new File(path).exists());
     assertTrue(path.endsWith(tempFile.getName()));
@@ -96,9 +93,9 @@ public class UploadFileTest {
   @Test
   public void shouldThrowAnExceptionIfMoreThanOneFileIsSent() throws Exception {
     ActiveSession session = mock(ActiveSession.class);
-    stub(session.getId()).toReturn(new SessionId("1234567"));
-    stub(session.getFileSystem()).toReturn(tempFs);
-    stub(session.getDownstreamDialect()).toReturn(Dialect.OSS);
+    when(session.getId()).thenReturn(new SessionId("1234567"));
+    when(session.getFileSystem()).thenReturn(tempFs);
+    when(session.getDownstreamDialect()).thenReturn(Dialect.OSS);
 
     File baseDir = Files.createTempDir();
     touch(baseDir, "example");
@@ -106,7 +103,7 @@ public class UploadFileTest {
     String encoded = Zip.zip(baseDir);
 
     Gson gson = new Gson();
-    UploadFile uploadFile = new UploadFile(new JsonToBeanConverter(), session);
+    UploadFile uploadFile = new UploadFile(new Json(), session);
     Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
     request.setContent(gson.toJson(args).getBytes(UTF_8));
@@ -115,7 +112,7 @@ public class UploadFileTest {
 
     try {
       new ErrorHandler(false).throwIfResponseFailed(
-          new JsonToBeanConverter().convert(Response.class, response.getContentString()),
+          new Json().toType(response.getContentString(), Response.class),
           100);
       fail("Should not get this far");
     } catch (WebDriverException ignored) {

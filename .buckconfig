@@ -2,6 +2,8 @@
   src_roots = /java/client/src, /java/client/test, /java/server/src, /java/server/test
   source_level = 8 
   target_level = 8
+  jar_spool_mode = direct_to_jar
+  compile_against_abis = true
 
 [project]
   ignore = \
@@ -11,8 +13,17 @@
       java/client/build, \
       java/server/build
 
+[build]
+  metadata_storage = sqlite
+
 [cache]
   mode = dir
+
+[parser]
+  polyglot_parsing_enabled = true
+
+[resources]
+  resource_aware_scheduling_enabled = true
 
 [test]
   # Maximum timeout of 10 minutes per test (since each suite counts as a test)

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -28,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,12 +38,20 @@ import java.util.Objects;
 public class JreHttpClient implements HttpClient {
 
   private final URL url;
+  private final String auth;
 
   private JreHttpClient(URL url) {
     if (!url.getProtocol().toLowerCase().startsWith("http")) {
       throw new IllegalArgumentException("Base URL must be an http URL: " + url);
     }
     this.url = url;
+
+    String authority = url.getUserInfo();
+    if (authority == null || "".equals(authority)) {
+      auth = null;
+    } else {
+      auth = "Basic " + Base64.getEncoder().encodeToString(url.getUserInfo().getBytes(UTF_8));
+    }
   }
 
   @Override
@@ -50,6 +61,9 @@ public class JreHttpClient implements HttpClient {
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     try {
       connection.setInstanceFollowRedirects(followRedirects);
+      if (auth != null) {
+        connection.setRequestProperty("Authorization", auth);
+      }
       for (String name : request.getHeaderNames()) {
         for (String value : request.getHeaders(name)) {
           connection.addRequestProperty(name, value);

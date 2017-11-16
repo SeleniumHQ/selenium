@@ -43,7 +43,7 @@ public enum Platform {
    * For versions of Windows that "feel like" Windows XP. These are ones that store files in
    * "\Program Files\" and documents under "\\documents and settings\\username"
    */
-  XP("Windows Server 2003", "xp", "windows", "winnt", "windows_nt") {
+  XP("Windows Server 2003", "xp", "windows", "winnt", "windows_nt", "windows nt") {
     @Override
     public Platform family() {
       return WINDOWS;
@@ -84,7 +84,7 @@ public enum Platform {
     }
   },
 
-  MAC("mac", "darwin", "macOS", "os x") {
+  MAC("mac", "darwin", "macOS", "mac os x", "os x") {
     @Override
     public Platform family() {
       return null;

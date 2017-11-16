@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'junit',
   maven_coords = 'junit:junit:jar:4.12',

@@ -31,10 +31,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.testing.FakeHttpServletRequest;
@@ -186,8 +186,7 @@ public class DriverServletTest {
 
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 
-    Response resp = new JsonToBeanConverter().convert(
-      Response.class, response.getBody());
+    Response resp = new Json().toType(response.getBody(), Response.class);
 
     String sessionId = resp.getSessionId();
     assertNotNull(sessionId);

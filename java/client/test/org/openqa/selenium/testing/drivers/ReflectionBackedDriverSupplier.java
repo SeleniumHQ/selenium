@@ -22,7 +22,7 @@ import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.BrowserType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
@@ -40,14 +40,12 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
   public WebDriver get() {
     try {
-      DesiredCapabilities desiredCapsToUse = new DesiredCapabilities(desiredCapabilities);
-
-      Class<? extends WebDriver> driverClass = mapToClass(desiredCapsToUse);
+      Class<? extends WebDriver> driverClass = mapToClass(desiredCapabilities);
       if (driverClass == null) {
         return null;
       }
 
-      return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapsToUse);
+      return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapabilities);
     } catch (InvocationTargetException e) {
       throw new RuntimeException(e.getTargetException());
     } catch (Exception e) {
@@ -60,25 +58,25 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     String name = caps == null ? "" : caps.getBrowserName();
     String className;
 
-    if (DesiredCapabilities.chrome().getBrowserName().equals(name)) {
+    if (BrowserType.CHROME.equals(name)) {
       className = "org.openqa.selenium.testing.drivers.TestChromeDriver";
-    } else if (DesiredCapabilities.operaBlink().getBrowserName().equals(name)) {
+    } else if (BrowserType.OPERA_BLINK.equals(name)) {
       className = "org.openqa.selenium.testing.drivers.TestOperaBlinkDriver";
-    } else if (DesiredCapabilities.firefox().getBrowserName().equals(name)) {
+    } else if (BrowserType.FIREFOX.equals(name)) {
       if (isInDevMode()) {
         className = "org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver";
       } else {
         className = "org.openqa.selenium.firefox.FirefoxDriver";
       }
-    } else if (DesiredCapabilities.htmlUnit().getBrowserName().equals(name)) {
+    } else if (BrowserType.HTMLUNIT.equals(name)) {
       if (caps.is(SUPPORTS_JAVASCRIPT)) {
         className = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTests$HtmlUnitDriverForTest";
       } else {
         className = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
       }
-    } else if (DesiredCapabilities.internetExplorer().getBrowserName().equals(name)) {
+    } else if (BrowserType.IE.equals(name)) {
       className = "org.openqa.selenium.ie.InternetExplorerDriver";
-    } else if (DesiredCapabilities.safari().getBrowserName().equals(name)) {
+    } else if (BrowserType.SAFARI.equals(name)) {
       className = "org.openqa.selenium.safari.SafariDriver";
     } else {
       // The last chance saloon.

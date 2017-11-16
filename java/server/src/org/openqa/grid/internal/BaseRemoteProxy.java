@@ -33,11 +33,13 @@ import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
+import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -68,8 +70,9 @@ public class BaseRemoteProxy implements RemoteProxy {
   // list of the type of test the remote can run.
   private final List<TestSlot> testSlots;
 
-  private final Registry registry;
+  private final GridRegistry registry;
 
+  private CapabilityMatcher capabilityMatcher;
 
   private final String id;
 
@@ -80,12 +83,12 @@ public class BaseRemoteProxy implements RemoteProxy {
     return testSlots;
   }
 
-  public Registry getRegistry() {
-    return registry;
+  public <T extends GridRegistry> T getRegistry() {
+    return (T) registry;
   }
 
   public CapabilityMatcher getCapabilityHelper() {
-    return registry.getConfiguration().capabilityMatcher;
+    return capabilityMatcher;
   }
 
 
@@ -98,12 +101,16 @@ public class BaseRemoteProxy implements RemoteProxy {
    * @param request  The request
    * @param registry The registry to use
    */
-  public BaseRemoteProxy(RegistrationRequest request, Registry registry) {
+  public BaseRemoteProxy(RegistrationRequest request, GridRegistry registry) {
     this.request = request;
     this.registry = registry;
     this.config = new GridNodeConfiguration();
-    // the registry is the 'hub' configuration, which is used as a seed.
-    this.config.merge(registry.getConfiguration());
+    this.capabilityMatcher = new DefaultCapabilityMatcher();
+    // the registry is the 'hub' configuration, which is used as a seed for this proxy configuration
+    if (registry.getHub() != null) {
+      this.config.merge(registry.getHub().getConfiguration());
+      this.capabilityMatcher = registry.getHub().getConfiguration().capabilityMatcher;
+    }
     // the proxy values must override any that the hub specify where an overlap occurs.
     // merging last causes the values to be overridden.
     this.config.merge(request.getConfiguration());
@@ -136,10 +143,10 @@ public class BaseRemoteProxy implements RemoteProxy {
       this.id = remoteHost.toExternalForm();
     }
 
-    List<DesiredCapabilities> capabilities = request.getConfiguration().capabilities;
+    List<MutableCapabilities> capabilities = request.getConfiguration().capabilities;
 
     List<TestSlot> slots = new ArrayList<>();
-    for (DesiredCapabilities capability : capabilities) {
+    for (MutableCapabilities capability : capabilities) {
       Object maxInstance = capability.getCapability(MAX_INSTANCES);
 
       SeleniumProtocol protocol = SeleniumProtocol.fromCapabilitiesMap(capability.asMap());
@@ -267,10 +274,12 @@ public class BaseRemoteProxy implements RemoteProxy {
     return request;
   }
 
+  @ManagedAttribute
   public int getMaxNumberOfConcurrentTestSessions() {
     return config.maxSession;
   }
 
+  @ManagedAttribute
   public URL getRemoteHost() {
     return remoteHost;
   }
@@ -298,6 +307,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return null;
   }
 
+  @ManagedAttribute
   public int getTotalUsed() {
     int totalUsed = 0;
 
@@ -310,6 +320,11 @@ public class BaseRemoteProxy implements RemoteProxy {
     return totalUsed;
   }
 
+  @ManagedAttribute
+  public int getTotal() {
+    return getTestSlots().size();
+  }
+
   public boolean hasCapability(Map<String, Object> requestedCapability) {
     for (TestSlot slot : getTestSlots()) {
       if (slot.matches(requestedCapability)) {
@@ -320,6 +335,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return false;
   }
 
+  @ManagedAttribute
   public boolean isBusy() {
     return getTotalUsed() != 0;
   }
@@ -335,7 +351,7 @@ public class BaseRemoteProxy implements RemoteProxy {
    */
   @SuppressWarnings("unchecked")
   public static <T extends RemoteProxy> T getNewInstance(
-      RegistrationRequest request, Registry registry) {
+      RegistrationRequest request, GridRegistry registry) {
     try {
       String proxyClass = request.getConfiguration().proxy;
       if (proxyClass == null) {
@@ -345,7 +361,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       Class<?> clazz = Class.forName(proxyClass);
       log.fine("Using class " + clazz.getName());
       Object[] args = new Object[]{request, registry};
-      Class<?>[] argsClass = new Class[]{RegistrationRequest.class, Registry.class};
+      Class<?>[] argsClass = new Class[]{RegistrationRequest.class, GridRegistry.class};
       Constructor<?> c = clazz.getConstructor(argsClass);
       Object proxy = c.newInstance(args);
       if (proxy instanceof RemoteProxy) {
@@ -483,11 +499,12 @@ public class BaseRemoteProxy implements RemoteProxy {
     return new JsonParser().parse(s.toString()).getAsJsonObject();
   }
 
-
+  @ManagedAttribute
   public float getResourceUsageInPercent() {
     return 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
   }
 
+  @ManagedAttribute
   public long getLastSessionStart() {
     long last = -1;
     for (TestSlot slot : getTestSlots()) {

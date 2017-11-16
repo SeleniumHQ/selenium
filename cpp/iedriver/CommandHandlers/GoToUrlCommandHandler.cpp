@@ -53,6 +53,28 @@ void GoToUrlCommandHandler::ExecuteInternal(
     BOOL is_valid = ::PathIsURL(wide_url.c_str());
     if (is_valid != TRUE) {
       response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Specified URL (" + url + ") is not valid.");
+      return;
+    }
+
+    BOOL is_file_url = ::UrlIsFileUrl(wide_url.c_str());
+    if (is_file_url) {
+      DWORD path_length = MAX_PATH;
+      std::vector<wchar_t> buffer(path_length);
+      HRESULT hr = ::PathCreateFromUrl(wide_url.c_str(), &buffer[0], &path_length, 0);
+      if (FAILED(hr)) {
+        response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                   "Specified URL (" + url + ") is a file, " +
+                                   "but the path was not valid.");
+        return;
+      } else {
+        std::wstring file_path(&buffer[0]);
+        if (file_path.size() == 0) {
+          response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                     "Specified URL (" + url + ") is a file, " +
+                                     "but the path was not valid.");
+          return;
+        }
+      }
     }
 
     status_code = browser_wrapper->NavigateToUrl(url);

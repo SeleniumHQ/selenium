@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.Interactions;
@@ -9,6 +9,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     [TestFixture]
     public class PageFactoryBrowserTest : DriverTestFixture
     {
+#if !NETCOREAPP2_0
         //TODO: Move these to a standalone class when more tests rely on the server being up
         [OneTimeSetUp]
         public void RunBeforeAnyTest()
@@ -171,5 +172,6 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         #pragma warning restore 649
         #endregion
+#endif
     }
 }

@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.grid.e2e.node;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -23,23 +22,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.google.common.base.Throwables;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -55,7 +50,7 @@ public class CrashWhenStartingBrowserTest {
 
   private Hub hub;
   private SelfRegisteringRemote remote;
-  private Registry registry;
+  private GridRegistry registry;
   private Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
 
   private String proxyId;
@@ -92,8 +87,7 @@ public class CrashWhenStartingBrowserTest {
 
     try {
       Capabilities ff = new FirefoxOptions()
-          .setBinary(WRONG_PATH)
-          .addTo(DesiredCapabilities.firefox());
+          .setBinary(WRONG_PATH);
       new RemoteWebDriver(hub.getWebDriverHubRequestURL(), ff);
       fail("Expected WebDriverException to be thrown");
     } catch (SessionNotCreatedException expected) {

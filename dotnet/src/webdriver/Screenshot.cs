@@ -17,9 +17,7 @@
 // </copyright>
 
 using System;
-#if NETCOREAPP2_0
-using ImageSharp;
-using ImageSharp.Formats;
+#if NETCOREAPP2_0 || NETSTANDARD2_0
 #else
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -95,6 +93,16 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Saves the screenshot to a Portable Network Graphics (PNG) file, overwriting the
+        /// file if it already exists.
+        /// </summary>
+        /// <param name="fileName">The full path and file name to save the screenshot to.</param>
+        public void SaveAsFile(string fileName)
+        {
+            this.SaveAsFile(fileName, ScreenshotImageFormat.Png);
+        }
+
+        /// <summary>
         /// Saves the screenshot to a file, overwriting the file if it already exists.
         /// </summary>
         /// <param name="fileName">The full path and file name to save the screenshot to.</param>
@@ -107,13 +115,19 @@ namespace OpenQA.Selenium
                 throw new DirectoryNotFoundException("Output Directory does not exist");
             }
 
+#if NETCOREAPP2_0 || NETSTANDARD2_0
+            if (format != ScreenshotImageFormat.Png)
+            {
+                throw new WebDriverException(".NET Core does not support image manipulation, so only Portable Network Graphics (PNG) format is supported");
+            }
+#endif
+
             using (MemoryStream imageStream = new MemoryStream(this.byteArray))
             {
-#if NETCOREAPP2_0
-                Image<Rgba32> image = Image.Load(imageStream);
+#if NETCOREAPP2_0 || NETSTANDARD2_0
                 using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
                 {
-                    image.Save(fileStream, ConvertScreenshotImageFormat(format));
+                    imageStream.WriteTo(fileStream);
                 }
 #else
                 Image screenshotImage = Image.FromStream(imageStream);
@@ -131,30 +145,7 @@ namespace OpenQA.Selenium
             return this.base64Encoded;
         }
 
-#if NETCOREAPP2_0
-        private static IImageFormat ConvertScreenshotImageFormat(ScreenshotImageFormat format)
-        {
-            IImageFormat returnedFormat = ImageFormats.Png;
-            switch (format)
-            {
-                case ScreenshotImageFormat.Jpeg:
-                    returnedFormat = ImageFormats.Jpeg;
-                    break;
-
-                case ScreenshotImageFormat.Gif:
-                    returnedFormat = ImageFormats.Gif;
-                    break;
-
-                case ScreenshotImageFormat.Bmp:
-                    returnedFormat = ImageFormats.Bitmap;
-                    break;
-
-                case ScreenshotImageFormat.Tiff:
-                    throw new WebDriverException("TIFF image format not supported by .NET Core library");
-            }
-
-            return returnedFormat;
-        }
+#if NETCOREAPP2_0 || NETSTANDARD2_0
 #else
         private static ImageFormat ConvertScreenshotImageFormat(ScreenshotImageFormat format)
         {

@@ -43,7 +43,7 @@ public class GridShutdownTest {
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
     ff.put(MAX_INSTANCES, 1);
 
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
 
     RemoteProxy p1 =
         RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);

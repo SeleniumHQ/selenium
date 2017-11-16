@@ -87,5 +87,5 @@ py_prep(
     "//javascript/atoms/fragments:is-displayed",
     "//javascript/firefox-driver:webdriver",
     "//javascript/firefox-driver:webdriver_prefs",
-    "//javascript/webdriver/atoms:getAttribute"
+    "//javascript/webdriver/atoms:get-attribute"
   ])

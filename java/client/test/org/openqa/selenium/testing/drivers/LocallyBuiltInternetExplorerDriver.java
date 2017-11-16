@@ -22,13 +22,14 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerDriverLogLevel;
 import org.openqa.selenium.ie.InternetExplorerDriverService;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 
 public class LocallyBuiltInternetExplorerDriver extends InternetExplorerDriver {
   public LocallyBuiltInternetExplorerDriver(Capabilities capabilities) {
-    super(getService(), capabilities);
+    super(getService(), new InternetExplorerOptions().merge(capabilities));
   }
 
   private static InternetExplorerDriverService getService() {

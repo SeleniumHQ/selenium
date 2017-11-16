@@ -24,10 +24,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.net.PortProber;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,32 +45,35 @@ public class SocketLockTest {
   }
 
   @Test
-  public void wellKnownLockLocation() {
-    Lock lock = new SocketLock(freePort);
-    lock.lock(TimeUnit.SECONDS.toMillis(1));
-    lock.unlock();
-  }
-
-  @Test
-  public void serialLockOnSamePort() {
-    for (int i = 0; i < 20; i++) {
-      Lock lock = new SocketLock(freePort);
-      lock.lock(TimeUnit.SECONDS.toMillis(2));
+  public void wellKnownLockLocation() throws IOException {
+    try (SocketLock lock = new SocketLock(freePort)) {
+      lock.lock(TimeUnit.SECONDS.toMillis(1));
       lock.unlock();
     }
   }
 
   @Test
-  public void attemptToReuseLocksFails() {
-    Lock lock = new SocketLock(freePort);
-    lock.lock(TimeUnit.SECONDS.toMillis(1));
-    lock.unlock();
-    try {
-      lock.lock(TimeUnit.SECONDS.toMillis(1));
-      fail("Expected a SocketException to be thrown when reused");
-    } catch (WebDriverException e) {
+  public void serialLockOnSamePort() throws IOException {
+    for (int i = 0; i < 20; i++) {
+      try (SocketLock lock = new SocketLock(freePort)) {
+        lock.lock(TimeUnit.SECONDS.toMillis(2));
+        lock.unlock();
+      }
+    }
+  }
 
-      // Lock reuse not permitted; expected.
+  @Test
+  public void attemptToReuseLocksFails() throws IOException {
+    try (SocketLock lock = new SocketLock(freePort)) {
+      lock.lock(TimeUnit.SECONDS.toMillis(1));
+      lock.unlock();
+      try {
+        lock.lock(TimeUnit.SECONDS.toMillis(1));
+        fail("Expected a SocketException to be thrown when reused");
+      } catch (WebDriverException e) {
+
+        // Lock reuse not permitted; expected.
+      }
     }
   }
 }

@@ -35,7 +35,7 @@ public class TestSessionTest {
   @Test
   public void testIsOrphanedSe1() throws Exception {
 
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     try {
       Map<String, Object> ff = new HashMap<>();
       ff.put(CapabilityType.APPLICATION_NAME, "FF");
@@ -60,7 +60,7 @@ public class TestSessionTest {
   @Test
   public void testIsOrphanedWebDriver() throws Exception {
 
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     try {
       Map<String, Object> ff = new HashMap<>();
       ff.put(CapabilityType.APPLICATION_NAME, "FF");

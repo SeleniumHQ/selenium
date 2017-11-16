@@ -20,6 +20,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Options(ChromeOptions):
+    KEY = "operaOptions"
 
     def __init__(self):
         ChromeOptions.__init__(self)
@@ -86,8 +87,7 @@ class Options(ChromeOptions):
         """
         capabilities = ChromeOptions.to_capabilities(self)
         capabilities.update(DesiredCapabilities.OPERA)
-        opera_options = capabilities["operaOptions"] = \
-            capabilities.pop("chromeOptions")
+        opera_options = capabilities[self.KEY] = capabilities.pop(ChromeOptions.KEY, None)
 
         if self.android_package_name:
             opera_options["androidPackage"] = self.android_package_name

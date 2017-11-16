@@ -1,4 +1,4 @@
-﻿// <copyright file="SafariOptions.cs" company="WebDriver Committers">
+// <copyright file="SafariOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,12 +16,12 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+using OpenQA.Selenium.Remote;
+
 namespace OpenQA.Selenium.Safari
 {
-    using System;
-    using System.Collections.Generic;
-    using OpenQA.Selenium.Remote;
-
     /// <summary>
     /// Class to manage options specific to <see cref="SafariDriver"/>
     /// </summary>
@@ -45,13 +45,15 @@ namespace OpenQA.Selenium.Safari
     /// </example>
     public class SafariOptions : DriverOptions
     {
+        private const string BrowserNameValue = "safari";
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariOptions"/> class.
         /// </summary>
-        public SafariOptions()
+        public SafariOptions() : base()
         {
+            this.BrowserName = BrowserNameValue;
         }
 
         /// <summary>
@@ -84,7 +86,7 @@ namespace OpenQA.Selenium.Safari
         /// <returns>The ICapabilities for Safari with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = DesiredCapabilities.Safari();
+            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {
                 capabilities.SetCapability(pair.Key, pair.Value);

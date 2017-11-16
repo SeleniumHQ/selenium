@@ -57,6 +57,7 @@ public class WebDriverServlet extends HttpServlet {
 
   private static final Logger LOG = Logger.getLogger(WebDriverServlet.class.getName());
   public static final String ACTIVE_SESSIONS_KEY = WebDriverServlet.class.getName() + ".sessions";
+  public static final String NEW_SESSION_PIPELINE_KEY = WebDriverServlet.class.getName() + ".pipeline";
 
   private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
 
@@ -81,7 +82,14 @@ public class WebDriverServlet extends HttpServlet {
       getServletContext().setAttribute(ACTIVE_SESSIONS_KEY, allSessions);
     }
 
-    handlers = new AllHandlers(allSessions);
+    NewSessionPipeline pipeline =
+        (NewSessionPipeline) getServletContext().getAttribute(NEW_SESSION_PIPELINE_KEY);
+    if (pipeline == null) {
+      pipeline = DefaultPipeline.createPipelineWithDefaultFallbacks().create();
+      getServletContext().setAttribute(NEW_SESSION_PIPELINE_KEY, pipeline);
+    }
+
+    handlers = new AllHandlers(pipeline, allSessions);
   }
 
   private synchronized Logger configureLogging() {
@@ -206,7 +214,7 @@ public class WebDriverServlet extends HttpServlet {
 
       try {
         if (handler instanceof ActiveSession) {
-          sessionLogHandler .attachToCurrentThread(((ActiveSession) handler).getId());
+          sessionLogHandler.attachToCurrentThread(((ActiveSession) handler).getId());
           ActiveSession session = (ActiveSession) handler;
           Thread.currentThread().setName(String.format(
               "Handler thread for session %s (%s)",

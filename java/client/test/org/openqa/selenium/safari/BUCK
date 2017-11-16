@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_test(name = 'safari',
   srcs = [ 'SafariDriverTests.java' ],
   vm_args = [

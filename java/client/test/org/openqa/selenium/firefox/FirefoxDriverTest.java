@@ -45,6 +45,7 @@ import org.mockito.Mockito;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
@@ -54,7 +55,6 @@ import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
@@ -66,8 +66,8 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.SauceDriver;
-import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
@@ -119,10 +119,9 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void canPassCapabilities() {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
-    capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
-    localDriver = new FirefoxDriver(capabilities);
+    localDriver = new FirefoxDriver(caps);
 
     assertEquals(
         "none",
@@ -157,8 +156,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(FirefoxDriver.PROFILE, profile);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.PROFILE, profile);
 
     localDriver = new FirefoxDriver(caps);
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
@@ -168,8 +166,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Ignore(value = MARIONETTE, reason = "Assumed to be covered by tests for GeckoDriverService")
   public void canSetBinaryInCapabilities() throws IOException {
     FirefoxBinary binary = spy(new FirefoxBinary());
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(FirefoxDriver.BINARY, binary);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.BINARY, binary);
 
     localDriver = new FirefoxDriver(caps);
 
@@ -179,8 +176,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void canSetBinaryPathInCapabilities() throws IOException {
     String binPath = new FirefoxBinary().getPath();
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(FirefoxDriver.BINARY, binPath);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.BINARY, binPath);
 
     localDriver = new FirefoxDriver(caps);
   }
@@ -568,10 +564,11 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415067")
   public void testFirefoxCanNativelyClickOverlappingElements() {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
-    capabilities.setCapability(CapabilityType.OVERLAPPING_CHECK_DISABLED, true);
-    WebDriver secondDriver = new FirefoxDriver(capabilities);
+    FirefoxOptions options = new FirefoxOptions();
+    options.setCapability(CapabilityType.OVERLAPPING_CHECK_DISABLED, true);
+    WebDriver secondDriver = new FirefoxDriver(options);
     try {
       secondDriver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
       secondDriver.findElement(By.id("under")).click();

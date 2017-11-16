@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'websocket-api',
   maven_coords = 'org.eclipse.jetty.websocket:websocket-api:jar:9.4.5.v20170502',

@@ -25,8 +25,9 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.DefaultGridRegistry;
 import org.openqa.grid.internal.DetachedRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.TestSessionListener;
@@ -55,7 +56,7 @@ public class SessionListenerTest {
 
   private static class MyRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
 
-    public MyRemoteProxy(RegistrationRequest request, Registry registry) {
+    public MyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -71,7 +72,7 @@ public class SessionListenerTest {
 
   @Test
   public void beforeAfterRan() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     registry.add(new MyRemoteProxy(req, registry));
 
     RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);
@@ -97,7 +98,7 @@ public class SessionListenerTest {
 
     private boolean firstCall = true;
 
-    public MyBuggyBeforeRemoteProxy(RegistrationRequest request, Registry registry) {
+    public MyBuggyBeforeRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -116,7 +117,7 @@ public class SessionListenerTest {
    */
   @Test(timeout = 500000)
   public void buggyBefore() throws InterruptedException {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     registry.add(new MyBuggyBeforeRemoteProxy(req, registry));
 
     RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);
@@ -151,7 +152,7 @@ public class SessionListenerTest {
    */
   static class MyBuggyAfterRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
 
-    public MyBuggyAfterRemoteProxy(RegistrationRequest request, Registry registry) {
+    public MyBuggyAfterRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -169,7 +170,7 @@ public class SessionListenerTest {
    */
   @Test(timeout = 1000)
   public void buggyAfter() throws InterruptedException {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     try {
       registry.add(new MyBuggyAfterRemoteProxy(req, registry));
 
@@ -207,7 +208,7 @@ public class SessionListenerTest {
     private Lock lock = new ReentrantLock();
     private boolean firstTime = true;
 
-    public SlowAfterSession(RegistrationRequest request, Registry registry) {
+    public SlowAfterSession(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -253,7 +254,7 @@ public class SessionListenerTest {
     req.getConfiguration().maxSession = 2;
     req.getConfiguration().capabilities.add(new DesiredCapabilities(cap));
 
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     try {
       final SlowAfterSession proxy = new SlowAfterSession(req, registry);
       proxy.setupTimeoutListener();

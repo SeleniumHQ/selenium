@@ -20,8 +20,8 @@ rubydocs(
     "CHANGES"
   ],
   readme = "README.md",
-  output_dir = "../docs/api/rb",
-  deps = [ "//rb:gem:build", "//rb:bundle" ]
+  output_dir = "docs/api/rb",
+  deps = ["//rb:gem:build", "//rb:bundle"]
 )
 
 ruby_library(name = "common",
@@ -43,7 +43,7 @@ ruby_library(name = "common",
   ],
   resources = [
     { "../LICENSE" : "rb/LICENSE" },
-    { "//javascript/webdriver/atoms:getAttribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"}
+    { "//javascript/webdriver/atoms:get-attribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"}
   ]
 )
 
@@ -122,15 +122,6 @@ ruby_library(name = "firefox",
   deps = [":common"]
 )
 
-ruby_test(name = "ff-nightly",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":firefox"]
-)
-
 ruby_test(name = "firefox",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
@@ -165,14 +156,6 @@ ruby_library(name = "phantomjs",
   deps = [":common"]
 )
 
-ruby_test(name = "phantomjs",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/phantomjs/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":phantomjs"]
-)
 ruby_library(name = "remote",
   srcs = [
     "lib/selenium/webdriver/remote/**/*.rb",
@@ -218,19 +201,6 @@ ruby_test(name = "remote-ff-esr",
   ]
 )
 
-ruby_test(name = "remote-ff-nightly",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":firefox"
-  ]
-)
-
 ruby_test(name = "remote-firefox",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
@@ -242,19 +212,6 @@ ruby_test(name = "remote-firefox",
     ":remote",
     ":firefox"
   ]
-)
-
-ruby_test(name = "remote-phantomjs",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/phantomjs/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":phantomjs"
-    ]
 )
 
 ruby_test(name = "remote-safari",
@@ -352,4 +309,14 @@ ruby_test(name = "unit",
     ":phantomjs",
     ":support"
   ]
+)
+
+ruby_lint(name = "lint",
+  srcs = [
+    "lib/**/*.rb",
+    "spec/**/*.rb",
+    "Gemfile",
+    "selenium-webdriver.gemspec"
+  ],
+  deps = ["//rb:bundle"]
 )

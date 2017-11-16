@@ -111,7 +111,7 @@ class WebDriver(object):
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
                  desired_capabilities=None, browser_profile=None, proxy=None,
-                 keep_alive=False, file_detector=None):
+                 keep_alive=False, file_detector=None, options=None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -128,6 +128,7 @@ class WebDriver(object):
              HTTP keep-alive. Defaults to False.
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
+         - options - instance of a driver options.Options class
         """
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")
@@ -137,6 +138,8 @@ class WebDriver(object):
             warnings.warn("Please use FirefoxOptions to set proxy",
                           DeprecationWarning)
             proxy.add_to_capabilities(desired_capabilities)
+        if options is not None:
+            desired_capabilities.update(options.to_capabilities())
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
             self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
@@ -639,6 +642,18 @@ class WebDriver(object):
             command = Command.W3C_MAXIMIZE_WINDOW
         self.execute(command, {"windowHandle": "current"})
 
+    def fullscreen_window(self):
+        """
+        Invokes the window manager-specific 'full screen' operation
+        """
+        self.execute(Command.FULLSCREEN_WINDOW)
+
+    def minimize_window(self):
+        """
+        Invokes the window manager-specific 'minimize' operation
+        """
+        self.execute(Command.MINIMIZE_WINDOW)
+
     @property
     def switch_to(self):
         return self._switch_to
@@ -948,13 +963,15 @@ class WebDriver(object):
         :Usage:
             driver.set_window_size(800,600)
         """
-        command = Command.SET_WINDOW_SIZE
         if self.w3c:
-            command = Command.W3C_SET_WINDOW_SIZE
-        self.execute(command, {
-            'width': int(width),
-            'height': int(height),
-            'windowHandle': windowHandle})
+            if windowHandle != 'current':
+                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            self.set_window_rect(width=int(width), height=int(height))
+        else:
+            self.execute(Command.SET_WINDOW_SIZE, {
+                'width': int(width),
+                'height': int(height),
+                'windowHandle': windowHandle})
 
     def get_window_size(self, windowHandle='current'):
         """
@@ -965,13 +982,16 @@ class WebDriver(object):
         """
         command = Command.GET_WINDOW_SIZE
         if self.w3c:
-            command = Command.W3C_GET_WINDOW_SIZE
-        size = self.execute(command, {'windowHandle': windowHandle})
+            if windowHandle != 'current':
+                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            size = self.get_window_rect()
+        else:
+            size = self.execute(command, {'windowHandle': windowHandle})
 
         if size.get('value', None) is not None:
-            return size['value']
-        else:
-            return size
+            size = size['value']
+
+        return {k: size[k] for k in ('width', 'height')}
 
     def set_window_position(self, x, y, windowHandle='current'):
         """
@@ -985,10 +1005,9 @@ class WebDriver(object):
             driver.set_window_position(0,0)
         """
         if self.w3c:
-            return self.execute(Command.W3C_SET_WINDOW_POSITION, {
-                                'x': int(x),
-                                'y': int(y)
-                                })
+            if windowHandle != 'current':
+                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            return self.set_window_rect(x=int(x), y=int(y))
         else:
             self.execute(Command.SET_WINDOW_POSITION,
                          {
@@ -1005,10 +1024,14 @@ class WebDriver(object):
             driver.get_window_position()
         """
         if self.w3c:
-            return self.execute(Command.W3C_GET_WINDOW_POSITION)['value']
+            if windowHandle != 'current':
+                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            position = self.get_window_rect()
         else:
-            return self.execute(Command.GET_WINDOW_POSITION, {
-                'windowHandle': windowHandle})['value']
+            position = self.execute(Command.GET_WINDOW_POSITION,
+                                    {'windowHandle': windowHandle})['value']
+
+        return {k: position[k] for k in ('x', 'y')}
 
     def get_window_rect(self):
         """

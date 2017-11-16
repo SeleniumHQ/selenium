@@ -15,12 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.grid.web.servlet.beta;
 
 import com.google.common.io.ByteStreams;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
@@ -51,7 +50,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     this(null);
   }
 
-  public ConsoleServlet(Registry registry) {
+  public ConsoleServlet(GridRegistry registry) {
     super(registry);
     coreVersion = new BuildInfo().getReleaseLabel();
   }

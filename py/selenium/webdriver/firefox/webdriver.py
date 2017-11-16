@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import warnings
 
 try:
     import http.client as http_client
@@ -54,8 +55,8 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(self, firefox_profile=None, firefox_binary=None,
                  timeout=30, capabilities=None, proxy=None,
-                 executable_path="geckodriver", firefox_options=None,
-                 log_path="geckodriver.log"):
+                 executable_path="geckodriver", options=None,
+                 log_path="geckodriver.log", firefox_options=None):
         """Starts a new local session of Firefox.
 
         Based on the combination and specificity of the various keyword
@@ -68,20 +69,20 @@ class WebDriver(RemoteWebDriver):
         dictionary that is passed on to the remote end.
 
         As some of the options, such as `firefox_profile` and
-        `firefox_options.profile` are mutually exclusive, precedence is
+        `options.profile` are mutually exclusive, precedence is
         given from how specific the setting is.  `capabilities` is the
-        least specific keyword argument, followed by `firefox_options`,
+        least specific keyword argument, followed by `options`,
         followed by `firefox_binary` and `firefox_profile`.
 
         In practice this means that if `firefox_profile` and
-        `firefox_options.profile` are both set, the selected profile
+        `options.profile` are both set, the selected profile
         instance will always come from the most specific variable.
         In this case that would be `firefox_profile`.  This will result in
-        `firefox_options.profile` to be ignored because it is considered
+        `options.profile` to be ignored because it is considered
         a less specific setting than the top-level `firefox_profile`
         keyword argument.  Similarily, if you had specified a
-        `capabilities["firefoxOptions"]["profile"]` Base64 string,
-        this would rank below `firefox_options.profile`.
+        `capabilities["moz:firefoxOptions"]["profile"]` Base64 string,
+        this would rank below `options.profile`.
 
         :param firefox_profile: Instance of ``FirefoxProfile`` object
             or a string.  If undefined, a fresh profile will be created
@@ -97,43 +98,46 @@ class WebDriver(RemoteWebDriver):
         :param executable_path: Full path to override which geckodriver
             binary to use for Firefox 47.0.1 and greater, which
             defaults to picking up the binary from the system path.
-        :param firefox_options: Instance of ``options.Options``.
+        :param options: Instance of ``options.Options``.
         :param log_path: Where to log information from the driver.
 
         """
+        if firefox_options:
+            warnings.warn('use options instead of firefox_options', DeprecationWarning)
+            options = firefox_options
         self.binary = None
         self.profile = None
         self.service = None
 
         if capabilities is None:
             capabilities = DesiredCapabilities.FIREFOX.copy()
-        if firefox_options is None:
-            firefox_options = Options()
+        if options is None:
+            options = Options()
 
         capabilities = dict(capabilities)
 
         if capabilities.get("binary"):
             self.binary = capabilities["binary"]
 
-        # firefox_options overrides capabilities
-        if firefox_options is not None:
-            if firefox_options.binary is not None:
-                self.binary = firefox_options.binary
-            if firefox_options.profile is not None:
-                self.profile = firefox_options.profile
+        # options overrides capabilities
+        if options is not None:
+            if options.binary is not None:
+                self.binary = options.binary
+            if options.profile is not None:
+                self.profile = options.profile
 
         # firefox_binary and firefox_profile
-        # override firefox_options
+        # override options
         if firefox_binary is not None:
             if isinstance(firefox_binary, basestring):
                 firefox_binary = FirefoxBinary(firefox_binary)
             self.binary = firefox_binary
-            firefox_options.binary = firefox_binary
+            options.binary = firefox_binary
         if firefox_profile is not None:
             if isinstance(firefox_profile, basestring):
                 firefox_profile = FirefoxProfile(firefox_profile)
             self.profile = firefox_profile
-            firefox_options.profile = firefox_profile
+            options.profile = firefox_profile
 
         # W3C remote
         # TODO(ato): Perform conformance negotiation
@@ -143,7 +147,7 @@ class WebDriver(RemoteWebDriver):
             self.service = Service(executable_path, log_path=log_path)
             self.service.start()
 
-            capabilities.update(firefox_options.to_capabilities())
+            capabilities.update(options.to_capabilities())
 
             executor = FirefoxRemoteConnection(
                 remote_server_addr=self.service.service_url)
@@ -237,8 +241,10 @@ class WebDriver(RemoteWebDriver):
         Returns identifier of installed addon. This identifier can later
         be used to uninstall addon.
 
+        :param path: Absolute path to the addon that will be installed.
+
         :Usage:
-            driver.install_addon('firebug.xpi')
+            driver.install_addon('/path/to/firebug.xpi')
         """
         payload = {"path": path}
         if temporary is not None:

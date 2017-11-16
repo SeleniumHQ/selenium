@@ -255,3 +255,70 @@ class InvalidArgumentException(WebDriverException):
     The arguments passed to a command are either invalid or malformed.
     """
     pass
+
+
+class JavascriptException(WebDriverException):
+    """
+    An error occurred while executing JavaScript supplied by the user.
+    """
+    pass
+
+
+class NoSuchCookieException(WebDriverException):
+    """
+    No cookie matching the given path name was found amongst the associated cookies of the
+    current browsing context's active document.
+    """
+    pass
+
+
+class ScreenshotException(WebDriverException):
+    """
+    A screen capture was made impossible.
+    """
+    pass
+
+
+class ElementClickInterceptedException(WebDriverException):
+    """
+    The Element Click command could not be completed because the element receiving the events
+    is obscuring the element that was requested clicked.
+    """
+    pass
+
+
+class InsecureCertificateException(WebDriverException):
+    """
+    Navigation caused the user agent to hit a certificate warning, which is usually the result
+    of an expired or invalid TLS certificate.
+    """
+    pass
+
+
+class InvalidCoordinatesException(WebDriverException):
+    """
+    The coordinates provided to an interactions operation are invalid.
+    """
+    pass
+
+
+class InvalidSessionIdException(WebDriverException):
+    """
+    Occurs if the given session id is not in the list of active sessions, meaning the session
+    either does not exist or that it's not active.
+    """
+    pass
+
+
+class SessionNotCreatedException(WebDriverException):
+    """
+    A new session could not be created.
+    """
+    pass
+
+
+class UnknownMethodException(WebDriverException):
+    """
+    The requested command matched a known URL but did not match an method for that URL.
+    """
+    pass

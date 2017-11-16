@@ -1,4 +1,5 @@
-include_defs('//SELENIUM_VERSION')
+# BUILD FILE SYNTAX: SKYLARK
+load("//:selenium-version.bzl", "SE_VERSION")
 
 java_library(
   name = 'api',
@@ -6,9 +7,18 @@ java_library(
     'Augmentable.java',
     'Command.java',
     'CommandExecutor.java',
+    'ErrorCodes.java',
     'Response.java',
+    'ScreenshotException.java',
     'SessionId.java',
   ],
+  deps = [
+    '//java/client/src/org/openqa/selenium:core',
+    '//third_party/java/guava:guava',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/json:json',
+  ]
 )
 
 java_library(
@@ -48,8 +58,6 @@ java_library(name = 'remote',
     'mobile/AddNetworkConnection.java',
   ],
   exported_deps = [
-    ':api',
-    ':capabilities',
     ':remote-lib',
     '//java/client/src/org/openqa/selenium:selenium',
   ],
@@ -60,12 +68,12 @@ java_library(name = 'remote',
   visibility = ['PUBLIC'],
 )
 
+
 java_library(name = 'remote-lib',
   srcs = [
     'BeanToJsonConverter.java',
     'CommandCodec.java',
     'CommandInfo.java',
-    'CoordinatesUtils.java',
     'Dialect.java',
     'DriverCommand.java',
     'ErrorCodes.java',
@@ -76,10 +84,10 @@ java_library(name = 'remote-lib',
     'HandshakeResponse.java',
     'HttpCommandExecutor.java',
     'InitialHandshakeResponse.java',
-    'JsonException.java',
     'JsonToBeanConverter.java',
     'JsonWireProtocolResponse.java',
     'LocalFileDetector.java',
+    'NewSessionPayload.java',
     'ProtocolHandshake.java',
     'RemoteExecuteMethod.java',
     'RemoteKeyboard.java',
@@ -90,8 +98,6 @@ java_library(name = 'remote-lib',
     'RemoteWebDriver.java',
     'RemoteWebElement.java',
     'ResponseCodec.java',
-    'ScreenshotException.java',
-    'SimplePropertyDescriptor.java',
     'UnreachableBrowserException.java',
     'UselessFileDetector.java',
     'W3CHandshakeResponse.java',
@@ -125,12 +131,14 @@ java_library(name = 'remote-lib',
     ':is-displayed',
   ],
   exported_deps = [
+    ':api',
+    ':capabilities',
+    '//java/client/src/org/openqa/selenium/json:json',
+    '//java/client/src/org/openqa/selenium/remote/session:session',
     '//third_party/java/httpcomponents:httpclient',
     '//third_party/java/httpcomponents:httpcore',
   ],
   deps = [
-    ':api',
-    ':capabilities',
     ':http-session-id',
     '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/gson:gson',
@@ -140,7 +148,7 @@ java_library(name = 'remote-lib',
 
 export_file(
   name = 'get-attribute',
-  src = '//javascript/webdriver/atoms:getAttribute',
+  src = '//javascript/webdriver/atoms:get-attribute',
   out = 'getAttribute.js',
 )
 

@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,6 +20,8 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver do
+      it_behaves_like 'driver that can be started concurrently', except: {browser: %i[edge safari]}
+
       it 'should get the page title' do
         driver.navigate.to url_for('xhtmlTest.html')
         expect(driver.title).to eq('XHTML Test Page')
@@ -32,16 +32,14 @@ module Selenium
         expect(driver.page_source).to match(%r{<title>XHTML Test Page</title>}i)
       end
 
-      not_compliant_on driver: :remote, browser: :phantomjs do
-        it 'should refresh the page' do
-          driver.navigate.to url_for('javascriptPage.html')
-          sleep 1 # javascript takes too long to load
-          driver.find_element(id: 'updatediv').click
-          expect(driver.find_element(id: 'dynamo').text).to eq('Fish and chips!')
-          driver.navigate.refresh
-          wait_for_element(id: 'dynamo')
-          expect(driver.find_element(id: 'dynamo').text).to eq("What's for dinner?")
-        end
+      it 'should refresh the page' do
+        driver.navigate.to url_for('javascriptPage.html')
+        sleep 1 # javascript takes too long to load
+        driver.find_element(id: 'updatediv').click
+        expect(driver.find_element(id: 'dynamo').text).to eq('Fish and chips!')
+        driver.navigate.refresh
+        wait_for_element(id: 'dynamo')
+        expect(driver.find_element(id: 'dynamo').text).to eq("What's for dinner?")
       end
 
       context 'screenshots' do
@@ -220,14 +218,9 @@ module Selenium
           expect(driver.execute_script('return true;')).to eq(true)
         end
 
-        # https://github.com/SeleniumHQ/selenium/issues/3337
-        not_compliant_on driver: :remote, platform: :macosx do
-          not_compliant_on browser: [:chrome, :phantomjs, :edge] do
-            it 'should raise if the script is bad' do
-              driver.navigate.to url_for('xhtmlTest.html')
-              expect { driver.execute_script('return squiggle();') }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
-            end
-          end
+        it 'should raise if the script is bad', except: {browser: %i[chrome edge]} do
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect { driver.execute_script('return squiggle();') }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
         end
 
         it 'should return arrays' do
@@ -280,34 +273,28 @@ module Selenium
         end
       end
 
-      not_compliant_on browser: :phantomjs do
-        describe 'execute async script' do
-          before do
-            driver.manage.timeouts.script_timeout = 0
-            driver.navigate.to url_for('ajaxy_page.html')
-          end
+      describe 'execute async script' do
+        before do
+          driver.manage.timeouts.script_timeout = 0
+          driver.navigate.to url_for('ajaxy_page.html')
+        end
 
-          it 'should be able to return arrays of primitives from async scripts' do
-            result = driver.execute_async_script "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);"
-            expect(result).to eq([nil, 123, 'abc', true, false])
-          end
+        it 'should be able to return arrays of primitives from async scripts' do
+          result = driver.execute_async_script "arguments[arguments.length - 1]([null, 123, 'abc', true, false]);"
+          expect(result).to eq([nil, 123, 'abc', true, false])
+        end
 
-          it 'should be able to pass multiple arguments to async scripts' do
-            result = driver.execute_async_script 'arguments[arguments.length - 1](arguments[0] + arguments[1]);', 1, 2
-            expect(result).to eq(3)
-          end
+        it 'should be able to pass multiple arguments to async scripts' do
+          result = driver.execute_async_script 'arguments[arguments.length - 1](arguments[0] + arguments[1]);', 1, 2
+          expect(result).to eq(3)
+        end
 
-          # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
-          not_compliant_on browser: :edge do
-            not_compliant_on driver: :remote, platform: :macosx do
-              it 'times out if the callback is not invoked' do
-                expect do
-                  # Script is expected to be async and explicitly callback, so this should timeout.
-                  driver.execute_async_script 'return 1 + 2;'
-                end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
-              end
-            end
-          end
+        # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
+        it 'times out if the callback is not invoked', except: [{browser: :edge}] do
+          expect do
+            # Script is expected to be async and explicitly callback, so this should timeout.
+            driver.execute_async_script 'return 1 + 2;'
+          end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
         end
       end
     end

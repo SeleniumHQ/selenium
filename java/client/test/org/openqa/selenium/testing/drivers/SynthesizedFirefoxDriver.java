@@ -24,12 +24,11 @@ import com.google.common.base.Throwables;
 
 import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.DevMode;
 
 import java.io.File;
@@ -39,7 +38,6 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class SynthesizedFirefoxDriver extends FirefoxDriver {
@@ -56,13 +54,13 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
   }
 
   public SynthesizedFirefoxDriver(FirefoxOptions options) {
-    super(tweakCapabilities(options.toCapabilities()));
+    super(tweakCapabilities(options));
   }
 
   private static Capabilities tweakCapabilities(Capabilities desiredCaps) {
     Objects.requireNonNull(desiredCaps, "Capabilities to tweak must not be null");
 
-    DesiredCapabilities tweaked = new DesiredCapabilities(desiredCaps);
+    MutableCapabilities tweaked = new MutableCapabilities(desiredCaps);
 
     if (tweaked.getCapability(PROFILE) == null) {
       tweaked.setCapability(PROFILE, createTemporaryProfile());

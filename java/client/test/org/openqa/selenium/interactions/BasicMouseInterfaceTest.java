@@ -184,7 +184,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/660")
   public void testContextClick() {
     driver.get(pages.javascriptPage);
 

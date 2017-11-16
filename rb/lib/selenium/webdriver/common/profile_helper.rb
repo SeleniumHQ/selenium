@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -32,7 +30,7 @@ module Selenium
       end
 
       def as_json(*)
-        {'zip' => Zipper.zip(layout_on_disk)}
+        {"zip" => Zipper.zip(layout_on_disk)}
       end
 
       def to_json(*)
@@ -46,7 +44,7 @@ module Selenium
 
         # TODO: must be a better way..
         FileUtils.rm_rf tmp_directory
-        FileUtils.mkdir_p File.dirname(tmp_directory), mode: 0700
+        FileUtils.mkdir_p File.dirname(tmp_directory), mode: 0o700
         FileUtils.cp_r directory, tmp_directory
 
         tmp_directory

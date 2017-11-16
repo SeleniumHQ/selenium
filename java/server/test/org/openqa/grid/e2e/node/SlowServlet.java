@@ -15,10 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.grid.e2e.node;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
 import java.io.IOException;
@@ -37,7 +36,7 @@ public class SlowServlet extends RegistryBasedServlet {
     this(null);
   }
 
-  public SlowServlet(Registry registry) {
+  public SlowServlet(GridRegistry registry) {
     super(registry);
   }
 

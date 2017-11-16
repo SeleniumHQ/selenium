@@ -45,11 +45,11 @@ end
 verbose($DEBUG)
 
 def release_version
-  "3.5"
+  "3.7"
 end
 
 def version
-  "#{release_version}.3"
+  "#{release_version}.1"
 end
 
 ide_version = "2.8.0"
@@ -133,7 +133,7 @@ task :all => [
   :"selenium-java",
   "//java/client/test/org/openqa/selenium/environment:webserver"
 ]
-task :all_zip => [:'selenium-java_zip']
+task :all_zip => [:'prep-release-zip']
 task :tests => [
   "//java/client/test/org/openqa/selenium/htmlunit:htmlunit",
   "//java/client/test/org/openqa/selenium/firefox:test-synthesized",
@@ -151,16 +151,12 @@ task :tests => [
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
-task :firefox => [
-  "//java/client/src/org/openqa/selenium/firefox"
-]
+task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
 task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:webserver:run"
 task :remote => [:remote_server, :remote_client]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
-task :safari => [
-  "//java/client/src/org/openqa/selenium/safari",
-]
+task :safari => [ "//java/client/src/org/openqa/selenium/safari" ]
 task :selenium => [ "//java/client/src/org/openqa/selenium" ]
 task :support => [
   "//java/client/src/org/openqa/selenium/lift",
@@ -208,6 +204,7 @@ task :test_remote_server => [
    '//java/server/test/org/openqa/selenium/remote/server/log:test:run',
 ]
 task :test_remote => [
+  '//java/client/test/org/openqa/selenium/json:small-tests:run',
   '//java/client/test/org/openqa/selenium/remote:common-tests:run',
   '//java/client/test/org/openqa/selenium/remote:client-tests:run',
   '//java/client/test/org/openqa/selenium/remote:remote-driver-tests:run',
@@ -256,6 +253,7 @@ task :test_java => [
 
 task :test_java_small_tests => [
   "//java/client/test/org/openqa/selenium:small-tests:run",
+  "//java/client/test/org/openqa/selenium/json:small-tests:run",
   "//java/client/test/org/openqa/selenium/support:small-tests:run",
   "//java/client/test/org/openqa/selenium/remote:common-tests:run",
   "//java/client/test/org/openqa/selenium/remote:client-tests:run",
@@ -270,7 +268,6 @@ task :test_rb_local => [
   "//rb:firefox-test",
   "//rb:phantomjs-test",
   ("//rb:ff-esr-test" if ENV['FF_ESR_BINARY']),
-  ("//rb:ff-nightly-test" if ENV['FF_NIGHTLY_BINARY']),
   ("//rb:safari-preview-test" if mac?),
   ("//rb:safari-test" if mac?),
   ("//rb:ie-test" if windows?),
@@ -282,7 +279,6 @@ task :test_rb_remote => [
   "//rb:remote-firefox-test",
   "//rb:remote-phantomjs-test",
   ("//rb:remote-ff-esr-test" if ENV['FF_ESR_BINARY']),
-  ("//rb:remote-ff-nightly-test" if ENV['FF_NIGHTLY_BINARY']),
   ("//rb:remote-safari-preview-test" if mac?),
   ("//rb:remote-safari-test" if mac?),
   ("//rb:remote-ie-test" if windows?),
@@ -331,6 +327,7 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 
 
 task :javadocs => [:'repack-jetty', :common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
+  rm_rf "build/javadoc"
   mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = '.'
@@ -343,6 +340,7 @@ task :javadocs => [:'repack-jetty', :common, :firefox, :ie, :remote, :support, :
    [File.join(%w(java server src))].each do |m|
      sourcepath += File::PATH_SEPARATOR + m
    end
+
    p sourcepath
    cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
    cmd << " -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal"
@@ -351,6 +349,23 @@ task :javadocs => [:'repack-jetty', :common, :firefox, :ie, :remote, :support, :
      cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";")
    end
    sh cmd
+
+   File.open("build/javadoc/stylesheet.css", "a") { |file| file.write(<<EOF
+
+/* Custom selenium-specific styling */
+.blink {
+  animation: 2s cubic-bezier(0.5, 0, 0.85, 0.85) infinite blink;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+EOF
+)
+   }
 end
 
 task :py_prep_for_install_release => [
@@ -444,18 +459,15 @@ end
 
 
 task :'prep-release-zip' => [
-  '//java/client/src/org/openqa/selenium:client-combined:zip',
-  '//java/server/src/org/openqa/grid/selenium:selenium:zip',
+  '//java/server/src/org/openqa/grid/selenium:selenium',
+  '//java/client/src/org/openqa/selenium:client-combined-zip',
+  '//java/server/src/org/openqa/grid/selenium:selenium-zip',
   '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'] do
 
   mkdir_p "build/dist"
   cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium'].out, "build/dist/selenium-server-standalone-#{version}.jar"
-  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium:zip'].out, "build/dist/selenium-server-#{version}.zip"
-  `jar uf build/dist/selenium-server-#{version}.zip NOTICE LICENSE`
-  `cd java && jar uf ../build/dist/selenium-server-#{version}.zip CHANGELOG`
-  cp Rake::Task['//java/client/src/org/openqa/selenium:client-combined:zip'].out, "build/dist/selenium-java-#{version}.zip"
-  `jar uf build/dist/selenium-java-#{version}.zip NOTICE LICENSE`
-  `cd java && jar uf ../build/dist/selenium-server-#{version}.zip CHANGELOG`
+  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium-zip'].out, "build/dist/selenium-server-#{version}.zip"
+  cp Rake::Task['//java/client/src/org/openqa/selenium:client-combined-zip'].out, "build/dist/selenium-java-#{version}.zip"
   cp Rake::Task['//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'].out, "build/dist/selenium-html-runner-#{version}.jar"
 end
 
@@ -508,7 +520,7 @@ task :'push-release' => [:'prep-release-zip'] do
     py = "python"
   end
 
-  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{release_version} --publish build/dist/selenium-server-standalone-#{version}.jar --publish build/dist/selenium-server-#{version}.zip --publish build/dist/selenium-java-#{version}.zip build/dist/selenium-html-runner-#{version}.jar"
+  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{release_version} --publish build/dist/selenium-server-standalone-#{version}.jar --publish build/dist/selenium-server-#{version}.zip --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-html-runner-#{version}.jar"
 end
 
 desc 'Build the selenium client jars'
@@ -522,14 +534,14 @@ end
 namespace :node do
   task :atoms => [
     "//javascript/atoms/fragments:is-displayed",
-    "//javascript/webdriver/atoms:getAttribute",
+    "//javascript/webdriver/atoms:get-attribute",
   ] do
     baseDir = "javascript/node/selenium-webdriver/lib/atoms"
     mkdir_p baseDir
 
     [
       Rake::Task["//javascript/atoms/fragments:is-displayed"].out,
-      Rake::Task["//javascript/webdriver/atoms:getAttribute"].out,
+      Rake::Task["//javascript/webdriver/atoms:get-attribute"].out,
     ].each do |atom|
       name = File.basename(atom)
 
@@ -550,7 +562,6 @@ namespace :node do
         " --output=build/javascript/node/selenium-webdriver" <<
         " --resource=LICENSE:/LICENSE" <<
         " --resource=NOTICE:/NOTICE" <<
-        " --resource=javascript/firefox-driver/webdriver.json:firefox/webdriver.json" <<
         " --resource=common/src/web/:test/data/" <<
         " --exclude_resource=common/src/web/Bin" <<
         " --exclude_resource=.gitignore" <<

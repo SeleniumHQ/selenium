@@ -26,9 +26,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.BeanToJsonConverter;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.json.Json;
 
 import java.util.Map;
 
@@ -72,8 +71,8 @@ public class InternetExplorerOptionsTest {
 
   @Test
   public void shouldPopulateIeOptionsFromExistingCapabilitiesWhichLackThem() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+    Capabilities caps = new ImmutableCapabilities(
+        INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
 
     InternetExplorerOptions options = new InternetExplorerOptions(caps);
 
@@ -93,9 +92,9 @@ public class InternetExplorerOptionsTest {
         .withInitialBrowserUrl("http://www.cheese.com")
         .addCommandSwitches("--cake");
 
-    String json = new BeanToJsonConverter().convert(options);
+    String json = new Json().toJson(options);
     System.out.println("json = " + json);
-    Capabilities capabilities = new JsonToBeanConverter().convert(Capabilities.class, json);
+    Capabilities capabilities = new Json().toType(json, Capabilities.class);
 
     assertEquals(options, capabilities);
 

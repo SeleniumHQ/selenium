@@ -86,6 +86,18 @@ const EDGEDRIVER_EXE = 'MicrosoftWebDriver.exe';
 
 
 /**
+ * _Synchronously_ attempts to locate the edge driver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
+ */
+function locateSynchronously() {
+  return process.platform === 'win32'
+      ? io.findInPath(EDGEDRIVER_EXE, true) : null;
+}
+
+
+/**
  * Option keys.
  * @enum {string}
  */
@@ -102,7 +114,7 @@ class Options {
     /** @private {!Object} */
     this.options_ = {};
 
-    /** @private {?capabilities.ProxyConfig} */
+    /** @private {?./lib/proxy.Config} */
     this.proxy_ = null;
   }
 
@@ -132,7 +144,7 @@ class Options {
 
   /**
    * Sets the proxy settings for the new session.
-   * @param {capabilities.ProxyConfig} proxy The proxy configuration to use.
+   * @param {./lib/proxy.Config} proxy The proxy configuration to use.
    * @return {!Options} A self reference.
    */
   setProxy(proxy) {
@@ -202,7 +214,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *   MicrosoftEdgeDriver cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || io.findInPath(EDGEDRIVER_EXE, true);
+    let exe = opt_exe || locateSynchronously();
     if (!exe) {
       throw Error(
         'The ' + EDGEDRIVER_EXE + ' could not be found on the current PATH. ' +
@@ -265,11 +277,9 @@ class Driver extends webdriver.WebDriver {
    *     options.
    * @param {remote.DriverService=} opt_service The session to use; will use
    *     the {@linkplain #getDefaultService default service} by default.
-   * @param {promise.ControlFlow=} opt_flow The control flow to use, or
-   *     {@code null} to use the currently active flow.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config, opt_service, opt_flow) {
+  static createSession(opt_config, opt_service) {
     var service = opt_service || getDefaultService();
     var client = service.start().then(url => new http.HttpClient(url));
     var executor = new http.Executor(client);
@@ -279,7 +289,7 @@ class Driver extends webdriver.WebDriver {
         (opt_config || capabilities.Capabilities.edge());
 
     return /** @type {!Driver} */(super.createSession(
-        executor, caps, opt_flow, () => service.kill()));
+        executor, caps, () => service.kill()));
   }
 
   /**
@@ -299,3 +309,4 @@ exports.Options = Options;
 exports.ServiceBuilder = ServiceBuilder;
 exports.getDefaultService = getDefaultService;
 exports.setDefaultService = setDefaultService;
+exports.locateSynchronously = locateSynchronously;

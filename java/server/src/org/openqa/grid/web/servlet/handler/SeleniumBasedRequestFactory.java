@@ -17,10 +17,10 @@
 
 package org.openqa.grid.web.servlet.handler;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 
 import javax.servlet.http.HttpServletRequest;
 
 public interface SeleniumBasedRequestFactory {
-  SeleniumBasedRequest createFromRequest(HttpServletRequest request, Registry registry);
+  SeleniumBasedRequest createFromRequest(HttpServletRequest request, GridRegistry registry);
 }

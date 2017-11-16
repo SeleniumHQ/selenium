@@ -30,8 +30,8 @@ import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LoggingHandler;
-import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.log.LoggingManager;
@@ -302,7 +302,7 @@ public class DriverServlet extends HttpServlet {
                     "lineNumber", element.getLineNumber()))
                 .collect(ImmutableList.toImmutableList())));
 
-    byte[] bytes = new BeanToJsonConverter().convert(value).getBytes(UTF_8);
+    byte[] bytes = new Json().toJson(value).getBytes(UTF_8);
 
     try {
       resp.setStatus(HTTP_INTERNAL_ERROR);

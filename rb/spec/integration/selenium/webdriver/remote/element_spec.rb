@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,28 +19,24 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    compliant_on driver: :remote do
-      describe Element do
-        before do
-          driver.file_detector = ->(_str) { __FILE__ }
-        end
+    describe Element, only: {driver: :remote, browser: %i[chrome ff_esr]} do
+      before do
+        driver.file_detector = ->(_str) { __FILE__ }
+      end
 
-        after do
-          driver.file_detector = nil
-        end
+      after do
+        driver.file_detector = nil
+      end
 
-        compliant_on browser: [:chrome, :ff_esr] do
-          it 'uses the file detector' do
-            driver.navigate.to url_for('upload.html')
+      it 'uses the file detector' do
+        driver.navigate.to url_for('upload.html')
 
-            driver.find_element(id: 'upload').send_keys('random string')
-            driver.find_element(id: 'go').submit
+        driver.find_element(id: 'upload').send_keys('random string')
+        driver.find_element(id: 'go').submit
 
-            driver.switch_to.frame('upload_target')
-            body = driver.find_element(xpath: '//body')
-            expect(body.text).to include('uses the set file detector')
-          end
-        end
+        driver.switch_to.frame('upload_target')
+        body = driver.find_element(xpath: '//body')
+        expect(body.text).to include('uses the set file detector')
       end
     end
   end # WebDriver

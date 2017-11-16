@@ -17,7 +17,7 @@
 
 package org.openqa.grid.web.servlet;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class Grid1HeartbeatServlet extends RegistryBasedServlet {
     this(null);
   }
 
-  public Grid1HeartbeatServlet(Registry registry) {
+  public Grid1HeartbeatServlet(GridRegistry registry) {
     super(registry);
   }
 

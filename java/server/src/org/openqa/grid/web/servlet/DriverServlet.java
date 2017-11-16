@@ -24,7 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
@@ -52,7 +52,7 @@ public class DriverServlet extends RegistryBasedServlet {
     this(null);
   }
 
-  public DriverServlet(Registry registry) {
+  public DriverServlet(GridRegistry registry) {
     super(registry);
   }
 

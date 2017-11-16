@@ -69,6 +69,11 @@ public class GridHubConfiguration extends GridConfiguration {
    */
   static final Boolean DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE = true;
 
+  /**
+   * Default hub GridRegistry implementation to use
+   */
+  static final String DEFAULT_HUB_REGISTRY_CLASS = "org.openqa.grid.internal.DefaultGridRegistry";
+
   /*
    * config parameters which do not serialize or de-serialize
    */
@@ -129,6 +134,13 @@ public class GridHubConfiguration extends GridConfiguration {
     arity = 1
   )
   public Boolean throwOnCapabilityNotPresent = DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE;
+
+  @Expose
+  @Parameter(
+      names = "-registry",
+      description = "<String> class name : a class implementing the GridRegistry interface. Specifies the registry the hub will use."
+  )
+  public String registry = DEFAULT_HUB_REGISTRY_CLASS;
 
   /**
    * Creates a new configuration using the default values.
@@ -192,6 +204,9 @@ public class GridHubConfiguration extends GridConfiguration {
     if (isMergeAble(other.throwOnCapabilityNotPresent, throwOnCapabilityNotPresent)) {
       throwOnCapabilityNotPresent = other.throwOnCapabilityNotPresent;
     }
+    if (isMergeAble(other.registry, registry)) {
+      registry = other.registry;
+    }
   }
 
   @Override
@@ -203,6 +218,8 @@ public class GridHubConfiguration extends GridConfiguration {
     sb.append(toString(format, "newSessionWaitTimeout", newSessionWaitTimeout));
     sb.append(toString(format, "prioritizer", prioritizer != null ? prioritizer.getClass().getCanonicalName(): null));
     sb.append(toString(format, "throwOnCapabilityNotPresent", throwOnCapabilityNotPresent));
+    sb.append(toString(format, "registry", registry));
+
     return sb.toString();
   }
 

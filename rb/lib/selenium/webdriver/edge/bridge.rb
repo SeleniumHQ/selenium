@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -24,10 +22,10 @@ module Selenium
 
         def commands(command)
           unsupported = %i[execute_script execute_async_script submit_element double_click
-           mouse_down mouse_up mouse_move_to click
-           send_keys_to_active_element get_window_handles get_current_window_handle
-           get_window_size set_window_size get_window_position set_window_position
-           maximize_window get_alert_text accept_alert dismiss_alert]
+                           mouse_down mouse_up mouse_move_to click
+                           send_keys_to_active_element get_window_handles get_current_window_handle
+                           get_window_size set_window_size get_window_position set_window_position
+                           maximize_window get_alert_text accept_alert dismiss_alert]
           if unsupported.include? command
             Remote::OSS::Bridge::COMMANDS[command]
           else

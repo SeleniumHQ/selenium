@@ -5,6 +5,7 @@
   "withoutServlets": [],
   "custom": {},
   "capabilityMatcher": "org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
+  "registryClass": "org.openqa.grid.internal.DefaultGridRegistry",
   "throwOnCapabilityNotPresent": true,
   "cleanUpCycle": 5000,
   "role": "hub",

@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import warnings
 
 from selenium.webdriver.chrome.webdriver import WebDriver as ChromiumDriver
 from .options import Options
@@ -24,8 +25,9 @@ class OperaDriver(ChromiumDriver):
     to drive the Opera browser based on Chromium."""
 
     def __init__(self, executable_path=None, port=0,
-                 opera_options=None, service_args=None,
-                 desired_capabilities=None, service_log_path=None):
+                 options=None, service_args=None,
+                 desired_capabilities=None, service_log_path=None,
+                 opera_options=None):
         """
         Creates a new instance of the operadriver.
 
@@ -38,15 +40,18 @@ class OperaDriver(ChromiumDriver):
                   a free port will be found.
          - desired_capabilities: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
-         - chrome_options: this takes an instance of ChromeOptions
+         - options: this takes an instance of ChromeOptions
         """
+        if opera_options:
+            warnings.warn('use options instead of opera_options', DeprecationWarning)
+            options = opera_options
 
         executable_path = (executable_path if executable_path is not None
                            else "operadriver")
         ChromiumDriver.__init__(self,
                                 executable_path=executable_path,
                                 port=port,
-                                chrome_options=opera_options,
+                                options=options,
                                 service_args=service_args,
                                 desired_capabilities=desired_capabilities,
                                 service_log_path=service_log_path)
@@ -65,9 +70,9 @@ class WebDriver(OperaDriver):
                  port=0,
                  service_log_path=None,
                  service_args=None,
-                 opera_options=None):
+                 options=None):
         OperaDriver.__init__(self, executable_path=executable_path,
-                             port=port, opera_options=opera_options,
+                             port=port, options=options,
                              service_args=service_args,
                              desired_capabilities=desired_capabilities,
                              service_log_path=service_log_path)

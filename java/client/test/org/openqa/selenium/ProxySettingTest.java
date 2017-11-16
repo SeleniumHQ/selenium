@@ -20,7 +20,6 @@ package org.openqa.selenium;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
@@ -34,11 +33,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.ProxyServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.seleniumhq.jetty9.server.Handler;
@@ -80,12 +77,10 @@ public class ProxySettingTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
-  @NotYetImplemented(MARIONETTE)
   @NeedsLocalEnvironment
   public void canConfigureManualHttpProxy() {
     Proxy proxyToUse = proxyServer.asProxy();
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(PROXY, proxyToUse);
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxyToUse);
 
     WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
     registerDriverTeardown(driver);
@@ -109,8 +104,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(PROXY, proxy);
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
     WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
     registerDriverTeardown(driver);
@@ -140,8 +134,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(PROXY, proxy);
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
     WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
     registerDriverTeardown(driver);

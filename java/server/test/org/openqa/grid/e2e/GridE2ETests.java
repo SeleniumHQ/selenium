@@ -35,7 +35,7 @@ import org.openqa.grid.e2e.misc.Issue1586;
 import org.openqa.grid.e2e.misc.WebDriverPriorityDemo;
 import org.openqa.grid.e2e.node.BrowserTimeOutTest;
 import org.openqa.grid.e2e.node.CrashWhenStartingBrowserTest;
-import org.openqa.grid.e2e.node.DefaultProxyFindsFirefoxLocationsTest;
+import org.openqa.grid.e2e.node.DefaultProxyInjectsConfigurationUuidTest;
 import org.openqa.grid.e2e.node.DefaultProxyIsUnregisteredIfDownForTooLongTest;
 import org.openqa.grid.e2e.node.NodeGoingDownAndUpTest;
 import org.openqa.grid.e2e.node.NodeRecoveryTest;
@@ -48,7 +48,7 @@ import org.openqa.grid.e2e.utils.ExtraServletUtilTest;
     BrowserTimeOutTest.class,
     ConfigInheritanceTest.class,
     CrashWhenStartingBrowserTest.class,
-    DefaultProxyFindsFirefoxLocationsTest.class,
+    DefaultProxyInjectsConfigurationUuidTest.class,
     DefaultProxyIsUnregisteredIfDownForTooLongTest.class,
     ExtraServletUtilTest.class,
     Grid1HeartbeatTest.class,

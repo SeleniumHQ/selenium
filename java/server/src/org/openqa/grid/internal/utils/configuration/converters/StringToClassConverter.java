@@ -24,17 +24,15 @@ import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 
 public abstract class StringToClassConverter<E> {
-  public E convert(String capabilityMatcherClass) {
+  public E convert(String clazz) {
     try {
-      return (E) Class.forName(capabilityMatcherClass).newInstance();
+      return (E) Class.forName(clazz).newInstance();
     } catch (Throwable e) {
-      throw new GridConfigurationException("Error creating class with " +
-                                           capabilityMatcherClass + " : " + e.getMessage(), e);
+      throw new GridConfigurationException("Error creating class with " + clazz + " : " + e.getMessage(), e);
     }
   }
 
   public static class CapabilityMatcherStringConverter extends StringToClassConverter<CapabilityMatcher> implements IStringConverter<CapabilityMatcher>{}
 
   public static class PrioritizerStringConverter extends StringToClassConverter<Prioritizer> implements IStringConverter<Prioritizer>{}
-
 }

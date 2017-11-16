@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'testng',
   maven_coords = 'org.testng:testng:jar:6.9.9',

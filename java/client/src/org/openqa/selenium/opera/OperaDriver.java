@@ -132,7 +132,9 @@ public class OperaDriver extends RemoteWebDriver
    *
    * @param capabilities The capabilities required from the OperaDriver.
    * @see #OperaDriver(OperaDriverService, Capabilities)
+   * @deprecated Use {@link OperaDriver(OperaOptions)} instead.
    */
+  @Deprecated
   public OperaDriver(Capabilities capabilities) {
     this(OperaDriverService.createDefaultService(), capabilities);
   }
@@ -155,7 +157,7 @@ public class OperaDriver extends RemoteWebDriver
    * @param options The options to use.
    */
   public OperaDriver(OperaDriverService service, OperaOptions options) {
-    this(service, options.toCapabilities());
+    this(service, (Capabilities) options);
   }
 
   /**
@@ -164,7 +166,9 @@ public class OperaDriver extends RemoteWebDriver
    *
    * @param service The service to use.
    * @param capabilities The capabilities required from the OperaDriver.
+   * @deprecated Use {@link OperaDriver(OperaDriverService, OperaOptions)} instead.
    */
+  @Deprecated
   public OperaDriver(OperaDriverService service, Capabilities capabilities) {
     super(new DriverCommandExecutor(service), capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());

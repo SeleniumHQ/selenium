@@ -66,7 +66,7 @@ public class ParallelTest {
 
   @Test
   public void canGetApp2() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -87,7 +87,7 @@ public class ParallelTest {
    */
   @Test
   public void cannotGet2App2() throws InterruptedException {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -115,7 +115,7 @@ public class ParallelTest {
    */
   @Test(timeout = 2000)
   public void canGet5App1() {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -136,7 +136,7 @@ public class ParallelTest {
    */
   @Test(timeout = 1000)
   public void cannotGet6App1() throws InterruptedException {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -174,7 +174,7 @@ public class ParallelTest {
    */
   @Test(timeout = 1000)
   public void cannotGetApp2() throws InterruptedException {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -207,7 +207,7 @@ public class ParallelTest {
 
   @Test(timeout = 10000)
   public void releaseAndReserve() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1;
     RegistrationRequest req;
     Map<String, Object> app1 = new HashMap<>();
@@ -244,7 +244,7 @@ public class ParallelTest {
 
       // release them
       for (TestSession session : used) {
-        registry.terminateSynchronousFOR_TEST_ONLY(session);
+        ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
       }
       assertEquals(registry.getActiveSessions().size(), 0);
       used.clear();
@@ -261,7 +261,7 @@ public class ParallelTest {
 
       assertEquals(registry.getActiveSessions().size(), 5);
 
-      registry.terminateSynchronousFOR_TEST_ONLY(used.get(0));
+      ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(used.get(0));
 
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();

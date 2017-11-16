@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -74,6 +72,13 @@ module Selenium
             profile = Profile.new
             subject.profile = profile
             expect(subject.profile).to eq(profile)
+          end
+        end
+
+        describe '#headless!' do
+          it 'adds the -headless command-line flag' do
+            subject.headless!
+            expect(subject.as_json['moz:firefoxOptions'][:args]).to include('-headless')
           end
         end
 

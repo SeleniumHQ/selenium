@@ -64,6 +64,17 @@ WebElement.clickElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
+  // Handle the special case of the file input element here
+
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
+    var inputtype = element.getAttribute('type');
+    if (inputtype && inputtype.toLowerCase() == 'file') {
+      respond.status = bot.ErrorCode.INVALID_ARGUMENT;
+      respond.send();
+      return;
+    }
+  }
+
   var unwrapped = fxdriver.moz.unwrapFor4(element);
 
   var offset = Utils.getClickablePoint(unwrapped);

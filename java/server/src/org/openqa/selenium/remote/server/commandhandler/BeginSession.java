@@ -24,32 +24,37 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.ActiveSession;
-import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.server.CommandHandler;
-import org.openqa.selenium.remote.server.NewSessionPayload;
+import org.openqa.selenium.remote.server.NewSessionPipeline;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BeginSession implements CommandHandler {
 
-  private final ActiveSessionFactory sessionFactory;
-  private final ActiveSessions allSessions;
+  private final Logger LOG = Logger.getLogger(BeginSession.class.getName());
 
-  public BeginSession(ActiveSessions allSessions) {
+  private final NewSessionPipeline pipeline;
+  private final ActiveSessions allSessions;
+  private final Json json;
+
+  public BeginSession(NewSessionPipeline pipeline, ActiveSessions allSessions, Json json) {
+    this.pipeline = pipeline;
     this.allSessions = allSessions;
-    this.sessionFactory = new ActiveSessionFactory();
+    this.json = json;
   }
 
   @Override
@@ -68,8 +73,8 @@ public class BeginSession implements CommandHandler {
     try (Reader reader = new InputStreamReader(
         req.consumeContentStream(),
         req.getContentEncoding());
-         NewSessionPayload payload = new NewSessionPayload(contentLength, reader)) {
-      session = sessionFactory.createSession(payload);
+         NewSessionPayload payload = NewSessionPayload.create(reader)) {
+      session = pipeline.createNewSession(payload);
       allSessions.put(session);
     }
 
@@ -106,7 +111,7 @@ public class BeginSession implements CommandHandler {
               "Unrecognized downstream dialect: " + session.getDownstreamDialect());
       }
 
-      byte[] payload = new BeanToJsonConverter().convert(toConvert).getBytes(UTF_8);
+      byte[] payload = json.toJson(toConvert).getBytes(UTF_8);
 
       resp.setStatus(HTTP_OK);
       resp.setHeader("Cache-Control", "no-cache");

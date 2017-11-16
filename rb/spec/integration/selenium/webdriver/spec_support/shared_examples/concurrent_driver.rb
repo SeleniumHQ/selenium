@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,35 +15,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
-shared_examples_for 'driver that can be started concurrently' do |browser_name|
-  it 'is started sequentially' do
-    caps_opt = {}
-    if browser_name == :ff_esr
-      caps_opt[:firefox_binary] = ENV['FF_ESR_BINARY']
-      caps_opt[:marionette] = false
-      browser_name = :firefox
+shared_examples_for 'driver that can be started concurrently' do |guard|
+  before { quit_driver }
+
+  after do
+    drivers.each(&:quit)
+    threads.select(&:alive?).each(&:kill)
+  end
+
+  let(:drivers) { [] }
+  let(:threads) { [] }
+
+  it 'starts 3 drivers sequentially', guard do
+    3.times do
+      threads << Thread.new do
+        drivers << create_driver!
+      end
     end
 
-    expect do
-      # start 5 drivers concurrently
-      threads = []
-      drivers = []
+    expect { threads.each(&:join) }.not_to raise_error
+    expect(drivers.count).to eq(3)
 
-      5.times do
-        threads << Thread.new do
-          drivers << GlobalTestEnv.send(:create_driver)
-        end
-      end
-
-      threads.each do |thread|
-        thread.abort_on_exception = true
-        thread.join
-      end
-
-      drivers.each do |driver|
-        driver.title # make any wire call
-        driver.quit
-      end
-    end.not_to raise_error
+    # make any wire call
+    expect { drivers.each(&:title) }.not_to raise_error
   end
 end

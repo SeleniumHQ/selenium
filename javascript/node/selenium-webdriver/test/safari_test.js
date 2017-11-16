@@ -17,75 +17,12 @@
 
 'use strict';
 
-const webdriver = require('..'),
-  proxy = require('../proxy'),
-  safari = require('../safari'),
-  assert = require('../testing/assert'),
-  test = require('../lib/test');
+const assert = require('assert');
 
+const safari = require('../safari');
+const test = require('../lib/test');
+const webdriver = require('..');
 
-describe('safari.Options', function() {
-  describe('fromCapabilities', function() {
-    it('returns a new Options instance  if none were defined', function() {
-      let options = safari.Options.fromCapabilities(
-        new webdriver.Capabilities());
-      assert(options).instanceOf(safari.Options);
-    });
-
-    it('returns the options instance if present', function() {
-      let options = new safari.Options().setCleanSession(true),
-        caps = options.toCapabilities();
-      assert(safari.Options.fromCapabilities(caps)).equalTo(options);
-    });
-
-    it('extracts supported WebDriver capabilities', function() {
-      let proxyPrefs = proxy.direct(),
-        logPrefs = {},
-        caps = webdriver.Capabilities.chrome()
-          .set(webdriver.Capability.PROXY, proxyPrefs)
-          .set(webdriver.Capability.LOGGING_PREFS, logPrefs);
-
-      let options = safari.Options.fromCapabilities(caps);
-      assert(options.proxy_).equalTo(proxyPrefs);
-      assert(options.logPrefs_).equalTo(logPrefs);
-    });
-  });
-
-  describe('toCapabilities', function() {
-    let options;
-
-    before(function() {
-      options = new safari.Options()
-        .setCleanSession(true);
-    });
-
-    it('returns a new capabilities object if one is not provided', function() {
-      let caps = options.toCapabilities();
-      assert(caps).instanceOf(webdriver.Capabilities);
-      assert(caps.get('browserName')).equalTo('safari');
-      assert(caps.get('safari.options')).equalTo(options);
-    });
-
-    it('adds to input capabilities object', function() {
-      let caps = webdriver.Capabilities.safari();
-      assert(options.toCapabilities(caps)).equalTo(caps);
-      assert(caps.get('safari.options')).equalTo(options);
-    });
-
-    it('sets generic driver capabilities', function() {
-      let proxyPrefs = proxy.direct(),
-        loggingPrefs = {};
-
-      options
-        .setLoggingPrefs(loggingPrefs)
-        .setProxy(proxyPrefs);
-
-      let caps = options.toCapabilities();
-      assert(caps.get('proxy')).equalTo(proxyPrefs);
-      assert(caps.get('loggingPrefs')).equalTo(loggingPrefs);
-    });
-  });
-});
 
 test.suite(function(env) {
   describe('safaridriver', function() {
@@ -97,12 +34,11 @@ test.suite(function(env) {
       }
     });
 
-    it('can start safaridriver', function() {
+    it('can start safaridriver', async function() {
       service = new safari.ServiceBuilder().build();
 
-      return service.start().then(function(url) {
-        assert(url).matches(/127\.0\.0\.1/);
-      });
+      let url = await service.start();
+      assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`);
     });
   });
 }, {browsers: ['safari']});

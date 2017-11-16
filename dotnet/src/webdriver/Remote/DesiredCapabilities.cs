@@ -1,4 +1,4 @@
-﻿// <copyright file="DesiredCapabilities.cs" company="WebDriver Committers">
+// <copyright file="DesiredCapabilities.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Remote
     public class DesiredCapabilities : ICapabilities, ISpecificationCompliant
     {
         private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
-        private bool isSpecCompliant = true;
+        private bool isSpecCompliant;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
@@ -86,6 +86,22 @@ namespace OpenQA.Selenium.Remote
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
+        /// </summary>
+        /// <param name="browser">Name of the browser e.g. firefox, internet explorer, safari</param>
+        /// <param name="version">Version of the browser</param>
+        /// <param name="platform">The platform it works on</param>
+        /// <param name="isSpecCompliant">Sets a value indicating whether the capabilities are
+        /// compliant with the W3C WebDriver specification.</param>
+        internal DesiredCapabilities(string browser, string version, Platform platform, bool isSpecCompliant)
+        {
+            this.SetCapability(CapabilityType.BrowserName, browser);
+            this.SetCapability(CapabilityType.Version, version);
+            this.SetCapability(CapabilityType.Platform, platform);
+            this.isSpecCompliant = isSpecCompliant;
         }
 
         /// <summary>

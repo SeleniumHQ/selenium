@@ -32,6 +32,7 @@ import org.openqa.selenium.testing.TestUtilities;
     AlertsTest.class,
     CleanSessionTest.class,
     CrossDomainTest.class,
+    SafariOptionsTest.class,
     TechnologyPreviewTest.class,
 })
 public class SafariDriverTests {

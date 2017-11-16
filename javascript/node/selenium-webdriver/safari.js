@@ -26,7 +26,6 @@ const io = require('./io');
 const {Capabilities, Capability} = require('./lib/capabilities');
 const command = require('./lib/command');
 const error = require('./lib/error');
-const logging = require('./lib/logging');
 const promise = require('./lib/promise');
 const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
@@ -35,11 +34,23 @@ const remote = require('./remote');
 
 
 /**
+ * _Synchronously_ attempts to locate the IE driver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
+ */
+function locateSynchronously() {
+  return process.platform === 'darwin'
+      ? io.findInPath('safaridriver', true) : null;
+}
+
+
+/**
  * @return {string} .
  * @throws {Error}
  */
 function findSafariDriver() {
-  let exe = io.findInPath('safaridriver', true);
+  let exe = locateSynchronously();
   if (!exe) {
     throw Error(
       `The safaridriver executable could not be found on the current PATH.
@@ -77,12 +88,6 @@ class Options {
   constructor() {
     /** @private {Object<string, *>} */
     this.options_ = null;
-
-    /** @private {./lib/logging.Preferences} */
-    this.logPrefs_ = null;
-
-    /** @private {?./lib/capabilities.ProxyConfig} */
-    this.proxy_ = null;
   }
 
   /**
@@ -92,61 +97,16 @@ class Options {
    * @return {!Options} The SafariDriver options.
    */
   static fromCapabilities(capabilities) {
-    var options = new Options();
-    var o = capabilities.get(OPTIONS_CAPABILITY_KEY);
+    let options = new Options();
+    let o = capabilities.get(OPTIONS_CAPABILITY_KEY);
 
     if (o instanceof Options) {
       options = o;
     } else if (o) {
-      options.setCleanSession(o.cleanSession);
       options.setTechnologyPreview(o[TECHNOLOGY_PREVIEW_OPTIONS_KEY]);
     }
 
-    if (capabilities.has(Capability.PROXY)) {
-      options.setProxy(capabilities.get(Capability.PROXY));
-    }
-
-    if (capabilities.has(Capability.LOGGING_PREFS)) {
-      options.setLoggingPrefs(capabilities.get(Capability.LOGGING_PREFS));
-    }
-
     return options;
-  }
-
-  /**
-   * Sets whether to force Safari to start with a clean session. Enabling this
-   * option will cause all global browser data to be deleted.
-   * @param {boolean} clean Whether to make sure the session has no cookies,
-   *     cache entries, local storage, or databases.
-   * @return {!Options} A self reference.
-   */
-  setCleanSession(clean) {
-    if (!this.options_) {
-      this.options_ = {};
-    }
-    this.options_['cleanSession'] = clean;
-    return this;
-  }
-
-  /**
-   * Sets the logging preferences for the new session.
-   * @param {!./lib/logging.Preferences} prefs The logging preferences.
-   * @return {!Options} A self reference.
-   */
-  setLoggingPrefs(prefs) {
-    this.logPrefs_ = prefs;
-    return this;
-  }
-
-  /**
-   * Sets the proxy to use.
-   *
-   * @param {./lib/capabilities.ProxyConfig} proxy The proxy configuration to use.
-   * @return {!Options} A self reference.
-   */
-  setProxy(proxy) {
-    this.proxy_ = proxy;
-    return this;
   }
 
   /**
@@ -172,13 +132,7 @@ class Options {
    * @return {!Capabilities} The capabilities.
    */
   toCapabilities(opt_capabilities) {
-    var caps = opt_capabilities || Capabilities.safari();
-    if (this.logPrefs_) {
-      caps.set(Capability.LOGGING_PREFS, this.logPrefs_);
-    }
-    if (this.proxy_) {
-      caps.set(Capability.PROXY, this.proxy_);
-    }
+    let caps = opt_capabilities || Capabilities.safari();
     if (this.options_) {
       caps.set(OPTIONS_CAPABILITY_KEY, this);
     }
@@ -229,11 +183,9 @@ class Driver extends webdriver.WebDriver {
    *
    * @param {(Options|Capabilities)=} opt_config The configuration
    *     options for the new session.
-   * @param {promise.ControlFlow=} opt_flow The control flow to create
-   *     the driver under.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config, opt_flow) {
+  static createSession(opt_config) {
     let caps, exe;
 
     if (opt_config instanceof Options) {
@@ -251,7 +203,7 @@ class Driver extends webdriver.WebDriver {
         service.start().then(url => new http.HttpClient(url)));
 
     return /** @type {!Driver} */(super.createSession(
-        executor, caps, opt_flow, () => service.kill()));
+        executor, caps, () => service.kill()));
   }
 }
 
@@ -262,3 +214,4 @@ class Driver extends webdriver.WebDriver {
 exports.Driver = Driver;
 exports.Options = Options;
 exports.ServiceBuilder = ServiceBuilder;
+exports.locateSynchronously = locateSynchronously;

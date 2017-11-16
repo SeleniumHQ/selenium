@@ -1,4 +1,4 @@
-﻿// <copyright file="WebElementProxy.cs" company="WebDriver Committers">
+// <copyright file="WebElementProxy.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+#if !NETSTANDARD2_0
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -104,3 +105,4 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
     }
 }
+#endif

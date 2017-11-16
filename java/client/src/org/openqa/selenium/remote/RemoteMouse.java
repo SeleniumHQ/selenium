@@ -68,19 +68,19 @@ public class RemoteMouse implements Mouse {
   public void doubleClick(Coordinates where) {
     moveIfNeeded(where);
 
-    executor.execute(DriverCommand.DOUBLE_CLICK, ImmutableMap.<String, Object>of());
+    executor.execute(DriverCommand.DOUBLE_CLICK, ImmutableMap.of());
   }
 
   public void mouseDown(Coordinates where) {
     moveIfNeeded(where);
 
-    executor.execute(DriverCommand.MOUSE_DOWN, ImmutableMap.<String, Object>of());
+    executor.execute(DriverCommand.MOUSE_DOWN, ImmutableMap.of());
   }
 
   public void mouseUp(Coordinates where) {
     moveIfNeeded(where);
 
-    executor.execute(DriverCommand.MOUSE_UP, ImmutableMap.<String, Object>of());
+    executor.execute(DriverCommand.MOUSE_UP, ImmutableMap.of());
   }
 
   public void mouseMove(Coordinates where) {

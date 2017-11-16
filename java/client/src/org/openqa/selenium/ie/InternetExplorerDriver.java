@@ -152,8 +152,16 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     this(null, null, DEFAULT_PORT);
   }
 
+  /**
+   * @deprecated Use {@link InternetExplorerDriver(InternetExplorerOptions)}
+   */
+  @Deprecated
   public InternetExplorerDriver(Capabilities capabilities) {
     this(null, capabilities, DEFAULT_PORT);
+  }
+
+  public InternetExplorerDriver(InternetExplorerOptions options) {
+    this(null, options);
   }
 
   /**
@@ -170,8 +178,18 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     this(service, null, DEFAULT_PORT);
   }
 
+  /**
+   * @deprecated Use {@link InternetExplorerDriver(InternetExplorerDriverService, InternetExplorerOptions)}
+   */
+  @Deprecated
   public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities) {
     this(service, capabilities, DEFAULT_PORT);
+  }
+
+  public InternetExplorerDriver(
+      InternetExplorerDriverService service,
+      InternetExplorerOptions options) {
+    this(service, options, DEFAULT_PORT);
   }
 
   /**

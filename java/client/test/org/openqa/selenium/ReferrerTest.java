@@ -44,7 +44,6 @@ import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -232,7 +231,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * redirects the second domain to another host.
    */
   @Test
-  @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithAProxiedHost() {
     testServer1.start();
@@ -272,7 +270,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * to connect directly to the target server.
    */
   @Test
-  @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
     testServer1.start();
@@ -409,8 +406,7 @@ public class ReferrerTest extends JUnit4TestBase {
       Proxy proxy = new Proxy();
       proxy.setProxyAutoconfigUrl(pacUrl);
 
-      DesiredCapabilities caps = new DesiredCapabilities();
-      caps.setCapability(PROXY, proxy);
+      Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
       return driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
     }

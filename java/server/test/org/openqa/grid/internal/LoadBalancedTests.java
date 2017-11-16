@@ -41,8 +41,8 @@ import java.util.Map;
  */
 public class LoadBalancedTests {
 
-  private Registry registry;
-  private Registry registry2;
+  private GridRegistry registry;
+  private GridRegistry registry2;
 
   private BaseRemoteProxy proxy1;
   private BaseRemoteProxy proxy2;
@@ -50,8 +50,8 @@ public class LoadBalancedTests {
 
   @Before
   public void setup() {
-    registry = Registry.newInstance();
-    registry2 = Registry.newInstance();
+    registry = DefaultGridRegistry.newInstance();
+    registry2 = DefaultGridRegistry.newInstance();
 
     register5ProxiesOf5Slots();
     register3ProxiesVariableSlotSize();
@@ -104,7 +104,7 @@ public class LoadBalancedTests {
       assertNotNull(session);
       assertEquals(2, session.getSlot().getProxy().getTotalUsed());
       // and release
-      registry.terminateSynchronousFOR_TEST_ONLY(session);
+      ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
     }
 
     // at that point, 1 FF per proxy
@@ -153,7 +153,7 @@ public class LoadBalancedTests {
 
     //release and check the resource are freed.
     for (TestSession session : sessions) {
-      registry.terminateSynchronousFOR_TEST_ONLY(session);
+      ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
     }
     assertEquals(50, proxy1.getResourceUsageInPercent(), 0f);
     assertEquals(25, proxy2.getResourceUsageInPercent(), 0f);

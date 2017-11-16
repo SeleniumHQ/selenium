@@ -24,10 +24,11 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CommandExecutor;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -35,7 +36,6 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -88,8 +88,6 @@ public class FirefoxDriver extends RemoteWebDriver {
     public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
-  private static final Logger LOG = Logger.getLogger(FirefoxDriver.class.getName());
-
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
   public static final String MARIONETTE = "marionette";
@@ -100,10 +98,18 @@ public class FirefoxDriver extends RemoteWebDriver {
     this(new FirefoxOptions());
   }
 
+  /**
+   * @deprecated Use {@link FirefoxDriver(FirefoxOptions)}.
+   */
+  @Deprecated
   public FirefoxDriver(Capabilities desiredCapabilities) {
     this(new FirefoxOptions(Objects.requireNonNull(desiredCapabilities, "No capabilities seen")));
   }
 
+  /**
+   * @deprecated Use {@link FirefoxDriver(GeckoDriverService, FirefoxOptions)}.
+   */
+  @Deprecated
   public FirefoxDriver(GeckoDriverService service, Capabilities desiredCapabilities) {
     this(
         Objects.requireNonNull(service, "No geckodriver service provided"),
@@ -111,21 +117,39 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   public FirefoxDriver(FirefoxOptions options) {
-    super(toExecutor(options), dropCapabilities(options.toCapabilities()));
+    super(toExecutor(options), dropCapabilities(options));
+  }
+
+  public FirefoxDriver(GeckoDriverService service) {
+    super(new DriverCommandExecutor(service), new FirefoxOptions());
+  }
+
+  public FirefoxDriver(XpiDriverService service) {
+    super(new DriverCommandExecutor(service), new FirefoxOptions());
   }
 
   public FirefoxDriver(GeckoDriverService service, FirefoxOptions options) {
-    super(new DriverCommandExecutor(service), dropCapabilities(options.toCapabilities()));
+    super(new DriverCommandExecutor(service), dropCapabilities(options));
+  }
+
+  public FirefoxDriver(XpiDriverService service, FirefoxOptions options) {
+    super(new DriverCommandExecutor(service), dropCapabilities(options));
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
     Objects.requireNonNull(options, "No options to construct executor from");
     DriverService.Builder<?, ?> builder;
 
-    if (options.isLegacy()) {
+    if (! Boolean.parseBoolean(System.getProperty(DRIVER_USE_MARIONETTE, "true"))
+        || options.isLegacy()) {
+      FirefoxProfile profile = options.getProfile();
+      if (profile == null) {
+        profile = new FirefoxProfile();
+        options.setCapability(FirefoxDriver.PROFILE, profile);
+      }
       builder = XpiDriverService.builder()
           .withBinary(options.getBinary())
-          .withProfile(options.getProfile());
+          .withProfile(profile);
     } else {
       builder = new GeckoDriverService.Builder()
           .usingFirefoxBinary(options.getBinary());
@@ -166,17 +190,17 @@ public class FirefoxDriver extends RemoteWebDriver {
    */
   private static Capabilities dropCapabilities(Capabilities capabilities) {
     if (capabilities == null) {
-      return new DesiredCapabilities();
+      return new ImmutableCapabilities();
     }
 
-    DesiredCapabilities caps;
+    MutableCapabilities caps;
 
     if (isLegacy(capabilities)) {
       final Set<String> toRemove = Sets.newHashSet(BINARY, PROFILE);
-      caps = new DesiredCapabilities(
+      caps = new MutableCapabilities(
           Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
     } else {
-      caps = new DesiredCapabilities(capabilities);
+      caps = new MutableCapabilities(capabilities);
     }
 
     // Ensure that the proxy is in a state fit to be sent to the extension
