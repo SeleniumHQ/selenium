@@ -220,7 +220,7 @@ public class ErrorHandler {
 
   private Throwable rebuildServerError(Map<String, Object> rawErrorData, int responseStatus) {
 
-    if (!rawErrorData.containsKey(CLASS) && !rawErrorData.containsKey(STACK_TRACE)) {
+    if (rawErrorData.get(CLASS) == null || rawErrorData.get(STACK_TRACE) == null) {
       // Not enough information for us to try to rebuild an error.
       return null;
     }
