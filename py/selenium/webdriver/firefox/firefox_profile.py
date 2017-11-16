@@ -330,6 +330,16 @@ class FirefoxProfile(object):
                     rc.append(node.data)
             return ''.join(rc).strip()
 
+        def parse_manifest_json(content):
+            """Extracts the details from the contents of a WebExtensions `manifest.json` file."""
+            manifest = json.loads(content)
+            return {
+                'id': manifest['applications']['gecko']['id'],
+                'version': manifest['version'],
+                'name': manifest['version'],
+                'unpack': False,
+            }
+
         if not os.path.exists(addon_path):
             raise IOError('Add-on path does not exist: %s' % addon_path)
 
