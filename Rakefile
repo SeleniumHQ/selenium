@@ -268,7 +268,6 @@ task :test_rb => ["//rb:unit-test", :test_rb_local, :test_rb_remote]
 task :test_rb_local => [
   "//rb:chrome-test",
   "//rb:firefox-test",
-  "//rb:phantomjs-test",
   ("//rb:ff-esr-test" if ENV['FF_ESR_BINARY']),
   ("//rb:safari-preview-test" if mac?),
   ("//rb:safari-test" if mac?),
@@ -279,7 +278,6 @@ task :test_rb_local => [
 task :test_rb_remote => [
   "//rb:remote-chrome-test",
   "//rb:remote-firefox-test",
-  "//rb:remote-phantomjs-test",
   ("//rb:remote-ff-esr-test" if ENV['FF_ESR_BINARY']),
   ("//rb:remote-safari-preview-test" if mac?),
   ("//rb:remote-safari-test" if mac?),
