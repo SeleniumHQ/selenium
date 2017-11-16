@@ -19,7 +19,6 @@ import pytest
 
 from selenium.common.exceptions import (
     ElementNotSelectableException,
-    InvalidElementStateException,
     NoSuchElementException,
     UnexpectedTagNameException)
 from selenium.webdriver.support.ui import Select
