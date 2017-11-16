@@ -43,7 +43,7 @@ class Options(object):
 
     @property
     def binary(self):
-        """Returns the location of the binary."""
+        """Returns the FirefoxBinary instance"""
         return self._binary
 
     @binary.setter
@@ -58,10 +58,12 @@ class Options(object):
 
     @property
     def binary_location(self):
-        return self.binary
+        """Returns the location of the binary."""
+        return self.binary._start_cmd
 
-    @binary.setter  # noqa
+    @binary_location.setter  # noqa
     def binary_location(self, value):
+        """ Sets the location of the browser binary by string """
         self.binary = value
 
     @property

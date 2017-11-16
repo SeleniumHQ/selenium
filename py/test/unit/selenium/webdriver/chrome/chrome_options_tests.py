@@ -134,9 +134,12 @@ def test_creates_capabilities(options):
     options._binary_location = '/bar'
     options._extensions = ['baz']
     options._debugger_address = '/foo/bar'
+    options._experimental_options = {'foo': 'bar'}
     caps = options.to_capabilities()
-    assert Options.KEY in caps
-    assert 'foo' in caps[Options.KEY]['args']
-    assert caps[Options.KEY]['binary'] == '/bar'
-    assert 'baz' in caps[Options.KEY]['extensions']
-    assert caps[Options.KEY]['debuggerAddress'] == '/foo/bar'
+    opts = caps.get(Options.KEY)
+    assert opts
+    assert 'foo' in opts['args']
+    assert opts['binary'] == '/bar'
+    assert 'baz' in opts['extensions']
+    assert opts['debuggerAddress'] == '/foo/bar'
+    assert opts['foo'] == 'bar'
