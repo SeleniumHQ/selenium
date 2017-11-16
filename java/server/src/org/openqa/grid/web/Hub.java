@@ -247,4 +247,9 @@ public class Hub {
     return getUrl("/grid/console");
   }
 
+  @ManagedAttribute(name = "NewSessionRequestCount")
+  public int getNewSessionRequestCount() {
+    return getRegistry().getNewSessionRequestCount();
+  }
+
 }

@@ -24,9 +24,6 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.server.jmx.JMXHelper;
-import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
-import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.util.List;
@@ -43,7 +40,6 @@ import java.util.logging.Logger;
  * incoming requests.
  */
 @ThreadSafe
-@ManagedService(objectName = "org.seleniumhq.qrid:type=Registry", description = "Selenium Grid Hub Registry")
 public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistry {
   private static final Logger LOG = Logger.getLogger(DefaultGridRegistry.class.getName());
 
@@ -75,8 +71,6 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
     this.newSessionQueue = new NewSessionRequestQueue();
     proxies = new ProxySet((hub != null) ? hub.getConfiguration().throwOnCapabilityNotPresent : true);
     this.matcherThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler());
-
-    new JMXHelper().register(this);
   }
 
   public void start() {
@@ -403,7 +397,6 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#getNewSessionRequestCount()
    */
-  @ManagedAttribute(name = "NewSessionRequestCount")
   public int getNewSessionRequestCount() {
     // may race
     return newSessionQueue.getNewSessionRequestCount();
