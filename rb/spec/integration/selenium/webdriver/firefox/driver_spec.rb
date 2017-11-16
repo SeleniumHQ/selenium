@@ -54,7 +54,7 @@ module Selenium
         end
       end
 
-      it 'takes a binary path as an argument' do
+      it 'takes a binary path as an argument', except: {browser: :ff_esr} do
         skip "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
 
         begin
@@ -75,7 +75,7 @@ module Selenium
         end
       end
 
-      it 'gives precedence to firefox options versus argument switch' do
+      it 'gives precedence to firefox options versus argument switch', except: {browser: :ff_esr} do
         skip "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
 
         begin
