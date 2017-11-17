@@ -24,7 +24,7 @@ from selenium.webdriver.chrome.options import Options
 
 @pytest.fixture
 def options():
-    yield Options()
+    return Options()
 
 
 def test_set_binary_location(options):

@@ -30,11 +30,9 @@ def close_windows(driver):
     yield
     try:
         from urllib import request as url_request
-        URLError = url_request.URLError
     except ImportError:
         import urllib2 as url_request
-        import urllib2
-        URLError = urllib2.URLError
+    URLError = url_request.URLError
 
     try:
         window_handles = driver.window_handles

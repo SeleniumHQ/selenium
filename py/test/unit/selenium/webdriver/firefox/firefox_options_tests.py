@@ -26,7 +26,7 @@ from selenium.webdriver.firefox.options import Options
 
 @pytest.fixture
 def options():
-    yield Options()
+    return Options()
 
 
 def test_set_binary_with_firefox_binary(options):
