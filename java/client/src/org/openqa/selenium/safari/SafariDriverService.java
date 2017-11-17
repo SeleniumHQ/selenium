@@ -60,7 +60,7 @@ public class SafariDriverService extends DriverService {
   }
 
   static SafariDriverService createDefaultService(Capabilities caps) {
-    return createDefaultService(new SafariOptions());
+    return createDefaultService(new SafariOptions(caps));
   }
 
   @Override
