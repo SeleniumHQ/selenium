@@ -43,10 +43,14 @@ RSpec.configure do |c|
 
   c.before do |example|
     guards = WebDriver::SpecSupport::Guards.new(example)
-    if guards.exclude.any?
-      skip 'Bug Prevents Execution.'
-    elsif guards.except.satisfied.any? || guards.only.unsatisfied.any?
-      pending 'Guarded.'
+
+    matched = guards.matched
+    message = matched.each_with_object([]) { |m, a| a << m.message if m.message }
+
+    if matched.any?(&:skip?)
+      skip message.empty? ? 'Bug Prevents Execution' : message.to_s
+    elsif matched.any?(&:pending?)
+      pending message.empty? ? 'Guarded' : message.to_s
     end
   end
 

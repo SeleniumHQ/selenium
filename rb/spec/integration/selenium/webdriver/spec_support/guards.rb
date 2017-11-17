@@ -32,6 +32,19 @@ module Selenium
           @guards.each(&block)
         end
 
+        def matched
+          excl = exclude
+          pend = except.satisfied.to_a + only.unsatisfied.to_a
+
+          if excl.any?
+            exclude.each { |x| x.skip = true}
+          elsif pend.any?
+            pend.each { |x| x.pending = true}
+          else
+            []
+          end
+        end
+
         def except
           self.class.new(@example, @guards.select(&:except?))
         end
@@ -56,22 +69,30 @@ module Selenium
 
         def collect_example_guards
           guards = []
+          messages = extract_metadata(:message)
 
           GUARD_TYPES.each do |guard_type|
-            example_group = @example.metadata[:example_group]
-            example_guards = [@example.metadata[guard_type], example_group[guard_type]]
-            while example_group[:parent_example_group]
-              example_group = example_group[:parent_example_group]
-              example_guards << example_group[guard_type]
-            end
-
-            example_guards.flatten.uniq.compact.each do |example_guard|
-              guards << Guard.new(example_guard, guard_type)
+            extract_metadata(guard_type).each do |example_guard|
+              guards << Guard.new(example_guard, guard_type, messages.shift)
             end
           end
 
           guards
         end
+
+        private
+
+        def extract_metadata(key)
+          example_group = @example.metadata[:example_group]
+          metadata = [@example.metadata[key], example_group[key]]
+          while example_group[:parent_example_group]
+            example_group = example_group[:parent_example_group]
+            metadata << example_group[key]
+          end
+
+          metadata.flatten.compact
+        end
+
       end # Guards
     end # SpecSupport
   end # WebDriver

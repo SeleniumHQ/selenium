@@ -20,12 +20,15 @@ module Selenium
     module SpecSupport
       class Guards
         class Guard
-          def initialize(guard, type)
+          attr_accessor :skip, :pending, :message
+
+          def initialize(guard, type, message = nil)
             @type = type
 
             @drivers = []
             @browsers = []
             @platforms = []
+            @message = message
 
             set_window_manager(guard)
             expand_drivers(guard)
@@ -47,6 +50,14 @@ module Selenium
 
           def satisfied?
             satisfies_driver? && satisfies_browser? && satisfies_platform? && satisfies_window_manager?
+          end
+
+          def skip?
+            @skip
+          end
+
+          def pending?
+            @pending
           end
 
           private
