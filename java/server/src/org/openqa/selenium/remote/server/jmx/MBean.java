@@ -200,7 +200,9 @@ public class MBean implements DynamicMBean {
         try {
           return (ObjectName) bean.getClass().getMethod("getObjectName").invoke(bean);
         } catch (IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {
-          return new ObjectName(bean.getClass().getName());
+          return new ObjectName(String.format("%s:%s",
+                                              bean.getClass().getPackage().getName(),
+                                              bean.getClass().getSimpleName()));
         }
       } else {
         return new ObjectName(mBean.objectName());
@@ -219,7 +221,7 @@ public class MBean implements DynamicMBean {
         return ((Map<?,?>) res).entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey, e -> e.getValue().toString()));
       } else {
-        return res;
+        return res.toString();
       }
     } catch (IllegalAccessException|InvocationTargetException e) {
       e.printStackTrace();

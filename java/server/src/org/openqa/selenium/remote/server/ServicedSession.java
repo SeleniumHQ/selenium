@@ -50,6 +50,9 @@ import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -61,6 +64,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+
+@ManagedService
 public class ServicedSession implements ActiveSession {
 
   private final DriverService service;
@@ -94,6 +101,8 @@ public class ServicedSession implements ActiveSession {
     this.driver = new Augmenter().augment(new RemoteWebDriver(
         executor,
         new ImmutableCapabilities(getCapabilities())));
+
+    new JMXHelper().register(this);
   }
 
 
@@ -103,26 +112,31 @@ public class ServicedSession implements ActiveSession {
   }
 
   @Override
+  @ManagedAttribute
   public SessionId getId() {
     return id;
   }
 
   @Override
+  @ManagedAttribute
   public Dialect getUpstreamDialect() {
     return upstream;
   }
 
   @Override
+  @ManagedAttribute
   public Dialect getDownstreamDialect() {
     return downstream;
   }
 
   @Override
+  @ManagedAttribute
   public Map<String, Object> getCapabilities() {
     return capabilities;
   }
 
   @Override
+  @ManagedAttribute
   public WebDriver getWrappedDriver() {
     return driver;
   }
@@ -278,5 +292,10 @@ public class ServicedSession implements ActiveSession {
           throw new IllegalStateException("Unknown dialect: " + dialect);
       }
     }
+  }
+
+  public ObjectName getObjectName() throws MalformedObjectNameException {
+    return new ObjectName(String.format("org.seleniumhq.server:type=Session,browser=\"%s\",id=%s",
+                                        getCapabilities().get("browserName"), getId()));
   }
 }

@@ -31,6 +31,8 @@ import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.seleniumhq.jetty9.security.ConstraintMapping;
 import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
 import org.seleniumhq.jetty9.server.Connector;
@@ -51,6 +53,7 @@ import javax.servlet.Servlet;
 /**
  * Provides a server that can launch and manage selenium sessions.
  */
+@ManagedService(objectName = "org.seleniumhq.server:type=SeleniumServer")
 public class SeleniumServer implements GridNodeServer {
 
   private final static Logger LOG = Logger.getLogger(SeleniumServer.class.getName());
@@ -73,6 +76,8 @@ public class SeleniumServer implements GridNodeServer {
 
   public SeleniumServer(StandaloneConfiguration configuration) {
     this.configuration = configuration;
+
+    new JMXHelper().register(this);
   }
 
   public int getRealPort() {

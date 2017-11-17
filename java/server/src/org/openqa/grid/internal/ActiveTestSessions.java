@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 
+import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 /**
@@ -65,7 +66,11 @@ public class ActiveTestSessions {
 
   public boolean remove(TestSession o, SessionTerminationReason reason) {
     updateReason(o, reason);
-    new JMXHelper().unregister(o.getObjectName());
+    try {
+      new JMXHelper().unregister(o.getObjectName());
+    } catch (MalformedObjectNameException e) {
+      e.printStackTrace();
+    }
     return activeTestSessions.remove(o);
   }
 

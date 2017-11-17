@@ -680,16 +680,11 @@ public class TestSession {
     return forwardingRequest;
   }
 
-  public ObjectName getObjectName() {
-    try {
-      return new ObjectName(
-          String.format("org.seleniumhq.qrid:type=TestSession,node=\"%s\",browser=\"%s\",id=%s",
-                        getSlot().getRemoteURL(), getRequestedCapabilities().get("browserName"),
-                        getInternalKey()));
-    } catch (MalformedObjectNameException e) {
-      e.printStackTrace();
-      return null;
-    }
+  public ObjectName getObjectName() throws MalformedObjectNameException {
+    return new ObjectName(
+        String.format("org.seleniumhq.qrid:type=TestSession,node=\"%s\",browser=\"%s\",id=%s",
+                      getSlot().getRemoteURL(), getRequestedCapabilities().get("browserName"),
+                      getInternalKey()));
   }
 
 }
