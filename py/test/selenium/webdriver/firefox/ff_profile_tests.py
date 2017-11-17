@@ -177,7 +177,7 @@ def test_that_we_can_add_a_webextension(capabilities, webserver):
     extension_filename = 'webextension.xpi'
     # TODO: This file should probably live in a common directory.
     current_directory = os.path.dirname(os.path.realpath(__file__))
-    root_directory = os.path.join(current_directory, '..' , '..', '..', '..', '..')
+    root_directory = os.path.join(current_directory, '..', '..', '..', '..', '..')
     data_directory = os.path.join(root_directory, 'javascript', 'node',
                                   'selenium-webdriver', 'lib', 'test', 'data', 'firefox')
     full_extension_filename = os.path.join(data_directory, extension_filename)
@@ -185,6 +185,6 @@ def test_that_we_can_add_a_webextension(capabilities, webserver):
     profile = FirefoxProfile()
     profile.add_extension(full_extension_filename)
 
-    driver = Firefox(fcapabilities=capabilities, firefox_profile=profile)
+    driver = Firefox(capabilities=capabilities, firefox_profile=profile)
     driver.get(webserver.where_is('simpleTest.html'))
     driver.find_element_by_id('webextensions-selenium-example')
