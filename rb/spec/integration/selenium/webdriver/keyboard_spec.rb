@@ -23,7 +23,7 @@ module Selenium
     # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
     describe Keyboard, except: {browser: %i[edge firefox ie]} do
       # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
-      it 'sends keys to the active element', except: {browser: %i[safari safari_preview]} do
+      it 'sends keys to the active element', except: [{browser: %i[safari safari_preview]}, {browser: :ff_esr, platform: :linux}] do
         driver.navigate.to url_for('bodyTypingTest.html')
 
         driver.keyboard.send_keys 'ab'

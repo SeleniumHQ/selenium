@@ -102,6 +102,7 @@ module Selenium
           expect(driver.title).to eq('XHTML Test Page')
 
           driver.switch_to.window(new_window)
+          wait.until { driver.title == 'We Arrive Here'}
           expect(driver.title).to eq('We Arrive Here')
         end
 
