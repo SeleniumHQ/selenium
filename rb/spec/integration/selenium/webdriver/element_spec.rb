@@ -33,7 +33,7 @@ module Selenium
           .to raise_error(Selenium::WebDriver::Error::UnknownError, error)
       end
 
-      it 'should not raise if element is only partially covered', only: {browser: %i[firefox ff_esr ie safari]} do
+      it 'should not raise if element is only partially covered', only: {browser: %i[firefox ff_esr ie safari safari_preview]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
         expect { driver.find_element(id: 'other_contents').click }.not_to raise_error
       end
@@ -42,6 +42,7 @@ module Selenium
         driver.navigate.to url_for('formPage.html')
         wait_for_element(id: 'submitButton')
         driver.find_element(id: 'submitButton').submit
+        reset_driver!
       end
 
       it 'should send string keys' do
@@ -50,7 +51,7 @@ module Selenium
         driver.find_element(id: 'working').send_keys('foo', 'bar')
       end
 
-      it 'should send key presses', except: {browser: :safari} do
+      it 'should send key presses' do
         driver.navigate.to url_for('javascriptPage.html')
         key_reporter = driver.find_element(id: 'keyReporter')
 
@@ -59,7 +60,7 @@ module Selenium
       end
 
       # https://github.com/mozilla/geckodriver/issues/245
-      it 'should send key presses chords', except: {browser: :firefox} do
+      it 'should send key presses chords', except: {browser: %i[firefox safari safari_preview]} do
         driver.navigate.to url_for('javascriptPage.html')
         key_reporter = driver.find_element(id: 'keyReporter')
 
@@ -67,7 +68,7 @@ module Selenium
         expect(key_reporter.attribute('value')).to eq('Hello')
       end
 
-      it 'should handle file uploads', except: {browser: %i[safari edge]} do
+      it 'should handle file uploads', except: {browser: %i[safari edge safari_preview]} do
         driver.navigate.to url_for('formPage.html')
 
         element = driver.find_element(id: 'upload')
@@ -171,7 +172,7 @@ module Selenium
       end
 
       # IE - https://github.com/SeleniumHQ/selenium/pull/4043
-      it 'should drag and drop', except: {browser: %i[edge ie safari]} do
+      it 'should drag and drop', except: {browser: %i[edge ie safari safari_preview]} do
         driver.navigate.to url_for('dragAndDropTest.html')
 
         img1 = driver.find_element(id: 'test1')

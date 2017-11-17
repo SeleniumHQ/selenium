@@ -28,13 +28,13 @@ module Selenium
 
       # Safari is using GET instead of POST (W3C vs JWP)
       # Server - https://github.com/SeleniumHQ/selenium/issues/1795
-      it 'should find the active element', except: [{browser: :safari}, {driver: :remote, browser: :edge}] do
+      it 'should find the active element', except: {driver: :remote, browser: :edge} do
         driver.navigate.to url_for('xhtmlTest.html')
         expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
       end
 
       # Doesn't switch to frame by id directly
-      it 'should switch to a frame directly', except: {browser: :safari} do
+      it 'should switch to a frame directly', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('iframes.html')
         driver.switch_to.frame('iframe1')
 
@@ -62,62 +62,67 @@ module Selenium
         expect(driver.find_element(id: 'iframe_page_heading')).to be_kind_of(WebDriver::Element)
       end
 
-      it 'should switch to a window and back when given a block' do
-        driver.navigate.to url_for('xhtmlTest.html')
+      context 'window switching' do
 
-        driver.find_element(link: 'Open new window').click
-        wait.until { driver.window_handles.size == 2 }
-        expect(driver.title).to eq('XHTML Test Page')
+        after { reset_driver! }
 
-        driver.switch_to.window(new_window) do
-          wait.until { driver.title == 'We Arrive Here' }
+        it 'should switch to a window and back when given a block' do
+          driver.navigate.to url_for('xhtmlTest.html')
+
+          driver.find_element(link: 'Open new window').click
+          wait.until { driver.window_handles.size == 2 }
+          expect(driver.title).to eq('XHTML Test Page')
+
+          driver.switch_to.window(new_window) do
+            wait.until { driver.title == 'We Arrive Here' }
+          end
+
+          wait.until { driver.title == 'XHTML Test Page' }
         end
 
-        wait.until { driver.title == 'XHTML Test Page' }
-      end
+        it 'should handle exceptions inside the block' do
+          driver.navigate.to url_for('xhtmlTest.html')
 
-      it 'should handle exceptions inside the block', except: {browser: :safari} do
-        driver.navigate.to url_for('xhtmlTest.html')
+          driver.find_element(link: 'Open new window').click
+          wait.until { driver.window_handles.size == 2 }
+          expect(driver.title).to eq('XHTML Test Page')
 
-        driver.find_element(link: 'Open new window').click
-        wait.until { driver.window_handles.size == 2 }
-        expect(driver.title).to eq('XHTML Test Page')
+          expect do
+            driver.switch_to.window(new_window) { raise 'foo' }
+          end.to raise_error(RuntimeError, 'foo')
 
-        expect do
-          driver.switch_to.window(new_window) { raise 'foo' }
-        end.to raise_error(RuntimeError, 'foo')
-
-        expect(driver.title).to eq('XHTML Test Page')
-      end
-
-      it 'should switch to a window without a block', except: {browser: :safari} do
-        driver.navigate.to url_for('xhtmlTest.html')
-
-        driver.find_element(link: 'Open new window').click
-        wait.until { driver.window_handles.size == 2 }
-        expect(driver.title).to eq('XHTML Test Page')
-
-        driver.switch_to.window(new_window)
-        expect(driver.title).to eq('We Arrive Here')
-      end
-
-      it 'should use the original window if the block closes the popup' do
-        driver.navigate.to url_for('xhtmlTest.html')
-
-        driver.find_element(link: 'Open new window').click
-        wait.until { driver.window_handles.size == 2 }
-        expect(driver.title).to eq('XHTML Test Page')
-
-        driver.switch_to.window(new_window) do
-          wait.until { driver.title == 'We Arrive Here' }
-          driver.close
+          expect(driver.title).to eq('XHTML Test Page')
         end
 
-        expect(driver.current_url).to include('xhtmlTest.html')
-        expect(driver.title).to eq('XHTML Test Page')
+        it 'should switch to a window without a block' do
+          driver.navigate.to url_for('xhtmlTest.html')
+
+          driver.find_element(link: 'Open new window').click
+          wait.until { driver.window_handles.size == 2 }
+          expect(driver.title).to eq('XHTML Test Page')
+
+          driver.switch_to.window(new_window)
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'should use the original window if the block closes the popup' do
+          driver.navigate.to url_for('xhtmlTest.html')
+
+          driver.find_element(link: 'Open new window').click
+          wait.until { driver.window_handles.size == 2 }
+          expect(driver.title).to eq('XHTML Test Page')
+
+          driver.switch_to.window(new_window) do
+            wait.until { driver.title == 'We Arrive Here' }
+            driver.close
+          end
+
+          expect(driver.current_url).to include('xhtmlTest.html')
+          expect(driver.title).to eq('XHTML Test Page')
+        end
       end
 
-      context 'with more than two windows', except: {browser: %i[ie safari]} do
+      context 'with more than two windows', except: {browser: %i[ie safari safari_preview]} do
         after do
           # We need to reset driver because browsers behave differently
           # when trying to open the same blank target in a new window.
@@ -285,7 +290,7 @@ module Selenium
         end
 
         # Safari - Raises wrong error
-        context 'unhandled alert error', except: {browser: %i[safari]} do
+        context 'unhandled alert error', exclude: {browser: %i[safari safari_preview]} do
           after { reset_driver! }
 
           it 'raises an UnhandledAlertError if an alert has not been dealt with', except: {browser: %i[ie firefox]} do

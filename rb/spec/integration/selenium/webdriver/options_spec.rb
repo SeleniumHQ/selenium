@@ -20,7 +20,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Options do
-      describe 'logs', except: {browser: %i[firefox ie edge safari]} do
+      describe 'logs', except: {browser: %i[firefox ie edge safari safari_preview]} do
         it 'can fetch remote log types', only: {driver: :remote} do
           expect(driver.manage.logs.available_types).to include(:server, :browser, :driver)
         end
@@ -50,7 +50,7 @@ module Selenium
       end
 
       describe 'cookie management' do
-        it 'should get all', except: {browser: :safari} do
+        it 'should get all' do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
@@ -61,7 +61,7 @@ module Selenium
           expect(cookies.first[:value]).to eq('bar')
         end
 
-        it 'should get named cookie', except: {driver: :safari} do
+        it 'should get named cookie' do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
@@ -86,7 +86,7 @@ module Selenium
           expect(driver.manage.all_cookies).to be_empty
         end
 
-        it 'should use DateTime for expires', except: {browser: :safari} do
+        it 'should use DateTime for expires', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('xhtmlTest.html')
 
           expected = DateTime.new(2039)

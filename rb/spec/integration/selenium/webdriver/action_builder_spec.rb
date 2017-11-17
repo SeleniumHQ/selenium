@@ -21,7 +21,7 @@ module Selenium
   module WebDriver
     describe ActionBuilder, except: {browser: :edge} do
       describe 'Key actions' do
-        it 'sends keys to the active element', except: {browser: :safari} do
+        it 'sends keys to the active element', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('bodyTypingTest.html')
           keylogger = driver.find_element(id: 'body_result')
 
@@ -35,7 +35,7 @@ module Selenium
         end
 
         # https://github.com/mozilla/geckodriver/issues/646
-        it 'can send keys with shift pressed', except: {browser: %i[firefox safari]} do
+        it 'can send keys with shift pressed', except: {browser: %i[firefox safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -78,7 +78,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcddcba')
         end
 
-        it 'can send non-ASCII keys', except: {browser: :safari} do
+        it 'can send non-ASCII keys' do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -89,7 +89,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcad')
         end
 
-        it 'can send keys to element', except: {browser: :safari} do
+        it 'can send keys to element' do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -117,7 +117,7 @@ module Selenium
         end
       end # Key actions
 
-      describe 'Pointer actions', except: {browser: %i[safari]} do
+      describe 'Pointer actions', except: {browser: :safari} do
         it 'clicks an element' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
@@ -150,7 +150,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('DoubleClicked')
         end
 
-        it 'context clicks an element' do
+        it 'context clicks an element', exclude: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -158,7 +158,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', only: {browser: :firefox} do
+        it 'can release pressed buttons via release action', exclude: {browser: :safari}, only: {browser: :firefox} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')

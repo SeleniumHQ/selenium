@@ -23,7 +23,7 @@ module Selenium
     # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
     describe Keyboard, except: {browser: %i[edge firefox ie]} do
       # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
-      it 'sends keys to the active element', except: {browser: %i[safari]} do
+      it 'sends keys to the active element', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('bodyTypingTest.html')
 
         driver.keyboard.send_keys 'ab'
@@ -34,7 +34,7 @@ module Selenium
         expect(driver.find_element(id: 'result').text.strip).to be_empty
       end
 
-      it 'can send keys with shift pressed', except: {browser: :safari} do
+      it 'can send keys with shift pressed', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('javascriptPage.html')
 
         event_input = driver.find_element(id: 'theworks')

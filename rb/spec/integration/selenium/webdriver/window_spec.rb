@@ -33,7 +33,7 @@ module Selenium
         expect(size.height).to be > 0
       end
 
-      it 'sets the size of the current window', except: {browser: %i[ie safari]} do
+      it 'sets the size of the current window', except: {browser: :ie} do
         size = window.size
 
         target_width = size.width - 20
@@ -55,7 +55,7 @@ module Selenium
         expect(pos.y).to be >= 0
       end
 
-      it 'sets the position of the current window', except: {browser: %i[ie safari]} do
+      it 'sets the position of the current window', except: {browser: %i[ie safari_preview]} do
         pos = window.position
 
         target_x = pos.x + 10
@@ -100,7 +100,7 @@ module Selenium
         expect(new_rect.height).to eq(target_height)
       end
 
-      it 'can maximize the current window', except: [{window_manager: false}, {browser: %i[ie safari]}] do
+      it 'can maximize the current window', except: [{window_manager: false}, {browser: :ie}] do
         window.size = old_size = Dimension.new(200, 200)
 
         window.maximize
