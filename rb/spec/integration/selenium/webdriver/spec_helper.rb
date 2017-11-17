@@ -43,7 +43,9 @@ RSpec.configure do |c|
 
   c.before do |example|
     guards = WebDriver::SpecSupport::Guards.new(example)
-    if guards.except.satisfied.any? || guards.only.unsatisfied.any?
+    if guards.exclude.any?
+      skip 'Bug Prevents Execution.'
+    elsif guards.except.satisfied.any? || guards.only.unsatisfied.any?
       pending 'Guarded.'
     end
   end

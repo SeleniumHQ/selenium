@@ -21,7 +21,7 @@ module Selenium
       class Guards
         include Enumerable
 
-        GUARD_TYPES = %i[except only].freeze
+        GUARD_TYPES = %i[except only exclude].freeze
 
         def initialize(example, guards = nil)
           @example = example
@@ -38,6 +38,10 @@ module Selenium
 
         def only
           self.class.new(@example, @guards.select(&:only?))
+        end
+
+        def exclude
+          self.class.new(@example, @guards.select(&:exclude?)).satisfied
         end
 
         def satisfied

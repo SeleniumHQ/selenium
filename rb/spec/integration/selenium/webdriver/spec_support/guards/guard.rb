@@ -41,6 +41,10 @@ module Selenium
             @type == :only
           end
 
+          def exclude?
+            @type == :exclude
+          end
+
           def satisfied?
             satisfies_driver? && satisfies_browser? && satisfies_platform? && satisfies_window_manager?
           end
