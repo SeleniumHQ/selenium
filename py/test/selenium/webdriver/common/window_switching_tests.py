@@ -28,7 +28,19 @@ from selenium.webdriver.support.ui import WebDriverWait
 def close_windows(driver):
     main_windows_handle = driver.current_window_handle
     yield
-    for handle in driver.window_handles:
+    try:
+        from urllib import request as url_request
+        URLError = url_request.URLError
+    except ImportError:
+        import urllib2 as url_request
+        import urllib2
+        URLError = urllib2.URLError
+
+    try:
+        window_handles = driver.window_handles
+    except URLError:
+        return
+    for handle in window_handles:
         if handle != main_windows_handle:
             driver.switch_to.window(handle)
             driver.close()
