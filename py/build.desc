@@ -23,11 +23,6 @@ py_test(
   browsers = [ "marionette" ])
 
 py_test(
-  name = "phantomjs_test",
-  deps = [ ":test_phantomjs" ],
-  browsers = [ "phantomjs" ])
-
-py_test(
   name = "blackberry_test",
   deps = [ ":test_blackberry" ],
   browsers = [ "blackberry" ])
@@ -66,7 +61,6 @@ py_test(
     "ie",
     "edge",
     "blackberry",
-    "phantomjs",
     "remote_firefox",
     "safari",
   ])

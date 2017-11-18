@@ -8,7 +8,6 @@ rubygem(
     "//rb:firefox",
     "//rb:ff-esr",
     "//rb:ie",
-    "//rb:phantomjs",
     "//rb:remote",
     "//rb:safari"
   ]
@@ -146,14 +145,6 @@ ruby_test(name = "ie",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [ ":ie" ]
-)
-
-ruby_library(name = "phantomjs",
-  srcs = [
-    "lib/selenium/webdriver/phantomjs/**/*.rb",
-    "lib/selenium/webdriver/phantomjs.rb"
-  ],
-  deps = [":common"]
 )
 
 ruby_library(name = "remote",
@@ -306,7 +297,6 @@ ruby_test(name = "unit",
     ":ie",
     ":remote",
     ":safari",
-    ":phantomjs",
     ":support"
   ]
 )
