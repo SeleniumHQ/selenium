@@ -32,7 +32,11 @@ module Buck
       require "third_party/java/commons-logging/commons-logging-1.2"
       require "third_party/java/commons-io/commons-io-2.6"
 
-      httpclient = org.apache.http.impl.client.HttpClients.custom().setRedirectStrategy(org.apache.http.impl.client.LaxRedirectStrategy.new()).build()
+      httpclient = org.apache.http.impl.client.HttpClients.custom()
+                       .setRedirectStrategy(org.apache.http.impl.client.LaxRedirectStrategy.new())
+                       .setDefaultRequestConfig(org.apache.http.client.config.RequestConfig.custom()
+                                                    .setCookieSpec("standard").build())
+                       .build()
       httpget = org.apache.http.client.methods.HttpGet.new(url)
       response = httpclient.execute(httpget)
       entity = response.getEntity()
