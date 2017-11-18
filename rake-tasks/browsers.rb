@@ -63,12 +63,6 @@ BROWSERS = {
     },
     :browser_name => "blackberry"
   },
-  "phantomjs" => {
-    :python => {
-      :driver => "PhantomJS",
-    },
-    :browser_name => "phantomjs"
-  },
   "remote_firefox" => {
     :python => {
       :driver => "Remote",
