@@ -41,7 +41,6 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
@@ -78,7 +77,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
     initLocalDriver("none");
@@ -97,7 +95,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initLocalDriver("none");
@@ -122,7 +119,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(CHROME)
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResources() {
     initLocalDriver("eager");
@@ -146,7 +142,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(CHROME)
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
     initLocalDriver("eager");
@@ -224,7 +219,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformed() {
     assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
@@ -235,7 +229,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
     assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
@@ -341,7 +334,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(PHANTOMJS)
   @Ignore(value = SAFARI, reason = "does not support insecure SSL")
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     // TODO(user): Set the SSL capability to true.
@@ -385,7 +377,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   // if @NoDriverAfterTest can be removed from some other tests in this class.
   @NoDriverAfterTest
   @Test
-  @Ignore(PHANTOMJS)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NeedsLocalEnvironment
@@ -396,7 +387,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
-  @Ignore(PHANTOMJS)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NeedsLocalEnvironment

@@ -31,7 +31,6 @@ import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Before;
@@ -204,7 +203,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(CHROME)
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
@@ -378,7 +376,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   public void canHandleSecureCookie() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
@@ -398,7 +395,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   public void testRetainsCookieSecure() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
@@ -486,7 +482,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(FIREFOX)
   @Ignore(IE)
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));

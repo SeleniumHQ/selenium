@@ -29,7 +29,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.isIe6;
@@ -91,7 +90,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   @NotYetImplemented(
     value = MARIONETTE, reason = "Delegates to JS and so the wrong exception is returned")
@@ -259,7 +257,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");

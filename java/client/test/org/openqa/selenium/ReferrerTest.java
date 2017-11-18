@@ -25,7 +25,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.InProject.locate;
 
@@ -91,7 +90,6 @@ import javax.servlet.http.HttpServletResponse;
  * <p>Note: depending on the condition under test, the various pages may or may
  * not be served by the same server.
  */
-@Ignore(PHANTOMJS)
 @Ignore(SAFARI)
 public class ReferrerTest extends JUnit4TestBase {
 

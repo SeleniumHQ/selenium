@@ -321,12 +321,6 @@ public abstract class JUnit4TestBase implements WrapsDriver {
           }
           break;
 
-        case PHANTOMJS:
-          if (browser == Browser.phantomjs) {
-            return true;
-          }
-          break;
-
         case REMOTE:
           if (Boolean.getBoolean("selenium.browser.grid") ||
               Boolean.getBoolean("selenium.browser.remote") ||

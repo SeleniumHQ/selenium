@@ -56,10 +56,6 @@ public class BrowserToCapabilities {
         caps = DesiredCapabilities.operaBlink();
         break;
 
-      case phantomjs:
-        caps = DesiredCapabilities.phantomjs();
-        break;
-
       case safari:
         caps = DesiredCapabilities.safari();
         break;

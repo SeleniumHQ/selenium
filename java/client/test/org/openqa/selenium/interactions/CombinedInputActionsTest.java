@@ -29,7 +29,6 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
@@ -60,7 +59,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(FIREFOX)
-  @Ignore(PHANTOMJS)
   public void testPlainClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -110,7 +108,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(FIREFOX)
-  @Ignore(PHANTOMJS)
   public void testControlClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -135,7 +132,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(PHANTOMJS)
   public void testControlClickingOnCustomMultiSelectionList() {
     driver.get(pages.selectableItemsPage);
 
@@ -179,7 +175,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   public void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
 

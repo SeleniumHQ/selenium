@@ -30,7 +30,6 @@ import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
@@ -189,7 +188,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
   @Ignore(value = SAFARI, reason = "takes only visible viewport")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = PHANTOMJS, reason = "diffs at colors - small dimensions or coloring problem")
   @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotOfPageWithTooLongX() throws Exception {
     driver.get(appServer.whereIs("screen/screen_x_too_long.html"));
@@ -213,7 +211,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
   @Ignore(value = SAFARI, reason = "takes only visible viewport")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = PHANTOMJS, reason = "diffs at colors - small dimensions or coloring problem")
   @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotOfPageWithTooLongY() throws Exception {
     driver.get(appServer.whereIs("screen/screen_y_too_long.html"));
@@ -237,7 +234,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, reason = "failed due NS_ERROR_FAILURE at context.drawWindow")
   @Ignore(value = SAFARI, reason = "takes only visible viewport")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = PHANTOMJS, reason = "takes empty data of byte[], no errors")
   @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotOfPageWithTooLongXandY() throws Exception {
     driver.get(appServer.whereIs("screen/screen_too_long.html"));

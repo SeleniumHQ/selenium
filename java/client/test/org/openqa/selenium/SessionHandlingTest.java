@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
@@ -44,7 +43,6 @@ public class SessionHandlingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX)
-  @Ignore(PHANTOMJS)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     driver.close();
@@ -55,7 +53,6 @@ public class SessionHandlingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX)
-  @Ignore(value = PHANTOMJS, reason = "throws NoSuchWindowException")
   @Ignore(value = SAFARI, reason = "throws NullPointerException")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {

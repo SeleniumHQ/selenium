@@ -32,7 +32,6 @@ import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
@@ -49,7 +48,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Ignore(PHANTOMJS)
 public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   private JavascriptExecutor executor;

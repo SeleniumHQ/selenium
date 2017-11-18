@@ -20,7 +20,6 @@ package org.openqa.selenium;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.base.Joiner;
@@ -76,7 +75,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void canConfigureManualHttpProxy() {
     Proxy proxyToUse = proxyServer.asProxy();
@@ -91,7 +89,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void canConfigureProxyThroughPACFile() {
     Server helloServer = createSimpleHttpServer(
@@ -116,7 +113,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void canUsePACThatOnlyProxiesCertainHosts() throws Exception {
     Server helloServer = createSimpleHttpServer(

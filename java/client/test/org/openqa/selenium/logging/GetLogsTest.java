@@ -24,7 +24,6 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 
 import org.junit.After;
 import org.junit.Test;
@@ -45,7 +44,6 @@ import java.util.logging.Level;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
-@Ignore(PHANTOMJS)
 @Ignore(MARIONETTE)
 public class GetLogsTest extends JUnit4TestBase {
 

@@ -30,7 +30,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
@@ -141,7 +140,6 @@ public class VisibilityTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   @NotYetImplemented(HTMLUNIT)
   public void testElementHiddenByOverflowXIsNotVisible() {
@@ -160,7 +158,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(PHANTOMJS)
   @NotYetImplemented(HTMLUNIT)
   public void testElementHiddenByOverflowYIsNotVisible() {
     String[] pages = new String[]{

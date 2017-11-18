@@ -32,7 +32,6 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
@@ -131,7 +130,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(PHANTOMJS)
   @Ignore(value = SAFARI,
       reason = "Safari: button1 is scrolled to the bottom edge of the view, " +
                "so additonal scrolling is still required for button2")

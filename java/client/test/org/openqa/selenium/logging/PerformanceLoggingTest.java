@@ -26,7 +26,6 @@ import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.collect.ImmutableList;
@@ -47,7 +46,6 @@ import java.util.stream.StreamSupport;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
-@Ignore(PHANTOMJS)
 @Ignore(SAFARI)
 @Ignore(MARIONETTE)
 public class PerformanceLoggingTest extends JUnit4TestBase {

@@ -31,7 +31,6 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
@@ -172,7 +171,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(value = CHROME, reason = "WebKit bug 28804")
   @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
   @Ignore(MARIONETTE)
   public void testShouldHandleNonIntegerPositionAndSize() {
     driver.get(pages.rectanglesPage);
