@@ -79,6 +79,7 @@ class RubyMappings
 
   class AddTestDependencies < Tasks
     def handle(_fun, dir, args)
+      ENV['RB_GO_EXECUTION'] = 'true'
       task = Rake::Task[task_name(dir, "#{args[:name]}-test")]
 
       if args.has_key?(:deps)

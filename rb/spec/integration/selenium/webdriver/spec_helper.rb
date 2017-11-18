@@ -50,7 +50,12 @@ RSpec.configure do |c|
     if matched.any?(&:skip?)
       skip message.empty? ? 'Bug Prevents Execution' : message.to_s
     elsif matched.any?(&:pending?)
-      pending message.empty? ? 'Guarded' : message.to_s
+      msg = message.empty? ? 'Guarded' : message.to_s
+      if matched.map(&:type).include?(:only) && ENV['RB_GO_EXECUTION'] != 'true'
+        skip(msg)
+      else
+        pending(msg)
+      end
     end
   end
 

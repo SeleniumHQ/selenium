@@ -20,7 +20,7 @@ module Selenium
     module SpecSupport
       class Guards
         class Guard
-          attr_accessor :skip, :pending, :message
+          attr_accessor :skip, :pending, :message, :type
 
           def initialize(guard, type, message = nil)
             @type = type
