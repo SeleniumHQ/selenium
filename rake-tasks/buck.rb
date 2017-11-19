@@ -32,7 +32,7 @@ module Buck
       require "third_party/java/commons-logging/commons-logging-1.2"
       require "third_party/java/commons-io/commons-io-2.6"
 
-      puts "Downloading buck biuld tool, it can take up to several minutes..."
+      puts "Downloading buck build tool, it can take up to several minutes..."
 
       httpclient = org.apache.http.impl.client.HttpClients.custom()
                        .setRedirectStrategy(org.apache.http.impl.client.LaxRedirectStrategy.new())
