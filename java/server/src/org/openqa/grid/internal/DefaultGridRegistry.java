@@ -118,11 +118,8 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
    * @param reason  the reason for termination
    */
   public void terminate(final TestSession session, final SessionTerminationReason reason) {
-    new Thread(new Runnable() { // Thread safety reviewed
-      public void run() {
-        _release(session.getSlot(), reason);
-      }
-    }).start();
+    // Thread safety reviewed
+    new Thread(() -> _release(session.getSlot(), reason)).start();
   }
 
   /**
@@ -168,9 +165,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
           "Cleaning up stale test sessions on the unregistered node %s", proxy));
 
       final RemoteProxy p = proxies.remove(proxy);
-      for (TestSlot slot : p.getTestSlots()) {
-        forceRelease(slot, SessionTerminationReason.PROXY_REREGISTRATION);
-      }
+      p.getTestSlots().forEach(testSlot -> forceRelease(testSlot, SessionTerminationReason.PROXY_REREGISTRATION) );
       p.teardown();
     }
   }

@@ -24,10 +24,10 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * The queue of all incoming "new session" requests to the grid.
@@ -62,26 +62,20 @@ public class NewSessionRequestQueue {
       Predicate<RequestHandler> handlerConsumer,
       Prioritizer prioritizer) {
 
-    final List<RequestHandler> copy;
+    List<RequestHandler> copy = newSessionRequests;
     if (prioritizer != null) {
       copy = new ArrayList<>(newSessionRequests);
-      Collections.sort(copy);
-    } else {
-      copy = newSessionRequests;
+      copy.sort((a,b) -> prioritizer.compareTo(
+          a.getRequest().getDesiredCapabilities(), b.getRequest().getDesiredCapabilities()));
     }
 
-    List<RequestHandler> matched = new ArrayList<>();
-    for (RequestHandler request : copy) {
-      if (handlerConsumer.test(request)) {
-        matched.add(request);
-      }
-    }
-    for (RequestHandler req : matched) {
-      boolean ok = removeNewSessionRequest(req);
-      if (!ok) {
-        log.severe("Bug removing request " + req);
-      }
-    }
+    copy.stream()
+        .filter(handlerConsumer)
+        .forEach(requestHandler -> {
+          if (!removeNewSessionRequest(requestHandler)) {
+            log.severe("Bug removing request " + requestHandler);
+          }
+        });
   }
 
   /**
@@ -106,11 +100,9 @@ public class NewSessionRequestQueue {
    * @return An Iterable of unmodifiable maps.
    */
   public synchronized Iterable<DesiredCapabilities> getDesiredCapabilities() {
-    List<DesiredCapabilities> result = new ArrayList<>();
-    for (RequestHandler req : newSessionRequests) {
-      result.add(new DesiredCapabilities(req.getRequest().getDesiredCapabilities()));
-    }
-    return result;
+    return newSessionRequests.stream()
+        .map(req -> new DesiredCapabilities(req.getRequest().getDesiredCapabilities()))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -122,8 +114,6 @@ public class NewSessionRequestQueue {
   }
 
   public synchronized void stop() {
-    for (RequestHandler newSessionRequest : newSessionRequests) {
-      newSessionRequest.stop();
-    }
+    newSessionRequests.forEach(RequestHandler::stop);
   }
 }
