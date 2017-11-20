@@ -871,6 +871,34 @@ bool SendKeysCommandHandler::SetInsertionPoint(IHTMLElement* element) {
     hr = element->QueryInterface<IHTMLTextAreaElement>(&text_area_element);
     if (SUCCEEDED(hr) && text_area_element) {
       text_area_element->createTextRange(&range);
+    } else {
+      CComPtr<IHTMLElement3> element3;
+      element->QueryInterface<IHTMLElement3>(&element3);
+      VARIANT_BOOL is_content_editable_variant = VARIANT_FALSE;
+      if (element3) {
+        element3->get_isContentEditable(&is_content_editable_variant);
+      }
+      bool is_content_editable = is_content_editable_variant == VARIANT_TRUE;
+      if (is_content_editable) {
+        CComPtr<IDispatch> dispatch;
+        hr = element->get_document(&dispatch);
+        if (dispatch) {
+          CComPtr<IHTMLDocument2> doc;
+          hr = dispatch->QueryInterface<IHTMLDocument2>(&doc);
+          if (doc) {
+            CComPtr<IHTMLElement> body;
+            hr = doc->get_body(&body);
+            if (body) {
+              CComPtr<IHTMLBodyElement> body_element;
+              hr = body->QueryInterface<IHTMLBodyElement>(&body_element);
+              if (body_element) {
+                hr = body_element->createTextRange(&range);
+                range->moveToElementText(element);
+              }
+            }
+          }
+        }
+      }
     }
   }
 
