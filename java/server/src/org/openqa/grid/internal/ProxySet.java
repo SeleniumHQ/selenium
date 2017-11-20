@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
@@ -125,13 +126,10 @@ public class ProxySet implements Iterable<RemoteProxy> {
     // proxies.
     List<RemoteProxy> sorted = getSorted();
     log.fine("Available nodes: " + sorted);
-    for (RemoteProxy proxy : sorted) {
-      TestSession session = proxy.getNewSession(desiredCapabilities);
-      if (session != null) {
-        return session;
-      }
-    }
-    return null;
+    return sorted.stream()
+        .map(proxy -> proxy.getNewSession(desiredCapabilities))
+        .filter(Objects::nonNull)
+        .findFirst().orElse(null);
   }
 
   public Iterator<RemoteProxy> iterator() {
