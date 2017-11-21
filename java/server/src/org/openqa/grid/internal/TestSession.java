@@ -45,9 +45,7 @@ import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
-import org.openqa.selenium.remote.server.jmx.ManagedOperation;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.io.BufferedReader;
@@ -682,7 +680,7 @@ public class TestSession {
 
   public ObjectName getObjectName() throws MalformedObjectNameException {
     return new ObjectName(
-        String.format("org.seleniumhq.qrid:type=TestSession,node=\"%s\",browser=\"%s\",id=%s",
+        String.format("org.seleniumhq.grid:type=TestSession,node=\"%s\",browser=\"%s\",id=%s",
                       getSlot().getRemoteURL(), getRequestedCapabilities().get("browserName"),
                       getInternalKey()));
   }
