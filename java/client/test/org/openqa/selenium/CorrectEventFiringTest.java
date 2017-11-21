@@ -528,6 +528,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1417821")
   public void testClickAnElementThatDisappear() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/disappearing_element.html"));
