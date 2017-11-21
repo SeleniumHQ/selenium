@@ -62,9 +62,8 @@ public class NewSessionRequestQueue {
       Predicate<RequestHandler> handlerConsumer,
       Prioritizer prioritizer) {
 
-    List<RequestHandler> copy = newSessionRequests;
+    List<RequestHandler> copy = new ArrayList<>(newSessionRequests);
     if (prioritizer != null) {
-      copy = new ArrayList<>(newSessionRequests);
       copy.sort((a,b) -> prioritizer.compareTo(
           a.getRequest().getDesiredCapabilities(), b.getRequest().getDesiredCapabilities()));
     }
