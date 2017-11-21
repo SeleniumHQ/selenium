@@ -58,7 +58,7 @@ import javax.servlet.Servlet;
  * Jetty server. Main entry point for everything about the grid. <p> Except for unit tests, this
  * should be a singleton.
  */
-@ManagedService(objectName = "org.seleniumhq.qrid:type=Hub", description = "Selenium Grid Hub")
+@ManagedService(objectName = "org.seleniumhq.grid:type=Hub", description = "Selenium Grid Hub")
 public class Hub {
 
   private static final Logger log = Logger.getLogger(Hub.class.getName());
