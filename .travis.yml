@@ -52,13 +52,6 @@ matrix:
     - env: CHROME=1 TASK=test_chrome
       <<: *java
       <<: *chrome
-    - env: CHROME=1 TOXENV=py27-chrome
-      <<: *python
-      <<: *chrome
-    - env: CHROME=1 TOXENV=py36-chrome
-      <<: *python
-      <<: *chrome
-      python: 3.6
   include:
     - env: TASK=build
       <<: *java
@@ -116,6 +109,9 @@ matrix:
       <<: *python
     - env: TOXENV=py27-unit
       <<: *python
+    - env: CHROME=1 TOXENV=py27-chrome
+      <<: *python
+      <<: *chrome
     - env: TOXENV=py27-firefox
       <<: *python
       <<: *firefox-esr
@@ -133,6 +129,10 @@ matrix:
       python: 3.6
     - env: TOXENV=py36-unit
       <<: *python
+      python: 3.6
+    - env: CHROME=1 TOXENV=py36-chrome
+      <<: *python
+      <<: *chrome
       python: 3.6
     - env: TOXENV=py36-firefox
       <<: *python
