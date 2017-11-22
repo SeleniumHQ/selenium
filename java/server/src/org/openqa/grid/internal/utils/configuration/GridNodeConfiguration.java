@@ -51,7 +51,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class GridNodeConfiguration extends GridConfiguration {
   public static final String DEFAULT_NODE_CONFIG_FILE = "defaults/DefaultNodeWebDriver.json";
@@ -129,15 +131,24 @@ public class GridNodeConfiguration extends GridConfiguration {
 
       DesiredCapabilities firefox = new DesiredCapabilities();
       firefox.setBrowserName("firefox");
+      firefox.setCapability("marionette", true);
       firefox.setCapability("maxInstances", 5);
       firefox.setCapability("seleniumProtocol", "WebDriver");
 
       DesiredCapabilities ie = new DesiredCapabilities();
       ie.setBrowserName("internet explorer");
+      ie.setPlatform(Platform.WINDOWS);
       ie.setCapability("maxInstances", 1);
       ie.setCapability("seleniumProtocol", "WebDriver");
 
-      return Lists.newArrayList(chrome, firefox, ie);
+      DesiredCapabilities safari = new DesiredCapabilities();
+      safari.setBrowserName("safari");
+      safari.setCapability("technologyPreview", false);
+      safari.setPlatform(Platform.MAC);
+      safari.setCapability("maxInstances", 1);
+      safari.setCapability("seleniumProtocol", "WebDriver");
+
+      return Lists.newArrayList(chrome, firefox, ie, safari);
     }
   }
 
@@ -515,15 +526,15 @@ public class GridNodeConfiguration extends GridConfiguration {
     }
 
     Platform current = Platform.getCurrent();
-    for (MutableCapabilities cap : capabilities) {
-      if (cap.getPlatform() == null) {
-        cap.setCapability(CapabilityType.PLATFORM, current);
-      }
-      if (cap.getCapability(RegistrationRequest.SELENIUM_PROTOCOL) == null) {
-        cap.setCapability(RegistrationRequest.SELENIUM_PROTOCOL, SeleniumProtocol.WebDriver.toString());
-      }
-      cap.setCapability(CONFIG_UUID_CAPABILITY, UUID.randomUUID().toString());
-    }
+    capabilities = capabilities.stream()
+        .peek(cap -> cap.setCapability(CapabilityType.PLATFORM,
+                                       Optional.ofNullable(cap.getPlatform()).orElse(current)))
+        .filter(cap -> current.is(cap.getPlatform()))
+        .peek(cap -> cap.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,
+            Optional.ofNullable(cap.getCapability(RegistrationRequest.SELENIUM_PROTOCOL))
+                .orElse(SeleniumProtocol.WebDriver.toString())))
+        .peek(cap -> cap.setCapability(CONFIG_UUID_CAPABILITY, UUID.randomUUID().toString()))
+        .collect(Collectors.toList());
   }
 
   public void fixUpHost() {
