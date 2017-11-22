@@ -31,6 +31,7 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
     assert keyboards is not None
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
@@ -52,6 +53,7 @@ def testSendingKeysToActiveElementWithModifier(driver, pages):
     assert "ABC" == e.get_attribute('value')
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
@@ -73,6 +75,7 @@ def test_can_create_pause_action_on_keyboard(driver, pages):
     actions2.perform()
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
@@ -94,6 +97,7 @@ def test_can_create_pause_action_on_pointer(driver, pages):
     actions2.perform()
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
@@ -102,6 +106,7 @@ def test_can_clear_actions(driver, pages):
     actions.clear_actions()
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
@@ -119,6 +124,7 @@ def test_move_and_click(driver, pages):
     assert "Clicked" == toClick.get_attribute('value')
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
@@ -147,6 +153,7 @@ def testDragAndDrop(driver, pages):
     assert "Dropped!" == text
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
@@ -163,6 +170,7 @@ def test_context_click(driver, pages):
     assert "ContextClicked" == toContextClick.get_attribute('value')
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
@@ -182,6 +190,7 @@ def test_double_click(driver, pages):
     assert "DoubleClicked" == toDoubleClick.get_attribute('value')
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
@@ -191,6 +200,7 @@ def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
     assert 6 == len(dragInto.find_elements_by_tag_name("li"))
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
