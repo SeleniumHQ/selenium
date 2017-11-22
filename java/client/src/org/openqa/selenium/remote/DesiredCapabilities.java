@@ -28,8 +28,11 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class DesiredCapabilities extends MutableCapabilities {
+
+  private static final Logger LOG = Logger.getLogger(Capabilities.class.getName());
 
   public DesiredCapabilities(String browser, String version, Platform platform) {
     setCapability(BROWSER_NAME, browser);
@@ -110,10 +113,12 @@ public class DesiredCapabilities extends MutableCapabilities {
   }
 
   public static DesiredCapabilities chrome() {
+    LOG.info("Using `new ChromeOptions()` is preferred to `DesiredCapabilities.chrome()`");
     return new DesiredCapabilities(BrowserType.CHROME, "", Platform.ANY);
   }
 
   public static DesiredCapabilities firefox() {
+    LOG.info("Using `new FirefoxOptions()` is preferred to `DesiredCapabilities.firefox()`");
     DesiredCapabilities capabilities = new DesiredCapabilities(
         BrowserType.FIREFOX,
         "",
@@ -128,6 +133,7 @@ public class DesiredCapabilities extends MutableCapabilities {
   }
 
   public static DesiredCapabilities edge() {
+    LOG.info("Using `new EdgeOptions()` is preferred to `DesiredCapabilities.edge()`");
     return new DesiredCapabilities(BrowserType.EDGE, "", Platform.WINDOWS);
   }
   public static DesiredCapabilities internetExplorer() {
@@ -155,10 +161,12 @@ public class DesiredCapabilities extends MutableCapabilities {
   }
 
   public static DesiredCapabilities operaBlink() {
+    LOG.info("Using `new OperaOptions()` is preferred to `DesiredCapabilities.operaBlink()`");
     return new DesiredCapabilities(BrowserType.OPERA_BLINK, "", Platform.ANY);
   }
 
   public static DesiredCapabilities safari() {
+    LOG.info("Using `new SafariOptions()` is preferred to `DesiredCapabilities.safari()`");
     return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.MAC);
   }
 
