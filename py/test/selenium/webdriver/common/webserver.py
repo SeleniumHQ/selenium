@@ -29,8 +29,10 @@ except ImportError:
     import urllib as urllib_request
 try:
     from http.server import BaseHTTPRequestHandler, HTTPServer
+    from socketserver import ThreadingMixIn
 except ImportError:
     from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+    from SocketServer import ThreadingMixIn
 
 
 def updir():
@@ -78,6 +80,10 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
         pass
 
 
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
+
+
 class SimpleWebServer(object):
     """A very basic web server."""
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
@@ -86,8 +92,7 @@ class SimpleWebServer(object):
         port = port
         while True:
             try:
-                self.server = HTTPServer(
-                    (host, port), HtmlOnlyHandler)
+                self.server = ThreadedHTTPServer((host, port), HtmlOnlyHandler)
                 self.host = host
                 self.port = port
                 break
