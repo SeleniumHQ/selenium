@@ -1,3 +1,10 @@
+v3.8.0
+======
+
+* Added support for managing Grid Hubs and Nodes via JMX
+* Removed `Alert.authenticate` and supporting classes
+* Better handling of configuring SafariDriver via capabilities.
+
 v3.7.1
 ======
 
