@@ -94,7 +94,7 @@ public class GridNodeConfigurationTest {
     assertEquals(GridNodeConfiguration.DEFAULT_HUB, gnc.hub);
     assertEquals(GridNodeConfiguration.DEFAULT_MAX_SESSION, gnc.maxSession);
     assertFalse(gnc.capabilities.isEmpty());
-    assertEquals(3, gnc.capabilities.size());
+    assertEquals(4, gnc.capabilities.size());
     assertNull(gnc.id);
     assertEquals(GridNodeConfiguration.DEFAULT_DOWN_POLLING_LIMIT, gnc.downPollingLimit);
     assertNull(gnc.hubHost);
