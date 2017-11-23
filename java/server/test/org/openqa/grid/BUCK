@@ -44,4 +44,7 @@ java_library(name = 'test',
     '//third_party/java/mockito:mockito',
     '//third_party/java/servlet:servlet-api',
   ],
+  visibility = [
+    '//java/server/test/org/openqa/grid/selenium/proxy:proxy',
+  ],
 )
