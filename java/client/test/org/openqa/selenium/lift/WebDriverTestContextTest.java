@@ -20,7 +20,7 @@ package org.openqa.selenium.lift;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -64,7 +64,7 @@ public class WebDriverTestContextTest {
     element = mock(WebElement.class);
     element2 = mock(WebElement.class);
     finder = mockFinder();
-    clock = new TickingClock(CLOCK_INCREMENT);
+    clock = new TickingClock();
   }
 
   @Test

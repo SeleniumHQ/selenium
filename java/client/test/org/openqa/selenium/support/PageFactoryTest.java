@@ -190,7 +190,7 @@ public class PageFactoryTest {
     driver = mock(WebDriver.class);
     when(driver.findElement(Mockito.<By>any())).thenThrow(new NoSuchElementException("because"));
 
-    TickingClock clock = new TickingClock(10);
+    TickingClock clock = new TickingClock();
     Wait<WebDriver> wait = new WebDriverWait(driver, clock, clock, 1, 1001);
 
     PublicPage page = new PublicPage();
