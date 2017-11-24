@@ -21,7 +21,17 @@ package org.openqa.selenium.interactions;
  * One of the allowing types for an {@link InputSource}.
  */
 public enum SourceType {
-  KEY,
-  NONE,
-  POINTER,
+  KEY("key"),
+  NONE(null),
+  POINTER("pointer");
+
+  private final String type;
+
+  SourceType(String type) {
+    this.type = type;
+  }
+
+  public String getType() {
+    return type;
+  }
 }
