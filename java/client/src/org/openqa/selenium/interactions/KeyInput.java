@@ -50,7 +50,7 @@ public class KeyInput implements InputSource, Encodable {
   public Map<String, Object> encode() {
     Map<String, Object> toReturn = new HashMap<>();
 
-    toReturn.put("type", "key");
+    toReturn.put("type", getInputType().getType());
     toReturn.put("id", name);
 
     return toReturn;

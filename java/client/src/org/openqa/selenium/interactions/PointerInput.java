@@ -51,7 +51,7 @@ public class PointerInput implements InputSource, Encodable {
   public Map<String, Object> encode() {
     Map<String, Object> toReturn = new HashMap<>();
 
-    toReturn.put("type", "pointer");
+    toReturn.put("type", getInputType().getType());
     toReturn.put("id", name);
 
     Map<String, Object> parameters = new HashMap<>();
