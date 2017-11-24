@@ -27,7 +27,7 @@ module Selenium
             @browsers = []
             @platforms = []
 
-            set_window_manager(guard)
+            expand_window_manager(guard)
             expand_drivers(guard)
             expand_browsers(guard)
             expand_platforms(guard)
@@ -51,7 +51,7 @@ module Selenium
 
           private
 
-          def set_window_manager(guard)
+          def expand_window_manager(guard)
             return unless guard.key?(:window_manager)
             @window_manager = guard[:window_manager]
           end
