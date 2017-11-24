@@ -64,7 +64,7 @@ public class WebDriverTestContextTest {
     element = mock(WebElement.class);
     element2 = mock(WebElement.class);
     finder = mockFinder();
-    clock = new TickingClock(CLOCK_INCREMENT);
+    clock = new TickingClock();
   }
 
   @Test
