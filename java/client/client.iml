@@ -18,7 +18,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="byte-buddy" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-codec" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="commons-collections" level="project" />
     <orderEntry type="library" name="commons-exec" level="project" />
     <orderEntry type="library" name="commons-io" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-lang" level="project" />
