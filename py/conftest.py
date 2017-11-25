@@ -106,6 +106,12 @@ def driver(request):
             capabilities = DesiredCapabilities.FIREFOX.copy()
             capabilities['marionette'] = False
             kwargs.update({'desired_capabilities': capabilities})
+        if driver_class == 'WebKitGTK':
+            additional_args = {}
+            options = webdriver.WebKitGTKOptions()
+            options.overlay_scrollbars_enabled = False
+            additional_args['options'] = options
+            kwargs.update(additional_args)
         driver_instance = getattr(webdriver, driver_class)(**kwargs)
     yield driver_instance
     if MarkEvaluator(request.node, 'no_driver_after_test').istrue():
