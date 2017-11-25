@@ -110,7 +110,17 @@ def driver(request):
             additional_args = {}
             options = webdriver.WebKitGTKOptions()
             options.overlay_scrollbars_enabled = False
+            browser_path = os.environ.get('WD_BROWSER_PATH')
+            if browser_path is not None:
+                options.browser_executable_path = browser_path
+            browser_args = os.environ.get('WD_BROWSER_ARGS')
+            if browser_args is not None:
+                for arg in browser_args.split():
+                    options.add_browser_argument(arg)
             additional_args['options'] = options
+            driver_path = os.environ.get('WD_DRIVER_PATH')
+            if driver_path is not None:
+                additional_args['executable_path'] = driver_path
             kwargs.update(additional_args)
         driver_instance = getattr(webdriver, driver_class)(**kwargs)
     yield driver_instance
