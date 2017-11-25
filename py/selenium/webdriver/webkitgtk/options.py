@@ -89,7 +89,8 @@ class Options(object):
         browser_options = {}
         if self.browser_executable_path:
             browser_options["binary"] = self.browser_executable_path
-        browser_options["args"] = self.browser_arguments
+        if self.browser_arguments:
+            browser_options["args"] = self.browser_arguments
         browser_options["useOverlayScrollbars"] = self.overlay_scrollbars_enabled
 
         webkitgtk[Options.KEY] = browser_options
