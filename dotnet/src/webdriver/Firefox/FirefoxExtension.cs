@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxExtension.cs" company="WebDriver Committers">
+// <copyright file="FirefoxExtension.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -22,6 +22,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Xml;
 using OpenQA.Selenium.Internal;
+
+
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -95,7 +97,9 @@ namespace OpenQA.Selenium.Firefox
 
             // Then, copy the contents of the temporarly location into the
             // proper location in the Firefox profile directory.
-            string id = ReadIdFromInstallRdf(tempFileName);
+
+            string id = GetExtensionId(tempFileName);
+
             string extensionDirectory = Path.Combine(Path.Combine(profileDirectory, "extensions"), id);
             if (Directory.Exists(extensionDirectory))
             {
@@ -151,6 +155,65 @@ namespace OpenQA.Selenium.Firefox
             }
 
             return id;
+        }
+
+        private string GetExtensionId(string root)
+        {
+            // checks if manifest.json or install.rdf file exists and extract the addon/extenion id from the file accordingly
+
+            string MANIFEST_JSON_FILE = "manifest.json";
+            string manifestJsonPath = Path.Combine(root, MANIFEST_JSON_FILE);
+            string installRdfPath = Path.Combine(root, "install.rdf");
+
+
+            if (File.Exists(installRdfPath))
+            {
+                return ReadIdFromInstallRdf(root);
+            }
+            if (File.Exists(manifestJsonPath))
+            {
+                return ReadIdFromManifestJson(root);
+            }
+
+            throw new WebDriverException("Extension should contain either install.rdf or manifest.json metadata file");
+
+        }
+
+
+        private String ReadIdFromManifestJson(string root)
+        {
+            string MANIFEST_JSON_FILE = "manifest.json";
+            string manifestJsonPath = Path.Combine(root, MANIFEST_JSON_FILE);
+
+            try
+            {
+                string id = null;
+                var manifestObject = Newtonsoft.Json.Linq.JObject.Parse(File.ReadAllText(manifestJsonPath));
+                if (manifestObject["applications"] != null)
+                {
+                    var applicationObj = manifestObject["applications"];
+                    if (applicationObj["gecko"] != null)
+                    {
+                        var geckoObj = applicationObj["gecko"];
+                        if (geckoObj["id"] != null)
+                        {
+                            id = geckoObj["id"].ToString().Trim();
+                        }
+                    }
+                }
+
+                if (String.IsNullOrWhiteSpace(id))
+                {
+                    id = manifestObject["name"].ToString().Replace(" ", "") +
+                              "@" + manifestObject["version"].ToString();
+                }
+
+                return id;
+            }
+            catch (FileNotFoundException ex)
+            {
+                throw new WebDriverException("Unable to file manifest.json in xpi file");
+            }
         }
     }
 }
