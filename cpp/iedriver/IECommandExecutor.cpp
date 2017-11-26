@@ -474,7 +474,10 @@ void IECommandExecutor::DispatchCommand() {
               command_type == webdriver::CommandType::SendKeysToAlert ||
               command_type == webdriver::CommandType::AcceptAlert ||
               command_type == webdriver::CommandType::DismissAlert ||
-              command_type == webdriver::CommandType::SetAlertCredentials) {
+              command_type == webdriver::CommandType::SetAlertCredentials ||
+              command_type == webdriver::CommandType::GetCurrentWindowHandle ||
+              command_type == webdriver::CommandType::GetWindowHandles ||
+              command_type == webdriver::CommandType::SwitchToWindow) {
             LOG(DEBUG) << "Alert is detected, and the sent command is valid";
           } else {
             LOG(DEBUG) << "Unexpected alert is detected, and the sent command is invalid when an alert is present";
