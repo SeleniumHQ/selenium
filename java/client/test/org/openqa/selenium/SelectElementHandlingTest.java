@@ -157,4 +157,11 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     assertTrue("Expected to be selected", element.isSelected());
   }
 
+  @Test
+  public void testCanHandleTransparentSelect() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.cssSelector("#transparent option"));
+    element.click();
+    assertTrue("Expected to be selected", element.isSelected());
+  }
 }
