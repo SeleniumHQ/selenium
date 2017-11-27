@@ -73,6 +73,21 @@ module Selenium
       end
 
       #
+      # Click this element. Or not. Random chance.
+      #
+      # @example chance click on a button
+      #
+      #    driver.find_element(:tag_name, "button").chance_click
+      # 
+      # @raise [StaleElementReferenceError] if the element no longer exists as
+      #  defined
+      #
+
+      def chance_click
+        bridge.clickElement @id if [true, false].sample
+      end
+
+      #
       # Get the tag name of the element.
       #
       # @example Get the tagname of an INPUT element(returns "input")
