@@ -19,6 +19,8 @@ package org.openqa.selenium.remote;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -425,8 +427,8 @@ public class NewSessionPayload implements Closeable {
     toReturn.putAll(capabilities);
 
     // Platform name
-    if (capabilities.containsKey("platform") && !capabilities.containsKey("platformName")) {
-      toReturn.put("platformName", String.valueOf(capabilities.get("platform")));
+    if (capabilities.containsKey(PLATFORM) && !capabilities.containsKey(PLATFORM_NAME)) {
+      toReturn.put(PLATFORM_NAME, String.valueOf(capabilities.get(PLATFORM)));
     }
 
     return toReturn;

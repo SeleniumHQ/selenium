@@ -32,6 +32,9 @@ java_library(
     '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/guava:guava',
   ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/remote/session:session',
+  ]
 )
 
 java_library(

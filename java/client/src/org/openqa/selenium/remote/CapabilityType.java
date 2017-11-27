@@ -22,7 +22,8 @@ package org.openqa.selenium.remote;
  */
 public interface CapabilityType {
   String BROWSER_NAME = "browserName";
-  String PLATFORM = "platform";
+  @Deprecated String PLATFORM = "platform";
+  String PLATFORM_NAME = "platformName";
   String SUPPORTS_JAVASCRIPT = "javascriptEnabled";
   String TAKES_SCREENSHOT = "takesScreenshot";
   String VERSION = "version";
