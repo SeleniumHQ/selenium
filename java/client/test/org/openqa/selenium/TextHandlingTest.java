@@ -30,7 +30,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.ALL;
+import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -39,6 +41,7 @@ import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.regex.Pattern;
@@ -414,6 +417,16 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("point")).getText(), is("12.345"));
     assertThat(driver.findElement(By.id("comma")).getText(), is("12,345"));
     assertThat(driver.findElement(By.id("space")).getText(), is("12 345"));
+  }
+
+  @Test
+  @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")
+  public void canHandleTextTransformProperty() {
+    driver.get(pages.simpleTestPage);
+    assertThat(driver.findElement(By.id("capitalized")).getText(), is(
+        isChrome(driver) ? "Hello, World! Bla-Bla-BLA" : "Hello, World! Bla-bla-BLA"));
+    assertThat(driver.findElement(By.id("lowercased")).getText(), is("hello, world! bla-bla-bla"));
+    assertThat(driver.findElement(By.id("uppercased")).getText(), is("HELLO, WORLD! BLA-BLA-BLA"));
   }
 
 }
