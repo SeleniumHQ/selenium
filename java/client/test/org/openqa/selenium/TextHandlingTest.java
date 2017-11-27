@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
@@ -421,6 +422,7 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")
+  @NotYetImplemented(HTMLUNIT)
   public void canHandleTextTransformProperty() {
     driver.get(pages.simpleTestPage);
     assertThat(driver.findElement(By.id("capitalized")).getText(), is(
