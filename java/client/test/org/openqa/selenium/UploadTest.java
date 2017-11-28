@@ -106,6 +106,23 @@ public class UploadTest extends JUnit4TestBase {
     assertThat(ex, instanceOf(InvalidArgumentException.class));
   }
 
+  @Test
+  public void testUploadingWithHiddenFileInput() throws Exception {
+    driver.get(appServer.whereIs("upload_invisible.html"));
+    driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
+    driver.findElement(By.id("go")).click();
+
+    // Uploading files across a network may take a while, even if they're really small
+    WebElement label = driver.findElement(By.id("upload_label"));
+    wait.until(not(visibilityOf(label)));
+
+    driver.switchTo().frame("upload_target");
+
+    WebElement body = driver.findElement(By.xpath("//body"));
+    wait.until(elementTextToEqual(body, LOREM_IPSUM_TEXT));
+
+  }
+
   private File createTmpFile(String content) throws IOException {
     File f = File.createTempFile("webdriver", "tmp");
     f.deleteOnExit();
