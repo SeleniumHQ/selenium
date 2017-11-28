@@ -46,14 +46,14 @@ end
 verbose($DEBUG)
 
 def release_version
-  "3.7"
+  "3.8"
 end
 
 def version
-  "#{release_version}.1"
+  "#{release_version}.0"
 end
 
-ide_version = "2.8.0"
+ide_version = "2.9.1"
 
 # The build system used by webdriver is layered on top of rake, and we call it
 # "crazy fun" for no readily apparent reason.
