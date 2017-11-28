@@ -18,9 +18,6 @@
 package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.collect.Maps;
@@ -196,11 +193,15 @@ public class FirefoxDriver extends RemoteWebDriver {
       return new ImmutableCapabilities();
     }
 
-    final Set<String> toRemove = isLegacy(capabilities)
-                                 ? Sets.newHashSet(BINARY, PROFILE)
-                                 : Sets.newHashSet(BROWSER_NAME, BROWSER_VERSION, PLATFORM_NAME);
-    MutableCapabilities caps = new MutableCapabilities(
-        Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
+    MutableCapabilities caps;
+
+    if (isLegacy(capabilities)) {
+      final Set<String> toRemove = Sets.newHashSet(BINARY, PROFILE);
+      caps = new MutableCapabilities(
+          Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
+    } else {
+      caps = new MutableCapabilities(capabilities);
+    }
 
     // Ensure that the proxy is in a state fit to be sent to the extension
     Proxy proxy = Proxy.extractFrom(capabilities);
