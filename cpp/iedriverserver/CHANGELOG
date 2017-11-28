@@ -9,6 +9,29 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.7.0.1
+========
+ * Updated IE setAlertText command to check for invalid data.
+ * Updated getActiveElement command for IE driver to handle contentEditable
+   elements.
+ * Fixed IE driver setTimeouts command to properly validate JSON payload.
+ * Updated IE driver new session command handler to process null capability
+   values.
+ * Updated IE driver getActiveElement command to be spec-compliant. If there
+   is no active element, this method may now return a null results, as in
+   compliance with the W3C WebDriver specification, which relies on the DOM
+   definition of active element. Language bindings maintainers should
+   take note that this is a behavior change, and that the command can now
+   return null values. Adjust your language bindings accordingly.
+ * Made IE driver SetWindowRect command compliant with spec.
+ * Made commands return NoSuchElement error in IE with incorrect internal IDs.
+   The IE driver, to be spec compliant, must return "no such element" if an
+   invalid internal WebDriver ID is passed in the URL. Previously, the driver
+   would assume that the ID was one that was previously provided by the
+   driver, but now has gone stale. This may cause discomfort for some rare
+   use cases where the incorrect exception is being looked for.
+ * Updating IE driver element tag name command handler to be spec compliant
+
 v3.7.0.0
 ========
  * Release to synchronize with release of Selenium project.
