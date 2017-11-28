@@ -1,3 +1,15 @@
+Selenium 3.8.0
+
+* Firefox options can now be imported from selenium.webdriver as FirefoxOptions (#5120)
+* Headless mode can now be set in Chrome Options using `set_headless`
+* Headless mode can now be set in Firefox Options using `set_headless`
+* Add the WebKitGTK WebDriver and options class (#4635)
+* Browser options can now be passed to remote WebDriver via the `options` parameter
+* Browser option parameters are now standardized across drivers as `options`. `firefox_options`,
+  `chrome_options`, and `ie_options` are now deprecated
+* Added missing W3C Error Codes (#4556)
+* Support has been removed for Python versions 2.6 and 3.3
+
 Selenium 3.7.0
 
 * need to pass applicable environment variables to tox
