@@ -1,3 +1,20 @@
+v3.8.0
+======
+ * Updating .NET bindings setting of timeouts for spec-compliance. This
+   also removes some obsolete API entry points that have been marked as
+   deprecated for some months now. The properties of the ITimeouts object
+   should be used.
+ * Updated .NET Options classes to better support W3C Capabilities.
+ * Added .NET constructors to FirefoxDriver to align with other browser
+   drivers
+
+v3.7.0
+======
+ * Made .NET Interactions device classes public. Fixes issue #3989.
+ * Reversed the default for whether a generated capabilities payload
+   when creating a new session is a spec compliant payload. Fixes issue
+   #4758.
+
 v3.6.0
 ======
  * Removed internal use of deprecated construct in .NET bindings.
