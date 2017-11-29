@@ -111,7 +111,8 @@ class WebDriver(object):
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
                  desired_capabilities=None, browser_profile=None, proxy=None,
-                 keep_alive=False, file_detector=None, options=None):
+                 keep_alive=False, file_detector=None, options=None,
+                 resolve_ip=False):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -142,7 +143,9 @@ class WebDriver(object):
             desired_capabilities.update(options.to_capabilities())
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
-            self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
+            self.command_executor = RemoteConnection(command_executor,
+                                                     keep_alive=keep_alive,
+                                                     resolve_ip=resolve_ip)
         self._is_remote = True
         self.session_id = None
         self.capabilities = {}
