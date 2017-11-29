@@ -453,7 +453,7 @@ end
 task :'maven-dry-run' => JAVA_RELEASE_TARGETS do |t|
   t.prerequisites.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd.call('publish', ['--dry-run', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
+      Buck::buck_cmd('publish', ['--dry-run', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
     end
   end
 end
@@ -502,7 +502,7 @@ task :'publish-maven' => JAVA_RELEASE_TARGETS do
   creds = read_user_pass_from_m2_settings()
   JAVA_RELEASE_TARGETS.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd.call('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-docs', '-u', creds[0], '-p', creds[1], '--signing-passphrase', passphrase, p])
+      Buck::buck_cmd('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-docs', '-u', creds[0], '-p', creds[1], '--signing-passphrase', passphrase, p])
     end
   end
 end
@@ -510,7 +510,7 @@ end
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd.call('publish', ['--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-docs', p])
+      Buck::buck_cmd('publish', ['--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-docs', p])
     end
   end
 end
