@@ -18,12 +18,6 @@
 module Selenium
   module WebDriver
     module Remote
-      def self.const_missing(const_name)
-        super unless const_name == :W3CCapabilities
-        WebDriver.logger.deprecate 'Selenium::WebDriver::Remote::W3CCapabilities', 'Selenium::WebDriver::Remote::Capabilities'
-        W3C::Capabilities
-      end
-
       module W3C
 
         #
