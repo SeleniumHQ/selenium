@@ -1,3 +1,41 @@
+3.8.0 (Unreleased)
+==================
+
+Ruby:
+  * Removed deprecated Alert#authenticate
+  * Removed deprecated :port initialization argument of Remote::Bridge.
+    Use :url instead.
+  * Removed deprecated Selenium::WebDriver::Remote::W3CCapabilities.
+    Use Selenium::WebDriver::Remote::Capabilities instead.
+
+IE:
+  * Remove deprecated :log_file driver initialization argument.
+    Use driver_opts: {log_file: ''} instead.
+  * Remove deprecated :log_level driver initialization argument.
+    Use driver_opts: {log_level: ''} instead.
+  * Remove deprecated :implementation driver initialization argument.
+    Use driver_opts: {implementation: ''} instead.
+  * Removed deprecated :service_args driver initialization argument.
+    Use driver_opts: {args: ['--some-switch']} instead.
+
+Chrome:
+  * Removed deprecated :service_log_path driver initialization argument.
+    Use driver_opts: {log_path: 'path'} instead.
+  * Removed deprecated :service_args driver initialization argument.
+    Use driver_opts: {args: ['--some-switch']} instead.
+
+Firefox:
+  * Removed deprecated :service_args driver initialization argument.
+    Use driver_opts: {args: ['--some-switch']} instead.
+
+Safari:
+  * Removed deprecated :service_args driver initialization argument.
+    Use driver_opts: {args: ['--some-switch']} instead.
+
+Edge:
+  * Removed deprecated :service_args driver initialization argument.
+    Use driver_opts: {args: ['--some-switch']} instead.
+
 3.7.0 (2017-11-03)
 ==================
 

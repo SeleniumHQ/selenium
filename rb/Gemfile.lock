@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    selenium-webdriver (3.7.0)
+    selenium-webdriver (3.8.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
 
@@ -70,4 +70,4 @@ DEPENDENCIES
   yard (~> 0.9.9)
 
 BUNDLED WITH
-   1.15.4
+   1.16.0
