@@ -36,12 +36,6 @@ module Selenium
             driver_opts = opts.delete(:driver_opts) || {}
             port = opts.delete(:port) || Service::DEFAULT_PORT
 
-            %i[log_level log_file implementation].each do |method|
-              next unless opts.key? method
-              WebDriver.logger.deprecate ":#{method}", "driver_opts: {#{method}: '#{opts[method]}'}"
-              driver_opts[method] = opts.delete(method)
-            end
-
             @service = Service.new(driver_path, port, driver_opts)
             @service.start
             opts[:url] = @service.uri
