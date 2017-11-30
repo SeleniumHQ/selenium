@@ -22,6 +22,7 @@ module Selenium
         include Atoms
         include BridgeHelper
 
+        PORT = 4444
         COMMANDS = {
           new_session: [:post, 'session'.freeze]
         }.freeze
@@ -65,7 +66,6 @@ module Selenium
         # Initializes the bridge with the given server URL
         # @param [Hash] opts options for the driver
         # @option opts [String] :url url for the remote server
-        # @option opts [Integer] :port port number for the remote server
         # @option opts [Object] :http_client an HTTP client instance that implements the same protocol as Http::Default
         # @option opts [Capabilities] :desired_capabilities an instance of Remote::Capabilities describing the capabilities you want
         # @api private
@@ -73,12 +73,8 @@ module Selenium
 
         def initialize(opts = {})
           opts = opts.dup
-
-          WebDriver.logger.deprecate ':port', 'full URL' if opts.key?(:port)
-          port = opts.delete(:port) || 4444
-
           http_client = opts.delete(:http_client) { Http::Default.new }
-          url = opts.delete(:url) { "http://#{Platform.localhost}:#{port}/wd/hub" }
+          url = opts.delete(:url) { "http://#{Platform.localhost}:#{PORT}/wd/hub" }
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
