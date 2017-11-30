@@ -60,19 +60,24 @@ module Buck
     args ||= []
     buck.push(command)
     buck.push(*args)
+    puts buck.join(' ')
 
     output = ''
     Open3.popen3(*buck) do |stdin, stdout, stderr, wait|
+      Thread.new do
+        while (error = stderr.gets)
+          STDERR.print(error)
+        end
+      end
+
+      Thread.new do
+        while (line = stdout.gets)
+          output << line
+          STDOUT.print line
+        end
+      end
+
       stdin.close
-
-      while (error = stderr.gets)
-        STDERR.print(error)
-      end
-
-      while (line = stdout.gets)
-        output << line
-        STDOUT.print line
-      end
 
       raise "#{buck.join(' ')} failed with exit code: #{wait.value.exitstatus}" unless wait.value.success?
     end
