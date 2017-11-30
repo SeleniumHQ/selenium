@@ -86,9 +86,8 @@ module Selenium
             expect { driver.capabilities.browser_version }.to_not raise_exception
           end
 
-          caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']},
-                                              service_args: {binary: path})
-          create_driver!(desired_capabilities: caps) do |driver|
+          caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']})
+          create_driver!(desired_capabilities: caps, driver_opts: {binary: path}) do |driver|
             expect(driver.capabilities.version).to_not eql(@default_version)
             expect { driver.capabilities.browser_version }.to_not raise_exception
           end

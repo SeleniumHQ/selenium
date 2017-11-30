@@ -34,20 +34,15 @@ module Selenium
 
           unless opts.key?(:url)
             driver_path = opts.delete(:driver_path) || Chrome.driver_path
+            driver_opts = opts.delete(:driver_opts) || {}
             port = opts.delete(:port) || Service::DEFAULT_PORT
 
-            opts[:driver_opts] ||= {}
             if opts.key? :service_log_path
               WebDriver.logger.deprecate ':service_log_path', "driver_opts: {log_path: '#{opts[:service_log_path]}'}"
-              opts[:driver_opts][:log_path] = opts.delete :service_log_path
+              driver_opts[:log_path] = opts.delete :service_log_path
             end
 
-            if opts.key? :service_args
-              WebDriver.logger.deprecate ':service_args', "driver_opts: {args: #{opts[:service_args]}}"
-              opts[:driver_opts][:args] = opts.delete(:service_args)
-            end
-
-            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
+            @service = Service.new(driver_path, port, driver_opts)
             @service.start
             opts[:url] = @service.uri
           end

@@ -67,18 +67,6 @@ module Selenium
           driver = Driver.new(http_client: http, driver_opts: driver_opts)
           expect(driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
         end
-
-        it 'deprecates `service_args`' do
-          args = ["--binary=/path/to/bin",
-                  "–-log=/path/to/log",
-                  "–-marionette-port=9721",
-                  "–-host=localhost"]
-
-          expect(WebDriver.logger).to receive(:deprecate).with(':service_args', "driver_opts: {args: #{args}}")
-          @driver = Driver.new(http_client: http, service_args: args)
-          expect(@driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
-        end
-
       end
     end # Firefox
   end # WebDriver
