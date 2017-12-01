@@ -28,6 +28,7 @@ import org.openqa.grid.selenium.node.FirefoxMutator;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
@@ -47,6 +48,7 @@ import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.servlet.Servlet;
 
@@ -205,6 +207,10 @@ public class SeleniumServer implements GridNodeServer {
           caps -> {
             builder.addCapabilitiesMutator(new ChromeMutator(caps));
             builder.addCapabilitiesMutator(new FirefoxMutator(caps));
+            builder.addCapabilitiesMutator(c -> new ImmutableCapabilities(c.asMap().entrySet().stream()
+                .filter(e -> ! e.getKey().startsWith("se:"))
+                .filter(e -> e.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
           }
       );
     }
