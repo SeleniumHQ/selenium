@@ -1,3 +1,10 @@
+v3.8.1
+======
+
+* Fixed Chrome mutator injecting null binary path into new session payload.
+* Added mutator that stips grid-specific capabilities hurting IE driver.
+* Fixed SafariOptions construction from plain Capabilities object.
+
 v3.8.0
 ======
 
