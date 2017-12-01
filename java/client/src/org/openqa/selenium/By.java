@@ -45,105 +45,105 @@ import java.util.List;
  */
 public abstract class By {
   /**
-   * @param id The value of the "id" attribute to search for
-   * @return a By which locates elements by the value of the "id" attribute.
+   * @param id The value of the "id" attribute to search for.
+   * @return A By which locates elements by the value of the "id" attribute.
    */
   public static By id(final String id) {
     if (id == null)
       throw new IllegalArgumentException(
-          "Cannot find elements with a null id attribute.");
+          "Cannot find elements when the id is null.");
 
     return new ById(id);
   }
 
   /**
-   * @param linkText The exact text to match against
-   * @return a By which locates A elements by the exact text it displays
+   * @param linkText The exact text to match against.
+   * @return A By which locates A elements by the exact text they display.
    */
   public static By linkText(final String linkText) {
     if (linkText == null)
       throw new IllegalArgumentException(
-          "Cannot find elements when link text is null.");
+          "Cannot find elements when the link text is null.");
 
     return new ByLinkText(linkText);
   }
 
   /**
-   * @param linkText The text to match against
-   * @return a By which locates A elements that contain the given link text
+   * @param linkText The text to match against.
+   * @return A By which locates A elements that contain the given text.
    */
   public static By partialLinkText(final String linkText) {
     if (linkText == null)
       throw new IllegalArgumentException(
-          "Cannot find elements when link text is null.");
+          "Cannot find elements when the link text is null.");
 
     return new ByPartialLinkText(linkText);
   }
 
   /**
-   * @param name The value of the "name" attribute to search for
-   * @return a By which locates elements by the value of the "name" attribute.
+   * @param name The value of the "name" attribute to search for.
+   * @return A By which locates elements by the value of the "name" attribute.
    */
   public static By name(final String name) {
     if (name == null)
       throw new IllegalArgumentException(
-          "Cannot find elements when name text is null.");
+          "Cannot find elements when the name is null.");
 
     return new ByName(name);
   }
 
   /**
-   * @param name The element's tagName
-   * @return a By which locates elements by their tag name
+   * @param name The element's tag name.
+   * @return A By which locates elements by their tag name.
    */
   public static By tagName(final String name) {
     if (name == null)
       throw new IllegalArgumentException(
-          "Cannot find elements when name tag name is null.");
+          "Cannot find elements when the tag name is null.");
 
     return new ByTagName(name);
   }
 
   /**
-   * @param xpathExpression The xpath to use
-   * @return a By which locates elements via XPath
+   * @param xpathExpression The XPath to use.
+   * @return A By which locates elements via XPath.
    */
   public static By xpath(final String xpathExpression) {
     if (xpathExpression == null)
       throw new IllegalArgumentException(
-          "Cannot find elements when the XPath expression is null.");
+          "Cannot find elements when the XPath is null.");
 
     return new ByXPath(xpathExpression);
   }
 
   /**
-   * Finds elements based on the value of the "class" attribute. If an element has many classes then
-   * this will match against each of them. For example if the value is "one two onone", then the
-   * following "className"s will match: "one" and "two"
+   * Find elements based on the value of the "class" attribute. If an element has multiple classes, then
+   * this will match against each of them. For example, if the value is "one two onone", then the
+   * class names "one" and "two" will match.
    *
-   * @param className The value of the "class" attribute to search for
-   * @return a By which locates elements by the value of the "class" attribute.
+   * @param className The value of the "class" attribute to search for.
+   * @return A By which locates elements by the value of the "class" attribute.
    */
   public static By className(final String className) {
     if (className == null)
       throw new IllegalArgumentException(
-          "Cannot find elements when the class name expression is null.");
+          "Cannot find elements when the class name is null.");
 
     return new ByClassName(className);
   }
 
   /**
-   * Finds elements via the driver's underlying W3 Selector engine. If the browser does not
+   * Find elements via the driver's underlying W3 Selector engine. If the browser does not
    * implement the Selector API, a best effort is made to emulate the API. In this case, we strive
    * for at least CSS2 support, but offer no guarantees.
    *
-   * @param selector css expression
-   * @return a By which locates elements by CSS.
+   * @param selector CSS expression.
+   * @return A By which locates elements by CSS.
    */
   public static By cssSelector(final String selector) {
     if (selector == null)
       throw new IllegalArgumentException(
-          "Cannot find elements when the selector is null");
+          "Cannot find elements when the CSS selector is null.");
 
     return new ByCssSelector(selector);
 
@@ -152,8 +152,8 @@ public abstract class By {
   /**
    * Find a single element. Override this method if necessary.
    *
-   * @param context A context to use to find the element
-   * @return The WebElement that matches the selector
+   * @param context A context to use to find the element.
+   * @return The WebElement that matches the selector.
    */
   public WebElement findElement(SearchContext context) {
     List<WebElement> allElements = findElements(context);
@@ -166,8 +166,8 @@ public abstract class By {
   /**
    * Find many elements.
    *
-   * @param context A context to use to find the element
-   * @return A list of WebElements matching the selector
+   * @param context A context to use to find the elements.
+   * @return A list of WebElements matching the selector.
    */
   public abstract List<WebElement> findElements(SearchContext context);
 
@@ -394,7 +394,7 @@ public abstract class By {
     }
 
     /**
-     * Generates a partial xpath expression that matches an element whose specified attribute
+     * Generate a partial XPath expression that matches an element whose specified attribute
      * contains the given CSS word. So to match &lt;div class='foo bar'&gt; you would say "//div[" +
      * containingWord("class", "foo") + "]".
      *
