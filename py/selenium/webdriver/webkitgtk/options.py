@@ -22,35 +22,35 @@ class Options(object):
     KEY = 'webkitgtk:browserOptions'
 
     def __init__(self):
-        self._browser_executable_path = ''
-        self._browser_arguments = []
+        self._binary_location = ''
+        self._arguments = []
         self._overlay_scrollbars_enabled = True
 
     @property
-    def browser_executable_path(self):
+    def binary_location(self):
         """
         Returns the location of the browser binary otherwise an empty string
         """
-        return self._browser_executable_path
+        return self._binary_location
 
-    @browser_executable_path.setter
-    def browser_executable_path(self, value):
+    @binary_location.setter
+    def binary_location(self, value):
         """
         Allows you to set the browser binary to launch
 
         :Args:
          - value : path to the browser binary
         """
-        self._browser_executable_path = value
+        self._binary_location = value
 
     @property
-    def browser_arguments(self):
+    def arguments(self):
         """
         Returns a list of arguments needed for the browser
         """
-        return self._browser_arguments
+        return self._arguments
 
-    def add_browser_argument(self, argument):
+    def add_argument(self, argument):
         """
         Adds an argument to the list
 
@@ -58,7 +58,7 @@ class Options(object):
          - Sets the arguments
         """
         if argument:
-            self._browser_arguments.append(argument)
+            self._arguments.append(argument)
         else:
             raise ValueError("argument can not be null")
 
@@ -87,10 +87,10 @@ class Options(object):
         webkitgtk = DesiredCapabilities.WEBKITGTK.copy()
 
         browser_options = {}
-        if self.browser_executable_path:
-            browser_options["binary"] = self.browser_executable_path
-        if self.browser_arguments:
-            browser_options["args"] = self.browser_arguments
+        if self.binary_location:
+            browser_options["binary"] = self.binary_location
+        if self.arguments:
+            browser_options["args"] = self.arguments
         browser_options["useOverlayScrollbars"] = self.overlay_scrollbars_enabled
 
         webkitgtk[Options.KEY] = browser_options

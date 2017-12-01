@@ -48,13 +48,15 @@ drivers = (
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        '--driver',
-        action='append',
-        choices=drivers,
-        dest='drivers',
-        metavar='DRIVER',
-        help='driver to run tests against ({0})'.format(', '.join(drivers)))
+    parser.addoption('--driver', action='append', choices=drivers, dest='drivers',
+                     metavar='DRIVER',
+                     help='driver to run tests against ({})'.format(', '.join(drivers)))
+    parser.addoption('--browser-binary', action='store', dest='binary',
+                     help='location of the browser binary')
+    parser.addoption('--driver-binary', action='store', dest='executable',
+                     help='location of the service executable binary')
+    parser.addoption('--browser-args', action='store', dest='args',
+                     help='arguments to start the browser with')
 
 
 def pytest_ignore_collect(path, config):
@@ -93,38 +95,50 @@ def driver(request):
                 yield
                 return
 
+    driver_path = request.config.option.executable
+    options = None
+
     global driver_instance
     if driver_instance is None:
         if driver_class == 'BlackBerry':
             kwargs.update({'device_password': 'password'})
         if driver_class == 'Firefox':
             kwargs.update({'capabilities': {'marionette': False}})
+            options = get_options(driver_class, request.config)
         if driver_class == 'Marionette':
             driver_class = 'Firefox'
+            options = get_options(driver_class, request.config)
         if driver_class == 'Remote':
             capabilities = DesiredCapabilities.FIREFOX.copy()
             capabilities['marionette'] = False
             kwargs.update({'desired_capabilities': capabilities})
+            options = get_options('Firefox', request.config)
         if driver_class == 'WebKitGTK':
-            additional_args = {}
-            options = webdriver.WebKitGTKOptions()
-            options.overlay_scrollbars_enabled = False
-            browser_path = os.environ.get('WD_BROWSER_PATH')
-            if browser_path is not None:
-                options.browser_executable_path = browser_path
-            browser_args = os.environ.get('WD_BROWSER_ARGS')
-            if browser_args is not None:
-                for arg in browser_args.split():
-                    options.add_browser_argument(arg)
-            additional_args['options'] = options
-            driver_path = os.environ.get('WD_DRIVER_PATH')
-            if driver_path is not None:
-                additional_args['executable_path'] = driver_path
-            kwargs.update(additional_args)
+            options = get_options(driver_class, request.config)
+        if driver_path is not None:
+            kwargs['executable_path'] = driver_path
+        if options is not None:
+            kwargs['options'] = options
         driver_instance = getattr(webdriver, driver_class)(**kwargs)
     yield driver_instance
     if MarkEvaluator(request.node, 'no_driver_after_test').istrue():
         driver_instance = None
+
+
+def get_options(driver_class, config):
+    browser_path = config.option.binary
+    browser_args = config.option.args
+    options = None
+    if browser_path or browser_args:
+        options = getattr(webdriver, '{}Options'.format(driver_class))()
+        if driver_class == 'WebKitGTK':
+            options.overlay_scrollbars_enabled = False
+        if browser_path is not None:
+            options.binary_location = browser_path
+        if browser_args is not None:
+            for arg in browser_args.split():
+                options.add_argument(arg)
+    return options
 
 
 @pytest.fixture(scope='session', autouse=True)
