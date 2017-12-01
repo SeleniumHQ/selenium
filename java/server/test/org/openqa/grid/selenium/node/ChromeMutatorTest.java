@@ -18,6 +18,7 @@
 package org.openqa.grid.selenium.node;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.openqa.selenium.chrome.ChromeOptions.CAPABILITY;
 
@@ -68,6 +69,18 @@ public class ChromeMutatorTest {
     assertEquals(
         options.get("binary"),
         defaultConfig.getCapability("chrome_binary"));
+  }
+
+  @Test
+  public void shouldNotInjectNullBinary() {
+    ImmutableCapabilities caps = new ImmutableCapabilities(new ChromeOptions());
+    ImmutableCapabilities seen = new ChromeMutator(
+        new ImmutableCapabilities("browserName", "chrome")).apply(caps);
+
+    @SuppressWarnings("unchecked")
+    Map<String, Object> options = (Map<String, Object>) seen.getCapability(CAPABILITY);
+
+    assertFalse(options.containsKey("binary"));
   }
 
   @Test

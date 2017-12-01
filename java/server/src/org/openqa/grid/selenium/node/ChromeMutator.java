@@ -57,7 +57,7 @@ public class ChromeMutator implements Function<ImmutableCapabilities, ImmutableC
       options.putAll(asMap);
     }
 
-    if (!(options.get("binary") instanceof String)) {
+    if (options.get("binary") == null && config.getCapability("chrome_binary") != null) {
       options.put("binary", config.getCapability("chrome_binary"));
     }
 
