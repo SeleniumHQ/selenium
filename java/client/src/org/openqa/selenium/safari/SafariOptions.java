@@ -147,7 +147,6 @@ public class SafariOptions extends MutableCapabilities {
    */
   public SafariOptions useCleanSession(boolean useCleanSession) {
     options.put(Option.CLEAN_SESSION, useCleanSession);
-    setCapability(Option.CLEAN_SESSION, useCleanSession);
     return this;
   }
 
@@ -165,13 +164,32 @@ public class SafariOptions extends MutableCapabilities {
    *
    * @param useTechnologyPreview If true, the SafariDriver will use the Safari Technology Preview,
    *     otherwise will use the release version of Safari.
-   * @deprecated Create a {@link SafariDriverService} to specify what Safari flavour should be used
-   * and pass the service instance to a {@link SafariDriver} constructor.
    */
-  @Deprecated
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     options.put(Option.TECHNOLOGY_PREVIEW, useTechnologyPreview);
     return this;
+  }
+
+  @Override
+  public void setCapability(String key, Object value) {
+    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
+      setUseTechnologyPreview(Boolean.valueOf(value.toString()));
+    } else if (Option.CLEAN_SESSION.equals(key)) {
+      useCleanSession(Boolean.valueOf(value.toString()));
+    } else {
+      super.setCapability(key, value);
+    }
+  }
+
+  @Override
+  public void setCapability(String key, boolean value) {
+    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
+      setUseTechnologyPreview(value);
+    } else if (Option.CLEAN_SESSION.equals(key)) {
+      useCleanSession(value);
+    } else {
+      super.setCapability(key, value);
+    }
   }
 
   public SafariOptions setProxy(Proxy proxy) {
