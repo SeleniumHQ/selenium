@@ -39,7 +39,7 @@ module Selenium
         target_width = size.width - 20
         target_height = size.height - 20
 
-        window.size = Dimension.new(target_height)
+        window.size = Dimension.new(target_width, target_height)
 
         new_size = window.size
         expect(new_size.width).to eq(target_width)
