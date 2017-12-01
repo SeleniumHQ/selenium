@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.common.exceptions &mdash; Selenium 3.7 documentation</title>
+    <title>selenium.common.exceptions &mdash; Selenium 3.8 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '3.7',
+        VERSION:     '3.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.7 documentation" href="../../../index.html" />
+    <link rel="top" title="Selenium 3.8 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -303,6 +303,73 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The arguments passed to a command are either invalid or malformed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="JavascriptException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.JavascriptException">[docs]</a><span class="k">class</span> <span class="nc">JavascriptException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An error occurred while executing JavaScript supplied by the user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="NoSuchCookieException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchCookieException">[docs]</a><span class="k">class</span> <span class="nc">NoSuchCookieException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    No cookie matching the given path name was found amongst the associated cookies of the</span>
+<span class="sd">    current browsing context&#39;s active document.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="ScreenshotException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ScreenshotException">[docs]</a><span class="k">class</span> <span class="nc">ScreenshotException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A screen capture was made impossible.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="ElementClickInterceptedException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementClickInterceptedException">[docs]</a><span class="k">class</span> <span class="nc">ElementClickInterceptedException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Element Click command could not be completed because the element receiving the events</span>
+<span class="sd">    is obscuring the element that was requested clicked.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="InsecureCertificateException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.InsecureCertificateException">[docs]</a><span class="k">class</span> <span class="nc">InsecureCertificateException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Navigation caused the user agent to hit a certificate warning, which is usually the result</span>
+<span class="sd">    of an expired or invalid TLS certificate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="InvalidCoordinatesException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidCoordinatesException">[docs]</a><span class="k">class</span> <span class="nc">InvalidCoordinatesException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The coordinates provided to an interactions operation are invalid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="InvalidSessionIdException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSessionIdException">[docs]</a><span class="k">class</span> <span class="nc">InvalidSessionIdException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Occurs if the given session id is not in the list of active sessions, meaning the session</span>
+<span class="sd">    either does not exist or that it&#39;s not active.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="SessionNotCreatedException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.SessionNotCreatedException">[docs]</a><span class="k">class</span> <span class="nc">SessionNotCreatedException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A new session could not be created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="UnknownMethodException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.UnknownMethodException">[docs]</a><span class="k">class</span> <span class="nc">UnknownMethodException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The requested command matched a known URL but did not match an method for that URL.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 </pre></div>
 
@@ -337,7 +404,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

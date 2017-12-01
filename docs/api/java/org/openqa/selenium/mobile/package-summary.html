@@ -83,7 +83,11 @@
 <tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/mobile/NetworkConnection.html" title="interface in org.openqa.selenium.mobile">NetworkConnection</a></td>
 <td class="colLast">
-<div class="block">Control a device's network connection</div>
+<div class="block">Control a device's network connection  Example usage:
+
+ 
+ NetworkConnection mobileDriver = (NetworkConnection) driver;
+ if (mobileDriver.getNetworkConnection() !</div>
 </td>
 </tr>
 </tbody>
@@ -100,7 +104,18 @@
 <tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/mobile/NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></td>
 <td class="colLast">
-<div class="block">ConnectionType is a bitmask to represent a device's network connection</div>
+<div class="block">ConnectionType is a bitmask to represent a device's network connection
+ 
+ Data  | WIFI | Airplane
+ 0       0      1         == 1
+ 1       1      0         == 6
+ 1       0      0         == 4
+ 0       1      0         == 2
+ 0       0      0         == 0
+ 
+
+ Giving "Data" the first bit positions in order to give room for the future of enabling
+ specific types of data (Edge / 2G, 3G, 4G, LTE, etc) if the device allows it.</div>
 </td>
 </tr>
 </tbody>

@@ -27,6 +27,7 @@ org.openqa.selenium.os
 org.openqa.selenium.remote
 org.openqa.selenium.remote.html5
 org.openqa.selenium.remote.http
+org.openqa.selenium.remote.internal
 org.openqa.selenium.remote.mobile
 org.openqa.selenium.remote.server
 org.openqa.selenium.remote.server.commandhandler
@@ -36,13 +37,13 @@ org.openqa.selenium.remote.server.handler.interactions
 org.openqa.selenium.remote.server.handler.interactions.touch
 org.openqa.selenium.remote.server.handler.internal
 org.openqa.selenium.remote.server.handler.mobile
+org.openqa.selenium.remote.server.jmx
 org.openqa.selenium.remote.server.log
 org.openqa.selenium.remote.server.rest
 org.openqa.selenium.remote.server.xdrpc
 org.openqa.selenium.remote.service
 org.openqa.selenium.remote.session
 org.openqa.selenium.safari
-org.openqa.selenium.security
 org.openqa.selenium.server.htmlrunner
 org.openqa.selenium.support
 org.openqa.selenium.support.events

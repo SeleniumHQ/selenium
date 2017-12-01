@@ -334,7 +334,8 @@ implements <a href="../../../../org/openqa/selenium/WebElement.html" title="inte
 <tr id="i33" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html#getText--">getText</a></span>()</code>
-<div class="block">Get the visible (i.e.</div>
+<div class="block">Get the visible (i.e. not hidden by CSS) innerText of this element, including sub-elements,
+ without any leading or trailing whitespace.</div>
 </td>
 </tr>
 <tr id="i34" class="altColor">
@@ -348,15 +349,13 @@ implements <a href="../../../../org/openqa/selenium/WebElement.html" title="inte
 <tr id="i36" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html#isDisplayed--">isDisplayed</a></span>()</code>
-<div class="block">Is this element displayed or not? This method avoids the problem of having to parse an
- element's "style" attribute.</div>
+<div class="block">Is this element displayed or not?</div>
 </td>
 </tr>
 <tr id="i37" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html#isEnabled--">isEnabled</a></span>()</code>
-<div class="block">Is the element currently enabled or not? This will generally return true for everything but
- disabled input elements.</div>
+<div class="block">Is the element currently enabled or not?</div>
 </td>
 </tr>
 <tr id="i38" class="altColor">
@@ -1191,7 +1190,7 @@ implements <a href="../../../../org/openqa/selenium/WebElement.html" title="inte
 <h4>getScreenshotAs</h4>
 <pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
 public&nbsp;&lt;X&gt;&nbsp;X&nbsp;getScreenshotAs(<a href="../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;outputType)
-                            throws <a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
+                             throws <a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs-org.openqa.selenium.OutputType-">TakesScreenshot</a></code></span></div>
 <div class="block">Capture the screenshot and store it in the specified location.
 

@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":9,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":42,"i8":10,"i9":10,"i10":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -174,7 +174,7 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -203,28 +203,36 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/service/DriverService.html#getUrl-int-">getUrl</a></span>(int&nbsp;port)</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>protected boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/service/DriverService.html#hasShutdownEndpoint--">hasShutdownEndpoint</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/service/DriverService.html#isRunning--">isRunning</a></span>()</code>
 <div class="block">Checks whether the driver child process is currently running.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/service/DriverService.html#sendOutputTo-java.io.OutputStream-">sendOutputTo</a></span>(java.io.OutputStream&nbsp;outputStream)</code>&nbsp;</td>
-</tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/service/DriverService.html#sendOutputTo-java.io.OutputStream-">sendOutputTo</a></span>(java.io.OutputStream&nbsp;outputStream)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Visibility will be restricted to 'protected' soon.</span></div>
+</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/service/DriverService.html#start--">start</a></span>()</code>
 <div class="block">Starts this service if it is not already running.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/service/DriverService.html#stop--">stop</a></span>()</code>
-<div class="block">Stops this service is it is currently running.</div>
+<div class="block">Stops this service if it is currently running.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/service/DriverService.html#waitUntilAvailable--">waitUntilAvailable</a></span>()</code>&nbsp;</td>
 </tr>
@@ -392,12 +400,21 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>stop</h4>
 <pre>public&nbsp;void&nbsp;stop()</pre>
-<div class="block">Stops this service is it is currently running. This method will attempt to block until the
+<div class="block">Stops this service if it is currently running. This method will attempt to block until the
  server has been fully shutdown.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../org/openqa/selenium/remote/service/DriverService.html#start--"><code>start()</code></a></dd>
 </dl>
+</li>
+</ul>
+<a name="hasShutdownEndpoint--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hasShutdownEndpoint</h4>
+<pre>protected&nbsp;boolean&nbsp;hasShutdownEndpoint()</pre>
 </li>
 </ul>
 <a name="sendOutputTo-java.io.OutputStream-">
@@ -406,7 +423,9 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>sendOutputTo</h4>
-<pre>public&nbsp;void&nbsp;sendOutputTo(java.io.OutputStream&nbsp;outputStream)</pre>
+<pre>@Deprecated
+public&nbsp;void&nbsp;sendOutputTo(java.io.OutputStream&nbsp;outputStream)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Visibility will be restricted to 'protected' soon.</span></div>
 </li>
 </ul>
 <a name="getOutputStream--">

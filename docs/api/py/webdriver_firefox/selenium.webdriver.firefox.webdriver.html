@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.7 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.8 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.7',
+        VERSION:     '3.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.7 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.8 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.7 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.8 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -48,7 +48,7 @@
 <span id="selenium-webdriver-firefox-webdriver"></span><h1>selenium.webdriver.firefox.webdriver<a class="headerlink" href="#module-selenium.webdriver.firefox.webdriver" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="selenium.webdriver.firefox.webdriver.WebDriver">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.firefox.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>firefox_profile=None</em>, <em>firefox_binary=None</em>, <em>timeout=30</em>, <em>capabilities=None</em>, <em>proxy=None</em>, <em>executable_path='geckodriver'</em>, <em>firefox_options=None</em>, <em>log_path='geckodriver.log'</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.firefox.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>firefox_profile=None</em>, <em>firefox_binary=None</em>, <em>timeout=30</em>, <em>capabilities=None</em>, <em>proxy=None</em>, <em>executable_path='geckodriver'</em>, <em>options=None</em>, <em>log_path='geckodriver.log'</em>, <em>firefox_options=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starts a new local session of Firefox.</p>
 <p>Based on the combination and specificity of the various keyword
 arguments, a capabilities dictionary will be constructed that
@@ -58,19 +58,19 @@ more easily allow Firefox WebDriver sessions to be customised
 with different options.  They are mapped on to a capabilities
 dictionary that is passed on to the remote end.</p>
 <p>As some of the options, such as <cite>firefox_profile</cite> and
-<cite>firefox_options.profile</cite> are mutually exclusive, precedence is
+<cite>options.profile</cite> are mutually exclusive, precedence is
 given from how specific the setting is.  <cite>capabilities</cite> is the
-least specific keyword argument, followed by <cite>firefox_options</cite>,
+least specific keyword argument, followed by <cite>options</cite>,
 followed by <cite>firefox_binary</cite> and <cite>firefox_profile</cite>.</p>
 <p>In practice this means that if <cite>firefox_profile</cite> and
-<cite>firefox_options.profile</cite> are both set, the selected profile
+<cite>options.profile</cite> are both set, the selected profile
 instance will always come from the most specific variable.
 In this case that would be <cite>firefox_profile</cite>.  This will result in
-<cite>firefox_options.profile</cite> to be ignored because it is considered
+<cite>options.profile</cite> to be ignored because it is considered
 a less specific setting than the top-level <cite>firefox_profile</cite>
 keyword argument.  Similarily, if you had specified a
-<cite>capabilities[&#8220;firefoxOptions&#8221;][&#8220;profile&#8221;]</cite> Base64 string,
-this would rank below <cite>firefox_options.profile</cite>.</p>
+<cite>capabilities[&#8220;moz:firefoxOptions&#8221;][&#8220;profile&#8221;]</cite> Base64 string,
+this would rank below <cite>options.profile</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -90,7 +90,7 @@ Firefox via the extension connection.</li>
 <li><strong>executable_path</strong> &#8211; Full path to override which geckodriver
 binary to use for Firefox 47.0.1 and greater, which
 defaults to picking up the binary from the system path.</li>
-<li><strong>firefox_options</strong> &#8211; Instance of <tt class="docutils literal"><span class="pre">options.Options</span></tt>.</li>
+<li><strong>options</strong> &#8211; Instance of <tt class="docutils literal"><span class="pre">options.Options</span></tt>.</li>
 <li><strong>log_path</strong> &#8211; Where to log information from the driver.</li>
 </ul>
 </td>
@@ -109,7 +109,7 @@ defaults to picking up the binary from the system path.</li>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.firefox.webdriver.WebDriver.NATIVE_EVENTS_ALLOWED">
-<tt class="descname">NATIVE_EVENTS_ALLOWED</tt><em class="property"> = False</em><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.NATIVE_EVENTS_ALLOWED" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">NATIVE_EVENTS_ALLOWED</tt><em class="property"> = True</em><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.NATIVE_EVENTS_ALLOWED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -224,7 +224,7 @@ be used to uninstall addon.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.7 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -124,25 +124,15 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Alert.html#authenticateUsing-org.openqa.selenium.security.Credentials-">authenticateUsing</a></span>(<a href="../../../org/openqa/selenium/security/Credentials.html" title="interface in org.openqa.selenium.security">Credentials</a>&nbsp;credentials)</code>
-<div class="block">Authenticate an HTTP Basic Auth dialog.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Alert.html#dismiss--">dismiss</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Alert.html#getText--">getText</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Alert.html#sendKeys-java.lang.String-">sendKeys</a></span>(java.lang.String&nbsp;keysToSend)</code>&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Alert.html#setCredentials-org.openqa.selenium.security.Credentials-">setCredentials</a></span>(<a href="../../../org/openqa/selenium/security/Credentials.html" title="interface in org.openqa.selenium.security">Credentials</a>&nbsp;credentials)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -189,38 +179,10 @@ var activeTableTab = "activeTableTab";
 <a name="sendKeys-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>sendKeys</h4>
 <pre>void&nbsp;sendKeys(java.lang.String&nbsp;keysToSend)</pre>
-</li>
-</ul>
-<a name="setCredentials-org.openqa.selenium.security.Credentials-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setCredentials</h4>
-<pre><a href="../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
-void&nbsp;setCredentials(<a href="../../../org/openqa/selenium/security/Credentials.html" title="interface in org.openqa.selenium.security">Credentials</a>&nbsp;credentials)</pre>
-</li>
-</ul>
-<a name="authenticateUsing-org.openqa.selenium.security.Credentials-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>authenticateUsing</h4>
-<pre><a href="../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
-void&nbsp;authenticateUsing(<a href="../../../org/openqa/selenium/security/Credentials.html" title="interface in org.openqa.selenium.security">Credentials</a>&nbsp;credentials)</pre>
-<div class="block">Authenticate an HTTP Basic Auth dialog.
-
- Usage: driver.switchTo().alert().authenticateUsing(new UsernamePasswordCredentials("cheese",
-        "secretGouda"));</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>credentials</code> - - the credentials that will be passed to the Authentication prompt</dd>
-</dl>
 </li>
 </ul>
 </li>

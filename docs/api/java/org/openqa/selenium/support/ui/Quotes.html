@@ -149,7 +149,17 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/Quotes.html#escape-java.lang.String-">escape</a></span>(java.lang.String&nbsp;toEscape)</code>
 <div class="block">Convert strings with both quotes and ticks into a valid xpath component
 
- For example,</div>
+ For example,
+
+ 
+   <code>foo</code> will be converted to <code>"foo"</code>,
+ 
+ 
+   <code>f"oo</code> will be converted to <code>'f"oo'</code>,
+ 
+ 
+   <code>foo'"bar</code> will be converted to <code>concat("foo'", '"', "bar")</code>
+ </div>
 </td>
 </tr>
 </table>

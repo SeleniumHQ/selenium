@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.firefox.options &mdash; Selenium 3.7 documentation</title>
+    <title>selenium.webdriver.firefox.options &mdash; Selenium 3.8 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.7',
+        VERSION:     '3.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.7 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.8 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -92,7 +92,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">binary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the location of the binary.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Returns the FirefoxBinary instance&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary</span>
 
     <span class="nd">@binary.setter</span>
@@ -107,10 +107,12 @@
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span>
+        <span class="sd">&quot;&quot;&quot;Returns the location of the binary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">_start_cmd</span>
 
-    <span class="nd">@binary.setter</span>  <span class="c"># noqa</span>
+    <span class="nd">@binary_location.setter</span>  <span class="c"># noqa</span>
 <div class="viewcode-block" id="Options.binary_location"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.binary_location">[docs]</a>    <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the location of the browser binary by string &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">value</span>
 </div>
     <span class="nd">@property</span>
@@ -158,6 +160,25 @@
         <span class="k">if</span> <span class="n">argument</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">argument</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Options.headless"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.headless">[docs]</a>    <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether or not the headless argument is set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">&#39;-headless&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
+</div>
+<div class="viewcode-block" id="Options.set_headless"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.set_headless">[docs]</a>    <span class="k">def</span> <span class="nf">set_headless</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headless</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the headless argument</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          headless: boolean value indicating to set the headless option</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">headless</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;-headless&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s">&#39;-headless&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&#39;-headless&#39;</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Marshals the Firefox options to a `moz:firefoxOptions`</span>
@@ -219,7 +240,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

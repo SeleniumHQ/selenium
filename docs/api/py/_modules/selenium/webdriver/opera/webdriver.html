@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.opera.webdriver &mdash; Selenium 3.7 documentation</title>
+    <title>selenium.webdriver.opera.webdriver &mdash; Selenium 3.8 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.7',
+        VERSION:     '3.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.7 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.8 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -63,6 +63,7 @@
 <span class="c"># KIND, either express or implied.  See the License for the</span>
 <span class="c"># specific language governing permissions and limitations</span>
 <span class="c"># under the License.</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">ChromiumDriver</span>
 <span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
@@ -73,8 +74,9 @@
 <span class="sd">    to drive the Opera browser based on Chromium.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">opera_options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">service_log_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">service_log_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">opera_options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new instance of the operadriver.</span>
 
@@ -87,15 +89,18 @@
 <span class="sd">                  a free port will be found.</span>
 <span class="sd">         - desired_capabilities: Dictionary object with non-browser specific</span>
 <span class="sd">           capabilities only, such as &quot;proxy&quot; or &quot;loggingPref&quot;.</span>
-<span class="sd">         - chrome_options: this takes an instance of ChromeOptions</span>
+<span class="sd">         - options: this takes an instance of ChromeOptions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">opera_options</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;use options instead of opera_options&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="n">opera_options</span>
 
         <span class="n">executable_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">executable_path</span> <span class="k">if</span> <span class="n">executable_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
                            <span class="k">else</span> <span class="s">&quot;operadriver&quot;</span><span class="p">)</span>
         <span class="n">ChromiumDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                 <span class="n">executable_path</span><span class="o">=</span><span class="n">executable_path</span><span class="p">,</span>
                                 <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
-                                <span class="n">chrome_options</span><span class="o">=</span><span class="n">opera_options</span><span class="p">,</span>
+                                <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
                                 <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span>
                                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">,</span>
                                 <span class="n">service_log_path</span><span class="o">=</span><span class="n">service_log_path</span><span class="p">)</span>
@@ -114,9 +119,9 @@
                  <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                  <span class="n">service_log_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">service_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">opera_options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">OperaDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="n">executable_path</span><span class="p">,</span>
-                             <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">opera_options</span><span class="o">=</span><span class="n">opera_options</span><span class="p">,</span>
+                             <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
                              <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span>
                              <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">,</span>
                              <span class="n">service_log_path</span><span class="o">=</span><span class="n">service_log_path</span><span class="p">)</span></div>
@@ -153,7 +158,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.7 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.8 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.7',
+        VERSION:     '3.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.7 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.8 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -63,6 +63,7 @@
 <span class="c"># KIND, either express or implied.  See the License for the</span>
 <span class="c"># specific language governing permissions and limitations</span>
 <span class="c"># under the License.</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">http.client</span> <span class="kn">as</span> <span class="nn">http_client</span>
@@ -103,8 +104,8 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">firefox_binary</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">executable_path</span><span class="o">=</span><span class="s">&quot;geckodriver&quot;</span><span class="p">,</span> <span class="n">firefox_options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">log_path</span><span class="o">=</span><span class="s">&quot;geckodriver.log&quot;</span><span class="p">):</span>
+                 <span class="n">executable_path</span><span class="o">=</span><span class="s">&quot;geckodriver&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">log_path</span><span class="o">=</span><span class="s">&quot;geckodriver.log&quot;</span><span class="p">,</span> <span class="n">firefox_options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Starts a new local session of Firefox.</span>
 
 <span class="sd">        Based on the combination and specificity of the various keyword</span>
@@ -117,20 +118,20 @@
 <span class="sd">        dictionary that is passed on to the remote end.</span>
 
 <span class="sd">        As some of the options, such as `firefox_profile` and</span>
-<span class="sd">        `firefox_options.profile` are mutually exclusive, precedence is</span>
+<span class="sd">        `options.profile` are mutually exclusive, precedence is</span>
 <span class="sd">        given from how specific the setting is.  `capabilities` is the</span>
-<span class="sd">        least specific keyword argument, followed by `firefox_options`,</span>
+<span class="sd">        least specific keyword argument, followed by `options`,</span>
 <span class="sd">        followed by `firefox_binary` and `firefox_profile`.</span>
 
 <span class="sd">        In practice this means that if `firefox_profile` and</span>
-<span class="sd">        `firefox_options.profile` are both set, the selected profile</span>
+<span class="sd">        `options.profile` are both set, the selected profile</span>
 <span class="sd">        instance will always come from the most specific variable.</span>
 <span class="sd">        In this case that would be `firefox_profile`.  This will result in</span>
-<span class="sd">        `firefox_options.profile` to be ignored because it is considered</span>
+<span class="sd">        `options.profile` to be ignored because it is considered</span>
 <span class="sd">        a less specific setting than the top-level `firefox_profile`</span>
 <span class="sd">        keyword argument.  Similarily, if you had specified a</span>
-<span class="sd">        `capabilities[&quot;firefoxOptions&quot;][&quot;profile&quot;]` Base64 string,</span>
-<span class="sd">        this would rank below `firefox_options.profile`.</span>
+<span class="sd">        `capabilities[&quot;moz:firefoxOptions&quot;][&quot;profile&quot;]` Base64 string,</span>
+<span class="sd">        this would rank below `options.profile`.</span>
 
 <span class="sd">        :param firefox_profile: Instance of ``FirefoxProfile`` object</span>
 <span class="sd">            or a string.  If undefined, a fresh profile will be created</span>
@@ -146,43 +147,46 @@
 <span class="sd">        :param executable_path: Full path to override which geckodriver</span>
 <span class="sd">            binary to use for Firefox 47.0.1 and greater, which</span>
 <span class="sd">            defaults to picking up the binary from the system path.</span>
-<span class="sd">        :param firefox_options: Instance of ``options.Options``.</span>
+<span class="sd">        :param options: Instance of ``options.Options``.</span>
 <span class="sd">        :param log_path: Where to log information from the driver.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">firefox_options</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;use options instead of firefox_options&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="n">firefox_options</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">capabilities</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">FIREFOX</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">firefox_options</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">firefox_options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
 
         <span class="n">capabilities</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;binary&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">capabilities</span><span class="p">[</span><span class="s">&quot;binary&quot;</span><span class="p">]</span>
 
-        <span class="c"># firefox_options overrides capabilities</span>
-        <span class="k">if</span> <span class="n">firefox_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">firefox_options</span><span class="o">.</span><span class="n">binary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_options</span><span class="o">.</span><span class="n">binary</span>
-            <span class="k">if</span> <span class="n">firefox_options</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_options</span><span class="o">.</span><span class="n">profile</span>
+        <span class="c"># options overrides capabilities</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">binary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">binary</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">profile</span>
 
         <span class="c"># firefox_binary and firefox_profile</span>
-        <span class="c"># override firefox_options</span>
+        <span class="c"># override options</span>
         <span class="k">if</span> <span class="n">firefox_binary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">firefox_binary</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
                 <span class="n">firefox_binary</span> <span class="o">=</span> <span class="n">FirefoxBinary</span><span class="p">(</span><span class="n">firefox_binary</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
-            <span class="n">firefox_options</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
         <span class="k">if</span> <span class="n">firefox_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">firefox_profile</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
                 <span class="n">firefox_profile</span> <span class="o">=</span> <span class="n">FirefoxProfile</span><span class="p">(</span><span class="n">firefox_profile</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_profile</span>
-            <span class="n">firefox_options</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_profile</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_profile</span>
 
         <span class="c"># W3C remote</span>
         <span class="c"># TODO(ato): Perform conformance negotiation</span>
@@ -192,7 +196,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">log_path</span><span class="o">=</span><span class="n">log_path</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-            <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">firefox_options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
+            <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
 
             <span class="n">executor</span> <span class="o">=</span> <span class="n">FirefoxRemoteConnection</span><span class="p">(</span>
                 <span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">)</span>
@@ -337,7 +341,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

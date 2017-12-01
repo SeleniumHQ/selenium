@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.errorhandler &mdash; Selenium 3.7 documentation</title>
+    <title>selenium.webdriver.remote.errorhandler &mdash; Selenium 3.8 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.7',
+        VERSION:     '3.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.7 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.8 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -64,22 +64,34 @@
 <span class="c"># specific language governing permissions and limitations</span>
 <span class="c"># under the License.</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ElementNotInteractableException</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ElementClickInterceptedException</span><span class="p">,</span>
+                                        <span class="n">ElementNotInteractableException</span><span class="p">,</span>
                                         <span class="n">ElementNotSelectableException</span><span class="p">,</span>
                                         <span class="n">ElementNotVisibleException</span><span class="p">,</span>
                                         <span class="n">ErrorInResponseException</span><span class="p">,</span>
+                                        <span class="n">InsecureCertificateException</span><span class="p">,</span>
+                                        <span class="n">InvalidCoordinatesException</span><span class="p">,</span>
                                         <span class="n">InvalidElementStateException</span><span class="p">,</span>
+                                        <span class="n">InvalidSessionIdException</span><span class="p">,</span>
                                         <span class="n">InvalidSelectorException</span><span class="p">,</span>
                                         <span class="n">ImeNotAvailableException</span><span class="p">,</span>
                                         <span class="n">ImeActivationFailedException</span><span class="p">,</span>
+                                        <span class="n">InvalidArgumentException</span><span class="p">,</span>
+                                        <span class="n">InvalidCookieDomainException</span><span class="p">,</span>
+                                        <span class="n">JavascriptException</span><span class="p">,</span>
                                         <span class="n">MoveTargetOutOfBoundsException</span><span class="p">,</span>
+                                        <span class="n">NoSuchCookieException</span><span class="p">,</span>
                                         <span class="n">NoSuchElementException</span><span class="p">,</span>
                                         <span class="n">NoSuchFrameException</span><span class="p">,</span>
                                         <span class="n">NoSuchWindowException</span><span class="p">,</span>
                                         <span class="n">NoAlertPresentException</span><span class="p">,</span>
+                                        <span class="n">ScreenshotException</span><span class="p">,</span>
+                                        <span class="n">SessionNotCreatedException</span><span class="p">,</span>
                                         <span class="n">StaleElementReferenceException</span><span class="p">,</span>
                                         <span class="n">TimeoutException</span><span class="p">,</span>
+                                        <span class="n">UnableToSetCookieException</span><span class="p">,</span>
                                         <span class="n">UnexpectedAlertPresentException</span><span class="p">,</span>
+                                        <span class="n">UnknownMethodException</span><span class="p">,</span>
                                         <span class="n">WebDriverException</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -101,7 +113,6 @@
     <span class="n">ELEMENT_NOT_VISIBLE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="s">&#39;element not visible&#39;</span><span class="p">]</span>
     <span class="n">INVALID_ELEMENT_STATE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="s">&#39;invalid element state&#39;</span><span class="p">]</span>
     <span class="n">UNKNOWN_ERROR</span> <span class="o">=</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="s">&#39;unknown error&#39;</span><span class="p">]</span>
-    <span class="n">ELEMENT_NOT_INTERACTABLE</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;element not interactable&quot;</span><span class="p">]</span>
     <span class="n">ELEMENT_IS_NOT_SELECTABLE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="s">&#39;element not selectable&#39;</span><span class="p">]</span>
     <span class="n">JAVASCRIPT_ERROR</span> <span class="o">=</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="s">&#39;javascript error&#39;</span><span class="p">]</span>
     <span class="n">XPATH_LOOKUP_ERROR</span> <span class="o">=</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="s">&#39;invalid selector&#39;</span><span class="p">]</span>
@@ -116,9 +127,21 @@
     <span class="n">IME_NOT_AVAILABLE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="s">&#39;ime not available&#39;</span><span class="p">]</span>
     <span class="n">IME_ENGINE_ACTIVATION_FAILED</span> <span class="o">=</span> <span class="p">[</span><span class="mi">31</span><span class="p">,</span> <span class="s">&#39;ime engine activation failed&#39;</span><span class="p">]</span>
     <span class="n">INVALID_SELECTOR</span> <span class="o">=</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="s">&#39;invalid selector&#39;</span><span class="p">]</span>
+    <span class="n">SESSION_NOT_CREATED</span> <span class="o">=</span> <span class="p">[</span><span class="mi">33</span><span class="p">,</span> <span class="s">&#39;session not created&#39;</span><span class="p">]</span>
     <span class="n">MOVE_TARGET_OUT_OF_BOUNDS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">34</span><span class="p">,</span> <span class="s">&#39;move target out of bounds&#39;</span><span class="p">]</span>
     <span class="n">INVALID_XPATH_SELECTOR</span> <span class="o">=</span> <span class="p">[</span><span class="mi">51</span><span class="p">,</span> <span class="s">&#39;invalid selector&#39;</span><span class="p">]</span>
     <span class="n">INVALID_XPATH_SELECTOR_RETURN_TYPER</span> <span class="o">=</span> <span class="p">[</span><span class="mi">52</span><span class="p">,</span> <span class="s">&#39;invalid selector&#39;</span><span class="p">]</span>
+
+    <span class="n">ELEMENT_NOT_INTERACTABLE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="s">&#39;element not interactable&#39;</span><span class="p">]</span>
+    <span class="n">INSECURE_CERTIFICATE</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;insecure certificate&#39;</span><span class="p">]</span>
+    <span class="n">INVALID_ARGUMENT</span> <span class="o">=</span> <span class="p">[</span><span class="mi">61</span><span class="p">,</span> <span class="s">&#39;invalid argument&#39;</span><span class="p">]</span>
+    <span class="n">INVALID_COORDINATES</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;invalid coordinates&#39;</span><span class="p">]</span>
+    <span class="n">INVALID_SESSION_ID</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;invalid session id&#39;</span><span class="p">]</span>
+    <span class="n">NO_SUCH_COOKIE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">62</span><span class="p">,</span> <span class="s">&#39;no such cookie&#39;</span><span class="p">]</span>
+    <span class="n">UNABLE_TO_CAPTURE_SCREEN</span> <span class="o">=</span> <span class="p">[</span><span class="mi">63</span><span class="p">,</span> <span class="s">&#39;unable to capture screen&#39;</span><span class="p">]</span>
+    <span class="n">ELEMENT_CLICK_INTERCEPTED</span> <span class="o">=</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="s">&#39;element click intercepted&#39;</span><span class="p">]</span>
+    <span class="n">UNKNOWN_METHOD</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;unknown method exception&#39;</span><span class="p">]</span>
+
     <span class="n">METHOD_NOT_ALLOWED</span> <span class="o">=</span> <span class="p">[</span><span class="mi">405</span><span class="p">,</span> <span class="s">&#39;unsupported operation&#39;</span><span class="p">]</span>
 
 </div>
@@ -185,9 +208,9 @@
         <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ELEMENT_NOT_INTERACTABLE</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ElementNotInteractableException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_COOKIE_DOMAIN</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidCookieDomainException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_SET_COOKIE</span><span class="p">:</span>
-            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">UnableToSetCookieException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">TIMEOUT</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">TimeoutException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">SCRIPT_TIMEOUT</span><span class="p">:</span>
@@ -204,6 +227,26 @@
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ImeActivationFailedException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MOVE_TARGET_OUT_OF_BOUNDS</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">MoveTargetOutOfBoundsException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JAVASCRIPT_ERROR</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">JavascriptException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">SESSION_NOT_CREATED</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">SessionNotCreatedException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_ARGUMENT</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidArgumentException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">NO_SUCH_COOKIE</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">NoSuchCookieException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_CAPTURE_SCREEN</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ScreenshotException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ELEMENT_CLICK_INTERCEPTED</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ElementClickInterceptedException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INSECURE_CERTIFICATE</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InsecureCertificateException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_COORDINATES</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidCoordinatesException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_SESSION_ID</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidSessionIdException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNKNOWN_METHOD</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">UnknownMethodException</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
         <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s">&#39;&#39;</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -277,7 +320,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

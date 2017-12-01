@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.chrome.options &mdash; Selenium 3.7 documentation</title>
+    <title>selenium.webdriver.chrome.options &mdash; Selenium 3.8 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.7',
+        VERSION:     '3.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.7 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.8 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -71,6 +71,7 @@
 
 
 <div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">KEY</span> <span class="o">=</span> <span class="s">&quot;goog:chromeOptions&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
@@ -199,6 +200,26 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_experimental_options</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Options.headless"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.headless">[docs]</a>    <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether or not the headless argument is set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">&#39;--headless&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
+</div>
+<div class="viewcode-block" id="Options.set_headless"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.set_headless">[docs]</a>    <span class="k">def</span> <span class="nf">set_headless</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headless</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the headless argument</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          headless: boolean value indicating to set the headless option</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;--headless&#39;</span><span class="p">,</span> <span class="s">&#39;--disable-gpu&#39;</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">headless</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">)</span> <span class="o">-</span> <span class="n">args</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Creates a capabilities with all the options that have been set and</span>
@@ -215,7 +236,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugger_address</span><span class="p">:</span>
             <span class="n">chrome_options</span><span class="p">[</span><span class="s">&quot;debuggerAddress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugger_address</span>
 
-        <span class="n">chrome</span><span class="p">[</span><span class="s">&quot;goog:chromeOptions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chrome_options</span>
+        <span class="n">chrome</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">chrome_options</span>
 
         <span class="k">return</span> <span class="n">chrome</span></div></div>
 </pre></div>
@@ -251,7 +272,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.7 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
