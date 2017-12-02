@@ -108,6 +108,14 @@ public class DefaultCapabilityMatcherTest {
   }
 
   @Test
+  public void canAddAttributeMatcher() {
+    matcher.addToConsider("my:capability");
+    Map<String, Object> requested = ImmutableMap.of("my:capability", "cheese");
+    assertTrue(matcher.matches(ImmutableMap.of("my:capability", "cheese"), requested));
+    assertFalse(matcher.matches(ImmutableMap.of("my:capability", "milk"), requested));
+  }
+
+  @Test
   public void nullEmptyValues() {
     Map<String, Object> requested = new HashMap<>();
     requested.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);

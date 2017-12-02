@@ -26,6 +26,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.safari.SafariOptions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -140,14 +141,21 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     }
   }
 
-  private final List<Validator> validators = ImmutableList.of(
-      new PlatformValidator(),
-      new AliasedPropertyValidator(CapabilityType.BROWSER_NAME, "browser"),
-      new AliasedPropertyValidator(CapabilityType.BROWSER_VERSION, CapabilityType.VERSION),
-      new SimplePropertyValidator(CapabilityType.APPLICATION_NAME),
-      new FirefoxSpecificValidator(),
-      new SafariSpecificValidator()
-  );
+  private final List<Validator> validators = new ArrayList<>();
+  {
+    validators.addAll(Arrays.asList(
+        new PlatformValidator(),
+        new AliasedPropertyValidator(CapabilityType.BROWSER_NAME, "browser"),
+        new AliasedPropertyValidator(CapabilityType.BROWSER_VERSION, CapabilityType.VERSION),
+        new SimplePropertyValidator(CapabilityType.APPLICATION_NAME),
+        new FirefoxSpecificValidator(),
+        new SafariSpecificValidator()
+    ));
+  }
+
+  public void addToConsider(String capabilityName) {
+    validators.add(new SimplePropertyValidator(capabilityName));
+  }
 
   public boolean matches(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
     return providedCapabilities != null && requestedCapabilities != null
