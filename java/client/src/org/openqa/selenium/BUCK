@@ -59,8 +59,6 @@ java_library(name = 'core',
     'internal/ElementScrollBehavior.java',
     'internal/HasIdentity.java',
     'internal/Locatable.java',
-    'internal/Lock.java',
-    'internal/SocketLock.java',
     'internal/WrapsDriver.java',
     'internal/WrapsElement.java',
   ] + glob([

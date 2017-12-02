@@ -34,7 +34,7 @@ java_test(name = 'marionette',
 )
 
 java_library(name = 'tests',
-  srcs = glob(['*Test.java', 'internal/*.java']) + [
+  srcs = glob(['*Test.java']) + [
     'FirefoxSpecificTests.java',
   ],
   deps = [
