@@ -117,7 +117,7 @@ from https://github.com/facebook/watchman
 ## Requirements
 
 * [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-* `java` and `jar` on the PATH
+* `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE)
 
 Although the build system is based on rake, it's **strongly advised**
 to rely on the version of JRuby in `third_party/` that is invoked by
