@@ -151,6 +151,14 @@ FirefoxDriver.prototype.close = function(respond) {
     allWindows.getNext();
   }
 
+  // Here we go!
+  try {
+    var browser = respond.session.getBrowser();
+    browser.contentWindow.close();
+  } catch (e) {
+    goog.log.warning(FirefoxDriver.LOG_, 'Error closing window', e);
+  }
+
   // If we're on a Mac we may close all the windows but not quit, so
   // ensure that we do actually quit. For Windows, if we don't quit,
   // Firefox will crash. So, whatever the case may be, if that's the last
@@ -160,20 +168,12 @@ FirefoxDriver.prototype.close = function(respond) {
 
     // Use an nsITimer to give the response time to go out.
     var event = function(timer) {
-        appService.quit(forceQuit);
+      appService.quit(forceQuit);
     };
 
     FirefoxDriver.nstimer = new fxdriver.Timer();
     FirefoxDriver.nstimer.setTimeout(event, 500);
     return;  // The client should catch the fact that the socket suddenly closes
-  }
-
-  // Here we go!
-  try {
-    var browser = respond.session.getBrowser();
-    browser.contentWindow.close();
-  } catch (e) {
-    goog.log.warning(FirefoxDriver.LOG_, 'Error closing window', e);
   }
 
   // Send the response so the client doesn't get a connection refused socket
