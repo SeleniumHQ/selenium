@@ -25,14 +25,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
-@RunWith(JUnit4.class)
 public class JsonTest {
 
   @Test
