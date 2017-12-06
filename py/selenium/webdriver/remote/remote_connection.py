@@ -200,6 +200,10 @@ class RemoteConnection(object):
             port = parsed_url.port or None
             if parsed_url.scheme == "https":
                 ip = parsed_url.hostname
+            elif port and not common_utils.is_connectable(port, parsed_url.hostname):
+                ip = None
+                LOGGER.info('Could not connect to port {} on host '
+                            '{}'.format(port, parsed_url.hostname))
             else:
                 ip = common_utils.find_connectable_ip(parsed_url.hostname,
                                                       port=port)
