@@ -25,6 +25,7 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
+        include DriverExtensions::HasNetworkConditions
         include DriverExtensions::HasTouchScreen
         include DriverExtensions::HasWebStorage
         include DriverExtensions::TakesScreenshot
@@ -44,6 +45,8 @@ module Selenium
 
           listener = opts.delete(:listener)
           @bridge = Remote::Bridge.handshake(opts)
+          @bridge.extend Bridge
+
           super(@bridge, listener: listener)
         end
 

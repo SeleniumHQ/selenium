@@ -15,34 +15,35 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'net/http'
-
-require 'selenium/webdriver/chrome/bridge'
-require 'selenium/webdriver/chrome/service'
-require 'selenium/webdriver/chrome/driver'
-require 'selenium/webdriver/chrome/profile'
-require 'selenium/webdriver/chrome/options'
-
 module Selenium
   module WebDriver
-    module Chrome
-      def self.driver_path=(path)
-        Platform.assert_executable path
-        @driver_path = path
-      end
+    module DriverExtensions
+      module HasNetworkConditions
 
-      def self.driver_path
-        @driver_path ||= nil
-      end
+        #
+        # Returns network conditions.
+        #
+        # @return [Hash]
+        #
 
-      def self.path=(path)
-        Platform.assert_executable path
-        @path = path
-      end
+        def network_conditions
+          @bridge.network_conditions
+        end
 
-      def self.path
-        @path ||= nil
-      end
-    end # Chrome
+        #
+        # Sets network conditions
+        #
+        # @param [Hash] conditions
+        # @option conditions [Integer] :latency
+        # @option conditions [Integer] :throughput
+        # @option conditions [Boolean] :offline
+        #
+
+        def network_conditions=(conditions)
+          @bridge.network_conditions = conditions
+        end
+
+      end # HasNetworkConditions
+    end # DriverExtensions
   end # WebDriver
 end # Selenium

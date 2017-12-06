@@ -15,34 +15,29 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'net/http'
-
-require 'selenium/webdriver/chrome/bridge'
-require 'selenium/webdriver/chrome/service'
-require 'selenium/webdriver/chrome/driver'
-require 'selenium/webdriver/chrome/profile'
-require 'selenium/webdriver/chrome/options'
-
 module Selenium
   module WebDriver
     module Chrome
-      def self.driver_path=(path)
-        Platform.assert_executable path
-        @driver_path = path
-      end
+      module Bridge
 
-      def self.driver_path
-        @driver_path ||= nil
-      end
+        COMMANDS = {
+          get_network_conditions: [:get, '/session/:session_id/chromium/network_conditions'.freeze],
+          set_network_conditions: [:post, '/session/:session_id/chromium/network_conditions'.freeze]
+        }.freeze
 
-      def self.path=(path)
-        Platform.assert_executable path
-        @path = path
-      end
+        def commands(command)
+          COMMANDS[command] || super
+        end
 
-      def self.path
-        @path ||= nil
-      end
+        def network_conditions
+          execute :get_network_conditions
+        end
+
+        def network_conditions=(conditions)
+          execute :set_network_conditions, {}, {network_conditions: conditions}
+        end
+
+      end # Bridge
     end # Chrome
   end # WebDriver
 end # Selenium
