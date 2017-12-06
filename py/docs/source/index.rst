@@ -21,7 +21,7 @@ The `selenium` package is used to automate web browser interaction from Python.
 | **IRC**:  | **#selenium** channel on freenode                                                    |
 +-----------+--------------------------------------------------------------------------------------+
 
-Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer, PhantomJS), as well as the Remote protocol.
+Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as well as the Remote protocol.
 
 Supported Python Versions
 =========================

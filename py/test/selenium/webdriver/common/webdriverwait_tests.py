@@ -301,9 +301,6 @@ def testExpectedConditionElementLocatedSelectionStateToBe(driver, pages):
     assert element.is_selected() is True
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
 def testExpectedConditionAlertIsPresent(driver, pages):
     pages.load('blank.html')
     with pytest.raises(TimeoutException):

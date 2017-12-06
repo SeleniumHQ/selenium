@@ -26,16 +26,12 @@ def reset_timeouts(driver):
     driver.set_page_load_timeout(300)
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='PhantomJS does not implement page load timeouts')
 def testShouldTimeoutOnPageLoadTakingTooLong(driver, pages):
     driver.set_page_load_timeout(0.01)
     with pytest.raises(TimeoutException):
         pages.load("simpleTest.html")
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='PhantomJS does not implement page load timeouts')
 def testClickShouldTimeout(driver, pages):
     pages.load("simpleTest.html")
     driver.set_page_load_timeout(0.01)

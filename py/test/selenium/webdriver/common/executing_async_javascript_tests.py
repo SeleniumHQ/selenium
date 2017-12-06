@@ -100,7 +100,6 @@ def testShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts(driver, pages):
     # assert list_[0] == list_[1]
 
 
-@pytest.mark.xfail_phantomjs(run=False)
 def testShouldTimeoutIfScriptDoesNotInvokeCallback(driver, pages):
     pages.load("ajaxy_page.html")
     with pytest.raises(TimeoutException):
@@ -108,7 +107,6 @@ def testShouldTimeoutIfScriptDoesNotInvokeCallback(driver, pages):
         driver.execute_async_script("return 1 + 2;")
 
 
-@pytest.mark.xfail_phantomjs(run=False)
 def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout(driver, pages):
     pages.load("ajaxy_page.html")
     with pytest.raises(TimeoutException):

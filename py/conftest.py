@@ -41,7 +41,6 @@ drivers = (
     'Firefox',
     'Ie',
     'Marionette',
-    'PhantomJS',
     'Remote',
     'Safari',
     'WebKitGTK',

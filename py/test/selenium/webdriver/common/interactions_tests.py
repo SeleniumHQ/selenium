@@ -110,8 +110,6 @@ def testDoubleClick(driver, pages):
     assert "DoubleClicked" == toDoubleClick.get_attribute('value')
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/ariya/phantomjs/issues/14005')
 def testContextClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
@@ -149,7 +147,6 @@ def testCannotMoveToANullLocator(driver, pages):
 
 @pytest.mark.xfail_marionette(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
-@pytest.mark.xfail_phantomjs
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 def testClickingOnFormElements(driver, pages):

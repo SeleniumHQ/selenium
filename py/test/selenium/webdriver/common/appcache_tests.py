@@ -23,7 +23,6 @@ from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_marionette(raises=WebDriverException)
-@pytest.mark.xfail_phantomjs(raises=WebDriverException)
 @pytest.mark.xfail_remote
 def testWeCanGetTheStatusOfTheAppCache(driver, pages):
     pages.load('html5Page')

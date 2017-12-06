@@ -254,8 +254,6 @@ def testIsElementDisplayed(driver, pages):
     assert not not_visible
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/466')
 def testMoveWindowPosition(driver, pages):
     pages.load("blank.html")
     loc = driver.get_window_position()

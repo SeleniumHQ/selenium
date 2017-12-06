@@ -95,7 +95,6 @@ def testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed(driver, pages):
         pass
 
 
-@pytest.mark.xfail_phantomjs(raises=InvalidElementStateException)
 def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="unclickable")

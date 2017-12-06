@@ -181,7 +181,6 @@ def testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex(driver, pages):
         driver.switch_to.frame(27)
 
 
-@pytest.mark.xfail_phantomjs(raises=WebDriverException)
 def testShouldBeAbleToSwitchToParentFrame(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(driver.find_element_by_name("fourth"))
@@ -190,7 +189,6 @@ def testShouldBeAbleToSwitchToParentFrame(driver, pages):
     assert driver.find_element(By.ID, "pageNumber").text == "1"
 
 
-@pytest.mark.xfail_phantomjs(raises=WebDriverException)
 def testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(driver.find_element_by_name("fourth"))
@@ -200,14 +198,12 @@ def testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame(driver, pages):
     assert driver.find_element(By.ID, "pageNumber").text == "11"
 
 
-@pytest.mark.xfail_phantomjs(raises=WebDriverException)
 def testSwitchingToParentFrameFromDefaultContextIsNoOp(driver, pages):
     pages.load("xhtmlTest.html")
     driver.switch_to.parent_frame()
     assert driver.title == "XHTML Test Page"
 
 
-@pytest.mark.xfail_phantomjs(raises=WebDriverException)
 def testShouldBeAbleToSwitchToParentFromAnIframe(driver, pages):
     pages.load("iframes.html")
     driver.switch_to.frame(0)
@@ -310,7 +306,6 @@ def testShouldBeAbleToFindElementsInIframesByXPath(driver, pages):
     assert element is not None
 
 
-@pytest.mark.xfail_phantomjs
 def testGetCurrentUrlReturnsTopLevelBrowsingContextUrl(driver, pages):
     pages.load("frameset.html")
     assert "frameset.html" in driver.current_url
@@ -318,7 +313,6 @@ def testGetCurrentUrlReturnsTopLevelBrowsingContextUrl(driver, pages):
     assert "frameset.html" in driver.current_url
 
 
-@pytest.mark.xfail_phantomjs
 def testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes(driver, pages):
     pages.load("iframes.html")
     assert "iframes.html" in driver.current_url
@@ -326,7 +320,6 @@ def testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes(driver, pages):
     assert "iframes.html" in driver.current_url
 
 
-@pytest.mark.xfail_phantomjs(raises=BadStatusLine)
 def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")
     driver.switch_to.frame(driver.find_element_by_id("iframe1"))
@@ -344,7 +337,6 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs(driver, pages
     WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
 
-@pytest.mark.xfail_phantomjs(raises=BadStatusLine)
 def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")
     iframe = 0
@@ -360,7 +352,6 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex
     WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
 
-@pytest.mark.xfail_phantomjs(raises=BadStatusLine)
 def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")
     iframe = driver.find_element(By.ID, "iframe1")
@@ -379,7 +370,6 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement
 
 
 @pytest.mark.xfail_chrome(raises=NoSuchElementException)
-@pytest.mark.xfail_phantomjs(raises=BadStatusLine)
 @pytest.mark.xfail_marionette(raises=WebDriverException,
                               reason='https://github.com/mozilla/geckodriver/issues/614')
 @pytest.mark.xfail_webkitgtk(raises=NoSuchElementException)
