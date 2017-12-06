@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
@@ -54,12 +55,13 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   class PlatformValidator implements Validator {
     @Override
     public Boolean apply(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
-      Object requested = requestedCapabilities.get(CapabilityType.PLATFORM);
+      Object requested = Optional.ofNullable(requestedCapabilities.get(CapabilityType.PLATFORM))
+          .orElse(requestedCapabilities.get(CapabilityType.PLATFORM_NAME));
       if (anything(requested)) {
         return true;
       }
-      Object provided = providedCapabilities.get(CapabilityType.PLATFORM);
-
+      Object provided = Optional.ofNullable(providedCapabilities.get(CapabilityType.PLATFORM))
+          .orElse(providedCapabilities.get(CapabilityType.PLATFORM_NAME));
       Platform requestedPlatform = extractPlatform(requested);
       if (requestedPlatform != null) {
         Platform providedPlatform = extractPlatform(provided);

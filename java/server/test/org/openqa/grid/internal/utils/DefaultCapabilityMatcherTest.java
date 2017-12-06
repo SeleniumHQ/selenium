@@ -28,7 +28,6 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
 
 import java.util.HashMap;
@@ -38,8 +37,9 @@ public class DefaultCapabilityMatcherTest {
 
   private DefaultCapabilityMatcher matcher = new DefaultCapabilityMatcher();
 
+  // TODO remove test when CapabilityType.PLATFORM is removed from code base
   @Test
-  public void smokeTest() {
+  public void smokeTestWithDeprecatedPlatformCapability() {
     Map<String, Object> firefox = ImmutableMap.of(
         CapabilityType.BROWSER_NAME, "B",
         CapabilityType.PLATFORM, "XP");
@@ -73,7 +73,42 @@ public class DefaultCapabilityMatcherTest {
   }
 
   @Test
-  public void genericPlatformMatchingTest() {
+  public void smokeTest() {
+    Map<String, Object> firefox = ImmutableMap.of(
+        CapabilityType.BROWSER_NAME, "B",
+        CapabilityType.PLATFORM_NAME, "XP");
+    Map<String, Object> tl = new HashMap<String, Object>() {{
+      put(CapabilityType.APPLICATION_NAME, "A");
+      put(CapabilityType.VERSION, null);
+    }};
+
+    Map<String, Object> firefox2 = ImmutableMap.of(
+        CapabilityType.BROWSER_NAME, "B",
+        CapabilityType.PLATFORM_NAME, "win7",
+        CapabilityType.VERSION, "3.6");
+    Map<String, Object> tl2 = ImmutableMap.of(
+        CapabilityType.APPLICATION_NAME, "A",
+        CapabilityType.VERSION, "8.5.100.7");
+
+    assertTrue(matcher.matches(tl, tl));
+    assertFalse(matcher.matches(tl, tl2));
+    assertTrue(matcher.matches(tl2, tl));
+    assertTrue(matcher.matches(tl2, tl2));
+
+    assertTrue(matcher.matches(firefox, firefox));
+    assertFalse(matcher.matches(firefox, firefox2));
+    assertFalse(matcher.matches(firefox2, firefox));
+    assertTrue(matcher.matches(firefox2, firefox2));
+
+    assertFalse(matcher.matches(tl, null));
+    assertFalse(matcher.matches(null, null));
+    assertFalse(matcher.matches(tl, firefox));
+    assertFalse(matcher.matches(firefox, tl2));
+  }
+
+  // TODO remove test when CapabilityType.PLATFORM is removed from code base
+  @Test
+  public void genericPlatformMatchingTestWithDeprecatedPlatformCapability() {
     Map<String, Object> requested = ImmutableMap.of(CapabilityType.PLATFORM, Platform.WINDOWS);
 
     assertTrue(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM, "WINDOWS"), requested));
@@ -85,7 +120,20 @@ public class DefaultCapabilityMatcherTest {
   }
 
   @Test
-  public void specificPlatformMatchingTest() {
+  public void genericPlatformMatchingTest() {
+    Map<String, Object> requested = ImmutableMap.of(CapabilityType.PLATFORM_NAME, Platform.WINDOWS);
+
+    assertTrue(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "WINDOWS"), requested));
+    assertTrue(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "xp"), requested));
+    assertTrue(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "windows VISTA"), requested));
+    assertTrue(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "windows 7"), requested));
+
+    assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "linux"), requested));
+  }
+
+  // TODO remove test when CapabilityType.PLATFORM is removed from code base
+  @Test
+  public void specificPlatformMatchingTestWithDeprecatedPlatformCapability() {
     Map<String, Object> requested = ImmutableMap.of(CapabilityType.PLATFORM, Platform.XP);
 
     assertTrue(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM, "xp"), requested));
@@ -98,13 +146,37 @@ public class DefaultCapabilityMatcherTest {
   }
 
   @Test
-  public void unknownPlatformMatchingTest() {
+  public void specificPlatformMatchingTest() {
+    Map<String, Object> requested = ImmutableMap.of(CapabilityType.PLATFORM_NAME, Platform.XP);
+
+    assertTrue(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "xp"), requested));
+
+    assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "WINDOWS"), requested));
+    assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "windows VISTA"), requested));
+    assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "windows 7"), requested));
+
+    assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "linux"), requested));
+  }
+
+  // TODO remove test when CapabilityType.PLATFORM is removed from code base
+  @Test
+  public void unknownPlatformMatchingTestWithDeprecatedPlatformCapability() {
     Map<String, Object> requested = ImmutableMap.of(CapabilityType.PLATFORM, "ms-dos");
 
     assertTrue(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM, "ms-dos"), requested));
 
     assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM, "windows"), requested));
     assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM, "PS/2"), requested));
+  }
+
+  @Test
+  public void unknownPlatformMatchingTest() {
+    Map<String, Object> requested = ImmutableMap.of(CapabilityType.PLATFORM_NAME, "ms-dos");
+
+    assertTrue(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "ms-dos"), requested));
+
+    assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "windows"), requested));
+    assertFalse(matcher.matches(ImmutableMap.of(CapabilityType.PLATFORM_NAME, "PS/2"), requested));
   }
 
   @Test
@@ -115,8 +187,9 @@ public class DefaultCapabilityMatcherTest {
     assertFalse(matcher.matches(ImmutableMap.of("my:capability", "milk"), requested));
   }
 
+  // TODO remove test when CapabilityType.PLATFORM is removed from code base
   @Test
-  public void nullEmptyValues() {
+  public void nullEmptyValuesWithDeprecatedPlatformCapability() {
     Map<String, Object> requested = new HashMap<>();
     requested.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     requested.put(CapabilityType.PLATFORM, null);
@@ -125,6 +198,21 @@ public class DefaultCapabilityMatcherTest {
     Map<String, Object> node = new HashMap<>();
     node.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     node.put(CapabilityType.PLATFORM, Platform.LINUX);
+    node.put(CapabilityType.VERSION, "3.6");
+
+    assertTrue(matcher.matches(node, requested));
+  }
+
+  @Test
+  public void nullEmptyValues() {
+    Map<String, Object> requested = new HashMap<>();
+    requested.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    requested.put(CapabilityType.PLATFORM_NAME, null);
+    requested.put(CapabilityType.VERSION, "");
+
+    Map<String, Object> node = new HashMap<>();
+    node.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    node.put(CapabilityType.PLATFORM_NAME, Platform.LINUX);
     node.put(CapabilityType.VERSION, "3.6");
 
     assertTrue(matcher.matches(node, requested));
@@ -183,8 +271,9 @@ public class DefaultCapabilityMatcherTest {
     assertTrue(matcher.matches(mNode, requested));
   }
 
+  // TODO remove test when CapabilityType.PLATFORM is removed from code base
   @Test
-  public void shouldMatchSafariTechnologyPreviewOnly() {
+  public void shouldMatchSafariTechnologyPreviewOnlyWithDeprecatedPlatformCapability() {
     Map<String, Object> requested = new SafariOptions().setUseTechnologyPreview(true).asMap();
 
     Map<String, Object> tpNode = new HashMap<>();
@@ -201,7 +290,25 @@ public class DefaultCapabilityMatcherTest {
   }
 
   @Test
-  public void shouldMatchRegularSafariOnly() {
+  public void shouldMatchSafariTechnologyPreviewOnly() {
+    Map<String, Object> requested = new SafariOptions().setUseTechnologyPreview(true).asMap();
+
+    Map<String, Object> tpNode = new HashMap<>();
+    tpNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
+    tpNode.put(CapabilityType.PLATFORM_NAME, Platform.MAC);
+    tpNode.put("technologyPreview", true);
+
+    Map<String, Object> regularNode = new HashMap<>();
+    regularNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
+    regularNode.put(CapabilityType.PLATFORM_NAME, Platform.MAC);
+
+    assertTrue(matcher.matches(tpNode, requested));
+    assertFalse(matcher.matches(regularNode, requested));
+  }
+
+  // TODO remove test when CapabilityType.PLATFORM is removed from code base
+  @Test
+  public void shouldMatchRegularSafariOnlyWithDeprecatedPlatformCapability() {
     Map<String, Object> requested = new SafariOptions().asMap();
 
     Map<String, Object> tpNode = new HashMap<>();
@@ -215,6 +322,49 @@ public class DefaultCapabilityMatcherTest {
 
     assertFalse(matcher.matches(tpNode, requested));
     assertTrue(matcher.matches(regularNode, requested));
+  }
+
+  @Test
+  public void shouldMatchRegularSafariOnly() {
+    Map<String, Object> requested = new SafariOptions().asMap();
+
+    Map<String, Object> tpNode = new HashMap<>();
+    tpNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
+    tpNode.put(CapabilityType.PLATFORM_NAME, Platform.MAC);
+    tpNode.put("technologyPreview", true);
+
+    Map<String, Object> regularNode = new HashMap<>();
+    regularNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
+    regularNode.put(CapabilityType.PLATFORM_NAME, Platform.MAC);
+
+    assertFalse(matcher.matches(tpNode, requested));
+    assertTrue(matcher.matches(regularNode, requested));
+  }
+
+  // TODO remove test when CapabilityType.PLATFORM is removed from code base
+  @Test
+  public void shouldMatchWhenRequestedHasDeprecatedPlatformCapability() {
+    Map<String, Object> requested = new FirefoxOptions().asMap();
+    requested.put(CapabilityType.PLATFORM, Platform.ANY);
+
+    Map<String, Object> node = new HashMap<>();
+    node.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    node.put(CapabilityType.PLATFORM_NAME, Platform.LINUX);
+
+    assertTrue(matcher.matches(node, requested));
+  }
+
+  // TODO remove test when CapabilityType.PLATFORM is removed from code base
+  @Test
+  public void shouldMatchWhenNodeHasDeprecatedPlatformCapability() {
+    Map<String, Object> requested = new FirefoxOptions().asMap();
+    requested.put(CapabilityType.PLATFORM_NAME, Platform.ANY);
+
+    Map<String, Object> node = new HashMap<>();
+    node.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    node.put(CapabilityType.PLATFORM, Platform.LINUX);
+
+    assertTrue(matcher.matches(node, requested));
   }
 
 }
