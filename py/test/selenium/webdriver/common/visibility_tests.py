@@ -15,12 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
-
 from selenium.common.exceptions import (
     ElementNotVisibleException,
-    ElementNotInteractableException,
-    InvalidElementStateException)
+    ElementNotInteractableException)
 from selenium.webdriver.common.by import By
 
 

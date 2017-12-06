@@ -15,11 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-try:
-    from http.client import BadStatusLine
-except ImportError:
-    from httplib import BadStatusLine
-
 import pytest
 
 from selenium.common.exceptions import (
