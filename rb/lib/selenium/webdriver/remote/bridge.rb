@@ -40,13 +40,13 @@ module Selenium
         # @return [OSS:Bridge, W3C::Bridge]
         #
         def self.handshake(**opts)
-          desired_capabilities = opts.delete(:desired_capabilities)
+          desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.new }
 
           if desired_capabilities.is_a?(Symbol)
-            unless Remote::Capabilities.respond_to?(desired_capabilities)
+            unless Capabilities.respond_to?(desired_capabilities)
               raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
             end
-            desired_capabilities = Remote::Capabilities.__send__(desired_capabilities)
+            desired_capabilities = Capabilities.__send__(desired_capabilities)
           end
 
           bridge = new(opts)
