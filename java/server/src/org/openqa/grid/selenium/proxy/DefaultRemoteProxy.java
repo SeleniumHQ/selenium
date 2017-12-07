@@ -71,6 +71,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     unregisterDelay = config.unregisterIfStillDownAfter != null ? config.unregisterIfStillDownAfter : DEFAULT_UNREGISTER_DELAY;
     downPollingLimit = config.downPollingLimit != null ? config.downPollingLimit : DEFAULT_DOWN_POLLING_LIMIT;
 
+    new JMXHelper().unregister(this.getObjectName());
     new JMXHelper().register(this);
   }
 

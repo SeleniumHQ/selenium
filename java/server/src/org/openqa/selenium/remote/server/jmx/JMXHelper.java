@@ -41,8 +41,7 @@ public class JMXHelper {
       MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
       try {
         mbs.unregisterMBean(objectName);
-      } catch (Throwable t) {
-        t.printStackTrace();
+      } catch (Throwable ignore) {
       }
     }
   }
