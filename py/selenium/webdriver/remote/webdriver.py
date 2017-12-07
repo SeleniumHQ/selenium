@@ -739,7 +739,6 @@ class WebDriver(object):
         """
         :Returns:
             - SwitchTo: an object containing all options to switch focus into
-        into:
 
         :Usage:
             element = driver.switch_to.active_element
