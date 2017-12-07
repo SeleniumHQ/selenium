@@ -331,12 +331,12 @@ class ActionChains(object):
          - on_element: The element to mouse up.
            If None, releases on current mouse position.
         """
+        if on_element:
+                self.move_to_element(on_element)
         if self._driver.w3c:
             self.w3c_actions.pointer_action.release()
             self.w3c_actions.key_action.pause()
         else:
-            if on_element:
-                self.move_to_element(on_element)
             self._actions.append(lambda: self._driver.execute(Command.MOUSE_UP, {}))
         return self
 
