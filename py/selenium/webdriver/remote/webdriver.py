@@ -198,7 +198,7 @@ class WebDriver(object):
         """Returns the name of the underlying browser for this instance.
 
         :Usage:
-         - driver.name
+            name = driver.name
         """
         if 'browserName' in self.capabilities:
             return self.capabilities['browserName']
@@ -327,7 +327,7 @@ class WebDriver(object):
         """Returns the title of the current page.
 
         :Usage:
-            driver.title
+            title = driver.title
         """
         resp = self.execute(Command.GET_TITLE)
         return resp['value'] if resp['value'] is not None else ""
@@ -338,8 +338,14 @@ class WebDriver(object):
         :Args:
          - id\_ - The id of the element to be found.
 
+        :Returns:
+         - WebElement - the element if it was found
+
+        :Raises:
+         - NoSuchElementException - if the element wasn't found
+
         :Usage:
-            driver.find_element_by_id('foo')
+            element = driver.find_element_by_id('foo')
         """
         return self.find_element(by=By.ID, value=id_)
 
@@ -350,8 +356,12 @@ class WebDriver(object):
         :Args:
          - id\_ - The id of the elements to be found.
 
+        :Returns:
+         - list of WebElement - a list with elements if any was found.  An
+           empty list if not
+
         :Usage:
-            driver.find_elements_by_id('foo')
+            elements = driver.find_elements_by_id('foo')
         """
         return self.find_elements(by=By.ID, value=id_)
 
@@ -362,8 +372,14 @@ class WebDriver(object):
         :Args:
          - xpath - The xpath locator of the element to find.
 
+        :Returns:
+         - WebElement - the element if it was found
+
+        :Raises:
+         - NoSuchElementException - if the element wasn't found
+
         :Usage:
-            driver.find_element_by_xpath('//div/td[1]')
+            element = driver.find_element_by_xpath('//div/td[1]')
         """
         return self.find_element(by=By.XPATH, value=xpath)
 
@@ -374,8 +390,12 @@ class WebDriver(object):
         :Args:
          - xpath - The xpath locator of the elements to be found.
 
+        :Returns:
+         - list of WebElement - a list with elements if any was found.  An
+           empty list if not
+
         :Usage:
-            driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
+            elements = driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
         """
         return self.find_elements(by=By.XPATH, value=xpath)
 
@@ -386,8 +406,14 @@ class WebDriver(object):
         :Args:
          - link_text: The text of the element to be found.
 
+        :Returns:
+         - WebElement - the element if it was found
+
+        :Raises:
+         - NoSuchElementException - if the element wasn't found
+
         :Usage:
-            driver.find_element_by_link_text('Sign In')
+            element = driver.find_element_by_link_text('Sign In')
         """
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
@@ -398,8 +424,12 @@ class WebDriver(object):
         :Args:
          - link_text: The text of the elements to be found.
 
+        :Returns:
+         - list of webelement - a list with elements if any was found.  an
+           empty list if not
+
         :Usage:
-            driver.find_elements_by_link_text('Sign In')
+            elements = driver.find_elements_by_link_text('Sign In')
         """
         return self.find_elements(by=By.LINK_TEXT, value=text)
 
@@ -410,8 +440,14 @@ class WebDriver(object):
         :Args:
          - link_text: The text of the element to partially match on.
 
+        :Returns:
+         - WebElement - the element if it was found
+
+        :Raises:
+         - NoSuchElementException - if the element wasn't found
+
         :Usage:
-            driver.find_element_by_partial_link_text('Sign')
+            element = driver.find_element_by_partial_link_text('Sign')
         """
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
@@ -422,8 +458,12 @@ class WebDriver(object):
         :Args:
          - link_text: The text of the element to partial match on.
 
+        :Returns:
+         - list of webelement - a list with elements if any was found.  an
+           empty list if not
+
         :Usage:
-            driver.find_element_by_partial_link_text('Sign')
+            elements = driver.find_elements_by_partial_link_text('Sign')
         """
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
@@ -434,8 +474,14 @@ class WebDriver(object):
         :Args:
          - name: The name of the element to find.
 
+        :Returns:
+         - WebElement - the element if it was found
+
+        :Raises:
+         - NoSuchElementException - if the element wasn't found
+
         :Usage:
-            driver.find_element_by_name('foo')
+            element = driver.find_element_by_name('foo')
         """
         return self.find_element(by=By.NAME, value=name)
 
@@ -446,8 +492,12 @@ class WebDriver(object):
         :Args:
          - name: The name of the elements to find.
 
+        :Returns:
+         - list of webelement - a list with elements if any was found.  an
+           empty list if not
+
         :Usage:
-            driver.find_elements_by_name('foo')
+            elements = driver.find_elements_by_name('foo')
         """
         return self.find_elements(by=By.NAME, value=name)
 
@@ -456,10 +506,16 @@ class WebDriver(object):
         Finds an element by tag name.
 
         :Args:
-         - name: The tag name of the element to find.
+         - name - name of html tag (eg: h1, a, span)
+
+        :Returns:
+         - WebElement - the element if it was found
+
+        :Raises:
+         - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            driver.find_element_by_tag_name('foo')
+            element = driver.find_element_by_tag_name('h1')
         """
         return self.find_element(by=By.TAG_NAME, value=name)
 
@@ -468,10 +524,14 @@ class WebDriver(object):
         Finds elements by tag name.
 
         :Args:
-         - name: The tag name the use when finding elements.
+         - name - name of html tag (eg: h1, a, span)
+
+        :Returns:
+         - list of WebElement - a list with elements if any was found.  An
+           empty list if not
 
         :Usage:
-            driver.find_elements_by_tag_name('foo')
+            elements = driver.find_elements_by_tag_name('h1')
         """
         return self.find_elements(by=By.TAG_NAME, value=name)
 
@@ -482,8 +542,14 @@ class WebDriver(object):
         :Args:
          - name: The class name of the element to find.
 
+        :Returns:
+         - WebElement - the element if it was found
+
+        :Raises:
+         - NoSuchElementException - if the element wasn't found
+
         :Usage:
-            driver.find_element_by_class_name('foo')
+            element = driver.find_element_by_class_name('foo')
         """
         return self.find_element(by=By.CLASS_NAME, value=name)
 
@@ -494,8 +560,12 @@ class WebDriver(object):
         :Args:
          - name: The class name of the elements to find.
 
+        :Returns:
+         - list of WebElement - a list with elements if any was found.  An
+           empty list if not
+
         :Usage:
-            driver.find_elements_by_class_name('foo')
+            elements = driver.find_elements_by_class_name('foo')
         """
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
@@ -504,10 +574,16 @@ class WebDriver(object):
         Finds an element by css selector.
 
         :Args:
-         - css_selector: The css selector to use when finding elements.
+         - css_selector - CSS selector string, ex: 'a.nav#home'
+
+        :Returns:
+         - WebElement - the element if it was found
+
+        :Raises:
+         - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            driver.find_element_by_css_selector('#foo')
+            element = driver.find_element_by_css_selector('#foo')
         """
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
@@ -516,10 +592,14 @@ class WebDriver(object):
         Finds elements by css selector.
 
         :Args:
-         - css_selector: The css selector to use when finding elements.
+         - css_selector - CSS selector string, ex: 'a.nav#home'
+
+        :Returns:
+         - list of WebElement - a list with elements if any was found.  An
+           empty list if not
 
         :Usage:
-            driver.find_elements_by_css_selector('.foo')
+            elements = driver.find_elements_by_css_selector('.foo')
         """
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
@@ -656,6 +736,21 @@ class WebDriver(object):
 
     @property
     def switch_to(self):
+        """
+        :Returns:
+            - SwitchTo: an object containing all options to switch focus into
+        into:
+
+        :Usage:
+            element = driver.switch_to.active_element
+            alert = driver.switch_to.alert
+            driver.switch_to.default_content()
+            driver.switch_to.frame('frame_name')
+            driver.switch_to.frame(1)
+            driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
+            driver.switch_to.parent_frame()
+            driver.switch_to.window('main')
+        """
         return self._switch_to
 
     # Target Locators
