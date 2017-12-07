@@ -612,7 +612,7 @@ class WebDriver(object):
          - \*args: Any applicable arguments for your JavaScript.
 
         :Usage:
-            driver.execute_script('document.title')
+            driver.execute_script('return document.title')
         """
         converted_args = list(args)
         command = None
@@ -634,7 +634,7 @@ class WebDriver(object):
          - \*args: Any applicable arguments for your JavaScript.
 
         :Usage:
-            driver.execute_async_script('document.title')
+            driver.execute_async_script('return document.title')
         """
         converted_args = list(args)
         if self.w3c:
