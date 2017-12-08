@@ -31,7 +31,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -569,12 +568,11 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Ignore(SAFARI)
   @Ignore(value = FIREFOX, issue = "540")
   @Ignore(HTMLUNIT)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/914")
   public void shouldHandleRecursiveStructures() {
     driver.get(pages.simpleTestPage);
 
-    Object value = executeScript("var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1");
-
-    assertTrue(value instanceof Map);
+    Throwable t = catchThrowable(() -> executeScript(
+        "var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1"));
+    assertThat(t, instanceOf(JavascriptException.class));
   }
 }
