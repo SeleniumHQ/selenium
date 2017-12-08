@@ -40,6 +40,7 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -285,8 +286,7 @@ public class ChromeOptions extends MutableCapabilities {
 
     options.put("args", ImmutableList.copyOf(args));
 
-    options.put(
-        "extensions",
+    List<String> processedExtensionFiles =
         extensionFiles.stream()
             .map(file -> {
               try {
@@ -295,7 +295,11 @@ public class ChromeOptions extends MutableCapabilities {
                 throw new SessionNotCreatedException(e.getMessage(), e);
               }
             })
-            .collect(ImmutableList.toImmutableList()));
+            .collect(ImmutableList.toImmutableList());
+    List<String> allExtensions = new ArrayList<>();
+    allExtensions.addAll(extensions);
+    allExtensions.addAll(processedExtensionFiles);
+    options.put("extensions", ImmutableList.copyOf(allExtensions));
 
     toReturn.put(CAPABILITY, options);
 
