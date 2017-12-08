@@ -17,7 +17,6 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
-import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -123,32 +122,13 @@ public class GridNodeConfiguration extends GridConfiguration {
    * Default DesiredCapabilites
    */
   static final class DefaultDesiredCapabilitiesBuilder {
-    static final List<MutableCapabilities> getCapabilities() {
-      DesiredCapabilities chrome = new DesiredCapabilities();
-      chrome.setBrowserName("chrome");
-      chrome.setCapability("maxInstances", 5);
-      chrome.setCapability("seleniumProtocol", "WebDriver");
-
-      DesiredCapabilities firefox = new DesiredCapabilities();
-      firefox.setBrowserName("firefox");
-      firefox.setCapability("marionette", true);
-      firefox.setCapability("maxInstances", 5);
-      firefox.setCapability("seleniumProtocol", "WebDriver");
-
-      DesiredCapabilities ie = new DesiredCapabilities();
-      ie.setBrowserName("internet explorer");
-      ie.setPlatform(Platform.WINDOWS);
-      ie.setCapability("maxInstances", 1);
-      ie.setCapability("seleniumProtocol", "WebDriver");
-
-      DesiredCapabilities safari = new DesiredCapabilities();
-      safari.setBrowserName("safari");
-      safari.setCapability("technologyPreview", false);
-      safari.setPlatform(Platform.MAC);
-      safari.setCapability("maxInstances", 1);
-      safari.setCapability("seleniumProtocol", "WebDriver");
-
-      return Lists.newArrayList(chrome, firefox, ie, safari);
+    static List<MutableCapabilities> getCapabilities() {
+      JsonObject defaults = JSONConfigurationUtils.loadJSON(DEFAULT_NODE_CONFIG_FILE);
+      List<MutableCapabilities> caps = new ArrayList<>();
+      for (JsonElement el : defaults.getAsJsonArray("capabilities")) {
+        caps.add(new Json().toType(el, DesiredCapabilities.class));
+      }
+      return caps;
     }
   }
 
