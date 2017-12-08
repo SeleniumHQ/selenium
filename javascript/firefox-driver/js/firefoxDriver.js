@@ -306,7 +306,11 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
         }
 
         var result = unwrappedDoc['__webdriver_evaluate']['result'];
-        respond.value = Utils.wrapResult(result, doc);
+        try {
+          respond.value = Utils.wrapResult(result, doc);
+        } catch (e) {
+          respond.sendError(new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR, e));
+        }
         respond.status = unwrappedDoc['__webdriver_evaluate']['code'];
 
         // I have no idea why this started happening. Roll on m-day
