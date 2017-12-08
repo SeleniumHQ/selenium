@@ -12,14 +12,12 @@ git:
 _bindings:
   java: &java
     language: java
-    jdk: oraclejdk8
   python: &python
     language: python
-    python: "2.7"
+    python: 2.7
   ruby: &ruby
     language: ruby
     rvm: 2.0.0-p648
-    jdk: oraclejdk8
 
 _browsers:
   firefox: &firefox-latest
@@ -36,6 +34,9 @@ _browsers:
       apt:
         packages:
           - google-chrome-stable
+  safari: &safari
+    os: osx
+    osx_image: xcode9.1
 
 matrix:
   fast_finish: true
@@ -55,97 +56,97 @@ matrix:
   include:
     - env: TASK=build
       <<: *java
-    - env: TASK=//javascript/atoms:atoms
-      <<: *java
-    - env: TASK=//javascript/webdriver:all_js
-      <<: *java
-    - env: TASK=//javascript/ie-driver:atoms
-      <<: *java
-    - env: TASK=//javascript/chrome-driver:atoms
-      <<: *java
-    - env: TASK="//javascript/android-atoms:atoms ios_driver"
-      <<: *java
-    - env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
-      <<: *java
-    - env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
-      <<: *java
-      <<: *chrome
-    - env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
-      <<: *java
-      <<: *chrome
-    - env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
-      <<: *java
-      <<: *chrome
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run"
-      <<: *java
-      <<: *firefox-latest
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
-      <<: *java
-      <<: *firefox-latest
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run"
-      <<: *java
-      <<: *firefox-latest
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
-      <<: *java
-      <<: *firefox-latest
-    - env: TASK=test_firefox
-      <<: *java
-      <<: *firefox-esr
-    - env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
-      <<: *java
-      <<: *firefox-nightly
-    - env: TASK=test_java_small_tests
-      <<: *java
-    - env: MARIONETTE=1 TASK=test_grid
-      <<: *java
-      <<: *firefox-nightly
-    - env: TASK=test_htmlunit
-      <<: *java
-    - env: TASK=javadocs
-      <<: *java
-    - env: TOXENV=flake8
-      <<: *python
-    - env: TOXENV=docs
-      <<: *python
-    - env: TOXENV=py27-unit
-      <<: *python
-    - env: CHROME=1 TOXENV=py27-chrome
-      <<: *python
-      <<: *chrome
-    - env: TOXENV=py27-firefox
-      <<: *python
-      <<: *firefox-esr
-    - env: TOXENV=py27-remote
-      <<: *python
-      <<: *firefox-esr
-    - env: MARIONETTE=1 TOXENV=py27-marionette
-      <<: *python
-      <<: *firefox-nightly
-    - env: TOXENV=flake8
-      <<: *python
-      python: 3.6
-    - env: TOXENV=docs
-      <<: *python
-      python: 3.6
-    - env: TOXENV=py36-unit
-      <<: *python
-      python: 3.6
-    - env: CHROME=1 TOXENV=py36-chrome
-      <<: *python
-      <<: *chrome
-      python: 3.6
-    - env: TOXENV=py36-firefox
-      <<: *python
-      <<: *firefox-esr
-      python: 3.6
-    - env: TOXENV=py36-remote
-      <<: *python
-      <<: *firefox-esr
-      python: 3.6
-    - env: MARIONETTE=1 TOXENV=py36-marionette
-      <<: *python
-      <<: *firefox-nightly
-      python: 3.6
+    # - env: TASK=//javascript/atoms:atoms
+    #   <<: *java
+    # - env: TASK=//javascript/webdriver:all_js
+    #   <<: *java
+    # - env: TASK=//javascript/ie-driver:atoms
+    #   <<: *java
+    # - env: TASK=//javascript/chrome-driver:atoms
+    #   <<: *java
+    # - env: TASK="//javascript/android-atoms:atoms ios_driver"
+    #   <<: *java
+    # - env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
+    #   <<: *java
+    # - env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
+    #   <<: *java
+    #   <<: *chrome
+    # - env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
+    #   <<: *java
+    #   <<: *chrome
+    # - env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
+    #   <<: *java
+    #   <<: *chrome
+    # - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run"
+    #   <<: *java
+    #   <<: *firefox-latest
+    # - env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
+    #   <<: *java
+    #   <<: *firefox-latest
+    # - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run"
+    #   <<: *java
+    #   <<: *firefox-latest
+    # - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
+    #   <<: *java
+    #   <<: *firefox-latest
+    # - env: TASK=test_firefox
+    #   <<: *java
+    #   <<: *firefox-esr
+    # - env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
+    #   <<: *java
+    #   <<: *firefox-nightly
+    # - env: TASK=test_java_small_tests
+    #   <<: *java
+    # - env: MARIONETTE=1 TASK=test_grid
+    #   <<: *java
+    #   <<: *firefox-nightly
+    # - env: TASK=test_htmlunit
+    #   <<: *java
+    # - env: TASK=javadocs
+    #   <<: *java
+    # - env: TOXENV=flake8
+    #   <<: *python
+    # - env: TOXENV=docs
+    #   <<: *python
+    # - env: TOXENV=py27-unit
+    #   <<: *python
+    # - env: CHROME=1 TOXENV=py27-chrome
+    #   <<: *python
+    #   <<: *chrome
+    # - env: TOXENV=py27-firefox
+    #   <<: *python
+    #   <<: *firefox-esr
+    # - env: TOXENV=py27-remote
+    #   <<: *python
+    #   <<: *firefox-esr
+    # - env: MARIONETTE=1 TOXENV=py27-marionette
+    #   <<: *python
+    #   <<: *firefox-nightly
+    # - env: TOXENV=flake8
+    #   <<: *python
+    #   python: 3.6
+    # - env: TOXENV=docs
+    #   <<: *python
+    #   python: 3.6
+    # - env: TOXENV=py36-unit
+    #   <<: *python
+    #   python: 3.6
+    # - env: CHROME=1 TOXENV=py36-chrome
+    #   <<: *python
+    #   <<: *chrome
+    #   python: 3.6
+    # - env: TOXENV=py36-firefox
+    #   <<: *python
+    #   <<: *firefox-esr
+    #   python: 3.6
+    # - env: TOXENV=py36-remote
+    #   <<: *python
+    #   <<: *firefox-esr
+    #   python: 3.6
+    # - env: MARIONETTE=1 TOXENV=py36-marionette
+    #   <<: *python
+    #   <<: *firefox-nightly
+    #   python: 3.6
     - env: TASK=//rb:unit-test
       <<: *ruby
     - env: CHROME=1 TASK=//rb:chrome-test
@@ -157,6 +158,9 @@ matrix:
     - env: TASK=//rb:ff-esr-test
       <<: *ruby
       <<: *firefox-esr
+    - env: SAFARI=1 TASK=//rb:safari-test
+      <<: *ruby
+      <<: *safari
     - env: CHROME=1 TASK=//rb:remote-chrome-test
       <<: *ruby
       <<: *chrome
@@ -166,6 +170,9 @@ matrix:
     - env: TASK=//rb:remote-ff-esr-test
       <<: *ruby
       <<: *firefox-esr
+    - env: SAFARI=1 TASK=//rb:remote-safari-test
+      <<: *ruby
+      <<: *safari
     - env: TASK=//rb:docs
       <<: *ruby
     - env: TASK=//rb:lint

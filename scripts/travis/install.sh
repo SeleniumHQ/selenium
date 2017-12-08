@@ -13,6 +13,10 @@ if [[ ! -z $MARIONETTE ]]; then
   chmod +x geckodriver && sudo mv geckodriver /usr/local/bin
 fi
 
+if [[ ! -z $SAFARI ]]; then
+  sudo safaridriver --enable
+fi
+
 if [[ ! -z $PHANTOMJS ]]; then
   phantomjs -v
 fi
