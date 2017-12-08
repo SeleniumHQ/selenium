@@ -18,11 +18,6 @@
 from selenium.webdriver import Firefox
 
 
-def test_double_close(driver):
-    driver.close()
-    driver.close()
-
-
 def test_we_can_launch_multiple_firefox_instances(capabilities):
     driver1 = Firefox(capabilities=capabilities)
     driver2 = Firefox(capabilities=capabilities)
