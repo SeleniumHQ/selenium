@@ -59,7 +59,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -158,9 +157,9 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertTrue("result was: " + result + " (" + result.getClass() + ")", result instanceof Map);
     Map<String, Object> map = (Map<String, Object>) result;
 
-    Map<String, Object> expected = new HashMap<>();
-    expected.put("abc", "123");
-    expected.put("tired", false);
+    Map<String, Object> expected = ImmutableMap.of(
+      "abc", "123",
+      "tired", false);
 
     // Cannot do an exact match; Firefox 4 inserts a few extra keys in our object; this is OK, as
     // long as the expected keys are there.
@@ -177,18 +176,13 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
     driver.get(pages.javascriptPage);
 
-    Map<String, Object> expectedResult = new HashMap<String, Object>() {
-      {
-        put("foo", "bar");
-        put("baz", Arrays.asList("a", "b", "c"));
-        put("person", new HashMap<String, String>() {
-          {
-            put("first", "John");
-            put("last", "Doe");
-          }
-        });
-      }
-    };
+    Map<String, Object> expectedResult = ImmutableMap.of(
+        "foo", "bar",
+        "baz", Arrays.asList("a", "b", "c"),
+        "person", ImmutableMap.of(
+            "first", "John",
+            "last", "Doe")
+    );
 
     Object result = executeScript(
         "return {foo:'bar', baz: ['a', 'b', 'c'], " +
@@ -508,11 +502,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
     driver.get(pages.simpleTestPage);
 
-    Map<String, Object> args = new HashMap<String, Object>() {
-      {
-        put("key", Arrays.asList("a", new Object[]{"zero", 1, true, 3.14159, false, el}, "c"));
-      }
-    };
+    Map<String, Object> args = ImmutableMap.of(
+        "key", Arrays.asList("a", new Object[]{"zero", 1, true, 3.14159, false, el}, "c"));
 
     Throwable t = catchThrowable(() -> executeScript("return undefined;", args));
     assertThat(t, instanceOf(StaleElementReferenceException.class));
