@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 /**
  * Class to manage options specific to {@link ChromeDriver}.
@@ -287,15 +288,17 @@ public class ChromeOptions extends MutableCapabilities {
 
     options.put(
         "extensions",
-        extensionFiles.stream()
-            .map(file -> {
-              try {
-                return Base64.getEncoder().encodeToString(Files.toByteArray(file));
-              } catch (IOException e) {
-                throw new SessionNotCreatedException(e.getMessage(), e);
-              }
-            })
-            .collect(ImmutableList.toImmutableList()));
+        Stream.concat(
+            extensionFiles.stream()
+                .map(file -> {
+                  try {
+                    return Base64.getEncoder().encodeToString(Files.toByteArray(file));
+                  } catch (IOException e) {
+                    throw new SessionNotCreatedException(e.getMessage(), e);
+                  }
+                }),
+            extensions.stream()
+        ).collect(ImmutableList.toImmutableList()));
 
     toReturn.put(CAPABILITY, options);
 
