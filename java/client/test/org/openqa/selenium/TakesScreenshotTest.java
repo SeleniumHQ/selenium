@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -139,6 +140,29 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                                                          /* grid Y size */ 6);
 
     compareColors(expectedColors, actualColors);
+  }
+
+  @Test
+  @Ignore(value = CHROME)
+  @Ignore(value = FIREFOX)
+  @Ignore(value = IE)
+  @Ignore(value = SAFARI)
+  public void testShouldCaptureScreenshotOfAnElement() throws Exception {
+    driver.get(appServer.whereIs("screen/screen.html"));
+    WebElement element = driver.findElement(By.id("cell11"));
+
+    byte[] imageData = element.getScreenshotAs(OutputType.BYTES);
+    assertTrue(imageData != null);
+    assertTrue(imageData.length > 0);
+    BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
+    assertTrue(image != null);
+
+    Raster raster = image.getRaster();
+    String hex = String.format("#%02x%02x%02x",
+                               (raster.getSample(1, 1, 0)),
+                               (raster.getSample(1, 1, 1)),
+                               (raster.getSample(1, 1, 2)));
+    assertEquals("#0f12f7", hex);
   }
 
   @Test

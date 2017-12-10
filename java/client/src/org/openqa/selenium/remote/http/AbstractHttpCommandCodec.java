@@ -153,7 +153,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     defineCommand(UPLOAD_FILE, post("/session/:sessionId/file"));
     defineCommand(SCREENSHOT, get("/session/:sessionId/screenshot"));
-    defineCommand(ELEMENT_SCREENSHOT, get("/session/:sessionId/screenshot/:id"));
+    defineCommand(ELEMENT_SCREENSHOT, get("/session/:sessionId/element/:id/screenshot"));
     defineCommand(GET_TITLE, get("/session/:sessionId/title"));
 
     defineCommand(FIND_ELEMENT, post("/session/:sessionId/element"));
