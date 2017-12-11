@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -57,13 +56,13 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
@@ -122,7 +121,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     // TODO freynaud : registry to return a copy of proxies ?
     List<String> nodes = new ArrayList<>();
     for (RemoteProxy proxy : getRegistry().getAllProxies()) {
-      HtmlRenderer beta = new WebProxyHtmlRendererBeta(proxy);
+      HtmlRenderer beta = proxy.getHtmlRender();
       nodes.add(beta.renderSummary());
     }
 
