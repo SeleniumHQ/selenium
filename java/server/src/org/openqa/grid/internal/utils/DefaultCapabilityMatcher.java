@@ -115,8 +115,8 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
       if (! "firefox".equals(requestedCapabilities.get(CapabilityType.BROWSER_NAME))) {
         return true;
       }
-      FirefoxOptions requestedOptions = new FirefoxOptions(new ImmutableCapabilities(requestedCapabilities));
-      if (requestedOptions.isLegacy()) {
+      if (requestedCapabilities.get("marionette") != null
+          && !Boolean.valueOf(requestedCapabilities.get("marionette").toString())) {
         return providedCapabilities.get("marionette") != null
                && !Boolean.valueOf(providedCapabilities.get("marionette").toString());
       } else {
