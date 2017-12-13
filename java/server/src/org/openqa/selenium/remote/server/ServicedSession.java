@@ -258,7 +258,8 @@ public class ServicedSession implements ActiveSession {
             new SessionId(response.getSessionId()),
             (Map<String, Object>) response.getValue()));
       } catch (IOException | IllegalStateException | NullPointerException e) {
-        throw new SessionNotCreatedException("Cannot establish new session", e);
+        e.printStackTrace();
+        throw new SessionNotCreatedException("Cannot establish new session: " + e.getMessage(), e);
       }
     }
 
