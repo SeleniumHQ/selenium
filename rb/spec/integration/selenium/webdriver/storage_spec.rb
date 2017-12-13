@@ -27,7 +27,8 @@ module Selenium
             storage.clear
           end
 
-          it 'can get and set items' do
+          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2177
+          it 'can get and set items', except: {browser: :chrome} do
             expect(storage).to be_empty
             storage['foo'] = 'bar'
             expect(storage['foo']).to eq('bar')
@@ -47,7 +48,8 @@ module Selenium
             expect(storage.keys).to include('foo1', 'foo2', 'foo3')
           end
 
-          it 'can clear all items' do
+          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2177
+          it 'can clear all items', except: {browser: :chrome} do
             storage['foo1'] = 'bar1'
             storage['foo2'] = 'bar2'
             storage['foo3'] = 'bar3'
