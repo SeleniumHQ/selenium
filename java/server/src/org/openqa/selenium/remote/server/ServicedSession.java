@@ -63,12 +63,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 @ManagedService
 public class ServicedSession implements ActiveSession {
+
+  private static Logger log = Logger.getLogger(ActiveSession.class.getName());
 
   private final DriverService service;
   private final SessionId id;
@@ -104,7 +108,6 @@ public class ServicedSession implements ActiveSession {
 
     new JMXHelper().register(this);
   }
-
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
@@ -258,7 +261,7 @@ public class ServicedSession implements ActiveSession {
             new SessionId(response.getSessionId()),
             (Map<String, Object>) response.getValue()));
       } catch (IOException | IllegalStateException | NullPointerException e) {
-        e.printStackTrace();
+        log.log(Level.WARNING, e.getMessage(), e);
         throw new SessionNotCreatedException("Cannot establish new session: " + e.getMessage(), e);
       }
     }
