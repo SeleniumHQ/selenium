@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
@@ -30,10 +31,12 @@ import com.google.gson.JsonParser;
 
 import com.beust.jcommander.JCommander;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.Arrays;
 
@@ -146,7 +149,6 @@ public class GridNodeConfigurationTest {
     assertEquals(expected.nodeConfigFile, actual.nodeConfigFile);
     assertEquals(expected.unregisterIfStillDownAfter, actual.unregisterIfStillDownAfter);
 
-
     assertEquals(expected.cleanUpCycle, actual.cleanUpCycle);
     assertEquals(expected.host, actual.host);
     assertEquals(expected.maxSession, actual.maxSession);
@@ -217,16 +219,74 @@ public class GridNodeConfigurationTest {
 
   @Test
   public void testGetHubHost() {
+    final String[] args = new String[]{"-hubHost", "dummyhost", "-hubPort", "1234"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    gnc.hub = "http://dummyhost:4444/wd/hub";
+    new JCommander(gnc, args);
     assertEquals("dummyhost", gnc.getHubHost());
   }
 
   @Test
-  public void testGetHubPort() {
+  public void testGetHubHostFromHubOption() {
+    final String[] args = new String[]{"-hub", "http://dummyhost:1234/wd/hub"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    gnc.hub = "http://dummyhost:4444/wd/hub";
-    assertEquals(4444, gnc.getHubPort().intValue());
+    new JCommander(gnc, args);
+    assertEquals("dummyhost", gnc.getHubHost());
+  }
+
+  @Test
+  public void testOneOfHubOrHubHostShouldBePresent() {
+    final String[] args = new String[]{"-hubPort", "1234"};
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    new JCommander(gnc, args);
+    Throwable t = TestUtilities.catchThrowable(gnc::getHubHost);
+    assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
+    t = TestUtilities.catchThrowable(gnc::getHubPort);
+    assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
+  }
+
+  @Test
+  public void testHubOptionHasPrecedenceOverHubHost() {
+    final String[] args = new String[]{"-hub", "http://smarthost:4321/wd/hub",
+                                       "-hubHost", "dummyhost", "-hubPort", "1234"};
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    new JCommander(gnc, args);
+    assertEquals("smarthost", gnc.getHubHost());
+  }
+
+  @Test
+  public void testGetHubPort() {
+    final String[] args = new String[]{"-hubHost", "dummyhost", "-hubPort", "1234"};
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    new JCommander(gnc, args);
+    assertEquals(1234, gnc.getHubPort().intValue());
+  }
+
+  @Test
+  public void testGetHubPortFromHubOption() {
+    final String[] args = new String[]{"-hub", "http://dummyhost:1234/wd/hub"};
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    new JCommander(gnc, args);
+    assertEquals(1234, gnc.getHubPort().intValue());
+  }
+
+  @Test
+  public void testOneOfHubOrHubPortShouldBePresent() {
+    final String[] args = new String[]{"-hubHost", "dummyhost"};
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    new JCommander(gnc, args);
+    Throwable t = TestUtilities.catchThrowable(gnc::getHubHost);
+    assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
+    t = TestUtilities.catchThrowable(gnc::getHubPort);
+    assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
+  }
+
+  @Test
+  public void testHubOptionHasPrecedenceOverHubPort() {
+    final String[] args = new String[]{"-hub", "http://smarthost:4321/wd/hub",
+                                       "-hubHost", "dummyhost", "-hubPort", "1234"};
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    new JCommander(gnc, args);
+    assertEquals(4321, gnc.getHubPort().intValue());
   }
 
   @Test

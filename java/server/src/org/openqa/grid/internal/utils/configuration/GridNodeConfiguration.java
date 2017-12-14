@@ -132,6 +132,18 @@ public class GridNodeConfiguration extends GridConfiguration {
     }
   }
 
+  private static class HostPort {
+    final String host;
+    final int port;
+
+    HostPort(String host, int port) {
+      this.host = host;
+      this.port = port;
+    }
+  }
+
+  private HostPort hubHostPort;
+
   /*
    * config parameters which do not serialize or de-serialize
    */
@@ -228,11 +240,13 @@ public class GridNodeConfiguration extends GridConfiguration {
   /**
    * The hub url. Defaults to {@code http://localhost:4444}.
    */
-  @Expose
   @Parameter(
     names = "-hub",
     description = "<String> : the url that will be used to post the registration request. This option takes precedence over -hubHost and -hubPort options."
   )
+  private String hubOption;
+
+  @Expose
   public String hub = DEFAULT_HUB;
 
   /**
@@ -307,23 +321,42 @@ public class GridNodeConfiguration extends GridConfiguration {
   }
 
   public String getHubHost() {
-    if (hubHost == null) {
-      if (hub == null) {
-        throw new RuntimeException("You must specify either a hubHost or hub parameter.");
-      }
-      parseHubUrl();
-    }
-    return hubHost;
+    return getHubHostPort().host;
   }
 
   public Integer getHubPort() {
-    if (hubPort == null) {
-      if (hub == null) {
-        throw new RuntimeException("You must specify either a hubPort or hub parameter.");
+    return getHubHostPort().port;
+  }
+
+  private HostPort getHubHostPort() {
+    if (hubHostPort == null) { // parse options
+      // -hub has precedence
+      if (hubOption != null) {
+        hub = hubOption;
+        try {
+          URL u = new URL(hub);
+          hubHostPort = new HostPort(u.getHost(), u.getPort());
+        } catch (MalformedURLException mURLe) {
+          throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
+        }
+      } else if (hubHost != null || hubPort != null) {
+        if (hubHost == null) {
+          throw new RuntimeException("You must specify either a -hubHost or -hub parameter.");
+        }
+        if (hubPort == null) {
+          throw new RuntimeException("You must specify either a -hubPort or -hub parameter.");
+        }
+        hubHostPort = new HostPort(hubHost, hubPort);
+      } else {
+        try {
+          URL u = new URL(hub);
+          hubHostPort = new HostPort(u.getHost(), u.getPort());
+        } catch (MalformedURLException mURLe) {
+          throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
+        }
       }
-      parseHubUrl();
     }
-    return hubPort;
+    return hubHostPort;
   }
 
   public String getRemoteHost() {
@@ -337,16 +370,6 @@ public class GridNodeConfiguration extends GridConfiguration {
       remoteHost = "http://" + host + ":" + port;
     }
     return remoteHost;
-  }
-
-  private void parseHubUrl() {
-    try {
-      URL u = new URL(hub);
-      hubHost = u.getHost();
-      hubPort = u.getPort();
-    } catch (MalformedURLException mURLe) {
-      throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
-    }
   }
 
   public void merge(GridNodeConfiguration other) {
