@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
@@ -238,9 +239,9 @@ public class GridNodeConfigurationTest {
     final String[] args = new String[]{"-hubPort", "1234"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
     new JCommander(gnc, args);
-    Throwable t = TestUtilities.catchThrowable(gnc::getHubHost);
+    Throwable t = catchThrowable(gnc::getHubHost);
     assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
-    t = TestUtilities.catchThrowable(gnc::getHubPort);
+    t = catchThrowable(gnc::getHubPort);
     assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
   }
 
@@ -274,9 +275,9 @@ public class GridNodeConfigurationTest {
     final String[] args = new String[]{"-hubHost", "dummyhost"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
     new JCommander(gnc, args);
-    Throwable t = TestUtilities.catchThrowable(gnc::getHubHost);
+    Throwable t = catchThrowable(gnc::getHubHost);
     assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
-    t = TestUtilities.catchThrowable(gnc::getHubPort);
+    t = catchThrowable(gnc::getHubPort);
     assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
   }
 
