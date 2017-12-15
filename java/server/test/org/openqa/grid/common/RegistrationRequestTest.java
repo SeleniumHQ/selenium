@@ -86,7 +86,7 @@ public class RegistrationRequestTest {
   @Test
   public void basicCommandLineParam() {
     GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost");
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234", "-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
 
     assertEquals(GridRole.NODE, GridRole.get(req.getConfiguration().role));
@@ -111,7 +111,7 @@ public class RegistrationRequestTest {
   @Test
   public void commandLineParamDefaultCapabilities() {
     GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-host","localhost");
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234", "-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
     assertEquals("ABC", req.getConfiguration().getHubHost());
     assertEquals(config.capabilities.size(), req.getConfiguration().capabilities.size());
