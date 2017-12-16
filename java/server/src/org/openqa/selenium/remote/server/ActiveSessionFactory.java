@@ -17,20 +17,22 @@
 
 package org.openqa.selenium.remote.server;
 
-import static org.openqa.selenium.remote.DesiredCapabilities.chrome;
-import static org.openqa.selenium.remote.DesiredCapabilities.edge;
-import static org.openqa.selenium.remote.DesiredCapabilities.firefox;
-import static org.openqa.selenium.remote.DesiredCapabilities.htmlUnit;
-import static org.openqa.selenium.remote.DesiredCapabilities.internetExplorer;
-import static org.openqa.selenium.remote.DesiredCapabilities.opera;
-import static org.openqa.selenium.remote.DesiredCapabilities.operaBlink;
-import static org.openqa.selenium.remote.DesiredCapabilities.phantomjs;
-import static org.openqa.selenium.remote.DesiredCapabilities.safari;
+import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static org.openqa.selenium.remote.BrowserType.EDGE;
+import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.BrowserType.HTMLUNIT;
+import static org.openqa.selenium.remote.BrowserType.IE;
+import static org.openqa.selenium.remote.BrowserType.OPERA;
+import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
+import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
+import static org.openqa.selenium.remote.BrowserType.SAFARI;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Dialect;
 
@@ -78,18 +80,18 @@ public class ActiveSessionFactory implements SessionFactory {
                return marionette instanceof Boolean && !(Boolean) marionette;
              },
              "org.openqa.selenium.firefox.XpiDriverService")
-        .put(browserName(chrome()), "org.openqa.selenium.chrome.ChromeDriverService")
+        .put(browserName(CHROME), "org.openqa.selenium.chrome.ChromeDriverService")
         .put(containsKey("chromeOptions"), "org.openqa.selenium.chrome.ChromeDriverService")
-        .put(browserName(edge()), "org.openqa.selenium.edge.EdgeDriverService")
+        .put(browserName(EDGE), "org.openqa.selenium.edge.EdgeDriverService")
         .put(containsKey("edgeOptions"), "org.openqa.selenium.edge.EdgeDriverService")
-        .put(browserName(firefox()), "org.openqa.selenium.firefox.GeckoDriverService")
+        .put(browserName(FIREFOX), "org.openqa.selenium.firefox.GeckoDriverService")
         .put(containsKey(Pattern.compile("^moz:.*")), "org.openqa.selenium.firefox.GeckoDriverService")
-        .put(browserName(internetExplorer()), "org.openqa.selenium.ie.InternetExplorerDriverService")
+        .put(browserName(IE), "org.openqa.selenium.ie.InternetExplorerDriverService")
         .put(containsKey("se:ieOptions"), "org.openqa.selenium.ie.InternetExplorerDriverService")
-        .put(browserName(opera()), "org.openqa.selenium.opera.OperaDriverService")
-        .put(browserName(operaBlink()), "org.openqa.selenium.ie.OperaDriverService")
-        .put(browserName(phantomjs()), "org.openqa.selenium.phantomjs.PhantomJSDriverService")
-        .put(browserName(safari()), "org.openqa.selenium.safari.SafariDriverService")
+        .put(browserName(OPERA), "org.openqa.selenium.opera.OperaDriverService")
+        .put(browserName(OPERA_BLINK), "org.openqa.selenium.ie.OperaDriverService")
+        .put(browserName(PHANTOMJS), "org.openqa.selenium.phantomjs.PhantomJSDriverService")
+        .put(browserName(SAFARI), "org.openqa.selenium.safari.SafariDriverService")
         .put(containsKey(Pattern.compile("^safari\\..*")), "org.openqa.selenium.safari.SafariDriverService")
         .build()
         .entrySet().stream()
@@ -97,7 +99,8 @@ public class ActiveSessionFactory implements SessionFactory {
         .forEach(e -> builder.put(e.getKey(), new ServicedSession.Factory(e.getValue())));
 
     // Attempt to bind the htmlunitdriver if it's present.
-    bind(builder, "org.openqa.selenium.htmlunit.HtmlUnitDriver", browserName(htmlUnit()), htmlUnit());
+    bind(builder, "org.openqa.selenium.htmlunit.HtmlUnitDriver", browserName(HTMLUNIT),
+         new ImmutableCapabilities(BROWSER_NAME, HTMLUNIT));
 
     this.factories = ImmutableMap.copyOf(builder);
   }
@@ -144,8 +147,9 @@ public class ActiveSessionFactory implements SessionFactory {
     }
   }
 
-  private static Predicate<Capabilities> browserName(Capabilities caps) {
-    return toCompare -> caps.getBrowserName().equals(toCompare.getBrowserName());
+  private static Predicate<Capabilities> browserName(String browserName) {
+    Objects.requireNonNull(browserName, "Browser name must be set");
+    return toCompare -> browserName.equals(toCompare.getBrowserName());
   }
 
   private static Predicate<Capabilities> containsKey(String keyName) {
