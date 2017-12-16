@@ -17,9 +17,9 @@
 package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.lang.reflect.Constructor;
 import java.util.logging.Level;
@@ -37,7 +37,7 @@ public class DefaultDriverProvider implements DriverProvider {
   private Class<? extends WebDriver> driverClass;
 
   public DefaultDriverProvider(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
-    this.capabilities = new DesiredCapabilities(capabilities);
+    this.capabilities = new ImmutableCapabilities(capabilities);
     this.driverClass = driverClass;
   }
 

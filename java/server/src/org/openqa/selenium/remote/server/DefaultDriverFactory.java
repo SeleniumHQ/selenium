@@ -18,16 +18,27 @@
 package org.openqa.selenium.remote.server;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static org.openqa.selenium.remote.BrowserType.EDGE;
+import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.BrowserType.HTMLUNIT;
+import static org.openqa.selenium.remote.BrowserType.IE;
+import static org.openqa.selenium.remote.BrowserType.OPERA;
+import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
+import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
+import static org.openqa.selenium.remote.BrowserType.SAFARI;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.server.DefaultDriverProvider.createProvider;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.List;
 import java.util.Map;
@@ -35,23 +46,24 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 public class DefaultDriverFactory implements DriverFactory {
 
   private static final Logger LOG = Logger.getLogger(DefaultDriverFactory.class.getName());
 
   private static final List<DriverProvider> DEFAULT_DRIVER_PROVIDERS =
-      Stream.of(
-          createProvider(DesiredCapabilities.firefox(), "org.openqa.selenium.firefox.FirefoxDriver"),
-          createProvider(DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver"),
-          createProvider(DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver"),
-          createProvider(DesiredCapabilities.edge(), "org.openqa.selenium.edge.EdgeDriver"),
-          createProvider(DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver"),
-          createProvider(DesiredCapabilities.operaBlink(), "org.openqa.selenium.opera.OperaDriver"),
-          createProvider(DesiredCapabilities.safari(), "org.openqa.selenium.safari.SafariDriver"),
-          createProvider(DesiredCapabilities.phantomjs(), "org.openqa.selenium.phantomjs.PhantomJSDriver"),
-          createProvider(DesiredCapabilities.htmlUnit(), "org.openqa.selenium.htmlunit.HtmlUnitDriver"))
+      new ImmutableMap.Builder<String, String>()
+          .put(FIREFOX, "org.openqa.selenium.firefox.FirefoxDriver")
+          .put(CHROME, "org.openqa.selenium.chrome.ChromeDriver")
+          .put(IE, "org.openqa.selenium.ie.InternetExplorerDriver")
+          .put(EDGE, "org.openqa.selenium.edge.EdgeDriver")
+          .put(OPERA, "com.opera.core.systems.OperaDriver")
+          .put(OPERA_BLINK, "org.openqa.selenium.opera.OperaDriver")
+          .put(SAFARI, "org.openqa.selenium.safari.SafariDriver")
+          .put(PHANTOMJS, "org.openqa.selenium.phantomjs.PhantomJSDriver")
+          .put(HTMLUNIT, "org.openqa.selenium.htmlunit.HtmlUnitDriver")
+          .build().entrySet().stream()
+          .map(e -> createProvider(new ImmutableCapabilities(BROWSER_NAME, e.getKey()), e.getValue()))
           .filter(Objects::nonNull)
           .collect(ImmutableList.toImmutableList());
 
