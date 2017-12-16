@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.safari;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 
 import org.openqa.selenium.Capabilities;
