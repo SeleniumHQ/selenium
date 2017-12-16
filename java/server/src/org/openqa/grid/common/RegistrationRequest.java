@@ -234,6 +234,7 @@ public class RegistrationRequest {
     pendingRequest.configuration.fixUpHost();
     // make sure the capabilities are updated with required fields
     pendingRequest.configuration.fixUpCapabilities();
+    pendingRequest.configuration.dropCapabilitiesThatDoenNotMatchCurrentPlatform();
 
     return pendingRequest;
   }

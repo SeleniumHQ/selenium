@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
+import java.util.Arrays;
 
 public class RegistrationRequestTest {
 
@@ -82,7 +83,6 @@ public class RegistrationRequestTest {
                  req2.getConfiguration().capabilities.get(0).getPlatform());
   }
 
-
   @Test
   public void basicCommandLineParam() {
     GridNodeConfiguration config = new GridNodeConfiguration();
@@ -92,7 +92,6 @@ public class RegistrationRequestTest {
     assertEquals(GridRole.NODE, GridRole.get(req.getConfiguration().role));
     assertEquals("ABC", req.getConfiguration().getHubHost());
     assertEquals(1234, req.getConfiguration().getHubPort().longValue());
-
   }
 
   @Test
@@ -128,7 +127,6 @@ public class RegistrationRequestTest {
     new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost", "-register","false");
     RegistrationRequest req2 = RegistrationRequest.build(config);
     assertEquals(false, req2.getConfiguration().register);
-
   }
 
   @Test
@@ -256,6 +254,28 @@ public class RegistrationRequestTest {
     config.capabilities = null;
     RegistrationRequest req = RegistrationRequest.build(config);
     assertNull(req.getConfiguration().capabilities);
+  }
+
+  @Test
+  public void testConstructorDoesNotPruneCapabilitiesWithUnknownPlatform() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platformName", "cheese");
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = new RegistrationRequest(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 1);
+  }
+
+  @Test
+  public void testBuilderPrunesCapabilitiesWithUnknownPlatform() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platformName", "cheese");
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 0);
   }
 
   private void assertConstruction(RegistrationRequest req) {

@@ -530,13 +530,24 @@ public class GridNodeConfiguration extends GridConfiguration {
 
     Platform current = Platform.getCurrent();
     capabilities = capabilities.stream()
-        .peek(cap -> cap.setCapability(CapabilityType.PLATFORM,
-                                       Optional.ofNullable(cap.getPlatform()).orElse(current)))
-        .filter(cap -> current.is(cap.getPlatform()))
+        .peek(cap -> cap.setCapability(
+            CapabilityType.PLATFORM,
+            Optional.ofNullable(cap.getCapability(CapabilityType.PLATFORM_NAME)).orElse(current)))
         .peek(cap -> cap.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,
             Optional.ofNullable(cap.getCapability(RegistrationRequest.SELENIUM_PROTOCOL))
                 .orElse(SeleniumProtocol.WebDriver.toString())))
         .peek(cap -> cap.setCapability(CONFIG_UUID_CAPABILITY, UUID.randomUUID().toString()))
+        .collect(Collectors.toList());
+  }
+
+  public void dropCapabilitiesThatDoenNotMatchCurrentPlatform() {
+    if (capabilities == null) {
+      return; // assumes the caller set it/wants it this way
+    }
+
+    Platform current = Platform.getCurrent();
+    capabilities = capabilities.stream()
+        .filter(cap -> current.is(cap.getPlatform()))
         .collect(Collectors.toList());
   }
 
