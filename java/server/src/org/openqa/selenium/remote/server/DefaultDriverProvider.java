@@ -41,14 +41,6 @@ public class DefaultDriverProvider implements DriverProvider {
     this.driverClass = driverClass;
   }
 
-  /**
-   * @deprecated Replace with a call to {@link #createProvider(Capabilities, String)}
-   */
-  @Deprecated
-  public DefaultDriverProvider(Capabilities capabilities, String driverClassName) {
-    this(capabilities, getDriverClass(driverClassName));
-  }
-
   public static DriverProvider createProvider(Capabilities capabilities, String driverClassName) {
     Class<? extends WebDriver> driverClass = getDriverClass(driverClassName);
     if (driverClass == null) {
@@ -60,16 +52,6 @@ public class DefaultDriverProvider implements DriverProvider {
   @Override
   public Capabilities getProvidedCapabilities() {
     return capabilities;
-  }
-
-  /**
-   * Checks that driver class can be loaded.
-   * @deprecated All providers should be able to create driver classes.
-   */
-  @Override
-  @Deprecated
-  public boolean canCreateDriverInstances() {
-    return driverClass != null;
   }
 
   /**

@@ -25,16 +25,14 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-@RunWith(JUnit4.class)
 public class DriverFactoryTest {
+
   private DefaultDriverFactory factory;
 
   @Before
@@ -209,7 +207,6 @@ public class DriverFactoryTest {
   private DriverProvider mockDriverProviderFor(Capabilities nojavascript) {
     DriverProvider nojavascriptProvider = mock(DriverProvider.class);
     when(nojavascriptProvider.getProvidedCapabilities()).thenReturn(nojavascript);
-    when(nojavascriptProvider.canCreateDriverInstances()).thenReturn(true);
     return nojavascriptProvider;
   }
 

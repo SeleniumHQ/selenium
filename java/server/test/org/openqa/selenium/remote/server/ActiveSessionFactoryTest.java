@@ -83,11 +83,6 @@ public class ActiveSessionFactoryTest {
     }
 
     @Override
-    public boolean canCreateDriverInstances() {
-      return true;
-    }
-
-    @Override
     public boolean canCreateDriverInstanceFor(Capabilities capabilities) {
       return this.caps.getBrowserName().equals(capabilities.getBrowserName());
     }

@@ -45,15 +45,6 @@ public interface DriverProvider {
   Capabilities getProvidedCapabilities();
 
   /**
-   * Checks if the provider can create driver instances "in general".
-   *
-   * @return true if the provider can create driver instances.
-   * @deprecated All providers should be able to create driver instances.
-   */
-  @Deprecated
-  boolean canCreateDriverInstances();
-
-  /**
    * Checks if the provider can create driver instance with the desired capabilities.
    *
    * @param capabilities desired capabiilities to check if the provider can create a driver instance

@@ -76,11 +76,7 @@ public class DefaultDriverFactory implements DriverFactory {
   }
 
   public void registerDriverProvider(DriverProvider driverProvider) {
-    if (driverProvider.canCreateDriverInstances()) {
-      capabilitiesToDriverProvider.put(driverProvider.getProvidedCapabilities(), driverProvider);
-    } else {
-      LOG.info(String.format("Driver provider %s is not registered", driverProvider));
-    }
+    capabilitiesToDriverProvider.put(driverProvider.getProvidedCapabilities(), driverProvider);
   }
 
   @VisibleForTesting
@@ -127,13 +123,6 @@ public class DefaultDriverFactory implements DriverFactory {
           " registration capabilities %s does not match the current platform %s",
           provider, caps, current));
       return;
-    }
-
-    if (!provider.canCreateDriverInstances()) {
-      LOG.info(String.format(
-          "Driver provider %s registration is skipped:%n" +
-          "Unable to create new instances on this machine.",
-          provider));
     }
 
     registerDriverProvider(provider);
