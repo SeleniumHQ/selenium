@@ -35,7 +35,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.StubDriver;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class DriverFactoryTest {
@@ -124,13 +123,13 @@ public class DriverFactoryTest {
   @Test
   public void testShouldReturnDriverWhereTheMostCapabilitiesMatch_lotsOfRegisteredDrivers() {
     DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-    desiredCapabilities.setBrowserName(IE);
+    desiredCapabilities.setBrowserName(FIREFOX);
     desiredCapabilities.setVersion("");
     desiredCapabilities.setJavascriptEnabled(true);
     desiredCapabilities.setPlatform(Platform.ANY);
 
-    assertEquals(IE,
-                 factory.getProviderMatching(desiredCapabilities).getProvidedCapabilities().getBrowserName());
+    assertEquals(FIREFOX, factory.getProviderMatching(desiredCapabilities)
+        .getProvidedCapabilities().getBrowserName());
   }
 
   @Test
