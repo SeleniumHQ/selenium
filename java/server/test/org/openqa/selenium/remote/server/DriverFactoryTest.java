@@ -19,13 +19,20 @@ package org.openqa.selenium.remote.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.BrowserType.IE;
+import static org.openqa.selenium.remote.BrowserType.SAFARI;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.remote.BrowserType;
@@ -41,41 +48,65 @@ public class DriverFactoryTest {
   }
 
   @Test
+  public void testShouldRegisterCorrectDefaultsOnMac() {
+    DefaultDriverFactory factory = new DefaultDriverFactory(Platform.MAC);
+
+    assertTrue(canInstantiate(factory, CHROME));
+    assertTrue(canInstantiate(factory, FIREFOX));
+    assertTrue(canInstantiate(factory, SAFARI));
+    assertFalse(canInstantiate(factory, IE));
+  }
+
+  @Test
+  public void testShouldRegisterCorrectDefaultsOnLinux() {
+    DefaultDriverFactory factory = new DefaultDriverFactory(Platform.LINUX);
+
+    assertTrue(canInstantiate(factory, CHROME));
+    assertTrue(canInstantiate(factory, FIREFOX));
+    assertFalse(canInstantiate(factory, SAFARI));
+    assertFalse(canInstantiate(factory, IE));
+  }
+
+  @Test
+  public void testShouldRegisterCorrectDefaultsOnWindows() {
+    DefaultDriverFactory factory = new DefaultDriverFactory(Platform.VISTA);
+
+    assertTrue(canInstantiate(factory, CHROME));
+    assertTrue(canInstantiate(factory, FIREFOX));
+    assertFalse(canInstantiate(factory, SAFARI));
+    assertTrue(canInstantiate(factory, IE));
+  }
+
+  private boolean canInstantiate(DefaultDriverFactory factory, String browser) {
+    Capabilities capabilities = new ImmutableCapabilities(BROWSER_NAME, browser);
+    return factory.getProviderMatching(capabilities).canCreateDriverInstanceFor(capabilities);
+  }
+
+  @Test
   public void testShouldBeAbleToRegisterNewDrivers() {
-    DesiredCapabilities capabilities = new DesiredCapabilities("cheese", null, Platform.ANY);
-    assertFalse(factory.hasMappingFor(capabilities));
+    Capabilities capabilities = new DesiredCapabilities("cheese", null, Platform.ANY);
+    assertNotEquals(factory.getProviderMatching(capabilities).getProvidedCapabilities(), capabilities);
 
     factory.registerDriverProvider(mockDriverProviderFor(capabilities));
 
-    assertTrue(factory.hasMappingFor(capabilities));
+    assertEquals(factory.getProviderMatching(capabilities).getProvidedCapabilities(), capabilities);
   }
 
   @Test
   public void testShouldReturnMatchIfOneFieldMatchesAndOnlyOneDriverIsRegistered() {
-    DesiredCapabilities template = new DesiredCapabilities();
-    template.setBrowserName("foo");
-    template.setVersion("1.0");
-    template.setPlatform(Platform.getCurrent());
-
+    Capabilities template = new DesiredCapabilities("foo", "1.0", Platform.getCurrent());
     DriverProvider provider = mockDriverProviderFor(template);
 
     factory.registerDriverProvider(provider);
 
-    DesiredCapabilities example = new DesiredCapabilities();
-    example.setBrowserName(template.getBrowserName());
-
+    Capabilities example = new ImmutableCapabilities(BROWSER_NAME, template.getBrowserName());
     assertEquals(provider, factory.getProviderMatching(example));
   }
 
   @Test
   public void testShouldReturnDriverWhereTheMostCapabilitiesMatch() {
-    DesiredCapabilities first = new DesiredCapabilities();
-    first.setBrowserName("foo");
-    first.setVersion("1.0");
-
-    DesiredCapabilities second = new DesiredCapabilities();
-    second.setBrowserName("bar"); // Different name
-    second.setVersion("1.0");
+    Capabilities first = new DesiredCapabilities("foo", "1.0", Platform.ANY);
+    Capabilities second = new DesiredCapabilities("bar", "1.0", Platform.ANY);
 
     DriverProvider provider1 = mockDriverProviderFor(first);
     DriverProvider provider2 = mockDriverProviderFor(second);
@@ -83,41 +114,28 @@ public class DriverFactoryTest {
     factory.registerDriverProvider(provider1);
     factory.registerDriverProvider(provider2);
 
-    DesiredCapabilities example = new DesiredCapabilities();
-
-    example.setBrowserName("foo");
+    Capabilities example = new ImmutableCapabilities(BROWSER_NAME, "foo");
     assertEquals(provider1, factory.getProviderMatching(example));
 
-    example.setBrowserName("bar");
+    example = new ImmutableCapabilities(BROWSER_NAME, "bar");
     assertEquals(provider2, factory.getProviderMatching(example));
   }
 
   @Test
   public void testShouldReturnDriverWhereTheMostCapabilitiesMatch_lotsOfRegisteredDrivers() {
-    DriverProvider chromeProvider = mockDriverProviderFor(DesiredCapabilities.chrome());
-    DriverProvider firefoxProvider = mockDriverProviderFor(DesiredCapabilities.firefox());
-    DriverProvider htmlUnitProvider = mockDriverProviderFor(DesiredCapabilities.htmlUnit());
-    DriverProvider ieProvider = mockDriverProviderFor(DesiredCapabilities.internetExplorer());
-    DriverProvider operaProvider = mockDriverProviderFor(DesiredCapabilities.operaBlink());
-
-    factory.registerDriverProvider(chromeProvider);
-    factory.registerDriverProvider(firefoxProvider);
-    factory.registerDriverProvider(htmlUnitProvider);
-    factory.registerDriverProvider(ieProvider);
-    factory.registerDriverProvider(operaProvider);
-
     DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-    desiredCapabilities.setBrowserName(BrowserType.IE);
+    desiredCapabilities.setBrowserName(IE);
     desiredCapabilities.setVersion("");
     desiredCapabilities.setJavascriptEnabled(true);
     desiredCapabilities.setPlatform(Platform.ANY);
 
-    assertEquals(ieProvider, factory.getProviderMatching(desiredCapabilities));
+    assertEquals(IE,
+                 factory.getProviderMatching(desiredCapabilities).getProvidedCapabilities().getBrowserName());
   }
 
   @Test
   public void testShouldReturnMostRecentlyAddedDriverWhenAllCapabilitiesAreEqual() {
-    Capabilities capabilities = DesiredCapabilities.firefox();
+    Capabilities capabilities = new ImmutableCapabilities(BROWSER_NAME, "cheese");
 
     DriverProvider provider1 = mockDriverProviderFor(capabilities);
     DriverProvider provider2 = mockDriverProviderFor(capabilities);
@@ -178,8 +196,7 @@ public class DriverFactoryTest {
 
   @Test
   public void testShouldCallAConstructorTakingACapabilitiesArgInPreferenceToANoArgOne() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setBrowserName("example");
+    Capabilities caps = new ImmutableCapabilities(BROWSER_NAME, "example");
     factory.registerDriverProvider(new DefaultDriverProvider(caps, CapabilitiesDriver.class));
 
     CapabilitiesDriver driver = (CapabilitiesDriver) factory.newInstance(caps);
@@ -204,10 +221,10 @@ public class DriverFactoryTest {
     }
   }
 
-  private DriverProvider mockDriverProviderFor(Capabilities nojavascript) {
-    DriverProvider nojavascriptProvider = mock(DriverProvider.class);
-    when(nojavascriptProvider.getProvidedCapabilities()).thenReturn(nojavascript);
-    return nojavascriptProvider;
+  private DriverProvider mockDriverProviderFor(Capabilities capabilities) {
+    DriverProvider provider = mock(DriverProvider.class);
+    when(provider.getProvidedCapabilities()).thenReturn(capabilities);
+    return provider;
   }
 
 }
