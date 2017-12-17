@@ -29,6 +29,7 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.events.EventType');
+goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.selection');
