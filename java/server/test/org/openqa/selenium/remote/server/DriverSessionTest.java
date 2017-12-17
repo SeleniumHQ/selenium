@@ -17,58 +17,33 @@
 
 package org.openqa.selenium.remote.server;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-@RunWith(JUnit4.class)
 public class DriverSessionTest {
-  @Test
-  public void testShouldRegisterCorrectDefaultsOnMac() {
-    DriverFactory factory = new DefaultDriverFactory(Platform.MAC);
-    new DefaultDriverSessions(factory, 18000);
-
-    assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
-    assertTrue(factory.hasMappingFor(DesiredCapabilities.firefox()));
-    assertFalse(factory.hasMappingFor(DesiredCapabilities.internetExplorer()));
-  }
-
-  @Test
-  public void testShouldRegisterCorrectDefaultsOnLinux() {
-    DriverFactory factory = new DefaultDriverFactory(Platform.LINUX);
-    new DefaultDriverSessions(factory, 18000);
-
-    assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
-    assertTrue(factory.hasMappingFor(DesiredCapabilities.firefox()));
-    assertFalse(factory.hasMappingFor(DesiredCapabilities.internetExplorer()));
-  }
-
-  @Test
-  public void testShouldRegisterCorrectDefaultsOnWindows() {
-    DriverFactory factory = new DefaultDriverFactory(Platform.VISTA);
-    new DefaultDriverSessions(factory, 18000);
-
-    assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
-    assertTrue(factory.hasMappingFor(DesiredCapabilities.firefox()));
-    assertTrue(factory.hasMappingFor(DesiredCapabilities.internetExplorer()));
-  }
 
   @Test
   public void testShouldBeAbleToRegisterOwnDriver() {
-    DriverFactory factory = new DefaultDriverFactory(Platform.VISTA);
+    DefaultDriverFactory factory = new DefaultDriverFactory(Platform.VISTA);
     DriverSessions sessions = new DefaultDriverSessions(factory, 18000);
 
     Capabilities capabilities = new DesiredCapabilities("foo", "1", Platform.ANY);
+
+    assertFalse(factory.getProviderMatching(capabilities).canCreateDriverInstanceFor(capabilities));
+
     sessions.registerDriver(capabilities, AbstractDriver.class);
 
-    assertTrue(factory.hasMappingFor(capabilities));
+    assertTrue(factory.getProviderMatching(capabilities).canCreateDriverInstanceFor(capabilities));
   }
 
   public static abstract class AbstractDriver implements WebDriver {}
