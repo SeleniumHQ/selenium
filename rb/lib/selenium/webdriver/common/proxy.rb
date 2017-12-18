@@ -83,7 +83,7 @@ module Selenium
       end
 
       def no_proxy=(value)
-        self.type = :manual
+        self.type = :direct
         @no_proxy = value
       end
 
