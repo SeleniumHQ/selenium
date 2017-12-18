@@ -119,7 +119,7 @@
 const path = require('path');
 const url = require('url');
 
-const capabilities = require('./lib/capabilities');
+const Symbols = require('./lib/symbols');
 const command = require('./lib/command');
 const exec = require('./io/exec');
 const http = require('./http');
@@ -130,6 +130,7 @@ const portprober = require('./net/portprober');
 const remote = require('./remote');
 const webdriver = require('./lib/webdriver');
 const zip = require('./io/zip');
+const {Browser, Capabilities} = require('./lib/capabilities');
 const {Zip} = require('./io/zip');
 
 
@@ -177,6 +178,32 @@ async function installExtension(extension, dir) {
 }
 
 
+class Profile {
+  constructor() {
+    /** @private {?string} */
+    this.template_ = null;
+
+    /** @private {!Array<string>} */
+    this.extensions_ = [];
+  }
+
+  addExtensions(/** !Array<string> */paths) {
+    this.extensions_ = this.extensions_.concat(...paths);
+  }
+
+  /**
+   * @return {(!Promise<string>|undefined)} a promise for a base64 encoded
+   *     profile, or undefined if there's no data to include.
+   */
+  [Symbols.serialize]() {
+    if (this.template_ || this.extensions_.length) {
+      return buildProfile(this.template_, this.extensions_);
+    }
+    return undefined;
+  }
+}
+
+
 /**
  * @param {?string} template path to an existing profile to use as a template.
  * @param {!Array<string>} extensions paths to extensions to install in the new
@@ -212,25 +239,39 @@ async function buildProfile(template, extensions) {
 /**
  * Configuration options for the FirefoxDriver.
  */
-class Options {
-  constructor() {
-    /** @private {?string} */
-    this.profile_ = null;
+class Options extends Capabilities {
+  /**
+   * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
+   *     capabilities to initialize this instance from.
+   */
+  constructor(other) {
+    super(other);
+    this.setBrowserName(Browser.FIREFOX);
+  }
 
-    /** @private @const {!Map<string, (string|number|boolean)>} */
-    this.prefs_ = new Map;
+  /**
+   * @return {!Object}
+   * @private
+   */
+  firefoxOptions_() {
+    let options = this.get('moz:firefoxOptions');
+    if (!options) {
+      options = {};
+      this.set('moz:firefoxOptions', options);
+    }
+    return options;
+  }
 
-    /** @private {(Channel|string|null)} */
-    this.binary_ = null;
-
-    /** @private {!Array<string>} */
-    this.args_ = [];
-
-    /** @private {?./lib/proxy.Config} */
-    this.proxy_ = null;
-
-    /** @private {!Array<string>} */
-    this.extensions_ = [];
+  /**
+   * @return {!Profile}
+   * @private
+   */
+  profile_() {
+    let options = this.firefoxOptions_();
+    if (!options.profile) {
+      options.profile = new Profile();
+    }
+    return options.profile;
   }
 
   /**
@@ -241,7 +282,10 @@ class Options {
    * @return {!Options} A self reference.
    */
   addArguments(...args) {
-    this.args_ = this.args_.concat(...args);
+    if (args.length) {
+      let options = this.firefoxOptions_();
+      options.args = options.args ? options.args.concat(...args) : args;
+    }
     return this;
   }
 
@@ -281,7 +325,7 @@ class Options {
    * @return {!Options} A self reference.
    */
   addExtensions(...paths) {
-    this.extensions_ = this.extensions_.concat(...paths);
+    this.profile_().addExtensions(paths);
     return this;
   }
 
@@ -301,7 +345,9 @@ class Options {
       throw TypeError(
           `value must be a string, number, or boolean, but got ${typeof value}`);
     }
-    this.prefs_.set(key, value);
+    let options = this.firefoxOptions_();
+    options.prefs = options.prefs || {};
+    options.prefs[key] = value;
     return this;
   }
 
@@ -318,7 +364,7 @@ class Options {
     if (typeof profile !== 'string') {
       throw TypeError(`profile must be a string, but got ${typeof profile}`);
     }
-    this.profile_ = profile;
+    this.profile_().template_ = profile;
     return this;
   }
 
@@ -332,63 +378,10 @@ class Options {
    */
   setBinary(binary) {
     if (binary instanceof Channel || typeof binary === 'string') {
-      this.binary_ = binary;
+      this.firefoxOptions_().binary = binary;
       return this;
     }
     throw TypeError('binary must be a string path or Channel object');
-  }
-
-  /**
-   * Sets the proxy to use.
-   *
-   * @param {./lib/proxy.Config} proxy The proxy configuration to use.
-   * @return {!Options} A self reference.
-   */
-  setProxy(proxy) {
-    this.proxy_ = proxy;
-    return this;
-  }
-
-  /**
-   * Converts these options to a {@link capabilities.Capabilities} instance.
-   *
-   * @return {!capabilities.Capabilities} A new capabilities object.
-   */
-  toCapabilities() {
-    let caps = capabilities.Capabilities.firefox();
-    let firefoxOptions = {};
-    caps.set('moz:firefoxOptions', firefoxOptions);
-
-    if (this.proxy_) {
-      caps.set(capabilities.Capability.PROXY, this.proxy_);
-    }
-
-    if (this.args_.length) {
-      firefoxOptions['args'] = this.args_.concat();
-    }
-
-    if (this.binary_) {
-      if (this.binary_ instanceof Channel) {
-        firefoxOptions['binary'] = this.binary_.locate();
-
-      } else if (typeof this.binary_ === 'string') {
-        firefoxOptions['binary'] = this.binary_;
-      }
-    }
-
-    if (this.profile_ || this.extensions_.length) {
-      firefoxOptions['profile'] = buildProfile(this.profile_, this.extensions_);
-    }
-
-    if (this.prefs_.size) {
-      let prefs = {};
-      firefoxOptions['prefs'] = prefs;
-      for (let entry of this.prefs_.entries()) {
-        prefs[entry[0]] = entry[1];
-      }
-    }
-
-    return caps;
   }
 }
 
@@ -544,10 +537,9 @@ class Driver extends webdriver.WebDriver {
   /**
    * Creates a new Firefox session.
    *
-   * @param {(Options|capabilities.Capabilities|Object)=} opt_config The
+   * @param {(Options|Capabilities|Object)=} opt_config The
    *    configuration options for this driver, specified as either an
-   *    {@link Options} or {@link capabilities.Capabilities}, or as a raw hash
-   *    object.
+   *    {@link Options} or {@link Capabilities}, or as a raw hash object.
    * @param {(http.Executor|remote.DriverService)=} opt_executor Either a
    *   pre-configured command executor to use for communicating with an
    *   externally managed remote end (which is assumed to already be running),
@@ -565,12 +557,9 @@ class Driver extends webdriver.WebDriver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(opt_config, opt_executor) {
-    let caps;
-    if (opt_config instanceof Options) {
-      caps = opt_config.toCapabilities();
-    } else {
-      caps = new capabilities.Capabilities(opt_config);
-    }
+    let caps =
+        opt_config instanceof Capabilities
+            ? opt_config : new Options(opt_config);
 
     let executor;
     let onQuit;
@@ -721,6 +710,11 @@ class Channel {
       throw Error('Could not locate Firefox on the current system');
     });
     return this.found_;
+  }
+
+  /** @return {!Promise<string>} */
+  [Symbols.serialize]() {
+    return this.locate();
   }
 }
 

@@ -582,19 +582,19 @@ class Builder {
 
     // Apply browser specific overrides.
     if (browser === Browser.CHROME && this.chromeOptions_) {
-      capabilities.merge(this.chromeOptions_.toCapabilities());
+      capabilities.merge(this.chromeOptions_);
 
     } else if (browser === Browser.FIREFOX && this.firefoxOptions_) {
-      capabilities.merge(this.firefoxOptions_.toCapabilities());
+      capabilities.merge(this.firefoxOptions_);
 
     } else if (browser === Browser.INTERNET_EXPLORER && this.ieOptions_) {
-      capabilities.merge(this.ieOptions_.toCapabilities());
+      capabilities.merge(this.ieOptions_);
 
     } else if (browser === Browser.SAFARI && this.safariOptions_) {
-      capabilities.merge(this.safariOptions_.toCapabilities());
+      capabilities.merge(this.safariOptions_);
 
     } else if (browser === Browser.EDGE && this.edgeOptions_) {
-      capabilities.merge(this.edgeOptions_.toCapabilities());
+      capabilities.merge(this.edgeOptions_);
     }
 
     // Check for a remote browser.

@@ -133,7 +133,7 @@ const util = require('util');
 
 const http = require('./http');
 const io = require('./io');
-const {Capabilities, Capability} = require('./lib/capabilities');
+const {Browser, Capabilities, Capability} = require('./lib/capabilities');
 const command = require('./lib/command');
 const logging = require('./lib/logging');
 const promise = require('./lib/promise');
@@ -324,58 +324,19 @@ const OPTIONS_CAPABILITY_KEY = 'chromeOptions';
 /**
  * Class for managing ChromeDriver specific options.
  */
-class Options {
-  constructor() {
-    /** @private {!Object} */
-    this.options_ = {};
-
-    /** @private {!Array<(string|!Buffer)>} */
-    this.extensions_ = [];
-
-    /** @private {?logging.Preferences} */
-    this.logPrefs_ = null;
-
-    /** @private {?./lib/proxy.Config} */
-    this.proxy_ = null;
-  }
-
+class Options extends Capabilities {
   /**
-   * Extracts the ChromeDriver specific options from the given capabilities
-   * object.
-   * @param {!Capabilities} caps The capabilities object.
-   * @return {!Options} The ChromeDriver options.
+   * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
+   *     capabilities to initialize this instance from.
    */
-  static fromCapabilities(caps) {
-    let options = new Options();
+  constructor(other = undefined) {
+    super(other);
 
-    let o = caps.get(OPTIONS_CAPABILITY_KEY);
-    if (o instanceof Options) {
-      options = o;
-    } else if (o) {
-      options.
-          addArguments(o.args || []).
-          addExtensions(o.extensions || []).
-          detachDriver(o.detach).
-          excludeSwitches(o.excludeSwitches || []).
-          setChromeBinaryPath(o.binary).
-          setChromeLogFile(o.logPath).
-          setChromeMinidumpPath(o.minidumpPath).
-          setLocalState(o.localState).
-          setMobileEmulation(o.mobileEmulation).
-          setUserPreferences(o.prefs).
-          setPerfLoggingPrefs(o.perfLoggingPrefs);
-    }
+    /** @private {!Object} */
+    this.options_ = this.get(OPTIONS_CAPABILITY_KEY) || {};
 
-    if (caps.has(Capability.PROXY)) {
-      options.setProxy(caps.get(Capability.PROXY));
-    }
-
-    if (caps.has(Capability.LOGGING_PREFS)) {
-      options.setLoggingPrefs(
-          caps.get(Capability.LOGGING_PREFS));
-    }
-
-    return options;
+    this.setBrowserName(Browser.CHROME);
+    this.set(OPTIONS_CAPABILITY_KEY, this.options_);
   }
 
   /**
@@ -453,7 +414,8 @@ class Options {
    * @return {!Options} A self reference.
    */
   addExtensions(...args) {
-    this.extensions_ = this.extensions_.concat(...args);
+    let current = this.options_.extensions || [];
+    this.options_.extensions = current.concat(...args);
     return this;
   }
 
@@ -494,16 +456,6 @@ class Options {
    */
   setUserPreferences(prefs) {
     this.options_.prefs = prefs;
-    return this;
-  }
-
-  /**
-   * Sets the logging preferences for the new session.
-   * @param {!logging.Preferences} prefs The logging preferences.
-   * @return {!Options} A self reference.
-   */
-  setLoggingPrefs(prefs) {
-    this.logPrefs_ = prefs;
     return this;
   }
 
@@ -685,53 +637,24 @@ class Options {
   }
 
   /**
-   * Sets the proxy settings for the new session.
-   * @param {./lib/proxy.Config} proxy The proxy configuration to
-   *    use.
-   * @return {!Options} A self reference.
-   */
-  setProxy(proxy) {
-    this.proxy_ = proxy;
-    return this;
-  }
-
-  /**
-   * Converts this options instance to a {@link Capabilities} object.
-   * @param {Capabilities=} opt_capabilities The capabilities to merge
-   *     these options into, if any.
-   * @return {!Capabilities} The capabilities.
-   */
-  toCapabilities(opt_capabilities) {
-    let caps = opt_capabilities || Capabilities.chrome();
-    caps.
-        set(Capability.PROXY, this.proxy_).
-        set(Capability.LOGGING_PREFS, this.logPrefs_).
-        set(OPTIONS_CAPABILITY_KEY, this);
-    return caps;
-  }
-
-  /**
    * Converts this instance to its JSON wire protocol representation. Note this
    * function is an implementation not intended for general use.
+   *
    * @return {!Object} The JSON wire protocol representation of this instance.
+   * @suppress {checkTypes} Suppress [] access on a struct.
    */
   [Symbols.serialize]() {
-    let json = {};
-    for (let key in this.options_) {
-      if (this.options_[key] != null) {
-        json[key] = this.options_[key];
-      }
+    if (this.options_.extensions &&  this.options_.extensions.length) {
+      this.options_.extensions =
+          this.options_.extensions.map(function(extension) {
+            if (Buffer.isBuffer(extension)) {
+              return extension.toString('base64');
+            }
+            return io.read(/** @type {string} */(extension))
+                .then(buffer => buffer.toString('base64'));
+          });
     }
-    if (this.extensions_.length) {
-      json.extensions = this.extensions_.map(function(extension) {
-        if (Buffer.isBuffer(extension)) {
-          return extension.toString('base64');
-        }
-        return io.read(/** @type {string} */(extension))
-            .then(buffer => buffer.toString('base64'));
-      });
-    }
-    return json;
+    return super[Symbols.serialize]();
   }
 }
 
@@ -762,9 +685,7 @@ class Driver extends webdriver.WebDriver {
       executor = createExecutor(service.start());
     }
 
-    let caps =
-        opt_config instanceof Options ? opt_config.toCapabilities() :
-        (opt_config || Capabilities.chrome());
+    let caps = opt_config || Capabilities.chrome();
 
     // W3C spec requires noProxy value to be an array of strings, but Chrome
     // expects a single host as a string.

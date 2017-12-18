@@ -70,17 +70,17 @@
 
 'use strict';
 
-const fs = require('fs'),
-    util = require('util');
+const fs = require('fs');
+const util = require('util');
 
-const http = require('./http'),
-    io = require('./io'),
-    capabilities = require('./lib/capabilities'),
-    promise = require('./lib/promise'),
-    Symbols = require('./lib/symbols'),
-    webdriver = require('./lib/webdriver'),
-    portprober = require('./net/portprober'),
-    remote = require('./remote');
+const http = require('./http');
+const io = require('./io');
+const portprober = require('./net/portprober');
+const promise = require('./lib/promise');
+const remote = require('./remote');
+const Symbols = require('./lib/symbols');
+const webdriver = require('./lib/webdriver');
+const {Browser, Capabilities} = require('./lib/capabilities');
 
 const EDGEDRIVER_EXE = 'MicrosoftWebDriver.exe';
 
@@ -98,105 +98,16 @@ function locateSynchronously() {
 
 
 /**
- * Option keys.
- * @enum {string}
- */
-const CAPABILITY_KEY = {
-  PAGE_LOAD_STRATEGY: 'pageLoadStrategy'
-};
-
-
-/**
  * Class for managing MicrosoftEdgeDriver specific options.
  */
-class Options {
-  constructor() {
-    /** @private {!Object} */
-    this.options_ = {};
-
-    /** @private {?./lib/proxy.Config} */
-    this.proxy_ = null;
-  }
-
+class Options extends Capabilities {
   /**
-   * Extracts the MicrosoftEdgeDriver specific options from the given
-   * capabilities object.
-   * @param {!capabilities.Capabilities} caps The capabilities object.
-   * @return {!Options} The MicrosoftEdgeDriver options.
+   * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
+   *     capabilities to initialize this instance from.
    */
-  static fromCapabilities(caps) {
-    var options = new Options();
-    var map = options.options_;
-
-    Object.keys(CAPABILITY_KEY).forEach(function(key) {
-      key = CAPABILITY_KEY[key];
-      if (caps.has(key)) {
-        map[key] = caps.get(key);
-      }
-    });
-
-    if (caps.has(capabilities.Capability.PROXY)) {
-      options.setProxy(caps.get(capabilities.Capability.PROXY));
-    }
-
-    return options;
-  }
-
-  /**
-   * Sets the proxy settings for the new session.
-   * @param {./lib/proxy.Config} proxy The proxy configuration to use.
-   * @return {!Options} A self reference.
-   */
-  setProxy(proxy) {
-    this.proxy_ = proxy;
-    return this;
-  }
-
-  /**
-   * Sets the page load strategy for Edge.
-   * Supported values are "normal", "eager", and "none";
-   *
-   * @param {string} pageLoadStrategy The page load strategy to use.
-   * @return {!Options} A self reference.
-   */
-  setPageLoadStrategy(pageLoadStrategy) {
-    this.options_[CAPABILITY_KEY.PAGE_LOAD_STRATEGY] =
-      pageLoadStrategy.toLowerCase();
-    return this;
-  }
-
-  /**
-   * Converts this options instance to a {@link capabilities.Capabilities}
-   * object.
-   * @param {capabilities.Capabilities=} opt_capabilities The capabilities to
-   *     merge these options into, if any.
-   * @return {!capabilities.Capabilities} The capabilities.
-   */
-  toCapabilities(opt_capabilities) {
-    var caps = opt_capabilities || capabilities.Capabilities.edge();
-    if (this.proxy_) {
-      caps.set(capabilities.Capability.PROXY, this.proxy_);
-    }
-    Object.keys(this.options_).forEach(function(key) {
-      caps.set(key, this.options_[key]);
-    }, this);
-    return caps;
-  }
-
-  /**
-   * Converts this instance to its JSON wire protocol representation. Note this
-   * function is an implementation not intended for general use.
-   * @return {{pageLoadStrategy: (string|undefined)}}
-   *   The JSON wire protocol representation of this instance.
-   */
-  [Symbols.serialize]() {
-    var json = {};
-    for (var key in this.options_) {
-      if (this.options_[key] != null) {
-        json[key] = this.options_[key];
-      }
-    }
-    return json;
+  constructor(other = undefined) {
+    super(other);
+    this.setBrowserName(Browser.EDGE);
   }
 }
 
@@ -281,23 +192,18 @@ class Driver extends webdriver.WebDriver {
   /**
    * Creates a new browser session for Microsoft's Edge browser.
    *
-   * @param {(capabilities.Capabilities|Options)=} opt_config The configuration
-   *     options.
-   * @param {remote.DriverService=} opt_service The session to use; will use
+   * @param {(Capabilities|Options)=} options The configuration options.
+   * @param {remote.DriverService=} service The session to use; will use
    *     the {@linkplain #getDefaultService default service} by default.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config, opt_service) {
-    var service = opt_service || getDefaultService();
-    var client = service.start().then(url => new http.HttpClient(url));
-    var executor = new http.Executor(client);
+  static createSession(options, service = getDefaultService()) {
+    let client = service.start().then(url => new http.HttpClient(url));
+    let executor = new http.Executor(client);
 
-    var caps =
-        opt_config instanceof Options ? opt_config.toCapabilities() :
-        (opt_config || capabilities.Capabilities.edge());
-
+    options = options || new Options();
     return /** @type {!Driver} */(super.createSession(
-        executor, caps, () => service.kill()));
+        executor, options, () => service.kill()));
   }
 
   /**

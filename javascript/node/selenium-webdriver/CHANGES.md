@@ -69,10 +69,21 @@ mode.
    -  Added setChromeService, setEdgeService, & setFirefoxService
    -  Removed setEnableNativeEvents
    -  Removed setScrollBehavior
+*  Changes to `chrome.Options`
+   -  Now extends the `Capabilities` class
+   -  Removed from/toCapabilities
+*  Changes to `edge.Options`
+   -  Now extends the `Capabilities` class
+   -  Removed from/toCapabilities
+*  Changes to `ie.Options`
+   -  Now extends the `Capabilities` class
+   -  Removed from/toCapabilities
 *  Changes to `firefox.Driver`
    -  Added installAddon(path)
    -  Added uninstallAddon(id)
 *  Changes to `firefox.Options`
+   -  Now extends the `Capabilities` class
+   -  Removed from/toCapabilities
    -  Removed setLoggingPreferences (was a no-op)
    -  setProfile now only accepts a path to an existing profile
    -  Added addExtensions
@@ -82,9 +93,9 @@ mode.
 *  Removed the `firefox/binary` module
 *  Removed the `firefox/profile` module
 *  Changes to `safari.Options`
+   -  Now extends the `Capabilities` class
+   -  Removed from/toCapabilities
    -  Removed setCleanSession (was a no-op)
-   -  Removed setLoggingPreferences (was a no-op)
-   -  Removed setProxy (was a no-op)
 *  Changes to `lib/capabilities.Browser`:
    -  Removed several enum values.
       -  ANDROID (use Chrome for Android; see docs on the chrome module)
