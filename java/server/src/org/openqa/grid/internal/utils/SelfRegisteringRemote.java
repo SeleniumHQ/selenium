@@ -79,21 +79,6 @@ public class SelfRegisteringRemote {
 
     registrationRequest.validate();
 
-    try {
-      GridHubConfiguration hubConfiguration = getHubConfiguration();
-      // the node can not set these values. They must come from the hub
-      if (hubConfiguration.timeout != null && hubConfiguration.timeout >= 0) {
-        registrationRequest.getConfiguration().timeout = hubConfiguration.timeout;
-      }
-      if (hubConfiguration.browserTimeout != null && hubConfiguration.browserTimeout >= 0) {
-        registrationRequest.getConfiguration().browserTimeout = hubConfiguration.browserTimeout;
-      }
-    } catch (Exception e) {
-      LOG.warning(
-        "error getting the parameters from the hub. The node may end up with wrong timeouts." + e
-          .getMessage());
-    }
-
     // add the status servlet
     nodeServlets.put("/status", NodeW3CStatusServlet.class);
     nodeServlets.put("/wd/hub/status", NodeW3CStatusServlet.class);
@@ -284,6 +269,23 @@ public class SelfRegisteringRemote {
                                                 response.getStatusLine().getStatusCode(),
                                                 response.getStatusLine().getReasonPhrase()));
         }
+
+        try {
+          LOG.info("Updating the node configuration from the hub");
+          GridHubConfiguration hubConfiguration = getHubConfiguration();
+          // the node can not set these values. They must come from the hub
+          if (hubConfiguration.timeout != null && hubConfiguration.timeout >= 0) {
+            registrationRequest.getConfiguration().timeout = hubConfiguration.timeout;
+          }
+          if (hubConfiguration.browserTimeout != null && hubConfiguration.browserTimeout >= 0) {
+            registrationRequest.getConfiguration().browserTimeout = hubConfiguration.browserTimeout;
+          }
+        } catch (Exception e) {
+          LOG.warning(
+              "error getting the parameters from the hub. The node may end up with wrong timeouts." + e
+                  .getMessage());
+        }
+
         LOG.info("The node is registered to the hub and ready to use");
       } catch (Exception e) {
         throw new GridException("Error sending the registration request: " + e.getMessage());
