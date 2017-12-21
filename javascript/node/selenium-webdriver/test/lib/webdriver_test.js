@@ -1568,6 +1568,25 @@ describe('WebDriver', function() {
               (e) => assert.ok(e instanceof error.UnsupportedOperationError));
         });
       });
+
+      it('perform() only executes keyboard sequence', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.ACTIONS, {
+              actions:  [{
+                type: 'key',
+                id: 'default keyboard',
+                actions: [
+                  {type: 'keyDown', value: 'a'}, {type: 'keyUp', value: 'a'},
+                ]
+              }]
+            })
+            .end();
+
+        let driver = executor.createDriver();
+        let actions = driver.actions();
+        actions.mouse().pointerMove({x: 1, y: 2});
+        return actions.keyboard().sendKeys('a').perform();
+      });
     });
 
     describe('mouse()', function() {
@@ -1616,6 +1635,32 @@ describe('WebDriver', function() {
         let actions = driver.actions();
         actions.mouse().doubleClick(element1);
         return actions.perform();
+      });
+
+      it('perform() only executes mouse sequence', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.ACTIONS, {
+              actions:  [{
+                type: 'pointer',
+                id: 'default mouse',
+                parameters: {
+                  pointerType: 'mouse',
+                },
+                actions: [{
+                  type: 'pointerMove',
+                  origin: 'viewport',
+                  duration: 100,
+                  x: 1,
+                  y: 2
+                }]
+              }]
+            })
+            .end();
+
+        let driver = executor.createDriver();
+        let actions = driver.actions();
+        actions.keyboard().sendKeys('a');
+        return actions.mouse().pointerMove({x: 1, y: 2}).perform();
       });
     });
 

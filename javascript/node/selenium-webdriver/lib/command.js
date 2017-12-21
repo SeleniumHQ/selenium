@@ -196,7 +196,7 @@ const Name = {
 
 /**
  * Handles the execution of WebDriver {@link Command commands}.
- * @interface
+ * @record
  */
 class Executor {
   /**

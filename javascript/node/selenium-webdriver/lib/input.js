@@ -289,13 +289,30 @@ const ActionType = {
  * @see <https://www.w3.org/TR/webdriver/#actions>
  */
 class Sequence {
-  /** @param {!Device} device the device to generate this action sequence. */
-  constructor(device) {
+  /**
+   * @param {!Device} device the device to generate this action sequence.
+   * @param {function(): !Promise<void>} onPerform the function to call to
+   *     actually handle class to {@link #perform}.
+   */
+  constructor(device, onPerform) {
     /** @private @const */
     this.device_ = device;
 
+    /** @private @const */
+    this.onPerform_ = onPerform;
+
     /** @private @const {!Array<!Action>} */
     this.actions_ = [];
+  }
+
+  /**
+   * Executes this sequence.
+   *
+   * @return {!Promise<void>} a promise that will resolve when the sequence
+   *     has finished executing.
+   */
+  perform() {
+    return (0, this.onPerform_)();
   }
 
   /**
@@ -352,9 +369,13 @@ class Sequence {
  * @final
  */
 class KeySequence extends Sequence {
-  /** @param {!Keyboard} keyboard the keyboard to use. */
-  constructor(keyboard) {
-    super(keyboard);
+  /**
+   * @param {!Keyboard} keyboard the keyboard to use.
+   * @param {function(): !Promise<void>} onPerform the function to call to
+   *     actually handle class to {@link #perform}.
+   */
+  constructor(keyboard, onPerform) {
+    super(keyboard, onPerform);
   }
 
   /**
@@ -457,9 +478,13 @@ const Origin = {
  * @final
  */
 class PointerSequence extends Sequence {
-  /** @param {!Pointer} pointer the pointer to use. */
-  constructor(pointer) {
-    super(pointer);
+  /**
+   * @param {!Pointer} pointer the pointer to use.
+   * @param {function(): !Promise<void>} onPerform the function to call to
+   *     actually handle class to {@link #perform}.
+   */
+  constructor(pointer, onPerform) {
+    super(pointer, onPerform);
   }
 
   /**

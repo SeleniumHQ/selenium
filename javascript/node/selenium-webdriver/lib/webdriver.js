@@ -2410,9 +2410,30 @@ class AlertPromise extends Alert {
  *
  * This input sequence can be produced using the ActionSequence API with
  * the code below. Actions must be defined individually for each device and
- * explicitly kept in sync by the user. The list of actions for the mouse is
- * far longer than the keyboard. Rather than keeping track of the number of
- * steps for the keyboard to pause, there is a single call to
+ * explicitly kept in sync by the user.
+ *
+ *     let actions = driver.actions();
+ *     actions.keyboard().keyDown(Key.SHIFT);
+ *     actions.mouse().click(element1).click(element2);
+ *
+ *     // Insert no-op pauses so the keyboard does not act again until the
+ *     // mouse has finished it's sequence. Note, we allow the mouse to move
+ *     // to element1 during tick 1.
+ *     action.keyboard()
+ *        .pause()  // mouse down
+ *        .pause()  // mouse up
+ *        .pause()  // move to element 2
+ *        .pause()  // mouse down
+ *        .pause()  // mouse up
+ *        .keyUp(Key.SHIFT);
+ *
+ *     actions.perform();
+ *
+ * Notice that `mouse().click(element1)` is a compound action of
+ * "move to element 1", "mouse down", "mouse up". This generates a sequence
+ * far longer than the keyboard, so we have to insert pauses so the keyboard
+ * is idle until the mouse has finished. Rather than trying to keep track of
+ * the number of steps to pause, we can use a single call to
  * {@link #synchronize()}. This instructs the ActionSequence to ensure the
  * input sequence for all devices are the same length - inserting explicit
  * {@linkplain input.Sequence#pause pauses} as necessary.
@@ -2427,31 +2448,50 @@ class AlertPromise extends Alert {
  *     actions.keyboard().keyUp(Key.SHIFT);
  *     actions.perform();
  *
+ *
+ * > __N.B.__ not all browsers support parallel action sequences that define
+ * > actions for multiple devices at a single tick. Our example above is one
+ * > such sequence: the very first tick moves the mouse while press the SHIFT
+ * > key. For maximum portability, users must ensure only one action is defined
+ * > at each tick.
+ *
+ * > __TIP:__  Action sequences involving a single device can be defined and
+ * > executed in a single, fluent statement by calling
+ * > {@linkplain input.Sequence#perform perform} on the specific device you wish
+ * > to execute:
+ * >
+ * >     driver.actions().keyboard().sendKeys('hello').perform();
+ * >
+ *
  * @final
  * @see <https://www.w3.org/TR/webdriver/#actions>
  */
 class ActionSequence {
   /**
-   * @param {!IWebDriver} driver The driver instance to execute the configured
+   * @param {!command.Executor} executor The object to execute the configured
    *     actions with.
    */
-  constructor(driver) {
+  constructor(executor) {
     /** @private @const */
-    this.driver_ = driver;
+    this.executor_ = executor;
 
     /** @private @const */
     this.keyboard_ =
-        new input.KeySequence(new input.Keyboard('default keyboard'));
+        new input.KeySequence(
+            new input.Keyboard('default keyboard'),
+            () => this.perform(this.keyboard_));
 
     /** @private @const */
     this.mouse_ =
         new input.PointerSequence(
-            new input.Pointer('default mouse', input.Pointer.Type.MOUSE));
+            new input.Pointer('default mouse', input.Pointer.Type.MOUSE),
+            () => this.perform(this.mouse_));
 
     /** @private @const */
     this.touch_ =
         new input.PointerSequence(
-            new input.Pointer('default touch', input.Pointer.Type.TOUCH));
+            new input.Pointer('default touch', input.Pointer.Type.TOUCH),
+            () => this.perform(this.touch_));
   }
 
   /**
@@ -2505,36 +2545,41 @@ class ActionSequence {
     this.keyboard_.clear();
     this.mouse_.clear();
     this.touch_.clear();
-    return this.driver_.execute(
+    return this.executor_.execute(
         new command.Command(command.Name.CLEAR_ACTIONS));
   }
 
   /**
    * Performs the configured action sequence.
    *
+   * @param {input.Sequence=} device the specific device sequence to execute.
+   *     If unspecified, this will default to executing the sequence for every
+   *     defined device.
    * @return {!Promise<void>} a promise that will resolve when all actions have
    *     been completed.
    */
-  async perform() {
-    let actions = [
-        this.keyboard_,
-        this.mouse_,
-        this.touch_
-    ].filter(sequence => !sequence.isIdle());
+  async perform(device) {
+    let devices =
+      device ? [device] : [this.keyboard_, this.mouse_, this.touch_];
+
+    devices = devices.filter(d => !d.isIdle());
+    if (devices.length === 0) {
+      return Promise.resolve();
+    }
 
     try {
-      await this.driver_.execute(
+      await this.executor_.execute(
           new command.Command(command.Name.ACTIONS)
-              .setParameter('actions', actions));
+              .setParameter('actions', devices));
     } catch (err) {
       if (!(err instanceof error.UnknownCommandError)
           && !(err instanceof error.UnsupportedOperationError)) {
         throw err;
       }
 
-      const commands = await translateInputSequences(actions);
+      const commands = await translateInputSequences(devices);
       for (let cmd of commands) {
-        await this.driver_.execute(cmd);
+        await this.executor_.execute(cmd);
       }
     }
   }
