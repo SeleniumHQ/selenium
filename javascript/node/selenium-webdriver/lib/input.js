@@ -556,8 +556,10 @@ class PointerSequence extends Sequence {
 
 
 module.exports = {
+  ActionType,
   Button,
   Device,
+  DeviceType,
   Key,
   Keyboard,
   KeySequence,

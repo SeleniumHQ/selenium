@@ -185,6 +185,11 @@ const Name = {
 
   ACTIONS: 'actions',
   CLEAR_ACTIONS: 'clearActions',
+
+  LEGACY_ACTION_MOUSE_DOWN: 'legacyAction:mouseDown',
+  LEGACY_ACTION_MOUSE_UP: 'legacyAction:mouseUp',
+  LEGACY_ACTION_MOUSE_MOVE: 'legacyAction:mouseMove',
+  LEGACY_ACTION_SEND_KEYS: 'legacyAction:sendKeys',
 };
 
 

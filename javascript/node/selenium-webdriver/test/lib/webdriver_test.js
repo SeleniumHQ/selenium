@@ -134,7 +134,7 @@ describe('WebDriver', function() {
     }
 
     execute(command) {
-      assert.deepEqual(this.parameters_, command.getParameters());
+      assert.deepEqual(command.getParameters(), this.parameters_);
       return this.toDo_(command);
     }
   }
@@ -1482,72 +1482,226 @@ describe('WebDriver', function() {
         actions.keyboard().sendKeys('abc', 'd');
         return actions.perform();
       });
+
+      describe('legacy sendKeys()', function() {
+        it('can translate a basic sequence', function() {
+          let executor = new FakeExecutor()
+              .expect(CName.ACTIONS, {
+                actions:  [{
+                  type: 'key',
+                  id: 'default keyboard',
+                  actions: [
+                    {type: 'keyDown', value: 'a'}, {type: 'keyUp', value: 'a'},
+                    {type: 'keyDown', value: 'b'}, {type: 'keyUp', value: 'b'},
+                    {type: 'keyDown', value: 'c'}, {type: 'keyUp', value: 'c'},
+                    {type: 'keyDown', value: 'd'}, {type: 'keyUp', value: 'd'},
+                  ]
+                }]
+              })
+              .andReturnError(new error.UnsupportedOperationError())
+              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['a']})
+              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['b']})
+              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['c']})
+              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['d']})
+              .end();
+
+          let driver = executor.createDriver();
+          let actions = driver.actions();
+          actions.keyboard().sendKeys('abc', 'd');
+          return actions.perform();
+        });
+
+        it('skips pauses', function() {
+          let executor = new FakeExecutor()
+              .expect(CName.ACTIONS, {
+                actions:  [{
+                  type: 'key',
+                  id: 'default keyboard',
+                  actions: [
+                    {type: 'pause', duration: 0}, {type: 'pause', duration: 0},
+                    {type: 'keyDown', value: 'a'}, {type: 'keyUp', value: 'a'},
+                    {type: 'keyDown', value: 'b'}, {type: 'keyUp', value: 'b'},
+                  ]
+                }]
+              })
+              .andReturnError(new error.UnsupportedOperationError())
+              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['a']})
+              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['b']})
+              .end();
+
+          let driver = executor.createDriver();
+          let actions = driver.actions();
+          actions.keyboard().pause();
+          actions.keyboard().pause();
+          actions.keyboard().sendKeys('ab');
+
+
+          return actions.perform();
+        });
+
+        it('non-modifier keydown must be followed by keyup of same key', () => {
+          let executor = new FakeExecutor()
+              .expect(CName.ACTIONS, {
+                actions:  [{
+                  type: 'key',
+                  id: 'default keyboard',
+                  actions: [
+                    {type: 'keyDown', value: Key.SHIFT},
+                    {type: 'keyDown', value: 'a'},
+                    {type: 'keyDown', value: 'b'},
+                  ]
+                }]
+              })
+              .andReturnError(new error.UnsupportedOperationError())
+              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['a']})
+              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['b']})
+              .end();
+
+          let driver = executor.createDriver();
+          let actions = driver.actions();
+          actions.keyboard().keyDown(Key.SHIFT);
+          actions.keyboard().keyDown('a');
+          actions.keyboard().keyDown('b');
+
+          return actions.perform().then(
+              () => {throw Error('should have failed')},
+              (e) => assert.ok(e instanceof error.UnsupportedOperationError));
+        });
+      });
     });
 
-    it('testActionSequence', function() {
-      let executor = new FakeExecutor()
-          .expect(CName.FIND_ELEMENT,
-                  {using: 'css selector', value: '*[id="a"]'})
-              .andReturnSuccess(WebElement.buildId('id1'))
-          .expect(CName.FIND_ELEMENT,
-                  {using: 'css selector', value: '*[id="b"]'})
-              .andReturnSuccess(WebElement.buildId('id2'))
-          .expect(CName.ACTIONS, {
-            actions:  [{
-              type: 'key',
-              id: 'default keyboard',
-              actions: [
-                {type: 'keyDown', value: Key.SHIFT},
-                {type: 'pause', duration: 0},
-                {type: 'pause', duration: 0},
-                {type: 'pause', duration: 0},
-                {type: 'pause', duration: 0},
-                {type: 'pause', duration: 0},
-                {type: 'pause', duration: 0},
-                {type: 'keyUp', value: Key.SHIFT},
-              ]
-            },
-            {
-              type: 'pointer',
-              id: 'default mouse',
-              parameters: {
-                pointerType: 'mouse'
+    describe('mouse()', function() {
+      it('legacy doubleClick()', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.FIND_ELEMENT,
+                    {using: 'css selector', value: '*[id="a"]'})
+                .andReturnSuccess(WebElement.buildId('id1'))
+            .expect(CName.ACTIONS, {
+              actions:  [{
+                type: 'pointer',
+                id: 'default mouse',
+                parameters: {
+                  pointerType: 'mouse'
+                },
+                actions: [
+                  {
+                    duration: 100,
+                    origin: WebElement.buildId('id1'),
+                    type: 'pointerMove',
+                    x: 0,
+                    y: 0
+                  },
+                  {type: 'pointerDown', button: Button.LEFT},
+                  {type: 'pointerUp', button: Button.LEFT},
+                  {type: 'pointerDown', button: Button.LEFT},
+                  {type: 'pointerUp', button: Button.LEFT}
+                ]
+              }]
+            })
+            .andReturnError(new error.UnsupportedOperationError())
+            .expect(CName.LEGACY_ACTION_MOUSE_MOVE, {
+              element: 'id1',
+              xoffset: 0,
+              yoffset: 0
+            })
+            .expect(CName.LEGACY_ACTION_MOUSE_DOWN, {button: Button.LEFT})
+            .expect(CName.LEGACY_ACTION_MOUSE_UP, {button: Button.LEFT})
+            .expect(CName.LEGACY_ACTION_MOUSE_DOWN, {button: Button.LEFT})
+            .expect(CName.LEGACY_ACTION_MOUSE_UP, {button: Button.LEFT})
+            .end();
+
+        let driver = executor.createDriver();
+        let element1 = driver.findElement(By.id('a'));
+
+        let actions = driver.actions();
+        actions.mouse().doubleClick(element1);
+        return actions.perform();
+      });
+    });
+
+    describe('multi-device action sequence', function() {
+      it('must be translated to legacy', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.FIND_ELEMENT,
+                    {using: 'css selector', value: '*[id="a"]'})
+                .andReturnSuccess(WebElement.buildId('id1'))
+            .expect(CName.FIND_ELEMENT,
+                    {using: 'css selector', value: '*[id="b"]'})
+                .andReturnSuccess(WebElement.buildId('id2'))
+            .expect(CName.ACTIONS, {
+              actions:  [{
+                type: 'key',
+                id: 'default keyboard',
+                actions: [
+                  {type: 'keyDown', value: Key.SHIFT},
+                  {type: 'pause', duration: 0},
+                  {type: 'pause', duration: 0},
+                  {type: 'pause', duration: 0},
+                  {type: 'pause', duration: 0},
+                  {type: 'pause', duration: 0},
+                  {type: 'pause', duration: 0},
+                  {type: 'keyUp', value: Key.SHIFT},
+                ]
               },
-              actions: [
-                {type: 'pause', duration: 0},
-                {
-                  duration: 100,
-                  origin: WebElement.buildId('id1'),
-                  type: 'pointerMove',
-                  x: 0,
-                  y: 0
+              {
+                type: 'pointer',
+                id: 'default mouse',
+                parameters: {
+                  pointerType: 'mouse'
                 },
-                {type: 'pointerDown', button: Button.LEFT},
-                {type: 'pointerUp', button: Button.LEFT},
-                {
-                  duration: 100,
-                  origin: WebElement.buildId('id2'),
-                  type: 'pointerMove',
-                  x: 0,
-                  y: 0
-                },
-                {type: 'pointerDown', button: Button.LEFT},
-                {type: 'pointerUp', button: Button.LEFT}
-              ]
-            }]
-          })
-          .end();
+                actions: [
+                  {type: 'pause', duration: 0},
+                  {
+                    duration: 100,
+                    origin: WebElement.buildId('id1'),
+                    type: 'pointerMove',
+                    x: 0,
+                    y: 0
+                  },
+                  {type: 'pointerDown', button: Button.LEFT},
+                  {type: 'pointerUp', button: Button.LEFT},
+                  {
+                    duration: 100,
+                    origin: WebElement.buildId('id2'),
+                    type: 'pointerMove',
+                    x: 0,
+                    y: 0
+                  },
+                  {type: 'pointerDown', button: Button.LEFT},
+                  {type: 'pointerUp', button: Button.LEFT}
+                ]
+              }]
+            })
+            .andReturnError(new error.UnsupportedOperationError())
+            .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: [Key.SHIFT]})
+            .expect(CName.LEGACY_ACTION_MOUSE_MOVE, {
+              element: 'id1',
+              xoffset: 0,
+              yoffset: 0
+            })
+            .expect(CName.LEGACY_ACTION_MOUSE_DOWN, {button: Button.LEFT})
+            .expect(CName.LEGACY_ACTION_MOUSE_UP, {button: Button.LEFT})
+            .expect(CName.LEGACY_ACTION_MOUSE_MOVE, {
+              element: 'id2',
+              xoffset: 0,
+              yoffset: 0
+            })
+            .expect(CName.LEGACY_ACTION_MOUSE_DOWN, {button: Button.LEFT})
+            .expect(CName.LEGACY_ACTION_MOUSE_UP, {button: Button.LEFT})
+            .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: [Key.SHIFT]})
+            .end();
 
-      let driver = executor.createDriver();
-      let element1 = driver.findElement(By.id('a'));
-      let element2 = driver.findElement(By.id('b'));
+        let driver = executor.createDriver();
+        let element1 = driver.findElement(By.id('a'));
+        let element2 = driver.findElement(By.id('b'));
 
-      let actions = driver.actions();
-      actions.keyboard().keyDown(Key.SHIFT);
-      actions.mouse().pause().click(element1).click(element2);
-      actions.synchronize();
-      actions.keyboard().keyUp(Key.SHIFT);
-      return actions.perform();
+        let actions = driver.actions();
+        actions.keyboard().keyDown(Key.SHIFT);
+        actions.mouse().pause().click(element1).click(element2);
+        actions.synchronize();
+        actions.keyboard().keyUp(Key.SHIFT);
+        return actions.perform();
+      });
     });
   });
 

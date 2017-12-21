@@ -2515,16 +2515,136 @@ class ActionSequence {
    * @return {!Promise<void>} a promise that will resolve when all actions have
    *     been completed.
    */
-  perform() {
+  async perform() {
     let actions = [
         this.keyboard_,
         this.mouse_,
         this.touch_
     ].filter(sequence => !sequence.isIdle());
-    return this.driver_.execute(
-        new command.Command(command.Name.ACTIONS)
-            .setParameter('actions', actions));
+
+    try {
+      await this.driver_.execute(
+          new command.Command(command.Name.ACTIONS)
+              .setParameter('actions', actions));
+    } catch (err) {
+      if (!(err instanceof error.UnknownCommandError)
+          && !(err instanceof error.UnsupportedOperationError)) {
+        throw err;
+      }
+
+      const commands = await translateInputSequences(actions);
+      for (let cmd of commands) {
+        await this.driver_.execute(cmd);
+      }
+    }
   }
+}
+
+
+const MODIFIER_KEYS = new Set([
+  input.Key.ALT,
+  input.Key.CONTROL,
+  input.Key.SHIFT,
+  input.Key.COMMAND
+]);
+
+
+/**
+ * Translates input sequences to commands against the legacy actions API.
+ * @param {!Array<!input.Sequence>} sequences The input sequences to translate.
+ * @return {!Promise<!Array<command.Command>>} The translated commands.
+ */
+async function translateInputSequences(sequences) {
+  let devices = await toWireValue(sequences);
+  if (!Array.isArray(devices)) {
+    throw TypeError(`expected an array, got: ${typeof devices}`);
+  }
+
+  const commands = [];
+  const maxLength =
+      devices.reduce((len, device) => Math.max(device.actions.length, len), 0);
+  for (let i = 0; i < maxLength; i++) {
+    let next;
+    for (let device of devices) {
+      if (device.type === input.DeviceType.POINTER
+          && device.parameters.pointerType !== input.Pointer.Type.MOUSE) {
+        throw new error.UnsupportedOperationError(
+            `${device.parameters.pointerType} pointer not supported `
+                + `by the legacy API`);
+      }
+
+      let action = device.actions[i];
+      if (!action || action.type === input.ActionType.PAUSE) {
+        continue;
+      }
+
+      if (next) {
+        throw new error.UnsupportedOperationError(
+            'Parallel action sequences are not supported for this browser');
+      } else {
+        next = action;
+      }
+
+      switch (action.type) {
+        case input.ActionType.KEY_DOWN: {
+          // If this action is a keydown for a non-modifier key, the next action
+          // must be a keyup for the same key, otherwise it cannot be translated
+          // to the legacy action API.
+          if (!MODIFIER_KEYS.has(action.value)) {
+            const np1 = device.actions[i + 1];
+            if (!np1
+                || np1.type !== input.ActionType.KEY_UP
+                || np1.value !== action.value) {
+              throw new error.UnsupportedOperationError(
+                  'Unable to translate sequence to legacy API: keydown for '
+                      + `<${action.value}> must be followed by a keyup for the `
+                      + 'same key');
+            }
+          }
+          commands.push(
+              new command.Command(command.Name.LEGACY_ACTION_SEND_KEYS)
+                  .setParameter('value', [action.value]));
+          break;
+        }
+        case input.ActionType.KEY_UP: {
+          // The legacy API always treats sendKeys for a non-modifier to be a
+          // keydown/up pair. For modifiers, the sendKeys toggles the key state,
+          // so we can omit any keyup actions for non-modifier keys.
+          if (MODIFIER_KEYS.has(action.value)) {
+            commands.push(
+                new command.Command(command.Name.LEGACY_ACTION_SEND_KEYS)
+                    .setParameter('value', [action.value]));
+          }
+          break;
+        }
+        case input.ActionType.POINTER_DOWN:
+          commands.push(
+              new command.Command(command.Name.LEGACY_ACTION_MOUSE_DOWN)
+                  .setParameter('button', action.button));
+          break;
+        case input.ActionType.POINTER_UP:
+          commands.push(
+              new command.Command(command.Name.LEGACY_ACTION_MOUSE_UP)
+                  .setParameter('button', action.button));
+          break;
+        case input.ActionType.POINTER_MOVE: {
+          let cmd = new command.Command(command.Name.LEGACY_ACTION_MOUSE_MOVE)
+              .setParameter('xoffset', action.x)
+              .setParameter('yoffset', action.y);
+          if (WebElement.isId(action.origin)) {
+            cmd.setParameter('element', WebElement.extractId(action.origin));
+          }
+          commands.push(cmd);
+          break;
+        }
+        default:
+          throw new error.UnsupportedOperationError(
+              'Unable to translate action to legacy API: '
+                  + JSON.stringify(action));
+      }
+    }
+  }
+  return commands;
 }
 
 

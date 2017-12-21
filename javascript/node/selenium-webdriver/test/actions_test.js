@@ -19,18 +19,36 @@
 
 const assert = require('assert');
 
-const {Browser, By, until} = require('..');
-const test = require('../lib/test');
+const error = require('../lib/error');
 const fileServer = require('../lib/test/fileserver');
+const test = require('../lib/test');
+const {Key} = require('../lib/input');
+const {Browser, By, until} = require('..');
 
 test.suite(function(env) {
-  test.ignore(env.browsers(Browser.CHROME, Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.SAFARI)).
   describe('WebDriver.actions()', function() {
     let driver;
 
-    before(async function() { driver = await env.builder().build(); });
-    afterEach(function() { return driver.actions().clear(); });
-    after(function() { return driver.quit(); });
+    before(async function() {
+      driver = await env.builder().build();
+    });
+
+    afterEach(async function() {
+      try {
+        await driver.actions().clear();
+      } catch (e) {
+        if (e instanceof error.UnsupportedOperationError
+            || e instanceof error.UnknownCommandError) {
+          return;
+        }
+        throw e;
+      }
+    });
+
+    after(function() {
+      return driver.quit();
+    });
 
     it('can move to and click element in an iframe', async function() {
       await driver.get(fileServer.whereIs('click_tests/click_in_iframe.html'));
@@ -45,6 +63,40 @@ test.suite(function(env) {
       await actions.perform();
 
       return driver.wait(until.titleIs('Submitted Successfully!'), 5000);
+    });
+
+    it('can send keys to focused element', async function() {
+      await driver.get(test.Pages.formPage);
+
+      let el = await driver.findElement(By.id('email'));
+      assert.equal(await el.getAttribute('value'), '');
+
+      await driver.executeScript('arguments[0].focus()', el);
+
+      let actions = driver.actions();
+      actions.keyboard().sendKeys('foobar');
+      await actions.perform();
+
+      assert.equal(await el.getAttribute('value'), 'foobar');
+    });
+
+    it('can send keys to focused element (with modifiers)', async function() {
+      await driver.get(test.Pages.formPage);
+
+      let el = await driver.findElement(By.id('email'));
+      assert.equal(await el.getAttribute('value'), '');
+
+      await driver.executeScript('arguments[0].focus()', el);
+
+      let actions = driver.actions();
+      actions.keyboard().sendKeys('fo');
+      actions.keyboard().keyDown(Key.SHIFT);
+      actions.keyboard().sendKeys('OB');
+      actions.keyboard().keyUp(Key.SHIFT);
+      actions.keyboard().sendKeys('ar');
+      await actions.perform();
+
+      assert.equal(await el.getAttribute('value'), 'foOBar');
     });
 
     it('can interact with simple form elements', async function() {

@@ -231,6 +231,10 @@ const COMMAND_MAP = new Map([
     [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/log/types')],
     [cmd.Name.GET_SESSION_LOGS, post('/logs')],
     [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/file')],
+    [cmd.Name.LEGACY_ACTION_MOUSE_DOWN, post('/session/:sessionId/buttondown')],
+    [cmd.Name.LEGACY_ACTION_MOUSE_UP, post('/session/:sessionId/buttonup')],
+    [cmd.Name.LEGACY_ACTION_MOUSE_MOVE, post('/session/:sessionId/moveto')],
+    [cmd.Name.LEGACY_ACTION_SEND_KEYS, post('/session/:sessionId/keys')],
 ]);
 
 
