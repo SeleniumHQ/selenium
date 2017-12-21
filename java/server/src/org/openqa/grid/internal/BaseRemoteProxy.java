@@ -34,9 +34,9 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.web.servlet.beta.WebProxyHtmlRendererBeta;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
@@ -423,7 +423,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return getRemoteHost() != null ? getRemoteHost().toString() : "<detached>";
   }
 
-  private final HtmlRenderer renderer = new DefaultHtmlRenderer(this);
+  private final HtmlRenderer renderer = new WebProxyHtmlRendererBeta(this);
 
   public HtmlRenderer getHtmlRender() {
     return renderer;

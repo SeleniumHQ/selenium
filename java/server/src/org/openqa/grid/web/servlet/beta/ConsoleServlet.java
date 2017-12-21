@@ -122,7 +122,10 @@ public class ConsoleServlet extends RegistryBasedServlet {
     // TODO freynaud : registry to return a copy of proxies ?
     List<String> nodes = new ArrayList<>();
     for (RemoteProxy proxy : getRegistry().getAllProxies()) {
-      HtmlRenderer beta = new WebProxyHtmlRendererBeta(proxy);
+      HtmlRenderer beta = proxy.getHtmlRender();
+      if (beta == null) {
+        beta = new WebProxyHtmlRendererBeta(proxy);
+      }
       nodes.add(beta.renderSummary());
     }
 
