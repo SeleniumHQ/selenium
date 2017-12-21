@@ -114,9 +114,9 @@ namespace OpenQA.Selenium.Firefox
             FileUtilities.DeleteDirectory(stagingDirectoryName);
         }
 
-        private static string ReadIdFromInstallRdf(string root)
+        private string ReadIdFromInstallRdf(string root)
         {
-            string id = null;
+            string id;
             try
             {
                 string installRdf = Path.Combine(root, "install.rdf");
@@ -132,12 +132,8 @@ namespace OpenQA.Selenium.Firefox
                 {
                     XmlNode descriptionNode = rdfXmlDocument.SelectSingleNode("//RDF:Description", rdfNamespaceManager);
                     XmlAttribute attribute = descriptionNode.Attributes["id", EmNamespaceUri];
-                    if (attribute == null)
-                    {
-                        throw new WebDriverException("Cannot locate node containing extension id: " + installRdf);
-                    }
 
-                    id = attribute.Value;
+                    id = attribute?.Value ?? throw new WebDriverException("Cannot locate node containing extension id: " + installRdf);
                 }
                 else
                 {
@@ -180,7 +176,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
 
-        private String ReadIdFromManifestJson(string root)
+        private string ReadIdFromManifestJson(string root)
         {
             string MANIFEST_JSON_FILE = "manifest.json";
             string manifestJsonPath = Path.Combine(root, MANIFEST_JSON_FILE);
@@ -202,7 +198,7 @@ namespace OpenQA.Selenium.Firefox
                     }
                 }
 
-                if (String.IsNullOrWhiteSpace(id))
+                if (string.IsNullOrEmpty(id))
                 {
                     id = manifestObject["name"].ToString().Replace(" ", "") +
                               "@" + manifestObject["version"].ToString();
