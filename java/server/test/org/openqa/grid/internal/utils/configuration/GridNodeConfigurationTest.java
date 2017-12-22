@@ -180,6 +180,7 @@ public class GridNodeConfigurationTest {
                  + "\"register\":true,"
                  + "\"registerCycle\":5000,"
                  + "\"unregisterIfStillDownAfter\":60000,"
+                 + "\"enablePlatformVerification\":true,"
                  + "\"custom\":{},"
                  + "\"maxSession\":5,"
                  + "\"servlets\":[],"
