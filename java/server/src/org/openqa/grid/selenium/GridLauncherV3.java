@@ -229,13 +229,13 @@ public class GridLauncherV3 {
           }
 
           public void launch() throws Exception {
-            log.info("Launching a standalone Selenium Server");
+            log.info(String.format(
+                "Launching a standalone Selenium Server on port %s", configuration.port));
             SeleniumServer server = new SeleniumServer(configuration);
             Map<String, Class<? extends Servlet >> servlets = new HashMap<>();
             servlets.put("/*", DisplayHelpServlet.class);
             server.setExtraServlets(servlets);
             server.boot();
-            log.info("Selenium Server is up and running");
           }
         })
         .put(GridRole.HUB.toString(), () -> new GridItemLauncher() {
@@ -256,11 +256,10 @@ public class GridLauncherV3 {
           }
 
           public void launch() throws Exception {
-            log.info("Launching Selenium Grid hub");
+            log.info(String.format(
+                "Launching Selenium Grid hub on port %s", configuration.port));
             Hub h = new Hub(configuration);
             h.start();
-            log.info("Nodes should register to " + h.getRegistrationURL());
-            log.info("Selenium Grid hub is up and running");
           }
         })
         .put(GridRole.NODE.toString(), () -> new GridItemLauncher() {
@@ -284,12 +283,14 @@ public class GridLauncherV3 {
           }
 
           public void launch() throws Exception {
-            log.info("Launching a Selenium Grid node");
+            log.info(String.format(
+                "Launching a Selenium Grid node on port %s", configuration.port));
             SelfRegisteringRemote remote = new SelfRegisteringRemote(configuration);
             remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
-            remote.startRemoteServer();
-            log.info("Selenium Grid node is up and ready to register to the hub");
-            remote.startRegistrationProcess();
+            if (remote.startRemoteServer()) {
+              log.info("Selenium Grid node is up and ready to register to the hub");
+              remote.startRegistrationProcess();
+            }
           }
         });
 

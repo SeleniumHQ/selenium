@@ -45,6 +45,7 @@ import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
+import java.net.BindException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -121,7 +122,7 @@ public class SeleniumServer implements GridNodeServer {
     this.extraServlets = extraServlets;
   }
 
-  public void boot() {
+  public boolean boot() {
     if (configuration.jettyMaxThreads != null && configuration.jettyMaxThreads > 0) {
       server = new Server(new QueuedThreadPool(configuration.jettyMaxThreads));
     } else {
@@ -195,8 +196,21 @@ public class SeleniumServer implements GridNodeServer {
     try {
       server.start();
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      try {
+        server.stop();
+      } catch (Exception ignore) {
+      }
+      if (e instanceof BindException) {
+        LOG.severe(String.format(
+            "Port %s is busy, please choose a free port and specify it using -port option", configuration.port));
+        return false;
+      } else {
+        throw new RuntimeException(e);
+      }
     }
+
+    LOG.info(String.format("Selenium Server is up and running on port %s", configuration.port));
+    return true;
   }
 
   private NewSessionPipeline createPipeline(StandaloneConfiguration configuration) {

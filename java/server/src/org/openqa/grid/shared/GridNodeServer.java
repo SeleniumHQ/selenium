@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.servlet.Servlet;
 
 public interface GridNodeServer {
-  void boot() throws Exception;
+  boolean boot() throws Exception;
   void stop();
   int getRealPort();
   void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets);

@@ -116,12 +116,12 @@ public class SelfRegisteringRemote {
     this.server = server;
   }
 
-  public void startRemoteServer() throws Exception {
+  public boolean startRemoteServer() throws Exception {
     if (server == null) {
       throw new GridConfigurationException("no server set to register to the hub");
     }
     server.setExtraServlets(nodeServlets);
-    server.boot();
+    return server.boot();
   }
 
   public void stopRemoteServer() {

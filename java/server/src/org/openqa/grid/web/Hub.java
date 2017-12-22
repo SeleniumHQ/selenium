@@ -47,6 +47,7 @@ import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
+import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -174,8 +175,6 @@ public class Hub {
       httpConfig.setSecureScheme("https");
       httpConfig.setSecurePort(config.port);
 
-      log.info("Will listen on " + config.port);
-
       ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
       http.setPort(config.port);
 
@@ -211,7 +210,26 @@ public class Hub {
 
   public void start() throws Exception {
     initServer();
-    server.start();
+
+    try {
+      server.start();
+    } catch (Exception e) {
+      try {
+        stop();
+      } catch (Exception ignore) {
+      }
+      if (e instanceof BindException) {
+        log.severe(String.format(
+            "Port %s is busy, please choose a free port for the hub and specify it using -port option", config.port));
+        return;
+      } else {
+        throw new RuntimeException(e);
+      }
+    }
+
+    log.info("Selenium Grid hub is up and running");
+    log.info(String.format("Nodes should register to %s", getRegistrationURL()));
+    log.info(String.format("Clients should connect to %s", getWebDriverHubRequestURL()));
   }
 
   public void stop() throws Exception {
