@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.beust.jcommander.JCommander;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
@@ -268,7 +269,7 @@ public class RegistrationRequestTest {
   }
 
   @Test
-  public void testBuilderPrunesCapabilitiesWithUnknownPlatform() {
+  public void testBuilderPrunesCapabilitiesWithUnknownPlatformName() {
     GridNodeConfiguration config = new GridNodeConfiguration();
     MutableCapabilities capabilities = new MutableCapabilities();
     capabilities.setCapability("browserName", "firefox");
@@ -276,6 +277,86 @@ public class RegistrationRequestTest {
     config.capabilities = Arrays.asList(capabilities);
     RegistrationRequest req = RegistrationRequest.build(config);
     assertEquals(req.getConfiguration().capabilities.size(), 0);
+  }
+
+  @Test
+  public void testBuilderPrunesCapabilitiesWithUnknownPlatform() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platform", "cheese");
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 0);
+  }
+
+  @Test
+  public void testBuilderPrunesCapabilitiesWithPlatformThatDoesNotMatchCurrent() {
+    Platform current = Platform.getCurrent().family();
+    Platform platform = Arrays.stream(Platform.values())
+        .filter(p -> ! p.is(current)).findFirst().get();
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platform", platform);
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 0);
+  }
+
+  @Test
+  public void testBuilderDoesNotPruneCapabilitiesWithPlatformThatIsEqualToCurrentFamily() {
+    Platform platform = Platform.getCurrent().family();
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platform", platform);
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 1);
+  }
+
+  @Test
+  public void testBuilderDoesNotPruneCapabilitiesWithPlatformThatBelongsToCurrentFamily() {
+    Platform current = Platform.getCurrent().family();
+    Platform platform = Arrays.stream(Platform.values())
+        .filter(p -> p.is(current) && p != current).findFirst().orElse(null);
+    Assume.assumeTrue(platform != null);
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platform", platform);
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 1);
+  }
+
+  @Test
+  public void testBuilderFixesUpPlatform() {
+    Platform platform = Platform.getCurrent();
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platformName", platform);
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 1);
+    assertEquals(req.getConfiguration().capabilities.get(0).getCapability("platform"), platform);
+    assertEquals(req.getConfiguration().capabilities.get(0).getCapability("platformName"), platform);
+  }
+
+  @Test
+  public void testBuilderFixesUpPlatformName() {
+    Platform platform = Platform.getCurrent();
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platform", platform);
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 1);
+    assertEquals(req.getConfiguration().capabilities.get(0).getCapability("platform"), platform);
+    assertEquals(req.getConfiguration().capabilities.get(0).getCapability("platformName"), platform);
   }
 
   private void assertConstruction(RegistrationRequest req) {

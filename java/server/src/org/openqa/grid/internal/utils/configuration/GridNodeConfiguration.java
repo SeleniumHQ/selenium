@@ -311,6 +311,17 @@ public class GridNodeConfiguration extends GridConfiguration {
   public Integer unregisterIfStillDownAfter = DEFAULT_UNREGISTER_DELAY;
 
   /**
+   * Whether or not to drop capabilities that does not belong to the current platform family
+   */
+  @Expose
+  @Parameter(
+      names = "-enablePlatformVerification",
+      arity = 1,
+      description = "<Boolean>: Whether or not to drop capabilities that does not belong to the current platform family. Defaults to true."
+  )
+  public boolean enablePlatformVerification = true;
+
+  /**
    * Creates a new configuration using the default values.
    */
   public GridNodeConfiguration() {
@@ -532,7 +543,12 @@ public class GridNodeConfiguration extends GridConfiguration {
     capabilities = capabilities.stream()
         .peek(cap -> cap.setCapability(
             CapabilityType.PLATFORM,
-            Optional.ofNullable(cap.getCapability(CapabilityType.PLATFORM_NAME)).orElse(current)))
+            Optional.ofNullable(cap.getCapability(CapabilityType.PLATFORM_NAME)).orElse(
+                Optional.ofNullable(cap.getCapability(CapabilityType.PLATFORM)).orElse(current))))
+        .peek(cap -> cap.setCapability(
+            CapabilityType.PLATFORM_NAME,
+            Optional.ofNullable(cap.getCapability(CapabilityType.PLATFORM_NAME)).orElse(
+                Optional.ofNullable(cap.getCapability(CapabilityType.PLATFORM)).orElse(current))))
         .peek(cap -> cap.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,
             Optional.ofNullable(cap.getCapability(RegistrationRequest.SELENIUM_PROTOCOL))
                 .orElse(SeleniumProtocol.WebDriver.toString())))
@@ -540,14 +556,20 @@ public class GridNodeConfiguration extends GridConfiguration {
         .collect(Collectors.toList());
   }
 
-  public void dropCapabilitiesThatDoenNotMatchCurrentPlatform() {
+  public void dropCapabilitiesThatDoesNotMatchCurrentPlatform() {
+    if (!enablePlatformVerification) {
+      return;
+    }
+
     if (capabilities == null) {
       return; // assumes the caller set it/wants it this way
     }
 
     Platform current = Platform.getCurrent();
+    Platform currentFamily = Optional.ofNullable(current.family()).orElse(current);
     capabilities = capabilities.stream()
-        .filter(cap -> current.is(cap.getPlatform()))
+        .filter(cap -> cap.getPlatform() != null
+                       && (cap.getPlatform() == Platform.ANY || cap.getPlatform().is(currentFamily)))
         .collect(Collectors.toList());
   }
 
