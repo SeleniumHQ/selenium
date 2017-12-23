@@ -88,7 +88,7 @@ module Selenium
             # document handling
             #
 
-            get_page_source: [:get, '/session/:session_id/source'.freeze],
+            get_page_source: [:get, 'session/:session_id/source'.freeze],
             execute_script: [:post, 'session/:session_id/execute/sync'.freeze],
             execute_async_script: [:post, 'session/:session_id/execute/async'.freeze],
 
