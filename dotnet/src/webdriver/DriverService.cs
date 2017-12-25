@@ -1,4 +1,4 @@
-﻿// <copyright file="DriverService.cs" company="WebDriver Committers">
+// <copyright file="DriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -35,6 +35,7 @@ namespace OpenQA.Selenium
         private string driverServicePath;
         private string driverServiceExecutableName;
         private int driverServicePort;
+        private string driverServiceHost;
         private bool silent;
         private bool hideCommandPromptWindow;
         private Process driverServiceProcess;
@@ -68,6 +69,7 @@ namespace OpenQA.Selenium
             this.driverServicePath = servicePath;
             this.driverServiceExecutableName = driverServiceExecutableName;
             this.driverServicePort = port;
+            this.driverServiceHost = "localhost";
         }
 
         /// <summary>
@@ -75,7 +77,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public Uri ServiceUrl
         {
-            get { return new Uri(string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}", this.driverServicePort)); }
+            get { return new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}", this.driverServiceHost, this.driverServicePort)); }
         }
 
         /// <summary>
@@ -85,6 +87,15 @@ namespace OpenQA.Selenium
         {
             get { return this.driverServicePort; }
             set { this.driverServicePort = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the host of the service.
+        /// </summary>
+        public string Host
+        {
+            get { return this.driverServiceHost; }
+            set { this.driverServiceHost = value; }
         }
 
         /// <summary>
