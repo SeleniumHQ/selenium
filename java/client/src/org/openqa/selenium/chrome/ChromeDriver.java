@@ -19,6 +19,13 @@ package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -29,13 +36,21 @@ import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.TouchScreen;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.FileDetector;
+import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
+
+import java.lang.reflect.Field;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
@@ -234,6 +249,53 @@ public class ChromeDriver extends RemoteWebDriver
    */
   public void launchApp(String id) {
     execute(ChromeDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
+  }
+
+  /**
+   * Send command for browser to allow downloading in headless mode
+   *
+   * @param downloadPath
+   */
+  public void sendCommandForDownloadChromeHeadLess(String downloadPath) {
+    Json json = new Json();
+    Map<String, Object> paramsMap = new HashMap<>();
+    paramsMap.put("cmd", "Page.setDownloadBehavior");
+    Map<String, String> cmdParamsMap = new HashMap<>();
+    cmdParamsMap.put("behavior", "allow");
+    cmdParamsMap.put("downloadPath", downloadPath);
+    paramsMap.put("params", cmdParamsMap);
+    String content = json.toJson(paramsMap);
+    URL remoteServerUri = null;
+    try {
+      Field field = HttpCommandExecutor.class.getDeclaredField("remoteServer");
+      field.setAccessible(true);
+      remoteServerUri = (URL) field.get(getCommandExecutor());
+    } catch (Exception e) {
+      return;
+    }
+    CloseableHttpClient httpclient = null;
+    try {
+      httpclient = HttpClients.createDefault();
+      URIBuilder builder = null;
+      try {
+        builder = new URIBuilder(remoteServerUri.toURI());
+      } catch (URISyntaxException e) {
+      }
+      builder.setPath("session/" + getSessionId().toString() + "/chromium/send_command");
+      HttpPost sendCommandPost = new HttpPost(builder.build());
+      sendCommandPost.setHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType());
+      StringEntity entity = new StringEntity(content, ContentType.APPLICATION_JSON);
+      sendCommandPost.setEntity(entity);
+      CloseableHttpResponse response = httpclient.execute(sendCommandPost);
+    } catch (Exception e) {
+    } finally {
+      if (httpclient != null) {
+        try {
+          httpclient.close();
+        } catch (Exception e) {
+        }
+      }
+    }
   }
 
 }

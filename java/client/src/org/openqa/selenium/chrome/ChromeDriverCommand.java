@@ -24,4 +24,7 @@ final class ChromeDriverCommand {
   private ChromeDriverCommand() {}
 
   static final String LAUNCH_APP = "launchApp";
+  static final String SEND_COMMANDS_FOR_DOWNLOAD_CHROME_HEAD_LESS
+      = "sendCommandForDownloadChromeHeadLess";
+
 }
