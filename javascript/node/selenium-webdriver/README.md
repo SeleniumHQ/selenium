@@ -39,7 +39,7 @@ also find the tests for selenium-webdriver informative.
         await driver.get('http://www.google.com/ncr');
         await driver.findElement(By.name('q'));.sendKeys('webdriver', Key.RETURN);
         await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-      } finall {
+      } finally {
         await driver.quit();
       }
     })();
