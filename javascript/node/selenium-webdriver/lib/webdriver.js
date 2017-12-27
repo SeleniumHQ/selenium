@@ -2258,21 +2258,6 @@ class Alert {
   }
 
   /**
-   * Sets the username and password in an alert prompting for credentials (such
-   * as a Basic HTTP Auth prompt). This method will implicitly
-   * {@linkplain #accept() submit} the dialog.
-   *
-   * @param {string} username The username to send.
-   * @param {string} password The password to send.
-   * @return {!Promise<void>} A promise that will be resolved when this
-   *     command has completed.
-   */
-  authenticateAs(username, password) {
-    return this.driver_.execute(
-        new command.Command(command.Name.SET_ALERT_CREDENTIALS));
-  }
-
-  /**
    * Accepts this alert.
    *
    * @return {!Promise<void>} A promise that will be resolved
@@ -2348,16 +2333,6 @@ class AlertPromise extends Alert {
     this.getText = function() {
       return alert.then(function(alert) {
         return alert.getText();
-      });
-    };
-
-    /**
-     * Defers action until the alert has been located.
-     * @override
-     */
-    this.authenticateAs = function(username, password) {
-      return alert.then(function(alert) {
-        return alert.authenticateAs(username, password);
       });
     };
 

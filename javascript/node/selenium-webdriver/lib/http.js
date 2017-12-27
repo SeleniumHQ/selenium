@@ -225,7 +225,6 @@ const COMMAND_MAP = new Map([
     [cmd.Name.DISMISS_ALERT, post('/session/:sessionId/dismiss_alert')],
     [cmd.Name.GET_ALERT_TEXT, get('/session/:sessionId/alert_text')],
     [cmd.Name.SET_ALERT_TEXT, post('/session/:sessionId/alert_text')],
-    [cmd.Name.SET_ALERT_CREDENTIALS, post('/session/:sessionId/alert/credentials')],
     [cmd.Name.GET_LOG, post('/session/:sessionId/log')],
     [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/log/types')],
     [cmd.Name.GET_SESSION_LOGS, post('/logs')],
