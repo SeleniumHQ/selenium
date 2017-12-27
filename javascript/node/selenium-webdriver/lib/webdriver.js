@@ -1178,13 +1178,26 @@ class Options {
    *     with the named cookie, or `null` if there is no such cookie.
    */
   async getCookie(name) {
-    const cookies = await this.getCookies();
-    for (let cookie of cookies) {
-      if (cookie && cookie['name'] === name) {
-        return cookie;
+    try {
+      const cookie =
+          await this.driver_.execute(
+              new command.Command(command.Name.GET_COOKIE)
+                  .setParameter('name', name));
+      return cookie;
+    } catch (err) {
+      if (!(err instanceof error.UnknownCommandError)
+          && !(err instanceof error.UnsupportedOperationError)) {
+        throw err;
       }
+
+      const cookies = await this.getCookies();
+      for (let cookie of cookies) {
+        if (cookie && cookie['name'] === name) {
+          return cookie;
+        }
+      }
+      return null;
     }
-    return null;
   }
 
   /**
@@ -1639,6 +1652,19 @@ class TargetLocator {
   }
 
   /**
+   * Changes the focus of all future commands to the parent frame of the
+   * currently selected frame. This command has no effect if the driver is
+   * already focused on the top-level browsing context.
+   *
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has completed.
+   */
+  parentFrame() {
+    return this.driver_.execute(
+        new command.Command(command.Name.SWITCH_TO_FRAME_PARENT));
+  }
+
+  /**
    * Changes the focus of all future commands to another window. Windows may be
    * specified by their {@code window.name} attribute or by its handle
    * (as returned by {@link WebDriver#getWindowHandles}).
@@ -1765,19 +1791,7 @@ class WebElement {
     if (a === b) {
       return true;
     }
-
-    let ids = await Promise.all([a.getId(), b.getId()]);
-    // If the two element's have the same ID, they should be considered
-    // equal. Otherwise, they may still be equivalent, but we'll need to
-    // ask the server to check for us.
-    if (ids[0] === ids[1]) {
-      return true;
-    }
-
-    let cmd = new command.Command(command.Name.ELEMENT_EQUALS);
-    cmd.setParameter('id', ids[0]);
-    cmd.setParameter('other', ids[1]);
-    return a.driver_.execute(cmd);
+    return a.driver_.executeScript('arguments[0] === arguments[1]', a, b);
   }
 
   /** @return {!WebDriver} The parent driver for this instance. */

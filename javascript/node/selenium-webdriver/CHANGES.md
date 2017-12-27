@@ -161,6 +161,11 @@ mode.
    Google's Chrome and Microsoft's Edge browsers support the new API.
 
 *  All window manipulation commands are now supported.
+*  Added `driver.switchTo().parentFrame()`
+*  When a named cookie is requested, attempt to fetch it directly using the
+   W3C endpoint, `GET /session/{session id}/cookie/{name}`. If this command is
+   not recognized by the remote end, fallback to fetching all cookies and then
+   searching for the desired name.
 
 
 ## v3.6.0

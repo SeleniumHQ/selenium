@@ -206,7 +206,6 @@ const COMMAND_MAP = new Map([
     [cmd.Name.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/size')],
     [cmd.Name.GET_ELEMENT_ATTRIBUTE, get('/session/:sessionId/element/:id/attribute/:name')],
     [cmd.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
-    [cmd.Name.ELEMENT_EQUALS, get('/session/:sessionId/element/:id/equals/:other')],
     [cmd.Name.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
     [cmd.Name.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
     [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/current/maximize')],
@@ -250,30 +249,77 @@ const COMMAND_MAP = new Map([
 
 /** @const {!Map<string, (CommandSpec|CommandTransformer)>} */
 const W3C_COMMAND_MAP = new Map([
-  [cmd.Name.ACTIONS, post('/session/:sessionId/actions')],
-  [cmd.Name.CLEAR_ACTIONS, del('/session/:sessionId/actions')],
-  [cmd.Name.GET_ACTIVE_ELEMENT, get('/session/:sessionId/element/active')],
-  [cmd.Name.GET_ALERT_TEXT, get('/session/:sessionId/alert/text')],
-  [cmd.Name.SET_ALERT_TEXT, post('/session/:sessionId/alert/text')],
-  [cmd.Name.ACCEPT_ALERT, post('/session/:sessionId/alert/accept')],
-  [cmd.Name.DISMISS_ALERT, post('/session/:sessionId/alert/dismiss')],
-  [cmd.Name.GET_ELEMENT_ATTRIBUTE, (cmd) => {
-    return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'id', 'name');
-  }],
-  [cmd.Name.GET_ELEMENT_LOCATION, get('/session/:sessionId/element/:id/rect')],
-  [cmd.Name.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/rect')],
-  [cmd.Name.IS_ELEMENT_DISPLAYED, (cmd) => {
-    return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'id');
-  }],
+  // Server status.
+  [cmd.Name.GET_SERVER_STATUS, get('/status')],
+  // Session management.
+  [cmd.Name.NEW_SESSION, post('/session')],
+  [cmd.Name.QUIT, del('/session/:sessionId')],
+  [cmd.Name.GET_TIMEOUT, get('/session/:sessionId/timeouts')],
+  [cmd.Name.SET_TIMEOUT, post('/session/:sessionId/timeouts')],
+  // Navigation.
+  [cmd.Name.GET_CURRENT_URL, get('/session/:sessionId/url')],
+  [cmd.Name.GET, post('/session/:sessionId/url')],
+  [cmd.Name.GO_BACK, post('/session/:sessionId/back')],
+  [cmd.Name.GO_FORWARD, post('/session/:sessionId/forward')],
+  [cmd.Name.REFRESH, post('/session/:sessionId/refresh')],
+  // Page inspection.
+  [cmd.Name.GET_PAGE_SOURCE, get('/session/:sessionId/source')],
+  [cmd.Name.GET_TITLE, get('/session/:sessionId/title')],
+  // Script execution.
   [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute/sync')],
   [cmd.Name.EXECUTE_ASYNC_SCRIPT, post('/session/:sessionId/execute/async')],
+  // Frame selection.
+  [cmd.Name.SWITCH_TO_FRAME, post('/session/:sessionId/frame')],
+  [cmd.Name.SWITCH_TO_FRAME_PARENT, post('/session/:sessionId/frame/parent')],
+  // Window management.
+  [cmd.Name.GET_CURRENT_WINDOW_HANDLE, get('/session/:sessionId/window')],
+  [cmd.Name.CLOSE, del('/session/:sessionId/window')],
+  [cmd.Name.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
+  [cmd.Name.GET_WINDOW_HANDLES, get('/session/:sessionId/window/handles')],
+  [cmd.Name.GET_WINDOW_RECT, get('/session/:sessionId/window/rect')],
+  [cmd.Name.SET_WINDOW_RECT, post('/session/:sessionId/window/rect')],
   [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/maximize')],
   [cmd.Name.MINIMIZE_WINDOW, post('/session/:sessionId/window/minimize')],
   [cmd.Name.FULLSCREEN_WINDOW, post('/session/:sessionId/window/fullscreen')],
-  [cmd.Name.GET_WINDOW_RECT, get('/session/:sessionId/window/rect')],
-  [cmd.Name.SET_WINDOW_RECT, post('/session/:sessionId/window/rect')],
-  [cmd.Name.GET_CURRENT_WINDOW_HANDLE, get('/session/:sessionId/window')],
-  [cmd.Name.GET_WINDOW_HANDLES, get('/session/:sessionId/window/handles')],
+  // Actions.
+  [cmd.Name.ACTIONS, post('/session/:sessionId/actions')],
+  [cmd.Name.CLEAR_ACTIONS, del('/session/:sessionId/actions')],
+  // Locating elements.
+  [cmd.Name.GET_ACTIVE_ELEMENT, get('/session/:sessionId/element/active')],
+  [cmd.Name.FIND_ELEMENT, post('/session/:sessionId/element')],
+  [cmd.Name.FIND_ELEMENTS, post('/session/:sessionId/elements')],
+  [cmd.Name.FIND_CHILD_ELEMENT, post('/session/:sessionId/element/:id/element')],
+  [cmd.Name.FIND_CHILD_ELEMENTS, post('/session/:sessionId/element/:id/elements')],
+  // Element interaction.
+  [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
+  [cmd.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
+  [cmd.Name.GET_ELEMENT_LOCATION, get('/session/:sessionId/element/:id/rect')],
+  [cmd.Name.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/rect')],
+  [cmd.Name.CLEAR_ELEMENT, post('/session/:sessionId/element/:id/clear')],
+  [cmd.Name.CLICK_ELEMENT, post('/session/:sessionId/element/:id/click')],
+  [cmd.Name.SEND_KEYS_TO_ELEMENT, post('/session/:sessionId/element/:id/value')],
+  [cmd.Name.GET_ELEMENT_TEXT, get('/session/:sessionId/element/:id/text')],
+  [cmd.Name.IS_ELEMENT_ENABLED, get('/session/:sessionId/element/:id/enabled')],
+  [cmd.Name.GET_ELEMENT_ATTRIBUTE, (cmd) => {
+    return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'id', 'name');
+  }],
+  [cmd.Name.IS_ELEMENT_DISPLAYED, (cmd) => {
+    return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'id');
+  }],
+  // Cookie management.
+  [cmd.Name.GET_ALL_COOKIES, get('/session/:sessionId/cookie')],
+  [cmd.Name.ADD_COOKIE, post('/session/:sessionId/cookie')],
+  [cmd.Name.DELETE_ALL_COOKIES, del('/session/:sessionId/cookie')],
+  [cmd.Name.GET_COOKIE, get('/session/:sessionId/cookie/:name')],
+  [cmd.Name.DELETE_COOKIE, del('/session/:sessionId/cookie/:name')],
+  // Alert management.
+  [cmd.Name.ACCEPT_ALERT, post('/session/:sessionId/alert/accept')],
+  [cmd.Name.DISMISS_ALERT, post('/session/:sessionId/alert/dismiss')],
+  [cmd.Name.GET_ALERT_TEXT, get('/session/:sessionId/alert/text')],
+  [cmd.Name.SET_ALERT_TEXT, post('/session/:sessionId/alert/text')],
+  // Screenshots.
+  [cmd.Name.SCREENSHOT, get('/session/:sessionId/screenshot')],
+  [cmd.Name.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
 ]);
 
 

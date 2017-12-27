@@ -131,6 +131,7 @@ const Name = {
 
   SWITCH_TO_WINDOW: 'switchToWindow',
   SWITCH_TO_FRAME: 'switchToFrame',
+  SWITCH_TO_FRAME_PARENT: 'switchToFrameParent',
   GET_PAGE_SOURCE: 'getPageSource',
   GET_TITLE: 'getTitle',
 
@@ -147,7 +148,6 @@ const Name = {
   GET_ELEMENT_SIZE: 'getElementSize',
   GET_ELEMENT_ATTRIBUTE: 'getElementAttribute',
   GET_ELEMENT_VALUE_OF_CSS_PROPERTY: 'getElementValueOfCssProperty',
-  ELEMENT_EQUALS: 'elementEquals',
 
   SCREENSHOT: 'screenshot',
   TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',
@@ -162,19 +162,6 @@ const Name = {
   GET_ALERT_TEXT: 'getAlertText',
   SET_ALERT_TEXT: 'setAlertValue',
   SET_ALERT_CREDENTIALS: 'setAlertCredentials',
-
-  GET_LOCATION: 'getLocation',
-  SET_LOCATION: 'setLocation',
-
-  GET_SESSION_STORAGE_ITEM: 'getSessionStorageItem',
-  GET_SESSION_STORAGE_KEYS: 'getSessionStorageKey',
-  SET_SESSION_STORAGE_ITEM: 'setSessionStorageItem',
-  REMOVE_SESSION_STORAGE_ITEM: 'removeSessionStorageItem',
-  CLEAR_SESSION_STORAGE: 'clearSessionStorage',
-  GET_SESSION_STORAGE_SIZE: 'getSessionStorageSize',
-
-  SET_SCREEN_ORIENTATION: 'setScreenOrientation',
-  GET_SCREEN_ORIENTATION: 'getScreenOrientation',
 
   GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
   GET_LOG: 'getLog',
