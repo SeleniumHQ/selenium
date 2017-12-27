@@ -21,6 +21,7 @@
  * @fileoverview Defines types related to user input with the WebDriver API.
  */
 
+const {Command, Name} = require('./command');
 const {InvalidArgumentError} = require('./error');
 
 /**
@@ -232,6 +233,32 @@ class Keyboard extends Device {
   constructor(id) {
     super(DeviceType.KEY, id);
   }
+
+  /**
+   * Generates a key down action.
+   *
+   * @param {(Key|string|number)} key the key to press. This key may be
+   *     specified as a {@link Key} value, a specific unicode code point,
+   *     or a string containing a single unicode code point.
+   * @return {!Action} a new key down action.
+   * @package
+   */
+  keyDown(key) {
+    return {type: ActionType.KEY_DOWN, value: checkCodePoint(key)};
+  }
+
+  /**
+   * Generates a key up action.
+   *
+   * @param {(Key|string|number)} key the key to press. This key may be
+   *     specified as a {@link Key} value, a specific unicode code point,
+   *     or a string containing a single unicode code point.
+   * @return {!Action} a new key up action.
+   * @package
+   */
+  keyUp(key) {
+    return {type: ActionType.KEY_UP, value: checkCodePoint(key)};
+  }
 }
 
 
@@ -364,6 +391,28 @@ class Sequence {
 
 
 /**
+ * @param {(string|Key|number)} key
+ * @return {string}
+ * @throws {!(InvalidArgumentError|RangeError)}
+ */
+function checkCodePoint(key) {
+  if (typeof key === 'number') {
+    return String.fromCodePoint(key);
+  }
+
+  if (typeof key !== 'string') {
+    throw new InvalidArgumentError(`key is not a string: ${key}`);
+  }
+
+  if (Array.from(key.normalize()).length != 1) {
+    throw new InvalidArgumentError(
+        `key input is not a single code point: ${key}`);
+  }
+  return key;
+}
+
+
+/**
  * Defines a sequence of key input actions.
  *
  * @final
@@ -379,28 +428,6 @@ class KeySequence extends Sequence {
   }
 
   /**
-   * @param {(string|Key|number)} key
-   * @return {string}
-   * @throws {!(InvalidArgumentError|RangeError)}
-   * @private
-   */
-  static checkCodePoint_(key) {
-    if (typeof key === 'number') {
-      return String.fromCodePoint(key);
-    }
-
-    if (typeof key !== 'string') {
-      throw new InvalidArgumentError(`key is not a string: ${key}`);
-    }
-
-    if (Array.from(key.normalize()).length != 1) {
-      throw new InvalidArgumentError(
-          `key input is not a single code point: ${key}`);
-    }
-    return key;
-  }
-
-  /**
    * Records an action to press a single key.
    * @param {(Key|string|number)} key the key to press. This key may be
    *     specified as a {@link Key} value, a specific unicode code point,
@@ -410,7 +437,7 @@ class KeySequence extends Sequence {
   keyDown(key) {
     this.actions_.push({
       type: ActionType.KEY_DOWN,
-      value: KeySequence.checkCodePoint_(key)
+      value: checkCodePoint(key)
     });
     return this;
   }
@@ -425,7 +452,7 @@ class KeySequence extends Sequence {
   keyUp(key) {
     this.actions_.push({
       type: ActionType.KEY_UP,
-      value: KeySequence.checkCodePoint_(key)
+      value: checkCodePoint(key)
     });
     return this;
   }
@@ -491,7 +518,7 @@ class PointerSequence extends Sequence {
    * Cancels a pointer action.
    * @return {!PointerSequence} a self reference.
    */
-  pointerCancel() {
+  cancel() {
     this.actions_.push({type: ActionType.POINTER_CANCEL});
     return this;
   }
@@ -503,7 +530,7 @@ class PointerSequence extends Sequence {
    *    {@link Pointer.Type.PEN} and {@link Pointer.Type.TOUCH} devices.
    * @return {!PointerSequence} a self reference.
    */
-  pointerDown(button = Button.LEFT) {
+  press(button = Button.LEFT) {
     this.actions_.push({type: ActionType.POINTER_DOWN, button});
     return this;
   }
@@ -515,7 +542,7 @@ class PointerSequence extends Sequence {
    *    {@link Pointer.Type.PEN} and {@link Pointer.Type.TOUCH} devices.
    * @return {!PointerSequence} a self reference.
    */
-  pointerUp(button = Button.LEFT) {
+  release(button = Button.LEFT) {
     this.actions_.push({type: ActionType.POINTER_UP, button});
     return this;
   }
@@ -532,10 +559,10 @@ class PointerSequence extends Sequence {
    *   y: (number|undefined),
    *   duration: (number|undefined),
    *   origin: (!Origin|!./webdriver.WebElement|undefined),
-   * }} options the move options.
+   * }=} options the move options.
    * @return {!PointerSequence} a self reference.
    */
-  pointerMove({x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT}) {
+  move({x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT}) {
     this.actions_.push({
       type: ActionType.POINTER_MOVE,
       origin,
@@ -549,29 +576,29 @@ class PointerSequence extends Sequence {
   /**
    * Short-hand for performing a simple click (down/up) with this pointer.
    *
-   * @param {./webdriver.WebElement=} element the element on which to click.
-   *     If specified, the pointer will first be moved to the center of the
-   *     the element.
+   * @param {./webdriver.WebElement=} element If specified, the pointer will
+   *     first be moved to the center of the element before performing the
+   *     click.
    * @return {!PointerSequence} a self reference.
    */
-  click(element = undefined) {
+  click(element) {
     if (element) {
-      this.pointerMove({x: 0, y: 0, origin: element});
+      this.move({x: 0, y: 0, origin: element});
     }
-    this.pointerDown();
-    this.pointerUp();
+    this.press();
+    this.release();
     return this;
   }
 
   /**
    * Short-hand for performing a simple double-click with this pointer.
    *
-   * @param {./webdriver.WebElement=} element the element on which to click.
-   *     If specified, the pointer will first be moved to the center of the
-   *     the element.
+   * @param {./webdriver.WebElement=} element If specified, the pointer will
+   *     first be moved to the center of the element before performing the
+   *     double-click.
    * @return {!PointerSequence} a self reference.
    */
-  doubleClick(element = undefined) {
+  doubleClick(element) {
     return this.click(element).click();
   }
 }

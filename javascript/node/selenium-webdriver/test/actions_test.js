@@ -19,8 +19,10 @@
 
 const assert = require('assert');
 
+const chrome = require('../chrome');
 const error = require('../lib/error');
 const fileServer = require('../lib/test/fileserver');
+const firefox = require('../firefox');
 const test = require('../lib/test');
 const {Key} = require('../lib/input');
 const {Browser, By, until} = require('..');
@@ -61,6 +63,8 @@ test.suite(function(env) {
       let actions = driver.actions();
       actions.mouse().click(link);
       await actions.perform();
+
+      await driver.switchTo().defaultContent();
 
       return driver.wait(until.titleIs('Submitted Successfully!'), 5000);
     });
@@ -115,3 +119,4 @@ test.suite(function(env) {
     });
   });
 });
+

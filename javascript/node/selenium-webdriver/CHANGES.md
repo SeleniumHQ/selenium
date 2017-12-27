@@ -151,8 +151,15 @@ mode.
 
 *  Revamped the actions API to conform with the WebDriver Spec:
    <https://www.w3.org/TR/webdriver/#actions>. For details, refer to the JS doc
-   on the `lib/webdriver.ActionSequence` class. For simplicity, support for the
-   legacy actions API has been removed.
+   on the `lib/webdriver.ActionSequence` class.
+
+   As of December, 2017, only Firefox supports this new API.
+   `ActionSequence#perform()` will attempt to translate mouse and keyboard
+   sequences to the legacy API. Alternatively, you may continue to use the
+   legacy API directly via the `lib/actions` module. __NOTE:__ The legacy API
+   is considered strongly deprecated and will be removed in a minor release once
+   Google's Chrome and Microsoft's Edge browsers support the new API.
+
 *  All window manipulation commands are now supported.
 
 

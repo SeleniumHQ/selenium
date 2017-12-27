@@ -22,14 +22,14 @@
 'use strict';
 
 const by = require('./by');
-const {Capabilities} = require('./capabilities');
 const command = require('./command');
 const error = require('./error');
 const input = require('./input');
 const logging = require('./logging');
-const {Session} = require('./session');
-const Symbols = require('./symbols');
 const promise = require('./promise');
+const Symbols = require('./symbols');
+const {Capabilities} = require('./capabilities');
+const {Session} = require('./session');
 
 
 // Capability names that are defined in the W3C spec.
@@ -2384,6 +2384,8 @@ class AlertPromise extends Alert {
  * User facing API for generating complex user gestures. Each action sequence
  * will not be executed until {@link #perform()} is called.
  *
+ * ### Action Ticks
+ *
  * Action sequences are divided into a series of "ticks". At each tick, the
  * WebDriver remote end will perform a single action for each device included
  * in the action sequence. At tick 0, the driver will perform the first action
@@ -2392,10 +2394,43 @@ class AlertPromise extends Alert {
  * not have an action defined at a particular tick, it will automatically
  * pause.
  *
- * For example, suppose you want to emulate a user pressing the SHIFT key,
- * clicking on two elements, then releasing the SHIFT key. This sequence
- * involves 2 devices (mouse and keyboard) with actions defined over 7
- * ticks:
+ * Consider the following code sample:
+ *
+ *     const actions = driver.actions();
+ *
+ *     actions.keyboard().keyDown(SHIFT).pause().pause().keyUp(SHIFT);
+ *     actions.mouse().move({origin: el}).press().release();
+ *     actions.perform();
+ *
+ * This sample produces the following sequence of ticks:
+ *
+ * | Device   | Tick 1             | Tick 2  | Tick 3    | Tick 4             |
+ * | -------- | ------------------ | ------- | --------- | ------------------ |
+ * | Keyboard | keyDown(SHIFT)     | pause() | pause()   | keyUp(SHIFT)       |
+ * | Mouse    | move({origin: el}) | press() | release() |                    |
+ *
+ * Notice the mouse does not have an defined for the fourth tick; the remote end
+ * will implicitly insert a `pause()` action for the mouse for this stage.
+ *
+ * #### Tick Durations
+ *
+ * The length of each action tick is not explicitly defined as a unit of time.
+ * Instead, a tick is the implementation-specific amount of time it takes to
+ * complete the actions defined across all devices in a tick.
+ *
+ * Most actions, like pressing a key or pointer button, are "instaneous". A
+ * {@linkplain ./input.PointerSequence#move pointer move}, on the other hand,
+ * allows you to specify a duration, which has an implementation-specific
+ * interpretation for how granular to model the pointer movement. For instance,
+ * instead of a single "jump" to the target location, a remote end may simulate
+ * the larger movement over a series of small, incremental changes (e.g. one
+ * movement per vsync).
+ *
+ * #### Device Synchronization
+ *
+ * Suppose you want to emulate a user pressing the SHIFT key, clicking on two
+ * elements, then releasing the SHIFT key. This sequence involves two devices
+ * (the mouse and keyboard), with actions defined over seven ticks:
  *
  * 1.  press the SHIFT key while moving the mouse over element 1
  * 2.  pressing the left mouse button
@@ -2405,21 +2440,21 @@ class AlertPromise extends Alert {
  * 6.  releasing the left mouse button
  * 7.  releasing the SHIFT key
  *
- * Note there are no actions (or change in state) for the keyboard for
+ * There are no actions (or change in state) for the keyboard for
  * ticks 2 - 6, so it should pause for these ticks.
  *
  * This input sequence can be produced using the ActionSequence API with
  * the code below. Actions must be defined individually for each device and
  * explicitly kept in sync by the user.
  *
- *     let actions = driver.actions();
- *     actions.keyboard().keyDown(Key.SHIFT);
- *     actions.mouse().click(element1).click(element2);
+ *     const  actions = driver.actions();
  *
- *     // Insert no-op pauses so the keyboard does not act again until the
- *     // mouse has finished it's sequence. Note, we allow the mouse to move
- *     // to element1 during tick 1.
- *     action.keyboard()
+ *     actions.mouse().click(element1).click(element2);
+ *     actions.keyboard()
+ *         .keyDown(Key.SHIFT)
+ *         // Insert no-op pauses so the keyboard does not act again until the
+ *         // mouse has finished it's sequence. Note, we allow the mouse to move
+ *         // to element1 during tick 1.
  *        .pause()  // mouse down
  *        .pause()  // mouse up
  *        .pause()  // move to element 2
@@ -2431,16 +2466,16 @@ class AlertPromise extends Alert {
  *
  * Notice that `mouse().click(element1)` is a compound action of
  * "move to element 1", "mouse down", "mouse up". This generates a sequence
- * far longer than the keyboard, so we have to insert pauses so the keyboard
- * is idle until the mouse has finished. Rather than trying to keep track of
- * the number of steps to pause, we can use a single call to
+ * far longer than the keyboard, so we had to insert pauses so the keyboard
+ * remains idle until the mouse has finished. Rather than trying to keep track
+ * of the number of steps to pause, we can use a single call to
  * {@link #synchronize()}. This instructs the ActionSequence to ensure the
  * input sequence for all devices are the same length - inserting explicit
  * {@linkplain input.Sequence#pause pauses} as necessary.
  *
  *     let actions = driver.actions();
- *     actions.keyboard().keyDown(Key.SHIFT);
  *     actions.mouse().click(element1).click(element2);
+ *     actions.keyboard().keyDown(Key.SHIFT);
  *
  *     // Insert pauses for the keyboard to cover the span of all mouse actions
  *     actions.synchronize();

@@ -20,26 +20,22 @@
 const {StubError, assertIsInstance, assertIsStubError, throwStubError} =
     require('./testutil');
 
-const By = require('../../lib/by').By;
-const Capabilities = require('../../lib/capabilities').Capabilities;
-const Executor = require('../../lib/command').Executor;
-const CName = require('../../lib/command').Name;
 const error = require('../../lib/error');
-const Button = require('../../lib/input').Button;
-const Key = require('../../lib/input').Key;
 const logging = require('../../lib/logging');
-const Session = require('../../lib/session').Session;
 const promise = require('../../lib/promise');
 const until = require('../../lib/until');
-const Alert = require('../../lib/webdriver').Alert;
-const AlertPromise = require('../../lib/webdriver').AlertPromise;
-const UnhandledAlertError = require('../../lib/webdriver').UnhandledAlertError;
-const WebDriver = require('../../lib/webdriver').WebDriver;
-const WebElement = require('../../lib/webdriver').WebElement;
-const WebElementPromise = require('../../lib/webdriver').WebElementPromise;
+const {Alert, AlertPromise, WebDriver, WebElement, WebElementPromise} =
+    require('../../lib/webdriver');
+const {Button, Key} = require('../../lib/input');
+const {By} = require('../../lib/by');
+const {Capabilities} = require('../../lib/capabilities');
+const {Executor, Name} = require('../../lib/command');
+const {Session} = require('../../lib/session');
 
 const assert = require('assert');
 const sinon = require('sinon');
+
+const CName = Name;
 
 const SESSION_ID = 'test_session_id';
 const fail = (msg) => assert.fail(msg);
@@ -1401,7 +1397,7 @@ describe('WebDriver', function() {
   });
 
   describe('actions()', function() {
-    describe('mouse().pointerMove()', function() {
+    describe('mouse().move()', function() {
       it('no origin', function() {
         let executor = new FakeExecutor()
             .expect(CName.ACTIONS, {
@@ -1425,7 +1421,7 @@ describe('WebDriver', function() {
 
         let driver = executor.createDriver();
         let actions = driver.actions();
-        actions.mouse().pointerMove({x: 0, y: 125});
+        actions.mouse().move({x: 0, y: 125});
         return actions.perform();
       });
 
@@ -1455,7 +1451,7 @@ describe('WebDriver', function() {
         let driver = executor.createDriver();
         let element = driver.findElement(By.id('foo'));
         let actions = driver.actions();
-        actions.mouse().pointerMove({x: 0, y: 125, origin: element});
+        actions.mouse().move({x: 0, y: 125, origin: element});
         return actions.perform();
       });
     });
@@ -1483,92 +1479,6 @@ describe('WebDriver', function() {
         return actions.perform();
       });
 
-      describe('legacy sendKeys()', function() {
-        it('can translate a basic sequence', function() {
-          let executor = new FakeExecutor()
-              .expect(CName.ACTIONS, {
-                actions:  [{
-                  type: 'key',
-                  id: 'default keyboard',
-                  actions: [
-                    {type: 'keyDown', value: 'a'}, {type: 'keyUp', value: 'a'},
-                    {type: 'keyDown', value: 'b'}, {type: 'keyUp', value: 'b'},
-                    {type: 'keyDown', value: 'c'}, {type: 'keyUp', value: 'c'},
-                    {type: 'keyDown', value: 'd'}, {type: 'keyUp', value: 'd'},
-                  ]
-                }]
-              })
-              .andReturnError(new error.UnsupportedOperationError())
-              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['a']})
-              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['b']})
-              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['c']})
-              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['d']})
-              .end();
-
-          let driver = executor.createDriver();
-          let actions = driver.actions();
-          actions.keyboard().sendKeys('abc', 'd');
-          return actions.perform();
-        });
-
-        it('skips pauses', function() {
-          let executor = new FakeExecutor()
-              .expect(CName.ACTIONS, {
-                actions:  [{
-                  type: 'key',
-                  id: 'default keyboard',
-                  actions: [
-                    {type: 'pause', duration: 0}, {type: 'pause', duration: 0},
-                    {type: 'keyDown', value: 'a'}, {type: 'keyUp', value: 'a'},
-                    {type: 'keyDown', value: 'b'}, {type: 'keyUp', value: 'b'},
-                  ]
-                }]
-              })
-              .andReturnError(new error.UnsupportedOperationError())
-              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['a']})
-              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['b']})
-              .end();
-
-          let driver = executor.createDriver();
-          let actions = driver.actions();
-          actions.keyboard().pause();
-          actions.keyboard().pause();
-          actions.keyboard().sendKeys('ab');
-
-
-          return actions.perform();
-        });
-
-        it('non-modifier keydown must be followed by keyup of same key', () => {
-          let executor = new FakeExecutor()
-              .expect(CName.ACTIONS, {
-                actions:  [{
-                  type: 'key',
-                  id: 'default keyboard',
-                  actions: [
-                    {type: 'keyDown', value: Key.SHIFT},
-                    {type: 'keyDown', value: 'a'},
-                    {type: 'keyDown', value: 'b'},
-                  ]
-                }]
-              })
-              .andReturnError(new error.UnsupportedOperationError())
-              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['a']})
-              .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: ['b']})
-              .end();
-
-          let driver = executor.createDriver();
-          let actions = driver.actions();
-          actions.keyboard().keyDown(Key.SHIFT);
-          actions.keyboard().keyDown('a');
-          actions.keyboard().keyDown('b');
-
-          return actions.perform().then(
-              () => {throw Error('should have failed')},
-              (e) => assert.ok(e instanceof error.UnsupportedOperationError));
-        });
-      });
-
       it('perform() only executes keyboard sequence', function() {
         let executor = new FakeExecutor()
             .expect(CName.ACTIONS, {
@@ -1584,59 +1494,12 @@ describe('WebDriver', function() {
 
         let driver = executor.createDriver();
         let actions = driver.actions();
-        actions.mouse().pointerMove({x: 1, y: 2});
+        actions.mouse().move({x: 1, y: 2});
         return actions.keyboard().sendKeys('a').perform();
       });
     });
 
     describe('mouse()', function() {
-      it('legacy doubleClick()', function() {
-        let executor = new FakeExecutor()
-            .expect(CName.FIND_ELEMENT,
-                    {using: 'css selector', value: '*[id="a"]'})
-                .andReturnSuccess(WebElement.buildId('id1'))
-            .expect(CName.ACTIONS, {
-              actions:  [{
-                type: 'pointer',
-                id: 'default mouse',
-                parameters: {
-                  pointerType: 'mouse'
-                },
-                actions: [
-                  {
-                    duration: 100,
-                    origin: WebElement.buildId('id1'),
-                    type: 'pointerMove',
-                    x: 0,
-                    y: 0
-                  },
-                  {type: 'pointerDown', button: Button.LEFT},
-                  {type: 'pointerUp', button: Button.LEFT},
-                  {type: 'pointerDown', button: Button.LEFT},
-                  {type: 'pointerUp', button: Button.LEFT}
-                ]
-              }]
-            })
-            .andReturnError(new error.UnsupportedOperationError())
-            .expect(CName.LEGACY_ACTION_MOUSE_MOVE, {
-              element: 'id1',
-              xoffset: 0,
-              yoffset: 0
-            })
-            .expect(CName.LEGACY_ACTION_MOUSE_DOWN, {button: Button.LEFT})
-            .expect(CName.LEGACY_ACTION_MOUSE_UP, {button: Button.LEFT})
-            .expect(CName.LEGACY_ACTION_MOUSE_DOWN, {button: Button.LEFT})
-            .expect(CName.LEGACY_ACTION_MOUSE_UP, {button: Button.LEFT})
-            .end();
-
-        let driver = executor.createDriver();
-        let element1 = driver.findElement(By.id('a'));
-
-        let actions = driver.actions();
-        actions.mouse().doubleClick(element1);
-        return actions.perform();
-      });
-
       it('perform() only executes mouse sequence', function() {
         let executor = new FakeExecutor()
             .expect(CName.ACTIONS, {
@@ -1660,92 +1523,7 @@ describe('WebDriver', function() {
         let driver = executor.createDriver();
         let actions = driver.actions();
         actions.keyboard().sendKeys('a');
-        return actions.mouse().pointerMove({x: 1, y: 2}).perform();
-      });
-    });
-
-    describe('multi-device action sequence', function() {
-      it('must be translated to legacy', function() {
-        let executor = new FakeExecutor()
-            .expect(CName.FIND_ELEMENT,
-                    {using: 'css selector', value: '*[id="a"]'})
-                .andReturnSuccess(WebElement.buildId('id1'))
-            .expect(CName.FIND_ELEMENT,
-                    {using: 'css selector', value: '*[id="b"]'})
-                .andReturnSuccess(WebElement.buildId('id2'))
-            .expect(CName.ACTIONS, {
-              actions:  [{
-                type: 'key',
-                id: 'default keyboard',
-                actions: [
-                  {type: 'keyDown', value: Key.SHIFT},
-                  {type: 'pause', duration: 0},
-                  {type: 'pause', duration: 0},
-                  {type: 'pause', duration: 0},
-                  {type: 'pause', duration: 0},
-                  {type: 'pause', duration: 0},
-                  {type: 'pause', duration: 0},
-                  {type: 'keyUp', value: Key.SHIFT},
-                ]
-              },
-              {
-                type: 'pointer',
-                id: 'default mouse',
-                parameters: {
-                  pointerType: 'mouse'
-                },
-                actions: [
-                  {type: 'pause', duration: 0},
-                  {
-                    duration: 100,
-                    origin: WebElement.buildId('id1'),
-                    type: 'pointerMove',
-                    x: 0,
-                    y: 0
-                  },
-                  {type: 'pointerDown', button: Button.LEFT},
-                  {type: 'pointerUp', button: Button.LEFT},
-                  {
-                    duration: 100,
-                    origin: WebElement.buildId('id2'),
-                    type: 'pointerMove',
-                    x: 0,
-                    y: 0
-                  },
-                  {type: 'pointerDown', button: Button.LEFT},
-                  {type: 'pointerUp', button: Button.LEFT}
-                ]
-              }]
-            })
-            .andReturnError(new error.UnsupportedOperationError())
-            .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: [Key.SHIFT]})
-            .expect(CName.LEGACY_ACTION_MOUSE_MOVE, {
-              element: 'id1',
-              xoffset: 0,
-              yoffset: 0
-            })
-            .expect(CName.LEGACY_ACTION_MOUSE_DOWN, {button: Button.LEFT})
-            .expect(CName.LEGACY_ACTION_MOUSE_UP, {button: Button.LEFT})
-            .expect(CName.LEGACY_ACTION_MOUSE_MOVE, {
-              element: 'id2',
-              xoffset: 0,
-              yoffset: 0
-            })
-            .expect(CName.LEGACY_ACTION_MOUSE_DOWN, {button: Button.LEFT})
-            .expect(CName.LEGACY_ACTION_MOUSE_UP, {button: Button.LEFT})
-            .expect(CName.LEGACY_ACTION_SEND_KEYS, {value: [Key.SHIFT]})
-            .end();
-
-        let driver = executor.createDriver();
-        let element1 = driver.findElement(By.id('a'));
-        let element2 = driver.findElement(By.id('b'));
-
-        let actions = driver.actions();
-        actions.keyboard().keyDown(Key.SHIFT);
-        actions.mouse().pause().click(element1).click(element2);
-        actions.synchronize();
-        actions.keyboard().keyUp(Key.SHIFT);
-        return actions.perform();
+        return actions.mouse().move({x: 1, y: 2}).perform();
       });
     });
   });
