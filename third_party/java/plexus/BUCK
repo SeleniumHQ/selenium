@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'plexus-classworlds',
   maven_coords = 'org.codehaus.plexus:plexus-classworlds:jar:2.5.2',
@@ -21,9 +20,9 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'plexus-utils',
-  maven_coords = 'org.codehaus.plexus:plexus-utils:jar:3.0.20',
-  binary_jar = 'plexus-utils-3.0.20.jar',
-  source_jar = 'plexus-utils-3.0.20-sources.jar',
+  maven_coords = 'org.codehaus.plexus:plexus-utils:jar:3.0.22',
+  binary_jar = 'plexus-utils-3.0.22.jar',
+  source_jar = 'plexus-utils-3.0.22-sources.jar',
   visibility = [
     '//third_party/java/maven:maven-artifact',
     '//third_party/java/maven:maven-model',

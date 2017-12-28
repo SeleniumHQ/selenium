@@ -1,21 +1,24 @@
-# BUILD FILE SYNTAX: SKYLARK
-
-java_library(name = 'slf4j',
-  exported_deps = [
-    ':api',
+prebuilt_jar(
+  name = 'slf4j-api',
+  maven_coords = 'org.slf4j:slf4j-api:jar:1.7.25',
+  binary_jar = 'slf4j-api-1.7.25.jar',
+  source_jar = 'slf4j-api-1.7.25-sources.jar',
+  visibility = [
+    '//third_party/java/jetty:jetty-util',
+    '//third_party/java/littleshoot:littleproxy',
+    '//third_party/java/netty:netty-all'
   ],
+)
+
+prebuilt_jar(
+  name = 'slf4j-jdk14',
+  maven_coords = 'org.slf4j:slf4j-jdk14:jar:1.7.25',
+  binary_jar = 'slf4j-jdk14-1.7.25.jar',
+  source_jar = 'slf4j-jdk14-1.7.25-sources.jar',
   deps = [
-    ':jdk14',
+    ':slf4j-api',
   ],
   visibility = [
-    '//third_party/java/ehcache:ehcache',
+    '//third_party/java/netty:netty-all'
   ],
-)
-
-prebuilt_jar(name = 'api',
-  binary_jar = 'slf4j-api-1.6.6.jar',
-)
-
-prebuilt_jar(name = 'jdk14',
-  binary_jar = 'slf4j-jdk14-1.6.6.jar',
 )

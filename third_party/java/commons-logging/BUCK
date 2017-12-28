@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'commons-logging',
   maven_coords = 'commons-logging:commons-logging:jar:1.2',
@@ -7,6 +6,7 @@ prebuilt_jar(
   visibility = [
     '//third_party/java/htmlunit:htmlunit',
     '//third_party/java/httpcomponents:httpclient',
+    '//third_party/java/netty:netty-all',
   ],
 )
 

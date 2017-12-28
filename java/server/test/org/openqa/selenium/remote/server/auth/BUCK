@@ -15,7 +15,7 @@ java_library(
     '//third_party/java/guava:guava',
     '//third_party/java/httpcomponents:httpclient',
     '//third_party/java/jetty:jetty',
-    '//third_party/java/servlet:servlet-api',
+    '//third_party/java/servlet:javax.servlet-api',
   ],
 )
 

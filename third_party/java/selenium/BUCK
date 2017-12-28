@@ -1,18 +1,17 @@
-# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'htmlunit-driver',
-  maven_coords = 'org.seleniumhq.selenium:htmlunit-driver:jar:2.28',
-  binary_jar = 'htmlunit-driver-2.28.jar',
-  source_jar = 'htmlunit-driver-2.28-sources.jar',
+  maven_coords = 'org.seleniumhq.selenium:htmlunit-driver:jar:2.28.5',
+  binary_jar = 'htmlunit-driver-2.28.5.jar',
+  source_jar = 'htmlunit-driver-2.28.5-sources.jar',
   deps = [
+    '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/support:support',
     '//third_party/java/htmlunit:htmlunit'
   ],
   visibility = [
     '//java/client/test/org/openqa/selenium/htmlunit:htmlunit',
-    '//java/client/test/org/openqa/selenium/testing:test-base',
     '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
     '//java/server/test/org/openqa/grid/e2e:tests',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
   ],
 )
-

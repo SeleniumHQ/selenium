@@ -33,16 +33,13 @@
     <orderEntry type="library" name="testng" level="project" />
     <orderEntry type="library" name="xml-apis" level="project" />
     <orderEntry type="library" name="sac" level="project" />
-    <orderEntry type="library" scope="TEST" name="dnsjava" level="project" />
-    <orderEntry type="library" scope="TEST" name="dnssec4j" level="project" />
     <orderEntry type="library" name="jetty" level="project" />
-    <orderEntry type="library" scope="TEST" name="little_proxy" level="project" />
+    <orderEntry type="library" scope="TEST" name="littleproxy" level="project" />
     <orderEntry type="library" scope="TEST" name="slf4j" level="project" />
     <orderEntry type="library" name="mockito-core" level="project" />
     <orderEntry type="library" name="objenesis" level="project" />
     <orderEntry type="library" name="commons-httpclient" level="project" />
     <orderEntry type="library" scope="TEST" name="websocket" level="project" />
-    <orderEntry type="library" scope="TEST" name="jetty-util" level="project" />
     <orderEntry type="library" scope="TEST" name="github" level="project" />
     <orderEntry type="library" name="javaparser" level="project" />
   </component>

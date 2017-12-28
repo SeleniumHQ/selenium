@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="dnssec4j">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/dnssec4j/dnssec4j-0.1-SNAPSHOT.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

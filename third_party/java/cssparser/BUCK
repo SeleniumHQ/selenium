@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'cssparser',
   maven_coords = 'net.sourceforge.cssparser:cssparser:jar:0.9.24',

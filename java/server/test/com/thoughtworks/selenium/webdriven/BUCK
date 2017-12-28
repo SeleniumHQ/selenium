@@ -13,6 +13,6 @@ java_test(name = 'webdriven',
     '//java/server/src/org/openqa/selenium/remote/server:webdriver-servlet',
     '//third_party/java/jetty:jetty',
     '//third_party/java/junit:junit',
-    '//third_party/java/servlet:servlet-api',
+    '//third_party/java/servlet:javax.servlet-api',
   ],
 )

@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 java_binary(
   name = 'jarjar-links',
   main_class = 'org.pantsbuild.jarjar.Main',
@@ -12,9 +11,9 @@ java_binary(
 
 prebuilt_jar(
   name = 'jarjar',
-  maven_coords = 'org.pantsbuild:jarjar:jar:1.6.3',
-  binary_jar = 'jarjar-1.6.3.jar',
-  source_jar = 'jarjar-1.6.3-sources.jar',
+  maven_coords = 'org.pantsbuild:jarjar:jar:1.6.5',
+  binary_jar = 'jarjar-1.6.5.jar',
+  source_jar = 'jarjar-1.6.5-sources.jar',
   deps = [
     '//third_party/java/ant:ant',
     '//third_party/java/asm:asm',

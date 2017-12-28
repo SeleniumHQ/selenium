@@ -35,6 +35,6 @@ java_library(name = 'tests',
     '//java/client/test/org/openqa/selenium:helpers',
     '//third_party/java/guava:guava',
     '//third_party/java/junit:junit',
-    '//third_party/java/mockito:mockito',
+    '//third_party/java/mockito:mockito-core',
   ],
 )

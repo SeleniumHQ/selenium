@@ -23,7 +23,7 @@ java_library(
     '//java/server/src/org/openqa/selenium/remote/server:sessions',
     '//third_party/java/beust:jcommander',
     '//third_party/java/jetty:jetty',
-    '//third_party/java/servlet:servlet-api',
+    '//third_party/java/servlet:javax.servlet-api',
   ],
 )
 

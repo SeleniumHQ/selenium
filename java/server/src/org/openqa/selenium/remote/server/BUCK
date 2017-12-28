@@ -44,6 +44,9 @@ java_library(name = 'server',
     ':hub',
     ':style',
   ],
+  provided_deps = [
+    '//third_party/java/servlet:javax.servlet-api',
+  ],
   deps = [
     ':sessions',
     '//java/client/src/org/openqa/selenium:selenium',
@@ -53,7 +56,6 @@ java_library(name = 'server',
     '//java/server/src/org/openqa/selenium/remote/server/log:log',
     '//third_party/java/gson:gson',
     '//third_party/java/guava:guava',
-    '//third_party/java/servlet:servlet-api',
   ],
   visibility = [
     '//java/server/src/org/openqa/grid:grid',
@@ -86,7 +88,7 @@ java_library(
     'WebDriverServlet.java',
   ] + glob(['commandhandler/*.java']),
   provided_deps = [
-    '//third_party/java/servlet:servlet-api',
+    '//third_party/java/servlet:javax.servlet-api',
   ],
   deps = [
     ':server',
@@ -141,7 +143,7 @@ java_library(name = 'standalone-server-lib',
     '//third_party/java/beust:jcommander',
     '//third_party/java/jetty:jetty',
     '//third_party/java/selenium:htmlunit-driver',
-    '//third_party/java/servlet:servlet-api',
+    '//third_party/java/servlet:javax.servlet-api',
   ],
   visibility = [
     '//java/server/src/org/openqa/grid/selenium:classes',

@@ -13,7 +13,7 @@ java_library(name = 'rc-emulation-servlet',
     '//third_party/java/guava:guava',
   ],
   provided_deps = [
-    '//third_party/java/servlet:servlet-api',
+    '//third_party/java/servlet:javax.servlet-api',
   ],
   visibility = [
     '//java/server/src/com/thoughtworks/selenium:leg-rc',

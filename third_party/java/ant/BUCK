@@ -1,9 +1,8 @@
-# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'ant',
-  maven_coords = 'org.apache.ant:ant:jar:1.9.6',
-  binary_jar = 'ant-1.9.6.jar',
-  source_jar = 'ant-1.9.6-sources.jar',
+  maven_coords = 'org.apache.ant:ant:jar:1.9.9',
+  binary_jar = 'ant-1.9.9.jar',
+  source_jar = 'ant-1.9.9-sources.jar',
   deps = [
     ':ant-launcher'
   ],
@@ -15,8 +14,8 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'ant-launcher',
-  maven_coords = 'org.apache.ant:ant-launcher:jar:1.9.6',
-  binary_jar = 'ant-launcher-1.9.6.jar',
-  source_jar = 'ant-launcher-1.9.6-sources.jar',
+  maven_coords = 'org.apache.ant:ant-launcher:jar:1.9.9',
+  binary_jar = 'ant-launcher-1.9.9.jar',
+  source_jar = 'ant-launcher-1.9.9-sources.jar',
 )
 

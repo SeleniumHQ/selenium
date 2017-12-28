@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
@@ -31,7 +32,6 @@ import com.google.common.collect.Sets;
 import com.google.common.io.CharSource;
 import com.google.common.io.CharStreams;
 import com.google.common.io.FileBackedOutputStream;
-import com.google.gson.reflect.TypeToken;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -472,7 +472,7 @@ public class NewSessionPayload implements Closeable {
           while (input.hasNext()) {
             name = input.nextName();
             if ("firstMatch".equals(name)) {
-              return input.read(new TypeToken<List<Map<String, Object>>>(){}.getType());
+              return input.read(LIST_OF_MAPS_TYPE);
             } else {
               input.skipValue();
             }

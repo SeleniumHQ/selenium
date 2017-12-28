@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'xml-apis',
   maven_coords = 'xml-apis:xml-apis:jar:1.4.01',
