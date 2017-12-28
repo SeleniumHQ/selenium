@@ -55,7 +55,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    yard (0.9.9)
+    yard (0.9.12)
 
 PLATFORMS
   ruby
@@ -67,7 +67,7 @@ DEPENDENCIES
   rubocop (~> 0.50.0)
   selenium-webdriver!
   webmock (~> 2.0)
-  yard (~> 0.9.9)
+  yard (~> 0.9.11)
 
 BUNDLED WITH
    1.16.0
