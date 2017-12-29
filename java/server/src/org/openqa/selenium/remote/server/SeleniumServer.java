@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
+import static org.openqa.selenium.remote.server.WebDriverServlet.ACTIVE_SESSIONS_KEY;
 import static org.openqa.selenium.remote.server.WebDriverServlet.NEW_SESSION_PIPELINE_KEY;
 
 import com.beust.jcommander.JCommander;
@@ -29,25 +30,23 @@ import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.seleniumhq.jetty9.security.ConstraintMapping;
 import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
 import org.seleniumhq.jetty9.server.Connector;
+import org.seleniumhq.jetty9.server.Handler;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
+import org.seleniumhq.jetty9.server.handler.ContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.net.BindException;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -62,7 +61,6 @@ public class SeleniumServer implements GridNodeServer {
   private final static Logger LOG = Logger.getLogger(SeleniumServer.class.getName());
 
   private Server server;
-  private DefaultDriverSessions driverSessions;
   private StandaloneConfiguration configuration;
   private Map<String, Class<? extends Servlet>> extraServlets;
 
@@ -131,34 +129,24 @@ public class SeleniumServer implements GridNodeServer {
     ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SECURITY);
 
     if (configuration.browserTimeout != null && configuration.browserTimeout >= 0) {
-      handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER,
+      handler.setInitParameter(WebDriverServlet.BROWSER_TIMEOUT_PARAMETER,
                                String.valueOf(configuration.browserTimeout));
     }
 
     long inactiveSessionTimeoutSeconds = configuration.timeout == null ?
-                                   Long.MAX_VALUE /1000 : configuration.timeout;
+                                   Long.MAX_VALUE / 1000 : configuration.timeout;
     if (configuration.timeout != null && configuration.timeout >= 0) {
-      handler.setInitParameter(DriverServlet.SESSION_TIMEOUT_PARAMETER,
-                               String.valueOf(configuration.timeout));
+      handler.setInitParameter(WebDriverServlet.SESSION_TIMEOUT_PARAMETER,
+                               String.valueOf(inactiveSessionTimeoutSeconds));
     }
-
-    driverSessions = new DefaultDriverSessions(
-        new DefaultDriverFactory(Platform.getCurrent()),
-        TimeUnit.SECONDS.toMillis(inactiveSessionTimeoutSeconds));
-    handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
 
     NewSessionPipeline pipeline = createPipeline(configuration);
     handler.setAttribute(NEW_SESSION_PIPELINE_KEY, pipeline);
 
     handler.setContextPath("/");
-    if (configuration.enablePassThrough) {
-      LOG.info("Using the passthrough mode handler");
-      handler.addServlet(WebDriverServlet.class, "/wd/hub/*");
-      handler.addServlet(WebDriverServlet.class, "/webdriver/*");
-    } else {
-      handler.addServlet(DriverServlet.class, "/wd/hub/*");
-      handler.addServlet(DriverServlet.class, "/webdriver/*");
-    }
+    LOG.info("Using passthrough mode handler");
+    handler.addServlet(WebDriverServlet.class, "/wd/hub/*");
+    handler.addServlet(WebDriverServlet.class, "/webdriver/*");
     handler.setInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER, "/wd/hub");
 
     handler.setInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER, configuration.role);
@@ -267,14 +255,25 @@ public class SeleniumServer implements GridNodeServer {
   }
 
   private void stopAllBrowsers() {
-    for (SessionId sessionId : driverSessions.getSessions()) {
-      Session session = driverSessions.get(sessionId);
-      DeleteSession deleteSession = new DeleteSession(session);
-      try {
-        deleteSession.call();
-        driverSessions.deleteSession(sessionId);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
+    for (Handler handler : server.getHandlers()) {
+      if (!(handler instanceof ServletContextHandler)) {
+        continue;
+      }
+
+      ContextHandler.Context context = ((ServletContextHandler) handler).getServletContext();
+      if (context == null) {
+        continue;
+      }
+      Object value = context.getAttribute(ACTIVE_SESSIONS_KEY);
+      if (value instanceof ActiveSessions) {
+        ((ActiveSessions) value).getAllSessions().parallelStream()
+            .forEach(session -> {
+              try {
+                session.stop();
+              } catch (Exception ignored) {
+                // Ignored
+              }
+            });
       }
     }
   }

@@ -138,7 +138,7 @@ class InMemorySession implements ActiveSession {
         WebDriver driver = provider.newInstance(caps);
 
         // Prefer the OSS dialect.
-        Dialect downstream = downstreamDialects.contains(Dialect.OSS) ?
+        Dialect downstream = downstreamDialects.contains(Dialect.OSS) || downstreamDialects.isEmpty() ?
                              Dialect.OSS :
                              downstreamDialects.iterator().next();
         return Optional.of(new InMemorySession(driver, caps, downstream));

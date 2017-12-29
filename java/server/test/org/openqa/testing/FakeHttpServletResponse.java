@@ -157,7 +157,7 @@ public class FakeHttpServletResponse extends HeaderContainer
   }
 
   public void reset() {
-    throw new UnsupportedOperationException();
+    getHeaders().clear();
   }
 
   public void setLocale(Locale locale) {

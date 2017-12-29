@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.remote.Dialect.OSS;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
@@ -51,8 +52,8 @@ import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
-import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -89,7 +90,7 @@ public class ServicedSession implements ActiveSession {
       Dialect upstream,
       SessionCodec codec,
       SessionId id,
-      Map<String, Object> capabilities) throws IOException {
+      Map<String, Object> capabilities) {
     this.service = service;
     this.downstream = downstream;
     this.upstream = upstream;
@@ -241,7 +242,7 @@ public class ServicedSession implements ActiveSession {
           codec = new Passthrough(url);
           downstream = upstream;
         } else {
-          downstream = downstreamDialects.iterator().next();
+          downstream = downstreamDialects.isEmpty() ? OSS : downstreamDialects.iterator().next();
 
           codec = new ProtocolConverter(
               url,

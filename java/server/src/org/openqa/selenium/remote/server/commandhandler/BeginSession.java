@@ -40,12 +40,10 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class BeginSession implements CommandHandler {
-
-  private final Logger LOG = Logger.getLogger(BeginSession.class.getName());
 
   private final NewSessionPipeline pipeline;
   private final ActiveSessions allSessions;
@@ -59,16 +57,6 @@ public class BeginSession implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    String lengthString = req.getHeader("Content-Length");
-    long contentLength = Long.MAX_VALUE;
-    if (lengthString != null) {
-      try {
-        contentLength = Long.parseLong(lengthString);
-      } catch (NumberFormatException e) {
-        contentLength = Long.MAX_VALUE;
-      }
-    }
-
     ActiveSession session;
     try (Reader reader = new InputStreamReader(
         req.consumeContentStream(),
@@ -90,20 +78,32 @@ public class BeginSession implements CommandHandler {
     LoggingManager.perSessionLogHandler().configureLogging(loggingPrefs);
     LoggingManager.perSessionLogHandler().attachToCurrentThread(session.getId());
 
+    // Only servers implementing the server-side webdriver-backed selenium need to return this
+    // particular value.
+    Map<String, Object> caps;
+    if (session.getCapabilities().containsKey("webdriver.remote.sessionid")) {
+      caps = session.getCapabilities();
+    } else {
+      caps = ImmutableMap.<String, Object>builder()
+          .putAll(session.getCapabilities())
+          .put("webdriver.remote.sessionid", session.getId().toString())
+          .build();
+    }
+
     Object toConvert;
       switch (session.getDownstreamDialect()) {
         case OSS:
           toConvert = ImmutableMap.of(
               "status", 0,
               "sessionId", session.getId().toString(),
-              "value", session.getCapabilities());
+              "value", caps);
           break;
 
         case W3C:
           toConvert = ImmutableMap.of(
               "value", ImmutableMap.of(
                   "sessionId", session.getId().toString(),
-                  "capabilities", session.getCapabilities()));
+                  "capabilities", caps));
           break;
 
         default:

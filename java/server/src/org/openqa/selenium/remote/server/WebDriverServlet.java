@@ -21,7 +21,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.server.DriverServlet.SESSION_TIMEOUT_PARAMETER;
 
 import com.google.common.base.Splitter;
 import com.google.common.net.HttpHeaders;
@@ -55,6 +54,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class WebDriverServlet extends HttpServlet {
 
+  public static final String SESSION_TIMEOUT_PARAMETER = "webdriver.server.session.timeout";
+  public static final String BROWSER_TIMEOUT_PARAMETER = "webdriver.server.browser.timeout";
   private static final Logger LOG = Logger.getLogger(WebDriverServlet.class.getName());
   public static final String ACTIVE_SESSIONS_KEY = WebDriverServlet.class.getName() + ".sessions";
   public static final String NEW_SESSION_PIPELINE_KEY = WebDriverServlet.class.getName() + ".pipeline";
@@ -67,7 +68,7 @@ public class WebDriverServlet extends HttpServlet {
   private AllHandlers handlers;
 
   @Override
-  public void init() throws ServletException {
+  public void init() {
     configureLogging();
     log("Initialising WebDriverServlet");
 
@@ -222,14 +223,15 @@ public class WebDriverServlet extends HttpServlet {
               session.getCapabilities().get(BROWSER_NAME)));
         } else {
           // All commands that take a session id expect that as the path fragment immediately after "/session".
-          List<String> fragments = Splitter.on('/').limit(4).splitToList(req.getPathInfo());
+          String pathInfo = req.getPathInfo() == null ? "/" : req.getPathInfo();
+          List<String> fragments = Splitter.on('/').limit(4).splitToList(pathInfo);
           if (fragments.size() > 2) {
             if ("session".equals(fragments.get(1))) {
               sessionLogHandler.attachToCurrentThread(new SessionId(fragments.get(2)));
             }
           }
 
-          Thread.currentThread().setName(req.getPathInfo());
+          Thread.currentThread().setName(pathInfo);
         }
         LOG.info(String.format(
             "%s: Executing %s on %s (handler: %s)",

@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -55,5 +56,14 @@ public class UrlTemplateTest {
 
     assertEquals("cheese/type", match.getUrl());
     assertEquals(ImmutableMap.of("cake", "cheese"), match.getParameters());
+  }
+
+  @Test
+  public void aNullMatchDoesNotCauseANullPointerExceptionToBeThrown() {
+    try {
+      assertNull(new UrlTemplate("").match(null));
+    } catch (NullPointerException e) {
+      fail("Did not expect an NPE to be thrown");
+    }
   }
 }

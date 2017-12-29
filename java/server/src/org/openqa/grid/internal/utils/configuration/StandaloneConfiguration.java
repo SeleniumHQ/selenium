@@ -208,7 +208,8 @@ public class StandaloneConfiguration {
   @Parameter(
       names = "-enablePassThrough",
       arity = 1,
-      description = "<Boolean>: Whether or not to use the experimental passthrough mode. Defaults to true."
+      hidden = true,
+      description = "<Boolean> (deprecated): Always true, and value is ignored."
   )
   public boolean enablePassThrough = true;
 
