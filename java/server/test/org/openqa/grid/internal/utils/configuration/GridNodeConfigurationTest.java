@@ -37,7 +37,6 @@ import org.junit.Test;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.Arrays;
 
@@ -168,7 +167,7 @@ public class GridNodeConfigurationTest {
   public void testAsJson() {
     final String[] args = new String[] { "-capabilities", "browserName=chrome,platform=linux" };
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
 
     assertEquals("{\"capabilities\":"
                  + "[{\"browserName\":\"chrome\",\"platform\":\"LINUX\"}],"
@@ -198,7 +197,7 @@ public class GridNodeConfigurationTest {
     final String[] args = new String[] { "-capabilities",
                                        "browserName=chrome,platform=linux,maxInstances=10,boolean=false" };
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     assertTrue(gnc.capabilities.size() == 1);
     assertEquals("chrome", gnc.capabilities.get(0).getBrowserName());
     assertEquals(10L, gnc.capabilities.get(0).getCapability("maxInstances"));
@@ -211,7 +210,7 @@ public class GridNodeConfigurationTest {
     final String[] args = new String[] { "-capabilities",
                                          "browserName= chrome, platform =linux, maxInstances=10, boolean = false " };
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     assertTrue(gnc.capabilities.size() == 1);
     assertEquals("chrome", gnc.capabilities.get(0).getBrowserName());
     assertEquals(10L, gnc.capabilities.get(0).getCapability("maxInstances"));
@@ -223,7 +222,7 @@ public class GridNodeConfigurationTest {
   public void testGetHubHost() {
     final String[] args = new String[]{"-hubHost", "dummyhost", "-hubPort", "1234"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     assertEquals("dummyhost", gnc.getHubHost());
   }
 
@@ -231,7 +230,7 @@ public class GridNodeConfigurationTest {
   public void testGetHubHostFromHubOption() {
     final String[] args = new String[]{"-hub", "http://dummyhost:1234/wd/hub"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     assertEquals("dummyhost", gnc.getHubHost());
   }
 
@@ -239,7 +238,7 @@ public class GridNodeConfigurationTest {
   public void testOneOfHubOrHubHostShouldBePresent() {
     final String[] args = new String[]{"-hubPort", "1234"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     Throwable t = catchThrowable(gnc::getHubHost);
     assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
     t = catchThrowable(gnc::getHubPort);
@@ -251,7 +250,7 @@ public class GridNodeConfigurationTest {
     final String[] args = new String[]{"-hub", "http://smarthost:4321/wd/hub",
                                        "-hubHost", "dummyhost", "-hubPort", "1234"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     assertEquals("smarthost", gnc.getHubHost());
   }
 
@@ -259,7 +258,7 @@ public class GridNodeConfigurationTest {
   public void testGetHubPort() {
     final String[] args = new String[]{"-hubHost", "dummyhost", "-hubPort", "1234"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     assertEquals(1234, gnc.getHubPort().intValue());
   }
 
@@ -267,7 +266,7 @@ public class GridNodeConfigurationTest {
   public void testGetHubPortFromHubOption() {
     final String[] args = new String[]{"-hub", "http://dummyhost:1234/wd/hub"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     assertEquals(1234, gnc.getHubPort().intValue());
   }
 
@@ -275,7 +274,7 @@ public class GridNodeConfigurationTest {
   public void testOneOfHubOrHubPortShouldBePresent() {
     final String[] args = new String[]{"-hubHost", "dummyhost"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     Throwable t = catchThrowable(gnc::getHubHost);
     assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
     t = catchThrowable(gnc::getHubPort);
@@ -287,7 +286,7 @@ public class GridNodeConfigurationTest {
     final String[] args = new String[]{"-hub", "http://smarthost:4321/wd/hub",
                                        "-hubHost", "dummyhost", "-hubPort", "1234"};
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     assertEquals(4321, gnc.getHubPort().intValue());
   }
 

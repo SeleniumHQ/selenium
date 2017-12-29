@@ -292,8 +292,9 @@ public class SeleniumServer implements GridNodeServer {
 
   public static void main(String[] argv) {
     StandaloneConfiguration configuration = new StandaloneConfiguration();
-    JCommander jCommander = new JCommander(configuration, argv);
+    JCommander jCommander = JCommander.newBuilder().addObject(configuration).build();
     jCommander.setProgramName("selenium-3-server");
+    jCommander.parse(argv);
 
     if (configuration.help) {
       StringBuilder message = new StringBuilder();

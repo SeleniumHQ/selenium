@@ -78,7 +78,7 @@ public class DefaultRemoteProxyTest {
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
     nodeConfiguration.port = new Random().nextInt(100);
     nodeConfiguration.timeout = 1;
-    new JCommander(nodeConfiguration, "-role", "webdriver");
+    JCommander.newBuilder().addObject(nodeConfiguration).build().parse("-role", "webdriver");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = DefaultRemoteProxy.class.getName();
     BaseRemoteProxy p = createMockProxyWithPollingDisabled(req, registry);

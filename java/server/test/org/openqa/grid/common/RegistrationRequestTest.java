@@ -87,7 +87,8 @@ public class RegistrationRequestTest {
   @Test
   public void basicCommandLineParam() {
     GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234", "-host","localhost");
+    JCommander.newBuilder().addObject(config).build().parse(
+        "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234", "-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
 
     assertEquals(GridRole.NODE, GridRole.get(req.getConfiguration().role));
@@ -98,7 +99,7 @@ public class RegistrationRequestTest {
   @Test
   public void commandLineParamDefault() {
     GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd");
+    JCommander.newBuilder().addObject(config).build().parse("-role", "wd");
     RegistrationRequest req = RegistrationRequest.build(config);
     // the hub defaults to current IP.
     assertNotNull(req.getConfiguration().getHubHost());
@@ -111,7 +112,8 @@ public class RegistrationRequestTest {
   @Test
   public void commandLineParamDefaultCapabilities() {
     GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234", "-host","localhost");
+    JCommander.newBuilder().addObject(config).build().parse(
+        "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234", "-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
     assertEquals("ABC", req.getConfiguration().getHubHost());
     assertEquals(config.capabilities.size(), req.getConfiguration().capabilities.size());
@@ -120,12 +122,14 @@ public class RegistrationRequestTest {
   @Test
   public void registerParam() {
     GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-host","localhost");
+    JCommander.newBuilder().addObject(config).build().parse(
+        "-role", "wd", "-hubHost", "ABC", "-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
     assertEquals(true, req.getConfiguration().register);
 
     config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost", "-register","false");
+    JCommander.newBuilder().addObject(config).build().parse(
+        "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost", "-register","false");
     RegistrationRequest req2 = RegistrationRequest.build(config);
     assertEquals(false, req2.getConfiguration().register);
   }
@@ -133,7 +137,8 @@ public class RegistrationRequestTest {
   @Test
   public void ensurePre2_9HubCompatibility() {
     GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-host","example.com", "-port", "5555");
+    JCommander.newBuilder().addObject(config).build().parse(
+        "-role", "wd", "-host","example.com", "-port", "5555");
     RegistrationRequest req = RegistrationRequest.build(config);
 
     assertEquals("http://example.com:5555", req.getConfiguration().getRemoteHost());
@@ -142,7 +147,8 @@ public class RegistrationRequestTest {
   @Test(expected = GridConfigurationException.class)
   public void validateWithException() {
     GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "node", "-hubHost", "localhost", "-hub", "localhost:4444");
+    JCommander.newBuilder().addObject(config).build().parse(
+        "-role", "node", "-hubHost", "localhost", "-hub", "localhost:4444");
     RegistrationRequest req = new RegistrationRequest(config);
 
     req.validate();

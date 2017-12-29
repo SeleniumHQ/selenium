@@ -225,7 +225,7 @@ public class GridLauncherV3 {
 
           public void setConfiguration(String[] args) {
             configuration = new StandaloneConfiguration();
-            new JCommander(configuration, args);
+            JCommander.newBuilder().addObject(configuration).build().parse(args);
           }
 
           public void launch() throws Exception {
@@ -246,12 +246,13 @@ public class GridLauncherV3 {
 
           public void setConfiguration(String[] args) {
             GridHubConfiguration pending = new GridHubConfiguration();
-            new JCommander(pending, args);
+            JCommander.newBuilder().addObject(pending).build().parse(args);
             configuration = pending;
             //re-parse the args using any -hubConfig specified to init
             if (pending.hubConfig != null) {
               configuration = GridHubConfiguration.loadFromJSON(pending.hubConfig);
-              new JCommander(configuration, args); //args take precedence
+              //args take precedence
+              JCommander.newBuilder().addObject(configuration).build().parse(args);
             }
           }
 
@@ -270,12 +271,13 @@ public class GridLauncherV3 {
 
           public void setConfiguration(String[] args) {
             GridNodeConfiguration pending = new GridNodeConfiguration();
-            new JCommander(pending, args);
+            JCommander.newBuilder().addObject(pending).build().parse(args);
             configuration = pending;
             //re-parse the args using any -nodeConfig specified to init
             if (pending.nodeConfigFile != null) {
               configuration = GridNodeConfiguration.loadFromJSON(pending.nodeConfigFile);
-              new JCommander(configuration, args); //args take precedence
+              //args take precedence
+              JCommander.newBuilder().addObject(configuration).build().parse(args);
             }
             if (configuration.port == null) {
               configuration.port = 5555;
@@ -306,7 +308,7 @@ public class GridLauncherV3 {
         @Override
         public void setConfiguration(String[] args) {
           configuration = new CoreRunnerConfiguration();
-          new JCommander(configuration, args);
+          JCommander.newBuilder().addObject(configuration).build().parse(args);
         }
 
         @Override

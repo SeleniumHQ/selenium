@@ -38,7 +38,7 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
     Flags flags = new Flags();
-    new JCommander(flags, args);
+    JCommander.newBuilder().addObject(flags).build().parse(args);
 
     Server server = new Server();
     ServerConnector connector = new ServerConnector(server);
