@@ -148,7 +148,6 @@ public class ResultConfig {
       final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
       logHandler.transferThreadTempLogsToSessionLogs(sessionId);
       logHandler.removeSessionLogs(sessionId);
-      sessions.deleteSession(sessionId);
     }
     return response;
   }
