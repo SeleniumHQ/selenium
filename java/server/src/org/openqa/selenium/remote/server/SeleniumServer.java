@@ -66,7 +66,6 @@ public class SeleniumServer implements GridNodeServer {
   private StandaloneConfiguration configuration;
   private Map<String, Class<? extends Servlet>> extraServlets;
 
-  private Thread shutDownHook;
   /**
    * This lock is very important to ensure that SeleniumServer and the underlying Jetty instance
    * shuts down properly. It ensures that ProxyHandler does not add an SslRelay to the Jetty server
@@ -238,16 +237,6 @@ public class SeleniumServer implements GridNodeServer {
   public void stop() {
     int numTries = 0;
     Exception shutDownException = null;
-
-    // this may be called by a shutdown hook, or it may be called at any time
-    // in case it was called as an ordinary method, try to clean up the shutdown
-    // hook
-    try {
-      if (shutDownHook != null) {
-        Runtime.getRuntime().removeShutdownHook(shutDownHook);
-      }
-    } catch (IllegalStateException ignored) {
-    } // thrown if we're shutting down; that's OK
 
     // shut down the jetty server (try try again)
     while (numTries <= MAX_SHUTDOWN_RETRIES) {
