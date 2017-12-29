@@ -30,9 +30,6 @@ import com.google.gson.JsonParser;
 import com.beust.jcommander.JCommander;
 
 import org.junit.Test;
-import org.openqa.grid.internal.listeners.Prioritizer;
-
-import java.util.Map;
 
 public class GridHubConfigurationTest {
 
@@ -115,12 +112,7 @@ public class GridHubConfigurationTest {
   public void testMergeWithRealValues() {
     GridHubConfiguration ghc = new GridHubConfiguration();
     GridHubConfiguration other = new GridHubConfiguration();
-    other.prioritizer = new Prioritizer() {
-      @Override
-      public int compareTo(Map<String, Object> a, Map<String, Object> b) {
-        return 0;
-      }
-    };
+    other.prioritizer = (a, b) -> 0;
     other.hubConfig = "foo.json";
     other.throwOnCapabilityNotPresent = false;
     other.newSessionWaitTimeout = 100;
