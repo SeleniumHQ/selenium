@@ -78,6 +78,7 @@ java_library(
     'NewSessionPipeline.java',
     'Passthrough.java',
     'ProtocolConverter.java',
+    'RemoteSession.java',
     'ServicedSession.java',
     'SessionCodec.java',
     'SessionFactory.java',
