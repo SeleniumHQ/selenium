@@ -60,7 +60,6 @@ public class WebDriverServletTest {
   private static final String BASE_URL = "http://localhost:4444";
   private static final String CONTEXT_PATH = "/wd/hub";
 
-  private final SessionId sessionId = new SessionId("it's not real");
   private ActiveSessions testSessions;
   private WebDriverServlet driverServlet;
   private WebDriver driver;
@@ -70,23 +69,23 @@ public class WebDriverServletTest {
     testSessions = new ActiveSessions(1, MINUTES);
     driver = Mockito.mock(WebDriver.class);
 
-    InMemorySession.Factory factory = new InMemorySession.Factory(new DriverProvider() {
-      @Override
-      public Capabilities getProvidedCapabilities() {
-        return new ImmutableCapabilities();
-      }
+    InMemorySession.Factory factory = new InMemorySession.Factory(
+        new DriverProvider() {
+          @Override
+          public Capabilities getProvidedCapabilities() {
+            return new ImmutableCapabilities();
+          }
 
-      @Override
-      public boolean canCreateDriverInstanceFor(Capabilities capabilities) {
-        return true;
-      }
+          @Override
+          public boolean canCreateDriverInstanceFor(Capabilities capabilities) {
+            return true;
+          }
 
-      @Override
-      public WebDriver newInstance(Capabilities capabilities) {
-        return driver;
-      }
-    });
-
+          @Override
+          public WebDriver newInstance(Capabilities capabilities) {
+            return driver;
+          }
+        });
 
     NewSessionPipeline pipeline = NewSessionPipeline.builder()
         .add(factory)

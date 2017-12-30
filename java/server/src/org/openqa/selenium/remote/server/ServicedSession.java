@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 
 import javax.management.MalformedObjectNameException;
@@ -79,10 +80,13 @@ public class ServicedSession extends RemoteSession {
 
   public static class Factory extends RemoteSession.Factory<DriverService> {
 
+    private final Predicate<Capabilities> key;
     private final Function<Capabilities, ? extends DriverService> createService;
     private final String serviceClassName;
 
-    public Factory(String serviceClassName) {
+    public Factory(Predicate<Capabilities> key, String serviceClassName) {
+      this.key = key;
+
       this.serviceClassName = serviceClassName;
       try {
         Class<? extends DriverService> driverClazz =
@@ -127,6 +131,11 @@ public class ServicedSession extends RemoteSession {
       } catch (ReflectiveOperationException e) {
         return null;
       }
+    }
+
+    @Override
+    public boolean isSupporting(Capabilities capabilities) {
+      return key.test(capabilities);
     }
 
     @Override

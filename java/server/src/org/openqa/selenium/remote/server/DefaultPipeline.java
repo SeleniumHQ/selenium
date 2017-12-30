@@ -17,11 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.remote.service.DriverService;
-
-import java.util.Optional;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 /**
  * Used to represent the {@link NewSessionPipeline} that is typically used in the
@@ -35,34 +31,8 @@ public class DefaultPipeline {
     // Utility class
   }
 
-  public static NewSessionPipeline.Builder createPipelineWithDefaultFallbacks() {
-    // Set up the pipeline to inject
-    SessionFactory fallback = Stream.of(
-        "org.openqa.selenium.chrome.ChromeDriverService",
-        "org.openqa.selenium.firefox.GeckoDriverService",
-        "org.openqa.selenium.edge.EdgeDriverService",
-        "org.openqa.selenium.ie.InternetExplorerDriverService",
-        "org.openqa.selenium.safari.SafariDriverService")
-        .filter(name -> {
-          try {
-            Class.forName(name).asSubclass(DriverService.class);
-            return true;
-          } catch (ReflectiveOperationException e) {
-            return false;
-          }
-        })
-        .findFirst()
-        .map(serviceName -> {
-          SessionFactory factory = new ServicedSession.Factory(serviceName);
-          return (SessionFactory) (dialects, caps) -> {
-            LOG.info("Using default factory: " + serviceName);
-            return factory.apply(dialects, caps);
-          };
-        })
-        .orElse((dialects, caps) -> Optional.empty());
-
+  public static NewSessionPipeline.Builder createDefaultPipeline() {
     return NewSessionPipeline.builder()
-        .add(new ActiveSessionFactory())
-        .fallback(fallback);
+        .add(new ActiveSessionFactory());
   }
 }

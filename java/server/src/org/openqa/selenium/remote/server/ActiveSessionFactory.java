@@ -29,6 +29,7 @@ import static org.openqa.selenium.remote.BrowserType.SAFARI;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
@@ -36,8 +37,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Dialect;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -63,15 +63,15 @@ public class ActiveSessionFactory implements SessionFactory {
     }
   };
 
-  private volatile Map<Predicate<Capabilities>, SessionFactory> factories;
+  private volatile List<SessionFactory> factories;
 
   public ActiveSessionFactory() {
     // Insertion order matters. The first matching predicate is always used for matching.
-    Map<Predicate<Capabilities>, SessionFactory> builder = new LinkedHashMap<>();
+    ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
 
     // Allow user-defined factories to override default ones.
     StreamSupport.stream(loadDriverProviders().spliterator(), false)
-        .forEach(p -> builder.put(p::canCreateDriverInstanceFor, new InMemorySession.Factory(p)));
+        .forEach(p -> builder.add(new InMemorySession.Factory(p)));
 
     ImmutableMap.<Predicate<Capabilities>, String>builder()
         .put(caps -> {
@@ -96,13 +96,13 @@ public class ActiveSessionFactory implements SessionFactory {
         .build()
         .entrySet().stream()
         .filter(e -> CLASS_EXISTS.apply(e.getValue()) != null)
-        .forEach(e -> builder.put(e.getKey(), new ServicedSession.Factory(e.getValue())));
+        .forEach(e -> builder.add(new ServicedSession.Factory(e.getKey(), e.getValue())));
 
     // Attempt to bind the htmlunitdriver if it's present.
     bind(builder, "org.openqa.selenium.htmlunit.HtmlUnitDriver", browserName(HTMLUNIT),
          new ImmutableCapabilities(BROWSER_NAME, HTMLUNIT));
 
-    this.factories = ImmutableMap.copyOf(builder);
+    this.factories = builder.build();
   }
 
   public synchronized ActiveSessionFactory bind(
@@ -113,11 +113,11 @@ public class ActiveSessionFactory implements SessionFactory {
 
     LOG.info(String.format("Binding %s to respond to %s", useThis, onThis));
 
-    LinkedHashMap<Predicate<Capabilities>, SessionFactory> newMap = new LinkedHashMap<>();
-    newMap.put(onThis, useThis);
-    newMap.putAll(factories);
+    ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
+    builder.add(useThis);
+    builder.addAll(factories);
 
-    factories = newMap;
+    factories = builder.build();
 
     return this;
   }
@@ -128,7 +128,7 @@ public class ActiveSessionFactory implements SessionFactory {
   }
 
   private void bind(
-      Map<Predicate<Capabilities>, SessionFactory> builder,
+      ImmutableList.Builder<SessionFactory> builder,
       String className,
       Predicate<Capabilities> predicate,
       Capabilities capabilities) {
@@ -139,9 +139,7 @@ public class ActiveSessionFactory implements SessionFactory {
       }
 
       Class<? extends WebDriver> driverClass = clazz.asSubclass(WebDriver.class);
-      builder.put(
-          predicate,
-          new InMemorySession.Factory(new DefaultDriverProvider(capabilities, driverClass)));
+      builder.add(new InMemorySession.Factory(new DefaultDriverProvider(capabilities, driverClass)));
     } catch (ClassCastException ignored) {
       // Just carry on. Everything is fine.
     }
@@ -162,12 +160,19 @@ public class ActiveSessionFactory implements SessionFactory {
   }
 
   @Override
+  public boolean isSupporting(Capabilities capabilities) {
+    return factories.stream()
+        .map(factory -> factory.isSupporting(capabilities))
+        .reduce(Boolean::logicalOr)
+        .orElse(false);
+  }
+
+  @Override
   public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities caps) {
     LOG.info("Capabilities are: " + caps);
-    return factories.entrySet().stream()
-        .filter(e -> e.getKey().test(caps))
-        .peek(e -> LOG.info(String.format("%s matched %s", caps, e.getValue())))
-        .map(Map.Entry::getValue)
+    return factories.stream()
+        .filter(factory -> factory.isSupporting(caps))
+        .peek(factory -> LOG.info(String.format("%s matched %s", caps, factory)))
         .map(factory -> factory.apply(downstreamDialects, caps))
         .filter(Optional::isPresent)
         .map(Optional::get)

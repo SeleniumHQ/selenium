@@ -61,7 +61,7 @@ public class UrlTemplateTest {
   @Test
   public void aNullMatchDoesNotCauseANullPointerExceptionToBeThrown() {
     try {
-      assertNull(new UrlTemplate("").match(null));
+      assertNull(new UrlTemplate("/").match(null));
     } catch (NullPointerException e) {
       fail("Did not expect an NPE to be thrown");
     }

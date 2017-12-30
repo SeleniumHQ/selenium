@@ -201,7 +201,7 @@ public class SeleniumServer implements GridNodeServer {
   }
 
   private NewSessionPipeline createPipeline(StandaloneConfiguration configuration) {
-    NewSessionPipeline.Builder builder = DefaultPipeline.createPipelineWithDefaultFallbacks();
+    NewSessionPipeline.Builder builder = DefaultPipeline.createDefaultPipeline();
 
     if (configuration instanceof GridNodeConfiguration) {
       ((GridNodeConfiguration) configuration).capabilities.forEach(

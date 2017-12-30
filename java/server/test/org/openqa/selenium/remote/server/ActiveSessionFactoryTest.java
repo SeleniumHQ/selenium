@@ -31,6 +31,7 @@ import org.openqa.selenium.remote.Dialect;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 
 public class ActiveSessionFactoryTest {
 
@@ -56,7 +57,20 @@ public class ActiveSessionFactoryTest {
     ActiveSession session = Mockito.mock(ActiveSession.class);
 
     ActiveSessionFactory sessionFactory = new ActiveSessionFactory()
-        .bind(caps -> "cheese".equals(caps.getBrowserName()), (dialects, caps) -> Optional.of(session));
+        .bind(caps ->
+                  "cheese".equals(caps.getBrowserName()),
+              new SessionFactory() {
+                @Override
+                public boolean isSupporting(Capabilities capabilities) {
+                  return true;
+                }
+
+                @Override
+                public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects,
+                                                     Capabilities capabilities) {
+                  return Optional.of(session);
+                }
+              });
 
     ActiveSession created = sessionFactory.apply(ImmutableSet.copyOf(Dialect.values()), toPayload("cheese")).get();
 

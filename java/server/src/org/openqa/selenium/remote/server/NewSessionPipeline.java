@@ -2,8 +2,10 @@ package org.openqa.selenium.remote.server;
 
 import com.google.common.collect.ImmutableList;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 public class NewSessionPipeline {
@@ -41,6 +44,7 @@ public class NewSessionPipeline {
           return caps;
         })
         .map(caps -> factories.stream()
+            .filter(factory -> factory.isSupporting(caps))
             .map(factory -> factory.apply(payload.getDownstreamDialects(), caps))
             .filter(Optional::isPresent)
             .map(Optional::get)
@@ -57,7 +61,17 @@ public class NewSessionPipeline {
 
   public static class Builder {
     private List<SessionFactory> factories = new LinkedList<>();
-    private SessionFactory fallback = (dialects, caps) -> Optional.empty();
+    private SessionFactory fallback = new SessionFactory() {
+      @Override
+      public boolean isSupporting(Capabilities capabilities) {
+        return false;
+      }
+
+      @Override
+      public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities capabilities) {
+        return Optional.empty();
+      }
+    };
     private List<Function<ImmutableCapabilities, ImmutableCapabilities>> mutators = new LinkedList<>();
 
     private Builder() {

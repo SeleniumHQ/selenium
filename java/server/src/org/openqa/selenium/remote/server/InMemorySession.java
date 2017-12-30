@@ -125,6 +125,12 @@ class InMemorySession implements ActiveSession {
       this.provider = provider;
     }
 
+
+    @Override
+    public boolean isSupporting(Capabilities capabilities) {
+      return provider.canCreateDriverInstanceFor(capabilities);
+    }
+
     @Override
     public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities caps) {
       // Assume the blob fits in the available memory.

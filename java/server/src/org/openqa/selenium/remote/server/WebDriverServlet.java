@@ -86,7 +86,7 @@ public class WebDriverServlet extends HttpServlet {
     NewSessionPipeline pipeline =
         (NewSessionPipeline) getServletContext().getAttribute(NEW_SESSION_PIPELINE_KEY);
     if (pipeline == null) {
-      pipeline = DefaultPipeline.createPipelineWithDefaultFallbacks().create();
+      pipeline = DefaultPipeline.createDefaultPipeline().create();
       getServletContext().setAttribute(NEW_SESSION_PIPELINE_KEY, pipeline);
     }
 
