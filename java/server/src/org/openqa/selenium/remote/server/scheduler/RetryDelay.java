@@ -15,31 +15,34 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.server.scheduler;
 
-import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.SessionId;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
 
-import java.util.Map;
+import java.time.Duration;
+import java.util.Iterator;
 
-public interface ActiveSession extends CommandHandler, WrapsDriver {
+public interface RetryDelay extends Iterable<RetryDelay> {
 
-  SessionId getId();
+  Duration getDelay();
 
-  Dialect getUpstreamDialect();
+  @Override
+  default Iterator<RetryDelay> iterator() {
+    return ImmutableList.of(this).iterator();
+  }
 
-  Dialect getDownstreamDialect();
+  default RetryDelay orElse(RetryDelay nextDelay) {
+    return new RetryDelay() {
+      @Override
+      public Duration getDelay() {
+        return nextDelay.getDelay();
+      }
 
-  /**
-   * Describe the current webdriver session's capabilities.
-   */
-  Map<String, Object> getCapabilities();
-
-  TemporaryFilesystem getFileSystem();
-
-  void stop();
-
-  boolean isActive();
+      @Override
+      public Iterator<RetryDelay> iterator() {
+        return Iterators.concat(ImmutableList.of(this).iterator(), nextDelay.iterator());
+      }
+    };
+  }
 }

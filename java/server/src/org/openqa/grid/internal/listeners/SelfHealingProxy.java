@@ -33,19 +33,19 @@ public interface SelfHealingProxy {
    * proxy to see if it's still accessible, but it can have more logic in it, like checking the
    * resource usage ( RAM etc) on the remote.
    */
-  public void startPolling();
+  void startPolling();
 
   /**
    * put the polling on hold.
    */
-  public void stopPolling();
+  void stopPolling();
 
   /**
    * Allow to record when something important about the remote state is detected.
    *
    * @param event RemoteException event to be called when something happens
    */
-  public void addNewEvent(RemoteException event);
+  void addNewEvent(RemoteException event);
 
   // TODO freynaud pass the list as a param ?
 
@@ -57,6 +57,6 @@ public interface SelfHealingProxy {
    * @param events list of RemoteExceptions occurred
    * @param lastInserted last event that occurred
    */
-  public void onEvent(List<RemoteException> events, RemoteException lastInserted);
+  void onEvent(List<RemoteException> events, RemoteException lastInserted);
 
 }

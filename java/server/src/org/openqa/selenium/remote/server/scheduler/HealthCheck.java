@@ -15,31 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.server.scheduler;
 
-import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.SessionId;
+import java.util.Objects;
 
-import java.util.Map;
+public interface HealthCheck {
 
-public interface ActiveSession extends CommandHandler, WrapsDriver {
+  Result check();
 
-  SessionId getId();
+  class Result {
+    private final boolean isAlive;
+    private final String message;
 
-  Dialect getUpstreamDialect();
+    public Result(boolean isAlive, String message) {
+      this.isAlive = isAlive;
+      this.message = Objects.requireNonNull(message, "Message must be set");
+    }
 
-  Dialect getDownstreamDialect();
+    public boolean isAlive() {
+      return isAlive;
+    }
 
-  /**
-   * Describe the current webdriver session's capabilities.
-   */
-  Map<String, Object> getCapabilities();
-
-  TemporaryFilesystem getFileSystem();
-
-  void stop();
-
-  boolean isActive();
+    public String getMessage() {
+      return message;
+    }
+  }
 }

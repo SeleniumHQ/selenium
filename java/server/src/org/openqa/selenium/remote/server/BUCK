@@ -99,10 +99,12 @@ java_library(
   visibility = [
     '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
     '//java/server/src/org/openqa/grid:grid',
+    "//java/server/src/org/openqa/selenium/remote/server/scheduler:scheduler",
     '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
     "//java/server/test/org/openqa/selenium:lib",
     '//java/server/test/org/openqa/selenium/remote/server:tests',
     "//java/server/test/org/openqa/selenium/remote/server/auth:lib",
+    "//java/server/test/org/openqa/selenium/remote/server/scheduler:",
   ],
 )
 

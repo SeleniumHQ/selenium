@@ -50,6 +50,7 @@ class InMemorySession implements ActiveSession {
   private final Dialect downstream;
   private final TemporaryFilesystem filesystem;
   private final JsonHttpCommandHandler handler;
+  private volatile boolean active;
 
   private InMemorySession(WebDriver driver, Capabilities capabilities, Dialect downstream) {
     this.driver = Preconditions.checkNotNull(driver);
@@ -75,6 +76,8 @@ class InMemorySession implements ActiveSession {
     this.handler = new JsonHttpCommandHandler(
         new PretendDriverSessions(),
         LOG);
+
+    this.active = true;
   }
 
   @Override
@@ -114,7 +117,16 @@ class InMemorySession implements ActiveSession {
 
   @Override
   public void stop() {
-    driver.quit();
+    try {
+      driver.quit();
+    } finally {
+      active = false;
+    }
+  }
+
+  @Override
+  public boolean isActive() {
+    return active;
   }
 
   public static class Factory implements SessionFactory {

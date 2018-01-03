@@ -15,31 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.testing;
 
-import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.SessionId;
+import static org.junit.Assert.fail;
 
-import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
-public interface ActiveSession extends CommandHandler, WrapsDriver {
+public class Assertions {
+  private Assertions() {
+    // Utility class.
+  }
 
-  SessionId getId();
-
-  Dialect getUpstreamDialect();
-
-  Dialect getDownstreamDialect();
-
-  /**
-   * Describe the current webdriver session's capabilities.
-   */
-  Map<String, Object> getCapabilities();
-
-  TemporaryFilesystem getFileSystem();
-
-  void stop();
-
-  boolean isActive();
+  public static void assertException(Runnable test, Consumer<Exception> handler) {
+    try {
+      test.run();
+      fail("Expected an exception to be thrown");
+    } catch (Exception e) {
+      handler.accept(e);
+    }
+  }
 }

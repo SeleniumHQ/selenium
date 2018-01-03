@@ -36,6 +36,19 @@ java_library(name = 'helpers',
   ],
 )
 
+java_library(name = 'assertions',
+  srcs = [
+    'Assertions.java',
+  ],
+  deps = [
+    '//third_party/java/junit:junit',
+  ],
+  visibility = [
+    '//java/client/test/...',
+    '//java/server/test/...',
+  ],
+)
+
 java_library(name = 'test-base',
   srcs = [
     'JUnit4TestBase.java',

@@ -15,31 +15,34 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.server.scheduler;
 
-import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.ActiveSession;
+import org.openqa.selenium.remote.server.SessionFactory;
 
-import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 
-public interface ActiveSession extends CommandHandler, WrapsDriver {
+class FakeSessionFactory implements SessionFactory {
 
-  SessionId getId();
+  private final Predicate<Capabilities> predicate;
 
-  Dialect getUpstreamDialect();
+  public FakeSessionFactory(Predicate<Capabilities> predicate) {
+    this.predicate = predicate;
+  }
 
-  Dialect getDownstreamDialect();
+  @Override
+  public boolean isSupporting(Capabilities capabilities) {
+    return predicate.test(capabilities);
+  }
 
-  /**
-   * Describe the current webdriver session's capabilities.
-   */
-  Map<String, Object> getCapabilities();
-
-  TemporaryFilesystem getFileSystem();
-
-  void stop();
-
-  boolean isActive();
+  @Override
+  public Optional<ActiveSession> apply(
+      Set<Dialect> downstreamDialects,
+      Capabilities capabilities) {
+    return Optional.of(new FakeActiveSession(downstreamDialects, capabilities));
+  }
 }

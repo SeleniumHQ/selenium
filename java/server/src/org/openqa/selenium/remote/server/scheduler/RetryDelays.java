@@ -15,31 +15,36 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.server.scheduler;
 
-import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.SessionId;
+import java.time.Duration;
 
-import java.util.Map;
+public class RetryDelays {
 
-public interface ActiveSession extends CommandHandler, WrapsDriver {
+  private RetryDelays() {
+    // Utility class
+  }
 
-  SessionId getId();
+  public static RetryDelay immediately() {
+    return after(Duration.ZERO);
+  }
 
-  Dialect getUpstreamDialect();
+  public static RetryDelay after(Duration duration) {
+    return () -> duration;
+  }
 
-  Dialect getDownstreamDialect();
+  public static RetryDelay upTo(Duration maximumTimeout) {
+    long remaining = maximumTimeout.toMillis();
+    RetryDelay delay = immediately();
 
-  /**
-   * Describe the current webdriver session's capabilities.
-   */
-  Map<String, Object> getCapabilities();
+    long nextDelay = 500;
+    long maxDelay = 5000;
+    while (remaining > 0) {
+      delay = delay.orElse(after(Duration.ofMillis(nextDelay)));
+      remaining -= nextDelay;
+      nextDelay = Math.min(maxDelay, nextDelay + 500);
+    }
 
-  TemporaryFilesystem getFileSystem();
-
-  void stop();
-
-  boolean isActive();
+    return delay;
+  }
 }
