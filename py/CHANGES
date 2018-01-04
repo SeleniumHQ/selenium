@@ -1,3 +1,13 @@
+Selenium 3.8.1
+
+* Fix bug when creating an Opera driver (#5266)
+* Stop sending sessionId in w3c payload. (#4620)
+* Fix issue with w3c actions releasing on element (#5180)
+* A more descriptive log message is displayed if the port cannot be connected (#2913)
+* Initialize Alert object by calling alert.text (#1863)
+* PhantomJS is now deprecated, please use either Chrome or Firefox in headless mode
+* Legacy Firefox driver: ensuring copy of profile dir, its 'extensions' subdir and 'user.js' file are writable. (#1466)
+
 Selenium 3.8.0
 
 * Firefox options can now be imported from selenium.webdriver as FirefoxOptions (#5120)

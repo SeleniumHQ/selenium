@@ -35,4 +35,4 @@ from .common.action_chains import ActionChains  # noqa
 from .common.touch_actions import TouchActions  # noqa
 from .common.proxy import Proxy  # noqa
 
-__version__ = '3.8.0'
+__version__ = '3.8.1'
