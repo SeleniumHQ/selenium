@@ -3,7 +3,7 @@ PATH
   specs:
     selenium-webdriver (3.8.0)
       childprocess (~> 0.5)
-      rubyzip (~> 1.0)
+      rubyzip (~> 1.2)
 
 GEM
   remote: https://rubygems.org/
