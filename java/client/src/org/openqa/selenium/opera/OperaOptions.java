@@ -27,7 +27,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.File;
