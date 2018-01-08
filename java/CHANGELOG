@@ -8,6 +8,8 @@ v3.8.1
 v3.8.0
 ======
 
+* Dropped support for PhantomJS, it's recommended to use headless Firefox or
+  Chrome instead.
 * Node skips configurations that does not match current platform, no more IE
   slots on Linux-based nodes.
 * Introduced unique ids for node slot configurations. Hub injects UID of the
