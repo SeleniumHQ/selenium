@@ -21,8 +21,13 @@
  * @fileoverview Defines types related to user input with the WebDriver API.
  */
 
-const {Command, Name} = require('./command');
-const {InvalidArgumentError} = require('./error');
+const promise = require('./promise');
+const {Command, Executor, Name} = require('./command');
+const {
+  InvalidArgumentError,
+  UnknownCommandError,
+  UnsupportedOperationError
+} = require('./error');
 
 /**
  * Enumeration of the buttons used in the advanced interactions API.
@@ -171,32 +176,43 @@ class FileDetector {
 }
 
 
-/** @record */
-function Action() {}
-
-/** @type {!ActionType} */
-Action.prototype.type;
-
-/** @type {(number|undefined)} */
-Action.prototype.duration;
-
-/** @type {(string|undefined)} */
-Action.prototype.value;
-
-/** @type {(Button|undefined)} */
-Action.prototype.button;
+/**
+ * Generic description of a single action to send to the remote end.
+ *
+ * @record
+ * @package
+ */
+class Action {
+  constructor() {
+    /** @type {!Action.Type} */
+    this.type;
+    /** @type {(number|undefined)} */
+    this.duration;
+    /** @type {(string|undefined)} */
+    this.value;
+    /** @type {(Button|undefined)} */
+    this.button;
+    /** @type {(number|undefined)} */
+    this.x;
+    /** @type {(number|undefined)} */
+    this.y;
+  }
+}
 
 
 /**
- * Device types supported by the WebDriver protocol.
- *
  * @enum {string}
- * @see https://w3c.github.io/webdriver/webdriver-spec.html#input-source-state
+ * @package
+ * @see <https://w3c.github.io/webdriver/webdriver-spec.html#terminology-0>
  */
-const DeviceType = {
-  KEY: 'key',
-  NONE: 'none',
-  POINTER: 'pointer'
+Action.Type = {
+  KEY_DOWN: 'keyDown',
+  KEY_UP: 'keyUp',
+  PAUSE: 'pause',
+  POINTER_DOWN: 'pointerDown',
+  POINTER_UP: 'pointerUp',
+  POINTER_MOVE: 'pointerMove',
+  POINTER_CANCEL: 'pointerCancel'
 };
 
 
@@ -207,7 +223,7 @@ const DeviceType = {
  */
 class Device {
   /**
-   * @param {DeviceType} type the input type.
+   * @param {Device.Type} type the input type.
    * @param {string} id a unique ID for this device.
    */
   constructor(type, id) {
@@ -223,171 +239,16 @@ class Device {
 
 
 /**
- * Keyboard input device.
+ * Device types supported by the WebDriver protocol.
  *
- * @final
- * @see <https://www.w3.org/TR/webdriver/#dfn-key-input-source>
- */
-class Keyboard extends Device {
-  /** @param {string} id the device ID. */
-  constructor(id) {
-    super(DeviceType.KEY, id);
-  }
-
-  /**
-   * Generates a key down action.
-   *
-   * @param {(Key|string|number)} key the key to press. This key may be
-   *     specified as a {@link Key} value, a specific unicode code point,
-   *     or a string containing a single unicode code point.
-   * @return {!Action} a new key down action.
-   * @package
-   */
-  keyDown(key) {
-    return {type: ActionType.KEY_DOWN, value: checkCodePoint(key)};
-  }
-
-  /**
-   * Generates a key up action.
-   *
-   * @param {(Key|string|number)} key the key to press. This key may be
-   *     specified as a {@link Key} value, a specific unicode code point,
-   *     or a string containing a single unicode code point.
-   * @return {!Action} a new key up action.
-   * @package
-   */
-  keyUp(key) {
-    return {type: ActionType.KEY_UP, value: checkCodePoint(key)};
-  }
-}
-
-
-/**
- * Pointer input device.
- *
- * @final
- * @see <https://www.w3.org/TR/webdriver/#dfn-pointer-input-source>
- */
-class Pointer extends Device {
-  /**
-   * @param {string} id the device ID.
-   * @param {Pointer.Type} type the pointer type.
-   */
-  constructor(id, type) {
-    super(DeviceType.POINTER, id);
-    /** @private @const */ this.pointerType_ = type;
-  }
-
-  /** @override */
-  toJSON() {
-    return Object.assign(
-        {'parameters': {'pointerType': this.pointerType_}},
-        super.toJSON());
-  }
-}
-
-
-/**
- * The supported types of pointers.
  * @enum {string}
+ * @see <https://w3c.github.io/webdriver/webdriver-spec.html#input-source-state>
  */
-Pointer.Type = {
-  MOUSE: 'mouse',
-  PEN: 'pen',
-  TOUCH: 'touch'
+Device.Type = {
+  KEY: 'key',
+  NONE: 'none',
+  POINTER: 'pointer'
 };
-
-
-/** @enum {string} */
-const ActionType = {
-  KEY_DOWN: 'keyDown',
-  KEY_UP: 'keyUp',
-  PAUSE: 'pause',
-  POINTER_DOWN: 'pointerDown',
-  POINTER_UP: 'pointerUp',
-  POINTER_MOVE: 'pointerMove',
-  POINTER_CANCEL: 'pointerCancel'
-};
-
-
-/**
- * Defines a sequence of actions to perform with an individual input device.
- *
- * @see <https://www.w3.org/TR/webdriver/#actions>
- */
-class Sequence {
-  /**
-   * @param {!Device} device the device to generate this action sequence.
-   * @param {function(): !Promise<void>} onPerform the function to call to
-   *     actually handle class to {@link #perform}.
-   */
-  constructor(device, onPerform) {
-    /** @private @const */
-    this.device_ = device;
-
-    /** @private @const */
-    this.onPerform_ = onPerform;
-
-    /** @private @const {!Array<!Action>} */
-    this.actions_ = [];
-  }
-
-  /**
-   * Executes this sequence.
-   *
-   * @return {!Promise<void>} a promise that will resolve when the sequence
-   *     has finished executing.
-   */
-  perform() {
-    return (0, this.onPerform_)();
-  }
-
-  /**
-   * Clears all actions in this sequence.
-   * @final
-   */
-  clear() {
-    this.actions_.length = 0;
-  }
-
-  /**
-   * @return {number} the length of this action sequence.
-   * @final
-   */
-  length() {
-    return this.actions_.length;
-  }
-
-  /**
-   * @return {boolean} whether this sequence is empty or contains only
-   *     {@linkplain #pause pause} actions.
-   * @final
-   */
-  isIdle() {
-    return this.length() == 0
-        || this.actions_.every(action => action.type === ActionType.PAUSE);
-  }
-
-  /**
-   * Inserts a pause action into this action sequence.
-   *
-   * @param {number=} duration the length of a pause to take, in milliseconds.
-   *     If omitted or 0, the device will pause for the entire "tick".
-   * @return {THIS} a self reference.
-   * @this {THIS}
-   * @template THIS
-   */
-  pause(duration = 0) {
-    this.actions_.push({type: ActionType.PAUSE, duration});
-    return this;
-  }
-
-  /** @return {!Object} the JSON encoding for this action sequence. */
-  toJSON() {
-    const actions = this.actions_;
-    return Object.assign({actions}, this.device_.toJSON());
-  }
-}
 
 
 /**
@@ -404,7 +265,8 @@ function checkCodePoint(key) {
     throw new InvalidArgumentError(`key is not a string: ${key}`);
   }
 
-  if (Array.from(key.normalize()).length != 1) {
+  key = key.normalize();
+  if (Array.from(key).length != 1) {
     throw new InvalidArgumentError(
         `key input is not a single code point: ${key}`);
   }
@@ -413,81 +275,48 @@ function checkCodePoint(key) {
 
 
 /**
- * Defines a sequence of key input actions.
+ * Keyboard input device.
  *
  * @final
+ * @see <https://www.w3.org/TR/webdriver/#dfn-key-input-source>
  */
-class KeySequence extends Sequence {
-  /**
-   * @param {!Keyboard} keyboard the keyboard to use.
-   * @param {function(): !Promise<void>} onPerform the function to call to
-   *     actually handle class to {@link #perform}.
-   */
-  constructor(keyboard, onPerform) {
-    super(keyboard, onPerform);
+class Keyboard extends Device {
+  /** @param {string} id the device ID. */
+  constructor(id) {
+    super(Device.Type.KEY, id);
   }
 
   /**
-   * Records an action to press a single key.
+   * Generates a key down action.
+   *
    * @param {(Key|string|number)} key the key to press. This key may be
    *     specified as a {@link Key} value, a specific unicode code point,
    *     or a string containing a single unicode code point.
-   * @return {!KeySequence} a self reference.
+   * @return {!Action} a new key down action.
+   * @package
    */
   keyDown(key) {
-    this.actions_.push({
-      type: ActionType.KEY_DOWN,
-      value: checkCodePoint(key)
-    });
-    return this;
+    return {type: Action.Type.KEY_DOWN, value: checkCodePoint(key)};
   }
 
   /**
-   * Records an action to release a single key.
-   * @param {(Key|string|number)} key the key to release. This key may be
+   * Generates a key up action.
+   *
+   * @param {(Key|string|number)} key the key to press. This key may be
    *     specified as a {@link Key} value, a specific unicode code point,
    *     or a string containing a single unicode code point.
-   * @return {!KeySequence} a self reference.
+   * @return {!Action} a new key up action.
+   * @package
    */
   keyUp(key) {
-    this.actions_.push({
-      type: ActionType.KEY_UP,
-      value: checkCodePoint(key)
-    });
-    return this;
-  }
-
-  /**
-   * Records a sequence of actions to type the provided key sequence.
-   * For each key, this will record a pair of {@linkplain #keyDown keyDown}
-   * and {@linkplain #keyUp keyUp} actions. An implication of this pairing
-   * is that modifier keys (e.g. {@link ./input.Key.SHIFT Key.SHIFT}) will
-   * always be immediately released. In other words, `sendKeys(Key.SHIFT, 'a')`
-   * is the same as typing `sendKeys('a')`, _not_ `sendKeys('A')`.
-   *
-   * @param {...(Key|string|number)} keys the keys to type.
-   * @return {!KeySequence} a self reference.
-   */
-  sendKeys(...keys) {
-    for (const key of keys) {
-      if (typeof key === 'string') {
-        for (const symbol of key) {
-          this.keyDown(symbol);
-          this.keyUp(symbol);
-        }
-      } else {
-        this.keyDown(key);
-        this.keyUp(key);
-      }
-    }
-    return this;
+    return {type: Action.Type.KEY_UP, value: checkCodePoint(key)};
   }
 }
 
 
 /**
  * Defines the reference point from which to compute offsets for
- * {@linkplain PointerSequence#pointerMove pointer move} actions.
+ * {@linkplain ./input.Pointer#move pointer move} actions.
  *
  * @enum {string}
  */
@@ -500,55 +329,57 @@ const Origin = {
 
 
 /**
- * Defines a sequence of pointer input actions.
+ * Pointer input device.
  *
  * @final
+ * @see <https://www.w3.org/TR/webdriver/#dfn-pointer-input-source>
  */
-class PointerSequence extends Sequence {
+class Pointer extends Device {
   /**
-   * @param {!Pointer} pointer the pointer to use.
-   * @param {function(): !Promise<void>} onPerform the function to call to
-   *     actually handle class to {@link #perform}.
+   * @param {string} id the device ID.
+   * @param {Pointer.Type} type the pointer type.
    */
-  constructor(pointer, onPerform) {
-    super(pointer, onPerform);
+  constructor(id, type) {
+    super(Device.Type.POINTER, id);
+    /** @private @const */ this.pointerType_ = type;
+  }
+
+  /** @override */
+  toJSON() {
+    return Object.assign(
+        {'parameters': {'pointerType': this.pointerType_}},
+        super.toJSON());
   }
 
   /**
-   * Cancels a pointer action.
-   * @return {!PointerSequence} a self reference.
+   * @return {!Action} An action that cancels this pointer's current input.
+   * @package
    */
   cancel() {
-    this.actions_.push({type: ActionType.POINTER_CANCEL});
-    return this;
+    return {type: Action.Type.POINTER_CANCEL};
   }
 
   /**
-   * Records an action for pressing a pointer button.
-   *
-   * @param {Button=} button the button to press; this may be omitted for
-   *    {@link Pointer.Type.PEN} and {@link Pointer.Type.TOUCH} devices.
-   * @return {!PointerSequence} a self reference.
+   * @param {!Button=} button The button to press.
+   * @return {!Action} An action to press the specified button with this device.
+   * @package
    */
   press(button = Button.LEFT) {
-    this.actions_.push({type: ActionType.POINTER_DOWN, button});
-    return this;
+    return {type: Action.Type.POINTER_DOWN, button};
   }
 
   /**
-   * Records an action for releasing a pointer button.
-   *
-   * @param {Button=} button the button to release; this may be omitted for
-   *    {@link Pointer.Type.PEN} and {@link Pointer.Type.TOUCH} devices.
-   * @return {!PointerSequence} a self reference.
+   * @param {!Button=} button The button to release.
+   * @return {!Action} An action to release the specified button with this
+   *     device.
+   * @package
    */
   release(button = Button.LEFT) {
-    this.actions_.push({type: ActionType.POINTER_UP, button});
-    return this;
+    return {type: Action.Type.POINTER_UP, button};
   }
 
   /**
-   * Records an action for moving the pointer `x` and `y` pixels from the
+   * Creates an action for moving the pointer `x` and `y` pixels from the
    * specified `origin`. The `origin` may be defined as the pointer's
    * {@linkplain Origin.POINTER current position}, the
    * {@linkplain Origin.VIEWPORT viewport}, or the center of a specific
@@ -560,64 +391,817 @@ class PointerSequence extends Sequence {
    *   duration: (number|undefined),
    *   origin: (!Origin|!./webdriver.WebElement|undefined),
    * }=} options the move options.
-   * @return {!PointerSequence} a self reference.
+   * @return {!Action} The new action.
+   * @package
    */
   move({x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT}) {
-    this.actions_.push({
-      type: ActionType.POINTER_MOVE,
-      origin,
-      duration,
-      x,
-      y
-    });
+    return {type: Action.Type.POINTER_MOVE, origin, duration, x, y};
+  }
+}
+
+
+/**
+ * The supported types of pointers.
+ * @enum {string}
+ */
+Pointer.Type = {
+  MOUSE: 'mouse',
+  PEN: 'pen',
+  TOUCH: 'touch'
+};
+
+
+/**
+ * User facing API for generating complex user gestures. This class should not
+ * be instantiated directly. Instead, users should create new instances by
+ * calling {@link ./webdriver.WebDriver#actions WebDriver.actions()}.
+ *
+ * ### Action Ticks
+ *
+ * Action sequences are divided into a series of "ticks". At each tick, the
+ * WebDriver remote end will perform a single action for each device included
+ * in the action sequence. At tick 0, the driver will perform the first action
+ * defined for each device, at tick 1 the second action for each device, and
+ * so on until all actions have been executed. If an individual device does
+ * not have an action defined at a particular tick, it will automatically
+ * pause.
+ *
+ * By default, action sequences will be synchronized so only one device has a
+ * define action in each tick. Consider the following code sample:
+ *
+ *     const actions = driver.actions();
+ *
+ *     await actions
+ *         .keyDown(SHIFT)
+ *         .move({origin: el})
+ *         .press()
+ *         .release()
+ *         .keyUp(SHIFT)
+ *         .perform();
+ *
+ * This sample produces the following sequence of ticks:
+ *
+ * | Device   | Tick 1         | Tick 2             | Tick 3  | Tick 4    | Tick 5       |
+ * | -------- | -------------- | ------------------ | ------- | --------- | ------------ |
+ * | Keyboard | keyDown(SHIFT) | pause()            | pause() | pause()   | keyUp(SHIFT) |
+ * | Mouse    | pause()        | move({origin: el}) | press() | release() | pause()      |
+ *
+ * If you'd like the remote end to execute actions with multiple devices
+ * simultaneously, you may pass `{async: true}` when creating the actions
+ * builder. With synchronization disabled (`{async: true}`), the ticks from our
+ * previous example become:
+ *
+ * | Device   | Tick 1             | Tick 2       | Tick 3    |
+ * | -------- | ------------------ | ------------ | --------- |
+ * | Keyboard | keyDown(SHIFT)     | keyUp(SHIFT) |           |
+ * | Mouse    | move({origin: el}) | press()      | release() |
+ *
+ * When synchronization is disabled, it is your responsibility to insert
+ * {@linkplain #pause() pauses} for each device, as needed:
+ *
+ *     const actions = driver.actions({async: true});
+ *     const kb = actions.keyboard();
+ *     const mouse = actions.mouse();
+ *
+ *     actions.keyDown(SHIFT).pause(kb).pause(kb).key(SHIFT);
+ *     actions.pause(mouse).move({origin: el}).press().release();
+ *     actions.perform();
+ *
+ * With pauses insert for individual devices, we're back to:
+ *
+ * | Device   | Tick 1         | Tick 2             | Tick 3  | Tick 4       |
+ * | -------- | -------------- | ------------------ | ------- | ------------ |
+ * | Keyboard | keyDown(SHIFT) | pause()            | pause() | keyUp(SHIFT) |
+ * | Mouse    | pause()        | move({origin: el}) | press() | release()    |
+ *
+ * #### Tick Durations
+ *
+ * The length of each action tick is however long it takes the remote end to
+ * execute the actions for every device in that tick. Most actions are
+ * "instaneous", however, {@linkplain #pause pause} and
+ * {@linkplain #move pointer move} actions allow you to specify a duration for
+ * how long that action should take. The remote end will always wait for all
+ * actions within a tick to finish before starting the next tick, so a device
+ * may implicitly pause while waiting for other devices to finish.
+ *
+ * | Device    | Tick 1                | Tick 2  |
+ * | --------- | --------------------- | ------- |
+ * | Pointer 1 | move({duration: 200}) | press() |
+ * | Pointer 2 | move({duration: 300}) | press() |
+ *
+ * In table above, the move for Pointer 1 should only take 200 ms, but the
+ * remote end will wait for the move for Pointer 2 to finish
+ * (an additional 100 ms) before proceeding to Tick 2.
+ *
+ * This implicit waiting also applies to pauses. In the table below, even though
+ * the keyboard only defines a pause of 100 ms, the remote end will wait an
+ * additional 200 ms for the mouse mmove to finish before moving to Tick 2.
+ *
+ * | Device   | Tick 1                | Tick 2         |
+ * | -------- | --------------------- | -------------- |
+ * | Keyboard | pause(100)            | keyDown(SHIFT) |
+ * | Mouse    | move({duration: 300}) |                |
+ *
+ *
+ * #### Bridge Mode
+ *
+ * As of January 2018, only Firefox natively supports this API. For other
+ * browsers, you may either use the
+ * {@link ./actions.LegacyActionSequence LegacyActionSequence} class, _or_ you
+ * can put the Actions class into bridge mode by passing `{bridge: true}` on
+ * creation:
+ *
+ *     const actions = driver.actions({bridge: true});
+ *     await actions.click(element).sendKeys('abc').perform();
+ *
+ * In bridge mode, {@link #perform perform()} will first attempt to execute the
+ * configured action sequence using the W3C action protocol. If this is rejected
+ * by the remote end, the sequence will be translated to and executed against
+ * the legacy protocol.
+ *
+ * Bridge mode __is not enabled by default__ as there are several notable
+ * differences between W3C-specified and legacy protocols. Care must be
+ * taken to configure your action sequences to account for these differences:
+ *
+ * 1.  For W3C actions, the entire action sequence is executed in a single
+ *     call to the remote end. For legacy sequences, multiple calls must be
+ *     made for each step in the sequence. This introduces additional latency
+ *     which may impact how the browser responds to the emulated user actions.
+ *
+ * 2.  For the legacy actions, {@linkplain #pause pauses} are handled _locally_.
+ *
+ * 3.  For legacy actions, a {@linkplain #keyDown keyDown()} for a
+ *     _non-modifier key_ **must** be followed by a {@linkplain #keyUP keyUp()}
+ *     for the same key. This will be handled for you if you use the
+ *     {@linkplain #sendKeys sendKeys()} method.
+ *
+ * 4.  Mouse movements may not be specified relative to
+ *     {@linkplain ./input.Origin.VIEWPORT Origin.VIEWPORT}.
+ *     All movements must be relative to an element or the mouse's current
+ *     position ({@linkplain ./input.Origin.POINTER Origin.POINTER}).
+ *     The {@linkplain #move move()} method defaults to viewport relative
+ *     offsets, so you must always specify an appropriate origin in bridge mode:
+ *
+ *         driver.actions({bridge: true})
+ *             .move({x: 0, y: 0, origin: Origin.POINTER})
+ *             .perform();
+ *         driver.actions({bridge: true})
+ *             .move({x: 0, y: 0, origin: someWebElement})
+ *             .perform();
+ *
+ * 5.  The legacy protocol does not support specifying the duration of a
+ *     {@linkplain #move mouse movement}; any specified duration _is ignored_
+ *     when translating actions to the legacy protocol.
+ *
+ * 6.  For W3C actions, move offsets relative to a
+ *     {@linkplain ./webdriver.WebElement WebElement} are interpretted relative
+ *     to the center of an element's _first_ [client rect] in the viewport. For
+ *     legacy actions, element offsets are relative to the top-left corner of
+ *     the element's [bounding client rect]. When translating actions to the
+ *     legacy protocol in bridge mode, an extra command must be inserted to
+ *     translate move offsets from one frame of reference to the other. This
+ *     extra command conributes to the overall latency issue outlined in
+ *     point 1.
+ *
+ * [client rect]: https://developer.mozilla.org/en-US/docs/Web/API/Element/getClientRects
+ * [bounding client rect]: https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+ *
+ * @final
+ * @see <https://www.w3.org/TR/webdriver/#actions>
+ */
+class Actions {
+  /**
+   * @param {!Executor} executor The object to execute the configured
+   *     actions with.
+   * @param {{async: (boolean|undefined),
+   *          bridge: (boolean|undefined)}} options Options for this action
+   *     sequence (see class description for details).
+   */
+  constructor(executor, {async = false, bridge = false} = {}) {
+    if (async && bridge) {
+      throw new InvalidArgumentError(
+          'Async sequences not supported with bridge mode');
+    }
+
+    /** @private @const */
+    this.executor_ = executor;
+
+    /** @private @const */
+    this.sync_ = !async;
+
+    /** @private @const */
+    this.bridge_ = !!bridge;
+
+    /** @private @const */
+    this.keyboard_ = new Keyboard('default keyboard');
+
+    /** @private @const */
+    this.mouse_ = new Pointer('default mouse', Pointer.Type.MOUSE);
+
+    /** @private @const {!Map<!Device, !Array<!Action>>} */
+    this.sequences_ = new Map([
+      [this.keyboard_, []],
+      [this.mouse_, []],
+    ]);
+  }
+
+
+  /** @return {!Keyboard} the keyboard device handle. */
+  keyboard() {
+    return this.keyboard_;
+  }
+
+  /** @return {!Pointer} the mouse pointer device handle. */
+  mouse() {
+    return this.mouse_;
+  }
+
+  /**
+   * @param {!Device} device
+   * @return {!Array<!Action>}
+   * @private
+   */
+  sequence_(device) {
+    let sequence = this.sequences_.get(device);
+    if (!sequence) {
+      sequence = [];
+      this.sequences_.set(device, sequence);
+    }
+    return sequence;
+  }
+
+  /**
+   * Appends `actions` to the end of the current sequence for the given
+   * `device`. If device synchronization is enabled, after inserting the
+   * actions, pauses will be inserted for all other devices to ensure all action
+   * sequences are the same length.
+   *
+   * @param {!Device} device the device to update.
+   * @param {...!Action} actions the actions to insert.
+   * @return {!Actions} a self reference.
+   */
+  insert(device, ...actions) {
+    this.sequence_(device).push(...actions);
+    return this.sync_ ? this.synchronize() : this;
+  }
+
+  /**
+   * Ensures the action sequence for every device referenced in this action
+   * sequence is the same length. For devices whose sequence is too short,
+   * this will insert {@linkplain #pause pauses} so that every device has an
+   * explicit action defined at each tick.
+   *
+   * @param {...!Device} devices The specific devices to synchronize.
+   *     If unspecified, the action sequences for every device will be
+   *     synchronized.
+   * @return {!Actions} a self reference.
+   */
+  synchronize(...devices) {
+    let sequences;
+    let max = 0;
+    if (devices.length === 0) {
+      for (const s of this.sequences_.values()) {
+        max = Math.max(max, s.length);
+      }
+      sequences = this.sequences_.values();
+    } else {
+      sequences = [];
+      for (const device of devices) {
+        const seq = this.sequence_(device);
+        max = Math.max(max, seq.length);
+        sequences.push(seq);
+      }
+    }
+
+    const pause = {type: Action.Type.PAUSE, duration: 0};
+    for (const seq of sequences) {
+      while (seq.length < max) {
+        seq.push(pause);
+      }
+    }
+
     return this;
   }
 
   /**
-   * Short-hand for performing a simple click (down/up) with this pointer.
+   * Inserts a pause action for the specified devices, ensuring each device is
+   * idle for a tick. The length of the pause (in milliseconds) may be specified
+   * as the first parameter to this method (defaults to 0). Otherwise, you may
+   * just specify the individual devices that should pause.
    *
-   * @param {./webdriver.WebElement=} element If specified, the pointer will
+   * If no devices are specified, a pause action will be created (using the same
+   * duration) for every device.
+   *
+   * When device synchroniation is enabled (the default for new {@link Actions}
+   * objects), there is no need to specify devices as pausing one automatically
+   * pauses the others for the same duration. In other words, the following are
+   * all equivalent:
+   *
+   *     let a1 = driver.actions();
+   *     a1.pause(100).perform();
+   *
+   *     let a2 = driver.actions();
+   *     a2.pause(100, a2.keyboard()).perform();
+   *     // Synchronization ensures a2.mouse() is automatically paused too.
+   *
+   *     let a3 = driver.actions();
+   *     a3.pause(100, a3.keyboard(), a3.mouse()).perform();
+   *
+   * When device synchronization is _disabled_, you can cause individual devices
+   * to pause during a tick. For example, to hold the SHIFT key down while
+   * moving the mouse:
+   *
+   *     let actions = driver.actions({async: true});
+   *
+   *     actions.keyDown(Key.SHIFT);
+   *     actions.pause(actions.mouse())  // Pause for shift down
+   *         .press(Button.LEFT)
+   *         .move({x: 10, y: 10})
+   *         .release(Button.LEFT);
+   *     actions
+   *         .pause(
+   *             actions.keyboard(),  // Pause for press left
+   *             actions.keyboard(),  // Pause for move
+   *             actions.keyboard())  // Pause for release left
+   *        .keyUp(Key.SHIFT);
+   *     await actions.perform();
+   *
+   * @param {(number|!Device)=} duration The length of the pause to insert, in
+   *     milliseconds. Alternatively, the duration may be omitted (yielding a
+   *     default 0 ms pause), and the first device to pause may be specified.
+   * @param {...!Device} devices The devices to insert the pause for. If no
+   *     devices are specified, the pause will be inserted for _all_ devices.
+   * @return {!Actions} a self reference.
+   */
+  pause(duration, ...devices) {
+    if (duration instanceof Device) {
+      devices.push(duration);
+      duration = 0;
+    } else if (!duration) {
+      duration = 0;
+    }
+
+    const action = {type: Action.Type.PAUSE, duration};
+
+    // NB: need a properly typed variable for type checking.
+    /** @type {!Iterable<!Device>} */
+    const iterable = devices.length === 0 ? this.sequences_.keys() : devices;
+    for (const device of iterable) {
+      this.sequence_(device).push(action);
+    }
+    return this.sync_ ? this.synchronize() : this;
+  }
+
+  /**
+   * Inserts an action to press a single key.
+   *
+   * @param {(Key|string|number)} key the key to press. This key may be
+   *     specified as a {@link Key} value, a specific unicode code point,
+   *     or a string containing a single unicode code point.
+   * @return {!Actions} a self reference.
+   */
+  keyDown(key) {
+    return this.insert(this.keyboard_, this.keyboard_.keyDown(key));
+  }
+
+  /**
+   * Inserts an action to release a single key.
+   *
+   * @param {(Key|string|number)} key the key to release. This key may be
+   *     specified as a {@link Key} value, a specific unicode code point,
+   *     or a string containing a single unicode code point.
+   * @return {!Actions} a self reference.
+   */
+  keyUp(key) {
+    return this.insert(this.keyboard_, this.keyboard_.keyUp(key));
+  }
+
+  /**
+   * Inserts a sequence of actions to type the provided key sequence.
+   * For each key, this will record a pair of {@linkplain #keyDown keyDown}
+   * and {@linkplain #keyUp keyUp} actions. An implication of this pairing
+   * is that modifier keys (e.g. {@link ./input.Key.SHIFT Key.SHIFT}) will
+   * always be immediately released. In other words, `sendKeys(Key.SHIFT, 'a')`
+   * is the same as typing `sendKeys('a')`, _not_ `sendKeys('A')`.
+   *
+   * @param {...(Key|string|number)} keys the keys to type.
+   * @return {!Actions} a self reference.
+   */
+  sendKeys(...keys) {
+    const actions = [];
+    for (const key of keys) {
+      if (typeof key === 'string') {
+        for (const symbol of key) {
+          actions.push(
+              this.keyboard_.keyDown(symbol),
+              this.keyboard_.keyUp(symbol));
+        }
+      } else {
+        actions.push(
+            this.keyboard_.keyDown(key),
+            this.keyboard_.keyUp(key));
+      }
+    }
+    return this.insert(this.keyboard_, ...actions);
+  }
+
+  /**
+   * Inserts an action to press a mouse button at the mouse's current location.
+   *
+   * @param {!Button=} button The button to press; defaults to `LEFT`.
+   * @return {!Actions} a self reference.
+   */
+  press(button = Button.LEFT) {
+    return this.insert(this.mouse_, this.mouse_.press(button));
+  }
+
+  /**
+   * Inserts an action to release a mouse button at the mouse's current
+   * location.
+   *
+   * @param {!Button=} button The button to release; defaults to `LEFT`.
+   * @return {!Actions} a self reference.
+   */
+  release(button = Button.LEFT) {
+    return this.insert(this.mouse_, this.mouse_.release(button));
+  }
+
+  /**
+   * Inserts an action for moving the mouse `x` and `y` pixels relative to the
+   * specified `origin`. The `origin` may be defined as the mouse's
+   * {@linkplain ./input.Origin.POINTER current position}, the
+   * {@linkplain ./input.Origin.VIEWPORT viewport}, or the center of a specific
+   * {@linkplain ./webdriver.WebElement WebElement}.
+   *
+   * You may adjust how long the remote end should take, in milliseconds, to
+   * perform the move using the `duration` parameter (defaults to 100 ms).
+   * The number of incremental move events generated over this duration is an
+   * implementation detail for the remote end.
+   *
+   * @param {{
+   *   x: (number|undefined),
+   *   y: (number|undefined),
+   *   duration: (number|undefined),
+   *   origin: (!Origin|!./webdriver.WebElement|undefined),
+   * }=} options The move options. Defaults to moving the mouse to the top-left
+   *     corner of the viewport over 100ms.
+   * @return {!Actions} a self reference.
+   */
+  move({x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT} = {}) {
+    return this.insert(
+        this.mouse_, this.mouse_.move({x, y, duration, origin}));
+  }
+
+  /**
+   * Short-hand for performing a simple left-click (down/up) with the mouse.
+   *
+   * @param {./webdriver.WebElement=} element If specified, the mouse will
    *     first be moved to the center of the element before performing the
    *     click.
-   * @return {!PointerSequence} a self reference.
+   * @return {!Actions} a self reference.
    */
   click(element) {
     if (element) {
-      this.move({x: 0, y: 0, origin: element});
+      this.move({origin: element});
     }
-    this.press();
-    this.release();
-    return this;
+    return this.press().release();
   }
 
   /**
-   * Short-hand for performing a simple double-click with this pointer.
+   * Short-hand for performing a simple right-click (down/up) with the mouse.
    *
-   * @param {./webdriver.WebElement=} element If specified, the pointer will
+   * @param {./webdriver.WebElement=} element If specified, the mouse will
    *     first be moved to the center of the element before performing the
-   *     double-click.
-   * @return {!PointerSequence} a self reference.
+   *     click.
+   * @return {!Actions} a self reference.
+   */
+  contextClick(element) {
+    if (element) {
+      this.move({origin: element});
+    }
+    return this.press(Button.RIGHT).release(Button.RIGHT);
+  }
+
+  /**
+   * Short-hand for performing a double left-click with the mouse.
+   *
+   * @param {./webdriver.WebElement=} element If specified, the mouse will
+   *     first be moved to the center of the element before performing the
+   *     click.
+   * @return {!Actions} a self reference.
    */
   doubleClick(element) {
-    return this.click(element).click();
+    return this.click(element).press().release();
+  }
+
+  /**
+   * Configures a drag-and-drop action consisting of the following steps:
+   *
+   * 1.  Move to the center of the `from` element (element to be dragged).
+   * 2.  Press the left mouse button.
+   * 3.  If the `to` target is a {@linkplain ./webdriver.WebElement WebElement},
+   *     move the mouse to its center. Otherwise, move the mouse by the
+   *     specified offset.
+   * 4.  Releae the left mouse button.
+   *
+   * @param {!./webdriver.WebElement} from The element to press the left mouse
+   *     button on to start the drag.
+   * @param {(!./webdriver.WebElement|{x: number, y: number})} to Either another
+   *     element to drag to (will drag to the center of the element), or an
+   *     object specifying the offset to drag by, in pixels.
+   * @return {!Actions} a self reference.
+   */
+  dragAndDrop(from, to) {
+    // Do not require up top to avoid a cycle that breaks static analysis.
+    const {WebElement} = require('./webdriver');
+    if (!(to instanceof WebElement)
+        && (!to || typeof to.x !== 'number' || typeof to.y !== 'number')) {
+      throw new InvalidArgumentError(
+          'Invalid drag target; must specify a WebElement or {x, y} offset');
+    }
+
+    this.move({origin: from}).press();
+    if (to instanceof WebElement) {
+      this.move({origin: to});
+    } else {
+      this.move({x: to.x, y: to.y, origin: Origin.POINTER});
+    }
+    return this.release();
+  }
+
+  /**
+   * Releases all keys, pointers, and clears internal state.
+   *
+   * @return {!Promise<void>} a promise that will resolve when finished
+   *     clearing all action state.
+   */
+  clear() {
+    for (const s of this.sequences_.values()) {
+      s.length = 0;
+    }
+    return this.executor_.execute(new Command(Name.CLEAR_ACTIONS));
+  }
+
+  /**
+   * Performs the configured action sequence.
+   *
+   * @return {!Promise<void>} a promise that will resolve when all actions have
+   *     been completed.
+   */
+  async perform() {
+    const _actions = [];
+    this.sequences_.forEach((actions, device) => {
+      if (!isIdle(actions)) {
+        actions = actions.concat();  // Defensive copy.
+        _actions.push(Object.assign({actions}, device.toJSON()));
+      }
+    });
+
+    if (_actions.length === 0) {
+      return Promise.resolve();
+    }
+
+    try {
+      await this.executor_.execute(
+          new Command(Name.ACTIONS).setParameter('actions', _actions));
+    } catch (ex) {
+      if (this.bridge_
+          && (ex instanceof UnknownCommandError
+              || ex instanceof UnsupportedOperationError)) {
+        return executeLegacy(this.executor_, this.sequences_);
+      }
+      throw ex;
+    }
   }
 }
+
+
+/**
+ * @param {!Array<!Action>} actions
+ * @return {boolean}
+ */
+function isIdle(actions) {
+  return actions.length === 0
+      || actions.every(a => a.type === Action.Type.PAUSE && !a.duration);
+}
+
+
+const MODIFIER_KEYS = new Set([Key.ALT, Key.CONTROL, Key.SHIFT, Key.COMMAND]);
+
+
+/**
+ * @param {!Executor} executor
+ * @param {!Map<!Device, !Array<!Action>>} sequences
+ * @return {!Promise<void>}
+ * @suppress {deprecated} Ignore warnings about using LegacyActionSequence.
+ */
+async function executeLegacy(executor, sequences) {
+  let maxLength = 0;
+  sequences.forEach(seq => maxLength = Math.max(maxLength, seq.length));
+
+  const actions = [];
+  for (let i = 0; i < maxLength; i++) {
+    let next;
+    for (const device of sequences.keys()) {
+      const seq = sequences.get(device);
+
+      if (device instanceof Pointer
+          && device.pointerType_ !== Pointer.Type.MOUSE) {
+        throw new UnsupportedOperationError(
+            `${device.pointerType_} pointer not supported in bridge mode`);
+      }
+
+      const action = seq[i];
+      if (!action || (action.type === Action.Type.PAUSE && !action.duration)) {
+        continue;
+      }
+
+      // -  If we've already found an action for this tick:
+      //    -  If we have two pauses, use the one with a longer duration
+      //    -  If one is a pause and the other isn't, use the non-pause
+      //    -  Otherwise, two non-pauses is an error.
+      // - Otherwise, we haven't selected an action yet.
+      if (next) {
+        if (next.type === Action.Type.PAUSE) {
+          if (action.type === Action.Type.PAUSE) {
+            next = next.duration > action.duration ? next : action;
+          } else {
+            next = action;
+          }
+        } else if (action.type !== Action.Type.PAUSE) {
+          throw new UnsupportedOperationError(
+              'parallel actions not supported in bridge mode');
+        }
+      } else {
+        next = action;
+      }
+
+      if (action.type === Action.Type.KEY_DOWN) {
+        // If this action is a keydown for a non-modifier key, the next action
+        // must be a keyup for the same key, otherwise it cannot be translated
+        // to the legacy action API.
+        if (!MODIFIER_KEYS.has(action.value)) {
+          const nextAction = seq[i + 1];
+          if (!nextAction
+              || nextAction.type !== Action.Type.KEY_UP
+              || nextAction.value !== action.value) {
+            throw new UnsupportedOperationError(
+                `in bridge mode, keydown for <${action.value}> must be followed`
+                    + ' by a keyup for the same key');
+          }
+        }
+      } else if (action.type === Action.Type.KEY_UP
+          && !MODIFIER_KEYS.has(action.value)) {
+        next = null;
+      }
+    }
+
+    if (next) {
+      actions.push(next);
+    }
+  }
+
+  for (let i = 0; i < actions.length; i++) {
+    const action = actions[i];
+    switch (action.type) {
+      case Action.Type.PAUSE:
+        await promise.delayed(action.duration || 0);
+        break;
+      case Action.Type.KEY_DOWN:
+        const keys = [action.value];
+        if (!MODIFIER_KEYS.has(action.value)) {
+          function nextIsKeyDown() {
+            const next = actions[i + 1];
+            return !!next
+                && next.type === Action.Type.KEY_DOWN
+                && !MODIFIER_KEYS.has(next.value);
+          }
+          for (; nextIsKeyDown(); i++) {
+            keys.push(actions[i + 1].value);
+          }
+        }
+        await executor.execute(
+            new Command(Name.LEGACY_ACTION_SEND_KEYS)
+                .setParameter('value', keys));
+        break;
+      case Action.Type.KEY_UP:
+        await executor.execute(
+            new Command(Name.LEGACY_ACTION_SEND_KEYS)
+                .setParameter('value', [action.value]));
+        break;
+      case Action.Type.POINTER_DOWN: {
+        function isClick(startAt) {
+          const first = actions[startAt];
+          const second = actions[startAt + 1];
+          return !!first && !!second
+              && first.type === Action.Type.POINTER_DOWN
+              && second.type === Action.Type.POINTER_UP
+              && first.button === second.button;
+        }
+
+        function isDoubleClick(startAt) {
+          return isClick(startAt)
+              && isClick(startAt + 2)
+              && actions[startAt].button === actions[startAt = 2].button;
+        }
+
+        let cmd;
+        if (isDoubleClick(i)) {
+          i += 3;  // Consume the pointer up/down/up.
+          cmd = Name.LEGACY_ACTION_DOUBLE_CLICK;
+        } else  if (isClick(i)) {
+          i++;  // Consume the pointer-up.
+          cmd = Name.LEGACY_ACTION_CLICK;
+        } else {
+          cmd = Name.LEGACY_ACTION_MOUSE_DOWN;
+        }
+        await executor.execute(
+            new Command(cmd).setParameter('button', action.button));
+        break;
+      }
+      case Action.Type.POINTER_UP:
+        await executor.execute(
+            new Command(Name.LEGACY_ACTION_MOUSE_UP)
+                .setParameter('button', action.button));
+        break;
+      case Action.Type.POINTER_MOVE:
+        if (action.origin === Origin.VIEWPORT) {
+          throw new UnsupportedOperationError(
+              `pointer movements relative to ${Origin.VIEWPORT} are not`
+                  + ' supported in bridge mode');
+
+        }
+
+        let x = action.x;
+        let y = action.y;
+        const cmd = new Command(Name.LEGACY_ACTION_MOUSE_MOVE);
+        if (action.origin && action.origin !== Origin.POINTER) {
+          const el = /** @type {!./webdriver.WebElement} */(action.origin);
+
+          // Need to translate frame of reference from center of element's first
+          // client rect to the top-left of its bounding client rect. See:
+          // https://w3c.github.io/webdriver/webdriver-spec.html#dfn-center-point
+          let diff = await executor.execute(
+              new Command(Name.EXECUTE_SCRIPT)
+                  .setParameter('script', INTERNAL_COMPUTE_OFFSET_SCRIPT)
+                  .setParameter('args', [el]));
+          x += diff[0];
+          y += diff[1];
+
+          const id = await el.getId();
+          cmd.setParameter('element', id);
+        }
+        cmd.setParameter('xoffset', x).setParameter('yoffset', y);
+        await executor.execute(cmd);
+        break;
+      default:
+        throw new UnsupportedOperationError(
+            `${action.type} actions not supported in bridge mode`);
+    }
+  }
+}
+
+
+/**
+ * Script used to compute the offset from the center of a DOM element's first
+ * client rect from the top-left corner of the element's bounding client rect.
+ * The element's center point is computed using the algorithm defined here:
+ * <https://w3c.github.io/webdriver/webdriver-spec.html#dfn-center-point>.
+ *
+ * __This is only exported for use in internal unit tests. DO NOT USE.__
+ *
+ * @package
+ */
+const INTERNAL_COMPUTE_OFFSET_SCRIPT = `
+function computeOffset(el) {
+  var rect = el.getClientRects()[0];
+  var left = Math.max(0, Math.min(rect.x, rect.x + rect.width));
+  var right =
+      Math.min(window.innerWidth, Math.max(rect.x, rect.x + rect.width));
+  var top = Math.max(0, Math.min(rect.y, rect.y + rect.height));
+  var bot =
+      Math.min(window.innerHeight, Math.max(rect.y, rect.y + rect.height));
+  var x = Math.floor(0.5 * (left + right));
+  var y = Math.floor(0.5 * (top + bot));
+
+  var bbox = el.getBoundingClientRect();
+  return [x - bbox.left, y - bbox.top];
+}
+return computeOffset(arguments[0]);`;
 
 
 // PUBLIC API
 
 
 module.exports = {
-  ActionType,
+  Action,       // For documentation only.
+  Actions,
   Button,
   Device,
-  DeviceType,
   Key,
   Keyboard,
-  KeySequence,
   FileDetector,
   Origin,
   Pointer,
-  PointerSequence,
-  Sequence,
+  INTERNAL_COMPUTE_OFFSET_SCRIPT,
 };

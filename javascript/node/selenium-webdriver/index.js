@@ -672,7 +672,6 @@ class Builder {
 // PUBLIC API
 
 
-exports.ActionSequence = webdriver.ActionSequence;
 exports.Browser = capabilities.Browser;
 exports.Builder = Builder;
 exports.Button = input.Button;

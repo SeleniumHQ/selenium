@@ -30,7 +30,6 @@ var resourceRoot = require('../devmode') ?
 
 /**
  * Locates a test resource.
- * @param {string} resourcePath Path of the resource to locate.
  * @param {string} filePath The file to locate from the root of the project.
  * @return {string} The full path for the file, if it exists.
  * @throws {Error} If the file does not exist.

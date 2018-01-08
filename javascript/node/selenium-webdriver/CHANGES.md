@@ -120,6 +120,8 @@ mode.
        -  InvalidElementCoordinatesError
 *  Changes to `lib/webdriver.WebDriver`:
    -  Dropped support for "requiredCapabilities" from WebDriver.createSession
+   -  actions now returns the new `lib/input.Actions` class
+   -  removed touchActions
 *  Changes to `lib/webdriver.Alert`:
    -  Removed authenticateAs
 *  Changes to `lib/webdriver.Options` (`driver.manage()`):
@@ -153,14 +155,15 @@ mode.
 
 *  Revamped the actions API to conform with the WebDriver Spec:
    <https://www.w3.org/TR/webdriver/#actions>. For details, refer to the JS doc
-   on the `lib/webdriver.ActionSequence` class.
+   on the `lib/input.Actions` class.
 
-   As of December, 2017, only Firefox supports this new API.
-   `ActionSequence#perform()` will attempt to translate mouse and keyboard
-   sequences to the legacy API. Alternatively, you may continue to use the
-   legacy API directly via the `lib/actions` module. __NOTE:__ The legacy API
-   is considered strongly deprecated and will be removed in a minor release once
-   Google's Chrome and Microsoft's Edge browsers support the new API.
+   As of January, 2018, only Firefox natively supports this new API. You can
+   put the `Actions` class into "bridge mode" and it will attempt to translate
+   mouse and keyboard actions to the legacy API (see class docs). Alternatively,
+   you may continue to use the legacy API directly via the `lib/actions` module.
+   __NOTE:__ The legacy API is considered strongly deprecated and will be
+   removed in a minor release once Google's Chrome and Microsoft's Edge browsers
+   support the new API.
 
 *  All window manipulation commands are now supported.
 *  Added `driver.switchTo().parentFrame()`

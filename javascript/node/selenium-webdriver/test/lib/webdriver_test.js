@@ -1397,7 +1397,7 @@ describe('WebDriver', function() {
   });
 
   describe('actions()', function() {
-    describe('mouse().move()', function() {
+    describe('move()', function() {
       it('no origin', function() {
         let executor = new FakeExecutor()
             .expect(CName.ACTIONS, {
@@ -1420,9 +1420,7 @@ describe('WebDriver', function() {
             .end();
 
         let driver = executor.createDriver();
-        let actions = driver.actions();
-        actions.mouse().move({x: 0, y: 125});
-        return actions.perform();
+        return driver.actions().move({x: 0, y: 125}).perform();
       });
 
       it('origin = element', function() {
@@ -1450,80 +1448,7 @@ describe('WebDriver', function() {
 
         let driver = executor.createDriver();
         let element = driver.findElement(By.id('foo'));
-        let actions = driver.actions();
-        actions.mouse().move({x: 0, y: 125, origin: element});
-        return actions.perform();
-      });
-    });
-
-    describe('keyboard()', function() {
-      it('sendkeys()', function() {
-        let executor = new FakeExecutor()
-            .expect(CName.ACTIONS, {
-              actions:  [{
-                type: 'key',
-                id: 'default keyboard',
-                actions: [
-                  {type: 'keyDown', value: 'a'}, {type: 'keyUp', value: 'a'},
-                  {type: 'keyDown', value: 'b'}, {type: 'keyUp', value: 'b'},
-                  {type: 'keyDown', value: 'c'}, {type: 'keyUp', value: 'c'},
-                  {type: 'keyDown', value: 'd'}, {type: 'keyUp', value: 'd'},
-                ]
-              }]
-            })
-            .end();
-
-        let driver = executor.createDriver();
-        let actions = driver.actions();
-        actions.keyboard().sendKeys('abc', 'd');
-        return actions.perform();
-      });
-
-      it('perform() only executes keyboard sequence', function() {
-        let executor = new FakeExecutor()
-            .expect(CName.ACTIONS, {
-              actions:  [{
-                type: 'key',
-                id: 'default keyboard',
-                actions: [
-                  {type: 'keyDown', value: 'a'}, {type: 'keyUp', value: 'a'},
-                ]
-              }]
-            })
-            .end();
-
-        let driver = executor.createDriver();
-        let actions = driver.actions();
-        actions.mouse().move({x: 1, y: 2});
-        return actions.keyboard().sendKeys('a').perform();
-      });
-    });
-
-    describe('mouse()', function() {
-      it('perform() only executes mouse sequence', function() {
-        let executor = new FakeExecutor()
-            .expect(CName.ACTIONS, {
-              actions:  [{
-                type: 'pointer',
-                id: 'default mouse',
-                parameters: {
-                  pointerType: 'mouse',
-                },
-                actions: [{
-                  type: 'pointerMove',
-                  origin: 'viewport',
-                  duration: 100,
-                  x: 1,
-                  y: 2
-                }]
-              }]
-            })
-            .end();
-
-        let driver = executor.createDriver();
-        let actions = driver.actions();
-        actions.keyboard().sendKeys('a');
-        return actions.mouse().move({x: 1, y: 2}).perform();
+        return driver.actions().move({x: 0, y: 125, origin: element}).perform();
       });
     });
   });
