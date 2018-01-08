@@ -1,4 +1,4 @@
-// Licensed to the Software Freedom Conservancy (SFC) under one
+﻿// Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership. The SFC licenses this file
@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <ctime>
 #include <vector>
+#include <mutex>
 
 #include "command_types.h"
 #include "errorcodes.h"
@@ -438,6 +439,8 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
         LOG(DEBUG) << "Returned from DestroyWindow()";
         break;
       } else {
+        static std::mutex messageLock;
+        std::lock_guard<std::mutex> lock(messageLock);
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
       }
