@@ -292,8 +292,7 @@ const W3C_COMMAND_MAP = new Map([
   // Element interaction.
   [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
   [cmd.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
-  [cmd.Name.GET_ELEMENT_LOCATION, get('/session/:sessionId/element/:id/rect')],
-  [cmd.Name.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/rect')],
+  [cmd.Name.GET_ELEMENT_RECT, get('/session/:sessionId/element/:id/rect')],
   [cmd.Name.CLEAR_ELEMENT, post('/session/:sessionId/element/:id/clear')],
   [cmd.Name.CLICK_ELEMENT, post('/session/:sessionId/element/:id/click')],
   [cmd.Name.SEND_KEYS_TO_ELEMENT, post('/session/:sessionId/element/:id/value')],

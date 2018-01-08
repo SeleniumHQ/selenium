@@ -2082,26 +2082,27 @@ class WebElement {
   }
 
   /**
-   * Computes this element's bounding box, in pixels.
+   * Returns an object describing an element's location, in pixels relative to
+   * the document element, and the element's size in pixels.
    *
-   * @return {!Promise<{width: number, height: number}>} A
-   *     promise that will be resolved with the element's size as a
-   *     {@code {width:number, height:number}} object.
+   * @return {!Promise<{width: number, height: number, x: number, y: number}>}
+   *     A promise that will resolve with the element's rect.
    */
-  getSize() {
-    return this.execute_(new command.Command(command.Name.GET_ELEMENT_SIZE));
-  }
-
-  /**
-   * Computes the location of this element in page space.
-   *
-   * @return {!Promise<{x: number, y: number}>} A promise that
-   *     will be resolved to the element's location as a
-   *     {@code {x:number, y:number}} object.
-   */
-  getLocation() {
-    return this.execute_(
-        new command.Command(command.Name.GET_ELEMENT_LOCATION));
+  async getRect() {
+    try {
+      return await this.execute_(
+          new command.Command(command.Name.GET_ELEMENT_RECT));
+    } catch (err) {
+      if (err instanceof error.UnknownCommandError) {
+        const {width, height} =
+            await this.execute_(
+                new command.Command(command.Name.GET_ELEMENT_SIZE));
+        const {x, y} =
+            await this.execute_(
+                new command.Command(command.Name.GET_ELEMENT_LOCATION));
+        return {x, y, width, height};
+      }
+    }
   }
 
   /**

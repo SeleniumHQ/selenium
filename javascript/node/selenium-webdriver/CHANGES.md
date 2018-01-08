@@ -122,6 +122,8 @@ mode.
    -  Dropped support for "requiredCapabilities" from WebDriver.createSession
    -  actions now returns the new `lib/input.Actions` class
    -  removed touchActions
+*  Changes to `lib/webdriver.WebElement`:
+   -  Replaced getSize & getLocation with getRect
 *  Changes to `lib/webdriver.Alert`:
    -  Removed authenticateAs
 *  Changes to `lib/webdriver.Options` (`driver.manage()`):

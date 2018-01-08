@@ -66,6 +66,8 @@ test.suite(function(env) {
       await driver.get(fileServer.whereIs('/data/actions/record_click.html'));
 
       const div = await driver.findElement(By.css('div'));
+      const rect = await div.getRect();
+      assert.deepEqual(rect, {width: 500, height: 500, x: 0, y: 0});
 
       await driver.actions({bridge: true}).click(div).perform();
 
@@ -77,6 +79,8 @@ test.suite(function(env) {
       await driver.get(fileServer.whereIs('/data/actions/record_click.html'));
 
       const div = await driver.findElement(By.css('div'));
+      const rect = await div.getRect();
+      assert.deepEqual(rect, {width: 500, height: 500, x: 0, y: 0});
 
       await driver.actions({bridge: true})
           .move({x: 10, y: 10, origin: div})
