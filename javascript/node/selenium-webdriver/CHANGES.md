@@ -69,6 +69,9 @@ mode.
    -  Added setChromeService, setEdgeService, & setFirefoxService
    -  Removed setEnableNativeEvents
    -  Removed setScrollBehavior
+*  Changes to `chrome.Driver`
+   -  Added sendDevToolsCommand
+   -  Added setDownloadPath
 *  Changes to `chrome.Options`
    -  Now extends the `Capabilities` class
    -  Removed from/toCapabilities

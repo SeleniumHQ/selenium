@@ -135,6 +135,7 @@ const http = require('./http');
 const io = require('./io');
 const {Browser, Capabilities, Capability} = require('./lib/capabilities');
 const command = require('./lib/command');
+const error = require('./lib/error');
 const logging = require('./lib/logging');
 const promise = require('./lib/promise');
 const Symbols = require('./lib/symbols');
@@ -159,7 +160,8 @@ const CHROMEDRIVER_EXE =
 const Command = {
   LAUNCH_APP: 'launchApp',
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
-  SET_NETWORK_CONDITIONS: 'setNetworkConditions'
+  SET_NETWORK_CONDITIONS: 'setNetworkConditions',
+  SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
 };
 
 
@@ -193,6 +195,10 @@ function configureExecutor(executor) {
       Command.SET_NETWORK_CONDITIONS,
       'POST',
       '/session/:sessionId/chromium/network_conditions');
+  executor.defineCommand(
+      Command.SEND_DEVTOOLS_COMMAND,
+      'POST',
+      '/session/:sessionId/chromium/send_command');
 }
 
 
@@ -362,6 +368,12 @@ class Options extends Capabilities {
    * > __NOTE:__ Resizing the browser window in headless mode is only supported
    * > in Chrome 60. Users are encouraged to set an initial window size with
    * > the {@link #windowSize windowSize({width, height})} option.
+   *
+   * > __NOTE__: For security, Chrome disables downloads by default when
+   * > in headless mode (to prevent sites from silently downloading files to
+   * > your machine). After creating a session, you may call
+   * > {@link ./chrome.Driver#setDownloadPath setDownloadPath} to re-enable
+   * > downloads, saving files in the specified directory.
    *
    * @return {!Options} A self reference.
    */
@@ -750,6 +762,44 @@ class Driver extends webdriver.WebDriver {
     return this.execute(
         new command.Command(Command.SET_NETWORK_CONDITIONS)
             .setParameter('network_conditions', spec));
+  }
+
+  /**
+   * Sends an arbitrary devtools command to the browser.
+   *
+   * @param {string} cmd The name of the command to send.
+   * @param {Object=} params The command parameters.
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has finished.
+   * @see <https://chromedevtools.github.io/devtools-protocol/>
+   */
+  sendDevToolsCommand(cmd, params = {}) {
+    return this.execute(
+        new command.Command(Command.SEND_DEVTOOLS_COMMAND)
+            .setParameter('cmd', cmd)
+            .setParameter('params', params));
+  }
+
+  /**
+   * Sends a DevTools command to change Chrome's download directory.
+   *
+   * @param {string} path The desired download directory.
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has finished.
+   * @see #sendDevToolsCommand
+   */
+  async setDownloadPath(path) {
+    if (!path || typeof path !== 'string') {
+      throw new error.InvalidArgumentError('invalid download path');
+    }
+    const stat = await io.stat(path);
+    if (!stat.isDirectory()) {
+      throw new error.InvalidArgumentError('not a directory: ' + path);
+    }
+    return this.sendDevToolsCommand('Page.setDownloadBehavior', {
+      'behavior': 'allow',
+      'downloadPath': path
+    });
   }
 }
 
