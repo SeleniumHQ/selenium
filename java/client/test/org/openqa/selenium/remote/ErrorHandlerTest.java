@@ -327,23 +327,59 @@ public class ErrorHandlerTest {
     }
   }
   
-    @SuppressWarnings("ThrowableInstanceNeverThrown")
-    @Test
-    public void testShoulNotBuildWebDriverExceptionIfClassOrStackTraceIsNull() {
-      Map<String, ?> data = ImmutableMap.of(
-          "message", "some error message",
-          "class", null,
-          "stackTrace", null);
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
+  @Test
+  public void testShoulNotBuildWebDriverExceptionIfClassAndStackTraceIsNull() {
+    Map<String, ?> data = ImmutableMap.of(
+        "message", "some error message",
+        "class", null,
+        "stackTrace", null);
   
-      try {
-        handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
-        fail("Should have thrown!");
-      } catch (WebDriverException expected) {
-        assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds",
-                                            new WebDriverException()).getMessage(),
-            expected.getMessage());
-      }
+    try {
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
+      fail("Should have thrown!");
+    } catch (WebDriverException expected) {
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
+          expected.getMessage());
     }
+  }
+  
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
+  @Test
+  public void testShoulNotBuildWebDriverExceptionIfClassNullAndStackTraceNotNull() {
+    Map<String, ?> data = ImmutableMap.of(
+        "message", "some error message",
+        "class", null,
+        "stackTrace", "a");
+  
+    try {
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
+      fail("Should have thrown!");
+    } catch (WebDriverException expected) {
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
+          expected.getMessage());
+    }
+  }
+  
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
+  @Test
+  public void testShoulNotBuildWebDriverExceptionIfClassNotNullAndStackTraceNull() {
+    Map<String, ?> data = ImmutableMap.of(
+        "message", "some error message",
+        "class", "a",
+        "stackTrace", null);
+  
+    try {
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
+      fail("Should have thrown!");
+    } catch (WebDriverException expected) {
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
+          expected.getMessage());
+    }
+  }
 
   @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
