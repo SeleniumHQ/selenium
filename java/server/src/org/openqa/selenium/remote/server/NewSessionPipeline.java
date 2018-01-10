@@ -20,12 +20,12 @@ public class NewSessionPipeline {
 
   private final List<SessionFactory> factories;
   private final SessionFactory fallback;
-  private final List<Function<ImmutableCapabilities, ImmutableCapabilities>> mutators;
+  private final List<Function<Capabilities, Capabilities>> mutators;
 
   private NewSessionPipeline(
       List<SessionFactory> factories,
       SessionFactory fallback,
-      List<Function<ImmutableCapabilities, ImmutableCapabilities>> mutators) {
+      List<Function<Capabilities, Capabilities>> mutators) {
     this.factories = factories;
     this.fallback = fallback;
     this.mutators = mutators;
@@ -38,7 +38,7 @@ public class NewSessionPipeline {
   public ActiveSession createNewSession(NewSessionPayload payload) throws IOException {
     return payload.stream()
         .map(caps -> {
-          for (Function<ImmutableCapabilities, ImmutableCapabilities> mutator : mutators) {
+          for (Function<Capabilities, Capabilities> mutator : mutators) {
             caps = mutator.apply(caps);
           }
           return caps;
@@ -72,7 +72,7 @@ public class NewSessionPipeline {
         return Optional.empty();
       }
     };
-    private List<Function<ImmutableCapabilities, ImmutableCapabilities>> mutators = new LinkedList<>();
+    private List<Function<Capabilities, Capabilities>> mutators = new LinkedList<>();
 
     private Builder() {
       // Private class
@@ -89,7 +89,7 @@ public class NewSessionPipeline {
     }
 
     public Builder addCapabilitiesMutator(
-        Function<ImmutableCapabilities, ImmutableCapabilities> mutator) {
+        Function<Capabilities, Capabilities> mutator) {
       mutators.add(Objects.requireNonNull(mutator, "Mutator must not be null"));
       return this;
     }

@@ -221,7 +221,8 @@ public class NewSessionPayload implements Closeable {
 
       Map<String, Object> first = getOss();
       if (first == null) {
-        first = stream().findFirst()
+        //noinspection unchecked
+        first = (Map<String, Object>) stream().findFirst()
             .orElse(new ImmutableCapabilities())
             .asMap();
       }
@@ -309,7 +310,7 @@ public class NewSessionPayload implements Closeable {
    * equivalent W3C capabilities isn't particularly easy, so it's hoped that this approach gives us
    * the most compatible implementation.
    */
-  public Stream<ImmutableCapabilities> stream() throws IOException {
+  public Stream<Capabilities> stream() throws IOException {
     // OSS first
     Stream<Map<String, Object>> oss = Stream.of(getOss());
 

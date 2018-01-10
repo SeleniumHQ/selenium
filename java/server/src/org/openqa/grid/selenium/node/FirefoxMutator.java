@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class FirefoxMutator implements Function<ImmutableCapabilities, ImmutableCapabilities> {
+public class FirefoxMutator implements Function<Capabilities, Capabilities> {
 
   private static final String CONFIG_UUID_CAPABILITY = "se:CONFIG_UUID";
 
@@ -40,7 +40,7 @@ public class FirefoxMutator implements Function<ImmutableCapabilities, Immutable
   }
 
   @Override
-  public ImmutableCapabilities apply(ImmutableCapabilities capabilities) {
+  public Capabilities apply(Capabilities capabilities) {
     if (config == null || !"firefox".equals(capabilities.getBrowserName())) {
       return capabilities;
     }
