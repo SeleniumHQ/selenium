@@ -212,6 +212,7 @@ def testShouldBeAbleToSwitchToParentFromAnIframe(driver, pages):
 # ----------------------------------------------------------------------------------------------
 
 
+@pytest.mark.xfail_chrome(reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198')
 def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(2)
@@ -245,6 +246,7 @@ def testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage(driver
     driver.find_element(By.ID, "iframe_page_heading")
 
 
+@pytest.mark.xfail_chrome(reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198')
 def testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt(driver, pages):
     pages.load("iframes.html")
     driver.switch_to.frame(0)
@@ -256,6 +258,7 @@ def getTextOfGreetingElement(driver):
     return WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "greeting"))).text
 
 
+@pytest.mark.xfail_chrome(reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198')
 def testShouldBeAbleToClickInAFrame(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame("third")
@@ -278,6 +281,7 @@ def testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation(driver, pages):
     WebDriverWait(driver, 3).until(EC.title_is("Target page for issue 5237"))
 
 
+@pytest.mark.xfail_chrome(reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198')
 def testShouldBeAbleToClickInASubFrame(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(driver.find_element_by_id("sixth"))
@@ -394,6 +398,7 @@ def testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame(driver, pages):
     assert driver.execute_script("return window != window.top")
 
 
+@pytest.mark.xfail_chrome(reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198')
 def testShouldNotSwitchMagicallyToTheTopWindow(driver, pages):
     pages.load("frame_switching_tests/bug4876.html")
     driver.switch_to.frame(0)
