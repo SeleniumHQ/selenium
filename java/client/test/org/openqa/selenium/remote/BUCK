@@ -33,6 +33,8 @@ java_test(name = 'client-tests',
     'W3CHandshakeResponseTest.java',
     'internal/ApacheHttpClientTest.java',
     'internal/CircularOutputStreamTest.java',
+    'internal/HttpClientTestBase.java',
+    'internal/JreHttpClientTest.java',
     'internal/WebElementToJsonConverterTest.java',
   ],
   provided_deps = [
