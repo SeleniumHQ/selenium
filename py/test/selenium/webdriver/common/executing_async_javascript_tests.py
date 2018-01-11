@@ -23,6 +23,13 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
 
 
+@pytest.fixture(autouse=True)
+def reset_timeouts(driver):
+    driver.set_script_timeout(0)
+    yield
+    driver.set_script_timeout(30)
+
+
 def testShouldNotTimeoutIfCallbackInvokedImmediately(driver, pages):
     pages.load("ajaxy_page.html")
     result = driver.execute_async_script("arguments[arguments.length - 1](123);")
