@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -131,7 +130,6 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(MARIONETTE)
   public void testCannotSetDisabledOption() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.cssSelector("#visibility .disabled"));
