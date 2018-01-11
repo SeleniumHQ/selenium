@@ -41,5 +41,7 @@
 	<classpathentry kind="lib" path="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar" sourcepath="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/bytebuddy/byte-buddy-1.7.9.jar" sourcepath="/third-party/java/bytebuddy/byte-buddy-1.7.9-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/javaparser/javaparser-core-3.5.7.jar" sourcepath="/third-party/java/javaparser/javaparser-core-3.5.7-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/okhttp3/okhttp-3.9.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/okio/okio-1.13.0.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>

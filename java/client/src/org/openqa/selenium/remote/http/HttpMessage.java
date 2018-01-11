@@ -78,7 +78,7 @@ class HttpMessage {
   public String getHeader(String name) {
     return headers.entries().stream()
         .filter(e -> Objects.nonNull(e.getKey()))
-        .filter(e -> e.getKey().toLowerCase().equals(name.toLowerCase()))
+        .filter(e -> e.getKey().equalsIgnoreCase(name.toLowerCase()))
         .map(Map.Entry::getValue)
         .findFirst()
         .orElse(null);

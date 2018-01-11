@@ -72,8 +72,8 @@ abstract public class HttpClientTestBase {
 
     ImmutableList<String> values = ImmutableList.copyOf(response.getHeaders("Cheese"));
 
-    assertTrue(values.contains("Cheddar"));
-    assertTrue(values.contains("Brie, Gouda"));
+    assertTrue(values.toString(), values.contains("Cheddar"));
+    assertTrue(values.toString(), values.contains("Brie, Gouda"));
   }
 
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers)
