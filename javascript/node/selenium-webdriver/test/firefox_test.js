@@ -217,6 +217,7 @@ suite(function(env) {
         await verifyWebExtensionNotInstalled();
 
         let id = await driver.installAddon(WEBEXTENSION_EXTENSION);
+        await driver.sleep(1000);  // Give extension time to install (yuck).
 
         await driver.get(Pages.echoPage);
         await verifyWebExtensionWasInstalled();
