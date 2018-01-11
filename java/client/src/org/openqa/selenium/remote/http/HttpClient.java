@@ -34,12 +34,14 @@ public interface HttpClient {
    * @throws IOException if an I/O error occurs.
    */
   HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException;
-  
+
   /**
-	* Closes the connections associated with this client. 
-	*
-	* @throws  IOException  if an I/O error occurs.
-	*/
+	 * Closes the connections associated with this client.
+	 *
+	 * @throws  IOException  if an I/O error occurs.
+   * @deprecated This responsibility moved to Factory
+	 */
+  @Deprecated
   void close() throws IOException;
 
   interface Factory {
@@ -51,5 +53,10 @@ public interface HttpClient {
      * @return HttpClient
      */
     HttpClient createClient(URL url);
+
+    /**
+     * Closes idle clients.
+     */
+    void cleanupIdleClients();
   }
 }

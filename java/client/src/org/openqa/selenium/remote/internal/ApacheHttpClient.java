@@ -44,7 +44,7 @@ import java.net.BindException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
+import java.util.StringTokenizer;
 
 public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpClient {
 
@@ -136,16 +136,8 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       HttpContext context, HttpUriRequest httpMethod) throws IOException {
     try {
       return client.execute(targetHost, httpMethod, context);
-    } catch (BindException e) {
+    } catch (BindException | NoHttpResponseException e) {
       // If we get this, there's a chance we've used all the local ephemeral sockets
-      // Sleep for a bit to let the OS reclaim them, then try the request again.
-      try {
-        Thread.sleep(2000);
-      } catch (InterruptedException ie) {
-        throw new RuntimeException(ie);
-      }
-    } catch (NoHttpResponseException e) {
-      // If we get this, there's a chance we've used all the remote ephemeral sockets
       // Sleep for a bit to let the OS reclaim them, then try the request again.
       try {
         Thread.sleep(2000);
@@ -228,13 +220,19 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       checkNotNull(url, "null URL");
       HttpClient client;
       if (url.getUserInfo() != null) {
+        StringTokenizer tokens = new StringTokenizer(url.getUserInfo(), ":");
         UsernamePasswordCredentials credentials =
-            new UsernamePasswordCredentials(url.getUserInfo());
+            new UsernamePasswordCredentials(tokens.nextToken(), tokens.nextToken());
         client = clientFactory.createHttpClient(credentials);
       } else {
         client = clientFactory.getHttpClient();
       }
       return new ApacheHttpClient(client, url);
+    }
+
+    @Override
+    public void cleanupIdleClients() {
+      clientFactory.cleanupIdleClients();
     }
 
     private static synchronized HttpClientFactory getDefaultHttpClientFactory() {
@@ -245,8 +243,8 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     }
   }
 
+  @Deprecated
   @Override
   public void close() throws IOException {
-    client.getConnectionManager().closeIdleConnections(0, TimeUnit.SECONDS);
   }
 }

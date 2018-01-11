@@ -113,9 +113,9 @@ public class JreHttpClient implements HttpClient {
     }
   }
 
+  @Deprecated
   @Override
   public void close() throws IOException {
-
   }
 
   public static class Factory implements HttpClient.Factory {
@@ -123,6 +123,10 @@ public class JreHttpClient implements HttpClient {
     @Override
     public HttpClient createClient(URL url) {
       return new JreHttpClient(Objects.requireNonNull(url, "Base URL must be set"));
+    }
+
+    @Override
+    public void cleanupIdleClients() {
     }
   }
 }

@@ -49,6 +49,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private final URL remoteServer;
   private final HttpClient client;
+  private final HttpClient.Factory httpClientFactory;
   private final Map<String, CommandInfo> additionalCommands;
   private CommandCodec<HttpRequest> commandCodec;
   private ResponseCodec<HttpResponse> responseCodec;
@@ -85,6 +86,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     }
 
     this.additionalCommands = additionalCommands;
+    this.httpClientFactory = httpClientFactory;
     this.client = httpClientFactory.createClient(remoteServer);
   }
 
@@ -171,7 +173,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         }
       }
       if (QUIT.equals(command.getName())) {
-    	  client.close();
+        httpClientFactory.cleanupIdleClients();
       }
       return response;
     } catch (UnsupportedCommandException e) {
