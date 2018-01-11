@@ -182,7 +182,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             return bys.AsReadOnly();
         }
 
-        private static object CreateProxyObject(Type memberType, IElementLocator locator, IEnumerable<By> bys, bool cache)
+        protected static object CreateProxyObject(Type memberType, IElementLocator locator, IEnumerable<By> bys, bool cache)
         {
             object proxyObject = null;
             if (memberType == typeof(IList<IWebElement>))
