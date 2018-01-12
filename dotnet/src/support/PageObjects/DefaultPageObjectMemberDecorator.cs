@@ -72,7 +72,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// a class's member.</param>
         /// <param name="locator">The <see cref="IElementLocator"/> used to locate elements.</param>
         /// <returns>A transparent proxy to the WebDriver element object.</returns>
-        public object Decorate(MemberInfo member, IElementLocator locator)
+        public virtual object Decorate(MemberInfo member, IElementLocator locator)
         {
             FieldInfo field = member as FieldInfo;
             PropertyInfo property = member as PropertyInfo;
