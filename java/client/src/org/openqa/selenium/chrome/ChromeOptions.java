@@ -20,6 +20,7 @@ package org.openqa.selenium.chrome;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADING;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
@@ -232,6 +233,15 @@ public class ChromeOptions extends MutableCapabilities {
 
   public ChromeOptions setAcceptInsecureCerts(boolean acceptInsecureCerts) {
     setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
+    return this;
+  }
+
+  public ChromeOptions setEnableDownloading(boolean enableDownloading, String downloadPath){
+    if (enableDownloading){
+      setCapability(ENABLE_DOWNLOADING, downloadPath);
+    }else {
+      setCapability(ENABLE_DOWNLOADING, "");
+    }
     return this;
   }
 

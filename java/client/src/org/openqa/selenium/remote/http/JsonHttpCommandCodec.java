@@ -47,6 +47,7 @@ import static org.openqa.selenium.remote.DriverCommand.MOUSE_UP;
 import static org.openqa.selenium.remote.DriverCommand.MOVE_TO;
 import static org.openqa.selenium.remote.DriverCommand.REMOVE_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.REMOVE_SESSION_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.SEND_COMMAND_TO_BROWSER;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
@@ -133,6 +134,8 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(TOUCH_MOVE, post("/session/:sessionId/touch/move"));
     defineCommand(TOUCH_SCROLL, post("/session/:sessionId/touch/scroll"));
     defineCommand(TOUCH_UP, post("/session/:sessionId/touch/up"));
+
+    defineCommand(SEND_COMMAND_TO_BROWSER, post("/session/:sessionId/chromium/send_command_and_get_result"));
   }
 
   @Override
