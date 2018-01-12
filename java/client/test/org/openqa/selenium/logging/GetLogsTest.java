@@ -112,8 +112,7 @@ public class GetLogsTest extends JUnit4TestBase {
     LoggingPreferences loggingPrefs = new LoggingPreferences();
     loggingPrefs.enable(logType, logLevel);
     Capabilities caps = new ImmutableCapabilities(CapabilityType.LOGGING_PREFS, loggingPrefs);
-    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(caps);
-    localDriver = builder.get();
+    localDriver = new WebDriverBuilder().get(caps);
     localDriver.get(pages.simpleTestPage);
   }
 }

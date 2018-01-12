@@ -147,7 +147,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
       String baseUrl = whereIs("selenium-server/");
 
-      WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+      WebDriver driver = new WebDriverBuilder().get(caps);
       selenium = new WebDriverBackedSelenium(driver, baseUrl);
 
       selenium.setBrowserLogLevel("debug");

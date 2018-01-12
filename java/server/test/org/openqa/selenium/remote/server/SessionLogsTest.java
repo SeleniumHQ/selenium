@@ -46,8 +46,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.Browser;
-import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
 import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -85,7 +85,7 @@ public class SessionLogsTest extends JUnit4TestBase {
   }
 
   private void startDriver() {
-    Capabilities caps = BrowserToCapabilities.of(Browser.detect());
+    Capabilities caps = WebDriverBuilder.getStandardCapabilitiesFor(Browser.detect());
     localDriver = new RemoteWebDriver(server.getWebDriverUrl(), caps);
     localDriver.setFileDetector(new LocalFileDetector());
   }

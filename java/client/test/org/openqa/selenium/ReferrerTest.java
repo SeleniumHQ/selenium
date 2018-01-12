@@ -406,7 +406,7 @@ public class ReferrerTest extends JUnit4TestBase {
 
       Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
-      return driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+      return driver = new WebDriverBuilder().get(caps);
     }
 
     @Override

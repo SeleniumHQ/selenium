@@ -80,7 +80,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     Proxy proxyToUse = proxyServer.asProxy();
     Capabilities caps = new ImmutableCapabilities(PROXY, proxyToUse);
 
-    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    WebDriver driver = new WebDriverBuilder().get(caps);
     registerDriverTeardown(driver);
 
     driver.get(appServer.whereElseIs("simpleTest.html"));
@@ -103,7 +103,7 @@ public class ProxySettingTest extends JUnit4TestBase {
 
     Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
-    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    WebDriver driver = new WebDriverBuilder().get(caps);
     registerDriverTeardown(driver);
 
     driver.get(appServer.whereElseIs("mouseOver.html"));
@@ -132,7 +132,7 @@ public class ProxySettingTest extends JUnit4TestBase {
 
     Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
-    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    WebDriver driver = new WebDriverBuilder().get(caps);
     registerDriverTeardown(driver);
 
     driver.get("http://" + getHostAndPort(helloServer));

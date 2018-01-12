@@ -17,20 +17,51 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.opera.OperaOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariOptions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
-  private Capabilities desiredCapabilities;
+
+  private static Map<Browser, Supplier<Capabilities>> capabilitySuppliers =
+    new ImmutableMap.Builder<Browser, Supplier<Capabilities>>()
+      .put(Browser.chrome, ChromeOptions::new)
+      .put(Browser.ff, () -> new FirefoxOptions().setLegacy(!Boolean.parseBoolean(
+              System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true"))))
+      .put(Browser.ie, () -> {
+        InternetExplorerOptions options = new InternetExplorerOptions();
+        if (Boolean.getBoolean("selenium.browser.native_events")) {
+          options.enableNativeEvents();
+        }
+        return options;
+      })
+      .put(Browser.htmlunit, DesiredCapabilities::htmlUnit)
+      .put(Browser.operablink, OperaOptions::new)
+      .put(Browser.safari, SafariOptions::new)
+      .build();
+
+  public static Capabilities getStandardCapabilitiesFor(Browser browser) {
+    return capabilitySuppliers.getOrDefault(browser, ImmutableCapabilities::new).get();
+  }
+
   private final Browser browser;
 
   public WebDriverBuilder() {
@@ -38,28 +69,32 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
   }
 
   public WebDriverBuilder(Browser browser) {
-    if (browser == null) {
-      this.browser = Browser.chrome;
-    } else {
-      this.browser = browser;
-    }
+    this.browser = Optional.ofNullable(browser).orElse(Browser.chrome);
   }
 
   public WebDriver get() {
-    Capabilities standardCapabilities = BrowserToCapabilities.of(browser);
-    Capabilities desiredCaps = new MutableCapabilities(standardCapabilities).merge(desiredCapabilities);
+    return get(new ImmutableCapabilities());
+  }
 
-    List<Supplier<WebDriver>> suppliers = getSuppliers(desiredCaps);
+  public WebDriver get(Capabilities desiredCapabilities) {
+    Capabilities desiredCaps = getStandardCapabilitiesFor(browser).merge(desiredCapabilities);
 
-    for (Supplier<WebDriver> supplier : suppliers) {
-      WebDriver driver = supplier.get();
-      if (driver != null) {
-        modifyLogLevel(driver);
-        return driver;
-      }
-    }
+    WebDriver driver =
+        Stream.of(
+            new ExternalDriverSupplier(desiredCaps),
+            new SauceBackedDriverSupplier(desiredCaps),
+            new GridSupplier(desiredCaps),
+            new RemoteSupplier(desiredCaps),
+            new TestInternetExplorerSupplier(desiredCaps),
+            new ReflectionBackedDriverSupplier(desiredCaps),
+            new DefaultDriverSupplier(desiredCaps))
+        .map(Supplier::get)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities));
 
-    throw new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities);
+    modifyLogLevel(driver);
+    return driver;
   }
 
   private void modifyLogLevel(WebDriver driver) {
@@ -76,23 +111,6 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     } catch (IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private List<Supplier<WebDriver>> getSuppliers(Capabilities desiredCaps) {
-    List<Supplier<WebDriver>> suppliers = Lists.newArrayList();
-    suppliers.add(new ExternalDriverSupplier(desiredCaps));
-    suppliers.add(new SauceBackedDriverSupplier(desiredCaps));
-    suppliers.add(new GridSupplier(desiredCaps));
-    suppliers.add(new RemoteSupplier(desiredCaps));
-    suppliers.add(new TestInternetExplorerSupplier(desiredCaps));
-    suppliers.add(new ReflectionBackedDriverSupplier(desiredCaps));
-    suppliers.add(new DefaultDriverSupplier(desiredCaps));
-    return suppliers;
-  }
-
-  public WebDriverBuilder setDesiredCapabilities(Capabilities caps) {
-    this.desiredCapabilities = caps;
-    return this;
   }
 
   private enum LogLevel {

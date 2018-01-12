@@ -103,7 +103,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     Capabilities caps = behaviour == null
                         ? new ImmutableCapabilities()
                         : new ImmutableCapabilities(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
-    driver2 = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    driver2 = new WebDriverBuilder().get(caps);
 
     driver2.get(pages.alertsPage);
     driver2.findElement(By.id("prompt-with-default")).click();
