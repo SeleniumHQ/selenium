@@ -1,4 +1,4 @@
-## v4.0.0-dev
+## v4.0.0-alpha.1
 
 ### Notice
 
@@ -12,7 +12,30 @@ implementations for these browsers are no longer under active development.
 For Opera, users should be able to simply rely on testing Chrome as the Opera
 browser is based on Chromium (and the operadriver was a thin wrapper around
 chromedriver). For PhantomJS, users should use Chrome or Firefox in headless
-mode.
+mode (see `example/headless.js`)
+
+### Changes for W3C WebDriver Spec Compliance
+
+*  Revamped the actions API to conform with the WebDriver Spec:
+   <https://www.w3.org/TR/webdriver/#actions>. For details, refer to the JS doc
+   on the `lib/input.Actions` class.
+
+   As of January, 2018, only Firefox natively supports this new API. You can
+   put the `Actions` class into "bridge mode" and it will attempt to translate
+   mouse and keyboard actions to the legacy API (see class docs). Alternatively,
+   you may continue to use the legacy API directly via the `lib/actions` module.
+   __NOTE:__ The legacy API is considered strongly deprecated and will be
+   removed in a minor release once Google's Chrome and Microsoft's Edge browsers
+   support the new API.
+
+*  All window manipulation commands are now supported.
+*  Added `driver.switchTo().parentFrame()`
+*  When a named cookie is requested, attempt to fetch it directly using the
+   W3C endpoint, `GET /session/{session id}/cookie/{name}`. If this command is
+   not recognized by the remote end, fallback to fetching all cookies and then
+   searching for the desired name.
+*  Replaced `WebElement.getSize()` and `WebElement.getLocation()` with a single
+   method, `WebElement.getRect()`.
 
 ### API Changes
 
@@ -23,22 +46,10 @@ mode.
      -  `lib/webdriver.AlertPromise`
      -  `lib/webdriver.WebElementPromise`
 *  Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
-*  Removed the `firefox.Binary` class. Custom binaries can still be selected
-   using `firefox.Options#setBinary()`. Likewise, custom binary arguments can be
-   specified with `firefox.Options#addArguments()`.
 *  Removed the `lib/actions` module
 *  Removed the `lib/events` module
 *  Removed the `phantomjs` module
 *  Removed the 'opera' module
-*  Removed the `WebDriver.attachToSession()` factory method. Users can just use
-   use the `WebDriver` constructor directly instead.
-*  Removed the `WebDriver.prototype.call()` method. This was used to inject
-   custom function calls into the control flow. Now that the promise manager is
-   no longer used, this method is no longer necessary. Users are now responsible
-   for coordinating actions (ideally with async functions) and can just call
-   functions directly instead of through `driver.call()`.
-*  Removed the `WebDriver.prototype.touchActions()` method. Action sequences
-   are now defined from a single origin: `WebDriver.prototype.actions()`.
 *  Removed the promise manager from `lib/promise`, which includes the removal
    of the following exported names (replacements, if any, in parentheses):
    -  CancellableThenable
@@ -64,7 +75,6 @@ mode.
    -  rejected (use Promise.reject)
    -  setDefaultFlow
    -  when (use Promise.resolve)
-*  Renamed `WebDriver#schedule()` to `WebDriver#execute()`
 *  Changes to the `Builder` class:
    -  Added setChromeService, setEdgeService, & setFirefoxService
    -  Removed setEnableNativeEvents
@@ -81,6 +91,9 @@ mode.
 *  Changes to `ie.Options`
    -  Now extends the `Capabilities` class
    -  Removed from/toCapabilities
+*  Removed the `firefox.Binary` class. Custom binaries can still be selected
+   using `firefox.Options#setBinary()`. Likewise, custom binary arguments can be
+   specified with `firefox.Options#addArguments()`.
 *  Changes to `firefox.Driver`
    -  Added installAddon(path)
    -  Added uninstallAddon(id)
@@ -123,8 +136,16 @@ mode.
        -  InvalidElementCoordinatesError
 *  Changes to `lib/webdriver.WebDriver`:
    -  Dropped support for "requiredCapabilities" from WebDriver.createSession
-   -  actions now returns the new `lib/input.Actions` class
-   -  removed touchActions
+   -  actions() now returns the new `lib/input.Actions` class
+   -  Removed touchActions
+   -  Renamed schedule to execute
+   -  Removed the `WebDriver.attachToSession()` factory method. Users can just
+      the `WebDriver` constructor directly instead.
+   -  Removed the `call()` method. This was used to inject custom function calls
+      into the control flow. Now that the promise manager is no longer used,
+      this method is no longer necessary. Users are now responsible for
+      coordinating actions (ideally with async functions) and can just call
+      functions directly instead of through `driver.call()`.
 *  Changes to `lib/webdriver.WebElement`:
    -  Replaced getSize & getLocation with getRect
 *  Changes to `lib/webdriver.Alert`:
@@ -156,26 +177,6 @@ mode.
    -  Added the `suite` function. For details, refer to the jsdoc or
       `example/google_search_test.js`
 
-### Changes for W3C WebDriver Spec Compliance
-
-*  Revamped the actions API to conform with the WebDriver Spec:
-   <https://www.w3.org/TR/webdriver/#actions>. For details, refer to the JS doc
-   on the `lib/input.Actions` class.
-
-   As of January, 2018, only Firefox natively supports this new API. You can
-   put the `Actions` class into "bridge mode" and it will attempt to translate
-   mouse and keyboard actions to the legacy API (see class docs). Alternatively,
-   you may continue to use the legacy API directly via the `lib/actions` module.
-   __NOTE:__ The legacy API is considered strongly deprecated and will be
-   removed in a minor release once Google's Chrome and Microsoft's Edge browsers
-   support the new API.
-
-*  All window manipulation commands are now supported.
-*  Added `driver.switchTo().parentFrame()`
-*  When a named cookie is requested, attempt to fetch it directly using the
-   W3C endpoint, `GET /session/{session id}/cookie/{name}`. If this command is
-   not recognized by the remote end, fallback to fetching all cookies and then
-   searching for the desired name.
 
 
 ## v3.6.0
