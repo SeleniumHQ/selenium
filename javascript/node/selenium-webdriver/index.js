@@ -22,23 +22,23 @@
 
 'use strict';
 
-const chrome = require('./chrome');
-const edge = require('./edge');
-const firefox = require('./firefox');
 const _http = require('./http');
-const ie = require('./ie');
 const by = require('./lib/by');
 const capabilities = require('./lib/capabilities');
+const chrome = require('./chrome');
 const command = require('./lib/command');
+const edge = require('./edge');
 const error = require('./lib/error');
+const firefox = require('./firefox');
+const ie = require('./ie');
 const input = require('./lib/input');
 const logging = require('./lib/logging');
 const promise = require('./lib/promise');
+const remote = require('./remote');
+const safari = require('./safari');
 const session = require('./lib/session');
 const until = require('./lib/until');
 const webdriver = require('./lib/webdriver');
-const remote = require('./remote');
-const safari = require('./safari');
 
 const Browser = capabilities.Browser;
 const Capabilities = capabilities.Capabilities;
@@ -597,6 +597,14 @@ class Builder {
       capabilities.merge(this.edgeOptions_);
     }
 
+    checkOptions(
+        capabilities, 'chromeOptions', chrome.Options, 'setChromeOptions');
+    checkOptions(
+        capabilities, 'moz:firefoxOptions', firefox.Options,
+        'setFirefoxOptions');
+    checkOptions(
+        capabilities, 'safari.options', safari.Options, 'setSafariOptions');
+
     // Check for a remote browser.
     let url = this.url_;
     if (!this.ignoreEnv_) {
@@ -665,6 +673,63 @@ class Builder {
         throw new Error('Do not know how to build driver: ' + browser
             + '; did you forget to call usingServer(url)?');
     }
+  }
+}
+
+
+/**
+ * In the 3.x releases, the various browser option classes
+ * (e.g. firefox.Options) had to be manually set as an option using the
+ * Capabilties class:
+ *
+ *     let ffo = new firefox.Options();
+ *     // Configure firefox options...
+ *
+ *     let caps = new Capabilities();
+ *     caps.set('moz:firefoxOptions', ffo);
+ *
+ *     let driver = new Builder()
+ *         .withCapabilities(caps)
+ *         .build();
+ *
+ * The options are now subclasses of Capabilities and can be used directly. A
+ * direct translation of the above is:
+ *
+ *     let ffo = new firefox.Options();
+ *     // Configure firefox options...
+ *
+ *     let driver = new Builder()
+ *         .withCapabilities(ffo)
+ *         .build();
+ *
+ * You can also set the options for various browsers at once and let the builder
+ * choose the correct set at runtime (see Builder docs above):
+ *
+ *     let ffo = new firefox.Options();
+ *     // Configure ...
+ *
+ *     let co = new chrome.Options();
+ *     // Configure ...
+ *
+ *     let driver = new Builder()
+ *         .setChromeOptions(co)
+ *         .setFirefoxOptions(ffo)
+ *         .build();
+ *
+ * @param {!Capabilities} caps
+ * @param {string} key
+ * @param {function(new: Capabilities)} optionType
+ * @param {string} setMethod
+ * @throws {error.InvalidArgumentError}
+ */
+function checkOptions(caps, key, optionType, setMethod) {
+  let val = caps.get(key);
+  if (val instanceof optionType) {
+    throw new error.InvalidArgumentError(
+        'Options class extends Capabilities and should not be set as key '
+            + `"${key}"; set browser-specific options with `
+            + `Builder.${setMethod}(). For more information, see the `
+            + 'documentation attached to the function that threw this error');
   }
 }
 
