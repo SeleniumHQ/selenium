@@ -25,6 +25,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
+import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
@@ -636,7 +637,7 @@ public class Actions {
 
       try {
         ((Interactive) driver).perform(sequences.values());
-      } catch (ClassCastException | UnsupportedCommandException e) {
+      } catch (ClassCastException | UnsupportedCommandException | InvalidArgumentException e) {
         // Fall back to the old way of doing things. Old Skool #ftw
         fallBack.perform();
       }
