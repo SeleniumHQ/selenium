@@ -17,6 +17,7 @@
 package org.openqa.selenium.net;
 
 import static java.lang.System.currentTimeMillis;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.net.PortProber.findFreePort;
@@ -40,7 +41,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@RunWith(JUnit4.class)
 public class UrlCheckerTest {
 
   private final UrlChecker urlChecker = new UrlChecker();
@@ -66,43 +66,38 @@ public class UrlCheckerTest {
 
   @Test
   public void testWaitUntilAvailableIsTimely() throws Exception {
+    long delay = 200L;
 
-    executorService.submit(new Callable<Object>() {
-      @Override
-      public Object call() throws Exception {
-        Thread.sleep(10L);
-        server.start();
-        return null;
-      }
+    executorService.submit(() -> {
+      Thread.sleep(delay);
+      server.start();
+      return null;
     });
 
     long start = currentTimeMillis();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL("http://localhost:" + port + "/"));
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed, lessThan(450L));
-    System.out.println(elapsed);
+    assertThat(elapsed, greaterThan((long) UrlChecker.CONNECT_TIMEOUT_MS)); // first connection is unsuccessful
+    assertThat(elapsed, lessThan(UrlChecker.CONNECT_TIMEOUT_MS + 100L)); // threshold
   }
 
   @Test
   public void testWaitUntilUnavailableIsTimely() throws Exception {
-
+    long delay = 200L;
     server.start();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL("http://localhost:" + port + "/"));
 
-    executorService.submit(new Callable<Object>() {
-      @Override
-      public Object call() throws Exception {
-        Thread.sleep(10L);
-        server.stop();
-        return null;
-      }
+    executorService.submit(() -> {
+      Thread.sleep(delay);
+      server.stop();
+      return null;
     });
 
     long start = currentTimeMillis();
-    urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS,
-                                    new URL("http://localhost:" + port + "/"));
+    urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, new URL("http://localhost:" + port + "/"));
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed, lessThan(450L));
+    assertThat(elapsed, greaterThan(UrlChecker.CONNECT_TIMEOUT_MS + delay)); // last connection is unsuccessful
+    assertThat(elapsed, lessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 200L)); // threshold
     System.out.println(elapsed);
   }
 

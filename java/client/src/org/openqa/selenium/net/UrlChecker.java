@@ -43,7 +43,7 @@ public class UrlChecker {
 
   private static final Logger log = Logger.getLogger(UrlChecker.class.getName());
 
-  private static final int CONNECT_TIMEOUT_MS = 500;
+  static final int CONNECT_TIMEOUT_MS = 500;
   private static final int READ_TIMEOUT_MS = 1000;
   private static final long MAX_POLL_INTERVAL_MS = 320;
   private static final long MIN_POLL_INTERVAL_MS = 10;
