@@ -180,16 +180,12 @@ def test_Should_Not_Be_Able_To_Locate_By_Tag_Name_Multiple_Elements_That_Do_Not_
     assert len(elements) == 0
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1541')
 def test_Finding_ASingle_Element_By_Empty_Tag_Name_Should_Throw(driver, pages):
     pages.load("formPage.html")
     with pytest.raises(InvalidSelectorException):
         driver.find_element(By.TAG_NAME, "")
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1541')
 def test_Finding_Multiple_Elements_By_Empty_Tag_Name_Should_Throw(driver, pages):
     pages.load("formPage.html")
     with pytest.raises(InvalidSelectorException):

@@ -172,7 +172,6 @@ def testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs(driver, pages):
     assert current == new_handle
 
 
-@pytest.mark.xfail_chrome(reason="Fails on Travis")
 def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntCrash(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle

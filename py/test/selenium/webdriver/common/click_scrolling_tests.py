@@ -65,9 +65,6 @@ def testShouldBeAbleToClickOnAnElementHiddenByOverflow(driver, pages):
     assert "line8" == driver.find_element(By.ID, "clicked").text
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1536',
-    raises=WebDriverException)
 def testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow(driver, pages):
     pages.load("scrolling_tests/page_with_double_overflow_auto.html")
 
