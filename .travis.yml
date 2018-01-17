@@ -88,7 +88,7 @@ matrix:
     - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
       <<: *java
       <<: *firefox-latest
-    - env: TASK=test_firefox
+    - env: TASK=//java/client/test/org/openqa/selenium/firefox:test-synthesized:run
       <<: *java
       <<: *firefox-esr
     - env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
