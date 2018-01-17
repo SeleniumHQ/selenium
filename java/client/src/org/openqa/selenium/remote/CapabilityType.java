@@ -47,7 +47,7 @@ public interface CapabilityType {
   String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
   String HAS_TOUCHSCREEN = "hasTouchScreen";
   String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
-  String ENABLE_DOWNLOADING = "enableDownloading";
+  String ENABLE_DOWNLOADING = "chromium:enableDownloading";
 
   String LOGGING_PREFS = "loggingPrefs";
 

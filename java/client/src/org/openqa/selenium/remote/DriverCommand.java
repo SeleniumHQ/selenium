@@ -129,8 +129,6 @@ public interface DriverCommand {
   String SET_SCREEN_ROTATION = "setScreenRotation";
   String GET_SCREEN_ROTATION = "getScreenRotation";
 
-  String SEND_COMMAND_TO_BROWSER = "sendCommandToBrowser";
-
   // W3C Actions APIs
   String ACTIONS = "actions";
   String CLEAR_ACTIONS_STATE = "clearActionState";

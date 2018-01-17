@@ -18,6 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -28,11 +29,16 @@ import org.openqa.selenium.remote.service.DriverService;
  */
 class ChromeDriverCommandExecutor extends DriverCommandExecutor {
 
-  private static final ImmutableMap<String, CommandInfo> CHROME_COMMAND_NAME_TO_URL = ImmutableMap.of(
-      ChromeDriverCommand.LAUNCH_APP,
-      new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST));
+  private static final ImmutableMap<String, CommandInfo> CHROME_SPECIFIC_COMMANDS =
+      new ImmutableMap.Builder<String, CommandInfo>()
+          .put(ChromeDriverCommand.LAUNCH_APP,
+               new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST))
+          .put(ChromeDriverCommand.SEND_COMMAND_TO_BROWSER,
+               new CommandInfo("/session/:sessionId/chromium/send_command_and_get_result",
+                               HttpMethod.POST))
+          .build();
 
   public ChromeDriverCommandExecutor(DriverService service) {
-    super(service, CHROME_COMMAND_NAME_TO_URL);
+    super(service, CHROME_SPECIFIC_COMMANDS);
   }
 }

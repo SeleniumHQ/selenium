@@ -30,7 +30,6 @@ import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.mobile.NetworkConnection;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -173,19 +172,19 @@ public class ChromeDriver extends RemoteWebDriver
    * Creates a new ChromeDriver instance. The {@code service} will be started along with the
    * driver, and shutdown upon calling {@link #quit()}.
    *
-   * @param service The service to use.
+   * @param service      The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
    * @deprecated Use {@link ChromeDriver(ChromeDriverService, ChromeOptions)} instead.
    */
   @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new ChromeDriverCommandExecutor(service), capabilities);
-    if (capabilities.getCapability("enableDownloading")!=null){
-      sendCommandForDownloadChromeHeadLess(
-          (String) capabilities.getCapability("enableDownloading"));
+    if (capabilities.getCapability("chromium:enableDownloading") instanceof String) {
+      sendCommandForDownloadChromeHeadless(
+          (String) capabilities.getCapability("chromium:enableDownloading"));
     }
     locationContext = new RemoteLocationContext(getExecuteMethod());
-    webStorage = new  RemoteWebStorage(getExecuteMethod());
+    webStorage = new RemoteWebStorage(getExecuteMethod());
     touchScreen = new RemoteTouchScreen(getExecuteMethod());
     networkConnection = new RemoteNetworkConnection(getExecuteMethod());
   }
@@ -243,15 +242,11 @@ public class ChromeDriver extends RemoteWebDriver
 
   /**
    * Send command for browser to allow downloading in headless mode
-   *
-   * @param downloadPath
    */
-  public void sendCommandForDownloadChromeHeadLess(String downloadPath) {
-    if (downloadPath.length()>0){
-      execute(DriverCommand.SEND_COMMAND_TO_BROWSER,
-              ImmutableMap.of("cmd", "Page.setDownloadBehavior",
-                              "params",
-                              ImmutableMap.of("behavior", "allow","downloadPath", downloadPath)));
-    }
+  public void sendCommandForDownloadChromeHeadless(String downloadPath) {
+    execute(ChromeDriverCommand.SEND_COMMAND_TO_BROWSER,
+            ImmutableMap.of("cmd", "Page.setDownloadBehavior",
+                            "params",
+                            ImmutableMap.of("behavior", "allow", "downloadPath", downloadPath)));
   }
 }

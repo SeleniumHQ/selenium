@@ -25,17 +25,13 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Random;
 
 public class ChromeHeadlessTest extends JUnit4TestBase {
@@ -79,41 +75,6 @@ public class ChromeHeadlessTest extends JUnit4TestBase {
     }
   }
 
-  @Test
-  public void canStartChromeWithCustomOptions_Headless() {
-    String downloadFilePathath = downloaded.getAbsolutePath();
-
-    HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
-    chromePrefs.put("profile.default_content_settings.popups", 0);
-    chromePrefs.put("download.default_directory", downloadFilePathath);
-    ChromeOptions options = new ChromeOptions();
-    HashMap<String, Object> chromeOptionsMap = new HashMap<String, Object>();
-    options.setExperimentalOption("prefs", chromePrefs);
-    options.addArguments("--test-type");
-    options.addArguments("--disable-extensions"); //to disable browser extension popup
-    options.addArguments("--headless");
-
-    DesiredCapabilities cap = DesiredCapabilities.chrome();
-    cap.setCapability(ChromeOptions.CAPABILITY, chromeOptionsMap);
-    cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-    cap.setCapability(ChromeOptions.CAPABILITY, options);
-    ChromeDriver driver = new ChromeDriver(cap);
-
-    driver.sendCommandForDownloadChromeHeadLess(downloadFilePathath);
-
-    driver.get("https://chromedriver.storage.googleapis.com/index.html?path=2.34/");
-    (new WebDriverWait(driver, 20))
-        .until(ExpectedConditions
-                   .presenceOfElementLocated(By.xpath("//a[text()='chromedriver_win32.zip']")))
-        .click();
-
-    try {
-      Thread.sleep(20000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-
   private String createDownloadingPage() {
     String pathToDownloading = fileForDownloading.getAbsolutePath();
     return appServer.create(new Page()
@@ -132,7 +93,7 @@ public class ChromeHeadlessTest extends JUnit4TestBase {
     DesiredCapabilities cap = DesiredCapabilities.chrome();
     cap.setCapability(ChromeOptions.CAPABILITY, options);
     ChromeDriver driver = new ChromeDriver(cap);
-    driver.sendCommandForDownloadChromeHeadLess(downloadFilePath);
+    driver.sendCommandForDownloadChromeHeadless(downloadFilePath);
 
     driver.get(createDownloadingPage());
 
@@ -156,7 +117,7 @@ public class ChromeHeadlessTest extends JUnit4TestBase {
     options.setHeadless(true);
 
     ChromeDriver driver = new ChromeDriver(options);
-    driver.sendCommandForDownloadChromeHeadLess(downloadFilePath);
+    driver.sendCommandForDownloadChromeHeadless(downloadFilePath);
 
     driver.get(createDownloadingPage());
 
@@ -178,6 +139,7 @@ public class ChromeHeadlessTest extends JUnit4TestBase {
 
     ChromeOptions options = new ChromeOptions();
     options.setHeadless(true);
+
     options.setEnableDownloading(true, downloadFilePath);
 
     ChromeDriver driver = new ChromeDriver(options);
@@ -195,6 +157,4 @@ public class ChromeHeadlessTest extends JUnit4TestBase {
     assertTrue("Downloaded file should be present",
                new File(downloadFilePath + "\\fileForDownloading.txt").exists());
   }
-
-
 }

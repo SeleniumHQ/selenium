@@ -237,10 +237,10 @@ public class ChromeOptions extends MutableCapabilities {
   }
 
   public ChromeOptions setEnableDownloading(boolean enableDownloading, String downloadPath){
-    if (enableDownloading){
+    if (enableDownloading) {
       setCapability(ENABLE_DOWNLOADING, downloadPath);
     }else {
-      setCapability(ENABLE_DOWNLOADING, "");
+      setCapability(ENABLE_DOWNLOADING, (Objects) null);
     }
     return this;
   }
