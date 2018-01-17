@@ -37,6 +37,11 @@ _browsers:
         packages:
           - google-chrome-stable
 
+cache:
+  directories:
+    - buck-out
+    - build
+
 matrix:
   fast_finish: true
   exclude:
