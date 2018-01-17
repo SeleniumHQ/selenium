@@ -39,134 +39,176 @@ _browsers:
 
 cache:
   directories:
-    - /home/travis/build/SeleniumHQ/selenium/buck-out/crazy-fun
-    - /home/travis/build/SeleniumHQ/selenium/buck-out/cache
+    - buck-out/crazy-fun
+    - buck-out/cache
 
 jobs:
   include:
     - stage: prepare cache
       env: TASK=build
       <<: *java
-    - env: TASK=//javascript/atoms:atoms
+    - stage: test
+      env: TASK=//javascript/atoms:atoms
       <<: *java
-    - env: TASK=//javascript/webdriver:all_js
+    - stage: test
+      env: TASK=//javascript/webdriver:all_js
       <<: *java
-    - env: TASK=//javascript/ie-driver:atoms
+    - stage: test
+      env: TASK=//javascript/ie-driver:atoms
       <<: *java
-    - env: TASK=//javascript/chrome-driver:atoms
+    - stage: test
+      env: TASK=//javascript/chrome-driver:atoms
       <<: *java
-    - env: TASK="//javascript/android-atoms:atoms ios_driver"
+    - stage: test
+      env: TASK="//javascript/android-atoms:atoms ios_driver"
       <<: *java
-    - env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
+    - stage: test
+      env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
       <<: *java
-    - env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
+    - stage: test
+      env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
       <<: *java
       <<: *chrome
-    - env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
+    - stage: test
+      env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
       <<: *java
       <<: *chrome
 #    - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
 #      <<: *java
 #      <<: *chrome
-    - env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
+    - stage: test
+      env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
       <<: *java
       <<: *chrome
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run"
+    - stage: test
+      env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run"
       <<: *java
       <<: *firefox-latest
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
+    - stage: test
+      env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
       <<: *java
       <<: *firefox-latest
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run"
+    - stage: test
+      env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run"
       <<: *java
       <<: *firefox-latest
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
+    - stage: test
+      env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
       <<: *java
       <<: *firefox-latest
-    - env: TASK=//java/client/test/org/openqa/selenium/firefox:test-synthesized:run
+    - stage: test
+      env: TASK=//java/client/test/org/openqa/selenium/firefox:test-synthesized:run
       <<: *java
       <<: *firefox-esr
-    - env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
+    - stage: test
+      env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
       <<: *java
       <<: *firefox-nightly
-    - env: TASK=test_java_small_tests
+    - stage: test
+      env: TASK=test_java_small_tests
       <<: *java
-    - env: MARIONETTE=1 TASK=test_grid
+    - stage: test
+      env: MARIONETTE=1 TASK=test_grid
       <<: *java
       <<: *firefox-nightly
 #    - env: CHROME=1 TASK=test_chrome
 #      <<: *java
 #      <<: *chrome
-    - env: TASK=test_htmlunit
+    - stage: test
+      env: TASK=test_htmlunit
       <<: *java
-    - env: TASK=javadocs
+    - stage: test
+      env: TASK=javadocs
       <<: *java
-    - env: TOXENV=flake8
+    - stage: test
+      env: TOXENV=flake8
       <<: *python
-    - env: TOXENV=docs
+    - stage: test
+      env: TOXENV=docs
       <<: *python
-    - env: TOXENV=py27-unit
+    - stage: test
+      env: TOXENV=py27-unit
       <<: *python
-    - env: CHROME=1 TOXENV=py27-chrome
+    - stage: test
+      env: CHROME=1 TOXENV=py27-chrome
       <<: *python
       <<: *chrome
-    - env: TOXENV=py27-firefox
+    - stage: test
+      env: TOXENV=py27-firefox
       <<: *python
       <<: *firefox-esr
-    - env: TOXENV=py27-remote
+    - stage: test
+      env: TOXENV=py27-remote
       <<: *python
       <<: *firefox-esr
-    - env: MARIONETTE=1 TOXENV=py27-marionette
+    - stage: test
+      env: MARIONETTE=1 TOXENV=py27-marionette
       <<: *python
       <<: *firefox-nightly
-    - env: TOXENV=flake8
+    - stage: test
+      env: TOXENV=flake8
       <<: *python
       python: 3.6
-    - env: TOXENV=docs
+    - stage: test
+      env: TOXENV=docs
       <<: *python
       python: 3.6
-    - env: TOXENV=py36-unit
+    - stage: test
+      env: TOXENV=py36-unit
       <<: *python
       python: 3.6
-    - env: CHROME=1 TOXENV=py36-chrome
+    - stage: test
+      env: CHROME=1 TOXENV=py36-chrome
       <<: *python
       <<: *chrome
       python: 3.6
-    - env: TOXENV=py36-firefox
+    - stage: test
+      env: TOXENV=py36-firefox
       <<: *python
       <<: *firefox-esr
       python: 3.6
-    - env: TOXENV=py36-remote
+    - stage: test
+      env: TOXENV=py36-remote
       <<: *python
       <<: *firefox-esr
       python: 3.6
-    - env: MARIONETTE=1 TOXENV=py36-marionette
+    - stage: test
+      env: MARIONETTE=1 TOXENV=py36-marionette
       <<: *python
       <<: *firefox-nightly
       python: 3.6
-    - env: TASK=//rb:unit-test
+    - stage: test
+      env: TASK=//rb:unit-test
       <<: *ruby
-    - env: CHROME=1 TASK=//rb:chrome-test
-      <<: *ruby
-      <<: *chrome
-    - env: MARIONETTE=1 TASK=//rb:firefox-test
-      <<: *ruby
-      <<: *firefox-latest
-    - env: TASK=//rb:ff-esr-test
-      <<: *ruby
-      <<: *firefox-esr
-    - env: CHROME=1 TASK=//rb:remote-chrome-test
+    - stage: test
+      env: CHROME=1 TASK=//rb:chrome-test
       <<: *ruby
       <<: *chrome
-    - env: MARIONETTE=1 TASK=//rb:remote-firefox-test
+    - stage: test
+      env: MARIONETTE=1 TASK=//rb:firefox-test
       <<: *ruby
       <<: *firefox-latest
-    - env: TASK=//rb:remote-ff-esr-test
+    - stage: test
+      env: TASK=//rb:ff-esr-test
       <<: *ruby
       <<: *firefox-esr
-    - env: TASK=//rb:docs
+    - stage: test
+      env: CHROME=1 TASK=//rb:remote-chrome-test
       <<: *ruby
-    - env: TASK=//rb:lint
+      <<: *chrome
+    - stage: test
+      env: MARIONETTE=1 TASK=//rb:remote-firefox-test
+      <<: *ruby
+      <<: *firefox-latest
+    - stage: test
+      env: TASK=//rb:remote-ff-esr-test
+      <<: *ruby
+      <<: *firefox-esr
+    - stage: test
+      env: TASK=//rb:docs
+      <<: *ruby
+    - stage: test
+      env: TASK=//rb:lint
       <<: *ruby
 before_install: ./scripts/travis/before_install.sh
 install: ./scripts/travis/install.sh
