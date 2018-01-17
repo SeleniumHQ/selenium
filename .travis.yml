@@ -37,23 +37,15 @@ _browsers:
         packages:
           - google-chrome-stable
 
-matrix:
-  fast_finish: true
-  exclude:
-    - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
-      <<: *java
-      <<: *chrome
-    - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
-      <<: *java
-      <<: *firefox-nightly
-    - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
-      <<: *java
-      <<: *chrome
-    - env: CHROME=1 TASK=test_chrome
-      <<: *java
-      <<: *chrome
+cache:
+  directories:
+    - /home/travis/build/SeleniumHQ/selenium/buck-out/crazy-fun
+    - /home/travis/build/SeleniumHQ/selenium/buck-out/cache
+
+jobs:
   include:
-    - env: TASK=build
+    - stage: prepare cache
+      env: TASK=build
       <<: *java
     - env: TASK=//javascript/atoms:atoms
       <<: *java
@@ -73,6 +65,9 @@ matrix:
     - env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
       <<: *java
       <<: *chrome
+#    - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
+#      <<: *java
+#      <<: *chrome
     - env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
       <<: *java
       <<: *chrome
@@ -99,6 +94,9 @@ matrix:
     - env: MARIONETTE=1 TASK=test_grid
       <<: *java
       <<: *firefox-nightly
+#    - env: CHROME=1 TASK=test_chrome
+#      <<: *java
+#      <<: *chrome
     - env: TASK=test_htmlunit
       <<: *java
     - env: TASK=javadocs
@@ -170,9 +168,6 @@ matrix:
       <<: *ruby
     - env: TASK=//rb:lint
       <<: *ruby
-  allow_failures:
-    - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
-    - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
 before_install: ./scripts/travis/before_install.sh
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
