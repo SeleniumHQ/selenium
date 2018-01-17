@@ -37,7 +37,6 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 
-import java.util.Iterator;
 import java.util.concurrent.Callable;
 
 public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
@@ -115,9 +114,8 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
 
   private String getProxyId() throws Exception {
     RemoteProxy p = null;
-    Iterator<RemoteProxy> it = registry.getAllProxies().iterator();
-    while(it.hasNext()) {
-      p = it.next();
+    for (RemoteProxy remoteProxy : registry.getAllProxies()) {
+      p = remoteProxy;
     }
     if (p == null) {
       throw new Exception("Unable to find registered proxy at hub");
