@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <ctime>
 #include <vector>
+#include <mutex>
 
 #include "command_types.h"
 #include "errorcodes.h"
@@ -438,6 +439,10 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
         LOG(DEBUG) << "Returned from DestroyWindow()";
         break;
       } else {
+        // We need to lock this mutex here to make sure only one thread is processing
+        // win32 messages at a time.
+        static std::mutex messageLock;
+        std::lock_guard<std::mutex> lock(messageLock);
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
       }
