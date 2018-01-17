@@ -31,7 +31,6 @@ import com.google.gson.annotations.Expose;
 
 import com.beust.jcommander.Parameter;
 
-import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridConfigurationException;
@@ -123,7 +122,7 @@ public class GridNodeConfiguration extends GridConfiguration {
    */
   static final class DefaultDesiredCapabilitiesBuilder {
     static List<MutableCapabilities> getCapabilities() {
-      JsonObject defaults = JSONConfigurationUtils.loadJSON(DEFAULT_NODE_CONFIG_FILE);
+      JsonObject defaults = loadJSONFromResourceOrFile(DEFAULT_NODE_CONFIG_FILE);
       List<MutableCapabilities> caps = new ArrayList<>();
       for (JsonElement el : defaults.getAsJsonArray("capabilities")) {
         caps.add(new Json().toType(el, DesiredCapabilities.class));
@@ -457,7 +456,7 @@ public class GridNodeConfiguration extends GridConfiguration {
    * @param filePath node config json file to load configuration from
    */
   public static GridNodeConfiguration loadFromJSON(String filePath) {
-    return loadFromJSON(JSONConfigurationUtils.loadJSON(filePath));
+    return loadFromJSON(loadJSONFromResourceOrFile(filePath));
   }
 
   /**
