@@ -17,22 +17,18 @@
 package org.openqa.selenium.net;
 
 import static java.lang.System.currentTimeMillis;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.seleniumhq.jetty9.server.Request;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.handler.AbstractHandler;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -77,7 +73,6 @@ public class UrlCheckerTest {
     long start = currentTimeMillis();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL("http://localhost:" + port + "/"));
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed, greaterThan((long) UrlChecker.CONNECT_TIMEOUT_MS)); // first connection is unsuccessful
     assertThat(elapsed, lessThan(UrlChecker.CONNECT_TIMEOUT_MS + 100L)); // threshold
   }
 
@@ -96,7 +91,6 @@ public class UrlCheckerTest {
     long start = currentTimeMillis();
     urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, new URL("http://localhost:" + port + "/"));
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed, greaterThan(UrlChecker.CONNECT_TIMEOUT_MS + delay)); // last connection is unsuccessful
     assertThat(elapsed, lessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 200L)); // threshold
     System.out.println(elapsed);
   }
