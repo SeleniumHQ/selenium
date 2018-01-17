@@ -22,8 +22,6 @@ from selenium.common.exceptions import StaleElementReferenceException
 
 
 def testOldPage(driver, pages):
-    if driver.name == 'firefox' and driver.w3c:
-        pytest.skip('Stalls tests, https://bugzilla.mozilla.org/show_bug.cgi?id=1410799')
     pages.load("simpleTest.html")
     elem = driver.find_element(by=By.ID, value="links")
     pages.load("xhtmlTest.html")

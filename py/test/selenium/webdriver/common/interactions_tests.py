@@ -96,8 +96,6 @@ def testDragAndDrop(driver, pages):
     assert "Dropped!" == text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/mozilla/geckodriver/issues/661')
 def testDoubleClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")

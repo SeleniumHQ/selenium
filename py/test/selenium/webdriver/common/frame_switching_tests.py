@@ -373,8 +373,6 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement
                               reason='https://github.com/mozilla/geckodriver/issues/614')
 @pytest.mark.xfail_webkitgtk(raises=NoSuchElementException)
 def testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs(driver, pages):
-    if driver.name == 'firefox' and driver.w3c:
-        pytest.skip('Stalls tests, https://bugzilla.mozilla.org/show_bug.cgi?id=1410799')
     pages.load("frame_switching_tests/deletingFrame.html")
     driver.switch_to.frame(driver.find_element_by_id("iframe1"))
 

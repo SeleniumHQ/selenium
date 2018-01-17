@@ -56,8 +56,6 @@ def testShouldScrollToClickOnAnElementHiddenByOverflow(driver, pages):
         AssertionError("Should not be out of bounds: %s" % e.msg)
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/w3c/webdriver/issues/408')
 def testShouldBeAbleToClickOnAnElementHiddenByOverflow(driver, pages):
     pages.load("scroll.html")
 
@@ -110,9 +108,6 @@ def testShouldBeAbleToClickRadioButtonScrolledIntoView(driver, pages):
     # If we don't throw, we're good
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/w3c/webdriver/issues/408',
-    raises=ElementNotInteractableException)
 def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(driver, pages):
     pages.load("scroll5.html")
     driver.find_element(By.ID, "inner").click()
