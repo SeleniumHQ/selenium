@@ -39,86 +39,94 @@ _browsers:
 
 cache:
   directories:
-    - buck-out/crazy-fun
     - buck-out/cache
 
 jobs:
   include:
     - stage: prepare cache
-      env: TASK=build
+      script: TASK=build ./scripts/travis/script.sh
       <<: *java
     - stage: test
-      env: TASK=//javascript/atoms:atoms
+      script: TASK=//javascript/atoms:atoms ./scripts/travis/script.sh
       <<: *java
     - stage: test
-      env: TASK=//javascript/webdriver:all_js
+      script: TASK=//javascript/webdriver:all_js ./scripts/travis/script.sh
       <<: *java
     - stage: test
-      env: TASK=//javascript/ie-driver:atoms
+      script: TASK=//javascript/ie-driver:atoms ./scripts/travis/script.sh
       <<: *java
     - stage: test
-      env: TASK=//javascript/chrome-driver:atoms
+      script: TASK=//javascript/chrome-driver:atoms ./scripts/travis/script.sh
       <<: *java
     - stage: test
-      env: TASK="//javascript/android-atoms:atoms ios_driver"
+      script: TASK="//javascript/android-atoms:atoms ios_driver" ./scripts/travis/script.sh
       <<: *java
     - stage: test
-      env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
+      script: TASK=//java/client/test/org/openqa/selenium/atoms:test:run ./scripts/travis/script.sh
       <<: *java
     - stage: test
-      env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
+      install: CHROME=1 ./scripts/travis/install.sh
+      script: TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run" ./scripts/travis/script.sh
       <<: *java
       <<: *chrome
     - stage: test
-      env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
+      install: CHROME=1 ./scripts/travis/install.sh
+      script: TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run" ./scripts/travis/script.sh
       <<: *java
       <<: *chrome
 #    - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
 #      <<: *java
 #      <<: *chrome
     - stage: test
-      env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
+      install: CHROME=1 ./scripts/travis/install.sh
+      script: TASK="calcdeps //javascript/webdriver:webdriver-chrome:run" ./scripts/travis/script.sh
       <<: *java
       <<: *chrome
     - stage: test
-      env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run"
+      install: MARIONETTE=1 ./scripts/travis/install.sh
+      script: TASK="calcdeps //javascript/atoms:atoms-firefox:run" ./scripts/travis/script.sh
       <<: *java
       <<: *firefox-latest
     - stage: test
-      env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
+      install: MARIONETTE=1 ./scripts/travis/install.sh
+      script: TASK="calcdeps //javascript/webdriver:webdriver-firefox:run" ./scripts/travis/script.sh
       <<: *java
       <<: *firefox-latest
     - stage: test
-      env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run"
+      install: MARIONETTE=1 ./scripts/travis/install.sh
+      script: TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run" ./scripts/travis/script.sh
       <<: *java
       <<: *firefox-latest
     - stage: test
-      env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
+      install: MARIONETTE=1 ./scripts/travis/install.sh
+      script: TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run" ./scripts/travis/script.sh
       <<: *java
       <<: *firefox-latest
     - stage: test
-      env: TASK=//java/client/test/org/openqa/selenium/firefox:test-synthesized:run
+      script: TASK=//java/client/test/org/openqa/selenium/firefox:test-synthesized:run ./scripts/travis/script.sh
       <<: *java
       <<: *firefox-esr
     - stage: test
-      env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
+      install: MARIONETTE=1 ./scripts/travis/install.sh
+      script: TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run ./scripts/travis/script.sh
       <<: *java
       <<: *firefox-nightly
     - stage: test
-      env: TASK=test_java_small_tests
+      script: TASK=test_java_small_tests ./scripts/travis/script.sh
       <<: *java
     - stage: test
-      env: MARIONETTE=1 TASK=test_grid
+      install: MARIONETTE=1 ./scripts/travis/install.sh
+      script: TASK=test_grid ./scripts/travis/script.sh
       <<: *java
       <<: *firefox-nightly
 #    - env: CHROME=1 TASK=test_chrome
 #      <<: *java
 #      <<: *chrome
     - stage: test
-      env: TASK=test_htmlunit
+      script: TASK=test_htmlunit ./scripts/travis/script.sh
       <<: *java
     - stage: test
-      env: TASK=javadocs
+      script: TASK=javadocs ./scripts/travis/script.sh
       <<: *java
     - stage: test
       env: TOXENV=flake8
