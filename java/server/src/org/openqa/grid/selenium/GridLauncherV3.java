@@ -28,7 +28,6 @@ import org.openqa.grid.internal.utils.configuration.CoreRunnerConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
-import org.openqa.grid.shared.CliUtils;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.selenium.internal.BuildInfo;
@@ -38,6 +37,7 @@ import org.openqa.selenium.remote.server.log.TerseFormatter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -154,11 +154,11 @@ public class GridLauncherV3 {
 
   private static void printInfoAboutRoles(String roleCommandLineArg) {
     if (roleCommandLineArg != null) {
-      CliUtils.printWrappedLine(
+      printWrappedLine(
         "",
         "Error: the role '" + roleCommandLineArg + "' does not match a recognized server role: node/hub/standalone\n");
     } else {
-      CliUtils.printWrappedLine(
+      printWrappedLine(
         "",
         "Error: -role option needs to be followed by the value that defines role of this component in the grid\n");
     }
@@ -169,10 +169,35 @@ public class GridLauncherV3 {
       "  standalone  as a standalone server not being a part of a grid\n" +
       "\n" +
       "If -role option is omitted the server runs standalone\n");
-    CliUtils.printWrappedLine(
+    printWrappedLine(
       "",
       "To get help on the options available for a specific role run the server"
       + " with -help option and the corresponding -role option value");
+  }
+
+  private static void printWrappedLine(String prefix, String msg) {
+    printWrappedLine(System.out, prefix, msg, true);
+  }
+
+  private static void printWrappedLine(PrintStream output, String prefix, String msg, boolean first) {
+    output.print(prefix);
+    if (!first) {
+      output.print("  ");
+    }
+    int defaultWrap = 70;
+    int wrap = defaultWrap - prefix.length();
+    if (wrap > msg.length()) {
+      output.println(msg);
+      return;
+    }
+    String lineRaw = msg.substring(0, wrap);
+    int spaceIndex = lineRaw.lastIndexOf(' ');
+    if (spaceIndex == -1) {
+      spaceIndex = lineRaw.length();
+    }
+    String line = lineRaw.substring(0, spaceIndex);
+    output.println(line);
+    printWrappedLine(output, prefix, msg.substring(spaceIndex + 1), false);
   }
 
   private static void configureLogging(StandaloneConfiguration configuration) {
