@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.internal;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import org.openqa.selenium.remote.http.HttpClient;
@@ -28,15 +29,26 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class JreHttpClient implements HttpClient {
 
+  private final static Function<String, String> QUERY_ENCODE = str -> {
+    try {
+      return URLEncoder.encode(str, US_ASCII.toString());
+    } catch (UnsupportedEncodingException e) {
+      throw new UncheckedIOException(e);
+    }
+  };
   private final URL url;
   private final String auth;
 
@@ -61,7 +73,7 @@ public class JreHttpClient implements HttpClient {
 
   @Override
   public HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
-    URL url = new URL(this.url.toString() + request.getUri());
+    URL url = HttpUrlBuilder.toUrl(this.url, request);
 
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     try {

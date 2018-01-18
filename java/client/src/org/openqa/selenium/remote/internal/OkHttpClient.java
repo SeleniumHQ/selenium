@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import okhttp3.ConnectionPool;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -54,7 +55,20 @@ public class OkHttpClient implements HttpClient {
 
     Request.Builder builder = new Request.Builder();
 
-    builder.url(new URL(baseUrl.toString() + request.getUri()));
+    HttpUrl.Builder url;
+    try {
+      url = HttpUrl.parse(baseUrl.toString() + request.getUri()).newBuilder();
+    } catch (NullPointerException e) {
+      throw new IOException("Unable to parse URL: " + baseUrl.toString() + request.getUri());
+    }
+
+    for (String name : request.getQueryParameterNames()) {
+      for (String value : request.getQueryParameters(name)) {
+        url.addQueryParameter(name, value);
+      }
+    }
+
+    builder.url(url.build());
 
     for (String name : request.getHeaderNames()) {
       for (String value : request.getHeaders(name)) {

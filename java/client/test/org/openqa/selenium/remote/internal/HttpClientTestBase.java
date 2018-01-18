@@ -18,16 +18,20 @@
 package org.openqa.selenium.remote.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 
 import org.junit.Test;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.seleniumhq.jetty9.server.Server;
@@ -35,8 +39,10 @@ import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
 
 import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
+import java.util.stream.Stream;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -76,6 +82,53 @@ abstract public class HttpClientTestBase {
     assertTrue(values.toString(), values.contains("Brie, Gouda"));
   }
 
+  @Test
+  public void shouldAddUrlParameters() throws Exception {
+    HttpRequest request = new HttpRequest(GET, "/query");
+    String value = request.getQueryParameter("cheese");
+    assertNull(value);
+
+    request.addQueryParameter("cheese", "brie");
+    value = request.getQueryParameter("cheese");
+    assertEquals("brie", value);
+  }
+
+  @Test
+  public void shouldSendSimpleQueryParameters() throws Exception {
+    HttpRequest request = new HttpRequest(GET, "/query");
+    request.addQueryParameter("cheese", "cheddar");
+
+    HttpResponse response = getQueryParameterResponse(request);
+    Map<String, Object> values = new Json().toType(response.getContentString(), MAP_TYPE);
+
+    assertEquals(ImmutableList.of("cheddar"), values.get("cheese"));
+  }
+
+  @Test
+  public void shouldEncodeParameterNamesAndValues() throws Exception {
+    HttpRequest request = new HttpRequest(GET, "/query");
+    request.addQueryParameter("cheese type", "tasty cheese");
+
+    HttpResponse response = getQueryParameterResponse(request);
+    Map<String, Object> values = new Json().toType(response.getContentString(), MAP_TYPE);
+
+    assertEquals(ImmutableList.of("tasty cheese"), values.get("cheese type"));
+  }
+
+  @Test
+  public void canAddMoreThanOneQueryParameter() throws Exception {
+    HttpRequest request = new HttpRequest(GET, "/query");
+    request.addQueryParameter("cheese", "cheddar");
+    request.addQueryParameter("cheese", "gouda");
+    request.addQueryParameter("vegetable", "peas");
+
+    HttpResponse response = getQueryParameterResponse(request);
+    Map<String, Object> values = new Json().toType(response.getContentString(), MAP_TYPE);
+
+    assertEquals(ImmutableList.of("cheddar", "gouda"), values.get("cheese"));
+    assertEquals(ImmutableList.of("peas"), values.get("vegetable"));
+  }
+
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers)
       throws Exception {
     Server server = new Server(PortProber.findFreePort());
@@ -84,8 +137,7 @@ abstract public class HttpClientTestBase {
 
     class Headers extends HttpServlet {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-          throws ServletException, IOException {
+      protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         headers.forEach(resp::addHeader);
         resp.setContentLengthLong(0);
       }
@@ -98,7 +150,43 @@ abstract public class HttpClientTestBase {
     server.start();
     try {
       HttpClient client = createFactory().createClient(server.getURI().toURL());
-      HttpRequest request = new HttpRequest(HttpMethod.GET, "/foo");
+      HttpRequest request = new HttpRequest(GET, "/foo");
+      return client.execute(request);
+    } finally {
+      server.stop();
+    }
+  }
+
+  private HttpResponse getQueryParameterResponse(HttpRequest request) throws Exception {
+    Server server = new Server(PortProber.findFreePort());
+    ServletContextHandler handler = new ServletContextHandler();
+    handler.setContextPath("");
+
+    class Parameters extends HttpServlet {
+      @Override
+      protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try (Writer writer = resp.getWriter()) {
+          JsonOutput json = new Json().newOutput(writer);
+          json.beginObject();
+          req.getParameterMap()
+              .forEach((key, value) -> {
+                json.name(key);
+                json.beginArray();
+                Stream.of(value).forEach(v -> json.write(v, String.class));
+                json.endArray();
+              });
+          json.endObject();
+        }
+      }
+    }
+    ServletHolder holder = new ServletHolder(new Parameters());
+    handler.addServlet(holder, "/*");
+
+    server.setHandler(handler);
+
+    server.start();
+    try {
+      HttpClient client = createFactory().createClient(server.getURI().toURL());
       return client.execute(request);
     } finally {
       server.stop();

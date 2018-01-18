@@ -73,8 +73,8 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
   public HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
     HttpContext context = createContext();
 
-    String requestUrl = url.toExternalForm().replaceAll("/$", "") + request.getUri();
-    HttpUriRequest httpMethod = createHttpUriRequest(request.getMethod(), requestUrl);
+    URL url = HttpUrlBuilder.toUrl(this.url, request);
+    HttpUriRequest httpMethod = createHttpUriRequest(request.getMethod(), url);
     for (String name : request.getHeaderNames()) {
       // Skip content length as it is implicitly set when the message entity is set below.
       if (!"Content-Length".equalsIgnoreCase(name)) {
@@ -125,14 +125,22 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     return new BasicHttpContext();
   }
 
-  private static HttpUriRequest createHttpUriRequest(HttpMethod method, String url) {
+  private static HttpUriRequest createHttpUriRequest(HttpMethod method, URL url)
+      throws IOException {
+    URI uri = null;
+    try {
+      uri = url.toURI();
+    } catch (URISyntaxException e) {
+      throw new IOException(e);
+    }
+
     switch (method) {
       case DELETE:
-        return new HttpDelete(url);
+        return new HttpDelete(uri);
       case GET:
-        return new HttpGet(url);
+        return new HttpGet(uri);
       case POST:
-        return new HttpPost(url);
+        return new HttpPost(uri);
     }
     throw new AssertionError("Unsupported method: " + method);
   }
