@@ -88,6 +88,7 @@ DEFAULT_SECRETS_FILE = os.path.join(os.path.dirname(__file__),
 OAUTH_CREDENTIALS_FILE = '.credentials.dat'
 OAUTH_SCOPE = 'https://www.googleapis.com/auth/devstorage.full_control'
 
+mimetypes.add_type("application/java-archive", ".jar")
 
 class Error(Exception):
     def __init__(self, status, message):
