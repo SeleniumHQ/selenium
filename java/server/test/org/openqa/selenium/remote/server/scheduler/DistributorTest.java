@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DistributorTest {
 
@@ -133,8 +134,9 @@ public class DistributorTest {
 
     Distributor distributor = new Distributor().add(up).add(down).add(draining);
 
-    ImmutableList<SessionFactoryAndCapabilities> matches =
-        distributor.match(new FirefoxOptions()).collect(ImmutableList.toImmutableList());
+    ImmutableList<SessionFactoryAndCapabilities> matches = distributor.match(
+        new FirefoxOptions(),
+        stream -> stream.collect(ImmutableList.toImmutableList()));
 
     assertEquals(1, matches.size());
   }
@@ -148,9 +150,11 @@ public class DistributorTest {
 
     assertEquals(100, host.getRemainingCapacity());
 
-    SessionFactoryAndCapabilities match = distributor.match(new ChromeOptions())
-        .findFirst()
-        .orElseThrow(() -> new AssertionError("Unable to create session"));
+    SessionFactoryAndCapabilities match = distributor.match(
+        new ChromeOptions(),
+        stream -> stream
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("Unable to create session")));
 
     // We don't actually care about the session
     Optional<ActiveSession> activeSession = match.newSession(ImmutableSet.of(OSS));
@@ -166,16 +170,18 @@ public class DistributorTest {
 
     Distributor distributor = new Distributor().add(host);
 
-    SessionFactoryAndCapabilities match = distributor.match(new ChromeOptions())
-        .findFirst()
-        .orElseThrow(() -> new AssertionError("Unable to create session"));
+    SessionFactoryAndCapabilities match = distributor.match(
+        new ChromeOptions(),
+        stream -> stream.findFirst()
+            .orElseThrow(() -> new AssertionError("Unable to create session")));
 
     match.newSession(ImmutableSet.of(OSS));
 
     assertEquals(0, host.getRemainingCapacity());
 
-    List<SessionFactoryAndCapabilities> matches =
-        distributor.match(new ChromeOptions()).collect(Collectors.toList());
+    List<SessionFactoryAndCapabilities> matches = distributor.match(
+        new ChromeOptions(),
+        stream -> stream.collect(Collectors.toList()));
 
     assertTrue(matches.toString(), matches.isEmpty());
   }
@@ -187,9 +193,10 @@ public class DistributorTest {
 
     Distributor distributor = new Distributor().add(host);
 
-    SessionFactoryAndCapabilities match = distributor.match(new ChromeOptions())
-        .findFirst()
-        .orElseThrow(() -> new AssertionError("Unable to create session"));
+    SessionFactoryAndCapabilities match = distributor.match(
+        new ChromeOptions(),
+        stream -> stream.findFirst()
+            .orElseThrow(() -> new AssertionError("Unable to create session")));
 
     Optional<ActiveSession> session = match.newSession(ImmutableSet.of(OSS));
     assertEquals(0, host.getRemainingCapacity());
@@ -204,8 +211,9 @@ public class DistributorTest {
 
     Distributor distributor = new Distributor().add(host);
 
-    List<SessionFactoryAndCapabilities> matches = distributor.match(new FirefoxOptions())
-        .collect(Collectors.toList());
+    List<SessionFactoryAndCapabilities> matches = distributor.match(
+        new FirefoxOptions(),
+        stream -> stream.collect(Collectors.toList()));
 
     assertTrue(matches.toString(), matches.isEmpty());
   }
@@ -228,13 +236,16 @@ public class DistributorTest {
 
     // Start the first session. We can ignore it safely since all we want to do is use up the
     // capacity of the host
-    distributor.match(new ChromeOptions())
-        .findFirst()
-        .map(match -> match.newSession(ImmutableSet.of(OSS)))
-        .orElseThrow(() -> new AssertionError("New session should have been created."));
+    distributor.match(
+        new ChromeOptions(),
+        stream -> stream
+            .findFirst()
+            .map(match -> match.newSession(ImmutableSet.of(OSS)))
+            .orElseThrow(
+                () -> new AssertionError("New session should have been created.")));
 
     // We now expect the stream of matches to be empty, since the host has no additional capacity
-    long count = distributor.match(new ChromeOptions()).count();
+    long count = distributor.match(new ChromeOptions(), Stream::count);
     assertEquals(0, count);
   }
 
@@ -250,7 +261,7 @@ public class DistributorTest {
         .add(Host.builder().name("localhost").add(factory).create());
 
     List<SessionFactoryAndCapabilities> matches =
-        distributor.match(new FirefoxOptions()).collect(Collectors.toList());
+        distributor.match(new FirefoxOptions(), stream -> stream.collect(Collectors.toList()));
 
     assertEquals(1, matches.size());
 

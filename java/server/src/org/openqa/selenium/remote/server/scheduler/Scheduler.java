@@ -193,23 +193,25 @@ public class Scheduler {
   private Optional<SessionFactoryAndCapabilities> findFactory(
       List<ScheduledSessionFactory> toIgnore,
       Capabilities capabilities) {
-    Optional<SessionFactoryAndCapabilities> match;
     lock.lock();
     try {
-      match = distributor.match(capabilities)
-          .filter(m -> !toIgnore.contains(m.getSessionFactory()))
-          .findFirst();
-
-      match.ifPresent(m -> {
-        // Make sure we never use this factory again for this session
-        toIgnore.add(m.getSessionFactory());
-        // And mark it as being used.
-        m.getSessionFactory().setAvailable(false);
-      });
+      return distributor.match(
+          capabilities,
+          stream -> {
+            Optional<SessionFactoryAndCapabilities> toReturn = stream
+                .filter(m -> !toIgnore.contains(m.getSessionFactory()))
+                .findFirst();
+            toReturn.ifPresent(m -> {
+              // Make sure we never use this factory again for this session
+              toIgnore.add(m.getSessionFactory());
+              // And mark it as being used.
+              m.getSessionFactory().setAvailable(false);
+            });
+            return toReturn;
+          });
     } finally {
       lock.unlock();
     }
-    return match;
   }
 
 

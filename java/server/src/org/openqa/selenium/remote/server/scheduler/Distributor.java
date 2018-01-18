@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -69,17 +70,21 @@ public class Distributor {
     return this;
   }
 
-  Stream<SessionFactoryAndCapabilities> match(Capabilities caps) {
+  <X> X match(
+      Capabilities caps,
+      Function<Stream<SessionFactoryAndCapabilities>, X> executeWithinLock) {
     // There's going to be some wonkiness here, because we create the stream within a read lock, but
     // then return control out of that lock. Which isn't great.
     ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
     readLock.lock();
     try {
-      return getHosts()
+      Stream<SessionFactoryAndCapabilities> stream = getHosts()
           .filter(host -> host.getStatus() == Host.Status.UP)
           .map(host -> host.match(caps))
           .filter(Optional::isPresent)
           .map(Optional::get);
+
+      return executeWithinLock.apply(stream);
     } finally {
       readLock.unlock();
     }

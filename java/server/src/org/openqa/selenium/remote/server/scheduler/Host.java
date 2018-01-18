@@ -36,6 +36,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+/**
+ * Represents a physical host machine that can run a set of
+ * {@link org.openqa.selenium.remote.server.ActiveSession}s. This class is not thread safe, and it
+ * is intended that a {@code Host} instance be added to only one {@link Distributor}.
+ */
 public class Host {
 
   private final static Logger LOG = Logger.getLogger(Host.class.getName());
