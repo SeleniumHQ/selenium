@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  * Read-only adapter of {@link HttpServletRequest} to a {@link HttpRequest}. This class is not
  * thread-safe, and you can only expect to read the content once.
  */
-class ServletRequestWrappingHttpRequest extends HttpRequest {
+public class ServletRequestWrappingHttpRequest extends HttpRequest {
 
   private final HttpServletRequest req;
 
