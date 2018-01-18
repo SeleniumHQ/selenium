@@ -210,7 +210,7 @@ public class JettyAppServer implements AppServer {
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
       request.setContent(data);
-      HttpResponse response = client.execute(request, true);
+      HttpResponse response = client.execute(request);
       return response.getContentString();
     } catch (IOException ex) {
       throw new RuntimeException(ex);

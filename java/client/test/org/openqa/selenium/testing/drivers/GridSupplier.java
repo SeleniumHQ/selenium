@@ -91,7 +91,7 @@ public class GridSupplier implements Supplier<WebDriver> {
       HttpRequest req = new HttpRequest(HttpMethod.GET, "/status");
       HttpResponse response = null;
       try {
-        response = c.execute(req, true);
+        response = c.execute(req);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }

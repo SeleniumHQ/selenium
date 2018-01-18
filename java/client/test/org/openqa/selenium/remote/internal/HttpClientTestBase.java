@@ -99,7 +99,7 @@ abstract public class HttpClientTestBase {
     try {
       HttpClient client = createFactory().createClient(server.getURI().toURL());
       HttpRequest request = new HttpRequest(HttpMethod.GET, "/foo");
-      return client.execute(request, true);
+      return client.execute(request);
     } finally {
       server.stop();
     }

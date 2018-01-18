@@ -98,7 +98,7 @@ public class ProtocolHandshake {
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
     request.setContent(newSessionBlob);
     long start = System.currentTimeMillis();
-    HttpResponse response = client.execute(request, true);
+    HttpResponse response = client.execute(request);
     long time = System.currentTimeMillis() - start;
 
     // Ignore the content type. It may not have been set. Strictly speaking we're not following the

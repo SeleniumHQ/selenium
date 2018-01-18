@@ -161,7 +161,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     HttpRequest httpRequest = commandCodec.encode(command);
     try {
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
-      HttpResponse httpResponse = client.execute(httpRequest, true);
+      HttpResponse httpResponse = client.execute(httpRequest);
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
 
       Response response = responseCodec.decode(httpResponse);

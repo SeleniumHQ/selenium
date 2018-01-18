@@ -93,7 +93,7 @@ class ProtocolConverter implements SessionCodec {
 
   @VisibleForTesting
   HttpResponse makeRequest(HttpRequest request) throws IOException {
-    return client.execute(request, true);
+    return client.execute(request);
   }
 
   private void copyToServletResponse(HttpResponse response, HttpResponse resp)
