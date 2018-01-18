@@ -28,7 +28,6 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.InProject.locate;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -387,7 +386,7 @@ public class ReferrerTest extends JUnit4TestBase {
 
   private static String encode(String url) {
     try {
-      return URLEncoder.encode(url, Charsets.UTF_8.name());
+      return URLEncoder.encode(url, UTF_8.name());
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException("UTF-8 should always be supported!", e);
     }

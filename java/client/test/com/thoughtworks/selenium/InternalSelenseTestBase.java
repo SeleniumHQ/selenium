@@ -21,7 +21,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
@@ -55,6 +54,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -200,7 +200,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       try {
         URL scriptUrl =
             Resources.getResource(getClass(), "/com/thoughtworks/selenium/testHelpers.js");
-        String script = Resources.toString(scriptUrl, Charsets.UTF_8);
+        String script = Resources.toString(scriptUrl, StandardCharsets.UTF_8);
 
         ((JavascriptExecutor) driver).executeScript(script);
       } catch (IOException e) {

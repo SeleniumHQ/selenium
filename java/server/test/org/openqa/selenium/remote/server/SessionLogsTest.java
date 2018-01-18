@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.testing.Driver.CHROME;
@@ -24,7 +25,6 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 
 import org.apache.http.HttpEntity;
@@ -111,7 +111,7 @@ public class SessionLogsTest extends JUnit4TestBase {
     HttpPost postCmd = new HttpPost(postRequest);
     HttpResponse response = client.execute(postCmd);
     HttpEntity entity = response.getEntity();
-    try (InputStreamReader reader = new InputStreamReader(entity.getContent(), Charsets.UTF_8)) {
+    try (InputStreamReader reader = new InputStreamReader(entity.getContent(), UTF_8)) {
       String str = CharStreams.toString(reader);
       Map<String, Object> map = new Json().toType(str, MAP_TYPE);
       //noinspection unchecked

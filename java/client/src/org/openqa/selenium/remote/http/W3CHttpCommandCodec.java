@@ -66,7 +66,6 @@ import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
@@ -83,6 +82,7 @@ import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -388,7 +388,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       String scriptName = "/org/openqa/selenium/remote/" + atomFileName;
       URL url = getClass().getResource(scriptName);
 
-      String rawFunction = Resources.toString(url, Charsets.UTF_8);
+      String rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
       String script = String.format(
         "return (%s).apply(null, arguments);",
         rawFunction);

@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.net.MediaType;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,7 +53,7 @@ public class GeneratedJsTestServlet extends HttpServlet {
          + "        (loadFlags && loadFlags['module'] == 'goog'));\n"
          + "    goog.require('" + symbol + "');\n"
          + "  })()\n"
-         + "</script></head><body></body></html>").getBytes(Charsets.UTF_8);
+         + "</script></head><body></body></html>").getBytes(StandardCharsets.UTF_8);
 
     resp.setStatus(HttpServletResponse.SC_OK);
     resp.setContentType(MediaType.HTML_UTF_8.toString());

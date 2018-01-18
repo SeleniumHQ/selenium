@@ -20,7 +20,6 @@ package org.openqa.selenium.environment.webserver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 import org.apache.http.Header;
@@ -41,6 +40,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 @RunWith(JUnit4.class)
 public class AppServerTest {
@@ -132,7 +132,7 @@ public class AppServerTest {
     String FILE_CONTENTS = "Uploaded file";
     File testFile = File.createTempFile("webdriver", "tmp");
     testFile.deleteOnExit();
-    Files.write(FILE_CONTENTS, testFile, Charsets.UTF_8);
+    Files.write(FILE_CONTENTS, testFile, StandardCharsets.UTF_8);
 
     driver.get(server.whereIs("upload.html"));
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());

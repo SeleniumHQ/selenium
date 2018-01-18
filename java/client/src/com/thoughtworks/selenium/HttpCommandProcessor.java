@@ -17,7 +17,8 @@
 
 package com.thoughtworks.selenium;
 
-import com.google.common.base.Charsets;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.common.collect.Lists;
 
 import org.openqa.selenium.net.Urls;
@@ -31,6 +32,7 @@ import java.io.Writer;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -148,12 +150,12 @@ public class HttpCommandProcessor implements CommandProcessor {
 
   // for testing
   protected Writer getOutputStreamWriter(HttpURLConnection conn) throws IOException {
-    return new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), Charsets.UTF_8));
+    return new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), UTF_8));
   }
 
   // for testing
   protected Reader getInputStreamReader(HttpURLConnection conn) throws IOException {
-    return new InputStreamReader(conn.getInputStream(), "UTF-8");
+    return new InputStreamReader(conn.getInputStream(), UTF_8);
   }
 
   // for testing
