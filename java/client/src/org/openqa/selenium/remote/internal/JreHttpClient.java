@@ -55,6 +55,11 @@ public class JreHttpClient implements HttpClient {
   }
 
   @Override
+  public HttpResponse execute(HttpRequest request) throws IOException {
+    return execute(request, true);
+  }
+
+  @Override
   public HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
     URL url = new URL(this.url.toString() + request.getUri());
 

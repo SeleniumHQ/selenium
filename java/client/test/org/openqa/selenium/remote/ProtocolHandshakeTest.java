@@ -399,6 +399,11 @@ public class ProtocolHandshakeTest {
     }
 
     @Override
+    public HttpResponse execute(HttpRequest request) throws IOException {
+      return execute(request, true);
+    }
+
+    @Override
     public HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
       this.request = request;
       request.getContentString();

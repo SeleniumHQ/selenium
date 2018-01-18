@@ -65,6 +65,11 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
   }
 
   @Override
+  public HttpResponse execute(HttpRequest request) throws IOException {
+    return execute(request, true);
+  }
+
+  @Override
   public HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
     HttpContext context = createContext();
 

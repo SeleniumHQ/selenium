@@ -32,8 +32,20 @@ public interface HttpClient {
    * @param followRedirects whether to automatically follow redirects.
    * @return the final response.
    * @throws IOException if an I/O error occurs.
+   * @deprecated All call sites found set {@code followRedirects} to {@code true}. Use
+   *   @{link {@link #execute(HttpRequest)}}.
    */
+  @Deprecated
   HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException;
+
+  /**
+   * Executes the given request, following any redirects if necessary.
+   *
+   * @param request the request to execute.
+   * @return the final response.
+   * @throws IOException if an I/O error occurs.
+   */
+  HttpResponse execute(HttpRequest request) throws IOException;
 
   /**
 	 * Closes the connections associated with this client.
