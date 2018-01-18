@@ -46,20 +46,7 @@ import java.util.Map;
 
 public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
-  private final static HttpClient.Factory defaultClientFactory;
-  static {
-    String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
-    switch (defaultFactory) {
-      case "okhttp":
-        defaultClientFactory = new OkHttpClient.Factory();
-        break;
-
-      case "apache":
-      default:
-        defaultClientFactory = new ApacheHttpClient.Factory();
-        break;
-    }
-  }
+  private final static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
 
   private final URL remoteServer;
   private final HttpClient client;

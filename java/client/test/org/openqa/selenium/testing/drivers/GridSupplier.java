@@ -27,7 +27,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -82,7 +81,7 @@ public class GridSupplier implements Supplier<WebDriver> {
     }
 
     // Keep polling the status page of the hub until it claims to be ready
-    HttpClient client = new ApacheHttpClient.Factory().createClient(hub.getWebDriverUrl());
+    HttpClient client = HttpClient.Factory.createDefault().createClient(hub.getWebDriverUrl());
     Json json = new Json();
     Wait<HttpClient> wait = new FluentWait<>(client)
         .ignoring(RuntimeException.class)

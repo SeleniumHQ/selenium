@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.remote.http;
 
+import org.openqa.selenium.remote.internal.ApacheHttpClient;
+import org.openqa.selenium.remote.internal.OkHttpClient;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -57,6 +60,18 @@ public interface HttpClient {
   void close() throws IOException;
 
   interface Factory {
+
+    static Factory createDefault() {
+      String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
+      switch (defaultFactory) {
+        case "okhttp":
+          return new OkHttpClient.Factory();
+
+        case "apache":
+        default:
+          return new ApacheHttpClient.Factory();
+      }
+    }
 
     /**
      * Creates a HTTP client that will send requests to the given URL.

@@ -45,7 +45,6 @@ import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
 import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -136,7 +135,7 @@ public abstract class RemoteSession implements ActiveSession {
         Set<Dialect> downstreamDialects,
         Capabilities capabilities) {
       try {
-        HttpClient client = new ApacheHttpClient.Factory().createClient(url);
+        HttpClient client = HttpClient.Factory.createDefault().createClient(url);
 
         Command command = new Command(
             null,

@@ -29,12 +29,28 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
+import org.openqa.selenium.remote.internal.OkHttpClient;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
 class ProtocolConverter implements SessionCodec {
+
+  private final static HttpClient.Factory defaultClientFactory;
+  static {
+    String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
+    switch (defaultFactory) {
+      case "okhttp":
+        defaultClientFactory = new OkHttpClient.Factory();
+        break;
+
+      case "apache":
+      default:
+        defaultClientFactory = new ApacheHttpClient.Factory();
+        break;
+    }
+  }
 
   private final static ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
       .add("connection")
@@ -66,7 +82,7 @@ class ProtocolConverter implements SessionCodec {
     this.downstreamResponse = downstreamResponse;
     this.upstreamResponse = upstreamResponse;
 
-    client = new ApacheHttpClient.Factory().createClient(upstreamUrl);
+    client = HttpClient.Factory.createDefault().createClient(upstreamUrl);
     converter = new JsonToWebElementConverter(null);
   }
 
