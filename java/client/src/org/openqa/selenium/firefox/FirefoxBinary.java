@@ -148,8 +148,6 @@ public class FirefoxBinary {
    *     .usingFirefoxBinary(new FirefoxBinary(new File("path/to/firefox.exe")))
    *     .withEnvironment(ImmutableMap.of("DISPLAY", "0:0"))
    *     .build());
-   * @param propertyName
-   * @param value
    */
   @Deprecated
   public void setEnvironmentProperty(String propertyName, String value) {

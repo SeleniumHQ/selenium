@@ -33,7 +33,7 @@ public interface HttpClient {
    * @return the final response.
    * @throws IOException if an I/O error occurs.
    * @deprecated All call sites found set {@code followRedirects} to {@code true}. Use
-   *   @{link {@link #execute(HttpRequest)}}.
+   *   {@link #execute(HttpRequest)}.
    */
   @Deprecated
   HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException;

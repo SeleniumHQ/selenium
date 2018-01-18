@@ -37,10 +37,6 @@ public class DeviceRotation {
 
   /**
    * Instantiate a DeviceRotation object based on three integers.
-   *
-   * @param x
-   * @param y
-   * @param z
    */
   public DeviceRotation(int x, int y, int z) {
     this.x = x;
@@ -52,8 +48,6 @@ public class DeviceRotation {
   /**
    * Instantiate a DeviceRotation object based on a HashMap object where the keys are the axis x, y,
    * and z respectively: x : xVal y : yVal z : zVal
-   *
-   * @param map
    */
   public DeviceRotation(Map<String, Number> map) {
     if (map == null || !map.containsKey("x") || !map.containsKey("y") || !map.containsKey("z")) {

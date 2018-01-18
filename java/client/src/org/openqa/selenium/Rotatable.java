@@ -39,8 +39,6 @@ public interface Rotatable {
   
   /**
    * Changes the rotation of the browser window.
-   * 
-   * @param rotation
    */
   void rotate(DeviceRotation rotation);
   

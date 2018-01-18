@@ -104,7 +104,6 @@ abstract class AbstractCapabilities implements Capabilities {
 
   /**
    * Subclasses can use this to add information that isn't always in the capabilities map.
-   * @return
    */
   protected int amendHashCode() {
     return 0;
