@@ -212,6 +212,7 @@ def testShouldBeAbleToSwitchToParentFromAnIframe(driver, pages):
 # ----------------------------------------------------------------------------------------------
 
 
+@pytest.mark.xfail_chrome(reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198')
 def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(2)
@@ -245,6 +246,7 @@ def testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage(driver
     driver.find_element(By.ID, "iframe_page_heading")
 
 
+@pytest.mark.xfail_chrome(reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198')
 def testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt(driver, pages):
     pages.load("iframes.html")
     driver.switch_to.frame(0)
