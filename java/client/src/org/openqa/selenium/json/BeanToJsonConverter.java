@@ -34,6 +34,7 @@ import org.openqa.selenium.remote.SessionId;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -171,6 +172,10 @@ public class BeanToJsonConverter {
 
     if (toConvert instanceof File) {
       return new JsonPrimitive(((File) toConvert).getAbsolutePath());
+    }
+
+    if (toConvert instanceof URL) {
+      return new JsonPrimitive(((URL) toConvert).toExternalForm());
     }
 
     Method toJson = getMethod(toConvert, "toJson");

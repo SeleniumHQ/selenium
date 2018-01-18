@@ -46,6 +46,7 @@ public class Json {
       .registerTypeAdapterFactory(MapAdapter.FACTORY)
       .setLenient()
       .serializeNulls()
+      .disableHtmlEscaping()
       .create();
 
   public static final Type LIST_OF_MAPS_TYPE = new TypeToken<List<Map<String, Object>>>() {}.getType();

@@ -60,6 +60,8 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.awt.*;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -519,6 +521,17 @@ public class BeanToJsonConverterTest {
     assertEquals(pars.entrySet().size(), 2);
     assertEquals(pars.get("param1").getAsString(), parameters.get("param1"));
     assertEquals(pars.get("param2").getAsString(), parameters.get("param2"));
+  }
+
+  @Test
+  public void shouldConvertAUrlToAString() throws MalformedURLException {
+    URL url = new URL("http://example.com/cheese?type=edam");
+    ImmutableMap<String, URL> toConvert = ImmutableMap.of("url", url);
+
+    String seen = new Json().toJson(toConvert);
+    JsonObject converted = new JsonParser().parse(seen).getAsJsonObject();
+
+    assertEquals(url.toExternalForm(), converted.get("url").getAsString());
   }
 
   @SuppressWarnings("unused")
