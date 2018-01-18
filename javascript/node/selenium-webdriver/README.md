@@ -30,6 +30,7 @@ Safari 10 before testing.
 
 The sample below and others are included in the `example` directory. You may
 also find the tests for selenium-webdriver informative.
+
 ```javascript
 const {Builder, By, Key, until} = require('selenium-webdriver');
 
