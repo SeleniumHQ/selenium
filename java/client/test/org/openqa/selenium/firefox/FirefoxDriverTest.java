@@ -197,12 +197,12 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void shouldGetMeaningfulExceptionOnBrowserDeath() throws Exception {
-    FirefoxDriver driver2 = new FirefoxDriver();
-    driver2.get(pages.formPage);
+    localDriver = new FirefoxDriver();
+    localDriver.get(pages.formPage);
 
     // Grab the command executor
-    CommandExecutor keptExecutor = driver2.getCommandExecutor();
-    SessionId sessionId = driver2.getSessionId();
+    CommandExecutor keptExecutor = localDriver.getCommandExecutor();
+    SessionId sessionId = localDriver.getSessionId();
 
     try {
       Field field = RemoteWebDriver.class.getDeclaredField("executor");
@@ -211,9 +211,9 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       doThrow(new IOException("The remote server died"))
           .when(spoof).execute(Mockito.any());
 
-      field.set(driver2, spoof);
+      field.set(localDriver, spoof);
 
-      driver2.get(pages.formPage);
+      localDriver.get(pages.formPage);
       fail("Should have thrown.");
     } catch (UnreachableBrowserException e) {
       assertThat("Must contain descriptive error", e.getMessage(),
@@ -247,27 +247,21 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void shouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
     WebDriver secondDriver = new FirefoxDriver();
 
-    driver.get(pages.xhtmlTestPage);
-    secondDriver.get(pages.formPage);
+    try {
+      driver.get(pages.xhtmlTestPage);
+      secondDriver.get(pages.formPage);
 
-    assertThat(driver.getTitle(), is("XHTML Test Page"));
-    assertThat(secondDriver.getTitle(), is("We Leave From Here"));
-
-    // We only need to quit the second driver if the test passes
-    secondDriver.quit();
+      assertThat(driver.getTitle(), is("XHTML Test Page"));
+      assertThat(secondDriver.getTitle(), is("We Leave From Here"));
+    } finally {
+      secondDriver.quit();
+    }
   }
 
   @Test
   public void shouldBeAbleToStartFromAUniqueProfile() {
     FirefoxProfile profile = new FirefoxProfile();
-
-    try {
-      WebDriver secondDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-      secondDriver.quit();
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail("Expected driver to be created successfully");
-    }
+    localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
   }
 
   @Test
@@ -275,17 +269,11 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.homepage", pages.formPage);
 
-    try {
-      WebDriver secondDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-      new WebDriverWait(secondDriver, 30).until(titleIs("We Leave From Here"));
-      String title = secondDriver.getTitle();
-      secondDriver.quit();
+    localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
+    new WebDriverWait(localDriver, 30).until(titleIs("We Leave From Here"));
+    String title = localDriver.getTitle();
 
-      assertThat(title, is("We Leave From Here"));
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail("Expected driver to be created successfully");
-    }
+    assertThat(title, is("We Leave From Here"));
   }
 
   @Test
@@ -296,29 +284,16 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     profile.setPreference("webdriver.log.file", logFile.getAbsolutePath());
 
-    try {
-      WebDriver secondDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-      assertTrue("log file should exist", logFile.exists());
-      secondDriver.quit();
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail("Expected driver to be created successfully");
-    }
+    localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
+    assertTrue("log file should exist", logFile.exists());
   }
 
   @Test
   public void shouldBeAbleToStartFromProfileWithLogFileSetToStdout() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
-
     profile.setPreference("webdriver.log.file", "/dev/stdout");
 
-    try {
-      WebDriver secondDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-      secondDriver.quit();
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail("Expected driver to be created successfully");
-    }
+    localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
   }
 
   @Test
@@ -326,8 +301,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
     assumeNotNull(profile);
 
-    WebDriver firefox = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-    firefox.quit();
+    localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
   }
 
   @Test(timeout = 60000)
@@ -344,19 +318,12 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     FirefoxBinary binary = new FirefoxBinary();
     binary.addCommandLineOptions("-width", "800", "-height", "600");
 
-    FirefoxDriver driver2 = null;
-    try {
-      driver2 = new FirefoxDriver(new FirefoxOptions().setBinary(binary));
-      Dimension size = driver2.manage().window().getSize();
-      assertThat(size.width, greaterThanOrEqualTo(800));
-      assertThat(size.width, lessThan(850));
-      assertThat(size.height, greaterThanOrEqualTo(600));
-      assertThat(size.height, lessThan(650));
-    } finally {
-      if (driver2 != null) {
-        driver2.quit();
-      }
-    }
+    localDriver = new FirefoxDriver(new FirefoxOptions().setBinary(binary));
+    Dimension size = localDriver.manage().window().getSize();
+    assertThat(size.width, greaterThanOrEqualTo(800));
+    assertThat(size.width, lessThan(850));
+    assertThat(size.height, greaterThanOrEqualTo(600));
+    assertThat(size.height, lessThan(650));
   }
 
 
@@ -365,19 +332,9 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setAcceptUntrustedCertificates(false);
 
-    FirefoxDriver secondDriver = null;
-    try {
-      secondDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-      Capabilities caps = secondDriver.getCapabilities();
-      assertFalse(caps.is(ACCEPT_SSL_CERTS));
-    } catch (Exception e) {
-      fail("Creating driver with untrusted certificates set to false failed. " +
-           Throwables.getStackTraceAsString(e));
-    } finally {
-      if (secondDriver != null) {
-        secondDriver.quit();
-      }
-    }
+    localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
+    Capabilities caps = localDriver.getCapabilities();
+    assertFalse(caps.is(ACCEPT_SSL_CERTS));
   }
 
   @Test
@@ -386,13 +343,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", "1");
     profile.setPreference("browser.startup.homepage", pages.javascriptPage);
 
-    final WebDriver driver2 = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-
-    try {
-      new WebDriverWait(driver2, 30).until(urlToBe(pages.javascriptPage));
-    } finally {
-      driver2.quit();
-    }
+    localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
+    new WebDriverWait(localDriver, 30).until(urlToBe(pages.javascriptPage));
   }
 
   private ExpectedCondition<Boolean> urlToBe(final String expectedUrl) {
@@ -568,24 +520,18 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void testFirefoxCanNativelyClickOverlappingElements() {
     FirefoxOptions options = new FirefoxOptions();
     options.setCapability(CapabilityType.OVERLAPPING_CHECK_DISABLED, true);
-    WebDriver secondDriver = new FirefoxDriver(options);
-    try {
-      secondDriver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
-      secondDriver.findElement(By.id("under")).click();
-      assertEquals(secondDriver.findElement(By.id("log")).getText(),
-                   "Log:\n"
-                   + "mousedown in over (handled by over)\n"
-                   + "mousedown in over (handled by body)\n"
-                   + "mouseup in over (handled by over)\n"
-                   + "mouseup in over (handled by body)\n"
-                   + "click in over (handled by over)\n"
-                   + "click in over (handled by body)");
-    } finally {
-      secondDriver.quit();
-    }
+    localDriver = new FirefoxDriver(options);
+    localDriver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
+    localDriver.findElement(By.id("under")).click();
+    assertEquals(localDriver.findElement(By.id("log")).getText(),
+                 "Log:\n"
+                 + "mousedown in over (handled by over)\n"
+                 + "mousedown in over (handled by body)\n"
+                 + "mouseup in over (handled by over)\n"
+                 + "mouseup in over (handled by body)\n"
+                 + "click in over (handled by over)\n"
+                 + "click in over (handled by body)");
   }
-
-
 
   private static class CustomFirefoxProfile extends FirefoxProfile {}
 
