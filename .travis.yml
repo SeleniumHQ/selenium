@@ -60,37 +60,14 @@ matrix:
   include:
     - env: TASK=build
       <<: *java
-    - env: TASK=//javascript/atoms:atoms
-      <<: *java
-    - env: TASK=//javascript/webdriver:all_js
-      <<: *java
-    - env: TASK=//javascript/ie-driver:atoms
-      <<: *java
-    - env: TASK=//javascript/chrome-driver:atoms
-      <<: *java
-    - env: TASK="//javascript/android-atoms:atoms ios_driver"
+    - env: TASK="//javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver"
       <<: *java
     - env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
       <<: *java
-    - env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
+    - env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run //javascript/selenium-core:selenium-core-chrome:run //javascript/webdriver:webdriver-chrome:run"
       <<: *java
       <<: *chrome
-    - env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
-      <<: *java
-      <<: *chrome
-    - env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
-      <<: *java
-      <<: *chrome
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run"
-      <<: *java
-      <<: *firefox-latest
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
-      <<: *java
-      <<: *firefox-latest
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run"
-      <<: *java
-      <<: *firefox-latest
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
+    - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run //javascript/webdriver:webdriver-firefox:run //javascript/selenium-atoms:selenium-atoms-firefox:run //javascript/selenium-core:selenium-core-firefox:run"
       <<: *java
       <<: *firefox-latest
     - env: TASK=//java/client/test/org/openqa/selenium/firefox:test-synthesized:run
