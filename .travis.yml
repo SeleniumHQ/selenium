@@ -43,28 +43,34 @@ cache:
     - build
 
 matrix:
-  fast_finish: true
   exclude:
-    - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
-      <<: *java
-      <<: *chrome
-    - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
-      <<: *java
-      <<: *firefox-nightly
-    - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
-      <<: *java
-      <<: *chrome
     - env: CHROME=1 TASK=test_chrome
       <<: *java
       <<: *chrome
+    - env: TASK="//javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver"
+      <<: *java
+    - env: TOXENV=flake8
+      <<: *python
+    - env: TOXENV=docs
+      <<: *python
+    - env: CHROME=1 TOXENV=py27-chrome
+      <<: *python
+      <<: *chrome
+    - env: TOXENV=py27-firefox
+      <<: *python
+      <<: *firefox-esr
+    - env: TOXENV=py27-remote
+      <<: *python
+      <<: *firefox-esr
+    - env: MARIONETTE=1 TOXENV=py27-marionette
+      <<: *python
+      <<: *firefox-nightly
   include:
     - env: TASK=build
       <<: *java
-    - env: TASK="//javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver"
-      <<: *java
     - env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
       <<: *java
-    - env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run //javascript/selenium-core:selenium-core-chrome:run //javascript/webdriver:webdriver-chrome:run"
+    - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run //javascript/selenium-atoms:selenium-atoms-chrome:run //javascript/selenium-core:selenium-core-chrome:run //javascript/webdriver:webdriver-chrome:run"
       <<: *java
       <<: *chrome
     - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run //javascript/webdriver:webdriver-firefox:run //javascript/selenium-atoms:selenium-atoms-firefox:run //javascript/selenium-core:selenium-core-firefox:run"
@@ -85,24 +91,8 @@ matrix:
       <<: *java
     - env: TASK=javadocs
       <<: *java
-    - env: TOXENV=flake8
-      <<: *python
-    - env: TOXENV=docs
-      <<: *python
     - env: TOXENV=py27-unit
       <<: *python
-    - env: CHROME=1 TOXENV=py27-chrome
-      <<: *python
-      <<: *chrome
-    - env: TOXENV=py27-firefox
-      <<: *python
-      <<: *firefox-esr
-    - env: TOXENV=py27-remote
-      <<: *python
-      <<: *firefox-esr
-    - env: MARIONETTE=1 TOXENV=py27-marionette
-      <<: *python
-      <<: *firefox-nightly
     - env: TOXENV=flake8
       <<: *python
       python: 3.6
@@ -152,13 +142,11 @@ matrix:
       <<: *ruby
     - env: TASK=//rb:lint
       <<: *ruby
-  allow_failures:
-    - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
-    - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
 before_install: ./scripts/travis/before_install.sh
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
 script: ./scripts/travis/script.sh
+
 notifications:
   email: false
   irc:
