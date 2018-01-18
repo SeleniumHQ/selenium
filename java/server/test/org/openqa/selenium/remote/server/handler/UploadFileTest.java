@@ -78,7 +78,7 @@ public class UploadFileTest {
     String encoded = Zip.zip(tempFile);
 
     UploadFile uploadFile = new UploadFile(session);
-    Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
+    Map<String, Object> args = ImmutableMap.of("file", encoded);
     uploadFile.setJsonParameters(args);
     String path = uploadFile.call();
 
@@ -112,7 +112,7 @@ public class UploadFileTest {
   private File touch(File baseDir, String stem) throws IOException {
     File tempFile = File.createTempFile(stem, ".txt", baseDir);
     tempFile.deleteOnExit();
-    Files.write("I like cheese", tempFile, Charsets.UTF_8);
+    Files.asCharSink(tempFile, Charsets.UTF_8).write("I like cheese");
     return tempFile;
   }
 }
