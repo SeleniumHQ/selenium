@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,6 +70,35 @@ public class ServletRequestWrappingHttpRequest extends HttpRequest {
   @Override
   public void addHeader(String name, String value) {
     throw new UnsupportedOperationException("addHeader");
+  }
+
+  @Override
+  public String getQueryParameter(String name) {
+    String[] allValues = req.getParameterMap().get(name);
+    if (allValues == null || allValues.length == 0) {
+      return null;
+    }
+
+    return allValues[0];
+  }
+
+  @Override
+  public void addQueryParameter(String name, String value) {
+    throw new UnsupportedOperationException("addQueryParameter");
+  }
+
+  @Override
+  public Iterable<String> getQueryParameterNames() {
+    return req.getParameterMap().keySet();
+  }
+
+  @Override
+  public Iterable<String> getQueryParameters(String name) {
+    String[] allValues = req.getParameterMap().get(name);
+    if (allValues == null) {
+      return Collections.emptySet();
+    }
+    return () -> Arrays.stream(allValues).iterator();
   }
 
   @Override
