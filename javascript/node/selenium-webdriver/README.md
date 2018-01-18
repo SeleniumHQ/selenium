@@ -31,18 +31,20 @@ Safari 10 before testing.
 The sample below and others are included in the `example` directory. You may
 also find the tests for selenium-webdriver informative.
 
-    const {Builder, By, Key, until} = require('selenium-webdriver');
+```javascript
+const {Builder, By, Key, until} = require('selenium-webdriver');
 
-    (async function example() {
-      let driver = await new Builder().forBrowser('firefox').build();
-      try {
-        await driver.get('http://www.google.com/ncr');
-        await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
-        await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-      } finally {
-        await driver.quit();
-      }
-    })();
+(async function example() {
+  let driver = await new Builder().forBrowser('firefox').build();
+  try {
+    await driver.get('http://www.google.com/ncr');
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
+    await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+  } finally {
+    await driver.quit();
+  }
+})();
+```
 
 ### Using the Builder API
 
@@ -51,15 +53,17 @@ instances. Rather than clutter your code with branches for the various browsers,
 the builder lets you set all options in one flow. When you call
 `Builder#build()`, all options irrelevant to the selected browser are dropped:
 
-    const webdriver = require('selenium-webdriver');
-    const chrome = require('selenium-webdriver/chrome');
-    const firefox = require('selenium-webdriver/firefox');
+```javascript
+const webdriver = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
+const firefox = require('selenium-webdriver/firefox');
 
-    let driver = new webdriver.Builder()
-        .forBrowser('firefox')
-        .setChromeOptions(/* ... */)
-        .setFirefoxOptions(/* ... */)
-        .build();
+let driver = new webdriver.Builder()
+    .forBrowser('firefox')
+    .setChromeOptions(/* ... */)
+    .setFirefoxOptions(/* ... */)
+    .build();
+```
 
 Why would you want to configure options irrelevant to the target browser? The
 `Builder`'s API defines your _default_ configuration. You can change the target
@@ -92,11 +96,12 @@ server with
 You may configure your tests to run against a remote server through the Builder
 API:
 
-    let driver = new webdriver.Builder()
-        .forBrowser('firefox')
-        .usingServer('http://localhost:4444/wd/hub')
-        .build();
-
+```javascript
+let driver = new webdriver.Builder()
+    .forBrowser('firefox')
+    .usingServer('http://localhost:4444/wd/hub')
+    .build();
+```
 Or change the Builder's configuration at runtime with the `SELENIUM_REMOTE_URL`
 environment variable:
 
