@@ -23,7 +23,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
@@ -123,7 +122,7 @@ public class UploadFileTest {
   private File touch(File baseDir, String stem) throws IOException {
     File tempFile = File.createTempFile(stem, ".txt", baseDir);
     tempFile.deleteOnExit();
-    Files.asCharSink(tempFile, Charsets.UTF_8).write("I like cheese");
+    Files.asCharSink(tempFile, UTF_8).write("I like cheese");
     return tempFile;
   }
 }

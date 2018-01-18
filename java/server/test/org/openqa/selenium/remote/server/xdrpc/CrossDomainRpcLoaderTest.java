@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Charsets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -103,7 +103,7 @@ public class CrossDomainRpcLoaderTest {
     } else {
       json.addProperty("data", (String) data);
     }
-    final ByteArrayInputStream stream = new ByteArrayInputStream(json.toString().getBytes(Charsets.UTF_8));
+    final ByteArrayInputStream stream = new ByteArrayInputStream(json.toString().getBytes(UTF_8));
     when(mockRequest.getInputStream()).thenReturn(new ServletInputStream() {
       @Override
       public int read() throws IOException {

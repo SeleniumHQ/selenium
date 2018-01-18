@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.remote;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.base.Preconditions;
