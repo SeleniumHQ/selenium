@@ -19,27 +19,26 @@ import pytest
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.color import Color
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/w3c/webdriver/issues/417')
 def testShouldPickUpStyleOfAnElement(driver, pages):
     pages.load("javascriptPage.html")
 
     element = driver.find_element(by=By.ID, value="green-parent")
-    backgroundColour = element.value_of_css_property("background-color")
-    assert "rgba(0, 128, 0, 1)" == backgroundColour
+    backgroundColour = Color.from_string(element.value_of_css_property("background-color"))
+    assert Color.from_string("rgba(0, 128, 0, 1)") == backgroundColour
 
     element = driver.find_element(by=By.ID, value="red-item")
-    backgroundColour = element.value_of_css_property("background-color")
-    assert "rgba(255, 0, 0, 1)" == backgroundColour
+    backgroundColour = Color.from_string(element.value_of_css_property("background-color"))
+    assert Color.from_string("rgba(255, 0, 0, 1)") == backgroundColour
 
 
 def testShouldAllowInheritedStylesToBeUsed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="green-item")
-    backgroundColour = element.value_of_css_property("background-color")
-    assert backgroundColour in ("rgba(0, 0, 0, 0)", "transparent")
+    backgroundColour = Color.from_string(element.value_of_css_property("background-color"))
+    assert backgroundColour == Color.from_string("transparent")
 
 
 def testShouldCorrectlyIdentifyThatAnElementHasWidth(driver, pages):
