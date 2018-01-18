@@ -46,7 +46,20 @@ import java.util.Map;
 
 public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
-  private static HttpClient.Factory defaultClientFactory;
+  private final static HttpClient.Factory defaultClientFactory;
+  static {
+    String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
+    switch (defaultFactory) {
+      case "okhttp":
+        defaultClientFactory = new OkHttpClient.Factory();
+        break;
+
+      case "apache":
+      default:
+        defaultClientFactory = new ApacheHttpClient.Factory();
+        break;
+    }
+  }
 
   private final URL remoteServer;
   private final HttpClient client;
@@ -71,7 +84,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   public HttpCommandExecutor(
       Map<String, CommandInfo> additionalCommands,
       URL addressOfRemoteServer) {
-    this(additionalCommands, addressOfRemoteServer, getDefaultClientFactory());
+    this(additionalCommands, addressOfRemoteServer, defaultClientFactory);
   }
 
   public HttpCommandExecutor(
@@ -89,13 +102,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     this.additionalCommands = additionalCommands;
     this.httpClientFactory = httpClientFactory;
     this.client = httpClientFactory.createClient(remoteServer);
-  }
-
-  private static synchronized HttpClient.Factory getDefaultClientFactory() {
-    if (defaultClientFactory == null) {
-      defaultClientFactory = new OkHttpClient.Factory();
-    }
-    return defaultClientFactory;
   }
 
   /**
