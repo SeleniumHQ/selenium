@@ -37,8 +37,6 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
-import com.google.common.base.Throwables;
-
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -197,12 +195,12 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void shouldGetMeaningfulExceptionOnBrowserDeath() throws Exception {
-    localDriver = new FirefoxDriver();
-    localDriver.get(pages.formPage);
+    FirefoxDriver driver2 = new FirefoxDriver();
+    driver2.get(pages.formPage);
 
     // Grab the command executor
-    CommandExecutor keptExecutor = localDriver.getCommandExecutor();
-    SessionId sessionId = localDriver.getSessionId();
+    CommandExecutor keptExecutor = driver2.getCommandExecutor();
+    SessionId sessionId = driver2.getSessionId();
 
     try {
       Field field = RemoteWebDriver.class.getDeclaredField("executor");
@@ -211,9 +209,9 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       doThrow(new IOException("The remote server died"))
           .when(spoof).execute(Mockito.any());
 
-      field.set(localDriver, spoof);
+      field.set(driver2, spoof);
 
-      localDriver.get(pages.formPage);
+      driver2.get(pages.formPage);
       fail("Should have thrown.");
     } catch (UnreachableBrowserException e) {
       assertThat("Must contain descriptive error", e.getMessage(),
@@ -222,7 +220,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       keptExecutor.execute(new Command(sessionId, DriverCommand.QUIT));
     }
   }
-
 
   @NeedsFreshDriver
   @NoDriverAfterTest
