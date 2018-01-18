@@ -27,9 +27,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class Distributor {
+
+  private final static Logger LOG = Logger.getLogger(Distributor.class.getName());
 
   private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
   private final List<Host> hosts;
@@ -57,6 +60,7 @@ public class Distributor {
             "A host with the same name has already been added: " + host.getName());
       }
 
+      LOG.info("Adding host: " + host);
       hosts.add(host);
     } finally {
       writeLock.unlock();
