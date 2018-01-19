@@ -187,8 +187,7 @@ public class GridNodeConfigurationTest {
                  + "\"debug\":false,"
                  + "\"port\":5555,"
                  + "\"role\":\"node\","
-                 + "\"timeout\":1800,"
-                 + "\"enablePassThrough\":true}", gnc.toJson().toString());
+                 + "\"timeout\":1800}", gnc.toJson().toString());
   }
 
   @Test
