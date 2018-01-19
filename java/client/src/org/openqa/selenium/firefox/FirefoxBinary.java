@@ -205,7 +205,7 @@ public class FirefoxBinary {
     startFirefoxProcess(command);
   }
 
-  protected void startFirefoxProcess(CommandLine command) throws IOException {
+  protected void startFirefoxProcess(CommandLine command) {
     process = command;
     command.executeAsync();
   }
@@ -291,12 +291,8 @@ public class FirefoxBinary {
   /**
    * Waits for the process to execute, returning the command output taken from the profile's
    * execution.
-   *
-   * @throws InterruptedException if we are interrupted while waiting for the process to launch
-   * @throws IOException if there is a problem with reading the input stream of the launching
-   *         process
    */
-  public void waitFor() throws InterruptedException, IOException {
+  public void waitFor() {
     process.waitFor();
   }
 
@@ -305,12 +301,9 @@ public class FirefoxBinary {
    * execution.
    *
    * @param timeout the maximum time to wait in milliseconds
-   * @throws InterruptedException if we are interrupted while waiting for the process to launch
-   * @throws IOException if there is a problem with reading the input stream of the launching
-   *         process
    */
 
-  public void waitFor(long timeout) throws InterruptedException, IOException {
+  public void waitFor(long timeout) {
 	  process.waitFor(timeout);
   }
 
@@ -318,9 +311,8 @@ public class FirefoxBinary {
    * Gets all console output of the binary. Output retrieval is non-destructive and non-blocking.
    *
    * @return the console output of the executed binary.
-   * @throws IOException IO exception reading from the output stream of the firefox process
    */
-  public String getConsoleOutput() throws IOException {
+  public String getConsoleOutput() {
     if (process == null) {
       return null;
     }
