@@ -17,9 +17,12 @@
 
 package org.openqa.grid.e2e.misc;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
 import com.google.common.base.Function;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.grid.selenium.GridLauncherV3;
 import org.openqa.selenium.By;
@@ -31,9 +34,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
@@ -44,31 +49,36 @@ import java.util.concurrent.TimeUnit;
 public class GridViaCommandLineTest {
 
   @Test
+  public void unrecognizedRole() throws Exception {
+    ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
+    String[] args = {"-role", "hamlet"};
+    new GridLauncherV3(new PrintStream(outSpy), args).launch();
+    assertThat(outSpy.toString(),
+               containsString("Error: the role 'hamlet' does not match a recognized server role"));
+  }
+
+  @Test
   public void testRegisterNodeToHub() throws Exception {
     Integer hubPort = PortProber.findFreePort();
     String[] hubArgs = {"-role", "hub", "-port", hubPort.toString()};
-    GridLauncherV3.main(hubArgs);
+    new GridLauncherV3(hubArgs).launch();
     UrlChecker urlChecker = new UrlChecker();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(String.format("http://localhost:%d/grid/console", hubPort)));
-
 
     Integer nodePort = PortProber.findFreePort();
 
     String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort, "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
-    GridLauncherV3.main(nodeArgs);
+    new GridLauncherV3(nodeArgs).launch();
     urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(String.format("http://localhost:%d/wd/hub/status", nodePort)));
 
-    new FluentWait<URL>(new URL(String.format("http://localhost:%d/grid/console", hubPort))).withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
-      .until(new Function<URL, Boolean>() {
-        @Override
-        public Boolean apply(URL u) {
-          try (InputStream is = u.openConnection().getInputStream();
-               InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-               BufferedReader reader = new BufferedReader(isr)) {
-            return reader.lines().anyMatch(l -> l.contains("htmlunit"));
-          } catch (IOException ioe) {
-            return false;
-          }
+    new FluentWait<>(new URL(String.format("http://localhost:%d/grid/console", hubPort))).withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
+      .until((Function<URL, Boolean>) u -> {
+        try (InputStream is = u.openConnection().getInputStream();
+             InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(isr)) {
+          return reader.lines().anyMatch(l -> l.contains("htmlunit"));
+        } catch (IOException ioe) {
+          return false;
         }
       });
 
@@ -77,11 +87,11 @@ public class GridViaCommandLineTest {
 
     try {
       driver.get(String.format("http://localhost:%d/grid/console", hubPort));
-      Assert.assertEquals("Should only have one htmlunit registered to the hub", 1, driver.findElements(By.cssSelector("img[src$='htmlunit.png']")).size());
+      assertEquals("Should only have one htmlunit registered to the hub", 1, driver.findElements(By.cssSelector("img[src$='htmlunit.png']")).size());
     } finally {
       try {
         driver.quit();
-      } catch (Exception e) {}
+      } catch (Exception ignore) {}
     }
 
 

@@ -17,6 +17,7 @@
 
 package org.openqa.grid.selenium;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 
@@ -56,16 +57,36 @@ public class GridLauncherV3 {
   private static final String CORE_RUNNER_CLASS =
     "org.openqa.selenium.server.htmlrunner.HTMLLauncher";
   private static final BuildInfo buildInfo = new BuildInfo();
+  private PrintStream out;
+  private String[] args;
 
   private interface GridItemLauncher {
     StandaloneConfiguration getConfiguration();
     void launch() throws Exception;
-    default void printUsage() { new JCommander(getConfiguration()).usage(); }
+    default void printUsage(PrintStream out) {
+      StringBuilder sb = new StringBuilder();
+      new JCommander(getConfiguration()).usage(sb);
+      out.print(sb);
+    }
   }
 
   private static Map<String, Function<String[], GridItemLauncher>> LAUNCHERS = buildLaunchers();
 
   public static void main(String[] args) throws Exception {
+    new GridLauncherV3(args).launch();
+  }
+
+  public GridLauncherV3(String[] args) {
+    this(System.out, args);
+  }
+
+  @VisibleForTesting
+  public GridLauncherV3(PrintStream out, String[] args) {
+    this.out = out;
+    this.args = args;
+  }
+
+  public void launch() {
     GridItemLauncher launcher = buildLauncher(args);
     if (launcher == null) {
       return;
@@ -80,7 +101,7 @@ public class GridLauncherV3 {
     try {
       launcher.launch();
     } catch (Exception e) {
-      launcher.printUsage();
+      launcher.printUsage(out);
       e.printStackTrace();
     }
   }
@@ -90,14 +111,14 @@ public class GridLauncherV3 {
    *
    * @return null if no role is found, or a properly populated {@link GridItemLauncher}.
    */
-  private static GridItemLauncher buildLauncher(String[] args) {
+  private GridItemLauncher buildLauncher(String[] args) {
     String role = "standalone";
 
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("-htmlSuite")) {
         Function<String[], GridItemLauncher> launcherSupplier = LAUNCHERS.get("corerunner");
         if (launcherSupplier == null) {
-          System.err.println(Joiner.on("\n").join(
+          out.println(Joiner.on("\n").join(
             "Unable to find the HTML runner. This is normally because you have not downloaded",
             "or made available the 'selenium-leg-rc' jar on the CLASSPATH. Your test will",
             "not be run.",
@@ -134,7 +155,7 @@ public class GridLauncherV3 {
     GridItemLauncher toReturn = supplier.apply(args);
 
     if (toReturn.getConfiguration().help) {
-      toReturn.printUsage();
+      toReturn.printUsage(out);
       return null;
     }
 
@@ -148,7 +169,7 @@ public class GridLauncherV3 {
     return toReturn;
   }
 
-  private static void printInfoAboutRoles(String roleCommandLineArg) {
+  private void printInfoAboutRoles(String roleCommandLineArg) {
     if (roleCommandLineArg != null) {
       printWrappedLine(
         "",
@@ -158,7 +179,7 @@ public class GridLauncherV3 {
         "",
         "Error: -role option needs to be followed by the value that defines role of this component in the grid\n");
     }
-    System.out.println(
+    out.println(
       "Selenium server can run in one of the following roles:\n" +
       "  hub         as a hub of a Selenium grid\n" +
       "  node        as a node of a Selenium grid\n" +
@@ -171,11 +192,11 @@ public class GridLauncherV3 {
       + " with -help option and the corresponding -role option value");
   }
 
-  private static void printWrappedLine(String prefix, String msg) {
-    printWrappedLine(System.out, prefix, msg, true);
+  private void printWrappedLine(String prefix, String msg) {
+    printWrappedLine(out, prefix, msg, true);
   }
 
-  private static void printWrappedLine(PrintStream output, String prefix, String msg, boolean first) {
+  private void printWrappedLine(PrintStream output, String prefix, String msg, boolean first) {
     output.print(prefix);
     if (!first) {
       output.print("  ");
