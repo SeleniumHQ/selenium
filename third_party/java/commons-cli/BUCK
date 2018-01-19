@@ -1,7 +1,0 @@
-prebuilt_jar(
-  name = 'commons-cli',
-  maven_coords = 'commons-cli:commons-cli:jar:1.4',
-  binary_jar = 'commons-cli-1.4.jar',
-  source_jar = 'commons-cli-1.4-sources.jar',
-)
-
