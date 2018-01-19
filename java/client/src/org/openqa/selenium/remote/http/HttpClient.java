@@ -64,12 +64,12 @@ public interface HttpClient {
     static Factory createDefault() {
       String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
       switch (defaultFactory) {
-        case "okhttp":
-          return new OkHttpClient.Factory();
-
         case "apache":
-        default:
           return new ApacheHttpClient.Factory();
+
+        case "okhttp":
+        default:
+          return new OkHttpClient.Factory();
       }
     }
 
