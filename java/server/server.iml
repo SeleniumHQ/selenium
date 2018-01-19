@@ -16,6 +16,7 @@
     <orderEntry type="library" name="jcip-annotations" level="project" />
     <orderEntry type="library" name="jcommander" level="project" />
     <orderEntry type="library" name="jetty" level="project" />
+    <orderEntry type="library" scope="TEST" name="jetty-orig" level="project" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="snakeyaml" level="project" />
