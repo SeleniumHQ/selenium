@@ -1,3 +1,17 @@
+v3.9.0
+======
+
+* Switched to OkHttp for all HTTP communication. The version used can
+  be changed back to the Apache HttpClient by setting the
+  `webdriver.http.factory` system property to `apache`.
+* Removed passthrough mode for the server.
+* Grid: (implementation note) Start migrating servlets used to be
+  command handlers.
+* Upgraded every dependency to latest versions.
+* Added varargs methods to `ExpectedConditions` in order to avoid
+  annoying `Arrays.asList`.
+* Better logging when new session creation errors.
+
 v3.8.1
 ======
 
