@@ -12,6 +12,10 @@ if [[ ! -z $TOXENV ]]; then
   tox -c py/tox.ini
 fi
 
+if [[ ! -z "$BUCK" ]]; then
+  ./buckw $BUCK
+fi
+
 if [[ ! -z $TASK ]]; then
   ./go $TASK
 fi

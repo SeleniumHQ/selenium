@@ -68,6 +68,8 @@ matrix:
   include:
     - env: TASK=build
       <<: *java
+    - env: BUCK="build selenium-server-standalone"
+      <<: *java
     - env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
       <<: *java
     - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run //javascript/selenium-atoms:selenium-atoms-chrome:run //javascript/selenium-core:selenium-core-chrome:run //javascript/webdriver:webdriver-chrome:run"
