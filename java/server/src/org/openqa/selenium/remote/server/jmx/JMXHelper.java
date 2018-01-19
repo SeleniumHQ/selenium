@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server.jmx;
 
 import java.lang.management.ManagementFactory;
 
+import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
@@ -26,9 +27,11 @@ public class JMXHelper {
 
   public MBean register(Object bean) {
     MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+    MBean mBean = new MBean(bean);
     try {
-      MBean mBean = new MBean(bean);
       mbs.registerMBean(mBean, mBean.getObjectName());
+      return mBean;
+    } catch (InstanceAlreadyExistsException t) {
       return mBean;
     } catch (Throwable t) {
       t.printStackTrace();
