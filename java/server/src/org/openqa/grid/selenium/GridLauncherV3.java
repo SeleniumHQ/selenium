@@ -356,14 +356,13 @@ public class GridLauncherV3 {
 
           CoreRunnerConfiguration runnerConfig = this.configuration;
           String[] args = new String[] {
-            /* Results file */ runnerConfig.htmlSuite.get(3),
-            /* suite */ runnerConfig.htmlSuite.get(2),
-            /* start url */ runnerConfig.htmlSuite.get(1),
-            /* multi window */ "true",
-            /* browser string */ runnerConfig.htmlSuite.get(0),
+              "-htmlSuite",
+              /* browser string */ runnerConfig.htmlSuite.get(0),
+              /* start url */ runnerConfig.htmlSuite.get(1),
+              /* suite */ runnerConfig.htmlSuite.get(2),
+              /* Results file */ runnerConfig.htmlSuite.get(3),
           };
-          Integer result = (Integer) mainInt.invoke(coreRunner, (Object) args);
-          System.exit(result);
+          mainInt.invoke(coreRunner, (Object) args);
         }
       });
     } catch (ReflectiveOperationException e) {

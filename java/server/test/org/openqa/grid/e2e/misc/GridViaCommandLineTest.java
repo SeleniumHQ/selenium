@@ -42,6 +42,8 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -91,6 +93,25 @@ public class GridViaCommandLineTest {
     new GridLauncherV3(new PrintStream(outSpy), args).launch();
     assertThat(outSpy.toString(), startsWith("Usage: <main class> [options]"));
     assertThat(outSpy.toString(), containsString("-nodeConfig"));
+  }
+
+  @Test
+  public void canRedirectLogToFile() throws Exception {
+    Integer port = PortProber.findFreePort();
+    Path tempLog = Files.createTempFile("test", ".log");
+    String[] args = {"-log", tempLog.toString(), "-port", port.toString()};
+    new GridLauncherV3(args).launch();
+    String log = String.join("", Files.readAllLines(tempLog));
+    assertThat(log, containsString("Selenium Server is up and running on port " + port));
+  }
+
+  @Test
+  public void canStartHtmlSuite() throws Exception {
+    Path tempLog = Files.createTempFile("test", ".log");
+    String[] args = {"-htmlSuite", "*quantum", "http://base.url", "suite.html", "report.html", "-log", tempLog.toString()};
+    new GridLauncherV3(args).launch();
+    String log = String.join("", Files.readAllLines(tempLog));
+    assertThat(log, containsString("Unrecognized browser: *quantum"));
   }
 
   @Test
