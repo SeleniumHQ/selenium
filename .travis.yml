@@ -66,11 +66,9 @@ matrix:
       <<: *python
       <<: *firefox-nightly
   include:
-    - env: TASK=build
+    - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-tests"
       <<: *java
-    - env: BUCK="build selenium-server-standalone"
-      <<: *java
-    - env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
+    - env: BUCK="test //java/client/test/org/openqa/selenium/atoms:test"
       <<: *java
     - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run //javascript/selenium-atoms:selenium-atoms-chrome:run //javascript/selenium-core:selenium-core-chrome:run //javascript/webdriver:webdriver-chrome:run"
       <<: *java
@@ -78,18 +76,18 @@ matrix:
     - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run //javascript/webdriver:webdriver-firefox:run //javascript/selenium-atoms:selenium-atoms-firefox:run //javascript/selenium-core:selenium-core-firefox:run"
       <<: *java
       <<: *firefox-latest
-    - env: TASK=//java/client/test/org/openqa/selenium/firefox:test-synthesized:run
+    - env: BUCK="test legacy-firefox-test"
       <<: *java
       <<: *firefox-esr
-    - env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
+    - env: MARIONETTE=1 BUCK="test firefox-test"
       <<: *java
       <<: *firefox-nightly
-    - env: TASK=test_java_small_tests
+    - env: BUCK="test java-small-tests"
       <<: *java
-    - env: MARIONETTE=1 TASK=test_grid
+    - env: MARIONETTE=1 BUCK="test internal-grid-test grid-test"
       <<: *java
       <<: *firefox-nightly
-    - env: TASK=test_htmlunit
+    - env: BUCK="test htmlunit-test"
       <<: *java
     - env: TASK=javadocs
       <<: *java

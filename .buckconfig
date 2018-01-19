@@ -50,5 +50,10 @@
   # Tests
   chrome-test   = //java/client/test/org/openqa/selenium/chrome:chrome
   firefox-test  = //java/client/test/org/openqa/selenium/firefox:marionette
+  legacy-firefox-test = //java/client/test/org/openqa/selenium/firefox:test-synthesized
+  internal-grid-test = //java/server/test/org/openqa/grid/common:common //java/server/test/org/openqa/grid:grid //java/server/test/org/openqa/grid/e2e:e2e
   grid-test     = //java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests
   htmlunit-test = //java/client/test/org/openqa/selenium/htmlunit:htmlunit
+  ie-test       = //java/client/test/org/openqa/selenium/ie:ie
+  opera-test    = //java/client/test/org/openqa/selenium/opera:opera
+  java-small-tests = //java/client/test/org/openqa/selenium:small-tests //java/client/test/org/openqa/selenium/json:small-tests //java/client/test/org/openqa/selenium/support:small-tests //java/client/test/org/openqa/selenium/remote:common-tests //java/client/test/org/openqa/selenium/remote:client-tests //java/server/test/org/openqa/grid/selenium/node:node //java/server/test/org/openqa/grid/selenium/proxy:proxy //java/server/test/org/openqa/selenium/remote/server:small-tests //java/server/test/org/openqa/selenium/remote/server/log:test
