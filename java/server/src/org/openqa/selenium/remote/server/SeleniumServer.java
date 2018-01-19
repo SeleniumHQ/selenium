@@ -144,7 +144,6 @@ public class SeleniumServer implements GridNodeServer {
     handler.setAttribute(NEW_SESSION_PIPELINE_KEY, pipeline);
 
     handler.setContextPath("/");
-    LOG.info("Using passthrough mode handler");
     handler.addServlet(WebDriverServlet.class, "/wd/hub/*");
     handler.addServlet(WebDriverServlet.class, "/webdriver/*");
     handler.setInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER, "/wd/hub");

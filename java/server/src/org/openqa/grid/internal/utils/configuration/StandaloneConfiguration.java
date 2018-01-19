@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -133,10 +132,8 @@ public class StandaloneConfiguration {
     hidden = true,
     description = "Displays this help."
   )
-  /**
-   * Whether help or usage() is requested. Default {@code false}.
-   */
-  // initially defaults to false from boolean primitive type
+
+  // Initially defaults to false from boolean primitive type
   public boolean help;
 
   /*
@@ -214,19 +211,6 @@ public class StandaloneConfiguration {
   public Integer timeout = DEFAULT_TIMEOUT;
 
   /**
-   * Whether or not to use experimental passthrough mode on a hub or a standalone
-   */
-  @Expose
-  @Parameter(
-      names = "-enablePassThrough",
-      arity = 1,
-      hidden = true,
-      description = "<Boolean> (deprecated): Always true, and value is ignored."
-  )
-  public boolean enablePassThrough = true;
-
-
-  /**
    * Creates a new configuration using the default values.
    */
   public StandaloneConfiguration() {
@@ -257,7 +241,6 @@ public class StandaloneConfiguration {
 
   /**
    * copy another configuration's values into this one if they are set.
-   * @param other
    */
   public void merge(StandaloneConfiguration other) {
     if (other == null) {
@@ -325,7 +308,6 @@ public class StandaloneConfiguration {
     sb.append(toString(format, "port", port));
     sb.append(toString(format, "role", role));
     sb.append(toString(format, "timeout", timeout));
-    sb.append(toString(format, "enablePassThrough", enablePassThrough));
     return sb.toString();
   }
 
@@ -354,7 +336,6 @@ public class StandaloneConfiguration {
 
   /**
    * Return a JsonElement representation of the configuration. Does not serialize nulls.
-   * @return
    */
   public JsonElement toJson() {
     GsonBuilder builder = new GsonBuilder();
