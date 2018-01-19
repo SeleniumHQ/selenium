@@ -1,8 +1,8 @@
 prebuilt_jar(
   name = 'htmlunit',
-  maven_coords = 'net.sourceforge.htmlunit:htmlunit:jar:2.28',
-  binary_jar = 'htmlunit-2.28.jar',
-  source_jar = 'htmlunit-2.28-sources.jar',
+  maven_coords = 'net.sourceforge.htmlunit:htmlunit:jar:2.29',
+  binary_jar = 'htmlunit-2.29.jar',
+  source_jar = 'htmlunit-2.29-sources.jar',
   deps = [
     ':htmlunit-core-js',
     ':neko-htmlunit',
