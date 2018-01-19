@@ -21,11 +21,13 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Function;
 
 import org.junit.Test;
 import org.openqa.grid.selenium.GridLauncherV3;
+import org.openqa.grid.shared.Stoppable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.PortProber;
@@ -44,6 +46,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -100,9 +103,11 @@ public class GridViaCommandLineTest {
     Integer port = PortProber.findFreePort();
     Path tempLog = Files.createTempFile("test", ".log");
     String[] args = {"-log", tempLog.toString(), "-port", port.toString()};
-    new GridLauncherV3(args).launch();
+    Optional<Stoppable> server = new GridLauncherV3(args).launch();
+    assertTrue(server.isPresent());
     String log = String.join("", Files.readAllLines(tempLog));
     assertThat(log, containsString("Selenium Server is up and running on port " + port));
+    server.get().stop();
   }
 
   @Test
@@ -118,14 +123,14 @@ public class GridViaCommandLineTest {
   public void testRegisterNodeToHub() throws Exception {
     Integer hubPort = PortProber.findFreePort();
     String[] hubArgs = {"-role", "hub", "-port", hubPort.toString()};
-    new GridLauncherV3(hubArgs).launch();
+    Optional<Stoppable> hub = new GridLauncherV3(hubArgs).launch();
     UrlChecker urlChecker = new UrlChecker();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(String.format("http://localhost:%d/grid/console", hubPort)));
 
     Integer nodePort = PortProber.findFreePort();
 
     String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort, "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
-    new GridLauncherV3(nodeArgs).launch();
+    Optional<Stoppable> node = new GridLauncherV3(nodeArgs).launch();
     urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(String.format("http://localhost:%d/wd/hub/status", nodePort)));
 
     new FluentWait<>(new URL(String.format("http://localhost:%d/grid/console", hubPort))).withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
@@ -151,6 +156,7 @@ public class GridViaCommandLineTest {
       } catch (Exception ignore) {}
     }
 
-
+    node.ifPresent(Stoppable::stop);
+    hub.ifPresent(Stoppable::stop);
   }
 }
