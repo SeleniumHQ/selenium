@@ -60,7 +60,7 @@ st = os.stat(buck_pex)
 os.chmod(buck_pex, st.st_mode | stat.S_IEXEC)
 
 sys.argv.pop(0)
-args = ["python2", buck_pex]
+args = ["python", buck_pex]
 args.extend(sys.argv)
 call(args)
 
