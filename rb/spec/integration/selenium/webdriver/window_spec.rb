@@ -20,7 +20,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Window do
-      after { reset_driver! }
+      after { quit_driver }
 
       let(:window) { driver.manage.window }
 
@@ -47,7 +47,7 @@ module Selenium
       end
 
       it 'gets the position of the current window' do
-        pos = driver.manage.window.position
+        pos = window.position
 
         expect(pos).to be_a(Point)
 
@@ -71,7 +71,7 @@ module Selenium
       end
 
       it 'gets the rect of the current window', only: {browser: %i[firefox ie]} do
-        rect = driver.manage.window.rect
+        rect = window.rect
 
         expect(rect).to be_a(Rectangle)
 
@@ -118,8 +118,10 @@ module Selenium
         old_size = window.size
 
         window.full_screen
-
+        wait.until { window.size != old_size }
         new_size = window.size
+
+        expect(new_size.width).to be > old_size.width
         expect(new_size.height).to be > old_size.height
       end
 
