@@ -111,6 +111,7 @@ public class GridViaCommandLineTest {
   }
 
   @Test
+  @org.junit.Ignore
   public void canStartHtmlSuite() throws Exception {
     Path tempLog = Files.createTempFile("test", ".log");
     String[] args = {"-htmlSuite", "*quantum", "http://base.url", "suite.html", "report.html", "-log", tempLog.toString()};
