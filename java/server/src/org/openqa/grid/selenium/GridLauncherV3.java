@@ -160,9 +160,8 @@ public class GridLauncherV3 {
     }
 
     if (toReturn.getConfiguration().version) {
-      System.out.println(String.format("Selenium server version: %s, revision: %s",
-                                       buildInfo.getReleaseLabel(),
-                                       buildInfo.getBuildRevision()));
+      out.println(String.format("Selenium server version: %s, revision: %s",
+                                buildInfo.getReleaseLabel(), buildInfo.getBuildRevision()));
       return null;
     }
 

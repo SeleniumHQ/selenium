@@ -18,6 +18,7 @@
 package org.openqa.grid.e2e.misc;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -54,7 +55,42 @@ public class GridViaCommandLineTest {
     String[] args = {"-role", "hamlet"};
     new GridLauncherV3(new PrintStream(outSpy), args).launch();
     assertThat(outSpy.toString(),
-               containsString("Error: the role 'hamlet' does not match a recognized server role"));
+               startsWith("Error: the role 'hamlet' does not match a recognized server role"));
+  }
+
+  @Test
+  public void canPrintVersion() throws Exception {
+    ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
+    String[] args = {"-version"};
+    new GridLauncherV3(new PrintStream(outSpy), args).launch();
+    assertThat(outSpy.toString(), startsWith("Selenium server version: "));
+  }
+
+  @Test
+  public void canPrintGeneralHelp() throws Exception {
+    ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
+    String[] args = {"-help"};
+    new GridLauncherV3(new PrintStream(outSpy), args).launch();
+    assertThat(outSpy.toString(), startsWith("Usage: <main class> [options]"));
+    assertThat(outSpy.toString(), containsString("-role"));
+  }
+
+  @Test
+  public void canPrintHubHelp() throws Exception {
+    ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
+    String[] args = {"-role", "hub", "-help"};
+    new GridLauncherV3(new PrintStream(outSpy), args).launch();
+    assertThat(outSpy.toString(), startsWith("Usage: <main class> [options]"));
+    assertThat(outSpy.toString(), containsString("-hubConfig"));
+  }
+
+  @Test
+  public void canPrintNodeHelp() throws Exception {
+    ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
+    String[] args = {"-role", "node", "-help"};
+    new GridLauncherV3(new PrintStream(outSpy), args).launch();
+    assertThat(outSpy.toString(), startsWith("Usage: <main class> [options]"));
+    assertThat(outSpy.toString(), containsString("-nodeConfig"));
   }
 
   @Test
