@@ -41,7 +41,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -58,13 +58,12 @@ public class GridLauncherV3 {
   private static final BuildInfo buildInfo = new BuildInfo();
 
   private interface GridItemLauncher {
-    void setConfiguration(String[] args);
     StandaloneConfiguration getConfiguration();
     void launch() throws Exception;
     default void printUsage() { new JCommander(getConfiguration()).usage(); }
   }
 
-  private static ImmutableMap<String, Supplier<GridItemLauncher>> LAUNCHERS = buildLaunchers();
+  private static Map<String, Function<String[], GridItemLauncher>> LAUNCHERS = buildLaunchers();
 
   public static void main(String[] args) throws Exception {
     GridItemLauncher launcher = buildLauncher(args);
@@ -96,7 +95,7 @@ public class GridLauncherV3 {
 
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("-htmlSuite")) {
-        Supplier<GridItemLauncher> launcherSupplier = LAUNCHERS.get("corerunner");
+        Function<String[], GridItemLauncher> launcherSupplier = LAUNCHERS.get("corerunner");
         if (launcherSupplier == null) {
           System.err.println(Joiner.on("\n").join(
             "Unable to find the HTML runner. This is normally because you have not downloaded",
@@ -107,9 +106,7 @@ public class GridLauncherV3 {
             "running your HTML suite."));
           return null;
         }
-        GridItemLauncher launcher = launcherSupplier.get();
-        launcher.setConfiguration(args);
-        return launcher;
+        return launcherSupplier.apply(args);
       }
       if (args[i].startsWith("-role=")) {
         role = args[i].substring("-role=".length());
@@ -129,13 +126,12 @@ public class GridLauncherV3 {
       return null;
     }
 
-    Supplier<GridItemLauncher> supplier = LAUNCHERS.get(gridRole.toString());
+    Function<String[], GridItemLauncher> supplier = LAUNCHERS.get(gridRole.toString());
     if (supplier == null) {
       System.err.println("Unknown role: " + gridRole);
       return null;
     }
-    GridItemLauncher toReturn = supplier.get();
-    toReturn.setConfiguration(args);
+    GridItemLauncher toReturn = supplier.apply(args);
 
     if (toReturn.getConfiguration().help) {
       toReturn.printUsage();
@@ -239,18 +235,17 @@ public class GridLauncherV3 {
     }
   }
 
-  private static ImmutableMap<String, Supplier<GridItemLauncher>> buildLaunchers() {
-    ImmutableMap.Builder<String, Supplier<GridItemLauncher>> launchers =
-      ImmutableMap.<String, Supplier<GridItemLauncher>>builder()
-        .put(GridRole.NOT_GRID.toString(), () -> new GridItemLauncher() {
-          StandaloneConfiguration configuration;
-          public StandaloneConfiguration getConfiguration() {
-            return configuration;
+  private static Map<String, Function<String[], GridItemLauncher>> buildLaunchers() {
+    ImmutableMap.Builder<String, Function<String[], GridItemLauncher>> launchers =
+      ImmutableMap.<String, Function<String[], GridItemLauncher>>builder()
+        .put(GridRole.NOT_GRID.toString(), (args) -> new GridItemLauncher() {
+          StandaloneConfiguration configuration = new StandaloneConfiguration();
+          {
+            JCommander.newBuilder().addObject(configuration).build().parse(args);
           }
 
-          public void setConfiguration(String[] args) {
-            configuration = new StandaloneConfiguration();
-            JCommander.newBuilder().addObject(configuration).build().parse(args);
+          public StandaloneConfiguration getConfiguration() {
+            return configuration;
           }
 
           public void launch() throws Exception {
@@ -263,13 +258,9 @@ public class GridLauncherV3 {
             server.boot();
           }
         })
-        .put(GridRole.HUB.toString(), () -> new GridItemLauncher() {
+        .put(GridRole.HUB.toString(), (args) -> new GridItemLauncher() {
           GridHubConfiguration configuration;
-          public StandaloneConfiguration getConfiguration() {
-            return configuration;
-          }
-
-          public void setConfiguration(String[] args) {
+          {
             GridHubConfiguration pending = new GridHubConfiguration();
             JCommander.newBuilder().addObject(pending).build().parse(args);
             configuration = pending;
@@ -281,6 +272,10 @@ public class GridLauncherV3 {
             }
           }
 
+          public StandaloneConfiguration getConfiguration() {
+            return configuration;
+          }
+
           public void launch() throws Exception {
             log.info(String.format(
                 "Launching Selenium Grid hub on port %s", configuration.port));
@@ -288,13 +283,9 @@ public class GridLauncherV3 {
             h.start();
           }
         })
-        .put(GridRole.NODE.toString(), () -> new GridItemLauncher() {
+        .put(GridRole.NODE.toString(), (args) -> new GridItemLauncher() {
           GridNodeConfiguration configuration;
-          public StandaloneConfiguration getConfiguration() {
-            return configuration;
-          }
-
-          public void setConfiguration(String[] args) {
+          {
             GridNodeConfiguration pending = new GridNodeConfiguration();
             JCommander.newBuilder().addObject(pending).build().parse(args);
             configuration = pending;
@@ -307,6 +298,10 @@ public class GridLauncherV3 {
             if (configuration.port == null) {
               configuration.port = 5555;
             }
+          }
+
+          public StandaloneConfiguration getConfiguration() {
+            return configuration;
           }
 
           public void launch() throws Exception {
@@ -324,16 +319,13 @@ public class GridLauncherV3 {
     try {
       Class.forName(CORE_RUNNER_CLASS, false, GridLauncherV3.class.getClassLoader());
 
-      launchers.put("corerunner", () -> new GridItemLauncher() {
-        CoreRunnerConfiguration configuration;
+      launchers.put("corerunner", (args) -> new GridItemLauncher() {
+        CoreRunnerConfiguration configuration = new CoreRunnerConfiguration();
+        {
+          JCommander.newBuilder().addObject(configuration).build().parse(args);
+        }
         public StandaloneConfiguration getConfiguration() {
           return configuration;
-        }
-
-        @Override
-        public void setConfiguration(String[] args) {
-          configuration = new CoreRunnerConfiguration();
-          JCommander.newBuilder().addObject(configuration).build().parse(args);
         }
 
         @Override
