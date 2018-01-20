@@ -179,9 +179,9 @@ public class ChromeDriver extends RemoteWebDriver
   @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new ChromeDriverCommandExecutor(service), capabilities);
-    if (capabilities.getCapability("chromium:enableDownloading") instanceof String) {
+    if (capabilities.getCapability("chromium:enableDownloadTo") instanceof String) {
       sendCommandForDownloadChromeHeadless(
-          (String) capabilities.getCapability("chromium:enableDownloading"));
+          (String) capabilities.getCapability("chromium:enableDownloadTo"));
     }
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new RemoteWebStorage(getExecuteMethod());
