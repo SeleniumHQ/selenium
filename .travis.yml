@@ -63,7 +63,8 @@ jobs:
     - stage: warm cache
       script: ./go calcdeps && ./buckw build selenium-server-standalone //java/client/test/org/openqa/selenium/{environment,testing}/... "//java/client/test/org/openqa/selenium:"
       <<: *java
-    - script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
+    - stage: test
+      script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
       env: NAME="small-tests"
       <<: *java
 
