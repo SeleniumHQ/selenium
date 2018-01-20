@@ -63,15 +63,9 @@ jobs:
     - stage: warm cache
       script: ./go calcdeps && ./buckw build selenium-server-standalone //java/client/test/org/openqa/selenium/{environment,testing}/... "//java/client/test/org/openqa/selenium:"
       <<: *java
-    - stage: test
-      script: ./buckw test //java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests
-      <<: *java
-      <<: *firefox-latest
     - script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
+      env: NAME="small-tests"
       <<: *java
-    - script: ./buckw test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome
-      <<: *java
-      <<: *chrome
 
 notifications:
   email: false
