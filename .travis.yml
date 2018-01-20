@@ -65,12 +65,19 @@ jobs:
       script: ./go calcdeps && ./buckw build selenium-server-standalone //java/client/test/org/openqa/selenium/{environment,testing}/... "//java/client/test/org/openqa/selenium:"
       <<: *java
     - stage: test
+      script: ./buckw build //javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver
+      <<: *java
+    - stage: test
       script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
       <<: *java
     - stage: test
-      script: ./go calcdeps && ./buckw test //javascript/atoms:atoms-chrome
+      script: ./go calcdeps && ./buckw test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome
       <<: *java
       <<: *chrome
+    - stage: test
+      script: ./go calcdeps && ./buckw test //javascript/atoms:atoms-firefox //javascript/selenium-atoms:selenium-atoms-firefox //javascript/selenium-core:selenium-core-firefox //javascript/webdriver:webdriver-firefox
+      <<: *java
+      <<: *firefox-latest
 
 
 notifications:
