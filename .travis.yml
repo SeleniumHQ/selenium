@@ -65,9 +65,13 @@ jobs:
       script: ./go calcdeps && ./buckw build selenium-server-standalone //java/client/test/org/openqa/selenium/{environment,testing}/... "//java/client/test/org/openqa/selenium:"
       <<: *java
     - stage: test
-      script: xdpyinfo; echo $PATH && echo $DISPLAY && ./buckw test //java/client/test/org/openqa/selenium:small-tests
+      script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
+      <<: *java
+    - stage: test
+      script: ./buckw test //javascript/atoms:atoms-chrome
       <<: *java
       <<: *chrome
+
 
 notifications:
   email: false
