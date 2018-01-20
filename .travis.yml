@@ -49,16 +49,14 @@ script: ./scripts/travis/script.sh
 
 jobs:
   include:
-    - stage: small-tests
+    - stage: warm cache
       script: ./go calcdeps && ./buckw build selenium-server-standalone //java/client/test/org/openqa/selenium/{environment,testing}/... //java/client/test/org/openqa/selenium:"
       <<: *java
     - stage: test
-      matrix:
-        include:
-          - env: "BUCK=test //java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests"
-            <<: *java
-          - env: "BUCK=test //java/client/test/org/openqa/selenium:small-tests"
-            <<: *java
+      script: ./buckw //java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests
+      <<: *java
+    - script: ./buckw //java/client/test/org/openqa/selenium:small-tests
+      <<: *java
 
 notifications:
   email: false
