@@ -50,7 +50,7 @@ script: ./scripts/travis/script.sh
 jobs:
   include:
     - stage: warm cache
-      script: ./go calcdeps && ./buckw build selenium-server-standalone //java/client/test/org/openqa/selenium/{environment,testing}/... //java/client/test/org/openqa/selenium:
+      script: ./go calcdeps && ./buckw build selenium-server-standalone //java/client/test/org/openqa/selenium/{environment,testing}/... "//java/client/test/org/openqa/selenium:"
       <<: *java
     - stage: test
       script: ./buckw //java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests
