@@ -61,10 +61,11 @@ script: ./scripts/travis/script.sh
 jobs:
   include:
     - stage: warm cache
+      before_script:
       script: ./go calcdeps && ./buckw build selenium-server-standalone //java/client/test/org/openqa/selenium/{environment,testing}/... "//java/client/test/org/openqa/selenium:"
       <<: *java
     - stage: test
-      script: echo $PATH && echo $DISPLAY && ./buckw test //java/client/test/org/openqa/selenium:small-tests
+      script: xdpyinfo; echo $PATH && echo $DISPLAY && ./buckw test //java/client/test/org/openqa/selenium:small-tests
       <<: *java
       <<: *chrome
 
