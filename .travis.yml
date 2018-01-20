@@ -56,9 +56,9 @@ jobs:
       matrix:
         include:
           - env: "BUCK=test //java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests"
-          <<: *java
-          -env: "BUCK=test //java/client/test/org/openqa/selenium:small-tests"
-          <<: *java
+            <<: *java
+          - env: "BUCK=test //java/client/test/org/openqa/selenium:small-tests"
+            <<: *java
 
 notifications:
   email: false
