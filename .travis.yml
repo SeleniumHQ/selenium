@@ -21,22 +21,28 @@ _bindings:
     rvm: 2.0.0-p648
     jdk: oraclejdk8
 
+_install_geckodriver: &install-geckodriver
+  before_script:
+    - ./scripts/travis/before_script.sh
+    - export GECKODRIVER_DOWNLOAD=`curl -s 'https://api.github.com/repos/mozilla/geckodriver/releases/latest' | python -c "import sys, json; r = json.load(sys.stdin); print([a for a in r['assets'] if 'linux64' in a['name']][0]['browser_download_url']);"`
+    - curl -L -o geckodriver.tar.gz $GECKODRIVER_DOWNLOAD
+    - gunzip -c geckodriver.tar.gz | tar xopf -
+    - chmod +x geckodriver && sudo mv geckodriver /usr/local/bin
+
+
 _browsers:
   firefox: &firefox-latest
-    before_script:
-      - ./scripts/travis/before_script.sh
-      - export GECKODRIVER_DOWNLOAD=`curl -s 'https://api.github.com/repos/mozilla/geckodriver/releases/latest' | python -c "import sys, json; r = json.load(sys.stdin); print([a for a in r['assets'] if 'linux64' in a['name']][0]['browser_download_url']);"`
-      - curl -L -o geckodriver.tar.gz $GECKODRIVER_DOWNLOAD
-      - gunzip -c geckodriver.tar.gz | tar xopf -
-      - chmod +x geckodriver && sudo mv geckodriver /usr/local/bin
     addons:
       firefox: latest
+    <<: *install-geckodriver
   firefox-esr: &firefox-esr
     addons:
       firefox: latest-esr
+    <<: *install-geckodriver
   firefox-nightly: &firefox-nightly
     addons:
       firefox: latest-nightly
+    <<: *install-geckodriver
   chrome: &chrome
     before_script:
       - ./scripts/travis/before_script.sh
@@ -65,17 +71,36 @@ jobs:
       script: ./go calcdeps && ./buckw build selenium-server-standalone //java/client/test/org/openqa/selenium/{environment,testing}/... "//java/client/test/org/openqa/selenium:"
       <<: *java
     - stage: test
-      script: ./buckw build //javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver
-      <<: *java
-    - stage: test
-      script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
-      <<: *java
-    - stage: test
       script: ./go calcdeps && ./buckw test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome
       <<: *java
       <<: *chrome
     - stage: test
       script: ./go calcdeps && ./buckw test //javascript/atoms:atoms-firefox //javascript/selenium-atoms:selenium-atoms-firefox //javascript/selenium-core:selenium-core-firefox //javascript/webdriver:webdriver-firefox
+      <<: *java
+      <<: *firefox-latest
+    - stage: test
+      script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
+      <<: *java
+    - stage: test
+      script: ./go //javascript/atoms:atoms
+      <<: *java
+    - stage: test
+      script: ./go //javascript/webdriver:all_js
+      <<: *java
+    - stage: test
+      script: ./go //javascript/ie-driver:atoms
+      <<: *java
+    - stage: test
+      script: ./go //javascript/chrome-driver:atoms
+      <<: *java
+    - stage: test
+      script: ./go //javascript/android-atoms:atoms
+      <<: *java
+    - stage: test
+      script: ./go ios_driver
+      <<: *java
+    - stage: test
+      script: ./buckw test //java/server/test/org/openqa/grid/common:common //java/server/test/org/openqa/grid:grid //java/server/test/org/openqa/grid/e2e:e2e //java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests
       <<: *java
       <<: *firefox-latest
 
