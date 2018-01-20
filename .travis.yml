@@ -55,11 +55,13 @@ jobs:
     - stage: test
       script: ./buckw test //java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests
       <<: *java
+      <<: *firefox-latest
     - script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
       <<: *java
-    - script: ./buck test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome
+    - script: ./buckw test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome
       env: CHROME=1
       <<: *java
+      <<: *chrome
 
 notifications:
   email: false
