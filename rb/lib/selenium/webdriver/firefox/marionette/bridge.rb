@@ -40,6 +40,14 @@ module Selenium
             execute :uninstall_addon, {}, {id: id}
           end
 
+          def send_keys_to_element(element, keys)
+            if WebDriver::Platform.windows?
+              keys.each do |keys_chunk|
+                keys_chunk.tr!('/', '\\') if File.exist?(keys_chunk)
+              end
+            end
+            super(element, keys)
+          end
         end # Bridge
       end # Marionette
     end # Firefox

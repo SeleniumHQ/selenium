@@ -75,12 +75,9 @@ module Selenium
         expect(element.attribute('value')).to be_empty
 
         file = Tempfile.new('file-upload')
-        path = file.path
-        path.tr!('/', '\\') if WebDriver::Platform.windows?
+        element.send_keys file.path
 
-        element.send_keys path
-
-        expect(element.attribute('value')).to include(File.basename(path))
+        expect(element.attribute('value')).to include(File.basename(file.path))
       end
 
       it 'should get attribute value' do
