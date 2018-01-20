@@ -23,6 +23,11 @@ _bindings:
 
 _browsers:
   firefox: &firefox-latest
+    before_script:
+      - export GECKODRIVER_DOWNLOAD=`curl -s 'https://api.github.com/repos/mozilla/geckodriver/releases/latest' | python -c "import sys, json; r = json.load(sys.stdin); print([a for a in r['assets'] if 'linux64' in a['name']][0]['browser_download_url']);"`
+      - curl -L -o geckodriver.tar.gz $GECKODRIVER_DOWNLOAD
+      - gunzip -c geckodriver.tar.gz | tar xopf -
+      - chmod +x geckodriver && sudo mv geckodriver /usr/local/bin
     addons:
       firefox: latest
   firefox-esr: &firefox-esr
@@ -32,6 +37,10 @@ _browsers:
     addons:
       firefox: latest-nightly
   chrome: &chrome
+    before_script:
+      - export CHROMEDRIVER_VERSION=`curl -s http://chromedriver.storage.googleapis.com/LATEST_RELEASE`
+      - curl -L -O "http://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
+      - unzip chromedriver_linux64.zip && chmod +x chromedriver && sudo mv chromedriver /usr/local/bin
     addons:
       apt:
         packages:
@@ -59,7 +68,6 @@ jobs:
     - script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
       <<: *java
     - script: ./buckw test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome
-      env: CHROME=1
       <<: *java
       <<: *chrome
 
