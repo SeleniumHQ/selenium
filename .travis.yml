@@ -47,7 +47,7 @@ matrix:
     - env: CHROME=1 TASK=test_chrome
       <<: *java
       <<: *chrome
-    - env: TASK="//javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver"
+    - env: BUCK="//javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver"
       <<: *java
     - env: TOXENV=flake8
       <<: *python
@@ -66,14 +66,16 @@ matrix:
       <<: *python
       <<: *firefox-nightly
   include:
-    - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-tests"
+    - env: TASK="calcdeps"
+      <<: *java
+    - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests"
       <<: *java
     - env: BUCK="test //java/client/test/org/openqa/selenium/atoms:test"
       <<: *java
-    - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run //javascript/selenium-atoms:selenium-atoms-chrome:run //javascript/selenium-core:selenium-core-chrome:run //javascript/webdriver:webdriver-chrome:run"
+    - env: CHROME=1 TASK="calcdeps" BUCK="test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome"
       <<: *java
       <<: *chrome
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run //javascript/webdriver:webdriver-firefox:run //javascript/selenium-atoms:selenium-atoms-firefox:run //javascript/selenium-core:selenium-core-firefox:run"
+    - env: MARIONETTE=1 TASK="calcdeps" BUCK="test //javascript/atoms:atoms-firefox //javascript/webdriver:webdriver-firefox //javascript/selenium-atoms:selenium-atoms-firefox //javascript/selenium-core:selenium-core-firefox"
       <<: *java
       <<: *firefox-latest
     - env: BUCK="test legacy-firefox-test"
