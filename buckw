@@ -4,7 +4,6 @@ import hashlib
 import os
 import os.path
 import requests
-import shutil
 import stat
 import sys
 from subprocess import call
@@ -62,5 +61,5 @@ os.chmod(buck_pex, st.st_mode | stat.S_IEXEC)
 sys.argv.pop(0)
 args = ["python", buck_pex]
 args.extend(sys.argv)
-call(args)
+sys.exit(call(args))
 
