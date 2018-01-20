@@ -51,6 +51,7 @@ jobs:
   include:
     - stage: warm-cache
       script: ./go calcdeps && ./buckw build java/...
+      <<: *java
     - stage: test
       script: echo Hello
 
