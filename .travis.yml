@@ -68,7 +68,7 @@ jobs:
       script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
       <<: *java
     - stage: test
-      script: ./buckw test //javascript/atoms:atoms-chrome
+      script: ./go calcdeps && ./buckw test //javascript/atoms:atoms-chrome
       <<: *java
       <<: *chrome
 
