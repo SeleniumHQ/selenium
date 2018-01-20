@@ -47,16 +47,12 @@ install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
 script: ./scripts/travis/script.sh
 
-stages:
-  - warm-cache
-  - test
-
 jobs:
   include:
     - stage: warm-cache
-    - script: ./go calcdeps && ./buckw build java/...
+      script: ./go calcdeps && ./buckw build java/...
     - stage: test
-    - script: echo Hello
+      script: echo Hello
 
 notifications:
   email: false
