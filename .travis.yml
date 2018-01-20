@@ -65,8 +65,8 @@ jobs:
       <<: *java
     - stage: test
       script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
-      env: NAME="small-tests"
       <<: *java
+      <<: *chrome
 
 notifications:
   email: false
