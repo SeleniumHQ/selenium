@@ -21,19 +21,20 @@ module Selenium
   module WebDriver
     module DriverExtensions
       describe HasWebStorage, only: {browser: %i[chrome firefox]} do
-        shared_examples_for 'web storage' do
+        shared_examples 'web storage' do
           before do
             driver.navigate.to url_for('clicks.html')
             storage.clear
           end
 
-          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2177
-          it 'can get and set items', except: {browser: :chrome} do
+          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2177 - To monitor as recently fixed
+          it 'can get and set items' do
             expect(storage).to be_empty
             storage['foo'] = 'bar'
-            expect(storage['foo']).to eq('bar')
 
+            expect(storage['foo']).to eq('bar')
             storage['foo1'] = 'bar1'
+
             expect(storage['foo1']).to eq('bar1')
 
             expect(storage.size).to eq(2)
@@ -48,8 +49,8 @@ module Selenium
             expect(storage.keys).to include('foo1', 'foo2', 'foo3')
           end
 
-          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2177
-          it 'can clear all items', except: {browser: :chrome} do
+          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2177 - To monitor as recently fixed
+          it 'can clear all items' do
             storage['foo1'] = 'bar1'
             storage['foo2'] = 'bar2'
             storage['foo3'] = 'bar3'
