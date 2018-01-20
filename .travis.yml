@@ -64,7 +64,7 @@ jobs:
       script: ./go calcdeps && ./buckw build selenium-server-standalone //java/client/test/org/openqa/selenium/{environment,testing}/... "//java/client/test/org/openqa/selenium:"
       <<: *java
     - stage: test
-      script: ./buckw test //java/client/test/org/openqa/selenium:small-tests
+      script: echo "Path: " $PATH && echo "Display: " $DISPLAY && ./buckw test //java/client/test/org/openqa/selenium:small-tests
       <<: *java
       <<: *chrome
 
