@@ -628,6 +628,14 @@ class WebElement(object):
         return self._parent.execute(command, params)
 
     def find_element(self, by=By.ID, value=None):
+        """
+        'Private' method used by the find_element_by_* methods.
+
+        :Usage:
+            Use the corresponding find_element_by_* instead of this.
+
+        :rtype: WebElement
+        """
         if self._w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
@@ -645,6 +653,14 @@ class WebElement(object):
                              {"using": by, "value": value})['value']
 
     def find_elements(self, by=By.ID, value=None):
+        """
+        'Private' method used by the find_elements_by_* methods.
+
+        :Usage:
+            Use the corresponding find_elements_by_* instead of this.
+
+        :rtype: list of WebElement
+        """
         if self._w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
