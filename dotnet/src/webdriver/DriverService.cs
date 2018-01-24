@@ -1,4 +1,4 @@
-﻿// <copyright file="DriverService.cs" company="WebDriver Committers">
+// <copyright file="DriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -34,6 +34,7 @@ namespace OpenQA.Selenium
     {
         private string driverServicePath;
         private string driverServiceExecutableName;
+        private string driverServiceHostName = "localhost";
         private int driverServicePort;
         private bool silent;
         private bool hideCommandPromptWindow;
@@ -75,7 +76,21 @@ namespace OpenQA.Selenium
         /// </summary>
         public Uri ServiceUrl
         {
-            get { return new Uri(string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}", this.driverServicePort)); }
+            get { return new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}", this.driverServiceHostName, this.driverServicePort)); }
+        }
+
+        /// <summary>
+        /// Gets or sets the host name of the service. Defaults to "localhost."
+        /// </summary>
+        /// <remarks>
+        /// Most driver service executables do not allow connections from remote
+        /// (non-local) machines. This property can be used as a workaround so
+        /// that an IP address (like "127.0.0.1" or "::1") can be used instead.
+        /// </remarks>
+        public string HostName
+        {
+            get { return this.driverServiceHostName; }
+            set { this.driverServiceHostName = value; }
         }
 
         /// <summary>
