@@ -53,6 +53,9 @@ jobs:
     - stage: test
     - matrix:
       exclude:
+        - env: CHROME=1 TASK=test_chrome
+          <<: *java
+          <<: *chrome
         - env: BUCK="//javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver"
           <<: *java
         - env: TOXENV=flake8
@@ -93,9 +96,6 @@ jobs:
         - env: MARIONETTE=1 BUCK="test internal-grid-test grid-test"
           <<: *java
           <<: *firefox-nightly
-        - env: CHROME=1 BUCK="test chrome-test"
-          <<: *java
-          <<: *chrome
         - env: BUCK="test htmlunit-test"
           <<: *java
         - env: TASK=javadocs
