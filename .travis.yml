@@ -42,16 +42,6 @@ cache:
     - buck-out
     - build
 
-stages:
-  - warm-cache
-  - test
-
-jobs:
-  include:
-    - stage: warm-cache
-    - env: TASK="calcdeps" BUCK="build //java/..."
-    - stage: test
-
 matrix:
   exclude:
     - env: CHROME=1 TASK=test_chrome
@@ -76,9 +66,11 @@ matrix:
       <<: *python
       <<: *firefox-nightly
   include:
+    - env: TASK="calcdeps"
+      <<: *java
     - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests"
       <<: *java
-    - env: TASK="calcdeps" BUCK="test //java/client/test/org/openqa/selenium/atoms:test"
+    - env: BUCK="test //java/client/test/org/openqa/selenium/atoms:test"
       <<: *java
     - env: CHROME=1 TASK="calcdeps" BUCK="test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome"
       <<: *java
