@@ -66,8 +66,6 @@ matrix:
       <<: *python
       <<: *firefox-nightly
   include:
-    - env: TASK="calcdeps"
-      <<: *java
     - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests"
       <<: *java
     - env: BUCK="test //java/client/test/org/openqa/selenium/atoms:test"
