@@ -228,7 +228,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testShouldFireFocusKeyEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
 
