@@ -196,6 +196,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, issue = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2239")
   public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
     driver.get(pages.xhtmlTestPage);
     driver.get(pages.xhtmlTestPage + "#text");
