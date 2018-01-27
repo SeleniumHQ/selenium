@@ -25,7 +25,7 @@
 // Error List, point to "Suppress Message(s)", and click 
 // "In Project Suppression File". 
 // You do not need to add suppressions to this file manually. 
-
+[assembly: System.CLSCompliant(true)]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Scope = "type", Target = "Selenium.WebDriverCommandProcessor", Justification = "WebDriverCommandProcessor is a factory, and requires high class coupling")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Scope = "member", Target = "Selenium.WebDriverCommandProcessor.#PopulateSeleneseMethods()", Justification = "WebDriverCommandProcessor is a factory, and requires high class coupling")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Selenese", Scope = "type", Target = "Selenium.Internal.SeleniumEmulation.SeleneseCommand", Justification = "Selenese is spelled correctly")]
