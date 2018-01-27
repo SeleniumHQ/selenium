@@ -76,10 +76,6 @@ namespace OpenQA.Selenium.Firefox
             : base()
         {
             this.BrowserName = BrowserNameValue;
-            /*capabilityName == IsMarionetteCapability ||
-                            capabilityName == FirefoxLegacyProfileCapability ||
-                            capabilityName == FirefoxLegacyBinaryCapability ||
-                            capabilityName == FirefoxOptionsCapability)*/
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxOptionsCapability, "current FirefoxOptions class instance");
             this.AddKnownCapabilityName(FirefoxOptions.IsMarionetteCapability, "UseLegacyImplementation property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxProfileCapability, "Profile property");
@@ -181,14 +177,6 @@ namespace OpenQA.Selenium.Firefox
             if (argumentsToAdd == null)
             {
                 throw new ArgumentNullException("argumentsToAdd", "argumentsToAdd must not be null");
-            }
-
-            foreach (string argument in argumentsToAdd)
-            {
-                if (!argument.StartsWith("--", StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "All arguments must start with two dashes ('--'); argument '{0}' does not.", argument), "argumentsToAdd");
-                }
             }
 
             this.firefoxArguments.AddRange(argumentsToAdd);
