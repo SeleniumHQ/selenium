@@ -18,6 +18,7 @@
 
 using System;
 using OpenQA.Selenium.Remote;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium.Chrome
 {
@@ -61,10 +62,15 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public static readonly bool AcceptUntrustedCertificates = true;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChromeDriver"/> class.
-        /// </summary>
-        public ChromeDriver()
+        private const string GetNetworkConditionsCommand = "getNetworkConditions";
+        private const string SetNetworkConditionsCommand = "setNetworkConditions";
+        private const string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
+        private const string SendChromeCommand = "sendChromeCommand";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChromeDriver"/> class.
+    /// </summary>
+    public ChromeDriver()
             : this(new ChromeOptions())
         {
         }
@@ -140,6 +146,11 @@ namespace OpenQA.Selenium.Chrome
         public ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
+            // Add the custom commands unique to Chrome
+            AddCustomChromeCommand(GetNetworkConditionsCommand, CommandInfo.GetCommand, "/session/{sessionId}/chromium/network_connection");
+            AddCustomChromeCommand(SetNetworkConditionsCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/network_connection");
+            AddCustomChromeCommand(DeleteNetworkConditionsCommand, CommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_connection");
+            AddCustomChromeCommand(SendChromeCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
         }
 
         /// <summary>
@@ -158,6 +169,46 @@ namespace OpenQA.Selenium.Chrome
             set { }
         }
 
+        /// <summary>
+        /// Gets or sets the network condition emulation for Chrome.
+        /// </summary>
+        public ChromeNetworkConditions NetworkConditions
+        {
+            get
+            {
+                Response response = this.Execute(GetNetworkConditionsCommand, null);
+                return ChromeNetworkConditions.FromDictionary(response.Value as Dictionary<string, object>);
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", "value must not be null");
+                }
+
+                this.Execute(SetNetworkConditionsCommand, value.ToDictionary());
+            }
+        }
+
+        /// <summary>
+        /// Executes a custom Chrome command.
+        /// </summary>
+        /// <param name="commandName">Name of the command to execute.</param>
+        /// <param name="commandParameters">Parameters of the command to execute.</param>
+        public void ExecuteChromeCommand(string commandName, Dictionary<string, object> commandParameters)
+        {
+            if (commandName == null)
+            {
+                throw new ArgumentNullException("commandName", "commandName must not be null");
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["cmd"] = commandName;
+            parameters["params"] = commandParameters;
+            this.Execute(SendChromeCommand, parameters);
+        }
+
         private static ICapabilities ConvertOptionsToCapabilities(ChromeOptions options)
         {
             if (options == null)
@@ -166,6 +217,12 @@ namespace OpenQA.Selenium.Chrome
             }
 
             return options.ToCapabilities();
+        }
+
+        private void AddCustomChromeCommand(string commandName, string method, string resourcePath)
+        {
+            CommandInfo commandInfoToAdd = new CommandInfo(method, resourcePath);
+            this.CommandExecutor.CommandInfoRepository.TryAddCommand(commandName, commandInfoToAdd);
         }
     }
 }
