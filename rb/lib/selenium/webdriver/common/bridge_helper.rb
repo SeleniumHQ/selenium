@@ -74,6 +74,15 @@ module Selenium
 
         result
       end
+
+      def ensure_native_file_path(keys)
+        if WebDriver::Platform.windows?
+          keys.each do |keys_chunk|
+            keys_chunk.tr!('/', '\\') if File.exist?(keys_chunk)
+          end
+        end
+        keys
+      end
     end # BridgeHelper
   end # WebDriver
 end # Selenium

@@ -20,6 +20,7 @@ module Selenium
     module Firefox
       module Marionette
         module Bridge
+          include BridgeHelper
 
           COMMANDS = {
             install_addon: [:post, 'session/:session_id/moz/addon/install'.freeze],
@@ -41,12 +42,7 @@ module Selenium
           end
 
           def send_keys_to_element(element, keys)
-            if WebDriver::Platform.windows?
-              keys.each do |keys_chunk|
-                keys_chunk.tr!('/', '\\') if File.exist?(keys_chunk)
-              end
-            end
-            super(element, keys)
+            super(element, ensure_native_file_path(keys))
           end
         end # Bridge
       end # Marionette

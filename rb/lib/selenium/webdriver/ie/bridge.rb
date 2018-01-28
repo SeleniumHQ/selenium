@@ -15,22 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/ie/driver'
-require 'selenium/webdriver/ie/bridge'
-require 'selenium/webdriver/ie/options'
-require 'selenium/webdriver/ie/service'
-
 module Selenium
   module WebDriver
     module IE
-      def self.driver_path=(path)
-        Platform.assert_executable path
-        @driver_path = path
-      end
+      module Bridge
+        include BridgeHelper
 
-      def self.driver_path
-        @driver_path ||= nil
-      end
+        def send_keys_to_element(element, keys)
+          super(element, ensure_native_file_path(keys))
+        end
+      end # Bridge
     end # IE
   end # WebDriver
 end # Selenium
