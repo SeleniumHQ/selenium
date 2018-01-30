@@ -37,7 +37,7 @@ namespace webdriver {
 class UriInfo;
 class Session;
 
-typedef std::tr1::shared_ptr<Session> SessionHandle;
+typedef std::shared_ptr<Session> SessionHandle;
 
 class Server {
  public:
@@ -70,7 +70,7 @@ class Server {
 
  private:
   typedef std::map<std::string, SessionHandle> SessionMap;
-  typedef std::map<std::string, std::tr1::shared_ptr<UriInfo> > UrlMap;
+  typedef std::map<std::string, std::shared_ptr<UriInfo> > UrlMap;
 
   void Initialize(const int port,
                   const std::string& host,
