@@ -20,3 +20,5 @@ fi
 if [[ ! -z $TOXENV ]]; then
   pip install setuptools==28.8.0 tox==2.4.1
 fi
+
+echo -e "[ui]\n  superconsole = disabled\n" >> .buckconfig.local
