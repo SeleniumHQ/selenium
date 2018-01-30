@@ -153,9 +153,15 @@ std::string Alert::GetText() {
   } else {
     std::string alert_text = this->GetDirectUIDialogText();
     if (!this->is_security_alert_) {
-      size_t first_crlf = alert_text.find("\r\n\r\n");
-      if (first_crlf != std::string::npos && first_crlf + 4 < alert_text.size()) {
-        alert_text_value = alert_text.substr(first_crlf + 4);
+      if (!this->is_standard_alert_) {
+        // This means the alert is from onbeforeunload, and we need to
+        // strip off everything up to and including the first CR-LF pair.
+        size_t first_crlf = alert_text.find("\r\n\r\n");
+        if (first_crlf != std::string::npos && first_crlf + 4 < alert_text.size()) {
+          alert_text_value = alert_text.substr(first_crlf + 4);
+        }
+      } else {
+        alert_text_value = alert_text;
       }
     }
   }
@@ -240,12 +246,18 @@ std::string Alert::GetDirectUIDialogText() {
     return alert_text_value;
   }
 
-  // ASSUMPTION: The second "static text" accessibility object is the one
-  // that contains the message.
+  int child_index = 0;
+  if (!this->is_standard_alert_) {
+    // ASSUMPTION: This means the alert is from onbeforeunload, and
+    // the second "static text" accessibility object is the one
+    // that contains the message.
+    child_index = 1;
+  }
+
   CComPtr<IAccessible> message_text_object = this->GetChildWithRole(
       pane_object,
       ROLE_SYSTEM_STATICTEXT,
-      1);
+      child_index);
   if (!message_text_object) {
     LOG(WARN) << "Failed to get Active Accessibility text child object from pane";
     return alert_text_value;
