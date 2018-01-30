@@ -197,7 +197,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   }
 
  private:
-  typedef std::tr1::unordered_map<std::string, BrowserHandle> BrowserMap;
+  typedef std::unordered_map<std::string, BrowserHandle> BrowserMap;
   typedef std::map<std::string, std::wstring> ElementFindMethodMap;
 
   void AddManagedBrowser(BrowserHandle browser_wrapper);

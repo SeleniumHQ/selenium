@@ -38,7 +38,7 @@ class ElementRepository {
   void ClearCache(void);
   void Clear(void);
  private:
-  typedef std::tr1::unordered_map<std::string, ElementHandle> ElementMap;
+  typedef std::unordered_map<std::string, ElementHandle> ElementMap;
   ElementMap managed_elements_;
 };
 

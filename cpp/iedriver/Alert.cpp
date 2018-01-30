@@ -22,7 +22,7 @@
 
 namespace webdriver {
 
-Alert::Alert(std::tr1::shared_ptr<DocumentHost> browser, HWND handle) {
+Alert::Alert(std::shared_ptr<DocumentHost> browser, HWND handle) {
   LOG(TRACE) << "Entering Alert::Alert";
   this->browser_ = browser;
   this->alert_handle_ = handle;

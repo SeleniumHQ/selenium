@@ -25,7 +25,7 @@ namespace webdriver {
 // Forward declaration of classes.
 class IECommandHandler;
 
-typedef std::tr1::shared_ptr<IECommandHandler> CommandHandlerHandle;
+typedef std::shared_ptr<IECommandHandler> CommandHandlerHandle;
 
 class CommandHandlerRepository {
  public:
