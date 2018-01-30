@@ -163,6 +163,10 @@ namespace OpenQA.Selenium.Remote
                 requestStream.Write(data, 0, data.Length);
                 requestStream.Close();
             }
+            else if (request.Method == CommandInfo.GetCommand)
+            {
+                request.Headers.Add("Cache-Control", "no-cache");
+            }
 
             HttpResponseInfo responseInfo = new HttpResponseInfo();
             HttpWebResponse webResponse = null;
