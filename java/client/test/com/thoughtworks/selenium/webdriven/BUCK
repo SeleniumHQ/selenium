@@ -28,7 +28,7 @@ java_test(name = 'small-tests',
 )
 
 java_library(name = 'tests',
-  srcs = glob(['*Test.java'], excludes = ['ScriptMutatorTest.java','WebDriverBackedSeleniumLargeTest.java']),
+  srcs = glob(['*Test.java'], exclude = ['ScriptMutatorTest.java','WebDriverBackedSeleniumLargeTest.java']),
   deps = [
     '//java/client/src/com/thoughtworks/selenium:leg-rc',
     '//java/client/src/org/openqa/selenium:selenium',

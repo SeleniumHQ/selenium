@@ -19,7 +19,7 @@ java_library(name = 'api',
 )
 
 java_library(name = 'logging',
-  srcs = glob(['*.java', 'profiler/*.java'], excludes = API_SRCS),
+  srcs = glob(['*.java', 'profiler/*.java'], exclude = API_SRCS),
   deps = [
     ':api',
     '//java/client/src/org/openqa/selenium:beta',

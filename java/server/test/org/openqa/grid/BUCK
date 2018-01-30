@@ -24,7 +24,7 @@ java_library(name = 'test',
     'internal/**/*.java',
     'plugin/**/*.java',
     'web/**/*.java'
-  ], excludes = SUITES),
+  ], exclude = SUITES),
   deps = [
     '//java/client/src/com/thoughtworks/selenium:leg-rc',
     '//java/client/src/org/openqa/selenium:selenium',

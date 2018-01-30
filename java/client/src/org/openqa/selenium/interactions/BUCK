@@ -5,7 +5,7 @@ java_library(name = 'interactions',
     'KeyInput.java',
     'IsInteraction.java',
     'PointerInput.java',
-  ] + glob(['*Action.java', 'internal/*Action.java', 'touch/*.java'], excludes = ['Action.java', 'IsInteraction.java']),
+  ] + glob(['*Action.java', 'internal/*Action.java', 'touch/*.java'], exclude = ['Action.java', 'IsInteraction.java']),
   exported_deps = [
     ':core',
     ':exceptions',
