@@ -20,7 +20,7 @@
     <AssemblyTitle>WebDriver</AssemblyTitle>
     <Description>Selenium WebDriver API .NET Bindings</Description>
     <Company>Selenium Committers</Company>
-    <Copyright>Copyright © Software Freedom Conservancy 2017</Copyright>
+    <Copyright>Copyright © Software Freedom Conservancy 2018</Copyright>
     <Product>Selenium</Product>
     <Version>3</Version>
     <PackageId>Selenium.WebDriver</PackageId>
