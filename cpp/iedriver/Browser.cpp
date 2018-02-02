@@ -113,7 +113,6 @@ void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
       LOG(DEBUG) << "DocumentComplete happened from within a frameset";
       this->SetFocusedFrameByElement(NULL);
     }
-    ::PostMessage(this->executor_handle(), WD_REFRESH_MANAGED_ELEMENTS, NULL, NULL);
   }
 }
 
