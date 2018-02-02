@@ -31,6 +31,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldBeAbleToGetAFragmentOnTheCurrentPage()
         {
             if (TestUtilities.IsMarionette(driver))
