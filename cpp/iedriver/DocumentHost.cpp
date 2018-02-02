@@ -58,6 +58,7 @@ DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
 
   this->window_handle_ = hwnd;
   this->executor_handle_ = executor_handle;
+  this->script_executor_handle_ = NULL;
   this->is_closing_ = false;
   this->wait_required_ = false;
   this->focused_frame_window_ = NULL;

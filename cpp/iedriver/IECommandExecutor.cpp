@@ -31,6 +31,7 @@
 #include "BrowserFactory.h"
 #include "CommandExecutor.h"
 #include "CommandHandlerRepository.h"
+#include "Element.h"
 #include "ElementFinder.h"
 #include "ElementRepository.h"
 #include "IECommandHandler.h"
@@ -38,6 +39,7 @@
 #include "HtmlDialog.h"
 #include "ProxyManager.h"
 #include "StringUtilities.h"
+#include "Script.h"
 
 namespace webdriver {
 
@@ -350,6 +352,71 @@ LRESULT IECommandExecutor::OnGetQuitStatus(UINT uMsg,
   return this->is_quitting_ && this->managed_browsers_.size() > 0 ? 1 : 0;
 }
 
+LRESULT IECommandExecutor::OnScriptWait(UINT uMsg,
+                                        WPARAM wParam,
+                                        LPARAM lParam,
+                                        BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnScriptWait";
+
+  BrowserHandle browser;
+  int status_code = this->GetCurrentBrowser(&browser);
+  if (status_code == WD_SUCCESS && !browser->is_closing()) {
+    if (this->async_script_timeout_ >= 0 && this->wait_timeout_ < clock()) {
+      ::SendMessage(browser->script_executor_handle(), WD_ASYNC_SCRIPT_DETACH_LISTENTER, NULL, NULL);
+      Response timeout_response;
+      timeout_response.SetErrorResponse(ERROR_SCRIPT_TIMEOUT, "Timed out waiting for script to complete.");
+      this->serialized_response_ = timeout_response.Serialize();
+      this->is_waiting_ = false;
+      browser->set_script_executor_handle(NULL);
+    } else {
+      HWND alert_handle;
+      bool is_execution_finished = ::SendMessage(browser->script_executor_handle(), WD_ASYNC_SCRIPT_IS_EXECUTION_COMPLETE, NULL, NULL) != 0;
+      bool is_alert_active = this->IsAlertActive(browser, &alert_handle);
+      this->is_waiting_ = !is_execution_finished && !is_alert_active;
+      if (this->is_waiting_) {
+        // If we are still waiting, we need to wait a bit then post a message to
+        // ourselves to run the wait again. However, we can't wait using Sleep()
+        // on this thread. This call happens in a message loop, and we would be 
+        // unable to process the COM events in the browser if we put this thread
+        // to sleep.
+        unsigned int thread_id = 0;
+        HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
+                                                        0,
+                                                        &IECommandExecutor::ScriptWaitThreadProc,
+                                                        (void *)this->m_hWnd,
+                                                        0,
+                                                        &thread_id));
+        if (thread_handle != NULL) {
+          ::CloseHandle(thread_handle);
+        } else {
+          LOGERR(DEBUG) << "Unable to create waiter thread";
+        }
+      } else {
+        Response response;
+        ::SendMessage(browser->script_executor_handle(), WD_ASYNC_SCRIPT_DETACH_LISTENTER, NULL, NULL);
+        int status_code = static_cast<int>(::SendMessage(browser->script_executor_handle(), WD_ASYNC_SCRIPT_GET_RESULT, NULL, NULL));
+        if (status_code != WD_SUCCESS) {
+          response.SetErrorResponse(status_code, "Error executing JavaScript");
+        } else {
+          CComPtr<IHTMLDocument2> doc;
+          browser->GetDocument(&doc);
+          Script result_retrieval_script(doc,
+                                         "(function() { return function(){ return window.document.__webdriver_script_result; };})();",
+                                         0);
+          status_code = result_retrieval_script.Execute();
+          Json::Value script_result;
+          result_retrieval_script.ConvertResultToJsonValue(*this, &script_result);
+          response.SetSuccessResponse(script_result);
+        }
+        this->serialized_response_ = response.Serialize();
+      }
+    }
+  } else {
+    this->is_waiting_ = false;
+  }
+  return 0;
+}
+
 LRESULT IECommandExecutor::OnRefreshManagedElements(UINT uMsg,
                                                     WPARAM wParam,
                                                     LPARAM lParam,
@@ -374,6 +441,39 @@ LRESULT IECommandExecutor::OnHandleUnexpectedAlerts(UINT uMsg,
   return 0;
 }
 
+LRESULT IECommandExecutor::OnGetManagedElement(UINT uMsg,
+                                               WPARAM wParam,
+                                               LPARAM lParam,
+                                               BOOL& bHandled) {
+  ElementInfo* info = reinterpret_cast<ElementInfo*>(lParam);
+  ElementHandle element_handle;
+  int status_code = this->GetManagedElement(info->element_id, &element_handle);
+  if (status_code == WD_SUCCESS) {
+    info->element = element_handle->element();
+  }
+  return status_code;
+}
+
+LRESULT IECommandExecutor::OnAddManagedElement(UINT uMsg,
+                                               WPARAM wParam,
+                                               LPARAM lParam,
+                                               BOOL& bHandled) {
+  ElementInfo* info = reinterpret_cast<ElementInfo*>(lParam);
+  ElementHandle element_handle;
+  this->AddManagedElement(info->element, &element_handle);
+  info->element_id = element_handle->element_id();
+  return WD_SUCCESS;
+}
+
+LRESULT IECommandExecutor::OnRemoveManagedElement(UINT uMsg,
+                                                  WPARAM wParam,
+                                                  LPARAM lParam,
+                                                  BOOL& bHandled) {
+  ElementInfo* info = reinterpret_cast<ElementInfo*>(lParam);
+  this->RemoveManagedElement(info->element_id);
+  return WD_SUCCESS;
+}
+
 unsigned int WINAPI IECommandExecutor::WaitThreadProc(LPVOID lpParameter) {
   LOG(TRACE) << "Entering IECommandExecutor::WaitThreadProc";
   HWND window_handle = reinterpret_cast<HWND>(lpParameter);
@@ -382,6 +482,13 @@ unsigned int WINAPI IECommandExecutor::WaitThreadProc(LPVOID lpParameter) {
   return 0;
 }
 
+unsigned int WINAPI IECommandExecutor::ScriptWaitThreadProc(LPVOID lpParameter) {
+  LOG(TRACE) << "Entering IECommandExecutor::ScriptWaitThreadProc";
+  HWND window_handle = reinterpret_cast<HWND>(lpParameter);
+  ::Sleep(WAIT_TIME_IN_MILLISECONDS);
+  ::PostMessage(window_handle, WD_SCRIPT_WAIT, NULL, NULL);
+  return 0;
+}
 
 unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
   LOG(TRACE) << "Entering IECommandExecutor::ThreadProc";
@@ -522,6 +629,16 @@ void IECommandExecutor::DispatchCommand() {
           this->wait_timeout_ = clock() + (static_cast<int>(this->page_load_timeout_) / 1000 * CLOCKS_PER_SEC);
         }
         ::PostMessage(this->m_hWnd, WD_WAIT, NULL, NULL);
+      } else {
+        HWND script_executor_handle = browser->script_executor_handle();
+        this->is_waiting_ = script_executor_handle != NULL;
+        if (this->is_waiting_) {
+          if (this->async_script_timeout_ >= 0) {
+            this->wait_timeout_ = clock() + (static_cast<int>(this->async_script_timeout_) / 1000 * CLOCKS_PER_SEC);
+          }
+          ::PostMessage(this->m_hWnd, WD_SCRIPT_WAIT, NULL, NULL);
+          return;
+        }
       }
     } else {
       if (this->current_command_.command_type() != webdriver::CommandType::Quit) {
@@ -677,7 +794,37 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
 int IECommandExecutor::GetManagedElement(const std::string& element_id,
                                          ElementHandle* element_wrapper) const {
   LOG(TRACE) << "Entering IECommandExecutor::GetManagedElement";
-  return this->managed_elements_->GetManagedElement(element_id, element_wrapper);
+  ElementHandle candidate_wrapper;
+  int result = this->managed_elements_->GetManagedElement(element_id, &candidate_wrapper);
+  if (result != WD_SUCCESS) {
+    LOG(WARN) << "Unable to get managed element, element not found";
+    return result;
+  } else {
+    if (!candidate_wrapper->IsAttachedToDom()) {
+      LOG(WARN) << "Found managed element is no longer valid";
+      this->managed_elements_->RemoveManagedElement(element_id);
+      return EOBSOLETEELEMENT;
+    } else {
+      // If the element is attached to the DOM, validate that its document
+      // is the currently-focused document (via frames).
+      BrowserHandle current_browser;
+      this->GetCurrentBrowser(&current_browser);
+      CComPtr<IHTMLDocument2> focused_doc;
+      current_browser->GetDocument(&focused_doc);
+
+      CComPtr<IDispatch> parent_doc_dispatch;
+      candidate_wrapper->element()->get_document(&parent_doc_dispatch);
+
+      if (focused_doc.IsEqualObject(parent_doc_dispatch)) {
+        *element_wrapper = candidate_wrapper;
+        return WD_SUCCESS;
+      } else {
+        LOG(WARN) << "Found managed element's document is not currently focused";
+      }
+    }
+  }
+
+  return EOBSOLETEELEMENT;
 }
 
 void IECommandExecutor::AddManagedElement(IHTMLElement* element,

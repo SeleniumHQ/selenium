@@ -105,6 +105,22 @@ LRESULT AsyncScriptExecutor::OnSetArgument(UINT uMsg,
       this->script_arguments_[this->script_argument_index_] = dispatch_variant;
       break;
     }
+    case VT_BSTR: {
+      CComVariant str_arg(*reinterpret_cast<LPCTSTR*>(lParam));
+      this->script_arguments_[this->script_argument_index_] = str_arg;
+      break;
+    }
+    case VT_BOOL:
+      this->script_arguments_[this->script_argument_index_] = static_cast<int>(lParam) != VARIANT_FALSE;
+      break;
+    case VT_I4:
+    case VT_I8:
+      this->script_arguments_[this->script_argument_index_] = static_cast<long>(lParam);
+      break;
+    case VT_R4:
+    case VT_R8:
+      this->script_arguments_[this->script_argument_index_] = *reinterpret_cast<double*>(lParam);
+      break;
     default: {
       // TODO: Unmarshal arguments of types other than VT_DISPATCH. At present,
       // the asynchronous execution of JavaScript is only used for Automation
@@ -130,10 +146,17 @@ LRESULT AsyncScriptExecutor::OnExecuteScript(UINT uMsg,
     script_to_execute.AddArgument(this->script_arguments_[index]);
   }
   this->status_code_ = script_to_execute.Execute();
-  this->is_execution_completed_ = true;
+
   if (!this->is_listener_attached_) {
     ::PostMessage(this->m_hWnd, WM_CLOSE, NULL, NULL);
+  } else {
+    Script store_result_script(this->script_host_,
+                               "(function() { return function(){ window.document.__webdriver_script_result = arguments[0]; };})();",
+                               1);
+    store_result_script.AddArgument(script_to_execute.result());
+    store_result_script.Execute();
   }
+  this->is_execution_completed_ = true;
   return 0;
 }
 
