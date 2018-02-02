@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -469,7 +470,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
   public void testClickOverlappingElements() {
@@ -478,7 +478,8 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("under"));
     Throwable t = catchThrowable(element::click);
     assertThat(t, instanceOf(WebDriverException.class));
-    assertThat(t.getMessage(), containsString("Other element would receive the click"));
+    assertThat(t.getMessage(), anyOf(containsString("Other element would receive the click"),
+                                     containsString("is not clickable at point")));
   }
 
   @Test
@@ -528,7 +529,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1417821")
   public void testClickAnElementThatDisappear() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/disappearing_element.html"));

@@ -49,7 +49,7 @@ import java.util.Set;
 public class ClickTest extends JUnit4TestBase {
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     driver.get(pages.clicksPage);
   }
 
@@ -365,7 +365,6 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/615")
   public void clickingOnADisabledElementIsANoOp() {
     driver.get(appServer.whereIs("click_tests/disabled_element.html"));
 
