@@ -56,10 +56,9 @@ void ExecuteScriptCommandHandler::ExecuteInternal(
 
     CComPtr<IHTMLDocument2> doc;
     browser_wrapper->GetDocument(&doc);
-    Script script_wrapper(doc, script_source, json_args.size());
-    status_code = this->PopulateArgumentArray(executor,
-                                              script_wrapper,
-                                              json_args);
+    Script script_wrapper(doc, script_source);
+    status_code = script_wrapper.AddArguments(executor.window_handle(), json_args);
+
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Error setting arguments for script");
       return;
@@ -72,10 +71,19 @@ void ExecuteScriptCommandHandler::ExecuteInternal(
       return;
     } else {
       Json::Value script_result;
-      script_wrapper.ConvertResultToJsonValue(executor, &script_result);
+      script_wrapper.ConvertResultToJsonValue(executor.window_handle(), &script_result);
       response->SetSuccessResponse(script_result);
       return;
     }
+
+    //HWND async_executor_handle;
+    //status_code = script_wrapper.BeginAsyncExecution(&async_executor_handle);
+    //browser_wrapper->set_script_executor_handle(async_executor_handle);
+
+    //if (status_code != WD_SUCCESS) {
+    //  response->SetErrorResponse(status_code, "JavaScript error");
+    //  return;
+    //}
   }
 }
 

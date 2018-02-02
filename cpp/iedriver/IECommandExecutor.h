@@ -42,6 +42,11 @@
 
 namespace webdriver {
 
+struct ElementInfo {
+  std::string element_id;
+  IHTMLElement* element;
+};
+
 // Forward declaration of classes.
 class BrowserFactory;
 class CommandHandlerRepository;
@@ -74,6 +79,10 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     MESSAGE_HANDLER(WD_REFRESH_MANAGED_ELEMENTS, OnRefreshManagedElements)
     MESSAGE_HANDLER(WD_HANDLE_UNEXPECTED_ALERTS, OnHandleUnexpectedAlerts)
     MESSAGE_HANDLER(WD_QUIT, OnQuit)
+    MESSAGE_HANDLER(WD_SCRIPT_WAIT, OnScriptWait)
+    MESSAGE_HANDLER(WD_GET_MANAGED_ELEMENT, OnGetManagedElement)
+    MESSAGE_HANDLER(WD_ADD_MANAGED_ELEMENT, OnAddManagedElement)
+    MESSAGE_HANDLER(WD_REMOVE_MANAGED_ELEMENT, OnRemoveManagedElement)
   END_MSG_MAP()
 
   LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -91,11 +100,16 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   LRESULT OnRefreshManagedElements(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnHandleUnexpectedAlerts(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnScriptWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnGetManagedElement(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnAddManagedElement(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnRemoveManagedElement(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
   std::string session_id(void) const { return this->session_id_; }
 
   static unsigned int WINAPI ThreadProc(LPVOID lpParameter);
   static unsigned int WINAPI WaitThreadProc(LPVOID lpParameter);
+  static unsigned int WINAPI ScriptWaitThreadProc(LPVOID lpParameter);
 
   std::string current_browser_id(void) const { 
     return this->current_browser_id_; 
@@ -129,6 +143,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
                      const std::string& mechanism,
                      const std::string& criteria,
                      Json::Value* found_elements) const;
+
+  HWND window_handle(void) const { return this->m_hWnd; }
 
   unsigned long long implicit_wait_timeout(void) const {
     return this->implicit_wait_timeout_; 

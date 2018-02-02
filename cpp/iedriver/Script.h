@@ -40,6 +40,10 @@ class Script {
   Script(IHTMLDocument2* document,
          std::wstring script_source,
          unsigned long argument_count);
+  Script(IHTMLDocument2* document,
+         std::string script_source);
+  Script(IHTMLDocument2* document,
+         std::wstring script_source);
   ~Script(void);
 
   std::wstring source_code() const { return this->source_code_; }
@@ -58,6 +62,8 @@ class Script {
   void AddArgument(VARIANT argument);
   void AddNullArgument(void);
 
+  int AddArguments(HWND element_repository_handle, const Json::Value& arguments);
+
   bool ResultIsEmpty(void);
   bool ResultIsString(void);
   bool ResultIsInteger(void);
@@ -71,7 +77,10 @@ class Script {
 
   int Execute(void);
   int ExecuteAsync(int timeout_in_milliseconds);
+  int BeginAsyncExecution(HWND* aync_executor_handle);
   int ConvertResultToJsonValue(const IECommandExecutor& executor,
+                               Json::Value* value);
+  int ConvertResultToJsonValue(HWND element_repository_handle,
                                Json::Value* value);
   bool ConvertResultToString(std::string* value);
 
@@ -81,11 +90,16 @@ class Script {
                   const std::wstring& script_source,
                   const unsigned long argument_count);
 
+  int AddArgument(HWND element_repository_handle, const Json::Value& arg);
+  int WalkArray(HWND element_repository_handle, const Json::Value& array_value);
+  int WalkObject(HWND element_repository_handle, const Json::Value& object_value);
+
   CComPtr<IHTMLDocument2> script_engine_host_;
   unsigned long argument_count_;
   std::wstring source_code_;
   long current_arg_index_;
-  
+
+  HWND element_repository_handle_;
   std::vector<CComVariant> argument_array_;
   CComVariant result_;
 };
