@@ -95,11 +95,10 @@ public class UploadTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/1011")
   @Ignore(CHROME)
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
-  public void testClickFileInput() throws Exception {
+  public void testClickFileInput() {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
     Throwable ex = catchThrowable(element::click);
