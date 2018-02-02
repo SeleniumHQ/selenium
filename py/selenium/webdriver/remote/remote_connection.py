@@ -564,5 +564,5 @@ class RemoteConnection(object):
                 data = {'status': 0, 'value': body.strip()}
                 return data
         finally:
-            LOGGER.debug(u"Finished Request {}".format(data))
+            LOGGER.debug("Finished Request")
             resp.close()

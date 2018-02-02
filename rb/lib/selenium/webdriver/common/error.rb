@@ -34,7 +34,7 @@ module Selenium
           klass_name = code.split(' ').map(&:capitalize).join.sub(/Error$/, '')
           const_get("#{klass_name}Error")
         end
-      rescue NameError
+      rescue KeyError, NameError
         WebDriverError
       end
 

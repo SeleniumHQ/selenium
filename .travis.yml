@@ -44,11 +44,11 @@ cache:
 
 matrix:
   exclude:
-    - env: CHROME=1 TASK=test_chrome
+    - env: BUCK="//javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver"
+      <<: *java
+    - env: CHROME=1 BUCK="test chrome-test"
       <<: *java
       <<: *chrome
-    - env: TASK="//javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver"
-      <<: *java
     - env: TOXENV=flake8
       <<: *python
     - env: TOXENV=docs
@@ -66,30 +66,28 @@ matrix:
       <<: *python
       <<: *firefox-nightly
   include:
-    - env: TASK=build
+    - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests"
       <<: *java
-    - env: BUCK="build selenium-server-standalone"
+    - env: BUCK="test //java/client/test/org/openqa/selenium/atoms:test"
       <<: *java
-    - env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
-      <<: *java
-    - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run //javascript/selenium-atoms:selenium-atoms-chrome:run //javascript/selenium-core:selenium-core-chrome:run //javascript/webdriver:webdriver-chrome:run"
+    - env: CHROME=1 TASK="calcdeps" BUCK="test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome"
       <<: *java
       <<: *chrome
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run //javascript/webdriver:webdriver-firefox:run //javascript/selenium-atoms:selenium-atoms-firefox:run //javascript/selenium-core:selenium-core-firefox:run"
+    - env: MARIONETTE=1 TASK="calcdeps" BUCK="test //javascript/atoms:atoms-firefox //javascript/webdriver:webdriver-firefox //javascript/selenium-atoms:selenium-atoms-firefox //javascript/selenium-core:selenium-core-firefox"
       <<: *java
       <<: *firefox-latest
-    - env: TASK=//java/client/test/org/openqa/selenium/firefox:test-synthesized:run
+    - env: BUCK="test legacy-firefox-test"
       <<: *java
       <<: *firefox-esr
-    - env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
+    - env: MARIONETTE=1 BUCK="test firefox-test"
       <<: *java
       <<: *firefox-nightly
-    - env: TASK=test_java_small_tests
+    - env: BUCK="test java-small-tests"
       <<: *java
-    - env: MARIONETTE=1 TASK=test_grid
+    - env: MARIONETTE=1 BUCK="test internal-grid-test grid-test"
       <<: *java
       <<: *firefox-nightly
-    - env: TASK=test_htmlunit
+    - env: BUCK="test htmlunit-test"
       <<: *java
     - env: TASK=javadocs
       <<: *java
@@ -147,7 +145,7 @@ matrix:
 before_install: ./scripts/travis/before_install.sh
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
-script: ./scripts/travis/script.sh
+script: travis_wait ./scripts/travis/script.sh
 
 notifications:
   email: false

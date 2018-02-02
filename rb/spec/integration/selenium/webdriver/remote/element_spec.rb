@@ -33,6 +33,7 @@ module Selenium
 
         driver.find_element(id: 'upload').send_keys('random string')
         driver.find_element(id: 'go').submit
+        wait.until { driver.find_element(id: 'upload_label').displayed? }
 
         driver.switch_to.frame('upload_target')
         body = driver.find_element(xpath: '//body')

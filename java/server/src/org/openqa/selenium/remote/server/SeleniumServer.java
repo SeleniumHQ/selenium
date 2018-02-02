@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.management.ObjectName;
 import javax.servlet.Servlet;
 
 /**
@@ -73,11 +74,12 @@ public class SeleniumServer implements GridNodeServer {
   private final Object shutdownLock = new Object();
   private static final int MAX_SHUTDOWN_RETRIES = 8;
 
+  private ObjectName objectName;
 
   public SeleniumServer(StandaloneConfiguration configuration) {
     this.configuration = configuration;
 
-    new JMXHelper().register(this);
+    objectName = new JMXHelper().register(this).getObjectName();
   }
 
   public int getRealPort() {
@@ -251,6 +253,8 @@ public class SeleniumServer implements GridNodeServer {
         throw new RuntimeException(shutDownException);
       }
     }
+
+    new JMXHelper().unregister(objectName);
   }
 
   private void stopAllBrowsers() {

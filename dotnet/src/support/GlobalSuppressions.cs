@@ -1,4 +1,4 @@
-﻿// <copyright file="GlobalSuppressions.cs" company="WebDriver Committers">
+// <copyright file="GlobalSuppressions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -25,6 +25,7 @@
 // Error List, point to "Suppress Message(s)", and click
 // "In Project Suppression File".
 // You do not need to add suppressions to this file manually.
+[assembly: System.CLSCompliant(true)]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Scope = "member", Target = "OpenQA.Selenium.Support.UI.ExpectedConditions.#VisibilityOfAllElementsLocatedBy(OpenQA.Selenium.By)", Justification = "Nested generic types is appropriate for this type")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Scope = "member", Target = "OpenQA.Selenium.Support.UI.ExpectedConditions.#VisibilityOfAllElementsLocatedBy(System.Collections.ObjectModel.ReadOnlyCollection`1<OpenQA.Selenium.IWebElement>)", Justification = "Nested generic types is appropriate for this type")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Scope = "member", Target = "OpenQA.Selenium.Support.UI.ExpectedConditions.#PresenceOfAllElementsLocatedBy(OpenQA.Selenium.By)", Justification = "Nested generic types is appropriate for this type")]

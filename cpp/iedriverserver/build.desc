@@ -1,7 +1,6 @@
 visualc_release(name = "win32",
   deps = [
     "//javascript/ie-driver:atoms",
-    ":ie_result_type_cpp",
     ":sizzle"
   ],
   platform = "Win32",
@@ -13,7 +12,6 @@ visualc_release(name = "win32",
 visualc_release(name = "x64",
   deps = [
     "//javascript/ie-driver:atoms",
-    ":ie_result_type_cpp",
     ":sizzle"
   ],
   platform = "x64",

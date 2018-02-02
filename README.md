@@ -82,27 +82,27 @@ To list all available targets, you can append the `-T` flag:
 
 Although the plan is to return to a vanilla build of Buck as soon as
 possible, we currently use a fork hosted at
-https://github.com/SeleniumHQ/buck To build using Buck, first clone that
-repo and build using ant. Then add Buck's "bin" directory to your
-PATH.
+https://github.com/SeleniumHQ/buck
+
+Selenium uses `buckw` wrapper utility that automatically downloads buck if necessary and runs it with the specified options.
 
 To obtain a list of all available targets:
 
 ```sh
-buck targets
+buckw targets
 ```
 
 And build a particular file:
 
 ```sh
-buck build //java/client/src/org/openqa/selenium:webdriver-api
+buckw build //java/client/src/org/openqa/selenium:webdriver-api
 ```
 
 There are aliases for commonly invoked targets in the `.buckconfig`
 file, and these aliases can be invoked directly:
 
 ```sh
-buck build htmlunit
+buckw build htmlunit
 ```
 
 All buck output is stored under "buck-out", with the outputs of build
@@ -118,6 +118,8 @@ from https://github.com/facebook/watchman
 
 * [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE)
+* [Python 2.7](https://www.python.org/)
+* `python` on the PATH (make sure it's Python 2.7, as buck build tool is not Python 3 compatible)
 
 Although the build system is based on rake, it's **strongly advised**
 to rely on the version of JRuby in `third_party/` that is invoked by
@@ -129,7 +131,7 @@ Note that all Selenium Java artifacts are **built with Java 8
 
 ### Optional Requirements
 
-* Python 2.7, Python 3.4+ (without these, Python and Python3 tests will be skipped)
+* Python 3.4+ (if you want to run Python tests for this version)
 * Ruby 2.0
 
 ### Internet Explorer Driver
@@ -305,7 +307,7 @@ The maven jars should now be in your local `~/.m2/repository`. You can also publ
 directly using Buck:
 
 ```sh
-buck publish -r your-repo //java/client/src/org/openqa/selenium:selenium
+buckw publish -r your-repo //java/client/src/org/openqa/selenium:selenium
 ```
 
 This sequence will push some seven or so jars into your local Maven

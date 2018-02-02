@@ -1,6 +1,6 @@
 # BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'environment',
-  srcs = glob(['*.java', 'webserver/*.java'], excludes = ['**/*Test.java']),
+  srcs = glob(['*.java', 'webserver/*.java'], exclude = ['**/*Test.java']),
   provided_deps = [
     '//third_party/java/servlet:javax.servlet-api',
   ],

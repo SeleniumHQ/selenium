@@ -5,7 +5,6 @@ load("//:selenium-version.bzl", "SE_VERSION")
 
 java_binary(name = 'selenium',
   main_class = 'org.openqa.grid.selenium.GridLauncherV3',
-  manifest_file = ':manifest',
   merge_manifests = True,
   deps = [
     ':classes',
@@ -15,21 +14,12 @@ java_binary(name = 'selenium',
   ]
 )
 
-genrule(name = 'manifest',
-  out = 'build-info.mf',
-  cmd = "$(exe :generate-build-info) %s > $OUT" % (SE_VERSION),
-)
-
-python_binary(name = 'generate-build-info',
-  main = 'generate-build-info.py',
-)
-
 java_library(name = 'classes',
   maven_coords = 'org.seleniumhq.selenium:selenium-server:' + SE_VERSION,
   maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(
     ['**/*.java'],
-    excludes = ['node/**']),
+    exclude = ['node/**']),
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium:client-combined',

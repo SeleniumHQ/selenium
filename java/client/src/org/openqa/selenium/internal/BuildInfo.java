@@ -80,6 +80,12 @@ public class BuildInfo {
       for (Entry<Object, Object> e : entries) {
         properties.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
       }
+
+      attributes = manifest.getAttributes("Selenium");
+      entries = attributes.entrySet();
+      for (Entry<Object, Object> e : entries) {
+        properties.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
+      }
     } catch (NullPointerException e) {
       // Fall through
     }
