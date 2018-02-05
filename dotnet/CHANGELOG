@@ -1,3 +1,34 @@
+v3.9.0
+======
+ * Added commands to get and set network conditions for Chrome in .NET.
+   To get or set the network conditions, use the `NetworkConditions` property
+   of the ChromeDriver object. This property gets or sets a
+   ChromeNetworkConditions object which contains the proper values. Fixes
+   issue #5338.
+ * Readded CLSCompliant attribute to .NET assemblies. When converting from
+   the prior build system to using Buck and the dotnet build tools, the
+   assembly-level CLSCompliant attribute was removed. This commit restores
+   the CLSCompliant attribute to the assembly manifests. Fixes issue #5324.
+ * Removed check for leading hyphens in .NET FirefoxOptions AddArgument.
+   In prior releases of geckodriver, it was a requirement that all arguments
+   be preceeded by double hyphens ("--"). Geckodriver has now relaxed that
+   restriction, and the .NET bindings need to keep up with that change. This
+   commit removes the check for leading hyphens when calling AddArgument.
+ * Fixed strong-named assembly references. In the move to using the `dotnet`
+   build tools instead of calling the C# compiler directly, the creation of
+   strong-named assemblies was broken with incorrect references being created.
+   This commit fixes that problem. Fixes issue #5254.
+ * Exposed HostName property for .NET DriverService class. Previously, the
+   host name for a DriverService was hard-coded to be "localhost." This is
+   normally acceptable, as a DriverService is only intended to be used
+   locally, and most executables that are represented by a DriverService
+   (chromedriver, geckodriver, IEDriverServer.exe, etc.) do not even allow
+   connections from external machines for security reasons. However, there is
+   a legitimate use case (.NET Standard 2.0) where a local IP address
+   ("127.0.0.1" or "::1") is preferrable to using the "localhost" moniker.
+   This HostName property allows the user to specify that IP address. Note
+   that the property defaults to "localhost," preserving previous behavior.
+
 v3.8.0
 ======
  * Updating .NET bindings setting of timeouts for spec-compliance. This
