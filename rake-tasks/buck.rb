@@ -59,7 +59,9 @@ module Buck
 
     args ||= []
     buck.push(command)
-    buck.push('--stamp-build=detect')
+    if command == 'build' || command == 'test' || command == 'publish'
+      buck.push('--stamp-build=detect')
+    end
     buck.push(*args)
     puts buck.join(' ')
 
