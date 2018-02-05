@@ -680,7 +680,11 @@ int Script::AddArgument(HWND element_repository_handle, const Json::Value& arg) 
                                      reinterpret_cast<LPARAM>(&info)));
 
       if (status_code == WD_SUCCESS) {
-        ElementHandle wrapped_element(new Element(info.element, info.element_id));
+        CComPtr<IHTMLElement> element;
+        ::CoGetInterfaceAndReleaseStream(info.element_stream,
+                                         IID_IHTMLElement,
+                                         reinterpret_cast<void**>(&element));
+        ElementHandle wrapped_element(new Element(element, info.element_id));
         bool is_element_valid = wrapped_element->IsAttachedToDom();
         if (is_element_valid) {
           is_element_valid = wrapped_element->IsDocumentFocused(this->script_engine_host_);
@@ -692,7 +696,7 @@ int Script::AddArgument(HWND element_repository_handle, const Json::Value& arg) 
         }
 
         if (is_element_valid) {
-          this->AddArgument(info.element);
+          this->AddArgument(element);
         } else {
           status_code = EOBSOLETEELEMENT;
         }

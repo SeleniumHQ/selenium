@@ -449,7 +449,9 @@ LRESULT IECommandExecutor::OnGetManagedElement(UINT uMsg,
   ElementHandle element_handle;
   int status_code = this->GetManagedElement(info->element_id, &element_handle);
   if (status_code == WD_SUCCESS) {
-    info->element = element_handle->element();
+    ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLElement,
+                                            element_handle->element(),
+                                            &info->element_stream);
   }
   return status_code;
 }
@@ -460,7 +462,11 @@ LRESULT IECommandExecutor::OnAddManagedElement(UINT uMsg,
                                                BOOL& bHandled) {
   ElementInfo* info = reinterpret_cast<ElementInfo*>(lParam);
   ElementHandle element_handle;
-  this->AddManagedElement(info->element, &element_handle);
+  CComPtr<IHTMLElement> element;
+  ::CoGetInterfaceAndReleaseStream(info->element_stream,
+                                   IID_IHTMLElement,
+                                   reinterpret_cast<void**>(&element));
+  this->AddManagedElement(element, &element_handle);
   info->element_id = element_handle->element_id();
   return WD_SUCCESS;
 }

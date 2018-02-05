@@ -44,7 +44,7 @@ namespace webdriver {
 
 struct ElementInfo {
   std::string element_id;
-  IHTMLElement* element;
+  LPSTREAM element_stream;
 };
 
 // Forward declaration of classes.

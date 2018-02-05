@@ -240,8 +240,13 @@ int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
       ElementInfo info;
       CComPtr<IHTMLElement> node;
       variant_value.pdispVal->QueryInterface<IHTMLElement>(&node);
-      info.element = node;
-      status_code = static_cast<int>(::SendMessage(element_repository_handle, WD_ADD_MANAGED_ELEMENT, NULL, reinterpret_cast<LPARAM>(&info)));
+      ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLElement,
+                                              node,
+                                              &info.element_stream);
+      status_code = static_cast<int>(::SendMessage(element_repository_handle,
+                                                   WD_ADD_MANAGED_ELEMENT,
+                                                   NULL,
+                                                   reinterpret_cast<LPARAM>(&info)));
       Json::Value element_value(Json::objectValue);
       element_value["element-6066-11e4-a52e-4f735466cecf"] = info.element_id;
       *value = element_value;
