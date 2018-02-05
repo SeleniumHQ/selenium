@@ -683,9 +683,12 @@ int Script::AddArgument(HWND element_repository_handle, const Json::Value& arg) 
         ElementHandle wrapped_element(new Element(info.element, info.element_id));
         bool is_element_valid = wrapped_element->IsAttachedToDom();
         if (is_element_valid) {
-          CComPtr<IDispatch> parent_doc_dispatch;
-          wrapped_element->element()->get_document(&parent_doc_dispatch);
-          is_element_valid = this->script_engine_host_.IsEqualObject(parent_doc_dispatch);
+          is_element_valid = wrapped_element->IsDocumentFocused(this->script_engine_host_);
+        } else {
+          status_code = static_cast<int>(::SendMessage(element_repository_handle,
+                                         WD_REMOVE_MANAGED_ELEMENT,
+                                         NULL,
+                                         reinterpret_cast<LPARAM>(&info)));
         }
 
         if (is_element_valid) {

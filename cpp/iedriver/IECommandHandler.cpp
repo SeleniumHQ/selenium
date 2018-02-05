@@ -62,10 +62,7 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
       CComPtr<IHTMLDocument2> focused_doc;
       current_browser->GetDocument(&focused_doc);
 
-      CComPtr<IDispatch> parent_doc_dispatch;
-      candidate_wrapper->element()->get_document(&parent_doc_dispatch);
-
-      if (focused_doc.IsEqualObject(parent_doc_dispatch)) {
+      if (candidate_wrapper->IsDocumentFocused(focused_doc)) {
         *element_wrapper = candidate_wrapper;
         return WD_SUCCESS;
       } else {

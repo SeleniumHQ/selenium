@@ -1093,6 +1093,18 @@ bool Element::IsAttachedToDom() {
   return false;
 }
 
+bool Element::IsDocumentFocused(IHTMLDocument2* focused_doc) {
+  CComPtr<IDispatch> parent_doc_dispatch;
+  this->element_->get_document(&parent_doc_dispatch);
+
+  if (parent_doc_dispatch.IsEqualObject(focused_doc)) {
+    return true;
+  } else {
+    LOG(WARN) << "Found managed element's document is not currently focused";
+  }
+  return false;
+}
+
 bool Element::HasFirstChildTextNodeOfMultipleChildren() {
   CComPtr<IHTMLDOMNode> element_node;
   HRESULT hr = this->element_.QueryInterface<IHTMLDOMNode>(&element_node);

@@ -62,6 +62,7 @@ class Element {
   bool IsInteractable(void);
   bool IsEditable(void);
   bool IsAttachedToDom(void);
+  bool IsDocumentFocused(IHTMLDocument2* focused_doc);
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }
