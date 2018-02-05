@@ -59,6 +59,7 @@ module Buck
 
     args ||= []
     buck.push(command)
+    buck.push('--stamp-build=detect')
     buck.push(*args)
     puts buck.join(' ')
 
@@ -138,7 +139,7 @@ def buck(*args, &block)
 
   task = Rake::Task.task_defined?(name) ? Rake::Task[name] : Rake::Task.define_task(name)
   task.enhance prereqs do
-    Buck.buck_cmd('build', [name])
+    Buck.buck_cmd('build',  [name])
     block.call if block
   end
 
