@@ -153,7 +153,7 @@ implements java.io.Closeable</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/NewSessionPayload.html#getDownstreamDialects--">getDownstreamDialects</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>java.util.stream.Stream&lt;<a href="../../../../org/openqa/selenium/ImmutableCapabilities.html" title="class in org.openqa.selenium">ImmutableCapabilities</a>&gt;</code></td>
+<td class="colFirst"><code>java.util.stream.Stream&lt;<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/NewSessionPayload.html#stream--">stream</a></span>()</code>
 <div class="block">Stream the <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> encoded in the payload used to create this instance.</div>
 </td>
@@ -246,8 +246,8 @@ implements java.io.Closeable</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>stream</h4>
-<pre>public&nbsp;java.util.stream.Stream&lt;<a href="../../../../org/openqa/selenium/ImmutableCapabilities.html" title="class in org.openqa.selenium">ImmutableCapabilities</a>&gt;&nbsp;stream()
-                                                      throws java.io.IOException</pre>
+<pre>public&nbsp;java.util.stream.Stream&lt;<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;stream()
+                                             throws java.io.IOException</pre>
 <div class="block">Stream the <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> encoded in the payload used to create this instance. The
  <code>Stream</code> will start with a <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> object matching the OSS capabilities, and
  will then expand each of the "<code>firstMatch</code>" and "<code>alwaysMatch</code>" contents as defined

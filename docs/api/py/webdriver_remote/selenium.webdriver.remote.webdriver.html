@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.webdriver &mdash; Selenium 3.8 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &mdash; Selenium 3.9 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.8',
+        VERSION:     '3.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.8 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.9 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.8 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -290,7 +290,8 @@ driver.add_cookie({&#8216;name&#8217; : &#8216;foo&#8217;, &#8216;value&#8217; :
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.execute_async_script(&#8216;document.title&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">script = &#8220;var callback = arguments[arguments.length - 1]; &#8221;                      &#8220;window.setTimeout(function(){ callback(&#8216;timeout&#8217;) }, 3000);&#8221;
+driver.execute_async_script(script)</p>
 </td>
 </tr>
 </tbody>
@@ -311,7 +312,7 @@ driver.add_cookie({&#8216;name&#8217; : &#8216;foo&#8217;, &#8216;value&#8217; :
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.execute_script(&#8216;document.title&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.execute_script(&#8216;return document.title;&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -389,7 +390,17 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_element_by_class_name(&#8216;foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = driver.find_element_by_class_name(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -405,11 +416,21 @@ and used as a file detector during the duration of the context manager.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>css_selector: The css selector to use when finding elements.</li>
+<li>css_selector - CSS selector string, ex: &#8216;a.nav#home&#8217;</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_element_by_css_selector(&#8216;#foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = driver.find_element_by_css_selector(&#8216;#foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -429,7 +450,17 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_element_by_id(&#8216;foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = driver.find_element_by_id(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -449,7 +480,17 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_element_by_link_text(&#8216;Sign In&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = driver.find_element_by_link_text(&#8216;Sign In&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -469,7 +510,17 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_element_by_name(&#8216;foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = driver.find_element_by_name(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -489,7 +540,17 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_element_by_partial_link_text(&#8216;Sign&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = driver.find_element_by_partial_link_text(&#8216;Sign&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -505,11 +566,21 @@ and used as a file detector during the duration of the context manager.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>name: The tag name of the element to find.</li>
+<li>name - name of html tag (eg: h1, a, span)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_element_by_tag_name(&#8216;foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = driver.find_element_by_tag_name(&#8216;h1&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -529,7 +600,17 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_element_by_xpath(&#8216;//div/td[1]&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = driver.find_element_by_xpath(&#8216;//div/td[1]&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -565,7 +646,13 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_elements_by_class_name(&#8216;foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of WebElement - a list with elements if any was found.  An
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = driver.find_elements_by_class_name(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -581,11 +668,17 @@ and used as a file detector during the duration of the context manager.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>css_selector: The css selector to use when finding elements.</li>
+<li>css_selector - CSS selector string, ex: &#8216;a.nav#home&#8217;</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_elements_by_css_selector(&#8216;.foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of WebElement - a list with elements if any was found.  An
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = driver.find_elements_by_css_selector(&#8216;.foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -605,7 +698,13 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_elements_by_id(&#8216;foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of WebElement - a list with elements if any was found.  An
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = driver.find_elements_by_id(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -625,7 +724,13 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_elements_by_link_text(&#8216;Sign In&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of webelement - a list with elements if any was found.  an
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = driver.find_elements_by_link_text(&#8216;Sign In&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -645,7 +750,13 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_elements_by_name(&#8216;foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of webelement - a list with elements if any was found.  an
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = driver.find_elements_by_name(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -665,7 +776,13 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_element_by_partial_link_text(&#8216;Sign&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of webelement - a list with elements if any was found.  an
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = driver.find_elements_by_partial_link_text(&#8216;Sign&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -681,11 +798,17 @@ and used as a file detector during the duration of the context manager.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>name: The tag name the use when finding elements.</li>
+<li>name - name of html tag (eg: h1, a, span)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_elements_by_tag_name(&#8216;foo&#8217;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of WebElement - a list with elements if any was found.  An
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = driver.find_elements_by_tag_name(&#8216;h1&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -705,7 +828,13 @@ and used as a file detector during the duration of the context manager.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.find_elements_by_xpath(&#8220;//div[contains(&#64;class, &#8216;foo&#8217;)]&#8221;)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of WebElement - a list with elements if any was found.  An
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = driver.find_elements_by_xpath(&#8220;//div[contains(&#64;class, &#8216;foo&#8217;)]&#8221;)</p>
 </td>
 </tr>
 </tbody>
@@ -952,10 +1081,7 @@ execute_async_script, see set_script_timeout.</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><ul class="first last simple">
-<li>driver.name</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">name = driver.name</td>
 </tr>
 </tbody>
 </table>
@@ -1185,7 +1311,28 @@ to define custom shutdown behavior.</p>
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.switch_to">
 <tt class="descname">switch_to</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.switch_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.switch_to" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>SwitchTo: an object containing all options to switch focus into</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = driver.switch_to.active_element
+alert = driver.switch_to.alert
+driver.switch_to.default_content()
+driver.switch_to.frame(&#8216;frame_name&#8217;)
+driver.switch_to.frame(1)
+driver.switch_to.frame(driver.find_elements_by_tag_name(&#8220;iframe&#8221;)[0])
+driver.switch_to.parent_frame()
+driver.switch_to.window(&#8216;main&#8217;)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.switch_to_active_element">
@@ -1225,7 +1372,7 @@ to define custom shutdown behavior.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">driver.title</td>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">title = driver.title</td>
 </tr>
 </tbody>
 </table>
@@ -1286,7 +1433,7 @@ to define custom shutdown behavior.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.8 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.webelement &mdash; Selenium 3.8 documentation</title>
+    <title>selenium.webdriver.remote.webelement &mdash; Selenium 3.9 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.8',
+        VERSION:     '3.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.8 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.9 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.8 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -72,7 +72,18 @@ instance will fail.</p>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webelement.WebElement.find_element">
 <tt class="descname">find_element</tt><big>(</big><em>by='id'</em>, <em>value=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>&#8216;Private&#8217; method used by the find_element_by_* methods.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">Use the corresponding find_element_by_* instead of this.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">WebElement</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webelement.WebElement.find_element_by_class_name">
@@ -82,9 +93,22 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>name - class name to search for.</li>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>name: The class name of the element to find.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = element.find_element_by_class_name(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -99,9 +123,22 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>css_selector - CSS selctor string, ex: &#8216;a.nav#home&#8217;</li>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>css_selector - CSS selector string, ex: &#8216;a.nav#home&#8217;</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = element.find_element_by_css_selector(&#8216;#foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -116,9 +153,22 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>id_ - ID of child element to locate.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">foo_element = element.find_element_by_id(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -133,9 +183,22 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>link_text - Link text string to search for.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = element.find_element_by_link_text(&#8216;Sign In&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -150,9 +213,22 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>name - name property of the element to find.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = element.find_element_by_name(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -167,9 +243,22 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>link_text - Link text string to search for.</li>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>link_text: The text of the element to partially match on.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = element.find_element_by_partial_link_text(&#8216;Sign&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -184,9 +273,22 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>name - name of html tag (eg: h1, a, span)</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = element.find_element_by_tag_name(&#8216;h1&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -201,25 +303,58 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body">xpath - xpath of element to locate.  &#8220;//input[&#64;class=&#8217;myelement&#8217;]&#8221;</td>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>xpath - xpath of element to locate.  &#8220;//input[&#64;class=&#8217;myelement&#8217;]&#8221;</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
 <p>Note: The base path will be relative to this element&#8217;s location.</p>
 <p>This will select the first link under this element.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">myelement</span><span class="o">.</span><span class="n">find_elements_by_xpath</span><span class="p">(</span><span class="s">&quot;.//a&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">myelement</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">&quot;.//a&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>However, this will select the first link on the page.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">myelement</span><span class="o">.</span><span class="n">find_elements_by_xpath</span><span class="p">(</span><span class="s">&quot;//a&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">myelement</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">&quot;//a&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>WebElement - the element if it was found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><ul class="first simple">
+<li>NoSuchElementException - if the element wasn&#8217;t found</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">element = element.find_element_by_xpath(&#8216;//div/td[1]&#8217;)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webelement.WebElement.find_elements">
 <tt class="descname">find_elements</tt><big>(</big><em>by='id'</em>, <em>value=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>&#8216;Private&#8217; method used by the find_elements_by_* methods.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">Use the corresponding find_elements_by_* instead of this.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list of WebElement</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webelement.WebElement.find_elements_by_class_name">
@@ -229,9 +364,18 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>name - class name to search for.</li>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>name: The class name of the elements to find.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of WebElement - a list with elements if any was found.  An
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = element.find_elements_by_class_name(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -246,9 +390,18 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>css_selector - CSS selctor string, ex: &#8216;a.nav#home&#8217;</li>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>css_selector - CSS selector string, ex: &#8216;a.nav#home&#8217;</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of WebElement - a list with elements if any was found.  An
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = element.find_elements_by_css_selector(&#8216;.foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -258,14 +411,24 @@ instance will fail.</p>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webelement.WebElement.find_elements_by_id">
 <tt class="descname">find_elements_by_id</tt><big>(</big><em>id_</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements_by_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds a list of elements within this element&#8217;s children by ID.</p>
+<dd><p>Finds a list of elements within this element&#8217;s children by ID.
+Will return a list of webelements if found, or an empty list if not.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>id_ - Id of child element to find.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of WebElement - a list with elements if any was found.  An
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = element.find_elements_by_id(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -280,9 +443,18 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>link_text - Link text string to search for.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of webelement - a list with elements if any was found.  an
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = element.find_elements_by_link_text(&#8216;Sign In&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -297,9 +469,18 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>name - name property to search for.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of webelement - a list with elements if any was found.  an
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = element.find_elements_by_name(&#8216;foo&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -314,9 +495,18 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>link_text - Link text string to search for.</li>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>link_text: The text of the element to partial match on.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of webelement - a list with elements if any was found.  an
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = element.find_elements_by_partial_link_text(&#8216;Sign&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -331,9 +521,18 @@ instance will fail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>name - name of html tag (eg: h1, a, span)</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of WebElement - a list with elements if any was found.  An
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = element.find_elements_by_tag_name(&#8216;h1&#8217;)</p>
 </td>
 </tr>
 </tbody>
@@ -364,6 +563,21 @@ instance will fail.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">myelement</span><span class="o">.</span><span class="n">find_elements_by_xpath</span><span class="p">(</span><span class="s">&quot;//a&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first simple">
+<li>list of WebElement - a list with elements if any was found.  An
+empty list if not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">elements = element.find_elements_by_xpath(&#8220;//div[contains(&#64;class, &#8216;foo&#8217;)]&#8221;)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -412,8 +626,7 @@ is returned.</p>
 </tbody>
 </table>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Check if the &quot;active&quot; CSS class is applied to an element.</span>
-<span class="n">text_length</span> <span class="o">=</span> <span class="n">target_element</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s">&quot;text_length&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">text_length</span> <span class="o">=</span> <span class="n">target_element</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s">&quot;text_length&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -632,7 +845,7 @@ file inputs, this could be a local file path.</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.8 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

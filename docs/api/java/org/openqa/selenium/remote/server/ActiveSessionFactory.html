@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -161,6 +161,10 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/SessionFact
     <a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html" title="interface in org.openqa.selenium.remote.server">SessionFactory</a>&nbsp;useThis)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html#isSupporting-org.openqa.selenium.Capabilities-">isSupporting</a></span>(<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected java.lang.Iterable&lt;<a href="../../../../../org/openqa/selenium/remote/server/DriverProvider.html" title="interface in org.openqa.selenium.remote.server">DriverProvider</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html#loadDriverProviders--">loadDriverProviders</a></span>()</code>&nbsp;</td>
 </tr>
@@ -220,6 +224,19 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/SessionFact
 <li class="blockList">
 <h4>loadDriverProviders</h4>
 <pre>protected&nbsp;java.lang.Iterable&lt;<a href="../../../../../org/openqa/selenium/remote/server/DriverProvider.html" title="interface in org.openqa.selenium.remote.server">DriverProvider</a>&gt;&nbsp;loadDriverProviders()</pre>
+</li>
+</ul>
+<a name="isSupporting-org.openqa.selenium.Capabilities-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isSupporting</h4>
+<pre>public&nbsp;boolean&nbsp;isSupporting(<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html#isSupporting-org.openqa.selenium.Capabilities-">isSupporting</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html" title="interface in org.openqa.selenium.remote.server">SessionFactory</a></code></dd>
+</dl>
 </li>
 </ul>
 <a name="apply-java.util.Set-org.openqa.selenium.Capabilities-">

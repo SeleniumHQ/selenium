@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -105,6 +105,10 @@ var activeTableTab = "activeTableTab";
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl>
+<dt>Direct Known Subclasses:</dt>
+<dd><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html" title="class in org.openqa.selenium.remote.server">ServletRequestWrappingHttpRequest</a></dd>
+</dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">HttpRequest</span>
@@ -151,72 +155,93 @@ extends java.lang.Object</pre>
          java.lang.String&nbsp;value)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#addQueryParameter-java.lang.String-java.lang.String-">addQueryParameter</a></span>(java.lang.String&nbsp;name,
+                 java.lang.String&nbsp;value)</code>
+<div class="block">Set a query parameter, adding to existing values if present.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.io.InputStream</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#consumeContentStream--">consumeContentStream</a></span>()</code>
 <div class="block">Get the underlying content stream, bypassing the caching mechanisms that allow it to be read
  again.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getAttribute-java.lang.String-">getAttribute</a></span>(java.lang.String&nbsp;key)</code>
 <div class="block">Retrieves a user-defined attribute of this message.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>byte[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getContent--">getContent</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.nio.charset.Charset</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getContentEncoding--">getContentEncoding</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getContentString--">getContentString</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getHeader-java.lang.String-">getHeader</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getHeaderNames--">getHeaderNames</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getHeaders-java.lang.String-">getHeaders</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http">HttpMethod</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getMethod--">getMethod</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getQueryParameter-java.lang.String-">getQueryParameter</a></span>(java.lang.String&nbsp;name)</code>
+<div class="block">Get a query parameter.</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getQueryParameterNames--">getQueryParameterNames</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getQueryParameters-java.lang.String-">getQueryParameters</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
+</tr>
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getUri--">getUri</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#removeAttribute-java.lang.String-">removeAttribute</a></span>(java.lang.String&nbsp;key)</code>&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#removeHeader-java.lang.String-">removeHeader</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#setAttribute-java.lang.String-java.lang.Object-">setAttribute</a></span>(java.lang.String&nbsp;key,
             java.lang.Object&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#setContent-byte:A-">setContent</a></span>(byte[]&nbsp;data)</code>&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#setContent-java.io.InputStream-">setContent</a></span>(java.io.InputStream&nbsp;toStreamFrom)</code>&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#setHeader-java.lang.String-java.lang.String-">setHeader</a></span>(java.lang.String&nbsp;name,
          java.lang.String&nbsp;value)</code>&nbsp;</td>
@@ -277,6 +302,46 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getMethod</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http">HttpMethod</a>&nbsp;getMethod()</pre>
+</li>
+</ul>
+<a name="getQueryParameter-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQueryParameter</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getQueryParameter(java.lang.String&nbsp;name)</pre>
+<div class="block">Get a query parameter. The implementation will take care of decoding the from percent encoding.</div>
+</li>
+</ul>
+<a name="addQueryParameter-java.lang.String-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addQueryParameter</h4>
+<pre>public&nbsp;void&nbsp;addQueryParameter(java.lang.String&nbsp;name,
+                              java.lang.String&nbsp;value)</pre>
+<div class="block">Set a query parameter, adding to existing values if present. The implementation will ensure
+ that the name and value are properly encoded.</div>
+</li>
+</ul>
+<a name="getQueryParameterNames--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQueryParameterNames</h4>
+<pre>public&nbsp;java.lang.Iterable&lt;java.lang.String&gt;&nbsp;getQueryParameterNames()</pre>
+</li>
+</ul>
+<a name="getQueryParameters-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQueryParameters</h4>
+<pre>public&nbsp;java.lang.Iterable&lt;java.lang.String&gt;&nbsp;getQueryParameters(java.lang.String&nbsp;name)</pre>
 </li>
 </ul>
 <a name="getAttribute-java.lang.String-">

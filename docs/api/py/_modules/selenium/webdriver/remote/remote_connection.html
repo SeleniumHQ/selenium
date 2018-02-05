@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.8 documentation</title>
+    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.9 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.8',
+        VERSION:     '3.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.8 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.9 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.9 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -249,6 +249,10 @@
             <span class="n">port</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span> <span class="ow">or</span> <span class="bp">None</span>
             <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s">&quot;https&quot;</span><span class="p">:</span>
                 <span class="n">ip</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span>
+            <span class="k">elif</span> <span class="n">port</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">common_utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">):</span>
+                <span class="n">ip</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Could not connect to port {} on host &#39;</span>
+                            <span class="s">&#39;{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ip</span> <span class="o">=</span> <span class="n">common_utils</span><span class="o">.</span><span class="n">find_connectable_ip</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">,</span>
                                                       <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
@@ -503,8 +507,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">command_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">command</span><span class="p">]</span>
         <span class="k">assert</span> <span class="n">command_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;Unrecognised command </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">command</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dump_json</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;w3c&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s">&#39;sessionId&#39;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">params</span><span class="p">[</span><span class="s">&#39;sessionId&#39;</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dump_json</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 </div>
@@ -642,7 +648,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.9 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

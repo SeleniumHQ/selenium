@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var methods = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -73,7 +73,7 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.org.openqa.selenium.remote.server.RemoteSession">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
@@ -98,7 +98,12 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html" title="class in org.openqa.selenium.remote.server">org.openqa.selenium.remote.server.RemoteSession</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.remote.server.ServicedSession</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -112,8 +117,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">ServicedSession</span>
-extends java.lang.Object
-implements <a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></pre>
+extends <a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html" title="class in org.openqa.selenium.remote.server">RemoteSession</a></pre>
 </li>
 </ul>
 </div>
@@ -137,6 +141,21 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/ActiveSessi
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.Factory.html" title="class in org.openqa.selenium.remote.server">ServicedSession.Factory</a></span></code>&nbsp;</td>
 </tr>
 </table>
+</li>
+</ul>
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a name="fields.inherited.from.class.org.openqa.selenium.remote.server.RemoteSession">
+<!--   -->
+</a>
+<h3>Fields inherited from class&nbsp;org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html" title="class in org.openqa.selenium.remote.server">RemoteSession</a></h3>
+<code><a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html#log">log</a></code></li>
+</ul>
 </li>
 </ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
@@ -174,45 +193,21 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/ActiveSessi
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.html#execute-org.openqa.selenium.remote.http.HttpRequest-org.openqa.selenium.remote.http.HttpResponse-">execute</a></span>(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req,
-       <a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;resp)</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.Object&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.html#getCapabilities--">getCapabilities</a></span>()</code>
-<div class="block">Describe the current webdriver session's capabilities.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.html#getDownstreamDialect--">getDownstreamDialect</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.html#getFileSystem--">getFileSystem</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.html#getId--">getId</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
 <td class="colFirst"><code>javax.management.ObjectName</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.html#getObjectName--">getObjectName</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.html#getUpstreamDialect--">getUpstreamDialect</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.html#getWrappedDriver--">getWrappedDriver</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i8" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.html#stop--">stop</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.remote.server.RemoteSession">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html" title="class in org.openqa.selenium.remote.server">RemoteSession</a></h3>
+<code><a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html#execute-org.openqa.selenium.remote.http.HttpRequest-org.openqa.selenium.remote.http.HttpResponse-">execute</a>, <a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html#getCapabilities--">getCapabilities</a>, <a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html#getDownstreamDialect--">getDownstreamDialect</a>, <a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html#getFileSystem--">getFileSystem</a>, <a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html#getId--">getId</a>, <a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html#getUpstreamDialect--">getUpstreamDialect</a>, <a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html#getWrappedDriver--">getWrappedDriver</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -245,12 +240,7 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/ActiveSessi
                        <a href="../../../../../org/openqa/selenium/remote/Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream,
                        org.openqa.selenium.remote.server.SessionCodec&nbsp;codec,
                        <a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
-                       java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;capabilities)
-                throws java.io.IOException</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
+                       java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;capabilities)</pre>
 </li>
 </ul>
 </li>
@@ -261,105 +251,6 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/ActiveSessi
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="execute-org.openqa.selenium.remote.http.HttpRequest-org.openqa.selenium.remote.http.HttpResponse-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>execute</h4>
-<pre>public&nbsp;void&nbsp;execute(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req,
-                    <a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;resp)
-             throws java.io.IOException</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/CommandHandler.html#execute-org.openqa.selenium.remote.http.HttpRequest-org.openqa.selenium.remote.http.HttpResponse-">execute</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/CommandHandler.html" title="interface in org.openqa.selenium.remote.server">CommandHandler</a></code></dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
-</li>
-</ul>
-<a name="getId--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getId</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;getId()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html#getId--">getId</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="getUpstreamDialect--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getUpstreamDialect</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;getUpstreamDialect()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html#getUpstreamDialect--">getUpstreamDialect</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="getDownstreamDialect--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getDownstreamDialect</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;getDownstreamDialect()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html#getDownstreamDialect--">getDownstreamDialect</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="getCapabilities--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCapabilities</h4>
-<pre>public&nbsp;java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;getCapabilities()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html#getCapabilities--">ActiveSession</a></code></span></div>
-<div class="block">Describe the current webdriver session's capabilities.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html#getCapabilities--">getCapabilities</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="getWrappedDriver--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getWrappedDriver</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;getWrappedDriver()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/internal/WrapsDriver.html#getWrappedDriver--">getWrappedDriver</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The driver that contains this element.</dd>
-</dl>
-</li>
-</ul>
-<a name="getFileSystem--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getFileSystem</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a>&nbsp;getFileSystem()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html#getFileSystem--">getFileSystem</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></code></dd>
-</dl>
-</li>
-</ul>
 <a name="stop--">
 <!--   -->
 </a>
@@ -367,10 +258,6 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/ActiveSessi
 <li class="blockList">
 <h4>stop</h4>
 <pre>public&nbsp;void&nbsp;stop()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html#stop--">stop</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></code></dd>
-</dl>
 </li>
 </ul>
 <a name="getObjectName--">
@@ -440,7 +327,7 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/ActiveSessi
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.org.openqa.selenium.remote.server.RemoteSession">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>

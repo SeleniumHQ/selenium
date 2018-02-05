@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.webelement &mdash; Selenium 3.8 documentation</title>
+    <title>selenium.webdriver.remote.webelement &mdash; Selenium 3.9 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.8',
+        VERSION:     '3.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.8 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.9 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.9 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -152,7 +152,6 @@
 
 <span class="sd">        Example::</span>
 
-<span class="sd">            # Check if the &quot;active&quot; CSS class is applied to an element.</span>
 <span class="sd">            text_length = target_element.get_property(&quot;text_length&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -212,15 +211,32 @@
         <span class="sd">&quot;&quot;&quot;Finds element within this element&#39;s children by ID.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - id\_ - ID of child element to locate.</span>
+<span class="sd">         - id\_ - ID of child element to locate.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            foo_element = element.find_element_by_id(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">id_</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="WebElement.find_elements_by_id"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds a list of elements within this element&#39;s children by ID.</span>
+<span class="sd">        Will return a list of webelements if found, or an empty list if not.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - id\_ - Id of child element to find.</span>
+<span class="sd">         - id\_ - Id of child element to find.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of WebElement - a list with elements if any was found.  An</span>
+<span class="sd">           empty list if not</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            elements = element.find_elements_by_id(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">id_</span><span class="p">)</span>
 </div>
@@ -228,7 +244,16 @@
         <span class="sd">&quot;&quot;&quot;Finds element within this element&#39;s children by name.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - name - name property of the element to find.</span>
+<span class="sd">         - name - name property of the element to find.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            element = element.find_element_by_name(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -236,7 +261,14 @@
         <span class="sd">&quot;&quot;&quot;Finds a list of elements within this element&#39;s children by name.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - name - name property to search for.</span>
+<span class="sd">         - name - name property to search for.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of webelement - a list with elements if any was found.  an</span>
+<span class="sd">           empty list if not</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            elements = element.find_elements_by_name(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -244,7 +276,16 @@
         <span class="sd">&quot;&quot;&quot;Finds element within this element&#39;s children by visible link text.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - link_text - Link text string to search for.</span>
+<span class="sd">         - link_text - Link text string to search for.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            element = element.find_element_by_link_text(&#39;Sign In&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span>
 </div>
@@ -252,7 +293,14 @@
         <span class="sd">&quot;&quot;&quot;Finds a list of elements within this element&#39;s children by visible link text.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - link_text - Link text string to search for.</span>
+<span class="sd">         - link_text - Link text string to search for.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of webelement - a list with elements if any was found.  an</span>
+<span class="sd">           empty list if not</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            elements = element.find_elements_by_link_text(&#39;Sign In&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span>
 </div>
@@ -260,7 +308,16 @@
         <span class="sd">&quot;&quot;&quot;Finds element within this element&#39;s children by partially visible link text.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - link_text - Link text string to search for.</span>
+<span class="sd">         - link_text: The text of the element to partially match on.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            element = element.find_element_by_partial_link_text(&#39;Sign&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">PARTIAL_LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span>
 </div>
@@ -268,7 +325,14 @@
         <span class="sd">&quot;&quot;&quot;Finds a list of elements within this element&#39;s children by link text.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - link_text - Link text string to search for.</span>
+<span class="sd">         - link_text: The text of the element to partial match on.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of webelement - a list with elements if any was found.  an</span>
+<span class="sd">           empty list if not</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            elements = element.find_elements_by_partial_link_text(&#39;Sign&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">PARTIAL_LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span>
 </div>
@@ -276,7 +340,16 @@
         <span class="sd">&quot;&quot;&quot;Finds element within this element&#39;s children by tag name.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - name - name of html tag (eg: h1, a, span)</span>
+<span class="sd">         - name - name of html tag (eg: h1, a, span)</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            element = element.find_element_by_tag_name(&#39;h1&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -284,7 +357,14 @@
         <span class="sd">&quot;&quot;&quot;Finds a list of elements within this element&#39;s children by tag name.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - name - name of html tag (eg: h1, a, span)</span>
+<span class="sd">         - name - name of html tag (eg: h1, a, span)</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of WebElement - a list with elements if any was found.  An</span>
+<span class="sd">           empty list if not</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            elements = element.find_elements_by_tag_name(&#39;h1&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -292,7 +372,7 @@
         <span class="sd">&quot;&quot;&quot;Finds element by xpath.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            xpath - xpath of element to locate.  &quot;//input[@class=&#39;myelement&#39;]&quot;</span>
+<span class="sd">         - xpath - xpath of element to locate.  &quot;//input[@class=&#39;myelement&#39;]&quot;</span>
 
 <span class="sd">        Note: The base path will be relative to this element&#39;s location.</span>
 
@@ -300,14 +380,22 @@
 
 <span class="sd">        ::</span>
 
-<span class="sd">            myelement.find_elements_by_xpath(&quot;.//a&quot;)</span>
+<span class="sd">            myelement.find_element_by_xpath(&quot;.//a&quot;)</span>
 
 <span class="sd">        However, this will select the first link on the page.</span>
 
 <span class="sd">        ::</span>
 
-<span class="sd">            myelement.find_elements_by_xpath(&quot;//a&quot;)</span>
+<span class="sd">            myelement.find_element_by_xpath(&quot;//a&quot;)</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            element = element.find_element_by_xpath(&#39;//div/td[1]&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">xpath</span><span class="p">)</span>
 </div>
@@ -315,7 +403,7 @@
         <span class="sd">&quot;&quot;&quot;Finds elements within the element by xpath.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - xpath - xpath locator string.</span>
+<span class="sd">         - xpath - xpath locator string.</span>
 
 <span class="sd">        Note: The base path will be relative to this element&#39;s location.</span>
 
@@ -331,6 +419,13 @@
 
 <span class="sd">            myelement.find_elements_by_xpath(&quot;//a&quot;)</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of WebElement - a list with elements if any was found.  An</span>
+<span class="sd">           empty list if not</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            elements = element.find_elements_by_xpath(&quot;//div[contains(@class, &#39;foo&#39;)]&quot;)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">xpath</span><span class="p">)</span>
 </div>
@@ -338,7 +433,16 @@
         <span class="sd">&quot;&quot;&quot;Finds element within this element&#39;s children by class name.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - name - class name to search for.</span>
+<span class="sd">         - name: The class name of the element to find.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            element = element.find_element_by_class_name(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -346,7 +450,14 @@
         <span class="sd">&quot;&quot;&quot;Finds a list of elements within this element&#39;s children by class name.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - name - class name to search for.</span>
+<span class="sd">         - name: The class name of the elements to find.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of WebElement - a list with elements if any was found.  An</span>
+<span class="sd">           empty list if not</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            elements = element.find_elements_by_class_name(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -354,7 +465,16 @@
         <span class="sd">&quot;&quot;&quot;Finds element within this element&#39;s children by CSS selector.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - css_selector - CSS selctor string, ex: &#39;a.nav#home&#39;</span>
+<span class="sd">         - css_selector - CSS selector string, ex: &#39;a.nav#home&#39;</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            element = element.find_element_by_css_selector(&#39;#foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">css_selector</span><span class="p">)</span>
 </div>
@@ -362,7 +482,14 @@
         <span class="sd">&quot;&quot;&quot;Finds a list of elements within this element&#39;s children by CSS selector.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">            - css_selector - CSS selctor string, ex: &#39;a.nav#home&#39;</span>
+<span class="sd">         - css_selector - CSS selector string, ex: &#39;a.nav#home&#39;</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of WebElement - a list with elements if any was found.  An</span>
+<span class="sd">           empty list if not</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            elements = element.find_elements_by_css_selector(&#39;.foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">css_selector</span><span class="p">)</span>
 </div>
@@ -550,6 +677,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WebElement.find_element"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element">[docs]</a>    <span class="k">def</span> <span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &#39;Private&#39; method used by the find_element_by_* methods.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            Use the corresponding find_element_by_* instead of this.</span>
+
+<span class="sd">        :rtype: WebElement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w3c</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
                 <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
@@ -567,6 +702,14 @@
                              <span class="p">{</span><span class="s">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="WebElement.find_elements"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &#39;Private&#39; method used by the find_elements_by_* methods.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            Use the corresponding find_elements_by_* instead of this.</span>
+
+<span class="sd">        :rtype: list of WebElement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w3c</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
                 <span class="n">by</span> <span class="o">=</span> <span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span>
@@ -638,7 +781,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.9 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

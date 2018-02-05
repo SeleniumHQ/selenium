@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.webdriver &mdash; Selenium 3.8 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &mdash; Selenium 3.9 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.8',
+        VERSION:     '3.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.8 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.9 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.9 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -247,7 +247,7 @@
         <span class="sd">&quot;&quot;&quot;Returns the name of the underlying browser for this instance.</span>
 
 <span class="sd">        :Usage:</span>
-<span class="sd">         - driver.name</span>
+<span class="sd">            name = driver.name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s">&#39;browserName&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">[</span><span class="s">&#39;browserName&#39;</span><span class="p">]</span>
@@ -302,6 +302,7 @@
 
         <span class="c"># Double check to see if we have a W3C Compliant browser</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;status&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">w3c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span>
 </div>
     <span class="k">def</span> <span class="nf">_wrap_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -376,7 +377,7 @@
         <span class="sd">&quot;&quot;&quot;Returns the title of the current page.</span>
 
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.title</span>
+<span class="sd">            title = driver.title</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_TITLE</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resp</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="s">&quot;&quot;</span>
@@ -387,8 +388,14 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - id\_ - The id of the element to be found.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_element_by_id(&#39;foo&#39;)</span>
+<span class="sd">            element = driver.find_element_by_id(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">id_</span><span class="p">)</span>
 </div>
@@ -399,8 +406,12 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - id\_ - The id of the elements to be found.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of WebElement - a list with elements if any was found.  An</span>
+<span class="sd">           empty list if not</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_elements_by_id(&#39;foo&#39;)</span>
+<span class="sd">            elements = driver.find_elements_by_id(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">id_</span><span class="p">)</span>
 </div>
@@ -411,8 +422,14 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - xpath - The xpath locator of the element to find.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_element_by_xpath(&#39;//div/td[1]&#39;)</span>
+<span class="sd">            element = driver.find_element_by_xpath(&#39;//div/td[1]&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">xpath</span><span class="p">)</span>
 </div>
@@ -423,8 +440,12 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - xpath - The xpath locator of the elements to be found.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of WebElement - a list with elements if any was found.  An</span>
+<span class="sd">           empty list if not</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_elements_by_xpath(&quot;//div[contains(@class, &#39;foo&#39;)]&quot;)</span>
+<span class="sd">            elements = driver.find_elements_by_xpath(&quot;//div[contains(@class, &#39;foo&#39;)]&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">xpath</span><span class="p">)</span>
 </div>
@@ -435,8 +456,14 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - link_text: The text of the element to be found.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_element_by_link_text(&#39;Sign In&#39;)</span>
+<span class="sd">            element = driver.find_element_by_link_text(&#39;Sign In&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span>
 </div>
@@ -447,8 +474,12 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - link_text: The text of the elements to be found.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of webelement - a list with elements if any was found.  an</span>
+<span class="sd">           empty list if not</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_elements_by_link_text(&#39;Sign In&#39;)</span>
+<span class="sd">            elements = driver.find_elements_by_link_text(&#39;Sign In&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
 </div>
@@ -459,8 +490,14 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - link_text: The text of the element to partially match on.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_element_by_partial_link_text(&#39;Sign&#39;)</span>
+<span class="sd">            element = driver.find_element_by_partial_link_text(&#39;Sign&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">PARTIAL_LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span>
 </div>
@@ -471,8 +508,12 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - link_text: The text of the element to partial match on.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of webelement - a list with elements if any was found.  an</span>
+<span class="sd">           empty list if not</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_element_by_partial_link_text(&#39;Sign&#39;)</span>
+<span class="sd">            elements = driver.find_elements_by_partial_link_text(&#39;Sign&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">PARTIAL_LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span>
 </div>
@@ -483,8 +524,14 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - name: The name of the element to find.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_element_by_name(&#39;foo&#39;)</span>
+<span class="sd">            element = driver.find_element_by_name(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -495,8 +542,12 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - name: The name of the elements to find.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of webelement - a list with elements if any was found.  an</span>
+<span class="sd">           empty list if not</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_elements_by_name(&#39;foo&#39;)</span>
+<span class="sd">            elements = driver.find_elements_by_name(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -505,10 +556,16 @@
 <span class="sd">        Finds an element by tag name.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - name: The tag name of the element to find.</span>
+<span class="sd">         - name - name of html tag (eg: h1, a, span)</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
 
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_element_by_tag_name(&#39;foo&#39;)</span>
+<span class="sd">            element = driver.find_element_by_tag_name(&#39;h1&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -517,10 +574,14 @@
 <span class="sd">        Finds elements by tag name.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - name: The tag name the use when finding elements.</span>
+<span class="sd">         - name - name of html tag (eg: h1, a, span)</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of WebElement - a list with elements if any was found.  An</span>
+<span class="sd">           empty list if not</span>
 
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_elements_by_tag_name(&#39;foo&#39;)</span>
+<span class="sd">            elements = driver.find_elements_by_tag_name(&#39;h1&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -531,8 +592,14 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - name: The class name of the element to find.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_element_by_class_name(&#39;foo&#39;)</span>
+<span class="sd">            element = driver.find_element_by_class_name(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -543,8 +610,12 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - name: The class name of the elements to find.</span>
 
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of WebElement - a list with elements if any was found.  An</span>
+<span class="sd">           empty list if not</span>
+
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_elements_by_class_name(&#39;foo&#39;)</span>
+<span class="sd">            elements = driver.find_elements_by_class_name(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </div>
@@ -553,10 +624,16 @@
 <span class="sd">        Finds an element by css selector.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - css_selector: The css selector to use when finding elements.</span>
+<span class="sd">         - css_selector - CSS selector string, ex: &#39;a.nav#home&#39;</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - WebElement - the element if it was found</span>
+
+<span class="sd">        :Raises:</span>
+<span class="sd">         - NoSuchElementException - if the element wasn&#39;t found</span>
 
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_element_by_css_selector(&#39;#foo&#39;)</span>
+<span class="sd">            element = driver.find_element_by_css_selector(&#39;#foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">css_selector</span><span class="p">)</span>
 </div>
@@ -565,10 +642,14 @@
 <span class="sd">        Finds elements by css selector.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - css_selector: The css selector to use when finding elements.</span>
+<span class="sd">         - css_selector - CSS selector string, ex: &#39;a.nav#home&#39;</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">         - list of WebElement - a list with elements if any was found.  An</span>
+<span class="sd">           empty list if not</span>
 
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.find_elements_by_css_selector(&#39;.foo&#39;)</span>
+<span class="sd">            elements = driver.find_elements_by_css_selector(&#39;.foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">css_selector</span><span class="p">)</span>
 </div>
@@ -581,7 +662,7 @@
 <span class="sd">         - \*args: Any applicable arguments for your JavaScript.</span>
 
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.execute_script(&#39;document.title&#39;)</span>
+<span class="sd">            driver.execute_script(&#39;return document.title;&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">converted_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="n">command</span> <span class="o">=</span> <span class="bp">None</span>
@@ -603,7 +684,9 @@
 <span class="sd">         - \*args: Any applicable arguments for your JavaScript.</span>
 
 <span class="sd">        :Usage:</span>
-<span class="sd">            driver.execute_async_script(&#39;document.title&#39;)</span>
+<span class="sd">            script = &quot;var callback = arguments[arguments.length - 1]; &quot; \</span>
+<span class="sd">                     &quot;window.setTimeout(function(){ callback(&#39;timeout&#39;) }, 3000);&quot;</span>
+<span class="sd">            driver.execute_async_script(script)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">converted_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
@@ -705,6 +788,20 @@
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebDriver.switch_to"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.switch_to">[docs]</a>    <span class="k">def</span> <span class="nf">switch_to</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :Returns:</span>
+<span class="sd">            - SwitchTo: an object containing all options to switch focus into</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            element = driver.switch_to.active_element</span>
+<span class="sd">            alert = driver.switch_to.alert</span>
+<span class="sd">            driver.switch_to.default_content()</span>
+<span class="sd">            driver.switch_to.frame(&#39;frame_name&#39;)</span>
+<span class="sd">            driver.switch_to.frame(1)</span>
+<span class="sd">            driver.switch_to.frame(driver.find_elements_by_tag_name(&quot;iframe&quot;)[0])</span>
+<span class="sd">            driver.switch_to.parent_frame()</span>
+<span class="sd">            driver.switch_to.window(&#39;main&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span>
 
     <span class="c"># Target Locators</span></div>
@@ -1221,7 +1318,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.9 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

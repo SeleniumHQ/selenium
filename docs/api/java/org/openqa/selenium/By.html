@@ -211,13 +211,13 @@ extends java.lang.Object</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/By.html#className-java.lang.String-">className</a></span>(java.lang.String&nbsp;className)</code>
-<div class="block">Finds elements based on the value of the "class" attribute.</div>
+<div class="block">Find elements based on the value of the "class" attribute.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/By.html#cssSelector-java.lang.String-">cssSelector</a></span>(java.lang.String&nbsp;selector)</code>
-<div class="block">Finds elements via the driver's underlying W3 Selector engine.</div>
+<div class="block">Find elements via the driver's underlying W3 Selector engine.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -316,9 +316,9 @@ extends java.lang.Object</pre>
 <pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;id(java.lang.String&nbsp;id)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>id</code> - The value of the "id" attribute to search for</dd>
+<dd><code>id</code> - The value of the "id" attribute to search for.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a By which locates elements by the value of the "id" attribute.</dd>
+<dd>A By which locates elements by the value of the "id" attribute.</dd>
 </dl>
 </li>
 </ul>
@@ -331,9 +331,9 @@ extends java.lang.Object</pre>
 <pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;linkText(java.lang.String&nbsp;linkText)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>linkText</code> - The exact text to match against</dd>
+<dd><code>linkText</code> - The exact text to match against.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a By which locates A elements by the exact text it displays</dd>
+<dd>A By which locates A elements by the exact text they display.</dd>
 </dl>
 </li>
 </ul>
@@ -346,9 +346,9 @@ extends java.lang.Object</pre>
 <pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;partialLinkText(java.lang.String&nbsp;linkText)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>linkText</code> - The text to match against</dd>
+<dd><code>linkText</code> - The text to match against.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a By which locates A elements that contain the given link text</dd>
+<dd>A By which locates A elements that contain the given text.</dd>
 </dl>
 </li>
 </ul>
@@ -361,9 +361,9 @@ extends java.lang.Object</pre>
 <pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;name(java.lang.String&nbsp;name)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>name</code> - The value of the "name" attribute to search for</dd>
+<dd><code>name</code> - The value of the "name" attribute to search for.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a By which locates elements by the value of the "name" attribute.</dd>
+<dd>A By which locates elements by the value of the "name" attribute.</dd>
 </dl>
 </li>
 </ul>
@@ -376,9 +376,9 @@ extends java.lang.Object</pre>
 <pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;tagName(java.lang.String&nbsp;name)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>name</code> - The element's tagName</dd>
+<dd><code>name</code> - The element's tag name.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a By which locates elements by their tag name</dd>
+<dd>A By which locates elements by their tag name.</dd>
 </dl>
 </li>
 </ul>
@@ -391,9 +391,9 @@ extends java.lang.Object</pre>
 <pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;xpath(java.lang.String&nbsp;xpathExpression)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>xpathExpression</code> - The xpath to use</dd>
+<dd><code>xpathExpression</code> - The XPath to use.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a By which locates elements via XPath</dd>
+<dd>A By which locates elements via XPath.</dd>
 </dl>
 </li>
 </ul>
@@ -404,14 +404,14 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>className</h4>
 <pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;className(java.lang.String&nbsp;className)</pre>
-<div class="block">Finds elements based on the value of the "class" attribute. If an element has many classes then
- this will match against each of them. For example if the value is "one two onone", then the
- following "className"s will match: "one" and "two"</div>
+<div class="block">Find elements based on the value of the "class" attribute. If an element has multiple classes, then
+ this will match against each of them. For example, if the value is "one two onone", then the
+ class names "one" and "two" will match.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>className</code> - The value of the "class" attribute to search for</dd>
+<dd><code>className</code> - The value of the "class" attribute to search for.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a By which locates elements by the value of the "class" attribute.</dd>
+<dd>A By which locates elements by the value of the "class" attribute.</dd>
 </dl>
 </li>
 </ul>
@@ -422,14 +422,14 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>cssSelector</h4>
 <pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;cssSelector(java.lang.String&nbsp;selector)</pre>
-<div class="block">Finds elements via the driver's underlying W3 Selector engine. If the browser does not
+<div class="block">Find elements via the driver's underlying W3 Selector engine. If the browser does not
  implement the Selector API, a best effort is made to emulate the API. In this case, we strive
  for at least CSS2 support, but offer no guarantees.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>selector</code> - css expression</dd>
+<dd><code>selector</code> - CSS expression.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a By which locates elements by CSS.</dd>
+<dd>A By which locates elements by CSS.</dd>
 </dl>
 </li>
 </ul>
@@ -443,9 +443,9 @@ extends java.lang.Object</pre>
 <div class="block">Find a single element. Override this method if necessary.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>context</code> - A context to use to find the element</dd>
+<dd><code>context</code> - A context to use to find the element.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The WebElement that matches the selector</dd>
+<dd>The WebElement that matches the selector.</dd>
 </dl>
 </li>
 </ul>
@@ -459,9 +459,9 @@ extends java.lang.Object</pre>
 <div class="block">Find many elements.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>context</code> - A context to use to find the element</dd>
+<dd><code>context</code> - A context to use to find the elements.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A list of WebElements matching the selector</dd>
+<dd>A list of WebElements matching the selector.</dd>
 </dl>
 </li>
 </ul>

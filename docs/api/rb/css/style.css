@@ -484,6 +484,13 @@ pre.code .rubyid_backref,
 pre.code .rubyid_nth_ref { color: #6D79DE; }
 pre.code .regexp, .dregexp { color: #036A07; }
 pre.code a { border-bottom: 1px dotted #bbf; }
+/* inline code */
+p > code {
+	padding: 1px 3px 1px 3px;
+	border: 1px solid #E1E1E8;
+	background: #F7F7F9;
+	border-radius: 4px;
+}
 
 /* Color fix for links */
 #content .summary_desc pre.code .id > .object_link a, /* identifier */

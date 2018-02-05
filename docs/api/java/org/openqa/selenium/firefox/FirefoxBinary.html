@@ -332,7 +332,7 @@ extends java.lang.Object</pre>
 <h4>setEnvironmentProperty</h4>
 <pre>@Deprecated
 public&nbsp;void&nbsp;setEnvironmentProperty(java.lang.String&nbsp;propertyName,
-                                                java.lang.String&nbsp;value)</pre>
+                                               java.lang.String&nbsp;value)</pre>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">deprecated Use <code>DriverService.Builder#withEnvironment(Map)</code> instead:
  <p>
@@ -342,11 +342,6 @@ public&nbsp;void&nbsp;setEnvironmentProperty(java.lang.String&nbsp;propertyName,
      .usingFirefoxBinary(new FirefoxBinary(new File("path/to/firefox.exe")))
      .withEnvironment(ImmutableMap.of("DISPLAY", "0:0"))
      .build());</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>propertyName</code> - </dd>
-<dd><code>value</code> - </dd>
-</dl>
 </li>
 </ul>
 <a name="addCommandLineOptions-java.lang.String...-">
@@ -389,12 +384,7 @@ public&nbsp;void&nbsp;setEnvironmentProperty(java.lang.String&nbsp;propertyName,
 <ul class="blockList">
 <li class="blockList">
 <h4>startFirefoxProcess</h4>
-<pre>protected&nbsp;void&nbsp;startFirefoxProcess(<a href="../../../../org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os">CommandLine</a>&nbsp;command)
-                            throws java.io.IOException</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
+<pre>protected&nbsp;void&nbsp;startFirefoxProcess(<a href="../../../../org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os">CommandLine</a>&nbsp;command)</pre>
 </li>
 </ul>
 <a name="getFile--">
@@ -453,17 +443,9 @@ public&nbsp;java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;getExtra
 <ul class="blockList">
 <li class="blockList">
 <h4>waitFor</h4>
-<pre>public&nbsp;void&nbsp;waitFor()
-             throws java.lang.InterruptedException,
-                    java.io.IOException</pre>
+<pre>public&nbsp;void&nbsp;waitFor()</pre>
 <div class="block">Waits for the process to execute, returning the command output taken from the profile's
  execution.</div>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.InterruptedException</code> - if we are interrupted while waiting for the process to launch</dd>
-<dd><code>java.io.IOException</code> - if there is a problem with reading the input stream of the launching
-         process</dd>
-</dl>
 </li>
 </ul>
 <a name="waitFor-long-">
@@ -472,18 +454,12 @@ public&nbsp;java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;getExtra
 <ul class="blockList">
 <li class="blockList">
 <h4>waitFor</h4>
-<pre>public&nbsp;void&nbsp;waitFor(long&nbsp;timeout)
-             throws java.lang.InterruptedException,
-                    java.io.IOException</pre>
+<pre>public&nbsp;void&nbsp;waitFor(long&nbsp;timeout)</pre>
 <div class="block">Waits for the process to execute, returning the command output taken from the profile's
  execution.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>timeout</code> - the maximum time to wait in milliseconds</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.InterruptedException</code> - if we are interrupted while waiting for the process to launch</dd>
-<dd><code>java.io.IOException</code> - if there is a problem with reading the input stream of the launching
-         process</dd>
 </dl>
 </li>
 </ul>
@@ -493,14 +469,11 @@ public&nbsp;java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;getExtra
 <ul class="blockList">
 <li class="blockList">
 <h4>getConsoleOutput</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getConsoleOutput()
-                                  throws java.io.IOException</pre>
+<pre>public&nbsp;java.lang.String&nbsp;getConsoleOutput()</pre>
 <div class="block">Gets all console output of the binary. Output retrieval is non-destructive and non-blocking.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the console output of the executed binary.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - IO exception reading from the output stream of the firefox process</dd>
 </dl>
 </li>
 </ul>

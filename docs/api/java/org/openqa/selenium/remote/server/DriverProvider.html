@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":38,"i2":6,"i3":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":6,"i1":6,"i2":6};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../org/openqa/selenium/remote/server/DriverServlet.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/remote/server/DriverSessions.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?org/openqa/selenium/remote/server/DriverProvider.html" target="_top">Frames</a></li>
@@ -99,7 +99,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverProvider.html" title="class in org.openqa.selenium.remote.server">DefaultDriverProvider</a>, <a href="../../../../../org/openqa/selenium/remote/server/FirefoxDriverProvider.html" title="class in org.openqa.selenium.remote.server">FirefoxDriverProvider</a></dd>
+<dd><a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverProvider.html" title="class in org.openqa.selenium.remote.server">DefaultDriverProvider</a></dd>
 </dl>
 <hr>
 <br>
@@ -130,7 +130,7 @@ var activeTableTab = "activeTableTab";
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -142,21 +142,13 @@ var activeTableTab = "activeTableTab";
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DriverProvider.html#canCreateDriverInstances--">canCreateDriverInstances</a></span>()</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">All providers should be able to create driver instances.</span></div>
-</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DriverProvider.html#getProvidedCapabilities--">getProvidedCapabilities</a></span>()</code>
 <div class="block">The provider "promises" that created driver instances will have (at least) this set of
  capabilities.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DriverProvider.html#newInstance-org.openqa.selenium.Capabilities-">newInstance</a></span>(<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
 <div class="block">Creates a new driver instance.</div>
@@ -190,22 +182,6 @@ var activeTableTab = "activeTableTab";
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>capabilities provided</dd>
-</dl>
-</li>
-</ul>
-<a name="canCreateDriverInstances--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>canCreateDriverInstances</h4>
-<pre>@Deprecated
-boolean&nbsp;canCreateDriverInstances()</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">All providers should be able to create driver instances.</span></div>
-<div class="block">Checks if the provider can create driver instances "in general".</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>true if the provider can create driver instances.</dd>
 </dl>
 </li>
 </ul>
@@ -270,7 +246,7 @@ boolean&nbsp;canCreateDriverInstances()</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../org/openqa/selenium/remote/server/DriverServlet.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/remote/server/DriverSessions.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?org/openqa/selenium/remote/server/DriverProvider.html" target="_top">Frames</a></li>

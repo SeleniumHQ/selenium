@@ -27,7 +27,6 @@ org.openqa.selenium.os
 org.openqa.selenium.remote
 org.openqa.selenium.remote.html5
 org.openqa.selenium.remote.http
-org.openqa.selenium.remote.internal
 org.openqa.selenium.remote.mobile
 org.openqa.selenium.remote.server
 org.openqa.selenium.remote.server.commandhandler

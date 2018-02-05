@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var methods = {"i0":38,"i1":6,"i2":38};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -97,10 +97,6 @@ var activeTableTab = "activeTableTab";
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../../org/openqa/selenium/remote/internal/ApacheHttpClient.html" title="class in org.openqa.selenium.remote.internal">ApacheHttpClient</a>, <a href="../../../../../org/openqa/selenium/remote/internal/JreHttpClient.html" title="class in org.openqa.selenium.remote.internal">JreHttpClient</a></dd>
-</dl>
 <hr>
 <br>
 <pre>public interface <span class="typeNameLabel">HttpClient</span></pre>
@@ -137,7 +133,7 @@ var activeTableTab = "activeTableTab";
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -145,14 +141,25 @@ var activeTableTab = "activeTableTab";
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html#close--">close</a></span>()</code>
-<div class="block">Closes the connections associated with this client.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">This responsibility moved to Factory</span></div>
+</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html#execute-org.openqa.selenium.remote.http.HttpRequest-">execute</a></span>(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</code>
+<div class="block">Executes the given request, following any redirects if necessary.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html#execute-org.openqa.selenium.remote.http.HttpRequest-boolean-">execute</a></span>(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
        boolean&nbsp;followRedirects)</code>
-<div class="block">Executes the given request.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">All call sites found set <code>followRedirects</code> to <code>true</code>. Use
+   <a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html#execute-org.openqa.selenium.remote.http.HttpRequest-"><code>execute(HttpRequest)</code></a>.</span></div>
+</div>
 </td>
 </tr>
 </table>
@@ -176,14 +183,36 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>execute</h4>
-<pre><a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;execute(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-                     boolean&nbsp;followRedirects)
-              throws java.io.IOException</pre>
+<pre>@Deprecated
+<a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;execute(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+                                 boolean&nbsp;followRedirects)
+                          throws java.io.IOException</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">All call sites found set <code>followRedirects</code> to <code>true</code>. Use
+   <a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html#execute-org.openqa.selenium.remote.http.HttpRequest-"><code>execute(HttpRequest)</code></a>.</span></div>
 <div class="block">Executes the given request.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>request</code> - the request to execute.</dd>
 <dd><code>followRedirects</code> - whether to automatically follow redirects.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the final response.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - if an I/O error occurs.</dd>
+</dl>
+</li>
+</ul>
+<a name="execute-org.openqa.selenium.remote.http.HttpRequest-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>execute</h4>
+<pre><a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;execute(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)
+              throws java.io.IOException</pre>
+<div class="block">Executes the given request, following any redirects if necessary.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>request</code> - the request to execute.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the final response.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -197,8 +226,10 @@ var activeTableTab = "activeTableTab";
 <ul class="blockListLast">
 <li class="blockList">
 <h4>close</h4>
-<pre>void&nbsp;close()
-    throws java.io.IOException</pre>
+<pre>@Deprecated
+void&nbsp;close()
+                throws java.io.IOException</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">This responsibility moved to Factory</span></div>
 <div class="block">Closes the connections associated with this client.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>

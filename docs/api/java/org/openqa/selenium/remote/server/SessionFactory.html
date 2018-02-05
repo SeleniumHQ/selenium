@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6};
+var methods = {"i0":6,"i1":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -99,7 +99,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html" title="class in org.openqa.selenium.remote.server">ActiveSessionFactory</a>, <a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.Factory.html" title="class in org.openqa.selenium.remote.server">ServicedSession.Factory</a></dd>
+<dd><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html" title="class in org.openqa.selenium.remote.server">ActiveSessionFactory</a>, <a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.Factory.html" title="class in org.openqa.selenium.remote.server">RemoteSession.Factory</a>, <a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.Factory.html" title="class in org.openqa.selenium.remote.server">ServicedSession.Factory</a></dd>
 </dl>
 <hr>
 <br>
@@ -127,6 +127,10 @@ var activeTableTab = "activeTableTab";
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html#apply-java.util.Set-org.openqa.selenium.Capabilities-">apply</a></span>(java.util.Set&lt;<a href="../../../../../org/openqa/selenium/remote/Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;&nbsp;downstreamDialects,
      <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
 </tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/SessionFactory.html#isSupporting-org.openqa.selenium.Capabilities-">isSupporting</a></span>(<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -142,6 +146,15 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="isSupporting-org.openqa.selenium.Capabilities-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isSupporting</h4>
+<pre>boolean&nbsp;isSupporting(<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+</li>
+</ul>
 <a name="apply-java.util.Set-org.openqa.selenium.Capabilities-">
 <!--   -->
 </a>

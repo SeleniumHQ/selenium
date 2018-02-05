@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var methods = {"i0":6,"i1":6,"i2":17};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -98,10 +98,6 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <dl>
-<dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../../org/openqa/selenium/remote/internal/ApacheHttpClient.Factory.html" title="class in org.openqa.selenium.remote.internal">ApacheHttpClient.Factory</a>, <a href="../../../../../org/openqa/selenium/remote/internal/JreHttpClient.Factory.html" title="class in org.openqa.selenium.remote.internal">JreHttpClient.Factory</a></dd>
-</dl>
-<dl>
 <dt>Enclosing interface:</dt>
 <dd><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></dd>
 </dl>
@@ -121,16 +117,26 @@ var activeTableTab = "activeTableTab";
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t5" class="tableTab"><span><a href="javascript:show(16);">Default Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.Factory.html#cleanupIdleClients--">cleanupIdleClients</a></span>()</code>
+<div class="block">Closes idle clients.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.Factory.html#createClient-java.net.URL-">createClient</a></span>(java.net.URL&nbsp;url)</code>
 <div class="block">Creates a HTTP client that will send requests to the given URL.</div>
 </td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.Factory.html#createDefault--">createDefault</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -147,10 +153,19 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="createDefault--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createDefault</h4>
+<pre>static&nbsp;<a href="../../../../../org/openqa/selenium/remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;createDefault()</pre>
+</li>
+</ul>
 <a name="createClient-java.net.URL-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>createClient</h4>
 <pre><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;createClient(java.net.URL&nbsp;url)</pre>
@@ -161,6 +176,16 @@ var activeTableTab = "activeTableTab";
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>HttpClient</dd>
 </dl>
+</li>
+</ul>
+<a name="cleanupIdleClients--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>cleanupIdleClients</h4>
+<pre>void&nbsp;cleanupIdleClients()</pre>
+<div class="block">Closes idle clients.</div>
 </li>
 </ul>
 </li>

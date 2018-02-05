@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.8 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.9 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.8',
+        VERSION:     '3.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.8 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.9 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.9 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -105,7 +105,8 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">firefox_binary</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">executable_path</span><span class="o">=</span><span class="s">&quot;geckodriver&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">log_path</span><span class="o">=</span><span class="s">&quot;geckodriver.log&quot;</span><span class="p">,</span> <span class="n">firefox_options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">log_path</span><span class="o">=</span><span class="s">&quot;geckodriver.log&quot;</span><span class="p">,</span> <span class="n">firefox_options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">service_args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Starts a new local session of Firefox.</span>
 
 <span class="sd">        Based on the combination and specificity of the various keyword</span>
@@ -193,7 +194,10 @@
 
         <span class="k">if</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;marionette&quot;</span><span class="p">):</span>
             <span class="n">capabilities</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;marionette&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">log_path</span><span class="o">=</span><span class="n">log_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span>
+                <span class="n">executable_path</span><span class="p">,</span>
+                <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span>
+                <span class="n">log_path</span><span class="o">=</span><span class="n">log_path</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
             <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
@@ -341,7 +345,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.8 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.9 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

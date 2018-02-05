@@ -300,9 +300,10 @@ extends <a href="../../../com/thoughtworks/selenium/SeleneseTestBase.html" title
 <ul class="blockList">
 <li class="blockList">
 <h4>setUp</h4>
-<pre>public&nbsp;void&nbsp;setUp(java.lang.String&nbsp;url,
-                  java.lang.String&nbsp;browserString)
-           throws java.lang.Exception</pre>
+<pre>@BeforeTest
+public&nbsp;void&nbsp;setUp(java.lang.String&nbsp;url,
+                              java.lang.String&nbsp;browserString)
+                       throws java.lang.Exception</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/thoughtworks/selenium/SeleneseTestBase.html#setUp-java.lang.String-java.lang.String-">SeleneseTestBase</a></code></span></div>
 <div class="block">Creates a new DefaultSelenium object and starts it using the specified baseUrl and browser
  string. The port is selected as follows: if the server package's RemoteControlConfiguration
@@ -327,7 +328,8 @@ extends <a href="../../../com/thoughtworks/selenium/SeleneseTestBase.html" title
 <ul class="blockList">
 <li class="blockList">
 <h4>getSelenium</h4>
-<pre>public&nbsp;void&nbsp;getSelenium(boolean&nbsp;restartSession)</pre>
+<pre>@BeforeClass
+public&nbsp;void&nbsp;getSelenium(boolean&nbsp;restartSession)</pre>
 </li>
 </ul>
 <a name="setTestContext-java.lang.reflect.Method-">
@@ -336,7 +338,8 @@ extends <a href="../../../com/thoughtworks/selenium/SeleneseTestBase.html" title
 <ul class="blockList">
 <li class="blockList">
 <h4>setTestContext</h4>
-<pre>public&nbsp;void&nbsp;setTestContext(java.lang.reflect.Method&nbsp;method)</pre>
+<pre>@BeforeMethod
+public&nbsp;void&nbsp;setTestContext(java.lang.reflect.Method&nbsp;method)</pre>
 </li>
 </ul>
 <a name="attachScreenshotListener-java.lang.String-java.lang.String-org.testng.ITestContext-">
@@ -345,9 +348,10 @@ extends <a href="../../../com/thoughtworks/selenium/SeleneseTestBase.html" title
 <ul class="blockList">
 <li class="blockList">
 <h4>attachScreenshotListener</h4>
-<pre>public&nbsp;void&nbsp;attachScreenshotListener(java.lang.String&nbsp;host,
-                                     java.lang.String&nbsp;port,
-                                     org.testng.ITestContext&nbsp;context)</pre>
+<pre>@BeforeSuite
+public&nbsp;void&nbsp;attachScreenshotListener(java.lang.String&nbsp;host,
+                                                  java.lang.String&nbsp;port,
+                                                  org.testng.ITestContext&nbsp;context)</pre>
 </li>
 </ul>
 <a name="checkForVerificationErrors--">
@@ -356,7 +360,8 @@ extends <a href="../../../com/thoughtworks/selenium/SeleneseTestBase.html" title
 <ul class="blockList">
 <li class="blockList">
 <h4>checkForVerificationErrors</h4>
-<pre>public&nbsp;void&nbsp;checkForVerificationErrors()</pre>
+<pre>@AfterMethod
+public&nbsp;void&nbsp;checkForVerificationErrors()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/thoughtworks/selenium/SeleneseTestBase.html#checkForVerificationErrors--">SeleneseTestBase</a></code></span></div>
 <div class="block">Asserts that there were no verification errors during the current test, failing immediately if
  any are found</div>
@@ -372,7 +377,8 @@ extends <a href="../../../com/thoughtworks/selenium/SeleneseTestBase.html" title
 <ul class="blockList">
 <li class="blockList">
 <h4>selectDefaultWindow</h4>
-<pre>public&nbsp;void&nbsp;selectDefaultWindow()</pre>
+<pre>@AfterMethod(alwaysRun=true)
+public&nbsp;void&nbsp;selectDefaultWindow()</pre>
 </li>
 </ul>
 <a name="tearDown--">
@@ -381,8 +387,9 @@ extends <a href="../../../com/thoughtworks/selenium/SeleneseTestBase.html" title
 <ul class="blockList">
 <li class="blockList">
 <h4>tearDown</h4>
-<pre>public&nbsp;void&nbsp;tearDown()
-              throws java.lang.Exception</pre>
+<pre>@AfterTest(alwaysRun=true)
+public&nbsp;void&nbsp;tearDown()
+                                         throws java.lang.Exception</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/thoughtworks/selenium/SeleneseTestBase.html#tearDown--">SeleneseTestBase</a></code></span></div>
 <div class="block">checks for verification errors and stops the browser</div>
 <dl>

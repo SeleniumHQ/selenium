@@ -346,7 +346,9 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys-org.openqa.selenium.WebElement-java.lang.CharSequence...-">sendKeys</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
         java.lang.CharSequence...&nbsp;keys)</code>
 <div class="block">Equivalent to calling:
- <i>Actions.click(element).sendKeys(keysToSend).</div>
+ <i>Actions.click(element).sendKeys(keysToSend).</i>
+ This method is different from <a href="../../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-"><code>WebElement.sendKeys(CharSequence...)</code></a> - see
+ <a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys-java.lang.CharSequence...-"><code>sendKeys(CharSequence...)</code></a> for details how.</div>
 </td>
 </tr>
 <tr id="i25" class="rowColor">
@@ -413,7 +415,7 @@ extends java.lang.Object</pre>
 <h4>Actions</h4>
 <pre>@Deprecated
 public&nbsp;Actions(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
-                            <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse)</pre>
+                           <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse)</pre>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use the new interactions APIs.</span></div>
 <div class="block">A constructor that should only be used when the keyboard or mouse were extended to provide
  additional functionality (for example, dragging-and-dropping from the desktop).</div>

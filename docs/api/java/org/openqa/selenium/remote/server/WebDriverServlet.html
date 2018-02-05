@@ -151,7 +151,15 @@ extends javax.servlet.http.HttpServlet</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/WebDriverServlet.html#BROWSER_TIMEOUT_PARAMETER">BROWSER_TIMEOUT_PARAMETER</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/WebDriverServlet.html#NEW_SESSION_PIPELINE_KEY">NEW_SESSION_PIPELINE_KEY</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/WebDriverServlet.html#SESSION_TIMEOUT_PARAMETER">SESSION_TIMEOUT_PARAMETER</a></span></code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -245,6 +253,32 @@ extends javax.servlet.http.HttpServlet</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
+<a name="SESSION_TIMEOUT_PARAMETER">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>SESSION_TIMEOUT_PARAMETER</h4>
+<pre>public static final&nbsp;java.lang.String SESSION_TIMEOUT_PARAMETER</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#org.openqa.selenium.remote.server.WebDriverServlet.SESSION_TIMEOUT_PARAMETER">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a name="BROWSER_TIMEOUT_PARAMETER">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BROWSER_TIMEOUT_PARAMETER</h4>
+<pre>public static final&nbsp;java.lang.String BROWSER_TIMEOUT_PARAMETER</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#org.openqa.selenium.remote.server.WebDriverServlet.BROWSER_TIMEOUT_PARAMETER">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
 <a name="ACTIVE_SESSIONS_KEY">
 <!--   -->
 </a>
@@ -294,13 +328,10 @@ extends javax.servlet.http.HttpServlet</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>init</h4>
-<pre>public&nbsp;void&nbsp;init()
-          throws javax.servlet.ServletException</pre>
+<pre>public&nbsp;void&nbsp;init()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>init</code>&nbsp;in class&nbsp;<code>javax.servlet.GenericServlet</code></dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>javax.servlet.ServletException</code></dd>
 </dl>
 </li>
 </ul>
