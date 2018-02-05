@@ -72,6 +72,11 @@ Element::Element(IHTMLElement* element, HWND containing_window_handle) {
   this->containing_window_handle_ = containing_window_handle;
 }
 
+Element::Element(IHTMLElement* element, std::string element_id) {
+  this->element_ = element;
+  this->element_id_ = element_id;
+}
+
 Element::~Element(void) {
 }
 

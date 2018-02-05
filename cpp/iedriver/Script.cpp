@@ -674,10 +674,25 @@ int Script::AddArgument(HWND element_repository_handle, const Json::Value& arg) 
     if (arg.isMember(element_marker_property_name)) {
       ElementInfo info;
       info.element_id = arg[element_marker_property_name].asString();
-      status_code = static_cast<int>(::SendMessage(element_repository_handle, WD_GET_MANAGED_ELEMENT, NULL, reinterpret_cast<LPARAM>(&info)));
+      status_code = static_cast<int>(::SendMessage(element_repository_handle,
+                                     WD_GET_MANAGED_ELEMENT,
+                                     NULL,
+                                     reinterpret_cast<LPARAM>(&info)));
 
       if (status_code == WD_SUCCESS) {
-        this->AddArgument(info.element);
+        ElementHandle wrapped_element(new Element(info.element, info.element_id));
+        bool is_element_valid = wrapped_element->IsAttachedToDom();
+        if (is_element_valid) {
+          CComPtr<IDispatch> parent_doc_dispatch;
+          wrapped_element->element()->get_document(&parent_doc_dispatch);
+          is_element_valid = this->script_engine_host_.IsEqualObject(parent_doc_dispatch);
+        }
+
+        if (is_element_valid) {
+          this->AddArgument(info.element);
+        } else {
+          status_code = EOBSOLETEELEMENT;
+        }
       }
     } else {
       status_code = this->WalkObject(element_repository_handle, arg);

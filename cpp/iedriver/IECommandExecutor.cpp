@@ -794,37 +794,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
 int IECommandExecutor::GetManagedElement(const std::string& element_id,
                                          ElementHandle* element_wrapper) const {
   LOG(TRACE) << "Entering IECommandExecutor::GetManagedElement";
-  ElementHandle candidate_wrapper;
-  int result = this->managed_elements_->GetManagedElement(element_id, &candidate_wrapper);
-  if (result != WD_SUCCESS) {
-    LOG(WARN) << "Unable to get managed element, element not found";
-    return result;
-  } else {
-    if (!candidate_wrapper->IsAttachedToDom()) {
-      LOG(WARN) << "Found managed element is no longer valid";
-      this->managed_elements_->RemoveManagedElement(element_id);
-      return EOBSOLETEELEMENT;
-    } else {
-      // If the element is attached to the DOM, validate that its document
-      // is the currently-focused document (via frames).
-      BrowserHandle current_browser;
-      this->GetCurrentBrowser(&current_browser);
-      CComPtr<IHTMLDocument2> focused_doc;
-      current_browser->GetDocument(&focused_doc);
-
-      CComPtr<IDispatch> parent_doc_dispatch;
-      candidate_wrapper->element()->get_document(&parent_doc_dispatch);
-
-      if (focused_doc.IsEqualObject(parent_doc_dispatch)) {
-        *element_wrapper = candidate_wrapper;
-        return WD_SUCCESS;
-      } else {
-        LOG(WARN) << "Found managed element's document is not currently focused";
-      }
-    }
-  }
-
-  return EOBSOLETEELEMENT;
+  return this->managed_elements_->GetManagedElement(element_id, element_wrapper);
 }
 
 void IECommandExecutor::AddManagedElement(IHTMLElement* element,

@@ -37,6 +37,7 @@ class Browser;
 class Element {
  public:
   Element(IHTMLElement* element, HWND containing_window_handle);
+  Element(IHTMLElement* element, std::string element_id);
   virtual ~Element(void);
   Json::Value ConvertToJson(void);
   std::string GetTagName(void);
