@@ -96,7 +96,7 @@
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxExt.zip</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\firefox-driver\webdriver_prefs">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\firefox-driver\webdriver_prefs\webdriver_prefs">
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxPreferences</LogicalName>
     </EmbeddedResource>
@@ -108,11 +108,11 @@
       <Visible>False</Visible>
       <LogicalName>isDisplayed.js</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\cpp\prebuilt\i386\x_ignore_nofocus.so">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\cpp\prebuilt\noblur32\i386\x_ignore_nofocus.so">
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxNoFocus.x86.dll</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\cpp\prebuilt\amd64\x_ignore_nofocus.so">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\cpp\prebuilt\noblur64\amd64\x_ignore_nofocus.so">
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxNoFocus.x64.dll</LogicalName>
     </EmbeddedResource>
