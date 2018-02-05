@@ -9,6 +9,27 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.9.0.0
+========
+ * Refactor IE user-initiated JavaScript execution to use JSON objects.
+   This IE driver refactor is internal, but should not change behavior of the
+   driver. It is intended to let the driver's internal script executor use
+   the direct internal JSON objects as arguments for script execution,
+   deferring their conversion into variants until directly before execution.
+ * Removed clearing of known element cache on document navigation. This
+   was causing incorrect NoSuchElementException when
+   StaleElementReferenceException was expected.
+ * Updated IE driver alert detection to get alert text from "repeat" alerts.
+   This commit should allow the proper retrieval of alert text from IE alerts
+   that happen "repeatedly." That is, those that have the checkbox stating
+   "Do not let this page create any more alerts." Unlike standard Windows
+   alerts, these use controls that are only available via Active
+   Accessibility to retrieve the text. The driver now is able to detect and
+   retrieve text from these types of alerts.
+ * Removed now-deprecated non-standard tr1 namespace.
+ * (on behalf of Jacob Kiesel) Modified to use a mutex to lock Win32 message
+   handling. Fixes issue #5304.
+
 v3.8.0.0
 ========
  * Release to synchronize with release of Selenium project.
