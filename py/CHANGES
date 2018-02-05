@@ -1,3 +1,10 @@
+Selenium 3.9.0
+
+* Add docstrings to WebElement find methods (#5384)
+* Additional data in unexpected alert error is now handled for w3c drivers (#5416)
+* Allow service_args to be passed into Firefox WebDriver (#5421)
+* Fix bug introduced with response logging in 3.8.1 (#5362)
+
 Selenium 3.8.1
 
 * Fix bug when creating an Opera driver (#5266)
