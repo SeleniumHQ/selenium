@@ -374,7 +374,7 @@ task :py_prep_for_install_release => [
   "//py:prep"
 ]
 
-task :py_docs => "//py:docs"
+task :py_docs => ["//py:init", "//py:docs"]
 
 task :py_install =>  "//py:install"
 
