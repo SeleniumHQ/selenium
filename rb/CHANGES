@@ -1,3 +1,21 @@
+3.9.0 (2018-02-06)
+==================
+
+Ruby:
+  * Fixed a bug when omitted capabilities caused NoMethodError (issue #5185)
+  * Fixed a bug when getting page source in W3C dialect caused WebDriverError (thanks @KazuCocoa)
+  * Fixed a bug when getting backtrace of server error would case NoMethodError (thanks @mcking49)
+  * Updated YARD to ~> 0.9.11
+  * Updated rubyzip to ~> 1.2 (thanks @michaelglass)
+
+Chrome:
+  * Added support for getting network conditions via Driver#network_conditions
+  * Added support for setting network conditions via Driver#network_conditions=
+  * Added support to allow driver respond with custom error codes (issue #5376)
+
+Firefox:
+  * Improved GeckoDriver binary lookup mechanism (issue #5240)
+
 3.8.0 (2017-12-01)
 ==================
 
