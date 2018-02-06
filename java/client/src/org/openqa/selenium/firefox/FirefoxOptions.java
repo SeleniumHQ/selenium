@@ -17,10 +17,24 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.Objects.requireNonNull;
+import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
-import org.openqa.selenium.*;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -28,14 +42,14 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.logging.Level;
-
-import static java.util.Objects.requireNonNull;
-import static org.openqa.selenium.firefox.FirefoxDriver.*;
-import static org.openqa.selenium.remote.CapabilityType.*;
 
 /**
  * Manage firefox specific settings in a way that geckodriver can understand.
@@ -75,8 +89,8 @@ public class FirefoxOptions extends MutableCapabilities {
       FirefoxProfile profile = new ProfilesIni().getProfile(profileName);
       if (profile == null) {
         throw new WebDriverException(String.format(
-            "Firefox profile '%s' named in system property '%s' not found",
-            profileName, FirefoxDriver.SystemProperty.BROWSER_PROFILE));
+                "Firefox profile '%s' named in system property '%s' not found",
+                profileName, FirefoxDriver.SystemProperty.BROWSER_PROFILE));
       }
       setProfile(profile);
     }
@@ -166,7 +180,7 @@ public class FirefoxOptions extends MutableCapabilities {
           setProfile((FirefoxProfile) value);
         } else {
           throw new WebDriverException(
-              "In FirefoxOptions, don't know how to convert profile: " + that);
+                  "In FirefoxOptions, don't know how to convert profile: " + that);
         }
       }
     }
@@ -258,15 +272,15 @@ public class FirefoxOptions extends MutableCapabilities {
 
   public FirefoxOptions setPageLoadStrategy(PageLoadStrategy strategy) {
     setCapability(
-        PAGE_LOAD_STRATEGY,
-        Objects.requireNonNull(strategy, "Page load strategy must be set"));
+            PAGE_LOAD_STRATEGY,
+            Objects.requireNonNull(strategy, "Page load strategy must be set"));
     return this;
   }
 
   public FirefoxOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     setCapability(
-        UNHANDLED_PROMPT_BEHAVIOUR,
-        Objects.requireNonNull(behaviour, "Unhandled prompt behavior must be set"));
+            UNHANDLED_PROMPT_BEHAVIOUR,
+            Objects.requireNonNull(behaviour, "Unhandled prompt behavior must be set"));
     return this;
   }
 
@@ -291,34 +305,34 @@ public class FirefoxOptions extends MutableCapabilities {
   @Override
   public void setCapability(String key, Object value) {
     switch (key) {
-      case BINARY:
-        binary = new Binary(requireNonNull(value, "Binary value cannot be null"));
-        value = binary.asCapability();
-        break;
+    case BINARY:
+      binary = new Binary(requireNonNull(value, "Binary value cannot be null"));
+      value = binary.asCapability();
+      break;
 
-      case MARIONETTE:
-        if (value instanceof Boolean) {
-          legacy = !(Boolean) value;
+    case MARIONETTE:
+      if (value instanceof Boolean) {
+        legacy = !(Boolean) value;
+      }
+      break;
+
+    case PROFILE:
+      if (value instanceof FirefoxProfile) {
+        profile = (FirefoxProfile) value;
+      } else if (value instanceof String) {
+        try {
+          profile = FirefoxProfile.fromJson((String) value);
+        } catch (IOException e) {
+          throw new WebDriverException(e);
         }
-        break;
+        value = profile;
+      } else {
+        throw new WebDriverException("Unexpected value for profile: " + value);
+      }
+      break;
 
-      case PROFILE:
-        if (value instanceof FirefoxProfile) {
-          profile = (FirefoxProfile) value;
-        } else if (value instanceof String) {
-          try {
-            profile = FirefoxProfile.fromJson((String) value);
-          } catch (IOException e) {
-            throw new WebDriverException(e);
-          }
-          value = profile;
-        } else {
-          throw new WebDriverException("Unexpected value for profile: " + value);
-        }
-        break;
-
-      default:
-        // Do nothing
+    default:
+      // Do nothing
     }
     super.setCapability(key, value);
   }
@@ -379,93 +393,7 @@ public class FirefoxOptions extends MutableCapabilities {
   @Override
   public FirefoxOptions merge(Capabilities capabilities) {
     super.merge(capabilities);
-    if (capabilities instanceof FirefoxOptions) {
-      Map options = (Map) capabilities.asMap().get("moz:firefoxOptions");
-      mergeArguments(options);
-      mergeBooleanPrefs(capabilities);
-      mergeIntPrefs(capabilities);
-      mergeStringPrefs(capabilities);
-      mergeLogLevel(capabilities);
-    }
     return this;
-  }
-  
-  private void mergeArguments(Map options) {
-    addArguments((List<String>) options.get("args"));
-    deleteDuplicates((ArrayList) args);
-  }
-  
-  private void mergeBooleanPrefs(Capabilities capabilities) {
-    try {
-      Field booleanPrefsField =FirefoxOptions.class.getDeclaredField("booleanPrefs");
-      booleanPrefsField.setAccessible(true);
-      Map<String, Boolean> booleanPrefsList = (Map<String, Boolean>) booleanPrefsField.get(capabilities);
-      for (Map.Entry<String, Boolean> booleanPref : booleanPrefsList.entrySet()) {
-        if (booleanPrefs.get(booleanPref.getKey()) == null) {
-          addPreference(booleanPref.getKey(), booleanPref.getValue());
-        } else if (booleanPrefs.get(booleanPref.getKey()) != booleanPref.getValue()) {
-          throw new IllegalArgumentException("Boolean preferences can't be merged");
-        }
-      }
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      e.printStackTrace();
-    }
-  }
-  
-  private void mergeIntPrefs(Capabilities capabilities) {
-    try {
-      Field intPrefsField =FirefoxOptions.class.getDeclaredField("intPrefs");
-      intPrefsField.setAccessible(true);
-      Map<String, Integer> intPrefsPrefsList = (Map<String, Integer>) intPrefsField.get(capabilities);
-      for (Map.Entry<String, Integer> intPref : intPrefsPrefsList.entrySet()) {
-        if (intPrefs.get(intPref.getKey()) == null) {
-          addPreference(intPref.getKey(), intPref.getValue());
-        } else if (intPrefs.get(intPref.getKey()) != intPref.getValue()) {
-          throw new IllegalArgumentException("Integer preferences can't be merged");
-        }
-      }
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void mergeStringPrefs(Capabilities capabilities) {
-    try {
-      Field stringPrefsField =FirefoxOptions.class.getDeclaredField("stringPrefs");
-      stringPrefsField.setAccessible(true);
-      Map<String, String> stringPrefsPrefsList = (Map<String, String>) stringPrefsField.get(capabilities);
-      for (Map.Entry<String, String> stringPref : stringPrefsPrefsList.entrySet()) {
-        if (stringPrefs.get(stringPref.getKey()) == null) {
-          addPreference(stringPref.getKey(), stringPref.getValue());
-        } else if (stringPrefs.get(stringPref.getKey()) != stringPref.getValue()) {
-          throw new IllegalArgumentException("String preferences can't be merged");
-        }
-      }
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      e.printStackTrace();
-    }
-  }
-  
-  private void mergeLogLevel(Capabilities capabilities) {
-    try {
-      Field logLevelField =FirefoxOptions.class.getDeclaredField("logLevel");
-      logLevelField.setAccessible(true);
-      FirefoxDriverLogLevel logLevelValue = (FirefoxDriverLogLevel) logLevelField.get(capabilities);
-      if (logLevel ==null) {
-        logLevel = logLevelValue;
-      } else if (logLevel != logLevelValue) {
-        throw new IllegalArgumentException("Log levels can't be merged");
-      }
-  } catch (NoSuchFieldException | IllegalAccessException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void deleteDuplicates(ArrayList al) {
-    Set hs = new HashSet<>();
-    hs.addAll(al);
-    al.clear();
-    al.addAll(hs);
   }
 
   /**
@@ -487,14 +415,14 @@ public class FirefoxOptions extends MutableCapabilities {
   @Override
   protected int amendHashCode() {
     return Objects.hash(
-        args,
-        booleanPrefs,
-        intPrefs,
-        stringPrefs,
-        logLevel,
-        binary,
-        legacy,
-        profile);
+            args,
+            booleanPrefs,
+            intPrefs,
+            stringPrefs,
+            logLevel,
+            binary,
+            legacy,
+            profile);
   }
 
   private class Binary {
@@ -540,7 +468,7 @@ public class FirefoxOptions extends MutableCapabilities {
 
       Binary that = (Binary) o;
       return Objects.equals(this.path, that.path) &&
-             Objects.equals(this.binary, that.binary);
+              Objects.equals(this.binary, that.binary);
     }
 
     @Override

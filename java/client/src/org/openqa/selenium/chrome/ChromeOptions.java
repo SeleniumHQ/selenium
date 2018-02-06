@@ -17,23 +17,36 @@
 
 package org.openqa.selenium.chrome;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
-import org.openqa.selenium.*;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 import java.util.stream.Stream;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static org.openqa.selenium.remote.CapabilityType.*;
 
 /**
  * Class to manage options specific to {@link ChromeDriver}.
@@ -76,76 +89,7 @@ public class ChromeOptions extends MutableCapabilities {
   @Override
   public ChromeOptions merge(Capabilities extraCapabilities) {
     super.merge(extraCapabilities);
-    if (extraCapabilities instanceof ChromeOptions) {
-      Map options = (Map) extraCapabilities.asMap().get("goog:chromeOptions");
-      mergeArguments(options);
-      mergeExtensions(options);
-      mergeExtensionFiles(extraCapabilities);
-      mergeBinary(options);
-      mergeExperimentalOptions(extraCapabilities);
-    }
     return this;
-  }
-
-  private void mergeArguments(Map options) {
-    addArguments((List<String>) options.get("args"));
-    deleteDuplicates((ArrayList) args);
-  }
-
-  private void mergeExtensions(Map options) {
-    if (options.get("extensions") != null) {
-      addEncodedExtensions((List<String>) options.get("extensions"));
-      deleteDuplicates((ArrayList) extensions);
-    }
-  }
-
-  private void mergeExtensionFiles(Capabilities extraCapabilities) {
-    try {
-      Field extensionFilesField = ChromeOptions.class.getDeclaredField("extensionFiles");
-      extensionFilesField.setAccessible(true);
-      List<File> extensionFilesList = (List<File>) extensionFilesField.get(extraCapabilities);
-      for (File path: extensionFilesList) {
-        addExtensions(path);
-      }
-      deleteDuplicates((ArrayList) extensionFiles);
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void mergeBinary(Map options) {
-    if (options.get("binary") != null) {
-      if (binary == null){
-        binary = (String) options.get("binary");
-      } else if (options.get("binary") != binary) {
-        throw new IllegalArgumentException("Binaries can't be merged");
-      }
-    }
-  }
-
-  private void mergeExperimentalOptions(Capabilities extraCapabilities) {
-    try {
-      Field experimentalOptionField = ChromeOptions.class.getDeclaredField("experimentalOptions");
-      experimentalOptionField.setAccessible(true);
-      HashMap<String, Object> experimentalOptionList = (HashMap<String, Object>) experimentalOptionField.get(extraCapabilities);
-      for (Map.Entry<String, Object> experimentalOption : experimentalOptionList.entrySet()) {
-        if (experimentalOptions.get(experimentalOption.getKey()) == null) {
-          experimentalOptions.put(experimentalOption.getKey(), experimentalOption.getValue());
-        } else if (!(experimentalOptions.get(experimentalOption.getKey()).toString()
-            .contentEquals(experimentalOption.getValue().toString()))) {
-          throw new IllegalArgumentException("Experimental options can't be merged");
-        }
-      }
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void deleteDuplicates(ArrayList al) {
-    Set hs = new HashSet<>();
-    hs.addAll(al);
-    al.clear();
-    al.addAll(hs);
   }
 
   /**
@@ -221,7 +165,7 @@ public class ChromeOptions extends MutableCapabilities {
       checkNotNull(path);
       checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
       checkArgument(!path.isDirectory(), "%s is a directory",
-          path.getAbsolutePath());
+              path.getAbsolutePath());
     }
     extensionFiles.addAll(paths);
     return this;
@@ -286,6 +230,11 @@ public class ChromeOptions extends MutableCapabilities {
     return this;
   }
 
+  /**
+   * Returns ChromeOptions with the capability ACCEPT_INSECURE_CERTS set.
+   * @param acceptInsecureCerts
+   * @return ChromeOptions
+   */
   public ChromeOptions setAcceptInsecureCerts(boolean acceptInsecureCerts) {
     setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
     return this;
@@ -321,11 +270,11 @@ public class ChromeOptions extends MutableCapabilities {
   @Override
   protected int amendHashCode() {
     return Objects.hash(
-        args,
-        binary,
-        experimentalOptions,
-        extensionFiles,
-        extensions);
+            args,
+            binary,
+            experimentalOptions,
+            extensionFiles,
+            extensions);
   }
 
   @Override
@@ -343,18 +292,18 @@ public class ChromeOptions extends MutableCapabilities {
     options.put("args", ImmutableList.copyOf(args));
 
     options.put(
-        "extensions",
-        Stream.concat(
-            extensionFiles.stream()
-                .map(file -> {
-                  try {
-                    return Base64.getEncoder().encodeToString(Files.toByteArray(file));
-                  } catch (IOException e) {
-                    throw new SessionNotCreatedException(e.getMessage(), e);
-                  }
-                }),
-            extensions.stream()
-        ).collect(ImmutableList.toImmutableList()));
+            "extensions",
+            Stream.concat(
+                    extensionFiles.stream()
+                            .map(file -> {
+                              try {
+                                return Base64.getEncoder().encodeToString(Files.toByteArray(file));
+                              } catch (IOException e) {
+                                throw new SessionNotCreatedException(e.getMessage(), e);
+                              }
+                            }),
+                    extensions.stream()
+            ).collect(ImmutableList.toImmutableList()));
 
     toReturn.put(CAPABILITY, options);
 

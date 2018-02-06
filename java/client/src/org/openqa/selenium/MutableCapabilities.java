@@ -19,10 +19,14 @@ package org.openqa.selenium;
 
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.LinkedHashSet;
+import java.util.Collection;
+import java.util.ArrayList;
 
 public class MutableCapabilities extends AbstractCapabilities implements Serializable {
 
@@ -73,8 +77,59 @@ public class MutableCapabilities extends AbstractCapabilities implements Seriali
 
     extraCapabilities.asMap().forEach(this::setCapability);
 
+    mergeSimpleField("binary", extraCapabilities);
+    mergeSimpleField("logLevel", extraCapabilities);
+
+    mergeListField("args", extraCapabilities);
+    mergeListField("extensions", extraCapabilities);
+    mergeListField("extensionFiles", extraCapabilities);
+
+    mergeMapField("experimentalOptions", extraCapabilities);
+    mergeMapField("booleanPrefs", extraCapabilities);
+    mergeMapField("intPrefs", extraCapabilities);
+    mergeMapField("stringPrefs", extraCapabilities);
+    mergeMapField("options", extraCapabilities);
+
     return this;
   }
+
+  private void mergeSimpleField(String fieldName, Capabilities extraCaps) {
+    try {
+      Field receiverField = this.getClass().getDeclaredField(fieldName);
+      receiverField.setAccessible(true);
+      Field sourceField = extraCaps.getClass().getDeclaredField(fieldName);
+      sourceField.setAccessible(true);
+      receiverField.set(this, sourceField.get(extraCaps));
+    } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException e) {
+    }
+  }
+
+  private void mergeListField(String fieldName, Capabilities extraCaps) {
+    try {
+      Field receiverField = this.getClass().getDeclaredField(fieldName);
+      receiverField.setAccessible(true);
+      LinkedHashSet<?> set = new LinkedHashSet((Collection) receiverField.get(this));
+      Field sourceField = extraCaps.getClass().getDeclaredField(fieldName);
+      sourceField.setAccessible(true);
+      set.addAll((Collection) sourceField.get(extraCaps));
+      receiverField.set(this, new ArrayList(set));
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+    }
+  }
+
+  private void mergeMapField(String fieldName, Capabilities extraCaps) {
+    try {
+      Field receiverField = this.getClass().getDeclaredField(fieldName);
+      receiverField.setAccessible(true);
+      Map map =  (Map<?, ?>) receiverField.get(this);
+      Field sourceField = extraCaps.getClass().getDeclaredField(fieldName);
+      sourceField.setAccessible(true);
+      map.putAll((Map<?, ?>) sourceField.get(extraCaps));
+      receiverField.set(this, map);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+    }
+  }
+
 
   public void setCapability(String capabilityName, boolean value) {
     setCapability(capabilityName, (Object) value);
