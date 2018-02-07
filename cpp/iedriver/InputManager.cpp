@@ -150,6 +150,7 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
       ticks[action_index].append(action);
     }
   }
+
   int tick_duration = 0;
   InputState current_input_state = this->CloneCurrentInputState();
   for (size_t i = 0; i < ticks.size(); ++i) {
@@ -189,9 +190,8 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
       this->PerformInputWithSendMessage(browser_wrapper);
     }
   }
-
   ::Sleep(50);
-
+  
   // Must always release the mutex.
   if (mutex_handle != NULL) {
     ::ReleaseMutex(mutex_handle);
@@ -242,6 +242,10 @@ int InputManager::PerformInputWithSendInput(BrowserHandle browser_wrapper) {
     }
   }
 
+  // Focus browser if required
+  if (require_window_focus_)
+    this->SetFocusToBrowser(browser_wrapper);
+
   // Send all inputs between sleeps, sleeping in between.
   size_t next_input_index = 0;
   std::vector<size_t>::const_iterator it = sleep_indexes.begin();
@@ -250,24 +254,21 @@ int InputManager::PerformInputWithSendInput(BrowserHandle browser_wrapper) {
     INPUT sleep_input = this->inputs_[sleep_input_index];
     size_t number_of_inputs = sleep_input_index - next_input_index;
     if (number_of_inputs > 0) {
-      this->SetFocusToBrowser(browser_wrapper);
       HookProcessor::ResetEventCount();
       int sent_inputs = ::SendInput(static_cast<int>(number_of_inputs), &this->inputs_[next_input_index], sizeof(INPUT));
       this->WaitForInputEventProcessing(sent_inputs);
     }
-    LOG(DEBUG) << "Processing pause event";
-    ::Sleep(this->inputs_[sleep_input_index].hi.uMsg);
     next_input_index = sleep_input_index + 1;
   }
+  
   // Now send any inputs after the last sleep, if any.
   size_t last_inputs = this->inputs_.size() - next_input_index;
   if (last_inputs > 0) {
-    this->SetFocusToBrowser(browser_wrapper);
     HookProcessor::ResetEventCount();
     int sent_inputs = ::SendInput(static_cast<int>(last_inputs), &this->inputs_[next_input_index], sizeof(INPUT));
     this->WaitForInputEventProcessing(sent_inputs);
   }
-
+  
   // We're done here, so uninstall the hooks, and reset the buffer size.
   keyboard_hook.Dispose();
   mouse_hook.Dispose();
@@ -491,7 +492,6 @@ bool InputManager::WaitForInputEventProcessing(int input_count) {
   // input events created by the call to SendInput.
   int total_timeout_in_milliseconds = input_count * WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT;
   clock_t end = clock() + static_cast<clock_t>(((total_timeout_in_milliseconds / 1000.0) * CLOCKS_PER_SEC));
-
   int processed_event_count = HookProcessor::GetEventCount();
   bool inputs_processed = processed_event_count >= input_count;
   while (!inputs_processed && clock() < end) {
@@ -631,26 +631,8 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
       LOG(DEBUG) << "Omitting SendInput structure for mouse move; no movement required (x: "
                  << end_x << ", y: " << end_y << ")";
     } else {
-      const int step_count = 10;
-      long step_sleep = duration / max(step_count, 1);
-
-      long x_distance = end_x - input_state->mouse_x;
-      long y_distance = end_y - input_state->mouse_y;
-      for (int i = 0; i < step_count; i++) {
-        //To avoid integer division rounding and cumulative floating point errors,
-        //calculate from scratch each time
-        double step_progress = ((double)i) / step_count;
-        int current_x = (int)(input_state->mouse_x + (x_distance * step_progress));
-        int current_y = (int)(input_state->mouse_y + (y_distance * step_progress));
-        this->AddMouseInput(browser_window_handle, MOUSEEVENTF_MOVE, current_x, current_y);
-        if (step_sleep > 0) {
-          this->AddPauseInput(browser_window_handle, step_sleep);
-        }
-      }
       this->AddMouseInput(browser_window_handle, MOUSEEVENTF_MOVE, end_x, end_y);
-      this->AddPauseInput(browser_window_handle, 50);
-      if (step_sleep > 0) {
-      }
+      this->AddPauseInput(browser_window_handle, 50);   
     }
     input_state->mouse_x = end_x;
     input_state->mouse_y = end_y;
@@ -883,7 +865,6 @@ void InputManager::AddPauseInput(HWND window_handle, int duration) {
 }
 
 void InputManager::AddMouseInput(HWND window_handle, long input_action, int x, int y) {
-  LOG(TRACE) << "Entering InputManager::AddMouseInput";
   INPUT mouse_input;
   mouse_input.type = INPUT_MOUSE;
   mouse_input.mi.dwFlags = input_action | MOUSEEVENTF_ABSOLUTE;
