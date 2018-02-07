@@ -47,7 +47,7 @@ class Service(object):
         self.start_error_message = start_error_message
         self.log_file = log_file
         self.env = env or os.environ
-
+        
     @property
     def service_url(self):
         """
@@ -69,11 +69,10 @@ class Service(object):
         try:
             cmd = [self.path]
             cmd.extend(self.command_line_args())
-            self.process = subprocess.Popen(cmd, env=self.env,
-                                            close_fds=platform.system() != 'Windows',
-                                            stdout=self.log_file,
-                                            stderr=self.log_file,
-                                            stdin=PIPE)
+            if any("hide_console" in arg for arg in self.command_line_args()):
+                self.process = subprocess.Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE, creationflags=0x08000000)
+            else:
+                self.process = subprocess.Popen(cmd, env=self.env, close_fds=platform.system() != 'Windows', stdout=self.log_file, stderr=self.log_file, stdin=PIPE)
         except TypeError:
             raise
         except OSError as err:
