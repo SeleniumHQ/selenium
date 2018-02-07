@@ -71,22 +71,22 @@ void SetWindowRectCommandHandler::ExecuteInternal(
   browser_wrapper->Restore();
 
   HWND window_handle = browser_wrapper->GetTopLevelWindowHandle();
-  if (x >= 0 && y >= 0) {
-    BOOL set_window_pos_result = ::SetWindowPos(window_handle, NULL, x, y, 0, 0, SWP_NOSIZE);
-    if (!set_window_pos_result) {
-      response->SetErrorResponse(ERROR_UNKNOWN_ERROR,
-                                "Unexpected error setting window size (SetWindowPos API failed)");
-      return;
-    }
+  RECT current_window_rect;
+  ::GetWindowRect(window_handle, &current_window_rect);
+  if (x < 0 || y < 0) {
+    x = current_window_rect.left;
+    y = current_window_rect.top;
+  }
+  if (height < 0 || width < 0) {
+    height = current_window_rect.bottom - current_window_rect.top;
+    width = current_window_rect.right - current_window_rect.left;
   }
 
-  if (width >= 0 && height >= 0) {
-    BOOL set_window_size_result = ::SetWindowPos(window_handle, NULL, 0, 0, width, height, SWP_NOMOVE);
-    if (!set_window_size_result) {
-      response->SetErrorResponse(ERROR_UNKNOWN_ERROR,
-                                 "Unexpected error setting window size (SetWindowPos API failed)");
-      return;
-    }
+  BOOL set_window_pos_result = ::SetWindowPos(window_handle, NULL, x, y, width, height, 0);
+  if (!set_window_pos_result) {
+    response->SetErrorResponse(ERROR_UNKNOWN_ERROR,
+                              "Unexpected error setting window size (SetWindowPos API failed)");
+    return;
   }
 
   HWND browser_window_handle = browser_wrapper->GetTopLevelWindowHandle();
@@ -107,6 +107,9 @@ bool SetWindowRectCommandHandler::GetNumericParameter(
     std::string* error_message) {
   ParametersMap::const_iterator parameter_iterator = command_parameters.find(argument_name);
   if (parameter_iterator != command_parameters.end()) {
+    if (parameter_iterator->second.isNull()) {
+      return true;
+    }
     if (!parameter_iterator->second.isNumeric()) {
       *error_message = argument_name + " must be a numeric parameter.";
       return false;

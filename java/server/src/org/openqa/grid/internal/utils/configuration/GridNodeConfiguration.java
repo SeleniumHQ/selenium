@@ -17,7 +17,6 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
-import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -32,7 +31,6 @@ import com.google.gson.annotations.Expose;
 
 import com.beust.jcommander.Parameter;
 
-import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridConfigurationException;
@@ -123,34 +121,27 @@ public class GridNodeConfiguration extends GridConfiguration {
    * Default DesiredCapabilites
    */
   static final class DefaultDesiredCapabilitiesBuilder {
-    static final List<MutableCapabilities> getCapabilities() {
-      DesiredCapabilities chrome = new DesiredCapabilities();
-      chrome.setBrowserName("chrome");
-      chrome.setCapability("maxInstances", 5);
-      chrome.setCapability("seleniumProtocol", "WebDriver");
-
-      DesiredCapabilities firefox = new DesiredCapabilities();
-      firefox.setBrowserName("firefox");
-      firefox.setCapability("marionette", true);
-      firefox.setCapability("maxInstances", 5);
-      firefox.setCapability("seleniumProtocol", "WebDriver");
-
-      DesiredCapabilities ie = new DesiredCapabilities();
-      ie.setBrowserName("internet explorer");
-      ie.setPlatform(Platform.WINDOWS);
-      ie.setCapability("maxInstances", 1);
-      ie.setCapability("seleniumProtocol", "WebDriver");
-
-      DesiredCapabilities safari = new DesiredCapabilities();
-      safari.setBrowserName("safari");
-      safari.setCapability("technologyPreview", false);
-      safari.setPlatform(Platform.MAC);
-      safari.setCapability("maxInstances", 1);
-      safari.setCapability("seleniumProtocol", "WebDriver");
-
-      return Lists.newArrayList(chrome, firefox, ie, safari);
+    static List<MutableCapabilities> getCapabilities() {
+      JsonObject defaults = loadJSONFromResourceOrFile(DEFAULT_NODE_CONFIG_FILE);
+      List<MutableCapabilities> caps = new ArrayList<>();
+      for (JsonElement el : defaults.getAsJsonArray("capabilities")) {
+        caps.add(new Json().toType(el, DesiredCapabilities.class));
+      }
+      return caps;
     }
   }
+
+  private static class HostPort {
+    final String host;
+    final int port;
+
+    HostPort(String host, int port) {
+      this.host = host;
+      this.port = port;
+    }
+  }
+
+  private HostPort hubHostPort;
 
   /*
    * config parameters which do not serialize or de-serialize
@@ -248,11 +239,13 @@ public class GridNodeConfiguration extends GridConfiguration {
   /**
    * The hub url. Defaults to {@code http://localhost:4444}.
    */
-  @Expose
   @Parameter(
     names = "-hub",
     description = "<String> : the url that will be used to post the registration request. This option takes precedence over -hubHost and -hubPort options."
   )
+  private String hubOption;
+
+  @Expose
   public String hub = DEFAULT_HUB;
 
   /**
@@ -317,6 +310,17 @@ public class GridNodeConfiguration extends GridConfiguration {
   public Integer unregisterIfStillDownAfter = DEFAULT_UNREGISTER_DELAY;
 
   /**
+   * Whether or not to drop capabilities that does not belong to the current platform family
+   */
+  @Expose
+  @Parameter(
+      names = "-enablePlatformVerification",
+      arity = 1,
+      description = "<Boolean>: Whether or not to drop capabilities that does not belong to the current platform family. Defaults to true."
+  )
+  public boolean enablePlatformVerification = true;
+
+  /**
    * Creates a new configuration using the default values.
    */
   public GridNodeConfiguration() {
@@ -327,23 +331,42 @@ public class GridNodeConfiguration extends GridConfiguration {
   }
 
   public String getHubHost() {
-    if (hubHost == null) {
-      if (hub == null) {
-        throw new RuntimeException("You must specify either a hubHost or hub parameter.");
-      }
-      parseHubUrl();
-    }
-    return hubHost;
+    return getHubHostPort().host;
   }
 
   public Integer getHubPort() {
-    if (hubPort == null) {
-      if (hub == null) {
-        throw new RuntimeException("You must specify either a hubPort or hub parameter.");
+    return getHubHostPort().port;
+  }
+
+  private HostPort getHubHostPort() {
+    if (hubHostPort == null) { // parse options
+      // -hub has precedence
+      if (hubOption != null) {
+        hub = hubOption;
+        try {
+          URL u = new URL(hub);
+          hubHostPort = new HostPort(u.getHost(), u.getPort());
+        } catch (MalformedURLException mURLe) {
+          throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
+        }
+      } else if (hubHost != null || hubPort != null) {
+        if (hubHost == null) {
+          throw new RuntimeException("You must specify either a -hubHost or -hub parameter.");
+        }
+        if (hubPort == null) {
+          throw new RuntimeException("You must specify either a -hubPort or -hub parameter.");
+        }
+        hubHostPort = new HostPort(hubHost, hubPort);
+      } else {
+        try {
+          URL u = new URL(hub);
+          hubHostPort = new HostPort(u.getHost(), u.getPort());
+        } catch (MalformedURLException mURLe) {
+          throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
+        }
       }
-      parseHubUrl();
     }
-    return hubPort;
+    return hubHostPort;
   }
 
   public String getRemoteHost() {
@@ -357,16 +380,6 @@ public class GridNodeConfiguration extends GridConfiguration {
       remoteHost = "http://" + host + ":" + port;
     }
     return remoteHost;
-  }
-
-  private void parseHubUrl() {
-    try {
-      URL u = new URL(hub);
-      hubHost = u.getHost();
-      hubPort = u.getPort();
-    } catch (MalformedURLException mURLe) {
-      throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
-    }
   }
 
   public void merge(GridNodeConfiguration other) {
@@ -443,7 +456,7 @@ public class GridNodeConfiguration extends GridConfiguration {
    * @param filePath node config json file to load configuration from
    */
   public static GridNodeConfiguration loadFromJSON(String filePath) {
-    return loadFromJSON(JSONConfigurationUtils.loadJSON(filePath));
+    return loadFromJSON(loadJSONFromResourceOrFile(filePath));
   }
 
   /**
@@ -527,13 +540,35 @@ public class GridNodeConfiguration extends GridConfiguration {
 
     Platform current = Platform.getCurrent();
     capabilities = capabilities.stream()
-        .peek(cap -> cap.setCapability(CapabilityType.PLATFORM,
-                                       Optional.ofNullable(cap.getPlatform()).orElse(current)))
-        .filter(cap -> current.is(cap.getPlatform()))
+        .peek(cap -> cap.setCapability(
+            CapabilityType.PLATFORM,
+            Optional.ofNullable(cap.getCapability(CapabilityType.PLATFORM_NAME)).orElse(
+                Optional.ofNullable(cap.getCapability(CapabilityType.PLATFORM)).orElse(current))))
+        .peek(cap -> cap.setCapability(
+            CapabilityType.PLATFORM_NAME,
+            Optional.ofNullable(cap.getCapability(CapabilityType.PLATFORM_NAME)).orElse(
+                Optional.ofNullable(cap.getCapability(CapabilityType.PLATFORM)).orElse(current))))
         .peek(cap -> cap.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,
             Optional.ofNullable(cap.getCapability(RegistrationRequest.SELENIUM_PROTOCOL))
                 .orElse(SeleniumProtocol.WebDriver.toString())))
         .peek(cap -> cap.setCapability(CONFIG_UUID_CAPABILITY, UUID.randomUUID().toString()))
+        .collect(Collectors.toList());
+  }
+
+  public void dropCapabilitiesThatDoesNotMatchCurrentPlatform() {
+    if (!enablePlatformVerification) {
+      return;
+    }
+
+    if (capabilities == null) {
+      return; // assumes the caller set it/wants it this way
+    }
+
+    Platform current = Platform.getCurrent();
+    Platform currentFamily = Optional.ofNullable(current.family()).orElse(current);
+    capabilities = capabilities.stream()
+        .filter(cap -> cap.getPlatform() != null
+                       && (cap.getPlatform() == Platform.ANY || cap.getPlatform().is(currentFamily)))
         .collect(Collectors.toList());
   }
 

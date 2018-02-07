@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.server;
 
 import static org.openqa.selenium.remote.DriverCommand.*;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.Command;
@@ -33,7 +32,6 @@ import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
 import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
-import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;
 import org.openqa.selenium.remote.server.handler.CaptureScreenshot;
 import org.openqa.selenium.remote.server.handler.ChangeUrl;
@@ -90,7 +88,6 @@ import org.openqa.selenium.remote.server.handler.ImeGetAvailableEngines;
 import org.openqa.selenium.remote.server.handler.ImeIsActivated;
 import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
 import org.openqa.selenium.remote.server.handler.MaximizeWindow;
-import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
 import org.openqa.selenium.remote.server.handler.Rotate;
 import org.openqa.selenium.remote.server.handler.SendKeys;
@@ -149,8 +146,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 public class JsonHttpCommandHandler {
-
-  private static final String ADD_CONFIG_COMMAND_NAME = "-selenium-add-config";
 
   private final DriverSessions sessions;
   private final Logger log;
@@ -229,15 +224,8 @@ public class JsonHttpCommandHandler {
   }
 
   private void setUpMappings() {
-    for (CommandCodec<HttpRequest> codec : commandCodecs) {
-      codec.defineCommand(ADD_CONFIG_COMMAND_NAME, POST, "/config/drivers");
-    }
-
-    addNewMapping(ADD_CONFIG_COMMAND_NAME, AddConfig.class);
-
     addNewMapping(STATUS, Status.class);
     addNewMapping(GET_ALL_SESSIONS, GetAllSessions.class);
-    addNewMapping(NEW_SESSION, NewSession.class);
     addNewMapping(GET_CAPABILITIES, GetSessionCapabilities.class);
     addNewMapping(QUIT, DeleteSession.class);
 

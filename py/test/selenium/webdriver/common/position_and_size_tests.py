@@ -57,7 +57,6 @@ def testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort(driver, 
 
 
 @pytest.mark.xfail_marionette
-@pytest.mark.xfail_phantomjs
 def testShouldGetCoordinatesOfAnElementInAFrame(driver, pages):
     pages.load("coordinates_tests/element_in_frame.html")
     driver.switch_to_frame(driver.find_element(By.NAME, "ifr"))
@@ -67,7 +66,6 @@ def testShouldGetCoordinatesOfAnElementInAFrame(driver, pages):
 
 
 @pytest.mark.xfail_marionette
-@pytest.mark.xfail_phantomjs
 def testShouldGetCoordinatesOfAnElementInANestedFrame(driver, pages):
     pages.load("coordinates_tests/element_in_nested_frame.html")
     driver.switch_to_frame(driver.find_element(By.NAME, "ifr"))

@@ -56,7 +56,8 @@ class WebDriver(RemoteWebDriver):
     def __init__(self, firefox_profile=None, firefox_binary=None,
                  timeout=30, capabilities=None, proxy=None,
                  executable_path="geckodriver", options=None,
-                 log_path="geckodriver.log", firefox_options=None):
+                 log_path="geckodriver.log", firefox_options=None,
+                 service_args=None):
         """Starts a new local session of Firefox.
 
         Based on the combination and specificity of the various keyword
@@ -144,7 +145,10 @@ class WebDriver(RemoteWebDriver):
 
         if capabilities.get("marionette"):
             capabilities.pop("marionette")
-            self.service = Service(executable_path, log_path=log_path)
+            self.service = Service(
+                executable_path,
+                service_args=service_args,
+                log_path=log_path)
             self.service.start()
 
             capabilities.update(options.to_capabilities())

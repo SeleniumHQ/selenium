@@ -40,12 +40,6 @@ module Selenium
       def text
         @bridge.alert_text
       end
-
-      def authenticate(username, password)
-        WebDriver.logger.deprecate 'Alert#authenticate'
-        @bridge.authentication(username: username, password: password)
-        accept
-      end
     end # Alert
   end # WebDriver
 end # Selenium

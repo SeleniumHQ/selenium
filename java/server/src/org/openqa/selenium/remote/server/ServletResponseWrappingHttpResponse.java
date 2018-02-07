@@ -29,7 +29,7 @@ import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
-class ServletResponseWrappingHttpResponse extends HttpResponse {
+public class ServletResponseWrappingHttpResponse extends HttpResponse {
 
   private final HttpServletResponse resp;
 

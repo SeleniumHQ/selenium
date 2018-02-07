@@ -120,8 +120,7 @@ int Response::GetHttpResponseCode(void) {
       this->error_ == ERROR_INVALID_COOKIE_DOMAIN ||
       this->error_ == ERROR_INVALID_COORDINATES ||
       this->error_ == ERROR_INVALID_ELEMENT_STATE ||
-      this->error_ == ERROR_INVALID_SELECTOR ||
-      this->error_ == ERROR_STALE_ELEMENT_REFERENCE) {
+      this->error_ == ERROR_INVALID_SELECTOR) {
     response_code = 400;
   } else if (this->error_ == ERROR_INVALID_SESSION_ID ||
              this->error_ == ERROR_NO_SUCH_COOKIE ||
@@ -129,6 +128,7 @@ int Response::GetHttpResponseCode(void) {
              this->error_ == ERROR_NO_SUCH_ELEMENT ||
              this->error_ == ERROR_NO_SUCH_FRAME ||
              this->error_ == ERROR_NO_SUCH_WINDOW ||
+             this->error_ == ERROR_STALE_ELEMENT_REFERENCE ||
              this->error_ == ERROR_UNKNOWN_COMMAND) {
     response_code = 404;
   } else if (this->error_ == ERROR_SCRIPT_TIMEOUT ||

@@ -77,9 +77,12 @@ class FirefoxProfile(object):
             shutil.copytree(self.profile_dir, newprof,
                             ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock"))
             self.profile_dir = newprof
+            os.chmod(self.profile_dir, 0o755)
             self._read_existing_userjs(os.path.join(self.profile_dir, "user.js"))
         self.extensionsDir = os.path.join(self.profile_dir, "extensions")
         self.userPrefs = os.path.join(self.profile_dir, "user.js")
+        if os.path.isfile(self.userPrefs):
+            os.chmod(self.userPrefs, 0o644)
 
     # Public Methods
     def set_preference(self, key, value):
@@ -273,11 +276,11 @@ class FirefoxProfile(object):
         assert addon_id, 'The addon id could not be found: %s' % addon
 
         # copy the addon to the profile
-        extensions_path = os.path.join(self.profile_dir, 'extensions')
-        addon_path = os.path.join(extensions_path, addon_id)
+        addon_path = os.path.join(self.extensionsDir, addon_id)
         if not unpack and not addon_details['unpack'] and xpifile:
-            if not os.path.exists(extensions_path):
-                os.makedirs(extensions_path)
+            if not os.path.exists(self.extensionsDir):
+                os.makedirs(self.extensionsDir)
+                os.chmod(self.extensionsDir, 0o755)
             shutil.copy(xpifile, addon_path + '.xpi')
         else:
             if not os.path.exists(addon_path):

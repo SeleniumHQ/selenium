@@ -35,6 +35,13 @@ goog.require('bot.dom');
 fxdriver.preconditions.visible = function(doc, parameters) {
   var element = Utils.getElementAt(parameters.id, doc);
 
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
+    var inputtype = element.getAttribute('type');
+    if (inputtype && inputtype.toLowerCase() == 'file') {
+      return;
+    }
+  }
+
   if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
     return new WebDriverError(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and so may not be interacted with');

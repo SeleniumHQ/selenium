@@ -32,15 +32,10 @@ module Selenium
 
           unless opts.key?(:url)
             driver_path = opts.delete(:driver_path) || Edge.driver_path
+            driver_opts = opts.delete(:driver_opts) || {}
             port = opts.delete(:port) || Service::DEFAULT_PORT
 
-            opts[:driver_opts] ||= {}
-            if opts.key? :service_args
-              WebDriver.logger.deprecate ':service_args', "driver_opts: {args: #{opts[:service_args]}}"
-              opts[:driver_opts][:args] = opts.delete(:service_args)
-            end
-
-            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
+            @service = Service.new(driver_path, port, driver_opts)
             @service.host = 'localhost' if @service.host == '127.0.0.1'
             @service.start
             opts[:url] = @service.uri

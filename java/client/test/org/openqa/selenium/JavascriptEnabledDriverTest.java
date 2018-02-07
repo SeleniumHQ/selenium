@@ -39,11 +39,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @Test
-  public void testDocumentShouldReflectLatestTitle() throws Exception {
+  public void testDocumentShouldReflectLatestTitle() {
     driver.get(pages.javascriptPage);
 
     assertThat(driver.getTitle(), equalTo("Testing Javascript"));
@@ -53,8 +54,8 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
-  public void testDocumentShouldReflectLatestDom() throws Exception {
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1381519")
+  public void testDocumentShouldReflectLatestDom() {
     driver.get(pages.javascriptPage);
     String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
     assertThat(currentText, equalTo("What's for dinner?"));
@@ -223,7 +224,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @Test
   @Ignore(value = SAFARI, reason = "issue 3693")
-  public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
+  public void testShouldBeAbleToClickALinkThatClosesAWindow() {
     driver.get(pages.javascriptPage);
 
     String handle = driver.getWindowHandle();

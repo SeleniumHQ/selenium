@@ -46,14 +46,14 @@ end
 verbose($DEBUG)
 
 def release_version
-  "3.7"
+  "3.9"
 end
 
 def version
-  "#{release_version}.1"
+  "#{release_version}.0"
 end
 
-ide_version = "2.8.0"
+ide_version = "2.9.1"
 
 # The build system used by webdriver is layered on top of rake, and we call it
 # "crazy fun" for no readily apparent reason.
@@ -199,7 +199,7 @@ task :test_ie => [
   "//java/client/test/org/openqa/selenium/ie:ie:run"
 ]
 task :test_jobbie => [ :test_ie ]
-task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test-synthesized:run" ]
+task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:marionette:run" ]
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:opera:run" ]
 task :test_remote_server => [
    '//java/server/test/org/openqa/selenium/remote/server:small-tests:run',
@@ -374,7 +374,7 @@ task :py_prep_for_install_release => [
   "//py:prep"
 ]
 
-task :py_docs => "//py:docs"
+task :py_docs => ["//py:init", "//py:docs"]
 
 task :py_install =>  "//py:install"
 
@@ -453,7 +453,7 @@ end
 task :'maven-dry-run' => JAVA_RELEASE_TARGETS do |t|
   t.prerequisites.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd.call('publish', ['--dry-run', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
+      Buck::buck_cmd('publish', ['--dry-run', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
     end
   end
 end
@@ -502,7 +502,7 @@ task :'publish-maven' => JAVA_RELEASE_TARGETS do
   creds = read_user_pass_from_m2_settings()
   JAVA_RELEASE_TARGETS.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd.call('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-docs', '-u', creds[0], '-p', creds[1], '--signing-passphrase', passphrase, p])
+      Buck::buck_cmd('publish', ['--stamp-build=detect', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-docs', '-u', creds[0], '-p', creds[1], '--signing-passphrase', passphrase, p])
     end
   end
 end
@@ -510,7 +510,7 @@ end
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd.call('publish', ['--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-docs', p])
+      Buck::buck_cmd('publish', ['--stamp-build=detect', '--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-docs', p])
     end
   end
 end

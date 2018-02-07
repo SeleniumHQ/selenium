@@ -214,7 +214,7 @@ void Server::AddCommand(const std::string& url,
                         const std::string& http_verb,
                         const std::string& command_name) {
   if (this->commands_.find(url) == this->commands_.end()) {
-    this->commands_[url] = std::tr1::shared_ptr<UriInfo>(
+    this->commands_[url] = std::shared_ptr<UriInfo>(
         new UriInfo(url, http_verb, command_name));
   } else {
     this->commands_[url]->AddHttpVerb(http_verb, command_name);

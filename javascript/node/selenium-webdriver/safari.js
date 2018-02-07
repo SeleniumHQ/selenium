@@ -21,16 +21,16 @@
 
 'use strict';
 
-const http = require('./http');
-const io = require('./io');
-const {Capabilities, Capability} = require('./lib/capabilities');
 const command = require('./lib/command');
 const error = require('./lib/error');
+const http = require('./http');
+const io = require('./io');
+const portprober = require('./net/portprober');
 const promise = require('./lib/promise');
+const remote = require('./remote');
 const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
-const portprober = require('./net/portprober');
-const remote = require('./remote');
+const {Browser, Capabilities, Capability} = require('./lib/capabilities');
 
 
 /**
@@ -84,29 +84,19 @@ const TECHNOLOGY_PREVIEW_OPTIONS_KEY = 'technologyPreview';
 /**
  * Configuration options specific to the {@link Driver SafariDriver}.
  */
-class Options {
-  constructor() {
-    /** @private {Object<string, *>} */
-    this.options_ = null;
-  }
-
+class Options extends Capabilities {
   /**
-   * Extracts the SafariDriver specific options from the given capabilities
-   * object.
-   * @param {!Capabilities} capabilities The capabilities object.
-   * @return {!Options} The SafariDriver options.
+   * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
+   *     capabilities to initialize this instance from.
    */
-  static fromCapabilities(capabilities) {
-    let options = new Options();
-    let o = capabilities.get(OPTIONS_CAPABILITY_KEY);
+  constructor(other = undefined) {
+    super(other);
 
-    if (o instanceof Options) {
-      options = o;
-    } else if (o) {
-      options.setTechnologyPreview(o[TECHNOLOGY_PREVIEW_OPTIONS_KEY]);
-    }
+    /** @private {!Object} */
+    this.options_ = this.get(OPTIONS_CAPABILITY_KEY) || {};
 
-    return options;
+    this.set(OPTIONS_CAPABILITY_KEY, this.options_);
+    this.setBrowserName(Browser.SAFARI);
   }
 
   /**
@@ -117,46 +107,19 @@ class Options {
    * @return {!Options} A self reference.
    */
   setTechnologyPreview(useTechnologyPreview) {
-    if (!this.options_) {
-      this.options_ = {};
-    }
-
     this.options_[TECHNOLOGY_PREVIEW_OPTIONS_KEY] = !!useTechnologyPreview;
     return this;
-  }
-
-  /**
-   * Converts this options instance to a {@link Capabilities} object.
-   * @param {Capabilities=} opt_capabilities The capabilities to
-   *     merge these options into, if any.
-   * @return {!Capabilities} The capabilities.
-   */
-  toCapabilities(opt_capabilities) {
-    let caps = opt_capabilities || Capabilities.safari();
-    if (this.options_) {
-      caps.set(OPTIONS_CAPABILITY_KEY, this);
-    }
-    return caps;
-  }
-
-  /**
-   * Converts this instance to its JSON wire protocol representation. Note this
-   * function is an implementation detail not intended for general use.
-   * @return {!Object<string, *>} The JSON wire protocol representation of this
-   *     instance.
-   */
-  [Symbols.serialize]() {
-    return this.options_ || {};
   }
 }
 
 /**
- * @param  {(Options|Object<string, *>)=} o The options object
+ * @param  {(Capabilities|Object<string, *>)=} o The options object
  * @return {boolean}
  */
 function useTechnologyPreview(o) {
-  if (o instanceof Options) {
-    return !!(o.options_ && o.options_[TECHNOLOGY_PREVIEW_OPTIONS_KEY]);
+  if (o instanceof Capabilities) {
+    let options = o.get(OPTIONS_CAPABILITY_KEY);
+    return !!(options && options[TECHNOLOGY_PREVIEW_OPTIONS_KEY]);
   }
 
   if (o && typeof o === 'object') {
@@ -166,7 +129,10 @@ function useTechnologyPreview(o) {
   return false;
 }
 
-const SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE = '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver';
+
+const SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE =
+    '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver';
+
 
 /**
  * A WebDriver client for Safari. This class should never be instantiated
@@ -181,19 +147,13 @@ class Driver extends webdriver.WebDriver {
   /**
    * Creates a new Safari session.
    *
-   * @param {(Options|Capabilities)=} opt_config The configuration
-   *     options for the new session.
+   * @param {(Options|Capabilities)=} options The configuration options.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config) {
-    let caps, exe;
+  static createSession(options) {
+    let caps = options || new Options();
 
-    if (opt_config instanceof Options) {
-      caps = opt_config.toCapabilities();
-    } else {
-      caps = opt_config || Capabilities.safari();
-    }
-
+    let exe;
     if (useTechnologyPreview(caps.get(OPTIONS_CAPABILITY_KEY))) {
       exe = SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE;
     }

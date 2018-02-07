@@ -17,7 +17,6 @@
 
 package com.thoughtworks.selenium.corebased;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -26,6 +25,7 @@ import org.junit.Test;
 import org.openqa.selenium.internal.WrapsDriver;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 public class TestType extends InternalSelenseTestBase {
   @Test
@@ -48,7 +48,7 @@ public class TestType extends InternalSelenseTestBase {
     if (isAbleToUpdateFileElements()) {
       File tempFile = File.createTempFile("example", "upload");
       tempFile.deleteOnExit();
-      Files.write("I like cheese", tempFile, Charsets.UTF_8);
+      Files.write("I like cheese", tempFile, StandardCharsets.UTF_8);
       selenium.type("file", tempFile.getAbsolutePath());
       selenium.click("submitButton");
       selenium.waitForPageToLoad("30000");

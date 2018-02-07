@@ -40,9 +40,12 @@ public class GridTestHelper {
   }
 
   public static SelfRegisteringRemote getRemoteWithoutCapabilities(URL hub, GridRole role) {
-    String[] args = {"-role", "node","-host","localhost","-hub",hub.toString(),"-port",String.valueOf(PortProber.findFreePort())};
+    String[] args = {"-role", role.toString(),
+                     "-host","localhost",
+                     "-hub",hub.toString(),
+                     "-port",String.valueOf(PortProber.findFreePort())};
     GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, args);
+    JCommander.newBuilder().addObject(config).build().parse(args);
     RegistrationRequest req = RegistrationRequest.build(config);
     SelfRegisteringRemote remote = new SelfRegisteringRemote(req);
     remote.deleteAllBrowsers();

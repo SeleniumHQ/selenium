@@ -77,7 +77,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToClickOnAnElementHiddenByOverflow() {
     driver.get(appServer.whereIs("scroll.html"));
 
@@ -108,7 +107,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = IE, issue = "716")
   @Ignore(value = FIREFOX, issue = "716")
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/915")
   @Ignore(value = SAFARI, reason = "not tested")
   public void testShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_partially_hidden_element.html"));
@@ -151,7 +149,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "IE has special overflow handling")
-  @Ignore(MARIONETTE)
   public void testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView() {
     driver.get(appServer.whereIs("scroll5.html"));
     driver.findElement(By.id("inner")).click();

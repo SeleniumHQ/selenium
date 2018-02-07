@@ -276,7 +276,8 @@ function isRetryableNetworkError(err) {
   if (err && err.code) {
     return err.code === 'ECONNABORTED' ||
           err.code === 'ECONNRESET' ||
-          err.code === 'EADDRINUSE';
+          err.code === 'EADDRINUSE' ||
+          err.code === 'EPIPE';
   }
 
   return false;

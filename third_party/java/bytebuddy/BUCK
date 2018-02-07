@@ -1,10 +1,20 @@
-# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
-  name = 'bytebuddy',
-  maven_coords = 'net.bytebuddy:byte-buddy:jar:1.7.5',
-  binary_jar = 'byte-buddy-1.7.5.jar',
-  source_jar = 'byte-buddy-1.7.5-sources.jar',
+  name = 'byte-buddy',
+  maven_coords = 'net.bytebuddy:byte-buddy:jar:1.7.9',
+  binary_jar = 'byte-buddy-1.7.9.jar',
+  source_jar = 'byte-buddy-1.7.9-sources.jar',
   visibility = [
     '//java/client/src/org/openqa/selenium/remote:remote',
+    '//third_party/java/mockito:mockito-core',
+  ],
+)
+
+prebuilt_jar(
+  name = 'byte-buddy-agent',
+  maven_coords = 'net.bytebuddy:byte-buddy-agent:jar:1.7.9',
+  binary_jar = 'byte-buddy-agent-1.7.9.jar',
+  source_jar = 'byte-buddy-agent-1.7.9-sources.jar',
+  visibility = [
+    '//third_party/java/mockito:mockito-core',
   ],
 )

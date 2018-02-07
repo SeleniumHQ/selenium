@@ -162,7 +162,7 @@ closure_library(name = 'json',
 
 
 closure_library(name = 'locators',
-  srcs = glob(['locators/*.js'], excludes=['locators/xpath.js']),
+  srcs = glob(['locators/*.js'], exclude=['locators/xpath.js']),
   deps = [
     ':dom',
     ':json',

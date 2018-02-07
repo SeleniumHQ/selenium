@@ -40,6 +40,17 @@ Script::Script(IHTMLDocument2* document,
   this->Initialize(document, script_source, argument_count);
 }
 
+Script::Script(IHTMLDocument2* document,
+               std::string script_source) {
+  std::wstring wide_script = StringUtilities::ToWString(script_source);
+  this->Initialize(document, wide_script, 0);
+}
+
+Script::Script(IHTMLDocument2* document,
+               std::wstring script_source) {
+  this->Initialize(document, script_source, 0);
+}
+
 Script::~Script(void) {
 }
 
@@ -421,10 +432,163 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
   return WD_SUCCESS;
 }
 
+int Script::BeginAsyncExecution(HWND* async_executor_handle) {
+  LOG(TRACE) << "Entering Script::BeginAsyncExecution";
+  int return_code = WD_SUCCESS;
+
+  CComVariant result = L"";
+  CComBSTR error_description = L"";
+
+  AsyncScriptExecutorThreadContext thread_context;
+  thread_context.script_source = this->source_code_.c_str();
+  thread_context.script_argument_count = this->argument_count_;
+
+  // We need exclusive access to this event. If it's already created,
+  // OpenEvent returns non-NULL, so we need to wait a bit and retry
+  // until OpenEvent returns NULL.
+  int retry_counter = 50;
+  HANDLE event_handle = ::OpenEvent(SYNCHRONIZE, FALSE, ASYNC_SCRIPT_EVENT_NAME);
+  while (event_handle != NULL && --retry_counter > 0) {
+    ::CloseHandle(event_handle);
+    ::Sleep(50);
+    event_handle = ::OpenEvent(SYNCHRONIZE, FALSE, ASYNC_SCRIPT_EVENT_NAME);
+  }
+
+  // Failure condition here.
+  if (event_handle != NULL) {
+    ::CloseHandle(event_handle);
+    LOG(WARN) << "OpenEvent() returned non-NULL, event already exists.";
+    result.Clear();
+    result.vt = VT_BSTR;
+    error_description = L"Couldn't create an event for synchronizing the creation of the thread. This generally means that you were trying to click on an option in two different instances.";
+    result.bstrVal = error_description;
+    this->result_.Copy(&result);
+    return EUNEXPECTEDJSERROR;
+  }
+
+  LOG(DEBUG) << "Creating synchronization event for new thread";
+  event_handle = ::CreateEvent(NULL, TRUE, FALSE, ASYNC_SCRIPT_EVENT_NAME);
+  if (event_handle == NULL || ::GetLastError() == ERROR_ALREADY_EXISTS) {
+    if (event_handle == NULL) {
+      LOG(WARN) << "CreateEvent() failed.";
+      error_description = L"Couldn't create an event for synchronizing the creation of the thread. This is an internal failure at the Windows OS level, and is generally not due to an error in the IE driver.";
+    } else {
+      ::CloseHandle(event_handle);
+      LOG(WARN) << "Synchronization event is already created in another instance.";
+      error_description = L"Couldn't create an event for synchronizing the creation of the thread. This generally means that you were trying to click on an option in multiple different instances.";
+    }
+    result.Clear();
+    result.vt = VT_BSTR;
+    result.bstrVal = error_description;
+    this->result_.Copy(&result);
+    return EUNEXPECTEDJSERROR;
+  }
+
+  // Start the thread and wait up to 1 second to be signaled that it is ready
+  // to receive messages, then close the event handle.
+  LOG(DEBUG) << "Starting new thread";
+  unsigned int thread_id = 0;
+  HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
+                                                                 0,
+                                                                 AsyncScriptExecutor::ThreadProc,
+                                                                 reinterpret_cast<void*>(&thread_context),
+                                                                 0,
+                                                                 &thread_id));
+
+  LOG(DEBUG) << "Waiting for new thread to be ready for messages";
+  DWORD event_wait_result = ::WaitForSingleObject(event_handle, 5000);
+  if (event_wait_result != WAIT_OBJECT_0) {
+    LOG(WARN) << "Waiting for event to be signaled returned unexpected value: " << event_wait_result;
+  }
+  ::CloseHandle(event_handle);
+
+  if (thread_handle == NULL) {
+    LOG(WARN) << "_beginthreadex() failed.";
+    result.Clear();
+    result.vt = VT_BSTR;
+    error_description = L"Couldn't create the thread for executing JavaScript asynchronously.";
+    result.bstrVal = error_description;
+    this->result_.Copy(&result);
+    return EUNEXPECTEDJSERROR;
+  }
+
+  HWND executor_handle = thread_context.hwnd;
+  *async_executor_handle = executor_handle;
+
+  // Marshal the document and the element to click to streams for use in another thread.
+  LOG(DEBUG) << "Marshaling document to stream to send to new thread";
+  LPSTREAM document_stream;
+  HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLDocument2, this->script_engine_host_, &document_stream);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for document failed";
+    result.Clear();
+    result.vt = VT_BSTR;
+    error_description = L"Couldn't marshal the IHTMLDocument2 interface to a stream. This is an internal COM error.";
+    result.bstrVal = error_description;
+    this->result_.Copy(&result);
+    return EUNEXPECTEDJSERROR;
+  }
+
+  ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_SET_DOCUMENT, NULL, reinterpret_cast<LPARAM>(document_stream));
+  for (size_t index = 0; index < this->argument_array_.size(); ++index) {
+    CComVariant arg = this->argument_array_[index];
+    WPARAM wparam = static_cast<WPARAM>(arg.vt);
+    LPARAM lparam = NULL;
+    switch (arg.vt) {
+    case VT_DISPATCH: {
+      LPSTREAM dispatch_stream;
+      hr = ::CoMarshalInterThreadInterfaceInStream(IID_IDispatch, arg.pdispVal, &dispatch_stream);
+      if (FAILED(hr)) {
+        LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for IDispatch argument failed";
+        result.Clear();
+        result.vt = VT_BSTR;
+        error_description = L"Couldn't marshal the IDispatch interface to a stream. This is an internal COM error.";
+        result.bstrVal = error_description;
+        this->result_.Copy(&result);
+        return EUNEXPECTEDJSERROR;
+      }
+      lparam = reinterpret_cast<LPARAM>(dispatch_stream);
+      break;
+    }
+    case VT_BSTR:
+      lparam = reinterpret_cast<LPARAM>(&arg.bstrVal);
+      break;
+    case VT_BOOL:
+      lparam = static_cast<LPARAM>(arg.boolVal != VARIANT_FALSE);
+      break;
+    case VT_I4:
+    case VT_I8:
+      lparam = static_cast<LPARAM>(arg.intVal);
+      break;
+    case VT_R4:
+    case VT_R8:
+      lparam = reinterpret_cast<LPARAM>(&arg.dblVal);
+      break;
+    default: {
+      // TODO: Marshal arguments of types other than VT_DISPATCH. At present,
+      // the asynchronous execution of JavaScript is only used for Automation
+      // Atoms on an element which take a single argument, an IHTMLElement
+      // object, which is represented as an IDispatch. This case statement
+      // will get much more complex should the need arise to execute
+      // arbitrary scripts in an asynchronous manner.
+      }
+    }
+    ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_SET_ARGUMENT, wparam, lparam);
+  }
+  ::PostMessage(executor_handle, WD_ASYNC_SCRIPT_EXECUTE, NULL, NULL);
+  return WD_SUCCESS;
+}
+
 int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
                                      Json::Value* value) {
   LOG(TRACE) << "Entering Script::ConvertResultToJsonValue";
-  return VariantUtilities::ConvertVariantToJsonValue(executor,
+  return this->ConvertResultToJsonValue(executor.window_handle(), value);
+}
+
+int Script::ConvertResultToJsonValue(HWND element_repository_handle,
+                                     Json::Value* value) {
+  LOG(TRACE) << "Entering Script::ConvertResultToJsonValue";
+  return VariantUtilities::ConvertVariantToJsonValue(element_repository_handle,
                                                      this->result_,
                                                      value);
 }
@@ -461,6 +625,138 @@ bool Script::CreateAnonymousFunction(VARIANT* result) {
       L"__webdriver_script_fn",
       result);
   return get_result_success;
+}
+
+int Script::AddArguments(HWND element_repository_handle, const Json::Value& arguments) {
+  LOG(TRACE) << "Entering Script::AddArguments";
+
+  int status_code = WD_SUCCESS;
+
+  // Calling vector::resize() is okay here, because the vector
+  // should be empty when Initialize() is called, and the
+  // reallocation of variants shouldn't give us too much of a
+  // negative impact.
+  this->argument_array_.resize(arguments.size());
+
+  for (UINT arg_index = 0; arg_index < arguments.size(); ++arg_index) {
+    Json::Value arg = arguments[arg_index];
+    status_code = this->AddArgument(element_repository_handle, arg);
+    if (status_code != WD_SUCCESS) {
+      break;
+    }
+  }
+
+  return status_code;
+}
+
+int Script::AddArgument(HWND element_repository_handle, const Json::Value& arg) {
+  LOG(TRACE) << "Entering Script::AddArgument";
+
+  int status_code = WD_SUCCESS;
+  if (arg.isString()) {
+    std::string value = arg.asString();
+    this->AddArgument(value);
+  } else if (arg.isInt()) {
+    int int_number = arg.asInt();
+    this->AddArgument(int_number);
+  } else if (arg.isDouble()) {
+    double dbl_number = arg.asDouble();
+    this->AddArgument(dbl_number);
+  } else if (arg.isBool()) {
+    bool bool_arg = arg.asBool();
+    this->AddArgument(bool_arg);
+  } else if (arg.isNull()) {
+    this->AddNullArgument();
+  } else if (arg.isArray()) {
+    status_code = this->WalkArray(element_repository_handle, arg);
+  } else if (arg.isObject()) {
+    std::string element_marker_property_name = "element-6066-11e4-a52e-4f735466cecf";
+    if (arg.isMember(element_marker_property_name)) {
+      ElementInfo info;
+      info.element_id = arg[element_marker_property_name].asString();
+      status_code = static_cast<int>(::SendMessage(element_repository_handle, WD_GET_MANAGED_ELEMENT, NULL, reinterpret_cast<LPARAM>(&info)));
+
+      if (status_code == WD_SUCCESS) {
+        this->AddArgument(info.element);
+      }
+    } else {
+      status_code = this->WalkObject(element_repository_handle, arg);
+    }
+  }
+
+  return status_code;
+}
+
+int Script::WalkArray(HWND element_repository_handle,
+                      const Json::Value& array_value) {
+  LOG(TRACE) << "Entering Script::WalkArray";
+
+  int status_code = WD_SUCCESS;
+  Json::UInt array_size = array_value.size();
+  std::wstring array_script = L"(function(){ return function() { return [";
+  for (Json::UInt index = 0; index < array_size; ++index) {
+    if (index != 0) {
+      array_script += L",";
+    }
+    std::wstring index_string = std::to_wstring(static_cast<long long>(index));
+    array_script += L"arguments[" + index_string + L"]";
+  }
+  array_script += L"];}})();";
+
+  Script array_script_wrapper(this->script_engine_host_, array_script, array_size);
+  for (Json::UInt index = 0; index < array_size; ++index) {
+    status_code = array_script_wrapper.AddArgument(element_repository_handle, array_value[index]);
+    if (status_code != WD_SUCCESS) {
+      break;
+    }
+  }
+
+  if (status_code == WD_SUCCESS) {
+    status_code = array_script_wrapper.Execute();
+  }
+
+  if (status_code == WD_SUCCESS) {
+    this->AddArgument(array_script_wrapper.result());
+  }
+
+  return status_code;
+}
+
+int Script::WalkObject(HWND element_repository_handle,
+                       const Json::Value& object_value) {
+  LOG(TRACE) << "Entering Script::WalkObject";
+
+  int status_code = WD_SUCCESS;
+  Json::Value::iterator it = object_value.begin();
+  int counter = 0;
+  std::string object_script = "(function(){ return function() { return {";
+  for (; it != object_value.end(); ++it) {
+    if (counter != 0) {
+      object_script += ",";
+    }
+    std::string counter_string = std::to_string(static_cast<long long>(counter));
+    std::string name = it.memberName();
+    object_script += "\"" + name + "\"" + ":arguments[" + counter_string + "]";
+    ++counter;
+  }
+  object_script += "};}})();";
+
+  Script object_script_wrapper(this->script_engine_host_, object_script, counter);
+  for (it = object_value.begin(); it != object_value.end(); ++it) {
+    status_code = object_script_wrapper.AddArgument(element_repository_handle, object_value[it.memberName()]);
+    if (status_code != WD_SUCCESS) {
+      break;
+    }
+  }
+
+  if (status_code == WD_SUCCESS) {
+    status_code = object_script_wrapper.Execute();
+  }
+
+  if (status_code == WD_SUCCESS) {
+    this->AddArgument(object_script_wrapper.result());
+  }
+  return status_code;
 }
 
 } // namespace webdriver

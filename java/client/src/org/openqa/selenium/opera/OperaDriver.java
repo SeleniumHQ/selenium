@@ -132,7 +132,7 @@ public class OperaDriver extends RemoteWebDriver
    *
    * @param capabilities The capabilities required from the OperaDriver.
    * @see #OperaDriver(OperaDriverService, Capabilities)
-   * @deprecated Use {@link OperaDriver(OperaOptions)} instead.
+   * @deprecated Use {@link #OperaDriver(OperaOptions)} instead.
    */
   @Deprecated
   public OperaDriver(Capabilities capabilities) {
@@ -166,7 +166,7 @@ public class OperaDriver extends RemoteWebDriver
    *
    * @param service The service to use.
    * @param capabilities The capabilities required from the OperaDriver.
-   * @deprecated Use {@link OperaDriver(OperaDriverService, OperaOptions)} instead.
+   * @deprecated Use {@link #OperaDriver(OperaDriverService, OperaOptions)} instead.
    */
   @Deprecated
   public OperaDriver(OperaDriverService service, Capabilities capabilities) {

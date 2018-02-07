@@ -30,9 +30,6 @@ import com.google.gson.JsonParser;
 import com.beust.jcommander.JCommander;
 
 import org.junit.Test;
-import org.openqa.grid.internal.listeners.Prioritizer;
-
-import java.util.Map;
 
 public class GridHubConfigurationTest {
 
@@ -115,12 +112,7 @@ public class GridHubConfigurationTest {
   public void testMergeWithRealValues() {
     GridHubConfiguration ghc = new GridHubConfiguration();
     GridHubConfiguration other = new GridHubConfiguration();
-    other.prioritizer = new Prioritizer() {
-      @Override
-      public int compareTo(Map<String, Object> a, Map<String, Object> b) {
-        return 0;
-      }
-    };
+    other.prioritizer = (a, b) -> 0;
     other.hubConfig = "foo.json";
     other.throwOnCapabilityNotPresent = false;
     other.newSessionWaitTimeout = 100;
@@ -178,7 +170,7 @@ public class GridHubConfigurationTest {
     ghc = new GridHubConfiguration();
     String[] args = ("-servlet com.foo.bar.ServletA -servlet com.foo.bar.ServletB"
                      + " -custom foo=bar,bar=baz").split(" ");
-    new JCommander(ghc, args);
+    JCommander.newBuilder().addObject(ghc).build().parse(args);
 
     assertTrue(ghc.toString().contains("-servlets com.foo.bar.ServletA"
                                        + " -servlets com.foo.bar.ServletB"));
@@ -192,7 +184,7 @@ public class GridHubConfigurationTest {
     String[] hubArgs = {"-capabilityMatcher", "org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                         "-prioritizer", "org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer"};
     GridHubConfiguration ghc = new GridHubConfiguration();
-    new JCommander(ghc, hubArgs);
+    JCommander.newBuilder().addObject(ghc).build().parse(hubArgs);
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                  ghc.capabilityMatcher.getClass().getCanonicalName());
     assertEquals("org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer",

@@ -74,8 +74,7 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
     driver.quit();
 
     Capabilities caps = new ImmutableCapabilities(ENABLE_PERSISTENT_HOVERING, false);
-    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(caps);
-    driver = builder.get();
+    driver = new WebDriverBuilder().get(caps);
 
     try {
       driver.get(pages.javascriptPage);

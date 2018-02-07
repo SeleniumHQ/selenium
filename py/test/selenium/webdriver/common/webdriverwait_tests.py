@@ -90,7 +90,6 @@ def testShouldFailToFindVisibleElementsWhenExplicitWaiting(driver, pages):
         WebDriverWait(driver, 0.7).until(EC.visibility_of_any_elements_located((By.CLASS_NAME, "redbox")))
 
 
-@pytest.mark.xfail_marionette(reason='Fails on travis')
 def testShouldWaitUntilAllVisibleElementsAreFoundWhenSearchingForMany(driver, pages):
     pages.load("hidden_partially.html")
     add_visible = driver.find_element_by_id("addVisible")
@@ -301,9 +300,6 @@ def testExpectedConditionElementLocatedSelectionStateToBe(driver, pages):
     assert element.is_selected() is True
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
 def testExpectedConditionAlertIsPresent(driver, pages):
     pages.load('blank.html')
     with pytest.raises(TimeoutException):

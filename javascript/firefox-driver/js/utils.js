@@ -822,83 +822,96 @@ Utils.unwrapParameters = function(wrappedParameters, doc) {
 
 
 Utils.wrapResult = function(result, doc) {
-  result = fxdriver.moz.unwrap(result);
+  var _wrap = function(result, doc, seen) {
+    result = fxdriver.moz.unwrap(result);
 
-  // Sophisticated.
-  switch (typeof result) {
-    case 'string':
-    case 'number':
-    case 'boolean':
-      return result;
+    // Sophisticated.
+    switch (typeof result) {
+      case 'string':
+      case 'number':
+      case 'boolean':
+        return result;
 
-    case 'function':
-      return result.toString();
+      case 'function':
+        return result.toString();
 
-    case 'undefined':
-      return null;
-
-    case 'object':
-      if (result == null) {
+      case 'undefined':
         return null;
-      }
 
-      // There's got to be a more intelligent way of detecting this.
-      if (result.nodeType == 1 && result['tagName']) {
-        return {'ELEMENT': Utils.addToKnownElements(result)};
-      }
-
-      if (typeof result.getMonth === 'function') {
-        return result.toJSON();
-      }
-
-      if (typeof result.length === 'number' &&
-          !(result.propertyIsEnumerable('length'))) {
-        var array = [];
-        for (var i = 0; i < result.length; i++) {
-          array.push(Utils.wrapResult(result[i], doc));
+      case 'object':
+        if (result == null) {
+          return null;
         }
-        return array;
-      }
 
-      // Document. Grab the document element.
-      if (result.nodeType == 9) {
-        return Utils.wrapResult(result.documentElement);
-      }
-
-      try {
-        var nodeList = result.QueryInterface(CI.nsIDOMNodeList);
-        var array = [];
-        for (var i = 0; i < nodeList.length; i++) {
-          array.push(Utils.wrapResult(result.item(i), doc));
+        if (seen.indexOf(result) >= 0) {
+          throw new bot.Error(bot.ErrorCode.JAVASCRIPT_ERROR,
+                              'Recursive object cannot be transferred');
         }
-        return array;
-      } catch (ignored) {
-        goog.log.warning(Utils.LOG_, 'Error wrapping NodeList', ignored);
-      }
 
-      try {
-        // There's got to be a better way, but 'result instanceof Error' returns false
-        if (Object.getPrototypeOf(result) != null && goog.string.endsWith(Object.getPrototypeOf(result).toString(), 'Error')) {
-          try {
-            return fxdriver.error.toJSON(result);
-          } catch (ignored2) {
-            goog.log.info(Utils.LOG_, 'Error', ignored2);
-            return result.toString();
+        // There's got to be a more intelligent way of detecting this.
+        if (result.nodeType == 1 && result['tagName']) {
+          return {'ELEMENT': Utils.addToKnownElements(result)};
+        }
+
+        if (typeof result.getMonth === 'function') {
+          return result.toJSON();
+        }
+
+        seen.push(result);
+
+        if (typeof result.length === 'number' &&
+            !(result.propertyIsEnumerable('length'))) {
+          var array = [];
+          for (var i = 0; i < result.length; i++) {
+            array.push(_wrap(result[i], doc, seen));
           }
+          return array;
         }
-      } catch (ignored) {
-        goog.log.info(Utils.LOG_, 'Error', ignored);
-      }
 
-      var convertedObj = {};
-      for (var prop in result) {
-        convertedObj[prop] = Utils.wrapResult(result[prop], doc);
-      }
-      return convertedObj;
+        // Document. Grab the document element.
+        if (result.nodeType == 9) {
+          return _wrap(result.documentElement, doc, seen);
+        }
 
-    default:
-      return result;
-  }
+        var nodeList;
+        try {
+          nodeList = result.QueryInterface(CI.nsIDOMNodeList);
+        } catch (ignored) {
+        }
+        if (nodeList) {
+          var array = [];
+          for (var i = 0; i < nodeList.length; i++) {
+            array.push(_wrap(result.item(i), doc, seen));
+          }
+          return array;
+        }
+
+        try {
+          // There's got to be a better way, but 'result instanceof Error' returns false
+          if (Object.getPrototypeOf(result) != null && goog.string.endsWith(
+                  Object.getPrototypeOf(result).toString(), 'Error')) {
+            try {
+              return fxdriver.error.toJSON(result);
+            } catch (ignored2) {
+              goog.log.info(Utils.LOG_, 'Error', ignored2);
+              return result.toString();
+            }
+          }
+        } catch (ignored) {
+          goog.log.info(Utils.LOG_, 'Error', ignored);
+        }
+
+        var convertedObj = {};
+        for (var prop in result) {
+          convertedObj[prop] = _wrap(result[prop], doc, seen);
+        }
+        return convertedObj;
+
+      default:
+        return result;
+    }
+  };
+  return _wrap(result, doc, []);
 };
 
 

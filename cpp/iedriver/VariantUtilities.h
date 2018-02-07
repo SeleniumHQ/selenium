@@ -50,6 +50,9 @@ class VariantUtilities {
   static int ConvertVariantToJsonValue(const IECommandExecutor& executor,
                                        VARIANT variant_value,
                                        Json::Value* value);
+  static int ConvertVariantToJsonValue(HWND element_repository_handle,
+                                       VARIANT variant_value,
+                                       Json::Value* value);
   static bool ConvertVariantToString(VARIANT variant_value,
                                      std::string* value);
   static std::wstring GetVariantObjectTypeName(VARIANT value);
@@ -59,11 +62,10 @@ class VariantUtilities {
 
  private:
   static int GetArrayLength(IDispatch* array_dispatch, long* length);
-  static int GetArrayItem(const IECommandExecutor& executor,
+  static int GetArrayItem(HWND element_repository_handle,
                           IDispatch* array_dispatch,
                           long index,
                           Json::Value* item);
-
   static int GetPropertyNameList(IDispatch* object_dispatch,
                                  std::vector<std::wstring>* property_names);
 };

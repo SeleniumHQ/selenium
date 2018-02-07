@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 /**
  * Class to manage options specific to {@link ChromeDriver}.
@@ -229,6 +230,11 @@ public class ChromeOptions extends MutableCapabilities {
     return this;
   }
 
+  /**
+   * Returns ChromeOptions with the capability ACCEPT_INSECURE_CERTS set.
+   * @param acceptInsecureCerts
+   * @return ChromeOptions
+   */
   public ChromeOptions setAcceptInsecureCerts(boolean acceptInsecureCerts) {
     setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
     return this;
@@ -287,15 +293,17 @@ public class ChromeOptions extends MutableCapabilities {
 
     options.put(
         "extensions",
-        extensionFiles.stream()
-            .map(file -> {
-              try {
-                return Base64.getEncoder().encodeToString(Files.toByteArray(file));
-              } catch (IOException e) {
-                throw new SessionNotCreatedException(e.getMessage(), e);
-              }
-            })
-            .collect(ImmutableList.toImmutableList()));
+        Stream.concat(
+            extensionFiles.stream()
+                .map(file -> {
+                  try {
+                    return Base64.getEncoder().encodeToString(Files.toByteArray(file));
+                  } catch (IOException e) {
+                    throw new SessionNotCreatedException(e.getMessage(), e);
+                  }
+                }),
+            extensions.stream()
+        ).collect(ImmutableList.toImmutableList()));
 
     toReturn.put(CAPABILITY, options);
 

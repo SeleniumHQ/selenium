@@ -71,7 +71,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       localDriver.quit();
     }
     Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, strategy);
-    localDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    localDriver = new WebDriverBuilder().get(caps);
   }
 
   @Test
@@ -196,6 +196,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, issue = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2239")
   public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
     driver.get(pages.xhtmlTestPage);
     driver.get(pages.xhtmlTestPage + "#text");

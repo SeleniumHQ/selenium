@@ -121,7 +121,7 @@ bot.inject.wrapValue = function(value) {
         // a ton of compiler warnings.
         value = /**@type {!Object}*/ (value);
         if (seen.indexOf(value) >= 0) {
-          throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+          throw new bot.Error(bot.ErrorCode.JAVASCRIPT_ERROR,
             'Recursive object cannot be transferred');
         }
 

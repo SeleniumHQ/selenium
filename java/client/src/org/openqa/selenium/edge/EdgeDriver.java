@@ -147,7 +147,7 @@ public class EdgeDriver extends RemoteWebDriver {
 	   *
 	   * @param service The service to use.
 	   * @param capabilities The capabilities required from the EdgeDriver.
-     * @deprecated Use {@link EdgeDriver(EdgeDriverService, EdgeOptions)}
+     * @deprecated Use {@link #EdgeDriver(EdgeDriverService, EdgeOptions)}
 	   */
 		@Deprecated
 	  public EdgeDriver(EdgeDriverService service, Capabilities capabilities) {

@@ -86,7 +86,7 @@ public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
 
     Capabilities caps = new ImmutableCapabilities("webdriver.remote.quietExceptions", true);
 
-    WebDriver noScreenshotDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    WebDriver noScreenshotDriver = new WebDriverBuilder().get(caps);
 
     noScreenshotDriver.get(pages.simpleTestPage);
 

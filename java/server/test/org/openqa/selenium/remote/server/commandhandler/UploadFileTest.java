@@ -23,7 +23,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
@@ -77,7 +76,7 @@ public class UploadFileTest {
 
     Gson gson = new Gson();
     UploadFile uploadFile = new UploadFile(new Json(), session);
-    Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
+    Map<String, Object> args = ImmutableMap.of("file", encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
     request.setContent(gson.toJson(args).getBytes(UTF_8));
     HttpResponse response = new HttpResponse();
@@ -104,7 +103,7 @@ public class UploadFileTest {
 
     Gson gson = new Gson();
     UploadFile uploadFile = new UploadFile(new Json(), session);
-    Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
+    Map<String, Object> args = ImmutableMap.of("file", encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
     request.setContent(gson.toJson(args).getBytes(UTF_8));
     HttpResponse response = new HttpResponse();
@@ -123,7 +122,7 @@ public class UploadFileTest {
   private File touch(File baseDir, String stem) throws IOException {
     File tempFile = File.createTempFile(stem, ".txt", baseDir);
     tempFile.deleteOnExit();
-    Files.write("I like cheese", tempFile, Charsets.UTF_8);
+    Files.asCharSink(tempFile, UTF_8).write("I like cheese");
     return tempFile;
   }
 }

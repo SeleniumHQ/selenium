@@ -27,6 +27,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
@@ -74,6 +75,12 @@ public class OperaOptions extends MutableCapabilities {
 
   public OperaOptions() {
     setCapability(BROWSER_NAME, OPERA_BLINK);
+  }
+
+  @Override
+  public OperaOptions merge(Capabilities extraCapabilities) {
+    super.merge(extraCapabilities);
+    return this;
   }
 
   /**

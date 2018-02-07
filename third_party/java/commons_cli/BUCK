@@ -1,8 +1,0 @@
-# BUILD FILE SYNTAX: SKYLARK
-
-prebuilt_jar(name = 'commons_cli',
-  binary_jar = 'commons-cli-1.2.jar',
-  visibility = [
-    '//third_party/java/little_proxy:little_proxy',
-  ],
-)

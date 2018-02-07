@@ -25,5 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface SessionFactory {
+  boolean isSupporting(Capabilities capabilities);
+
   Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities capabilities);
 }

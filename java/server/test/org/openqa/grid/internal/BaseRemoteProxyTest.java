@@ -89,8 +89,7 @@ public class BaseRemoteProxyTest {
     GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     registry.getHub().getConfiguration().cleanUpCycle = 42;
 
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    new JCommander(nodeConfiguration, "-role", "webdriver");
+    GridNodeConfiguration nodeConfiguration = parseCliOptions("-role", "webdriver");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
 
@@ -108,8 +107,8 @@ public class BaseRemoteProxyTest {
     registry.getConfiguration().cleanUpCycle = 42;
     registry.getConfiguration().maxSession = 1;
 
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    new JCommander(nodeConfiguration, "-role", "webdriver", "-cleanUpCycle", "100", "-maxSession", "50");
+    GridNodeConfiguration nodeConfiguration = parseCliOptions(
+        "-role", "webdriver", "-cleanUpCycle", "100", "-maxSession", "50");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
 
@@ -126,8 +125,8 @@ public class BaseRemoteProxyTest {
     String remoteHost ="http://machine1:5555";
     GridRegistry registry = DefaultGridRegistry.newInstance();
 
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555");
+    GridNodeConfiguration nodeConfiguration = parseCliOptions(
+        "-role", "webdriver","-host", "machine1", "-port", "5555");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
@@ -139,8 +138,8 @@ public class BaseRemoteProxyTest {
   @Test
   public void proxyWithIdSpecified() {
     GridRegistry registry = DefaultGridRegistry.newInstance();
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc");
+    GridNodeConfiguration nodeConfiguration = parseCliOptions(
+        "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
@@ -152,8 +151,8 @@ public class BaseRemoteProxyTest {
   @Test
   public void timeouts() {
     GridRegistry registry = DefaultGridRegistry.newInstance();
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc","-timeout", "23", "-browserTimeout", "12");
+    GridNodeConfiguration nodeConfiguration = parseCliOptions(
+        "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc","-timeout", "23", "-browserTimeout", "12");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
@@ -190,4 +189,9 @@ public class BaseRemoteProxyTest {
     registry.stop();
   }
 
+  private GridNodeConfiguration parseCliOptions(String... args) {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    JCommander.newBuilder().addObject(config).build().parse(args);
+    return config;
+  }
 }

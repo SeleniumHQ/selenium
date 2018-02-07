@@ -19,18 +19,130 @@
 
 const assert = require('assert');
 
-const {Browser, By, until} = require('..');
-const test = require('../lib/test');
+const chrome = require('../chrome');
+const error = require('../lib/error');
 const fileServer = require('../lib/test/fileserver');
+const firefox = require('../firefox');
+const test = require('../lib/test');
+const {Key, Origin} = require('../lib/input');
+const {Browser, By, until} = require('..');
 
 test.suite(function(env) {
-  test.ignore(env.browsers(Browser.CHROME, Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.SAFARI)).
   describe('WebDriver.actions()', function() {
     let driver;
 
-    before(async function() { driver = await env.builder().build(); });
-    afterEach(function() { return driver.actions().clear(); });
-    after(function() { return driver.quit(); });
+    before(async function() {
+      driver = await env.builder().build();
+    });
+
+    afterEach(async function() {
+      try {
+        await driver.actions().clear();
+      } catch (e) {
+        if (e instanceof error.UnsupportedOperationError
+            || e instanceof error.UnknownCommandError) {
+          return;
+        }
+        throw e;
+      }
+    });
+
+    after(function() {
+      return driver.quit();
+    });
+
+    it('click(element)', async function() {
+      await driver.get(fileServer.whereIs('/data/actions/click.html'));
+
+      let box = await driver.findElement(By.id('box'));
+      assert.equal(await box.getAttribute('class'), '');
+
+      await driver.actions({bridge: true}).click(box).perform();
+      assert.equal(await box.getAttribute('class'), 'green');
+    });
+
+    it('click(element) clicks in center of element', async function() {
+      await driver.get(fileServer.whereIs('/data/actions/record_click.html'));
+
+      const div = await driver.findElement(By.css('div'));
+      const rect = await div.getRect();
+      assert.deepEqual(rect, {width: 500, height: 500, x: 0, y: 0});
+
+      await driver.actions({bridge: true}).click(div).perform();
+
+      const clicks = await driver.executeScript('return clicks');
+      assert.deepEqual(clicks, [[250, 250]]);
+    });
+
+    it('can move relative to element center', async function() {
+      await driver.get(fileServer.whereIs('/data/actions/record_click.html'));
+
+      const div = await driver.findElement(By.css('div'));
+      const rect = await div.getRect();
+      assert.deepEqual(rect, {width: 500, height: 500, x: 0, y: 0});
+
+      await driver.actions({bridge: true})
+          .move({x: 10, y: 10, origin: div})
+          .click()
+          .perform();
+
+      const clicks = await driver.executeScript('return clicks');
+      assert.deepEqual(clicks, [[260, 260]]);
+    });
+
+    it('doubleClick(element)', async function() {
+      // This test requires Firefox 59+.
+      if (env.browser.name === Browser.FIREFOX) {
+        await driver.quit();
+        driver = await env.builder()
+            .setFirefoxOptions(
+                new firefox.Options().setBinary(firefox.Channel.NIGHTLY))
+            .build();
+      }
+      await driver.get(fileServer.whereIs('/data/actions/click.html'));
+
+      let box = await driver.findElement(By.id('box'));
+      assert.equal(await box.getAttribute('class'), '');
+
+      await driver.actions({bridge: true}).doubleClick(box).perform();
+      assert.equal(await box.getAttribute('class'), 'blue');
+    });
+
+    it('dragAndDrop()', async function() {
+      await driver.get(fileServer.whereIs('/data/actions/drag.html'));
+
+      let slide = await driver.findElement(By.id('slide'));
+      assert.equal(await slide.getCssValue('left'), '0px');
+      assert.equal(await slide.getCssValue('top'), '0px');
+
+      let br = await driver.findElement(By.id('BR'));
+      await driver.actions({bridge: true}).dragAndDrop(slide, br).perform();
+      assert.equal(await slide.getCssValue('left'), '206px');
+      assert.equal(await slide.getCssValue('top'), '206px');
+
+      let tr = await driver.findElement(By.id('TR'));
+      await driver.actions({bridge: true}).dragAndDrop(slide, tr).perform();
+      assert.equal(await slide.getCssValue('left'), '206px');
+      assert.equal(await slide.getCssValue('top'), '1px');
+    });
+
+    it('move()', async function() {
+      await driver.get(fileServer.whereIs('/data/actions/drag.html'));
+
+      let slide = await driver.findElement(By.id('slide'));
+      assert.equal(await slide.getCssValue('left'), '0px');
+      assert.equal(await slide.getCssValue('top'), '0px');
+
+      await driver.actions({bridge: true})
+          .move({origin: slide})
+          .press()
+          .move({x: 100, y: 100, origin: Origin.POINTER})
+          .release()
+          .perform();
+      assert.equal(await slide.getCssValue('left'), '101px');
+      assert.equal(await slide.getCssValue('top'), '101px');
+    });
 
     it('can move to and click element in an iframe', async function() {
       await driver.get(fileServer.whereIs('click_tests/click_in_iframe.html'));
@@ -40,11 +152,41 @@ test.suite(function(env) {
 
       let link = await driver.findElement(By.id('link'));
 
-      let actions = driver.actions();
-      actions.mouse().click(link);
-      await actions.perform();
-
+      await driver.actions({bridge: true}).click(link).perform();
+      await driver.switchTo().defaultContent();
       return driver.wait(until.titleIs('Submitted Successfully!'), 5000);
+    });
+
+    it('can send keys to focused element', async function() {
+      await driver.get(test.Pages.formPage);
+
+      let el = await driver.findElement(By.id('email'));
+      assert.equal(await el.getAttribute('value'), '');
+
+      await driver.executeScript('arguments[0].focus()', el);
+
+      await driver.actions({bridge: true}).sendKeys('foobar').perform();
+
+      assert.equal(await el.getAttribute('value'), 'foobar');
+    });
+
+    it('can send keys to focused element (with modifiers)', async function() {
+      await driver.get(test.Pages.formPage);
+
+      let el = await driver.findElement(By.id('email'));
+      assert.equal(await el.getAttribute('value'), '');
+
+      await driver.executeScript('arguments[0].focus()', el);
+
+      await driver.actions({bridge: true})
+          .sendKeys('fo')
+          .keyDown(Key.SHIFT)
+          .sendKeys('OB')
+          .keyUp(Key.SHIFT)
+          .sendKeys('ar')
+          .perform();
+
+      assert.equal(await el.getAttribute('value'), 'foOBar');
     });
 
     it('can interact with simple form elements', async function() {
@@ -53,13 +195,13 @@ test.suite(function(env) {
       let el = await driver.findElement(By.id('email'));
       assert.equal(await el.getAttribute('value'), '');
 
-      let actions = driver.actions();
-      actions.mouse().click(el);
-      actions.synchronize();
-      actions.keyboard().sendKeys('foobar');
-      await actions.perform();
+      await driver.actions({bridge: true})
+          .click(el)
+          .sendKeys('foobar')
+          .perform();
 
       assert.equal(await el.getAttribute('value'), 'foobar');
     });
   });
 });
+

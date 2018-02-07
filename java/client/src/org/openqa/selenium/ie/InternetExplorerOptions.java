@@ -52,12 +52,14 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -165,6 +167,8 @@ public class InternetExplorerOptions extends MutableCapabilities {
     Object raw = getCapability(IE_SWITCHES);
     if (raw == null) {
       raw = new LinkedList<>();
+    } else if (raw instanceof String) {
+      raw = Arrays.asList(((String) raw).split(" "));
     }
 
     return amend(
@@ -245,8 +249,8 @@ public class InternetExplorerOptions extends MutableCapabilities {
     super.setCapability(key, value);
 
     if (IE_SWITCHES.equals(key)) {
-      if (!(value instanceof List)) {
-        throw new IllegalArgumentException("Command line switches must be a list");
+      if (value instanceof List) {
+        value = ((List<?>) value).stream().map(Object::toString).collect(Collectors.joining(" "));
       }
     }
 

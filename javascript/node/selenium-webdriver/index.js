@@ -22,23 +22,23 @@
 
 'use strict';
 
-const chrome = require('./chrome');
-const edge = require('./edge');
-const firefox = require('./firefox');
 const _http = require('./http');
-const ie = require('./ie');
 const by = require('./lib/by');
 const capabilities = require('./lib/capabilities');
+const chrome = require('./chrome');
 const command = require('./lib/command');
+const edge = require('./edge');
 const error = require('./lib/error');
+const firefox = require('./firefox');
+const ie = require('./ie');
 const input = require('./lib/input');
 const logging = require('./lib/logging');
 const promise = require('./lib/promise');
+const remote = require('./remote');
+const safari = require('./safari');
 const session = require('./lib/session');
 const until = require('./lib/until');
 const webdriver = require('./lib/webdriver');
-const remote = require('./remote');
-const safari = require('./safari');
 
 const Browser = capabilities.Browser;
 const Capabilities = capabilities.Capabilities;
@@ -212,8 +212,14 @@ class Builder {
     /** @private {chrome.Options} */
     this.chromeOptions_ = null;
 
+    /** @private {chrome.ServiceBuilder} */
+    this.chromeService_ = null;
+
     /** @private {firefox.Options} */
     this.firefoxOptions_ = null;
+
+    /** @private {firefox.ServiceBuilder} */
+    this.firefoxService_ = null;
 
     /** @private {ie.Options} */
     this.ieOptions_ = null;
@@ -223,6 +229,9 @@ class Builder {
 
     /** @private {edge.Options} */
     this.edgeOptions_ = null;
+
+    /** @private {remote.DriverService.Builder} */
+    this.edgeService_ = null;
 
     /** @private {boolean} */
     this.ignoreEnv_ = false;
@@ -409,6 +418,29 @@ class Builder {
   }
 
   /**
+   * @return {chrome.Options} the Chrome specific options currently configured
+   *     for this builder.
+   */
+  getChromeOptions() {
+    return this.chromeOptions_;
+  }
+
+  /**
+   * Sets the service builder to use for managing the chromedriver child process
+   * when creating new Chrome sessions.
+   *
+   * @param {chrome.ServiceBuilder} service the service to use.
+   * @return {!Builder} A self reference.
+   */
+  setChromeService(service) {
+    if (service && !(service instanceof chrome.ServiceBuilder)) {
+      throw TypeError('not a chrome.ServiceBuilder object');
+    }
+    this.chromeService_ = service;
+    return this;
+  }
+
+  /**
    * Sets Firefox specific {@linkplain firefox.Options options} for drivers
    * created by this builder. Any logging or proxy settings defined on the given
    * options will take precedence over those set through
@@ -428,6 +460,21 @@ class Builder {
    */
   getFirefoxOptions() {
     return this.firefoxOptions_;
+  }
+
+  /**
+   * Sets the {@link firefox.ServiceBuilder} to use to manage the geckodriver
+   * child process when creating Firefox sessions locally.
+   *
+   * @param {firefox.ServiceBuilder} service the service to use.
+   * @return {!Builder} a self reference.
+   */
+  setFirefoxService(service) {
+    if (service && !(service instanceof firefox.ServiceBuilder)) {
+      throw TypeError('not a firefox.ServiceBuilder object');
+    }
+    this.firefoxService_ = service;
+    return this;
   }
 
   /**
@@ -454,6 +501,21 @@ class Builder {
    */
   setEdgeOptions(options) {
     this.edgeOptions_ = options;
+    return this;
+  }
+
+  /**
+   * Sets the {@link edge.ServiceBuilder} to use to manage the
+   * MicrosoftEdgeDriver child process when creating sessions locally.
+   *
+   * @param {edge.ServiceBuilder} service the service to use.
+   * @return {!Builder} a self reference.
+   */
+  setEdgeService(service) {
+    if (service && !(service instanceof edge.ServiceBuilder)) {
+      throw TypeError('not a edge.ServiceBuilder object');
+    }
+    this.edgeService_ = service;
     return this;
   }
 
@@ -520,20 +582,28 @@ class Builder {
 
     // Apply browser specific overrides.
     if (browser === Browser.CHROME && this.chromeOptions_) {
-      capabilities.merge(this.chromeOptions_.toCapabilities());
+      capabilities.merge(this.chromeOptions_);
 
     } else if (browser === Browser.FIREFOX && this.firefoxOptions_) {
-      capabilities.merge(this.firefoxOptions_.toCapabilities());
+      capabilities.merge(this.firefoxOptions_);
 
     } else if (browser === Browser.INTERNET_EXPLORER && this.ieOptions_) {
-      capabilities.merge(this.ieOptions_.toCapabilities());
+      capabilities.merge(this.ieOptions_);
 
     } else if (browser === Browser.SAFARI && this.safariOptions_) {
-      capabilities.merge(this.safariOptions_.toCapabilities());
+      capabilities.merge(this.safariOptions_);
 
     } else if (browser === Browser.EDGE && this.edgeOptions_) {
-      capabilities.merge(this.edgeOptions_.toCapabilities());
+      capabilities.merge(this.edgeOptions_);
     }
+
+    checkOptions(
+        capabilities, 'chromeOptions', chrome.Options, 'setChromeOptions');
+    checkOptions(
+        capabilities, 'moz:firefoxOptions', firefox.Options,
+        'setFirefoxOptions');
+    checkOptions(
+        capabilities, 'safari.options', safari.Options, 'setSafariOptions');
 
     // Check for a remote browser.
     let url = this.url_;
@@ -569,17 +639,32 @@ class Builder {
 
     // Check for a native browser.
     switch (browser) {
-      case Browser.CHROME:
-        return createDriver(chrome.Driver, capabilities, null);
+      case Browser.CHROME: {
+        let service = null;
+        if (this.chromeService_) {
+          service = this.chromeService_.build();
+        }
+        return createDriver(chrome.Driver, capabilities, service);
+      }
 
-      case Browser.FIREFOX:
-        return createDriver(firefox.Driver, capabilities, null);
+      case Browser.FIREFOX: {
+        let service = null;
+        if (this.firefoxService_) {
+          service = this.firefoxService_.build();
+        }
+        return createDriver(firefox.Driver, capabilities, service);
+      }
 
       case Browser.INTERNET_EXPLORER:
         return createDriver(ie.Driver, capabilities);
 
-      case Browser.EDGE:
-        return createDriver(edge.Driver, capabilities, null);
+      case Browser.EDGE: {
+        let service = null;
+        if (this.edgeService_) {
+          service = this.edgeService_.build();
+        }
+        return createDriver(edge.Driver, capabilities, service);
+      }
 
       case Browser.SAFARI:
         return createDriver(safari.Driver, capabilities);
@@ -592,10 +677,66 @@ class Builder {
 }
 
 
+/**
+ * In the 3.x releases, the various browser option classes
+ * (e.g. firefox.Options) had to be manually set as an option using the
+ * Capabilties class:
+ *
+ *     let ffo = new firefox.Options();
+ *     // Configure firefox options...
+ *
+ *     let caps = new Capabilities();
+ *     caps.set('moz:firefoxOptions', ffo);
+ *
+ *     let driver = new Builder()
+ *         .withCapabilities(caps)
+ *         .build();
+ *
+ * The options are now subclasses of Capabilities and can be used directly. A
+ * direct translation of the above is:
+ *
+ *     let ffo = new firefox.Options();
+ *     // Configure firefox options...
+ *
+ *     let driver = new Builder()
+ *         .withCapabilities(ffo)
+ *         .build();
+ *
+ * You can also set the options for various browsers at once and let the builder
+ * choose the correct set at runtime (see Builder docs above):
+ *
+ *     let ffo = new firefox.Options();
+ *     // Configure ...
+ *
+ *     let co = new chrome.Options();
+ *     // Configure ...
+ *
+ *     let driver = new Builder()
+ *         .setChromeOptions(co)
+ *         .setFirefoxOptions(ffo)
+ *         .build();
+ *
+ * @param {!Capabilities} caps
+ * @param {string} key
+ * @param {function(new: Capabilities)} optionType
+ * @param {string} setMethod
+ * @throws {error.InvalidArgumentError}
+ */
+function checkOptions(caps, key, optionType, setMethod) {
+  let val = caps.get(key);
+  if (val instanceof optionType) {
+    throw new error.InvalidArgumentError(
+        'Options class extends Capabilities and should not be set as key '
+            + `"${key}"; set browser-specific options with `
+            + `Builder.${setMethod}(). For more information, see the `
+            + 'documentation attached to the function that threw this error');
+  }
+}
+
+
 // PUBLIC API
 
 
-exports.ActionSequence = webdriver.ActionSequence;
 exports.Browser = capabilities.Browser;
 exports.Builder = Builder;
 exports.Button = input.Button;

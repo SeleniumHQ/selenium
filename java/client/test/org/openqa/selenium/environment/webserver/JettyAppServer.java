@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.InProject.locate;
 
@@ -33,7 +33,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty9.http.HttpVersion;
 import org.seleniumhq.jetty9.http.MimeTypes;
@@ -206,11 +205,11 @@ public class JettyAppServer implements AppServer {
       converted.addProperty("content", page.toString());
       byte[] data = converted.toString().getBytes(UTF_8);
 
-      HttpClient client = new ApacheHttpClient.Factory().createClient(new URL(whereIs("/")));
+      HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
       request.setContent(data);
-      HttpResponse response = client.execute(request, true);
+      HttpResponse response = client.execute(request);
       return response.getContentString();
     } catch (IOException ex) {
       throw new RuntimeException(ex);

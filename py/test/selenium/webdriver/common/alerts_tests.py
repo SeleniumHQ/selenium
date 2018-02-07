@@ -25,8 +25,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import (
     InvalidElementStateException,
     NoAlertPresentException,
-    UnexpectedAlertPresentException,
-    WebDriverException)
+    UnexpectedAlertPresentException)
 
 
 @pytest.fixture(autouse=True)
@@ -38,8 +37,6 @@ def close_alert(driver):
         pass
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldBeAbleToOverrideTheWindowAlertMethod(driver, pages):
     pages.load("alerts.html")
     driver.execute_script(
@@ -57,11 +54,6 @@ def testShouldBeAbleToOverrideTheWindowAlertMethod(driver, pages):
         raise e
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldAllowUsersToAcceptAnAlertManually(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()
@@ -71,11 +63,6 @@ def testShouldAllowUsersToAcceptAnAlertManually(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldAllowUsersToAcceptAnAlertWithNoTextManually(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "empty-alert").click()
@@ -86,11 +73,6 @@ def testShouldAllowUsersToAcceptAnAlertWithNoTextManually(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldGetTextOfAlertOpenedInSetTimeout(driver, pages):
     pages.load("alerts.html")
     driver.find_element_by_id("slow-alert").click()
@@ -106,12 +88,6 @@ def testShouldGetTextOfAlertOpenedInSetTimeout(driver, pages):
         alert.accept()
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26 and https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500',
-    run=False)
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
 def testShouldAllowUsersToDismissAnAlertManually(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()
@@ -121,11 +97,6 @@ def testShouldAllowUsersToDismissAnAlertManually(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldAllowAUserToAcceptAPrompt(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="prompt").click()
@@ -136,11 +107,6 @@ def testShouldAllowAUserToAcceptAPrompt(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldAllowAUserToDismissAPrompt(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="prompt").click()
@@ -151,11 +117,6 @@ def testShouldAllowAUserToDismissAPrompt(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
 def testShouldAllowAUserToSetTheValueOfAPrompt(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="prompt").click()
@@ -167,11 +128,6 @@ def testShouldAllowAUserToSetTheValueOfAPrompt(driver, pages):
     assert "cheese" == result
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1353')
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
 def testSettingTheValueOfAnAlertThrows(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
@@ -186,9 +142,6 @@ def testSettingTheValueOfAnAlertThrows(driver, pages):
     condition=sys.platform == 'darwin',
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
     run=False)
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
 def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
@@ -200,11 +153,6 @@ def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
         alert.text
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 @pytest.mark.xfail_marionette(reason='Fails on travis')
 def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     pages.load("alerts.html")
@@ -217,11 +165,6 @@ def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 @pytest.mark.xfail_marionette(reason='Fails on travis')
 def testShouldAllowUsersToAcceptAnAlertInANestedFrame(driver, pages):
     pages.load("alerts.html")
@@ -241,11 +184,6 @@ def testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert():
     # //TODO(David) Complete this test
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testPromptShouldUseDefaultValueIfNoKeysSent(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "prompt-with-default").click()
@@ -257,11 +195,6 @@ def testPromptShouldUseDefaultValueIfNoKeysSent(driver, pages):
     assert "This is a default value" == txt
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testPromptShouldHaveNullValueIfDismissed(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "prompt-with-default").click()
@@ -271,11 +204,6 @@ def testPromptShouldHaveNullValueIfDismissed(driver, pages):
     assert "null" == driver.find_element(By.ID, "text").text
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testHandlesTwoAlertsFromOneInteraction(driver, pages):
     pages.load("alerts.html")
 
@@ -293,11 +221,6 @@ def testHandlesTwoAlertsFromOneInteraction(driver, pages):
     assert driver.find_element(By.ID, "text2").text == "cheddar"
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldHandleAlertOnPageLoad(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "open-page-with-onload-alert").click()
@@ -307,9 +230,6 @@ def testShouldHandleAlertOnPageLoad(driver, pages):
     assert "onload" == value
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
 def testShouldHandleAlertOnPageLoadUsingGet(driver, pages):
     pages.load("pageWithOnLoad.html")
     alert = _waitForAlert(driver)
@@ -320,11 +240,6 @@ def testShouldHandleAlertOnPageLoadUsingGet(driver, pages):
     WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.TAG_NAME, "p"), "Page with onload event handler"))
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldHandleAlertOnPageBeforeUnload(driver, pages):
     pages.load("pageWithOnBeforeUnloadMessage.html")
 
@@ -341,11 +256,6 @@ def testShouldHandleAlertOnPageBeforeUnload(driver, pages):
     WebDriverWait(driver, 3).until(EC.title_is("Testing Alerts"))
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def _testShouldHandleAlertOnPageBeforeUnloadAtQuit(driver, pages):
     # TODO: Add the ability to get a new session
     pages.load("pageWithOnBeforeUnloadMessage.html")
@@ -358,11 +268,6 @@ def _testShouldHandleAlertOnPageBeforeUnloadAtQuit(driver, pages):
     driver.quit()
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldAllowTheUserToGetTheTextOfAnAlert(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()
@@ -372,11 +277,6 @@ def testShouldAllowTheUserToGetTheTextOfAnAlert(driver, pages):
     assert "cheese" == value
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
 def testShouldAllowTheUserToGetTheTextOfAPrompt(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "prompt").click()
@@ -388,11 +288,6 @@ def testShouldAllowTheUserToGetTheTextOfAPrompt(driver, pages):
     assert "Enter something" == value
 
 
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testAlertShouldNotAllowAdditionalCommandsIfDismissed(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
@@ -408,9 +303,6 @@ def testAlertShouldNotAllowAdditionalCommandsIfDismissed(driver, pages):
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1537')
 @pytest.mark.xfail_marionette(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/detro/ghostdriver/issues/20',
-    raises=WebDriverException)
 def testUnexpectedAlertPresentExceptionContainsAlertText(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()

@@ -114,9 +114,8 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
 
   private void startLoggingDriver() {
     if (loggingDriver == null) {
-      WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(
-          new ImmutableCapabilities(ENABLE_PROFILING_CAPABILITY, true));
-      loggingDriver = builder.get();
+      loggingDriver = new WebDriverBuilder()
+          .get(new ImmutableCapabilities(ENABLE_PROFILING_CAPABILITY, true));
     }
   }
 

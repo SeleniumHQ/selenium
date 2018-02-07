@@ -99,7 +99,7 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   /**
-   * @deprecated Use {@link FirefoxDriver(FirefoxOptions)}.
+   * @deprecated Use {@link #FirefoxDriver(FirefoxOptions)}.
    */
   @Deprecated
   public FirefoxDriver(Capabilities desiredCapabilities) {
@@ -107,7 +107,7 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   /**
-   * @deprecated Use {@link FirefoxDriver(GeckoDriverService, FirefoxOptions)}.
+   * @deprecated Use {@link #FirefoxDriver(GeckoDriverService, FirefoxOptions)}.
    */
   @Deprecated
   public FirefoxDriver(GeckoDriverService service, Capabilities desiredCapabilities) {

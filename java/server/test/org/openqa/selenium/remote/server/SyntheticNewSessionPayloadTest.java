@@ -165,7 +165,6 @@ public class SyntheticNewSessionPayloadTest {
     try (NewSessionPayload newSessionPayload = NewSessionPayload.create(payload)) {
       StringBuilder b = new StringBuilder();
       newSessionPayload.writeTo(b);
-      System.out.println("b = " + b);
       return newSessionPayload.stream().collect(ImmutableList.toImmutableList());
     } catch (IOException e) {
       throw new UncheckedIOException(e);

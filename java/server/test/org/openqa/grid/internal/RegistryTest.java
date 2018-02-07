@@ -19,7 +19,6 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +27,6 @@ import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.GridHelper;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
@@ -43,7 +41,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RegistryTest {
 
   private static final int TOTAL_THREADS = 100;
-
 
   @Test
   public void addProxy() throws Exception {
@@ -170,12 +167,10 @@ public class RegistryTest {
 
     try {
       for (int i = 0; i < TOTAL_THREADS; i++) {
-        new Thread(new Runnable() { // Thread safety reviewed
-
-          public void run() {
-            registry.add(new BaseRemoteProxy(req, registry));
-            latch.countDown();
-          }
+        // Thread safety reviewed
+        new Thread(() -> {
+          registry.add(new BaseRemoteProxy(req, registry));
+          latch.countDown();
         }).start();
       }
 
@@ -220,12 +215,10 @@ public class RegistryTest {
 
     try {
       for (int i = 0; i < TOTAL_THREADS; i++) {
-        new Thread(new Runnable() { // Thread safety reviewed
-
-          public void run() {
-            registry.add(new MyRemoteProxy(req, registry));
-            counter.incrementAndGet();
-          }
+        // Thread safety reviewed
+        new Thread(() -> {
+          registry.add(new MyRemoteProxy(req, registry));
+          counter.incrementAndGet();
         }).start();
       }
       while (counter.get() != TOTAL_THREADS) {
@@ -237,11 +230,4 @@ public class RegistryTest {
       registry.stop();
     }
   }
-
-  @Test
-  public void testLegacyNewInstanceCanReceiveNullHub() {
-    GridRegistry registry = Registry.newInstance(null, new GridHubConfiguration());
-    assertNull(registry.getHub());
-  }
-
 }

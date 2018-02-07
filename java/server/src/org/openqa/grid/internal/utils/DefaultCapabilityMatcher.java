@@ -26,10 +26,12 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.safari.SafariOptions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
@@ -53,12 +55,13 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   class PlatformValidator implements Validator {
     @Override
     public Boolean apply(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
-      Object requested = requestedCapabilities.get(CapabilityType.PLATFORM);
+      Object requested = Optional.ofNullable(requestedCapabilities.get(CapabilityType.PLATFORM))
+          .orElse(requestedCapabilities.get(CapabilityType.PLATFORM_NAME));
       if (anything(requested)) {
         return true;
       }
-      Object provided = providedCapabilities.get(CapabilityType.PLATFORM);
-
+      Object provided = Optional.ofNullable(providedCapabilities.get(CapabilityType.PLATFORM))
+          .orElse(providedCapabilities.get(CapabilityType.PLATFORM_NAME));
       Platform requestedPlatform = extractPlatform(requested);
       if (requestedPlatform != null) {
         Platform providedPlatform = extractPlatform(provided);
@@ -112,8 +115,8 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
       if (! "firefox".equals(requestedCapabilities.get(CapabilityType.BROWSER_NAME))) {
         return true;
       }
-      FirefoxOptions requestedOptions = new FirefoxOptions(new ImmutableCapabilities(requestedCapabilities));
-      if (requestedOptions.isLegacy()) {
+      if (requestedCapabilities.get("marionette") != null
+          && !Boolean.valueOf(requestedCapabilities.get("marionette").toString())) {
         return providedCapabilities.get("marionette") != null
                && !Boolean.valueOf(providedCapabilities.get("marionette").toString());
       } else {
@@ -140,14 +143,21 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     }
   }
 
-  private final List<Validator> validators = ImmutableList.of(
-      new PlatformValidator(),
-      new AliasedPropertyValidator(CapabilityType.BROWSER_NAME, "browser"),
-      new AliasedPropertyValidator(CapabilityType.BROWSER_VERSION, CapabilityType.VERSION),
-      new SimplePropertyValidator(CapabilityType.APPLICATION_NAME),
-      new FirefoxSpecificValidator(),
-      new SafariSpecificValidator()
-  );
+  private final List<Validator> validators = new ArrayList<>();
+  {
+    validators.addAll(Arrays.asList(
+        new PlatformValidator(),
+        new AliasedPropertyValidator(CapabilityType.BROWSER_NAME, "browser"),
+        new AliasedPropertyValidator(CapabilityType.BROWSER_VERSION, CapabilityType.VERSION),
+        new SimplePropertyValidator(CapabilityType.APPLICATION_NAME),
+        new FirefoxSpecificValidator(),
+        new SafariSpecificValidator()
+    ));
+  }
+
+  public void addToConsider(String capabilityName) {
+    validators.add(new SimplePropertyValidator(capabilityName));
+  }
 
   public boolean matches(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
     return providedCapabilities != null && requestedCapabilities != null

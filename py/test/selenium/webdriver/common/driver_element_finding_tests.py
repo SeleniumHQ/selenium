@@ -19,10 +19,8 @@ import pytest
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import (
-    InvalidElementStateException,
     InvalidSelectorException,
     NoSuchElementException,
-    NoSuchWindowException,
     WebDriverException)
 
 # By.id positive
@@ -72,14 +70,12 @@ def test_Should_Not_Be_Able_To_Locate_By_Id_Multiple_Elements_That_Do_Not_Exist(
     assert len(elements) == 0
 
 
-@pytest.mark.xfail_phantomjs(raises=NoSuchWindowException)
 def test_Finding_ASingle_Element_By_Empty_Id_Should_Throw(driver, pages):
     pages.load("formPage.html")
     with pytest.raises(NoSuchElementException):
         driver.find_element(By.ID, "")
 
 
-@pytest.mark.xfail_phantomjs(raises=NoSuchElementException)
 def test_Finding_Multiple_Elements_By_Empty_Id_Should_Return_Empty_List(driver, pages):
     pages.load("formPage.html")
     elements = driver.find_elements(By.ID, "")
@@ -132,14 +128,12 @@ def test_Should_Not_Be_Able_To_Locate_By_Name_Multiple_Elements_That_Do_Not_Exis
     assert len(elements) == 0
 
 
-@pytest.mark.xfail_phantomjs(raises=NoSuchWindowException)
 def test_Finding_ASingle_Element_By_Empty_Name_Should_Throw(driver, pages):
     pages.load("formPage.html")
     with pytest.raises(NoSuchElementException):
         driver.find_element(By.NAME, "")
 
 
-@pytest.mark.xfail_phantomjs(raises=NoSuchElementException)
 def test_Finding_Multiple_Elements_By_Empty_Name_Should_Return_Empty_List(driver, pages):
     pages.load("formPage.html")
     elements = driver.find_elements(By.NAME, "")
@@ -186,18 +180,12 @@ def test_Should_Not_Be_Able_To_Locate_By_Tag_Name_Multiple_Elements_That_Do_Not_
     assert len(elements) == 0
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1541')
-@pytest.mark.xfail_phantomjs
 def test_Finding_ASingle_Element_By_Empty_Tag_Name_Should_Throw(driver, pages):
     pages.load("formPage.html")
     with pytest.raises(InvalidSelectorException):
         driver.find_element(By.TAG_NAME, "")
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1541')
-@pytest.mark.xfail_phantomjs
 def test_Finding_Multiple_Elements_By_Empty_Tag_Name_Should_Throw(driver, pages):
     pages.load("formPage.html")
     with pytest.raises(InvalidSelectorException):
@@ -269,7 +257,6 @@ def test_Should_Not_Find_Element_By_Class_When_The_Name_Queried_Is_Shorter_Than_
         driver.find_element(By.CLASS_NAME, "name_B")
 
 
-@pytest.mark.xfail_phantomjs(raises=NoSuchWindowException)
 def test_Finding_ASingle_Element_By_Empty_Class_Name_Should_Throw(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchElementException):
@@ -282,21 +269,18 @@ def test_Finding_Multiple_Elements_By_Empty_Class_Name_Should_Throw(driver, page
         driver.find_elements(By.CLASS_NAME, "")
 
 
-@pytest.mark.xfail_phantomjs(raises=WebDriverException)
 def test_Finding_ASingle_Element_By_Compound_Class_Name_Should_Throw(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchElementException):
         driver.find_element(By.CLASS_NAME, "a b")
 
 
-@pytest.mark.xfail_phantomjs(raises=InvalidElementStateException)
 def test_Finding_ASingle_Element_By_Invalid_Class_Name_Should_Throw(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchElementException):
         driver.find_element(By.CLASS_NAME, "!@#$%^&*")
 
 
-@pytest.mark.xfail_phantomjs(raises=InvalidElementStateException)
 def test_Finding_Multiple_Elements_By_Invalid_Class_Name_Should_Throw(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchElementException):
@@ -356,7 +340,6 @@ def test_Finding_ALink_By_Xpath_Using_Contains_Keyword_Should_Work(driver, pages
 @pytest.mark.xfail_firefox(raises=InvalidSelectorException)
 @pytest.mark.xfail_remote(raises=InvalidSelectorException)
 @pytest.mark.xfail_marionette(raises=WebDriverException)
-@pytest.mark.xfail_phantomjs(raises=InvalidSelectorException)
 @pytest.mark.xfail_safari(raises=NoSuchElementException)
 @pytest.mark.xfail_webkitgtk(raises=InvalidSelectorException)
 def test_Should_Be_Able_To_Find_Element_By_XPath_With_Namespace(driver, pages):
@@ -493,7 +476,6 @@ def test_Should_Not_Find_Elements_By_Css_Selector_When_There_Is_No_Such_Element(
     assert len(elements) == 0
 
 
-@pytest.mark.xfail_phantomjs(raises=NoSuchWindowException)
 def test_Finding_ASingle_Element_By_Empty_Css_Selector_Should_Throw(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchElementException):
@@ -506,14 +488,12 @@ def test_Finding_Multiple_Elements_By_Empty_Css_Selector_Should_Throw(driver, pa
         driver.find_elements(By.CSS_SELECTOR, "")
 
 
-@pytest.mark.xfail_phantomjs(raises=InvalidElementStateException)
 def test_Finding_ASingle_Element_By_Invalid_Css_Selector_Should_Throw(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchElementException):
         driver.find_element(By.CSS_SELECTOR, "//a/b/c[@id='1']")
 
 
-@pytest.mark.xfail_phantomjs(raises=InvalidElementStateException)
 def test_Finding_Multiple_Elements_By_Invalid_Css_Selector_Should_Throw(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchElementException):

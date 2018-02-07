@@ -17,10 +17,7 @@
 
 import pytest
 
-from selenium.common.exceptions import (
-    ElementNotInteractableException,
-    MoveTargetOutOfBoundsException,
-    WebDriverException)
+from selenium.common.exceptions import MoveTargetOutOfBoundsException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -56,8 +53,6 @@ def testShouldScrollToClickOnAnElementHiddenByOverflow(driver, pages):
         AssertionError("Should not be out of bounds: %s" % e.msg)
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/w3c/webdriver/issues/408')
 def testShouldBeAbleToClickOnAnElementHiddenByOverflow(driver, pages):
     pages.load("scroll.html")
 
@@ -67,9 +62,6 @@ def testShouldBeAbleToClickOnAnElementHiddenByOverflow(driver, pages):
     assert "line8" == driver.find_element(By.ID, "clicked").text
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1536',
-    raises=WebDriverException)
 def testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow(driver, pages):
     pages.load("scrolling_tests/page_with_double_overflow_auto.html")
 
@@ -110,9 +102,6 @@ def testShouldBeAbleToClickRadioButtonScrolledIntoView(driver, pages):
     # If we don't throw, we're good
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/w3c/webdriver/issues/408',
-    raises=ElementNotInteractableException)
 def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(driver, pages):
     pages.load("scroll5.html")
     driver.find_element(By.ID, "inner").click()

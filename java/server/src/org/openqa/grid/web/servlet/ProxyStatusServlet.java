@@ -17,33 +17,35 @@
 
 package org.openqa.grid.web.servlet;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
+import com.google.common.net.MediaType;
 
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.server.ServletRequestWrappingHttpRequest;
+import org.openqa.selenium.remote.server.ServletResponseWrappingHttpResponse;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ProxyStatusServlet extends RegistryBasedServlet {
 
-  private static final long serialVersionUID = 7653463271803124556L;
+  private final Json json = new Json();
 
   public ProxyStatusServlet() {
     this(null);
@@ -55,97 +57,89 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    process(request, response);
+      throws IOException {
+    process(
+        new ServletRequestWrappingHttpRequest(request),
+        new ServletResponseWrappingHttpResponse(response));
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    process(request, response);
+      throws IOException {
+    process(
+        new ServletRequestWrappingHttpRequest(request),
+        new ServletResponseWrappingHttpResponse(response));
   }
 
-  protected void process(HttpServletRequest request, HttpServletResponse response)
+  protected void process(HttpRequest request, HttpResponse response)
       throws IOException {
-    response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
+    response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
     response.setStatus(200);
-    JsonObject res;
     try {
-      res = getResponse(request);
-      response.getWriter().print(res);
-      response.getWriter().close();
-    } catch (JsonSyntaxException e) {
+      Object res = getResponse(request);
+      response.setContent(json.toJson(res).getBytes(UTF_8));
+    } catch (Throwable e) {
       throw new GridException(e.getMessage());
     }
   }
 
-  private JsonObject getResponse(HttpServletRequest request) throws IOException {
-    JsonObject requestJSON = null;
-    if (request.getInputStream() != null) {
-      BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
-      StringBuilder s = new StringBuilder();
-      String line;
-      while ((line = rd.readLine()) != null) {
-        s.append(line);
-      }
-      rd.close();
-      String json = s.toString();
-      if (!"".equals(json)) {
-        requestJSON = new JsonParser().parse(json).getAsJsonObject();
-      }
+  private Map<String, Object> getResponse(HttpRequest request) throws IOException {
+    Map<String, Object> requestJson = null;
+    if (!request.getContentString().isEmpty()) {
+      requestJson = json.toType(request.getContentString(), MAP_TYPE);
     }
 
-    JsonObject res = new JsonObject();
-    res.addProperty("success", false);
+    Map<String, Object> res = new TreeMap<>();
+    res.put("success", false);
 
     // the id can be specified via a param, or in the json request.
     String id;
-    if (requestJSON == null) {
-      id = request.getParameter("id");
+    if (requestJson == null) {
+      id = request.getQueryParameter("id");
     } else {
-      if (!requestJSON.has("id")) {
-        res.addProperty("msg",
-                        "you need to specify at least an id when call the node status service.");
+      if (!requestJson.containsKey("id")) {
+        res.put("msg", "you need to specify at least an id when call the node status service.");
         return res;
       }
-      id = requestJSON.get("id").getAsString();
+      id = String.valueOf(requestJson.get("id"));
     }
 
     try {
       URL u = new URL(id);
       id = "http://" + u.getHost() + ":" + u.getPort();
-    } catch (MalformedURLException ignore) {}
+    } catch (MalformedURLException ignore) {
+      // Fall through
+    }
 
     // id is defined from here.
     RemoteProxy proxy = getRegistry().getProxyById(id);
     if (proxy == null) {
-      res.addProperty("msg", "Cannot find proxy with ID =" + id + " in the registry.");
+      res.put("msg", "Cannot find proxy with ID =" + id + " in the registry.");
       return res;
     }
-    res.addProperty("msg", "proxy found !");
-    res.addProperty("success", true);
-    res.addProperty("id", proxy.getId());
-    res.add("request", proxy.getOriginalRegistrationRequest().toJson());
+    res.put("msg", "proxy found !");
+    res.put("success", true);
+    res.put("id", proxy.getId());
+    res.put("request", proxy.getOriginalRegistrationRequest());
 
     // maybe the request was for more info
-    if (requestJSON != null) {
-      // use basic (= no objects ) reflexion to get the extra stuff
+    if (requestJson != null) {
+      // use basic (= no objects ) reflection to get the extra stuff
       // requested.
-      List<String> methods = getExtraMethodsRequested(requestJSON);
+      List<String> methods = getExtraMethodsRequested(requestJson);
 
       List<String> errors = new ArrayList<>();
       for (String method : methods) {
         try {
           Object o = getValueByReflection(proxy, method);
-          res.add(method, new Gson().toJsonTree(o));
+          res.put(method, o);
         } catch (Throwable t) {
           errors.add(t.getMessage());
         }
       }
       if (!errors.isEmpty()) {
-        res.addProperty("success", false);
-        res.addProperty("errors", errors.toString());
+        res.put("success", false);
+        res.put("errors", errors.toString());
       }
     }
     return res;
@@ -161,10 +155,10 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     }
   }
 
-  private List<String> getExtraMethodsRequested(JsonObject request) {
+  private List<String> getExtraMethodsRequested(Map<String, Object> request) {
     List<String> res = new ArrayList<>();
 
-    for (Map.Entry<String, JsonElement> entry : request.entrySet()) {
+    for (Map.Entry<String, Object> entry : request.entrySet()) {
       if (!"id".equals(entry.getKey())) {
         res.add(entry.getKey());
       }

@@ -99,8 +99,6 @@ def testShouldIndicateWhenATextAreaIsDisabled(driver, pages):
     assert not textArea.is_enabled()
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1309234')
 def testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings(driver, pages):
     pages.load("formPage.html")
     disabledTextElement1 = driver.find_element_by_id("disabledTextElement1")

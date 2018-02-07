@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.remote.http;
 
+import org.openqa.selenium.remote.internal.ApacheHttpClient;
+import org.openqa.selenium.remote.internal.OkHttpClient;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -32,17 +35,43 @@ public interface HttpClient {
    * @param followRedirects whether to automatically follow redirects.
    * @return the final response.
    * @throws IOException if an I/O error occurs.
+   * @deprecated All call sites found set {@code followRedirects} to {@code true}. Use
+   *   {@link #execute(HttpRequest)}.
    */
+  @Deprecated
   HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException;
-  
+
   /**
-	* Closes the connections associated with this client. 
-	*
-	* @throws  IOException  if an I/O error occurs.
-	*/
+   * Executes the given request, following any redirects if necessary.
+   *
+   * @param request the request to execute.
+   * @return the final response.
+   * @throws IOException if an I/O error occurs.
+   */
+  HttpResponse execute(HttpRequest request) throws IOException;
+
+  /**
+	 * Closes the connections associated with this client.
+	 *
+	 * @throws  IOException  if an I/O error occurs.
+   * @deprecated This responsibility moved to Factory
+	 */
+  @Deprecated
   void close() throws IOException;
 
   interface Factory {
+
+    static Factory createDefault() {
+      String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
+      switch (defaultFactory) {
+        case "apache":
+          return new ApacheHttpClient.Factory();
+
+        case "okhttp":
+        default:
+          return new OkHttpClient.Factory();
+      }
+    }
 
     /**
      * Creates a HTTP client that will send requests to the given URL.
@@ -51,5 +80,10 @@ public interface HttpClient {
      * @return HttpClient
      */
     HttpClient createClient(URL url);
+
+    /**
+     * Closes idle clients.
+     */
+    void cleanupIdleClients();
   }
 }

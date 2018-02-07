@@ -21,17 +21,28 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 
 import com.beust.jcommander.Parameter;
 
-import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.exception.GridConfigurationException;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StandaloneConfiguration {
   public static final String DEFAULT_STANDALONE_CONFIG_FILE = "defaults/DefaultStandalone.json";
@@ -121,10 +132,8 @@ public class StandaloneConfiguration {
     hidden = true,
     description = "Displays this help."
   )
-  /**
-   * Whether help or usage() is requested. Default {@code false}.
-   */
-  // initially defaults to false from boolean primitive type
+
+  // Initially defaults to false from boolean primitive type
   public boolean help;
 
   /*
@@ -202,18 +211,6 @@ public class StandaloneConfiguration {
   public Integer timeout = DEFAULT_TIMEOUT;
 
   /**
-   * Whether or not to use experimental passthrough mode on a hub or a standalone
-   */
-  @Expose
-  @Parameter(
-      names = "-enablePassThrough",
-      arity = 1,
-      description = "<Boolean>: Whether or not to use the experimental passthrough mode. Defaults to true."
-  )
-  public boolean enablePassThrough = true;
-
-
-  /**
    * Creates a new configuration using the default values.
    */
   public StandaloneConfiguration() {
@@ -224,7 +221,7 @@ public class StandaloneConfiguration {
    * @param filePath node config json file to load configuration from
    */
   public static StandaloneConfiguration loadFromJSON(String filePath) {
-    return loadFromJSON(JSONConfigurationUtils.loadJSON(filePath));
+    return loadFromJSON(loadJSONFromResourceOrFile(filePath));
   }
 
   /**
@@ -244,7 +241,6 @@ public class StandaloneConfiguration {
 
   /**
    * copy another configuration's values into this one if they are set.
-   * @param other
    */
   public void merge(StandaloneConfiguration other) {
     if (other == null) {
@@ -312,7 +308,6 @@ public class StandaloneConfiguration {
     sb.append(toString(format, "port", port));
     sb.append(toString(format, "role", role));
     sb.append(toString(format, "timeout", timeout));
-    sb.append(toString(format, "enablePassThrough", enablePassThrough));
     return sb.toString();
   }
 
@@ -341,7 +336,6 @@ public class StandaloneConfiguration {
 
   /**
    * Return a JsonElement representation of the configuration. Does not serialize nulls.
-   * @return
    */
   public JsonElement toJson() {
     GsonBuilder builder = new GsonBuilder();
@@ -352,5 +346,51 @@ public class StandaloneConfiguration {
 
   protected void addJsonTypeAdapter(GsonBuilder builder) {
     // no default implementation
+  }
+
+  /**
+   * load a JSON file from the resource or file system.
+   *
+   * @param resource file or jar resource location
+   * @return A JsonObject representing the passed resource argument.
+   */
+  protected static JsonObject loadJSONFromResourceOrFile(String resource) {
+    try {
+      return new JsonParser().parse(readFileOrResource(resource)).getAsJsonObject();
+    } catch (JsonSyntaxException e) {
+      throw new GridConfigurationException("Wrong format for the JSON input : " + e.getMessage(), e);
+    }
+  }
+
+  private static String readFileOrResource(String resource) {
+    Stream<Function<String, InputStream>> suppliers = Stream.of(
+        (path) -> {
+          try {
+            return new FileInputStream(path);
+          } catch (FileNotFoundException e) {
+            return null;
+          } },
+        (path) -> Thread.currentThread().getContextClassLoader()
+            .getResourceAsStream("org/openqa/grid/common/" + path),
+        (path) -> Thread.currentThread().getContextClassLoader().getResourceAsStream(path)
+    );
+
+    InputStream in = suppliers
+        .map(supplier -> supplier.apply(resource))
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException(resource + " is not a valid resource."));
+
+    try(BufferedReader buffreader = new BufferedReader(new InputStreamReader(in))) {
+      return buffreader.lines().collect(Collectors.joining("\n"));
+    } catch (IOException e) {
+      throw new GridConfigurationException("Cannot read file or resource " + resource + ", " + e.getMessage(), e);
+    } finally {
+      try {
+        in.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

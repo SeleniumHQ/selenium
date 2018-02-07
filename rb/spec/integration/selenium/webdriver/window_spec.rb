@@ -20,7 +20,10 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Window do
-      after { reset_driver! }
+      after do
+        sleep 1 if ENV['TRAVIS']
+        quit_driver
+      end
 
       let(:window) { driver.manage.window }
 
@@ -33,7 +36,7 @@ module Selenium
         expect(size.height).to be > 0
       end
 
-      it 'sets the size of the current window', except: {browser: :ie} do
+      it 'sets the size of the current window' do
         size = window.size
 
         target_width = size.width - 20
@@ -47,7 +50,7 @@ module Selenium
       end
 
       it 'gets the position of the current window' do
-        pos = driver.manage.window.position
+        pos = window.position
 
         expect(pos).to be_a(Point)
 
@@ -55,7 +58,7 @@ module Selenium
         expect(pos.y).to be >= 0
       end
 
-      it 'sets the position of the current window', except: {browser: %i[ie safari_preview]} do
+      it 'sets the position of the current window', except: {browser: :safari_preview} do
         pos = window.position
 
         target_x = pos.x + 10
@@ -71,7 +74,7 @@ module Selenium
       end
 
       it 'gets the rect of the current window', only: {browser: %i[firefox ie]} do
-        rect = driver.manage.window.rect
+        rect = window.rect
 
         expect(rect).to be_a(Rectangle)
 
@@ -100,7 +103,7 @@ module Selenium
         expect(new_rect.height).to eq(target_height)
       end
 
-      it 'can maximize the current window', except: [{window_manager: false}, {browser: :ie}] do
+      it 'can maximize the current window', except: {window_manager: false} do
         window.size = old_size = Dimension.new(200, 200)
 
         window.maximize
@@ -118,8 +121,10 @@ module Selenium
         old_size = window.size
 
         window.full_screen
-
+        wait.until { window.size != old_size }
         new_size = window.size
+
+        expect(new_size.width).to be > old_size.width
         expect(new_size.height).to be > old_size.height
       end
 

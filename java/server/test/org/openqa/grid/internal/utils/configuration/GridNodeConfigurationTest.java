@@ -22,7 +22,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
@@ -30,6 +32,7 @@ import com.google.gson.JsonParser;
 
 import com.beust.jcommander.JCommander;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.Platform;
@@ -146,7 +149,6 @@ public class GridNodeConfigurationTest {
     assertEquals(expected.nodeConfigFile, actual.nodeConfigFile);
     assertEquals(expected.unregisterIfStillDownAfter, actual.unregisterIfStillDownAfter);
 
-
     assertEquals(expected.cleanUpCycle, actual.cleanUpCycle);
     assertEquals(expected.host, actual.host);
     assertEquals(expected.maxSession, actual.maxSession);
@@ -163,9 +165,8 @@ public class GridNodeConfigurationTest {
 
   @Test
   public void testAsJson() {
-    final String[] args = new String[] { "-capabilities", "browserName=chrome,platform=linux" };
-    GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    GridNodeConfiguration gnc = parseCliOptions(
+        "-capabilities", "browserName=chrome,platform=linux");
 
     assertEquals("{\"capabilities\":"
                  + "[{\"browserName\":\"chrome\",\"platform\":\"LINUX\"}],"
@@ -177,6 +178,7 @@ public class GridNodeConfigurationTest {
                  + "\"register\":true,"
                  + "\"registerCycle\":5000,"
                  + "\"unregisterIfStillDownAfter\":60000,"
+                 + "\"enablePlatformVerification\":true,"
                  + "\"custom\":{},"
                  + "\"maxSession\":5,"
                  + "\"servlets\":[],"
@@ -185,8 +187,7 @@ public class GridNodeConfigurationTest {
                  + "\"debug\":false,"
                  + "\"port\":5555,"
                  + "\"role\":\"node\","
-                 + "\"timeout\":1800,"
-                 + "\"enablePassThrough\":true}", gnc.toJson().toString());
+                 + "\"timeout\":1800}", gnc.toJson().toString());
   }
 
   @Test
@@ -194,7 +195,7 @@ public class GridNodeConfigurationTest {
     final String[] args = new String[] { "-capabilities",
                                        "browserName=chrome,platform=linux,maxInstances=10,boolean=false" };
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    JCommander.newBuilder().addObject(gnc).build().parse(args);
     assertTrue(gnc.capabilities.size() == 1);
     assertEquals("chrome", gnc.capabilities.get(0).getBrowserName());
     assertEquals(10L, gnc.capabilities.get(0).getCapability("maxInstances"));
@@ -204,10 +205,8 @@ public class GridNodeConfigurationTest {
 
   @Test
   public void testWithCapabilitiesArgsWithExtraSpacing() {
-    final String[] args = new String[] { "-capabilities",
-                                         "browserName= chrome, platform =linux, maxInstances=10, boolean = false " };
-    GridNodeConfiguration gnc = new GridNodeConfiguration();
-    new JCommander(gnc, args);
+    GridNodeConfiguration gnc = parseCliOptions(
+        "-capabilities", "browserName= chrome, platform =linux, maxInstances=10, boolean = false ");
     assertTrue(gnc.capabilities.size() == 1);
     assertEquals("chrome", gnc.capabilities.get(0).getBrowserName());
     assertEquals(10L, gnc.capabilities.get(0).getCapability("maxInstances"));
@@ -217,16 +216,58 @@ public class GridNodeConfigurationTest {
 
   @Test
   public void testGetHubHost() {
-    GridNodeConfiguration gnc = new GridNodeConfiguration();
-    gnc.hub = "http://dummyhost:4444/wd/hub";
+    GridNodeConfiguration gnc = parseCliOptions("-hubHost", "dummyhost", "-hubPort", "1234");
     assertEquals("dummyhost", gnc.getHubHost());
   }
 
   @Test
+  public void testGetHubHostFromHubOption() {
+    GridNodeConfiguration gnc = parseCliOptions("-hub", "http://dummyhost:1234/wd/hub");
+    assertEquals("dummyhost", gnc.getHubHost());
+  }
+
+  @Test
+  public void testOneOfHubOrHubHostShouldBePresent() {
+    GridNodeConfiguration gnc = parseCliOptions("-hubPort", "1234");
+    Throwable t = catchThrowable(gnc::getHubHost);
+    assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
+    t = catchThrowable(gnc::getHubPort);
+    assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
+  }
+
+  @Test
+  public void testHubOptionHasPrecedenceOverHubHost() {
+    GridNodeConfiguration gnc = parseCliOptions(
+        "-hub", "http://smarthost:4321/wd/hub", "-hubHost", "dummyhost", "-hubPort", "1234");
+    assertEquals("smarthost", gnc.getHubHost());
+  }
+
+  @Test
   public void testGetHubPort() {
-    GridNodeConfiguration gnc = new GridNodeConfiguration();
-    gnc.hub = "http://dummyhost:4444/wd/hub";
-    assertEquals(4444, gnc.getHubPort().intValue());
+    GridNodeConfiguration gnc = parseCliOptions("-hubHost", "dummyhost", "-hubPort", "1234");
+    assertEquals(1234, gnc.getHubPort().intValue());
+  }
+
+  @Test
+  public void testGetHubPortFromHubOption() {
+    GridNodeConfiguration gnc = parseCliOptions("-hub", "http://dummyhost:1234/wd/hub");
+    assertEquals(1234, gnc.getHubPort().intValue());
+  }
+
+  @Test
+  public void testOneOfHubOrHubPortShouldBePresent() {
+    GridNodeConfiguration gnc = parseCliOptions("-hubHost", "dummyhost");
+    Throwable t = catchThrowable(gnc::getHubHost);
+    assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
+    t = catchThrowable(gnc::getHubPort);
+    assertThat(t, CoreMatchers.instanceOf(RuntimeException.class));
+  }
+
+  @Test
+  public void testHubOptionHasPrecedenceOverHubPort() {
+    GridNodeConfiguration gnc = parseCliOptions(
+        "-hub", "http://smarthost:4321/wd/hub", "-hubHost", "dummyhost", "-hubPort", "1234");
+    assertEquals(4321, gnc.getHubPort().intValue());
   }
 
   @Test
@@ -314,4 +355,9 @@ public class GridNodeConfigurationTest {
         .allMatch(cap -> cap.getCapability(GridNodeConfiguration.CONFIG_UUID_CAPABILITY) != null));
   }
 
+  private GridNodeConfiguration parseCliOptions(String... args) {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    JCommander.newBuilder().addObject(config).build().parse(args);
+    return config;
+  }
 }

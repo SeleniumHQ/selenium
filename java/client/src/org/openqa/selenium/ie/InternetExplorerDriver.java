@@ -153,7 +153,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   }
 
   /**
-   * @deprecated Use {@link InternetExplorerDriver(InternetExplorerOptions)}
+   * @deprecated Use {@link #InternetExplorerDriver(InternetExplorerOptions)}
    */
   @Deprecated
   public InternetExplorerDriver(Capabilities capabilities) {
@@ -179,7 +179,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   }
 
   /**
-   * @deprecated Use {@link InternetExplorerDriver(InternetExplorerDriverService, InternetExplorerOptions)}
+   * @deprecated Use {@link #InternetExplorerDriver(InternetExplorerDriverService, InternetExplorerOptions)}
    */
   @Deprecated
   public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities) {

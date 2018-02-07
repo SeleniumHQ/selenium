@@ -39,7 +39,7 @@ public class SelfRegisteringRemoteTest {
     public Map<String, Class<? extends Servlet>> extraServlets;
 
     @Override
-    public void boot() throws Exception { }
+    public boolean boot() throws Exception { return true; }
 
     @Override
     public void stop() { }

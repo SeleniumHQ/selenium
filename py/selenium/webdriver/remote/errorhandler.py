@@ -232,8 +232,13 @@ class ErrorHandler(object):
                 pass
         if exception_class == ErrorInResponseException:
             raise exception_class(response, message)
-        elif exception_class == UnexpectedAlertPresentException and 'alert' in value:
-            raise exception_class(message, screen, stacktrace, value['alert'].get('text'))
+        elif exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if 'data' in value:
+                alert_text = value['data'].get('text')
+            elif 'alert' in value:
+                alert_text = value['alert'].get('text')
+            raise exception_class(message, screen, stacktrace, alert_text)
         raise exception_class(message, screen, stacktrace)
 
     def _value_or_default(self, obj, key, default):

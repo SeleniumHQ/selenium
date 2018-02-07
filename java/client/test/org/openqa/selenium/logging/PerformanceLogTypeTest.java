@@ -70,7 +70,7 @@ public class PerformanceLogTypeTest extends JUnit4TestBase {
     LoggingPreferences logPrefs = new LoggingPreferences();
     logPrefs.enable(LogType.PERFORMANCE, Level.INFO);
     Capabilities caps = new ImmutableCapabilities(CapabilityType.LOGGING_PREFS, logPrefs);
-    localDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    localDriver = new WebDriverBuilder().get(caps);
   }
 
   @Test

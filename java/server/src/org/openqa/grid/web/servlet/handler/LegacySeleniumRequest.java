@@ -17,9 +17,12 @@
 
 package org.openqa.grid.web.servlet.handler;
 
+import com.google.common.collect.Maps;
+
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.GridRegistry;
-import org.openqa.grid.web.utils.BrowserNameUtils;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -81,13 +84,32 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
         Map<String, Object> cap = new HashMap<>();
         // TODO freynaud : more splitting, like trying to guess the
         // platform or version ?
-        cap.putAll(BrowserNameUtils.parseGrid2Environment(envt));
+        cap.putAll(parseGrid2Environment(envt));
 
         return cap;
       }
     }
 
     throw new RuntimeException("Error");
+  }
+
+  private Map<String, Object> parseGrid2Environment(String environment) {
+    Map<String, Object> ret = Maps.newHashMap();
+
+    String[] details = environment.split(" ");
+    if (details.length == 1) {
+      // simple browser string
+      ret.put(CapabilityType.BROWSER_NAME, details[0]);
+    } else {
+      // more complex. Only case handled so far = X on Y
+      // where X is the browser string, Y the OS
+      ret.put(CapabilityType.BROWSER_NAME, details[0]);
+      if (details.length == 3) {
+        ret.put(CapabilityType.PLATFORM, Platform.extractFromSysProperty(details[2]));
+      }
+    }
+
+    return ret;
   }
 
   @Override

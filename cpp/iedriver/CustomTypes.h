@@ -22,10 +22,10 @@
 namespace webdriver {
 
 class Element;
-typedef std::tr1::shared_ptr<Element> ElementHandle;
+typedef std::shared_ptr<Element> ElementHandle;
 
 class DocumentHost;
-typedef std::tr1::shared_ptr<DocumentHost> BrowserHandle;
+typedef std::shared_ptr<DocumentHost> BrowserHandle;
 
 } // namespace webdriver
 

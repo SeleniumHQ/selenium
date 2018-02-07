@@ -20,12 +20,17 @@
     <AssemblyTitle>WebDriver</AssemblyTitle>
     <Description>Selenium WebDriver API .NET Bindings</Description>
     <Company>Selenium Committers</Company>
-    <Copyright>Copyright © Software Freedom Conservancy 2017</Copyright>
+    <Copyright>Copyright © Software Freedom Conservancy 2018</Copyright>
     <Product>Selenium</Product>
     <Version>3</Version>
     <PackageId>Selenium.WebDriver</PackageId>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SignAssembly)'=='true'">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\WebDriver.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">
@@ -91,7 +96,7 @@
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxExt.zip</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\firefox-driver\webdriver_prefs">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\firefox-driver\webdriver_prefs\webdriver_prefs">
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxPreferences</LogicalName>
     </EmbeddedResource>
@@ -103,11 +108,11 @@
       <Visible>False</Visible>
       <LogicalName>isDisplayed.js</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\cpp\prebuilt\i386\x_ignore_nofocus.so">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\cpp\prebuilt\noblur32\i386\x_ignore_nofocus.so">
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxNoFocus.x86.dll</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\cpp\prebuilt\amd64\x_ignore_nofocus.so">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\cpp\prebuilt\noblur64\amd64\x_ignore_nofocus.so">
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxNoFocus.x64.dll</LogicalName>
     </EmbeddedResource>

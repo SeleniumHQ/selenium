@@ -160,7 +160,6 @@ public class ClearTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearDateInput() {
     shouldBeAbleToClearInput(By.name("date_input"), "2017-11-22");
@@ -174,14 +173,12 @@ public class ClearTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearDatetimeLocalInput() {
     shouldBeAbleToClearInput(By.name("datetime_local_input"), "2017-11-22T11:22");
   }
 
   @Test
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearTimeInput() {
     shouldBeAbleToClearInput(By.name("time_input"), "11:22");

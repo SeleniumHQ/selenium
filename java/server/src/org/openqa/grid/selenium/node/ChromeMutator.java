@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class ChromeMutator implements Function<ImmutableCapabilities, ImmutableCapabilities> {
+public class ChromeMutator implements Function<Capabilities, Capabilities> {
 
   private static final String CONFIG_UUID_CAPABILITY = "se:CONFIG_UUID";
 
@@ -38,7 +38,7 @@ public class ChromeMutator implements Function<ImmutableCapabilities, ImmutableC
   }
 
   @Override
-  public ImmutableCapabilities apply(ImmutableCapabilities capabilities) {
+  public Capabilities apply(Capabilities capabilities) {
     if (config == null || !"chrome".equals(capabilities.getBrowserName())) {
       return capabilities;
     }
@@ -57,7 +57,7 @@ public class ChromeMutator implements Function<ImmutableCapabilities, ImmutableC
       options.putAll(asMap);
     }
 
-    if (!(options.get("binary") instanceof String)) {
+    if (options.get("binary") == null && config.getCapability("chrome_binary") != null) {
       options.put("binary", config.getCapability("chrome_binary"));
     }
 

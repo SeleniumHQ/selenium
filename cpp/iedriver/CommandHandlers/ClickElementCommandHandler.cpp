@@ -143,6 +143,9 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
         }
         browser_wrapper->set_wait_required(true);
       }
+    } else if (status_code == ENOSUCHELEMENT) {
+      response->SetErrorResponse(ERROR_NO_SUCH_ELEMENT, "Invalid internal element ID requested: " + element_id);
+      return;
     } else {
       response->SetErrorResponse(status_code, "Element is no longer valid");
       return;

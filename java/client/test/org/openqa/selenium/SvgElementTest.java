@@ -71,7 +71,6 @@ public class SvgElementTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415068")
   public void testShouldClickOnGraphTextElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
 

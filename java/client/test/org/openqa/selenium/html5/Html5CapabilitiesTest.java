@@ -114,8 +114,7 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
 
   private void configureCapability(String capability, boolean isEnabled) {
     Capabilities desiredCaps = new ImmutableCapabilities(capability, isEnabled);
-    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(desiredCaps);
-    localDriver = builder.get();
+    localDriver = new WebDriverBuilder().get(desiredCaps);
     Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
     assertTrue(String.format("The %s capability should be included in capabilities " +
         "for the session", capability), caps.getCapability(capability) != null);

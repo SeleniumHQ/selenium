@@ -30,7 +30,7 @@ class DocumentHost;
 
 class Alert {
  public:
-  Alert(std::tr1::shared_ptr<DocumentHost> browser, HWND handle);
+  Alert(std::shared_ptr<DocumentHost> browser, HWND handle);
   virtual ~Alert(void);
 
   int Accept(void);
@@ -97,7 +97,7 @@ class Alert {
   static BOOL CALLBACK FindTextBoxes(HWND hwnd, LPARAM arg);
 
   HWND alert_handle_;
-  std::tr1::shared_ptr<DocumentHost> browser_;
+  std::shared_ptr<DocumentHost> browser_;
   bool is_standard_alert_;
   bool is_security_alert_;
   bool is_standard_control_alert_;

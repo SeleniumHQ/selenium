@@ -63,8 +63,7 @@ module Selenium
       end
 
       context 'window switching' do
-
-        after { reset_driver! }
+        after { quit_driver }
 
         it 'should switch to a window and back when given a block' do
           driver.navigate.to url_for('xhtmlTest.html')

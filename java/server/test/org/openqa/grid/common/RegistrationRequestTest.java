@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.beust.jcommander.JCommander;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
@@ -35,6 +36,7 @@ import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
+import java.util.Arrays;
 
 public class RegistrationRequestTest {
 
@@ -82,23 +84,20 @@ public class RegistrationRequestTest {
                  req2.getConfiguration().capabilities.get(0).getPlatform());
   }
 
-
   @Test
   public void basicCommandLineParam() {
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost");
+    GridNodeConfiguration config = parseCliOptions(
+        "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234", "-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
 
     assertEquals(GridRole.NODE, GridRole.get(req.getConfiguration().role));
     assertEquals("ABC", req.getConfiguration().getHubHost());
     assertEquals(1234, req.getConfiguration().getHubPort().longValue());
-
   }
 
   @Test
   public void commandLineParamDefault() {
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd");
+    GridNodeConfiguration config = parseCliOptions("-role", "wd");
     RegistrationRequest req = RegistrationRequest.build(config);
     // the hub defaults to current IP.
     assertNotNull(req.getConfiguration().getHubHost());
@@ -110,8 +109,8 @@ public class RegistrationRequestTest {
 
   @Test
   public void commandLineParamDefaultCapabilities() {
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-host","localhost");
+    GridNodeConfiguration config = parseCliOptions(
+        "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234", "-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
     assertEquals("ABC", req.getConfiguration().getHubHost());
     assertEquals(config.capabilities.size(), req.getConfiguration().capabilities.size());
@@ -119,22 +118,21 @@ public class RegistrationRequestTest {
 
   @Test
   public void registerParam() {
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-host","localhost");
+    GridNodeConfiguration config = parseCliOptions(
+        "-role", "wd", "-hubHost", "ABC", "-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
     assertEquals(true, req.getConfiguration().register);
 
-    config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost", "-register","false");
+    config = parseCliOptions(
+        "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost", "-register","false");
     RegistrationRequest req2 = RegistrationRequest.build(config);
     assertEquals(false, req2.getConfiguration().register);
-
   }
 
   @Test
   public void ensurePre2_9HubCompatibility() {
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "wd", "-host","example.com", "-port", "5555");
+    GridNodeConfiguration config = parseCliOptions(
+        "-role", "wd", "-host","example.com", "-port", "5555");
     RegistrationRequest req = RegistrationRequest.build(config);
 
     assertEquals("http://example.com:5555", req.getConfiguration().getRemoteHost());
@@ -142,8 +140,8 @@ public class RegistrationRequestTest {
 
   @Test(expected = GridConfigurationException.class)
   public void validateWithException() {
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    new JCommander(config, "-role", "node", "-hubHost", "localhost", "-hub", "localhost:4444");
+    GridNodeConfiguration config = parseCliOptions(
+        "-role", "node", "-hubHost", "localhost", "-hub", "localhost:4444");
     RegistrationRequest req = new RegistrationRequest(config);
 
     req.validate();
@@ -258,6 +256,108 @@ public class RegistrationRequestTest {
     assertNull(req.getConfiguration().capabilities);
   }
 
+  @Test
+  public void testConstructorDoesNotPruneCapabilitiesWithUnknownPlatform() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platformName", "cheese");
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = new RegistrationRequest(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 1);
+  }
+
+  @Test
+  public void testBuilderPrunesCapabilitiesWithUnknownPlatformName() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platformName", "cheese");
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 0);
+  }
+
+  @Test
+  public void testBuilderPrunesCapabilitiesWithUnknownPlatform() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platform", "cheese");
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 0);
+  }
+
+  @Test
+  public void testBuilderPrunesCapabilitiesWithPlatformThatDoesNotMatchCurrent() {
+    Platform current = Platform.getCurrent().family();
+    Platform platform = Arrays.stream(Platform.values())
+        .filter(p -> ! p.is(current)).findFirst().get();
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platform", platform);
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 0);
+  }
+
+  @Test
+  public void testBuilderDoesNotPruneCapabilitiesWithPlatformThatIsEqualToCurrentFamily() {
+    Platform platform = Platform.getCurrent().family();
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platform", platform);
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 1);
+  }
+
+  @Test
+  public void testBuilderDoesNotPruneCapabilitiesWithPlatformThatBelongsToCurrentFamily() {
+    Platform current = Platform.getCurrent().family();
+    Platform platform = Arrays.stream(Platform.values())
+        .filter(p -> p.is(current) && p != current).findFirst().orElse(null);
+    Assume.assumeTrue(platform != null);
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platform", platform);
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 1);
+  }
+
+  @Test
+  public void testBuilderFixesUpPlatform() {
+    Platform platform = Platform.getCurrent();
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platformName", platform);
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 1);
+    assertEquals(req.getConfiguration().capabilities.get(0).getCapability("platform"), platform);
+    assertEquals(req.getConfiguration().capabilities.get(0).getCapability("platformName"), platform);
+  }
+
+  @Test
+  public void testBuilderFixesUpPlatformName() {
+    Platform platform = Platform.getCurrent();
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    MutableCapabilities capabilities = new MutableCapabilities();
+    capabilities.setCapability("browserName", "firefox");
+    capabilities.setCapability("platform", platform);
+    config.capabilities = Arrays.asList(capabilities);
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(req.getConfiguration().capabilities.size(), 1);
+    assertEquals(req.getConfiguration().capabilities.get(0).getCapability("platform"), platform);
+    assertEquals(req.getConfiguration().capabilities.get(0).getCapability("platformName"), platform);
+  }
+
   private void assertConstruction(RegistrationRequest req) {
     assertNotNull(req);
     assertNotNull(req.getConfiguration());
@@ -274,5 +374,11 @@ public class RegistrationRequestTest {
       assertNotNull(capabilities.getPlatform());
       assertNotNull(capabilities.getCapability("seleniumProtocol"));
     }
+  }
+
+  private GridNodeConfiguration parseCliOptions(String... args) {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    JCommander.newBuilder().addObject(config).build().parse(args);
+    return config;
   }
 }

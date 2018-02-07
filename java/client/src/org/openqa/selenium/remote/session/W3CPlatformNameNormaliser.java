@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.session;
 
 import static java.util.Collections.singleton;
 import static java.util.Locale.ENGLISH;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import java.util.AbstractMap;
 import java.util.Collection;
@@ -28,7 +29,7 @@ public class W3CPlatformNameNormaliser implements CapabilityTransform {
 
   @Override
   public Collection<Map.Entry<String, Object>> apply(Map.Entry<String, Object> entry) {
-    if (!"platformName".equals(entry.getKey())) {
+    if (!PLATFORM_NAME.equals(entry.getKey())) {
       return singleton(entry);
     }
 

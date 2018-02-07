@@ -67,7 +67,7 @@ public class StandaloneConfigurationTest {
   public void commandLineParsing() throws Exception {
     StandaloneConfiguration sc = new StandaloneConfiguration();
     String[] args = "-timeout 32123 -browserTimeout 456".split(" ");
-    new JCommander(sc, args);
+    JCommander.newBuilder().addObject(sc).build().parse(args);
     assertEquals(32123, sc.timeout.intValue());
     assertEquals(456, sc.browserTimeout.intValue());
   }

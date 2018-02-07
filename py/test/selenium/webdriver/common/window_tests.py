@@ -80,12 +80,8 @@ def test_should_set_the_position_of_the_current_window(driver):
     assert new_position.get('y') == target_y
 
 
-@pytest.mark.xfail_chrome(raises=WebDriverException,
-                          reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_firefox(raises=WebDriverException,
                            reason='Get Window Rect command not implemented')
-@pytest.mark.xfail_phantomjs(raises=WebDriverException,
-                             reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_remote(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
@@ -98,12 +94,8 @@ def test_should_get_the_rect_of_the_current_window(driver):
     assert rect.get('height') >= 0
 
 
-@pytest.mark.xfail_chrome(raises=WebDriverException,
-                          reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_firefox(raises=WebDriverException,
                            reason='Get Window Rect command not implemented')
-@pytest.mark.xfail_phantomjs(raises=WebDriverException,
-                             reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_remote(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
@@ -133,8 +125,6 @@ def test_should_set_the_rect_of_the_current_window(driver):
                           reason='Fullscreen command not implemented')
 @pytest.mark.xfail_firefox(raises=WebDriverException,
                            reason='Fullscreen command not implemented')
-@pytest.mark.xfail_phantomjs(raises=WebDriverException,
-                             reason='Fullscreen command not implemented')
 @pytest.mark.xfail_remote(raises=WebDriverException,
                           reason='Fullscreen command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
@@ -163,8 +153,6 @@ def test_should_fullscreen_the_current_window(driver):
                           reason='Minimize command not implemented')
 @pytest.mark.xfail_firefox(raises=WebDriverException,
                            reason='Minimize command not implemented')
-@pytest.mark.xfail_phantomjs(raises=WebDriverException,
-                             reason='Minimize command not implemented')
 @pytest.mark.xfail_remote(raises=WebDriverException,
                           reason='Minimize command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,

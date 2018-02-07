@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'cdi-api',
   maven_coords = 'javax.enterprise:cdi-api:jar:1.0',

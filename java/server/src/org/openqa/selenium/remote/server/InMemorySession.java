@@ -39,7 +39,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 class InMemorySession implements ActiveSession {
 
@@ -52,8 +51,7 @@ class InMemorySession implements ActiveSession {
   private final TemporaryFilesystem filesystem;
   private final JsonHttpCommandHandler handler;
 
-  private InMemorySession(WebDriver driver, Capabilities capabilities, Dialect downstream)
-      throws IOException {
+  private InMemorySession(WebDriver driver, Capabilities capabilities, Dialect downstream) {
     this.driver = Preconditions.checkNotNull(driver);
 
     Capabilities caps;
@@ -127,22 +125,28 @@ class InMemorySession implements ActiveSession {
       this.provider = provider;
     }
 
+
+    @Override
+    public boolean isSupporting(Capabilities capabilities) {
+      return provider.canCreateDriverInstanceFor(capabilities);
+    }
+
     @Override
     public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities caps) {
       // Assume the blob fits in the available memory.
       try {
         if (!provider.canCreateDriverInstanceFor(caps)) {
-          return null;
+          return Optional.empty();
         }
 
         WebDriver driver = provider.newInstance(caps);
 
         // Prefer the OSS dialect.
-        Dialect downstream = downstreamDialects.contains(Dialect.OSS) ?
+        Dialect downstream = downstreamDialects.contains(Dialect.OSS) || downstreamDialects.isEmpty() ?
                              Dialect.OSS :
                              downstreamDialects.iterator().next();
         return Optional.of(new InMemorySession(driver, caps, downstream));
-      } catch (IOException | IllegalStateException e) {
+      } catch (IllegalStateException e) {
         return Optional.empty();
       }
     }
@@ -158,30 +162,13 @@ class InMemorySession implements ActiveSession {
 
     private final Session session;
 
-    private PretendDriverSessions() throws IOException {
+    private PretendDriverSessions() {
       this.session = new ActualSession();
-    }
-
-    @Override
-    public SessionId newSession(Stream<Capabilities> desiredCapabilities) throws Exception {
-      throw new UnsupportedOperationException("newSession");
     }
 
     @Override
     public Session get(SessionId sessionId) {
       return getId().equals(sessionId) ? session : null;
-    }
-
-    @Override
-    public void deleteSession(SessionId sessionId) {
-      // no-op
-    }
-
-    @Override
-    public void registerDriver(
-        Capabilities capabilities,
-        Class<? extends WebDriver> implementation) {
-      throw new UnsupportedOperationException("registerDriver");
     }
 
     @Override
@@ -195,7 +182,7 @@ class InMemorySession implements ActiveSession {
     private final KnownElements knownElements;
     private volatile String screenshot;
 
-    private ActualSession() throws IOException {
+    private ActualSession() {
       knownElements = new KnownElements();
     }
 

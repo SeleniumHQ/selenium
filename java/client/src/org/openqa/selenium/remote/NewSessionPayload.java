@@ -18,7 +18,10 @@
 package org.openqa.selenium.remote;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -29,7 +32,6 @@ import com.google.common.collect.Sets;
 import com.google.common.io.CharSource;
 import com.google.common.io.CharStreams;
 import com.google.common.io.FileBackedOutputStream;
-import com.google.gson.reflect.TypeToken;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -219,7 +221,8 @@ public class NewSessionPayload implements Closeable {
 
       Map<String, Object> first = getOss();
       if (first == null) {
-        first = stream().findFirst()
+        //noinspection unchecked
+        first = (Map<String, Object>) stream().findFirst()
             .orElse(new ImmutableCapabilities())
             .asMap();
       }
@@ -307,7 +310,7 @@ public class NewSessionPayload implements Closeable {
    * equivalent W3C capabilities isn't particularly easy, so it's hoped that this approach gives us
    * the most compatible implementation.
    */
-  public Stream<ImmutableCapabilities> stream() throws IOException {
+  public Stream<Capabilities> stream() throws IOException {
     // OSS first
     Stream<Map<String, Object>> oss = Stream.of(getOss());
 
@@ -425,8 +428,8 @@ public class NewSessionPayload implements Closeable {
     toReturn.putAll(capabilities);
 
     // Platform name
-    if (capabilities.containsKey("platform") && !capabilities.containsKey("platformName")) {
-      toReturn.put("platformName", String.valueOf(capabilities.get("platform")));
+    if (capabilities.containsKey(PLATFORM) && !capabilities.containsKey(PLATFORM_NAME)) {
+      toReturn.put(PLATFORM_NAME, String.valueOf(capabilities.get(PLATFORM)));
     }
 
     return toReturn;
@@ -470,7 +473,7 @@ public class NewSessionPayload implements Closeable {
           while (input.hasNext()) {
             name = input.nextName();
             if ("firstMatch".equals(name)) {
-              return input.read(new TypeToken<List<Map<String, Object>>>(){}.getType());
+              return input.read(LIST_OF_MAPS_TYPE);
             } else {
               input.skipValue();
             }

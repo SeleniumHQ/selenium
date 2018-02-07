@@ -22,6 +22,7 @@ import com.google.common.collect.Maps;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.shared.Stoppable;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
 import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
@@ -47,6 +48,7 @@ import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
+import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -59,7 +61,7 @@ import javax.servlet.Servlet;
  * should be a singleton.
  */
 @ManagedService(objectName = "org.seleniumhq.grid:type=Hub", description = "Selenium Grid Hub")
-public class Hub {
+public class Hub implements Stoppable {
 
   private static final Logger log = Logger.getLogger(Hub.class.getName());
 
@@ -174,8 +176,6 @@ public class Hub {
       httpConfig.setSecureScheme("https");
       httpConfig.setSecurePort(config.port);
 
-      log.info("Will listen on " + config.port);
-
       ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
       http.setPort(config.port);
 
@@ -211,12 +211,34 @@ public class Hub {
 
   public void start() throws Exception {
     initServer();
-    server.start();
+
+    try {
+      server.start();
+    } catch (Exception e) {
+      try {
+        stop();
+      } catch (Exception ignore) {
+      }
+      if (e instanceof BindException) {
+        log.severe(String.format(
+            "Port %s is busy, please choose a free port for the hub and specify it using -port option", config.port));
+        return;
+      } else {
+        throw new RuntimeException(e);
+      }
+    }
+
+    log.info("Selenium Grid hub is up and running");
+    log.info(String.format("Nodes should register to %s", getRegistrationURL()));
+    log.info(String.format("Clients should connect to %s", getWebDriverHubRequestURL()));
   }
 
-  public void stop() throws Exception {
+  public void stop() {
     registry.stop();
-    server.stop();
+    try {
+      server.stop();
+    } catch (Exception ignore) {
+    }
   }
 
   @ManagedAttribute(name= "URL")

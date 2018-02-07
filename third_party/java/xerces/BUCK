@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'xercesImpl',
   maven_coords = 'xerces:xercesImpl:jar:2.11.0',

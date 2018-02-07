@@ -200,6 +200,10 @@ class RemoteConnection(object):
             port = parsed_url.port or None
             if parsed_url.scheme == "https":
                 ip = parsed_url.hostname
+            elif port and not common_utils.is_connectable(port, parsed_url.hostname):
+                ip = None
+                LOGGER.info('Could not connect to port {} on host '
+                            '{}'.format(port, parsed_url.hostname))
             else:
                 ip = common_utils.find_connectable_ip(parsed_url.hostname,
                                                       port=port)
@@ -454,8 +458,10 @@ class RemoteConnection(object):
         """
         command_info = self._commands[command]
         assert command_info is not None, 'Unrecognised command %s' % command
-        data = utils.dump_json(params)
         path = string.Template(command_info[1]).substitute(params)
+        if hasattr(self, 'w3c') and self.w3c and isinstance(params, dict) and 'sessionId' in params:
+            del params['sessionId']
+        data = utils.dump_json(params)
         url = '%s%s' % (self._url, path)
         return self._request(command_info[0], url, body=data)
 

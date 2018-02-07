@@ -15,12 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
-
 from selenium.common.exceptions import (
     ElementNotVisibleException,
-    ElementNotInteractableException,
-    InvalidElementStateException)
+    ElementNotInteractableException)
 from selenium.webdriver.common.by import By
 
 
@@ -95,7 +92,6 @@ def testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed(driver, pages):
         pass
 
 
-@pytest.mark.xfail_phantomjs(raises=InvalidElementStateException)
 def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="unclickable")

@@ -26,7 +26,6 @@ import com.google.gson.stream.JsonWriter;
 
 import com.beust.jcommander.Parameter;
 
-import org.openqa.grid.common.JSONConfigurationUtils;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
@@ -156,7 +155,7 @@ public class GridHubConfiguration extends GridConfiguration {
    * @param filePath hub config json file to load configuration from
    */
   public static GridHubConfiguration loadFromJSON(String filePath) {
-    return loadFromJSON(JSONConfigurationUtils.loadJSON(filePath));
+    return loadFromJSON(loadJSONFromResourceOrFile(filePath));
   }
 
   /**

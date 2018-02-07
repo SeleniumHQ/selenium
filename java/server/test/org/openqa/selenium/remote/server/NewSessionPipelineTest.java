@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.remote.server;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -39,7 +41,9 @@ public class NewSessionPipelineTest {
   @Test
   public void shouldCallSessionFactory() throws IOException {
     SessionFactory factory = mock(SessionFactory.class);
+    when(factory.isSupporting(any())).thenReturn(true);
     SessionFactory fallback = mock(SessionFactory.class);
+    when(fallback.isSupporting(any())).thenReturn(true);
     ActiveSession session = mock(ActiveSession.class);
     when(factory.apply(any(), any())).thenReturn(Optional.of(session));
 
@@ -77,6 +81,7 @@ public class NewSessionPipelineTest {
   @Test
   public void shouldUseMutators() throws IOException {
     SessionFactory factory = mock(SessionFactory.class);
+    when(factory.isSupporting(any())).thenReturn(true);
     ActiveSession session = mock(ActiveSession.class);
     when(factory.apply(any(), any())).thenReturn(Optional.of(session));
     FirefoxMutator mutator = new FirefoxMutator(new ImmutableCapabilities(
@@ -89,9 +94,34 @@ public class NewSessionPipelineTest {
             "alwaysMatch", ImmutableMap.of("browserName", "firefox")));
 
     NewSessionPipeline pipeline = NewSessionPipeline.builder()
-        .add(factory).addCapabilitiesMutator(mutator).create();
+        .add(factory)
+        .addCapabilitiesMutator(mutator)
+        .create();
 
     pipeline.createNewSession(NewSessionPayload.create(caps));
     verify(factory).apply(any(), argThat(cap -> cap.getCapability("marionette").equals(true)));
+  }
+
+  @Test
+  public void shouldNotUseFactoriesThatDoNotSupportTheCapabilities() throws IOException {
+    SessionFactory toBeIgnored = mock(SessionFactory.class);
+    when(toBeIgnored.isSupporting(any())).thenReturn(false);
+    when(toBeIgnored.apply(any(), any())).thenThrow(new AssertionError("Must not be called"));
+
+    ActiveSession session = mock(ActiveSession.class);
+    SessionFactory toBeUsed = mock(SessionFactory.class);
+    when(toBeUsed.isSupporting(any())).thenReturn(true);
+    when(toBeUsed.apply(any(), any())).thenReturn(Optional.of(session));
+
+    NewSessionPipeline pipeline = NewSessionPipeline.builder()
+        .add(toBeIgnored)
+        .add(toBeUsed)
+        .create();
+
+    ActiveSession seen =
+        pipeline.createNewSession(NewSessionPayload.create(new ImmutableCapabilities()));
+
+    assertEquals(session, seen);
+    verify(toBeIgnored, atLeast(1)).isSupporting(any());
   }
 }

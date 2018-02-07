@@ -44,7 +44,7 @@ import java.net.BindException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
+import java.util.StringTokenizer;
 
 public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpClient {
 
@@ -65,11 +65,16 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
   }
 
   @Override
+  public HttpResponse execute(HttpRequest request) throws IOException {
+    return execute(request, true);
+  }
+
+  @Override
   public HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
     HttpContext context = createContext();
 
-    String requestUrl = url.toExternalForm().replaceAll("/$", "") + request.getUri();
-    HttpUriRequest httpMethod = createHttpUriRequest(request.getMethod(), requestUrl);
+    URL url = HttpUrlBuilder.toUrl(this.url, request);
+    HttpUriRequest httpMethod = createHttpUriRequest(request.getMethod(), url);
     for (String name : request.getHeaderNames()) {
       // Skip content length as it is implicitly set when the message entity is set below.
       if (!"Content-Length".equalsIgnoreCase(name)) {
@@ -120,14 +125,22 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     return new BasicHttpContext();
   }
 
-  private static HttpUriRequest createHttpUriRequest(HttpMethod method, String url) {
+  private static HttpUriRequest createHttpUriRequest(HttpMethod method, URL url)
+      throws IOException {
+    URI uri = null;
+    try {
+      uri = url.toURI();
+    } catch (URISyntaxException e) {
+      throw new IOException(e);
+    }
+
     switch (method) {
       case DELETE:
-        return new HttpDelete(url);
+        return new HttpDelete(uri);
       case GET:
-        return new HttpGet(url);
+        return new HttpGet(uri);
       case POST:
-        return new HttpPost(url);
+        return new HttpPost(uri);
     }
     throw new AssertionError("Unsupported method: " + method);
   }
@@ -136,16 +149,8 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       HttpContext context, HttpUriRequest httpMethod) throws IOException {
     try {
       return client.execute(targetHost, httpMethod, context);
-    } catch (BindException e) {
+    } catch (BindException | NoHttpResponseException e) {
       // If we get this, there's a chance we've used all the local ephemeral sockets
-      // Sleep for a bit to let the OS reclaim them, then try the request again.
-      try {
-        Thread.sleep(2000);
-      } catch (InterruptedException ie) {
-        throw new RuntimeException(ie);
-      }
-    } catch (NoHttpResponseException e) {
-      // If we get this, there's a chance we've used all the remote ephemeral sockets
       // Sleep for a bit to let the OS reclaim them, then try the request again.
       try {
         Thread.sleep(2000);
@@ -228,13 +233,19 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       checkNotNull(url, "null URL");
       HttpClient client;
       if (url.getUserInfo() != null) {
+        StringTokenizer tokens = new StringTokenizer(url.getUserInfo(), ":");
         UsernamePasswordCredentials credentials =
-            new UsernamePasswordCredentials(url.getUserInfo());
+            new UsernamePasswordCredentials(tokens.nextToken(), tokens.nextToken());
         client = clientFactory.createHttpClient(credentials);
       } else {
         client = clientFactory.getHttpClient();
       }
       return new ApacheHttpClient(client, url);
+    }
+
+    @Override
+    public void cleanupIdleClients() {
+      clientFactory.cleanupIdleClients();
     }
 
     private static synchronized HttpClientFactory getDefaultHttpClientFactory() {
@@ -245,8 +256,8 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     }
   }
 
+  @Deprecated
   @Override
   public void close() throws IOException {
-    client.getConnectionManager().closeIdleConnections(0, TimeUnit.SECONDS);
   }
 }

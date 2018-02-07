@@ -63,6 +63,10 @@ class UrlTemplate {
    * @return A {@link Match} with all parameters filled if successful, null otherwise.
    */
   public UrlTemplate.Match match(String matchAgainst) {
+    if (matchAgainst == null) {
+      return null;
+    }
+
     String[] fragments = matchAgainst.split("/");
     if (fragments.length != template.size()) {
       return null;

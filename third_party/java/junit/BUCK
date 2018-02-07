@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'junit',
   maven_coords = 'junit:junit:jar:4.12',
@@ -8,12 +7,13 @@ prebuilt_jar(
     '//third_party/java/hamcrest:hamcrest-core'
   ],
   visibility = [
-    '//third_party/java/sisu:org.eclipse.sisu.plexus',
-    '//third_party/java/testng:testng',
+    '//java/client/src/com/thoughtworks/selenium:selenium',
+    '//java/client/src/com/thoughtworks/selenium/condition:condition',
+    '//java/client/src/org/openqa/selenium/lift:lift',
     '//java/client/test/...',
     '//java/server/test/...',
-    '//java/client/src/com/thoughtworks/selenium/...',
-    '//java/client/src/org/openqa/selenium/lift:lift',
+    '//third_party/java/sisu:org.eclipse.sisu.plexus',
+    '//third_party/java/testng:testng'
   ],
 )
 

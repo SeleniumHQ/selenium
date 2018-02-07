@@ -131,6 +131,7 @@ const Name = {
 
   SWITCH_TO_WINDOW: 'switchToWindow',
   SWITCH_TO_FRAME: 'switchToFrame',
+  SWITCH_TO_FRAME_PARENT: 'switchToFrameParent',
   GET_PAGE_SOURCE: 'getPageSource',
   GET_TITLE: 'getTitle',
 
@@ -144,10 +145,10 @@ const Name = {
   IS_ELEMENT_DISPLAYED: 'isElementDisplayed',
   GET_ELEMENT_LOCATION: 'getElementLocation',
   GET_ELEMENT_LOCATION_IN_VIEW: 'getElementLocationOnceScrolledIntoView',
+  GET_ELEMENT_RECT: 'getElementRect',
   GET_ELEMENT_SIZE: 'getElementSize',
   GET_ELEMENT_ATTRIBUTE: 'getElementAttribute',
   GET_ELEMENT_VALUE_OF_CSS_PROPERTY: 'getElementValueOfCssProperty',
-  ELEMENT_EQUALS: 'elementEquals',
 
   SCREENSHOT: 'screenshot',
   TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',
@@ -161,20 +162,6 @@ const Name = {
   DISMISS_ALERT: 'dismissAlert',
   GET_ALERT_TEXT: 'getAlertText',
   SET_ALERT_TEXT: 'setAlertValue',
-  SET_ALERT_CREDENTIALS: 'setAlertCredentials',
-
-  GET_LOCATION: 'getLocation',
-  SET_LOCATION: 'setLocation',
-
-  GET_SESSION_STORAGE_ITEM: 'getSessionStorageItem',
-  GET_SESSION_STORAGE_KEYS: 'getSessionStorageKey',
-  SET_SESSION_STORAGE_ITEM: 'setSessionStorageItem',
-  REMOVE_SESSION_STORAGE_ITEM: 'removeSessionStorageItem',
-  CLEAR_SESSION_STORAGE: 'clearSessionStorage',
-  GET_SESSION_STORAGE_SIZE: 'getSessionStorageSize',
-
-  SET_SCREEN_ORIENTATION: 'setScreenOrientation',
-  GET_SCREEN_ORIENTATION: 'getScreenOrientation',
 
   GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
   GET_LOG: 'getLog',
@@ -185,13 +172,28 @@ const Name = {
 
   ACTIONS: 'actions',
   CLEAR_ACTIONS: 'clearActions',
+
+  LEGACY_ACTION_CLICK: 'legacyAction:click',
+  LEGACY_ACTION_DOUBLE_CLICK: 'legacyAction:doubleclick',
+  LEGACY_ACTION_MOUSE_DOWN: 'legacyAction:mouseDown',
+  LEGACY_ACTION_MOUSE_UP: 'legacyAction:mouseUp',
+  LEGACY_ACTION_MOUSE_MOVE: 'legacyAction:mouseMove',
+  LEGACY_ACTION_SEND_KEYS: 'legacyAction:sendKeys',
+  LEGACY_ACTION_TOUCH_DOWN: 'legacyAction:touchDown',
+  LEGACY_ACTION_TOUCH_UP: 'legacyAction:touchUp',
+  LEGACY_ACTION_TOUCH_MOVE: 'legacyAction:touchMove',
+  LEGACY_ACTION_TOUCH_SCROLL: 'legacyAction:touchScroll',
+  LEGACY_ACTION_TOUCH_LONG_PRESS: 'legacyAction:touchLongPress',
+  LEGACY_ACTION_TOUCH_FLICK: 'legacyAction:touchFlick',
+  LEGACY_ACTION_TOUCH_SINGLE_TAP: 'legacyAction:singleTap',
+  LEGACY_ACTION_TOUCH_DOUBLE_TAP: 'legacyAction:doubleTap',
 };
 
 
 
 /**
  * Handles the execution of WebDriver {@link Command commands}.
- * @interface
+ * @record
  */
 class Executor {
   /**

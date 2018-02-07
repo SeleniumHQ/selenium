@@ -12,5 +12,5 @@ java_test(name = 'lift',
     '//java/client/test/org/openqa/selenium/support:tests',
     '//third_party/java/hamcrest:hamcrest-library',
     '//third_party/java/junit:junit',
-    '//third_party/java/mockito:mockito',
+    '//third_party/java/mockito:mockito-core',
   ])

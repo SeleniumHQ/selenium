@@ -18,16 +18,31 @@
 package org.openqa.selenium.remote.server;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.openqa.selenium.Platform.ANY;
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static org.openqa.selenium.remote.BrowserType.EDGE;
+import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.BrowserType.HTMLUNIT;
+import static org.openqa.selenium.remote.BrowserType.IE;
+import static org.openqa.selenium.remote.BrowserType.OPERA;
+import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
+import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
+import static org.openqa.selenium.remote.BrowserType.SAFARI;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.server.DefaultDriverProvider.createProvider;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.List;
 import java.util.Map;
@@ -42,18 +57,25 @@ public class DefaultDriverFactory implements DriverFactory {
   private static final Logger LOG = Logger.getLogger(DefaultDriverFactory.class.getName());
 
   private static final List<DriverProvider> DEFAULT_DRIVER_PROVIDERS =
-      Stream.of(
-          createProvider(DesiredCapabilities.firefox(), "org.openqa.selenium.firefox.FirefoxDriver"),
-          createProvider(DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver"),
-          createProvider(DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver"),
-          createProvider(DesiredCapabilities.edge(), "org.openqa.selenium.edge.EdgeDriver"),
-          createProvider(DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver"),
-          createProvider(DesiredCapabilities.operaBlink(), "org.openqa.selenium.opera.OperaDriver"),
-          createProvider(DesiredCapabilities.safari(), "org.openqa.selenium.safari.SafariDriver"),
-          createProvider(DesiredCapabilities.phantomjs(), "org.openqa.selenium.phantomjs.PhantomJSDriver"),
-          createProvider(DesiredCapabilities.htmlUnit(), "org.openqa.selenium.htmlunit.HtmlUnitDriver"))
-          .filter(Objects::nonNull)
-          .collect(ImmutableList.toImmutableList());
+      Stream.concat(
+        new ImmutableMap.Builder<String, String>()
+            .put(FIREFOX, "org.openqa.selenium.firefox.FirefoxDriver")
+            .put(CHROME, "org.openqa.selenium.chrome.ChromeDriver")
+            .put(OPERA, "com.opera.core.systems.OperaDriver")
+            .put(OPERA_BLINK, "org.openqa.selenium.opera.OperaDriver")
+            .put(PHANTOMJS, "org.openqa.selenium.phantomjs.PhantomJSDriver")
+            .put(HTMLUNIT, "org.openqa.selenium.htmlunit.HtmlUnitDriver")
+            .build().entrySet().stream()
+            .map(e -> createProvider(new ImmutableCapabilities(BROWSER_NAME, e.getKey()), e.getValue()))
+            .filter(Objects::nonNull),
+        Stream.of(
+            createProvider(new ImmutableCapabilities(BROWSER_NAME, IE, PLATFORM_NAME, WINDOWS),
+                           "org.openqa.selenium.ie.InternetExplorerDriver"),
+            createProvider(new ImmutableCapabilities(BROWSER_NAME, EDGE, PLATFORM_NAME, WINDOWS),
+                           "org.openqa.selenium.edge.EdgeDriver"),
+            createProvider(new ImmutableCapabilities(BROWSER_NAME, SAFARI, PLATFORM_NAME, MAC),
+                           "org.openqa.selenium.safari.SafariDriver"))
+        ).collect(ImmutableList.toImmutableList());
 
   private final Map<Capabilities, DriverProvider> capabilitiesToDriverProvider =
       new ConcurrentHashMap<>();
@@ -64,11 +86,7 @@ public class DefaultDriverFactory implements DriverFactory {
   }
 
   public void registerDriverProvider(DriverProvider driverProvider) {
-    if (driverProvider.canCreateDriverInstances()) {
-      capabilitiesToDriverProvider.put(driverProvider.getProvidedCapabilities(), driverProvider);
-    } else {
-      LOG.info(String.format("Driver provider %s is not registered", driverProvider));
-    }
+    capabilitiesToDriverProvider.put(driverProvider.getProvidedCapabilities(), driverProvider);
   }
 
   @VisibleForTesting
@@ -89,10 +107,6 @@ public class DefaultDriverFactory implements DriverFactory {
     throw new WebDriverException(String.format(
       "The best matching driver provider %s can't create a new driver instance for %s",
       provider, capabilities));
-  }
-
-  public boolean hasMappingFor(Capabilities capabilities) {
-    return capabilitiesToDriverProvider.containsKey(capabilities);
   }
 
   private void registerDefaults(Platform current) {
@@ -117,19 +131,12 @@ public class DefaultDriverFactory implements DriverFactory {
       return;
     }
 
-    if (!provider.canCreateDriverInstances()) {
-      LOG.info(String.format(
-          "Driver provider %s registration is skipped:%n" +
-          "Unable to create new instances on this machine.",
-          provider));
-    }
-
     registerDriverProvider(provider);
   }
 
   private boolean platformMatches(Platform current, Capabilities caps) {
     return caps.getPlatform() == null
-           || caps.getPlatform() == Platform.ANY
+           || caps.getPlatform() == ANY
            || current.is(caps.getPlatform());
   }
 }

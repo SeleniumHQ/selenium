@@ -34,7 +34,6 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_phantomjs
 @pytest.mark.xfail_marionette(
     reason='https://github.com/mozilla/geckodriver/issues/646')
 def testSendingKeysToActiveElementWithModifier(driver, pages):
@@ -56,7 +55,6 @@ def testSendingKeysToActiveElementWithModifier(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_phantomjs
 def test_can_create_pause_action_on_keyboard(driver, pages):
     # If we don't get an error and takes less than 3 seconds to run, we are good
     import datetime
@@ -78,7 +76,6 @@ def test_can_create_pause_action_on_keyboard(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_phantomjs
 def test_can_create_pause_action_on_pointer(driver, pages):
     # If we don't get an error and takes less than 3 seconds to run, we are good
     import datetime
@@ -100,7 +97,6 @@ def test_can_create_pause_action_on_pointer(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_phantomjs
 def test_can_clear_actions(driver, pages):
     actions = ActionBuilder(driver)
     actions.clear_actions()
@@ -109,7 +105,6 @@ def test_can_clear_actions(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_phantomjs
 def test_move_and_click(driver, pages):
     pages.load("javascriptPage.html")
     toClick = driver.find_element_by_id("clickField")
@@ -127,7 +122,6 @@ def test_move_and_click(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_phantomjs
 def testDragAndDrop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
@@ -156,7 +150,6 @@ def testDragAndDrop(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_phantomjs
 def test_context_click(driver, pages):
 
     pages.load("javascriptPage.html")
@@ -173,7 +166,6 @@ def test_context_click(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_phantomjs
 @pytest.mark.xfail_marionette(
     reason='https://github.com/mozilla/geckodriver/issues/661')
 def test_double_click(driver, pages):
@@ -193,7 +185,6 @@ def test_double_click(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_phantomjs
 def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
     _performDragAndDropWithMouse(driver, pages)
     dragInto = driver.find_element_by_id("sortable1")
@@ -203,7 +194,6 @@ def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_phantomjs
 def test_dragging_element_with_mouse_fires_events(driver, pages):
     _performDragAndDropWithMouse(driver, pages)
     dragReporter = driver.find_element_by_id("dragging_reports")

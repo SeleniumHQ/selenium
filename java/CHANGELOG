@@ -1,7 +1,40 @@
+v3.9.0
+======
+
+* Switched to OkHttp for all HTTP communication. The version used can
+  be changed back to the Apache HttpClient by setting the
+  `webdriver.http.factory` system property to `apache`.
+* Removed passthrough mode for the server.
+* Grid: (implementation note) Start migrating servlets used to be
+  command handlers.
+* Upgraded every dependency to latest versions.
+* Added varargs methods to `ExpectedConditions` in order to avoid
+  annoying `Arrays.asList`.
+* Better logging when new session creation errors.
+
+v3.8.1
+======
+
+* Fixed Chrome mutator injecting null binary path into new session payload.
+* Added mutator that stips grid-specific capabilities hurting IE driver.
+* Fixed SafariOptions construction from plain Capabilities object.
+
 v3.8.0
 ======
 
-* Added support for managing Grid Hubs and Nodes via JMX
+* Dropped support for PhantomJS, it's recommended to use headless Firefox or
+  Chrome instead.
+* Node skips configurations that does not match current platform, no more IE
+  slots on Linux-based nodes.
+* Introduced unique ids for node slot configurations. Hub injects UID of the
+  matched configuration to the new request payload. Node mutates capabilities
+  with matching config UUID only. This allows to have multiple configurations
+  for the same browser in node config file.
+* Implemented matching of some browser-specific capabilities on Grid hub,
+  namely "marionette" for Firefox (default is true) and "technologyPreview"
+  for Safari (default is false).
+* "technologyPreview" capability is now honored again by SafariDriver.
+* Added initial support for managing Grid Hubs and Nodes via JMX
 * Removed `Alert.authenticate` and supporting classes
 * Better handling of configuring SafariDriver via capabilities.
 

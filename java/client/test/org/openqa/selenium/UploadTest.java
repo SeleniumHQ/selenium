@@ -28,11 +28,9 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 import org.junit.Before;
@@ -44,6 +42,7 @@ import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Demonstrates how to use WebDriver with a file input element.
@@ -63,7 +62,7 @@ public class UploadTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testFileUploading() throws Exception {
+  public void testFileUploading() {
     assumeFalse(
         "This test as written assumes a file on local disk is accessible to the browser. "
         + "That is not true for browsers on mobile platforms.",
@@ -85,7 +84,7 @@ public class UploadTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  public void testCleanFileInput() throws Exception {
+  public void testCleanFileInput() {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
     element.sendKeys(testFile.getAbsolutePath());
@@ -95,21 +94,37 @@ public class UploadTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/1011")
   @Ignore(CHROME)
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
-  public void testClickFileInput() throws Exception {
+  public void testClickFileInput() {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
     Throwable ex = catchThrowable(element::click);
     assertThat(ex, instanceOf(InvalidArgumentException.class));
   }
 
+  @Test
+  public void testUploadingWithHiddenFileInput() {
+    driver.get(appServer.whereIs("upload_invisible.html"));
+    driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
+    driver.findElement(By.id("go")).click();
+
+    // Uploading files across a network may take a while, even if they're really small
+    WebElement label = driver.findElement(By.id("upload_label"));
+    wait.until(not(visibilityOf(label)));
+
+    driver.switchTo().frame("upload_target");
+
+    WebElement body = driver.findElement(By.xpath("//body"));
+    wait.until(elementTextToEqual(body, LOREM_IPSUM_TEXT));
+
+  }
+
   private File createTmpFile(String content) throws IOException {
     File f = File.createTempFile("webdriver", "tmp");
     f.deleteOnExit();
-    Files.write(content, f, Charsets.UTF_8);
+    Files.asCharSink(f, StandardCharsets.UTF_8).write(content);
     return f;
   }
 

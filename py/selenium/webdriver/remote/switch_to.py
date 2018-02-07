@@ -51,7 +51,9 @@ class SwitchTo:
         :Usage:
             alert = driver.switch_to.alert
         """
-        return Alert(self._driver)
+        alert = Alert(self._driver)
+        alert.text
+        return alert
 
     def default_content(self):
         """

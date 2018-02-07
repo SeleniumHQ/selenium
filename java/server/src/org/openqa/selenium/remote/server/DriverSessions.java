@@ -18,22 +18,13 @@
 
 package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.Set;
-import java.util.stream.Stream;
 
 public interface DriverSessions {
-  SessionId newSession(Stream<Capabilities> desiredCapabilities) throws Exception;
 
   Session get(SessionId sessionId);
 
-  void deleteSession(SessionId sessionId);
-
-  void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation);
-
   Set<SessionId> getSessions();
-
 }

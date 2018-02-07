@@ -51,4 +51,13 @@ public class SafariOptionsTest {
     assertEquals(expected, seen);
   }
 
+  @Test
+  public void canConstructFromCapabilities() {
+    SafariOptions options = new SafariOptions(
+        new ImmutableCapabilities("cleanSession", true, "technologyPreview", true));
+
+    assertTrue(options.getUseCleanSession());
+    assertTrue(options.getUseTechnologyPreview());
+  }
+
 }

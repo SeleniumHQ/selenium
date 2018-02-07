@@ -50,7 +50,7 @@ import java.util.Random;
 public class FrameSwitchingTest extends JUnit4TestBase {
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     try {
       driver.switchTo().defaultContent();
     } catch (Exception e) {
@@ -299,8 +299,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
-  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage()
-      throws Exception {
+  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage() {
     driver.get(pages.framesetPage);
 
     driver.switchTo().frame(0);

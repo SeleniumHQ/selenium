@@ -51,6 +51,9 @@ void IsElementSelectedCommandHandler::ExecuteInternal(
     if (status_code == WD_SUCCESS) {
       bool is_selected = element_wrapper->IsSelected();
       response->SetSuccessResponse(is_selected);
+    } else if (status_code == ENOSUCHELEMENT) {
+      response->SetErrorResponse(ERROR_NO_SUCH_ELEMENT, "Invalid internal element ID requested: " + element_id);
+      return;
     } else {
       response->SetErrorResponse(ERROR_STALE_ELEMENT_REFERENCE, "Element is no longer valid");
       return;

@@ -17,9 +17,9 @@
 package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.lang.reflect.Constructor;
 import java.util.logging.Level;
@@ -37,16 +37,8 @@ public class DefaultDriverProvider implements DriverProvider {
   private Class<? extends WebDriver> driverClass;
 
   public DefaultDriverProvider(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
-    this.capabilities = new DesiredCapabilities(capabilities);
+    this.capabilities = new ImmutableCapabilities(capabilities);
     this.driverClass = driverClass;
-  }
-
-  /**
-   * @deprecated Replace with a call to {@link #createProvider(Capabilities, String)}
-   */
-  @Deprecated
-  public DefaultDriverProvider(Capabilities capabilities, String driverClassName) {
-    this(capabilities, getDriverClass(driverClassName));
   }
 
   public static DriverProvider createProvider(Capabilities capabilities, String driverClassName) {
@@ -60,16 +52,6 @@ public class DefaultDriverProvider implements DriverProvider {
   @Override
   public Capabilities getProvidedCapabilities() {
     return capabilities;
-  }
-
-  /**
-   * Checks that driver class can be loaded.
-   * @deprecated All providers should be able to create driver classes.
-   */
-  @Override
-  @Deprecated
-  public boolean canCreateDriverInstances() {
-    return driverClass != null;
   }
 
   /**

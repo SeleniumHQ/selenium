@@ -25,6 +25,7 @@
 // Error List, point to "Suppress Message(s)", and click
 // "In Project Suppression File".
 // You do not need to add suppressions to this file manually.
+[assembly: System.CLSCompliant(true)]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Scope = "member", Target = "OpenQA.Selenium.By.#FindElementsMethod", Justification = "Type is properly specified. It should be a Func<T, TResult> that returns a ReadOnlyCollection<IWebElement>")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Scope = "member", Target = "OpenQA.Selenium.By.#.ctor(System.Func`2<OpenQA.Selenium.ISearchContext,OpenQA.Selenium.IWebElement>,System.Func`2<OpenQA.Selenium.ISearchContext,System.Collections.ObjectModel.ReadOnlyCollection`1<OpenQA.Selenium.IWebElement>>)", Justification = "Type is properly specified. It should be a Func<T, TResult> that returns a ReadOnlyCollection<IWebElement>")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace", Target = "OpenQA.Selenium.PhantomJS", Justification = "Namespaces are properly scoped.")]

@@ -102,8 +102,7 @@ public class AvailableLogsTest extends JUnit4TestBase {
   public void shouldBeAbleToEnableProfilerLog() {
     assumeFalse(isOldChromedriver(driver));
     Capabilities caps = new ImmutableCapabilities(ENABLE_PROFILING_CAPABILITY, true);
-    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(caps);
-    localDriver = builder.get();
+    localDriver = new WebDriverBuilder().get(caps);
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
     assertTrue("Profiler log should be enabled", logTypes.contains(LogType.PROFILER));
   }
