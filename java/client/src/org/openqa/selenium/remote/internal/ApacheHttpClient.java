@@ -232,10 +232,11 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     public org.openqa.selenium.remote.http.HttpClient createClient(URL url) {
       checkNotNull(url, "null URL");
       HttpClient client;
-      if (url.getUserInfo() != null) {
-        StringTokenizer tokens = new StringTokenizer(url.getUserInfo(), ":");
+      String urlUserInfo = url.getUserInfo();
+      if (urlUserInfo != null) {
+        UserInfo userInfo = new UserInfo(urlUserInfo);
         UsernamePasswordCredentials credentials =
-            new UsernamePasswordCredentials(tokens.nextToken(), tokens.nextToken());
+            new UsernamePasswordCredentials(userInfo.getUser(), userInfo.getPassword());
         client = clientFactory.createHttpClient(credentials);
       } else {
         client = clientFactory.getHttpClient();
