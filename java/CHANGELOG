@@ -1,3 +1,9 @@
+v3.9.1
+======
+
+* OkHttp backed instances can now connect to servers requiring
+  authorisation. Based on PR #5444 proposed by @valfirst.
+
 v3.9.0
 ======
 
