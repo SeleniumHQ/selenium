@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.internal;
 
-import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.common.base.Strings;
 
@@ -35,8 +35,9 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public class OkHttpClient implements HttpClient {
 
@@ -118,7 +119,21 @@ public class OkHttpClient implements HttpClient {
 
   public static class Factory implements HttpClient.Factory {
 
-    private ConnectionPool pool = new ConnectionPool();
+    private final ConnectionPool pool = new ConnectionPool();
+    private final long connectionTimeout;
+    private final long readTimeout;
+
+    public Factory() {
+      this(Duration.ofMinutes(2), Duration.ofHours(3));
+    }
+
+    public Factory(Duration connectionTimeout, Duration readTimeout) {
+      Objects.requireNonNull(connectionTimeout, "Connection timeout cannot be null");
+      Objects.requireNonNull(readTimeout, "Read timeout cannot be null");
+
+      this.connectionTimeout = connectionTimeout.toMillis();
+      this.readTimeout = readTimeout.toMillis();
+    }
 
     @Override
     public HttpClient createClient(URL url) {
@@ -126,7 +141,8 @@ public class OkHttpClient implements HttpClient {
           .connectionPool(pool)
           .followRedirects(true)
           .followSslRedirects(true)
-          .readTimeout(0, MINUTES);
+          .readTimeout(readTimeout, MILLISECONDS)
+          .connectTimeout(connectionTimeout, MILLISECONDS);
 
       String info = url.getUserInfo();
       if (!Strings.isNullOrEmpty(info)) {
