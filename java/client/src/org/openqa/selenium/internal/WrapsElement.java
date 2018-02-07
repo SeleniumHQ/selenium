@@ -18,10 +18,17 @@
 package org.openqa.selenium.internal;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.remote.RemoteWebElement;
 
 /**
  * Indicates that there is an underlying element that can be used
  */
-public interface WrapsElement {
+public interface WrapsElement extends Locatable {
   WebElement getWrappedElement();
+
+  default Coordinates getCoordinates() {
+    return ((RemoteWebElement) getWrappedElement()).getCoordinates();
+  }
 }
