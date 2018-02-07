@@ -36,6 +36,7 @@ java_test(name = 'client-tests',
     'internal/ApacheHttpClientTest.java',
     'internal/HttpClientTestBase.java',
     'internal/OkHttpClientTest.java',
+    'internal/UserInfoTest.java',
     'internal/WebElementToJsonConverterTest.java',
   ],
   provided_deps = [
