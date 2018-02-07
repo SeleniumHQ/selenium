@@ -337,8 +337,8 @@ public class GridNodeConfigurationTest {
     assertSame(other.capabilities, gnc.capabilities);
     assertEquals(other.id, gnc.id);
     assertEquals(other.downPollingLimit, gnc.downPollingLimit);
-    assertEquals(other.hub, gnc.hub);
-    assertEquals(other.hubHost, gnc.hubHost);
+    assertEquals(other.getHubHost(), gnc.getHubHost());
+    assertEquals(other.getHubPort(), gnc.getHubPort());
     assertEquals(other.nodePolling, gnc.nodePolling);
     assertEquals(other.nodeStatusCheckTimeout, gnc.nodeStatusCheckTimeout);
     assertEquals(other.proxy, gnc.proxy);
