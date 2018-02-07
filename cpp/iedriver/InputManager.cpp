@@ -865,6 +865,7 @@ void InputManager::AddPauseInput(HWND window_handle, int duration) {
 }
 
 void InputManager::AddMouseInput(HWND window_handle, long input_action, int x, int y) {
+  LOG(TRACE) << "Entering InputManager::AddMouseInput";
   INPUT mouse_input;
   mouse_input.type = INPUT_MOUSE;
   mouse_input.mi.dwFlags = input_action | MOUSEEVENTF_ABSOLUTE;
