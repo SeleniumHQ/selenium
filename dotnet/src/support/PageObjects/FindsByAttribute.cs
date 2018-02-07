@@ -1,4 +1,4 @@
-﻿// <copyright file="FindsByAttribute.cs" company="WebDriver Committers">
+// <copyright file="FindsByAttribute.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// </para>
     /// </remarks>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-    public sealed class FindsByAttribute : Attribute, IComparable
+    public class FindsByAttribute : Attribute, IComparable
     {
         private By finder = null;
 
@@ -91,7 +91,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// Gets or sets an explicit <see cref="By"/> object to find by.
         /// Setting this property takes precedence over setting the How or Using properties.
         /// </summary>
-        internal By Finder
+        protected internal By Finder
         {
             get
             {
