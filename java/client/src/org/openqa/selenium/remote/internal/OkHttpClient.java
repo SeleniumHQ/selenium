@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.internal;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
+
 import com.google.common.base.Strings;
 
 import org.openqa.selenium.remote.http.HttpClient;
@@ -34,6 +36,7 @@ import okhttp3.Response;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class OkHttpClient implements HttpClient {
 
@@ -122,7 +125,8 @@ public class OkHttpClient implements HttpClient {
       okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
           .connectionPool(pool)
           .followRedirects(true)
-          .followSslRedirects(true);
+          .followSslRedirects(true)
+          .readTimeout(0, MINUTES);
 
       String info = url.getUserInfo();
       if (!Strings.isNullOrEmpty(info)) {
