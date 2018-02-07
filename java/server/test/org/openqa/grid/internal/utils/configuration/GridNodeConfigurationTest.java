@@ -34,10 +34,14 @@ import com.beust.jcommander.JCommander;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
+import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 public class GridNodeConfigurationTest {
@@ -353,6 +357,27 @@ public class GridNodeConfigurationTest {
     gnc.fixUpCapabilities();
     assertTrue(gnc.capabilities.stream()
         .allMatch(cap -> cap.getCapability(GridNodeConfiguration.CONFIG_UUID_CAPABILITY) != null));
+  }
+
+  @Test
+  public void canLoadConfigFile() throws IOException {
+    String json = "{\"capabilities\":[], \"hub\": \"http://dummyhost:1234\"}";
+    Path nodeConfig = Files.createTempFile("node", ".json");
+    Files.write(nodeConfig, json.getBytes());
+    GridNodeConfiguration gnc = parseCliOptions("-nodeConfig", nodeConfig.toString());
+    RegistrationRequest request = RegistrationRequest.build(gnc);
+    assertEquals("dummyhost", request.getConfiguration().getHubHost());
+  }
+
+  @Test
+  public void hubOptionHasPrecedenceOverNodeConfig() throws IOException {
+    String json = "{\"capabilities\":[], \"hub\": \"http://dummyhost:1234\"}";
+    Path nodeConfig = Files.createTempFile("node", ".json");
+    Files.write(nodeConfig, json.getBytes());
+    GridNodeConfiguration gnc = parseCliOptions(
+        "-nodeConfig", nodeConfig.toString(), "-hub", "http://smarthost:1234");
+    RegistrationRequest request = RegistrationRequest.build(gnc);
+    assertEquals("smarthost", request.getConfiguration().getHubHost());
   }
 
   private GridNodeConfiguration parseCliOptions(String... args) {
