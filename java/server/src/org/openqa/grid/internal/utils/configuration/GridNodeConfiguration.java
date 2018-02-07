@@ -394,8 +394,8 @@ public class GridNodeConfiguration extends GridConfiguration {
     if (isMergeAble(other.downPollingLimit, downPollingLimit)) {
       downPollingLimit = other.downPollingLimit;
     }
-    if (isMergeAble(other.hub, hub)) {
-      hub = other.hub;
+    if (isMergeAble(other.hubOption, hubOption)) {
+      hubOption = other.hubOption;
     }
     if (isMergeAble(other.hubHost, hubHost)) {
       hubHost = other.hubHost;
