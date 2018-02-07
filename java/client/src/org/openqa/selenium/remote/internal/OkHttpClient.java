@@ -17,11 +17,14 @@
 
 package org.openqa.selenium.remote.internal;
 
+import com.google.common.base.Strings;
+
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import okhttp3.ConnectionPool;
+import okhttp3.Credentials;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -116,12 +119,31 @@ public class OkHttpClient implements HttpClient {
 
     @Override
     public HttpClient createClient(URL url) {
-      okhttp3.OkHttpClient client = new okhttp3.OkHttpClient.Builder()
+      okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
           .connectionPool(pool)
           .followRedirects(true)
-          .followSslRedirects(true)
-          .build();
-      return new OkHttpClient(client, url);
+          .followSslRedirects(true);
+
+      String info = url.getUserInfo();
+      if (!Strings.isNullOrEmpty(info)) {
+        String[] parts = info.split(":", 2);
+        String user = parts[0];
+        String pass = parts.length > 1 ? parts[1] : null;
+
+        String credentials = Credentials.basic(user, pass);
+
+        client.authenticator((route, response) -> {
+          if (response.request().header("Authorization") != null) {
+            return null; // Give up, we've already attempted to authenticate.
+          }
+
+          return response.request().newBuilder()
+              .header("Authorization", credentials)
+              .build();
+        });
+      }
+
+      return new OkHttpClient(client.build(), url);
     }
 
     @Override
