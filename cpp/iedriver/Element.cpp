@@ -72,9 +72,10 @@ Element::Element(IHTMLElement* element, HWND containing_window_handle) {
   this->containing_window_handle_ = containing_window_handle;
 }
 
-Element::Element(IHTMLElement* element, std::string element_id) {
+Element::Element(IHTMLElement* element, HWND containing_window_handle, const std::string& element_id) {
   this->element_ = element;
   this->element_id_ = element_id;
+  this->containing_window_handle_ = containing_window_handle;
 }
 
 Element::~Element(void) {
@@ -84,9 +85,7 @@ Json::Value Element::ConvertToJson() {
   LOG(TRACE) << "Entering Element::ConvertToJson";
 
   Json::Value json_wrapper;
-  // TODO: Remove the "ELEMENT" property once all target bindings 
-  // have been updated to use spec-compliant protocol.
-  json_wrapper["element-6066-11e4-a52e-4f735466cecf"] = this->element_id_;
+  json_wrapper[JSON_ELEMENT_PROPERTY_NAME] = this->element_id_;
 
   return json_wrapper;
 }

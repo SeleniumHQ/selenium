@@ -271,16 +271,128 @@ int Script::Execute() {
   return return_code;
 }
 
-int Script::ExecuteAsync(int timeout_in_milliseconds) {
+int Script::ExecuteAsync(const IECommandExecutor& command_executor,
+                         const Json::Value& args,
+                         const int timeout_override_in_milliseconds,
+                         HWND* async_executor_handle) {
   LOG(TRACE) << "Entering Script::ExecuteAsync";
   int return_code = WD_SUCCESS;
 
+  Json::FastWriter writer;
+  std::wstring serialized_args = StringUtilities::ToWString(writer.write(args));
+  this->argument_count_ = args.size();
+  return_code = this->CreateAsyncScriptExecutor(command_executor.window_handle(),
+                                                serialized_args,
+                                                async_executor_handle);
+
+  if (return_code != WD_SUCCESS) {
+    return return_code;
+  }
+
+  return_code = this->SetAsyncScriptDocument(*async_executor_handle);
+
+  if (this->polling_source_code_.size() > 0) {
+    ::SendMessage(*async_executor_handle,
+                  WD_ASYNC_SCRIPT_SET_POLLING_SCRIPT,
+                  NULL,
+                  reinterpret_cast<LPARAM>(this->polling_source_code_.c_str()));
+  }
+
+  std::string required_element_list = "";
+  ::SendMessage(*async_executor_handle,
+                WD_ASYNC_SCRIPT_GET_REQUIRED_ELEMENT_LIST,
+                NULL,
+                reinterpret_cast<LPARAM>(&required_element_list));
+  Json::Reader reader;
+  Json::Value required_elements;
+  reader.parse(required_element_list, required_elements);
+
+  for (Json::UInt i = 0; i < required_elements.size(); ++i) {
+    std::string element_id = required_elements[i].asString();
+    this->SetAsyncScriptElementArgument(*async_executor_handle,
+                                command_executor,
+                                element_id);
+  }
+
+  // Note: this is hard-coded to 200 milliseconds per element, but since
+  // we're just accessing the known element repository via a direct call,
+  // that should be way more than enough time.
+  int execution_prep_timeout = 200 * required_elements.size();
+  int retry_counter = static_cast<int>(execution_prep_timeout / 10);
+  bool is_execution_ready = ::SendMessage(*async_executor_handle,
+                                          WD_ASYNC_SCRIPT_IS_EXECUTION_READY,
+                                          NULL,
+                                          NULL) != 0;
+  while (!is_execution_ready && --retry_counter > 0) {
+    ::Sleep(10);
+    is_execution_ready = ::SendMessage(*async_executor_handle,
+                                       WD_ASYNC_SCRIPT_IS_EXECUTION_READY,
+                                       NULL,
+                                       NULL) != 0;
+  }
+
+  ::PostMessage(*async_executor_handle, WD_ASYNC_SCRIPT_EXECUTE, NULL, NULL);
+  if (timeout_override_in_milliseconds > 0) {
+    // If we set a timeout override, that means we expect relatively quick
+    // execution with no need to retrieve elements as part of the script result.
+    // We will wait a short bit and poll for the execution of the script to be
+    // complete. This will allow us to say synchronous for short-running scripts
+    // like clearing an input element, yet still be able to continue processing
+    // when the script is blocked, as when an alert() window is present.
+    LOG(TRACE) << "Waiting for async script execution to be complete";
+    int execution_retry_counter = static_cast<int>(timeout_override_in_milliseconds / 10);
+    bool is_execution_finished = ::SendMessage(*async_executor_handle,
+                                               WD_ASYNC_SCRIPT_IS_EXECUTION_COMPLETE,
+                                               NULL,
+                                               NULL) != 0;
+    while (!is_execution_finished && --retry_counter > 0) {
+      ::Sleep(10);
+      is_execution_finished = ::SendMessage(*async_executor_handle,
+                                            WD_ASYNC_SCRIPT_IS_EXECUTION_COMPLETE,
+                                            NULL,
+                                            NULL) != 0;
+    }
+
+    if (is_execution_finished) {
+      // TODO: Marshal the actual result from the AsyncScriptExecutor window
+      // thread to this one. At present, the asynchronous execution of JavaScript
+      // is only used for Automation Atoms on an element which could cause an
+      // alert to appear (e.g., clear, click, or submit), and do not return any
+      // return values back to the caller. In this case, the return code of the
+      // execution method is sufficent. Marshaling the return will require two
+      // more messages, one for determining the variant type of the return value,
+      // and another for actually retrieving that value from the worker window's
+      // thread.
+      LOG(TRACE) << "Async script execution completed, getting result";
+      Json::Value script_result;
+      int status_code = static_cast<int>(::SendMessage(*async_executor_handle,
+                                                       WD_ASYNC_SCRIPT_GET_RESULT,
+                                                       NULL,
+                                                       reinterpret_cast<LPARAM>(&script_result)));
+      return status_code;
+    } else {
+      LOG(TRACE) << "Async script execution not completed after timeout, detaching listener";
+      ::SendMessage(*async_executor_handle,
+                    WD_ASYNC_SCRIPT_DETACH_LISTENTER,
+                    NULL,
+                    NULL);
+    }
+  }
+  return WD_SUCCESS;
+}
+
+int Script::CreateAsyncScriptExecutor(HWND element_repository_handle,
+                                      const std::wstring& serialized_args,
+                                      HWND* async_executor_handle) {
+  LOG(TRACE) << "Entering Script::CreateAsyncScriptExecutor";
   CComVariant result = L"";
   CComBSTR error_description = L"";
 
   AsyncScriptExecutorThreadContext thread_context;
   thread_context.script_source = this->source_code_.c_str();
   thread_context.script_argument_count = this->argument_count_;
+  thread_context.main_element_repository_handle = element_repository_handle;
+  thread_context.serialized_script_args = serialized_args.c_str();
 
   // We need exclusive access to this event. If it's already created,
   // OpenEvent returns non-NULL, so we need to wait a bit and retry
@@ -345,182 +457,28 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
     LOG(WARN) << "_beginthreadex() failed.";
     result.Clear();
     result.vt = VT_BSTR;
-    error_description = L"Couldn't create the thread for executing JavaScript asynchronously.";
+    error_description = L"Couldn't create a thread for executing JavaScript asynchronously.";
     result.bstrVal = error_description;
     this->result_.Copy(&result);
     return EUNEXPECTEDJSERROR;
   }
 
-  HWND executor_handle = thread_context.hwnd;
-
-  // Marshal the document and the element to click to streams for use in another thread.
-  LOG(DEBUG) << "Marshaling document to stream to send to new thread";
-  LPSTREAM document_stream;
-  HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLDocument2, this->script_engine_host_, &document_stream);
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for document failed";
-    result.Clear();
-    result.vt = VT_BSTR;
-    error_description = L"Couldn't marshal the IHTMLDocument2 interface to a stream. This is an internal COM error.";
-    result.bstrVal = error_description;
-    this->result_.Copy(&result);
-    return EUNEXPECTEDJSERROR;
-  }
-
-  ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_SET_DOCUMENT, NULL, reinterpret_cast<LPARAM>(document_stream));
-  for (size_t index = 0; index < this->argument_array_.size(); ++index) {
-    CComVariant arg = this->argument_array_[index];
-    WPARAM wparam = static_cast<WPARAM>(arg.vt);
-    LPARAM lparam = NULL;
-    switch (arg.vt) {
-      case VT_DISPATCH: {
-        LPSTREAM dispatch_stream;
-        hr = ::CoMarshalInterThreadInterfaceInStream(IID_IDispatch, arg.pdispVal, &dispatch_stream);
-        if (FAILED(hr)) {
-          LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for IDispatch argument failed";
-          result.Clear();
-          result.vt = VT_BSTR;
-          error_description = L"Couldn't marshal the IDispatch interface to a stream. This is an internal COM error.";
-          result.bstrVal = error_description;
-          this->result_.Copy(&result);
-          return EUNEXPECTEDJSERROR;
-        }
-        lparam = reinterpret_cast<LPARAM>(dispatch_stream);
-        break;
-      }
-      default: {
-        // TODO: Marshal arguments of types other than VT_DISPATCH. At present,
-        // the asynchronous execution of JavaScript is only used for Automation
-        // Atoms on an element which take a single argument, an IHTMLElement
-        // object, which is represented as an IDispatch. This case statement
-        // will get much more complex should the need arise to execute
-        // arbitrary scripts in an asynchronous manner.
-      }
-    }
-    ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_SET_ARGUMENT, wparam, lparam);
-  }
-  ::PostMessage(executor_handle, WD_ASYNC_SCRIPT_EXECUTE, NULL, NULL);
-  // We will wait a short bit and poll for the execution of the script to be
-  // complete. This will allow us to say synchronous for short-running scripts
-  // like clearing an input element, yet still be able to continue processing
-  // when the script is blocked, as when an alert() window is present.
-  LOG(TRACE) << "Waiting for async script execution to be complete";
-  retry_counter = static_cast<int>(timeout_in_milliseconds / 10);
-  bool is_execution_finished = ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_IS_EXECUTION_COMPLETE, NULL, NULL) != 0;
-  while(!is_execution_finished && --retry_counter > 0) {
-    ::Sleep(10);
-    is_execution_finished = ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_IS_EXECUTION_COMPLETE, NULL, NULL) != 0;
-  }
-
-  if (is_execution_finished) {
-    // TODO: Marshal the actual result from the AsyncScriptExecutor window
-    // thread to this one. At present, the asynchronous execution of JavaScript
-    // is only used for Automation Atoms on an element which could cause an
-    // alert to appear (e.g., clear, click, or submit), and do not return any
-    // return values back to the caller. In this case, the return code of the
-    // execution method is sufficent. Marshaling the return will require two
-    // more messages, one for determining the variant type of the return value,
-    // and another for actually retrieving that value from the worker window's
-    // thread.
-    LOG(TRACE) << "Async script execution completed, getting result";
-    int status_code = static_cast<int>(::SendMessage(executor_handle, WD_ASYNC_SCRIPT_GET_RESULT, NULL, NULL));
-    return status_code;
-  } else {
-    LOG(TRACE) << "Async script execution not completed after timeout, detaching listener";
-    ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_DETACH_LISTENTER, NULL, NULL);
-  }
+  *async_executor_handle = thread_context.hwnd;
   return WD_SUCCESS;
 }
 
-int Script::BeginAsyncExecution(HWND* async_executor_handle) {
-  LOG(TRACE) << "Entering Script::BeginAsyncExecution";
-  int return_code = WD_SUCCESS;
-
-  CComVariant result = L"";
-  CComBSTR error_description = L"";
-
-  AsyncScriptExecutorThreadContext thread_context;
-  thread_context.script_source = this->source_code_.c_str();
-  thread_context.script_argument_count = this->argument_count_;
-
-  // We need exclusive access to this event. If it's already created,
-  // OpenEvent returns non-NULL, so we need to wait a bit and retry
-  // until OpenEvent returns NULL.
-  int retry_counter = 50;
-  HANDLE event_handle = ::OpenEvent(SYNCHRONIZE, FALSE, ASYNC_SCRIPT_EVENT_NAME);
-  while (event_handle != NULL && --retry_counter > 0) {
-    ::CloseHandle(event_handle);
-    ::Sleep(50);
-    event_handle = ::OpenEvent(SYNCHRONIZE, FALSE, ASYNC_SCRIPT_EVENT_NAME);
-  }
-
-  // Failure condition here.
-  if (event_handle != NULL) {
-    ::CloseHandle(event_handle);
-    LOG(WARN) << "OpenEvent() returned non-NULL, event already exists.";
-    result.Clear();
-    result.vt = VT_BSTR;
-    error_description = L"Couldn't create an event for synchronizing the creation of the thread. This generally means that you were trying to click on an option in two different instances.";
-    result.bstrVal = error_description;
-    this->result_.Copy(&result);
-    return EUNEXPECTEDJSERROR;
-  }
-
-  LOG(DEBUG) << "Creating synchronization event for new thread";
-  event_handle = ::CreateEvent(NULL, TRUE, FALSE, ASYNC_SCRIPT_EVENT_NAME);
-  if (event_handle == NULL || ::GetLastError() == ERROR_ALREADY_EXISTS) {
-    if (event_handle == NULL) {
-      LOG(WARN) << "CreateEvent() failed.";
-      error_description = L"Couldn't create an event for synchronizing the creation of the thread. This is an internal failure at the Windows OS level, and is generally not due to an error in the IE driver.";
-    } else {
-      ::CloseHandle(event_handle);
-      LOG(WARN) << "Synchronization event is already created in another instance.";
-      error_description = L"Couldn't create an event for synchronizing the creation of the thread. This generally means that you were trying to click on an option in multiple different instances.";
-    }
-    result.Clear();
-    result.vt = VT_BSTR;
-    result.bstrVal = error_description;
-    this->result_.Copy(&result);
-    return EUNEXPECTEDJSERROR;
-  }
-
-  // Start the thread and wait up to 1 second to be signaled that it is ready
-  // to receive messages, then close the event handle.
-  LOG(DEBUG) << "Starting new thread";
-  unsigned int thread_id = 0;
-  HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
-                                                                 0,
-                                                                 AsyncScriptExecutor::ThreadProc,
-                                                                 reinterpret_cast<void*>(&thread_context),
-                                                                 0,
-                                                                 &thread_id));
-
-  LOG(DEBUG) << "Waiting for new thread to be ready for messages";
-  DWORD event_wait_result = ::WaitForSingleObject(event_handle, 5000);
-  if (event_wait_result != WAIT_OBJECT_0) {
-    LOG(WARN) << "Waiting for event to be signaled returned unexpected value: " << event_wait_result;
-  }
-  ::CloseHandle(event_handle);
-
-  if (thread_handle == NULL) {
-    LOG(WARN) << "_beginthreadex() failed.";
-    result.Clear();
-    result.vt = VT_BSTR;
-    error_description = L"Couldn't create the thread for executing JavaScript asynchronously.";
-    result.bstrVal = error_description;
-    this->result_.Copy(&result);
-    return EUNEXPECTEDJSERROR;
-  }
-
-  HWND executor_handle = thread_context.hwnd;
-  *async_executor_handle = executor_handle;
-
+int Script::SetAsyncScriptDocument(HWND async_executor_handle) {
+  LOG(TRACE) << "Entering Script::SetAsyncScriptDocument";
   // Marshal the document and the element to click to streams for use in another thread.
   LOG(DEBUG) << "Marshaling document to stream to send to new thread";
   LPSTREAM document_stream;
-  HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLDocument2, this->script_engine_host_, &document_stream);
+  HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLDocument2,
+                                                       this->script_engine_host_,
+                                                       &document_stream);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for document failed";
+    CComVariant result = L"";
+    CComBSTR error_description = L"";
     result.Clear();
     result.vt = VT_BSTR;
     error_description = L"Couldn't marshal the IHTMLDocument2 interface to a stream. This is an internal COM error.";
@@ -528,67 +486,53 @@ int Script::BeginAsyncExecution(HWND* async_executor_handle) {
     this->result_.Copy(&result);
     return EUNEXPECTEDJSERROR;
   }
-
-  ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_SET_DOCUMENT, NULL, reinterpret_cast<LPARAM>(document_stream));
-  for (size_t index = 0; index < this->argument_array_.size(); ++index) {
-    CComVariant arg = this->argument_array_[index];
-    WPARAM wparam = static_cast<WPARAM>(arg.vt);
-    LPARAM lparam = NULL;
-    switch (arg.vt) {
-    case VT_DISPATCH: {
-      LPSTREAM dispatch_stream;
-      hr = ::CoMarshalInterThreadInterfaceInStream(IID_IDispatch, arg.pdispVal, &dispatch_stream);
-      if (FAILED(hr)) {
-        LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for IDispatch argument failed";
-        result.Clear();
-        result.vt = VT_BSTR;
-        error_description = L"Couldn't marshal the IDispatch interface to a stream. This is an internal COM error.";
-        result.bstrVal = error_description;
-        this->result_.Copy(&result);
-        return EUNEXPECTEDJSERROR;
-      }
-      lparam = reinterpret_cast<LPARAM>(dispatch_stream);
-      break;
-    }
-    case VT_BSTR:
-      lparam = reinterpret_cast<LPARAM>(&arg.bstrVal);
-      break;
-    case VT_BOOL:
-      lparam = static_cast<LPARAM>(arg.boolVal != VARIANT_FALSE);
-      break;
-    case VT_I4:
-    case VT_I8:
-      lparam = static_cast<LPARAM>(arg.intVal);
-      break;
-    case VT_R4:
-    case VT_R8:
-      lparam = reinterpret_cast<LPARAM>(&arg.dblVal);
-      break;
-    default: {
-      // TODO: Marshal arguments of types other than VT_DISPATCH. At present,
-      // the asynchronous execution of JavaScript is only used for Automation
-      // Atoms on an element which take a single argument, an IHTMLElement
-      // object, which is represented as an IDispatch. This case statement
-      // will get much more complex should the need arise to execute
-      // arbitrary scripts in an asynchronous manner.
-      }
-    }
-    ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_SET_ARGUMENT, wparam, lparam);
-  }
-  ::PostMessage(executor_handle, WD_ASYNC_SCRIPT_EXECUTE, NULL, NULL);
+  ::SendMessage(async_executor_handle,
+                WD_ASYNC_SCRIPT_SET_DOCUMENT,
+                NULL,
+                reinterpret_cast<LPARAM>(document_stream));
   return WD_SUCCESS;
+}
+
+int Script::SetAsyncScriptElementArgument(HWND async_executor_handle,
+                                          const IECommandExecutor& command_executor,
+                                          const std::string& element_id) {
+  LOG(TRACE) << "Entering Script::SetAsyncScriptElementArgument";
+  ElementInfo* info = new ElementInfo;
+  info->element_id = element_id;
+  ElementHandle element_wrapper;
+  int return_code = command_executor.GetManagedElement(element_id, &element_wrapper);
+  HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLElement,
+                                                       element_wrapper->element(),
+                                                       &info->element_stream);
+  if (FAILED(hr)) {
+    CComVariant result;
+    CComBSTR error_description = L"";
+    LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for IDispatch argument failed";
+    result.Clear();
+    result.vt = VT_BSTR;
+    error_description = L"Couldn't marshal the IDispatch interface to a stream. This is an internal COM error.";
+    result.bstrVal = error_description;
+    this->result_.Copy(&result);
+    return EUNEXPECTEDJSERROR;
+  }
+  ::PostMessage(async_executor_handle,
+                WD_ASYNC_SCRIPT_SET_ELEMENT_ARGUMENT,
+                NULL,
+                reinterpret_cast<LPARAM>(info));
+  return return_code;
 }
 
 int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
                                      Json::Value* value) {
   LOG(TRACE) << "Entering Script::ConvertResultToJsonValue";
-  return this->ConvertResultToJsonValue(executor.window_handle(), value);
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  return this->ConvertResultToJsonValue(mutable_executor.element_manager(), value);
 }
 
-int Script::ConvertResultToJsonValue(HWND element_repository_handle,
+int Script::ConvertResultToJsonValue(IElementManager* element_manager,
                                      Json::Value* value) {
   LOG(TRACE) << "Entering Script::ConvertResultToJsonValue";
-  return VariantUtilities::ConvertVariantToJsonValue(element_repository_handle,
+  return VariantUtilities::ConvertVariantToJsonValue(element_manager,
                                                      this->result_,
                                                      value);
 }
@@ -627,7 +571,7 @@ bool Script::CreateAnonymousFunction(VARIANT* result) {
   return get_result_success;
 }
 
-int Script::AddArguments(HWND element_repository_handle, const Json::Value& arguments) {
+int Script::AddArguments(IElementManager* element_manager, const Json::Value& arguments) {
   LOG(TRACE) << "Entering Script::AddArguments";
 
   int status_code = WD_SUCCESS;
@@ -640,7 +584,7 @@ int Script::AddArguments(HWND element_repository_handle, const Json::Value& argu
 
   for (UINT arg_index = 0; arg_index < arguments.size(); ++arg_index) {
     Json::Value arg = arguments[arg_index];
-    status_code = this->AddArgument(element_repository_handle, arg);
+    status_code = this->AddArgument(element_manager, arg);
     if (status_code != WD_SUCCESS) {
       break;
     }
@@ -649,7 +593,7 @@ int Script::AddArguments(HWND element_repository_handle, const Json::Value& argu
   return status_code;
 }
 
-int Script::AddArgument(HWND element_repository_handle, const Json::Value& arg) {
+int Script::AddArgument(IElementManager* element_manager, const Json::Value& arg) {
   LOG(TRACE) << "Entering Script::AddArgument";
 
   int status_code = WD_SUCCESS;
@@ -668,48 +612,35 @@ int Script::AddArgument(HWND element_repository_handle, const Json::Value& arg) 
   } else if (arg.isNull()) {
     this->AddNullArgument();
   } else if (arg.isArray()) {
-    status_code = this->WalkArray(element_repository_handle, arg);
+    status_code = this->WalkArray(element_manager, arg);
   } else if (arg.isObject()) {
-    std::string element_marker_property_name = "element-6066-11e4-a52e-4f735466cecf";
-    if (arg.isMember(element_marker_property_name)) {
-      ElementInfo info;
-      info.element_id = arg[element_marker_property_name].asString();
-      status_code = static_cast<int>(::SendMessage(element_repository_handle,
-                                     WD_GET_MANAGED_ELEMENT,
-                                     NULL,
-                                     reinterpret_cast<LPARAM>(&info)));
-
+    if (arg.isMember(JSON_ELEMENT_PROPERTY_NAME)) {
+      std::string element_id = arg[JSON_ELEMENT_PROPERTY_NAME].asString();
+      ElementHandle wrapped_element;
+      status_code = element_manager->GetManagedElement(element_id, &wrapped_element);
       if (status_code == WD_SUCCESS) {
-        CComPtr<IHTMLElement> element;
-        ::CoGetInterfaceAndReleaseStream(info.element_stream,
-                                         IID_IHTMLElement,
-                                         reinterpret_cast<void**>(&element));
-        ElementHandle wrapped_element(new Element(element, info.element_id));
         bool is_element_valid = wrapped_element->IsAttachedToDom();
         if (is_element_valid) {
           is_element_valid = wrapped_element->IsDocumentFocused(this->script_engine_host_);
         } else {
-          status_code = static_cast<int>(::SendMessage(element_repository_handle,
-                                         WD_REMOVE_MANAGED_ELEMENT,
-                                         NULL,
-                                         reinterpret_cast<LPARAM>(&info)));
+          element_manager->RemoveManagedElement(element_id);
         }
 
         if (is_element_valid) {
-          this->AddArgument(element);
+          this->AddArgument(wrapped_element->element());
         } else {
           status_code = EOBSOLETEELEMENT;
         }
       }
     } else {
-      status_code = this->WalkObject(element_repository_handle, arg);
+      status_code = this->WalkObject(element_manager, arg);
     }
   }
 
   return status_code;
 }
 
-int Script::WalkArray(HWND element_repository_handle,
+int Script::WalkArray(IElementManager* element_manager,
                       const Json::Value& array_value) {
   LOG(TRACE) << "Entering Script::WalkArray";
 
@@ -727,7 +658,7 @@ int Script::WalkArray(HWND element_repository_handle,
 
   Script array_script_wrapper(this->script_engine_host_, array_script, array_size);
   for (Json::UInt index = 0; index < array_size; ++index) {
-    status_code = array_script_wrapper.AddArgument(element_repository_handle, array_value[index]);
+    status_code = array_script_wrapper.AddArgument(element_manager, array_value[index]);
     if (status_code != WD_SUCCESS) {
       break;
     }
@@ -744,7 +675,7 @@ int Script::WalkArray(HWND element_repository_handle,
   return status_code;
 }
 
-int Script::WalkObject(HWND element_repository_handle,
+int Script::WalkObject(IElementManager* element_manager,
                        const Json::Value& object_value) {
   LOG(TRACE) << "Entering Script::WalkObject";
 
@@ -765,7 +696,7 @@ int Script::WalkObject(HWND element_repository_handle,
 
   Script object_script_wrapper(this->script_engine_host_, object_script, counter);
   for (it = object_value.begin(); it != object_value.end(); ++it) {
-    status_code = object_script_wrapper.AddArgument(element_repository_handle, object_value[it.memberName()]);
+    status_code = object_script_wrapper.AddArgument(element_manager, object_value[it.memberName()]);
     if (status_code != WD_SUCCESS) {
       break;
     }

@@ -58,7 +58,8 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
       if (executor.input_manager()->enable_native_events()) {
         if (this->IsOptionElement(element_wrapper)) {
           std::string option_click_error = "";
-          status_code = this->ExecuteAtom(this->GetClickAtom(),
+          status_code = this->ExecuteAtom(executor,
+                                          this->GetClickAtom(),
                                           browser_wrapper,
                                           element_wrapper,
                                           &option_click_error);
@@ -129,7 +130,8 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
           return;
         }
         std::string synthetic_click_error = "";
-        status_code = this->ExecuteAtom(this->GetSyntheticClickAtom(),
+        status_code = this->ExecuteAtom(executor,
+                                        this->GetSyntheticClickAtom(),
                                         browser_wrapper,
                                         element_wrapper,
                                         &synthetic_click_error);
@@ -177,15 +179,21 @@ std::wstring ClickElementCommandHandler::GetClickAtom() {
 }
 
 int ClickElementCommandHandler::ExecuteAtom(
+    const IECommandExecutor& executor,
     const std::wstring& atom_script_source,
     BrowserHandle browser_wrapper,
     ElementHandle element_wrapper,
     std::string* error_msg) {
+  HWND async_executor_handle;
   CComPtr<IHTMLDocument2> doc;
   browser_wrapper->GetDocument(&doc);
-  Script script_wrapper(doc, atom_script_source, 1);
-  script_wrapper.AddArgument(element_wrapper);
-  int status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
+  Script script_wrapper(doc, atom_script_source);
+  Json::Value args(Json::arrayValue);
+  args.append(element_wrapper->ConvertToJson());
+  int status_code = script_wrapper.ExecuteAsync(executor,
+                                                args,
+                                                ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS,
+                                                &async_executor_handle);
   if (status_code != WD_SUCCESS) {
     if (script_wrapper.ResultIsString()) {
       std::wstring error = script_wrapper.result().bstrVal;

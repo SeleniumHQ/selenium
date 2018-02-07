@@ -22,6 +22,7 @@
 
 #include "Element.h"
 #include "IECommandExecutor.h"
+#include "Script.h"
 #include "StringUtilities.h"
 
 namespace webdriver {
@@ -173,10 +174,11 @@ bool VariantUtilities::ConvertVariantToString(VARIANT variant_value,
 int VariantUtilities::ConvertVariantToJsonValue(const IECommandExecutor& executor,
                                                 VARIANT variant_value,
                                                 Json::Value* value) {
-  return ConvertVariantToJsonValue(executor.window_handle(), variant_value, value);
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  return ConvertVariantToJsonValue(mutable_executor.element_manager(), variant_value, value);
 }
 
-int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
+int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager,
                                                 VARIANT variant_value,
                                                 Json::Value* value) {
   int status_code = WD_SUCCESS;
@@ -207,7 +209,7 @@ int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
 
       for (long i = 0; i < length; ++i) {
         Json::Value array_item_result;
-        int array_item_status = GetArrayItem(element_repository_handle,
+        int array_item_status = GetArrayItem(element_manager,
                                              variant_value.pdispVal,
                                              i,
                                              &array_item_result);
@@ -227,7 +229,7 @@ int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
                                       &property_value_variant);
 
         Json::Value property_value;
-        ConvertVariantToJsonValue(element_repository_handle,
+        ConvertVariantToJsonValue(element_manager,
                                   property_value_variant,
                                   &property_value);
 
@@ -237,18 +239,12 @@ int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
       *value = result_object;
     } else {
       LOG(INFO) << "Unknown type of dispatch is found in result, assuming IHTMLElement";
-      ElementInfo info;
       CComPtr<IHTMLElement> node;
       variant_value.pdispVal->QueryInterface<IHTMLElement>(&node);
-      ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLElement,
-                                              node,
-                                              &info.element_stream);
-      status_code = static_cast<int>(::SendMessage(element_repository_handle,
-                                                   WD_ADD_MANAGED_ELEMENT,
-                                                   NULL,
-                                                   reinterpret_cast<LPARAM>(&info)));
+      ElementHandle element_wrapper;
+      status_code = element_manager->AddManagedElement(node, &element_wrapper);
       Json::Value element_value(Json::objectValue);
-      element_value["element-6066-11e4-a52e-4f735466cecf"] = info.element_id;
+      element_value[JSON_ELEMENT_PROPERTY_NAME] = element_wrapper->element_id();
       *value = element_value;
     }
   } else {
@@ -347,7 +343,7 @@ int VariantUtilities::GetArrayLength(IDispatch* array_dispatch, long* length) {
   return WD_SUCCESS;
 }
 
-int VariantUtilities::GetArrayItem(HWND element_repository_handle,
+int VariantUtilities::GetArrayItem(IElementManager* element_manager,
                                    IDispatch* array_dispatch,
                                    long index,
                                    Json::Value* item){
@@ -363,7 +359,7 @@ int VariantUtilities::GetArrayItem(HWND element_repository_handle,
     return EUNEXPECTEDJSERROR;
   }
   
-  int array_item_status = ConvertVariantToJsonValue(element_repository_handle,
+  int array_item_status = ConvertVariantToJsonValue(element_manager,
                                                     array_item_variant,
                                                     item);
   return WD_SUCCESS;

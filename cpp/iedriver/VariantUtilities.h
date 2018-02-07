@@ -31,6 +31,7 @@ namespace webdriver {
 // Forward declaration of classes to avoid
 // circular include files.
 class IECommandExecutor;
+class IElementManager;
 
 class VariantUtilities {
  private:
@@ -50,7 +51,7 @@ class VariantUtilities {
   static int ConvertVariantToJsonValue(const IECommandExecutor& executor,
                                        VARIANT variant_value,
                                        Json::Value* value);
-  static int ConvertVariantToJsonValue(HWND element_repository_handle,
+  static int ConvertVariantToJsonValue(IElementManager* element_manager,
                                        VARIANT variant_value,
                                        Json::Value* value);
   static bool ConvertVariantToString(VARIANT variant_value,
@@ -62,7 +63,7 @@ class VariantUtilities {
 
  private:
   static int GetArrayLength(IDispatch* array_dispatch, long* length);
-  static int GetArrayItem(HWND element_repository_handle,
+  static int GetArrayItem(IElementManager* element_manager,
                           IDispatch* array_dispatch,
                           long index,
                           Json::Value* item);

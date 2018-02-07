@@ -14,30 +14,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_EXECUTESCRIPTCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_EXECUTESCRIPTCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_IELEMENTMANAGER_H_
+#define WEBDRIVER_IE_IELEMENTMANAGER_H_
 
-#include "../IECommandHandler.h"
-
-namespace Json {
-  class Value;
-}
+#include <string>
+#include "CustomTypes.h"
 
 namespace webdriver {
 
-class Script;
-
-class ExecuteScriptCommandHandler : public IECommandHandler {
+class IElementManager {
  public:
-  ExecuteScriptCommandHandler(void);
-  virtual ~ExecuteScriptCommandHandler(void);
-
- protected:
-  virtual void ExecuteInternal(const IECommandExecutor& executor,
-                               const ParametersMap& command_parameters,
-                               Response* response);
+  virtual ~IElementManager() {}
+  virtual int GetManagedElement(const std::string& element_id,
+                                ElementHandle* element_wrapper) const = 0;
+  virtual bool AddManagedElement(IHTMLElement* element,
+                                 ElementHandle* element_wrapper) = 0;
+  virtual void RemoveManagedElement(const std::string& element_id) = 0;
 };
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_EXECUTESCRIPTCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_IELEMENTMANAGER_H_
+

@@ -29,8 +29,14 @@ namespace Json {
 
 namespace webdriver {
 
+struct ElementInfo {
+  std::string element_id;
+  LPSTREAM element_stream;
+};
+
 // Forward declaration of classes.
 class IECommandExecutor;
+class IElementManager;
 
 class Script {
  public:
@@ -62,7 +68,7 @@ class Script {
   void AddArgument(VARIANT argument);
   void AddNullArgument(void);
 
-  int AddArguments(HWND element_repository_handle, const Json::Value& arguments);
+  int AddArguments(IElementManager* element_manager, const Json::Value& arguments);
 
   bool ResultIsEmpty(void);
   bool ResultIsString(void);
@@ -76,28 +82,45 @@ class Script {
   bool ResultIsIDispatch(void);
 
   int Execute(void);
-  int ExecuteAsync(int timeout_in_milliseconds);
-  int BeginAsyncExecution(HWND* aync_executor_handle);
+  int ExecuteAsync(const IECommandExecutor& command_executor,
+                   const Json::Value& args,
+                   const int timeout_override_in_milliseconds,
+                   HWND* async_executor_handle);
   int ConvertResultToJsonValue(const IECommandExecutor& executor,
                                Json::Value* value);
-  int ConvertResultToJsonValue(HWND element_repository_handle,
+  int ConvertResultToJsonValue(IElementManager* element_manager,
                                Json::Value* value);
   bool ConvertResultToString(std::string* value);
 
+  std::wstring polling_source_code(void) const { return this->polling_source_code_; }
+  void set_polling_source_code(const std::wstring& value) { this->polling_source_code_ = value; }
+
  private:
   bool CreateAnonymousFunction(VARIANT* result);
+  int CreateAsyncScriptExecutor(HWND element_repository_handle,
+                                const std::wstring& serialized_args,
+                                HWND* async_executor_handle);
+  int SetAsyncScriptDocument(HWND async_executor_handle);
+  int SetAsyncScriptElementArgument(HWND async_executor_handle,
+                                    const IECommandExecutor& command_executor,
+                                    const std::string& element_id);
   void Initialize(IHTMLDocument2* document,
                   const std::wstring& script_source,
                   const unsigned long argument_count);
 
-  int AddArgument(HWND element_repository_handle, const Json::Value& arg);
-  int WalkArray(HWND element_repository_handle, const Json::Value& array_value);
-  int WalkObject(HWND element_repository_handle, const Json::Value& object_value);
+  int AddArgument(IElementManager* element_manager,
+                  const Json::Value& arg);
+  int WalkArray(IElementManager* element_manager,
+                const Json::Value& array_value);
+  int WalkObject(IElementManager* element_manager,
+                 const Json::Value& object_value);
 
   CComPtr<IHTMLDocument2> script_engine_host_;
   unsigned long argument_count_;
   std::wstring source_code_;
   long current_arg_index_;
+
+  std::wstring polling_source_code_;
 
   HWND element_repository_handle_;
   std::vector<CComVariant> argument_array_;

@@ -332,6 +332,7 @@
     <ClInclude Include="HtmlDialog.h" />
     <ClInclude Include="IECommandExecutor.h" />
     <ClInclude Include="IECommandHandler.h" />
+    <ClInclude Include="IElementManager.h" />
     <ClInclude Include="IEServer.h" />
     <ClInclude Include="IESession.h" />
     <ClInclude Include="InputManager.h" />

@@ -68,11 +68,17 @@ void ClearElementCommandHandler::ExecuteInternal(
       script_source += atoms::asString(atoms::CLEAR);
       script_source += L")})();";
 
+      Json::Value args(Json::arrayValue);
+      args.append(element_wrapper->ConvertToJson());
+
+      HWND async_executor_handle;
       CComPtr<IHTMLDocument2> doc;
       browser_wrapper->GetDocument(&doc);
-      Script script_wrapper(doc, script_source, 1);
-      script_wrapper.AddArgument(element_wrapper);
-      status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
+      Script script_wrapper(doc, script_source);
+      status_code = script_wrapper.ExecuteAsync(executor,
+                                                args,
+                                                ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS,
+                                                &async_executor_handle);
       if (status_code != WD_SUCCESS) {
         // Assume that a JavaScript error returned by the atom is that
         // the element is either invisible, disabled, or read-only.

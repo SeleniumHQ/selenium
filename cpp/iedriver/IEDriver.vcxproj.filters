@@ -554,6 +554,9 @@
     <ClInclude Include="CommandHandlers\GetNamedCookieCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
+    <ClInclude Include="IElementManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="IEDriver.def">
