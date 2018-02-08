@@ -25,7 +25,6 @@ import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
-import org.openqa.grid.internal.utils.configuration.CoreRunnerConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
@@ -40,7 +39,6 @@ import org.openqa.selenium.remote.server.log.TerseFormatter;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -56,8 +54,6 @@ import javax.servlet.Servlet;
 public class GridLauncherV3 {
 
   private static final Logger log = Logger.getLogger(GridLauncherV3.class.getName());
-  private static final String CORE_RUNNER_CLASS =
-    "org.openqa.selenium.server.htmlrunner.HTMLLauncher";
   private static final BuildInfo buildInfo = new BuildInfo();
 
   private PrintStream out;
@@ -132,18 +128,10 @@ public class GridLauncherV3 {
 
     for (int i = 0; i < args.length; i++) {
       if (args[i].equals("-htmlSuite")) {
-        Function<String[], GridItemLauncher> launcherSupplier = LAUNCHERS.get("corerunner");
-        if (launcherSupplier == null) {
-          out.println(Joiner.on("\n").join(
-            "Unable to find the HTML runner. This is normally because you have not downloaded",
-            "or made available the 'selenium-leg-rc' jar on the CLASSPATH. Your test will",
-            "not be run.",
-            "Download the Selenium HTML Runner from http://www.seleniumhq.org/download/ and",
-            "use that in place of the selenium-server-standalone.jar for the simplest way of",
-            "running your HTML suite."));
-          return null;
-        }
-        return launcherSupplier.apply(args);
+        out.println(Joiner.on("\n").join(
+          "Download the Selenium HTML Runner from http://www.seleniumhq.org/download/ and",
+          "use that to run your HTML suite."));
+        return null;
       }
       if (args[i].startsWith("-role=")) {
         role = args[i].substring("-role=".length());
@@ -266,7 +254,7 @@ public class GridLauncherV3 {
             return configuration;
           }
 
-          public Stoppable launch() throws Exception {
+          public Stoppable launch() {
             log.info(String.format(
                 "Launching a standalone Selenium Server on port %s", configuration.port));
             SeleniumServer server = new SeleniumServer(configuration);
@@ -337,40 +325,6 @@ public class GridLauncherV3 {
             return server;
           }
         });
-
-    try {
-      Class.forName(CORE_RUNNER_CLASS, false, GridLauncherV3.class.getClassLoader());
-
-      launchers.put("corerunner", (args) -> new GridItemLauncher() {
-        CoreRunnerConfiguration configuration = new CoreRunnerConfiguration();
-        {
-          JCommander.newBuilder().addObject(configuration).build().parse(args);
-        }
-        public StandaloneConfiguration getConfiguration() {
-          return configuration;
-        }
-
-        @Override
-        public Stoppable launch() throws Exception {
-          Class<?> coreRunnerClass = Class.forName(CORE_RUNNER_CLASS);
-          Object coreRunner = coreRunnerClass.newInstance();
-          Method mainInt = coreRunnerClass.getMethod("mainInt", String[].class);
-
-          CoreRunnerConfiguration runnerConfig = this.configuration;
-          String[] args = new String[] {
-              "-htmlSuite",
-              /* browser string */ runnerConfig.htmlSuite.get(0),
-              /* start url */ runnerConfig.htmlSuite.get(1),
-              /* suite */ runnerConfig.htmlSuite.get(2),
-              /* Results file */ runnerConfig.htmlSuite.get(3),
-          };
-          mainInt.invoke(coreRunner, (Object) args);
-          return () -> {};
-        }
-      });
-    } catch (ReflectiveOperationException e) {
-      // Do nothing. It's fine.
-    }
 
     return launchers.build();
   }

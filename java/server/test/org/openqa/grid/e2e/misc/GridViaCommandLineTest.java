@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
 public class GridViaCommandLineTest {
 
   @Test
-  public void unrecognizedRole() throws Exception {
+  public void unrecognizedRole() {
     ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
     String[] args = {"-role", "hamlet"};
     new GridLauncherV3(new PrintStream(outSpy), args).launch();
@@ -64,7 +64,7 @@ public class GridViaCommandLineTest {
   }
 
   @Test
-  public void canPrintVersion() throws Exception {
+  public void canPrintVersion() {
     ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
     String[] args = {"-version"};
     new GridLauncherV3(new PrintStream(outSpy), args).launch();
@@ -72,7 +72,7 @@ public class GridViaCommandLineTest {
   }
 
   @Test
-  public void canPrintGeneralHelp() throws Exception {
+  public void canPrintGeneralHelp() {
     ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
     String[] args = {"-help"};
     new GridLauncherV3(new PrintStream(outSpy), args).launch();
@@ -81,7 +81,7 @@ public class GridViaCommandLineTest {
   }
 
   @Test
-  public void canPrintHubHelp() throws Exception {
+  public void canPrintHubHelp() {
     ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
     String[] args = {"-role", "hub", "-help"};
     new GridLauncherV3(new PrintStream(outSpy), args).launch();
@@ -90,7 +90,7 @@ public class GridViaCommandLineTest {
   }
 
   @Test
-  public void canPrintNodeHelp() throws Exception {
+  public void canPrintNodeHelp() {
     ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
     String[] args = {"-role", "node", "-help"};
     new GridLauncherV3(new PrintStream(outSpy), args).launch();
@@ -111,13 +111,11 @@ public class GridViaCommandLineTest {
   }
 
   @Test
-  @org.junit.Ignore
-  public void canStartHtmlSuite() throws Exception {
-    Path tempLog = Files.createTempFile("test", ".log");
-    String[] args = {"-htmlSuite", "*quantum", "http://base.url", "suite.html", "report.html", "-log", tempLog.toString()};
-    new GridLauncherV3(args).launch();
-    String log = String.join("", Files.readAllLines(tempLog));
-    assertThat(log, containsString("Unrecognized browser: *quantum"));
+  public void canStartHtmlSuite() {
+    ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
+    String[] args = {"-htmlSuite", "*quantum", "http://base.url", "suite.html", "report.html"};
+    new GridLauncherV3(new PrintStream(outSpy), args).launch();
+    assertThat(outSpy.toString(), containsString("Download the Selenium HTML Runner"));
   }
 
   @Test
@@ -126,15 +124,19 @@ public class GridViaCommandLineTest {
     String[] hubArgs = {"-role", "hub", "-port", hubPort.toString()};
     Optional<Stoppable> hub = new GridLauncherV3(hubArgs).launch();
     UrlChecker urlChecker = new UrlChecker();
-    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(String.format("http://localhost:%d/grid/console", hubPort)));
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(
+        String.format("http://localhost:%d/grid/console", hubPort)));
 
     Integer nodePort = PortProber.findFreePort();
 
-    String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort, "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
+    String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort,
+                         "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
     Optional<Stoppable> node = new GridLauncherV3(nodeArgs).launch();
-    urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(String.format("http://localhost:%d/wd/hub/status", nodePort)));
+    urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(
+        String.format("http://localhost:%d/wd/hub/status", nodePort)));
 
-    new FluentWait<>(new URL(String.format("http://localhost:%d/grid/console", hubPort))).withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
+    new FluentWait<>(new URL(String.format("http://localhost:%d/grid/console", hubPort)))
+      .withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
       .until((Function<URL, Boolean>) u -> {
         try (InputStream is = u.openConnection().getInputStream();
              InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
@@ -150,7 +152,8 @@ public class GridViaCommandLineTest {
 
     try {
       driver.get(String.format("http://localhost:%d/grid/console", hubPort));
-      assertEquals("Should only have one htmlunit registered to the hub", 1, driver.findElements(By.cssSelector("img[src$='htmlunit.png']")).size());
+      assertEquals("Should only have one htmlunit registered to the hub",
+                   1, driver.findElements(By.cssSelector("img[src$='htmlunit.png']")).size());
     } finally {
       try {
         driver.quit();
