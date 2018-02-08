@@ -247,7 +247,7 @@ namespace OpenQA.Selenium.Support.UI
                 {
                     var allChildren = parent.FindElements(childLocator);
 
-                    return !allChildren.Any() ? allChildren : throw new NoSuchElementException();
+                    return allChildren.Any() ? allChildren : throw new NoSuchElementException();
                 }
                 catch (NoSuchElementException)
                 {
@@ -303,7 +303,7 @@ namespace OpenQA.Selenium.Support.UI
                     var allChildren = parent.FindElements(childLocator);
 
                     // The original code only checked the first element. Fair enough.
-                    if (!allChildren.Any() && allChildren.First().Displayed)
+                    if (allChildren.Any() && allChildren.First().Displayed)
                     {
                         return allChildren;
                     }
@@ -337,7 +337,7 @@ namespace OpenQA.Selenium.Support.UI
                     var allChildren = current.FindElements(childLocator);
 
                     // The original code only checked the first element. Fair enough.
-                    if (!allChildren.Any() && allChildren.First().Displayed)
+                    if (allChildren.Any() && allChildren.First().Displayed)
                     {
                         return allChildren;
                     }
@@ -370,8 +370,7 @@ namespace OpenQA.Selenium.Support.UI
                     var current = driver.FindElement(parent);
                     var allChildren = current.FindElements(childLocator);
 
-                    // The original code only checked the first element. Fair enough.
-                    if (!allChildren.Any() && allChildren.First().Displayed)
+                    if (allChildren.Any() && allChildren.First().Displayed)
                     {
                         return allChildren.First();
                     }
