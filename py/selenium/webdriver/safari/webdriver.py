@@ -31,20 +31,23 @@ class WebDriver(RemoteWebDriver):
 
     """
 
-    def __init__(self, port=0, executable_path="/usr/bin/safaridriver",
+    def __init__(self, port=0, executable_path="/usr/bin/safaridriver", reuse_service=False,
                  desired_capabilities=DesiredCapabilities.SAFARI, quiet=False):
         """
-        Creates a new instance of the Safari driver.
 
-        Starts the service and then creates new instance of Safari Driver.
+        Creates a new Safari driver instance and launches or finds a running safaridriver service.
 
         :Args:
-         - port - port you would like the service to run, if left as 0, a free port will be found.
+         - port - The port on which the safaridriver service should listen for new connections. If zero, a free port will be found.
+         - quiet - If True, the driver's stdout and stderr is suppressed.
+         - executable_path - Path to a custom safaridriver executable to be used. If absent, /usr/bin/safaridriver is used.
          - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).
-         - quiet - set to True to suppress stdout and stderr of the driver
+         - reuse_service - If True, do not spawn a safaridriver instance; instead, connect to an already-running service that was launched externally.
         """
-        self.service = Service(executable_path, port=port, quiet=quiet)
-        self.service.start()
+
+        self._reuse_service = reuse_service
+        if not reuse_service:
+            self.service.start()
 
         RemoteWebDriver.__init__(
             self,
@@ -62,4 +65,5 @@ class WebDriver(RemoteWebDriver):
         except http_client.BadStatusLine:
             pass
         finally:
-            self.service.stop()
+            if not self._reuse_service:
+                self.service.stop()
