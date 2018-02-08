@@ -39,6 +39,7 @@ import org.openqa.selenium.remote.server.log.TerseFormatter;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -71,7 +72,7 @@ public class GridLauncherV3 {
 
   private static Map<String, Function<String[], GridItemLauncher>> LAUNCHERS = buildLaunchers();
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     new GridLauncherV3(args).launch();
   }
 
@@ -124,15 +125,16 @@ public class GridLauncherV3 {
    * @return null if no role is found, or a properly populated {@link GridItemLauncher}.
    */
   private GridItemLauncher buildLauncher(String[] args) {
+    if (Arrays.stream(args).anyMatch("-htmlSuite"::equals)) {
+      out.println(Joiner.on("\n").join(
+          "Download the Selenium HTML Runner from http://www.seleniumhq.org/download/ and",
+          "use that to run your HTML suite."));
+      return null;
+    }
+
     String role = "standalone";
 
     for (int i = 0; i < args.length; i++) {
-      if (args[i].equals("-htmlSuite")) {
-        out.println(Joiner.on("\n").join(
-          "Download the Selenium HTML Runner from http://www.seleniumhq.org/download/ and",
-          "use that to run your HTML suite."));
-        return null;
-      }
       if (args[i].startsWith("-role=")) {
         role = args[i].substring("-role=".length());
       } else if (args[i].equals("-role")) {
