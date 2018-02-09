@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net45;net40;net35;netstandard2.0</TargetFrameworks>
@@ -26,11 +26,6 @@
     <PackageId>Selenium.WebDriverBackedSelenium</PackageId>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(SignAssembly)'=='true'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\WebDriver.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">

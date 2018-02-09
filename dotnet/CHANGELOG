@@ -1,3 +1,9 @@
+v3.9.1
+======
+ * Updated build process and packaging to correctly distribute strongly-
+   named releases. Fixes issue #5254 (for real, this time). No functional
+   changes whatsoever.
+
 v3.9.0
 ======
  * Added commands to get and set network conditions for Chrome in .NET.
