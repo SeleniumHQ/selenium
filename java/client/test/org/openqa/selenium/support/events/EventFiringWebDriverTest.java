@@ -46,6 +46,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
+import org.openqa.selenium.WebDriver.TargetLocator;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
@@ -150,6 +151,26 @@ public class EventFiringWebDriverTest {
     order.verify(mockedElement).click();
     order.verify(listener).afterClickOn(any(WebElement.class), any(WebDriver.class));
     verifyNoMoreInteractions(mockedDriver, mockedElement, listener);
+  }
+
+  @Test
+  public void windowEvent() {
+    String windowName = "Window name";
+    WebDriver mockedDriver = mock(WebDriver.class);
+    TargetLocator mockedTargetLocator = mock(TargetLocator.class);
+    WebDriverEventListener listener = mock(WebDriverEventListener.class);
+
+    when(mockedDriver.switchTo()).thenReturn(mockedTargetLocator);
+
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
+
+    testedDriver.switchTo().window(windowName);
+
+    InOrder order = Mockito.inOrder(mockedTargetLocator, listener);
+    order.verify(listener).beforeSwitchToWindow(eq(windowName), any(WebDriver.class));
+    order.verify(mockedTargetLocator).window(windowName);
+    order.verify(listener).afterSwitchToWindow(eq(windowName), any(WebDriver.class));
+    verifyNoMoreInteractions(mockedTargetLocator, listener);
   }
 
   @Test
