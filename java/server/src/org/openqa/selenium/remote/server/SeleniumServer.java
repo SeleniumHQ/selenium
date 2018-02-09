@@ -155,17 +155,24 @@ public class SeleniumServer implements GridNodeServer {
     addRcSupport(handler);
     addExtraServlets(handler);
 
-    Constraint constraint = new Constraint();
-    constraint.setName("Disable TRACE");
-    constraint.setAuthenticate(true);
-
-    ConstraintMapping mapping = new ConstraintMapping();
-    mapping.setConstraint(constraint);
-    mapping.setMethod("TRACE");
-    mapping.setPathSpec("/");
-
     ConstraintSecurityHandler securityHandler = (ConstraintSecurityHandler) handler.getSecurityHandler();
-    securityHandler.addConstraintMapping(mapping);
+
+    Constraint disableTrace = new Constraint();
+    disableTrace.setName("Disable TRACE");
+    disableTrace.setAuthenticate(true);
+    ConstraintMapping disableTraceMapping = new ConstraintMapping();
+    disableTraceMapping.setConstraint(disableTrace);
+    disableTraceMapping.setMethod("TRACE");
+    disableTraceMapping.setPathSpec("/");
+    securityHandler.addConstraintMapping(disableTraceMapping);
+
+    Constraint enableOther = new Constraint();
+    enableOther.setName("Enable everything but TRACE");
+    ConstraintMapping enableOtherMapping = new ConstraintMapping();
+    enableOtherMapping.setConstraint(enableOther);
+    enableOtherMapping.setMethodOmissions(new String[] {"TRACE"});
+    enableOtherMapping.setPathSpec("/");
+    securityHandler.addConstraintMapping(enableOtherMapping);
 
     server.setHandler(handler);
 
