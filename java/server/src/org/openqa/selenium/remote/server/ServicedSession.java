@@ -183,7 +183,7 @@ public class ServicedSession extends RemoteSession {
 
     @Override
     public String toString() {
-      return getClass() + " (provider: " + serviceClassName + ")";
+      return getClass().getName() + " (provider: " + serviceClassName + ")";
     }
   }
 

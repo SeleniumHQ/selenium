@@ -172,7 +172,7 @@ public class ActiveSessionFactory implements SessionFactory {
     LOG.info("Capabilities are: " + caps);
     return factories.stream()
         .filter(factory -> factory.isSupporting(caps))
-        .peek(factory -> LOG.info(String.format("%s matched %s", caps, factory)))
+        .peek(factory -> LOG.info(String.format("Matched factory %s", factory)))
         .map(factory -> factory.apply(downstreamDialects, caps))
         .filter(Optional::isPresent)
         .map(Optional::get)
