@@ -640,7 +640,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public WebDriver window(String windowName) {
-      return targetLocator.window(windowName);
+      dispatcher.beforeSwitchToWindow(windowName, driver);
+      WebDriver driverToReturn = targetLocator.window(windowName);
+      dispatcher.afterSwitchToWindow(windowName, driver);
+      return driverToReturn;
     }
 
     public WebDriver defaultContent() {
