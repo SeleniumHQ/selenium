@@ -9,6 +9,40 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.9.0.1
+========
+ * Made JavaScript execution asynchronous for executeScript in IE.
+
+   Prior to this change, the execution of JavaScript via the executeScript
+   method was synchronous. This would mean that if the script passed into the
+   driver called the JavaScript `alert()`, `confirm()`, or `prompt()`
+   functions, the WebDriver code would hang until the dialog was manually
+   dismissed. Moving this to asynchronous execution allows the driver to be
+   compliant with the W3C WebDriver Specification, that mandates that user
+   prompts triggered by executeScript should be able to be handled by the
+   WebDriver alert handling functions. However, this spec compliance comes at
+   several costs.
+
+   The first cost is complexity. The IE driver uses COM interfaces to
+   communicate with Internet Explorer. COM is inherently single-threaded, and
+   requires a fair amount of manipulation to allow accessing the objects on
+   separate threads. This leads to requiring a fairly complex system of
+   communication and synchronization between the threads to give the illusion
+   of a synchronous script execution.
+
+   The second cost is performance. Because of the need for synchronization,
+   this change **may** introduce a performance hit in the IE driver. This is
+   unfortunate, but unavoidable. The benefit of having user-initiated
+   JavaScript not block and hang WebDriver code far outweighs whatever
+   relatively small performance hit has been introduced.
+
+   Finally, there is every chance that, despite all efforts to the contrary,
+   it's possible that there are new regressions introduced by this change.
+   Multiple test suites have been run using this change, and none have
+   failed thus far due to the changes herein. Claims that this change is
+   causing a specific failure should be accompanied by a full test case, or
+   issues reported against this change will be summarily closed.
+
 v3.9.0.0
 ========
  * Refactor IE user-initiated JavaScript execution to use JSON objects.
