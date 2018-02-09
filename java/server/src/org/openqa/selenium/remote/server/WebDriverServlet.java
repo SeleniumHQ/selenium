@@ -201,7 +201,7 @@ public class WebDriverServlet extends HttpServlet {
   private void handle(HttpServletRequest req, HttpServletResponse resp) {
     CommandHandler handler = handlers.match(req);
 
-    LOG.info("Found handler: " + handler);
+    LOG.fine("Found handler: " + handler);
 
     boolean invalidateSession =
         handler instanceof ActiveSession &&
@@ -233,7 +233,7 @@ public class WebDriverServlet extends HttpServlet {
 
           Thread.currentThread().setName(pathInfo);
         }
-        LOG.info(String.format(
+        LOG.fine(String.format(
             "%s: Executing %s on %s (handler: %s)",
             Thread.currentThread().getName(),
             req.getMethod(),
