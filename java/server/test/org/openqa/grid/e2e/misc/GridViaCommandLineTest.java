@@ -18,6 +18,7 @@
 package org.openqa.grid.e2e.misc;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -34,6 +35,10 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import java.io.BufferedReader;
@@ -107,6 +112,35 @@ public class GridViaCommandLineTest {
     assertTrue(server.isPresent());
     String log = String.join("", Files.readAllLines(tempLog));
     assertThat(log, containsString("Selenium Server is up and running on port " + port));
+    server.get().stop();
+  }
+
+  @Test
+  public void canLaunchStandalone() throws IOException {
+    Integer port = PortProber.findFreePort();
+    ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
+    String[] args = {"-role", "standalone", "-port", port.toString()};
+    Optional<Stoppable> server = new GridLauncherV3(new PrintStream(outSpy), args).launch();
+    assertTrue(server.isPresent());
+    assertThat(server.get(), instanceOf(SeleniumServer.class));
+
+    String url = "http://localhost:" + port;
+    HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(url));
+    HttpRequest req = new HttpRequest(HttpMethod.GET, "/");
+    String content = client.execute(req).getContentString();
+    assertThat(content, containsString("Whoops! The URL specified routes to this help page."));
+
+    server.get().stop();
+  }
+
+  @Test
+  public void launchesStandaloneByDefault() {
+    Integer port = PortProber.findFreePort();
+    ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
+    String[] args = {"-port", port.toString()};
+    Optional<Stoppable> server = new GridLauncherV3(new PrintStream(outSpy), args).launch();
+    assertTrue(server.isPresent());
+    assertThat(server.get(), instanceOf(SeleniumServer.class));
     server.get().stop();
   }
 
