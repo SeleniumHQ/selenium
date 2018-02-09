@@ -538,8 +538,8 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
     Json::Value origin_value = move_to_action["origin"];
     if (origin_value.isString()) {
       origin = origin_value.asString();
-    } else if (origin_value.isObject() && origin_value.isMember("element-6066-11e4-a52e-4f735466cecf")) {
-      origin = origin_value["element-6066-11e4-a52e-4f735466cecf"].asString();
+    } else if (origin_value.isObject() && origin_value.isMember(JSON_ELEMENT_PROPERTY_NAME)) {
+      origin = origin_value[JSON_ELEMENT_PROPERTY_NAME].asString();
       element_specified = true;
     }
   }
