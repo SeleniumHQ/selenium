@@ -84,6 +84,8 @@ public class GridLauncherV3 {
   public GridLauncherV3(PrintStream out, String[] args) {
     this.out = out;
     this.args = args;
+
+    System.setProperty("org.seleniumhq.jetty9.LEVEL", "WARN");
   }
 
   public Optional<Stoppable> launch() {
