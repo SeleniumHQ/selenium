@@ -215,7 +215,6 @@ public class GridLauncherV3 {
       logLevel = Level.INFO;
     }
     Logger.getLogger("").setLevel(logLevel);
-    Logger.getLogger("org.openqa.jetty").setLevel(Level.WARNING);
 
     String logFilename =
         configuration.log != null
