@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server.log;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -78,6 +79,8 @@ public class TerseFormatter extends Formatter {
     buffer.append(timestampFormatter.format(new Date(record.getMillis())));
     buffer.append(' ');
     buffer.append(levelNumberToCommonsLevelName(record.getLevel()));
+    String[] parts = record.getSourceClassName().split("\\.");
+    buffer.append(" [" + parts[parts.length-1] + "." + record.getSourceMethodName() + "]");
     buffer.append(SUFFIX);
     buffer.append(formatMessage(record)).append(lineSeparator);
     if (record.getThrown() != null) {
