@@ -65,6 +65,11 @@ public class ServicedSession extends RemoteSession {
   }
 
   @Override
+  public String toString() {
+    return getId().toString() + " (" + service.getClass().getName() + ")";
+  }
+
+  @Override
   public void stop() {
     // Try and kill the running session. Both W3C and OSS use the same quit endpoint
     try {
