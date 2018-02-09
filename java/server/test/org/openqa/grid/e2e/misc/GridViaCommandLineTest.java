@@ -145,7 +145,22 @@ public class GridViaCommandLineTest {
   }
 
   @Test
-  public void canStartHtmlSuite() {
+  public void canGetDebugLogFromStandalone() throws Exception {
+    Integer port = PortProber.findFreePort();
+    Path tempLog = Files.createTempFile("test", ".log");
+    String[] args = {"-debug", "-log", tempLog.toString(), "-port", port.toString()};
+    Optional<Stoppable> server = new GridLauncherV3(args).launch();
+    assertTrue(server.isPresent());
+    WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
+                                           DesiredCapabilities.htmlUnit());
+    driver.quit();
+    String log = String.join("", Files.readAllLines(tempLog));
+    assertThat(log, containsString("DEBUG [WebDriverServlet.handle]"));
+    server.get().stop();
+  }
+
+  @Test
+  public void cannotStartHtmlSuite() {
     ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
     String[] args = {"-htmlSuite", "*quantum", "http://base.url", "suite.html", "report.html"};
     new GridLauncherV3(new PrintStream(outSpy), args).launch();
