@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 
@@ -8,6 +8,7 @@ namespace OpenQA.Selenium
     public class ExecutingAsyncJavascriptTest : DriverTestFixture
     {
         private IJavaScriptExecutor executor;
+        private TimeSpan originalTimeout;
 
         [SetUp]
         public void SetUpEnvironment()
@@ -17,7 +18,14 @@ namespace OpenQA.Selenium
                 executor = (IJavaScriptExecutor)driver;
             }
 
-            driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromMilliseconds(0);
+            originalTimeout = driver.Manage().Timeouts().AsynchronousJavaScript;
+            driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(1);
+        }
+
+        [TearDown]
+        public void TearDownEnvironment()
+        {
+            driver.Manage().Timeouts().AsynchronousJavaScript = originalTimeout;
         }
 
         [Test]
@@ -152,7 +160,6 @@ namespace OpenQA.Selenium
         public void ShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError()
         {
             driver.Url = ajaxyPage;
-            driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromMilliseconds(100);
             Assert.Throws<InvalidOperationException>(() => executor.ExecuteAsyncScript("window.location = '" + dynamicPage + "';"));
         }
 
@@ -166,6 +173,8 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldBeAbleToExecuteAsynchronousScripts()
         {
+            // Reset the timeout to the 30-second default instead of zero.
+            driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(30);
             driver.Url = ajaxyPage;
 
             IWebElement typer = driver.FindElement(By.Name("typer"));

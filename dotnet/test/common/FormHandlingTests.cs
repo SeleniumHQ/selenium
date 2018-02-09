@@ -139,11 +139,12 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldBeAbleToAlterTheContentsOfAFileUploadInputElement()
         {
+            string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
             driver.Url = formsPage;
             IWebElement uploadElement = driver.FindElement(By.Id("upload"));
             Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
 
-            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, testFileName);
             System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
@@ -173,7 +174,8 @@ namespace OpenQA.Selenium
             IWebElement uploadElement = driver.FindElement(By.Id("file"));
             Assert.AreEqual(string.Empty, uploadElement.GetAttribute("value"));
 
-            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
+            string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, testFileName);
             System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
@@ -192,7 +194,8 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldBeAbleToUploadTheSameFileTwice()
         {
-            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
+            string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, testFileName);
             System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
@@ -208,6 +211,7 @@ namespace OpenQA.Selenium
                 uploadElement.Submit();
             }
 
+            inputFile.Delete();
             // If we get this far, then we're all good.
         }
 
@@ -291,7 +295,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Hangs")]
         [IgnoreBrowser(Browser.Android, "Untested")]
         [IgnoreBrowser(Browser.HtmlUnit, "Untested")]
         [IgnoreBrowser(Browser.IPhone, "Untested")]

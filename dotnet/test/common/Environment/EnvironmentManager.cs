@@ -70,19 +70,7 @@ namespace OpenQA.Selenium.Environment
         {
             get
             {
-                Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                string assemblyLocation = executingAssembly.Location;
-
-                // If we're shadow copying,. fiddle with 
-                // the codebase instead 
-                if (AppDomain.CurrentDomain.ShadowCopyFiles)
-                {
-                    Uri uri = new Uri(executingAssembly.CodeBase);
-                    assemblyLocation = uri.LocalPath;
-                }
-
-                string currentDirectory = Path.GetDirectoryName(assemblyLocation);
-                return currentDirectory;
+                return TestContext.CurrentContext.TestDirectory;
             }
         }
         
