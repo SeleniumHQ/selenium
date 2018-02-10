@@ -89,6 +89,8 @@ module Selenium
         #
 
         def add_argument(arg)
+          return if @args.include?(arg)
+
           @args << arg
         end
 
@@ -120,6 +122,18 @@ module Selenium
 
         def add_preference(name, value)
           prefs[name] = value
+        end
+
+        #
+        # Run Chrome in headless mode.
+        #
+        # @example Enable headless mode
+        #   options = Selenium::WebDriver::Chrome::Options.new
+        #   options.headless!
+        #
+
+        def headless!
+          add_argument '--headless'
         end
 
         #
