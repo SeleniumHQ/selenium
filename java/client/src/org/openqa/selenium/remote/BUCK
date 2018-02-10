@@ -42,6 +42,14 @@ java_library(
   srcs = [ 'HttpSessionId.java' ],
 )
 
+java_library(
+  name = 'remote-web-element',
+  srcs = [ 'RemoteWebElement.java' ],
+  visibility = [
+    "//java/client/src/org/openqa/selenium:core",
+  ]
+)
+
 java_library(name = 'remote',
   maven_coords = 'org.seleniumhq.selenium:selenium-remote-driver:' + SE_VERSION,
   maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
