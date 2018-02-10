@@ -93,6 +93,35 @@ module Selenium
             subject.add_argument('foo')
             expect(subject.args).to include('foo')
           end
+
+          context 'multiple arguments' do
+            it 'should add only unique arguments' do
+              subject.add_argument('foo')
+              subject.add_argument('bar')
+
+              expect(subject.args).to eq %w[foo bar]
+            end
+
+            it 'should not add same argument more than once' do
+              subject.add_argument('foo')
+              subject.add_argument('foo')
+
+              expect(subject.args).to eq ['foo']
+            end
+          end
+        end
+
+        describe '#headless!' do
+          it 'should add the --headless command-line argument' do
+            subject.headless!
+            expect(subject.args).to eql ['--headless']
+          end
+
+          it 'should not add the --headless command-line argument if already present' do
+            subject.add_argument('--headless')
+            subject.headless!
+            expect(subject.args).to eql ['--headless']
+          end
         end
 
         describe '#add_option' do

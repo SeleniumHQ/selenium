@@ -47,6 +47,26 @@ module Selenium
             expect(ua).to eq('foo;bar')
           end
         end
+
+        context 'headless mode' do
+          it 'should be able to run in headless mode with #headless!' do
+            subject.headless!
+
+            create_driver!(options: subject) do |driver|
+              ua = driver.execute_script 'return window.navigator.userAgent'
+              expect(ua).to match(/HeadlessChrome/)
+            end
+          end
+
+          it 'should be able to run in headless mode with #add_argument' do
+            subject.add_argument('--headless')
+
+            create_driver!(options: subject) do |driver|
+              ua = driver.execute_script 'return window.navigator.userAgent'
+              expect(ua).to match(/HeadlessChrome/)
+            end
+          end
+        end
       end
     end # Chrome
   end # WebDriver
