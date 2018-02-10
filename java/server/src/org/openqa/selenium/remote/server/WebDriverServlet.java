@@ -41,6 +41,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -64,6 +66,7 @@ public class WebDriverServlet extends HttpServlet {
 
   private final StaticResourceHandler staticResourceHandler = new StaticResourceHandler();
   private final ExecutorService executor = Executors.newCachedThreadPool();
+  private final ScheduledExecutorService scheduled = Executors.newSingleThreadScheduledExecutor();
   private ActiveSessions allSessions;
   private AllHandlers handlers;
 
@@ -72,7 +75,7 @@ public class WebDriverServlet extends HttpServlet {
     configureLogging();
     log("Initialising WebDriverServlet");
 
-    String value = getInitParameter(SESSION_TIMEOUT_PARAMETER);
+    String value = getServletContext().getInitParameter(SESSION_TIMEOUT_PARAMETER);
     long inactiveSessionTimeout = value != null ?
                                   SECONDS.toMillis(Long.parseLong(value)) :
                                   Long.MAX_VALUE;
@@ -82,6 +85,7 @@ public class WebDriverServlet extends HttpServlet {
       allSessions = new ActiveSessions(inactiveSessionTimeout, MILLISECONDS);
       getServletContext().setAttribute(ACTIVE_SESSIONS_KEY, allSessions);
     }
+    scheduled.scheduleWithFixedDelay(() -> allSessions.cleanUp(), 5, 5, TimeUnit.SECONDS);
 
     NewSessionPipeline pipeline =
         (NewSessionPipeline) getServletContext().getAttribute(NEW_SESSION_PIPELINE_KEY);

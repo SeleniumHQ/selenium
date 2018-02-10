@@ -106,6 +106,10 @@ public class ActiveSessions {
     return allSessions.asMap().values();
   }
 
+  public void cleanUp() {
+    allSessions.cleanUp();
+  }
+
   public void addListener(ActiveSessionListener listener) {
     listeners.add(listener);
   }

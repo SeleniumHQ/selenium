@@ -20,12 +20,15 @@ package org.openqa.grid.e2e.misc;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Function;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.openqa.grid.selenium.GridLauncherV3;
 import org.openqa.grid.shared.Stoppable;
@@ -154,9 +157,34 @@ public class GridViaCommandLineTest {
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
                                            DesiredCapabilities.htmlUnit());
     driver.quit();
-    String log = String.join("", Files.readAllLines(tempLog));
-    assertThat(log, containsString("DEBUG [WebDriverServlet.handle]"));
+    assertThat(readAll(tempLog), containsString("DEBUG [WebDriverServlet.handle]"));
     server.get().stop();
+  }
+
+  @Test(timeout = 20000L)
+  public void canSetSessionTimeoutForStandalone() throws Exception {
+    Integer port = PortProber.findFreePort();
+    Path tempLog = Files.createTempFile("test", ".log");
+    String[] args = {"-log", tempLog.toString(), "-port", port.toString(), "-timeout", "5"};
+    Optional<Stoppable> server = new GridLauncherV3(args).launch();
+    assertTrue(server.isPresent());
+    WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
+                                           DesiredCapabilities.htmlUnit());
+    long start = System.currentTimeMillis();
+    new FluentWait<>(tempLog).withTimeout(100, TimeUnit.SECONDS)
+        .until(file -> readAll(file).contains("Removing session"));
+    long end = System.currentTimeMillis();
+    assertThat(end - start, greaterThan(5000L));
+    assertThat(end - start, lessThan(15000L));
+    server.get().stop();
+  }
+
+  private String readAll(Path file) {
+    try {
+      return String.join("", Files.readAllLines(file));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Test
