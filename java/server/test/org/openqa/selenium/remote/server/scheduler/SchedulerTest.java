@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server.scheduler;
 
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,9 +33,11 @@ import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.server.ActiveSession;
 import org.openqa.selenium.remote.server.SessionFactory;
@@ -42,7 +45,16 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SchedulerTest {
@@ -159,5 +171,68 @@ public class SchedulerTest {
       assertFalse(firstSession.isActive());
       assertFalse(secondSession.isActive());
     }
+  }
+
+  @Test
+  public void shouldNotLockWhenLotsOfThreadsHitTheScheduler() throws InterruptedException {
+
+    int count = Runtime.getRuntime().availableProcessors() * 2;
+    Host.Builder host = Host.builder()
+        .name("localhost")
+        .maxSessions(4);
+
+    SessionFactory factory = new SessionFactory() {
+      @Override
+      public boolean isSupporting(Capabilities capabilities) {
+        return true;
+      }
+
+      @Override
+      public Optional<ActiveSession> apply(
+          Set<Dialect> downstreamDialects,
+          Capabilities capabilities) {
+        return Optional.of(new FakeActiveSession(downstreamDialects, capabilities));
+      }
+    };
+
+    for (int i = 0; i < count; i++) {
+      host.add(factory);
+    }
+
+    Scheduler scheduler = Scheduler.builder()
+        .distributeUsing(new Distributor().add(host.create()))
+        .retrySchedule(RetryDelays.upTo(Duration.of(1, MINUTES)))
+        .create();
+
+    List<Callable<Boolean>> tasks = new LinkedList<>();
+    for (int i = 0; i < 10000; i++) {
+      tasks.add(() -> {
+        try (NewSessionPayload payload = NewSessionPayload.create(new FirefoxOptions())) {
+          ActiveSession session = scheduler.createSession(payload);
+          try {
+            session.getCapabilities();
+            return true;
+          } catch (Exception ignored) {
+            return false;
+          } finally {
+            session.stop();
+          }
+        }
+      });
+    }
+
+    ExecutorService executor = Executors.newFixedThreadPool(count + 5);
+    boolean ok = executor.invokeAll(tasks).stream()
+        .map(f -> {
+          try {
+            return f.get(5, SECONDS);
+          } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            return false;
+          }
+        })
+        .reduce(Boolean::logicalAnd)
+        .orElse(false);
+
+    assertTrue(ok);
   }
 }
