@@ -166,7 +166,7 @@ public class Host {
     private static final Consumer<Host> ON_DOWN = host -> {
       Host.LOG.info(host.name + " changing status to down");
       host.setStatus(DOWN);
-      host.factories.forEach(factory -> factory.killSession());
+      host.factories.forEach(ScheduledSessionFactory::killSession);
     };
 
     private String name;
