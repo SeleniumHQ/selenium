@@ -47,6 +47,18 @@ java_library(name = 'core',
   ],
 )
 
+java_library(name = 'locatable',
+  srcs = [
+    'internal/Locatable.java',
+  ],
+  deps = [
+    '//java/client/src/org/openqa/selenium:primitives',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:web-element',
+  ],
+)
+
 java_library(name = 'exceptions',
   srcs = [
     'InvalidCoordinatesException.java',
