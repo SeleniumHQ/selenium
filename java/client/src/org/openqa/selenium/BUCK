@@ -108,6 +108,12 @@ java_library(name = 'web-element',
     'WebElement.java',
     'SearchContext.java',
     'TakesScreenshot.java',
+    'By.java',
+    'Point.java',
+    'Dimension.java',
+    'Rectangle.java',
+    'OutputType.java',
+    'WebDriverException.java'
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:core',
