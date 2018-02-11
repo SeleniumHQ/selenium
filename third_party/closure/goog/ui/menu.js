@@ -73,7 +73,8 @@ goog.require('goog.ui.MenuSeparator');
  * @extends {goog.ui.Container}
  */
 goog.ui.Menu = function(opt_domHelper, opt_renderer) {
-  goog.ui.Container.call(this, goog.ui.Container.Orientation.VERTICAL,
+  goog.ui.Container.call(
+      this, goog.ui.Container.Orientation.VERTICAL,
       opt_renderer || goog.ui.MenuRenderer.getInstance(), opt_domHelper);
 
   // Unlike Containers, Menus aren't keyboard-accessible by default.  This line
@@ -136,7 +137,7 @@ goog.ui.Menu.prototype.allowAutoFocus_ = true;
 
 
 /**
- * Whether the menu should use windows syle behavior and allow disabled menu
+ * Whether the menu should use windows style behavior and allow disabled menu
  * items to be highlighted (though not selectable).  Defaults to false
  * @type {boolean}
  * @private
@@ -241,7 +242,7 @@ goog.ui.Menu.prototype.removeItemAt = function(n) {
  * @deprecated Use {@link #getChildAt} instead.
  */
 goog.ui.Menu.prototype.getItemAt = function(n) {
-  return /** @type {goog.ui.MenuItem?} */(this.getChildAt(n));
+  return /** @type {goog.ui.MenuItem?} */ (this.getChildAt(n));
 };
 
 
@@ -264,9 +265,7 @@ goog.ui.Menu.prototype.getItems = function() {
   // TODO(user): Remove reference to getItems and instead use getChildAt,
   // forEachChild, and getChildCount
   var children = [];
-  this.forEachChild(function(child) {
-    children.push(child);
-  });
+  this.forEachChild(function(child) { children.push(child); });
   return children;
 };
 
@@ -345,12 +344,15 @@ goog.ui.Menu.prototype.getAllowHighlightDisabled = function() {
 
 /**
  * @override
+ * @param {boolean} show Whether to show or hide the menu.
+ * @param {boolean=} opt_force If true, doesn't check whether the menu
+ *     already has the requested visibility, and doesn't dispatch any events.
  * @param {goog.events.Event=} opt_e Mousedown event that caused this menu to
  *     be made visible (ignored if show is false).
  */
 goog.ui.Menu.prototype.setVisible = function(show, opt_force, opt_e) {
-  var visibilityChanged = goog.ui.Menu.superClass_.setVisible.call(this, show,
-      opt_force);
+  var visibilityChanged =
+      goog.ui.Menu.superClass_.setVisible.call(this, show, opt_force);
   if (visibilityChanged && show && this.isInDocument() &&
       this.allowAutoFocus_) {
     this.getKeyEventTarget().focus();

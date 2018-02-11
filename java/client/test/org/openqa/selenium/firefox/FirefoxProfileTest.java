@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.drivers.Firebug;
@@ -38,14 +37,20 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RunWith(JUnit4.class)
 public class FirefoxProfileTest {
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
   private static final String FIREBUG_RESOURCE_PATH =
       "/org/openqa/selenium/testing/drivers/firebug-1.5.0-fx.xpi";
+  private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
 
   private FirefoxProfile profile;
 
@@ -149,18 +154,24 @@ public class FirefoxProfileTest {
 
   @Test
   public void shouldInstallExtensionFromZip() throws IOException {
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.addExtension(InProject.locate(FIREBUG_PATH));
+    profile.addExtension(InProject.locate(FIREBUG_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
     assertTrue(extensionDir.exists());
   }
 
   @Test
+  public void shouldInstallWebExtensionFromZip() throws IOException {
+    profile.addExtension(InProject.locate(MOOLTIPASS_PATH).toFile());
+    File profileDir = profile.layoutOnDisk();
+    File extensionDir = new File(profileDir, "extensions/MooltipassExtension@1.1.87");
+    assertTrue(extensionDir.exists());
+  }
+
+  @Test
   public void shouldInstallExtensionFromDirectory() throws IOException {
-    FirefoxProfile profile = new FirefoxProfile();
-    File extension = InProject.locate(FIREBUG_PATH);
-    File unzippedExtension = FileHandler.unzip(new FileInputStream(extension));
+    File extension = InProject.locate(FIREBUG_PATH).toFile();
+    File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
     profile.addExtension(unzippedExtension);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
@@ -168,8 +179,17 @@ public class FirefoxProfileTest {
   }
 
   @Test
+  public void shouldInstallWebExtensionFromDirectory() throws IOException {
+    File extension = InProject.locate(MOOLTIPASS_PATH).toFile();
+    File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
+    profile.addExtension(unzippedExtension);
+    File profileDir = profile.layoutOnDisk();
+    File extensionDir = new File(profileDir, "extensions/MooltipassExtension@1.1.87");
+    assertTrue(extensionDir.exists());
+  }
+
+  @Test
   public void shouldInstallExtensionUsingClasspath() throws IOException {
-    FirefoxProfile profile = new FirefoxProfile();
     profile.addExtension(Firebug.class, FIREBUG_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
@@ -177,21 +197,34 @@ public class FirefoxProfileTest {
   }
 
   @Test
+  public void convertingToJsonShouldNotPolluteTempDir() throws IOException {
+    File sysTemp = new File(System.getProperty("java.io.tmpdir"));
+    Set<String> before = Arrays.stream(sysTemp.list())
+        .filter(f -> f.endsWith("webdriver-profile")).collect(Collectors.toSet());
+    assertNotNull(profile.toJson());
+    Set<String> after = Arrays.stream(sysTemp.list())
+        .filter(f -> f.endsWith("webdriver-profile")).collect(Collectors.toSet());
+    assertEquals(before, after);
+  }
+
+  @Test
   public void shouldConvertItselfIntoAMeaningfulRepresentation() throws IOException {
-    FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("i.like.cheese", true);
 
     String json = profile.toJson();
 
     assertNotNull(json);
 
-    File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "duplicated");
-    new Zip().unzip(json, dir);
+    File dir = Zip.unzipToTempDir(json, "webdriver", "duplicated");
 
     File prefs = new File(dir, "user.js");
     assertTrue(prefs.exists());
 
-    assertTrue(FileHandler.readAsString(prefs).contains("i.like.cheese"));
+    try (Stream<String> lines = Files.lines(prefs.toPath())) {
+      assertTrue(lines.anyMatch(s -> s.contains("i.like.cheese")));
+    }
+
+    FileHandler.delete(dir);
   }
 
   private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {

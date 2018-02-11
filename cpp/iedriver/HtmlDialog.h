@@ -17,10 +17,9 @@
 #ifndef WEBDRIVER_IE_HTMLDIALOG_H_
 #define WEBDRIVER_IE_HTMLDIALOG_H_
 
-#include <exdispid.h>
-#include <exdisp.h>
 #include <mshtml.h>
 #include <mshtmdid.h>
+
 #include "DocumentHost.h"
 #include "messages.h"
 
@@ -74,6 +73,9 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
   int Refresh(void);
 
   bool IsValidWindow(void);
+
+  bool IsFullScreen(void);
+  bool SetFullScreen(bool is_full_screen);
 
  private:
   static BOOL CALLBACK FindChildDialogWindow(HWND hwnd, LPARAM arg);

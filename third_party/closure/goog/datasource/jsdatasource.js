@@ -385,7 +385,7 @@ goog.ds.JsDataSource.prototype.load = function() {
  */
 goog.ds.JsDataSource.prototype.getLoadState = function() {
   return (this.root_ == null) ? goog.ds.LoadState.NOT_LOADED :
-      goog.ds.LoadState.LOADED;
+                                goog.ds.LoadState.LOADED;
 };
 
 

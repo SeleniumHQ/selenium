@@ -25,6 +25,14 @@ goog.require('goog.promise.Resolver');
 
 
 /**
+ * NOTE: This class was created in anticipation of the built-in Promise type
+ * being standardized and implemented across browsers. Now that Promise is
+ * available in modern browsers, and is automatically polyfilled by the Closure
+ * Compiler, by default, most new code should use native {@code Promise}
+ * instead of {@code goog.Promise}. However, {@code goog.Promise} has the
+ * concept of cancellation which native Promises do not yet have. So code
+ * needing cancellation may still want to use {@code goog.Promise}.
+ *
  * Promises provide a result that may be resolved asynchronously. A Promise may
  * be resolved by being fulfilled with a fulfillment value, rejected with a
  * rejection reason, or blocked by another Promise. A Promise is said to be
@@ -281,13 +289,8 @@ goog.define('goog.Promise.DEFAULT_MAX_UNUSED', 100);
 
 /** @const @private {goog.async.FreeList<!goog.Promise.CallbackEntry_>} */
 goog.Promise.freelist_ = new goog.async.FreeList(
-    function() {
-      return new goog.Promise.CallbackEntry_();
-    },
-    function(item) {
-      item.reset();
-    },
-    goog.Promise.DEFAULT_MAX_UNUSED);
+    function() { return new goog.Promise.CallbackEntry_(); },
+    function(item) { item.reset(); }, goog.Promise.DEFAULT_MAX_UNUSED);
 
 
 /**
@@ -356,9 +359,7 @@ goog.Promise.resolve = function(opt_value) {
  *     given reason.
  */
 goog.Promise.reject = function(opt_reason) {
-  return new goog.Promise(function(resolve, reject) {
-    reject(opt_reason);
-  });
+  return new goog.Promise(function(resolve, reject) { reject(opt_reason); });
 };
 
 
@@ -375,8 +376,8 @@ goog.Promise.reject = function(opt_reason) {
  * @private
  */
 goog.Promise.resolveThen_ = function(value, onFulfilled, onRejected) {
-  var isThenable = goog.Promise.maybeThen_(
-      value, onFulfilled, onRejected, null);
+  var isThenable =
+      goog.Promise.maybeThen_(value, onFulfilled, onRejected, null);
   if (!isThenable) {
     goog.async.run(goog.partial(onFulfilled, value));
   }
@@ -431,14 +432,11 @@ goog.Promise.all = function(promises) {
       }
     };
 
-    var onReject = function(reason) {
-      reject(reason);
-    };
+    var onReject = function(reason) { reject(reason); };
 
     for (var i = 0, promise; i < promises.length; i++) {
       promise = promises[i];
-      goog.Promise.resolveThen_(
-          promise, goog.partial(onFulfill, i), onReject);
+      goog.Promise.resolveThen_(promise, goog.partial(onFulfill, i), onReject);
     }
   });
 };
@@ -471,9 +469,8 @@ goog.Promise.allSettled = function(promises) {
 
     var onSettled = function(index, fulfilled, result) {
       toSettle--;
-      results[index] = fulfilled ?
-          {fulfilled: true, value: result} :
-          {fulfilled: false, reason: result};
+      results[index] = fulfilled ? {fulfilled: true, value: result} :
+                                   {fulfilled: false, reason: result};
       if (toSettle == 0) {
         resolve(results);
       }
@@ -481,8 +478,8 @@ goog.Promise.allSettled = function(promises) {
 
     for (var i = 0, promise; i < promises.length; i++) {
       promise = promises[i];
-      goog.Promise.resolveThen_(promise,
-          goog.partial(onSettled, i, true /* fulfilled */),
+      goog.Promise.resolveThen_(
+          promise, goog.partial(onSettled, i, true /* fulfilled */),
           goog.partial(onSettled, i, false /* fulfilled */));
     }
   });
@@ -507,9 +504,7 @@ goog.Promise.firstFulfilled = function(promises) {
       return;
     }
 
-    var onFulfill = function(value) {
-      resolve(value);
-    };
+    var onFulfill = function(value) { resolve(value); };
 
     var onReject = function(index, reason) {
       toReject--;
@@ -521,8 +516,7 @@ goog.Promise.firstFulfilled = function(promises) {
 
     for (var i = 0, promise; i < promises.length; i++) {
       promise = promises[i];
-      goog.Promise.resolveThen_(
-          promise, onFulfill, goog.partial(onReject, i));
+      goog.Promise.resolveThen_(promise, onFulfill, goog.partial(onReject, i));
     }
   });
 };
@@ -563,13 +557,14 @@ goog.Promise.prototype.then = function(
     opt_onFulfilled, opt_onRejected, opt_context) {
 
   if (opt_onFulfilled != null) {
-    goog.asserts.assertFunction(opt_onFulfilled,
-        'opt_onFulfilled should be a function.');
+    goog.asserts.assertFunction(
+        opt_onFulfilled, 'opt_onFulfilled should be a function.');
   }
   if (opt_onRejected != null) {
-    goog.asserts.assertFunction(opt_onRejected,
+    goog.asserts.assertFunction(
+        opt_onRejected,
         'opt_onRejected should be a function. Did you pass opt_context ' +
-        'as the second argument instead of the third?');
+            'as the second argument instead of the third?');
   }
 
   if (goog.Promise.LONG_STACK_TRACES) {
@@ -578,8 +573,7 @@ goog.Promise.prototype.then = function(
 
   return this.addChildPromise_(
       goog.isFunction(opt_onFulfilled) ? opt_onFulfilled : null,
-      goog.isFunction(opt_onRejected) ? opt_onRejected : null,
-      opt_context);
+      goog.isFunction(opt_onRejected) ? opt_onRejected : null, opt_context);
 };
 goog.Thenable.addImplementation(goog.Promise);
 
@@ -609,13 +603,14 @@ goog.Promise.prototype.thenVoid = function(
     opt_onFulfilled, opt_onRejected, opt_context) {
 
   if (opt_onFulfilled != null) {
-    goog.asserts.assertFunction(opt_onFulfilled,
-        'opt_onFulfilled should be a function.');
+    goog.asserts.assertFunction(
+        opt_onFulfilled, 'opt_onFulfilled should be a function.');
   }
   if (opt_onRejected != null) {
-    goog.asserts.assertFunction(opt_onRejected,
+    goog.asserts.assertFunction(
+        opt_onRejected,
         'opt_onRejected should be a function. Did you pass opt_context ' +
-        'as the second argument instead of the third?');
+            'as the second argument instead of the third?');
   }
 
   if (goog.Promise.LONG_STACK_TRACES) {
@@ -624,10 +619,10 @@ goog.Promise.prototype.thenVoid = function(
 
   // Note: no default rejection handler is provided here as we need to
   // distinguish unhandled rejections.
-  this.addCallbackEntry_(goog.Promise.getCallbackEntry_(
-      opt_onFulfilled || goog.nullFunction,
-      opt_onRejected || null,
-      opt_context));
+  this.addCallbackEntry_(
+      goog.Promise.getCallbackEntry_(
+          opt_onFulfilled || goog.nullFunction, opt_onRejected || null,
+          opt_context));
 };
 
 
@@ -670,7 +665,7 @@ goog.Promise.prototype.thenAlways = function(onSettled, opt_context) {
  * Adds a callback that will be invoked only if the Promise is rejected. This
  * is equivalent to {@code then(null, onRejected)}.
  *
- * @param {!function(this:THIS, *): *} onRejected A function that will be
+ * @param {function(this:THIS, *): *} onRejected A function that will be
  *     invoked with the rejection reason if the Promise is rejected.
  * @param {THIS=} opt_context An optional context object that will be the
  *     execution context for the callbacks. By default, functions are executed
@@ -777,8 +772,7 @@ goog.Promise.prototype.cancelChild_ = function(childPromise, err) {
         this.popEntry_();
       }
 
-      this.executeCallback_(
-          childEntry, goog.Promise.State_.REJECTED, err);
+      this.executeCallback_(childEntry, goog.Promise.State_.REJECTED, err);
     }
   }
 };
@@ -794,9 +788,8 @@ goog.Promise.prototype.cancelChild_ = function(childPromise, err) {
  * @private
  */
 goog.Promise.prototype.addCallbackEntry_ = function(callbackEntry) {
-  if (!this.hasEntry_() &&
-      (this.state_ == goog.Promise.State_.FULFILLED ||
-       this.state_ == goog.Promise.State_.REJECTED)) {
+  if (!this.hasEntry_() && (this.state_ == goog.Promise.State_.FULFILLED ||
+                            this.state_ == goog.Promise.State_.REJECTED)) {
     this.scheduleCallbacks_();
   }
   this.queueEntry_(callbackEntry);
@@ -813,7 +806,7 @@ goog.Promise.prototype.addCallbackEntry_ = function(callbackEntry) {
  *
  * @param {?function(this:THIS, TYPE):
  *          (RESULT|goog.Promise<RESULT>|Thenable)} onFulfilled A callback that
- *     will be invoked if the Promise is fullfilled, or null.
+ *     will be invoked if the Promise is fulfilled, or null.
  * @param {?function(this:THIS, *): *} onRejected A callback that will be
  *     invoked if the Promise is rejected, or null.
  * @param {THIS=} opt_context An optional execution context for the callbacks.
@@ -910,7 +903,7 @@ goog.Promise.prototype.resolve_ = function(state, x) {
     return;
   }
 
-  if (this == x) {
+  if (this === x) {
     state = goog.Promise.State_.REJECTED;
     x = new TypeError('Promise cannot resolve to itself');
   }
@@ -959,8 +952,7 @@ goog.Promise.maybeThen_ = function(value, onFulfilled, onRejected, context) {
     try {
       var then = value['then'];
       if (goog.isFunction(then)) {
-        goog.Promise.tryThen_(
-            value, then, onFulfilled, onRejected, context);
+        goog.Promise.tryThen_(value, then, onFulfilled, onRejected, context);
         return true;
       }
     } catch (e) {
@@ -1137,8 +1129,8 @@ goog.Promise.prototype.executeCallbacks_ = function() {
 goog.Promise.prototype.executeCallback_ = function(
     callbackEntry, state, result) {
   // Cancel an unhandled rejection if the then/thenVoid call had an onRejected.
-  if (state == goog.Promise.State_.REJECTED &&
-      callbackEntry.onRejected && !callbackEntry.always) {
+  if (state == goog.Promise.State_.REJECTED && callbackEntry.onRejected &&
+      !callbackEntry.always) {
     this.removeUnhandledRejection_();
   }
 
@@ -1211,17 +1203,19 @@ goog.Promise.prototype.addStackTrace_ = function(err) {
  * @private
  */
 goog.Promise.prototype.appendLongStack_ = function(err) {
-  if (goog.Promise.LONG_STACK_TRACES &&
-      err && goog.isString(err.stack) && this.stack_.length) {
+  if (goog.Promise.LONG_STACK_TRACES && err && goog.isString(err.stack) &&
+      this.stack_.length) {
     var longTrace = ['Promise trace:'];
 
     for (var promise = this; promise; promise = promise.parent_) {
       for (var i = this.currentStep_; i >= 0; i--) {
         longTrace.push(promise.stack_[i]);
       }
-      longTrace.push('Value: ' +
-          '[' + (promise.state_ == goog.Promise.State_.REJECTED ?
-              'REJECTED' : 'FULFILLED') + '] ' +
+      longTrace.push(
+          'Value: ' +
+          '[' + (promise.state_ == goog.Promise.State_.REJECTED ? 'REJECTED' :
+                                                                  'FULFILLED') +
+          '] ' +
           '<' + String(promise.result_) + '>');
     }
     err.stack += '\n\n' + longTrace.join('\n');

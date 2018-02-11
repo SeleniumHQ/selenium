@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.support;
 
 import static org.junit.Assert.assertEquals;
@@ -182,4 +181,19 @@ public class ColorTest {
     String expected = "rgba(1, 255, 3, 0)";
     assertEquals(expected, actual.asRgba());
   }
+
+  @Test
+  public void baseColourToAwt() {
+    java.awt.Color green = java.awt.Color.GREEN;
+    String rgba = "rgba(0, 255, 0, 1)";
+    assertEquals(Color.fromString(rgba).getColor(), green);
+  }
+
+  @Test
+  public void transparentColourToAwt() {
+    java.awt.Color transGreen = new java.awt.Color(0, 255, 0, 0);
+    String rgba = "rgba(0, 255, 0, 0)";
+    assertEquals(Color.fromString(rgba).getColor(), transGreen);
+  }
+
 }

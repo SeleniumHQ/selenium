@@ -17,8 +17,6 @@
 
 package org.openqa.grid.internal;
 
-import com.google.common.base.Predicate;
-
 import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.internal.listeners.Prioritizer;
@@ -26,18 +24,19 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * The queue of all incoming "new session" requests to the grid.
  *
  * Currently still uses the readerwriterlock/condition model that is used in the
- * Registry and is tightly coupled to the registry
+ * GridRegistry and is tightly coupled to the registry
  */
 @ThreadSafe
-class NewSessionRequestQueue {
+public class NewSessionRequestQueue {
 
   private static final Logger log = Logger.getLogger(NewSessionRequestQueue.class.getName());
 
@@ -59,29 +58,23 @@ class NewSessionRequestQueue {
    * @param prioritizer     The prioritizer to use
    */
 
-  public synchronized void processQueue(Predicate<RequestHandler> handlerConsumer,
-                                        Prioritizer prioritizer) {
+  public synchronized void processQueue(
+      Predicate<RequestHandler> handlerConsumer,
+      Prioritizer prioritizer) {
 
-    final List<RequestHandler> copy;
+    List<RequestHandler> copy = new ArrayList<>(newSessionRequests);
     if (prioritizer != null) {
-      copy = new ArrayList<>(newSessionRequests);
-      Collections.sort(copy);
-    } else {
-      copy = newSessionRequests;
+      copy.sort((a,b) -> prioritizer.compareTo(
+          a.getRequest().getDesiredCapabilities(), b.getRequest().getDesiredCapabilities()));
     }
 
-    List<RequestHandler> matched = new ArrayList<>();
-    for (RequestHandler request : copy) {
-      if (handlerConsumer.apply(request)) {
-        matched.add(request);
-      }
-    }
-    for (RequestHandler req : matched) {
-      boolean ok = removeNewSessionRequest(req);
-      if (!ok) {
-        log.severe("Bug removing request " + req);
-      }
-    }
+    copy.stream()
+        .filter(handlerConsumer)
+        .forEach(requestHandler -> {
+          if (!removeNewSessionRequest(requestHandler)) {
+            log.severe("Bug removing request " + requestHandler);
+          }
+        });
   }
 
   /**
@@ -106,11 +99,9 @@ class NewSessionRequestQueue {
    * @return An Iterable of unmodifiable maps.
    */
   public synchronized Iterable<DesiredCapabilities> getDesiredCapabilities() {
-    List<DesiredCapabilities> result = new ArrayList<>();
-    for (RequestHandler req : newSessionRequests) {
-      result.add(new DesiredCapabilities(req.getRequest().getDesiredCapabilities()));
-    }
-    return result;
+    return newSessionRequests.stream()
+        .map(req -> new DesiredCapabilities(req.getRequest().getDesiredCapabilities()))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -121,9 +112,7 @@ class NewSessionRequestQueue {
     return newSessionRequests.size();
   }
 
-  public synchronized void stop(){
-    for (RequestHandler newSessionRequest : newSessionRequests) {
-      newSessionRequest.stop();
-    }
+  public synchronized void stop() {
+    newSessionRequests.forEach(RequestHandler::stop);
   }
 }

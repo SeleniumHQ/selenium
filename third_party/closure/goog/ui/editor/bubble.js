@@ -78,8 +78,8 @@ goog.ui.editor.Bubble = function(parent, zIndex) {
    * @type {goog.dom.ViewportSizeMonitor}
    * @private
    */
-  this.viewPortSizeMonitor_ = new goog.dom.ViewportSizeMonitor(
-      this.dom_.getWindow());
+  this.viewPortSizeMonitor_ =
+      new goog.dom.ViewportSizeMonitor(this.dom_.getWindow());
 
   /**
    * Maps panel ids to panels.
@@ -94,9 +94,9 @@ goog.ui.editor.Bubble = function(parent, zIndex) {
    * @type {Element}
    * @private
    */
-  this.bubbleContainer_ =
-      this.dom_.createDom(goog.dom.TagName.DIV,
-          {'className': goog.ui.editor.Bubble.BUBBLE_CLASSNAME});
+  this.bubbleContainer_ = this.dom_.createDom(
+      goog.dom.TagName.DIV,
+      {'className': goog.ui.editor.Bubble.BUBBLE_CLASSNAME});
 
   goog.style.setElementShown(this.bubbleContainer_, false);
   goog.dom.appendChild(parent, this.bubbleContainer_);
@@ -234,9 +234,8 @@ goog.ui.editor.Bubble.prototype.setAutoHide = function(autoHide) {
  * @return {boolean} Whether there is already a panel of the given type.
  */
 goog.ui.editor.Bubble.prototype.hasPanelOfType = function(type) {
-  return goog.object.some(this.panels_, function(panel) {
-    return panel.type == type;
-  });
+  return goog.object.some(
+      this.panels_, function(panel) { return panel.type == type; });
 };
 
 
@@ -254,11 +253,11 @@ goog.ui.editor.Bubble.prototype.hasPanelOfType = function(type) {
  *     If any panel prefers the top position, the top position is used.
  * @return {string} The id of the panel.
  */
-goog.ui.editor.Bubble.prototype.addPanel = function(type, title, targetElement,
-    contentFn, opt_preferTopPosition) {
+goog.ui.editor.Bubble.prototype.addPanel = function(
+    type, title, targetElement, contentFn, opt_preferTopPosition) {
   var id = goog.string.createUniqueString();
-  var panel = new goog.ui.editor.Bubble.Panel_(this.dom_, id, type, title,
-      targetElement, !opt_preferTopPosition);
+  var panel = new goog.ui.editor.Bubble.Panel_(
+      this.dom_, id, type, title, targetElement, !opt_preferTopPosition);
   this.panels_[id] = panel;
 
   // Insert the panel in string order of type.  Technically we could use binary
@@ -277,8 +276,8 @@ goog.ui.editor.Bubble.prototype.addPanel = function(type, title, targetElement,
       break;
     }
   }
-  goog.dom.insertSiblingBefore(panel.element,
-      nextElement || this.bubbleContents_.lastChild);
+  goog.dom.insertSiblingBefore(
+      panel.element, nextElement || this.bubbleContents_.lastChild);
 
   contentFn(panel.getContentElement());
   goog.editor.style.makeUnselectable(panel.element, this.eventHandler_);
@@ -326,13 +325,13 @@ goog.ui.editor.Bubble.prototype.removePanel = function(id) {
  * @private
  */
 goog.ui.editor.Bubble.prototype.openBubble_ = function() {
-  this.eventHandler_.
-      listen(this.closeBox_, goog.events.EventType.CLICK,
-          this.closeBubble_).
-      listen(this.viewPortSizeMonitor_,
-          goog.events.EventType.RESIZE, this.handleWindowResize_).
-      listen(this.popup_, goog.ui.PopupBase.EventType.HIDE,
-          this.handlePopupHide);
+  this.eventHandler_
+      .listen(this.closeBox_, goog.events.EventType.CLICK, this.closeBubble_)
+      .listen(
+          this.viewPortSizeMonitor_, goog.events.EventType.RESIZE,
+          this.handleWindowResize_)
+      .listen(
+          this.popup_, goog.ui.PopupBase.EventType.HIDE, this.handlePopupHide);
 
   this.popup_.setVisible(true);
   this.reposition();
@@ -427,15 +426,16 @@ goog.ui.editor.Bubble.prototype.reposition = function() {
   // Fix for bug when bubbleContainer and targetElement have
   // opposite directionality, the bubble should anchor to the END of
   // the targetElement instead of START.
-  var reverseLayout = (goog.style.isRightToLeft(this.bubbleContainer_) !=
-      goog.style.isRightToLeft(targetElement));
+  var reverseLayout =
+      (goog.style.isRightToLeft(this.bubbleContainer_) !=
+       goog.style.isRightToLeft(targetElement));
 
   // Try to put the bubble at the bottom of the target unless the plugin has
   // requested otherwise.
   if (preferBottomPosition) {
-    status = this.positionAtAnchor_(reverseLayout ?
-        goog.positioning.Corner.BOTTOM_END :
-        goog.positioning.Corner.BOTTOM_START,
+    status = this.positionAtAnchor_(
+        reverseLayout ? goog.positioning.Corner.BOTTOM_END :
+                        goog.positioning.Corner.BOTTOM_START,
         goog.positioning.Corner.TOP_START,
         goog.positioning.Overflow.ADJUST_X | goog.positioning.Overflow.FAIL_Y);
   }
@@ -443,8 +443,9 @@ goog.ui.editor.Bubble.prototype.reposition = function() {
   if (status & goog.positioning.OverflowStatus.FAILED) {
     // Try to put it at the top of the target if there is not enough
     // space at the bottom.
-    status = this.positionAtAnchor_(reverseLayout ?
-        goog.positioning.Corner.TOP_END : goog.positioning.Corner.TOP_START,
+    status = this.positionAtAnchor_(
+        reverseLayout ? goog.positioning.Corner.TOP_END :
+                        goog.positioning.Corner.TOP_START,
         goog.positioning.Corner.BOTTOM_START,
         goog.positioning.Overflow.ADJUST_X | goog.positioning.Overflow.FAIL_Y);
   }
@@ -452,14 +453,14 @@ goog.ui.editor.Bubble.prototype.reposition = function() {
   if (status & goog.positioning.OverflowStatus.FAILED) {
     // Put it at the bottom again with adjustment if there is no
     // enough space at the top.
-    status = this.positionAtAnchor_(reverseLayout ?
-        goog.positioning.Corner.BOTTOM_END :
-        goog.positioning.Corner.BOTTOM_START,
-        goog.positioning.Corner.TOP_START,
-        goog.positioning.Overflow.ADJUST_X |
-        goog.positioning.Overflow.ADJUST_Y);
+    status = this.positionAtAnchor_(
+        reverseLayout ? goog.positioning.Corner.BOTTOM_END :
+                        goog.positioning.Corner.BOTTOM_START,
+        goog.positioning.Corner.TOP_START, goog.positioning.Overflow.ADJUST_X |
+            goog.positioning.Overflow.ADJUST_Y);
     if (status & goog.positioning.OverflowStatus.FAILED) {
-      goog.log.warning(this.logger,
+      goog.log.warning(
+          this.logger,
           'reposition(): positionAtAnchor() failed with ' + status);
     }
   }
@@ -491,9 +492,8 @@ goog.ui.editor.Bubble.prototype.positionAtAnchor_ = function(
     }
   }
   return goog.positioning.positionAtAnchor(
-      targetElement, targetCorner, this.bubbleContainer_,
-      bubbleCorner, null, this.getMarginBox(), overflow,
-      null, this.getViewportBox());
+      targetElement, targetCorner, this.bubbleContainer_, bubbleCorner, null,
+      this.getMarginBox(), overflow, null, this.getViewportBox());
 };
 
 
@@ -518,8 +518,8 @@ goog.ui.editor.Bubble.prototype.getViewportBox = goog.functions.NULL;
  * @constructor
  * @private
  */
-goog.ui.editor.Bubble.Panel_ = function(dom, id, type, title, targetElement,
-    preferBottomPosition) {
+goog.ui.editor.Bubble.Panel_ = function(
+    dom, id, type, title, targetElement, preferBottomPosition) {
   /**
    * The type of bubble panel.
    * @type {string}
@@ -541,12 +541,15 @@ goog.ui.editor.Bubble.Panel_ = function(dom, id, type, title, targetElement,
   /**
    * The element containing this panel.
    */
-  this.element = dom.createDom(goog.dom.TagName.DIV,
+  this.element = dom.createDom(
+      goog.dom.TagName.DIV,
       {className: goog.getCssName('tr_bubble_panel'), id: id},
-      dom.createDom(goog.dom.TagName.DIV,
+      dom.createDom(
+          goog.dom.TagName.DIV,
           {className: goog.getCssName('tr_bubble_panel_title')},
-          title ? title + ':' : ''), // TODO(robbyw): Does this work in bidi?
-      dom.createDom(goog.dom.TagName.DIV,
+          title ? title + ':' : ''),  // TODO(robbyw): Does this work in bidi?
+      dom.createDom(
+          goog.dom.TagName.DIV,
           {className: goog.getCssName('tr_bubble_panel_content')}));
 };
 

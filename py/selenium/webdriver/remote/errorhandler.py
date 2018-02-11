@@ -15,24 +15,35 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.common.exceptions import ElementNotSelectableException
-from selenium.common.exceptions import ElementNotVisibleException
-from selenium.common.exceptions import InvalidCookieDomainException
-from selenium.common.exceptions import InvalidElementStateException
-from selenium.common.exceptions import InvalidSelectorException
-from selenium.common.exceptions import ImeNotAvailableException
-from selenium.common.exceptions import ImeActivationFailedException
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoSuchFrameException
-from selenium.common.exceptions import NoSuchWindowException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import UnableToSetCookieException
-from selenium.common.exceptions import UnexpectedAlertPresentException
-from selenium.common.exceptions import NoAlertPresentException
-from selenium.common.exceptions import ErrorInResponseException
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import WebDriverException
-from selenium.common.exceptions import MoveTargetOutOfBoundsException
+from selenium.common.exceptions import (ElementClickInterceptedException,
+                                        ElementNotInteractableException,
+                                        ElementNotSelectableException,
+                                        ElementNotVisibleException,
+                                        ErrorInResponseException,
+                                        InsecureCertificateException,
+                                        InvalidCoordinatesException,
+                                        InvalidElementStateException,
+                                        InvalidSessionIdException,
+                                        InvalidSelectorException,
+                                        ImeNotAvailableException,
+                                        ImeActivationFailedException,
+                                        InvalidArgumentException,
+                                        InvalidCookieDomainException,
+                                        JavascriptException,
+                                        MoveTargetOutOfBoundsException,
+                                        NoSuchCookieException,
+                                        NoSuchElementException,
+                                        NoSuchFrameException,
+                                        NoSuchWindowException,
+                                        NoAlertPresentException,
+                                        ScreenshotException,
+                                        SessionNotCreatedException,
+                                        StaleElementReferenceException,
+                                        TimeoutException,
+                                        UnableToSetCookieException,
+                                        UnexpectedAlertPresentException,
+                                        UnknownMethodException,
+                                        WebDriverException)
 
 try:
     basestring
@@ -67,9 +78,21 @@ class ErrorCode(object):
     IME_NOT_AVAILABLE = [30, 'ime not available']
     IME_ENGINE_ACTIVATION_FAILED = [31, 'ime engine activation failed']
     INVALID_SELECTOR = [32, 'invalid selector']
+    SESSION_NOT_CREATED = [33, 'session not created']
     MOVE_TARGET_OUT_OF_BOUNDS = [34, 'move target out of bounds']
     INVALID_XPATH_SELECTOR = [51, 'invalid selector']
     INVALID_XPATH_SELECTOR_RETURN_TYPER = [52, 'invalid selector']
+
+    ELEMENT_NOT_INTERACTABLE = [60, 'element not interactable']
+    INSECURE_CERTIFICATE = ['insecure certificate']
+    INVALID_ARGUMENT = [61, 'invalid argument']
+    INVALID_COORDINATES = ['invalid coordinates']
+    INVALID_SESSION_ID = ['invalid session id']
+    NO_SUCH_COOKIE = [62, 'no such cookie']
+    UNABLE_TO_CAPTURE_SCREEN = [63, 'unable to capture screen']
+    ELEMENT_CLICK_INTERCEPTED = [64, 'element click intercepted']
+    UNKNOWN_METHOD = ['unknown method exception']
+
     METHOD_NOT_ALLOWED = [405, 'unsupported operation']
 
 
@@ -90,7 +113,6 @@ class ErrorHandler(object):
         status = response.get('status', None)
         if status is None or status == ErrorCode.SUCCESS:
             return
-
         value = None
         message = response.get("message", "")
         screen = response.get("screen", "")
@@ -101,15 +123,15 @@ class ErrorHandler(object):
                 import json
                 try:
                     value = json.loads(value_json)
+                    if len(value.keys()) == 1:
+                        value = value['value']
                     status = value.get('error', None)
                     if status is None:
                         status = value["status"]
                         message = value["value"]
                         if not isinstance(message, basestring):
-                            try:
-                                message = message['message']
-                            except TypeError:
-                                message = None
+                            value = message
+                            message = message.get('message')
                     else:
                         message = value.get('message', None)
                 except ValueError:
@@ -134,10 +156,12 @@ class ErrorHandler(object):
             exception_class = InvalidSelectorException
         elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
             exception_class = ElementNotSelectableException
+        elif status in ErrorCode.ELEMENT_NOT_INTERACTABLE:
+            exception_class = ElementNotInteractableException
         elif status in ErrorCode.INVALID_COOKIE_DOMAIN:
-            exception_class = WebDriverException
+            exception_class = InvalidCookieDomainException
         elif status in ErrorCode.UNABLE_TO_SET_COOKIE:
-            exception_class = WebDriverException
+            exception_class = UnableToSetCookieException
         elif status in ErrorCode.TIMEOUT:
             exception_class = TimeoutException
         elif status in ErrorCode.SCRIPT_TIMEOUT:
@@ -154,6 +178,26 @@ class ErrorHandler(object):
             exception_class = ImeActivationFailedException
         elif status in ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:
             exception_class = MoveTargetOutOfBoundsException
+        elif status in ErrorCode.JAVASCRIPT_ERROR:
+            exception_class = JavascriptException
+        elif status in ErrorCode.SESSION_NOT_CREATED:
+            exception_class = SessionNotCreatedException
+        elif status in ErrorCode.INVALID_ARGUMENT:
+            exception_class = InvalidArgumentException
+        elif status in ErrorCode.NO_SUCH_COOKIE:
+            exception_class = NoSuchCookieException
+        elif status in ErrorCode.UNABLE_TO_CAPTURE_SCREEN:
+            exception_class = ScreenshotException
+        elif status in ErrorCode.ELEMENT_CLICK_INTERCEPTED:
+            exception_class = ElementClickInterceptedException
+        elif status in ErrorCode.INSECURE_CERTIFICATE:
+            exception_class = InsecureCertificateException
+        elif status in ErrorCode.INVALID_COORDINATES:
+            exception_class = InvalidCoordinatesException
+        elif status in ErrorCode.INVALID_SESSION_ID:
+            exception_class = InvalidSessionIdException
+        elif status in ErrorCode.UNKNOWN_METHOD:
+            exception_class = UnknownMethodException
         else:
             exception_class = WebDriverException
         if value == '' or value is None:
@@ -188,8 +232,13 @@ class ErrorHandler(object):
                 pass
         if exception_class == ErrorInResponseException:
             raise exception_class(response, message)
-        elif exception_class == UnexpectedAlertPresentException and 'alert' in value:
-            raise exception_class(message, screen, stacktrace, value['alert'].get('text'))
+        elif exception_class == UnexpectedAlertPresentException:
+            alert_text = None
+            if 'data' in value:
+                alert_text = value['data'].get('text')
+            elif 'alert' in value:
+                alert_text = value['alert'].get('text')
+            raise exception_class(message, screen, stacktrace, alert_text)
         raise exception_class(message, screen, stacktrace)
 
     def _value_or_default(self, obj, key, default):

@@ -14,6 +14,8 @@
 
 /**
  * @fileoverview Definition of the IE browser specific range wrapper.
+ * @suppress {missingRequire} Cannot depend on goog.dom.browserrange because it
+ *     creates a circular dependency.
  *
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
  *
@@ -85,8 +87,8 @@ goog.dom.browserrange.IeRange = function(range, doc) {
    */
   this.doc_ = doc;
 };
-goog.inherits(goog.dom.browserrange.IeRange,
-    goog.dom.browserrange.AbstractRange);
+goog.inherits(
+    goog.dom.browserrange.IeRange, goog.dom.browserrange.AbstractRange);
 
 
 /**
@@ -113,7 +115,7 @@ goog.dom.browserrange.IeRange.getBrowserRangeForNode_ = function(node) {
     // range.htmlText includes the element's outerHTML. The range created above
     // is not collapsed, and should be collapsed explicitly.
     // Example : node = <div></div>
-    // But if the node is sth like <br>, it shouldnt be collapsed.
+    // But if the node is sth like <br>, it shouldn't be collapsed.
     if (goog.dom.browserrange.canContainRangeEndpoint(node) &&
         !node.childNodes.length) {
       nodeRange.collapse(false);
@@ -160,13 +162,14 @@ goog.dom.browserrange.IeRange.getBrowserRangeForNode_ = function(node) {
  * @return {!TextRange} A browser range spanning the node's contents.
  * @private
  */
-goog.dom.browserrange.IeRange.getBrowserRangeForNodes_ = function(startNode,
-    startOffset, endNode, endOffset) {
+goog.dom.browserrange.IeRange.getBrowserRangeForNodes_ = function(
+    startNode, startOffset, endNode, endOffset) {
   // Create a range starting at the correct start position.
   var child, collapse = false;
   if (startNode.nodeType == goog.dom.NodeType.ELEMENT) {
     if (startOffset > startNode.childNodes.length) {
-      goog.log.error(goog.dom.browserrange.IeRange.logger_,
+      goog.log.error(
+          goog.dom.browserrange.IeRange.logger_,
           'Cannot have startOffset > startNode child count');
     }
     child = startNode.childNodes[startOffset];
@@ -174,8 +177,8 @@ goog.dom.browserrange.IeRange.getBrowserRangeForNodes_ = function(startNode,
     startNode = child || startNode.lastChild || startNode;
     startOffset = 0;
   }
-  var leftRange = goog.dom.browserrange.IeRange.
-      getBrowserRangeForNode_(startNode);
+  var leftRange =
+      goog.dom.browserrange.IeRange.getBrowserRangeForNode_(startNode);
 
   // This happens only when startNode is a text node.
   if (startOffset) {
@@ -202,7 +205,8 @@ goog.dom.browserrange.IeRange.getBrowserRangeForNodes_ = function(startNode,
   collapse = false;
   if (endNode.nodeType == goog.dom.NodeType.ELEMENT) {
     if (endOffset > endNode.childNodes.length) {
-      goog.log.error(goog.dom.browserrange.IeRange.logger_,
+      goog.log.error(
+          goog.dom.browserrange.IeRange.logger_,
           'Cannot have endOffset > endNode child count');
     }
     child = endNode.childNodes[endOffset];
@@ -210,8 +214,8 @@ goog.dom.browserrange.IeRange.getBrowserRangeForNodes_ = function(startNode,
     endOffset = 0;
     collapse = !child;
   }
-  var rightRange = goog.dom.browserrange.IeRange.
-      getBrowserRangeForNode_(endNode);
+  var rightRange =
+      goog.dom.browserrange.IeRange.getBrowserRangeForNode_(endNode);
   rightRange.collapse(!collapse);
   if (endOffset) {
     rightRange.moveEnd('character', endOffset);
@@ -257,7 +261,8 @@ goog.dom.browserrange.IeRange.createFromNodeContents = function(node) {
     }
     range.endNode_ = leaf;
     range.endOffset_ = leaf.nodeType == goog.dom.NodeType.ELEMENT ?
-                       leaf.childNodes.length : leaf.length;
+        leaf.childNodes.length :
+        leaf.length;
     range.parentNode_ = node;
   }
   return range;
@@ -272,11 +277,11 @@ goog.dom.browserrange.IeRange.createFromNodeContents = function(node) {
  * @param {number} endOffset The offset within the end node.
  * @return {!goog.dom.browserrange.AbstractRange} A wrapper object.
  */
-goog.dom.browserrange.IeRange.createFromNodes = function(startNode,
-    startOffset, endNode, endOffset) {
+goog.dom.browserrange.IeRange.createFromNodes = function(
+    startNode, startOffset, endNode, endOffset) {
   var range = new goog.dom.browserrange.IeRange(
-      goog.dom.browserrange.IeRange.getBrowserRangeForNodes_(startNode,
-          startOffset, endNode, endOffset),
+      goog.dom.browserrange.IeRange.getBrowserRangeForNodes_(
+          startNode, startOffset, endNode, endOffset),
       goog.dom.getOwnerDocument(startNode));
   range.startNode_ = startNode;
   range.startOffset_ = startOffset;
@@ -291,8 +296,8 @@ goog.dom.browserrange.IeRange.createFromNodes = function(startNode,
  * @override
  */
 goog.dom.browserrange.IeRange.prototype.clone = function() {
-  var range = new goog.dom.browserrange.IeRange(
-      this.range_.duplicate(), this.doc_);
+  var range =
+      new goog.dom.browserrange.IeRange(this.range_.duplicate(), this.doc_);
   range.parentNode_ = this.parentNode_;
   range.startNode_ = this.startNode_;
   range.endNode_ = this.endNode_;
@@ -357,8 +362,8 @@ goog.dom.browserrange.IeRange.prototype.getContainer = function() {
     // Deal with IE's selecting the outer tags when you double click
     // If the innerText is the same, then we just want the inner node
     while (parent.childNodes.length == 1 &&
-           parent.innerText == goog.dom.browserrange.IeRange.getNodeText_(
-               parent.firstChild)) {
+           parent.innerText ==
+               goog.dom.browserrange.IeRange.getNodeText_(parent.firstChild)) {
       // A container should be an element which can have children or a text
       // node. Elements like IMG, BR, etc. can not be containers.
       if (!goog.dom.browserrange.canContainRangeEndpoint(parent.firstChild)) {
@@ -415,7 +420,7 @@ goog.dom.browserrange.IeRange.prototype.findDeepestContainer_ = function(node) {
       // compare start of this range with both start and end of child range.
       var inChildRange = isNativeInRangeErratic ?
           (this.compareBrowserRangeEndpoints(childRange, start, start) >= 0 &&
-              this.compareBrowserRangeEndpoints(childRange, start, end) <= 0) :
+           this.compareBrowserRangeEndpoints(childRange, start, end) <= 0) :
           this.range_.inRange(childRange);
       if (inChildRange) {
         return this.findDeepestContainer_(child);
@@ -482,9 +487,8 @@ goog.dom.browserrange.IeRange.prototype.getEndOffset = function() {
 goog.dom.browserrange.IeRange.prototype.compareBrowserRangeEndpoints = function(
     range, thisEndpoint, otherEndpoint) {
   return this.range_.compareEndPoints(
-      (thisEndpoint == goog.dom.RangeEndpoint.START ? 'Start' : 'End') +
-      'To' +
-      (otherEndpoint == goog.dom.RangeEndpoint.START ? 'Start' : 'End'),
+      (thisEndpoint == goog.dom.RangeEndpoint.START ? 'Start' : 'End') + 'To' +
+          (otherEndpoint == goog.dom.RangeEndpoint.START ? 'Start' : 'End'),
       range);
 };
 
@@ -496,8 +500,8 @@ goog.dom.browserrange.IeRange.prototype.compareBrowserRangeEndpoints = function(
  * @return {Node} The deepest node containing the endpoint.
  * @private
  */
-goog.dom.browserrange.IeRange.prototype.getEndpointNode_ = function(endpoint,
-    opt_node) {
+goog.dom.browserrange.IeRange.prototype.getEndpointNode_ = function(
+    endpoint, opt_node) {
 
   /** @type {Node} */
   var node = opt_node || this.getContainer();
@@ -549,13 +553,12 @@ goog.dom.browserrange.IeRange.prototype.getEndpointNode_ = function(endpoint,
         return this.getEndpointNode_(endpoint, child);
       }
 
-    // Case 2 - The first child encountered to have overlap this range is
-    // contained entirely in this range.
+      // Case 2 - The first child encountered to have overlap this range is
+      // contained entirely in this range.
     } else if (this.containsRange(childRange)) {
       // If it is an element which can not be a range endpoint container, the
       // current child offset can be used to deduce the endpoint offset.
       if (!goog.dom.browserrange.canContainRangeEndpoint(child)) {
-
         // Container can't be any deeper, so current node is the container.
         if (isStartEndpoint) {
           this.startOffset_ = i;
@@ -568,15 +571,15 @@ goog.dom.browserrange.IeRange.prototype.getEndpointNode_ = function(endpoint,
       // If child can contain range endpoints, recurse inside this child.
       return this.getEndpointNode_(endpoint, child);
 
-    // Case 3 - Partial non-adjacency overlap.
-    } else if (this.compareBrowserRangeEndpoints(ieRange, start, end) < 0 &&
-               this.compareBrowserRangeEndpoints(ieRange, end, start) > 0) {
+      // Case 3 - Partial non-adjacency overlap.
+    } else if (
+        this.compareBrowserRangeEndpoints(ieRange, start, end) < 0 &&
+        this.compareBrowserRangeEndpoints(ieRange, end, start) > 0) {
       // If this child overlaps the selection partially, recurse down to find
       // the first/last child the next level down that overlaps the selection
       // completely. We do not consider edge-adjacency (== 0) as overlap.
       return this.getEndpointNode_(endpoint, child);
     }
-
   }
 
   // None of the children of this node overlapped the selection, that means
@@ -600,14 +603,14 @@ goog.dom.browserrange.IeRange.prototype.getEndpointNode_ = function(endpoint,
  *     endpoint comes before the other node endpoint, and positive otherwise.
  * @private
  */
-goog.dom.browserrange.IeRange.prototype.compareNodeEndpoints_ =
-    function(node, thisEndpoint, otherEndpoint) {
+goog.dom.browserrange.IeRange.prototype.compareNodeEndpoints_ = function(
+    node, thisEndpoint, otherEndpoint) {
+  /** @suppress {missingRequire} Circular dep with browserrange */
   return this.range_.compareEndPoints(
-      (thisEndpoint == goog.dom.RangeEndpoint.START ? 'Start' : 'End') +
-      'To' +
-      (otherEndpoint == goog.dom.RangeEndpoint.START ? 'Start' : 'End'),
-      goog.dom.browserrange.createRangeFromNodeContents(node).
-          getBrowserRange());
+      (thisEndpoint == goog.dom.RangeEndpoint.START ? 'Start' : 'End') + 'To' +
+          (otherEndpoint == goog.dom.RangeEndpoint.START ? 'Start' : 'End'),
+      goog.dom.browserrange.createRangeFromNodeContents(node)
+          .getBrowserRange());
 };
 
 
@@ -619,8 +622,8 @@ goog.dom.browserrange.IeRange.prototype.compareNodeEndpoints_ =
  * @return {number} The offset.
  * @private
  */
-goog.dom.browserrange.IeRange.prototype.getOffset_ = function(endpoint,
-    opt_container) {
+goog.dom.browserrange.IeRange.prototype.getOffset_ = function(
+    endpoint, opt_container) {
   var isStartEndpoint = endpoint == goog.dom.RangeEndpoint.START;
   var container = opt_container ||
       (isStartEndpoint ? this.getStartNode() : this.getEndNode());
@@ -630,12 +633,13 @@ goog.dom.browserrange.IeRange.prototype.getOffset_ = function(endpoint,
     var children = container.childNodes;
     var len = children.length;
     var edge = isStartEndpoint ? 0 : len - 1;
-    var sign = isStartEndpoint ? 1 : - 1;
+    var sign = isStartEndpoint ? 1 : -1;
 
     // We find the index in the child array of the endpoint of the selection.
     for (var i = edge; i >= 0 && i < len; i += sign) {
       var child = children[i];
       // Ignore the child nodes, which could be end point containers.
+      /** @suppress {missingRequire} Circular dep with browserrange */
       if (goog.dom.browserrange.canContainRangeEndpoint(child)) {
         continue;
       }
@@ -655,8 +659,8 @@ goog.dom.browserrange.IeRange.prototype.getOffset_ = function(endpoint,
     var range = this.range_.duplicate();
 
     // Create a range that selects the entire container.
-    var nodeRange = goog.dom.browserrange.IeRange.getBrowserRangeForNode_(
-        container);
+    var nodeRange =
+        goog.dom.browserrange.IeRange.getBrowserRangeForNode_(container);
 
     // Now, intersect our range with the container range - this should give us
     // the part of our selection that is in the container.
@@ -675,8 +679,8 @@ goog.dom.browserrange.IeRange.prototype.getOffset_ = function(endpoint,
  * @private
  */
 goog.dom.browserrange.IeRange.getNodeText_ = function(node) {
-  return node.nodeType == goog.dom.NodeType.TEXT ?
-         node.nodeValue : node.innerText;
+  return node.nodeType == goog.dom.NodeType.TEXT ? node.nodeValue :
+                                                   node.innerText;
 };
 
 
@@ -765,18 +769,18 @@ goog.dom.browserrange.IeRange.prototype.removeContents = function() {
     // the other browsers.
     var newStartNode = this.getStartNode();
     var newStartOffset = this.getStartOffset();
-    /** @preserveTry */
+
     try {
       var sibling = startNode.nextSibling;
       if (startNode == endNode && startNode.parentNode &&
-          startNode.nodeType == goog.dom.NodeType.TEXT &&
-          sibling && sibling.nodeType == goog.dom.NodeType.TEXT) {
+          startNode.nodeType == goog.dom.NodeType.TEXT && sibling &&
+          sibling.nodeType == goog.dom.NodeType.TEXT) {
         startNode.nodeValue += sibling.nodeValue;
         goog.dom.removeNode(sibling);
 
         // Make sure to reselect the appropriate position.
-        this.range_ = goog.dom.browserrange.IeRange.getBrowserRangeForNode_(
-            newStartNode);
+        this.range_ =
+            goog.dom.browserrange.IeRange.getBrowserRangeForNode_(newStartNode);
         this.range_.move('character', newStartOffset);
         this.clearCachedValues_();
       }
@@ -808,10 +812,10 @@ goog.dom.browserrange.IeRange.getDomHelper_ = function(range) {
  * @return {Element} The resulting copy of element.
  * @private
  */
-goog.dom.browserrange.IeRange.pasteElement_ = function(range, element,
-    opt_domHelper) {
-  opt_domHelper = opt_domHelper || goog.dom.browserrange.IeRange.getDomHelper_(
-      range);
+goog.dom.browserrange.IeRange.pasteElement_ = function(
+    range, element, opt_domHelper) {
+  opt_domHelper =
+      opt_domHelper || goog.dom.browserrange.IeRange.getDomHelper_(range);
 
   // Make sure the node has a unique id.
   var id;
@@ -869,11 +873,11 @@ goog.dom.browserrange.IeRange.prototype.surroundContents = function(element) {
  * @return {Node} The resulting copy of node.
  * @private
  */
-goog.dom.browserrange.IeRange.insertNode_ = function(clone, node,
-    before, opt_domHelper) {
+goog.dom.browserrange.IeRange.insertNode_ = function(
+    clone, node, before, opt_domHelper) {
   // Get a DOM helper.
-  opt_domHelper = opt_domHelper || goog.dom.browserrange.IeRange.getDomHelper_(
-      clone);
+  opt_domHelper =
+      opt_domHelper || goog.dom.browserrange.IeRange.getDomHelper_(clone);
 
   // If it's not an element, wrap it in one.
   var isNonElement;
@@ -883,7 +887,8 @@ goog.dom.browserrange.IeRange.insertNode_ = function(clone, node,
   }
 
   clone.collapse(before);
-  node = goog.dom.browserrange.IeRange.pasteElement_(clone,
+  node = goog.dom.browserrange.IeRange.pasteElement_(
+      clone,
       /** @type {!Element} */ (node), opt_domHelper);
 
   // If we didn't want an element, unwrap the element and return the node.

@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -26,5 +24,5 @@ module Selenium
         skip
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

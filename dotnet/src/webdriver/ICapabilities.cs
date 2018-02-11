@@ -16,8 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System.Collections.Generic;
-
 namespace OpenQA.Selenium
 {
     /// <summary>
@@ -39,11 +37,6 @@ namespace OpenQA.Selenium
         /// Gets the browser version
         /// </summary>
         string Version { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the browser is JavaScript enabled
-        /// </summary>
-        bool IsJavaScriptEnabled { get; }
 
         /// <summary>
         /// Gets a value indicating whether the browser has a given capability.

@@ -39,7 +39,7 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
     super(klass);
     Browser browser = Browser.detect();
     if (browser == null && DevMode.isInDevMode()) {
-      browser = Browser.ff;
+      browser = Browser.chrome;
     }
     ignorance = new TestIgnorance(browser);
   }

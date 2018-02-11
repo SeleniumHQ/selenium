@@ -15,7 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
+import pytest
+
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote.webelement import WebElement
 
 try:
@@ -24,213 +26,257 @@ except NameError:
     pass
 
 
-class ExecutingJavaScriptTests(unittest.TestCase):
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAString(driver, pages):
+    pages.load("xhtmlTest.html")
 
-    def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAString(self):
-        self._loadPage("xhtmlTest")
+    result = driver.execute_script("return document.title")
 
-        result = self.driver.execute_script("return document.title")
-
-        self.assertTrue(type(result) == str,
-            "The type of the result is %s" % type(result))
-        self.assertEqual("XHTML Test Page", result)
+    assert type(result) == str, "The type of the result is %s" % type(result)
+    assert "XHTML Test Page" == result
 
 
-    def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnInteger(self):
-        self._loadPage("nestedElements")
-        result = self.driver.execute_script("return document.getElementsByName('checky').length")
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnInteger(driver, pages):
+    pages.load("nestedElements.html")
+    result = driver.execute_script("return document.getElementsByName('checky').length")
 
-        self.assertTrue(type(result) == int)
-        self.assertTrue(int(result) > 1)
-
-
-    #@Ignore(SELENESE)
-    def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement(self):
-        self._loadPage("xhtmlTest")
-
-        result = self.driver.execute_script("return document.getElementById('id1')")
-
-        self.assertTrue(result is not None)
-        self.assertTrue(type(result) == WebElement)
-        self.assertEqual("a", result.tag_name.lower())
+    assert type(result) == int
+    assert int(result) > 1
 
 
-    def testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean(self):
-        self._loadPage("xhtmlTest")
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement(driver, pages):
+    pages.load("xhtmlTest.html")
 
-        result = self.driver.execute_script("return true")
+    result = driver.execute_script("return document.getElementById('id1')")
 
-        self.assertTrue(result is not None)
-        self.assertTrue(type(result) == bool)
-        self.assertTrue(bool(result))
-
-
-    #@Ignore(SELENESE, IPHONE)
-    def testShouldBeAbleToExecuteSimpleJavascriptAndAStringsArray(self):
-        self._loadPage("javascriptPage")
-        expectedResult = []
-        expectedResult.append("zero")
-        expectedResult.append("one")
-        expectedResult.append("two")
-        result = self.driver.execute_script(
-            "return ['zero', 'one', 'two']")
-
-        self.assertEqual(expectedResult, result)
-
-    #@Ignore(SELENESE, IPHONE)
-    def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray(self):
-        self._loadPage("javascriptPage")
-        expectedResult = []
-        expectedResult.append("zero")
-        subList = []
-        subList.append(True)
-        subList.append(False)
-        expectedResult.append(subList)
-        result = self.driver.execute_script("return ['zero', [true, false]]")
-        self.assertTrue(result is not None)
-        self.assertTrue(type(result) == list)
-        self.assertTrue(expectedResult, result)
-
-    def testPassingAndReturningAnIntShouldReturnAWholeNumber(self):
-        self._loadPage("javascriptPage")
-        expectedResult = 1
-        result = self.driver.execute_script("return arguments[0]", expectedResult)
-        self.assertTrue((type(result) == int))
-        self.assertEqual(expectedResult, result)
+    assert result is not None
+    assert isinstance(result, WebElement)
+    assert "a" == result.tag_name.lower()
 
 
-    def testPassingAndReturningADoubleShouldReturnADecimal(self):
-        self._loadPage("javascriptPage")
-        expectedResult = 1.2
-        result = self.driver.execute_script("return arguments[0]", expectedResult)
-        self.assertTrue( type(result) == float)
-        self.assertEqual(expectedResult, result)
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAListOfWebElements(driver, pages):
+    pages.load("xhtmlTest.html")
 
-    def testShouldThrowAnExceptionWhenTheJavascriptIsBad(self):
-        self._loadPage("xhtmlTest")
+    result = driver.execute_script("return document.querySelectorAll('div.navigation a')")
 
-        try:
-            self.driver.execute_script("return squiggle()")
-            self.fail("Expected an exception")
-        except Exception as e:
-            pass
+    assert result is not None
+    assert isinstance(result, list)
+    assert all(isinstance(item, WebElement) for item in result)
+    assert all('a' == item.tag_name.lower() for item in result)
 
 
-    def testShouldBeAbleToCallFunctionsDefinedOnThePage(self):
-        self._loadPage("javascriptPage")
-        self.driver.execute_script("displayMessage('I like cheese')")
-        text = self.driver.find_element_by_id("result").text
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnWebElementsInsideAList(driver, pages):
+    pages.load("xhtmlTest.html")
 
-        self.assertEqual("I like cheese", text.strip())
+    result = driver.execute_script("return [document.body]")
 
-    def testShouldBeAbleToPassAStringAnAsArgument(self):
-        self._loadPage("javascriptPage")
-        value = self.driver.execute_script(
-            "return arguments[0] == 'fish' ? 'fish' : 'not fish'", "fish")
-
-        self.assertEqual("fish", value)
+    assert result is not None
+    assert isinstance(result, list)
+    assert isinstance(result[0], WebElement)
 
 
-    def testShouldBeAbleToPassABooleanAnAsArgument(self):
-        self._loadPage("javascriptPage")
-        value = bool(self.driver.execute_script("return arguments[0] == true", True))
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnWebElementsInsideANestedList(driver, pages):
+    pages.load("xhtmlTest.html")
 
-        self.assertTrue(value)
+    result = driver.execute_script("return [document.body, [document.getElementById('id1')]]")
 
-    def testShouldBeAbleToPassANumberAnAsArgument(self):
-        self._loadPage("javascriptPage")
-        value = bool(self.driver.execute_script("return arguments[0] == 1 ? true : false", 1))
-
-        self.assertTrue(value)
-
-    def testShouldBeAbleToPassAWebElementAsArgument(self):
-        self._loadPage("javascriptPage")
-        button = self.driver.find_element_by_id("plainButton")
-        value = self.driver.execute_script(
-            "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble']",
-            button)
-
-        self.assertEqual("plainButton", value)
-
-    def testShouldBeAbleToPassAnArrayAsArgument(self):
-        self._loadPage("javascriptPage")
-        array = ["zero", 1, True, 3.14159]
-        length = int(self.driver.execute_script("return arguments[0].length", array))
-        self.assertEqual(len(array), length)
+    assert result is not None
+    assert isinstance(result, list)
+    assert isinstance(result[0], WebElement)
+    assert isinstance(result[1][0], WebElement)
 
 
-    def testShouldBeAbleToPassACollectionAsArgument(self):
-        self._loadPage("javascriptPage")
-        collection = []
-        collection.append("Cheddar")
-        collection.append("Brie")
-        collection.append(7)
-        length = int(self.driver.execute_script("return arguments[0].length", collection))
-        self.assertEqual(len(collection), length)
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnWebElementsInsideADict(driver, pages):
+    pages.load("xhtmlTest.html")
 
-        collection = []
-        collection.append("Gouda")
-        collection.append("Stilton")
-        collection.append("Stilton")
-        collection.append(True)
-        length = int(self.driver.execute_script("return arguments[0].length", collection))
-        self.assertEqual(len(collection), length)
+    result = driver.execute_script("return {el1: document.body}")
 
-    def testShouldThrowAnExceptionIfAnArgumentIsNotValid(self):
-        self._loadPage("javascriptPage")
-        try:
-            self.driver.execute_script("return arguments[0]", driver)
-            self.fail("Exception should have been thrown")
-        except Exception as e:
-            pass
-
-    def testShouldBeAbleToPassInMoreThanOneArgument(self):
-        self._loadPage("javascriptPage")
-        result = self.driver.execute_script("return arguments[0] + arguments[1]", "one", "two")
-
-        self.assertEqual("onetwo", result)
-
-    def testJavascriptStringHandlingShouldWorkAsExpected(self):
-        self._loadPage("javascriptPage")
-
-        value = self.driver.execute_script("return ''")
-        self.assertEqual("", value)
-
-        value = self.driver.execute_script("return undefined")
-        self.assertTrue(value is None)
-
-        value = self.driver.execute_script("return ' '")
-        self.assertEqual(" ", value)
-
-    def testShouldBeAbleToCreateAPersistentValue(self):
-        self._loadPage("formPage")
-
-        self.driver.execute_script("document.alerts = []")
-        self.driver.execute_script("document.alerts.push('hello world')")
-        text = self.driver.execute_script("return document.alerts.shift()")
-
-        self.assertEqual("hello world", text)
-
-    def testCanPassADictionaryAsAParameter(self):
-        self._loadSimplePage()
-        nums = [1, 2]
-        args = {"bar": "test", "foo": nums}
+    assert result is not None
+    assert isinstance(result, dict)
+    assert isinstance(result.get('el1'), WebElement)
 
 
-        res = self.driver.execute_script("return arguments[0]['foo'][1]", args);
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnWebElementsInsideANestedDict(driver, pages):
+    pages.load("xhtmlTest.html")
 
-        self.assertEqual(2, res)
+    result = driver.execute_script("return {el1: document.body, "
+                                   "nested: {el2: document.getElementById('id1')}}")
 
-    def testCanPassANone(self):
-        self._loadSimplePage()
-        res = self.driver.execute_script("return arguments[0] === null", None)
-        self.assertTrue(res)
+    assert result is not None
+    assert isinstance(result, dict)
+    assert isinstance(result.get('el1'), WebElement)
+    assert isinstance(result.get('nested').get('el2'), WebElement)
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
 
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnWebElementsInsideAListInsideADict(driver, pages):
+    pages.load("xhtmlTest.html")
 
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+    result = driver.execute_script("return {el1: [document.body]}")
+
+    assert result is not None
+    assert isinstance(result, dict)
+    assert isinstance(result.get('el1'), list)
+    assert isinstance(result.get('el1')[0], WebElement)
+
+
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean(driver, pages):
+    pages.load("xhtmlTest.html")
+
+    result = driver.execute_script("return true")
+
+    assert result is not None
+    assert type(result) == bool
+    assert bool(result)
+
+
+def testShouldBeAbleToExecuteSimpleJavascriptAndAStringsArray(driver, pages):
+    pages.load("javascriptPage.html")
+    expectedResult = []
+    expectedResult.append("zero")
+    expectedResult.append("one")
+    expectedResult.append("two")
+    result = driver.execute_script(
+        "return ['zero', 'one', 'two']")
+
+    assert expectedResult == result
+
+
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray(driver, pages):
+    pages.load("javascriptPage.html")
+    expectedResult = []
+    expectedResult.append("zero")
+    subList = []
+    subList.append(True)
+    subList.append(False)
+    expectedResult.append(subList)
+    result = driver.execute_script("return ['zero', [true, false]]")
+    assert result is not None
+    assert type(result) == list
+    assert expectedResult == result
+
+
+def testPassingAndReturningAnIntShouldReturnAWholeNumber(driver, pages):
+    pages.load("javascriptPage.html")
+    expectedResult = 1
+    result = driver.execute_script("return arguments[0]", expectedResult)
+    assert type(result) == int
+    assert expectedResult == result
+
+
+def testPassingAndReturningADoubleShouldReturnADecimal(driver, pages):
+    pages.load("javascriptPage.html")
+    expectedResult = 1.2
+    result = driver.execute_script("return arguments[0]", expectedResult)
+    assert type(result) == float
+    assert expectedResult == result
+
+
+def testShouldThrowAnExceptionWhenTheJavascriptIsBad(driver, pages):
+    pages.load("xhtmlTest.html")
+    with pytest.raises(WebDriverException):
+        driver.execute_script("return squiggle()")
+
+
+def testShouldBeAbleToCallFunctionsDefinedOnThePage(driver, pages):
+    pages.load("javascriptPage.html")
+    driver.execute_script("displayMessage('I like cheese')")
+    text = driver.find_element_by_id("result").text
+    assert "I like cheese" == text.strip()
+
+
+def testShouldBeAbleToPassAStringAnAsArgument(driver, pages):
+    pages.load("javascriptPage.html")
+    value = driver.execute_script(
+        "return arguments[0] == 'fish' ? 'fish' : 'not fish'", "fish")
+    assert "fish" == value
+
+
+def testShouldBeAbleToPassABooleanAnAsArgument(driver, pages):
+    pages.load("javascriptPage.html")
+    value = bool(driver.execute_script("return arguments[0] == true", True))
+    assert value
+
+
+def testShouldBeAbleToPassANumberAnAsArgument(driver, pages):
+    pages.load("javascriptPage.html")
+    value = bool(driver.execute_script("return arguments[0] == 1 ? true : false", 1))
+    assert value
+
+
+def testShouldBeAbleToPassAWebElementAsArgument(driver, pages):
+    pages.load("javascriptPage.html")
+    button = driver.find_element_by_id("plainButton")
+    value = driver.execute_script(
+        "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble']",
+        button)
+    assert "plainButton" == value
+
+
+def testShouldBeAbleToPassAnArrayAsArgument(driver, pages):
+    pages.load("javascriptPage.html")
+    array = ["zero", 1, True, 3.14159]
+    length = int(driver.execute_script("return arguments[0].length", array))
+    assert len(array) == length
+
+
+def testShouldBeAbleToPassACollectionAsArgument(driver, pages):
+    pages.load("javascriptPage.html")
+    collection = []
+    collection.append("Cheddar")
+    collection.append("Brie")
+    collection.append(7)
+    length = int(driver.execute_script("return arguments[0].length", collection))
+    assert len(collection) == length
+
+    collection = []
+    collection.append("Gouda")
+    collection.append("Stilton")
+    collection.append("Stilton")
+    collection.append(True)
+    length = int(driver.execute_script("return arguments[0].length", collection))
+    assert len(collection) == length
+
+
+def testShouldThrowAnExceptionIfAnArgumentIsNotValid(driver, pages):
+    pages.load("javascriptPage.html")
+    with pytest.raises(Exception):
+        driver.execute_script("return arguments[0]", driver)
+
+
+def testShouldBeAbleToPassInMoreThanOneArgument(driver, pages):
+    pages.load("javascriptPage.html")
+    result = driver.execute_script("return arguments[0] + arguments[1]", "one", "two")
+    assert "onetwo" == result
+
+
+def testJavascriptStringHandlingShouldWorkAsExpected(driver, pages):
+    pages.load("javascriptPage.html")
+    value = driver.execute_script("return ''")
+    assert "" == value
+
+    value = driver.execute_script("return undefined")
+    assert value is None
+
+    value = driver.execute_script("return ' '")
+    assert " " == value
+
+
+def testShouldBeAbleToCreateAPersistentValue(driver, pages):
+    pages.load("formPage.html")
+    driver.execute_script("document.alerts = []")
+    driver.execute_script("document.alerts.push('hello world')")
+    text = driver.execute_script("return document.alerts.shift()")
+    assert "hello world" == text
+
+
+def testCanPassADictionaryAsAParameter(driver, pages):
+    pages.load("simpleTest.html")
+    nums = [1, 2]
+    args = {"bar": "test", "foo": nums}
+    res = driver.execute_script("return arguments[0]['foo'][1]", args)
+    assert 2 == res
+
+
+def testCanPassANone(driver, pages):
+    pages.load("simpleTest.html")
+    res = driver.execute_script("return arguments[0] === null", None)
+    assert res

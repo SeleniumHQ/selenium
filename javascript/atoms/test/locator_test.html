@@ -41,6 +41,12 @@ limitations under the License.
       assertEquals('right', e.getAttribute('name'));
     }
 
+    function testFindByIdDoesNotMatchSearchContextRoot() {
+      var root = bot.locators.findElement({id: 'x'});
+      assertNull(bot.locators.findElement({id: 'x'}, root));
+      assertEquals(0, bot.locators.findElements({id: 'x'}, root).length);
+    }
+
     function testFindingByNameIgnoresComments() {
       // This element is outside a form, forcing IE to fall back to using
       // doc.getElementsByTagName. There are comments on this page that are
@@ -95,6 +101,13 @@ limitations under the License.
       assertNull(bot.locators.findElement({className: 'catsAndDogs'}));
     }
 
+    function testFindByClassNameDoesNotMatchSearchContextRoot() {
+      var root = bot.locators.findElement({className: 'cats'});
+      assertNull(bot.locators.findElement({className: 'cats'}, root));
+      assertEquals(0,
+          bot.locators.findElements({className: 'cats'}, root).length);
+    }
+
     /** @bug http://code.google.com/p/selenium/issues/detail?id=1918 */
     function testFindSingleByClassName_targetClassHasDots() {
       var found = bot.locators.findElement({className: 'name.with.dots'});
@@ -126,6 +139,12 @@ limitations under the License.
       }
 
       assertNull(bot.locators.findElement({css: '#uglyfish'}));
+    }
+
+    function testFindByCssSelectorDoesNotMatchSearchContextRoot() {
+      var root = bot.locators.findElement({css: '#x'});
+      assertNull(bot.locators.findElement({css: '#x'}, root));
+      assertEquals(0, bot.locators.findElements({css: '#x'}, root).length);
     }
 
     function testShouldFindElementByMultipleSelectors() {
@@ -170,6 +189,12 @@ limitations under the License.
 
     function testWillReturnNullIfNoMatchUsingXPathIsFound() {
       assertNull(bot.locators.findElement({xpath: '//fish'}));
+    }
+
+    function testFindByXPathDescendantSelectorDoesNotMatchSearchContextRoot() {
+      var root = bot.locators.findElement({xpath: '//p[@id = "x"]'});
+      assertNull(bot.locators.findElement({xpath: './p'}, root));
+      assertEquals(0, bot.locators.findElements({xpath: './p'}, root).length);
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathIsSyntacticallyInvalidInSingle() {
@@ -229,11 +254,16 @@ limitations under the License.
         var els = bot.locators.findElements({id: id});
         assertEquals("Expected exactly one element with ID " + id, 1, els.length);
         assertEquals(expectedName, els[0].getAttribute('name'));
+
+        var el = bot.locators.findElement({id: id});
+        assertNotNullNorUndefined("Expected element with ID " + id, el);
+        assertEquals(expectedName, el.getAttribute('name'));
       }
 
       findById("'", 'apóstrofo');
       findById('"', 'comilla');
       findById('\\', 'barra_invertida');
+      findById('s p a c e', 'space');
       findById('#.:;,!?+<>=~*^$|%&@`{}-/[]()', 'remaining_css_special_symbols');
     }
 
@@ -396,6 +426,7 @@ limitations under the License.
   <div name="apóstrofo" id="'">apóstrofo</div>
   <div name="comilla" id='"'>comilla</div>
   <div name="barra_invertida" id="\">barra invertida</div>
+  <div name="space" id="s p a c e">space</div>
   <div name="remaining_css_special_symbols" id="#.:;,!?+<>=~*^$|%&@`{}-/[]()">queso!</div>
 
   <a id="link" href="#">this is a link</a>

@@ -43,7 +43,7 @@ goog.inherits(goog.proto.Serializer, goog.json.Serializer);
 
 /**
  * Serializes an array to a protocol buffer string. This overrides the JSON
- * method to output empty slots when the value is null or undefined.
+ * method to don't output trailing null or undefined.
  * @param {Array<*>} arr The array to serialize.
  * @param {Array<string>} sb Array used as a string builder.
  * @override
@@ -54,14 +54,14 @@ goog.proto.Serializer.prototype.serializeArray = function(arr, sb) {
   var emptySlots = 0;
   var sep = '';
   for (var i = 0; i < l; i++) {
-    if (arr[i] == null) { // catches undefined as well
+    if (arr[i] == null) {  // catches undefined as well
       emptySlots++;
     } else {
+      sb.push(sep);
       if (emptySlots > 0) {
-        sb.push(goog.string.repeat(',', emptySlots));
+        sb.push(goog.string.repeat('null,', emptySlots));
         emptySlots = 0;
       }
-      sb.push(sep);
       this.serializeInternal(arr[i], sb);
       sep = ',';
     }

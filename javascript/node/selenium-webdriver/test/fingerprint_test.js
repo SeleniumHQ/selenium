@@ -17,9 +17,10 @@
 
 'use strict';
 
-var assert = require('../testing/assert'),
-    test = require('../lib/test'),
-    Pages = test.Pages;
+const assert = require('assert');
+
+const test = require('../lib/test');
+const Pages = test.Pages;
 
 
 test.suite(function(env) {
@@ -35,23 +36,28 @@ test.suite(function(env) {
   });
 
   describe('fingerprinting', function() {
-    test.it('it should fingerprint the navigator object', function() {
-      driver.get(Pages.simpleTestPage);
-      assert(driver.executeScript('return navigator.webdriver')).equalTo(true);
+    test.it('it should fingerprint the navigator object', async function() {
+      await driver.get(Pages.simpleTestPage);
+
+      let wd = await driver.executeScript('return navigator.webdriver');
+      assert.strictEqual(wd, true);
     });
 
-    test.it('fingerprint must not be writable', function() {
-      driver.get(Pages.simpleTestPage);
-      assert(driver.executeScript(
-          'navigator.webdriver = "ohai"; return navigator.webdriver'))
-          .equalTo(true);
+    test.it('fingerprint must not be writable', async function() {
+      await driver.get(Pages.simpleTestPage);
+
+      let wd = await driver.executeScript(
+          'navigator.webdriver = "ohai"; return navigator.webdriver');
+      assert.strictEqual(wd, true);
     });
 
-    test.it('leaves fingerprint on svg pages', function() {
-      driver.get(Pages.svgPage);
-      assert(driver.executeScript('return navigator.webdriver')).equalTo(true);
+    test.it('leaves fingerprint on svg pages', async function() {
+      await driver.get(Pages.svgPage);
+
+      let wd = await driver.executeScript('return navigator.webdriver');
+      assert.strictEqual(wd, true);
     });
   });
 
-// Currently only implemented in firefox.
-}, {browsers: ['firefox']});
+// Currently only implemented in legacy firefox.
+}, {browsers: ['legacy-firefox']});

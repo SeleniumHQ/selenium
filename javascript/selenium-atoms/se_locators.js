@@ -210,10 +210,12 @@ core.locators.elementFindFirstMatchingChild = function(element, selector) {
   for (var i = 0; i < childCount; i++) {
     var child = element.childNodes[i];
     if (child.nodeType == goog.dom.NodeType.ELEMENT) {
-      if (selector(child)) {
-        return child;
+      var childEl = /** @type {!Element} */ (child);
+      if (selector(childEl)) {
+        return childEl;
       }
-      var result = core.locators.elementFindFirstMatchingChild(child, selector);
+      var result = core.locators.elementFindFirstMatchingChild(
+          childEl, selector);
       if (result) {
         return result;
       }

@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
@@ -57,7 +56,7 @@ public class OperaOptionsFunctionalTest extends JUnit4TestBase {
     OperaOptions options1 = new OperaOptions();
     OperaOptions options2 = new OperaOptions();
     assertTrue("empty opera options should be equal", options1.equals(options2));
-    options1.toJson();
+    options1.asMap();
     assertTrue("empty opera options after one is .toJson() should be equal",
                options1.equals(options2));
   }

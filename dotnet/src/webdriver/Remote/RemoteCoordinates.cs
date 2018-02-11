@@ -18,8 +18,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using OpenQA.Selenium.Interactions.Internal;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -68,7 +68,20 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public object AuxiliaryLocator
         {
-            get { return this.element.InternalElementId; }
+            get
+            {
+                IWebElementReference elementReference = this.element as IWebElementReference;
+                if (elementReference == null)
+                {
+                    return null;
+                }
+
+                // Note that the OSS dialect of the wire protocol for the Actions API
+                // uses the raw ID of the element, not an element reference. To use this,
+                // extract the ID using the well-known key to the dictionary for element
+                // references.
+                return elementReference.ElementReferenceId;
+            }
         }
     }
 }

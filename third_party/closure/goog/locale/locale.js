@@ -119,8 +119,7 @@ goog.locale.getRegionSubTag = function(languageCode) {
  */
 goog.locale.getScriptSubTag = function(languageCode) {
   var result = languageCode.split(/[-_]/g);
-  return result.length > 1 && result[1].match(/^[a-zA-Z]{4}$/) ?
-      result[1] : '';
+  return result.length > 1 && result[1].match(/^[a-zA-Z]{4}$/) ? result[1] : '';
 };
 
 
@@ -149,9 +148,10 @@ goog.locale.getVariantSubTag = function(languageCode) {
  */
 goog.locale.getNativeCountryName = function(countryCode) {
   var key = goog.locale.getLanguageSubTag(countryCode) + '_' +
-            goog.locale.getRegionSubTag(countryCode);
+      goog.locale.getRegionSubTag(countryCode);
   return key in goog.locale.nativeNameConstants['COUNTRY'] ?
-      goog.locale.nativeNameConstants['COUNTRY'][key] : countryCode;
+      goog.locale.nativeNameConstants['COUNTRY'][key] :
+      countryCode;
 };
 
 
@@ -159,7 +159,7 @@ goog.locale.getNativeCountryName = function(countryCode) {
  * Returns the localized country name for the provided language code in the
  * current or provided locale symbols set.
  *
- * This method depends on goog.locale.LocaleNameConstants__<locale> available
+ * This method depends on `goog.locale.LocaleNameConstants__<locale>` available
  * from http://go/js_locale_data. User of this method has to add dependency to
  * this.
  *
@@ -169,17 +169,39 @@ goog.locale.getNativeCountryName = function(countryCode) {
  *
  * @return {string} Localized country name.
  */
-goog.locale.getLocalizedCountryName = function(languageCode,
-                                               opt_localeSymbols) {
-  if (!opt_localeSymbols) {
-    opt_localeSymbols = goog.locale.getResource('LocaleNameConstants',
-        goog.locale.getLocale());
-  }
+goog.locale.getLocalizedCountryName = function(
+    languageCode, opt_localeSymbols) {
   var code = goog.locale.getRegionSubTag(languageCode);
-  return code in opt_localeSymbols['COUNTRY'] ?
-      opt_localeSymbols['COUNTRY'][code] : languageCode;
+  var name =
+      goog.locale.getLocalizedRegionNameFromRegionCode(code, opt_localeSymbols);
+  return name == code ? languageCode : name;
 };
 
+/**
+ * Returns the localized country name for the provided language code in the
+ * current or provided locale symbols set.
+ *
+ * This method depends on `goog.locale.LocaleNameConstants__<locale>` available
+ * from http://go/js_locale_data. User of this method has to add dependency to
+ * this.
+ *
+ * @param {string} regionCode Two character country code or three digit region
+ *      code to look up the country name for.
+ * @param {?Object=} opt_localeSymbols If omitted the current locale symbol
+ *     set is used.
+ *
+ * @return {string} Localized region name.
+ */
+goog.locale.getLocalizedRegionNameFromRegionCode = function(
+    regionCode, opt_localeSymbols) {
+  if (!opt_localeSymbols) {
+    opt_localeSymbols =
+        goog.locale.getResource('LocaleNameConstants', goog.locale.getLocale());
+  }
+  return regionCode in opt_localeSymbols['COUNTRY'] ?
+      opt_localeSymbols['COUNTRY'][regionCode] :
+      regionCode;
+};
 
 /**
  * Returns the language name of the provided language code in its native
@@ -197,7 +219,8 @@ goog.locale.getNativeLanguageName = function(languageCode) {
     return goog.locale.nativeNameConstants['LANGUAGE'][languageCode];
   var code = goog.locale.getLanguageSubTag(languageCode);
   return code in goog.locale.nativeNameConstants['LANGUAGE'] ?
-      goog.locale.nativeNameConstants['LANGUAGE'][code] : languageCode;
+      goog.locale.nativeNameConstants['LANGUAGE'][code] :
+      languageCode;
 };
 
 
@@ -205,7 +228,7 @@ goog.locale.getNativeLanguageName = function(languageCode) {
  * Returns the localized language name for the provided language code in
  * the current or provided locale symbols set.
  *
- * This method depends on goog.locale.LocaleNameConstants__<locale> available
+ * This method depends on `goog.locale.LocaleNameConstants__<locale>` available
  * from http://go/js_locale_data. User of this method has to add dependency to
  * this.
  *
@@ -214,17 +237,18 @@ goog.locale.getNativeLanguageName = function(languageCode) {
  *
  * @return {string} Localized language name of the provided language code.
  */
-goog.locale.getLocalizedLanguageName = function(languageCode,
-                                                opt_localeSymbols) {
+goog.locale.getLocalizedLanguageName = function(
+    languageCode, opt_localeSymbols) {
   if (!opt_localeSymbols) {
-    opt_localeSymbols = goog.locale.getResource('LocaleNameConstants',
-        goog.locale.getLocale());
+    opt_localeSymbols =
+        goog.locale.getResource('LocaleNameConstants', goog.locale.getLocale());
   }
   if (languageCode in opt_localeSymbols['LANGUAGE'])
     return opt_localeSymbols['LANGUAGE'][languageCode];
   var code = goog.locale.getLanguageSubTag(languageCode);
   return code in opt_localeSymbols['LANGUAGE'] ?
-      opt_localeSymbols['LANGUAGE'][code] : languageCode;
+      opt_localeSymbols['LANGUAGE'][code] :
+      languageCode;
 };
 
 
@@ -400,4 +424,3 @@ var registerTimeZoneSelectedShortNames =
 var registerTimeZoneSelectedLongNames =
     goog.locale.registerTimeZoneSelectedLongNames;
 var registerTimeZoneAllLongNames = goog.locale.registerTimeZoneAllLongNames;
-

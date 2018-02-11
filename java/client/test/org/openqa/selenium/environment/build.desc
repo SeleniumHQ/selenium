@@ -1,9 +1,0 @@
-
-java_library(name = "environment",
-  srcs = [
-    "*.java",
-  ],
-  deps = [
-    "//java/client/test/org/openqa/selenium/environment/webserver",
-    "//java/client/test/org/openqa/selenium/testing/drivers:browser",
-  ])

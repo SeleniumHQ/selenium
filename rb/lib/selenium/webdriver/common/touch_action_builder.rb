@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +18,6 @@
 module Selenium
   module WebDriver
     class TouchActionBuilder < ActionBuilder
-
       #
       # @api private
       #
@@ -31,7 +28,7 @@ module Selenium
       end
 
       def scroll(*args)
-        unless [2,3].include? args.size
+        unless [2, 3].include? args.size
           raise ArgumentError, "wrong number of arguments, expected 2..3, got #{args.size}"
         end
 
@@ -40,7 +37,7 @@ module Selenium
       end
 
       def flick(*args)
-        unless [2,4].include? args.size
+        unless [2, 4].include? args.size
           raise ArgumentError, "wrong number of arguments, expected 2 or 4, got #{args.size}"
         end
 
@@ -77,7 +74,6 @@ module Selenium
         @actions << [:touch_screen, :move, [x, y]]
         self
       end
-
     end # TouchActionBuilder
   end # WebDriver
 end # Selenium

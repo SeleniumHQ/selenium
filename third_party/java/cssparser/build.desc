@@ -1,5 +1,0 @@
-java_library(name = "cssparser",
-  deps = [
-    "cssparser-0.9.16.jar",
-    "//third_party/java/css:sac"
-  ])

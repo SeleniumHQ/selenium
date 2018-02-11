@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,83 +18,54 @@
 module Selenium
   module WebDriver
     module Edge
+      module Bridge
 
-      # @api private
-      class Bridge < Remote::W3CBridge
-
-        def initialize(opts = {})
-
-          http_client = opts.delete(:http_client)
-
-          if opts.has_key?(:url)
-            url = opts.delete(:url)
+        def commands(command)
+          unsupported = %i[execute_script execute_async_script submit_element double_click
+                           mouse_down mouse_up mouse_move_to click
+                           send_keys_to_active_element get_window_handles get_current_window_handle
+                           get_window_size set_window_size get_window_position set_window_position
+                           maximize_window get_alert_text accept_alert dismiss_alert]
+          if unsupported.include? command
+            Remote::OSS::Bridge::COMMANDS[command]
           else
-            @service = Service.default_service(*extract_service_args(opts))
-
-            if @service.instance_variable_get("@host") == "127.0.0.1"
-              @service.instance_variable_set("@host", 'localhost')
-            end
-
-            @service.start
-
-            url = @service.uri
+            super
           end
-
-          caps = create_capabilities(opts)
-
-          remote_opts = {
-            :url                  => url,
-            :desired_capabilities => caps
-          }
-
-          remote_opts.merge!(:http_client => http_client) if http_client
-          super(remote_opts)
         end
 
-        def browser
-          :edge
+        def send_keys_to_active_element(key)
+          execute :send_keys_to_active_element, {}, {value: key}
         end
 
-        def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices
-          ]
+        def window_handle
+          execute :get_current_window_handle
         end
 
-        def capabilities
-          @capabilities ||= Remote::Capabilities.edge
+        def window_size(handle = :current)
+          data = execute :get_window_size, window_handle: handle
+
+          Dimension.new data['width'], data['height']
         end
 
-        def quit
-          super
-        ensure
-          @service.stop if @service
+        def resize_window(width, height, handle = :current)
+          execute :set_window_size, {window_handle: handle},
+                  {width: width,
+                   height: height}
         end
 
-        private
+        def window_position(handle = :current)
+          data = execute :get_window_position, window_handle: handle
 
-        def create_capabilities(opts)
-          caps               = opts.delete(:desired_capabilities) { Remote::W3CCapabilities.edge }
-          page_load_strategy = opts.delete(:page_load_strategy) || "normal"
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
-
-          caps['page_load_strategy'] = page_load_strategy
-
-          caps
+          Point.new data['x'], data['y']
         end
 
-        def extract_service_args(opts)
-          args = []
+        def reposition_window(x, y, handle = :current)
+          execute :set_window_position, {window_handle: handle},
+                  {x: x, y: y}
+        end
 
-          if opts.has_key?(:service_log_path)
-            args << "--log-path=#{opts.delete(:service_log_path)}"
-          end
-
-          args
+        def maximize_window(handle = :current)
+          execute :maximize_window, window_handle: handle
         end
 
       end # Bridge

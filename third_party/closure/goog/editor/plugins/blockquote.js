@@ -45,8 +45,8 @@ goog.require('goog.log');
  * @extends {goog.editor.Plugin}
  * @final
  */
-goog.editor.plugins.Blockquote = function(requiresClassNameToSplit,
-    opt_className) {
+goog.editor.plugins.Blockquote = function(
+    requiresClassNameToSplit, opt_className) {
   goog.editor.Plugin.call(this);
 
   /**
@@ -119,8 +119,8 @@ goog.editor.plugins.Blockquote.prototype.isSilentCommand = goog.functions.TRUE;
  * @param {Node} node DOM node in question.
  * @return {boolean} Whether the node is a splittable blockquote.
  */
-goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote =
-    function(node) {
+goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote = function(
+    node) {
   if (/** @type {!Element} */ (node).tagName != goog.dom.TagName.BLOCKQUOTE) {
     return false;
   }
@@ -129,8 +129,8 @@ goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote =
     return true;
   }
 
-  return goog.dom.classlist.contains(/** @type {!Element} */ (node),
-      this.className_);
+  return goog.dom.classlist.contains(
+      /** @type {!Element} */ (node), this.className_);
 };
 
 
@@ -140,11 +140,11 @@ goog.editor.plugins.Blockquote.prototype.isSplittableBlockquote =
  * @return {boolean} Whether the node is a blockquote with the required class
  *     name applied.
  */
-goog.editor.plugins.Blockquote.prototype.isSetupBlockquote =
-    function(node) {
-  return /** @type {!Element} */(node).tagName == goog.dom.TagName.BLOCKQUOTE &&
-      goog.dom.classlist.contains(/** @type {!Element} */ (node),
-          this.className_);
+goog.editor.plugins.Blockquote.prototype.isSetupBlockquote = function(node) {
+  return /** @type {!Element} */ (node).tagName ==
+      goog.dom.TagName.BLOCKQUOTE &&
+      goog.dom.classlist.contains(
+          /** @type {!Element} */ (node), this.className_);
 };
 
 
@@ -154,9 +154,9 @@ goog.editor.plugins.Blockquote.prototype.isSetupBlockquote =
  * @return {boolean} Whether the node is a blockquote without the required
  *     class name applied.
  */
-goog.editor.plugins.Blockquote.prototype.isUnsetupBlockquote =
-    function(node) {
-  return /** @type {!Element} */(node).tagName == goog.dom.TagName.BLOCKQUOTE &&
+goog.editor.plugins.Blockquote.prototype.isUnsetupBlockquote = function(node) {
+  return /** @type {!Element} */ (node).tagName ==
+      goog.dom.TagName.BLOCKQUOTE &&
       !this.isSetupBlockquote(node);
 };
 
@@ -184,8 +184,8 @@ goog.editor.plugins.Blockquote.findAndRemoveSingleChildAncestor_ = function(
   var predicateFunc = function(parentNode) {
     return parentNode != root && parentNode.childNodes.length == 1;
   };
-  var ancestor = goog.editor.node.findHighestMatchingAncestor(node,
-      predicateFunc);
+  var ancestor =
+      goog.editor.node.findHighestMatchingAncestor(node, predicateFunc);
   if (!ancestor) {
     ancestor = node;
   }
@@ -245,8 +245,8 @@ goog.editor.plugins.Blockquote.prototype.execCommandInternal = function(
  * @return {boolean} Whether the blockquote was split.
  * @private
  */
-goog.editor.plugins.Blockquote.prototype.splitQuotedBlockW3C_ =
-    function(anchorPos) {
+goog.editor.plugins.Blockquote.prototype.splitQuotedBlockW3C_ = function(
+    anchorPos) {
   var cursorNode = anchorPos.node;
   var quoteNode = goog.editor.node.findTopMostEditableAncestor(
       cursorNode.parentNode, goog.bind(this.isSplittableBlockquote, this));
@@ -266,7 +266,6 @@ goog.editor.plugins.Blockquote.prototype.splitQuotedBlockW3C_ =
   //    empty subtree that ends in a 0 length text node. We account for that
   //    as a post-splitting operation.
   if (quoteNode) {
-
     // selection is in a line that has text in it
     if (cursorNode.nodeType == goog.dom.NodeType.TEXT) {
       if (anchorPos.offset == cursorNode.length) {
@@ -314,16 +313,15 @@ goog.editor.plugins.Blockquote.prototype.splitQuotedBlockW3C_ =
     return false;
   }
 
-  secondHalf = goog.editor.node.splitDomTreeAt(cursorNode, secondHalf,
-      quoteNode);
+  secondHalf =
+      goog.editor.node.splitDomTreeAt(cursorNode, secondHalf, quoteNode);
   goog.dom.insertSiblingAfter(secondHalf, quoteNode);
 
   // Set the insertion point.
   var dh = this.getFieldDomHelper();
-  var tagToInsert =
-      this.getFieldObject().queryCommandValue(
-          goog.editor.Command.DEFAULT_TAG) ||
-          goog.dom.TagName.DIV;
+  var tagToInsert = this.getFieldObject().queryCommandValue(
+                        goog.editor.Command.DEFAULT_TAG) ||
+      goog.dom.TagName.DIV;
   var container = dh.createElement(/** @type {string} */ (tagToInsert));
   container.innerHTML = '&nbsp;';  // Prevent the div from collapsing.
   quoteNode.parentNode.insertBefore(container, secondHalf);
@@ -365,8 +363,8 @@ goog.editor.plugins.Blockquote.prototype.insertEmptyTextNodeBeforeRange_ =
  * @return {boolean} Whether the blockquote was split.
  * @private
  */
-goog.editor.plugins.Blockquote.prototype.splitQuotedBlockIE_ =
-    function(splitNode) {
+goog.editor.plugins.Blockquote.prototype.splitQuotedBlockIE_ = function(
+    splitNode) {
   var dh = this.getFieldDomHelper();
   var quoteNode = goog.editor.node.findTopMostEditableAncestor(
       splitNode.parentNode, goog.bind(this.isSplittableBlockquote, this));
@@ -384,17 +382,16 @@ goog.editor.plugins.Blockquote.prototype.splitQuotedBlockIE_ =
   // on that.
   if (splitNode.nextSibling &&
       /** @type {!Element} */ (splitNode.nextSibling).tagName ==
-      goog.dom.TagName.BR) {
+          goog.dom.TagName.BR) {
     splitNode = splitNode.nextSibling;
   }
   var secondHalf = goog.editor.node.splitDomTreeAt(splitNode, clone, quoteNode);
   goog.dom.insertSiblingAfter(secondHalf, quoteNode);
 
   // Set insertion point.
-  var tagToInsert =
-      this.getFieldObject().queryCommandValue(
-          goog.editor.Command.DEFAULT_TAG) ||
-          goog.dom.TagName.DIV;
+  var tagToInsert = this.getFieldObject().queryCommandValue(
+                        goog.editor.Command.DEFAULT_TAG) ||
+      goog.dom.TagName.DIV;
   var div = dh.createElement(/** @type {string} */ (tagToInsert));
   quoteNode.parentNode.insertBefore(div, secondHalf);
 
@@ -410,7 +407,7 @@ goog.editor.plugins.Blockquote.prototype.splitQuotedBlockIE_ =
   range.select();
 
   // Remove the no-longer-necessary nbsp.
-  div.innerHTML = '';
+  goog.dom.removeChildren(div);
 
   // Clear the original selection.
   range.pasteHTML('');

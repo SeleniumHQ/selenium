@@ -19,15 +19,15 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,17 +36,17 @@ import javax.servlet.http.HttpServletResponse;
 
 public class NewRequestCrashesDuringNewSessionTest {
 
-  private static Registry registry;
-  private static Map<String, Object> ff = new HashMap<>();
-  private static RemoteProxy p1;
+  private GridRegistry registry;
+  private Map<String, Object> ff = new HashMap<>();
+  private RemoteProxy p1;
 
   /**
    * create a hub with 1 IE and 1 FF
    */
-  @BeforeClass
-  public static void setup() {
-    registry = Registry.newInstance();
-    ff.put(APP, "FF");
+  @Before
+  public void setup() throws Exception {
+    registry = DefaultGridRegistry.newInstance();
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
 
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);
@@ -86,8 +86,8 @@ public class NewRequestCrashesDuringNewSessionTest {
     assertEquals(0, registry.getNewSessionRequestCount());
   }
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
   }
 
@@ -95,7 +95,7 @@ public class NewRequestCrashesDuringNewSessionTest {
 
 
     public MockedBuggyNewSessionRequestHandler(SeleniumBasedRequest request,
-        HttpServletResponse response, Registry registry) {
+        HttpServletResponse response, GridRegistry registry) {
       super(request, response, registry);
     }
 

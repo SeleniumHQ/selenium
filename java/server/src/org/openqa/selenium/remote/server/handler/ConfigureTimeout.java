@@ -21,43 +21,83 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class ConfigureTimeout extends WebDriverHandler<Void> implements JsonParametersAware {
 
-  private volatile String type;
-  private volatile long millis;
+  private static final String IMPLICIT = "implicit";
+  private static final String PAGE_LOAD = "page load";
+  private static final String SCRIPT = "script";
+  private static final List<String> knownTypes = Arrays.asList(IMPLICIT, PAGE_LOAD, SCRIPT);
+
+  private Map<String, Object> timeouts = new HashMap<>();
 
   public ConfigureTimeout(Session session) {
     super(session);
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    type = (String) allParameters.get("type");
-    try {
-      millis = ((Number) allParameters.get("ms")).longValue();
-    } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) timeout value passed: " + allParameters.get("ms"), ex);
+    String type = (String) allParameters.get("type");
+
+    if (type != null) {
+      // OSS
+      if (! knownTypes.contains(type)) {
+        throw new WebDriverException("Unknown wait type: " + type);
+      }
+      timeouts.put(type, allParameters.get("ms"));
+
+    } else {
+      // W3C
+      for (String key : allParameters.keySet()) {
+        if (! knownTypes.contains(key)) {
+          throw new WebDriverException("Unknown wait type: " + key);
+        }
+      }
+      timeouts.putAll(allParameters);
     }
   }
 
   @Override
   public Void call() throws Exception {
-    if ("implicit".equals(type)) {
-      getDriver().manage().timeouts().implicitlyWait(millis, TimeUnit.MILLISECONDS);
-    } else if ("page load".equals(type)) {
-      getDriver().manage().timeouts().pageLoadTimeout(millis, TimeUnit.MILLISECONDS);
-    } else if ("script".equals(type)) {
-      getDriver().manage().timeouts().setScriptTimeout(millis, TimeUnit.MILLISECONDS);
-    } else {
-      throw new WebDriverException("Unknown wait type: " + type);
+    if (timeouts.containsKey(IMPLICIT)) {
+      try {
+        getDriver().manage().timeouts().implicitlyWait(
+            ((Number) timeouts.get(IMPLICIT)).longValue(), TimeUnit.MILLISECONDS);
+      } catch (ClassCastException ex) {
+        throw new WebDriverException(
+            "Illegal (non-numeric) timeout value passed: " + timeouts.get(IMPLICIT), ex);
+      }
+    }
+    if (timeouts.containsKey(PAGE_LOAD)) {
+      try {
+        getDriver().manage().timeouts().pageLoadTimeout(
+            ((Number) timeouts.get(PAGE_LOAD)).longValue(), TimeUnit.MILLISECONDS);
+      } catch (ClassCastException ex) {
+        throw new WebDriverException(
+            "Illegal (non-numeric) timeout value passed: " + timeouts.get(PAGE_LOAD), ex);
+      }
+    }
+    if (timeouts.containsKey(SCRIPT)) {
+      try {
+        getDriver().manage().timeouts().setScriptTimeout(
+            ((Number) timeouts.get(SCRIPT)).longValue(), TimeUnit.MILLISECONDS);
+      } catch (ClassCastException ex) {
+        throw new WebDriverException(
+            "Illegal (non-numeric) timeout value passed: " + timeouts.get(SCRIPT), ex);
+      }
     }
     return null;
   }
 
   @Override
   public String toString() {
-    return String.format("[%s wait: %s]", type, millis);
+    return "[" + timeouts.entrySet().stream()
+        .map((entry) -> String.format("%s: %s", entry.getKey(), entry.getValue()))
+        .collect(Collectors.joining(",")) + "]";
   }
 }

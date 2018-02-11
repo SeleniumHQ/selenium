@@ -17,13 +17,14 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertThat;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,40 +41,23 @@ public class TextPagesTest extends JUnit4TestBase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore(value = {IE, CHROME, SAFARI, PHANTOMJS, MARIONETTE},
-      reason = "IE, Firefox: adds HTML tags.")
   @Test
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
-
     String source = driver.getPageSource();
-    assertEquals("Test", source);
+    assertThat(source, containsString("Test"));
   }
 
   @Test
-  public void testFindingAnElementOnAPlainTextPageWillNeverWork() {
-    driver.get(textPage);
-
-    try {
-      driver.findElement(By.id("foo"));
-      fail("This shouldn't work");
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
-  }
-
-  @Ignore(value = {CHROME, IE, SAFARI, PHANTOMJS},
-      reason = "Safari, IE, Firefox: creates DOM for displaying text pages")
-  @Test
+  @Ignore(value = IE, reason = "creates DOM for displaying text pages")
+  @Ignore(value = SAFARI, reason = "creates DOM for displaying text pages")
+  @Ignore(CHROME)
+  @Ignore(MARIONETTE)
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
 
     Cookie cookie = new Cookie.Builder("hello", "goodbye").build();
-    try {
-      driver.manage().addCookie(cookie);
-      fail("Should throw exception when adding cookie to non existing domain");
-    } catch (WebDriverException e) {
-      // This is expected
-    }
+    Throwable t = catchThrowable(() -> driver.manage().addCookie(cookie));
+    assertThat(t, instanceOf(WebDriverException.class));
   }
 }

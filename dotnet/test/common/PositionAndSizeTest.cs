@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
@@ -58,8 +55,10 @@ namespace OpenQA.Selenium
             Point location = GetLocationInViewPort(By.Id("box"));
             Assert.AreEqual(10, location.X);
             Assert.GreaterOrEqual(location.Y, 0);
-            Assert.LessOrEqual(location.Y, windowHeight - 100);
             Assert.AreEqual(new Point(10, 5010), GetLocationOnPage(By.Id("box")));
+            // GetLocationInViewPort only works within the context of a single frame
+            // for W3C-spec compliant remote ends.
+            // Assert.LessOrEqual(location.Y, windowHeight - 100);
         }
 
         [Test]
@@ -77,8 +76,10 @@ namespace OpenQA.Selenium
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/element_in_frame.html");
             driver.SwitchTo().Frame("ifr");
-            Assert.AreEqual(new Point(25, 25), GetLocationInViewPort(By.Id("box")));
             Assert.AreEqual(new Point(10, 10), GetLocationOnPage(By.Id("box")));
+            // GetLocationInViewPort only works within the context of a single frame
+            // for W3C-spec compliant remote ends.
+            // Assert.AreEqual(new Point(25, 25), GetLocationInViewPort(By.Id("box")));
         }
 
         [Test]
@@ -87,13 +88,14 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/element_in_nested_frame.html");
             driver.SwitchTo().Frame("ifr");
             driver.SwitchTo().Frame("ifr");
-            Assert.AreEqual(new Point(40, 40), GetLocationInViewPort(By.Id("box")));
             Assert.AreEqual(new Point(10, 10), GetLocationOnPage(By.Id("box")));
+            // GetLocationInViewPort only works within the context of a single frame
+            // for W3C-spec compliant remote ends.
+            // Assert.AreEqual(new Point(40, 40), GetLocationInViewPort(By.Id("box")));
         }
 
         [Test]
         [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldGetCoordinatesOfAnElementWithFixedPosition()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_fixed_element.html");
@@ -123,7 +125,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Chrome, "WebKit bug 28804")]
         [IgnoreBrowser(Browser.IPhone, "WebKit bug 28804")]
-        [IgnoreBrowser(Browser.Safari, "WebKit bug 28804")]
         [IgnoreBrowser(Browser.PhantomJS, "WebKit bug 28804")]
         [IgnoreBrowser(Browser.IE, "Position and size are always integer in IE")]
         public void ShouldHandleNonIntegerPositionAndSize()

@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.lift.find;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.Matchers.attribute;
 import static org.openqa.selenium.lift.Matchers.value;
-
-import static org.hamcrest.Matchers.equalTo;
 
 import org.hamcrest.Factory;
 

@@ -17,8 +17,16 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.Arrays.stream;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.UNIX;
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.os.WindowsUtils.getPathsInProgramFiles;
+import org.openqa.selenium.remote.service.DriverService;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -26,22 +34,61 @@ import com.google.common.collect.Maps;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
-import org.openqa.selenium.firefox.internal.Streams;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class FirefoxBinary {
+
+  /**
+   * Enumerates Firefox channels, according to https://wiki.mozilla.org/RapidRelease
+   */
+  public enum Channel {
+    ESR("esr"),
+    RELEASE("release"),
+    BETA("beta"),
+    AURORA("aurora"),
+    NIGHTLY("nightly");
+
+    private String name;
+
+    Channel(String name) {
+      this.name = name;
+    }
+
+    public String toString() {
+      return name;
+    }
+
+    /**
+     * Gets a channel with the name matching the parameter.
+     *
+     * @param name the channel name
+     * @return the Channel enum value matching the parameter
+     */
+    public static Channel fromString(String name) {
+      final String lcName = name.toLowerCase();
+      return stream(Channel.values())
+          .filter(ch -> ch.name.equals(lcName))
+          .findFirst().orElseThrow(() -> new WebDriverException("Unrecognized channel: " + name));
+    }
+  }
+
   private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";
-  private static final String IME_IBUS_HANDLER_LIBRARY_NAME = "libibushandler.so";
   private static final String PATH_PREFIX = "/" +
       FirefoxBinary.class.getPackage().getName().replace(".", "/") + "/";
 
@@ -53,13 +100,56 @@ public class FirefoxBinary {
   private long timeout = SECONDS.toMillis(45);
 
   public FirefoxBinary() {
-    this(null);
+    Executable systemBinary = locateFirefoxBinaryFromSystemProperty();
+    if (systemBinary != null) {
+      executable = systemBinary;
+      return;
+    }
+
+    Executable platformBinary = locateFirefoxBinariesFromPlatform().findFirst().orElse(null);
+    if (platformBinary != null) {
+      executable = platformBinary;
+      return;
+    }
+
+    throw new WebDriverException("Cannot find firefox binary in PATH. " +
+                                 "Make sure firefox is installed. OS appears to be: " + Platform.getCurrent());
+  }
+
+  public FirefoxBinary(Channel channel) {
+    Executable systemBinary = locateFirefoxBinaryFromSystemProperty();
+    if (systemBinary != null) {
+      if (systemBinary.getChannel() == channel) {
+        executable = systemBinary;
+        return;
+      } else {
+        throw new WebDriverException(
+          "Firefox executable specified by system property " + FirefoxDriver.SystemProperty.BROWSER_BINARY +
+          " does not belong to channel '" + channel + "', it appears to be '" + systemBinary.getChannel() + "'");
+      }
+    }
+
+    executable = locateFirefoxBinariesFromPlatform()
+        .filter(e -> e.getChannel() == channel)
+        .findFirst().orElseThrow(() -> new WebDriverException(
+            String.format("Cannot find firefox binary for channel '%s' in PATH", channel)));
   }
 
   public FirefoxBinary(File pathToFirefoxBinary) {
     executable = new Executable(pathToFirefoxBinary);
   }
 
+  /**
+   * deprecated Use {@link DriverService.Builder#withEnvironment(Map)} instead:
+   * <p>
+   * new FirefoxDriver(
+   *   new GeckoDriverService.Builder()
+   *     .usingDriverExecutable(new File("path/to/geckodriver.exe"))
+   *     .usingFirefoxBinary(new FirefoxBinary(new File("path/to/firefox.exe")))
+   *     .withEnvironment(ImmutableMap.of("DISPLAY", "0:0"))
+   *     .build());
+   */
+  @Deprecated
   public void setEnvironmentProperty(String propertyName, String value) {
     if (propertyName == null || value == null) {
       throw new WebDriverException(
@@ -71,6 +161,10 @@ public class FirefoxBinary {
 
   public void addCommandLineOptions(String... options) {
     extraOptions.addAll(Lists.newArrayList(options));
+  }
+
+  void amendOptions(FirefoxOptions options) {
+    options.addArguments(extraOptions);
   }
 
   protected boolean isOnLinux() {
@@ -85,36 +179,49 @@ public class FirefoxBinary {
     setEnvironmentProperty("MOZ_CRASHREPORTER_DISABLE", "1"); // Disable Breakpad
     setEnvironmentProperty("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the
                                                   // console
-
-    if (isOnLinux()
-        && (profile.areNativeEventsEnabled() || profile.shouldLoadNoFocusLib())) {
+    if (isOnLinux() && profile.shouldLoadNoFocusLib()) {
       modifyLinkLibraryPath(profileDir);
     }
 
-    List<String> cmdArray = Lists.newArrayList(getExecutable().getPath());
+    List<String> cmdArray = Lists.newArrayList();
     cmdArray.addAll(extraOptions);
     cmdArray.addAll(Lists.newArrayList(commandLineFlags));
-    CommandLine command = new CommandLine(Iterables.toArray(cmdArray, String.class));
+    CommandLine command = new CommandLine(getPath(), Iterables.toArray(cmdArray, String.class));
     command.setEnvironmentVariables(getExtraEnv());
-    executable.setLibraryPath(command, getExtraEnv());
+    command.updateDynamicLibraryPath(getExtraEnv().get(CommandLine.getLibraryPathPropertyName()));
+    // On Snow Leopard, beware of problems the sqlite library
+    if (! (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5)) {
+      String firefoxLibraryPath = System.getProperty(
+        FirefoxDriver.SystemProperty.BROWSER_LIBRARY_PATH,
+        getFile().getAbsoluteFile().getParentFile().getAbsolutePath());
+      command.updateDynamicLibraryPath(firefoxLibraryPath);
+    }
 
     if (stream == null) {
-      stream = getExecutable().getDefaultOutputStream();
+      stream = getDefaultOutputStream();
     }
     command.copyOutputTo(stream);
 
     startFirefoxProcess(command);
   }
 
-  protected void startFirefoxProcess(CommandLine command) throws IOException {
+  protected void startFirefoxProcess(CommandLine command) {
     process = command;
     command.executeAsync();
   }
 
-  protected Executable getExecutable() {
-    return executable;
+  protected File getFile() {
+    return executable.getFile();
   }
 
+  protected String getPath() {
+    return executable.getPath();
+  }
+
+  /**
+   * @deprecated No replacement. Environment should be configured in {@link DriverService} instance.
+   */
+  @Deprecated
   public Map<String, String> getExtraEnv() {
     return Collections.unmodifiableMap(extraEnv);
   }
@@ -129,9 +236,6 @@ public class FirefoxBinary {
     String newLdLibPath =
         extractAndCheck(profileDir, NO_FOCUS_LIBRARY_NAME, PATH_PREFIX + "x86", PATH_PREFIX +
             "amd64");
-    newLdLibPath +=
-        extractAndCheck(profileDir, IME_IBUS_HANDLER_LIBRARY_NAME, PATH_PREFIX + "x86",
-            PATH_PREFIX + "amd64");
     if (existingLdLibPath != null && !existingLdLibPath.equals("")) {
       newLdLibPath += existingLdLibPath;
     }
@@ -187,12 +291,8 @@ public class FirefoxBinary {
   /**
    * Waits for the process to execute, returning the command output taken from the profile's
    * execution.
-   *
-   * @throws InterruptedException if we are interrupted while waiting for the process to launch
-   * @throws IOException if there is a problem with reading the input stream of the launching
-   *         process
    */
-  public void waitFor() throws InterruptedException, IOException {
+  public void waitFor() {
     process.waitFor();
   }
 
@@ -201,27 +301,22 @@ public class FirefoxBinary {
    * execution.
    *
    * @param timeout the maximum time to wait in milliseconds
-   * @throws InterruptedException if we are interrupted while waiting for the process to launch
-   * @throws IOException if there is a problem with reading the input stream of the launching
-   *         process
    */
 
-  public void waitFor(long timeout) throws InterruptedException, IOException {
-	process.waitFor(timeout);
+  public void waitFor(long timeout) {
+	  process.waitFor(timeout);
   }
 
   /**
    * Gets all console output of the binary. Output retrieval is non-destructive and non-blocking.
    *
    * @return the console output of the executed binary.
-   * @throws IOException IO exception reading from the output stream of the firefox process
    */
-  public String getConsoleOutput() throws IOException {
+  public String getConsoleOutput() {
     if (process == null) {
       return null;
     }
-
-    return Streams.drainStream(stream);
+    return process.getStdOut();
   }
 
   public long getTimeout() {
@@ -237,6 +332,10 @@ public class FirefoxBinary {
     return "FirefoxBinary(" + executable.getPath() + ")";
   }
 
+  public String toJson() {
+    return executable.getPath();
+  }
+
   public void setOutputWatcher(OutputStream stream) {
     this.stream = stream;
   }
@@ -246,4 +345,113 @@ public class FirefoxBinary {
       process.destroy();
     }
   }
+
+  private OutputStream getDefaultOutputStream() throws FileNotFoundException {
+    String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
+    if (firefoxLogFile != null) {
+      if ("/dev/stdout".equals(firefoxLogFile)) {
+        return System.out;
+      }
+      return new FileOutputStream(firefoxLogFile);
+    }
+    return null;
+  }
+
+  /**
+   * Locates the firefox binary from a system property. Will throw an exception if the binary cannot
+   * be found.
+   */
+  private static Executable locateFirefoxBinaryFromSystemProperty() {
+    String binaryName = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_BINARY);
+    if (binaryName == null)
+      return null;
+
+    File binary = new File(binaryName);
+    if (binary.exists() && !binary.isDirectory())
+      return new Executable(binary);
+
+    Platform current = Platform.getCurrent();
+    if (current.is(WINDOWS)) {
+      if (!binaryName.endsWith(".exe")) {
+        binaryName += ".exe";
+      }
+
+    } else if (current.is(MAC)) {
+      if (!binaryName.endsWith(".app")) {
+        binaryName += ".app";
+      }
+      binaryName += "/Contents/MacOS/firefox-bin";
+    }
+
+    binary = new File(binaryName);
+    if (binary.exists())
+      return new Executable(binary);
+
+    throw new WebDriverException(
+      String.format("'%s' property set, but unable to locate the requested binary: %s",
+                    FirefoxDriver.SystemProperty.BROWSER_BINARY, binaryName));
+  }
+
+  /**
+   * Locates the firefox binary by platform.
+   */
+  private static Stream<Executable> locateFirefoxBinariesFromPlatform() {
+    ImmutableList.Builder<Executable> executables = new ImmutableList.Builder<>();
+
+    Platform current = Platform.getCurrent();
+    if (current.is(WINDOWS)) {
+      executables.addAll(Stream.of(getPathsInProgramFiles("Mozilla Firefox\\firefox.exe"),
+                                   getPathsInProgramFiles("Firefox Developer Edition\\firefox.exe"),
+                                   getPathsInProgramFiles("Nightly\\firefox.exe"))
+          .flatMap(List::stream)
+          .map(File::new).filter(File::exists)
+          .map(Executable::new).collect(toList()));
+
+    } else if (current.is(MAC)) {
+      // system
+      File binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox-bin");
+      if (binary.exists()) {
+        executables.add(new Executable(binary));
+      }
+
+      // user home
+      binary = new File(System.getProperty("user.home") + binary.getAbsolutePath());
+      if (binary.exists()) {
+        executables.add(new Executable(binary));
+      }
+
+    } else if (current.is(UNIX)) {
+      String systemFirefoxBin = new ExecutableFinder().find("firefox-bin");
+      if (systemFirefoxBin != null) {
+        executables.add(new Executable(new File(systemFirefoxBin)));
+      }
+    }
+
+    String systemFirefox = new ExecutableFinder().find("firefox");
+    if (systemFirefox != null) {
+      Path firefoxPath = new File(systemFirefox).toPath();
+      if (Files.isSymbolicLink(firefoxPath)) {
+        try {
+          Path realPath = firefoxPath.toRealPath();
+          File attempt1 = realPath.getParent().resolve("firefox").toFile();
+          if (attempt1.exists()) {
+            executables.add(new Executable(attempt1));
+          } else {
+            File attempt2 = realPath.getParent().resolve("firefox-bin").toFile();
+            if (attempt2.exists()) {
+              executables.add(new Executable(attempt2));
+            }
+          }
+        } catch (IOException e) {
+          // ignore this path
+        }
+
+      } else {
+        executables.add(new Executable(new File(systemFirefox)));
+      }
+    }
+
+    return executables.build().stream();
+  }
+
 }

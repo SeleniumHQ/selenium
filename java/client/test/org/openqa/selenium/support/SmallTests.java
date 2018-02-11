@@ -16,6 +16,8 @@
 // under the License.
 package org.openqa.selenium.support;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.openqa.selenium.support.events.EventFiringWebDriverTest;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorTest;
 import org.openqa.selenium.support.pagefactory.AnnotationsTest;
@@ -27,14 +29,12 @@ import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandlerTe
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandlerTest;
 import org.openqa.selenium.support.ui.ExpectedConditionsTest;
 import org.openqa.selenium.support.ui.FluentWaitTest;
+import org.openqa.selenium.support.ui.HowTest;
 import org.openqa.selenium.support.ui.LoadableComponentTest;
 import org.openqa.selenium.support.ui.QuotesTest;
 import org.openqa.selenium.support.ui.SelectTest;
 import org.openqa.selenium.support.ui.SlowLoadableComponentTest;
 import org.openqa.selenium.support.ui.WebDriverWaitTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -48,6 +48,7 @@ import org.junit.runners.Suite;
     EventFiringWebDriverTest.class,
     ExpectedConditionsTest.class,
     FluentWaitTest.class,
+    HowTest.class,
     LoadableComponentTest.class,
     LocatingElementHandlerTest.class,
     LocatingElementListHandlerTest.class,

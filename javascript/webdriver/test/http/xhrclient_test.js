@@ -21,7 +21,6 @@ goog.require('goog.testing.jsunit');
 goog.require('goog.userAgent');
 goog.require('webdriver.http.Request');
 goog.require('webdriver.http.XhrClient');
-goog.require('webdriver.promise');
 goog.require('webdriver.test.testutil');
 
 function shouldRunTests() {

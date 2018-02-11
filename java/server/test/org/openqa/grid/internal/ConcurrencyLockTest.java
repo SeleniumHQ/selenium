@@ -18,13 +18,13 @@
 package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,19 +42,19 @@ import java.util.Map;
 
 public class ConcurrencyLockTest {
 
-  private static Registry registry;
+  private GridRegistry registry;
 
-  private static Map<String, Object> ie = new HashMap<>();
-  private static Map<String, Object> ff = new HashMap<>();
+  private Map<String, Object> ie = new HashMap<>();
+  private Map<String, Object> ff = new HashMap<>();
 
   /**
    * create a hub with 1 IE and 1 FF
    */
-  @BeforeClass
-  public static void setup() {
-    registry = Registry.newInstance();
-    ie.put(APP, "IE");
-    ff.put(APP, "FF");
+  @Before
+  public void setup() throws Exception {
+    registry = DefaultGridRegistry.newInstance();
+    ie.put(CapabilityType.APPLICATION_NAME, "IE");
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
 
     RemoteProxy p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ie, "http://machine1:4444", registry);
     RemoteProxy p2 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine2:4444", registry);
@@ -62,7 +62,6 @@ public class ConcurrencyLockTest {
     registry.add(p2);
 
   }
-
 
   private List<String> results = Collections.synchronizedList(new ArrayList<String>());
 
@@ -101,15 +100,15 @@ public class ConcurrencyLockTest {
 
   private void runTests2(Map<String, Object> cap) throws InterruptedException {
 
-    MockedRequestHandler newSessionHandler =GridHelper.createNewSessionHandler(registry, cap);
+    MockedRequestHandler newSessionHandler = GridHelper.createNewSessionHandler(registry, cap);
 
-    if (cap.get(APP).equals("FF")) {
+    if (cap.get(CapabilityType.APPLICATION_NAME).equals("FF")) {
       // start the FF right away
       newSessionHandler.process();
       TestSession s = newSessionHandler.getSession();
       Thread.sleep(2000);
       results.add("FF");
-      registry.terminateSynchronousFOR_TEST_ONLY(s);
+      ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(s);
     } else {
       // wait for 1 sec before starting IE to make sure the FF proxy is
       // busy with the 3 FF requests.
@@ -124,8 +123,8 @@ public class ConcurrencyLockTest {
   }
 
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
   }
 

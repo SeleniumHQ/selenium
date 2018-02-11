@@ -17,24 +17,22 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.base.Supplier;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.io.IOException;
+import java.util.function.Supplier;
 
 public class RemoteSupplier implements Supplier<WebDriver> {
 
   private static OutOfProcessSeleniumServer server = new OutOfProcessSeleniumServer();
   private static volatile boolean started;
   private Capabilities desiredCapabilities;
-  private Capabilities requiredCapabilities;
 
-  public RemoteSupplier(Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
+  public RemoteSupplier(Capabilities desiredCapabilities) {
     this.desiredCapabilities = desiredCapabilities;
-   this.requiredCapabilities = requiredCapabilities;
   }
 
   public WebDriver get() {
@@ -46,8 +44,7 @@ public class RemoteSupplier implements Supplier<WebDriver> {
       startServer();
     }
 
-    RemoteWebDriver driver = new RemoteWebDriver(
-        server.getWebDriverUrl(), desiredCapabilities, requiredCapabilities);
+    RemoteWebDriver driver = new RemoteWebDriver(server.getWebDriverUrl(), desiredCapabilities);
     driver.setFileDetector(new LocalFileDetector());
     return driver;
   }
@@ -57,7 +54,11 @@ public class RemoteSupplier implements Supplier<WebDriver> {
       return;
     }
 
-    server.start();
+    try {
+      server.start();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     started = true;
   }
 }

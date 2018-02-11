@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium.webdriven.commands;
 
-import com.thoughtworks.selenium.webdriven.commands.AlertOverride;
-
 import org.openqa.selenium.WebDriver;
 
 public class AlertOverrideStub extends AlertOverride {

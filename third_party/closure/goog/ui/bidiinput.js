@@ -77,8 +77,8 @@ goog.ui.BidiInput.prototype.decorateInternal = function(element) {
  */
 goog.ui.BidiInput.prototype.createDom = function() {
   this.setElementInternal(
-      this.getDomHelper().createDom(goog.dom.TagName.INPUT,
-                                    {'type': goog.dom.InputType.TEXT}));
+      this.getDomHelper().createDom(
+          goog.dom.TagName.INPUT, {'type': goog.dom.InputType.TEXT}));
   this.init_();
 };
 
@@ -95,8 +95,8 @@ goog.ui.BidiInput.prototype.init_ = function() {
 
   // Listen to value change events
   this.inputHandler_ = new goog.events.InputHandler(this.getElement());
-  goog.events.listen(this.inputHandler_,
-      goog.events.InputHandler.EventType.INPUT,
+  goog.events.listen(
+      this.inputHandler_, goog.events.InputHandler.EventType.INPUT,
       this.setDirection_, false, this);
 };
 
@@ -158,7 +158,8 @@ goog.ui.BidiInput.prototype.setValue = function(value) {
  */
 goog.ui.BidiInput.prototype.getValue = function() {
   var element = this.getElement();
-  return goog.isDefAndNotNull(element.value) ? element.value :
+  return goog.isDefAndNotNull(element.value) ?
+      element.value :
       goog.dom.getRawTextContent(element);
 };
 

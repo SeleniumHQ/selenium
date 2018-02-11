@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +18,6 @@
 module Selenium
   module WebDriver
     class Logs
-
       #
       # @api private
       #
@@ -30,13 +27,12 @@ module Selenium
       end
 
       def get(type)
-        @bridge.getLog type
+        @bridge.log type
       end
 
       def available_types
-        @bridge.getAvailableLogTypes
+        @bridge.available_log_types
       end
-
     end # Logs
   end # WebDriver
 end # Selenium

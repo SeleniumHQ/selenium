@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using System.Drawing;
 using NUnit.Framework.Constraints;
@@ -163,7 +161,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Firefox, "Window demands focus to work.")]
-        [IgnoreBrowser(Browser.Safari, "Window demands focus to work.")]
         public void ChangeEventIsFiredAppropriatelyWhenFocusIsLost()
         {
             driver.Url = javascriptPage;
@@ -234,7 +231,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.Safari, "Safari: issue 3693")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.WindowsPhone, "Windows Phone driver does not support multiple windows")]

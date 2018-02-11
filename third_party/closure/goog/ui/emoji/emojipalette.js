@@ -46,15 +46,11 @@ goog.require('goog.ui.emoji.EmojiPaletteRenderer');
  * @constructor
  * @final
  */
-goog.ui.emoji.EmojiPalette = function(emoji,
-                                      opt_urlPrefix,
-                                      opt_renderer,
-                                      opt_domHelper) {
-  goog.ui.Palette.call(this,
-                       null,
-                       opt_renderer ||
-                       new goog.ui.emoji.EmojiPaletteRenderer(null),
-                       opt_domHelper);
+goog.ui.emoji.EmojiPalette = function(
+    emoji, opt_urlPrefix, opt_renderer, opt_domHelper) {
+  goog.ui.Palette.call(
+      this, null, opt_renderer || new goog.ui.emoji.EmojiPaletteRenderer(null),
+      opt_domHelper);
   /**
    * All the different emoji that this palette can display. Maps emoji ids
    * (string) to the goog.ui.emoji.Emoji for that id.
@@ -138,16 +134,15 @@ goog.ui.emoji.EmojiPalette.prototype.imageLoader_;
  * @return {!Array<!HTMLDivElement>} The emoji items.
  * @private
  */
-goog.ui.emoji.EmojiPalette.prototype.getEmojiArrayFromProperties_ =
-    function(emojiGroup) {
+goog.ui.emoji.EmojiPalette.prototype.getEmojiArrayFromProperties_ = function(
+    emojiGroup) {
   var emojiItems = [];
 
   for (var i = 0; i < emojiGroup.length; i++) {
     var url = emojiGroup[i][0];
     var id = emojiGroup[i][1];
     var spriteInfo = emojiGroup[i][2];
-    var displayUrl = spriteInfo ? spriteInfo.getUrl() :
-                     this.urlPrefix_ + url;
+    var displayUrl = spriteInfo ? spriteInfo.getUrl() : this.urlPrefix_ + url;
 
     var item = this.getRenderer().createPaletteItem(
         this.getDomHelper(), id, spriteInfo, displayUrl);
@@ -188,8 +183,8 @@ goog.ui.emoji.EmojiPalette.prototype.loadAnimatedEmoji = function() {
       this.imageLoader_.addImage(emoji.getId(), url);
     }
 
-    this.getHandler().listen(this.imageLoader_, goog.events.EventType.LOAD,
-        this.handleImageLoad_);
+    this.getHandler().listen(
+        this.imageLoader_, goog.events.EventType.LOAD, this.handleImageLoad_);
     this.imageLoader_.start();
   }
 };
@@ -255,7 +250,12 @@ goog.ui.emoji.EmojiPalette.prototype.getGoomojiIdFromElement_ = function(el) {
   }
 
   var item = this.getRenderer().getContainingItem(this, el);
-  return item ? item.getAttribute(goog.ui.emoji.Emoji.ATTRIBUTE) : null;
+  if (item) {
+    return item.getAttribute(goog.ui.emoji.Emoji.ATTRIBUTE) != '' ?
+        item.getAttribute(goog.ui.emoji.Emoji.ATTRIBUTE) :
+        item.getAttribute(goog.ui.emoji.Emoji.DATA_ATTRIBUTE);
+  }
+  return null;
 };
 
 

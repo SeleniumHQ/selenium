@@ -15,15 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.testing.drivers;
-
-import com.google.common.base.Supplier;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.UnreachableBrowserException;
+
+import java.util.function.Supplier;
 
 public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
 
@@ -54,6 +53,8 @@ public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
           System.out.println("Waiting 5 sec before the next attempt");
           Thread.sleep(5000);
         } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          throw new RuntimeException(e);
         }
       }
     }

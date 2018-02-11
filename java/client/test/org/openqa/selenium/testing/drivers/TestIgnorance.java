@@ -20,21 +20,20 @@ package org.openqa.selenium.testing.drivers;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.ALL;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.EDGE;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.GRID;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.REMOTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.drivers.Browser.chrome;
 import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
-import static org.openqa.selenium.testing.drivers.Browser.htmlunit_js;
 import static org.openqa.selenium.testing.drivers.Browser.ie;
 import static org.openqa.selenium.testing.drivers.Browser.opera;
-import static org.openqa.selenium.testing.drivers.Browser.phantomjs;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -42,7 +41,7 @@ import com.google.common.collect.Sets;
 import org.junit.runner.Description;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.IgnoreList;
 import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
@@ -55,8 +54,7 @@ import java.util.Set;
 public class TestIgnorance {
 
   private Set<Browser> alwaysNativeEvents = ImmutableSet.of(chrome, ie, opera);
-  private Set<Browser> neverNativeEvents = ImmutableSet.of(
-      htmlunit, htmlunit_js, phantomjs);
+  private Set<Browser> neverNativeEvents = ImmutableSet.of(htmlunit);
   private IgnoreComparator ignoreComparator = new IgnoreComparator();
   private Set<String> methods = Sets.newHashSet();
   private Set<String> only = Sets.newHashSet();
@@ -89,7 +87,9 @@ public class TestIgnorance {
   }
 
   public boolean isIgnored(Description method) {
-    boolean ignored = ignoreComparator.shouldIgnore(method.getTestClass().getAnnotation(Ignore.class)) ||
+    boolean ignored = ignoreComparator.shouldIgnore(method.getTestClass().getAnnotation(IgnoreList.class)) ||
+                      ignoreComparator.shouldIgnore(method.getTestClass().getAnnotation(Ignore.class)) ||
+                      ignoreComparator.shouldIgnore(method.getAnnotation(IgnoreList.class)) ||
                       ignoreComparator.shouldIgnore(method.getAnnotation(Ignore.class));
 
     ignored |= isIgnoredBecauseOfJUnit4Ignore(method.getTestClass().getAnnotation(org.junit.Ignore.class));
@@ -97,9 +97,6 @@ public class TestIgnorance {
     if (Boolean.getBoolean("ignored_only")) {
       ignored = !ignored;
     }
-
-    ignored |= isIgnoredDueToJavascript(method.getTestClass().getAnnotation(JavascriptEnabled.class));
-    ignored |= isIgnoredDueToJavascript(method.getAnnotation(JavascriptEnabled.class));
 
     ignored |= isIgnoredBecauseOfNativeEvents(method.getTestClass().getAnnotation(NativeEventsRequired.class));
     ignored |= isIgnoredBecauseOfNativeEvents(method.getAnnotation(NativeEventsRequired.class));
@@ -150,13 +147,8 @@ public class TestIgnorance {
                       || method.getTestClass().getAnnotation(NeedsLocalEnvironment.class) != null;
     if (SauceDriver.shouldUseSauce()) {
       return isLocal;
-    } else {
-      return Boolean.getBoolean("local_only") && !isLocal;
     }
-  }
-
-  private boolean isIgnoredDueToJavascript(JavascriptEnabled enabled) {
-    return enabled != null && !browser.isJavascriptEnabled();
+    return Boolean.getBoolean("local_only") && !isLocal;
   }
 
   private boolean isIgnoredDueToEnvironmentVariables(Description method) {
@@ -167,13 +159,20 @@ public class TestIgnorance {
   }
 
   public void setBrowser(Browser browser) {
-    this.browser = checkNotNull(browser, "Browser to use must be set");
+    this.browser = checkNotNull(
+        browser,
+        "Browser to use must be set. Do this by setting the 'selenium.browser' system property");
     addIgnoresForBrowser(browser, ignoreComparator);
   }
 
   private void addIgnoresForBrowser(Browser browser, IgnoreComparator comparator) {
-    if (Boolean.getBoolean("selenium.browser.remote") || SauceDriver.shouldUseSauce()) {
+    if (Boolean.getBoolean("selenium.browser.remote")
+        || Boolean.getBoolean("selenium.browser.grid")
+        || SauceDriver.shouldUseSauce()) {
       comparator.addDriver(REMOTE);
+    }
+    if (Boolean.getBoolean("selenium.browser.grid")) {
+      comparator.addDriver(GRID);
     }
 
     switch (browser) {
@@ -181,8 +180,13 @@ public class TestIgnorance {
         comparator.addDriver(CHROME);
         break;
 
+      case edge:
+        comparator.addDriver(EDGE);
+        break;
+
       case ff:
-        if (Boolean.getBoolean("webdriver.firefox.marionette")) {
+        if (System.getProperty("webdriver.firefox.marionette") == null ||
+            Boolean.getBoolean("webdriver.firefox.marionette")) {
           comparator.addDriver(MARIONETTE);
         } else {
           comparator.addDriver(FIREFOX);
@@ -190,7 +194,6 @@ public class TestIgnorance {
         break;
 
       case htmlunit:
-      case htmlunit_js:
         comparator.addDriver(HTMLUNIT);
         break;
 
@@ -207,10 +210,6 @@ public class TestIgnorance {
 
       case operablink:
         comparator.addDriver(CHROME);
-        break;
-
-      case phantomjs:
-        comparator.addDriver(PHANTOMJS);
         break;
 
       case safari:

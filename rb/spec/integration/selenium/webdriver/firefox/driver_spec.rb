@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,49 +19,82 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    module Firefox
+    describe Firefox, only: {browser: %i[ff_esr firefox]} do
+      it 'creates default capabilities (W3C)', except: {browser: :ff_esr} do
+        create_driver! do |driver|
+          caps = driver.capabilities
+          expect(caps.proxy).to be_nil
+          expect(caps.browser_version).to match(/^\d\d\./)
+          expect(caps.platform_name).to_not be_nil
 
-      compliant_on :browser => :firefox do
-        describe Driver do
-          describe ".new" do
+          expect(caps.accept_insecure_certs).to be == false
+          expect(caps.page_load_strategy).to be == 'normal'
+          expect(caps.accessibility_checks).to be == false
+          expect(caps.implicit_timeout).to be_zero
+          expect(caps.page_load_timeout).to be == 300000
+          expect(caps.script_timeout).to be == 30000
 
-            it "takes a binary path as an argument" do
-              pending "Set ENV['ALTERNATE_FIREFOX_PATH'] to test this" unless ENV['ALTERNATE_FIREFOX_PATH']
-
-              begin
-                default_path = Firefox::Binary.path
-
-                driver1 = Selenium::WebDriver.for :firefox
-                default_version = driver1.capabilities[:version]
-                driver1.quit
-
-                caps = Remote::Capabilities.firefox(firefox_binary: ENV['ALTERNATE_FIREFOX_PATH'])
-                driver2 = Selenium::WebDriver.for :firefox, :desired_capabilities => caps
-
-                expect(driver2.capabilities[:version]).to_not be == default_version
-                driver2.quit
-              ensure
-                Firefox::Binary.path = default_path
-              end
-            end
-
-            it "takes a Firefox::Profile instance as argument" do
-              begin
-                profile = Selenium::WebDriver::Firefox::Profile.new
-                driver = Selenium::WebDriver.for :firefox, :profile => profile
-                stored_profile = driver.instance_variable_get('@bridge').instance_variable_get('@launcher').instance_variable_get('@profile')
-                expect(stored_profile).to be == profile
-              ensure
-                driver.quit if driver
-              end
-            end
-          end
-
-          it_behaves_like "driver that can be started concurrently", :firefox
-
-        end # Driver
+          expect(caps.remote_session_id).not_to be_nil
+        end
       end
 
-    end # Firefox
+      it 'creates default capabilities (OSS)', only: {browser: :ff_esr} do
+        create_driver! do |driver|
+          caps = driver.capabilities
+          expect(caps.proxy).to be_nil
+          expect(caps.browser_name).to_not be_nil
+          expect(caps.version).to match(/^\d\d\./)
+          expect(caps.platform).to_not be_nil
+
+          expect(caps.javascript_enabled).to_not be_nil
+          expect(caps.css_selectors_enabled).to_not be_nil
+          expect(caps.takes_screenshot).to_not be_nil
+          expect(caps.native_events).to_not be_nil
+          expect(caps.rotatable).to_not be_nil
+        end
+      end
+
+      it 'takes a binary path as an argument', only: {driver: :firefox} do
+        skip "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
+
+        begin
+          path = Firefox::Binary.path
+
+          create_driver! do |driver|
+            @default_version = driver.capabilities.version
+            expect { driver.capabilities.browser_version }.to_not raise_exception
+          end
+
+          caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']})
+          create_driver!(desired_capabilities: caps) do |driver|
+            expect(driver.capabilities.version).to_not eql(@default_version)
+            expect { driver.capabilities.browser_version }.to_not raise_exception
+          end
+        ensure
+          Firefox::Binary.path = path
+        end
+      end
+
+      it 'gives precedence to firefox options versus argument switch', only: {driver: :firefox} do
+        skip "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
+
+        begin
+          path = Firefox::Binary.path
+
+          create_driver! do |driver|
+            @default_version = driver.capabilities.version
+            expect { driver.capabilities.browser_version }.to_not raise_exception
+          end
+
+          caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']})
+          create_driver!(desired_capabilities: caps, driver_opts: {binary: path}) do |driver|
+            expect(driver.capabilities.version).to_not eql(@default_version)
+            expect { driver.capabilities.browser_version }.to_not raise_exception
+          end
+        ensure
+          Firefox::Binary.path = path
+        end
+      end
+    end
   end # WebDriver
 end # Selenium

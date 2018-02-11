@@ -16,11 +16,7 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using OpenQA.Selenium;
-using Selenium.Internal.SeleniumEmulation;
 
 namespace Selenium.Internal.SeleniumEmulation
 {

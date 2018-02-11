@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
@@ -51,6 +50,5 @@ public class DimensionTest {
     assertEquals(d1, d1copy);
     assertEquals(d1.hashCode(), d1copy.hashCode());
   }
-
 
 }

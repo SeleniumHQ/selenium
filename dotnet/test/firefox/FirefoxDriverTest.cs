@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using OpenQA.Selenium.Firefox.Internal;
 using System.Threading;
-using System.Collections.ObjectModel;
 using OpenQA.Selenium.Environment;
 using System.IO;
 

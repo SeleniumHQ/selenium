@@ -17,16 +17,15 @@
 
 package org.openqa.grid.web.servlet.handler;
 
-import org.openqa.grid.common.RegistrationRequest;
+import com.google.common.collect.Maps;
+
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.internal.exception.NewSessionException;
-import org.openqa.grid.web.utils.BrowserNameUtils;
+import org.openqa.grid.internal.GridRegistry;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class LegacySeleniumRequest extends SeleniumBasedRequest {
 
-  public LegacySeleniumRequest(HttpServletRequest httpServletRequest, Registry registry) {
+  public LegacySeleniumRequest(HttpServletRequest httpServletRequest, GridRegistry registry) {
     super(httpServletRequest, registry);
 
   }
@@ -85,19 +84,7 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
         Map<String, Object> cap = new HashMap<>();
         // TODO freynaud : more splitting, like trying to guess the
         // platform or version ?
-
-        // We don't want to process Grid 1.0 environment names because
-        // they use an explicit mapping
-        // to a browser launcher string.
-        if (getRegistry().getConfiguration().getGrid1Mapping().containsKey(envt)) {
-          cap.put(RegistrationRequest.BROWSER, envt);
-        }
-
-        // Otherwise, process the environment string to extract the
-        // target browser and platform.
-        else {
-          cap.putAll(BrowserNameUtils.parseGrid2Environment(envt));
-        }
+        cap.putAll(parseGrid2Environment(envt));
 
         return cap;
       }
@@ -106,45 +93,23 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
     throw new RuntimeException("Error");
   }
 
-  @Override
-  public String getNewSessionRequestedCapability(TestSession session) {
-    try {
-      String body = getBody();
-      String[] pieces = body.split("&");
-      StringBuilder builder = new StringBuilder();
+  private Map<String, Object> parseGrid2Environment(String environment) {
+    Map<String, Object> ret = Maps.newHashMap();
 
-      for (String piece : pieces) {
-        if (piece.startsWith("1=")) {
-          piece = URLDecoder.decode(piece, "UTF-8");
-          String parts[] = piece.split("1=");
-
-          // We don't want to process Grid 1.0 environment names
-          // because they use an explicit mapping
-          // to a browser launcher string.
-          if (getRegistry().getConfiguration().getGrid1Mapping().containsKey(parts[1])) {
-            piece =
-                String.format(
-                    "1=%s",
-                    URLEncoder.encode(
-                        BrowserNameUtils.lookupGrid1Environment(parts[1], getRegistry()), "UTF-8"));
-          }
-
-          // Otherwise, the requested environment includes the browser
-          // name before the space.
-          else {
-            piece =
-                (String) BrowserNameUtils.parseGrid2Environment(piece).get(
-                    RegistrationRequest.BROWSER);
-          }
-        }
-        builder.append(piece).append("&");
+    String[] details = environment.split(" ");
+    if (details.length == 1) {
+      // simple browser string
+      ret.put(CapabilityType.BROWSER_NAME, details[0]);
+    } else {
+      // more complex. Only case handled so far = X on Y
+      // where X is the browser string, Y the OS
+      ret.put(CapabilityType.BROWSER_NAME, details[0]);
+      if (details.length == 3) {
+        ret.put(CapabilityType.PLATFORM, Platform.extractFromSysProperty(details[2]));
       }
-      return builder.toString();
-    } catch (UnsupportedEncodingException ignore) {
-
     }
-    throw new NewSessionException("Error with the request ");
 
+    return ret;
   }
 
   @Override

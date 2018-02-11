@@ -26,21 +26,21 @@ function testCallbackHelper_functionCalled() {
   var callback = callbackHelper();
   callback();
   assertNotThrows(callback.assertCalled);
-  assertThrows(callback.assertNotCalled);
+  assertThrowsJsUnitException(callback.assertNotCalled);
 }
 
 function testCallbackHelper_functionCalledMoreThanOnce() {
   var callback = callbackHelper();
   callback();
   callback(123, 'abc');
-  assertThrows(callback.assertCalled);
-  assertThrows(callback.assertNotCalled);
+  assertThrowsJsUnitException(callback.assertCalled);
+  assertThrowsJsUnitException(callback.assertNotCalled);
 }
 
 function testCallbackHelper_functionNotCalled() {
   var callback = callbackHelper();
   assertNotThrows(callback.assertNotCalled);
-  assertThrows(callback.assertCalled);
+  assertThrowsJsUnitException(callback.assertCalled);
 }
 
 function testCallbackHelper_wrappedFunctionIsCalled() {
@@ -50,38 +50,36 @@ function testCallbackHelper_wrappedFunctionIsCalled() {
   });
   callback();
   assertNotThrows(callback.assertCalled);
-  assertThrows(callback.assertNotCalled);
+  assertThrowsJsUnitException(callback.assertNotCalled);
   assertEquals(1, count);
 }
 
 function testCallbackPair_callbackExpected() {
   var pair = callbackPair();
-  assertThrows(pair.assertCallback);
+  assertThrowsJsUnitException(pair.assertCallback);
   pair.callback();
   assertNotThrows(pair.assertCallback);
   pair.errback();
-  assertThrows(pair.assertCallback);
+  assertThrowsJsUnitException(pair.assertCallback);
 
   pair.reset();
   pair.callback();
   assertNotThrows(pair.assertCallback);
   pair.callback();
-  assertThrows('Should expect to be called only once',
-      pair.assertCallback);
 }
 
 function testCallbackPair_errbackExpected() {
   var pair = callbackPair();
-  assertThrows(pair.assertErrback);
+  assertThrowsJsUnitException(pair.assertErrback);
   pair.errback();
   assertNotThrows(pair.assertErrback);
   pair.callback();
-  assertThrows(pair.assertErrback);
+  assertThrowsJsUnitException(pair.assertErrback);
 }
 
 function testCallbackPair_eitherExpected() {
   var pair = callbackPair();
-  assertThrows(pair.assertEither);
+  assertThrowsJsUnitException(pair.assertEither);
   pair.errback();
   assertNotThrows(pair.assertEither);
   pair.reset();
@@ -95,10 +93,10 @@ function testCallbackPair_neitherExpected() {
   var pair = callbackPair();
   assertNotThrows(pair.assertNeither);
   pair.errback();
-  assertThrows(pair.assertNeither);
+  assertThrowsJsUnitException(pair.assertNeither);
   pair.reset();
   pair.callback();
-  assertThrows(pair.assertNeither);
+  assertThrowsJsUnitException(pair.assertNeither);
   pair.errback();
-  assertThrows(pair.assertNeither);
+  assertThrowsJsUnitException(pair.assertNeither);
 }

@@ -19,32 +19,32 @@
  * @fileoverview Various HTTP utilities.
  */
 
-var base = require('../lib/_base'),
-    error = require('../error'),
-    Executor = require('./index').Executor,
+'use strict';
+
+const Executor = require('./index').Executor,
     HttpClient = require('./index').HttpClient,
     HttpRequest = require('./index').Request,
     Command = require('../lib/command').Command,
     CommandName = require('../lib/command').Name,
-    promise = base.require('webdriver.promise');
+    error = require('../lib/error');
 
 
 
 /**
  * Queries a WebDriver server for its current status.
  * @param {string} url Base URL of the server to query.
- * @return {!webdriver.promise.Promise.<!Object>} A promise that resolves with
+ * @return {!Promise<!Object>} A promise that resolves with
  *     a hash of the server status.
  */
 function getStatus(url) {
   var client = new HttpClient(url);
   var executor = new Executor(client);
   var command = new Command(CommandName.GET_SERVER_STATUS);
-  return executor.execute(command).then(function(responseObj) {
-    error.checkLegacyResponse(responseObj);
-    return responseObj['value'];
-  });
+  return executor.execute(command);
 }
+
+
+class CancellationError {}
 
 
 // PUBLIC API
@@ -53,41 +53,67 @@ function getStatus(url) {
 /**
  * Queries a WebDriver server for its current status.
  * @param {string} url Base URL of the server to query.
- * @return {!webdriver.promise.Promise.<!Object>} A promise that resolves with
+ * @return {!Promise<!Object>} A promise that resolves with
  *     a hash of the server status.
  */
 exports.getStatus = getStatus;
+
+
+exports.CancellationError = CancellationError;
 
 
 /**
  * Waits for a WebDriver server to be healthy and accepting requests.
  * @param {string} url Base URL of the server to query.
  * @param {number} timeout How long to wait for the server.
- * @return {!webdriver.promise.Promise} A promise that will resolve when the
- *     server is ready.
+ * @param {Promise=} opt_cancelToken A promise used as a cancellation signal:
+ *     if resolved before the server is ready, the wait will be terminated
+ *     early with a {@link CancellationError}.
+ * @return {!Promise} A promise that will resolve when the server is ready, or
+ *     if the wait is cancelled.
  */
-exports.waitForServer = function(url, timeout) {
-  var ready = promise.defer(),
-      start = Date.now();
-  checkServerStatus();
-  return ready.promise;
+exports.waitForServer = function(url, timeout, opt_cancelToken) {
+  return new Promise((onResolve, onReject) => {
+    let start = Date.now();
 
-  function checkServerStatus() {
-    return getStatus(url).then(ready.fulfill, onError);
-  }
+    let done = false;
+    let resolve = (status) => {
+      done = true;
+      onResolve(status);
+    };
+    let reject = (err) => {
+      done = true;
+      onReject(err);
+    };
 
-  function onError() {
-    if (Date.now() - start > timeout) {
-      ready.reject(
-          Error('Timed out waiting for the WebDriver server at ' + url));
-    } else {
-      setTimeout(function() {
-        if (ready.isPending()) {
-          checkServerStatus();
-        }
-      }, 50);
+    if (opt_cancelToken) {
+      opt_cancelToken.then(_ => reject(new CancellationError));
     }
-  }
+
+    checkServerStatus();
+    function checkServerStatus() {
+      return getStatus(url).then(status => resolve(status), onError);
+    }
+
+    function onError(e) {
+      // Some servers don't support the status command. If they are able to
+      // response with an error, then can consider the server ready.
+      if (e instanceof error.UnsupportedOperationError) {
+        resolve({});
+        return;
+      }
+
+      if (Date.now() - start > timeout) {
+        reject(Error('Timed out waiting for the WebDriver server at ' + url));
+      } else {
+        setTimeout(function() {
+          if (!done) {
+            checkServerStatus();
+          }
+        }, 50);
+      }
+    }
+  });
 };
 
 
@@ -96,39 +122,59 @@ exports.waitForServer = function(url, timeout) {
  * timeout expires.
  * @param {string} url The URL to poll.
  * @param {number} timeout How long to wait, in milliseconds.
- * @return {!webdriver.promise.Promise} A promise that will resolve when the
- *     URL responds with 2xx.
+ * @param {Promise=} opt_cancelToken A promise used as a cancellation signal:
+ *     if resolved before the a 2xx response is received, the wait will be
+ *     terminated early with a {@link CancellationError}.
+ * @return {!Promise} A promise that will resolve when a 2xx is received from
+ *     the given URL, or if the wait is cancelled.
  */
-exports.waitForUrl = function(url, timeout) {
-  var client = new HttpClient(url),
-      request = new HttpRequest('GET', ''),
-      ready = promise.defer(),
-      start = Date.now();
-  testUrl();
-  return ready.promise;
+exports.waitForUrl = function(url, timeout, opt_cancelToken) {
+  return new Promise((onResolve, onReject) => {
+    let client = new HttpClient(url);
+    let request = new HttpRequest('GET', '');
+    let start = Date.now();
 
-  function testUrl() {
-    client.send(request).then(onResponse, onError);
-  }
+    let done = false;
+    let resolve = () => {
+      done = true;
+      onResolve();
+    };
+    let reject = (err) => {
+      done = true;
+      onReject(err);
+    };
 
-  function onError() {
-    if (Date.now() - start > timeout) {
-      ready.reject(Error(
-          'Timed out waiting for the URL to return 2xx: ' + url));
-    } else {
-      setTimeout(function() {
-        if (ready.isPending()) {
-          testUrl();
-        }
-      }, 50);
+    if (opt_cancelToken) {
+      opt_cancelToken.then(_ => reject(new CancellationError));
     }
-  }
 
-  function onResponse(response) {
-    if (!ready.isPending()) return;
-    if (response.status > 199 && response.status < 300) {
-      return ready.fulfill();
+    testUrl();
+
+    function testUrl() {
+      client.send(request).then(onResponse, onError);
     }
-    onError();
-  }
+
+    function onError() {
+      if (Date.now() - start > timeout) {
+        reject(Error('Timed out waiting for the URL to return 2xx: ' + url));
+      } else {
+        setTimeout(function() {
+          if (!done) {
+            testUrl();
+          }
+        }, 50);
+      }
+    }
+
+    function onResponse(response) {
+      if (done) {
+        return;
+      }
+      if (response.status > 199 && response.status < 300) {
+        resolve();
+        return;
+      }
+      onError();
+    }
+  });
 };

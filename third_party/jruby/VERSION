@@ -1,4 +1,1 @@
-JRuby: JRuby: jruby 1.6.0.dev @ 2011-01-04 e1fe932
-Bundled gems: json_pure, albacore, rspec (2.4.0), rake, ci_reporter, rubyzip
-
-How to update the jar: https://gist.github.com/733501
+jruby 9.1.15.0 (2.3.3) 2017-12-07 929fde8 Java HotSpot(TM) 64-Bit Server VM 25.152-b16 on 1.8.0_152-b16 +jit [darwin-x86_64]

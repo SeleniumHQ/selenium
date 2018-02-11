@@ -33,11 +33,11 @@ goog.require('goog.ui.ContainerRenderer');
  * code.  The tab bar's DOM structure is determined by its orientation and
  * location relative to tab contents.  For example, a horizontal tab bar
  * located above tab contents looks like this:
- * <pre>
- *   <div class="goog-tab-bar goog-tab-bar-horizontal goog-tab-bar-top">
- *     ...(tabs here)...
- *   </div>
- * </pre>
+ *
+ *    <div class="goog-tab-bar goog-tab-bar-horizontal goog-tab-bar-top">
+ *      ...(tabs here)...
+ *    </div>
+ *
  * @constructor
  * @extends {goog.ui.ContainerRenderer}
  */
@@ -79,8 +79,8 @@ goog.ui.TabBarRenderer.prototype.getCssClass = function() {
  * @protected
  * @override
  */
-goog.ui.TabBarRenderer.prototype.setStateFromClassName = function(tabBar,
-    className, baseClass) {
+goog.ui.TabBarRenderer.prototype.setStateFromClassName = function(
+    tabBar, className, baseClass) {
   // Create the class-to-location lookup table on first access.
   if (!this.locationByClass_) {
     this.createLocationByClassMap_();
@@ -92,8 +92,8 @@ goog.ui.TabBarRenderer.prototype.setStateFromClassName = function(tabBar,
   if (location) {
     tabBar.setLocation(location);
   } else {
-    goog.ui.TabBarRenderer.superClass_.setStateFromClassName.call(this, tabBar,
-        className, baseClass);
+    goog.ui.TabBarRenderer.superClass_.setStateFromClassName.call(
+        this, tabBar, className, baseClass);
   }
 };
 
@@ -108,8 +108,8 @@ goog.ui.TabBarRenderer.prototype.setStateFromClassName = function(tabBar,
  * @override
  */
 goog.ui.TabBarRenderer.prototype.getClassNames = function(tabBar) {
-  var classNames = goog.ui.TabBarRenderer.superClass_.getClassNames.call(this,
-      tabBar);
+  var classNames =
+      goog.ui.TabBarRenderer.superClass_.getClassNames.call(this, tabBar);
 
   // Create the location-to-class lookup table on first access.
   if (!this.classByLocation_) {
@@ -135,6 +135,7 @@ goog.ui.TabBarRenderer.prototype.createClassByLocationMap_ = function() {
    * and string concatenation.
    * @type {Object}
    * @private
+   * @suppress {missingRequire} goog.ui.TabBar
    */
   this.classByLocation_ = goog.object.create(
       goog.ui.TabBar.Location.TOP, goog.getCssName(baseClass, 'top'),

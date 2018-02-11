@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Defines of how the proxy tries to mitigate system errors like network issues etc. When a proxy
  * implements this interface, the polling will start when the proxy is fully registered to the
- * Registry, ie after the Registration.beforeRegistration() is done.
+ * GridRegistry, ie after the Registration.beforeRegistration() is done.
  */
 public interface SelfHealingProxy {
 

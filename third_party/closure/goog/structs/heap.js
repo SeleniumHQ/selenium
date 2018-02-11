@@ -89,7 +89,7 @@ goog.structs.Heap.prototype.insertAll = function(heap) {
     // If it is a heap and the current heap is empty, I can rely on the fact
     // that the keys/values are in the correct order to put in the underlying
     // structure.
-    if (heap.getCount() <= 0) {
+    if (this.getCount() <= 0) {
       var nodes = this.nodes_;
       for (var i = 0; i < keys.length; i++) {
         nodes.push(new goog.structs.Node(keys[i], values[i]));
@@ -170,8 +170,9 @@ goog.structs.Heap.prototype.moveDown_ = function(index) {
 
     // Determine the index of the smaller child.
     var smallerChildIndex = rightChildIndex < count &&
-        nodes[rightChildIndex].getKey() < nodes[leftChildIndex].getKey() ?
-        rightChildIndex : leftChildIndex;
+            nodes[rightChildIndex].getKey() < nodes[leftChildIndex].getKey() ?
+        rightChildIndex :
+        leftChildIndex;
 
     // If the node being moved down is smaller than its children, the node
     // has found the correct index it should be at.
@@ -280,9 +281,8 @@ goog.structs.Heap.prototype.getKeys = function() {
  * @return {boolean} Whether the heap contains the value.
  */
 goog.structs.Heap.prototype.containsValue = function(val) {
-  return goog.array.some(this.nodes_, function(node) {
-    return node.getValue() == val;
-  });
+  return goog.array.some(
+      this.nodes_, function(node) { return node.getValue() == val; });
 };
 
 
@@ -292,9 +292,8 @@ goog.structs.Heap.prototype.containsValue = function(val) {
  * @return {boolean} Whether the heap contains the key.
  */
 goog.structs.Heap.prototype.containsKey = function(key) {
-  return goog.array.some(this.nodes_, function(node) {
-    return node.getKey() == key;
-  });
+  return goog.array.some(
+      this.nodes_, function(node) { return node.getKey() == key; });
 };
 
 

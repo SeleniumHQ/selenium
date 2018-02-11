@@ -59,27 +59,16 @@ goog.db.IndexedDb = function(db) {
   this.eventHandler_ = new goog.events.EventHandler(this);
 
   this.eventHandler_.listen(
-      this.db_,
-      goog.db.IndexedDb.EventType.ABORT,
-      goog.bind(
-          this.dispatchEvent,
-          this,
-          goog.db.IndexedDb.EventType.ABORT));
+      this.db_, goog.db.IndexedDb.EventType.ABORT,
+      goog.bind(this.dispatchEvent, this, goog.db.IndexedDb.EventType.ABORT));
   this.eventHandler_.listen(
-      this.db_,
-      goog.db.IndexedDb.EventType.ERROR,
-      this.dispatchError_);
+      this.db_, goog.db.IndexedDb.EventType.ERROR, this.dispatchError_);
   this.eventHandler_.listen(
-      this.db_,
-      goog.db.IndexedDb.EventType.VERSION_CHANGE,
+      this.db_, goog.db.IndexedDb.EventType.VERSION_CHANGE,
       this.dispatchVersionChange_);
   this.eventHandler_.listen(
-      this.db_,
-      goog.db.IndexedDb.EventType.CLOSE,
-      goog.bind(
-          this.dispatchEvent,
-          this,
-          goog.db.IndexedDb.EventType.CLOSE));
+      this.db_, goog.db.IndexedDb.EventType.CLOSE,
+      goog.bind(this.dispatchEvent, this, goog.db.IndexedDb.EventType.CLOSE));
 };
 goog.inherits(goog.db.IndexedDb, goog.events.EventTarget);
 
@@ -102,7 +91,7 @@ goog.db.IndexedDb.prototype.open_ = true;
 goog.db.IndexedDb.prototype.dispatchError_ = function(ev) {
   this.dispatchEvent({
     type: goog.db.IndexedDb.EventType.ERROR,
-    errorCode: /** @type {IDBRequest} */ (ev.target).errorCode
+    errorCode: /** @type {IDBRequest} */ (ev.target).error.severity
   });
 };
 
@@ -115,8 +104,8 @@ goog.db.IndexedDb.prototype.dispatchError_ = function(ev) {
  * @private
  */
 goog.db.IndexedDb.prototype.dispatchVersionChange_ = function(ev) {
-  this.dispatchEvent(new goog.db.IndexedDb.VersionChangeEvent(
-      ev.oldVersion, ev.newVersion));
+  this.dispatchEvent(
+      new goog.db.IndexedDb.VersionChangeEvent(ev.oldVersion, ev.newVersion));
 };
 
 
@@ -149,10 +138,12 @@ goog.db.IndexedDb.prototype.getName = function() {
 
 
 /**
- * @return {string} The current database version.
+ * @return {number} The current database version.
  */
 goog.db.IndexedDb.prototype.getVersion = function() {
-  return this.db_.version;
+  // TODO(bradfordcsmith): drop Number() call once closure compiler's externs
+  // are updated
+  return Number(this.db_.version);
 };
 
 
@@ -169,7 +160,8 @@ goog.db.IndexedDb.prototype.getObjectStoreNames = function() {
  * {@link goog.db.UpgradeNeededCallback}.
  *
  * @param {string} name Name for the new object store.
- * @param {Object=} opt_params Options object. The available options are:
+ * @param {!IDBObjectStoreParameters=} opt_params Options object.
+ *     The available options are:
  *     keyPath, which is a string and determines what object attribute
  *     to use as the key when storing objects in this object store; and
  *     autoIncrement, which is a boolean, which defaults to false and determines
@@ -181,8 +173,8 @@ goog.db.IndexedDb.prototype.getObjectStoreNames = function() {
  */
 goog.db.IndexedDb.prototype.createObjectStore = function(name, opt_params) {
   try {
-    return new goog.db.ObjectStore(this.db_.createObjectStore(
-        name, opt_params));
+    return new goog.db.ObjectStore(
+        this.db_.createObjectStore(name, opt_params));
   } catch (ex) {
     throw goog.db.Error.fromException(ex, 'creating object store ' + name);
   }
@@ -220,9 +212,8 @@ goog.db.IndexedDb.prototype.createTransaction = function(storeNames, opt_mode) {
   try {
     // IndexedDB on Chrome 22+ requires that opt_mode not be passed rather than
     // be explicitly passed as undefined.
-    var transaction = opt_mode ?
-        this.db_.transaction(storeNames, opt_mode) :
-        this.db_.transaction(storeNames);
+    var transaction = opt_mode ? this.db_.transaction(storeNames, opt_mode) :
+                                 this.db_.transaction(storeNames);
     return new goog.db.Transaction(transaction, this);
   } catch (ex) {
     throw goog.db.Error.fromException(ex, 'creating transaction');

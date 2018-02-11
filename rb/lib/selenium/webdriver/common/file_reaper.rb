@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,21 +17,16 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
 
     module FileReaper
-
       class << self
-        def reap=(bool)
-          @reap = bool
-        end
+        attr_writer :reap
 
         def reap?
-          @reap = true unless defined?(@reap)
-          !!@reap
+          @reap = defined?(@reap) ? @reap : true
         end
 
         def tmp_files
@@ -67,7 +60,6 @@ module Selenium
 
       # we *do* want child process reaping, so not using Platform.exit_hook here.
       at_exit { reap! }
-
     end # FileReaper
   end # WebDriver
 end # Selenium

@@ -53,8 +53,8 @@ goog.net.MultiIframeLoadMonitor = function(iframes, callback, opt_hasContent) {
   this.callback_ = callback;
 
   for (var i = 0; i < iframes.length; i++) {
-    var iframeLoadMonitor = new goog.net.IframeLoadMonitor(
-        iframes[i], opt_hasContent);
+    var iframeLoadMonitor =
+        new goog.net.IframeLoadMonitor(iframes[i], opt_hasContent);
     if (iframeLoadMonitor.isLoaded()) {
       // Already loaded - don't need to wait
       iframeLoadMonitor.dispose();
@@ -115,4 +115,3 @@ goog.net.MultiIframeLoadMonitor.prototype.stopMonitoring = function() {
   }
   this.pendingIframeLoadMonitors_.length = 0;
 };
-

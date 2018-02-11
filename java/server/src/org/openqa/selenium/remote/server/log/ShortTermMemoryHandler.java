@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.log;
 
 import java.io.StringWriter;
@@ -55,7 +54,7 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
 
 
   @Override
-  public void publish(LogRecord record) {
+  public synchronized void publish(LogRecord record) {
     if (record.getLevel().intValue() < minimumLevel) {
       return;
     }
@@ -67,12 +66,12 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
   }
 
   @Override
-  public void flush() {
+  public synchronized void flush() {
     /* NOOP */
   }
 
   @Override
-  public void close() throws SecurityException {
+  public synchronized void close() throws SecurityException {
     for (int i = 0; i < capacity; i++) {
       lastRecords[i] = null;
     }
@@ -95,7 +94,7 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
     return validRecords.toArray(new LogRecord[validRecords.size()]);
   }
 
-  public String formattedRecords() {
+  public synchronized String formattedRecords() {
     final StringWriter writer;
 
     writer = new StringWriter();

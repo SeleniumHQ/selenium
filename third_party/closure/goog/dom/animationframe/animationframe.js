@@ -158,16 +158,8 @@ goog.dom.animationFrame.running_ = false;
  */
 goog.dom.animationFrame.createTask = function(spec, opt_context) {
   var id = goog.dom.animationFrame.taskId_++;
-  var measureTask = {
-    id: id,
-    fn: spec.measure,
-    context: opt_context
-  };
-  var mutateTask = {
-    id: id,
-    fn: spec.mutate,
-    context: opt_context
-  };
+  var measureTask = {id: id, fn: spec.measure, context: opt_context};
+  var mutateTask = {id: id, fn: spec.mutate, context: opt_context};
 
   var taskSet = {
     measureTask: measureTask,
@@ -178,13 +170,6 @@ goog.dom.animationFrame.createTask = function(spec, opt_context) {
   };
 
   return function() {
-    // Default the context to the one that was used to call the tasks scheduler
-    // (this function).
-    if (!opt_context) {
-      measureTask.context = this;
-      mutateTask.context = this;
-    }
-
     // Save args and state.
     if (arguments.length > 0) {
       // The state argument goes last. That is kinda horrible but compatible
@@ -205,9 +190,10 @@ goog.dom.animationFrame.createTask = function(spec, opt_context) {
     }
     if (!taskSet.isScheduled) {
       taskSet.isScheduled = true;
-      var tasksArray = goog.dom.animationFrame.tasks_[
-          goog.dom.animationFrame.doubleBufferIndex_];
-      tasksArray.push(taskSet);
+      var tasksArray = goog.dom.animationFrame
+                           .tasks_[goog.dom.animationFrame.doubleBufferIndex_];
+      tasksArray.push(
+          /** @type {goog.dom.animationFrame.TaskSet_} */ (taskSet));
     }
     goog.dom.animationFrame.requestAnimationFrame_();
   };

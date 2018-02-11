@@ -73,10 +73,6 @@ goog.fs.url.getUrlObject_ = function() {
  *
  * @return {?goog.fs.url.UrlObject_} The object for this browser or null if the
  *     browser does not support Object Urls.
- * @suppress {unnecessaryCasts} Depending on how the code is compiled, casting
- *     goog.global to UrlObject_ may result in unnecessary cast warning.
- *     However, the cast cannot be removed because with different set of
- *     compiler flags, the cast is indeed necessary.  As such, silencing it.
  * @private
  */
 goog.fs.url.findUrlObject_ = function() {
@@ -85,11 +81,12 @@ goog.fs.url.findUrlObject_ = function() {
   if (goog.isDef(goog.global.URL) &&
       goog.isDef(goog.global.URL.createObjectURL)) {
     return /** @type {goog.fs.url.UrlObject_} */ (goog.global.URL);
-  // This is what Chrome does (as of 10.0.648.6 dev)
-  } else if (goog.isDef(goog.global.webkitURL) &&
-             goog.isDef(goog.global.webkitURL.createObjectURL)) {
+    // This is what Chrome does (as of 10.0.648.6 dev)
+  } else if (
+      goog.isDef(goog.global.webkitURL) &&
+      goog.isDef(goog.global.webkitURL.createObjectURL)) {
     return /** @type {goog.fs.url.UrlObject_} */ (goog.global.webkitURL);
-  // This is what the spec used to say to do
+    // This is what the spec used to say to do
   } else if (goog.isDef(goog.global.createObjectURL)) {
     return /** @type {goog.fs.url.UrlObject_} */ (goog.global);
   } else {

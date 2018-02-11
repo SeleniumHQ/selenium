@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import org.openqa.selenium.internal.Base64Encoder;
-
 import java.io.IOException;
+import java.util.Base64;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuth extends HttpServlet {
   private static final String CREDENTIALS = "test:test";
-  private final Base64Encoder base64 = new Base64Encoder();
+  private final Base64.Decoder decoder = Base64.getDecoder();
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
@@ -44,10 +43,10 @@ public class BasicAuth extends HttpServlet {
 
   private boolean isAuthorized(String auth) {
     if (auth != null) {
-      final int index = auth.indexOf(' ');
+      final int index = auth.indexOf(' ') + 1;
 
       if (index > 0) {
-        final String credentials = new String(base64.decode(auth.substring(index)));
+        final String credentials = new String(decoder.decode(auth.substring(index)));
         return CREDENTIALS.equals(credentials);
       }
     }

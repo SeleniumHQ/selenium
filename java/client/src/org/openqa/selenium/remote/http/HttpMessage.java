@@ -17,34 +17,36 @@
 
 package org.openqa.selenium.remote.http;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
 
+import org.openqa.selenium.WebDriverException;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 class HttpMessage {
 
   private final Multimap<String, String> headers = Multimaps.newListMultimap(
-      Maps.<String, Collection<String>>newHashMap(), new Supplier<List<String>>() {
-        @Override
-        public List<String> get() {
-          return Lists.newLinkedList();
-        }
-      });
+      Maps.<String, Collection<String>>newHashMap(), Lists::newLinkedList);
 
   private final Map<String, Object> attributes = Maps.newHashMap();
 
-  private byte[] content = new byte[0];
+  private InputStream content = new ByteArrayInputStream(new byte[0]);
+  private volatile byte[] readContent = null;
 
   /**
    * Retrieves a user-defined attribute of this message. Attributes are stored as simple key-value
@@ -74,8 +76,12 @@ class HttpMessage {
   }
 
   public String getHeader(String name) {
-    Collection<String> values = headers.get(name);
-    return values.isEmpty() ? null : values.iterator().next();
+    return headers.entries().stream()
+        .filter(e -> Objects.nonNull(e.getKey()))
+        .filter(e -> e.getKey().equalsIgnoreCase(name.toLowerCase()))
+        .map(Map.Entry::getValue)
+        .findFirst()
+        .orElse(null);
   }
 
   public void setHeader(String name, String value) {
@@ -91,15 +97,7 @@ class HttpMessage {
     headers.removeAll(name);
   }
 
-  public void setContent(byte[] data) {
-    this.content = data;
-  }
-
-  public byte[] getContent() {
-    return content;
-  }
-
-  public String getContentString() {
+  public Charset getContentEncoding() {
     Charset charset = UTF_8;
     try {
       String contentType = getHeader(CONTENT_TYPE);
@@ -110,6 +108,42 @@ class HttpMessage {
     } catch (IllegalArgumentException ignored) {
       // Do nothing.
     }
-    return new String(content, charset);
+    return charset;
+  }
+
+  public void setContent(byte[] data) {
+    this.content = new ByteArrayInputStream(data);
+  }
+
+  public void setContent(InputStream toStreamFrom) {
+    this.content = toStreamFrom;
+  }
+
+  public byte[] getContent() {
+    if (readContent == null) {
+      synchronized (this) {
+        if (readContent == null) {
+          try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            ByteStreams.copy(consumeContentStream(), bos);
+            readContent = bos.toByteArray();
+          } catch (IOException e) {
+            throw new WebDriverException(e);
+          }
+        }
+      }
+    }
+    return readContent;
+  }
+
+  public String getContentString() {
+    return new String(getContent(), getContentEncoding());
+  }
+
+  /**
+   * Get the underlying content stream, bypassing the caching mechanisms that allow it to be read
+   * again.
+   */
+  public InputStream consumeContentStream() {
+    return content;
   }
 }

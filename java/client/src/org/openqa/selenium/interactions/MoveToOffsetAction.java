@@ -17,16 +17,24 @@
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.internal.Locatable;
+import com.google.common.collect.ImmutableList;
 
-import java.util.Arrays;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.PointerInput.Origin;
+import org.openqa.selenium.interactions.internal.MouseAction;
+import org.openqa.selenium.interactions.internal.Locatable;
+
+import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Move the mouse to a location within the element provided. The coordinates provided specify the
  * offset from the top-left corner of the element.
+ *
+ * @deprecated Use {@link Actions#moveToElement(WebElement, int, int)}
  */
+@Deprecated
 public class MoveToOffsetAction extends MouseAction implements Action {
   private final int xOffset;
   private final int yOffset;
@@ -41,7 +49,18 @@ public class MoveToOffsetAction extends MouseAction implements Action {
     mouse.mouseMove(getActionLocation(), xOffset, yOffset);
   }
 
-  public List<Object> asList() {
-    return Arrays.<Object>asList("move", getTargetId(), xOffset, yOffset);
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    Optional<WebElement> target = getTargetElement();
+
+    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+
+    interactions.add(mouse.createPointerMove(
+        Duration.ofMillis(500),
+        target.map(Origin::fromElement).orElse(Origin.pointer()),
+        xOffset,
+        yOffset));
+
+    return interactions.build();
   }
 }

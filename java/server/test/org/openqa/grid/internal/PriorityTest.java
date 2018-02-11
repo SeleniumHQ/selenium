@@ -18,14 +18,14 @@
 package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertNotNull;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ import java.util.Map;
 
 public class PriorityTest {
 
-  private static Registry registry;
+  private GridRegistry registry;
 
   // priority rule : the request with the highest priority goes first.
   private static Prioritizer highestNumberHasPriority = new Prioritizer() {
@@ -46,49 +46,49 @@ public class PriorityTest {
     }
   };
 
-  static Map<String, Object> ff = new HashMap<>();
-  static RemoteProxy p1;
+  private Map<String, Object> ff = new HashMap<>();
+  private RemoteProxy p1;
 
-  static RequestHandler newSessionRequest1;
-  static RequestHandler newSessionRequest2;
-  static RequestHandler newSessionRequest3;
-  static RequestHandler newSessionRequest4;
-  static RequestHandler newSessionRequest5;
+  private RequestHandler newSessionRequest1;
+  private RequestHandler newSessionRequest2;
+  private RequestHandler newSessionRequest3;
+  private RequestHandler newSessionRequest4;
+  private RequestHandler newSessionRequest5;
 
-  static List<RequestHandler> requests = new ArrayList<>();
+  private List<RequestHandler> requests = new ArrayList<>();
 
   /**
    * create a hub with 1 FF
    *
    * @throws InterruptedException
    */
-  @BeforeClass
-  public static void setup() throws InterruptedException {
-    registry = Registry.newInstance();
-    registry.setPrioritizer(highestNumberHasPriority);
-    ff.put(APP, "FF");
+  @Before
+  public void setup() throws Exception {
+    registry = DefaultGridRegistry.newInstance();
+    registry.getConfiguration().prioritizer = highestNumberHasPriority;
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);
 
     // create 5 sessionRequest, with priority =1 .. 5
     Map<String, Object> ff1 = new HashMap<>();
-    ff1.put(APP, "FF");
+    ff1.put(CapabilityType.APPLICATION_NAME, "FF");
     ff1.put("_priority", 1);
 
     Map<String, Object> ff2 = new HashMap<>();
-    ff2.put(APP, "FF");
+    ff2.put(CapabilityType.APPLICATION_NAME, "FF");
     ff2.put("_priority", 2);
 
     Map<String, Object> ff3 = new HashMap<>();
-    ff3.put(APP, "FF");
+    ff3.put(CapabilityType.APPLICATION_NAME, "FF");
     ff3.put("_priority", 3);
 
     Map<String, Object> ff4 = new HashMap<>();
-    ff4.put(APP, "FF");
+    ff4.put(CapabilityType.APPLICATION_NAME, "FF");
     ff4.put("_priority", 4);
 
     Map<String, Object> ff5 = new HashMap<>();
-    ff5.put(APP, "FF");
+    ff5.put(CapabilityType.APPLICATION_NAME, "FF");
     ff5.put("_priority", 5);
 
     newSessionRequest1 = GridHelper.createNewSessionHandler(registry, ff1);
@@ -123,7 +123,7 @@ public class PriorityTest {
 
     // free the grid : the queue is consumed, and the test with the highest
     // priority should be processed.
-    registry.terminateSynchronousFOR_TEST_ONLY(session);
+    ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
 
   }
 
@@ -136,8 +136,8 @@ public class PriorityTest {
   }
 
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
   }
 

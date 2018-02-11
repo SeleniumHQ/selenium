@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,7 +17,6 @@
 
 module Selenium
   module WebDriver
-
     #
     # Shared across bridges
     #
@@ -27,24 +24,21 @@ module Selenium
     #
 
     module BridgeHelper
-
       def unwrap_script_result(arg)
         case arg
         when Array
           arg.map { |e| unwrap_script_result(e) }
         when Hash
-          if id = element_id_from(arg)
-            Element.new self, id
-          else
-            arg.each { |k, v| arg[k] = unwrap_script_result(v) }
-          end
+          element_id = element_id_from(arg)
+          return Element.new(self, element_id) if element_id
+          arg.each { |k, v| arg[k] = unwrap_script_result(v) }
         else
           arg
         end
       end
 
       def element_id_from(id)
-        id['ELEMENT'] or id['element-6066-11e4-a52e-4f735466cecf']
+        id['ELEMENT'] || id['element-6066-11e4-a52e-4f735466cecf']
       end
 
       def parse_cookie_string(str)
@@ -57,22 +51,22 @@ module Selenium
           'secure'  => false
         }
 
-        str.split(";").each do |attribute|
-          if attribute.include? "="
-            key, value = attribute.strip.split("=", 2)
+        str.split(';').each do |attribute|
+          if attribute.include? '='
+            key, value = attribute.strip.split('=', 2)
             if result['name'].empty?
               result['name']  = key
               result['value'] = value
             elsif key == 'domain' && value.strip =~ /^\.(.+)/
-              result['domain'] = $1
+              result['domain'] = Regexp.last_match(1)
             elsif key && value
               result[key] = value
             end
-          elsif attribute == "secure"
+          elsif attribute == 'secure'
             result['secure'] = true
           end
 
-          unless [nil, "", "0"].include?(result['expires'])
+          unless [nil, '', '0'].include?(result['expires'])
             # firefox stores expiry as number of seconds
             result['expires'] = Time.at(result['expires'].to_i)
           end
@@ -80,7 +74,6 @@ module Selenium
 
         result
       end
-
     end # BridgeHelper
   end # WebDriver
 end # Selenium

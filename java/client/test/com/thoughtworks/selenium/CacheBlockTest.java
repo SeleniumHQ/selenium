@@ -15,12 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium;
 
 import static org.junit.Assert.assertNotNull;
-
-import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.junit.Test;
 

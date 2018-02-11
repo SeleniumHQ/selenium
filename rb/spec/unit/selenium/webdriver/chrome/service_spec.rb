@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,47 +15,58 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
     module Chrome
-
       describe Service do
-        let(:mock_process) do
-          double("ChildProcess", :io => double.as_null_object, :start => true)
+        let(:resp) { {'sessionId' => 'foo', 'value' => Remote::Capabilities.chrome.as_json} }
+        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
+        let(:caps) { Remote::Capabilities.chrome }
+        let(:http) { instance_double(Remote::Http::Default, call: resp).as_null_object }
+
+        before do
+          allow(Remote::Capabilities).to receive(:chrome).and_return(caps)
+          allow_any_instance_of(Service).to receive(:start)
+          allow_any_instance_of(Service).to receive(:binary_path)
         end
 
-        # ugh.
-        before { Service.instance_variable_set("@executable_path", nil) }
+        it 'does not start driver when receives url' do
+          expect(Service).not_to receive(:new)
+          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
 
-        it "uses the user-provided path if set" do
-          Platform.stub(:os => :unix)
-          allow(Platform).to receive(:assert_executable).with("/some/path")
-          Chrome.driver_path = "/some/path"
-
-          expect(ChildProcess).to receive(:build) do |*args|
-            expect(args.first).to eq("/some/path")
-            mock_process
-          end
-
-          Service.default_service.send(:start_process)
+          Driver.new(http_client: http, url: 'http://example.com:4321')
         end
 
-        it "finds the Chrome server binary by searching PATH" do
-          Platform.stub(:os => :unix)
-          expect(Platform).to receive(:find_binary).once.and_return("/some/path")
-          expect(Platform).to receive(:assert_executable).with("/some/path")
+        it 'defaults to desired path and port' do
+          expect(Service).to receive(:new).with(Chrome.driver_path, Service::DEFAULT_PORT, {}).and_return(service)
 
-          expect(Service.executable_path).to eq("/some/path")
+          Driver.new(http_client: http)
         end
 
-        it "raises a nice error if the server binary can't be found" do
-          allow(Platform).to receive(:find_binary).and_return(nil)
+        it 'accepts a driver path & port' do
+          path = '/foo/chromedriver'
+          port = '1234'
+          expect(Service).to receive(:new).with(path, '1234', {}).and_return(service)
 
-          expect { Service.executable_path }.to raise_error(Error::WebDriverError, /github.com\/SeleniumHQ/)
+          Driver.new(http_client: http, driver_path: path, port: port)
         end
 
+        it 'accepts driver options' do
+          driver_opts = {port_server: '2323',
+                         whitelisted_ips: ['192.168.0.1', '192.168.0.2'],
+                         silent: true,
+                         log_path: '/path/to/log'}
+
+          args = ["--log-path=#{driver_opts[:log_path]}",
+                  "--port-server=#{driver_opts[:port_server]}",
+                  "--whitelisted-ips=#{driver_opts[:whitelisted_ips]}",
+                  "--silent"]
+
+          driver = Driver.new(http_client: http, driver_opts: driver_opts)
+          expect(driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
+        end
       end
     end # Chrome
   end # WebDriver

@@ -20,13 +20,13 @@
  * high level table modifications: Adding and deleting rows and columns,
  * and merging and splitting cells.
  *
- * @supported IE6+, WebKit 525+, Firefox 2+.
  */
 
 goog.provide('goog.editor.Table');
 goog.provide('goog.editor.TableCell');
 goog.provide('goog.editor.TableRow');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
 goog.require('goog.dom.NodeType');
@@ -44,12 +44,12 @@ goog.require('goog.style');
  * @final
  */
 goog.editor.Table = function(node) {
-  this.element = goog.dom.getAncestorByTagNameAndClass(node,
-      goog.dom.TagName.TABLE);
+  this.element =
+      goog.dom.getAncestorByTagNameAndClass(node, goog.dom.TagName.TABLE);
   if (!this.element) {
-    goog.log.error(this.logger_,
-        "Can't create Table based on a node " +
-        "that isn't a table, or descended from a table.");
+    goog.log.error(
+        this.logger_, "Can't create Table based on a node " +
+            "that isn't a table, or descended from a table.");
   }
   this.dom_ = goog.dom.getDomHelper(this.element);
   this.refresh();
@@ -61,8 +61,7 @@ goog.editor.Table = function(node) {
  * @type {goog.log.Logger}
  * @private
  */
-goog.editor.Table.prototype.logger_ =
-    goog.log.getLogger('goog.editor.Table');
+goog.editor.Table.prototype.logger_ = goog.log.getLogger('goog.editor.Table');
 
 
 /**
@@ -76,7 +75,8 @@ goog.editor.Table.prototype.logger_ =
 // every time there is a change to the DOM.
 goog.editor.Table.prototype.refresh = function() {
   var rows = this.rows = [];
-  var tbody = this.element.getElementsByTagName(goog.dom.TagName.TBODY)[0];
+  var tbody = goog.dom.getElementsByTagName(
+      goog.dom.TagName.TBODY, goog.asserts.assert(this.element))[0];
   if (!tbody) {
     return;
   }
@@ -153,8 +153,8 @@ goog.editor.Table.getChildCellElements = function(tr) {
  * @return {!Element} The new row.
  */
 goog.editor.Table.prototype.insertRow = function(opt_rowIndex) {
-  var rowIndex = goog.isDefAndNotNull(opt_rowIndex) ?
-      opt_rowIndex : this.rows.length;
+  var rowIndex =
+      goog.isDefAndNotNull(opt_rowIndex) ? opt_rowIndex : this.rows.length;
   var refRow;
   var insertAfter;
   if (rowIndex == 0) {
@@ -232,7 +232,8 @@ goog.editor.Table.prototype.insertColumn = function(opt_colIndex) {
 goog.editor.Table.prototype.removeRow = function(rowIndex) {
   var row = this.rows[rowIndex];
   if (!row) {
-    goog.log.warning(this.logger_,
+    goog.log.warning(
+        this.logger_,
         "Can't remove row at position " + rowIndex + ': no such row.');
   }
   for (var i = 0, cell; cell = row.columns[i]; i += cell.colSpan) {
@@ -258,9 +259,9 @@ goog.editor.Table.prototype.removeColumn = function(colIndex) {
   for (var i = 0, row; row = this.rows[i]; i++) {
     var cell = row.columns[colIndex];
     if (!cell) {
-      goog.log.error(this.logger_,
-          "Can't remove cell at position " + i + ', ' + colIndex +
-          ': no such cell.');
+      goog.log.error(
+          this.logger_, "Can't remove cell at position " + i + ', ' + colIndex +
+              ': no such cell.');
     }
     if (cell.colSpan > 1) {
       cell.setColSpan(cell.colSpan - 1);
@@ -297,13 +298,11 @@ goog.editor.Table.prototype.mergeCells = function(
   for (var i = startRowIndex; i <= endRowIndex; i++) {
     for (var j = startColIndex; j <= endColIndex; j++) {
       cell = this.rows[i].columns[j];
-      if (cell.startRow < startRowIndex ||
-          cell.endRow > endRowIndex ||
-          cell.startCol < startColIndex ||
-          cell.endCol > endColIndex) {
-        goog.log.warning(this.logger_,
-            "Can't merge cells: the cell in row " + i + ', column ' + j +
-            'extends outside the supplied rectangle.');
+      if (cell.startRow < startRowIndex || cell.endRow > endRowIndex ||
+          cell.startCol < startColIndex || cell.endCol > endColIndex) {
+        goog.log.warning(
+            this.logger_, "Can't merge cells: the cell in row " + i +
+                ', column ' + j + 'extends outside the supplied rectangle.');
         return false;
       }
       // TODO(user): this is somewhat inefficient, as we will add
@@ -470,8 +469,7 @@ goog.editor.TableCell.prototype.setColSpan = function(colSpan) {
     if (colSpan > 1) {
       this.element.colSpan = colSpan;
     } else {
-      this.element.colSpan = 1,
-      this.element.removeAttribute('colSpan');
+      this.element.colSpan = 1, this.element.removeAttribute('colSpan');
     }
     this.colSpan = colSpan;
     this.updateCoordinates_();
@@ -525,7 +523,7 @@ goog.editor.Table.DEFAULT_BORDER_COLOR = '#888';
  * @param {number} columns Number of columns in the table.
  * @param {number} rows Number of rows in the table.
  * @param {Object=} opt_tableStyle Object containing borderWidth and borderColor
- *    properties, used to set the inital style of the table.
+ *    properties, used to set the initial style of the table.
  * @return {!Element} a table element.
  */
 goog.editor.Table.createDomTable = function(
@@ -546,22 +544,22 @@ goog.editor.Table.createDomTable = function(
   // Calculate a good cell width.
   var cellWidth = Math.max(
       minimumCellWidth,
-      Math.min(goog.editor.Table.OPTIMUM_EMPTY_CELL_WIDTH,
-               goog.editor.Table.OPTIMUM_MAX_NEW_TABLE_WIDTH / columns));
+      Math.min(
+          goog.editor.Table.OPTIMUM_EMPTY_CELL_WIDTH,
+          goog.editor.Table.OPTIMUM_MAX_NEW_TABLE_WIDTH / columns));
 
-  var tds = tableElement.getElementsByTagName(goog.dom.TagName.TD);
+  var tds = goog.dom.getElementsByTagName(goog.dom.TagName.TD, tableElement);
   for (var i = 0, td; td = tds[i]; i++) {
     td.style.width = cellWidth + 'px';
   }
 
   // Set border somewhat redundantly to make sure they show
   // up correctly in all browsers.
-  goog.style.setStyle(
-      tableElement, {
-        'borderCollapse': 'collapse',
-        'borderColor': style.borderColor,
-        'borderWidth': style.borderWidth + 'px'
-      });
+  goog.style.setStyle(tableElement, {
+    'borderCollapse': 'collapse',
+    'borderColor': style.borderColor,
+    'borderWidth': style.borderWidth + 'px'
+  });
   tableElement.border = style.borderWidth;
   tableElement.setAttribute('bordercolor', style.borderColor);
   tableElement.setAttribute('cellspacing', '0');

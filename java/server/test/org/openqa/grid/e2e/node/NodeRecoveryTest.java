@@ -19,22 +19,19 @@ package org.openqa.grid.e2e.node;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
-
-import java.net.URL;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 /**
  * a node should be allowed to stop / crash and restart. When the node restarts, it replaces the old
@@ -45,17 +42,17 @@ import java.net.URL;
  */
 public class NodeRecoveryTest {
 
-  private static Hub hub;
-  private static SelfRegisteringRemote node;
+  private Hub hub;
+  private SelfRegisteringRemote node;
 
-  private static int originalTimeout = 3000;
-  private static int newtimeout = 20000;
+  private final static int ORIGINAL_TIMEOUT = 3;
+  private final static int NEW_TIMEOUT = 20;
 
-  @BeforeClass
-  public static void setup() throws Exception {
+  @Before
+  public void setup() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
-    config.setHost("localhost");
-    config.setPort(PortProber.findFreePort());
+    config.host = "localhost";
+    config.port = PortProber.findFreePort();
     hub = new Hub(config);
 
     hub.start();
@@ -64,41 +61,38 @@ public class NodeRecoveryTest {
     // register a selenium 1 with a timeout of 3 sec
 
     node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
-    node.setTimeout(originalTimeout, 1000);
+    node.setTimeout(ORIGINAL_TIMEOUT, 100);
     node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
   }
 
-  @Ignore
   @Test
   public void nodeServerCanStopAndRestart() throws Exception {
 
     assertEquals(hub.getRegistry().getAllProxies().size(), 1);
     for (RemoteProxy p : hub.getRegistry().getAllProxies()) {
-      assertEquals(p.getTimeOut(), originalTimeout);
+      assertEquals(p.getTimeOut(), ORIGINAL_TIMEOUT * 1000);
     }
 
-    URL hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
-
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
-    new RemoteWebDriver(new URL(hubURL + "/grid/driver"), caps);
+    new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
 
     // kill the node
     node.stopRemoteServer();
 
 
     // change its config.
-    node.setTimeout(newtimeout, 1000);
+    node.setTimeout(NEW_TIMEOUT, 100);
 
     // restart it
     node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
 
-    // wait for 5 sec : the timeout of the original node should be reached, and the session freed
-    Thread.sleep(5000);
+    // the timeout of the original node should be reached, and the session freed
+    Thread.sleep(ORIGINAL_TIMEOUT * 1000 + 100);
 
     assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
@@ -107,7 +101,7 @@ public class NodeRecoveryTest {
 
     for (RemoteProxy p : hub.getRegistry().getAllProxies()) {
       System.out.println(p);
-      assertEquals(p.getTimeOut(), newtimeout);
+      assertEquals(p.getTimeOut(), NEW_TIMEOUT * 1000);
     }
 
   }

@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,13 +17,11 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
 
     class SocketLock
-
       def initialize(port, timeout)
         @port    = port
         @timeout = timeout
@@ -36,7 +32,7 @@ module Selenium
       # execution block if the lock could be successfully obtained.
       #
 
-      def locked(&blk)
+      def locked
         lock
 
         begin
@@ -51,13 +47,10 @@ module Selenium
       def lock
         max_time = Time.now + @timeout
 
-        until can_lock? || Time.now >= max_time
-          sleep 0.1
-        end
+        sleep 0.1 until can_lock? || Time.now >= max_time
 
-        unless did_lock?
-          raise Error::WebDriverError, "unable to bind to locking port #{@port} within #{@timeout} seconds"
-        end
+        return if did_lock?
+        raise Error::WebDriverError, "unable to bind to locking port #{@port} within #{@timeout} seconds"
       end
 
       def release
@@ -70,14 +63,13 @@ module Selenium
 
         true
       rescue SocketError, Errno::EADDRINUSE, Errno::EBADF => ex
-        $stderr.puts "#{self}: #{ex.message}" if $DEBUG
+        WebDriver.logger.debug("#{self}: #{ex.message}")
         false
       end
 
       def did_lock?
-        !!@server
+        !@server.nil?
       end
-
     end # SocketLock
   end # WebDriver
 end # Selenium

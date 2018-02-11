@@ -50,7 +50,7 @@ remote.ui.SessionView = function() {
   this.confirmDialog_ = new goog.ui.Dialog(undefined, true);
 
   this.confirmDialog_.setTitle('Delete session?');
-  this.confirmDialog_.setContent(
+  this.confirmDialog_.setTextContent(
       'Are you sure you want to delete this session?');
   goog.events.listen(this.confirmDialog_, goog.ui.Dialog.EventType.SELECT,
       this.onConfirm_, false, this);

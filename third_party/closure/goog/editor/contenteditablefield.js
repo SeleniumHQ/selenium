@@ -76,8 +76,9 @@ goog.editor.ContentEditableField.prototype.turnOnDesignModeGecko =
 
 /** @override */
 goog.editor.ContentEditableField.prototype.installStyles = function() {
-  goog.asserts.assert(!this.cssStyles, 'ContentEditableField does not support' +
-      ' CSS styles; instead just write plain old CSS on the main page.');
+  goog.asserts.assert(
+      !this.cssStyles, 'ContentEditableField does not support' +
+          ' CSS styles; instead just write plain old CSS on the main page.');
 };
 
 
@@ -104,5 +105,4 @@ goog.editor.ContentEditableField.prototype.makeEditableInternal = function(
  * ContentEditableField does not make any changes to the DOM when it is made
  * editable other than setting contentEditable to true.
  */
-goog.editor.ContentEditableField.prototype.restoreDom =
-    goog.nullFunction;
+goog.editor.ContentEditableField.prototype.restoreDom = goog.nullFunction;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Drawing;
@@ -92,7 +90,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Webkit-based browsers apparently scroll anyway.")]
         [IgnoreBrowser(Browser.IPhone, "Webkit-based browsers apparently scroll anyway.")]
-        [IgnoreBrowser(Browser.Safari, "Webkit-based browsers apparently scroll anyway.")]
         [IgnoreBrowser(Browser.PhantomJS, "Webkit-based browsers apparently scroll anyway.")]
         public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
         {
@@ -123,7 +120,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         [IgnoreBrowser(Browser.IPhone, "Not tested.")]
-        [IgnoreBrowser(Browser.Safari, "Not tested.")]
         public void ShouldBeAbleToClickElementInAFrameThatIsOutOfView()
         {
             try
@@ -143,7 +139,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         [IgnoreBrowser(Browser.IPhone, "Not tested.")]
-        [IgnoreBrowser(Browser.Safari, "Not tested.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInAFrame()
         {
             try
@@ -180,7 +175,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         [IgnoreBrowser(Browser.IPhone, "Not tested.")]
-        [IgnoreBrowser(Browser.Safari, "Not tested.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView()
         {
             try
@@ -200,7 +194,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         [IgnoreBrowser(Browser.IPhone, "Not tested.")]
-        [IgnoreBrowser(Browser.Safari, "Not tested.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame()
         {
             try
@@ -221,7 +214,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         [IgnoreBrowser(Browser.IPhone, "Not tested.")]
-        [IgnoreBrowser(Browser.Safari, "Not tested.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView()
         {
             try

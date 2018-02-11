@@ -42,8 +42,8 @@ goog.require('goog.graphics.StrokeAndFillElement');
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
 goog.graphics.TextElement = function(element, graphics, stroke, fill) {
-  goog.graphics.StrokeAndFillElement.call(this, element, graphics, stroke,
-      fill);
+  goog.graphics.StrokeAndFillElement.call(
+      this, element, graphics, stroke, fill);
 };
 goog.inherits(goog.graphics.TextElement, goog.graphics.StrokeAndFillElement);
 

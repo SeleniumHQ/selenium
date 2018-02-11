@@ -26,13 +26,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.grid.e2e.misc.ConfigInheritanceTest;
 import org.openqa.grid.e2e.misc.Grid1HeartbeatTest;
+import org.openqa.grid.e2e.misc.GridDistributionTest;
 import org.openqa.grid.e2e.misc.GridSerializeExceptionTest;
+import org.openqa.grid.e2e.misc.GridViaCommandLineTest;
 import org.openqa.grid.e2e.misc.HubRestart;
 import org.openqa.grid.e2e.misc.HubRestartNeg;
+import org.openqa.grid.e2e.misc.Issue1586;
 import org.openqa.grid.e2e.misc.WebDriverPriorityDemo;
 import org.openqa.grid.e2e.node.BrowserTimeOutTest;
 import org.openqa.grid.e2e.node.CrashWhenStartingBrowserTest;
-import org.openqa.grid.e2e.node.DefaultProxyFindsFirefoxLocationsTest;
+import org.openqa.grid.e2e.node.DefaultProxyInjectsConfigurationUuidTest;
 import org.openqa.grid.e2e.node.DefaultProxyIsUnregisteredIfDownForTooLongTest;
 import org.openqa.grid.e2e.node.NodeGoingDownAndUpTest;
 import org.openqa.grid.e2e.node.NodeRecoveryTest;
@@ -42,22 +45,24 @@ import org.openqa.grid.e2e.utils.ExtraServletUtilTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    BrowserTimeOutTest.class,
     ConfigInheritanceTest.class,
+    CrashWhenStartingBrowserTest.class,
+    DefaultProxyInjectsConfigurationUuidTest.class,
+    DefaultProxyIsUnregisteredIfDownForTooLongTest.class,
+    ExtraServletUtilTest.class,
     Grid1HeartbeatTest.class,
+    GridDistributionTest.class,
     GridSerializeExceptionTest.class,
+    GridViaCommandLineTest.class,
     HubRestart.class,
     HubRestartNeg.class,
-    //Issue1586.class, // extremely slow test, for issue1586. Excluding from regression.
-    WebDriverPriorityDemo.class,
-    //BrowserTimeOutTest.class, // broken on CI, needs investigation
-    CrashWhenStartingBrowserTest.class,
-    DefaultProxyFindsFirefoxLocationsTest.class,
-    DefaultProxyIsUnregisteredIfDownForTooLongTest.class,
+    Issue1586.class,
     NodeGoingDownAndUpTest.class, // slow
     NodeRecoveryTest.class,
     NodeTimeOutTest.class,
     SmokeTest.class, // slow
-    ExtraServletUtilTest.class,
+    WebDriverPriorityDemo.class,
 })
 public class GridE2ETests {
 }

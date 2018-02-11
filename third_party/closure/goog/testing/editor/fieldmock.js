@@ -18,6 +18,7 @@
  * @author robbyw@google.com (Robby Walker)
  */
 
+goog.setTestOnly('goog.testing.editor.FieldMock');
 goog.provide('goog.testing.editor.FieldMock');
 
 goog.require('goog.dom');
@@ -36,15 +37,14 @@ goog.require('goog.testing.mockmatchers');
  *     different from {@code opt_window} when mocking a field that uses an
  *     iframe. Defaults to {@code opt_window}.
  * @param {goog.dom.AbstractRange=} opt_range An object (mock or real) to be
- *     returned by getRange(). If ommitted, a new goog.dom.Range is created
+ *     returned by getRange(). If omitted, a new goog.dom.Range is created
  *     from the window every time getRange() is called.
  * @constructor
  * @extends {goog.testing.LooseMock}
  * @suppress {missingProperties} Mocks do not fit in the type system well.
  * @final
  */
-goog.testing.editor.FieldMock =
-    function(opt_window, opt_appWindow, opt_range) {
+goog.testing.editor.FieldMock = function(opt_window, opt_appWindow, opt_range) {
   goog.testing.LooseMock.call(this, goog.editor.Field);
   opt_window = opt_window || window;
   opt_appWindow = opt_appWindow || opt_window;
@@ -86,31 +86,23 @@ goog.testing.editor.FieldMock =
   /**
    * @return {boolean} Whether we're in modal interaction mode.
    */
-  this.inModalMode = function() {
-    return inModalMode;
-  };
+  this.inModalMode = function() { return inModalMode; };
 
   /**
    * @param {boolean} mode Sets whether we're in modal interaction mode.
    */
-  this.setModalMode = function(mode) {
-    inModalMode = mode;
-  };
+  this.setModalMode = function(mode) { inModalMode = mode; };
 
   var uneditable = false;
 
   /**
    * @return {boolean} Whether the field is uneditable.
    */
-  this.isUneditable = function() {
-    return uneditable;
-  };
+  this.isUneditable = function() { return uneditable; };
 
   /**
    * @param {boolean} isUneditable Whether the field is uneditable.
    */
-  this.setUneditable = function(isUneditable) {
-    uneditable = isUneditable;
-  };
+  this.setUneditable = function(isUneditable) { uneditable = isUneditable; };
 };
 goog.inherits(goog.testing.editor.FieldMock, goog.testing.LooseMock);

@@ -15,8 +15,12 @@
 // limitations under the License.
 
 #include "HtmlDialog.h"
-#include "BrowserFactory.h"
+
+#include "errorcodes.h"
 #include "logging.h"
+
+#include "BrowserFactory.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 
@@ -102,6 +106,14 @@ bool HtmlDialog::IsValidWindow() {
     return false;
   }
   return true;
+}
+
+bool HtmlDialog::SetFullScreen(bool is_full_screen) {
+  return false;
+}
+
+bool HtmlDialog::IsFullScreen() {
+  return false;
 }
 
 bool HtmlDialog::IsBusy() {

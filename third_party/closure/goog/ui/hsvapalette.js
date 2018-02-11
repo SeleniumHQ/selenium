@@ -170,10 +170,12 @@ goog.ui.HsvaPalette.prototype.createDom = function() {
   goog.ui.HsvaPalette.base(this, 'createDom');
 
   var dom = this.getDomHelper();
-  this.aImageEl_ = /** @type {!HTMLElement} */ (dom.createDom(
-      goog.dom.TagName.DIV, goog.getCssName(this.className, 'a-image')));
-  this.aHandleEl_ = /** @type {!HTMLElement} */ (dom.createDom(
-      goog.dom.TagName.DIV, goog.getCssName(this.className, 'a-handle')));
+  this.aImageEl_ = /** @type {!HTMLElement} */ (
+      dom.createDom(
+          goog.dom.TagName.DIV, goog.getCssName(this.className, 'a-image')));
+  this.aHandleEl_ = /** @type {!HTMLElement} */ (
+      dom.createDom(
+          goog.dom.TagName.DIV, goog.getCssName(this.className, 'a-handle')));
   this.swatchBackdropEl_ = dom.createDom(
       goog.dom.TagName.DIV, goog.getCssName(this.className, 'swatch-backdrop'));
   var element = this.getElement();
@@ -210,8 +212,9 @@ goog.ui.HsvaPalette.prototype.updateUi = function() {
 
 /** @override */
 goog.ui.HsvaPalette.prototype.updateInput = function() {
-  if (!goog.array.equals([this.color, this.alpha_],
-      goog.ui.HsvaPalette.parseUserInput_(this.inputElement.value))) {
+  if (!goog.array.equals(
+          [this.color, this.alpha_],
+          goog.ui.HsvaPalette.parseUserInput_(this.inputElement.value))) {
     this.inputElement.value = this.getColorRgbaHex();
   }
 };
@@ -225,12 +228,11 @@ goog.ui.HsvaPalette.prototype.handleMouseDown = function(e) {
     var b = goog.style.getBounds(this.valueBackgroundImageElement);
     this.handleMouseMoveA_(b, e);
     this.mouseMoveListener = goog.events.listen(
-        this.getDomHelper().getDocument(),
-        goog.events.EventType.MOUSEMOVE,
+        this.getDomHelper().getDocument(), goog.events.EventType.MOUSEMOVE,
         goog.bind(this.handleMouseMoveA_, this, b));
     this.mouseUpListener = goog.events.listen(
-        this.getDomHelper().getDocument(),
-        goog.events.EventType.MOUSEUP, this.handleMouseUp, false, this);
+        this.getDomHelper().getDocument(), goog.events.EventType.MOUSEUP,
+        this.handleMouseUp, false, this);
   }
 };
 
@@ -246,9 +248,10 @@ goog.ui.HsvaPalette.prototype.handleMouseDown = function(e) {
 goog.ui.HsvaPalette.prototype.handleMouseMoveA_ = function(b, e) {
   e.preventDefault();
   var vportPos = this.getDomHelper().getDocumentScroll();
-  var newA = (b.top + b.height - Math.min(
-      Math.max(vportPos.y + e.clientY, b.top),
-      b.top + b.height)) / b.height;
+  var newA =
+      (b.top + b.height -
+       Math.min(Math.max(vportPos.y + e.clientY, b.top), b.top + b.height)) /
+      b.height;
   this.setAlpha(newA);
 };
 

@@ -24,17 +24,16 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -42,10 +41,10 @@ import java.net.URL;
 
 public class Grid1HeartbeatTest {
 
-  private static Hub hub;
+  private Hub hub;
 
-  @BeforeClass
-  public static void setup() throws Exception {
+  @Before
+  public void setup() throws Exception {
     hub = GridTestHelper.getHub();
   }
 
@@ -54,15 +53,15 @@ public class Grid1HeartbeatTest {
     // Send the heartbeat request when we know that there are no nodes
     // registered with the hub.
     URL heartbeatUrl =
-        new URL(String.format("http://%s:%s/heartbeat?host=localhost&port=5000", hub.getHost(),
-            hub.getPort()));
+        new URL(String.format("http://%s:%s/heartbeat?host=localhost&port=5000", hub.getConfiguration().host,
+            hub.getConfiguration().port));
 
     HttpRequest request = new HttpGet(heartbeatUrl.toString());
 
     HttpClientFactory httpClientFactory = new HttpClientFactory();
     try {
       HttpClient client = httpClientFactory.getHttpClient();
-      HttpHost host = new HttpHost(hub.getHost(), hub.getPort());
+      HttpHost host = new HttpHost(hub.getConfiguration().host, hub.getConfiguration().port);
       HttpResponse response = client.execute(host, request);
 
       BufferedReader body =
@@ -90,9 +89,9 @@ public class Grid1HeartbeatTest {
 
     // Check that the node is registered with the hub.
     URL heartbeatUrl =
-        new URL(String.format("http://%s:%s/heartbeat?host=%s&port=%s", hub.getHost(), hub
-            .getPort(), selenium1.getConfiguration().get(RegistrationRequest.HOST), selenium1
-            .getConfiguration().get(RegistrationRequest.PORT)));
+        new URL(String.format("http://%s:%s/heartbeat?host=%s&port=%s", hub.getConfiguration().host, hub
+            .getConfiguration().port, selenium1.getConfiguration().host, selenium1
+            .getConfiguration().port));
 
     HttpRequest request = new HttpGet(heartbeatUrl.toString());
 
@@ -100,7 +99,7 @@ public class Grid1HeartbeatTest {
 
     HttpClient client = httpClientFactory.getHttpClient();
     try {
-      HttpHost host = new HttpHost(hub.getHost(), hub.getPort());
+      HttpHost host = new HttpHost(hub.getConfiguration().host, hub.getConfiguration().port);
       HttpResponse response = client.execute(host, request);
 
       BufferedReader body =
@@ -113,8 +112,8 @@ public class Grid1HeartbeatTest {
     }
   }
 
-  @AfterClass
-  public static void teardown() throws Exception {
+  @After
+  public void teardown() throws Exception {
     hub.stop();
   }
 }

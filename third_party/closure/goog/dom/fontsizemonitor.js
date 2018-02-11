@@ -60,16 +60,20 @@ goog.dom.FontSizeMonitor = function(opt_domHelper) {
    * @type {HTMLElement}
    * @private
    */
-  this.sizeElement_ = /** @type {!HTMLElement} */ (dom.createDom(
-      // The size of the iframe is expressed in em, which are font size relative
-      // which will cause the iframe to be resized when the font size changes.
-      // The actual values are not relevant as long as we can ensure that the
-      // iframe has a non zero size and is completely off screen.
-      goog.userAgent.IE ? goog.dom.TagName.DIV : goog.dom.TagName.IFRAME, {
-        'style': 'position:absolute;width:9em;height:9em;top:-99em',
-        'tabIndex': -1,
-        'aria-hidden': 'true'
-      }));
+  this.sizeElement_ = /** @type {!HTMLElement} */ (
+      dom.createDom(
+          // The size of the iframe is expressed in em, which are font size
+          // relative
+          // which will cause the iframe to be resized when the font size
+          // changes.
+          // The actual values are not relevant as long as we can ensure that
+          // the
+          // iframe has a non zero size and is completely off screen.
+          goog.userAgent.IE ? goog.dom.TagName.DIV : goog.dom.TagName.IFRAME, {
+            'style': 'position:absolute;width:9em;height:9em;top:-99em',
+            'tabIndex': -1,
+            'aria-hidden': 'true'
+          }));
   var p = dom.getDocument().body;
   p.insertBefore(this.sizeElement_, p.firstChild);
 
@@ -78,10 +82,10 @@ goog.dom.FontSizeMonitor = function(opt_domHelper) {
    * @type {Element|Window}
    * @private
    */
-  var resizeTarget = this.resizeTarget_ =
-      goog.userAgent.IE ? this.sizeElement_ :
-          goog.dom.getFrameContentWindow(
-              /** @type {HTMLIFrameElement} */ (this.sizeElement_));
+  var resizeTarget = this.resizeTarget_ = goog.userAgent.IE ?
+      this.sizeElement_ :
+      goog.dom.getFrameContentWindow(
+          /** @type {HTMLIFrameElement} */ (this.sizeElement_));
 
   // We need to open and close the document to get Firefox 2 to work.  We must
   // not do this for IE in case we are using HTTPS since accessing the document
@@ -94,8 +98,9 @@ goog.dom.FontSizeMonitor = function(opt_domHelper) {
   }
 
   // Listen to resize event on the window inside the iframe.
-  goog.events.listen(resizeTarget, goog.events.EventType.RESIZE,
-                     this.handleResize_, false, this);
+  goog.events.listen(
+      resizeTarget, goog.events.EventType.RESIZE, this.handleResize_, false,
+      this);
 
   /**
    * Last measured width of the iframe element.
@@ -130,13 +135,13 @@ goog.dom.FontSizeMonitor.CHANGE_EVENT =
 goog.dom.FontSizeMonitor.prototype.disposeInternal = function() {
   goog.dom.FontSizeMonitor.superClass_.disposeInternal.call(this);
 
-  goog.events.unlisten(this.resizeTarget_, goog.events.EventType.RESIZE,
-                       this.handleResize_, false, this);
+  goog.events.unlisten(
+      this.resizeTarget_, goog.events.EventType.RESIZE, this.handleResize_,
+      false, this);
   this.resizeTarget_ = null;
 
   // Firefox 2 crashes if the iframe is removed during the unload phase.
-  if (!goog.userAgent.GECKO ||
-      goog.userAgent.isVersionOrHigher('1.9')) {
+  if (!goog.userAgent.GECKO || goog.userAgent.isVersionOrHigher('1.9')) {
     goog.dom.removeNode(this.sizeElement_);
   }
   delete this.sizeElement_;

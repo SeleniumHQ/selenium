@@ -25,25 +25,30 @@ from selenium.common.exceptions import NoSuchElementException
 
 LOGGER = logging.getLogger(__name__)
 
+
 def format_json(json_struct):
     return json.dumps(json_struct, indent=4)
+
 
 def dump_json(json_struct):
     return json.dumps(json_struct)
 
+
 def load_json(s):
     return json.loads(s)
 
+
 def handle_find_element_exception(e):
-    if ("Unable to find" in e.response["value"]["message"] or
-        "Unable to locate" in e.response["value"]["message"]):
+    if ("Unable to find" in e.response["value"]["message"] or "Unable to locate" in e.response["value"]["message"]):
         raise NoSuchElementException("Unable to locate element:")
     else:
         raise e
 
+
 def return_value_if_exists(resp):
     if resp and "value" in resp:
         return resp["value"]
+
 
 def get_root_parent(elem):
     parent = elem.parent
@@ -53,6 +58,7 @@ def get_root_parent(elem):
             parent = parent.parent
         except AttributeError:
             return parent
+
 
 def unzip_to_temp_dir(zip_file_name):
     """Unzip zipfile to a temporary directory.

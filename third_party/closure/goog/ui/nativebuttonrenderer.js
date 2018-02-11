@@ -61,12 +61,14 @@ goog.ui.NativeButtonRenderer.prototype.getAriaRole = function() {
  */
 goog.ui.NativeButtonRenderer.prototype.createDom = function(button) {
   this.setUpNativeButton_(button);
-  return button.getDomHelper().createDom(goog.dom.TagName.BUTTON, {
-    'class': this.getClassNames(button).join(' '),
-    'disabled': !button.isEnabled(),
-    'title': button.getTooltip() || '',
-    'value': button.getValue() || ''
-  }, button.getCaption() || '');
+  return button.getDomHelper().createDom(
+      goog.dom.TagName.BUTTON, {
+        'class': this.getClassNames(button).join(' '),
+        'disabled': !button.isEnabled(),
+        'title': button.getTooltip() || '',
+        'value': button.getValue() || ''
+      },
+      button.getCaption() || '');
 };
 
 
@@ -79,10 +81,10 @@ goog.ui.NativeButtonRenderer.prototype.createDom = function(button) {
  */
 goog.ui.NativeButtonRenderer.prototype.canDecorate = function(element) {
   return element.tagName == goog.dom.TagName.BUTTON ||
-      (element.tagName == goog.dom.TagName.INPUT && (
-          element.type == goog.dom.InputType.BUTTON ||
-          element.type == goog.dom.InputType.SUBMIT ||
-          element.type == goog.dom.InputType.RESET));
+      (element.tagName == goog.dom.TagName.INPUT &&
+       (element.type == goog.dom.InputType.BUTTON ||
+        element.type == goog.dom.InputType.SUBMIT ||
+        element.type == goog.dom.InputType.RESET));
 };
 
 
@@ -96,8 +98,8 @@ goog.ui.NativeButtonRenderer.prototype.decorate = function(button, element) {
         this.getClassForState(goog.ui.Component.State.DISABLED));
     goog.dom.classlist.add(element, disabledClassName);
   }
-  return goog.ui.NativeButtonRenderer.superClass_.decorate.call(this, button,
-      element);
+  return goog.ui.NativeButtonRenderer.superClass_.decorate.call(
+      this, button, element);
 };
 
 
@@ -111,7 +113,8 @@ goog.ui.NativeButtonRenderer.prototype.initializeDom = function(button) {
   // which are special because they do natively what most goog.ui.Controls
   // do programmatically.  Do not use your renderer's initializeDom method
   // to hook up event handlers!
-  button.getHandler().listen(button.getElement(), goog.events.EventType.CLICK,
+  button.getHandler().listen(
+      button.getElement(), goog.events.EventType.CLICK,
       button.performActionInternal);
 };
 
@@ -152,10 +155,10 @@ goog.ui.NativeButtonRenderer.prototype.setFocusable = goog.nullFunction;
  * Native buttons also expose the DISABLED state in the HTML button's
  * {@code disabled} attribute.
  */
-goog.ui.NativeButtonRenderer.prototype.setState = function(button, state,
-    enable) {
-  goog.ui.NativeButtonRenderer.superClass_.setState.call(this, button, state,
-      enable);
+goog.ui.NativeButtonRenderer.prototype.setState = function(
+    button, state, enable) {
+  goog.ui.NativeButtonRenderer.superClass_.setState.call(
+      this, button, state, enable);
   var element = button.getElement();
   if (element && state == goog.ui.Component.State.DISABLED) {
     element.disabled = enable;

@@ -37,24 +37,19 @@ goog.require('goog.testing.PseudoRandom');
 /**
  * The JSON fuzzing generator.
  *
- * @param {number=} opt_seed The seed for the random generator.
  * @param {!goog.labs.testing.JsonFuzzing.Options=} opt_options Configuration
  *     for the fuzzing json generator.
+ * @param {number=} opt_seed The seed for the random generator.
  * @constructor
  * @struct
  */
-goog.labs.testing.JsonFuzzing = function(opt_seed, opt_options) {
+goog.labs.testing.JsonFuzzing = function(opt_options, opt_seed) {
   /**
    * The config options.
    * @private {!goog.labs.testing.JsonFuzzing.Options}
    */
-  this.options_ = opt_options ||
-      {
-        jsonSize: 10,
-        numFields: 5,
-        arraySize: 5,
-        maxDepth: 5
-      };
+  this.options_ =
+      opt_options || {jsonSize: 10, numFields: 5, arraySize: 5, maxDepth: 5};
 
   /**
    * The random generator
@@ -101,7 +96,7 @@ goog.labs.testing.JsonFuzzing.prototype.newArray = function() {
 
   var maxSize = this.options_.jsonSize;
 
-  var size = this.nextInt_(1, maxSize);
+  var size = this.nextInt(1, maxSize);
   for (var i = 0; i < size; i++) {
     result.push(this.nextElm_(depth));
   }
@@ -116,9 +111,8 @@ goog.labs.testing.JsonFuzzing.prototype.newArray = function() {
  * @param {number} min Inclusive
  * @param {number} max Exclusive
  * @return {number} A random integer
- * @private
  */
-goog.labs.testing.JsonFuzzing.prototype.nextInt_ = function(min, max) {
+goog.labs.testing.JsonFuzzing.prototype.nextInt = function(min, max) {
   var random = this.random_.random();
 
   return Math.floor(random * (max - min)) + min;
@@ -216,9 +210,12 @@ goog.labs.testing.JsonFuzzing.prototype.nextFieldType_ = function() {
  */
 goog.labs.testing.JsonFuzzing.prototype.nextElm_ = function(depth) {
   switch (this.nextElmType_()) {
-    case 0: return this.nextMessage_(depth);
-    case 1: return this.nextArray_(depth);
-    default: throw Error('invalid elm type encounted.');
+    case 0:
+      return this.nextMessage_(depth);
+    case 1:
+      return this.nextArray_(depth);
+    default:
+      throw Error('invalid elm type encounted.');
   }
 };
 
@@ -237,7 +234,7 @@ goog.labs.testing.JsonFuzzing.prototype.nextMessage_ = function(depth) {
 
   var numFields = this.options_.numFields;
 
-  var random_num = this.nextInt_(0, numFields);
+  var random_num = this.nextInt(0, numFields);
   var result = {};
 
   // TODO(user): unicode and random keys
@@ -284,7 +281,7 @@ goog.labs.testing.JsonFuzzing.prototype.nextArray_ = function(depth) {
 
   var size = this.options_.arraySize;
 
-  var random_size = this.nextInt_(0, size);
+  var random_size = this.nextInt(0, size);
   var result = [];
 
   // mixed content

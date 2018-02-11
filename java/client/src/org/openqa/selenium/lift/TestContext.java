@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.lift;
 
+import org.hamcrest.Matcher;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
-
-import org.hamcrest.Matcher;
 
 /**
  * Interface for objects that provide a context (maintaining any state) for web tests.

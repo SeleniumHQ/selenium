@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Text.RegularExpressions;
-using NUnit.Framework.Constraints;
 
 namespace OpenQA.Selenium
 {

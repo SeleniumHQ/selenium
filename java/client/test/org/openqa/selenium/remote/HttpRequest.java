@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.base.Throwables;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -29,6 +27,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.IOException;
@@ -62,7 +61,7 @@ public class HttpRequest {
         httpClientFactory.close();
       }
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -97,7 +96,7 @@ public class HttpRequest {
         post.addHeader("Content-Type", "application/json; charset=utf8");
 
         if (payload != null) {
-          String content = new BeanToJsonConverter().convert(payload);
+          String content = new Json().toJson(payload);
           post.setEntity(new StringEntity(content, "UTF-8"));
         }
         return post;

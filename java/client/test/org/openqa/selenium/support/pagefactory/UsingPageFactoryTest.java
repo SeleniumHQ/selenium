@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.support.pagefactory;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -35,14 +34,12 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.List;
 
 public class UsingPageFactoryTest extends JUnit4TestBase {
 
   @Test
-  @JavascriptEnabled
   public void canExecuteJsUsingDecoratedElements() {
     driver.get(pages.xhtmlTestPage);
 

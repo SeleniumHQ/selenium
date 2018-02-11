@@ -15,13 +15,17 @@
 // limitations under the License.
 
 #include "DocumentHost.h"
+
+#include "errorcodes.h"
+#include "logging.h"
+
 #include "BrowserCookie.h"
 #include "BrowserFactory.h"
 #include "CookieManager.h"
-#include "logging.h"
 #include "messages.h"
 #include "RegistryUtilities.h"
 #include "Script.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 
@@ -54,6 +58,7 @@ DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
 
   this->window_handle_ = hwnd;
   this->executor_handle_ = executor_handle;
+  this->script_executor_handle_ = NULL;
   this->is_closing_ = false;
   this->wait_required_ = false;
   this->focused_frame_window_ = NULL;
@@ -122,6 +127,16 @@ std::string DocumentHost::GetPageSource() {
   std::wstring converted_html = html;
   std::string page_source = StringUtilities::ToString(converted_html);
   return page_source;
+}
+
+void DocumentHost::Restore(void) {
+  if (this->IsFullScreen()) {
+    this->SetFullScreen(false);
+  }
+  HWND window_handle = this->GetTopLevelWindowHandle();
+  if (::IsZoomed(window_handle) || ::IsIconic(window_handle)) {
+    ::ShowWindow(window_handle, SW_RESTORE);
+  }
 }
 
 int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {

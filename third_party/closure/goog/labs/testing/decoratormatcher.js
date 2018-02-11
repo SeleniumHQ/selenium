@@ -40,8 +40,7 @@ goog.labs.testing.AnythingMatcher = function() {};
  *
  * @override
  */
-goog.labs.testing.AnythingMatcher.prototype.matches =
-    function(actualObject) {
+goog.labs.testing.AnythingMatcher.prototype.matches = function(actualObject) {
   return true;
 };
 
@@ -52,8 +51,7 @@ goog.labs.testing.AnythingMatcher.prototype.matches =
  *
  * @override
  */
-goog.labs.testing.AnythingMatcher.prototype.describe =
-    function(actualObject) {
+goog.labs.testing.AnythingMatcher.prototype.describe = function(actualObject) {
   throw Error('AnythingMatcher should never fail!');
 };
 
@@ -88,8 +86,6 @@ function is(matcher) {
  * @return {!goog.labs.testing.Matcher} The matcher with custom description.
  */
 function describedAs(description, matcher) {
-  matcher.describe = function(value) {
-    return description;
-  };
+  matcher.describe = function(value) { return description; };
   return matcher;
 }

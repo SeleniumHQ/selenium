@@ -18,9 +18,6 @@
 package org.openqa.grid.internal;
 
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
-import static org.openqa.grid.common.RegistrationRequest.PATH;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
-import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -36,10 +33,13 @@ import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
+import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -59,46 +59,36 @@ import java.util.logging.Logger;
 
 public class BaseRemoteProxy implements RemoteProxy {
   private final RegistrationRequest request;
-  // how many ms between 2 cycle checking if there are some session that have
-  // timed out. -1 means we never run the cleanup cycle. By default there is
-  // no timeout
-  private final int cleanUpCycle;
-  private final int timeOutMs;
 
   private static final Logger log = Logger.getLogger(BaseRemoteProxy.class.getName());
 
   // the host the remote listen on.The final URL will be proxy.host + slot.path
   protected volatile URL remoteHost;
 
-  private final Map<String, Object> config;
+  protected final GridNodeConfiguration config;
 
   // list of the type of test the remote can run.
   private final List<TestSlot> testSlots;
 
-  // maximum number of tests that can run at a given time on the remote.
-  private final int maxConcurrentSession;
-  private final Registry registry;
+  private final GridRegistry registry;
 
+  private CapabilityMatcher capabilityMatcher;
 
   private final String id;
 
   private volatile boolean stop = false;
   private CleanUpThread cleanUpThread;
 
-  // connection and socket timeout for getStatus node alive check
-  // 0 means default timeouts of grid http client will be used.
-  private final int statusCheckTimeout;
-
   public List<TestSlot> getTestSlots() {
     return testSlots;
   }
 
-  public Registry getRegistry() {
-    return registry;
+  public <T extends GridRegistry> T getRegistry() {
+    return (T) registry;
   }
 
   public CapabilityMatcher getCapabilityHelper() {
-    return registry.getCapabilityMatcher();
+    return capabilityMatcher;
   }
 
 
@@ -111,14 +101,25 @@ public class BaseRemoteProxy implements RemoteProxy {
    * @param request  The request
    * @param registry The registry to use
    */
-  public BaseRemoteProxy(RegistrationRequest request, Registry registry) {
+  public BaseRemoteProxy(RegistrationRequest request, GridRegistry registry) {
     this.request = request;
     this.registry = registry;
-    this.config =
-        mergeConfig(registry.getConfiguration().getAllParams(), request.getConfiguration());
+    this.config = new GridNodeConfiguration();
+    this.capabilityMatcher = new DefaultCapabilityMatcher();
+    // the registry is the 'hub' configuration, which is used as a seed for this proxy configuration
+    if (registry.getHub() != null) {
+      this.config.merge(registry.getHub().getConfiguration());
+      this.capabilityMatcher = registry.getHub().getConfiguration().capabilityMatcher;
+    }
+    // the proxy values must override any that the hub specify where an overlap occurs.
+    // merging last causes the values to be overridden.
+    this.config.merge(request.getConfiguration());
+    // host and port are merge() protected values -- overrule this behavior
+    this.config.host = request.getConfiguration().host;
+    this.config.port = request.getConfiguration().port;
 
-    String url = (String) config.get(REMOTE_HOST);
-    String id = (String) config.get(RegistrationRequest.ID);
+    String url = config.getRemoteHost();
+    String id = config.id;
 
     if (url == null && id == null) {
       throw new GridException(
@@ -142,19 +143,13 @@ public class BaseRemoteProxy implements RemoteProxy {
       this.id = remoteHost.toExternalForm();
     }
 
-    maxConcurrentSession = getConfigInteger(RegistrationRequest.MAX_SESSION);
-    cleanUpCycle = getConfigInteger(RegistrationRequest.CLEAN_UP_CYCLE);
-    timeOutMs = getConfigInteger(RegistrationRequest.TIME_OUT);
-    statusCheckTimeout = getConfigInteger(RegistrationRequest.STATUS_CHECK_TIMEOUT);
-
-    List<DesiredCapabilities> capabilities = request.getCapabilities();
+    List<MutableCapabilities> capabilities = request.getConfiguration().capabilities;
 
     List<TestSlot> slots = new ArrayList<>();
-    for (DesiredCapabilities capability : capabilities) {
+    for (MutableCapabilities capability : capabilities) {
       Object maxInstance = capability.getCapability(MAX_INSTANCES);
 
-      SeleniumProtocol protocol = getProtocol(capability);
-      String path = getPath(capability);
+      SeleniumProtocol protocol = SeleniumProtocol.fromCapabilitiesMap(capability.asMap());
 
       if (maxInstance == null) {
         log.warning("Max instance not specified. Using default = 1 instance");
@@ -167,86 +162,23 @@ public class BaseRemoteProxy implements RemoteProxy {
         for (String k : capability.asMap().keySet()) {
           c.put(k, capability.getCapability(k));
         }
-        slots.add(new TestSlot(this, protocol, path, c));
+        slots.add(createTestSlot(protocol, c));
       }
     }
 
     this.testSlots = Collections.unmodifiableList(slots);
   }
 
-  private Integer getConfigInteger(String key){
-    Object o = this.config.get(key);
-    if (o == null) {
-      return 0;
-    }
-    if (o instanceof String){
-      return Integer.parseInt((String)o);
-    }
-    return (Integer) o;
-  }
-
-  private SeleniumProtocol getProtocol(DesiredCapabilities capability) {
-    String type = (String) capability.getCapability(SELENIUM_PROTOCOL);
-
-    SeleniumProtocol protocol;
-    if (type == null) {
-      protocol = SeleniumProtocol.WebDriver;
-    } else {
-      try {
-        protocol = SeleniumProtocol.valueOf(type);
-      } catch (IllegalArgumentException e) {
-        throw new GridException(
-            type + " isn't a valid protocol type for grid. See SeleniumProtocol enum.", e);
-      }
-    }
-    return protocol;
-  }
-
-  private String getPath(DesiredCapabilities capability) {
-    String type = (String) capability.getCapability(PATH);
-    if (type == null) {
-      switch (getProtocol(capability)) {
-        case Selenium:
-          return "/selenium-server/driver";
-        case WebDriver:
-          return "/wd/hub";
-        default:
-          throw new GridException("Protocol not supported.");
-      }
-    } else {
-      return type;
-    }
-  }
-
   public void setupTimeoutListener() {
     cleanUpThread = null;
     if (this instanceof TimeoutListener) {
-      if (cleanUpCycle > 0 && timeOutMs > 0) {
+      if (config.cleanUpCycle > 0 && config.timeout > 0) {
         log.fine("starting cleanup thread");
         cleanUpThread = new CleanUpThread(this);
         new Thread(cleanUpThread, "RemoteProxy CleanUpThread for " + getId())
             .start(); // Thread safety reviewed (hopefully ;)
       }
     }
-  }
-
-  /**
-   * merge the param from config 1 and 2. If a param is present in both, config2 value is used.
-   *
-   * @param configuration1 The first configuration to merge (recessive)
-   * @param configuration2 The second configuration to merge (dominant)
-   * @return The merged collection
-   */
-  private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
-                                          Map<String, Object> configuration2) {
-    Map<String, Object> res = new HashMap<>();
-    res.putAll(configuration1);
-
-    for (String key : configuration2.keySet()) {
-      res.put(key, configuration2.get(key));
-    }
-
-    return res;
   }
 
   public String getId() {
@@ -281,7 +213,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       log.fine("cleanup thread starting...");
       while (!proxy.stop) {
         try {
-          Thread.sleep(cleanUpCycle);
+          Thread.sleep(config.cleanUpCycle);
         } catch (InterruptedException e) {
           log.severe("clean up thread died. " + e.getMessage());
         }
@@ -291,7 +223,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
 
     void cleanUpAllSlots() {
-      for (TestSlot slot : testSlots) {
+      for (TestSlot slot : getTestSlots()) {
         try {
           cleanUpSlot(slot);
         } catch (Throwable t) {
@@ -305,7 +237,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       TestSession session = slot.getSession();
       if (session != null) {
         long inactivity = session.getInactivityTime();
-        boolean hasTimedOut = inactivity > timeOutMs;
+        boolean hasTimedOut = inactivity > getTimeOut();
         if (hasTimedOut) {
           if (!session.isForwardingRequest()) {
             log.logp(Level.WARNING, "SessionCleanup", null,
@@ -313,7 +245,7 @@ public class BaseRemoteProxy implements RemoteProxy {
                     + " has TIMED OUT due to client inactivity and will be released.");
             try {
               ((TimeoutListener) proxy).beforeRelease(session);
-            } catch(IllegalStateException ignore){
+            } catch(IllegalStateException ignore) {
               log.log(Level.WARNING, ignore.getMessage());
             }
             registry.terminate(session, SessionTerminationReason.TIMEOUT);
@@ -325,7 +257,7 @@ public class BaseRemoteProxy implements RemoteProxy {
               "session " + session + " has been ORPHANED and will be released");
           try {
             ((TimeoutListener) proxy).beforeRelease(session);
-          } catch(IllegalStateException ignore){
+          } catch(IllegalStateException ignore) {
             log.log(Level.WARNING, ignore.getMessage());
           }
           registry.terminate(session, SessionTerminationReason.ORPHAN);
@@ -334,7 +266,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
   }
 
-  public Map<String, Object> getConfig() {
+  public GridNodeConfiguration getConfig() {
     return config;
   }
 
@@ -342,28 +274,30 @@ public class BaseRemoteProxy implements RemoteProxy {
     return request;
   }
 
+  @ManagedAttribute
   public int getMaxNumberOfConcurrentTestSessions() {
-    return maxConcurrentSession;
+    return config.maxSession;
   }
 
+  @ManagedAttribute
   public URL getRemoteHost() {
     return remoteHost;
   }
 
   public TestSession getNewSession(Map<String, Object> requestedCapability) {
-    log.info("Trying to create a new session on node " + this);
+    log.fine("Trying to create a new session on node " + this);
 
     if (!hasCapability(requestedCapability)) {
-      log.info("Node " + this + " has no matching capability");
+      log.fine("Node " + this + " has no matching capability");
       return null;
     }
     // any slot left at all?
-    if (getTotalUsed() >= maxConcurrentSession) {
-      log.info("Node " + this + " has no free slots");
+    if (getTotalUsed() >= config.maxSession) {
+      log.fine("Node " + this + " has no free slots");
       return null;
     }
     // any slot left for the given app ?
-    for (TestSlot testslot : testSlots) {
+    for (TestSlot testslot : getTestSlots()) {
       TestSession session = testslot.getNewSession(requestedCapability);
 
       if (session != null) {
@@ -373,10 +307,11 @@ public class BaseRemoteProxy implements RemoteProxy {
     return null;
   }
 
+  @ManagedAttribute
   public int getTotalUsed() {
     int totalUsed = 0;
 
-    for (TestSlot slot : testSlots) {
+    for (TestSlot slot : getTestSlots()) {
       if (slot.getSession() != null) {
         totalUsed++;
       }
@@ -385,8 +320,13 @@ public class BaseRemoteProxy implements RemoteProxy {
     return totalUsed;
   }
 
+  @ManagedAttribute
+  public int getTotal() {
+    return getTestSlots().size();
+  }
+
   public boolean hasCapability(Map<String, Object> requestedCapability) {
-    for (TestSlot slot : testSlots) {
+    for (TestSlot slot : getTestSlots()) {
       if (slot.matches(requestedCapability)) {
         return true;
       }
@@ -395,6 +335,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return false;
   }
 
+  @ManagedAttribute
   public boolean isBusy() {
     return getTotalUsed() != 0;
   }
@@ -410,9 +351,9 @@ public class BaseRemoteProxy implements RemoteProxy {
    */
   @SuppressWarnings("unchecked")
   public static <T extends RemoteProxy> T getNewInstance(
-      RegistrationRequest request, Registry registry) {
+      RegistrationRequest request, GridRegistry registry) {
     try {
-      String proxyClass = request.getRemoteProxyClass();
+      String proxyClass = request.getConfiguration().proxy;
       if (proxyClass == null) {
         log.fine("No proxy class. Using default");
         proxyClass = BaseRemoteProxy.class.getCanonicalName();
@@ -420,15 +361,14 @@ public class BaseRemoteProxy implements RemoteProxy {
       Class<?> clazz = Class.forName(proxyClass);
       log.fine("Using class " + clazz.getName());
       Object[] args = new Object[]{request, registry};
-      Class<?>[] argsClass = new Class[]{RegistrationRequest.class, Registry.class};
+      Class<?>[] argsClass = new Class[]{RegistrationRequest.class, GridRegistry.class};
       Constructor<?> c = clazz.getConstructor(argsClass);
       Object proxy = c.newInstance(args);
       if (proxy instanceof RemoteProxy) {
         ((RemoteProxy) proxy).setupTimeoutListener();
         return (T) proxy;
-      } else {
-        throw new InvalidParameterException("Error: " + proxy.getClass() + " isn't a remote proxy");
       }
+      throw new InvalidParameterException("Error: " + proxy.getClass() + " isn't a remote proxy");
     } catch (InvocationTargetException e) {
       throw new InvalidParameterException("Error: " + e.getTargetException().getMessage());
     } catch (Exception e) {
@@ -490,7 +430,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   }
 
   public int getTimeOut() {
-    return timeOutMs;
+    return config.timeout * 1000;
   }
 
 
@@ -504,8 +444,8 @@ public class BaseRemoteProxy implements RemoteProxy {
   public JsonObject getStatus() throws GridException {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
-    HttpClient client = getHttpClientFactory().getGridHttpClient(statusCheckTimeout, statusCheckTimeout);
-    HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
+    HttpClient client = getHttpClientFactory().getGridHttpClient(config.nodeStatusCheckTimeout, config.nodeStatusCheckTimeout);
+    HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort(), getRemoteHost().getProtocol());
     HttpResponse response;
     String existingName = Thread.currentThread().getName();
     HttpEntity entity = null;
@@ -559,8 +499,17 @@ public class BaseRemoteProxy implements RemoteProxy {
     return new JsonParser().parse(s.toString()).getAsJsonObject();
   }
 
-
+  @ManagedAttribute
   public float getResourceUsageInPercent() {
     return 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
+  }
+
+  @ManagedAttribute
+  public long getLastSessionStart() {
+    long last = -1;
+    for (TestSlot slot : getTestSlots()) {
+      last = Math.max(last, slot.getLastSessionStart());
+    }
+    return last;
   }
 }

@@ -23,11 +23,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.io.CharStreams;
+import com.google.common.io.Closeables;
 import com.google.common.io.LineReader;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.IOUtils;
-import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.json.Json;
 
 import java.io.File;
 import java.io.FileReader;
@@ -37,7 +37,6 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 class Preferences {
 
@@ -68,17 +67,14 @@ class Preferences {
 
   public Preferences(Reader defaults, File userPrefs) {
     readDefaultPreferences(defaults);
-    FileReader reader = null;
-    try {
-      reader = new FileReader(userPrefs);
+    try (FileReader reader = new FileReader(userPrefs)) {
       readPreferences(reader);
     } catch (IOException e) {
       throw new WebDriverException(e);
-    } finally {
-      IOUtils.closeQuietly(reader);
     }
   }
 
+  @VisibleForTesting
   public Preferences(Reader defaults, Reader reader) {
     readDefaultPreferences(defaults);
     try {
@@ -86,14 +82,17 @@ class Preferences {
     } catch (IOException e) {
       throw new WebDriverException(e);
     } finally {
-      IOUtils.closeQuietly(reader);
+      try {
+        Closeables.close(reader, true);
+      } catch (IOException ignoted) {
+      }
     }
   }
 
   private void readDefaultPreferences(Reader defaultsReader) {
     try {
       String rawJson = CharStreams.toString(defaultsReader);
-      Map<String, Object> map = new JsonToBeanConverter().convert(Map.class, rawJson);
+      Map<String, Object> map = new Json().toType(rawJson, Map.class);
 
       Map<String, Object> frozen = (Map<String, Object>) map.get("frozen");
       for (Map.Entry<String, Object> entry : frozen.entrySet()) {
@@ -181,10 +180,8 @@ class Preferences {
   private String valueAsPreference(Object value) {
     if (value instanceof String) {
       return "\"" + escapeValueAsPreference((String) value) + "\"";
-    } else {
-      return escapeValueAsPreference(String.valueOf(value));
     }
-
+    return escapeValueAsPreference(String.valueOf(value));
   }
 
   private String escapeValueAsPreference(String value) {

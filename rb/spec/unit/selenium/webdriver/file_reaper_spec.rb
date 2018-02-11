@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -25,7 +23,7 @@ module Selenium
       before { FileReaper.reap = true }
 
       let(:tmp_file) do
-        Pathname.new(Dir.tmpdir).join(SecureRandom.uuid).tap { |f| f.mkpath }
+        Pathname.new(Dir.tmpdir).join(SecureRandom.uuid).tap(&:mkpath)
       end
 
       it 'reaps files that have been added' do
@@ -40,9 +38,9 @@ module Selenium
       it 'fails if the file has not been added' do
         expect(tmp_file).to exist
 
-        expect {
+        expect do
           FileReaper.reap(tmp_file.to_s)
-        }.to raise_error(Error::WebDriverError)
+        end.to raise_error(Error::WebDriverError)
       end
 
       it 'does not reap if reaping has been disabled' do
@@ -62,13 +60,16 @@ module Selenium
 
           FileReaper << tmp_file.to_s
 
-          pid = fork { FileReaper.reap!; exit; exit }
+          pid = fork do
+            FileReaper.reap!
+            exit
+            exit
+          end
           Process.wait pid
 
           expect(tmp_file).to exist
         end
       end
-
     end
-  end
-end
+  end # WebDriver
+end # Selenium

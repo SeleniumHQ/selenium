@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +18,6 @@
 module Selenium
   module WebDriver
     module Firefox
-
       # @api private
       module Util
         module_function
@@ -41,7 +38,6 @@ module Selenium
         def stringified?(str)
           str =~ /^".*"$/
         end
-
       end # Util
     end # Firefox
   end # WebDriver

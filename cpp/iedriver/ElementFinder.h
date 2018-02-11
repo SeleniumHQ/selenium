@@ -20,11 +20,16 @@
 #include <string>
 #include <vector>
 
+#include "CustomTypes.h"
+
+namespace Json {
+  class Value;
+}
+
 namespace webdriver {
 
-// Forward declaration of classes to avoid
-// circular include files.
-class IESessionWindow;
+// Forward declaration of classes.
+class IECommandExecutor;
 
 class ElementFinder {
  public:

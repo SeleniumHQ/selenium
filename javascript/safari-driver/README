@@ -1,19 +1,6 @@
-To use:
+The SafariDriver code has been moved to the `safari` branch:
 
-1.) Sign up for the Safari developer program online, at
-        https://developer.apple.com/programs/safari/
-2.) Generate a signed developer certificate.
+https://github.com/seleniumhq/selenium/tree/safari
 
-3.) $ ./go //javascript/safari-driver:SafariDriver
-4.) Launch Safari
-5.) Develop > Show ExtensionBuilder
-6.) Add Extension
-7.) Select ./build/javascript/safari-driver/SafariDriver.safariextension
-8.) Install
-
-To reload any changes made:
-
-1.) $ ./go //javascript/safari-driver:SafariDriver
-2.) Develop > Show ExtensionBuilder
-3.) Select WebDriver extension
-4.) Reload
+This directly only contains a snapshot of the JavaScript needed by clients to
+initiate a connection with the SafariDriver.

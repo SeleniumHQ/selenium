@@ -19,13 +19,11 @@ package org.openqa.selenium.testing.drivers;
 
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class DefaultDriverSupplier implements Supplier<WebDriver> {
@@ -33,12 +31,9 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
   private static final Logger log = Logger.getLogger(DefaultDriverSupplier.class.getName());
   private Class<? extends WebDriver> driverClass;
   private final Capabilities desiredCapabilities;
-  private final Capabilities requiredCapabilities;
 
-  public DefaultDriverSupplier(Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
+  public DefaultDriverSupplier(Capabilities desiredCapabilities) {
     this.desiredCapabilities = desiredCapabilities;
-    this.requiredCapabilities = requiredCapabilities;
 
     try {
       // Only support a default driver if we're actually in dev mode.
@@ -57,16 +52,11 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     log.info("Providing default driver instance");
 
     try {
-      return driverClass.getConstructor(Capabilities.class, Capabilities.class).
-          newInstance(desiredCapabilities, requiredCapabilities);
-    } catch (InstantiationException e) {
-      throw Throwables.propagate(e);
-    } catch (IllegalAccessException e) {
-      throw Throwables.propagate(e);
-    } catch (NoSuchMethodException e) {
-      throw Throwables.propagate(e);
+      return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapabilities);
     } catch (InvocationTargetException e) {
-      throw Throwables.propagate(e.getTargetException());
+      throw new RuntimeException(e.getTargetException());
+    } catch (ReflectiveOperationException e) {
+      throw new RuntimeException(e);
     }
   }
 }

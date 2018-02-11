@@ -17,11 +17,10 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class SlowLoadingPageTest extends JUnit4TestBase {
   private static final long LOAD_TIME_IN_SECONDS = 3;

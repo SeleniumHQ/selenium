@@ -19,18 +19,17 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,25 +50,23 @@ public class ParallelTest {
   @Before
   public void prepareReqRequest() {
 
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
     app1.put(MAX_INSTANCES, 5);
 
-    app2.put(APP, "app2");
+    app2.put(CapabilityType.APPLICATION_NAME, "app2");
     app2.put(MAX_INSTANCES, 1);
 
-    config.put(REMOTE_HOST, "http://machine1:4444");
-    config.put(MAX_SESSION, 5);
-
     req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.addDesiredCapability(app2);
-    req.setConfiguration(config);
+    req.getConfiguration().host = "machine1";
+    req.getConfiguration().port = 4444;
+    req.getConfiguration().maxSession = 5;
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app1));
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app2));
   }
 
   @Test
   public void canGetApp2() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -90,7 +87,7 @@ public class ParallelTest {
    */
   @Test
   public void cannotGet2App2() throws InterruptedException {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -118,7 +115,7 @@ public class ParallelTest {
    */
   @Test(timeout = 2000)
   public void canGet5App1() {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -139,7 +136,7 @@ public class ParallelTest {
    */
   @Test(timeout = 1000)
   public void cannotGet6App1() throws InterruptedException {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -177,7 +174,7 @@ public class ParallelTest {
    */
   @Test(timeout = 1000)
   public void cannotGetApp2() throws InterruptedException {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -210,26 +207,25 @@ public class ParallelTest {
 
   @Test(timeout = 10000)
   public void releaseAndReserve() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1;
     RegistrationRequest req;
     Map<String, Object> app1 = new HashMap<>();
     Map<String, Object> app2 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
     app1.put(MAX_INSTANCES, 5);
 
-    app2.put(APP, "app2");
+    app2.put(CapabilityType.APPLICATION_NAME, "app2");
     app2.put(MAX_INSTANCES, 1);
 
-    config.put(REMOTE_HOST, "http://machine1:4444");
-    config.put(MAX_SESSION, 5);
-
     req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.addDesiredCapability(app2);
-    req.setConfiguration(config);
-    req.getConfiguration().put(CapabilityType.PROXY, DetachedRemoteProxy.class.getCanonicalName());
+    req.getConfiguration().host = "machine1";
+    req.getConfiguration().port = 4444;
+    req.getConfiguration().maxSession = 5;
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app1));
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app2));
+    req.getConfiguration().proxy = DetachedRemoteProxy.class.getCanonicalName();
 
     p1 = BaseRemoteProxy.getNewInstance(req, registry);
 
@@ -248,7 +244,7 @@ public class ParallelTest {
 
       // release them
       for (TestSession session : used) {
-        registry.terminateSynchronousFOR_TEST_ONLY(session);
+        ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
       }
       assertEquals(registry.getActiveSessions().size(), 0);
       used.clear();
@@ -265,7 +261,7 @@ public class ParallelTest {
 
       assertEquals(registry.getActiveSessions().size(), 5);
 
-      registry.terminateSynchronousFOR_TEST_ONLY(used.get(0));
+      ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(used.get(0));
 
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();

@@ -19,37 +19,38 @@ package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.After;
 import org.junit.Test;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.Random;
 
 public class FrameSwitchingTest extends JUnit4TestBase {
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     try {
       driver.switchTo().defaultContent();
     } catch (Exception e) {
@@ -176,12 +177,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     driver.get(pages.framesetPage);
     WebElement frame = driver.findElement(By.tagName("frameset"));
 
-    try {
-      driver.switchTo().frame(frame);
-      fail();
-    } catch (NoSuchFrameException expected) {
-      // Do nothing.
-    }
+    Throwable t = catchThrowable(() -> driver.switchTo().frame(frame));
+    assertThat(t, instanceOf(NoSuchFrameException.class));
   }
 
   @Test
@@ -191,22 +188,14 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     driver.switchTo().frame("second");
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
 
-    try {
-      driver.switchTo().frame("third");
-      fail();
-    } catch (NoSuchFrameException expected) {
-      // Do nothing
-    }
+    Throwable t = catchThrowable(() -> driver.switchTo().frame("third"));
+    assertThat(t, instanceOf(NoSuchFrameException.class));
 
     driver.switchTo().defaultContent();
     driver.switchTo().frame("third");
 
-    try {
-      driver.switchTo().frame("second");
-      fail();
-    } catch (NoSuchFrameException expected) {
-      // Do nothing
-    }
+    Throwable t2 = catchThrowable(() -> driver.switchTo().frame("second"));
+    assertThat(t2, instanceOf(NoSuchFrameException.class));
 
     driver.switchTo().defaultContent();
     driver.switchTo().frame("second");
@@ -226,41 +215,29 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("fourth");
 
-    try {
-      driver.switchTo().frame("second");
-      fail("Expected NoSuchFrameException");
-    } catch (NoSuchFrameException e) {
-      // Expected
-    }
-
+    Throwable t = catchThrowable(() -> driver.switchTo().frame("second"));
+    assertThat(t, instanceOf(NoSuchFrameException.class));
   }
 
   @Test
   public void testShouldThrowAnExceptionWhenAFrameCannotBeFound() {
     driver.get(pages.xhtmlTestPage);
 
-    try {
-      driver.switchTo().frame("Nothing here");
-      fail("Should not have been able to switch");
-    } catch (NoSuchFrameException e) {
-      // This is expected
-    }
+    Throwable t = catchThrowable(() -> driver.switchTo().frame("Nothing here"));
+    assertThat(t, instanceOf(NoSuchFrameException.class));
   }
 
   @Test
   public void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
     driver.get(pages.xhtmlTestPage);
 
-    try {
-      driver.switchTo().frame(27);
-      fail("Should not have been able to switch");
-    } catch (NoSuchFrameException e) {
-      // This is expected
-    }
+    Throwable t = catchThrowable(() -> driver.switchTo().frame(27));
+    assertThat(t, instanceOf(NoSuchFrameException.class));
   }
 
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToParentFrame() {
     driver.get(pages.framesetPage);
 
@@ -268,8 +245,9 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("1"));
   }
 
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
 
@@ -278,16 +256,18 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
     driver.switchTo().parentFrame();
     assertEquals(driver.getTitle(), "XHTML Test Page");
   }
 
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToParentFromAnIframe() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
@@ -314,13 +294,12 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     // TODO(simon): this should not be needed, and is only here because IE's submit returns too
     // soon.
 
-    wait.until(WaitingConditions.elementTextToEqual(By.xpath("//p"), "Success!"));
+    wait.until(textToBe(By.xpath("//p"), "Success!"));
   }
 
-  @Ignore(value = {MARIONETTE})
   @Test
-  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage()
-      throws Exception {
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
+  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage() {
     driver.get(pages.framesetPage);
 
     driver.switchTo().frame(0);
@@ -337,12 +316,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
 
-    try {
-      driver.switchTo().defaultContent();
-      driver.findElement(By.id("iframe_page_heading"));
-    } catch (Exception e) {
-      fail("Should have switched back to main content");
-    }
+    driver.switchTo().defaultContent();
+    driver.findElement(By.id("iframe_page_heading"));
   }
 
   @Test
@@ -373,7 +348,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(getTextOfGreetingElement(), equalTo("Success!"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation() {
     driver.get(appServer.whereIs("click_tests/issue5237.html"));
@@ -411,8 +385,9 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertNotNull(element);
   }
 
-  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrl() {
     driver.get(pages.framesetPage);
     assertThat(driver.getCurrentUrl(), equalTo(pages.framesetPage));
@@ -421,8 +396,9 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(pages.framesetPage));
   }
 
-  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes() {
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl(), equalTo(pages.iframePage));
@@ -431,8 +407,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(pages.iframePage));
   }
 
-  @Ignore(value = {PHANTOMJS})
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
@@ -451,20 +425,14 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
     driver.switchTo().frame("iframe1");
 
-    try {
-      wait.until(presenceOfElementLocated(By.id("success")));
-    } catch (WebDriverException web) {
-      fail("Could not find element after switching frame");
-    }
+    wait.until(presenceOfElementLocated(By.id("success")));
   }
 
-  @Ignore(value = {PHANTOMJS})
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
     int iframe = 0;
-    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iframe));
+    wait.until(frameToBeAvailableAndSwitchToIt(iframe));
     // we should be in the frame now
     WebElement killIframe = driver.findElement(By.id("killIframe"));
     killIframe.click();
@@ -473,22 +441,16 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
     addIFrame.click();
-    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iframe));
+    wait.until(frameToBeAvailableAndSwitchToIt(iframe));
 
-    try {
-      wait.until(presenceOfElementLocated(By.id("success")));
-    } catch (WebDriverException web) {
-      fail("Could not find element after switching frame");
-    }
+    wait.until(presenceOfElementLocated(By.id("success")));
   }
 
-  @Ignore(value = {PHANTOMJS})
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
     WebElement iframe = driver.findElement(By.id("iframe1"));
-    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iframe));
+    wait.until(frameToBeAvailableAndSwitchToIt(iframe));
     // we should be in the frame now
     WebElement killIframe = driver.findElement(By.id("killIframe"));
     killIframe.click();
@@ -499,31 +461,24 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     addIFrame.click();
 
     iframe = driver.findElement(By.id("iframe1"));
-    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iframe));
-
-    try {
-      wait.until(presenceOfElementLocated(By.id("success")));
-    } catch (WebDriverException web) {
-      fail("Could not find element after switching frame");
-    }
+    wait.until(frameToBeAvailableAndSwitchToIt(iframe));
+    wait.until(presenceOfElementLocated(By.id("success")));
   }
 
-  @Ignore(value = {CHROME, HTMLUNIT, IE, MARIONETTE, PHANTOMJS, SAFARI}, reason = "not tested")
-  @JavascriptEnabled
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
+  @Ignore(SAFARI)
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 
     driver.switchTo().frame("iframe1");
+    driver.findElement(By.id("killIframe")).click();
 
-    WebElement killIframe = driver.findElement(By.id("killIframe"));
-    killIframe.click();
-
-    try {
-      driver.findElement(By.id("killIframe")).click();
-      fail("NoSuchFrameException should be thrown");
-    } catch (NoSuchFrameException expected) {
-    }
+    Throwable t = catchThrowable(() -> driver.findElement(By.id("killIframe")));
+    assertThat(t, instanceOf(NoSuchFrameException.class));
   }
 
   @Test
@@ -533,7 +488,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertEquals("Unique title", driver.getTitle());
   }
 
-  @JavascriptEnabled
   @Test
   public void testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame() {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
@@ -544,7 +498,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertTrue((Boolean) executor.executeScript("return window != window.top"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldNotSwitchMagicallyToTheTopWindow() {
     String baseUrl = appServer.whereIs("frame_switching_tests/");
@@ -579,25 +532,11 @@ public class FrameSwitchingTest extends JUnit4TestBase {
         && "44".compareTo(((HasCapabilities) driver).getCapabilities().getVersion()) <= 0);
 
     driver.get(pages.iframePage);
-    try {
-      driver.findElement(By.id("iframe1"));
-    } catch (NoSuchElementException e) {
-      fail("Expected to be on iframes.html, but " + e.getMessage());
-    }
-
     driver.switchTo().frame(driver.findElement(By.id("iframe1")));
-    try {
-      driver.findElement(By.id("cheese")); // Found on formPage.html but not on iframes.html.
-    } catch (NoSuchElementException e) {
-      fail("Expected to be on formPage.html, but " + e.getMessage());
-    }
+    driver.findElement(By.id("cheese")); // Found on formPage.html but not on iframes.html.
 
     driver.get(pages.iframePage); // This must effectively switchTo().defaultContent(), too.
-    try {
-      driver.findElement(By.id("iframe1"));
-    } catch (NoSuchElementException e) {
-      fail("Expected to be on iframes.html, but " + e.getMessage());
-    }
+    driver.findElement(By.id("iframe1"));
   }
 
   private void assertFrameNotPresent(String locator) {

@@ -16,8 +16,10 @@
 // under the License.
 
 /**
- * @fileoverview An example WebDriver script. This requires the chromedriver
- * to be present on the system PATH.
+ * @fileoverview An example WebDriver script.
+ *
+ * Before running this script, ensure that Mozilla's geckodriver is present on
+ * your system PATH: <https://github.com/mozilla/geckodriver/releases>
  *
  * Usage:
  *   // Default behavior
@@ -30,21 +32,19 @@
  *   SELENIUM_SERVER_JAR=/path/to/selenium-server-standalone.jar \
  *     node selenium-webdriver/example/google_search.js
  *
- *   // Target a remove Selenium server
+ *   // Target a remote Selenium server
  *   SELENIUM_REMOTE_URL=http://www.example.com:4444/wd/hub \
  *     node selenium-webdriver/example/google_search.js
  */
 
-var webdriver = require('..'),
-    By = webdriver.By,
-    until = webdriver.until;
+const {Builder, By, Key, until} = require('..');
 
-var driver = new webdriver.Builder()
+var driver = new Builder()
     .forBrowser('firefox')
     .build();
 
-driver.get('http://www.google.com/ncr');
-driver.findElement(By.name('q')).sendKeys('webdriver');
-driver.findElement(By.name('btnG')).click();
-driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-driver.quit();
+driver.get('http://www.google.com/ncr')
+    .then(_ =>
+        driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN))
+    .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000))
+    .then(_ => driver.quit());

@@ -15,8 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.support.ui;
+
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -24,8 +25,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 
 /**

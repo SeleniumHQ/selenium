@@ -1,5 +1,6 @@
+include_defs('//javascript/JAVASCRIPT_DEFS')
 
-js_library(name = 'atoms-lib',
+closure_library(name = 'atoms-lib',
   srcs = glob(['*.js', 'storage/*.js']),
   deps = [
     '//javascript/atoms:action',
@@ -14,3 +15,77 @@ js_library(name = 'atoms-lib',
   ],
 )
 
+closure_binary(name = 'inputs',
+  srcs = [
+    'inputs.js',
+    'exports/inputs.js',
+  ],
+  flags = [
+    '--compilation_level=ADVANCED_OPTIMIZATIONS',
+  ],
+  no_format = True,
+  deps = [
+    ':atoms-lib',
+  ],
+  visibility = [
+    '//java/client/test/org/openqa/selenium/atoms:',
+  ],
+)
+
+closure_library(name = 'attribute-lib',
+  srcs = ['attribute.js'],
+  deps = [
+    '//javascript/atoms:domcore',
+    '//third_party/closure:closure',
+  ],
+)
+
+closure_fragment(name = 'clear-element',
+  module = 'bot.action',
+  function = 'bot.action.clear',
+  deps = [ '//javascript/atoms:action' ],
+  visibility = [
+  ],
+)
+
+closure_fragment(name = 'get-attribute',
+  module = 'webdriver.atoms.element.attribute',
+  function = 'webdriver.atoms.element.attribute.get',
+  deps = [ ':attribute-lib' ],
+  visibility = [
+    '//dotnet/src/webdriver:webdriver_deps',
+    '//java/client/src/org/openqa/selenium/remote:get-attribute',
+  ],
+)
+
+closure_fragment(name = 'get-text',
+  module = 'webdriver.atoms.element',
+  function = 'webdriver.atoms.element.getText',
+  deps = [ ':atoms-lib' ],
+  visibility = [
+  ],
+)
+
+closure_fragment(name = 'is-displayed',
+  module = 'bot.dom',
+  function = 'bot.dom.isShown',
+  deps = [ '//javascript/atoms:dom' ],
+  visibility = [
+  ],
+)
+
+closure_fragment(name = 'is-enabled',
+  module = 'bot.dom',
+  function = 'bot.dom.isEnabled',
+  deps = [ '//javascript/atoms:dom' ],
+  visibility = [
+  ],
+)
+
+closure_fragment(name = 'is-selected',
+  module = 'webdriver.atoms.element',
+  function = 'webdriver.atoms.element.isSelected',
+  deps = [ ':atoms-lib' ],
+  visibility = [
+  ],
+)

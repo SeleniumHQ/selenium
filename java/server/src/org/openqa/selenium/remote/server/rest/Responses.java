@@ -17,16 +17,17 @@
 
 package org.openqa.selenium.remote.server.rest;
 
-import com.google.common.base.Optional;
 import com.google.gson.JsonObject;
 
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
+import java.util.Optional;
+
 /**
- * Contains factory methods for creating {@link org.openqa.selenium.remote.Response} objects.
+ * Contains factory methods for creating {@link Response} objects.
  */
 class Responses {
 
@@ -82,8 +83,8 @@ class Responses {
     response.setState(ERROR_CODES.toState(response.getStatus()));
 
     if (reason != null) {
-      JsonObject json = new BeanToJsonConverter().convertObject(reason).getAsJsonObject();
-      json.addProperty("screen", screenshot.orNull());
+      JsonObject json = new Json().toJsonElement(reason).getAsJsonObject();
+      json.addProperty("screen", screenshot.orElse(null));
       response.setValue(json);
     }
     return response;

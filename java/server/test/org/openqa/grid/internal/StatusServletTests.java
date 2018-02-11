@@ -20,6 +20,7 @@ package org.openqa.grid.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.gson.JsonArray;
@@ -38,11 +39,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.BufferedReader;
@@ -50,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,18 +72,17 @@ public class StatusServletTests {
   @Before
   public void setup() throws Exception {
     GridHubConfiguration c = new GridHubConfiguration();
-    c.getAllParams().put(RegistrationRequest.TIME_OUT, 12345);
-    c.setPort(PortProber.findFreePort());
-    c.setHost("localhost");
+    c.timeout = 12345;
+    c.port = PortProber.findFreePort();
+    c.host = "localhost";
     hub = new Hub(c);
-    Registry registry = hub.getRegistry();
+    GridRegistry registry = hub.getRegistry();
     httpClientFactory = new HttpClientFactory();
-    hubApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/hub");
-    proxyApi = new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/proxy");
-    testSessionApi =
-        new URL("http://" + hub.getHost() + ":" + hub.getPort() + "/grid/api/testsession");
+    hubApi = hub.getUrl("/grid/api/hub");
+    proxyApi = hub.getUrl("/grid/api/proxy");
+    testSessionApi = hub.getUrl("/grid/api/testsession");
 
-    host = new HttpHost(hub.getHost(), hub.getPort());
+    host = new HttpHost(hub.getConfiguration().host, hub.getConfiguration().port);
 
     hub.start();
 
@@ -93,13 +95,13 @@ public class StatusServletTests {
         RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444", registry);
 
     RegistrationRequest req = new RegistrationRequest();
+    req.getConfiguration().capabilities.clear();
     Map<String, Object> capability = new HashMap<>();
     capability.put(CapabilityType.BROWSER_NAME, "custom app");
-    req.addDesiredCapability(capability);
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(capability));
+    req.getConfiguration().host = "machine5";
+    req.getConfiguration().port = 4444;
 
-    Map<String, Object> config = new HashMap<>();
-    config.put(RegistrationRequest.REMOTE_HOST, "http://machine5:4444");
-    req.setConfiguration(config);
     RemoteProxy customProxy = new MyCustomProxy(req, registry);
 
     registry.add(p1);
@@ -115,7 +117,6 @@ public class StatusServletTests {
     newSessionRequest.process();
     session = newSessionRequest.getSession();
     session.setExternalKey(ExternalSessionKey.fromString("ext. key"));
-
   }
 
   @Test
@@ -252,9 +253,9 @@ public class StatusServletTests {
     JsonObject j = new JsonObject();
 
     JsonArray keys = new JsonArray();
-    keys.add(new JsonPrimitive(RegistrationRequest.TIME_OUT));
+    keys.add(new JsonPrimitive("timeout"));
     keys.add(new JsonPrimitive("I'm not a valid key"));
-    keys.add(new JsonPrimitive(RegistrationRequest.SERVLETS));
+    keys.add(new JsonPrimitive("servlets"));
 
     j.add("configuration", keys);
     r.setEntity(new StringEntity(j.toString()));
@@ -264,13 +265,40 @@ public class StatusServletTests {
     JsonObject o = extractObject(response);
 
     assertTrue(o.get("success").getAsBoolean());
-    assertEquals(12345, o.get(RegistrationRequest.TIME_OUT).getAsInt());
-    assertTrue(o.get("I'm not a valid key").isJsonNull());
-    assertEquals(0, o.get(RegistrationRequest.SERVLETS).getAsJsonArray().size());
+    assertEquals(12345, o.get("timeout").getAsInt());
+    assertNull(o.get("I'm not a valid key"));
+    assertTrue(o.getAsJsonArray("servlets").size() == 0);
     assertFalse(o.has("capabilityMatcher"));
-
   }
 
+  /**
+   * if a certain set of parameters are requested to the hub, only those params are returned.
+   * @throws IOException
+   */
+  @Test
+  public void testHubGetSpecifiedConfigWithQueryString() throws IOException {
+
+    HttpClient client = httpClientFactory.getHttpClient();
+
+    ArrayList<String> keys = new ArrayList<>();
+    keys.add(URLEncoder.encode("timeout", "UTF-8"));
+    keys.add(URLEncoder.encode("I'm not a valid key", "UTF-8"));
+    keys.add(URLEncoder.encode("servlets", "UTF-8"));
+
+    String query = "?configuration=" + String.join(",",keys);
+    String url = hubApi.toExternalForm() + query ;
+    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+
+    HttpResponse response = client.execute(host, r);
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    JsonObject o = extractObject(response);
+
+    assertTrue(o.get("success").getAsBoolean());
+    assertEquals(12345, o.get("timeout").getAsInt());
+    assertNull(o.get("I'm not a valid key"));
+    assertTrue(o.getAsJsonArray("servlets").size() == 0);
+    assertFalse(o.has("capabilityMatcher"));
+  }
 
   /**
    * when no param is specified, a call to the hub API returns all the config params the hub
@@ -297,8 +325,7 @@ public class StatusServletTests {
     assertTrue(o.get("success").getAsBoolean());
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                  o.get("capabilityMatcher").getAsString());
-    assertTrue(o.get("prioritizer").isJsonNull());
-
+    assertNull(o.get("prioritizer"));
   }
 
   @Test
@@ -316,7 +343,7 @@ public class StatusServletTests {
     assertTrue(o.get("success").getAsBoolean());
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                  o.get("capabilityMatcher").getAsString());
-    assertTrue(o.get("prioritizer").isJsonNull());
+    assertNull(o.get("prioritizer"));
   }
 
   @Test

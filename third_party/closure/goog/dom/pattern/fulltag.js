@@ -81,8 +81,7 @@ goog.dom.pattern.FullTag.prototype.matchToken = function(token, type) {
   } else {
     this.depth_ += type;
 
-    return this.depth_ ?
-           goog.dom.pattern.MatchType.MATCHING :
-           goog.dom.pattern.MatchType.MATCH;
+    return this.depth_ ? goog.dom.pattern.MatchType.MATCHING :
+                         goog.dom.pattern.MatchType.MATCH;
   }
 };

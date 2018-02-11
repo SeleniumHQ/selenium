@@ -18,8 +18,6 @@ package org.openqa.selenium.edge;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.edge.EdgeDriverService;
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
@@ -115,7 +113,9 @@ public class EdgeDriver extends RemoteWebDriver {
 	   *
 	   * @param capabilities The capabilities required from the EdgeDriver.
 	   * @see #EdgeDriver(EdgeDriverService, Capabilities)
+     * @deprecated Use {@link EdgeDriver(EdgeOptions)}
 	   */
+	  @Deprecated
 	  public EdgeDriver(Capabilities capabilities) {
 	    this(EdgeDriverService.createDefaultService(), capabilities);
 	  }
@@ -138,7 +138,7 @@ public class EdgeDriver extends RemoteWebDriver {
 	   * @param options The options to use.
 	   */
 	  public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
-	    this(service, options.toCapabilities());
+      super(new DriverCommandExecutor(service), options);
 	  }
 	  
 	  /**
@@ -147,7 +147,9 @@ public class EdgeDriver extends RemoteWebDriver {
 	   *
 	   * @param service The service to use.
 	   * @param capabilities The capabilities required from the EdgeDriver.
+     * @deprecated Use {@link #EdgeDriver(EdgeDriverService, EdgeOptions)}
 	   */
+		@Deprecated
 	  public EdgeDriver(EdgeDriverService service, Capabilities capabilities) {
 	    super(new DriverCommandExecutor(service), capabilities);
 	  }

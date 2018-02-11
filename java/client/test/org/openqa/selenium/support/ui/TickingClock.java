@@ -15,18 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.support.ui;
 
 import java.util.concurrent.TimeUnit;
 
 public class TickingClock implements Clock, Sleeper {
-  private final long incrementMillis;
   private long now = 0;
-
-  public TickingClock(long incrementMillis) {
-    this.incrementMillis = incrementMillis;
-  }
 
   public long now() {
     return now;

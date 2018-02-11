@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * A cross-domain RPC that specifies a command to execute in the WebDriver

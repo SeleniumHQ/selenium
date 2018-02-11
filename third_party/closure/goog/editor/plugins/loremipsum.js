@@ -29,6 +29,7 @@ goog.require('goog.editor.Field');
 goog.require('goog.editor.Plugin');
 goog.require('goog.editor.node');
 goog.require('goog.functions');
+goog.require('goog.html.SafeHtml');
 goog.require('goog.userAgent');
 
 
@@ -90,8 +91,8 @@ goog.editor.plugins.LoremIpsum.prototype.queryCommandValue = function(command) {
  *     after clearing lorem. Should be a boolean.
  * @override
  */
-goog.editor.plugins.LoremIpsum.prototype.execCommand = function(command,
-    opt_placeCursor) {
+goog.editor.plugins.LoremIpsum.prototype.execCommand = function(
+    command, opt_placeCursor) {
   if (command == goog.editor.Command.CLEAR_LOREM) {
     this.clearLorem_(!!opt_placeCursor);
   } else if (command == goog.editor.Command.UPDATE_LOREM) {
@@ -101,8 +102,8 @@ goog.editor.plugins.LoremIpsum.prototype.execCommand = function(command,
 
 
 /** @override */
-goog.editor.plugins.LoremIpsum.prototype.isSupportedCommand =
-    function(command) {
+goog.editor.plugins.LoremIpsum.prototype.isSupportedCommand = function(
+    command) {
   return command == goog.editor.Command.CLEAR_LOREM ||
       command == goog.editor.Command.UPDATE_LOREM ||
       command == goog.editor.Command.USING_LOREM;
@@ -122,8 +123,7 @@ goog.editor.plugins.LoremIpsum.prototype.updateLorem_ = function() {
   // 3) We're not using lorem already
   // 4) The field is not currently active (doesn't have focus).
   var fieldObj = this.getFieldObject();
-  if (!this.usingLorem_ &&
-      !fieldObj.inModalMode() &&
+  if (!this.usingLorem_ && !fieldObj.inModalMode() &&
       goog.editor.Field.getActiveFieldId() != fieldObj.id) {
     var field = fieldObj.getElement();
     if (!field) {
@@ -140,7 +140,9 @@ goog.editor.plugins.LoremIpsum.prototype.updateLorem_ = function() {
       // clear the lorem ipsum style.
       this.oldFontStyle_ = field.style.fontStyle;
       field.style.fontStyle = 'italic';
-      fieldObj.setHtml(true, this.message_, true);
+      fieldObj.setSafeHtml(
+          true, goog.html.SafeHtml.htmlEscapePreservingNewlines(this.message_),
+          true);
     }
   }
 };
@@ -174,7 +176,7 @@ goog.editor.plugins.LoremIpsum.prototype.clearLorem_ = function(
     goog.asserts.assert(field);
     this.usingLorem_ = false;
     field.style.fontStyle = this.oldFontStyle_;
-    fieldObj.setHtml(true, null, true);
+    fieldObj.setSafeHtml(true, null, true);
 
     // TODO(nicksantos): I'm pretty sure that this is a hack, but talk to
     // Julie about why this is necessary and what to do with it. Really,

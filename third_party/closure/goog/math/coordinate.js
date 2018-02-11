@@ -67,6 +67,17 @@ if (goog.DEBUG) {
 
 
 /**
+ * Returns whether the specified value is equal to this coordinate.
+ * @param {*} other Some other value.
+ * @return {boolean} Whether the specified value is equal to this coordinate.
+ */
+goog.math.Coordinate.prototype.equals = function(other) {
+  return other instanceof goog.math.Coordinate &&
+      goog.math.Coordinate.equals(this, other);
+};
+
+
+/**
  * Compares coordinates for equality.
  * @param {goog.math.Coordinate} a A Coordinate.
  * @param {goog.math.Coordinate} b A Coordinate.
@@ -209,7 +220,7 @@ goog.math.Coordinate.prototype.translate = function(tx, opt_ty) {
     this.x += tx.x;
     this.y += tx.y;
   } else {
-    this.x += tx;
+    this.x += Number(tx);
     if (goog.isNumber(opt_ty)) {
       this.y += opt_ty;
     }

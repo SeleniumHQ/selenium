@@ -17,50 +17,19 @@
 #ifndef WEBDRIVER_IE_DELETECOOKIECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_DELETECOOKIECOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class DeleteCookieCommandHandler : public IECommandHandler {
  public:
-  DeleteCookieCommandHandler(void) {
-  }
-
-  virtual ~DeleteCookieCommandHandler(void) {
-  }
+  DeleteCookieCommandHandler(void);
+  virtual ~DeleteCookieCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
-    if (name_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter in URL: name");
-      return;
-    }
-
-    std::string cookie_name = name_parameter_iterator->second.asString();
-    BrowserHandle browser_wrapper;
-    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get browser");
-      return;
-    }
-
-    BrowserCookie cookie;
-    cookie.set_name(cookie_name);
-    browser_wrapper->cookie_manager()->DeleteCookie(
-        browser_wrapper->GetCurrentUrl(),
-        cookie);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to delete cookie");
-      return;
-    }
-
-    response->SetSuccessResponse(Json::Value::null);
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

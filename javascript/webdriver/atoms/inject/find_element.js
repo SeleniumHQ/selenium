@@ -69,7 +69,7 @@ webdriver.atoms.inject.locators.findElements = function(
  * @param {string} strategy The strategy to use to locate the element.
  * @param {string} target The locator to use.
  * @param {(function(!Object, (Document|Element)=): Element|
- *          function(!Object, (Document|Element)=): !goog.array.ArrayLike)}
+ *          function(!Object, (Document|Element)=): !IArrayLike)}
  *     searchFn The search function to invoke.
  * @param {?{ELEMENT: string}=} opt_root The WebElement reference for the
  *     element to perform the search under. If not specified, will use

@@ -1,4 +1,4 @@
-﻿// <copyright file="Executable.cs" company="WebDriver Committers">
+// <copyright file="Executable.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -17,7 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -136,6 +135,9 @@ namespace OpenQA.Selenium.Firefox.Internal
             string binary = string.Empty;
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {
+#if !NETCOREAPP2_0 && !NETSTANDARD2_0
+                // NOTE: This code is legacy, and will be removed. It will not be
+                // fixed for the .NET Core case.
                 // Look first in HKEY_LOCAL_MACHINE, then in HKEY_CURRENT_USER
                 // if it's not found there. If it's still not found, look in
                 // the default install location (C:\Program Files\Mozilla Firefox).
@@ -152,6 +154,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 }
                 else
                 {
+#endif
                     // NOTE: Can't use Environment.SpecialFolder.ProgramFilesX86, because .NET 3.5
                     // doesn't have that member of the enum.
                     string[] windowsDefaultInstallLocations = new string[]
@@ -161,7 +164,9 @@ namespace OpenQA.Selenium.Firefox.Internal
                     };
 
                     binary = GetExecutablePathUsingDefaultInstallLocations(windowsDefaultInstallLocations, "Firefox.exe");
+#if !NETCOREAPP2_0 && !NETSTANDARD2_0
                 }
+#endif
             }
             else
             {
@@ -201,8 +206,11 @@ namespace OpenQA.Selenium.Firefox.Internal
             return FindBinary(new string[] { "firefox3", "firefox" });
         }
 
+#if !NETCOREAPP2_0 && !NETSTANDARD2_0
         private static string GetExecutablePathUsingRegistry(RegistryKey mozillaKey)
         {
+            // NOTE: This code is legacy, and will be removed. It will not be
+            // fixed for the .NET Core case.
             string currentVersion = (string)mozillaKey.GetValue("CurrentVersion");
             if (string.IsNullOrEmpty(currentVersion))
             {
@@ -225,6 +233,7 @@ namespace OpenQA.Selenium.Firefox.Internal
 
             return path;
         }
+#endif
 
         private static string GetExecutablePathUsingDefaultInstallLocations(string[] defaultInstallLocations, string exeName)
         {

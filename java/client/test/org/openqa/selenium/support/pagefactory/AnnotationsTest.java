@@ -26,13 +26,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.AbstractFindByBuilder;
 import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.PageFactoryFinder;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 import java.util.List;
 
 @RunWith(JUnit4.class)
@@ -93,6 +101,34 @@ public class AnnotationsTest {
 
   @FindBy(using = "cheese")
   public WebElement findByUnsetHow_field;
+
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target({ElementType.FIELD, ElementType.TYPE})
+  @PageFactoryFinder(FindByXXXX.FindByXXXXBuilder.class)
+  public @interface FindByXXXX {
+
+    public static class FindByXXXXBuilder extends AbstractFindByBuilder {
+
+      @Override
+      public By buildIt(Object annotation, Field field) {
+        return new By() {
+          @Override
+          public List<WebElement> findElements(SearchContext context) {
+            return null;
+          }
+
+          @Override
+          public String toString() {
+            return "FindByXXXX's By";
+          }
+        };
+      }
+    }
+
+  }
+
+  @FindByXXXX()
+  public WebElement findBy_xxx;
 
   @Test
   public void testDefault() throws Exception {
@@ -219,6 +255,18 @@ public class AnnotationsTest {
   public void findByUnsetHowIsEquivalentToFindById() throws Exception {
     assertThat(new Annotations(getClass().getField("findByUnsetHow_field")).buildBy(),
                equalTo(By.id("cheese")));
+  }
+
+  /*
+   * Example of how teams making their own @FinyBy alikes would experience a general purpose
+   * capability.
+   *
+   * @See @FindByXXXX (above)
+   */
+  @Test
+  public void findBySomethingElse() throws Exception {
+    assertThat(new Annotations(getClass().getField("findBy_xxx")).buildBy().toString(),
+               equalTo("FindByXXXX's By"));
   }
 
 }

@@ -30,7 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SendKeyToActiveElement extends WebDriverHandler<Void> implements JsonParametersAware {
 
-  private final List<CharSequence> keys = new CopyOnWriteArrayList<CharSequence>();
+  private final List<CharSequence> keys = new CopyOnWriteArrayList<>();
 
   public SendKeyToActiveElement(Session session) {
     super(session);

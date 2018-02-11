@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
 {
@@ -148,7 +145,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.WindowsPhone, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]
-        [IgnoreBrowser(Browser.Safari, "Doesn't support multiple windows; Safari: issue 3693")]
+        [IgnoreBrowser(Browser.Edge, "Hangs browser")]
         public void ShouldOnlyFollowHrefOnce()
         {
             driver.Url = clicksPage;
@@ -366,7 +363,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/wrapped_overlapping_elements.html");

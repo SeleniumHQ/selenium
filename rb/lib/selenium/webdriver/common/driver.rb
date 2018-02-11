@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,7 +17,6 @@
 
 module Selenium
   module WebDriver
-
     #
     # The main class through which you control the browser.
     #
@@ -33,7 +30,6 @@ module Selenium
       include SearchContext
 
       class << self
-
         #
         # @api private
         #
@@ -43,42 +39,24 @@ module Selenium
         #
 
         def for(browser, opts = {})
-          listener = opts.delete(:listener)
-
-          bridge = case browser
-                   when :firefox, :ff, :marionette
-                     if Remote::W3CCapabilities.w3c?(opts)
-                       Firefox::W3CBridge.new(opts)
-                     else
-                       Firefox::Bridge.new(opts)
-                     end
-                   when :remote
-                     if Remote::W3CCapabilities.w3c?(opts)
-                       Remote::W3CBridge.new(opts)
-                     else
-                       Remote::Bridge.new(opts)
-                     end
-                   when :ie, :internet_explorer
-                     IE::Bridge.new(opts)
-                   when :chrome
-                     Chrome::Bridge.new(opts)
-                   when :edge
-                     Edge::Bridge.new(opts)
-                   when :android
-                     Android::Bridge.new(opts)
-                   when :iphone
-                     IPhone::Bridge.new(opts)
-                   when :phantomjs
-                     PhantomJS::Bridge.new(opts)
-                   when :safari
-                     Safari::Bridge.new(opts)
-                   else
-                     raise ArgumentError, "unknown driver: #{browser.inspect}"
-                   end
-
-          bridge = Support::EventFiringBridge.new(bridge, listener) if listener
-
-          new(bridge)
+          case browser
+          when :chrome
+            Chrome::Driver.new(opts)
+          when :internet_explorer, :ie
+            IE::Driver.new(opts)
+          when :safari
+            Safari::Driver.new(opts)
+          when :phantomjs
+            PhantomJS::Driver.new(opts)
+          when :firefox, :ff
+            Firefox::Driver.new(opts)
+          when :edge
+            Edge::Driver.new(opts)
+          when :remote
+            Remote::Driver.new(opts)
+          else
+            raise ArgumentError, "unknown driver: #{browser.inspect}"
+          end
         end
       end
 
@@ -89,17 +67,13 @@ module Selenium
       # @api private
       #
 
-      def initialize(bridge)
+      def initialize(bridge, listener: nil)
         @bridge = bridge
-
-        # TODO: refactor this away
-        unless bridge.driver_extensions.empty?
-          extend(*bridge.driver_extensions)
-        end
+        @bridge = Support::EventFiringBridge.new(bridge, listener) if listener
       end
 
       def inspect
-        '#<%s:0x%x browser=%s>' % [self.class, hash*2, bridge.browser.inspect]
+        format '#<%s:0x%x browser=%s>', self.class, hash * 2, bridge.browser.inspect
       end
 
       #
@@ -126,7 +100,24 @@ module Selenium
       #
 
       def manage
-        @manage ||= WebDriver::Options.new(bridge)
+        bridge.options
+      end
+
+      #
+      # @return [ActionBuilder, W3CActionBuilder]
+      # @see ActionBuilder, W3CActionBuilder
+      #
+
+      def action
+        bridge.action
+      end
+
+      def mouse
+        bridge.mouse
+      end
+
+      def keyboard
+        bridge.keyboard
       end
 
       #
@@ -144,7 +135,7 @@ module Selenium
       #
 
       def current_url
-        bridge.getCurrentUrl
+        bridge.url
       end
 
       #
@@ -154,7 +145,7 @@ module Selenium
       #
 
       def title
-        bridge.getTitle
+        bridge.title
       end
 
       #
@@ -164,7 +155,7 @@ module Selenium
       #
 
       def page_source
-        bridge.getPageSource
+        bridge.page_source
       end
 
       #
@@ -191,7 +182,7 @@ module Selenium
       #
 
       def window_handles
-        bridge.getWindowHandles
+        bridge.window_handles
       end
 
       #
@@ -201,7 +192,7 @@ module Selenium
       #
 
       def window_handle
-        bridge.getCurrentWindowHandle
+        bridge.window_handle
       end
 
       #
@@ -209,7 +200,7 @@ module Selenium
       #
       # @param [String] script
       #   JavaScript source to execute
-      # @param [WebDriver::Element,Integer, Float, Boolean, NilClass, String, Array] *args
+      # @param [WebDriver::Element, Integer, Float, Boolean, NilClass, String, Array] args
       #   Arguments will be available in the given script in the 'arguments' pseudo-array.
       #
       # @return [WebDriver::Element,Integer,Float,Boolean,NilClass,String,Array]
@@ -217,7 +208,7 @@ module Selenium
       #
 
       def execute_script(script, *args)
-        bridge.executeScript(script, *args)
+        bridge.execute_script(script, *args)
       end
 
       # Execute an asynchronous piece of JavaScript in the context of the
@@ -229,27 +220,26 @@ module Selenium
       #
       # @param [String] script
       #   JavaScript source to execute
-      # @param [WebDriver::Element,Integer, Float, Boolean, NilClass, String, Array] *args
+      # @param [WebDriver::Element,Integer, Float, Boolean, NilClass, String, Array] args
       #   Arguments to the script. May be empty.
       #
       # @return [WebDriver::Element,Integer,Float,Boolean,NilClass,String,Array]
       #
 
       def execute_async_script(script, *args)
-        bridge.executeAsyncScript(script, *args)
+        bridge.execute_async_script(script, *args)
       end
-
 
       #-------------------------------- sugar  --------------------------------
 
       #
-      #   driver.first(:id, 'foo')
+      #   driver.first(id: 'foo')
       #
 
       alias_method :first, :find_element
 
       #
-      #   driver.all(:class, 'bar') #=> [#<WebDriver::Element:0x1011c3b88, ...]
+      #   driver.all(class: 'bar') #=> [#<WebDriver::Element:0x1011c3b88, ...]
       #
 
       alias_method :all, :find_elements
@@ -263,7 +253,7 @@ module Selenium
       # Get the first element matching the given selector. If given a
       # String or Symbol, it will be used as the id of the element.
       #
-      # @param  [String,Hash] id or selector
+      # @param  [String,Hash] sel id or selector
       # @return [WebDriver::Element]
       #
       # Examples:
@@ -273,9 +263,7 @@ module Selenium
       #
 
       def [](sel)
-        if sel.kind_of?(String) || sel.kind_of?(Symbol)
-          sel = { :id => sel }
-        end
+        sel = {id: sel} if sel.is_a?(String) || sel.is_a?(Symbol)
 
         find_element sel
       end
@@ -299,10 +287,7 @@ module Selenium
 
       private
 
-      def bridge
-        @bridge
-      end
-
+      attr_reader :bridge
     end # Driver
   end # WebDriver
 end # Selenium

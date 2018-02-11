@@ -17,20 +17,19 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.ALL;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
+
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class MiscTest extends JUnit4TestBase {
 
@@ -59,9 +58,7 @@ public class MiscTest extends JUnit4TestBase {
     assertThat(selectBox.getTagName().toLowerCase(), is("input"));
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldReturnTheSourceOfAPage() {
     driver.get(pages.simpleTestPage);
 
@@ -75,11 +72,10 @@ public class MiscTest extends JUnit4TestBase {
     assertThat(source.contains("with document.write and with document.write again"), is(true));
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {CHROME, IE, SAFARI},
-          reason = "Chrome, Safari: returns XML content formatted for display as HTML document" +
-                   "Others: untested")
   @Test
+  @Ignore(value = CHROME, reason = "returns XML content formatted for display as HTML document")
+  @Ignore(value = SAFARI, reason = "returns XML content formatted for display as HTML document")
+  @Ignore(IE)
   public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
     driver.get(pages.simpleXmlDocument);
     String source = driver.getPageSource().toLowerCase();
@@ -87,8 +83,8 @@ public class MiscTest extends JUnit4TestBase {
   }
 
 
-  @Ignore(issues = {2282})
   @Test
+  @Ignore(value = ALL, reason = "issue 2282")
   public void testStimulatesStrangeOnloadInteractionInFirefox()
       throws Exception {
     driver.get(pages.documentWrite);
@@ -100,9 +96,7 @@ public class MiscTest extends JUnit4TestBase {
     driver.findElement(By.id("links"));
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testClickingShouldNotTrampleWOrHInGlobalScope() throws Throwable {
     driver.get(appServer.whereIs("globalscope.html"));
     String[] vars = new String[]{"w", "h"};

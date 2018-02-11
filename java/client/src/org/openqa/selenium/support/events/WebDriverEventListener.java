@@ -17,11 +17,40 @@
 
 package org.openqa.selenium.support.events;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public interface WebDriverEventListener {
+
+  /**
+   * This action will be performed each time before {@link Alert#accept()}
+   *
+   * @param driver WebDriver
+   */
+  void beforeAlertAccept(WebDriver driver);
+
+  /**
+   * This action will be performed each time after {@link Alert#accept()}
+   *
+   * @param driver WebDriver
+   */
+  void afterAlertAccept(WebDriver driver);
+
+  /**
+   * This action will be performed each time before {@link Alert#dismiss()}
+   *
+   * @param driver WebDriver
+   */
+  void afterAlertDismiss(WebDriver driver);
+
+  /**
+   * This action will be performed each time after {@link Alert#dismiss()}
+   *
+   * @param driver WebDriver
+   */
+  void beforeAlertDismiss(WebDriver driver);
 
   /**
    * Called before {@link org.openqa.selenium.WebDriver#get get(String url)} respectively
@@ -73,6 +102,21 @@ public interface WebDriverEventListener {
   void afterNavigateForward(WebDriver driver);
 
   /**
+   * Called before {@link org.openqa.selenium.WebDriver.Navigation#refresh navigate().refresh()}.
+   *
+   * @param driver WebDriver
+   */
+  void beforeNavigateRefresh(WebDriver driver);
+
+  /**
+   * Called after {@link org.openqa.selenium.WebDriver.Navigation#refresh navigate().refresh()}. Not called,
+   * if an exception is thrown.
+   *
+   * @param driver WebDriver
+   */
+  void afterNavigateRefresh(WebDriver driver);
+
+  /**
    * Called before {@link WebDriver#findElement WebDriver.findElement(...)}, or
    * {@link WebDriver#findElements WebDriver.findElements(...)}, or {@link WebElement#findElement
    * WebElement.findElement(...)}, or {@link WebElement#findElement WebElement.findElements(...)}.
@@ -118,7 +162,7 @@ public interface WebDriverEventListener {
    * @param driver WebDriver
    * @param element the WebElement being used for the action
    */
-  void beforeChangeValueOf(WebElement element, WebDriver driver);
+  void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend);
 
   /**
    * Called after {@link WebElement#clear WebElement.clear()}, {@link WebElement#sendKeys
@@ -127,7 +171,7 @@ public interface WebDriverEventListener {
    * @param driver WebDriver
    * @param element the WebElement being used for the action
    */
-  void afterChangeValueOf(WebElement element, WebDriver driver);
+  void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend);
 
   /**
    * Called before {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(java.lang.String, java.lang.Object[]) }

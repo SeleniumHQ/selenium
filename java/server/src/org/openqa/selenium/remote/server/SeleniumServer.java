@@ -17,32 +17,54 @@
 
 package org.openqa.selenium.remote.server;
 
+import static org.openqa.selenium.remote.server.WebDriverServlet.ACTIVE_SESSIONS_KEY;
+import static org.openqa.selenium.remote.server.WebDriverServlet.NEW_SESSION_PIPELINE_KEY;
+
 import com.beust.jcommander.JCommander;
 
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
+import org.openqa.grid.selenium.node.ChromeMutator;
+import org.openqa.grid.selenium.node.FirefoxMutator;
 import org.openqa.grid.shared.GridNodeServer;
-import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.handler.DeleteSession;
+import org.openqa.grid.web.servlet.DisplayHelpServlet;
+import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
+import org.seleniumhq.jetty9.security.ConstraintMapping;
+import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
 import org.seleniumhq.jetty9.server.Connector;
+import org.seleniumhq.jetty9.server.Handler;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
+import org.seleniumhq.jetty9.server.handler.ContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
+import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
+import java.net.BindException;
+import java.util.Map;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+import javax.management.ObjectName;
 import javax.servlet.Servlet;
 
 /**
  * Provides a server that can launch and manage selenium sessions.
  */
+@ManagedService(objectName = "org.seleniumhq.server:type=SeleniumServer")
 public class SeleniumServer implements GridNodeServer {
 
-  private final int port;
-  private int threadCount;
-  private Server server;
-  private DefaultDriverSessions driverSessions;
+  private final static Logger LOG = Logger.getLogger(SeleniumServer.class.getName());
 
-  private Thread shutDownHook;
+  private Server server;
+  private StandaloneConfiguration configuration;
+  private Map<String, Class<? extends Servlet>> extraServlets;
+
   /**
    * This lock is very important to ensure that SeleniumServer and the underlying Jetty instance
    * shuts down properly. It ensures that ProxyHandler does not add an SslRelay to the Jetty server
@@ -52,10 +74,22 @@ public class SeleniumServer implements GridNodeServer {
   private final Object shutdownLock = new Object();
   private static final int MAX_SHUTDOWN_RETRIES = 8;
 
+  private ObjectName objectName;
 
-  public SeleniumServer(int port) {
-    this.port = port;
+  public SeleniumServer(StandaloneConfiguration configuration) {
+    this.configuration = configuration;
+
+    objectName = new JMXHelper().register(this).getObjectName();
   }
+
+  public int getRealPort() {
+    if (server.isStarted()) {
+      ServerConnector socket = (ServerConnector)server.getConnectors()[0];
+      return socket.getPort();
+    }
+    return configuration.port;
+  }
+
 
   private void addRcSupport(ServletContextHandler handler) {
     try {
@@ -65,29 +99,80 @@ public class SeleniumServer implements GridNodeServer {
         getClass().getClassLoader())
         .asSubclass(Servlet.class);
       handler.addServlet(rcServlet, "/selenium-server/driver/");
+      LOG.info("Bound legacy RC support");
     } catch (ClassNotFoundException e) {
       // Do nothing.
     }
   }
 
-  private void setThreadCount(int threadCount) {
-    this.threadCount = threadCount;
+  private void addExtraServlets(ServletContextHandler handler) {
+    if (extraServlets != null && extraServlets.size() > 0) {
+      for (String path : extraServlets.keySet()) {
+        handler.addServlet(extraServlets.get(path), path);
+      }
+    }
   }
 
-  public void boot() {
-    if (threadCount > 0) {
-      server = new Server(new QueuedThreadPool(threadCount));
+  public void setConfiguration(StandaloneConfiguration configuration) {
+    this.configuration = configuration;
+  }
+
+  public void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets) {
+    this.extraServlets = extraServlets;
+  }
+
+  public boolean boot() {
+    if (configuration.jettyMaxThreads != null && configuration.jettyMaxThreads > 0) {
+      server = new Server(new QueuedThreadPool(configuration.jettyMaxThreads));
     } else {
       server = new Server();
     }
 
-    ServletContextHandler handler = new ServletContextHandler();
+    ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SECURITY);
 
-    driverSessions = new DefaultDriverSessions();
-    handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
+    if (configuration.browserTimeout != null && configuration.browserTimeout >= 0) {
+      handler.setInitParameter(WebDriverServlet.BROWSER_TIMEOUT_PARAMETER,
+                               String.valueOf(configuration.browserTimeout));
+    }
+
+    long inactiveSessionTimeoutSeconds = configuration.timeout == null ?
+                                   Long.MAX_VALUE / 1000 : configuration.timeout;
+    if (configuration.timeout != null && configuration.timeout >= 0) {
+      handler.setInitParameter(WebDriverServlet.SESSION_TIMEOUT_PARAMETER,
+                               String.valueOf(inactiveSessionTimeoutSeconds));
+    }
+
+    NewSessionPipeline pipeline = createPipeline(configuration);
+    handler.setAttribute(NEW_SESSION_PIPELINE_KEY, pipeline);
+
     handler.setContextPath("/");
-    handler.addServlet(DriverServlet.class, "/wd/hub/*");
+    handler.addServlet(WebDriverServlet.class, "/wd/hub/*");
+    handler.addServlet(WebDriverServlet.class, "/webdriver/*");
+    handler.setInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER, "/wd/hub");
+
+    handler.setInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER, configuration.role);
+
     addRcSupport(handler);
+    addExtraServlets(handler);
+
+    ConstraintSecurityHandler securityHandler = (ConstraintSecurityHandler) handler.getSecurityHandler();
+
+    Constraint disableTrace = new Constraint();
+    disableTrace.setName("Disable TRACE");
+    disableTrace.setAuthenticate(true);
+    ConstraintMapping disableTraceMapping = new ConstraintMapping();
+    disableTraceMapping.setConstraint(disableTrace);
+    disableTraceMapping.setMethod("TRACE");
+    disableTraceMapping.setPathSpec("/");
+    securityHandler.addConstraintMapping(disableTraceMapping);
+
+    Constraint enableOther = new Constraint();
+    enableOther.setName("Enable everything but TRACE");
+    ConstraintMapping enableOtherMapping = new ConstraintMapping();
+    enableOtherMapping.setConstraint(enableOther);
+    enableOtherMapping.setMethodOmissions(new String[] {"TRACE"});
+    enableOtherMapping.setPathSpec("/");
+    securityHandler.addConstraintMapping(enableOtherMapping);
 
     server.setHandler(handler);
 
@@ -95,7 +180,10 @@ public class SeleniumServer implements GridNodeServer {
     httpConfig.setSecureScheme("https");
 
     ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-    http.setPort(port);
+    if (configuration.port == null) {
+      configuration.port = 4444;
+    }
+    http.setPort(configuration.port);
     http.setIdleTimeout(500000);
 
     server.setConnectors(new Connector[]{http});
@@ -103,20 +191,40 @@ public class SeleniumServer implements GridNodeServer {
     try {
       server.start();
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      try {
+        server.stop();
+      } catch (Exception ignore) {
+      }
+      if (e instanceof BindException) {
+        LOG.severe(String.format(
+            "Port %s is busy, please choose a free port and specify it using -port option", configuration.port));
+        return false;
+      } else {
+        throw new RuntimeException(e);
+      }
     }
+
+    LOG.info(String.format("Selenium Server is up and running on port %s", configuration.port));
+    return true;
   }
 
-  private class ShutDownHook implements Runnable {
-    private final SeleniumServer selenium;
+  private NewSessionPipeline createPipeline(StandaloneConfiguration configuration) {
+    NewSessionPipeline.Builder builder = DefaultPipeline.createDefaultPipeline();
 
-    ShutDownHook(SeleniumServer selenium) {
-      this.selenium = selenium;
+    if (configuration instanceof GridNodeConfiguration) {
+      ((GridNodeConfiguration) configuration).capabilities.forEach(
+          caps -> {
+            builder.addCapabilitiesMutator(new ChromeMutator(caps));
+            builder.addCapabilitiesMutator(new FirefoxMutator(caps));
+            builder.addCapabilitiesMutator(c -> new ImmutableCapabilities(c.asMap().entrySet().stream()
+                .filter(e -> ! e.getKey().startsWith("se:"))
+                .filter(e -> e.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
+          }
+      );
     }
 
-    public void run() {
-      selenium.stop();
-    }
+    return builder.create();
   }
 
   /**
@@ -125,16 +233,6 @@ public class SeleniumServer implements GridNodeServer {
   public void stop() {
     int numTries = 0;
     Exception shutDownException = null;
-
-    // this may be called by a shutdown hook, or it may be called at any time
-    // in case it was called as an ordinary method, try to clean up the shutdown
-    // hook
-    try {
-      if (shutDownHook != null) {
-        Runtime.getRuntime().removeShutdownHook(shutDownHook);
-      }
-    } catch (IllegalStateException ignored) {
-    } // thrown if we're shutting down; that's OK
 
     // shut down the jetty server (try try again)
     while (numTries <= MAX_SHUTDOWN_RETRIES) {
@@ -162,35 +260,48 @@ public class SeleniumServer implements GridNodeServer {
         throw new RuntimeException(shutDownException);
       }
     }
+
+    new JMXHelper().unregister(objectName);
   }
 
   private void stopAllBrowsers() {
-    for (SessionId sessionId : driverSessions.getSessions()) {
-      Session session = driverSessions.get(sessionId);
-      DeleteSession deleteSession = new DeleteSession(session);
-      try {
-        deleteSession.call();
-        driverSessions.deleteSession(sessionId);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
+    for (Handler handler : server.getHandlers()) {
+      if (!(handler instanceof ServletContextHandler)) {
+        continue;
+      }
+
+      ContextHandler.Context context = ((ServletContextHandler) handler).getServletContext();
+      if (context == null) {
+        continue;
+      }
+      Object value = context.getAttribute(ACTIVE_SESSIONS_KEY);
+      if (value instanceof ActiveSessions) {
+        ((ActiveSessions) value).getAllSessions().parallelStream()
+            .forEach(session -> {
+              try {
+                session.stop();
+              } catch (Exception ignored) {
+                // Ignored
+              }
+            });
       }
     }
   }
 
   public static void main(String[] argv) {
-    CommandLineArgs args = new CommandLineArgs();
-    JCommander jCommander = new JCommander(args, argv);
+    StandaloneConfiguration configuration = new StandaloneConfiguration();
+    JCommander jCommander = JCommander.newBuilder().addObject(configuration).build();
     jCommander.setProgramName("selenium-3-server");
+    jCommander.parse(argv);
 
-    if (args.help) {
+    if (configuration.help) {
       StringBuilder message = new StringBuilder();
       jCommander.usage(message);
       System.err.println(message.toString());
       return;
     }
 
-    SeleniumServer server = new SeleniumServer(args.port);
-    server.setThreadCount(args.jettyThreads);
+    SeleniumServer server = new SeleniumServer(configuration);
     server.boot();
   }
 
@@ -198,7 +309,7 @@ public class SeleniumServer implements GridNodeServer {
     if (msg != null) {
       System.out.println(msg);
     }
-    CommandLineArgs args = new CommandLineArgs();
+    StandaloneConfiguration args = new StandaloneConfiguration();
     JCommander jCommander = new JCommander(args);
     jCommander.usage();
   }

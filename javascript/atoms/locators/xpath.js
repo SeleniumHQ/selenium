@@ -222,7 +222,7 @@ bot.locators.xpath.single = function(target, root) {
  * @param {string} target The xpath to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
+ * @return {!IArrayLike} All matching elements, or an empty list.
  */
 bot.locators.xpath.many = function(target, root) {
 
@@ -250,5 +250,5 @@ bot.locators.xpath.many = function(target, root) {
   goog.array.forEach(nodes, function(n) {
     bot.locators.xpath.checkElement_(n, target);
   });
-  return /** @type {!goog.array.ArrayLike} */ (nodes);
+  return /** @type {!IArrayLike} */ (nodes);
 };

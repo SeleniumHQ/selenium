@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,57 +19,55 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
+    # Firefox - "Actions Endpoint Not Yet Implemented"
+    # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
+    describe Keyboard, except: {browser: %i[edge firefox ie]} do
+      it 'sends keys to the active element', except: [{browser: %i[safari safari_preview]},
+                                                      {browser: :ff_esr, platform: :linux}] do
+        driver.navigate.to url_for('bodyTypingTest.html')
 
-    # Marionette BUG - Interactions Not Supported
-    not_compliant_on :browser => [:android, :iphone, :safari, :marionette] do
-      describe Keyboard do
+        driver.keyboard.send_keys 'ab'
 
-        it "sends keys to the active element" do
-          driver.navigate.to url_for("bodyTypingTest.html")
+        text = driver.find_element(id: 'body_result').text.strip
+        expect(text).to eq('keypress keypress')
 
-          driver.keyboard.send_keys "ab"
+        expect(driver.find_element(id: 'result').text.strip).to be_empty
+      end
 
-          text = driver.find_element(:id => "body_result").text.strip
-          expect(text).to eq("keypress keypress")
+      it 'can send keys with shift pressed', except: {browser: %i[safari safari_preview]} do
+        driver.navigate.to url_for('javascriptPage.html')
 
-          expect(driver.find_element(:id => "result").text.strip).to be_empty
-        end
+        event_input = driver.find_element(id: 'theworks')
+        keylogger = driver.find_element(id: 'result')
 
-        it "can send keys with shift pressed" do
-          driver.navigate.to url_for("javascriptPage.html")
+        driver.mouse.click event_input
 
-          event_input = driver.find_element(:id => "theworks")
-          keylogger = driver.find_element(:id => "result")
+        driver.keyboard.press :shift
+        driver.keyboard.send_keys 'ab'
+        driver.keyboard.release :shift
 
-          driver.mouse.click event_input
+        expect(event_input.attribute(:value)).to eq('AB')
+        expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
+      end
 
-          driver.keyboard.press :shift
-          driver.keyboard.send_keys "ab"
-          driver.keyboard.release :shift
+      it 'raises an ArgumentError if the pressed key is not a modifier key' do
+        expect { driver.keyboard.press :return }.to raise_error(ArgumentError)
+      end
 
-          expect(event_input.attribute(:value)).to eq("AB")
-          expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
-        end
+      it 'can press and release modifier keys', except: {browser: :safari} do
+        driver.navigate.to url_for('javascriptPage.html')
 
-        it "raises an ArgumentError if the pressed key is not a modifier key" do
-          expect { driver.keyboard.press :return }.to raise_error(ArgumentError)
-        end
+        event_input = driver.find_element(id: 'theworks')
+        keylogger = driver.find_element(id: 'result')
 
-        it "can press and release modifier keys" do
-          driver.navigate.to url_for("javascriptPage.html")
+        driver.mouse.click event_input
 
-          event_input = driver.find_element(:id => "theworks")
-          keylogger = driver.find_element(:id => "result")
+        driver.keyboard.press :shift
+        expect(keylogger.text).to match(/keydown *$/)
 
-          driver.mouse.click event_input
-
-          driver.keyboard.press :shift
-          expect(keylogger.text).to match(/keydown *$/)
-
-          driver.keyboard.release :shift
-          expect(keylogger.text).to match(/keyup *$/)
-        end
-      end # Keyboard
+        driver.keyboard.release :shift
+        expect(keylogger.text).to match(/keyup *$/)
+      end
     end
   end # WebDriver
 end # Selenium

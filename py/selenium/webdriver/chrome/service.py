@@ -14,7 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 from selenium.webdriver.common import service
+
 
 class Service(service.Service):
     """
@@ -34,7 +36,7 @@ class Service(service.Service):
 
         self.service_args = service_args or []
         if log_path:
-          self.service_args.append('--log-path=%s' % log_path)
+            self.service_args.append('--log-path=%s' % log_path)
 
         service.Service.__init__(self, executable_path, port=port, env=env,
                                  start_error_message="Please see https://sites.google.com/a/chromium.org/chromedriver/home")

@@ -78,7 +78,7 @@ goog.html.SafeScript = function() {
   /**
    * A type marker used to implement additional run-time type checking.
    * @see goog.html.SafeScript#unwrap
-   * @const
+   * @const {!Object}
    * @private
    */
   this.SAFE_SCRIPT_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =
@@ -190,8 +190,8 @@ goog.html.SafeScript.unwrap = function(safeScript) {
           goog.html.SafeScript.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) {
     return safeScript.privateDoNotAccessOrElseSafeScriptWrappedValue_;
   } else {
-    goog.asserts.fail(
-        'expected object of type SafeScript, got \'' + safeScript + '\'');
+    goog.asserts.fail('expected object of type SafeScript, got \'' +
+        safeScript + '\' of type ' + goog.typeOf(safeScript));
     return 'type_error:SafeScript';
   }
 };

@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +18,6 @@
 module Selenium
   module WebDriver
     class Wait
-
       DEFAULT_TIMEOUT  = 5
       DEFAULT_INTERVAL = 0.2
 
@@ -41,7 +38,6 @@ module Selenium
         @ignored  = Array(opts[:ignore] || Error::NoSuchElementError)
       end
 
-
       #
       # Wait until the given block returns a true value.
       #
@@ -49,7 +45,7 @@ module Selenium
       # @return [Object] the result of the block
       #
 
-      def until(&blk)
+      def until
         end_time = Time.now + @timeout
         last_error = nil
 
@@ -64,19 +60,16 @@ module Selenium
           sleep @interval
         end
 
-
-        if @message
-          msg = @message.dup
-        else
-          msg = "timed out after #{@timeout} seconds"
-        end
+        msg = if @message
+                @message.dup
+              else
+                "timed out after #{@timeout} seconds"
+              end
 
         msg << " (#{last_error.message})" if last_error
 
         raise Error::TimeOutError, msg
       end
-
     end # Wait
   end # WebDriver
 end # Selenium
-

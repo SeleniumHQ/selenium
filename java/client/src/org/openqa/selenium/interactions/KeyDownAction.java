@@ -17,17 +17,21 @@
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.interactions.internal.SingleKeyAction;
-import org.openqa.selenium.internal.Locatable;
+import com.google.common.collect.ImmutableList;
 
-import java.util.Arrays;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.SingleKeyAction;
+import org.openqa.selenium.interactions.internal.Locatable;
+
 import java.util.List;
 
 /**
  * Emulates key press only, without the release.
  *
+ * @deprecated Use {@link Actions#keyDown(WebElement, CharSequence)}
  */
+@Deprecated
 public class KeyDownAction extends SingleKeyAction implements Action {
   public KeyDownAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
     super(keyboard, mouse, locationProvider, key);
@@ -43,7 +47,13 @@ public class KeyDownAction extends SingleKeyAction implements Action {
     keyboard.pressKey(key);
   }
 
-  public List<Object> asList() {
-    return Arrays.<Object>asList("keyDown", key);
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+
+    optionallyClickElement(mouse, interactions);
+    interactions.add(keyboard.createKeyDown(key.getCodePoint()));
+
+    return interactions.build();
   }
 }

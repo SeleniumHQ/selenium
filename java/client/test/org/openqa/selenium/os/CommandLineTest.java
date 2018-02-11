@@ -22,10 +22,12 @@ import static org.junit.Assert.assertFalse;
 
 import com.google.common.collect.Maps;
 
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Platform;
 
 import java.util.Map;
 
@@ -135,5 +137,12 @@ public class CommandLineTest {
     commandLine.destroy();
   }
 
-
+  @Test
+  public void canUpdateLibraryPath() {
+    Assume.assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
+    CommandLine commandLine = new CommandLine(testExecutable);
+    commandLine.updateDynamicLibraryPath("C:\\My\\Tools");
+    assertEquals(String.format("%s;%s", System.getenv("PATH"), "C:\\My\\Tools"),
+                 commandLine.getEnvironment().get(CommandLine.getLibraryPathPropertyName()));
+  }
 }

@@ -16,7 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using OpenQA.Selenium;
 
 namespace Selenium.Internal.SeleniumEmulation

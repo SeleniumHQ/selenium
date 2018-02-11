@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,10 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/ie/driver'
+require 'selenium/webdriver/ie/options'
+require 'selenium/webdriver/ie/service'
+
 module Selenium
   module WebDriver
-
-    # @api private
     module IE
       def self.driver_path=(path)
         Platform.assert_executable path
@@ -30,10 +30,6 @@ module Selenium
       def self.driver_path
         @driver_path ||= nil
       end
-
     end # IE
   end # WebDriver
 end # Selenium
-
-require 'selenium/webdriver/ie/server'
-require 'selenium/webdriver/ie/bridge'

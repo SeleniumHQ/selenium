@@ -17,18 +17,21 @@
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.internal.Locatable;
+import com.google.common.collect.ImmutableList;
 
-import java.util.Arrays;
+import org.openqa.selenium.interactions.internal.MouseAction;
+import org.openqa.selenium.interactions.internal.Locatable;
+
 import java.util.List;
 
 /**
  * Releases the left mouse button
  *
+ * @deprecated Use {@link Actions#release()}
  */
-
+@Deprecated
 public class ButtonReleaseAction extends MouseAction implements Action {
+
   public ButtonReleaseAction(Mouse mouse, Locatable locationProvider) {
     super(mouse, locationProvider);
   }
@@ -44,7 +47,13 @@ public class ButtonReleaseAction extends MouseAction implements Action {
     mouse.mouseUp(getActionLocation());
   }
 
-  public List<Object> asList() {
-    return Arrays.<Object>asList("release");
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+
+    moveToLocation(mouse, interactions);
+    interactions.add(mouse.createPointerUp(Button.LEFT.asArg()));
+
+    return interactions.build();
   }
 }

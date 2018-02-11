@@ -17,68 +17,49 @@
 
 package org.openqa.grid.common;
 
-import com.google.common.collect.ImmutableList;
-
-import org.openqa.grid.common.exception.GridConfigurationException;
-
-import java.util.List;
-
 public enum GridRole {
   NOT_GRID, HUB, NODE;
 
-  private static List<String> rcAliases = new ImmutableList.Builder<String>()
-    .add("rc")
-    .add("remotecontrol")
-    .add("remote-control")
-    .build();
+  private static final String WD_S = "wd";
+  private static final String WEBDRIVER_S = "webdriver";
+  private static final String NODE_S = "node";
+  private static final String HUB_S = "hub";
+  private static final String STANDALONE_S = "standalone";
 
-  private static List<String> wdAliases = new ImmutableList.Builder<String>()
-    .add("wd")
-    .add("webdriver")
-    .build();
-
-  private static List<String> nodeAliases = new ImmutableList.Builder<String>()
-    .add("node")
-    .addAll(rcAliases)
-    .addAll(wdAliases)
-    .build();
-
-  /**
-   * finds the requested role from the parameters.
-   *
-   * @param args command line arguments
-   * @return the role in the grid from the -role param
-   */
-  public static GridRole find(String[] args) {
-    if (args == null) {
+  public static GridRole get(String role) {
+    if (role == null || role.equals("")) {
       return NOT_GRID;
     }
-    for (int i = 0; i < args.length; i++) {
-      if ("-role".equals(args[i])) {
-        if (i == args.length - 1) {
-          return null;
-        } else {
-          String role = args[i + 1].toLowerCase();
-          if (nodeAliases.contains(role)) {
-            return NODE;
-          } else if ("hub".equals(role)) {
-            return HUB;
-          } else if ("standalone".equals(role)) {
-            return NOT_GRID;
-          } else {
-            return null;
-          }
-        }
-      }
+    switch (role) {
+      case WD_S:
+      case WEBDRIVER_S:
+      case NODE_S:
+        return NODE;
+
+      case HUB_S:
+        return HUB;
+
+      case STANDALONE_S:
+        return NOT_GRID;
+
+      default:
+        return null;
     }
-    return NOT_GRID;
   }
 
-  public static boolean isRC(String nodeType) {
-    return rcAliases.contains(nodeType);
-  }
+  public String toString() {
+    switch (this) {
+      case NODE:
+        return NODE_S;
 
-  public static boolean isWebDriver(String nodeType) {
-    return wdAliases.contains(nodeType);
+      case HUB:
+        return HUB_S;
+
+      case NOT_GRID:
+        return STANDALONE_S;
+
+      default:
+        throw new IllegalStateException("Unrecognized GridRole");
+    }
   }
 }

@@ -21,49 +21,41 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.support.Color;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 
 public class CssValueTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
-  @Ignore(MARIONETTE)
   @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("green-parent"));
-    String backgroundColour = element.getCssValue("background-color");
+    Color backgroundColour = Color.fromString(element.getCssValue("background-color"));
 
-    assertEquals("rgba(0, 128, 0, 1)", backgroundColour);
+    assertEquals(new Color(0, 128, 0, 1), backgroundColour);
 
     element = driver.findElement(By.id("red-item"));
-    backgroundColour = element.getCssValue("background-color");
+    backgroundColour = Color.fromString(element.getCssValue("background-color"));
 
-    assertEquals("rgba(255, 0, 0, 1)", backgroundColour);
+    assertEquals(new Color(255, 0, 0, 1), backgroundColour);
   }
 
-  @JavascriptEnabled
-  @Ignore(MARIONETTE)
   @Test
   public void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
 
     WebElement element = driver.findElement(By.id("namedColor"));
-    String backgroundColour = element.getCssValue("background-color");
-    assertEquals("rgba(0, 128, 0, 1)", backgroundColour);
+    Color backgroundColour = Color.fromString(element.getCssValue("background-color"));
+    assertEquals(new Color(0, 128, 0, 1), backgroundColour);
 
     element = driver.findElement(By.id("rgb"));
-    backgroundColour = element.getCssValue("background-color");
-    assertEquals("rgba(0, 128, 0, 1)", backgroundColour);
-
+    backgroundColour = Color.fromString(element.getCssValue("background-color"));
+    assertEquals(new Color(0, 128, 0, 1), backgroundColour);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);

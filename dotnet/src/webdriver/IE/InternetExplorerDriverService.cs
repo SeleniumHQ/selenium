@@ -17,9 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -34,7 +32,6 @@ namespace OpenQA.Selenium.IE
         private static readonly Uri InternetExplorerDriverDownloadUrl = new Uri("http://selenium-release.storage.googleapis.com/index.html");
 
         private InternetExplorerDriverLogLevel loggingLevel = InternetExplorerDriverLogLevel.Fatal;
-        private InternetExplorerDriverEngine engineImplementation = InternetExplorerDriverEngine.Legacy;
         private string host = string.Empty;
         private string logFile = string.Empty;
         private string libraryExtractionPath = string.Empty;
@@ -76,15 +73,6 @@ namespace OpenQA.Selenium.IE
         {
             get { return this.loggingLevel; }
             set { this.loggingLevel = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the implementation to be used by the IEDriverServer.
-        /// </summary>
-        public InternetExplorerDriverEngine Implementation
-        {
-            get { return this.engineImplementation; }
-            set { this.engineImplementation = value; }
         }
 
         /// <summary>
@@ -139,11 +127,6 @@ namespace OpenQA.Selenium.IE
                 if (this.loggingLevel != InternetExplorerDriverLogLevel.Fatal)
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-level={0}", this.loggingLevel.ToString().ToUpperInvariant()));
-                }
-
-                if (this.engineImplementation != InternetExplorerDriverEngine.Legacy)
-                {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -implementation={0}", this.engineImplementation.ToString().ToUpperInvariant()));
                 }
 
                 if (!string.IsNullOrEmpty(this.whitelistedIpAddresses))

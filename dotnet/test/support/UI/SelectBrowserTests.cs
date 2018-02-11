@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using NMock2;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
@@ -275,6 +273,54 @@ namespace OpenQA.Selenium.Support.UI
             IList<IWebElement> returnedOptions = elementWrapper.AllSelectedOptions;
 
             Assert.AreEqual(1, returnedOptions.Count);
+        }
+
+        [Test]
+        public void ShouldThrowExceptionOnDeselectByReturnedValueIfOptionDoesNotExist()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.DeselectByValue("not there"));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionOnDeselectByTextIfOptionDoesNotExist()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.DeselectByText("not there"));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionOnDeselectByIndexIfOptionDoesNotExist()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.DeselectByIndex(10));
+        }
+
+        [Test]
+        public void ShouldNotAllowUserToDeselectByTextWhenSelectDoesNotSupportMultipleSelections()
+        {
+            IWebElement element = driver.FindElement(By.Name("selectomatic"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<InvalidOperationException>(() => elementWrapper.DeselectByText("Four"));
+        }
+
+        [Test]
+        public void ShouldNotAllowUserToDeselectByValueWhenSelectDoesNotSupportMultipleSelections()
+        {
+            IWebElement element = driver.FindElement(By.Name("selectomatic"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<InvalidOperationException>(() => elementWrapper.DeselectByValue("two"));
+        }
+
+        [Test]
+        public void ShouldNotAllowUserToDeselectByIndexWhenSelectDoesNotSupportMultipleSelections()
+        {
+            IWebElement element = driver.FindElement(By.Name("selectomatic"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<InvalidOperationException>(() => elementWrapper.DeselectByIndex(0));
         }
     }
 }

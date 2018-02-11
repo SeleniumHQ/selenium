@@ -1,3 +1,323 @@
+v3.9.1
+======
+ * Updated build process and packaging to correctly distribute strongly-
+   named releases. Fixes issue #5254 (for real, this time). No functional
+   changes whatsoever.
+
+v3.9.0
+======
+ * Added commands to get and set network conditions for Chrome in .NET.
+   To get or set the network conditions, use the `NetworkConditions` property
+   of the ChromeDriver object. This property gets or sets a
+   ChromeNetworkConditions object which contains the proper values. Fixes
+   issue #5338.
+ * Readded CLSCompliant attribute to .NET assemblies. When converting from
+   the prior build system to using Buck and the dotnet build tools, the
+   assembly-level CLSCompliant attribute was removed. This commit restores
+   the CLSCompliant attribute to the assembly manifests. Fixes issue #5324.
+ * Removed check for leading hyphens in .NET FirefoxOptions AddArgument.
+   In prior releases of geckodriver, it was a requirement that all arguments
+   be preceeded by double hyphens ("--"). Geckodriver has now relaxed that
+   restriction, and the .NET bindings need to keep up with that change. This
+   commit removes the check for leading hyphens when calling AddArgument.
+ * Fixed strong-named assembly references. In the move to using the `dotnet`
+   build tools instead of calling the C# compiler directly, the creation of
+   strong-named assemblies was broken with incorrect references being created.
+   This commit fixes that problem. Fixes issue #5254.
+ * Exposed HostName property for .NET DriverService class. Previously, the
+   host name for a DriverService was hard-coded to be "localhost." This is
+   normally acceptable, as a DriverService is only intended to be used
+   locally, and most executables that are represented by a DriverService
+   (chromedriver, geckodriver, IEDriverServer.exe, etc.) do not even allow
+   connections from external machines for security reasons. However, there is
+   a legitimate use case (.NET Standard 2.0) where a local IP address
+   ("127.0.0.1" or "::1") is preferrable to using the "localhost" moniker.
+   This HostName property allows the user to specify that IP address. Note
+   that the property defaults to "localhost," preserving previous behavior.
+
+v3.8.0
+======
+ * Updating .NET bindings setting of timeouts for spec-compliance. This
+   also removes some obsolete API entry points that have been marked as
+   deprecated for some months now. The properties of the ITimeouts object
+   should be used.
+ * Updated .NET Options classes to better support W3C Capabilities.
+ * Added .NET constructors to FirefoxDriver to align with other browser
+   drivers
+
+v3.7.0
+======
+ * Made .NET Interactions device classes public. Fixes issue #3989.
+ * Reversed the default for whether a generated capabilities payload
+   when creating a new session is a spec compliant payload. Fixes issue
+   #4758.
+
+v3.6.0
+======
+ * Removed internal use of deprecated construct in .NET bindings.
+ * Added no-format override to .NET Screenshot class for saving file,
+   which will save the image in a Portable Network Graphics (PNG)
+   format.
+ * Updating .NET bindings to not send incorrect W3C Firefox capabilities
+   Previously, RemoteWebDriver would send the same capabilities dictionary
+   using both the "desiredCapabilities" and "capabilities" properties when
+   requesting a new remote session. In the case of the language bindings
+   expressly requesting to use the legacy Firefox driver, the capabilities
+   dictionary will include properties that are invalid for the W3C-compliant
+   remote server. To resolve that issue, we will mask the explicit attempt by
+   setting a property that causes the .NET RemoteWebDriver to send a
+   legacy-only compatible new session request when explicitly requesting the
+   legacy driver. Fixes issue #4637.
+ * Added the output of .NET Standard 2.0 class libraries to the release
+   artifacts, which will allow the bindings to be used against .NET Core 2.0.
+   This addition marks the initial support of .NET Core in the Selenium .NET
+   language bindings. Use of the .NET bindings against .NET Core should be
+   considered experimental at this stage. The following issues are already
+   known, and should not be reported:
+    - Calls to localhost in .NET Core are slower than those in the full .NET
+      Framework. This is due to internal differences in the .NET libraries
+      themselves, and are not the fault of the bindings directly. See
+      https://github.com/dotnet/corefx/issues/24104 for more details.
+    - Attempting to save a screenshot to any graphics file format other than
+      Portable Network Graphics (PNG) will throw an exception. .NET Core does
+      not provide the image manipulation classes that the full .NET Framework
+      does, and there are no production-ready third-party libraries that
+      provide that functionality yet and also only rely on managed code. This
+      concern is over and above the difficulties with adding dependencies to
+      the language bindings.
+    - When using the bindings against .NET Core, there is no PageFactory
+      class available. This is not an oversight, nor is it a bug. The .NET
+      PageFactory implementation requires use of classes that are not
+      available in .NET Core. It is a non-trivial matter to add additional
+      dependencies to the .NET bindings, so simply replacing those classes
+      with a third-party library that is compatible with .NET Core is not a
+      perfectly obvious option.
+    - References to the .NET Standard 2.0 library versions provided in this
+      and future releases are only valid when using NuGet package references.
+      Simply copying the assembly and adding an assembly reference to the
+      .NET Core 2.0 project will not work. This is by design of the .NET
+      Core ecosystem, which is now entirely dependent on NuGet to propertly
+      resolve dependencies.
+
+v3.5.2
+======
+ * Changed .NET ChromeOptions to use "goog:chromeOptions" as property name.
+   This aligns with current chromedriver.exe expectations as well as with the
+   W3C WebDriver Specification. It also means that the .NET bindings will now
+   require 2.31 or later of chromedriver.exe.
+ * Guarding against null return value from FindElements. Fixes issue #4555
+   for .NET.
+ * Updating serialization of Proxy for W3C-compliant drivers in .NET. Fixes
+   issue #4574 for .NET.
+ * Added support for W3C 'invalid argument' error code.
+ * Added GetProperty method to IWebElement.
+ * Added support for new new window commands (Minimize and FullScreen).
+ * Updated .NET FirefoxOptions to not force specifying binary location. In
+   the Marionette/Geckodriver case, the service executable can locate the
+   Firefox executable on its own when looking in default installation
+   locations. There is no need for the language bindings to go spelunking
+   through the registry in that case any longer because the bindings do not
+   have to directly launch the Firefox executable.
+ * Committed initial support for .NET Core. This is only committed to the
+   source repository; it is not yet released in any consumable binary form.
+   This support will likely change significantly between now and when it is
+   officially released. Please do not rely on it yet.
+
+v3.5.1
+======
+ * Added ability to detect spec-compliant capabilities in .NET. This
+   release updates the .NET DesiredCapabilities class to allow the
+   language bindings to construct the correct type of payload for the new
+   session command before sending the command to the remote end. This will
+   remove the burden from intermediate nodes (like the Java standalone server
+   and grid) from incorrectly parsing a driver using the legacy protocol
+   dialect (Edge, Safari, Chrome) and throwing an error on session creation.
+   Fixes issue #4443.
+ * Deprecated the static methods on the DesiredCapabilities class's methods
+   for specific browsers in .NET. For over a year, the guidance for .NET
+   users has been to use a browser-specific options class (FirefoxOptions,
+   InternetExplorerOptions, etc.) to set specific capabilities for the driver
+   to be instaniated. To use the options classes with the Java standalone
+   remote server or grid, call the `ToCapabilities` method on the options
+   object.
+ * Removed deprecated screenshot methods. These have been deprecated
+   since 3.1.0.
+ * Removed IsJavaScriptEnabled property from DesiredCapabilities. Since
+   virtually all driver implementations and all browsers support JavaScript
+   and cannot run properly without it being enabled, this property is nearly
+   useless. Use SetCapability("javascriptEnabled", true) if you require this
+   functionality.
+
+v3.5.0
+======
+ * (on behalf of Matthew Lymer) Fixing the parsing of logging levels to match
+   the values in the LogLevel enum. Fixes issue #4121.
+ * Updated .NET DriverService to allow hard termination shutdown of
+   exectuable.s Some driver services (geckodriver, safaridriver) don't support
+   a shutdown HTTP end point. The base DriverSerivce class should allow for
+   that, and not attempt to use one if it's known the service doesn't provide
+   one.
+
+v3.4.0
+======
+ * Exposed new Interactions framework. This release introduces a new 
+   Interactions framework using the ActionBuilder class for creating advanced
+   user interaction sequences in the .NET bindings. This framework is only
+   designed to be used with remote ends that understand the W3C WebDriver
+   Specification actions end point, and as such, there is no documentation
+   or guidance for its use at present. Most users will continue to use the
+   Actions class for now,bwhich works with both protocol dialects. Once most
+   remote ends use the W3C dialect of the wire protocol, these classes will
+   become more useful.
+ * Fixed IAlert.SendKeys to send a string instead of a character array when
+   communicating with remote ends that use the in the W3C Specification
+   dialect of the wire protocol.
+ * Now the "marionette" capability is only set for the case where the user
+   wants to use the legacy Firefox driver. Starting with Geckodriver 0.16,
+   this capability is not recognized as valid, since it violates the spec,
+   and will not create a session if it's specified.
+ * Updated InternetExplorerOptions to send IE-specific capabilities in a 
+   property named "se:ieOptions". This is the correct method for passing
+   browser-specific capabilities according to the W3C WebDriver spec. This
+   should be transparent for most users, but beginning with 3.4.0.0 of the
+   IE driver, this is the preferred mechanism for passing IE-specific
+   capabilities.
+ * Added "acceptInsecureCerts" capability  for use with remote ends that
+   adhere to the W3C WebDriver Specification. The default for the capability
+   is true.
+ * Updated FirefoxDriver(FirefoxOptions) constructor to allow the user to
+   specify `UseLegacyImplementation = true` in the FirefoxOptions passed
+   to the constructor and not be forced to have a copy of geckodriver
+   available. Fixes issue #3597.
+ * Updated bindings to properly use the W3C WebDriver Specification.
+
+v3.3.0
+======
+ * Fixed error return values from W3C spec-compliant remote ends
+ * Fixed pointer actions duration in .NET to be an integer
+ * Added ability to run .NET integration tests against Safari
+   Technology Preview release
+ * Fixed accounting for W3C spec-compliant response for new session
+   command that contains a 'value' property.
+
+v3.2.0
+======
+ * Removed .NET Selenium RC language binding implementation. As
+   announced previously, this release entirely removes the .NET
+   implementation of the Selenium RC technology stack. The RC API still
+   exists as part of WebDriverBackedSelenium, but is still marked as
+   deprecated.
+ * Removed ability to set vendor implementation for IE driver. This
+   property has been marked obsolete for awhile, but is now being removed.
+
+v3.1.0
+======
+ * Note that this will be the final release containing Selenium RC language
+   bindings for .NET. Users still relying on the RC API will be able to
+   continue to do so using WebDriverBackedSelenium, or by converting their
+   code to use WebDriver proper. Selenium RC has been deprecated for over
+   six years, and the .NET Selenium RC language bindings have not been
+   updated with a code change other than a version bump in nearly that long.
+ * Prepared Screenshot object for removal of direct dependency on
+   System.Drawing.Imaging.ImageFormat. The dependency still exists for now,
+   but is no longer exposed in the public API.
+ * Updated specification compliance for windows and timeouts APIs. The
+   language bindings now properly implement the local end of the W3C
+   WebDriver specification for getting and setting window size and position,
+   and for getting and setting timeouts. It also marks as obsolete the
+   methods for the ITimeouts interface in favor of properties, since the
+   specification supports getting as well as setting timeouts.
+ * Enabled execution of project's .NET tests from within Visual Studio. It
+   is now possible to execute .NET tests from within the Visual Studio IDE.
+   To enable this functionality, you must install the NUnit 3 Test Adapter
+   plug-in. To change the browser against which the tests are executed,
+   modify the dotnet/test/common/App.config file.
+ * Updated .NET upload tests to work no matter working directory
+ * Updated project to use NUnit 3.6.0
+ * Initial development of .NET implementation of W3C spec actions command.
+ * Refactored wire protocol serialization of IWebElements.
+ * Removing custom code for geckodriver since it now implements a status end
+   point.
+
+v3.0.1
+======
+ * Updated build process to include atoms resources in strong-named assemblies.
+   Fixes issue #3137.
+
+v3.0.0
+======
+ * Major release of the .NET bindings for Selenium. Selenium RC classes
+   and interfaces (DefaultSelenium and ISelenium) have officially been
+   marked with the Obsolete attribute. Please move to Selenium WebDriver
+ * Geckodriver is now the default mechanism for automating Firefox. This
+   is Mozilla's implementation of a driver for that browser, and is
+   required for automating Firefox versions 48 and above.
+ * The IE driver no longer actively supports IE 7 or 8. Only IE 9, 10, and
+   11 are actively supported.
+ * The legacy driver for Safari maintained by the Selenium project is no
+   longer supported. This release includes support for Apple's Safari
+   driver, for Safari 10, available on macOS 10.11 ("El Capitan") and 10.12
+   ("Sierra").
+ * Updated to conform to the latest options schema for geckodriver. This
+   release expects geckodriver.exe v0.11.1 or later.
+ * Marked InternetExplorerDriverService.Implementation property as
+   deprecated. The Microsoft (vendor) implementation is no longer maintained
+   and will not be updated. As it never had feature parity with the open-
+   source implementation, the property is now unnecessary, and the feature
+   will be removed from IEDriverServer.exe in a future release.
+
+v3.0.0-beta3
+============
+ * Modified to use automation atoms for getAttribute and isDisplayed in .NET
+   for W3C remote ends
+ * Added ability to set additional command line arguments for geckodriver
+
+v3.0.0-beta2
+============
+ * Updated GetAttribute shim for GetAttribute method for W3C protocol remote
+   ends.
+ * Modified parameter name in SendKeys to alert for W3C protocol remote
+   ends.
+
+v3.0.0-beta1
+============
+ * The Mozilla-provided Marionette-based FirefoxDriver is now the default
+   implementation for automating Firefox. Additionally, this aligns the
+   FirefoxDriver class with other browser-specific implementations, using
+   a FirefoxOptions class for setting options for the browser session. 
+   Constructors of FirefoxDriver directly referencing FirefoxProfile or
+   FirefoxBinary have been marked as deprecated, and will be removed in a 
+   future release.
+
+v2.53.0
+=======
+ * This will be the final full release in the 2.x series. There may be
+   small point releases going forward, but future development will 
+   concentrate on 3.0.
+ * (on behalf of arnonaxelrod) Added an overload of ExecuteJavaScript
+   extension method that doesn't accept a generic argument and doesn't
+   return a value.
+ * (on behalf of mohammadsavadkuhi) Corrected argument name in
+   exceptions thrown by DefaultWait<T>.
+ * Corrected trace categories for Chrome perf logging prefs in .NET.
+ * Added device metrics to Chrome options for mobile emulation.
+ * Removed .NET type-safe option for setting IE cookie capability. The
+   'ie.validateCookieDocumentType' has been obsolete since 2.47 of WebDriver.
+   This commit marks the 'ValidateCookieDocumentType' property of the
+   'InternetExplorerOptions' object as obsolete, and no longer sends that
+   capability to the driver. This property will be removed in a future
+   version of the .NET bindings.
+
+v2.52.0
+=======
+ * Updated Firefox driver to include ability to disable overlapping element
+   check. This includes a new constant for the name of the capability.
+ * Provided an implementation of the local-end logging API.
+ * Provided type-safe option to allow disabling of full-page screenshots when
+   using the IE driver.
+ * (on behalf of Glib Briia) Updated support library's SelectElement class to
+   better handle <select multiple='multiple'> elements.
+
 v2.51.0
 =======
  * Updated Firefox driver which includes fixes for the clicking in overlapped

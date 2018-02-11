@@ -17,17 +17,20 @@
 
 package org.openqa.selenium.interactions;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Emulates key release only, without the press.
  *
+ * @deprecated Use {@link Actions#keyUp(CharSequence)}
  */
+@Deprecated
 public class KeyUpAction extends SingleKeyAction implements Action {
   public KeyUpAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
     super(keyboard, mouse, locationProvider, key);
@@ -43,7 +46,14 @@ public class KeyUpAction extends SingleKeyAction implements Action {
     keyboard.releaseKey(key);
   }
 
-  public List<Object> asList() {
-    return Arrays.<Object>asList("keyUp", key);
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    ImmutableList.Builder<Interaction> toReturn = ImmutableList.builder();
+
+    optionallyClickElement(mouse, toReturn);
+    toReturn.add(keyboard.createKeyUp(key.getCodePoint()));
+
+    return toReturn.build();
   }
+
 }

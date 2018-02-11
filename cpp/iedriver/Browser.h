@@ -17,13 +17,12 @@
 #ifndef WEBDRIVER_IE_BROWSER_H_
 #define WEBDRIVER_IE_BROWSER_H_
 
-#include <exdispid.h>
-#include <exdisp.h>
-#include <mshtml.h>
-#include <iostream>
 #include <string>
+
+#include <exdispid.h>
+#include <mshtml.h>
+
 #include "DocumentHost.h"
-#include "messages.h"
 
 namespace webdriver {
 
@@ -113,6 +112,9 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
 
   bool IsValidWindow(void);
 
+  bool IsFullScreen(void);
+  bool SetFullScreen(bool is_full_screen);
+
   IWebBrowser2* browser(void) { return this->browser_; }
 
  private:
@@ -121,7 +123,6 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   bool IsDocumentNavigating(const std::string& page_load_strategy,
                             IHTMLDocument2* doc);
   bool GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc);
-  //HWND GetTabWindowHandle(void);
   void CheckDialogType(HWND dialog_window_handle);
 
   static unsigned int WINAPI GoBackThreadProc(LPVOID param);

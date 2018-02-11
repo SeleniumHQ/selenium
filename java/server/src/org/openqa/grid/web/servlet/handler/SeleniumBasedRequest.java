@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.grid.web.servlet.handler;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -24,14 +23,14 @@ import com.google.common.io.ByteStreams;
 
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.internal.GridRegistry;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -57,7 +56,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
   private byte[] body;
-  private final Registry registry;
+  private final GridRegistry registry;
   private final RequestType type;
   private final String encoding = "UTF-8";
   private final Map<String, Object> desiredCapability;
@@ -65,11 +64,11 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
   private static List<SeleniumBasedRequestFactory> requestFactories =
     new ImmutableList.Builder<SeleniumBasedRequestFactory>()
-      .add(new LegacySeleniumRequestFactory())
       .add(new WebDriverRequestFactory())
+      .add(new LegacySeleniumRequestFactory())
       .build();
 
-  public static SeleniumBasedRequest createFromRequest(HttpServletRequest request, Registry registry) {
+  public static SeleniumBasedRequest createFromRequest(HttpServletRequest request, GridRegistry registry) {
     for (SeleniumBasedRequestFactory factory : requestFactories) {
       SeleniumBasedRequest sbr = factory.createFromRequest(request, registry);
       if (sbr != null) {
@@ -80,15 +79,15 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
   }
 
   @VisibleForTesting
-  public SeleniumBasedRequest(HttpServletRequest request, Registry registry, RequestType type,
-      Map<String, Object> desiredCapability) {
+  public SeleniumBasedRequest(HttpServletRequest request, GridRegistry registry, RequestType type,
+                              Map<String, Object> desiredCapability) {
     super(request);
     this.registry = registry;
     this.type = type;
     this.desiredCapability = desiredCapability;
   }
 
-  public SeleniumBasedRequest(HttpServletRequest httpServletRequest, Registry registry) {
+  public SeleniumBasedRequest(HttpServletRequest httpServletRequest, GridRegistry registry) {
     super(httpServletRequest);
     try {
       InputStream is = super.getInputStream();
@@ -106,7 +105,7 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
     }
   }
 
-  public Registry getRegistry() {
+  public GridRegistry getRegistry() {
     return registry;
   }
 
@@ -131,16 +130,13 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
    */
   public abstract Map<String, Object> extractDesiredCapability();
 
-  // TODO freynaud remove the TestSession parameter.The listener can modify the
-  // original request instead.
-  public abstract String getNewSessionRequestedCapability(TestSession session);
-
   public RequestType getRequestType() {
     return type;
   }
 
   @Override
   public ServletInputStream getInputStream() throws IOException {
+    setBody(getBody());
     return new ServletInputStreamImpl(new ByteArrayInputStream(body));
   }
 
@@ -151,11 +147,10 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
   @Override
   public int getContentLength() {
-    if (body == null){
+    if (body == null) {
       return 0;
-    }else {
-      return body.length;
     }
+    return body.length;
   }
 
   public String getBody() {
@@ -170,8 +165,8 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
     return null;
   }
 
-  public void setBody(String content) {
-    setBody(content.getBytes());
+  public void setBody(String content) throws UnsupportedEncodingException {
+    setBody(content.getBytes(encoding));
   }
 
   public void setBody(byte[] content) {
@@ -179,7 +174,7 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
     setAttribute("Content-Length", content.length);
   }
 
-  public long getCreationTime(){
+  public long getCreationTime() {
     return timestamp;
   }
 

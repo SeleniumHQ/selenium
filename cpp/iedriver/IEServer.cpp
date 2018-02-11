@@ -15,9 +15,11 @@
 // limitations under the License.
 
 #include "IEServer.h"
+
+#include "logging.h"
+
 #include "IESession.h"
 #include "FileUtilities.h"
-#include "logging.h"
 
 namespace webdriver {
 
@@ -26,12 +28,11 @@ IEServer::IEServer(int port,
                    const std::string& log_level,
                    const std::string& log_file,
                    const std::string& version,
-                   const std::string& driver_implementation,
                    const std::string& acl) : Server(port, host, log_level, log_file, acl) {
   LOG(TRACE) << "Entering IEServer::IEServer";
   LOG(INFO) << "Driver version: " << version;
   this->version_ = version;
-  this->driver_implementation_ = driver_implementation;
+  this->AddCommand("/session/:sessionid/ie/script/background", "POST", "executeBackgroundScript");
 }
 
 IEServer::~IEServer(void) {
@@ -42,7 +43,6 @@ SessionHandle IEServer::InitializeSession() {
   SessionHandle session_handle(new IESession());
   SessionParameters params;
   params.port = this->port();
-  params.implementation = IESession::ConvertDriverEngine(this->driver_implementation_);
   session_handle->Initialize(reinterpret_cast<void*>(&params));
   return session_handle;
 }
@@ -67,10 +67,18 @@ std::string IEServer::GetStatus() {
   os["arch"] = arch;
   os["name"] = "windows";
   os["version"] = os_version;
-    
+
+  bool is_ready = this->session_count() < 1;
+  std::string message = "Ready to create session";
+  if (!is_ready) {
+    message = "Maximum number of sessions already created";
+  }
+
   Json::Value status;
   status["build"] = build;
   status["os"] = os;
+  status["ready"] = is_ready;
+  status["message"] = message;
   Response response;
   response.SetSuccessResponse(status);
   return response.Serialize();

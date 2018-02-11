@@ -48,8 +48,10 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.Control}
  */
 goog.ui.Button = function(opt_content, opt_renderer, opt_domHelper) {
-  goog.ui.Control.call(this, opt_content, opt_renderer ||
-      goog.ui.NativeButtonRenderer.getInstance(), opt_domHelper);
+  goog.ui.Control.call(
+      this, opt_content,
+      opt_renderer || goog.ui.NativeButtonRenderer.getInstance(),
+      opt_domHelper);
 };
 goog.inherits(goog.ui.Button, goog.ui.Control);
 goog.tagUnsealableClass(goog.ui.Button);
@@ -176,8 +178,8 @@ goog.ui.Button.prototype.enterDocument = function() {
   if (this.isSupportedState(goog.ui.Component.State.FOCUSED)) {
     var keyTarget = this.getKeyEventTarget();
     if (keyTarget) {
-      this.getHandler().listen(keyTarget, goog.events.EventType.KEYUP,
-          this.handleKeyEventInternal);
+      this.getHandler().listen(
+          keyTarget, goog.events.EventType.KEYUP, this.handleKeyEventInternal);
     }
   }
 };
@@ -195,9 +197,9 @@ goog.ui.Button.prototype.enterDocument = function() {
  */
 goog.ui.Button.prototype.handleKeyEventInternal = function(e) {
   if (e.keyCode == goog.events.KeyCodes.ENTER &&
-      e.type == goog.events.KeyHandler.EventType.KEY ||
+          e.type == goog.events.KeyHandler.EventType.KEY ||
       e.keyCode == goog.events.KeyCodes.SPACE &&
-      e.type == goog.events.EventType.KEYUP) {
+          e.type == goog.events.EventType.KEYUP) {
     return this.performActionInternal(e);
   }
   // Return true for space keypress (even though the event is handled on keyup)
@@ -208,7 +210,6 @@ goog.ui.Button.prototype.handleKeyEventInternal = function(e) {
 
 
 // Register a decorator factory function for goog.ui.Buttons.
-goog.ui.registry.setDecoratorByClassName(goog.ui.ButtonRenderer.CSS_CLASS,
-    function() {
-      return new goog.ui.Button(null);
-    });
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.ButtonRenderer.CSS_CLASS,
+    function() { return new goog.ui.Button(null); });

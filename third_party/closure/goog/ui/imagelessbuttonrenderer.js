@@ -51,14 +51,6 @@ goog.ui.ImagelessButtonRenderer = function() {
   goog.ui.CustomButtonRenderer.call(this);
 };
 goog.inherits(goog.ui.ImagelessButtonRenderer, goog.ui.CustomButtonRenderer);
-
-
-/**
- * The singleton instance of this renderer class.
- * @type {goog.ui.ImagelessButtonRenderer?}
- * @private
- */
-goog.ui.ImagelessButtonRenderer.instance_ = null;
 goog.addSingletonGetter(goog.ui.ImagelessButtonRenderer);
 
 
@@ -73,6 +65,7 @@ goog.ui.ImagelessButtonRenderer.CSS_CLASS =
 
 /**
  * Returns the button's contents wrapped in the following DOM structure:
+ *
  *    <div class="goog-inline-block goog-imageless-button">
  *      <div class="goog-inline-block goog-imageless-button-outer-box">
  *        <div class="goog-imageless-button-inner-box">
@@ -91,8 +84,8 @@ goog.ui.ImagelessButtonRenderer.prototype.createDom;
 /** @override */
 goog.ui.ImagelessButtonRenderer.prototype.getContentElement = function(
     element) {
-  return /** @type {Element} */ (element && element.firstChild &&
-      element.firstChild.firstChild &&
+  return /** @type {Element} */ (
+      element && element.firstChild && element.firstChild.firstChild &&
       element.firstChild.firstChild.firstChild.lastChild);
 };
 
@@ -100,14 +93,16 @@ goog.ui.ImagelessButtonRenderer.prototype.getContentElement = function(
 /**
  * Takes a text caption or existing DOM structure, and returns the content
  * wrapped in a pseudo-rounded-corner box.  Creates the following DOM structure:
- *  <div class="goog-inline-block goog-imageless-button-outer-box">
- *    <div class="goog-inline-block goog-imageless-button-inner-box">
- *      <div class="goog-imageless-button-pos">
- *        <div class="goog-imageless-button-top-shadow">&nbsp;</div>
- *        <div class="goog-imageless-button-content">Contents...</div>
+ *
+ *    <div class="goog-inline-block goog-imageless-button-outer-box">
+ *      <div class="goog-inline-block goog-imageless-button-inner-box">
+ *        <div class="goog-imageless-button-pos">
+ *          <div class="goog-imageless-button-top-shadow">&nbsp;</div>
+ *          <div class="goog-imageless-button-content">Contents...</div>
+ *        </div>
  *      </div>
  *    </div>
- *  </div>
+ *
  * Used by both {@link #createDom} and {@link #decorate}.  To be overridden
  * by subclasses.
  * @param {goog.ui.ControlContent} content Text caption or DOM structure to wrap
@@ -116,19 +111,24 @@ goog.ui.ImagelessButtonRenderer.prototype.getContentElement = function(
  * @return {Element} Pseudo-rounded-corner box containing the content.
  * @override
  */
-goog.ui.ImagelessButtonRenderer.prototype.createButton = function(content,
-                                                                  dom) {
+goog.ui.ImagelessButtonRenderer.prototype.createButton = function(
+    content, dom) {
   var baseClass = this.getCssClass();
   var inlineBlock = goog.ui.INLINE_BLOCK_CLASSNAME + ' ';
-  return dom.createDom(goog.dom.TagName.DIV,
+  return dom.createDom(
+      goog.dom.TagName.DIV,
       inlineBlock + goog.getCssName(baseClass, 'outer-box'),
-      dom.createDom(goog.dom.TagName.DIV,
+      dom.createDom(
+          goog.dom.TagName.DIV,
           inlineBlock + goog.getCssName(baseClass, 'inner-box'),
-          dom.createDom(goog.dom.TagName.DIV, goog.getCssName(baseClass, 'pos'),
-              dom.createDom(goog.dom.TagName.DIV,
-                            goog.getCssName(baseClass, 'top-shadow'), '\u00A0'),
-              dom.createDom(goog.dom.TagName.DIV,
-                            goog.getCssName(baseClass, 'content'), content))));
+          dom.createDom(
+              goog.dom.TagName.DIV, goog.getCssName(baseClass, 'pos'),
+              dom.createDom(
+                  goog.dom.TagName.DIV,
+                  goog.getCssName(baseClass, 'top-shadow'), '\u00A0'),
+              dom.createDom(
+                  goog.dom.TagName.DIV, goog.getCssName(baseClass, 'content'),
+                  content))));
 };
 
 
@@ -146,23 +146,17 @@ goog.ui.ImagelessButtonRenderer.prototype.hasBoxStructure = function(
   var outer = button.getDomHelper().getFirstElementChild(element);
   var outerClassName = goog.getCssName(this.getCssClass(), 'outer-box');
   if (outer && goog.dom.classlist.contains(outer, outerClassName)) {
-
     var inner = button.getDomHelper().getFirstElementChild(outer);
     var innerClassName = goog.getCssName(this.getCssClass(), 'inner-box');
     if (inner && goog.dom.classlist.contains(inner, innerClassName)) {
-
       var pos = button.getDomHelper().getFirstElementChild(inner);
       var posClassName = goog.getCssName(this.getCssClass(), 'pos');
       if (pos && goog.dom.classlist.contains(pos, posClassName)) {
-
         var shadow = button.getDomHelper().getFirstElementChild(pos);
-        var shadowClassName = goog.getCssName(
-            this.getCssClass(), 'top-shadow');
+        var shadowClassName = goog.getCssName(this.getCssClass(), 'top-shadow');
         if (shadow && goog.dom.classlist.contains(shadow, shadowClassName)) {
-
           var content = button.getDomHelper().getNextElementSibling(shadow);
-          var contentClassName = goog.getCssName(
-              this.getCssClass(), 'content');
+          var contentClassName = goog.getCssName(this.getCssClass(), 'content');
           if (content &&
               goog.dom.classlist.contains(content, contentClassName)) {
             // We have a proper box structure.
@@ -189,20 +183,18 @@ goog.ui.ImagelessButtonRenderer.prototype.getCssClass = function() {
 
 // Register a decorator factory function for goog.ui.ImagelessButtonRenderer.
 goog.ui.registry.setDecoratorByClassName(
-    goog.ui.ImagelessButtonRenderer.CSS_CLASS,
-    function() {
-      return new goog.ui.Button(null,
-          goog.ui.ImagelessButtonRenderer.getInstance());
+    goog.ui.ImagelessButtonRenderer.CSS_CLASS, function() {
+      return new goog.ui.Button(
+          null, goog.ui.ImagelessButtonRenderer.getInstance());
     });
 
 
 // Register a decorator factory function for toggle buttons using the
 // goog.ui.ImagelessButtonRenderer.
 goog.ui.registry.setDecoratorByClassName(
-    goog.getCssName('goog-imageless-toggle-button'),
-    function() {
-      var button = new goog.ui.Button(null,
-          goog.ui.ImagelessButtonRenderer.getInstance());
+    goog.getCssName('goog-imageless-toggle-button'), function() {
+      var button = new goog.ui.Button(
+          null, goog.ui.ImagelessButtonRenderer.getInstance());
       button.setSupportedState(goog.ui.Component.State.CHECKED, true);
       return button;
     });

@@ -19,39 +19,39 @@ package org.openqa.grid.e2e.misc;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 
 public class ConfigInheritanceTest {
-  private static Hub hub;
+  private Hub hub;
 
-  @BeforeClass
-  public static void prepare() throws Exception {
+  @Before
+  public void prepare() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
-    config.setPort(PortProber.findFreePort());
-    config.getAllParams().put("A", "valueA");
-    config.getAllParams().put("B", 5);
-    config.getAllParams().put("A2", "valueA2");
-    config.getAllParams().put("B2", 42);
+    config.port = PortProber.findFreePort();
+    config.custom.put("A", "valueA");
+    config.custom.put("B", "5");
+    config.custom.put("A2", "valueA2");
+    config.custom.put("B2", "42");
     hub = GridTestHelper.getHub(config);
 
 
     SelfRegisteringRemote remote =
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
-    remote.getConfiguration().put("A2", "proxyA2");
-    remote.getConfiguration().put("B2", 50);
+    remote.getConfiguration().custom.put("A2", "proxyA2");
+    remote.getConfiguration().custom.put("B2", "50");
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
@@ -65,17 +65,17 @@ public class ConfigInheritanceTest {
     assertEquals(1, hub.getRegistry().getAllProxies().size());
     RemoteProxy p = hub.getRegistry().getAllProxies().iterator().next();
 
-    assertEquals(p.getConfig().get("A"), "valueA");
-    assertEquals(p.getConfig().get("A2"), "proxyA2");
+    assertEquals(p.getConfig().custom.get("A"), "valueA");
+    assertEquals(p.getConfig().custom.get("A2"), "proxyA2");
 
-    assertEquals(p.getConfig().get("B"), 5);
-    assertEquals(p.getConfig().get("B2"), 50);
+    assertEquals(p.getConfig().custom.get("B"), "5");
+    assertEquals(p.getConfig().custom.get("B2"), "50");
 
 
   }
 
-  @AfterClass
-  public static void stop() throws Exception {
+  @After
+  public void stop() throws Exception {
     hub.stop();
   }
 }

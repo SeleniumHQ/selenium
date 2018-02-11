@@ -18,11 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.IE
@@ -164,6 +159,37 @@ namespace OpenQA.Selenium.IE
         {
             get { return base.FileDetector; }
             set { }
+        }
+
+        /// <summary>
+        /// Gets the capabilities as a dictionary supporting legacy drivers.
+        /// </summary>
+        /// <param name="legacyCapabilities">The dictionary to return.</param>
+        /// <returns>A Dictionary consisting of the capabilities requested.</returns>
+        /// <remarks>This method is only transitional. Do not rely on it. It will be removed
+        /// once browser driver capability formats stabilize.</remarks>
+        protected override Dictionary<string, object> GetLegacyCapabilitiesDictionary(ICapabilities legacyCapabilities)
+        {
+            // Flatten the dictionary, if required to support old versions of the IE driver.
+            Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
+            DesiredCapabilities capabilitiesObject = legacyCapabilities as DesiredCapabilities;
+            foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
+            {
+                if (entry.Key == InternetExplorerOptions.Capability)
+                {
+                    Dictionary<string, object> internetExplorerOptions = entry.Value as Dictionary<string, object>;
+                    foreach (KeyValuePair<string, object> option in internetExplorerOptions)
+                    {
+                        capabilitiesDictionary.Add(option.Key, option.Value);
+                    }
+                }
+                else
+                {
+                    capabilitiesDictionary.Add(entry.Key, entry.Value);
+                }
+            }
+
+            return capabilitiesDictionary;
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(InternetExplorerOptions options)

@@ -39,8 +39,9 @@ goog.require('goog.ui.registry');
  * @final
  */
 goog.ui.ToolbarSeparator = function(opt_renderer, opt_domHelper) {
-  goog.ui.Separator.call(this, opt_renderer ||
-      goog.ui.ToolbarSeparatorRenderer.getInstance(), opt_domHelper);
+  goog.ui.Separator.call(
+      this, opt_renderer || goog.ui.ToolbarSeparatorRenderer.getInstance(),
+      opt_domHelper);
 };
 goog.inherits(goog.ui.ToolbarSeparator, goog.ui.Separator);
 
@@ -48,6 +49,4 @@ goog.inherits(goog.ui.ToolbarSeparator, goog.ui.Separator);
 // Registers a decorator factory function for toolbar separators.
 goog.ui.registry.setDecoratorByClassName(
     goog.ui.ToolbarSeparatorRenderer.CSS_CLASS,
-    function() {
-      return new goog.ui.ToolbarSeparator();
-    });
+    function() { return new goog.ui.ToolbarSeparator(); });

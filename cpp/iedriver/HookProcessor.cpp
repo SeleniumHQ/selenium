@@ -15,10 +15,14 @@
 // limitations under the License.
 
 #include "HookProcessor.h"
+
 #include <ctime>
 #include <vector>
 #include <Sddl.h>
+
 #include "logging.h"
+
+#include "StringUtilities.h"
 
 #define MAX_BUFFER_SIZE 32768
 #define NAMED_PIPE_BUFFER_SIZE 1024
@@ -29,6 +33,7 @@
 // Define a shared data segment.  Variables in this segment can be
 // shared across processes that load this DLL.
 #pragma data_seg("SHARED")
+int event_count = 0;
 int data_buffer_size = MAX_BUFFER_SIZE;
 char data_buffer[MAX_BUFFER_SIZE];
 #pragma data_seg()
@@ -317,6 +322,18 @@ int HookProcessor::PullData(std::vector<char>* data) {
     LOG(WARN) << "No connection received from browser via named pipe";
   }
   return static_cast<int>(data->size());
+}
+
+int HookProcessor::GetEventCount() {
+  return event_count;
+}
+
+void HookProcessor::IncrementEventCount(int increment) {
+  event_count += increment;
+}
+
+void HookProcessor::ResetEventCount() {
+  event_count = 0;
 }
 
 int HookProcessor::GetDataBufferSize() {

@@ -1781,5 +1781,4 @@ public interface Selenium {
    *        Java keycodes are NOT the same thing as JavaScript keycodes!
    */
   void keyPressNative(String keycode);
-
 }

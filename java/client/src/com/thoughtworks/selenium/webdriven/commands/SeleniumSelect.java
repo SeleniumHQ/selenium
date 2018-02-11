@@ -36,12 +36,15 @@ public class SeleniumSelect {
   private final WebDriver driver;
   private final WebElement select;
 
-  public SeleniumSelect(JavascriptLibrary library, ElementFinder finder, WebDriver driver,
-      String locator) {
+  public SeleniumSelect(
+    JavascriptLibrary library,
+    ElementFinder finder,
+    WebDriver driver,
+    String locator) {
     this.driver = driver;
 
     findOption =
-        "return (" + library.getSeleniumScript("findOption.js") + ").apply(null, arguments)";
+      "return (" + library.getSeleniumScript("findOption.js") + ").apply(null, arguments)";
 
     select = finder.findElement(driver, locator);
     if (!"select".equals(select.getTagName().toLowerCase())) {
@@ -94,7 +97,7 @@ public class SeleniumSelect {
     return toReturn;
   }
 
-  private WebElement findOption(String optionLocator) {
+  public WebElement findOption(String optionLocator) {
     return (WebElement) ((JavascriptExecutor) driver)
         .executeScript(findOption, select, optionLocator);
   }

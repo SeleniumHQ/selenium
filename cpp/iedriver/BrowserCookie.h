@@ -17,14 +17,15 @@
 #ifndef WEBDRIVER_IE_BROWSERCOOKIE_H_
 #define WEBDRIVER_IE_BROWSERCOOKIE_H_
 
+#include <string>
+
 namespace Json {
   class Value;
-}
+} // namespace Json
 
 namespace webdriver {
 
-class BrowserCookie
-{
+class BrowserCookie {
  public:
   BrowserCookie(void);
   virtual ~BrowserCookie(void);

@@ -109,7 +109,8 @@ HealthService.prototype.attach = function(win, component) {
       oldOnError: oldOnError
     };
     var self = this;
-    win.onerror = function SIDEErrorHandler(msg, url, line, column, error) {
+    //TODO maybe use an add event listener to not overwrite any existing handlers?
+    win.onerror = function(msg, url, line, column, error) {
       self.addError(component, "UncaughtException", msg, url, line, column, (error && error.stack ? error.stack : null));
       if (self.alerts) {
         try {
@@ -188,6 +189,8 @@ HealthService.prototype.addException = function(component, event, exception) {
 HealthService.prototype.increaseCounter = function(component, counter) {
   if (!this.stats[component]) {
     this.stats[component] = {};
+  }
+  if (!this.stats[component][counter]) {
     this.stats[component][counter] = 0;
   }
   this.stats[component][counter]++;
@@ -231,7 +234,7 @@ HealthService.prototype.getData = function() {
  * Return the collected data
  */
 HealthService.prototype.getJSON = function(pretty) {
-  return JSON.stringify(this.getData(), null, 2);
+  return JSON.stringify(this.getData(), null, pretty ? 2 : null);
 };
 
 /**

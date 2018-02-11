@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +61,7 @@ public class RemoteLogsTest {
 
   @Test
   public void canGetProfilerLogs() {
-    List<LogEntry> entries = new ArrayList<LogEntry>();
+    List<LogEntry> entries = new ArrayList<>();
     entries.add(new LogEntry(Level.INFO, 0, "hello"));
     when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
 
@@ -79,7 +80,7 @@ public class RemoteLogsTest {
 
   @Test
   public void canGetLocalProfilerLogsIfNoRemoteProfilerLogSupport() {
-    List<LogEntry> entries = new ArrayList<LogEntry>();
+    List<LogEntry> entries = new ArrayList<>();
     entries.add(new LogEntry(Level.INFO, 0, "hello"));
     when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
 
@@ -97,7 +98,7 @@ public class RemoteLogsTest {
 
   @Test
   public void canGetClientLogs() {
-    List<LogEntry> entries = new ArrayList<LogEntry>();
+    List<LogEntry> entries = new ArrayList<>();
     entries.add(new LogEntry(Level.SEVERE, 0, "hello"));
     when(localLogs.get(LogType.CLIENT)).thenReturn(new LogEntries(entries));
 
@@ -126,21 +127,39 @@ public class RemoteLogsTest {
   }
 
   @Test
+  public void throwsOnBogusRemoteLogsResponse() {
+    when(
+        executeMethod
+            .execute(DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.BROWSER)))
+        .thenReturn(new ImmutableMap.Builder()
+                        .put("error", "unknown method")
+                        .put("message", "Command not found: POST /session/11037/log")
+                        .put("stacktrace", "").build());
+    try {
+      remoteLogs.get(LogType.BROWSER);
+      fail("Should have thrown WebDriverException");
+    } catch (WebDriverException expected) {
+    }
+
+    verifyNoMoreInteractions(localLogs);
+  }
+
+  @Test
   public void canGetAvailableLogTypes() {
-    List<String> remoteAvailableLogTypes = new ArrayList<String>();
+    List<String> remoteAvailableLogTypes = new ArrayList<>();
     remoteAvailableLogTypes.add(LogType.PROFILER);
     remoteAvailableLogTypes.add(LogType.SERVER);
 
     when(executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null))
         .thenReturn(remoteAvailableLogTypes);
 
-    Set<String> localAvailableLogTypes = new HashSet<String>();
+    Set<String> localAvailableLogTypes = new HashSet<>();
     localAvailableLogTypes.add(LogType.PROFILER);
     localAvailableLogTypes.add(LogType.CLIENT);
 
     when(localLogs.getAvailableLogTypes()).thenReturn(localAvailableLogTypes);
 
-    Set<String> expected = new HashSet<String>();
+    Set<String> expected = new HashSet<>();
     expected.add(LogType.CLIENT);
     expected.add(LogType.PROFILER);
     expected.add(LogType.SERVER);

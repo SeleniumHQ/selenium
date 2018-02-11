@@ -51,15 +51,13 @@
  *   video.setSelected(true);
  * </pre>
  *
- *
- * @supported IE6, FF2+, Safari. Requires flash to actually work.
- *
- * TODO(user): test on other browsers
+ * Requires flash to actually work.
  */
 
 goog.provide('goog.ui.media.Vimeo');
 goog.provide('goog.ui.media.VimeoModel');
 
+goog.require('goog.html.uncheckedconversions');
 goog.require('goog.string');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
@@ -145,8 +143,7 @@ goog.ui.media.Vimeo.prototype.createDom = function(c) {
       /** @type {goog.ui.media.VimeoModel} */ (control.getDataModel());
 
   var flash = new goog.ui.media.FlashObject(
-      dataModel.getPlayer().getTrustedResourceUrl(),
-      control.getDomHelper());
+      dataModel.getPlayer().getTrustedResourceUrl(), control.getDomHelper());
   flash.render(div);
 
   return div;
@@ -178,14 +175,11 @@ goog.ui.media.Vimeo.prototype.getCssClass = function() {
  * @extends {goog.ui.media.MediaModel}
  * @final
  */
-goog.ui.media.VimeoModel = function(videoId, opt_caption, opt_description,
-                                    opt_autoplay) {
+goog.ui.media.VimeoModel = function(
+    videoId, opt_caption, opt_description, opt_autoplay) {
   goog.ui.media.MediaModel.call(
-      this,
-      goog.ui.media.VimeoModel.buildUrl(videoId),
-      opt_caption,
-      opt_description,
-      goog.ui.media.MediaModel.MimeType.FLASH);
+      this, goog.ui.media.VimeoModel.buildUrl(videoId), opt_caption,
+      opt_description, goog.ui.media.MediaModel.MimeType.FLASH);
 
   /**
    * The Vimeo video id.
@@ -194,8 +188,9 @@ goog.ui.media.VimeoModel = function(videoId, opt_caption, opt_description,
    */
   this.videoId_ = videoId;
 
-  this.setPlayer(new goog.ui.media.MediaModel.Player(
-      goog.ui.media.VimeoModel.buildFlashUrl(videoId, opt_autoplay)));
+  this.setPlayer(
+      new goog.ui.media.MediaModel.Player(
+          goog.ui.media.VimeoModel.buildFlashUrl(videoId, opt_autoplay)));
 };
 goog.inherits(goog.ui.media.VimeoModel, goog.ui.media.MediaModel);
 
@@ -226,10 +221,8 @@ goog.ui.media.VimeoModel.MATCHER_ =
  *     URL.
  * @throws exception in case the parsing fails
  */
-goog.ui.media.VimeoModel.newInstance = function(vimeoUrl,
-                                                opt_caption,
-                                                opt_description,
-                                                opt_autoplay) {
+goog.ui.media.VimeoModel.newInstance = function(
+    vimeoUrl, opt_caption, opt_description, opt_autoplay) {
   if (goog.ui.media.VimeoModel.MATCHER_.test(vimeoUrl)) {
     var data = goog.ui.media.VimeoModel.MATCHER_.exec(vimeoUrl);
     return new goog.ui.media.VimeoModel(
@@ -257,14 +250,17 @@ goog.ui.media.VimeoModel.buildUrl = function(videoId) {
  * @param {string} videoId The vimeo video ID.
  * @param {boolean=} opt_autoplay Whether the flash movie should start playing
  *     as soon as it is shown, or if it should show a 'play' button.
- * @return {string} The vimeo flash URL.
+ * @return {!goog.html.TrustedResourceUrl} The vimeo flash URL.
  */
 goog.ui.media.VimeoModel.buildFlashUrl = function(videoId, opt_autoplay) {
   var autoplay = opt_autoplay ? '&autoplay=1' : '';
-  return 'http://vimeo.com/moogaloop.swf?clip_id=' +
-      goog.string.urlEncode(videoId) +
-      '&server=vimeo.com&show_title=1&show_byline=1&show_portrait=0color=&' +
-      'fullscreen=1' + autoplay;
+  return goog.html.uncheckedconversions.
+      trustedResourceUrlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from('Fixed domain, encoded parameters.'),
+          'http://vimeo.com/moogaloop.swf?clip_id=' +
+              goog.string.urlEncode(videoId) +
+              '&server=vimeo.com&show_title=1&show_byline=1&' +
+              'show_portrait=0color=&fullscreen=1' + autoplay);
 };
 
 
@@ -275,4 +271,3 @@ goog.ui.media.VimeoModel.buildFlashUrl = function(videoId, opt_autoplay) {
 goog.ui.media.VimeoModel.prototype.getVideoId = function() {
   return this.videoId_;
 };
-

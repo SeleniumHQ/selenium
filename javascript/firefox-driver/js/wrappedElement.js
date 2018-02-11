@@ -64,6 +64,17 @@ WebElement.clickElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
+  // Handle the special case of the file input element here
+
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
+    var inputtype = element.getAttribute('type');
+    if (inputtype && inputtype.toLowerCase() == 'file') {
+      respond.status = bot.ErrorCode.INVALID_ARGUMENT;
+      respond.send();
+      return;
+    }
+  }
+
   var unwrapped = fxdriver.moz.unwrapFor4(element);
 
   var offset = Utils.getClickablePoint(unwrapped);
@@ -189,8 +200,17 @@ WebElement.clearElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
   bot.setWindow(respond.session.getWindow());
-  bot.action.clear(element);
-  respond.send();
+  try {
+    bot.action.clear(element);
+    respond.send();
+  } catch (e) {
+    var code = e.code;
+    if (code) {
+      respond.sendError(new WebDriverError(code, e.message));
+    } else {
+      throw e;
+    }
+  }
 };
 WebElement.clearElement.preconditions =
     [fxdriver.preconditions.visible, fxdriver.preconditions.enabled, fxdriver.preconditions.writable];

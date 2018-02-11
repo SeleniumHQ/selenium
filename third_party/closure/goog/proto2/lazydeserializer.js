@@ -40,8 +40,8 @@ goog.inherits(goog.proto2.LazyDeserializer, goog.proto2.Serializer);
 
 
 /** @override */
-goog.proto2.LazyDeserializer.prototype.deserialize =
-    function(descriptor, data) {
+goog.proto2.LazyDeserializer.prototype.deserialize = function(
+    descriptor, data) {
   var message = descriptor.createMessageInstance();
   message.initializeForLazyDeserializer(this, data);
   goog.asserts.assert(message instanceof goog.proto2.Message);

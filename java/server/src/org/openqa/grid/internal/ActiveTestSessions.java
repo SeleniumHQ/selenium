@@ -20,6 +20,7 @@ package org.openqa.grid.internal;
 import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.common.exception.GridException;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
 
 import java.util.Collections;
 import java.util.Map;
@@ -30,11 +31,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+
 /**
  * The set of active test sessions.
  */
 @ThreadSafe
-class ActiveTestSessions {
+public class ActiveTestSessions {
 
   private static final Logger log = Logger.getLogger(ActiveTestSessions.class.getName());
 
@@ -55,11 +59,18 @@ class ActiveTestSessions {
     if (!added) {
       log.severe("Error adding session : " + testSession);
     }
+
+    new JMXHelper().register(testSession);
     return added;
   }
 
   public boolean remove(TestSession o, SessionTerminationReason reason) {
     updateReason(o, reason);
+    try {
+      new JMXHelper().unregister(o.getObjectName());
+    } catch (MalformedObjectNameException e) {
+      e.printStackTrace();
+    }
     return activeTestSessions.remove(o);
   }
 
@@ -103,12 +114,11 @@ class ActiveTestSessions {
           String msg = "Session [" + keyId + "] was terminated due to " + sessionTerminationReason;
           log.fine(msg);
           throw new GridException(msg);
-      } else {
-          String msg = "Session [" + keyId + "] not available and is not among the last 1000 terminated sessions.\n"
-                  + "Active sessions are" + this.unmodifiableSet();
-          log.fine(msg);
-          throw new GridException(msg);
       }
+      String msg = "Session [" + keyId + "] not available and is not among the last 1000 terminated sessions.\n"
+          + "Active sessions are" + this.unmodifiableSet();
+      log.fine(msg);
+      throw new GridException(msg);
     }
     return sessionByExternalKey;
   }

@@ -15,27 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.grid.web.servlet;
 
+import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonNull;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import org.openqa.grid.common.exception.GridException;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.TestSlot;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -56,9 +55,9 @@ import javax.servlet.http.HttpServletResponse;
  *      ]
  * }
  *
- * if no param is specified, all params known to the hub are returned.
+ * alternatively you can use a query string ?configuration=timeout,servlets
  *
- * {"configuration": []  }
+ * if no param is specified, all params known to the hub are returned.
  *
  */
 public class HubStatusServlet extends RegistryBasedServlet {
@@ -67,7 +66,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
     super(null);
   }
 
-  public HubStatusServlet(Registry registry) {
+  public HubStatusServlet(GridRegistry registry) {
     super(registry);
   }
 
@@ -101,41 +100,27 @@ public class HubStatusServlet extends RegistryBasedServlet {
     try {
       if (request.getInputStream() != null) {
         JsonObject requestJSON = getRequestJSON(request);
-        JsonArray keys = requestJSON != null
-                         ? requestJSON.get("configuration").getAsJsonArray()
-                         : null;
+        List<String> keysToReturn = null;
 
-        Set<String> paramsToReturn;
-        Registry registry = getRegistry();
-        Map<String,Object> allParams = registry.getConfiguration().getAllParams();
-
-        if (requestJSON == null || keys.size() == 0) {
-          paramsToReturn = allParams.keySet();
-        } else {
-          paramsToReturn = new HashSet<>();
-          for (int i = 0; i < keys.size(); i++) {
-            paramsToReturn.add(keys.get(i).getAsString());
-          }
+        if (request.getParameter("configuration") != null && !"".equals(request.getParameter("configuration"))) {
+          keysToReturn = Arrays.asList(request.getParameter("configuration").split(","));
+        } else if (requestJSON != null && requestJSON.has("configuration")) {
+          keysToReturn = new Gson().fromJson(requestJSON.getAsJsonArray("configuration"), ArrayList.class);
         }
 
-        if (paramsToReturn.contains("newSessionRequestCount")) {
+        GridRegistry registry = getRegistry();
+        JsonElement config = registry.getConfiguration().toJson();
+        for (Map.Entry<String, JsonElement> entry : config.getAsJsonObject().entrySet()) {
+          if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains(entry.getKey())) {
+            res.add(entry.getKey(), entry.getValue());
+          }
+        }
+        if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("newSessionRequestCount")) {
           res.addProperty("newSessionRequestCount", registry.getNewSessionRequestCount());
-          paramsToReturn.remove("newSessionRequestCount");
         }
 
-        if (paramsToReturn.contains("slotCounts")) {
+        if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("slotCounts")) {
           res.add("slotCounts", getSlotCounts());
-          paramsToReturn.remove("slotCounts");
-        }
-
-        for (String key : paramsToReturn) {
-          Object value = allParams.get(key);
-          if (value == null) {
-            res.add(key, JsonNull.INSTANCE);
-          } else {
-            res.add(key, new Gson().toJsonTree(value));
-          }
-
         }
       }
     } catch (Exception e) {
@@ -148,39 +133,29 @@ public class HubStatusServlet extends RegistryBasedServlet {
   }
 
   private JsonObject getSlotCounts() {
-    int freeSlots = 0;
     int totalSlots = 0;
+    int usedSlots = 0;
 
     for (RemoteProxy proxy : getRegistry().getAllProxies()) {
-      for (TestSlot slot : proxy.getTestSlots()) {
-        if (slot.getSession() == null) {
-          freeSlots += 1;
-        }
-
-        totalSlots += 1;
-      }
+      totalSlots += Math.min(proxy.getMaxNumberOfConcurrentTestSessions(), proxy.getTestSlots().size());
+      usedSlots += proxy.getTotalUsed();
     }
-
     JsonObject result = new JsonObject();
-
-    result.addProperty("free", freeSlots);
+    result.addProperty("free", totalSlots - usedSlots);
     result.addProperty("total", totalSlots);
-
     return result;
   }
 
   private JsonObject getRequestJSON(HttpServletRequest request) throws IOException {
-    JsonObject requestJSON = null;
-    BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
-    StringBuilder s = new StringBuilder();
-    String line;
-    while ((line = rd.readLine()) != null) {
-      s.append(line);
-    }
-    rd.close();
-    String json = s.toString();
-    if (!"".equals(json)) {
-      requestJSON = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject requestJSON = new JsonObject();
+
+    try (BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
+      StringBuilder s = new StringBuilder();
+      CharStreams.copy(rd, s);
+      String json = s.toString();
+      if (!"".equals(json)) {
+        requestJSON = new JsonParser().parse(json).getAsJsonObject();
+      }
     }
     return requestJSON;
   }

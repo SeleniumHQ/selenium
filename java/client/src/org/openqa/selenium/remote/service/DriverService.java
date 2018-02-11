@@ -22,18 +22,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -49,6 +51,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * used to stop the server.
  */
 public class DriverService {
+
   /**
    * The base URL for the managed server.
    */
@@ -68,6 +71,7 @@ public class DriverService {
   private final String executable;
   private final ImmutableList<String> args;
   private final ImmutableMap<String, String> environment;
+  private OutputStream outputStream = System.err;
 
   /**
   *
@@ -77,12 +81,20 @@ public class DriverService {
   * @param environment The environment for the launched server.
   * @throws IOException If an I/O error occurs.
   */
- protected DriverService(File executable, int port, ImmutableList<String> args,
+ protected DriverService(
+     File executable,
+     int port,
+     ImmutableList<String> args,
      ImmutableMap<String, String> environment) throws IOException {
    this.executable = executable.getCanonicalPath();
-   url = new URL(String.format("http://localhost:%d", port));
    this.args = args;
    this.environment = environment;
+
+   this.url = getUrl(port);
+ }
+
+ protected URL getUrl(int port) throws IOException {
+   return new URL(String.format("http://localhost:%d", port));
  }
 
   /**
@@ -102,9 +114,12 @@ public class DriverService {
    * @return The driver executable as a {@link File} object
    * @throws IllegalStateException If the executable not found or cannot be executed
    */
-  protected static File findExecutable(String exeName, String exeProperty, String exeDocs,
+  protected static File findExecutable(
+      String exeName,
+      String exeProperty,
+      String exeDocs,
       String exeDownload) {
-    String defaultPath = CommandLine.find(exeName);
+    String defaultPath = new ExecutableFinder().find(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
     checkState(exePath != null,
         "The path to the driver executable must be set by the %s system property;"
@@ -122,7 +137,7 @@ public class DriverService {
         "The driver executable does not exist: %s", exe.getAbsolutePath());
     checkState(!exe.isDirectory(),
         "The driver executable is a directory: %s", exe.getAbsolutePath());
-    checkState(FileHandler.canExecute(exe),
+    checkState(exe.canExecute(),
         "The driver is not executable: %s", exe.getAbsolutePath());
   }
 
@@ -134,10 +149,7 @@ public class DriverService {
   public boolean isRunning() {
     lock.lock();
     try {
-      if (process == null) {
-        return false;
-      }
-      return process.isRunning();
+      return process != null && process.isRunning();
     } catch (IllegalThreadStateException e) {
       return true;
     } finally {
@@ -160,7 +172,7 @@ public class DriverService {
       }
       process = new CommandLine(this.executable, args.toArray(new String[] {}));
       process.setEnvironmentVariables(environment);
-      process.copyOutputTo(System.err);
+      process.copyOutputTo(getOutputStream());
       process.executeAsync();
 
       waitUntilAvailable();
@@ -174,37 +186,67 @@ public class DriverService {
       URL status = new URL(url.toString() + "/status");
       new UrlChecker().waitUntilAvailable(20, SECONDS, status);
     } catch (UrlChecker.TimeoutException e) {
-      process.checkForError();
+      if (process != null && !process.isRunning()) {
+        process.checkForError();
+      }
       throw new WebDriverException("Timed out waiting for driver server to start.", e);
     }
   }
 
   /**
-   * Stops this service is it is currently running. This method will attempt to block until the
+   * Stops this service if it is currently running. This method will attempt to block until the
    * server has been fully shutdown.
    *
    * @see #start()
    */
   public void stop() {
     lock.lock();
+
+    WebDriverException toThrow = null;
     try {
       if (process == null) {
         return;
       }
-      URL killUrl = new URL(url.toString() + "/shutdown");
-      new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
+
+      if (hasShutdownEndpoint()) {
+        try {
+          URL killUrl = new URL(url.toString() + "/shutdown");
+          new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
+        } catch (MalformedURLException e) {
+          toThrow = new WebDriverException(e);
+        } catch (UrlChecker.TimeoutException e) {
+          toThrow = new WebDriverException("Timed out waiting for driver server to shutdown.", e);
+        }
+      }
+
       process.destroy();
-    } catch (MalformedURLException e) {
-      throw new WebDriverException(e);
-    } catch (UrlChecker.TimeoutException e) {
-      throw new WebDriverException("Timed out waiting for driver server to shutdown.", e);
     } finally {
       process = null;
       lock.unlock();
     }
+
+    if (toThrow != null) {
+      throw toThrow;
+    }
   }
 
-  public static abstract class Builder<DS extends DriverService, B extends Builder> {
+  protected boolean hasShutdownEndpoint() {
+    return true;
+  }
+
+  /**
+   * @deprecated Visibility will be restricted to 'protected' soon.
+   */
+  @Deprecated
+  public void sendOutputTo(OutputStream outputStream) {
+    this.outputStream = Preconditions.checkNotNull(outputStream);
+  }
+
+  protected OutputStream getOutputStream() {
+    return outputStream;
+  }
+
+  public static abstract class Builder<DS extends DriverService, B extends Builder<?, ?>> {
 
     private int port = 0;
     private File exe = null;
@@ -217,6 +259,7 @@ public class DriverService {
      * @param file The executable to use.
      * @return A self reference.
      */
+    @SuppressWarnings("unchecked")
     public B usingDriverExecutable(File file) {
       checkNotNull(file);
       checkExecutable(file);

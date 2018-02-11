@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +18,6 @@
 module Selenium
   module WebDriver
     class Navigation
-
       def initialize(bridge)
         @bridge = bridge
       end
@@ -38,7 +35,7 @@ module Selenium
       #
 
       def back
-        @bridge.goBack
+        @bridge.go_back
       end
 
       #
@@ -46,7 +43,7 @@ module Selenium
       #
 
       def forward
-        @bridge.goForward
+        @bridge.go_forward
       end
 
       #
@@ -56,7 +53,6 @@ module Selenium
       def refresh
         @bridge.refresh
       end
-
     end # Navigation
   end # WebDriver
 end # Selenium

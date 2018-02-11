@@ -22,6 +22,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.server.KnownElements;
 
 import java.util.List;
@@ -49,6 +50,10 @@ public class ArgumentConverter implements Function<Object, Object> {
         converted.put(entry.getKey(), apply(entry.getValue()));
       }
       return converted;
+    }
+
+    if (arg instanceof RemoteWebElement) {
+      return knownElements.get(((RemoteWebElement) arg).getId());
     }
 
     if (arg instanceof List<?>) {

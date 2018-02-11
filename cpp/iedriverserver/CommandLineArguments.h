@@ -31,13 +31,15 @@ class CommandLineArguments {
 
   std::wstring GetValue(std::wstring arg_name,
                         std::wstring default_value);
-  bool is_help_requested (void) const { return this->is_help_requested_; }
+  bool is_help_requested(void) const { return this->is_help_requested_; }
+  bool is_version_requested(void) const { return this->is_version_requested_; }
 
  private:
   void ParseArguments(int argc, _TCHAR* argv[]);
   int GetSwitchDelimiterLength(std::wstring arg);
 
   bool is_help_requested_;
+  bool is_version_requested_;
   std::map<std::wstring, std::wstring> args_map_;
 };
 

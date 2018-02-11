@@ -17,25 +17,14 @@
 
 package org.openqa.selenium;
 
-import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
-import com.google.common.net.HttpHeaders;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,26 +32,25 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.ProxyServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-import org.webbitserver.HttpControl;
-import org.webbitserver.HttpHandler;
-import org.webbitserver.HttpRequest;
-import org.webbitserver.HttpResponse;
-import org.webbitserver.WebServer;
-import org.webbitserver.WebServers;
+import org.seleniumhq.jetty9.server.Handler;
+import org.seleniumhq.jetty9.server.Request;
+import org.seleniumhq.jetty9.server.Server;
+import org.seleniumhq.jetty9.server.ServerConnector;
+import org.seleniumhq.jetty9.server.handler.AbstractHandler;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
-@Ignore(MARIONETTE)
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public class ProxySettingTest extends JUnit4TestBase {
 
   @Rule
@@ -85,30 +73,27 @@ public class ProxySettingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI},
-          reason = "PhantomJS - not tested, Safari - not implemented")
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(SAFARI)
+  @NeedsLocalEnvironment
   public void canConfigureManualHttpProxy() {
     Proxy proxyToUse = proxyServer.asProxy();
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(PROXY, proxyToUse);
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxyToUse);
 
-    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    WebDriver driver = new WebDriverBuilder().get(caps);
     registerDriverTeardown(driver);
 
-    driver.get(pages.simpleTestPage);
+    driver.get(appServer.whereElseIs("simpleTest.html"));
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
-          reason = "PhantomJS - not tested, Safari - not implemented")
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(SAFARI)
+  @NeedsLocalEnvironment
   public void canConfigureProxyThroughPACFile() {
-    WebServer helloServer = createSimpleHttpServer(
+    Server helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
-    WebServer pacFileServer = createPacfileServer(Joiner.on('\n').join(
+    Server pacFileServer = createPacfileServer(Joiner.on('\n').join(
         "function FindProxyForURL(url, host) {",
         "  return 'PROXY " + getHostAndPort(helloServer) + "';",
         "}"));
@@ -116,27 +101,25 @@ public class ProxySettingTest extends JUnit4TestBase {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(PROXY, proxy);
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
-    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    WebDriver driver = new WebDriverBuilder().get(caps);
     registerDriverTeardown(driver);
 
-    driver.get(pages.mouseOverPage);
+    driver.get(appServer.whereElseIs("mouseOver.html"));
     assertEquals("Should follow proxy to another server",
         "Hello, world!", driver.findElement(By.tagName("h3")).getText());
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
-          reason = "PhantomJS - not tested, Safari - not implemented")
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(SAFARI)
+  @NeedsLocalEnvironment
   public void canUsePACThatOnlyProxiesCertainHosts() throws Exception {
-    WebServer helloServer = createSimpleHttpServer(
+    Server helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
-    WebServer goodbyeServer = createSimpleHttpServer(
+    Server goodbyeServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Goodbye</title><h3>Goodbye, world!</h3>");
-    WebServer pacFileServer = createPacfileServer(Joiner.on('\n').join(
+    Server pacFileServer = createPacfileServer(Joiner.on('\n').join(
         "function FindProxyForURL(url, host) {",
         "  if (url.indexOf('" + getHostAndPort(helloServer) + "') != -1) {",
         "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
@@ -147,137 +130,89 @@ public class ProxySettingTest extends JUnit4TestBase {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(PROXY, proxy);
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
-    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    WebDriver driver = new WebDriverBuilder().get(caps);
     registerDriverTeardown(driver);
 
     driver.get("http://" + getHostAndPort(helloServer));
     assertEquals("Should follow proxy to another server",
         "Goodbye, world!", driver.findElement(By.tagName("h3")).getText());
 
-    driver.get(pages.simpleTestPage);
+    driver.get(appServer.whereElseIs("simpleTest.html"));
     assertEquals("Proxy should have permitted direct access to host",
         "Heading", driver.findElement(By.tagName("h1")).getText());
   }
 
-  @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
-  @NeedsLocalEnvironment
-  @Test
-  public void canConfigureProxyWithRequiredCapability() {
-    Proxy proxyToUse = proxyServer.asProxy();
-    DesiredCapabilities requiredCaps = new DesiredCapabilities();
-    requiredCaps.setCapability(PROXY, proxyToUse);
-
-    WebDriver driver = new WebDriverBuilder().setRequiredCapabilities(requiredCaps).get();
-    registerDriverTeardown(driver);
-
-    driver.get(pages.simpleTestPage);
-    assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
-  }
-
-  @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
-  @NeedsLocalEnvironment
-  @Test
-  public void requiredProxyCapabilityShouldHavePriority() {
-    ProxyServer desiredProxyServer = new ProxyServer();
-    registerProxyTeardown(desiredProxyServer);
-
-    Proxy desiredProxy = desiredProxyServer.asProxy();
-    Proxy requiredProxy = proxyServer.asProxy();
-
-    DesiredCapabilities desiredCaps = new DesiredCapabilities();
-    desiredCaps.setCapability(PROXY, desiredProxy);
-    DesiredCapabilities requiredCaps = new DesiredCapabilities();
-    requiredCaps.setCapability(PROXY, requiredProxy);
-
-    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).
-        setRequiredCapabilities(requiredCaps).get();
-    registerDriverTeardown(driver);
-
-    driver.get(pages.simpleTestPage);
-
-    assertFalse("Desired proxy should not have been called.",
-                desiredProxyServer.hasBeenCalled("simpleTest.html"));
-    assertTrue("Required proxy should have been called.",
-               proxyServer.hasBeenCalled("simpleTest.html"));
-  }
-
   private void registerDriverTeardown(final WebDriver driver) {
-    tearDowns.add(new Callable<Object>() {
-      @Override
-      public Object call() {
-        driver.quit();
-        return null;
-      }
+    tearDowns.add(() -> {
+      driver.quit();
+      return null;
     });
   }
 
   private void registerProxyTeardown(final ProxyServer proxy) {
-    tearDowns.add(new Callable<Object>() {
+    tearDowns.add(() -> {
+      proxy.destroy();
+      return null;
+    });
+  }
+
+  private Server createSimpleHttpServer(final String responseHtml) {
+    return createServer(new AbstractHandler() {
       @Override
-      public Object call() {
-        proxy.destroy();
-        return null;
+      public void handle(String s, Request baseRequest, HttpServletRequest request,
+                         HttpServletResponse response) throws IOException, ServletException {
+        response.setContentType("text/html; charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(responseHtml);
+        baseRequest.setHandled(true);
       }
     });
   }
 
-  private WebServer createSimpleHttpServer(final String responseHtml) {
-    return createServer(new HttpHandler() {
+  private Server createPacfileServer(final String pacFileContents) {
+    return createServer(new AbstractHandler() {
       @Override
-      public void handleHttpRequest(
-          HttpRequest request, HttpResponse response, HttpControl control) {
-        response.charset(Charsets.UTF_8)
-            .header(HttpHeaders.CONTENT_TYPE, "text/html")
-            .content(responseHtml)
-            .end();
+      public void handle(String s, Request baseRequest, HttpServletRequest request,
+                         HttpServletResponse response) throws IOException, ServletException {
+        response.setContentType("application/x-javascript-config; charset=us-ascii");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println(pacFileContents);
+        baseRequest.setHandled(true);
       }
     });
   }
 
-  private WebServer createPacfileServer(final String pacFileContents) {
-    return createServer(new HttpHandler() {
-      @Override
-      public void handleHttpRequest(
-          HttpRequest request, HttpResponse response, HttpControl control) {
-        response.charset(Charsets.US_ASCII)
-            .header(HttpHeaders.CONTENT_TYPE, "application/x-javascript-config")
-            .content(pacFileContents)
-            .end();
-      }
-    });
-  }
+  private Server createServer(Handler handler) {
+    final Server server = new Server();
 
-  private WebServer createServer(HttpHandler handler) {
+    ServerConnector http = new ServerConnector(server);
     int port = PortProber.findFreePort();
-    final WebServer server = WebServers.createWebServer(newFixedThreadPool(5), port);
-    server.add(handler);
+    http.setPort(port);
+    http.setIdleTimeout(500000);
+    server.addConnector(http);
 
-    tearDowns.add(new Callable<Object>() {
-      @Override
-      public Object call() {
+    server.setHandler(handler);
+
+    tearDowns.add(() -> {
+      try {
         server.stop();
-        return null;
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
+      return null;
     });
 
     try {
-      server.start().get(10, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw new RuntimeException("Interrupted waiting for server to start", e);
-    } catch (ExecutionException e) {
+      server.start();
+    } catch (Exception e) {
       throw new RuntimeException("Server failed to start", e);
-    } catch (java.util.concurrent.TimeoutException e) {
-      throw new TimeoutException("Timed out waiting for the server to start", e);
     }
     return server;
   }
 
-  private static HostAndPort getHostAndPort(WebServer server) {
-    String host = MoreObjects.firstNonNull(System.getenv("HOSTNAME"), "localhost");
-    return HostAndPort.fromParts(host, server.getPort());
+  private static HostAndPort getHostAndPort(Server server) {
+    return HostAndPort.fromParts(server.getURI().getHost(), server.getURI().getPort());
   }
 }

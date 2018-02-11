@@ -17,10 +17,14 @@
 
 package org.openqa.selenium.support;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.pagefactory.ByChained;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 
 /**
  * Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
@@ -37,6 +41,23 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
+@PageFactoryFinder(FindBys.FindByBuilder.class)
 public @interface FindBys {
   FindBy[] value();
+
+  public static class FindByBuilder extends AbstractFindByBuilder {
+    public By buildIt(Object annotation, Field field) {
+      FindBys findBys = (FindBys) annotation;
+      assertValidFindBys(findBys);
+
+      FindBy[] findByArray = findBys.value();
+      By[] byArray = new By[findByArray.length];
+      for (int i = 0; i < findByArray.length; i++) {
+        byArray[i] = buildByFromFindBy(findByArray[i]);
+      }
+
+      return new ByChained(byArray);
+    }
+
+  }
 }

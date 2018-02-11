@@ -17,33 +17,19 @@
 #ifndef WEBDRIVER_IE_GETALLWINDOWHANDLESCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETALLWINDOWHANDLESCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class GetAllWindowHandlesCommandHandler : public IECommandHandler {
  public:
-  GetAllWindowHandlesCommandHandler(void) {
-  }
-
-  virtual ~GetAllWindowHandlesCommandHandler(void) {
-  }
+  GetAllWindowHandlesCommandHandler(void);
+  virtual ~GetAllWindowHandlesCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const ParametersMap& command_parameters,
-                       Response* response) {
-    Json::Value handles(Json::arrayValue);
-    std::vector<std::string> handle_list;
-    executor.GetManagedBrowserHandles(&handle_list);
-    for (unsigned int i = 0; i < handle_list.size(); ++i) {
-      handles.append(handle_list[i]);
-    }
-
-    response->SetSuccessResponse(handles);
-  }
+                      const ParametersMap& command_parameters,
+                      Response* response);
 };
 
 } // namespace webdriver

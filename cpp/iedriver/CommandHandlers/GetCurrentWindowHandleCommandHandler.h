@@ -17,33 +17,19 @@
 #ifndef WEBDRIVER_IE_GETCURRENTWINDOWHANDLECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETCURRENTWINDOWHANDLECOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class GetCurrentWindowHandleCommandHandler : public IECommandHandler {
  public:
-  GetCurrentWindowHandleCommandHandler(void) {
-  }
-
-  virtual ~GetCurrentWindowHandleCommandHandler(void) {
-  }
+  GetCurrentWindowHandleCommandHandler(void);
+  virtual ~GetCurrentWindowHandleCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    std::string current_handle = executor.current_browser_id();
-    BrowserHandle browser;
-    int status_code = executor.GetManagedBrowser(current_handle, &browser);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(ENOSUCHWINDOW, "Window is closed");
-    } else {
-      response->SetSuccessResponse(current_handle);
-    }
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

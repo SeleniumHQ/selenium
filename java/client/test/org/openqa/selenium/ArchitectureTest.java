@@ -19,13 +19,12 @@ package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -123,24 +122,16 @@ public class ArchitectureTest {
 
   @Test
   public void determineArchEmpty() {
-    try {
-      Architecture.extractFromSysProperty("");
-      fail("Expected UnsupportedOperationException");
-    } catch (RuntimeException e) {
-      assertThat(e, is(instanceOf(UnsupportedOperationException.class)));
-      assertThat(e.getMessage(), containsString("Unknown architecture"));
-    }
+    Throwable t = catchThrowable(() -> Architecture.extractFromSysProperty(""));
+    assertThat(t, instanceOf(UnsupportedOperationException.class));
+    assertThat(t.getMessage(), containsString("Unknown architecture"));
   }
 
   @Test
   public void determineArchBogus() {
-    try {
-      Architecture.extractFromSysProperty("hoobaflooba");
-      fail("Expected UnsupportedOperationException");
-    } catch (RuntimeException e) {
-      assertThat(e, is(instanceOf(UnsupportedOperationException.class)));
-      assertThat(e.getMessage(), containsString("Unknown architecture"));
-    }
+    Throwable t = catchThrowable(() -> Architecture.extractFromSysProperty("hoobaflooba"));
+    assertThat(t, instanceOf(UnsupportedOperationException.class));
+    assertThat(t.getMessage(), containsString("Unknown architecture"));
   }
 
   @Test

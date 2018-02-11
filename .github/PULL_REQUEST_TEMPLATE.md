@@ -1,0 +1,1 @@
+- [ ] By placing an `X` in the preceding checkbox, I verify that I have signed the [Contributor License Agreement](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIBUTING.md#step-6-sign-the-cla)

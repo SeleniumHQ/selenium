@@ -17,12 +17,7 @@
 
 package org.openqa.selenium;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -32,16 +27,22 @@ import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import com.google.common.collect.Sets;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.awt.image.BufferedImage;
@@ -77,16 +78,16 @@ import javax.imageio.ImageIO;
 // TODO(user): test screenshots at guaranteed minimized browsers
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
-@Ignore(value = {IE}, reason = "IE: strange colors appeared")
+@Ignore(value = IE, reason = "strange colors appeared")
 public class TakesScreenshotTest extends JUnit4TestBase {
 
-  private TakesScreenshot screenshoter;
+  private TakesScreenshot screenshooter;
   private File tempFile = null;
 
   @Before
   public void setUp() throws Exception {
     assumeTrue(driver instanceof TakesScreenshot);
-    screenshoter = (TakesScreenshot) driver;
+    screenshooter = (TakesScreenshot) driver;
   }
 
   @After
@@ -100,7 +101,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   public void testGetScreenshotAsFile() throws Exception {
     driver.get(pages.simpleTestPage);
-    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
+    tempFile = screenshooter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
   }
@@ -108,14 +109,14 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   public void testGetScreenshotAsBase64() throws Exception {
     driver.get(pages.simpleTestPage);
-    String screenshot = screenshoter.getScreenshotAs(OutputType.BASE64);
+    String screenshot = screenshooter.getScreenshotAs(OutputType.BASE64);
     assertTrue(screenshot.length() > 0);
   }
 
   @Test
   public void testGetScreenshotAsBinary() throws Exception {
     driver.get(pages.simpleTestPage);
-    byte[] screenshot = screenshoter.getScreenshotAs(OutputType.BYTES);
+    byte[] screenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
     assertTrue(screenshot.length > 0);
   }
 
@@ -142,9 +143,32 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {SAFARI, CHROME, MARIONETTE},
-          reason = " SAFARI: takes only visible viewport." +
-                   " CHROME: takes only visible viewport.")
+  @Ignore(value = CHROME)
+  @Ignore(value = FIREFOX)
+  @Ignore(value = IE)
+  @Ignore(value = SAFARI)
+  public void testShouldCaptureScreenshotOfAnElement() throws Exception {
+    driver.get(appServer.whereIs("screen/screen.html"));
+    WebElement element = driver.findElement(By.id("cell11"));
+
+    byte[] imageData = element.getScreenshotAs(OutputType.BYTES);
+    assertTrue(imageData != null);
+    assertTrue(imageData.length > 0);
+    BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
+    assertTrue(image != null);
+
+    Raster raster = image.getRaster();
+    String hex = String.format("#%02x%02x%02x",
+                               (raster.getSample(1, 1, 0)),
+                               (raster.getSample(1, 1, 1)),
+                               (raster.getSample(1, 1, 2)));
+    assertEquals("#0f12f7", hex);
+  }
+
+  @Test
+  @Ignore(value = SAFARI, reason = "takes only visible viewport")
+  @Ignore(value = CHROME, reason = "takes only visible viewport")
+  @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotOfPageWithLongX() throws Exception {
     driver.get(appServer.whereIs("screen/screen_x_long.html"));
 
@@ -163,9 +187,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {SAFARI, CHROME, MARIONETTE},
-          reason = " SAFARI: takes only visible viewport." +
-                   " CHROME: takes only visible viewport.")
+  @Ignore(value = SAFARI, reason = "takes only visible viewport")
+  @Ignore(value = CHROME, reason = "takes only visible viewport")
+  @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotOfPageWithLongY() throws Exception {
     driver.get(appServer.whereIs("screen/screen_y_long.html"));
 
@@ -184,12 +208,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, SAFARI, CHROME, IE, FIREFOX, MARIONETTE},
-          reason = " IE: cuts captured image at driver level." +
-                   " FF: captured image is cat at driver level." +
-                   " SAFARI: takes only visible viewport." +
-                   " CHROME: takes only visible viewport." +
-                   " PHANTOMJS: diffs at colors - small dimensions or coloring problem.")
+  @Ignore(value = IE, reason = "cuts captured image at driver level")
+  @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
+  @Ignore(value = SAFARI, reason = "takes only visible viewport")
+  @Ignore(value = CHROME, reason = "takes only visible viewport")
+  @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotOfPageWithTooLongX() throws Exception {
     driver.get(appServer.whereIs("screen/screen_x_too_long.html"));
 
@@ -208,12 +231,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, SAFARI, CHROME, IE, FIREFOX, MARIONETTE},
-          reason = " IE: cuts captured image at driver level." +
-                   " FF: captured image is cat at driver level." +
-                   " SAFARI: takes only visible viewport." +
-                   " CHROME: takes only visible viewport." +
-                   " PHANTOMJS: diffs at colors - small dimensions or coloring problem.")
+  @Ignore(value = IE, reason = "cuts captured image at driver level")
+  @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
+  @Ignore(value = SAFARI, reason = "takes only visible viewport")
+  @Ignore(value = CHROME, reason = "takes only visible viewport")
+  @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotOfPageWithTooLongY() throws Exception {
     driver.get(appServer.whereIs("screen/screen_y_too_long.html"));
 
@@ -232,12 +254,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, SAFARI, CHROME, IE, FIREFOX, MARIONETTE},
-          reason = " IE: returns null." +
-                   " FF: failed due NS_ERROR_FAILURE at context.drawWindow." +
-                   " SAFARI: takes only visible viewport." +
-                   " CHROME: takes only visible viewport." +
-                   " PHANTOMJS: takes empty data of byte[], no errors. ")
+  @Ignore(value = IE, reason = "returns null")
+  @Ignore(value = FIREFOX, reason = "failed due NS_ERROR_FAILURE at context.drawWindow")
+  @Ignore(value = SAFARI, reason = "takes only visible viewport")
+  @Ignore(value = CHROME, reason = "takes only visible viewport")
+  @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotOfPageWithTooLongXandY() throws Exception {
     driver.get(appServer.whereIs("screen/screen_too_long.html"));
 
@@ -256,10 +277,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(
-      value = {IE},
-      reason = " IE: v9 shows strange border which broke color comparison"
-  )
+  @Ignore(value = IE, reason = "v9 shows strange border which broke color comparison")
   public void testShouldCaptureScreenshotAtFramePage() throws Exception {
     // Fails on Sauce for whatever reason; probably display or window manager.
     assumeFalse(SauceDriver.shouldUseSauce()
@@ -296,8 +314,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME},
-          reason = " CHROME: Unknown actual colors are presented at screenshot")
+  @Ignore(CHROME)
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -323,10 +340,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(
-      value = {IE, MARIONETTE},
-      reason = "IE: v9 shows strange border which broke color comparison"
-  )
+  @Ignore(value = IE, reason = "v9 shows strange border which broke color comparison")
+  @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() throws Exception {
     // Fails on Sauce for whatever reason; probably display or window manager.
     assumeFalse(SauceDriver.shouldUseSauce()
@@ -359,11 +374,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(
-      value = {IE, CHROME, MARIONETTE},
-      reason = " IE: v9 takes screesnhot only of switched-in frame area " +
-               " CHROME: Unknown actual colors are presented at screenshot"
-  )
+  @Ignore(value = IE, reason = "v9 shows strange border which broke color comparison")
+  @Ignore(CHROME)
+  @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -398,7 +411,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   private BufferedImage getImage() {
     BufferedImage image = null;
     try {
-      byte[] imageData = screenshoter.getScreenshotAs(OutputType.BYTES);
+      byte[] imageData = screenshooter.getScreenshotAs(OutputType.BYTES);
       assertTrue(imageData != null);
       assertTrue(imageData.length > 0);
       image = ImageIO.read(new ByteArrayInputStream(imageData));
@@ -513,6 +526,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
    *
    * @param im image
    */
+  @SuppressWarnings("unused")
   private void saveImageToTmpFile(BufferedImage im) {
 
     File outputfile = new File( testName.getMethodName() + "_image.png");

@@ -28,27 +28,18 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.remote.RemoteWebElement;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrappedWebElement;
+import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.RemoteWebElement;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Unit tests for {@link WebElementToJsonConverter}.
- */
 @RunWith(JUnit4.class)
 public class WebElementToJsonConverterTest {
 
@@ -86,7 +77,7 @@ public class WebElementToJsonConverterTest {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
 
-    WrappingWebElement wrapped = wrapElement(element);
+    WrappedWebElement wrapped = wrapElement(element);
     wrapped = wrapElement(wrapped);
     wrapped = wrapElement(wrapped);
     wrapped = wrapElement(wrapped);
@@ -95,7 +86,6 @@ public class WebElementToJsonConverterTest {
     assertIsWebElementObject(value, "abc123");
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void convertsSimpleCollections() {
     Object converted = CONVERTER.apply(Lists.newArrayList(null, "abc", true, 123, Math.PI));
@@ -105,7 +95,6 @@ public class WebElementToJsonConverterTest {
     assertContentsInOrder(list, null, "abc", true, 123, Math.PI);
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void convertsNestedCollections_simpleValues() {
     List<?> innerList = Lists.newArrayList(123, "abc");
@@ -234,7 +223,9 @@ public class WebElementToJsonConverterTest {
 
     Object value = CONVERTER.apply(new Object[] { element });
     assertContentsInOrder(Lists.newArrayList((Collection<?>) value),
-        ImmutableMap.of("ELEMENT", "abc123"));
+        ImmutableMap.of(
+          Dialect.OSS.getEncodedElementKey(), "abc123",
+          Dialect.W3C.getEncodedElementKey(), "abc123"));
   }
 
   @Test
@@ -246,17 +237,19 @@ public class WebElementToJsonConverterTest {
     }
   }
 
-  private static WrappingWebElement wrapElement(WebElement element) {
-    return new WrappingWebElement(element);
+  private static WrappedWebElement wrapElement(WebElement element) {
+    return new WrappedWebElement(element);
   }
 
   private static void assertIsWebElementObject(Object value, String expectedKey) {
     assertThat(value, instanceOf(Map.class));
 
     Map<?, ?>  map = (Map<?, ?>) value;
-    assertEquals(1, map.size());
-    assertTrue(map.containsKey("ELEMENT"));
-    assertEquals(expectedKey, map.get("ELEMENT"));
+    assertEquals(2, map.size());
+    assertTrue(map.containsKey(Dialect.OSS.getEncodedElementKey()));
+    assertEquals(expectedKey, map.get(Dialect.OSS.getEncodedElementKey()));
+    assertTrue(map.containsKey(Dialect.W3C.getEncodedElementKey()));
+    assertEquals(expectedKey, map.get(Dialect.W3C.getEncodedElementKey()));
   }
 
   private static void assertContentsInOrder(List<?> list, Object... expectedContents) {
@@ -264,84 +257,4 @@ public class WebElementToJsonConverterTest {
     assertEquals(expected, list);
   }
 
-  private static class WrappingWebElement implements WebElement, WrapsElement {
-
-    private WebElement element;
-
-    public WrappingWebElement(WebElement element) {
-      this.element = element;
-    }
-
-    public WebElement getWrappedElement() {
-      return element;
-    }
-
-    public void click() {
-      throw new UnsupportedOperationException();
-    }
-
-    public void submit() {
-      throw new UnsupportedOperationException();
-    }
-
-    public void sendKeys(CharSequence... keysToSend) {
-      throw new UnsupportedOperationException();
-    }
-
-    public void clear() {
-      throw new UnsupportedOperationException();
-    }
-
-    public String getTagName() {
-      throw new UnsupportedOperationException();
-    }
-
-    public String getAttribute(String name) {
-      throw new UnsupportedOperationException();
-    }
-
-    public boolean isSelected() {
-      throw new UnsupportedOperationException();
-    }
-
-    public boolean isEnabled() {
-      throw new UnsupportedOperationException();
-    }
-
-    public String getText() {
-      throw new UnsupportedOperationException();
-    }
-
-    public List<WebElement> findElements(By by) {
-      throw new UnsupportedOperationException();
-    }
-
-    public WebElement findElement(By by) {
-      throw new UnsupportedOperationException();
-    }
-
-    public boolean isDisplayed() {
-      throw new UnsupportedOperationException();
-    }
-
-    public Point getLocation() {
-      throw new UnsupportedOperationException();
-    }
-
-    public Dimension getSize() {
-      throw new UnsupportedOperationException();
-    }
-
-    public Rectangle getRect() {
-      throw new UnsupportedOperationException();
-    }
-
-    public String getCssValue(String propertyName) {
-      throw new UnsupportedOperationException();
-    }
-
-    public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
-      throw new UnsupportedOperationException();
-    }
-  }
 }

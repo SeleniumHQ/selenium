@@ -52,10 +52,8 @@ goog.require('goog.dom.safe');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
-goog.require('goog.html.SafeUrl');
 goog.require('goog.html.TrustedResourceUrl');
 goog.require('goog.html.flash');
-goog.require('goog.html.legacyconversions');
 goog.require('goog.log');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -73,11 +71,7 @@ goog.require('goog.userAgent.flash');
  * {@link goog.ui.Component}, which makes it very easy to be embedded on the
  * page.
  *
- * @param {string|!goog.html.TrustedResourceUrl} flashUrl The Flash SWF URL.
- *     If possible pass a TrustedResourceUrl. string is supported
- *     for backwards-compatibility only, uses goog.html.legacyconversions,
- *     and will be sanitized with goog.html.SafeUrl.sanitize() before being
- *     used.
+ * @param {!goog.html.TrustedResourceUrl} flashUrl The Flash SWF URL.
  * @param {goog.dom.DomHelper=} opt_domHelper An optional DomHelper.
  * @extends {goog.ui.Component}
  * @constructor
@@ -85,23 +79,13 @@ goog.require('goog.userAgent.flash');
 goog.ui.media.FlashObject = function(flashUrl, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
 
-  var trustedResourceUrl;
-  if (flashUrl instanceof goog.html.TrustedResourceUrl) {
-    trustedResourceUrl = flashUrl;
-  } else {
-    var flashUrlSanitized =
-        goog.html.SafeUrl.unwrap(goog.html.SafeUrl.sanitize(flashUrl));
-    trustedResourceUrl = goog.html.legacyconversions
-        .trustedResourceUrlFromString(flashUrlSanitized);
-  }
-
   /**
    * The URL of the flash movie to be embedded.
    *
    * @type {!goog.html.TrustedResourceUrl}
    * @private
    */
-  this.flashUrl_ = trustedResourceUrl;
+  this.flashUrl_ = flashUrl;
 
   /**
    * An event handler used to handle events consistently between browsers.
@@ -348,16 +332,18 @@ goog.ui.media.FlashObject.prototype.setFlashVar = function(key, value) {
  * @param {string=} opt_value The optional value for the flashVar key.
  * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
-goog.ui.media.FlashObject.prototype.setFlashVars = function(flashVar,
-                                                            opt_value) {
+goog.ui.media.FlashObject.prototype.setFlashVars = function(
+    flashVar, opt_value) {
   if (flashVar instanceof goog.structs.Map ||
       goog.typeOf(flashVar) == 'object') {
-    this.addFlashVars(/**@type {!goog.structs.Map|!Object}*/(flashVar));
+    this.addFlashVars(/**@type {!goog.structs.Map|!Object}*/ (flashVar));
   } else {
-    goog.asserts.assert(goog.isString(flashVar) && goog.isDef(opt_value),
+    goog.asserts.assert(
+        goog.isString(flashVar) && goog.isDef(opt_value),
         'Invalid argument(s)');
-    this.setFlashVar(/**@type {string}*/(flashVar),
-                     /**@type {string}*/(opt_value));
+    this.setFlashVar(
+        /**@type {string}*/ (flashVar),
+        /**@type {string}*/ (opt_value));
   }
   return this;
 };
@@ -498,8 +484,7 @@ goog.ui.media.FlashObject.prototype.enterDocument = function() {
   // inexpensive/scalable way to stop events on the capturing phase unless we
   // added an event listener on the document for each flash object.
   this.eventHandler_.listen(
-      this.getElement(),
-      goog.object.getValues(goog.events.EventType),
+      this.getElement(), goog.object.getValues(goog.events.EventType),
       goog.events.Event.stopPropagation);
 };
 
@@ -513,8 +498,9 @@ goog.ui.media.FlashObject.prototype.createDom = function() {
   if (this.hasRequiredVersion() &&
       !goog.userAgent.flash.isVersion(
           /** @type {string} */ (this.getRequiredVersion()))) {
-    goog.log.warning(this.logger_, 'Required flash version not found:' +
-        this.getRequiredVersion());
+    goog.log.warning(
+        this.logger_,
+        'Required flash version not found:' + this.getRequiredVersion());
     throw Error(goog.ui.Component.Error.NOT_SUPPORTED);
   }
 
@@ -558,21 +544,19 @@ goog.ui.media.FlashObject.prototype.createSwfTag_ = function() {
  * @private
  */
 goog.ui.media.FlashObject.prototype.createSwfTagModern_ = function(flashVars) {
-  return goog.html.flash.createEmbed(
-      this.flashUrl_,
-      {
-        'AllowScriptAccess': this.allowScriptAccess_,
-        'allowFullScreen': 'true',
-        'allowNetworking': 'all',
-        'bgcolor': this.backgroundColor_,
-        'class': goog.ui.media.FlashObject.FLASH_CSS_CLASS,
-        'FlashVars': flashVars,
-        'id': this.getId(),
-        'name': this.getId(),
-        'quality': 'high',
-        'SeamlessTabbing': 'false',
-        'wmode': this.wmode_
-      });
+  return goog.html.flash.createEmbed(this.flashUrl_, {
+    'AllowScriptAccess': this.allowScriptAccess_,
+    'allowFullScreen': 'true',
+    'allowNetworking': 'all',
+    'bgcolor': this.backgroundColor_,
+    'class': goog.ui.media.FlashObject.FLASH_CSS_CLASS,
+    'FlashVars': flashVars,
+    'id': this.getId(),
+    'name': this.getId(),
+    'quality': 'high',
+    'SeamlessTabbing': 'false',
+    'wmode': this.wmode_
+  });
 };
 
 
@@ -586,8 +570,7 @@ goog.ui.media.FlashObject.prototype.createSwfTagModern_ = function(flashVars) {
  */
 goog.ui.media.FlashObject.prototype.createSwfTagOldIe_ = function(flashVars) {
   return goog.html.flash.createObjectForOldIe(
-      this.flashUrl_,
-      {
+      this.flashUrl_, {
         'allowFullScreen': 'true',
         'AllowScriptAccess': this.allowScriptAccess_,
         'allowNetworking': 'all',
@@ -610,8 +593,8 @@ goog.ui.media.FlashObject.prototype.createSwfTagOldIe_ = function(flashVars) {
  *     be found.
  */
 goog.ui.media.FlashObject.prototype.getFlashElement = function() {
-  return /** @type {HTMLObjectElement} */(this.getElement() ?
-      this.getElement().firstChild : null);
+  return /** @type {HTMLObjectElement} */ (
+      this.getElement() ? this.getElement().firstChild : null);
 };
 
 

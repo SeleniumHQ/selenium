@@ -18,8 +18,10 @@
  * @author robbyw@google.com (Robby Walker)
  */
 
+goog.setTestOnly('goog.testing.ExpectedFailures');
 goog.provide('goog.testing.ExpectedFailures');
 
+goog.require('goog.asserts');
 goog.require('goog.debug.DivConsole');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -113,26 +115,33 @@ goog.testing.ExpectedFailures.prototype.suppressedFailures_;
  */
 goog.testing.ExpectedFailures.setUpConsole_ = function() {
   if (!goog.testing.ExpectedFailures.console_) {
-    var xButton = goog.dom.createDom(goog.dom.TagName.DIV, {
-      'style': 'position: absolute; border-left:1px solid #333;' +
-          'border-bottom:1px solid #333; right: 0; top: 0; width: 1em;' +
-          'height: 1em; cursor: pointer; background-color: #cde;' +
-          'text-align: center; color: black'
-    }, 'X');
-    var div = goog.dom.createDom(goog.dom.TagName.DIV, {
-      'style': 'position: absolute; border: 1px solid #333; right: 10px;' +
-          'top : 10px; width: 400px; display: none'
-    }, xButton);
+    var xButton = goog.dom.createDom(
+        goog.dom.TagName.DIV, {
+          'style': 'position: absolute; border-left:1px solid #333;' +
+              'border-bottom:1px solid #333; right: 0; top: 0; width: 1em;' +
+              'height: 1em; cursor: pointer; background-color: #cde;' +
+              'text-align: center; color: black'
+        },
+        'X');
+    var div = goog.dom.createDom(
+        goog.dom.TagName.DIV, {
+          'style': 'position: absolute; border: 1px solid #333; right: 10px;' +
+              'top : 10px; width: 400px; display: none'
+        },
+        xButton);
     document.body.appendChild(div);
     goog.events.listen(xButton, goog.events.EventType.CLICK, function() {
       goog.style.setElementShown(div, false);
     });
 
     goog.testing.ExpectedFailures.console_ = new goog.debug.DivConsole(div);
-    goog.log.addHandler(goog.testing.ExpectedFailures.prototype.logger_,
+    goog.log.addHandler(
+        goog.testing.ExpectedFailures.prototype.logger_,
         goog.bind(goog.style.setElementShown, null, div, true));
-    goog.log.addHandler(goog.testing.ExpectedFailures.prototype.logger_,
-        goog.bind(goog.testing.ExpectedFailures.console_.addLogRecord,
+    goog.log.addHandler(
+        goog.testing.ExpectedFailures.prototype.logger_,
+        goog.bind(
+            goog.testing.ExpectedFailures.console_.addLogRecord,
             goog.testing.ExpectedFailures.console_));
   }
 };
@@ -170,11 +179,14 @@ goog.testing.ExpectedFailures.prototype.isExceptionExpected = function(ex) {
  */
 goog.testing.ExpectedFailures.prototype.handleException = function(ex) {
   if (this.isExceptionExpected(ex)) {
-    goog.log.info(this.logger_, 'Suppressing test failure in ' +
-        goog.testing.TestCase.currentTestName + ':' +
-        (this.failureMessage_ ? '\n(' + this.failureMessage_ + ')' : ''),
+    goog.asserts.assertInstanceof(ex, goog.testing.JsUnitException);
+    goog.log.info(
+        this.logger_, 'Suppressing test failure in ' +
+            goog.testing.TestCase.currentTestName + ':' +
+            (this.failureMessage_ ? '\n(' + this.failureMessage_ + ')' : ''),
         ex);
     this.suppressedFailures_.push(ex);
+    goog.testing.TestCase.invalidateAssertionException(ex);
     return;
   }
 
@@ -210,7 +222,7 @@ goog.testing.ExpectedFailures.prototype.run = function(func, opt_lenient) {
  */
 goog.testing.ExpectedFailures.prototype.getExpectationMessage_ = function() {
   return 'Expected a test failure in \'' +
-         goog.testing.TestCase.currentTestName + '\' but the test passed.';
+      goog.testing.TestCase.currentTestName + '\' but the test passed.';
 };
 
 

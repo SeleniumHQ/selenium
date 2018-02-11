@@ -52,6 +52,10 @@ public class Status implements RestishHandler<Response> {
     java.addProperty("version", System.getProperty("java.version"));
     info.add("java", java);
 
+    // https://w3c.github.io/webdriver/webdriver-spec.html#status
+    info.addProperty("ready", true);
+    info.addProperty("message", "Server is running");
+
     response.setValue(info);
     return response;
   }

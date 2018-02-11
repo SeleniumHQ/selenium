@@ -17,19 +17,21 @@
 
 package org.openqa.grid.web.servlet;
 
+import com.google.common.io.CharStreams;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +45,7 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
     super(null);
   }
 
-  public TestSessionStatusServlet(Registry registry) {
+  public TestSessionStatusServlet(GridRegistry registry) {
     super(registry);
   }
 
@@ -77,18 +79,13 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
   private JsonObject getResponse(HttpServletRequest request) throws IOException {
     JsonObject requestJSON = null;
     if (request.getInputStream() != null) {
-      BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
-      StringBuilder s = new StringBuilder();
-      String line;
-      while ((line = rd.readLine()) != null) {
-        s.append(line);
+      String json;
+      try (Reader rd = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
+        json = CharStreams.toString(rd);
       }
-      rd.close();
-      String json = s.toString();
       if (!"".equals(json)) {
         requestJSON = new JsonParser().parse(json).getAsJsonObject();
       }
-
     }
 
     JsonObject res = new JsonObject();
@@ -112,17 +109,16 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
     if (testSession == null) {
       res.addProperty("msg", "Cannot find test slot running session " + session + " in the registry.");
       return res;
-    } else {
-      res.addProperty("msg", "slot found !");
-      res.remove("success");
-      res.addProperty("success", true);
-      res.addProperty("session", testSession.getExternalKey().getKey());
-      res.addProperty("internalKey", testSession.getInternalKey());
-      res.addProperty("inactivityTime", testSession.getInactivityTime());
-      RemoteProxy p = testSession.getSlot().getProxy();
-      res.addProperty("proxyId", p.getId());
-      return res;
     }
+    res.addProperty("msg", "slot found !");
+    res.remove("success");
+    res.addProperty("success", true);
+    res.addProperty("session", testSession.getExternalKey().getKey());
+    res.addProperty("internalKey", testSession.getInternalKey());
+    res.addProperty("inactivityTime", testSession.getInactivityTime());
+    RemoteProxy p = testSession.getSlot().getProxy();
+    res.addProperty("proxyId", p.getId());
+    return res;
   }
 
 }

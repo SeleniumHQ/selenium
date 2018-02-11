@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.internal;
 
-import org.openqa.selenium.interactions.internal.Coordinates;
-
 public interface HasIdentity {
   String getId();
 }

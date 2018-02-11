@@ -17,8 +17,8 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.Logs;
 
 import java.net.URL;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * The main interface to use for testing, which represents an idealised web browser. The methods in
- * this class fall into three categories:
+ * this interface fall into three categories:
  * <ul>
  * <li>Control of the browser itself</li>
  * <li>Selection of {@link WebElement}s</li>
@@ -39,8 +39,8 @@ import java.util.concurrent.TimeUnit;
  * various methods similar to {@link WebDriver#findElement(By)}, which is used to find
  * {@link WebElement}s.
  * <p>
- * Currently, you will need to instantiate implementations of this class directly. It is hoped that
- * you write your tests against this interface so that you may "swap in" a more fully featured
+ * Currently, you will need to instantiate implementations of this interface directly. It is hoped
+ * that you write your tests against this interface so that you may "swap in" a more fully featured
  * browser when there is a requirement for one.
  * <p>
  * Note that all methods that use XPath to locate elements will throw a {@link RuntimeException}
@@ -457,7 +457,7 @@ public interface WebDriver extends SearchContext {
     /**
      * Make an engines that is available (appears on the list returned by getAvailableEngines)
      * active. After this call, the only loaded engine on the IME daemon will be this one and the
-     * input sent using sendKeys will be converted by the engine. Noteh that this is a
+     * input sent using sendKeys will be converted by the engine. Note that this is a
      * platform-independent method of activating IME (the platform-specific way being using keyboard
      * shortcuts).
      *

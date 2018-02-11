@@ -17,18 +17,21 @@
 
 'use strict';
 
-var By = require('..').By,
-    assert = require('../testing/assert'),
-    test = require('../lib/test');
+const assert = require('assert');
+
+const test = require('../lib/test');
+const {By} = require('..');
 
 
 test.suite(function(env) {
   var driver;
-  test.after(function() { driver.quit(); });
+  after(function() { return driver.quit(); });
 
-  test.it('should return lower case tag name', function() {
-    driver = env.builder().build();
-    driver.get(test.Pages.formPage);
-    assert(driver.findElement(By.id('cheese')).getTagName()).equalTo('input');
+  it('should return lower case tag name', async function() {
+    driver = await env.builder().build();
+    await driver.get(test.Pages.formPage);
+
+    let el = await driver.findElement(By.id('cheese'));
+    assert.equal(await el.getTagName(), 'input');
   });
 });

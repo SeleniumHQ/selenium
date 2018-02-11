@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using System.Drawing;
 using OpenQA.Selenium.Environment;
@@ -131,7 +129,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.PhantomJS)]
-        [IgnoreBrowser(Browser.Safari)]
         public void ElementHiddenByOverflowXIsNotVisible()
         {
             string[] pages = new string[]{
@@ -191,7 +188,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void ElementScrollableByOverflowYIsVisible()
         {
             string[] pages = new string[]{

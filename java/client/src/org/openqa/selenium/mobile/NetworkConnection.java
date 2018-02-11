@@ -109,6 +109,9 @@ public interface NetworkConnection {
       return Integer.toString(mask);
     }
 
+    public String toJson() {
+      return toString();
+    }
   }
 
   /**

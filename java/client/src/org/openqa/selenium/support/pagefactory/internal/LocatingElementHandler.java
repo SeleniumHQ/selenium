@@ -40,7 +40,7 @@ public class LocatingElementHandler implements InvocationHandler {
       if ("toString".equals(method.getName())) {
         return "Proxy element for: " + locator.toString();
       }
-      else throw e;
+      throw e;
     }
 
     if ("getWrappedElement".equals(method.getName())) {

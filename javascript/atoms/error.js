@@ -60,6 +60,7 @@ bot.ErrorCode = {
   SQL_DATABASE_ERROR: 35,
   INVALID_XPATH_SELECTOR: 51,
   INVALID_XPATH_SELECTOR_RETURN_TYPE: 52,
+  INVALID_ARGUMENT: 61,
   // The following error codes are derived straight from HTTP return codes.
   METHOD_NOT_ALLOWED: 405
 };

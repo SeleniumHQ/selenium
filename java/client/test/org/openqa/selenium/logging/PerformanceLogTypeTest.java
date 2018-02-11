@@ -22,30 +22,30 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
+import com.google.common.collect.Iterables;
+
 import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import com.google.common.collect.Iterables;
-
 import java.util.Set;
 import java.util.logging.Level;
 
-
-@Ignore({HTMLUNIT, IE, PHANTOMJS, SAFARI})
+@Ignore(HTMLUNIT)
+@Ignore(IE)
+@Ignore(MARIONETTE)
 public class PerformanceLogTypeTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -58,7 +58,6 @@ public class PerformanceLogTypeTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(MARIONETTE)
   @Test
   public void performanceLogShouldBeDisabledByDefault() {
     assumeFalse(isOldChromedriver(driver));
@@ -68,11 +67,10 @@ public class PerformanceLogTypeTest extends JUnit4TestBase {
   }
 
   void createLocalDriverWithPerformanceLogType() {
-  	DesiredCapabilities caps = new DesiredCapabilities();
     LoggingPreferences logPrefs = new LoggingPreferences();
     logPrefs.enable(LogType.PERFORMANCE, Level.INFO);
-    caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
-    localDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.LOGGING_PREFS, logPrefs);
+    localDriver = new WebDriverBuilder().get(caps);
   }
 
   @Test

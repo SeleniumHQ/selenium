@@ -15,11 +15,17 @@
 // limitations under the License.
 
 #include "Browser.h"
-#include "logging.h"
+
 #include <comutil.h>
 #include <ShlGuid.h>
+
+#include "errorcodes.h"
+#include "logging.h"
+
 #include "Alert.h"
 #include "BrowserFactory.h"
+#include "messages.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 
@@ -107,7 +113,6 @@ void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
       LOG(DEBUG) << "DocumentComplete happened from within a frameset";
       this->SetFocusedFrameByElement(NULL);
     }
-    ::PostMessage(this->executor_handle(), WD_REFRESH_MANAGED_ELEMENTS, NULL, NULL);
   }
 }
 
@@ -460,17 +465,22 @@ bool Browser::Wait(const std::string& page_load_strategy) {
     return false;
   }
 
-  // Waiting for browser.ReadyState == READYSTATE_COMPLETE...;
+  READYSTATE expected_ready_state = READYSTATE_COMPLETE;
+  if (page_load_strategy == "eager") {
+    expected_ready_state = READYSTATE_INTERACTIVE;
+  }
+
+  // Waiting for browser.ReadyState >= expected ready state
   is_navigating = this->is_navigation_started_;
   READYSTATE ready_state;
   HRESULT hr = this->browser_->get_ReadyState(&ready_state);
-  if (is_navigating || FAILED(hr) || ready_state != READYSTATE_COMPLETE) {
+  if (is_navigating || FAILED(hr) || ready_state < expected_ready_state) {
     if (is_navigating) {
       LOG(DEBUG) << "DocumentComplete event fired, indicating a new navigation.";
     } else if (FAILED(hr)) {
       LOGHR(DEBUG, hr) << "IWebBrowser2::get_ReadyState failed.";
     } else {
-      LOG(DEBUG) << "Browser ReadyState is not '4', indicating 'Complete'; it was " << ready_state;
+      LOG(DEBUG) << "Browser ReadyState is not at least '" << expected_ready_state << "'; it was " << ready_state;
     }
     return false;
   }
@@ -670,33 +680,20 @@ HWND Browser::GetBrowserWindowHandle() {
   return hwnd;
 }
 
-//HWND Browser::GetTabWindowHandle() {
-//  LOG(TRACE) << "Entering Browser::GetTabWindowHandle";
-//
-//  HWND hwnd = NULL;
-//  CComPtr<IServiceProvider> service_provider;
-//  HRESULT hr = this->browser_->QueryInterface(IID_IServiceProvider,
-//                                              reinterpret_cast<void**>(&service_provider));
-//  if (SUCCEEDED(hr)) {
-//    CComPtr<IOleWindow> window;
-//    hr = service_provider->QueryService(SID_SShellBrowser,
-//                                        IID_IOleWindow,
-//                                        reinterpret_cast<void**>(&window));
-//    if (SUCCEEDED(hr)) {
-//      // This gets the TabWindowClass window in IE 7 and 8,
-//      // and the top-level window frame in IE 6. The window
-//      // we need is the InternetExplorer_Server window.
-//      window->GetWindow(&hwnd);
-//      hwnd = this->FindContentWindowHandle(hwnd);
-//    } else {
-//      LOGHR(WARN, hr) << "Unable to get window, call to IOleWindow::QueryService for SID_SShellBrowser failed";
-//    }
-//  } else {
-//    LOGHR(WARN, hr) << "Unable to get service, call to IWebBrowser2::QueryInterface for IID_IServiceProvider failed";
-//  }
-//
-//  return hwnd;
-//}
+bool Browser::SetFullScreen(bool is_full_screen) {
+  if (is_full_screen) {
+    this->browser_->put_FullScreen(VARIANT_TRUE);
+  } else {
+    this->browser_->put_FullScreen(VARIANT_FALSE);
+  }
+  return true;
+}
+
+bool Browser::IsFullScreen() {
+  VARIANT_BOOL is_full_screen = VARIANT_FALSE;
+  this->browser_->get_FullScreen(&is_full_screen);
+  return is_full_screen == VARIANT_TRUE;
+}
 
 HWND Browser::GetActiveDialogWindowHandle() {
   LOG(TRACE) << "Entering Browser::GetActiveDialogWindowHandle";

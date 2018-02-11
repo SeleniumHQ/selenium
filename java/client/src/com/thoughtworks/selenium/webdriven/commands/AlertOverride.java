@@ -61,6 +61,18 @@ public class AlertOverride {
         "    window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(true)); " +
         "    return res; " +
         "  }; " +
+        "  window.localStorage.setItem('__webdriverPrompts', JSON.stringify([])); " +
+        "  if (!('__webdriverNextPrompt' in window.localStorage)) { " +
+        "    window.localStorage.setItem('__webdriverNextPrompt', JSON.stringify(true)); " +
+        "  } " +
+        "  window.prompt = function(msg, def) { " +
+        "    var prompts = JSON.parse(window.localStorage.getItem('__webdriverPrompts')); " +
+        "    prompts.push(msg || def); " +
+        "    window.localStorage.setItem('__webdriverPrompts', JSON.stringify(prompts)); " +
+        "    var res = JSON.parse(window.localStorage.getItem('__webdriverNextPrompts')); " +
+        "    window.localStorage.setItem('__webdriverNextPrompts', JSON.stringify(true)); " +
+        "    return res; " +
+        "  }; " +
         "} else { " +
         "  if (window.__webdriverAlerts) { return; } " +
         "  window.__webdriverAlerts = []; " +
@@ -73,11 +85,19 @@ public class AlertOverride {
         "    window.__webdriverNextConfirm = true; " +
         "    return res; " +
         "  }; " +
+        "  window.__webdriverPrompts = []; " +
+        "  window.__webdriverNextPrompts = true; " +
+        "  window.prompt = function(msg, def) { " +
+        "    window.__webdriverPrompt.push(msg || def); " +
+        "    var res = window.__webdriverNextPrompt; " +
+        "    window.__webdriverNextPrompt = true; " +
+        "    return res; " +
+        "  }; " +
         "}"
       );
   }
 
-  private void checkOverridesEnabled(){
+  private void checkOverridesEnabled() {
     checkState(enableOverrides,
           "Selenium alert overrides have been disabled; please use the underlying WebDriver API");
   }
@@ -172,5 +192,22 @@ public class AlertOverride {
         "  return window.__webdriverConfirms && window.__webdriverConfirms.length > 0; " +
         "}"
       ));
+  }
+
+  public boolean isPromptPresent(WebDriver driver) {
+    checkOverridesEnabled();
+    return Boolean.TRUE.equals(((JavascriptExecutor) driver).executeScript(
+      "var canUseLocalStorage = false; " +
+      "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+      "var canUseJSON = false; " +
+      "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+      "if (canUseLocalStorage && canUseJSON) { " +
+      "  if (!('__webdriverPrompts' in window.localStorage)) { return false } " +
+      "  var prompts = JSON.parse(window.localStorage.getItem('__webdriverPrompts')); " +
+      "  return prompts && prompts.length > 0; " +
+      "} else { " +
+      "  return window.__webdriverPrompts && window.__webdriverPrompts.length > 0; " +
+      "}"
+    ));
   }
 }

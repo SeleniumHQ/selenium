@@ -32,7 +32,6 @@ EXPORT webdriver::Server* StartServer(int port,
                                       const std::wstring& log_level,
                                       const std::wstring& log_file,
                                       const std::wstring& version,
-                                      const std::wstring& driver_engine,
                                       const std::wstring& whitelist);
 EXPORT void StopServer(void);
 

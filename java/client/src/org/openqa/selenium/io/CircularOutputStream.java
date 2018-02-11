@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.io;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -32,29 +29,17 @@ public class CircularOutputStream extends OutputStream {
   private int end;
   private boolean filled = false;
   private byte[] buffer;
-  private FileOutputStream out_log;
-
-  public CircularOutputStream(File outputFile, int maxSize) {
-    buffer = new byte[maxSize];
-    if (outputFile != null) {
-      try {
-        out_log = new FileOutputStream(outputFile);
-      } catch (FileNotFoundException e) {
-        out_log = null;
-      }
-    }
-  }
-
-  public CircularOutputStream(File outputFile) {
-    this(outputFile, DEFAULT_SIZE);
-  }
 
   public CircularOutputStream(int maxSize) {
-    this(null, maxSize);
+    buffer = new byte[maxSize];
+  }
+
+  public CircularOutputStream() {
+    this(DEFAULT_SIZE);
   }
 
   @Override
-  public void write(int b) throws IOException {
+  public synchronized void write(int b) throws IOException {
     if (end == buffer.length) {
       filled = true;
       end = 0;
@@ -65,10 +50,6 @@ public class CircularOutputStream extends OutputStream {
     }
 
     buffer[end++] = (byte) b;
-    if (out_log != null) {
-      out_log.write(b);
-    }
-
   }
 
   @Override

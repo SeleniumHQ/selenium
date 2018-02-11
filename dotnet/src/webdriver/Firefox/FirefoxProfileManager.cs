@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Text;
 using OpenQA.Selenium.Firefox.Internal;
 
 namespace OpenQA.Selenium.Firefox

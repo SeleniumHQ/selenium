@@ -35,12 +35,13 @@ goog.require('goog.string');
 
 
 /**
- * @return {boolean} Whether the user's browser is Opera.
+ * @return {boolean} Whether the user's browser is Opera.  Note: Chromium
+ *     based Opera (Opera 15+) is detected as Chrome to avoid unnecessary
+ *     special casing.
  * @private
  */
 goog.labs.userAgent.browser.matchOpera_ = function() {
-  return goog.labs.userAgent.util.matchUserAgent('Opera') ||
-      goog.labs.userAgent.util.matchUserAgent('OPR');
+  return goog.labs.userAgent.util.matchUserAgent('Opera');
 };
 
 
@@ -119,8 +120,7 @@ goog.labs.userAgent.browser.matchIosWebview_ = function() {
  */
 goog.labs.userAgent.browser.matchChrome_ = function() {
   return (goog.labs.userAgent.util.matchUserAgent('Chrome') ||
-      goog.labs.userAgent.util.matchUserAgent('CriOS')) &&
-      !goog.labs.userAgent.browser.matchOpera_() &&
+          goog.labs.userAgent.util.matchUserAgent('CriOS')) &&
       !goog.labs.userAgent.browser.matchEdge_();
 };
 
@@ -168,16 +168,14 @@ goog.labs.userAgent.browser.isFirefox =
 /**
  * @return {boolean} Whether the user's browser is Safari.
  */
-goog.labs.userAgent.browser.isSafari =
-    goog.labs.userAgent.browser.matchSafari_;
+goog.labs.userAgent.browser.isSafari = goog.labs.userAgent.browser.matchSafari_;
 
 
 /**
  * @return {boolean} Whether the user's browser is Coast (Opera's Webkit-based
  *     iOS browser).
  */
-goog.labs.userAgent.browser.isCoast =
-    goog.labs.userAgent.browser.matchCoast_;
+goog.labs.userAgent.browser.isCoast = goog.labs.userAgent.browser.matchCoast_;
 
 
 /**
@@ -190,8 +188,7 @@ goog.labs.userAgent.browser.isIosWebview =
 /**
  * @return {boolean} Whether the user's browser is Chrome.
  */
-goog.labs.userAgent.browser.isChrome =
-    goog.labs.userAgent.browser.matchChrome_;
+goog.labs.userAgent.browser.isChrome = goog.labs.userAgent.browser.matchChrome_;
 
 
 /**
@@ -228,8 +225,8 @@ goog.labs.userAgent.browser.getVersion = function() {
     return goog.labs.userAgent.browser.getIEVersion_(userAgentString);
   }
 
-  var versionTuples = goog.labs.userAgent.util.extractVersionTuples(
-      userAgentString);
+  var versionTuples =
+      goog.labs.userAgent.util.extractVersionTuples(userAgentString);
 
   // Construct a map for easy lookup.
   var versionMap = {};
@@ -255,7 +252,7 @@ goog.labs.userAgent.browser.getVersion = function() {
   if (goog.labs.userAgent.browser.isOpera()) {
     // Opera 10 has Version/10.0 but Opera/9.8, so look for "Version" first.
     // Opera uses 'OPR' for more recent UAs.
-    return lookUpValueWithKeys(['Version', 'Opera', 'OPR']);
+    return lookUpValueWithKeys(['Version', 'Opera']);
   }
 
   // Check Edge before Chrome since it has Chrome in the string.
@@ -280,8 +277,8 @@ goog.labs.userAgent.browser.getVersion = function() {
  *     given version.
  */
 goog.labs.userAgent.browser.isVersionOrHigher = function(version) {
-  return goog.string.compareVersions(goog.labs.userAgent.browser.getVersion(),
-                                     version) >= 0;
+  return goog.string.compareVersions(
+             goog.labs.userAgent.browser.getVersion(), version) >= 0;
 };
 
 

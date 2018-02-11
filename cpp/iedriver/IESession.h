@@ -27,24 +27,15 @@
 
 namespace webdriver {
 
-enum DriverImplementation {
-  LegacyImplementation = 0,
-  AutoDetectImplementation,
-  VendorImplementation
-};
-
 // Structure to be used for storing session initialization parameters
 struct SessionParameters {
   int port;
-  DriverImplementation implementation;
 };
 
 class IESession : public Session {
 public:
   IESession();
   virtual ~IESession(void);
-
-  static DriverImplementation ConvertDriverEngine(const std::string& engine);
 
   void Initialize(void* init_params);
   void ShutDown(void);
@@ -53,7 +44,6 @@ public:
 
 private:
   bool WaitForCommandExecutorExit(int timeout_in_milliseconds);
-  DriverImplementation driver_implementation_;
   HWND executor_window_handle_;
 };
 

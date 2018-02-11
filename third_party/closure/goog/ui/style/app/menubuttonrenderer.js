@@ -43,8 +43,8 @@ goog.require('goog.ui.style.app.ButtonRenderer');
 goog.ui.style.app.MenuButtonRenderer = function() {
   goog.ui.style.app.ButtonRenderer.call(this);
 };
-goog.inherits(goog.ui.style.app.MenuButtonRenderer,
-    goog.ui.style.app.ButtonRenderer);
+goog.inherits(
+    goog.ui.style.app.MenuButtonRenderer, goog.ui.style.app.ButtonRenderer);
 goog.addSingletonGetter(goog.ui.style.app.MenuButtonRenderer);
 
 
@@ -64,27 +64,40 @@ goog.ui.style.app.MenuButtonRenderer.CSS_CLASS =
  * @type {Array<Array<string>>}
  */
 goog.ui.style.app.MenuButtonRenderer.IE6_CLASS_COMBINATIONS = [
-  [goog.getCssName('goog-button-base-rtl'),
-   goog.getCssName('goog-menu-button')],
+  [
+    goog.getCssName('goog-button-base-rtl'), goog.getCssName('goog-menu-button')
+  ],
 
-  [goog.getCssName('goog-button-base-hover'),
-   goog.getCssName('goog-menu-button')],
+  [
+    goog.getCssName('goog-button-base-hover'),
+    goog.getCssName('goog-menu-button')
+  ],
 
-  [goog.getCssName('goog-button-base-focused'),
-   goog.getCssName('goog-menu-button')],
+  [
+    goog.getCssName('goog-button-base-focused'),
+    goog.getCssName('goog-menu-button')
+  ],
 
-  [goog.getCssName('goog-button-base-disabled'),
-   goog.getCssName('goog-menu-button')],
+  [
+    goog.getCssName('goog-button-base-disabled'),
+    goog.getCssName('goog-menu-button')
+  ],
 
-  [goog.getCssName('goog-button-base-active'),
-   goog.getCssName('goog-menu-button')],
+  [
+    goog.getCssName('goog-button-base-active'),
+    goog.getCssName('goog-menu-button')
+  ],
 
-  [goog.getCssName('goog-button-base-open'),
-   goog.getCssName('goog-menu-button')],
+  [
+    goog.getCssName('goog-button-base-open'),
+    goog.getCssName('goog-menu-button')
+  ],
 
-  [goog.getCssName('goog-button-base-active'),
-   goog.getCssName('goog-button-base-open'),
-   goog.getCssName('goog-menu-button')]
+  [
+    goog.getCssName('goog-button-base-active'),
+    goog.getCssName('goog-button-base-open'),
+    goog.getCssName('goog-menu-button')
+  ]
 ];
 
 
@@ -112,8 +125,8 @@ goog.ui.style.app.MenuButtonRenderer.prototype.getAriaRole = function() {
  * @return {Element} The button's content element.
  * @override
  */
-goog.ui.style.app.MenuButtonRenderer.prototype.getContentElement =
-    function(element) {
+goog.ui.style.app.MenuButtonRenderer.prototype.getContentElement = function(
+    element) {
   return goog.ui.style.app.MenuButtonRenderer.superClass_.getContentElement
       .call(this, element);
 };
@@ -129,8 +142,8 @@ goog.ui.style.app.MenuButtonRenderer.prototype.getContentElement =
  * @return {Element} Decorated element.
  * @override
  */
-goog.ui.style.app.MenuButtonRenderer.prototype.decorate =
-    function(control, element) {
+goog.ui.style.app.MenuButtonRenderer.prototype.decorate = function(
+    control, element) {
   var button = /** @type {goog.ui.MenuButton} */ (control);
   // TODO(attila):  Add more robust support for subclasses of goog.ui.Menu.
   var menuElem = goog.dom.getElementsByTagNameAndClass(
@@ -148,8 +161,8 @@ goog.ui.style.app.MenuButtonRenderer.prototype.decorate =
   }
 
   // Let the superclass do the rest.
-  return goog.ui.style.app.MenuButtonRenderer.superClass_.decorate.call(this,
-      button, element);
+  return goog.ui.style.app.MenuButtonRenderer.superClass_.decorate.call(
+      this, button, element);
 };
 
 
@@ -157,25 +170,27 @@ goog.ui.style.app.MenuButtonRenderer.prototype.decorate =
  * Takes a text caption or existing DOM structure, and returns the content and
  * a dropdown arrow element wrapped in a pseudo-rounded-corner box.  Creates
  * the following DOM structure:
- *  <div class="goog-inline-block goog-button-outer-box">
- *    <div class="goog-inline-block goog-button-inner-box">
- *      <div class="goog-button-pos">
- *        <div class="goog-button-top-shadow">&nbsp;</div>
- *        <div class="goog-button-content">
- *          Contents...
- *          <div class="goog-menu-button-dropdown"> </div>
+ *
+ *    <div class="goog-inline-block goog-button-outer-box">
+ *      <div class="goog-inline-block goog-button-inner-box">
+ *        <div class="goog-button-pos">
+ *          <div class="goog-button-top-shadow">&nbsp;</div>
+ *          <div class="goog-button-content">
+ *            Contents...
+ *            <div class="goog-menu-button-dropdown"> </div>
+ *          </div>
  *        </div>
  *      </div>
  *    </div>
- *  </div>
+ *
  * @param {goog.ui.ControlContent} content Text caption or DOM structure to wrap
  *     in a box.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
  * @return {Element} Pseudo-rounded-corner box containing the content.
  * @override
  */
-goog.ui.style.app.MenuButtonRenderer.prototype.createButton = function(content,
-    dom) {
+goog.ui.style.app.MenuButtonRenderer.prototype.createButton = function(
+    content, dom) {
   var contentWithDropdown = this.createContentWithDropdown(content, dom);
   return goog.ui.style.app.MenuButtonRenderer.superClass_.createButton.call(
       this, contentWithDropdown, dom);
@@ -183,8 +198,8 @@ goog.ui.style.app.MenuButtonRenderer.prototype.createButton = function(content,
 
 
 /** @override */
-goog.ui.style.app.MenuButtonRenderer.prototype.setContent = function(element,
-    content) {
+goog.ui.style.app.MenuButtonRenderer.prototype.setContent = function(
+    element, content) {
   var dom = goog.dom.getDomHelper(this.getContentElement(element));
   goog.ui.style.app.MenuButtonRenderer.superClass_.setContent.call(
       this, element, this.createContentWithDropdown(content, dom));
@@ -199,8 +214,8 @@ goog.ui.style.app.MenuButtonRenderer.prototype.setContent = function(element,
  */
 goog.ui.style.app.MenuButtonRenderer.prototype.createContentWithDropdown =
     function(content, dom) {
-  var caption = dom.createDom(goog.dom.TagName.DIV, null, content,
-                              this.createDropdown(dom));
+  var caption = dom.createDom(
+      goog.dom.TagName.DIV, null, content, this.createDropdown(dom));
   return goog.array.toArray(caption.childNodes);
 };
 
@@ -208,13 +223,15 @@ goog.ui.style.app.MenuButtonRenderer.prototype.createContentWithDropdown =
 /**
  * Returns an appropriately-styled DIV containing a dropdown arrow.
  * Creates the following DOM structure:
+ *
  *    <div class="goog-menu-button-dropdown"> </div>
+ *
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
  * @return {Element} Dropdown element.
  */
 goog.ui.style.app.MenuButtonRenderer.prototype.createDropdown = function(dom) {
-  return dom.createDom(goog.dom.TagName.DIV,
-                       goog.getCssName(this.getCssClass(), 'dropdown'));
+  return dom.createDom(
+      goog.dom.TagName.DIV, goog.getCssName(this.getCssClass(), 'dropdown'));
 };
 
 

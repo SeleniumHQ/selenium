@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.remote.server.handler;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
@@ -38,11 +38,9 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DefaultSession;
 import org.openqa.selenium.remote.server.DriverFactory;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.SystemClock;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +51,6 @@ public class UploadFileTest {
 
   private DriverFactory driverFactory;
   private TemporaryFilesystem tempFs;
-  private SessionId sessionId;
   private File tempDir;
 
   @Before
@@ -61,7 +58,6 @@ public class UploadFileTest {
     driverFactory = mock(DriverFactory.class);
     when(driverFactory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
     tempDir = Files.createTempDir();
-    sessionId = new SessionId("foo");
     tempFs = TemporaryFilesystem.getTmpFsBasedOn(tempDir);
   }
 
@@ -73,13 +69,16 @@ public class UploadFileTest {
 
   @Test
   public void shouldWriteABase64EncodedZippedFileToDiskAndKeepName() throws Exception {
-    Session session = DefaultSession.createSession(driverFactory, tempFs, new SystemClock(), sessionId, DesiredCapabilities.firefox());
+    Session session = DefaultSession.createSession(
+        driverFactory,
+        tempFs,
+        DesiredCapabilities.firefox());
 
     File tempFile = touch(null, "foo");
-    String encoded = new Zip().zipFile(tempFile.getParentFile(), tempFile);
+    String encoded = Zip.zip(tempFile);
 
     UploadFile uploadFile = new UploadFile(session);
-    Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
+    Map<String, Object> args = ImmutableMap.of("file", encoded);
     uploadFile.setJsonParameters(args);
     String path = uploadFile.call();
 
@@ -89,15 +88,18 @@ public class UploadFileTest {
 
   @Test
   public void shouldThrowAnExceptionIfMoreThanOneFileIsSent() throws Exception {
-    Session session = DefaultSession.createSession(driverFactory, tempFs, new SystemClock(), sessionId, DesiredCapabilities.firefox());
+    Session session = DefaultSession.createSession(
+        driverFactory,
+        tempFs,
+        DesiredCapabilities.firefox());
     File baseDir = Files.createTempDir();
 
     touch(baseDir, "example");
     touch(baseDir, "unwanted");
-    String encoded = new Zip().zip(baseDir);
+    String encoded = Zip.zip(baseDir);
 
     UploadFile uploadFile = new UploadFile(session);
-    Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
+    Map<String, Object> args = ImmutableMap.of("file", encoded);
     uploadFile.setJsonParameters(args);
 
     try {
@@ -110,7 +112,7 @@ public class UploadFileTest {
   private File touch(File baseDir, String stem) throws IOException {
     File tempFile = File.createTempFile(stem, ".txt", baseDir);
     tempFile.deleteOnExit();
-    Files.write("I like cheese", tempFile, Charsets.UTF_8);
+    Files.asCharSink(tempFile, UTF_8).write("I like cheese");
     return tempFile;
   }
 }

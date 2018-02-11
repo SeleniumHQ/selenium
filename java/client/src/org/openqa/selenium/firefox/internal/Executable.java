@@ -15,64 +15,41 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.firefox.internal;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.base.Preconditions;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.WindowsUtils;
-import org.openqa.selenium.io.CircularOutputStream;
+import org.openqa.selenium.firefox.FirefoxBinary;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.OutputStream;
-import java.util.Map;
-
-import static org.openqa.selenium.Platform.MAC;
-import static org.openqa.selenium.Platform.UNIX;
-import static org.openqa.selenium.Platform.WINDOWS;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
 
 /**
- * Wrapper around our runtime environment requirements. Performs discovery of firefox instances.
- *
- * <p>
- * NOTE: System and platform binaries will only be discovered at class initialization.
+ * Wrapper around Firefox executable.
  */
 public class Executable {
-  private static final File SYSTEM_BINARY = locateFirefoxBinaryFromSystemProperty();
-  private static final File PLATFORM_BINARY = locateFirefoxBinaryFromPlatform();
 
   private final File binary;
+  private String version;
+  private FirefoxBinary.Channel channel;
 
   public Executable(File userSpecifiedBinaryPath) {
-    if (userSpecifiedBinaryPath != null) {
+    Preconditions.checkState(userSpecifiedBinaryPath != null,
+                             "Path to the firefox binary should not be null");
+    Preconditions.checkState(userSpecifiedBinaryPath.exists() && userSpecifiedBinaryPath.isFile(),
+                             "Specified firefox binary location does not exist or is not a real file: " +
+                             userSpecifiedBinaryPath);
+    binary = userSpecifiedBinaryPath;
+  }
 
-      // It should exist and be a file.
-      if (userSpecifiedBinaryPath.exists() && userSpecifiedBinaryPath.isFile()) {
-        binary = userSpecifiedBinaryPath;
-        return;
-      }
-
-      throw new WebDriverException(
-          "Specified firefox binary location does not exist or is not a real file: " +
-              userSpecifiedBinaryPath);
-    }
-
-    if (SYSTEM_BINARY != null && SYSTEM_BINARY.exists()) {
-      binary = SYSTEM_BINARY;
-      return;
-    }
-
-    if (PLATFORM_BINARY != null && PLATFORM_BINARY.exists()) {
-      binary = PLATFORM_BINARY;
-      return;
-    }
-
-    throw new WebDriverException("Cannot find firefox binary in PATH. " +
-        "Make sure firefox is installed. OS appears to be: " + Platform.getCurrent());
+  public File getDirectory() {
+    return binary.getAbsoluteFile().getParentFile();
   }
 
   public File getFile() {
@@ -83,139 +60,73 @@ public class Executable {
     return binary.getAbsolutePath();
   }
 
-  public void setLibraryPath(CommandLine command, final Map<String, String> extraEnv) {
-    final String propertyName = CommandLine.getLibraryPathPropertyName();
-    StringBuilder libraryPath = new StringBuilder();
+  public String getVersion() {
+    if (version == null) {
+      loadApplicationIni();
+    }
+    return version;
+  }
 
-    // If we have an env var set for the path, use it.
-    String env = getEnvVar(propertyName, null);
-    if (env != null) {
-      libraryPath.append(env).append(File.pathSeparator);
+  public FirefoxBinary.Channel getChannel() {
+    if (channel == null) {
+      loadChannelPref();
+    }
+    return channel;
+  }
+
+  private void loadApplicationIni() {
+    Optional<Path> applicationIni = getResource("application.ini");
+    if (applicationIni.isPresent()) {
+      try (BufferedReader reader = Files.newBufferedReader(applicationIni.get())) {
+        reader.lines().map(String::trim).forEach(line -> {
+          if (line.startsWith("Version=")) {
+            version = line.substring("Version=".length());
+          }
+        });
+      } catch (IOException e) {
+        throw new WebDriverException("Cannot get version info for of Firefox binary " + binary, e);
+      }
+      return;
     }
 
-    // Check our extra env vars for the same var, and use it too.
-    env = extraEnv.get(propertyName);
-    if (env != null) {
-      libraryPath.append(env).append(File.pathSeparator);
+    // Set version to something with a ridiculously high number.
+    version = "1000.0 unknown";
+  }
+
+  private void loadChannelPref() {
+    Optional<Path> channelPrefs = getResource("defaults/pref/channel-prefs.js");
+
+    if (channelPrefs.isPresent()) {
+      try (BufferedReader reader = Files.newBufferedReader(channelPrefs.get())) {
+        reader.lines().map(String::trim).forEach(line -> {
+          if (line.startsWith("pref(")) {
+            channel = FirefoxBinary.Channel.fromString(
+                line.substring("pref(\"app.update.channel\", \"".length(),
+                               line.length() - "\");".length()));
+          }
+        });
+      } catch (IOException e) {
+        throw new WebDriverException("Cannot get channel info for Firefox binary " + binary, e);
+      }
+      return;
     }
 
-    // Last, add the contents of the specified system property, defaulting to the binary's path.
+    // Pick a sane default
+    channel = FirefoxBinary.Channel.RELEASE;
+  }
 
-    // On Snow Leopard, beware of problems the sqlite library
-    String firefoxLibraryPath = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LIBRARY_PATH,
-        binary.getAbsoluteFile().getParentFile().getAbsolutePath());
-    if (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5) {
-      libraryPath.append(libraryPath).append(File.pathSeparator);
+  private Optional<Path> getResource(String resourceName) {
+    Path binaryLocation = binary.getAbsoluteFile().toPath();
+    Path discovered;
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      discovered = binaryLocation.getParent().getParent().resolve("Resources").resolve(resourceName);
     } else {
-      libraryPath.append(firefoxLibraryPath).append(File.pathSeparator).append(libraryPath);
+      discovered = binaryLocation.getParent().resolve(resourceName);
     }
 
-    // Add the library path to the builder.
-    command.setEnvironmentVariable(propertyName, libraryPath.toString());
-  }
-
-  /**
-   * Locates the firefox binary from a system property. Will throw an exception if the binary cannot
-   * be found.
-   */
-  private static File locateFirefoxBinaryFromSystemProperty() {
-    String binaryName = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_BINARY);
-    if (binaryName == null)
-      return null;
-
-    File binary = new File(binaryName);
-    if (binary.exists())
-      return binary;
-
-    Platform current = Platform.getCurrent();
-    if (current.is(WINDOWS)) {
-      if (!binaryName.endsWith(".exe"))
-        binaryName += ".exe";
-
-    } else if (current.is(MAC)) {
-      if (!binaryName.endsWith(".app"))
-        binaryName += ".app";
-      binaryName += "/Contents/MacOS/firefox-bin";
+    if (Files.exists(discovered)) {
+      return Optional.of(discovered);
     }
-
-    binary = new File(binaryName);
-    if (binary.exists())
-      return binary;
-
-    throw new WebDriverException(
-        String.format("'%s' property set, but unable to locate the requested binary: %s",
-                      FirefoxDriver.SystemProperty.BROWSER_BINARY, binaryName));
-  }
-
-  /**
-   * Locates the firefox binary by platform.
-   */
-  private static File locateFirefoxBinaryFromPlatform() {
-    File binary = null;
-
-    Platform current = Platform.getCurrent();
-    if (current.is(WINDOWS)) {
-      binary =
-          findExistingBinary(WindowsUtils.getPathsInProgramFiles("Mozilla Firefox\\firefox.exe"));
-
-    } else if (current.is(MAC)) {
-      binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox-bin");
-      // fall back to homebrew install location if default is not found
-      if (!binary.exists()) {
-        binary = new File(System.getProperty("user.home") + binary.getAbsolutePath());
-      }
-    }
-
-    if (binary != null && binary.exists()) {
-      return binary;
-    }
-
-    if (current.is(UNIX)) {
-      String systemFirefox = CommandLine.find("firefox-bin");
-      if (systemFirefox != null) {
-        return new File(systemFirefox);
-      }
-    }
-
-    String systemFirefox = CommandLine.find("firefox");
-    if (systemFirefox != null) {
-      return new File(systemFirefox);
-    }
-
-    return null;
-  }
-
-  private static File findExistingBinary(final ImmutableList<String> paths) {
-    for (String path : paths) {
-      File file = new File(path);
-      if (file.exists()) {
-        return file;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Retrieve an env var; if no var is set, returns the default
-   *
-   * @param name the name of the variable
-   * @param defaultValue the default value of the variable
-   * @return the env var
-   */
-  private static String getEnvVar(String name, String defaultValue) {
-    final String value = System.getenv(name);
-    if (value != null) {
-      return value;
-    }
-    return defaultValue;
-  }
-
-  public OutputStream getDefaultOutputStream() {
-    String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
-    if ("/dev/stdout".equals(firefoxLogFile)) {
-      return System.out;
-    }
-    File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
-    return new CircularOutputStream(logFile);
+    return Optional.empty();
   }
 }

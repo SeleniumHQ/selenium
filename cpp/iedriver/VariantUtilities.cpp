@@ -15,9 +15,15 @@
 // limitations under the License.
 
 #include "VariantUtilities.h"
-#include "IECommandExecutor.h"
+
+#include "errorcodes.h"
 #include "json.h"
 #include "logging.h"
+
+#include "Element.h"
+#include "IECommandExecutor.h"
+#include "Script.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 VariantUtilities::VariantUtilities(void) {
@@ -116,7 +122,63 @@ bool VariantUtilities::VariantIsObject(VARIANT value) {
   return false;
 }
 
+bool VariantUtilities::ConvertVariantToString(VARIANT variant_value,
+                                             std::string* value) {
+  VARTYPE type = variant_value.vt;
+  switch (type) {
+
+  case VT_BOOL:
+    LOG(DEBUG) << "Result type is boolean";
+    *value = variant_value.boolVal == VARIANT_TRUE ? "true" : "false";
+    return true;
+
+  case VT_BSTR:
+    LOG(DEBUG) << "Result type is string";
+    if (!variant_value.bstrVal) {
+      *value = "";
+    }
+    else {
+      std::wstring str_value = variant_value.bstrVal;
+      *value = StringUtilities::ToString(str_value);
+    }
+    return true;
+
+  case VT_I4:
+    LOG(DEBUG) << "Result type is int";
+    *value = std::to_string(static_cast<long long>(variant_value.lVal));
+    return true;
+
+  case VT_R4:
+    LOG(DEBUG) << "Result type is real";
+    *value = std::to_string(variant_value.dblVal);
+    return true;
+
+  case VT_EMPTY:
+  case VT_NULL:
+    LOG(DEBUG) << "Result type is empty";
+    *value = "";
+    return false;
+
+    // This is lame
+  case VT_DISPATCH:
+    LOG(DEBUG) << "Result type is dispatch";
+    *value = "";
+    return true;
+
+  default:
+    LOG(DEBUG) << "Result type is unknown: " << type;
+  }
+  return false;
+}
+
 int VariantUtilities::ConvertVariantToJsonValue(const IECommandExecutor& executor,
+                                                VARIANT variant_value,
+                                                Json::Value* value) {
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  return ConvertVariantToJsonValue(mutable_executor.element_manager(), variant_value, value);
+}
+
+int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager,
                                                 VARIANT variant_value,
                                                 Json::Value* value) {
   int status_code = WD_SUCCESS;
@@ -147,7 +209,7 @@ int VariantUtilities::ConvertVariantToJsonValue(const IECommandExecutor& executo
 
       for (long i = 0; i < length; ++i) {
         Json::Value array_item_result;
-        int array_item_status = GetArrayItem(executor,
+        int array_item_status = GetArrayItem(element_manager,
                                              variant_value.pdispVal,
                                              i,
                                              &array_item_result);
@@ -167,7 +229,7 @@ int VariantUtilities::ConvertVariantToJsonValue(const IECommandExecutor& executo
                                       &property_value_variant);
 
         Json::Value property_value;
-        ConvertVariantToJsonValue(executor,
+        ConvertVariantToJsonValue(element_manager,
                                   property_value_variant,
                                   &property_value);
 
@@ -177,12 +239,13 @@ int VariantUtilities::ConvertVariantToJsonValue(const IECommandExecutor& executo
       *value = result_object;
     } else {
       LOG(INFO) << "Unknown type of dispatch is found in result, assuming IHTMLElement";
-      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
       CComPtr<IHTMLElement> node;
       variant_value.pdispVal->QueryInterface<IHTMLElement>(&node);
       ElementHandle element_wrapper;
-      mutable_executor.AddManagedElement(node, &element_wrapper);
-      *value = element_wrapper->ConvertToJson();
+      status_code = element_manager->AddManagedElement(node, &element_wrapper);
+      Json::Value element_value(Json::objectValue);
+      element_value[JSON_ELEMENT_PROPERTY_NAME] = element_wrapper->element_id();
+      *value = element_value;
     }
   } else {
     LOG(WARN) << "Unknown type of result is found";
@@ -190,7 +253,6 @@ int VariantUtilities::ConvertVariantToJsonValue(const IECommandExecutor& executo
   }
   return status_code;
 }
-
 bool VariantUtilities::GetVariantObjectPropertyValue(IDispatch* variant_object_dispatch,
                                                      std::wstring property_name,
                                                      VARIANT* property_value) {
@@ -281,10 +343,10 @@ int VariantUtilities::GetArrayLength(IDispatch* array_dispatch, long* length) {
   return WD_SUCCESS;
 }
 
-int VariantUtilities::GetArrayItem(const IECommandExecutor& executor,
-                         IDispatch* array_dispatch,
-                         long index,
-                         Json::Value* item){
+int VariantUtilities::GetArrayItem(IElementManager* element_manager,
+                                   IDispatch* array_dispatch,
+                                   long index,
+                                   Json::Value* item){
   LOG(TRACE) << "Entering Script::GetArrayItem";
   std::wstring index_string = std::to_wstring(static_cast<long long>(index));
   CComVariant array_item_variant;
@@ -297,10 +359,9 @@ int VariantUtilities::GetArrayItem(const IECommandExecutor& executor,
     return EUNEXPECTEDJSERROR;
   }
   
-  int array_item_status = ConvertVariantToJsonValue(executor,
+  int array_item_status = ConvertVariantToJsonValue(element_manager,
                                                     array_item_variant,
                                                     item);
   return WD_SUCCESS;
 }
-
 } // namespace webdriver

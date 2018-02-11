@@ -29,6 +29,7 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.events.EventType');
+goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.selection');
@@ -812,7 +813,9 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
  */
 bot.Keyboard.checkCanUpdateSelection_ = function(element) {
   try {
-    element.selectionStart;
+    if (typeof element.selectionStart == 'number') {
+      return;
+    }
   } catch (ex) {
     // The native error message is actually pretty informative, just add a
     // reference to the relevant Chrome bug to provide more context.
@@ -823,6 +826,7 @@ bot.Keyboard.checkCanUpdateSelection_ = function(element) {
     }
     throw ex;
   }
+  throw Error('Element does not support selection');
 };
 
 

@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,33 +15,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
-shared_examples_for "driver that can be started concurrently" do |browser_name|
-  it "is started sequentially" do
-    expect {
-      # start 5 drivers concurrently
-      threads, drivers = [], []
+shared_examples_for 'driver that can be started concurrently' do |guard|
+  before { quit_driver }
 
-      opt = GlobalTestEnv.remote_server? ? {:url => GlobalTestEnv.remote_server.webdriver_url} : {}
-      if browser_name == :marionette
-        caps = Selenium::WebDriver::Remote::Capabilities.firefox(:marionette => true, :firefox_binary => ENV['MARIONETTE_PATH'])
-        opt.merge!(:desired_capabilities => caps)
-      end
+  after do
+    drivers.each(&:quit)
+    threads.select(&:alive?).each(&:kill)
+  end
 
-      5.times do
-        threads << Thread.new do
-          drivers << Selenium::WebDriver.for(GlobalTestEnv.driver, opt)
-        end
-      end
+  let(:drivers) { [] }
+  let(:threads) { [] }
 
-      threads.each do |thread|
-        thread.abort_on_exception = true
-        thread.join
+  it 'starts 3 drivers sequentially', guard do
+    3.times do
+      threads << Thread.new do
+        drivers << create_driver!
       end
+    end
 
-      drivers.each do |driver|
-        driver.title # make any wire call
-        driver.quit
-      end
-    }.not_to raise_error
+    expect { threads.each(&:join) }.not_to raise_error
+    expect(drivers.count).to eq(3)
+
+    # make any wire call
+    expect { drivers.each(&:title) }.not_to raise_error
   end
 end

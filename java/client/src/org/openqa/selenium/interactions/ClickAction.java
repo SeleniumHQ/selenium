@@ -17,16 +17,19 @@
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.internal.Locatable;
+import com.google.common.collect.ImmutableList;
 
-import java.util.Arrays;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.MouseAction;
+import org.openqa.selenium.interactions.internal.Locatable;
+
 import java.util.List;
 
 /**
- * clicks an element.
- *
+ * Clicks an element.
+ * @deprecated Use {@link Actions#click(WebElement)}
  */
+@Deprecated
 public class ClickAction extends MouseAction implements Action {
   public ClickAction(Mouse mouse, Locatable locationProvider) {
     super(mouse, locationProvider);
@@ -37,7 +40,14 @@ public class ClickAction extends MouseAction implements Action {
     mouse.click(getActionLocation());
   }
 
-  public List<Object> asList() {
-    return Arrays.<Object>asList("click", getTargetId(), Button.LEFT, 1);
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+
+    moveToLocation(mouse, interactions);
+    interactions.add(mouse.createPointerDown(Button.LEFT.asArg()));
+    interactions.add(mouse.createPointerUp(Button.LEFT.asArg()));
+
+    return interactions.build();
   }
 }

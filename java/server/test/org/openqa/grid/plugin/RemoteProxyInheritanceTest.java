@@ -18,57 +18,49 @@
 package org.openqa.grid.plugin;
 
 import static org.junit.Assert.assertEquals;
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.ID;
-import static org.openqa.grid.common.RegistrationRequest.PROXY_CLASS;
 
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.DefaultGridRegistry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RemoteProxyInheritanceTest {
-  private Registry registry = Registry.newInstance();
+  private GridRegistry registry = DefaultGridRegistry.newInstance();
 
   @Test
   public void defaultToRemoteProxy() {
-    RegistrationRequest res = RegistrationRequest.build("-role", "webdriver", "-host", "localhost");
-    res.getCapabilities().clear();
-    RegistrationRequest req = res;
-
     Map<String, Object> app1 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(ID, "abc");
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.capabilities.clear();
+    config.proxy = null;
+    config.capabilities.add(new DesiredCapabilities(app1));
 
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
-
-    // requires Custom1 & Custom1 set in config to work.
-    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(new RegistrationRequest(config), registry);
     assertEquals(BaseRemoteProxy.class, p.getClass());
   }
 
   @Test
   public void existing() {
     Map<String, Object> app1 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(PROXY_CLASS, "org.openqa.grid.plugin.MyRemoteProxy");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    config.proxy = "org.openqa.grid.plugin.MyRemoteProxy";
+    config.capabilities.add(new DesiredCapabilities(app1));
+    config.custom.put("Custom1", "A");
+    config.custom.put("Custom2", "B");
 
-    config.put("Custom1", "A");
-    config.put("Custom2", "B");
-    config.put(ID, "abc");
-
-    RegistrationRequest req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    RegistrationRequest req = new RegistrationRequest(config);
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
@@ -76,20 +68,19 @@ public class RemoteProxyInheritanceTest {
     MyRemoteProxy myRemoteProxy = (MyRemoteProxy) p;
     assertEquals("A", myRemoteProxy.getCustom1());
     assertEquals("B", myRemoteProxy.getCustom2());
-    assertEquals("A", myRemoteProxy.getConfig().get("Custom1"));
-    assertEquals("B", myRemoteProxy.getConfig().get("Custom2"));
+    assertEquals("A", myRemoteProxy.getConfig().custom.get("Custom1"));
+    assertEquals("B", myRemoteProxy.getConfig().custom.get("Custom2"));
   }
 
   @Test(expected = InvalidParameterException.class)
   public void notExisting() {
     Map<String, Object> app1 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(PROXY_CLASS, "I Don't exist");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    config.proxy = "I Don't exist";
+    config.capabilities.add(new DesiredCapabilities(app1));
 
-    RegistrationRequest req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    RegistrationRequest req = new RegistrationRequest(config);
 
     BaseRemoteProxy.getNewInstance(req, registry);
   }
@@ -97,13 +88,12 @@ public class RemoteProxyInheritanceTest {
   @Test(expected = InvalidParameterException.class)
   public void notExtendingProxyExisting() {
     Map<String, Object> app1 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(PROXY_CLASS, "java.lang.String");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    config.proxy = "java.lang.String";
+    config.capabilities.add(new DesiredCapabilities(app1));
 
-    RegistrationRequest req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    RegistrationRequest req = new RegistrationRequest(config);
 
     BaseRemoteProxy.getNewInstance(req, registry);
   }
@@ -112,13 +102,12 @@ public class RemoteProxyInheritanceTest {
   @Test(expected = InvalidParameterException.class)
   public void badConfig() {
     Map<String, Object> app1 = new HashMap<>();
-    Map<String, Object> config = new HashMap<>();
-    app1.put(APP, "app1");
-    config.put(PROXY_CLASS, "I Don't exist");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    config.proxy = "I Don't exist";
+    config.capabilities.add(new DesiredCapabilities(app1));
 
-    RegistrationRequest req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    RegistrationRequest req = new RegistrationRequest(config);
 
     // requires Custom1 & Custom1 set in config to work.
     BaseRemoteProxy.getNewInstance(req, registry);

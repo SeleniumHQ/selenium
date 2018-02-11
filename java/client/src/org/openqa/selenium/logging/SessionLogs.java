@@ -17,13 +17,10 @@
 
 package org.openqa.selenium.logging;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import org.openqa.selenium.Beta;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -60,21 +57,26 @@ public class SessionLogs {
     return Collections.unmodifiableMap(logTypeToEntriesMap);
   }
 
-  public static SessionLogs fromJSON(JsonObject rawSessionLogs) {
+  public static SessionLogs fromJSON(Map<String, Object> rawSessionLogs) {
     SessionLogs sessionLogs = new SessionLogs();
-    for (Map.Entry<String, JsonElement> entry : rawSessionLogs.entrySet()) {
+    for (Map.Entry<String, Object> entry : rawSessionLogs.entrySet()) {
       String logType = entry.getKey();
-      JsonArray rawLogEntries = entry.getValue().getAsJsonArray();
+      Collection<?> rawLogEntries = (Collection<?>) entry.getValue();
       List<LogEntry> logEntries = new ArrayList<>();
-      for (int index = 0; index < rawLogEntries.size(); index++) {
-        JsonObject rawEntry = rawLogEntries.get(index).getAsJsonObject();
-        logEntries.add(new LogEntry(LogLevelMapping.toLevel(
-            rawEntry.get("level").getAsString()),
-            rawEntry.get("timestamp").getAsLong(),
-            rawEntry.get("message").getAsString()));
+      for (Object o : rawLogEntries) {
+        @SuppressWarnings("unchecked") Map<String, Object> rawEntry = (Map<String, Object>) o;
+        logEntries.add(new LogEntry(
+            LogLevelMapping.toLevel(String.valueOf(rawEntry.get("level"))),
+            ((Number) rawEntry.get("timestamp")).longValue(),
+            String.valueOf(rawEntry.get("message"))));
       }
       sessionLogs.addLog(logType, new LogEntries(logEntries));
     }
     return sessionLogs;
+  }
+
+  @Beta
+  public Map<String, LogEntries> toJson() {
+    return getAll();
   }
 }

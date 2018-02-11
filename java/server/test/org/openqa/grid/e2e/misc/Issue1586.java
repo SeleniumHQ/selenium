@@ -17,8 +17,9 @@
 
 package org.openqa.grid.e2e.misc;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -29,18 +30,17 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
 // see http://code.google.com/p/selenium/issues/detail?id=1586
 public class Issue1586 {
 
-  private static Hub hub;
+  private Hub hub;
 
-  @BeforeClass
-  public static void prepare() throws Exception {
+  @Before
+  public void prepare() throws Exception {
     hub = GridTestHelper.getHub();
 
     // register a webdriver
@@ -55,12 +55,12 @@ public class Issue1586 {
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
   }
 
-  // extremely slow test, for issue1586. Excluding from regression.
   @Test
+  @Ignore("Extremely slow test, for issue1586. Excluding from regression.")
   public void test() throws MalformedURLException {
     WebDriver driver = null;
     try {
-      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/grid/driver"), GridTestHelper.getDefaultBrowserCapability());
+      driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), GridTestHelper.getDefaultBrowserCapability());
       for (int i = 0; i < 20; i++) {
         driver.get("https://github.com/SeleniumHQ/selenium");
         WebElement keywordInput = driver.findElement(By.name("q"));
@@ -77,8 +77,8 @@ public class Issue1586 {
     }
   }
 
-  @AfterClass
-  public static void stop() throws Exception {
+  @After
+  public void stop() throws Exception {
     hub.stop();
   }
 }

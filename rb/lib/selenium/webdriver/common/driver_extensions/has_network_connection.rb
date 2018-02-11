@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,7 +20,7 @@ module Selenium
     module DriverExtensions
       module HasNetworkConnection
         def network_connection_type
-          connection_value = @bridge.getNetworkConnection
+          connection_value = @bridge.network_connection
 
           connection_type = values_to_type[connection_value]
 
@@ -32,17 +30,17 @@ module Selenium
         end
 
         def network_connection_type=(connection_type)
-          raise ArgumentError, "Invalid connection type" unless valid_type? connection_type
+          raise ArgumentError, 'Invalid connection type' unless valid_type? connection_type
 
           connection_value = type_to_values[connection_type]
 
-          @bridge.setNetworkConnection connection_value
+          @bridge.network_connection = connection_value
         end
 
         private
 
         def type_to_values
-          {:airplane_mode => 1, :wifi => 2, :data => 4, :all => 6, :none => 0}
+          {airplane_mode: 1, wifi: 2, data: 4, all: 6, none: 0}
         end
 
         def values_to_type
@@ -52,7 +50,6 @@ module Selenium
         def valid_type?(type)
           type_to_values.keys.include? type
         end
-
       end # HasNetworkConnection
     end # DriverExtensions
   end # WebDriver

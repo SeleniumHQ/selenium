@@ -39,7 +39,7 @@ public class UploadFile extends WebDriverHandler<String> implements JsonParamete
     TemporaryFilesystem tempfs = getSession().getTemporaryFileSystem();
     File tempDir = tempfs.createTempDir("upload", "file");
 
-    new Zip().unzip(file, tempDir);
+    Zip.unzip(file, tempDir);
     // Select the first file
     File[] allFiles = tempDir.listFiles();
     if (allFiles == null || allFiles.length != 1) {

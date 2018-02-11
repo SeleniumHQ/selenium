@@ -1,6 +1,0 @@
-java_library(name = "mockito",
-  deps = [ 
-    "mockito-core-1.9.5.jar",
-    "//third_party/java/hamcrest",
-    "//third_party/java/objenesis",
-  ])

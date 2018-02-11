@@ -65,9 +65,9 @@ goog.dom.pattern.callback.removeNode = function(node, position) {
  */
 goog.dom.pattern.callback.flattenElement = function(node, position) {
   // Find out which position would be next.
-  position.setPosition(node, node.firstChild ?
-      goog.dom.TagWalkType.START_TAG :
-      goog.dom.TagWalkType.END_TAG);
+  position.setPosition(
+      node, node.firstChild ? goog.dom.TagWalkType.START_TAG :
+                              goog.dom.TagWalkType.END_TAG);
 
   goog.iter.nextOrValue(position, null);
 

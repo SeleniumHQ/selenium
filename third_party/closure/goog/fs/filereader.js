@@ -273,8 +273,8 @@ goog.fs.FileReader.readAsDataUrl = function(blob) {
  */
 goog.fs.FileReader.createDeferred_ = function(reader) {
   var deferred = new goog.async.Deferred();
-  reader.listen(goog.fs.FileReader.EventType.LOAD_END,
-      goog.partial(function(d, r, e) {
+  reader.listen(
+      goog.fs.FileReader.EventType.LOAD_END, goog.partial(function(d, r, e) {
         var result = r.getResult();
         var error = r.getError();
         if (result != null && !error) {

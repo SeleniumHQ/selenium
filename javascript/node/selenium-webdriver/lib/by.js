@@ -21,8 +21,6 @@
  * @fileoverview Factory methods for the supported locator strategies.
  */
 
-const LegacyBy = require('./_base').require('webdriver.Locator');
-
 /**
  * Short-hand expressions for the primary element locator strategies.
  * For example the following two statements are equivalent:
@@ -54,8 +52,8 @@ var ByHash;
  * @see https://drafts.csswg.org/cssom/#serialize-an-identifier
  */
 class InvalidCharacterError extends Error {
-  constructor(msg) {
-    super(msg);
+  constructor() {
+    super();
     this.name = this.constructor.name;
   }
 }
@@ -86,7 +84,7 @@ function escapeCss(css) {
         || (i == 0 && c >= 0x0030 && c <= 0x0039)
         || (i == 1 && c >= 0x0030 && c <= 0x0039
             && css.charCodeAt(0) == 0x002D)) {
-      ret += '\\' + c.toString(16);
+      ret += '\\' + c.toString(16) + ' ';
       continue;
     }
 
@@ -115,15 +113,12 @@ function escapeCss(css) {
  * Describes a mechanism for locating an element on the page.
  * @final
  */
-class By extends LegacyBy {
+class By {
   /**
    * @param {string} using the name of the location strategy to use.
    * @param {string} value the value to search for.
    */
   constructor(using, value) {
-    // TODO: this is a legacy hack that can be removed once fully off closure.
-    super(using, value);
-
     /** @type {string} */
     this.using = using;
 
@@ -134,7 +129,7 @@ class By extends LegacyBy {
   /**
    * Locates elements that have a specific class name.
    *
-   * @param {string} className The class name to search for.
+   * @param {string} name The class name to search for.
    * @return {!By} The new locator.
    * @see http://www.w3.org/TR/2011/WD-html5-20110525/elements.html#classes
    * @see http://www.w3.org/TR/CSS2/selector.html#class-html
@@ -158,7 +153,7 @@ class By extends LegacyBy {
   }
 
   /**
-   * Locates eleemnts by the ID attribute. This locator uses the CSS selector
+   * Locates elements by the ID attribute. This locator uses the CSS selector
    * `*[id="$ID"]`, _not_ `document.getElementById`.
    *
    * @param {string} id The ID to search for.
@@ -187,11 +182,11 @@ class By extends LegacyBy {
    *
    * @param {!(string|Function)} script The script to execute.
    * @param {...*} var_args The arguments to pass to the script.
-   * @return {function(!webdriver.WebDriver): !webdriver.promise.Promise} A new,
-   *     JavaScript-based locator function.
+   * @return {function(!./webdriver.WebDriver): !Promise}
+   *     A new JavaScript-based locator function.
    */
   static js(script, var_args) {
-    let args = Array.slice.call(arguments, 0);
+    let args = Array.prototype.slice.call(arguments, 0);
     return function(driver) {
       return driver.executeScript.apply(driver, args);
     };
@@ -208,7 +203,7 @@ class By extends LegacyBy {
   }
 
   /**
-   * Locates link elements whose 
+   * Locates link elements whose
    * {@linkplain webdriver.WebElement#getText visible text} contains the given
    * substring.
    *
@@ -247,15 +242,16 @@ class By extends LegacyBy {
 
   /** @override */
   toString() {
-    return this.constructor.name + '(' + this.using + ', ' + this.value + ')';
+    // The static By.name() overrides this.constructor.name.  Shame...
+    return `By(${this.using}, ${this.value})`;
   }
 }
 
 
 /**
  * Checks if a value is a valid locator.
- * @param {(By|Function|ByHash)} locator The value to check.
- * @return {(By|Function)} The valid locator.
+ * @param {!(By|Function|ByHash)} locator The value to check.
+ * @return {!(By|Function)} The valid locator.
  * @throws {TypeError} If the given value does not define a valid locator
  *     strategy.
  */
@@ -263,6 +259,14 @@ function check(locator) {
   if (locator instanceof By || typeof locator === 'function') {
     return locator;
   }
+
+  if (locator
+      && typeof locator === 'object'
+      && typeof locator.using === 'string'
+      && typeof locator.value === 'string') {
+    return new By(locator.using, locator.value);
+  }
+
   for (let key in locator) {
     if (locator.hasOwnProperty(key) && By.hasOwnProperty(key)) {
       return By[key](locator[key]);
@@ -275,6 +279,7 @@ function check(locator) {
 
 // PUBLIC API
 
-
-exports.By = By;
-exports.checkedLocator = check;
+module.exports = {
+  By: By,
+  checkedLocator: check,
+};

@@ -1,4 +1,7 @@
-java_library(name = 'webdriver-api',
+# BUILD FILE SYNTAX: SKYLARK
+load("//:selenium-version.bzl", "SE_VERSION")
+
+java_library(name = 'selenium',
   exported_deps = [
     ':beta',
     ':core',
@@ -6,24 +9,27 @@ java_library(name = 'webdriver-api',
     ':platform',
     ':primitives',
     '//java/client/src/org/openqa/selenium/interactions:interactions',
-    '//java/client/src/org/openqa/selenium/interactions:exceptions',
+    '//java/client/src/org/openqa/selenium/io:io',
     '//java/client/src/org/openqa/selenium/logging:api',
-    '//java/client/src/org/openqa/selenium/security:security',
+    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/os:os',
   ],
   visibility = ['PUBLIC'],
 )
 
-java_library(
-  name = 'codecs',
-  srcs = [
-    'internal/Base64Encoder.java',
-  ],
+export_file(
+  name = 'template-pom',
+  src = 'pom.xml',
+  out = 'pom.xml',
   visibility = ['PUBLIC'],
 )
 
 java_library(name = 'core',
-  maven_coords = "org.seleniumhq.selenium:selenium-api:2.49.0",
+  maven_coords = 'org.seleniumhq.selenium:selenium-api:' + SE_VERSION,
+  maven_pom_template = ':template-pom',
   srcs = [
+    'AbstractCapabilities.java',
     'Alert.java',
     'By.java',
     'Capabilities.java',
@@ -31,8 +37,12 @@ java_library(name = 'core',
     'ContextAware.java',
     'HasCapabilities.java',
     'JavascriptExecutor.java',
+    'DeviceRotation.java',
     'Keys.java',
+    'ImmutableCapabilities.java',
+    'MutableCapabilities.java',
     'OutputType.java',
+    'PageLoadStrategy.java',
     'Proxy.java',
     'Rotatable.java',
     'ScreenOrientation.java',
@@ -41,11 +51,9 @@ java_library(name = 'core',
     'UnexpectedAlertBehaviour.java',
     'WebDriver.java',
     'WebElement.java',
+    'internal/ElementScrollBehavior.java',
     'internal/HasIdentity.java',
-    'internal/Killable.java',
     'internal/Locatable.java',
-    'internal/Lock.java',
-    'internal/SocketLock.java',
     'internal/WrapsDriver.java',
     'internal/WrapsElement.java',
   ] + glob([
@@ -53,41 +61,60 @@ java_library(name = 'core',
      'internal/FindsBy*.java',
      'mobile/*.java',
   ]),
-  deps = [
+  manifest_file = ':manifest',
+  exported_deps = [
+    # This list of dependencies MUST NOT include anything other than code
+    # from the selenium project. That means no guava and no gson.
     ':beta',
-    ':codecs',
     ':exceptions',
     ':platform',
     ':primitives',
     '//java/client/src/org/openqa/selenium/interactions:core',
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/logging:api',
-    '//java/client/src/org/openqa/selenium/security:security',
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium/interactions:interactions',
+    'PUBLIC',
   ],
+)
+
+genrule(name = 'manifest',
+  out = 'manifest.mf',
+  cmd = 'python -c "print(\'\\n\\nName: Selenium\\nSelenium-Version: {}\\n\\n\')" >> $OUT'.format(SE_VERSION),
 )
 
 java_library(name = 'beta',
   srcs = [ 'Beta.java' ],
-  visibility = [ 'PUBLIC' ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/interactions:interactions',
+    '//java/client/src/org/openqa/selenium/logging:api',
+    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/os:os',
+  ],
 )
 
 java_library(name = 'exceptions',
   srcs = [
+    'ElementClickInterceptedException.java',
+    'ElementNotInteractableException.java',
+    'ElementNotSelectableException.java',
     'ElementNotVisibleException.java',
     'ImeActivationFailedException.java',
     'ImeNotAvailableException.java',
+    'InvalidArgumentException.java',
     'InvalidCookieDomainException.java',
     'InvalidElementStateException.java',
     'InvalidSelectorException.java',
+    'JavascriptException.java',
     'NoAlertPresentException.java',
+    'NoSuchCookieException.java',
     'NoSuchElementException.java',
     'NoSuchFrameException.java',
+    'NoSuchSessionException.java',
     'NoSuchWindowException.java',
     'NotFoundException.java',
     'SessionNotCreatedException.java',
+    'ScriptTimeoutException.java',
     'StaleElementReferenceException.java',
     'TimeoutException.java',
     'UnableToSetCookieException.java',
@@ -96,9 +123,16 @@ java_library(name = 'exceptions',
     'WebDriverException.java',
     'internal/BuildInfo.java',
   ],
+  deps = [
+    ':beta',
+  ],
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
+    '//java/client/src/org/openqa/selenium/interactions:interactions',
     '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/test/org/openqa/selenium/testing:helpers',
   ],
 )
@@ -112,7 +146,11 @@ java_library(
   deps = [
     ':exceptions',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/os:os',
+  ],
 )
 
 java_library(name = 'primitives',
@@ -126,16 +164,75 @@ java_library(name = 'primitives',
   ],
 )
 
-java_binary(name = 'selenium-java',
-  deps = [
-    ':webdriver-api',
-    '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
-    '//java/client/src/org/openqa/selenium/ie:ie',
+java_library(
+  name = 'client-combined',
+  maven_coords = 'org.seleniumhq.selenium:selenium-java:' + SE_VERSION,
+  maven_pom_template = ':template-pom',
+  exported_deps = [
+    ':selenium',
     '//java/client/src/org/openqa/selenium/chrome:chrome',
     '//java/client/src/org/openqa/selenium/firefox:firefox',
-    '//java/client/src/org/openqa/selenium/lift:lift',
+    '//java/client/src/org/openqa/selenium/edge:edge',
+    '//java/client/src/org/openqa/selenium/ie:ie',
+    '//java/client/src/org/openqa/selenium/opera:opera',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/safari:safari',
-    '//java/client/src/org/openqa/selenium/support:support',
+    '//java/client/src/org/openqa/selenium/support:support'
+  ],
+  visibility = [
+    '//java/server/src/org/openqa/grid/selenium:classes',
+    '//java/server/test/org/openqa/selenium:lib',
   ],
 )
+
+
+# This isn't very elegant, but we can build a dist zip like this:
+zip_file(
+  name = 'client-combined-zip',
+  out = 'selenium-java-' + SE_VERSION + '.zip',
+  srcs = [
+    ':client-combined-' + SE_VERSION,
+    ':client-combined-source-zip',
+    ':client-libs',
+    '//java:changelog',
+    '//:notice',
+    '//:license',
+  ],
+)
+
+# The jar file containing merged first party code
+java_binary(
+  name = 'client-combined-' + SE_VERSION,
+  blacklist = [
+    '^(?!com.thoughtworks.selenium.*|org.openqa.selenium.*|org.openqa.grid.*)',
+  ],
+  deps = [
+    ':client-combined',
+  ],
+)
+
+# The first party source, as a source jar which we don't want merged
+genrule(
+  name = 'client-combined-sources',
+  out = 'client-combined-' + SE_VERSION + '-sources.jar',
+  cmd = 'mkdir temp && $(exe //java/client/src/org/openqa/selenium/tools:package) $OUT $(@query_paths "inputs(kind(java_library, deps(//java/client/src/org/openqa/selenium:client-combined)))")',
+)
+
+# So we hide it in another zip file, which will be merged. Zip file merging isn't recursive.
+zip_file(
+  name = 'client-combined-source-zip',
+  out = 'selenium-java-sources.jar',
+  merge_source_zips = False,
+  srcs = [
+    ':client-combined-sources'
+  ],
+)
+
+# The third party libraries we depend on, as a source jar for merging
+genrule(
+  name = 'client-libs',
+  out = 'libs-sources.jar',
+  bash = 'mkdir libs && python -c "import sys,shutil;map(lambda f:shutil.copy(f,\'libs\'),[l for l in open(sys.argv[1][1:]).read().strip(\'\\\'\').split(\':\') if l.endswith(\'.jar\') and \'third_party/java\' in l])" $(@classpath :client-combined) && jar cMf $OUT libs/*',
+  cmd_exe = 'mkdir libs && python -c "import sys,shutil;map(lambda f:shutil.copy(f,\'libs\'),[l for l in open(sys.argv[1][1:]).read().strip(\'\\\'\').split(\';\') if l.endswith(\'.jar\') and \'third_party\\java\' in l])" $(@classpath :client-combined) && jar cMf $OUT libs/*',
+)
+

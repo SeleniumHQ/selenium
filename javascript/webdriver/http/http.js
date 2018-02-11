@@ -30,7 +30,6 @@ goog.require('goog.array');
 goog.require('webdriver.CommandExecutor');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.logging');
-goog.require('webdriver.promise');
 
 
 
@@ -48,7 +47,7 @@ webdriver.http.Client = function() {
  * final response.
  *
  * @param {!webdriver.http.Request} request The request to send.
- * @return {!webdriver.promise.Promise<!webdriver.http.Response>} A promise that
+ * @return {!goog.Promise<!webdriver.http.Response>} A promise that
  *     will be fulfilled with the server's response.
  */
 webdriver.http.Client.prototype.send = function(request) {};

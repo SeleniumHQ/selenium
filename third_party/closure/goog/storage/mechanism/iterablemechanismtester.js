@@ -22,8 +22,8 @@
 
 goog.provide('goog.storage.mechanism.iterableMechanismTester');
 
-goog.require('goog.iter.Iterator');
-goog.require('goog.storage.mechanism.IterableMechanism');
+goog.require('goog.iter');
+goog.require('goog.iter.StopIteration');
 goog.require('goog.testing.asserts');
 goog.setTestOnly('iterableMechanismTester');
 
@@ -54,8 +54,7 @@ function testIteratorBasics() {
   assertEquals('one', mechanism.__iterator__(false).next());
   var iterator = mechanism.__iterator__();
   assertEquals('one', iterator.next());
-  assertEquals(goog.iter.StopIteration,
-               assertThrows(iterator.next));
+  assertEquals(goog.iter.StopIteration, assertThrows(iterator.next));
 }
 
 
@@ -66,8 +65,8 @@ function testIteratorWithTwoValues() {
   mechanism.set('first', 'one');
   mechanism.set('second', 'two');
   assertSameElements(['one', 'two'], goog.iter.toArray(mechanism));
-  assertSameElements(['first', 'second'],
-                     goog.iter.toArray(mechanism.__iterator__(true)));
+  assertSameElements(
+      ['first', 'second'], goog.iter.toArray(mechanism.__iterator__(true)));
 }
 
 
@@ -81,10 +80,11 @@ function testClear() {
   assertNull(mechanism.get('first'));
   assertNull(mechanism.get('second'));
   assertEquals(0, mechanism.getCount());
-  assertEquals(goog.iter.StopIteration,
-               assertThrows(mechanism.__iterator__(true).next));
-  assertEquals(goog.iter.StopIteration,
-               assertThrows(mechanism.__iterator__(false).next));
+  assertEquals(
+      goog.iter.StopIteration, assertThrows(mechanism.__iterator__(true).next));
+  assertEquals(
+      goog.iter.StopIteration,
+      assertThrows(mechanism.__iterator__(false).next));
 }
 
 
@@ -107,11 +107,12 @@ function testIteratorWithWeirdKeys() {
   mechanism.set(
       '\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341', 'ten');
   assertEquals(3, mechanism.getCount());
-  assertSameElements([
-    ' ',
-    '=+!@#$%^&*()-_\\|;:\'",./<>?[]{}~`',
-    '\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341'
-  ], goog.iter.toArray(mechanism.__iterator__(true)));
+  assertSameElements(
+      [
+        ' ', '=+!@#$%^&*()-_\\|;:\'",./<>?[]{}~`',
+        '\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341'
+      ],
+      goog.iter.toArray(mechanism.__iterator__(true)));
   mechanism.clear();
   assertEquals(0, mechanism.getCount());
 }

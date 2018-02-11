@@ -21,6 +21,8 @@ public enum UnexpectedAlertBehaviour {
 
   ACCEPT ("accept"),
   DISMISS ("dismiss"),
+  ACCEPT_AND_NOTIFY ("accept and notify"),
+  DISMISS_AND_NOTIFY ("dismiss and notify"),
   IGNORE ("ignore")
   ;
 

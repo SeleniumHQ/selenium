@@ -19,7 +19,6 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,6 +26,7 @@ import org.junit.Test;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +41,7 @@ public class PriorityTestLoad {
 
   private final static int MAX = 100;
 
-  private Registry registry;
+  private GridRegistry registry;
 
   // priority rule : the request with the highest priority goes first.
   private Prioritizer highestNumberHasPriority = new Prioritizer() {
@@ -63,10 +63,10 @@ public class PriorityTestLoad {
    * @throws InterruptedException
    */
   @Before
-  public void setup() throws InterruptedException {
-    registry = Registry.newInstance();
-    registry.setPrioritizer(highestNumberHasPriority);
-    ff.put(APP, "FF");
+  public void setup() throws Exception {
+    registry = DefaultGridRegistry.newInstance();
+    registry.getConfiguration().prioritizer = highestNumberHasPriority;
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
     RemoteProxy
       p1 =
       RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
@@ -74,7 +74,7 @@ public class PriorityTestLoad {
 
     for (int i = 1; i <= MAX; i++) {
       Map<String, Object> cap = new HashMap<>();
-      cap.put(APP, "FF");
+      cap.put(CapabilityType.APPLICATION_NAME, "FF");
       cap.put("_priority", i);
       RequestHandler req = GridHelper.createNewSessionHandler(registry, cap);
       requests.add(req);
@@ -102,7 +102,7 @@ public class PriorityTestLoad {
     }
 
     // release the initial request.
-    registry.terminateSynchronousFOR_TEST_ONLY(session);
+    ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
   }
 
   // validate that the one with priority MAX has been assigned a proxy

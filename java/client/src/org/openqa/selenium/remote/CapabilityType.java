@@ -22,10 +22,12 @@ package org.openqa.selenium.remote;
  */
 public interface CapabilityType {
   String BROWSER_NAME = "browserName";
-  String PLATFORM = "platform";
+  @Deprecated String PLATFORM = "platform";
+  String PLATFORM_NAME = "platformName";
   String SUPPORTS_JAVASCRIPT = "javascriptEnabled";
   String TAKES_SCREENSHOT = "takesScreenshot";
   String VERSION = "version";
+  String BROWSER_VERSION = "browserVersion";
   String SUPPORTS_ALERTS = "handlesAlerts";
   String SUPPORTS_SQL_DATABASE = "databaseEnabled";
   String SUPPORTS_LOCATION_CONTEXT = "locationContextEnabled";
@@ -35,12 +37,16 @@ public interface CapabilityType {
   String PROXY = "proxy";
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
   String ROTATABLE = "rotatable";
+  String APPLICATION_NAME = "applicationName";
   // Enable this capability to accept all SSL certs by defaults.
   String ACCEPT_SSL_CERTS = "acceptSslCerts";
+  String ACCEPT_INSECURE_CERTS = "acceptInsecureCerts";
   String HAS_NATIVE_EVENTS = "nativeEvents";
   String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
+  String UNHANDLED_PROMPT_BEHAVIOUR = "unhandledPromptBehavior";
   String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
   String HAS_TOUCHSCREEN = "hasTouchScreen";
+  String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
 
   String LOGGING_PREFS = "loggingPrefs";
 

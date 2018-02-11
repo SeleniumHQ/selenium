@@ -17,6 +17,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.editor.dom');
 goog.provide('goog.testing.editor.dom');
 
 goog.require('goog.dom.NodeType');
@@ -105,10 +106,10 @@ goog.testing.editor.dom.getPreviousNextNonEmptyTextNodeHelper_ = function(
   // TODO(user): Move this logic to a new method in TagIterator such as
   // skipToNode().
   // Then we set the iterator to start at the given start node, not opt_stopAt.
-  var walkType; // Let TagIterator set the initial walk type by default.
+  var walkType;  // Let TagIterator set the initial walk type by default.
   var depth = goog.testing.editor.dom.getRelativeDepth_(node, opt_stopAt);
   if (depth == -1) {
-    return null; // Fail because opt_stopAt is not an ancestor of node.
+    return null;  // Fail because opt_stopAt is not an ancestor of node.
   }
   if (node.nodeType == goog.dom.NodeType.ELEMENT) {
     if (opt_skipDescendants) {
@@ -129,14 +130,14 @@ goog.testing.editor.dom.getPreviousNextNonEmptyTextNodeHelper_ = function(
   try {
     iter.next();
   } catch (e) {
-    return null; // It could have been a leaf node.
+    return null;  // It could have been a leaf node.
   }
   // Now just get the first non-empty text node the iterator finds.
-  var filter = goog.iter.filter(iter,
-                                goog.testing.editor.dom.isNonEmptyTextNode_);
+  var filter =
+      goog.iter.filter(iter, goog.testing.editor.dom.isNonEmptyTextNode_);
   try {
     return /** @type {Text} */ (filter.next());
-  } catch (e) { // No next item is available so return null.
+  } catch (e) {  // No next item is available so return null.
     return null;
   }
 };
@@ -195,35 +196,36 @@ goog.testing.editor.dom.getRelativeDepth_ = function(node, parentNode) {
  * @param {Node=} opt_stopAt Node to stop searching at (search will be
  *     restricted to this node's subtree).
  */
-goog.testing.editor.dom.assertRangeBetweenText = function(before,
-                                                          after,
-                                                          range,
-                                                          opt_stopAt) {
+goog.testing.editor.dom.assertRangeBetweenText = function(
+    before, after, range, opt_stopAt) {
   var previousText =
       goog.testing.editor.dom.getTextFollowingRange_(range, true, opt_stopAt);
   if (before == '') {
-    assertNull('Expected nothing before range but found <' + previousText + '>',
-               previousText);
+    assertNull(
+        'Expected nothing before range but found <' + previousText + '>',
+        previousText);
   } else {
-    assertNotNull('Expected <' + before + '> before range but found nothing',
-                  previousText);
-    assertTrue('Expected <' + before + '> before range but found <' +
-               previousText + '>',
-               goog.string.endsWith(
-                   /** @type {string} */ (previousText), before));
+    assertNotNull(
+        'Expected <' + before + '> before range but found nothing',
+        previousText);
+    assertTrue(
+        'Expected <' + before + '> before range but found <' + previousText +
+            '>',
+        goog.string.endsWith(
+            /** @type {string} */ (previousText), before));
   }
   var nextText =
       goog.testing.editor.dom.getTextFollowingRange_(range, false, opt_stopAt);
   if (after == '') {
-    assertNull('Expected nothing after range but found <' + nextText + '>',
-               nextText);
+    assertNull(
+        'Expected nothing after range but found <' + nextText + '>', nextText);
   } else {
-    assertNotNull('Expected <' + after + '> after range but found nothing',
-                  nextText);
-    assertTrue('Expected <' + after + '> after range but found <' +
-               nextText + '>',
-               goog.string.startsWith(
-                   /** @type {string} */ (nextText), after));
+    assertNotNull(
+        'Expected <' + after + '> after range but found nothing', nextText);
+    assertTrue(
+        'Expected <' + after + '> after range but found <' + nextText + '>',
+        goog.string.startsWith(
+            /** @type {string} */ (nextText), after));
   }
 };
 
@@ -242,15 +244,14 @@ goog.testing.editor.dom.assertRangeBetweenText = function(before,
  *     non-empty text node is found.
  * @private
  */
-goog.testing.editor.dom.getTextFollowingRange_ = function(range,
-                                                          isBefore,
-                                                          opt_stopAt) {
+goog.testing.editor.dom.getTextFollowingRange_ = function(
+    range, isBefore, opt_stopAt) {
   var followingTextNode;
   var endpointNode = isBefore ? range.getStartNode() : range.getEndNode();
   var endpointOffset = isBefore ? range.getStartOffset() : range.getEndOffset();
-  var getFollowingTextNode =
-      isBefore ? goog.testing.editor.dom.getPreviousNonEmptyTextNode :
-                 goog.testing.editor.dom.getNextNonEmptyTextNode;
+  var getFollowingTextNode = isBefore ?
+      goog.testing.editor.dom.getPreviousNonEmptyTextNode :
+      goog.testing.editor.dom.getNextNonEmptyTextNode;
 
   if (endpointNode.nodeType == goog.dom.NodeType.TEXT) {
     // Range endpoint is in a text node.
@@ -272,8 +273,8 @@ goog.testing.editor.dom.getTextFollowingRange_ = function(range,
     if (isBefore ? endpointOffset > 0 : endpointOffset < numChildren) {
       // There is at least one child following the endpoint.
       var followingChild =
-          endpointNode.childNodes[isBefore ? endpointOffset - 1 :
-                                             endpointOffset];
+          endpointNode
+              .childNodes[isBefore ? endpointOffset - 1 : endpointOffset];
       if (goog.testing.editor.dom.isNonEmptyTextNode_(followingChild)) {
         // The following child has text so return that.
         return followingChild.nodeValue;

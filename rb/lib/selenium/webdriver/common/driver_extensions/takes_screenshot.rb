@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,14 +17,12 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
 
     module DriverExtensions
       module TakesScreenshot
-
         #
         # Save a PNG screenshot to the given path
         #
@@ -34,6 +30,11 @@ module Selenium
         #
 
         def save_screenshot(png_path)
+          extension = File.extname(png_path).downcase
+          if extension != '.png'
+            WebDriver.logger.warn "name used for saved screenshot does not match file type. "\
+                                  "It should end with .png extension"
+          end
           File.open(png_path, 'wb') { |f| f << screenshot_as(:png) }
         end
 
@@ -48,14 +49,13 @@ module Selenium
         def screenshot_as(format)
           case format
           when :base64
-            bridge.getScreenshot
+            bridge.screenshot
           when :png
-            bridge.getScreenshot.unpack("m")[0]
+            bridge.screenshot.unpack('m')[0]
           else
             raise Error::UnsupportedOperationError, "unsupported format: #{format.inspect}"
           end
         end
-
       end # TakesScreenshot
     end # DriverExtensions
   end # WebDriver

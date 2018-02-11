@@ -106,8 +106,8 @@ goog.editor.plugins.TableEditor.SUPPORTED_COMMANDS_ =
  *     this plugin handles.
  * @override
  */
-goog.editor.plugins.TableEditor.prototype.isSupportedCommand =
-    function(command) {
+goog.editor.plugins.TableEditor.prototype.isSupportedCommand = function(
+    command) {
   return command in goog.editor.plugins.TableEditor.SUPPORTED_COMMANDS_;
 };
 
@@ -145,10 +145,10 @@ goog.editor.plugins.TableEditor.prototype.getCurrentTable_ = function() {
  * @private
  */
 goog.editor.plugins.TableEditor.prototype.getAncestorTable_ = function(node) {
-  var ancestor = goog.dom.getAncestor(node, this.isUserEditableTableBound_,
-      true);
+  var ancestor =
+      goog.dom.getAncestor(node, this.isUserEditableTableBound_, true);
   if (goog.editor.node.isEditable(ancestor)) {
-    return /** @type {Element?} */(ancestor);
+    return /** @type {Element?} */ (ancestor);
   } else {
     return null;
   }
@@ -160,8 +160,8 @@ goog.editor.plugins.TableEditor.prototype.getAncestorTable_ = function(node) {
  * only returns a value for goog.editor.plugins.TableEditor.COMMAND.TABLE.
  * @override
  */
-goog.editor.plugins.TableEditor.prototype.queryCommandValue =
-    function(command) {
+goog.editor.plugins.TableEditor.prototype.queryCommandValue = function(
+    command) {
   if (command == goog.editor.plugins.TableEditor.COMMAND.TABLE) {
     return !!this.getCurrentTable_();
   }
@@ -192,7 +192,7 @@ goog.editor.plugins.TableEditor.prototype.execCommandInternal = function(
     // TODO(user): use the reference to the table element returned from
     // replaceContentsWithNode.
     if (!goog.userAgent.IE) {
-      cursorCell = table.getElementsByTagName(goog.dom.TagName.TD)[0];
+      cursorCell = goog.dom.getElementsByTagName(goog.dom.TagName.TD, table)[0];
     }
   } else {
     var cellSelection = new goog.editor.plugins.TableEditor.CellSelection_(
@@ -255,16 +255,18 @@ goog.editor.plugins.TableEditor.prototype.execCommandInternal = function(
         break;
       case goog.editor.plugins.TableEditor.COMMAND.MERGE_CELLS:
         if (cellSelection.isRectangle()) {
-          table.mergeCells(cellSelection.getFirstRowIndex(),
-                           cellSelection.getFirstColumnIndex(),
-                           cellSelection.getLastRowIndex(),
-                           cellSelection.getLastColumnIndex());
+          table.mergeCells(
+              cellSelection.getFirstRowIndex(),
+              cellSelection.getFirstColumnIndex(),
+              cellSelection.getLastRowIndex(),
+              cellSelection.getLastColumnIndex());
         }
         break;
       case goog.editor.plugins.TableEditor.COMMAND.SPLIT_CELL:
         if (cellSelection.containsSingleCell()) {
-          table.splitCell(cellSelection.getFirstRowIndex(),
-                          cellSelection.getFirstColumnIndex());
+          table.splitCell(
+              cellSelection.getFirstRowIndex(),
+              cellSelection.getFirstColumnIndex());
         }
         break;
       case goog.editor.plugins.TableEditor.COMMAND.REMOVE_TABLE:
@@ -288,8 +290,8 @@ goog.editor.plugins.TableEditor.prototype.execCommandInternal = function(
  * @return {boolean} Whether the element is a table editable by the user.
  * @private
  */
-goog.editor.plugins.TableEditor.prototype.isUserEditableTable_ =
-    function(element) {
+goog.editor.plugins.TableEditor.prototype.isUserEditableTable_ = function(
+    element) {
   // Default implementation.
   if (element.tagName != goog.dom.TagName.TABLE) {
     return false;
@@ -307,8 +309,8 @@ goog.editor.plugins.TableEditor.prototype.isUserEditableTable_ =
  * @param {function(Element):boolean} func A function to decide whether the
  *   table element could be editable by the user or not.
  */
-goog.editor.plugins.TableEditor.prototype.addIsTableEditableFunction =
-    function(func) {
+goog.editor.plugins.TableEditor.prototype.addIsTableEditableFunction = function(
+    func) {
   goog.array.insert(this.isTableEditableFunctions_, func);
 };
 
@@ -323,8 +325,8 @@ goog.editor.plugins.TableEditor.prototype.addIsTableEditableFunction =
  * @constructor
  * @private
  */
-goog.editor.plugins.TableEditor.CellSelection_ =
-    function(range, getParentTableFunction) {
+goog.editor.plugins.TableEditor.CellSelection_ = function(
+    range, getParentTableFunction) {
   this.cells_ = [];
 
   // Mozilla lets users select groups of cells, with each cell showing
@@ -342,8 +344,8 @@ goog.editor.plugins.TableEditor.CellSelection_ =
         range.containsNode(node, false);
   };
 
-  var parentTableElement = selectionContainer &&
-      getParentTableFunction(selectionContainer);
+  var parentTableElement =
+      selectionContainer && getParentTableFunction(selectionContainer);
   if (!parentTableElement) {
     return;
   }
@@ -383,8 +385,7 @@ goog.editor.plugins.TableEditor.CellSelection_ =
  * subset.
  * @return {!goog.editor.Table} the table.
  */
-goog.editor.plugins.TableEditor.CellSelection_.prototype.getTable =
-    function() {
+goog.editor.plugins.TableEditor.CellSelection_.prototype.getTable = function() {
   return this.parentTable_;
 };
 
@@ -453,10 +454,11 @@ goog.editor.plugins.TableEditor.CellSelection_.prototype.isRectangle =
   }
   var firstCell = this.cells_[0];
   var lastCell = this.cells_[this.cells_.length - 1];
-  return !(this.firstRowIndex_ < firstCell.startRow ||
-           this.lastRowIndex_ > lastCell.endRow ||
-           this.firstColIndex_ < firstCell.startCol ||
-           this.lastColIndex_ > lastCell.endCol);
+  return !(
+      this.firstRowIndex_ < firstCell.startRow ||
+      this.lastRowIndex_ > lastCell.endRow ||
+      this.firstColIndex_ < firstCell.startCol ||
+      this.lastColIndex_ > lastCell.endCol);
 };
 
 
@@ -470,6 +472,5 @@ goog.editor.plugins.TableEditor.CellSelection_.prototype.isRectangle =
 goog.editor.plugins.TableEditor.CellSelection_.prototype.containsSingleCell =
     function() {
   var cellCount = this.cells_.length;
-  return cellCount > 0 &&
-      (this.cells_[0] == this.cells_[cellCount - 1]);
+  return cellCount > 0 && (this.cells_[0] == this.cells_[cellCount - 1]);
 };

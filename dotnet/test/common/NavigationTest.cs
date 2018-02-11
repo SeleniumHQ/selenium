@@ -10,7 +10,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldNotHaveProblemNavigatingWithNoPagesBrowsed()
         {
             INavigation navigation;
@@ -20,7 +19,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldGoBackAndForward()
         {
             INavigation navigation;
@@ -48,7 +46,7 @@ namespace OpenQA.Selenium
             INavigation navigation;
             navigation = driver.Navigate();
 
-            navigation.GoToUrl("isidsji30342όϊώ®ιεµρ©ζ");
+            navigation.GoToUrl("isidsji30342??ιεµρ©ζ");
             navigation.GoToUrl("");
         }
 
@@ -58,7 +56,7 @@ namespace OpenQA.Selenium
             INavigation navigation;
             navigation = driver.Navigate();
             Assert.Throws<ArgumentNullException>(() => navigation.GoToUrl((Uri)null));
-            // new Uri("") and new Uri("isidsji30342όϊώ®ιεµρ©ζ") 
+            // new Uri("") and new Uri("isidsji30342??ιεµρ©ζ") 
             // throw an exception, so we needn't worry about them.
         }
 

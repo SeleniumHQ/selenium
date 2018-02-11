@@ -17,9 +17,9 @@
 
 goog.provide('webdriver.http.CorsClient');
 
+goog.require('goog.Promise');
 goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Response');
-goog.require('webdriver.promise');
 
 
 
@@ -99,7 +99,7 @@ webdriver.http.CorsClient.isAvailable = function() {
 /** @override */
 webdriver.http.CorsClient.prototype.send = function(request) {
     var url = this.url_;
-  return new webdriver.promise.Promise(function(fulfill, reject) {
+  return new goog.Promise(function(fulfill, reject) {
     var xhr = new (typeof XDomainRequest !== 'undefined' ?
         XDomainRequest : XMLHttpRequest);
     xhr.open('POST', url, true);

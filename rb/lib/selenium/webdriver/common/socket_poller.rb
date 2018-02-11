@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -23,7 +21,6 @@ require 'socket'
 module Selenium
   module WebDriver
     class SocketPoller
-
       def initialize(host, port, timeout = 0, interval = 0.25)
         @host     = host
         @port     = Integer(port)
@@ -50,7 +47,7 @@ module Selenium
       #
 
       def closed?
-        with_timeout { not listening? }
+        with_timeout { !listening? }
       end
 
       private
@@ -81,11 +78,8 @@ module Selenium
           begin
             sock.connect_nonblock sockaddr
           rescue Errno::EINPROGRESS
-            if IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
-              retry
-            else
-              raise Errno::ECONNREFUSED
-            end
+            retry if IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
+            raise Errno::ECONNREFUSED
           rescue *CONNECTED_ERRORS
             # yay!
           end
@@ -94,12 +88,12 @@ module Selenium
           true
         rescue *NOT_CONNECTED_ERRORS
           sock.close if sock
-          $stderr.puts [@host, @port].inspect if $DEBUG
+          WebDriver.logger.debug("polling for socket on #{[@host, @port].inspect}")
           false
         end
       end
 
-      def with_timeout(&blk)
+      def with_timeout
         max_time = time_now + @timeout
 
         (
@@ -118,7 +112,6 @@ module Selenium
       def time_now
         Time.now
       end
-
     end # SocketPoller
   end # WebDriver
 end # Selenium

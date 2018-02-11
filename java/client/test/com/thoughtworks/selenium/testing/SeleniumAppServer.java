@@ -21,19 +21,23 @@ import org.openqa.selenium.environment.webserver.JettyAppServer;
 import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public class SeleniumAppServer extends JettyAppServer {
 
   private static final String RC_CONTEXT_PATH = "/selenium-server";
 
   public SeleniumAppServer() {
-    super();
+    this(detectHostname(), getHttpPortFromEnv(), getHttpsPortFromEnv());
+  }
+
+  public SeleniumAppServer(String hostname, int httpPort, int httpsPort) {
+    super(hostname, httpPort, httpsPort);
     ServletContextHandler context = addResourceHandler(RC_CONTEXT_PATH, findRootOfRcTestPages());
     addServlet(context, "/cachedContentTest", CachedContentServlet.class);
   }
 
-  protected File findRootOfRcTestPages() {
+  protected Path findRootOfRcTestPages() {
     return InProject.locate("java/server/test/org/openqa/selenium");
   }
 
@@ -45,15 +49,11 @@ public class SeleniumAppServer extends JettyAppServer {
   }
 
   public static void main(String[] args) {
-    JettyAppServer server = new SeleniumAppServer();
-
-    server.listenOn(getHttpPortFromEnv());
-    System.out.println(String.format("Starting server on port %d", getHttpPortFromEnv()));
-
-    server.listenSecurelyOn(getHttpsPortFromEnv());
-    System.out.println(String.format("HTTPS on %d", getHttpsPortFromEnv()));
-
-    server.start();
+    int httpPort = getHttpPortFromEnv();
+    int httpsPort = getHttpsPortFromEnv();
+    System.out.println(String.format("Starting server on HTTPS port %d and HTTPS port %d",
+                                     httpPort, httpsPort));
+    new SeleniumAppServer(detectHostname(), httpPort, httpsPort).start();
   }
 
 }

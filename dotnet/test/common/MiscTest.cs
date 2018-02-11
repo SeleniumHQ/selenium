@@ -1,4 +1,3 @@
-using System;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium
@@ -61,6 +60,11 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldNotHaveProblemOpeningNonExistingPage()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                Assert.Ignore("Marionette does not handle malformed URLs.");
+            }
+
             driver.Url = "www.doesnotexist.comx";
             Assert.Throws<NoSuchElementException>(() => { IWebElement e = driver.FindElement(By.Id("Bla")); });
         }

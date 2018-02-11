@@ -47,6 +47,7 @@ import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 import java.net.ProxySelector;
+import java.util.concurrent.TimeUnit;
 
 public class HttpClientFactory {
 
@@ -64,7 +65,7 @@ public class HttpClientFactory {
     httpClient = createHttpClient(null, connectionTimeout, socketTimeout);
   }
 
-  private static HttpClientConnectionManager getClientConnectionManager() {
+  protected static HttpClientConnectionManager getClientConnectionManager() {
     Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
         .<ConnectionSocketFactory>create()
         .register("http", PlainConnectionSocketFactory.getSocketFactory())
@@ -99,8 +100,8 @@ public class HttpClientFactory {
 
     HttpClientBuilder builder = HttpClientBuilder.create()
         .setConnectionManager(getClientConnectionManager())
-        .setDefaultSocketConfig(createSocketConfig(socketTimeout))
-        .setDefaultRequestConfig(createRequestConfig(connectionTimeout, socketTimeout))
+        .setDefaultSocketConfig(socketConfig)
+        .setDefaultRequestConfig(requestConfig)
         .setRoutePlanner(createRoutePlanner());
 
     if (credentials != null) {
@@ -127,14 +128,14 @@ public class HttpClientFactory {
         .build();
   }
 
-  private SocketConfig createSocketConfig(int socketTimeout) {
+  protected SocketConfig createSocketConfig(int socketTimeout) {
     return SocketConfig.custom()
         .setSoReuseAddress(true)
         .setSoTimeout(socketTimeout)
         .build();
   }
 
-  private RequestConfig createRequestConfig(int connectionTimeout, int socketTimeout) {
+  protected RequestConfig createRequestConfig(int connectionTimeout, int socketTimeout) {
     return RequestConfig.custom()
         .setStaleConnectionCheckEnabled(true)
         .setConnectTimeout(connectionTimeout)
@@ -142,7 +143,7 @@ public class HttpClientFactory {
         .build();
   }
 
-  private HttpRoutePlanner createRoutePlanner() {
+  protected HttpRoutePlanner createRoutePlanner() {
     return new SystemDefaultRoutePlanner(
         new DefaultSchemePortResolver(), ProxySelector.getDefault());
   }
@@ -154,6 +155,10 @@ public class HttpClientFactory {
       throw new RuntimeException(e);
     }
     gridClientConnectionManager.shutdown();
+  }
+
+  void cleanupIdleClients() {
+    gridClientConnectionManager.closeIdleConnections(0, TimeUnit.SECONDS);
   }
 
   static class MyRedirectHandler implements RedirectStrategy {

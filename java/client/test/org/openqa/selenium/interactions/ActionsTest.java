@@ -28,14 +28,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tests the builder for advanced user interaction, the Actions class.
@@ -62,14 +69,7 @@ public class ActionsTest {
 
   @Test
   public void creatingAllKeyboardActions() {
-    Actions builder = new Actions(driver);
-
-    builder.keyDown(Keys.SHIFT).sendKeys("abc").keyUp(Keys.CONTROL);
-
-    CompositeAction returnedAction = (CompositeAction) builder.build();
-    returnedAction.perform();
-
-    assertEquals("Expected 3 keyboard actions", 3, returnedAction.getNumberOfActions());
+    new Actions(driver).keyDown(Keys.SHIFT).sendKeys("abc").keyUp(Keys.CONTROL).perform();
 
     InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates);
     order.verify(mockKeyboard).pressKey(Keys.SHIFT);
@@ -78,16 +78,20 @@ public class ActionsTest {
     order.verifyNoMoreInteractions();
   }
 
+
+  @Test(expected = IllegalArgumentException.class)
+  public void throwsIllegalArgumentExceptionIfKeysNull() {
+    new Actions(driver).sendKeys().perform();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void throwsIllegalArgumentExceptionOverridenIfKeysNull() {
+    new Actions(driver).sendKeys(dummyLocatableElement).perform();
+  }
+
   @Test
   public void providingAnElementToKeyboardActions() {
-    Actions builder = new Actions(driver);
-
-    builder.keyDown(dummyLocatableElement, Keys.SHIFT);
-
-    CompositeAction returnedAction = (CompositeAction) builder.build();
-    returnedAction.perform();
-
-    assertEquals("Expected 1 keyboard action", 1, returnedAction.getNumberOfActions());
+    new Actions(driver).keyDown(dummyLocatableElement, Keys.SHIFT).perform();
 
     InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates);
     order.verify(mockMouse).click(mockCoordinates);
@@ -103,18 +107,17 @@ public class ActionsTest {
     final WebElement dummyElement2 = mockLocatableElementWithCoordinates(dummyCoordinates2);
     final WebElement dummyElement3 = mockLocatableElementWithCoordinates(dummyCoordinates3);
 
-    Actions builder = new Actions(driver);
-
-    builder.keyDown(dummyLocatableElement, Keys.SHIFT)
+    new Actions(driver)
+        .keyDown(dummyLocatableElement, Keys.SHIFT)
         .sendKeys(dummyElement2, "abc")
-        .keyUp(dummyElement3, Keys.CONTROL);
+        .keyUp(dummyElement3, Keys.CONTROL)
+        .perform();
 
-    CompositeAction returnedAction = (CompositeAction) builder.build();
-    returnedAction.perform();
-
-    assertEquals("Expected 3 keyboard actions", 3, returnedAction.getNumberOfActions());
-
-    InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates, dummyCoordinates2,
+    InOrder order = inOrder(
+        mockMouse,
+        mockKeyboard,
+        mockCoordinates,
+        dummyCoordinates2,
         dummyCoordinates3);
     order.verify(mockMouse).click(mockCoordinates);
     order.verify(mockKeyboard).pressKey(Keys.SHIFT);
@@ -127,17 +130,14 @@ public class ActionsTest {
 
   @Test
   public void creatingAllMouseActions() {
-    CompositeAction returnedAction = (CompositeAction) new Actions(driver)
+    new Actions(driver)
         .clickAndHold(dummyLocatableElement)
         .release(dummyLocatableElement)
         .click(dummyLocatableElement)
         .doubleClick(dummyLocatableElement)
         .moveToElement(dummyLocatableElement)
         .contextClick(dummyLocatableElement)
-        .build();
-
-    returnedAction.perform();
-    assertEquals("Expected 6 mouse actions", 6, returnedAction.getNumberOfActions());
+        .perform();
 
     InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates);
     order.verify(mockMouse).mouseMove(mockCoordinates);
@@ -153,6 +153,82 @@ public class ActionsTest {
     order.verify(mockMouse).contextClick(mockCoordinates);
     order.verifyNoMoreInteractions();
   }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  @Test
+  public void testCtrlClick() {
+    WebDriver driver = mock(WebDriver.class, withSettings().extraInterfaces(Interactive.class));
+    ArgumentCaptor<Collection<Sequence>> sequenceCaptor =
+        ArgumentCaptor.forClass((Class) Collection.class);
+    Mockito.doNothing().when((Interactive) driver).perform(sequenceCaptor.capture());
+
+    new Actions(driver)
+        .keyDown(Keys.CONTROL)
+        .click()
+        .keyUp(Keys.CONTROL)
+        .perform();
+
+    Collection<Sequence> sequence = sequenceCaptor.getValue();
+
+    assertEquals(2, sequence.size());
+
+    // get mouse and keyboard sequences
+    Map<String, Object>[] sequencesJson = sequence.stream().map(Sequence::toJson).toArray(HashMap[]::new);
+    Map<String, Object> mouseSequence = sequencesJson[0];
+    Map<String, Object> keyboardSequence;
+    if (!mouseSequence.get("type").equals("pointer")) {
+      mouseSequence = sequencesJson[1];
+      keyboardSequence = sequencesJson[0];
+    }
+    else {
+      keyboardSequence = sequencesJson[1];
+    }
+
+    assertEquals("pointer", mouseSequence.get("type"));
+    List<Map<?,?>> mouseActions = (List<Map<?,?>>) mouseSequence.get("actions");
+    assertEquals(4, mouseActions.size());
+
+    assertEquals("key", keyboardSequence.get("type"));
+    List<Map<?, ?>> keyboardActions = (List<Map<?, ?>>) keyboardSequence.get("actions");
+    assertEquals(4, keyboardActions.size());
+
+    // Mouse pauses as key goes down
+    Map<?, ?> pauseAction = mouseActions.get(0);
+    assertEquals("pause", pauseAction.get("type"));
+    assertEquals(0L, pauseAction.get("duration"));
+
+    Map<?, ?> keyDownAction = keyboardActions.get(0);
+    assertEquals("keyDown", keyDownAction.get("type"));
+    assertEquals(Keys.CONTROL.toString(), keyDownAction.get("value"));
+
+    // Mouse goes down, so keyboard pauses
+    Map<?, ?> pointerDownAction = mouseActions.get(1);
+    assertEquals("pointerDown", pointerDownAction.get("type"));
+    assertEquals(0, pointerDownAction.get("button"));
+
+    pauseAction = keyboardActions.get(1);
+    assertEquals("pause", pauseAction.get("type"));
+    assertEquals(0L, pauseAction.get("duration"));
+
+    // Mouse goes up, so keyboard pauses
+    Map<?, ?> pointerUpAction = mouseActions.get(2);
+    assertEquals("pointerUp", pointerUpAction.get("type"));
+    assertEquals(0, pointerUpAction.get("button"));
+
+    pauseAction = keyboardActions.get(2);
+    assertEquals("pause", pauseAction.get("type"));
+    assertEquals(0L, pauseAction.get("duration"));
+
+    // Mouse pauses as keyboard releases key
+    pauseAction = mouseActions.get(3);
+    assertEquals("pause", pauseAction.get("type"));
+    assertEquals(0L, pauseAction.get("duration"));
+
+    Map<?, ?> keyUpAction = keyboardActions.get(3);
+    assertEquals("keyUp", keyUpAction.get("type"));
+    assertEquals(Keys.CONTROL.toString(), keyUpAction.get("value"));
+  }
+
 
   private WebElement mockLocatableElementWithCoordinates(Coordinates coord) {
     WebElement element = mock(WebElement.class,

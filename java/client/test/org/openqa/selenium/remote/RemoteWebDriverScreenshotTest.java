@@ -21,10 +21,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.OutputType.BASE64;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.GRID;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -34,7 +37,9 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @Ignore(HTMLUNIT)
 public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
+
   @Test
+  @Ignore(GRID)
   public void testShouldBeAbleToGrabASnapshotOnException() {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");
@@ -79,10 +84,9 @@ public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
       return;
     }
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("webdriver.remote.quietExceptions", true);
+    Capabilities caps = new ImmutableCapabilities("webdriver.remote.quietExceptions", true);
 
-    WebDriver noScreenshotDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    WebDriver noScreenshotDriver = new WebDriverBuilder().get(caps);
 
     noScreenshotDriver.get(pages.simpleTestPage);
 

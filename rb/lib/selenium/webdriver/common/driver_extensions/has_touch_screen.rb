@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,10 +18,9 @@
 module Selenium
   module WebDriver
     module DriverExtensions
-
       module HasTouchScreen
         def touch
-          TouchActionBuilder.new mouse, keyboard, touch_screen
+          TouchActionBuilder.new Mouse.new(@bridge), Keyboard.new(@bridge), touch_screen
         end
 
         private
@@ -31,7 +28,6 @@ module Selenium
         def touch_screen
           TouchScreen.new @bridge
         end
-
       end # HasTouchScreen
     end # DriverExtensions
   end # WebDriver

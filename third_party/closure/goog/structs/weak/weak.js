@@ -40,7 +40,6 @@
  * @package
  */
 
-
 goog.provide('goog.structs.weak');
 
 goog.require('goog.userAgent');
@@ -49,10 +48,10 @@ goog.require('goog.userAgent');
 /**
  * Whether this browser supports weak collections, using either the native or
  * shim implementation.
- * @const
+ * @const {boolean}
  */
 // Only test for shim, since ES6 native WeakMap/Set imply ES5 shim dependencies
-goog.structs.weak.SUPPORTED_BROWSER = Object.defineProperty &&
+goog.structs.weak.SUPPORTED_BROWSER = !!Object.defineProperty &&
     // IE<9 and Safari<5.1 cannot defineProperty on some objects
     !(goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9')) &&
     !(goog.userAgent.SAFARI && !goog.userAgent.isVersionOrHigher('534.48.3'));
@@ -121,8 +120,9 @@ goog.structs.weak.set = function(id, key, value) {
   goog.structs.weak.checkKeyType(key);
   if (!key.hasOwnProperty(goog.structs.weak.WEAKREFS_PROPERTY_NAME)) {
     // Use defineProperty to make property non-enumerable
-    Object.defineProperty(/** @type {!Object} */(key),
-        goog.structs.weak.WEAKREFS_PROPERTY_NAME, {value: {}});
+    Object.defineProperty(
+        /** @type {!Object} */ (key), goog.structs.weak.WEAKREFS_PROPERTY_NAME,
+        {value: {}});
   }
   key[goog.structs.weak.WEAKREFS_PROPERTY_NAME][id] = value;
 };

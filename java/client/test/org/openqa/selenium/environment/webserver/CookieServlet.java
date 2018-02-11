@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.environment.webserver;
 
 import java.io.IOException;
@@ -83,11 +82,13 @@ public class CookieServlet extends HttpServlet {
           String.format(RESPONSE_STRING, "Cookie deleted", name));
 
     } else if ("deleteAll".equals(action)) {
-      for (Cookie cookie : request.getCookies()) {
-        cookie.setValue("");
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+      if (request.getCookies() != null) {
+        for (Cookie cookie : request.getCookies()) {
+          cookie.setValue("");
+          cookie.setPath("/");
+          cookie.setMaxAge(0);
+          response.addCookie(cookie);
+        }
       }
       response.getOutputStream().println(
           String.format(RESPONSE_STRING, "All cookies deleted", ""));

@@ -22,6 +22,7 @@ goog.provide('goog.graphics.Path');
 goog.provide('goog.graphics.Path.Segment');
 
 goog.require('goog.array');
+goog.require('goog.graphics.AffineTransform');
 goog.require('goog.math');
 
 
@@ -213,7 +214,7 @@ goog.graphics.Path.prototype.lineTo = function(var_args) {
  * specified using 3 points (6 coordinates) - two control points and the end
  * point of the curve.
  *
- * @param {...number} var_args The coordinates specifiying each curve in sets of
+ * @param {...number} var_args The coordinates specifying each curve in sets of
  *     6 points: {@code [x1, y1]} the first control point, {@code [x2, y2]} the
  *     second control point and {@code [x, y]} the end point.
  * @return {!goog.graphics.Path} The path itself.
@@ -230,8 +231,9 @@ goog.graphics.Path.prototype.curveTo = function(var_args) {
   for (var i = 0; i < arguments.length; i += 6) {
     var x = arguments[i + 4];
     var y = arguments[i + 5];
-    this.arguments_.push(arguments[i], arguments[i + 1],
-        arguments[i + 2], arguments[i + 3], x, y);
+    this.arguments_.push(
+        arguments[i], arguments[i + 1], arguments[i + 2], arguments[i + 3], x,
+        y);
   }
   this.count_[this.count_.length - 1] += i / 6;
   this.currentPoint_ = [x, y];
@@ -277,8 +279,8 @@ goog.graphics.Path.prototype.close = function() {
  * @return {!goog.graphics.Path} The path itself.
  * @deprecated Use {@code arcTo} or {@code arcToAsCurves} instead.
  */
-goog.graphics.Path.prototype.arc = function(cx, cy, rx, ry,
-    fromAngle, extent, connect) {
+goog.graphics.Path.prototype.arc = function(
+    cx, cy, rx, ry, fromAngle, extent, connect) {
   var startX = cx + goog.math.angleDx(fromAngle, rx);
   var startY = cy + goog.math.angleDy(fromAngle, ry);
   if (connect) {
@@ -351,11 +353,9 @@ goog.graphics.Path.prototype.arcToAsCurves = function(
     angle += inc;
     relX = Math.cos(angle);
     relY = Math.sin(angle);
-    this.curveTo(c0, c1,
-        cx + (relX + z * relY) * rx,
-        cy + (relY - z * relX) * ry,
-        cx + relX * rx,
-        cy + relY * ry);
+    this.curveTo(
+        c0, c1, cx + (relX + z * relY) * rx, cy + (relY - z * relX) * ry,
+        cx + relX * rx, cy + relY * ry);
   }
   return this;
 };
@@ -491,8 +491,8 @@ goog.graphics.Path.prototype.transform = function(tx) {
   if (!this.isSimple()) {
     throw Error('Non-simple path');
   }
-  tx.transform(this.arguments_, 0, this.arguments_, 0,
-      this.arguments_.length / 2);
+  tx.transform(
+      this.arguments_, 0, this.arguments_, 0, this.arguments_.length / 2);
   if (this.closePoint_) {
     tx.transform(this.closePoint_, 0, this.closePoint_, 0, 1);
   }

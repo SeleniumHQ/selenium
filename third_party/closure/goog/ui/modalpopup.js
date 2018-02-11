@@ -23,6 +23,7 @@ goog.require('goog.Timer');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.animationFrame');
 goog.require('goog.dom.classlist');
 goog.require('goog.dom.iframe');
 goog.require('goog.events');
@@ -78,6 +79,15 @@ goog.ui.ModalPopup = function(opt_useIframeMask, opt_domHelper) {
    * @private
    */
   this.lastFocus_ = null;
+
+  /**
+   * The animation task that resizes the background, scheduled to run in the
+   * next animation frame.
+   * @type {function(...?)}
+   * @private
+   */
+  this.resizeBackgroundTask_ = goog.dom.animationFrame.createTask(
+      {mutate: this.resizeBackground_}, this);
 };
 goog.inherits(goog.ui.ModalPopup, goog.ui.Component);
 goog.tagUnsealableClass(goog.ui.ModalPopup);
@@ -256,8 +266,8 @@ goog.ui.ModalPopup.prototype.manageBackgroundDom_ = function() {
 goog.ui.ModalPopup.prototype.createTabCatcher_ = function() {
   // Creates tab catcher element.
   if (!this.tabCatcherElement_) {
-    this.tabCatcherElement_ = this.getDomHelper().createElement(
-        goog.dom.TagName.SPAN);
+    this.tabCatcherElement_ =
+        this.getDomHelper().createElement(goog.dom.TagName.SPAN);
     goog.style.setElementShown(this.tabCatcherElement_, false);
     goog.dom.setFocusableTabIndex(this.tabCatcherElement_, true);
     this.tabCatcherElement_.style.position = 'absolute';
@@ -320,9 +330,7 @@ goog.ui.ModalPopup.prototype.decorateInternal = function(element) {
   goog.ui.ModalPopup.base(this, 'decorateInternal', element);
   var allClasses = goog.string.trim(this.getCssClass()).split(' ');
 
-  goog.dom.classlist.addAll(
-      goog.asserts.assert(this.getElement()),
-      allClasses);
+  goog.dom.classlist.addAll(goog.asserts.assert(this.getElement()), allClasses);
 
   // Create the background mask...
   this.manageBackgroundDom_();
@@ -341,8 +349,8 @@ goog.ui.ModalPopup.prototype.enterDocument = function() {
 
   goog.dom.insertSiblingAfter(this.tabCatcherElement_, this.getElement());
 
-  this.focusHandler_ = new goog.events.FocusHandler(
-      this.getDomHelper().getDocument());
+  this.focusHandler_ =
+      new goog.events.FocusHandler(this.getDomHelper().getDocument());
 
   // We need to watch the entire document so that we can detect when the
   // focus is moved out of this modal popup.
@@ -422,8 +430,9 @@ goog.ui.ModalPopup.prototype.setA11YDetectBackground = function(hide) {
  * @param {!goog.fx.Transition} bgHideTransition Transition to hide
  *     the background.
  */
-goog.ui.ModalPopup.prototype.setTransition = function(popupShowTransition,
-    popupHideTransition, bgShowTransition, bgHideTransition) {
+goog.ui.ModalPopup.prototype.setTransition = function(
+    popupShowTransition, popupHideTransition, bgShowTransition,
+    bgHideTransition) {
   this.popupShowTransition_ = popupShowTransition;
   this.popupHideTransition_ = popupHideTransition;
   this.bgShowTransition_ = bgShowTransition;
@@ -450,9 +459,13 @@ goog.ui.ModalPopup.prototype.show_ = function() {
   this.reposition();
 
   // Listen for keyboard and resize events while the modal popup is visible.
-  this.getHandler().listen(
-      this.getDomHelper().getWindow(), goog.events.EventType.RESIZE,
-      this.resizeBackground_);
+  this.getHandler()
+      .listen(
+          this.getDomHelper().getWindow(), goog.events.EventType.RESIZE,
+          this.resizeBackground_)
+      .listen(
+          this.getDomHelper().getWindow(),
+          goog.events.EventType.ORIENTATIONCHANGE, this.resizeBackgroundTask_);
 
   this.showPopupElement_(true);
   this.focus();
@@ -481,9 +494,13 @@ goog.ui.ModalPopup.prototype.hide_ = function() {
 
   // Stop listening for keyboard and resize events while the modal
   // popup is hidden.
-  this.getHandler().unlisten(
-      this.getDomHelper().getWindow(), goog.events.EventType.RESIZE,
-      this.resizeBackground_);
+  this.getHandler()
+      .unlisten(
+          this.getDomHelper().getWindow(), goog.events.EventType.RESIZE,
+          this.resizeBackground_)
+      .unlisten(
+          this.getDomHelper().getWindow(),
+          goog.events.EventType.ORIENTATIONCHANGE, this.resizeBackgroundTask_);
 
   // Set visibility to hidden even if there is a transition. This
   // reduces complexity in subclasses who may want to override
@@ -618,9 +635,11 @@ goog.ui.ModalPopup.prototype.resizeBackground_ = function() {
   // to account for browser differences in treatment of absolutely-positioned
   // content.
   var viewSize = goog.dom.getViewportSize(win);
-  var w = Math.max(viewSize.width,
+  var w = Math.max(
+      viewSize.width,
       Math.max(doc.body.scrollWidth, doc.documentElement.scrollWidth));
-  var h = Math.max(viewSize.height,
+  var h = Math.max(
+      viewSize.height,
       Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight));
 
   if (this.bgIframeEl_) {

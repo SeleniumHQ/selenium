@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class TemporaryFilesystem {
 
-  private final Set<File> temporaryFiles = new CopyOnWriteArraySet<File>();
+  private final Set<File> temporaryFiles = new CopyOnWriteArraySet<>();
   private final File baseDir;
   private final Thread shutdownHook = new Thread() {  // Thread safety reviewed
     @Override
@@ -145,6 +145,10 @@ public class TemporaryFilesystem {
   }
 
   public boolean deleteBaseDir() {
-    return baseDir.delete();
+    boolean wasDeleted = baseDir.delete();
+    if (! baseDir.exists()) {
+      Runtime.getRuntime().removeShutdownHook(shutdownHook);
+    }
+    return wasDeleted;
   }
 }

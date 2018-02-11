@@ -19,19 +19,24 @@ package org.openqa.selenium.testing;
 
 import com.google.common.collect.Lists;
 
-import org.jboss.netty.handler.codec.http.HttpRequest;
-
-import org.littleshoot.proxy.DefaultHttpProxyServer;
-import org.littleshoot.proxy.HttpRequestFilter;
-
+import org.littleshoot.proxy.HttpFilters;
+import org.littleshoot.proxy.HttpFiltersAdapter;
+import org.littleshoot.proxy.HttpFiltersSourceAdapter;
+import org.littleshoot.proxy.HttpProxyServer;
+import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+
 import java.util.List;
 
 public class ProxyServer {
-  private DefaultHttpProxyServer proxyServer;
+  private HttpProxyServer proxyServer;
   private final String baseUrl;
   private final List<String> uris = Lists.newLinkedList();
 
@@ -41,20 +46,29 @@ public class ProxyServer {
     String address = new NetworkUtils().getPrivateLocalAddress();
     baseUrl = String.format("%s:%d", address, port);
 
-    proxyServer = new DefaultHttpProxyServer(port, new HttpRequestFilter() {
-      @Override
-      public void filter(HttpRequest httpRequest) {
-        String uri = httpRequest.getUri();
-        String[] parts = uri.split("/");
-        if (parts.length == 0) {
-          return;
-        }
-        String finalPart = parts[parts.length - 1];
-        uris.add(finalPart);
-      }
-    });
+    proxyServer = DefaultHttpProxyServer.bootstrap().withAllowLocalOnly(false).withPort(port)
+        .withFiltersSource(new HttpFiltersSourceAdapter() {
+          public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+            return new HttpFiltersAdapter(originalRequest) {
+              public HttpResponse clientToProxyRequest(HttpObject httpObject) {
+                String uri = originalRequest.uri();
+                String[] parts = uri.split("/");
+                if (parts.length == 0) {
+                  return null;
+                }
+                String finalPart = parts[parts.length - 1];
+                uris.add(finalPart);
+                return null;
+              }
 
-    proxyServer.start();
+              @Override
+              public HttpObject serverToProxyResponse(HttpObject httpObject) {
+                return httpObject;
+              }
+            };
+          }
+        })
+        .start();
   }
 
   public String getBaseUrl() {

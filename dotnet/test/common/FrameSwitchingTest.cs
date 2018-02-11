@@ -25,9 +25,9 @@ namespace OpenQA.Selenium
         public void ShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded()
         {
             driver.Url = iframePage;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(1));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
             IWebElement element = driver.FindElement(By.Id("iframe_page_heading"));
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(0));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
             Assert.IsNotNull(element);
         }
 
@@ -217,7 +217,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
@@ -231,7 +230,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
@@ -246,7 +244,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
@@ -260,7 +257,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]

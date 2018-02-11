@@ -34,10 +34,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
-import org.openqa.selenium.NeedsFreshDriver;
-import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.Pages;
-import org.openqa.selenium.SwitchToTopAfterTest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
@@ -52,12 +49,14 @@ import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 @RunWith(SeleniumTestRunner.class)
 public abstract class JUnit4TestBase implements WrapsDriver {
 
   private static final Logger logger = Logger.getLogger(JUnit4TestBase.class.getName());
 
+  private Browser browser = Browser.detect();
   protected TestEnvironment environment;
   protected AppServer appServer;
   protected Pages pages;
@@ -109,7 +108,8 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     protected void starting(Description description) {
       super.starting(description);
       NeedsFreshDriver annotation = description.getAnnotation(NeedsFreshDriver.class);
-      if (annotation != null) {
+      if (annotation != null && matches(browser, annotation.value())) {
+        System.out.println("Restarting driver before test " + description);
         removeDriver();
       }
       try {
@@ -120,10 +120,21 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     }
 
     @Override
-    protected void finished(Description description) {
+    protected void succeeded(Description description) {
       super.finished(description);
       NoDriverAfterTest annotation = description.getAnnotation(NoDriverAfterTest.class);
-      if (annotation != null) {
+      if (annotation != null && !annotation.failedOnly() && matches(browser, annotation.value())) {
+        System.out.println("Restarting driver after succeeded test " + description);
+        removeDriver();
+      }
+    }
+
+    @Override
+    protected void failed(Throwable e, Description description) {
+      super.finished(description);
+      NoDriverAfterTest annotation = description.getAnnotation(NoDriverAfterTest.class);
+      if (annotation != null && matches(browser, annotation.value())) {
+        System.out.println("Restarting driver after failed test " + description);
         removeDriver();
       }
     }
@@ -158,107 +169,63 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     }
 
     private void dealWithSauceFailureIfNecessary(Throwable t) {
-      if (!(t instanceof AssumptionViolatedException) && t.getMessage() != null
-          && (t.getMessage().contains("sauce") || t.getMessage().contains("Sauce"))) {
-        removeDriver();
+      String message = t.getMessage();
+      if (!(t instanceof AssumptionViolatedException) && message != null
+          && (message.contains("sauce") || message.contains("Sauce"))) {
         try {
+          removeDriver();
           createDriver();
         } catch (Exception e) {
-          throw new RuntimeException("Exception creating driver, after Sauce-detected exception", e);
+          t.addSuppressed(e);
+          throw new RuntimeException("Sauce-related failure. Tried re-creating the driver, but that failed too.", t);
         }
       } else {
-        throw Throwables.propagate(t);
+        Throwables.throwIfUnchecked(t);
+        throw new RuntimeException(t);
       }
     }
   }
 
   private class NotYetImplementedRule implements TestRule {
 
-    private Browser browser;
+    private boolean notImplemented(NotYetImplementedList list) {
+      return list != null && list.value().length > 0 && notImplemented(Stream.of(list.value()));
+    }
 
-    public NotYetImplementedRule() {
-      browser = Browser.detect();
+    private boolean notImplemented(NotYetImplemented single) {
+      return single !=  null && notImplemented(Stream.of(single));
+    }
+
+    private boolean notImplemented(Stream<NotYetImplemented> nyi) {
+      return nyi.anyMatch(driver -> matches(browser, new Driver[]{driver.value()}));
     }
 
     @Override
     public Statement apply(final Statement base, final Description description) {
-      if (!isNotYetImplemented(description)) {
-        return base;
-      }
-
-      return new Statement() {
-        @Override
-        public void evaluate() throws Throwable {
-          Exception toBeThrown = null;
-          try {
-            base.evaluate();
-            toBeThrown = new Exception(description.getTestClass().getSimpleName() + '.' + description.getMethodName()
-                                       + " is marked as not yet implemented with " + browser + " but already works!");
-          }
-          catch (final Throwable e) {
-            // expected
-          }
-          if (toBeThrown != null) {
-            throw toBeThrown;
-          }
-        }
-      };
-    }
-
-    private boolean isNotYetImplemented(final Description description) {
-      final NotYetImplemented notYetImplementedBrowsers = description.getAnnotation(NotYetImplemented.class);
-      boolean isNotYetImplemented = false;
-      if (notYetImplementedBrowsers != null) {
-        for (Ignore.Driver driver : notYetImplementedBrowsers.value()) {
-          if (!isNotYetImplemented) {
-            switch (driver) {
-              case ALL:
-                isNotYetImplemented = true;
-                break;
-
-              case CHROME:
-                isNotYetImplemented = browser == Browser.chrome;
-                break;
-
-              case FIREFOX:
-                if (!Boolean.getBoolean("webdriver.firefox.marionette")) {
-                  isNotYetImplemented = browser == Browser.ff;
-                }
-                break;
-
-              case HTMLUNIT:
-                isNotYetImplemented = browser == Browser.htmlunit || browser == Browser.htmlunit_js;
-                break;
-
-              case IE:
-                isNotYetImplemented = browser == Browser.ie;
-                break;
-
-              case MARIONETTE:
-                if (Boolean.getBoolean("webdriver.firefox.marionette")) {
-                  isNotYetImplemented = browser == Browser.ff;
-                }
-                break;
-
-              case PHANTOMJS:
-                isNotYetImplemented = browser == Browser.phantomjs;
-                break;
-
-              case REMOTE:
-                isNotYetImplemented = Boolean.getBoolean("selenium.browser.remote") || SauceDriver.shouldUseSauce();
-                break;
-
-              case SAFARI:
-                isNotYetImplemented = browser == Browser.safari;
-                break;
-
-              default:
-                throw new RuntimeException("Cannot determine driver");
+      if (notImplemented(description.getAnnotation(NotYetImplementedList.class)) ||
+          notImplemented(description.getAnnotation(NotYetImplemented.class))) {
+        return new Statement() {
+          @Override
+          public void evaluate() throws Throwable {
+            Exception toBeThrown = null;
+            try {
+              base.evaluate();
+              toBeThrown = new Exception(String.format(
+                  "%s.%s is marked as not yet implemented with %s but already works!",
+                  description.getTestClass().getSimpleName(), description.getMethodName(), browser));
+            }
+            catch (final Throwable e) {
+              // expected
+            }
+            if (toBeThrown != null) {
+              throw toBeThrown;
             }
           }
-        }
+        };
+
+      } else {
+        return base;
       }
-      return isNotYetImplemented;
     }
   }
 
@@ -308,4 +275,76 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     return e.getClass().getName().contains("TimedOutException");
   }
 
+  private static boolean matches(Browser browser, Driver[] drivers) {
+    for (Driver driver : drivers) {
+      switch (driver) {
+        case ALL:
+          return true;
+
+        case CHROME:
+          if (browser == Browser.chrome) {
+            return true;
+          }
+          break;
+
+        case FIREFOX:
+          if (browser == Browser.ff && !Boolean.getBoolean("webdriver.firefox.marionette")) {
+            return true;
+          }
+          break;
+
+        case HTMLUNIT:
+          if (browser == Browser.htmlunit) {
+            return true;
+          }
+          break;
+
+        case IE:
+          if (browser == Browser.ie) {
+            return true;
+          }
+          break;
+
+        case EDGE:
+          if (browser == Browser.edge) {
+            return true;
+          }
+          break;
+
+        case MARIONETTE:
+          if (browser != Browser.ff) {
+            return false;
+          }
+          if (System.getProperty("webdriver.firefox.marionette") == null ||
+              Boolean.getBoolean("webdriver.firefox.marionette")) {
+            return true;
+          }
+          break;
+
+        case REMOTE:
+          if (Boolean.getBoolean("selenium.browser.grid") ||
+              Boolean.getBoolean("selenium.browser.remote") ||
+              SauceDriver.shouldUseSauce()) {
+            return true;
+          }
+          break;
+
+        case GRID:
+          if (Boolean.getBoolean("selenium.browser.grid")) {
+            return true;
+          }
+          break;
+
+        case SAFARI:
+          if (browser == Browser.safari) {
+            return true;
+          }
+          break;
+
+        default:
+          throw new RuntimeException("Cannot determine driver");
+      }
+    }
+    return false;
+  }
 }

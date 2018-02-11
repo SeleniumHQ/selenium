@@ -17,35 +17,34 @@
 
 package org.openqa.grid.internal;
 
-import static org.openqa.grid.common.RegistrationRequest.APP;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class NewSessionRequestTimeout {
 
-  private static Registry registry;
-  private static Map<String, Object> ff = new HashMap<>();
-  private static RemoteProxy p1;
+  private GridRegistry registry;
+  private Map<String, Object> ff = new HashMap<>();
+  private RemoteProxy p1;
 
   /**
    * create a hub with 1 IE and 1 FF
    */
-  @BeforeClass
-  public static void setup() {
-    registry = Registry.newInstance();
-    ff.put(APP, "FF");
+  @Before
+  public void setup() throws Exception {
+    registry = DefaultGridRegistry.newInstance();
+    ff.put(CapabilityType.APPLICATION_NAME, "FF");
 
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);
     // after 1 sec in the queue, request are kicked out.
-    registry.setNewSessionWaitTimeout(1000);
+    registry.getConfiguration().newSessionWaitTimeout = 1000;
   }
 
   @Test(timeout = 5000)
@@ -64,8 +63,8 @@ public class NewSessionRequestTimeout {
 
   }
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
   }
 }

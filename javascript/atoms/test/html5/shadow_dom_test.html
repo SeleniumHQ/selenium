@@ -18,6 +18,11 @@ where each element comes from.
     Base-level Stuff
   </div>
 </div>
+<div id="divWithNoShadowDOM">
+<content>
+  Text inside a content tag outside any shadow DOM. Should be displayed
+</content>
+</div>
 
 <template id="parentTemplate">
 <div id="parentDiv">
@@ -38,7 +43,9 @@ where each element comes from.
         As the older child of a nested shadow root, this is the most likely
         to go wrong bit of the page.
         <H4>Older Child Contents</H4>
-        <content></content>
+        <content>
+          Text inside the older child content tag. Should be replaced
+        </content>
     </div>
 </div>
 </template>
@@ -48,7 +55,9 @@ where each element comes from.
         <H3>Younger Child</H3>
         <div style="border-style:dotted;border-color:blue">
             <H4>Younger Child Contents</H4>
-            <content id="youngChildContent" select=".stuffForYoungChild"></content>
+            <content id="youngChildContent" select=".stuffForYoungChild">
+              Text inside the younger content tag. Should be replaced
+            </content>
         </div>
         <div style="border-style:dashed;border-color:blue">
             <H4>Younger Child Shadow</H4>
@@ -86,9 +95,7 @@ if (bot.dom.IS_SHADOW_DOM_ENABLED) {
 <script type="text/javascript" >
 
 function testGetParentNodeInComposedDom() {
-  if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
-    assertFalse(typeof bot.dom.getParentNodeInComposedDom === "unknown");
-  } else {
+  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
     var youngChildContent = document.querySelector("* /deep/ #youngChildContent");
     var stuffForYoungChild = /** @type {!Element} */ (document.querySelector(
       "* /deep/ .stuffForYoungChild"));
@@ -116,15 +123,15 @@ function testGetParentNodeInComposedDom() {
 
 
 function testGetVisibleTextInComposedDom() {
-  if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
-    assertFalse(typeof bot.dom.getVisibleTextInComposedDom === "unknown");
-  } else {
+  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
     var parentDiv = /** @type {!Element} */ (document.querySelector(
       "* /deep/ #parentDiv"));
     var youngerChildDiv = /** @type {!Element} */ (document.querySelector(
       "* /deep/ #youngerChildDiv"));
     var olderChildDiv = /** @type {!Element} */ (document.querySelector(
       "* /deep/ #olderChildDiv"));
+    var divWithNoShadowDOM = /** @type {!Element} */ (document.querySelector(
+      "#divWithNoShadowDOM"));
     var expectedOlderChildContents = "Older Child\n" +
         "As the older child of a nested shadow root, this is the most " +
         "likely to go wrong bit of the page.\n" +
@@ -141,28 +148,30 @@ function testGetVisibleTextInComposedDom() {
   
     var expectedParentContents = expectedYoungerChildContents;
   
+    var expectedOutsideShadowDomContents = "Text inside a content tag " + 
+        "outside any shadow DOM. Should be displayed";
+  
     var expectedPageContents = "Page for Shadow DOM chromedriver tests\n" + 
         "The page has a shadow root that in turn contains two shadow roots. " +
         "So we can check behaviour with both nested roots and younger/" +
         "older sibling roots. The various sections are highlighted with " +
         "colored borders to make it more obvious where each element comes " +
         "from.\n" +
-        expectedParentContents;
-  
+        expectedParentContents + "\n" + expectedOutsideShadowDomContents;
+
     assertEquals(expectedOlderChildContents, 
-        bot.dom.getVisibleTextInComposedDom(olderChildDiv));
+        bot.dom.getVisibleText(olderChildDiv));
     assertEquals(expectedYoungerChildContents, 
-        bot.dom.getVisibleTextInComposedDom(youngerChildDiv));
-    assertEquals(expectedParentContents, bot.dom.getVisibleTextInComposedDom(parentDiv));
+        bot.dom.getVisibleText(youngerChildDiv));
+    assertEquals(expectedParentContents, bot.dom.getVisibleText(parentDiv));
+    assertEquals(expectedOutsideShadowDomContents, bot.dom.getVisibleText(divWithNoShadowDOM));
     assertEquals(expectedPageContents, 
-      bot.dom.getVisibleTextInComposedDom(/** @type {!Element} */ (document.body)));
+      bot.dom.getVisibleText(/** @type {!Element} */ (document.body)));
   }
 }
 
 function testIsShownInComposedDom() {
-  if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
-    assertFalse(typeof bot.dom.isShownInComposedDom === "unknown");
-  } else {
+  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
     var parentHeading = /** @type {!Element} */ (document.querySelector(
       "* /deep/ #parentHeading"));
     var oldChildDiv = document.querySelector("* /deep/ #olderChildDiv");
@@ -170,15 +179,15 @@ function testIsShownInComposedDom() {
       "* /deep/ #neverShownDiv"));
   
     // neverShown is in an older shadow DOM, and thus isn't displayed
-    assertFalse(bot.dom.isShownInComposedDom(neverShownDiv));
+    assertFalse(bot.dom.isShown(neverShownDiv));
   
-    assert(bot.dom.isShownInComposedDom(parentHeading));
+    assert(bot.dom.isShown(parentHeading));
     var oldChildDivDisplay = oldChildDiv.style.display;
     try {
       oldChildDiv.style.display = "None";
       // In the Logical DOM, parentHeading is displayed. But in the Composed
       // DOM it's been pulled within oldChildDiv, and thus is no longer visible.
-      assertFalse(bot.dom.isShownInComposedDom(parentHeading));
+      assertFalse(bot.dom.isShown(parentHeading));
     } finally {
       oldChildDiv.style.display = oldChildDivDisplay;
     }
@@ -187,5 +196,3 @@ function testIsShownInComposedDom() {
 </script>
 </body>
 </html>
-
-

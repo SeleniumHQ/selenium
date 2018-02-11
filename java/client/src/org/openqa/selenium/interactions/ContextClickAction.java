@@ -17,15 +17,18 @@
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.internal.Locatable;
+import com.google.common.collect.ImmutableList;
 
-import java.util.Arrays;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.MouseAction;
+import org.openqa.selenium.interactions.internal.Locatable;
+
 import java.util.List;
 
 /**
  * Context-clicks an element
  *
+ * @deprecated Use {@link Actions#contextClick(WebElement)}
  */
 public class ContextClickAction extends MouseAction implements Action {
   public ContextClickAction(Mouse mouse, Locatable where) {
@@ -41,7 +44,14 @@ public class ContextClickAction extends MouseAction implements Action {
     mouse.contextClick(getActionLocation());
   }
 
-  public List<Object> asList() {
-    return Arrays.<Object>asList("click", getTargetId(), Button.RIGHT, 1);
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+
+    moveToLocation(mouse, interactions);
+    interactions.add(mouse.createPointerDown(Button.RIGHT.asArg()));
+    interactions.add(mouse.createPointerUp(Button.RIGHT.asArg()));
+
+    return interactions.build();
   }
 }

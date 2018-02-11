@@ -291,6 +291,14 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/application_cache/status').
       on(Request.Method.GET, Dispatcher.executeAs('getAppCacheStatus'));
 
+  // For use with the DriverService
+  // Shutdown responds to both GET and POST, emulating the ChromeDriver and
+  // IEDriver.
+  this.bind_('/shutdown').
+      on(Request.Method.GET, Dispatcher.executeAs('quit'));
+  this.bind_('/shutdown').
+      on(Request.Method.POST, Dispatcher.executeAs('quit'));
+
   // --------------------------------------------------------------------------
   // Firefox extensions to the wire protocol.
   // --------------------------------------------------------------------------

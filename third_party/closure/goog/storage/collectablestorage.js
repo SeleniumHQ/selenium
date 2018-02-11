@@ -51,13 +51,13 @@ goog.inherits(goog.storage.CollectableStorage, goog.storage.ExpiringStorage);
  * @return {!Array<string>} Keys of values that expired.
  * @private
  */
-goog.storage.CollectableStorage.prototype.getExpiredKeys_ =
-    function(keys, opt_strict) {
+goog.storage.CollectableStorage.prototype.getExpiredKeys_ = function(
+    keys, opt_strict) {
   var keysToRemove = [];
   goog.iter.forEach(keys, function(key) {
     // Get the wrapper.
     var wrapper;
-    /** @preserveTry */
+
     try {
       wrapper = goog.storage.CollectableStorage.prototype.getWrapper.call(
           this, key, true);
@@ -86,7 +86,7 @@ goog.storage.CollectableStorage.prototype.getExpiredKeys_ =
     }
     // Objects which can't be decoded are removed in strict mode.
     if (opt_strict) {
-      /** @preserveTry */
+
       try {
         goog.storage.RichStorage.Wrapper.unwrap(wrapper);
       } catch (ex) {
@@ -130,5 +130,6 @@ goog.storage.CollectableStorage.prototype.collectInternal = function(
 goog.storage.CollectableStorage.prototype.collect = function(opt_strict) {
   this.collectInternal(
       /** @type {goog.storage.mechanism.IterableMechanism} */ (this.mechanism)
-      .__iterator__(true), opt_strict);
+          .__iterator__(true),
+      opt_strict);
 };

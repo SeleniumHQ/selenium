@@ -1,4 +1,4 @@
-﻿// <copyright file="EventFiringWebDriver.cs" company="WebDriver Committers">
+// <copyright file="EventFiringWebDriver.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Text;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.Events
@@ -880,6 +879,11 @@ namespace OpenQA.Selenium.Support.Events
                 get { return this.wrappedOptions.Window; }
             }
 
+            public ILogs Logs
+            {
+                get { return this.wrappedOptions.Logs; }
+            }
+
             /// <summary>
             /// Provides access to the timeouts defined for this driver.
             /// </summary>
@@ -1091,11 +1095,10 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Specifies the amount of time the driver should wait when searching for an
-            /// element if it is not immediately present.
+            /// Gets or sets the implicit wait timeout, which is the  amount of time the
+            /// driver should wait when searching for an element if it is not immediately
+            /// present.
             /// </summary>
-            /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
-            /// <returns>A self reference</returns>
             /// <remarks>
             /// When searching for a single element, the driver should poll the page
             /// until the element has been found, or this timeout expires before throwing
@@ -1108,30 +1111,33 @@ namespace OpenQA.Selenium.Support.Events
             /// slower location strategies like XPath.
             /// </para>
             /// </remarks>
-            public ITimeouts ImplicitlyWait(TimeSpan timeToWait)
+            public TimeSpan ImplicitWait
             {
-                return this.wrappedTimeouts.ImplicitlyWait(timeToWait);
+                get { return this.wrappedTimeouts.ImplicitWait; }
+                set { this.wrappedTimeouts.ImplicitWait = value; }
             }
 
             /// <summary>
-            /// Specifies the amount of time the driver should wait when executing JavaScript asynchronously.
+            /// Gets or sets the asynchronous script timeout, which is the amount
+            /// of time the driver should wait when executing JavaScript asynchronously.
+            /// This timeout only affects the <see cref="IJavaScriptExecutor.ExecuteAsyncScript(string, object[])"/>
+            /// method.
             /// </summary>
-            /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
-            /// <returns>A self reference</returns>
-            public ITimeouts SetScriptTimeout(TimeSpan timeToWait)
+            public TimeSpan AsynchronousJavaScript
             {
-                return this.wrappedTimeouts.SetScriptTimeout(timeToWait);
+                get { return this.wrappedTimeouts.AsynchronousJavaScript; }
+                set { this.wrappedTimeouts.AsynchronousJavaScript = value; }
             }
 
             /// <summary>
-            /// Specifies the amount of time the driver should wait for a page to load when setting the <see cref="IWebDriver.Url"/> property.
+            /// Gets or sets the page load timeout, which is the amount of time the driver
+            /// should wait for a page to load when setting the <see cref="IWebDriver.Url"/>
+            /// property.
             /// </summary>
-            /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
-            /// <returns>A self reference</returns>
-            public ITimeouts SetPageLoadTimeout(TimeSpan timeToWait)
+            public TimeSpan PageLoad
             {
-                this.wrappedTimeouts.SetPageLoadTimeout(timeToWait);
-                return this;
+                get { return this.wrappedTimeouts.PageLoad; }
+                set { this.wrappedTimeouts.PageLoad = value; }
             }
         }
 
@@ -1423,6 +1429,28 @@ namespace OpenQA.Selenium.Support.Events
                 }
 
                 return attribute;
+            }
+
+            /// <summary>
+            /// Gets the value of a JavaScript property of this element.
+            /// </summary>
+            /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+            /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
+            /// value is not set or the property does not exist.</returns>
+            public string GetProperty(string propertyName)
+            {
+                string elementProperty = string.Empty;
+                try
+                {
+                    elementProperty = this.underlyingElement.GetProperty(propertyName);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return elementProperty;
             }
 
             /// <summary>

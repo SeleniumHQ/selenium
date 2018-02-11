@@ -25,12 +25,12 @@ from .service import Service
 class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path='MicrosoftWebDriver.exe',
-                 capabilities=None, port=0):
+                 capabilities=None, port=0, verbose=False, log_path=None):
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
 
-        self.edge_service = Service(executable_path, port=self.port)
+        self.edge_service = Service(executable_path, port=self.port, verbose=verbose, log_path=log_path)
         self.edge_service.start()
 
         if capabilities is None:

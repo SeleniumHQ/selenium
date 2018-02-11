@@ -15,17 +15,30 @@
 // limitations under the License.
 
 #include "Alert.h"
+#include "errorcodes.h"
 #include "logging.h"
+#include "DocumentHost.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 
-Alert::Alert(BrowserHandle browser, HWND handle) {
+Alert::Alert(std::shared_ptr<DocumentHost> browser, HWND handle) {
   LOG(TRACE) << "Entering Alert::Alert";
   this->browser_ = browser;
   this->alert_handle_ = handle;
 
+  this->is_standard_alert_ = true;
+  this->is_standard_control_alert_ = true;
   HWND direct_ui_child = this->GetDirectUIChild();
-  this->is_standard_alert_ = direct_ui_child == NULL;
+  if (direct_ui_child) {
+    this->is_standard_control_alert_ = false;
+    DialogButtonInfo cancel_button_info = this->GetDialogButton(CANCEL);
+    if (cancel_button_info.button_exists) {
+      this->is_standard_alert_ = !IsLinkButton(cancel_button_info.button_handle);
+    } else {
+      this->is_standard_alert_ = false;
+    }
+  }
 
   std::vector<HWND> text_boxes;
   ::EnumChildWindows(this->alert_handle_,
@@ -135,14 +148,20 @@ int Alert::SendKeysInternal(const std::string& keys,
 std::string Alert::GetText() {
   LOG(TRACE) << "Entering Alert::GetText";
   std::string alert_text_value = "";
-  if (this->is_standard_alert_) {
+  if (this->is_standard_control_alert_) {
     alert_text_value = this->GetStandardDialogText();
   } else {
     std::string alert_text = this->GetDirectUIDialogText();
     if (!this->is_security_alert_) {
-      size_t first_crlf = alert_text.find("\r\n\r\n");
-      if (first_crlf != std::string::npos && first_crlf + 4 < alert_text.size()) {
-        alert_text_value = alert_text.substr(first_crlf + 4);
+      if (!this->is_standard_alert_) {
+        // This means the alert is from onbeforeunload, and we need to
+        // strip off everything up to and including the first CR-LF pair.
+        size_t first_crlf = alert_text.find("\r\n\r\n");
+        if (first_crlf != std::string::npos && first_crlf + 4 < alert_text.size()) {
+          alert_text_value = alert_text.substr(first_crlf + 4);
+        }
+      } else {
+        alert_text_value = alert_text;
       }
     }
   }
@@ -227,12 +246,18 @@ std::string Alert::GetDirectUIDialogText() {
     return alert_text_value;
   }
 
-  // ASSUMPTION: The second "static text" accessibility object is the one
-  // that contains the message.
+  int child_index = 0;
+  if (!this->is_standard_alert_) {
+    // ASSUMPTION: This means the alert is from onbeforeunload, and
+    // the second "static text" accessibility object is the one
+    // that contains the message.
+    child_index = 1;
+  }
+
   CComPtr<IAccessible> message_text_object = this->GetChildWithRole(
       pane_object,
       ROLE_SYSTEM_STATICTEXT,
-      1);
+      child_index);
   if (!message_text_object) {
     LOG(WARN) << "Failed to get Active Accessibility text child object from pane";
     return alert_text_value;
@@ -322,7 +347,7 @@ HWND Alert::GetDirectUIChild() {
 int Alert::ClickAlertButton(DialogButtonInfo button_info) {
   LOG(TRACE) << "Entering Alert::ClickAlertButton";
   // Click on the appropriate button of the Alert
-  if (this->is_standard_alert_) {
+  if (this->is_standard_control_alert_) {
     ::SendMessage(this->alert_handle_,
                   WM_COMMAND,
                   button_info.button_control_id,
@@ -425,6 +450,17 @@ bool Alert::IsCancelButton(HWND button_handle) {
     // The BS_DEFCOMMANDLINK mask includes BS_COMMANDLINK, but we
     // want only to match those without the default bits set.
     return button_style == BS_COMMANDLINK || button_style == BS_PUSHBUTTON;
+  }
+  return false;
+}
+
+bool Alert::IsLinkButton(HWND button_handle) {
+  std::vector<wchar_t> button_window_class(100);
+  ::GetClassName(button_handle, &button_window_class[0], static_cast<int>(button_window_class.size()));
+  if (wcscmp(&button_window_class[0], L"Button") == 0) {
+    long window_long = ::GetWindowLong(button_handle, GWL_STYLE);
+    long button_style = window_long & BS_TYPEMASK;
+    return button_style == BS_COMMANDLINK;
   }
   return false;
 }

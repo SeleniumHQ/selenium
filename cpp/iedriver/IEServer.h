@@ -30,7 +30,6 @@ class IEServer : public Server {
            const std::string& log_level,
            const std::string& log_file,
            const std::string& version,
-           const std::string& driver_implementation,
            const std::string& acl);
   virtual ~IEServer(void);
 
@@ -40,7 +39,6 @@ class IEServer : public Server {
   virtual void ShutDown(void);
  private:
   std::string version_;
-  std::string driver_implementation_;
 };
 
 } // namespace webdriver

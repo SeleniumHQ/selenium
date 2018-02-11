@@ -17,287 +17,20 @@
 
 'use strict';
 
-var assert = require('assert');
-var http = require('http');
-var sinon = require('sinon');
-var url = require('url');
+var assert = require('assert'),
+    http = require('http'),
+    url = require('url');
 
-var error = require('../../error');
-var Executor = require('../../http').Executor;
-var HttpClient = require('../../http').HttpClient;
-var HttpRequest = require('../../http').Request;
-var HttpResponse = require('../../http').Response;
-var buildPath = require('../../http').buildPath;
-var Command = require('../../lib/command').Command;
-var CommandName = require('../../lib/command').Name;
-var Server = require('../../lib/test/httpserver').Server;
-var promise = require('../..').promise;
-
-describe('buildPath', function() {
-  it('properly replaces path segments with command parameters', function() {
-    var parameters = {'sessionId':'foo', 'url':'http://www.google.com'};
-    var finalPath = buildPath('/session/:sessionId/url', parameters);
-    assert.equal(finalPath, '/session/foo/url');
-    assert.deepEqual(parameters,  {'url':'http://www.google.com'});
-  });
-
-  it('handles web element references', function() {
-    var parameters = {'sessionId':'foo', 'id': {}};
-    parameters['id']['ELEMENT'] = 'bar';
-
-    var finalPath = buildPath(
-        '/session/:sessionId/element/:id/click', parameters);
-    assert.equal(finalPath, '/session/foo/element/bar/click');
-    assert.deepEqual(parameters, {});
-  });
-
-  it('throws if missing a parameter', function() {
-    assert.throws(
-      () => buildPath('/session/:sessionId', {}),
-      function(err) {
-        return err instanceof error.InvalidArgumentError
-            && 'Missing required parameter: sessionId' === err.message;
-      });
-
-    assert.throws(
-      () => buildPath('/session/:sessionId/element/:id', {'sessionId': 'foo'}),
-      function(err) {
-        return err instanceof error.InvalidArgumentError
-            && 'Missing required parameter: id' === err.message;
-      });
-  });
-
-  it('does not match on segments that do not start with a colon', function() {
-    assert.equal(buildPath('/session/foo:bar/baz', {}), '/session/foo:bar/baz');
-  });
-});
-
-describe('Executor', function() {
-  let executor;
-  let send;
-
-  beforeEach(function setUp() {
-    let client = new HttpClient('http://www.example.com');
-    send = sinon.stub(client, 'send');
-    executor = new Executor(client);
-  });
-
-  it('rejects unrecognized commands', function() {
-    assert.throws(
-        () => executor.execute(new Command('fake-name')),
-        function (err) {
-          return err instanceof error.UnknownCommandError
-              && 'Unrecognized command: fake-name' === err.message;
-        });
-  });
-
-  it('rejects promise if client fails to send request', function() {
-    let error = new Error('boom');
-    send.returns(Promise.reject(error));
-    return assertFailsToSend(new Command(CommandName.NEW_SESSION))
-        .then(function(e) {
-           assert.strictEqual(error, e);
-           assertSent(
-               'POST', '/session', {},
-               [['Accept', 'application/json; charset=utf-8']]);
-        });
-  });
-
-  it('can execute commands with no URL parameters', function() {
-    send.returns(Promise.resolve(new HttpResponse(200, {}, '')));
-
-    let command = new Command(CommandName.NEW_SESSION);
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent(
-           'POST', '/session', {},
-           [['Accept', 'application/json; charset=utf-8']]);
-    });
-  });
-
-  it('rejects commands missing URL parameters', function() {
-    let command =
-        new Command(CommandName.FIND_CHILD_ELEMENT).
-            setParameter('sessionId', 's123').
-            // Let this be missing: setParameter('id', {'ELEMENT': 'e456'}).
-            setParameter('using', 'id').
-            setParameter('value', 'foo');
-
-    assert.throws(
-        () => executor.execute(command),
-        function(err) {
-          return err instanceof error.InvalidArgumentError
-              && 'Missing required parameter: id' === err.message;
-        });
-    assert.ok(!send.called);
-  });
-
-  it('replaces URL parameters with command parameters', function() {
-    var command = new Command(CommandName.GET).
-        setParameter('sessionId', 's123').
-        setParameter('url', 'http://www.google.com');
-
-    send.returns(Promise.resolve(new HttpResponse(200, {}, '')));
-
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent(
-           'POST', '/session/s123/url', {'url': 'http://www.google.com'},
-           [['Accept', 'application/json; charset=utf-8']]);
-    });
-  });
-
-  it('returns parsed JSON response', function() {
-    var responseObj = {
-      'status': error.ErrorCode.SUCCESS,
-      'value': 'http://www.google.com'
-    };
-
-    var command = new Command(CommandName.GET_CURRENT_URL).
-        setParameter('sessionId', 's123');
-
-
-    send.returns(Promise.resolve(
-        new HttpResponse(200, {}, JSON.stringify(responseObj))));
-
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent('GET', '/session/s123/url', {},
-           [['Accept', 'application/json; charset=utf-8']]);
-       assert.deepEqual(response, responseObj);
-    });
-  });
-
-  it('returns success for 2xx with body as value when not json', function() {
-    var command = new Command(CommandName.GET_CURRENT_URL).
-        setParameter('sessionId', 's123');
-
-    send.returns(Promise.resolve(
-        new HttpResponse(200, {}, 'hello, world\r\ngoodbye, world!')));
-
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent('GET', '/session/s123/url', {},
-           [['Accept', 'application/json; charset=utf-8']]);
-       assert.deepEqual(response, {
-         'status': error.ErrorCode.SUCCESS,
-         'value': 'hello, world\ngoodbye, world!'
-       });
-    });
-  });
-
-  it('returns success for 2xx with invalid JSON body', function() {
-    var command = new Command(CommandName.GET_CURRENT_URL).
-        setParameter('sessionId', 's123');
-
-    send.returns(Promise.resolve(
-        new HttpResponse(200, {}, '[')));
-
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent('GET', '/session/s123/url', {},
-           [['Accept', 'application/json; charset=utf-8']]);
-       assert.deepEqual(response, {
-         'status': error.ErrorCode.SUCCESS,
-         'value': '['
-       });
-    });
-  });
-
-  it('returns unknown command for 404 with body as value when not json',
-      function() {
-        var command = new Command(CommandName.GET_CURRENT_URL).
-            setParameter('sessionId', 's123');
-
-        send.returns(Promise.resolve(
-            new HttpResponse(404, {}, 'hello, world\r\ngoodbye, world!')));
-
-        return assertSendsSuccessfully(command, function(response) {
-           assertSent('GET', '/session/s123/url', {},
-               [['Accept', 'application/json; charset=utf-8']]);
-           assert.deepEqual(response, {
-             'status': error.ErrorCode.UNKNOWN_COMMAND,
-             'value': 'hello, world\ngoodbye, world!'
-           });
-      });
-     });
-
-  it('returnsUnknownErrorForGenericErrorCodeWithBodyAsValueWhenNotJSON',
-      function() {
-        var command = new Command(CommandName.GET_CURRENT_URL).
-            setParameter('sessionId', 's123');
-
-        send.returns(Promise.resolve(
-            new HttpResponse(500, {}, 'hello, world\r\ngoodbye, world!')));
-
-        return assertSendsSuccessfully(command).then(function(response) {
-           assertSent('GET', '/session/s123/url', {},
-               [['Accept', 'application/json; charset=utf-8']]);
-           assert.deepEqual(response, {
-             'status': error.ErrorCode.UNKNOWN_ERROR,
-             'value': 'hello, world\ngoodbye, world!'
-           });
-        });
-      });
-
-  it('canDefineNewCommands', function() {
-    executor.defineCommand('greet', 'GET', '/person/:name');
-
-    var command = new Command('greet').
-        setParameter('name', 'Bob');
-
-    send.returns(Promise.resolve(new HttpResponse(200, {}, '')));
-
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent('GET', '/person/Bob', {},
-           [['Accept', 'application/json; charset=utf-8']]);
-    });
-  });
-
-  it('canRedefineStandardCommands', function() {
-    executor.defineCommand(CommandName.GO_BACK, 'POST', '/custom/back');
-
-    var command = new Command(CommandName.GO_BACK).
-        setParameter('times', 3);
-
-    send.returns(Promise.resolve(new HttpResponse(200, {}, '')));
-
-    return assertSendsSuccessfully(command).then(function(response) {
-       assertSent('POST', '/custom/back', {'times': 3},
-           [['Accept', 'application/json; charset=utf-8']]);
-    });
-  });
-
-  function entries(map) {
-    let entries = [];
-    for (let e of map.entries()) {
-      entries.push(e);
-    }
-    return entries;
-  }
-
-  function assertSent(method, path, data, headers) {
-    assert.ok(send.calledWith(sinon.match(function(value) {
-      assert.equal(value.method, method);
-      assert.equal(value.path, path);
-      assert.deepEqual(value.data, data);
-      assert.deepEqual(entries(value.headers), headers);
-      return true;
-    })));
-  }
-
-  function assertSendsSuccessfully(command) {
-    return executor.execute(command).then(function(response) {
-      return response;
-    });
-  }
-
-  function assertFailsToSend(command, opt_onError) {
-    return executor.execute(command).then(
-        () => {throw Error('should have failed')},
-        (e) => {return e});
-  }
-});
+var HttpClient = require('../../http').HttpClient,
+    HttpRequest = require('../../lib/http').Request,
+    HttpResponse = require('../../lib/http').Response,
+    Server = require('../../lib/test/httpserver').Server;
 
 describe('HttpClient', function() {
-  this.timeout(4 * 1000);
 
   var server = new Server(function(req, res) {
+    let parsedUrl = url.parse(req.url);
+
     if (req.method == 'GET' && req.url == '/echo') {
       res.writeHead(200, req.headers);
       res.end();
@@ -309,6 +42,14 @@ describe('HttpClient', function() {
     } else if (req.method == 'GET' && req.url == '/hello') {
       res.writeHead(200, {'content-type': 'text/plain'});
       res.end('hello, world!');
+
+    } else if (req.method == 'GET' && req.url == '/chunked') {
+      res.writeHead(200, {
+        'content-type': 'text/html; charset=utf-8',
+        'transfer-encoding': 'chunked'
+      });
+      res.write('<!DOCTYPE html>');
+      setTimeout(() => res.end('<h1>Hello, world!</h1>'), 20);
 
     } else if (req.method == 'GET' && req.url == '/badredirect') {
       res.writeHead(303, {});
@@ -338,12 +79,19 @@ describe('HttpClient', function() {
       res.writeHead(200, {'content-type': 'text/plain'});
       res.end('Access granted!');
 
-    } else if (req.method == 'GET' && req.url == '/proxy') {
-      res.writeHead(200, req.headers);
+    } else if (req.method == 'GET'
+        && parsedUrl.pathname
+        && parsedUrl.pathname.endsWith('/proxy')) {
+      let headers = Object.assign({}, req.headers);
+      headers['x-proxy-request-uri'] = req.url;
+      res.writeHead(200, headers);
       res.end();
 
-    } else if (req.method == 'GET' && req.url == '/proxy/redirect') {
-      res.writeHead(303, {'Location': '/proxy'});
+    } else if (req.method == 'GET'
+        && parsedUrl.pathname
+        && parsedUrl.pathname.endsWith('/proxy/redirect')) {
+      let path = `/proxy${parsedUrl.search || ''}${parsedUrl.hash || ''}`;
+      res.writeHead(303, {'Location': path});
       res.end();
 
     } else {
@@ -377,6 +125,16 @@ describe('HttpClient', function() {
       assert.equal(request.headers.get('Foo'), 'Bar');
       assert.equal(
           request.headers.get('Accept'), 'application/json; charset=utf-8');
+    });
+  });
+
+  it('handles chunked responses', function() {
+    let request = new HttpRequest('GET', '/chunked');
+
+    let client = new HttpClient(server.url());
+    return client.send(request).then(response => {
+      assert.equal(200, response.status);
+      assert.equal(response.body, '<!DOCTYPE html><h1>Hello, world!</h1>');
     });
   });
 
@@ -421,23 +179,44 @@ describe('HttpClient', function() {
     });
   });
 
-  it('proxies requests through the webdriver proxy', function() {
-    var request = new HttpRequest('GET', '/proxy');
-    var client = new HttpClient(
-        'http://another.server.com', undefined, server.url());
-    return client.send(request).then(function(response) {
-       assert.equal(200, response.status);
-       assert.equal(response.headers.get('host'), 'another.server.com');
+  describe('with proxy', function() {
+    it('sends request to proxy with absolute URI', function() {
+      var request = new HttpRequest('GET', '/proxy');
+      var client = new HttpClient(
+          'http://another.server.com', undefined, server.url());
+      return client.send(request).then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal(response.headers.get('host'), 'another.server.com');
+        assert.equal(
+            response.headers.get('x-proxy-request-uri'),
+            'http://another.server.com/proxy');
+      });
     });
-  });
 
-  it('proxies requests through the webdriver proxy on redirect', function() {
-    var request = new HttpRequest('GET', '/proxy/redirect');
-    var client = new HttpClient(
-        'http://another.server.com', undefined, server.url());
-    return client.send(request).then(function(response) {
-      assert.equal(200, response.status);
-      assert.equal(response.headers.get('host'), 'another.server.com');
+    it('uses proxy when following redirects', function() {
+      var request = new HttpRequest('GET', '/proxy/redirect');
+      var client = new HttpClient(
+          'http://another.server.com', undefined, server.url());
+      return client.send(request).then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal(response.headers.get('host'), 'another.server.com');
+        assert.equal(
+            response.headers.get('x-proxy-request-uri'),
+            'http://another.server.com/proxy');
+      });
+    });
+
+    it('includes search and hash in redirect URI', function() {
+      var request = new HttpRequest('GET', '/proxy/redirect?foo#bar');
+      var client = new HttpClient(
+          'http://another.server.com', undefined, server.url());
+      return client.send(request).then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal(response.headers.get('host'), 'another.server.com');
+        assert.equal(
+            response.headers.get('x-proxy-request-uri'),
+            'http://another.server.com/proxy?foo#bar');
+      });
     });
   });
 });

@@ -31,6 +31,7 @@ namespace webdriver {
 // Forward declaration of classes to avoid
 // circular include files.
 class IECommandExecutor;
+class IElementManager;
 
 class VariantUtilities {
  private:
@@ -50,6 +51,11 @@ class VariantUtilities {
   static int ConvertVariantToJsonValue(const IECommandExecutor& executor,
                                        VARIANT variant_value,
                                        Json::Value* value);
+  static int ConvertVariantToJsonValue(IElementManager* element_manager,
+                                       VARIANT variant_value,
+                                       Json::Value* value);
+  static bool ConvertVariantToString(VARIANT variant_value,
+                                     std::string* value);
   static std::wstring GetVariantObjectTypeName(VARIANT value);
   static bool GetVariantObjectPropertyValue(IDispatch* variant_object,
                                             std::wstring property_name,
@@ -57,11 +63,10 @@ class VariantUtilities {
 
  private:
   static int GetArrayLength(IDispatch* array_dispatch, long* length);
-  static int GetArrayItem(const IECommandExecutor& executor,
+  static int GetArrayItem(IElementManager* element_manager,
                           IDispatch* array_dispatch,
                           long index,
                           Json::Value* item);
-
   static int GetPropertyNameList(IDispatch* object_dispatch,
                                  std::vector<std::wstring>* property_names);
 };

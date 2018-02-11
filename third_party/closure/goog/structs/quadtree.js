@@ -51,8 +51,8 @@ goog.structs.QuadTree = function(minX, minY, maxX, maxY) {
    * The root node for the quad tree.
    * @private {goog.structs.QuadTree.Node}
    */
-  this.root_ = new goog.structs.QuadTree.Node(
-      minX, minY, maxX - minX, maxY - minY);
+  this.root_ =
+      new goog.structs.QuadTree.Node(minX, minY, maxX - minX, maxY - minY);
 };
 
 

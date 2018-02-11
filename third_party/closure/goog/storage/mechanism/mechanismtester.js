@@ -153,8 +153,10 @@ function testWeirdKeys() {
   mechanism.set('', 'zero');
   assertEquals('space', mechanism.get(' '));
   assertEquals('control', mechanism.get('=+!@#$%^&*()-_\\|;:\'",./<>?[]{}~`'));
-  assertEquals('ten', mechanism.get(
-      '\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341'));
+  assertEquals(
+      'ten',
+      mechanism.get(
+          '\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341'));
   if (!goog.userAgent.IE) {
     // IE does not properly handle nulls in HTML5 localStorage keys (IE8, IE9).
     // https://connect.microsoft.com/IE/feedback/details/667799/
@@ -176,12 +178,11 @@ function testQuota() {
   }
   // This test might crash Safari 4, so it is disabled for this version.
   // It works fine on Safari 3 and Safari 5.
-  if (goog.userAgent.product.SAFARI &&
-      goog.userAgent.product.isVersion(4) &&
+  if (goog.userAgent.product.SAFARI && goog.userAgent.product.isVersion(4) &&
       !goog.userAgent.product.isVersion(5)) {
     return;
   }
-  var buffer = '\u03ff'; // 2 bytes
+  var buffer = '\u03ff';  // 2 bytes
   var savedBytes = 0;
   try {
     while (buffer.length < minimumQuota) {

@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
-import static org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
-import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
@@ -31,7 +27,6 @@ import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 
@@ -54,12 +49,10 @@ public class FirefoxProfile {
   private Preferences additionalPrefs;
 
   private Map<String, Extension> extensions = Maps.newHashMap();
-  private boolean enableNativeEvents;
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
   private boolean untrustedCertIssuer;
   private File model;
-  private static final String ENABLE_NATIVE_EVENTS_PREF = "webdriver_enable_native_events";
   private static final String ACCEPT_UNTRUSTED_CERTS_PREF = "webdriver_accept_untrusted_certs";
   private static final String ASSUME_UNTRUSTED_ISSUER_PREF = "webdriver_assume_untrusted_issuer";
 
@@ -94,17 +87,12 @@ public class FirefoxProfile {
     if (prefsInModel.exists()) {
       StringReader reader = new StringReader("{\"frozen\": {}, \"mutable\": {}}");
       Preferences existingPrefs = new Preferences(reader, prefsInModel);
-      enableNativeEvents = getBooleanPreference(existingPrefs, ENABLE_NATIVE_EVENTS_PREF,
-                                                DEFAULT_ENABLE_NATIVE_EVENTS);
-      acceptUntrustedCerts = getBooleanPreference(existingPrefs, ACCEPT_UNTRUSTED_CERTS_PREF,
-                                                  ACCEPT_UNTRUSTED_CERTIFICATES);
-      untrustedCertIssuer = getBooleanPreference(existingPrefs, ASSUME_UNTRUSTED_ISSUER_PREF,
-                                                 ASSUME_UNTRUSTED_ISSUER);
+      acceptUntrustedCerts = getBooleanPreference(existingPrefs, ACCEPT_UNTRUSTED_CERTS_PREF, true);
+      untrustedCertIssuer = getBooleanPreference(existingPrefs, ASSUME_UNTRUSTED_ISSUER_PREF, true);
       existingPrefs.addTo(additionalPrefs);
     } else {
-      enableNativeEvents = DEFAULT_ENABLE_NATIVE_EVENTS;
-      acceptUntrustedCerts = ACCEPT_UNTRUSTED_CERTIFICATES;
-      untrustedCertIssuer = ASSUME_UNTRUSTED_ISSUER;
+      acceptUntrustedCerts = true;
+      untrustedCertIssuer = true;
     }
 
     // This is not entirely correct but this is not stored in the profile
@@ -148,7 +136,7 @@ public class FirefoxProfile {
 
   public String getStringPreference(String key, String defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof String){
+    if(preference != null && preference instanceof String) {
       return (String) preference;
     }
     return defaultValue;
@@ -156,7 +144,7 @@ public class FirefoxProfile {
 
   public int getIntegerPreference(String key, int defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Integer){
+    if(preference != null && preference instanceof Integer) {
       return (Integer) preference;
     }
     return defaultValue;
@@ -164,7 +152,7 @@ public class FirefoxProfile {
 
   public boolean getBooleanPreference(String key, boolean defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Boolean){
+    if(preference != null && preference instanceof Boolean) {
       return (Boolean) preference;
     }
     return defaultValue;
@@ -190,7 +178,7 @@ public class FirefoxProfile {
     return extensions.containsKey("webdriver");
   }
 
-  public void addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
+  public void addExtension(Class<?> loadResourcesUsing, String loadFrom) {
     // Is loadFrom a file?
     File file = new File(loadFrom);
     if (file.exists()) {
@@ -205,9 +193,8 @@ public class FirefoxProfile {
    * Attempt to add an extension to install into this instance.
    *
    * @param extensionToInstall File pointing to the extension
-   * @throws IOException IO Exception if can't read the extension to install
    */
-  public void addExtension(File extensionToInstall) throws IOException {
+  public void addExtension(File extensionToInstall) {
     addExtension(extensionToInstall.getName(), new FileExtension(extensionToInstall));
   }
 
@@ -279,9 +266,6 @@ public class FirefoxProfile {
 
     additionalPrefs.addTo(prefs);
 
-    // Should we use native events?
-    prefs.setPreference(ENABLE_NATIVE_EVENTS_PREF, enableNativeEvents);
-
     // Should we accept untrusted certificates or not?
     prefs.setPreference(ACCEPT_UNTRUSTED_CERTS_PREF, acceptUntrustedCerts);
 
@@ -297,14 +281,10 @@ public class FirefoxProfile {
       prefs.setPreference("browser.startup.page", 1);
     }
 
-    FileWriter writer = null;
-    try {
-      writer = new FileWriter(userPrefs);
+    try (FileWriter writer = new FileWriter(userPrefs)) {
       prefs.writeTo(writer);
     } catch (IOException e) {
       throw new WebDriverException(e);
-    } finally {
-      IOUtils.closeQuietly(writer);
     }
   }
 
@@ -321,14 +301,6 @@ public class FirefoxProfile {
     if (cacheFile.exists()) {
       cacheFile.delete();
     }
-  }
-
-  public boolean areNativeEventsEnabled() {
-    return enableNativeEvents;
-  }
-
-  public void setEnableNativeEvents(boolean enableNativeEvents) {
-    this.enableNativeEvents = enableNativeEvents;
   }
 
   /**
@@ -384,17 +356,16 @@ public class FirefoxProfile {
   }
 
   public String toJson() throws IOException {
-    File generatedProfile = layoutOnDisk();
-
-    return new Zip().zip(generatedProfile);
+    File file = layoutOnDisk();
+    try {
+      return Zip.zip(file);
+    } finally {
+      clean(file);
+    }
   }
 
   public static FirefoxProfile fromJson(String json) throws IOException {
-    File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "duplicated");
-
-    new Zip().unzip(json, dir);
-
-    return new FirefoxProfile(dir);
+    return new FirefoxProfile(Zip.unzipToTempDir(json, "webdriver", "duplicated"));
   }
 
   protected void cleanTemporaryModel() {

@@ -1,10 +1,14 @@
+# BUILD FILE SYNTAX: SKYLARK
+load("//:selenium-version.bzl", "SE_VERSION")
+
 java_library(name = 'ie',
+  maven_coords = 'org.seleniumhq.selenium:selenium-ie-driver:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(['*.java']),
-  deps = [
-    '//java/client/src/org/openqa/selenium/net:net',
-    '//java/client/src/org/openqa/selenium/remote/service:service',
+  exported_deps = [
     '//java/client/src/org/openqa/selenium/remote:remote',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
+  ],
+  deps = [
     '//third_party/java/guava:guava',
   ],
   visibility = [ 'PUBLIC' ],

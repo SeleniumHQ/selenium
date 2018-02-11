@@ -20,9 +20,8 @@
  */
 package org.openqa.selenium.lift.find;
 
-import static org.openqa.selenium.lift.match.TextMatcher.text;
-
 import static org.hamcrest.Matchers.equalTo;
+import static org.openqa.selenium.lift.match.TextMatcher.text;
 
 import org.hamcrest.Factory;
 

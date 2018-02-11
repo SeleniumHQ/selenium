@@ -15,32 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.io;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Random;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 @RunWith(JUnit4.class)
 public class ZipTest {
   private File inputDir;
   private File outputDir;
-  private Zip zip;
   private TemporaryFilesystem tmpFs;
 
   @Before
@@ -51,8 +50,6 @@ public class ZipTest {
 
     inputDir = tmpFs.createTempDir("input", "ziptest");
     outputDir = tmpFs.createTempDir("output", "ziptest");
-
-    zip = new Zip();
   }
 
   @After
@@ -61,81 +58,15 @@ public class ZipTest {
   }
 
   @Test
-  public void testShouldCreateAZipWithASingleEntry() throws IOException {
-    touch(new File(inputDir, "example.txt"));
-
-    File output = new File(outputDir, "my.zip");
-    zip.zip(inputDir, output);
-
-    assertTrue(output.exists());
-    assertZipContains(output, "example.txt");
-  }
-
-  @Test
-  public void testShouldZipUpASingleSubDirectory() throws IOException {
-    touch(new File(inputDir, "subdir/example.txt"));
-
-    File output = new File(outputDir, "subdir.zip");
-    zip.zip(inputDir, output);
-
-    assertTrue(output.exists());
-    assertZipContains(output, "subdir/example.txt");
-  }
-
-  @Test
-  public void testShouldZipMultipleDirectories() throws IOException {
-    touch(new File(inputDir, "subdir/example.txt"));
-    touch(new File(inputDir, "subdir2/fishy/food.txt"));
-
-    File output = new File(outputDir, "subdir.zip");
-    zip.zip(inputDir, output);
-
-    assertTrue(output.exists());
-    assertZipContains(output, "subdir/example.txt");
-    assertZipContains(output, "subdir2/fishy/food.txt");
-  }
-
-  @Test
-  public void testCanUnzipASingleEntry() throws IOException {
-    File source = InProject.locate(
-        "java/client/test/org/openqa/selenium/internal/single-file.zip");
-
-    zip.unzip(source, outputDir);
-
-    assertTrue(new File(outputDir, "example.txt").exists());
-  }
-
-  @Test
-  public void testCanUnzipAComplexZip() throws IOException {
-    File source = InProject.locate(
-        "java/client/test/org/openqa/selenium/internal/subfolders.zip");
-
-    zip.unzip(source, outputDir);
-
-    assertTrue(new File(outputDir, "example.txt").exists());
-    assertTrue(new File(outputDir, "subdir/foodyfun.txt").exists());
-  }
-
-  @Test
-  public void testWillNotOverwriteAnExistingZip() {
-    try {
-      zip.zip(inputDir, outputDir);
-      fail("Should have thrown an exception");
-    } catch (IOException e) {
-      assertTrue(e.getMessage(), e.getMessage().contains("already exists"));
-    }
-  }
-
-  @Test
   public void testCanZipASingleFile() throws IOException {
     File input = new File(inputDir, "foo.txt");
     File unwanted = new File(inputDir, "nay.txt");
-    touch(input);
-    touch(unwanted);
+    writeTestFile(input);
+    writeTestFile(unwanted);
 
-    String zipped = zip.zipFile(inputDir, input);
+    String zipped = Zip.zip(input);
 
-    zip.unzip(zipped, outputDir);
+    Zip.unzip(zipped, outputDir);
     File unzipped = new File(outputDir, "foo.txt");
     File notThere = new File(outputDir, "nay.txt");
 
@@ -144,40 +75,64 @@ public class ZipTest {
   }
 
   @Test
-  public void testZippingASingleFileWillThrowIfInputIsNotAFile() throws IOException {
-    try {
-      zip.zipFile(inputDir.getParentFile(), inputDir);
-      fail("Should have failed");
-    } catch (IllegalArgumentException ignored) {
-    }
+  public void testCanZipADirectory() throws IOException {
+    File input1 = new File(inputDir, "foo.txt");
+    File input2 = new File(inputDir, "bar/bar.txt");
+    writeTestFile(input1);
+    writeTestFile(input2);
+
+    String zipped = Zip.zip(inputDir);
+
+    Zip.unzip(zipped, outputDir);
+    File unzipped1 = new File(outputDir, "foo.txt");
+    File unzipped2 = new File(outputDir, "bar/bar.txt");
+
+    assertTrue(unzipped1.exists());
+    assertTrue(unzipped2.exists());
   }
 
-  private void assertZipContains(File output, String s) throws IOException {
-    FileInputStream fis = new FileInputStream(output);
-    ZipInputStream zis = new ZipInputStream(fis);
-    try {
-      ZipEntry entry;
-      while ((entry = zis.getNextEntry()) != null) {
-        if (s.equals(entry.getName().replaceAll("\\\\", "/"))) {
-          return;
-        }
+  @Test
+  public void testCanUnzip() throws IOException {
+    File testZip = File.createTempFile("testUnzip", "zip");
+    writeTestZip(testZip, 25);
+    File out = Zip.unzipToTempDir(new FileInputStream(testZip), "unzip", "stream");
+    assertEquals(25, out.list().length);
+  }
+
+  private File writeTestZip(File file, int files) throws IOException {
+    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
+    for (int i = 0; i < files; i++) {
+      writeTestZipEntry(out);
+    }
+    out.close();
+    file.deleteOnExit();
+    return file;
+  }
+
+  private void writeTestZipEntry(ZipOutputStream out) throws IOException {
+    File testFile = File.createTempFile("testZip", "file");
+    writeTestFile(testFile);
+    ZipEntry entry = new ZipEntry(testFile.getName());
+    out.putNextEntry(entry);
+    try (FileInputStream in = new FileInputStream(testFile)) {
+      byte[] buffer = new byte[16384];
+      while (in.read(buffer, 0, 16384) != -1) {
+        out.write(buffer);
       }
-    } finally {
-      zis.close();
     }
-
-    fail("File not in zip: " + s);
+    out.flush();
   }
 
-  private void touch(File file) throws IOException {
+  private void writeTestFile(File file) throws IOException {
     File parent = file.getParentFile();
     if (!parent.exists()) {
       assertTrue(parent.mkdirs());
     }
-    FileOutputStream fos = new FileOutputStream(file);
-    fos.write("".getBytes());
-    fos.close();
-
-    assertTrue(file.exists());
+    byte[] byteArray = new byte[16384];
+    new Random().nextBytes(byteArray);
+    try (OutputStream out = new FileOutputStream(file)) {
+      out.write(byteArray);
+    }
+    file.deleteOnExit();
   }
 }

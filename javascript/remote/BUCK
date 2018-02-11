@@ -14,13 +14,36 @@ export_file(name = 'style',
   ],
 )
 
-js_binary(name = 'client',
+browsers = {
+  'firefox': 'ff',
+  'chrome': 'chrome',
+  'ie': 'ie'}
+for browser in browsers.keys():
+  java_test(
+    name = 'remote-%s' % browser,
+    vm_args = [
+      '-Dselenium.browser=%s' % browsers[browser],
+      '-Djs.test.timeout=20',
+      '-Djs.test.dir=%s' % get_base_path(),
+    ],
+    test_classes = [
+      'org.openqa.selenium.javascript.ClosureTestSuite',
+    ],
+    deps = [
+      '//java/client/test/org/openqa/selenium/javascript:javascript',
+      '//java/client/src/org/openqa/selenium/chrome:chrome',
+      '//java/client/src/org/openqa/selenium/edge:edge',
+      '//java/client/src/org/openqa/selenium/ie:ie',
+      '//java/client/src/org/openqa/selenium/firefox:firefox',
+    ],
+  )
+
+
+closure_binary(name = 'client',
   srcs = glob(['*.js', 'ui/*.js',]),
   deps = [
     '//javascript/atoms:errors',
-    '//javascript/webdriver:base',
     '//javascript/webdriver:http',
-    '//javascript/webdriver:session',
     '//third_party/closure:closure',
   ],
   flags = [

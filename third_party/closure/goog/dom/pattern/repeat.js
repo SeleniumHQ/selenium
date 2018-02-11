@@ -38,9 +38,7 @@ goog.require('goog.dom.pattern.MatchType');
  * @extends {goog.dom.pattern.AbstractPattern}
  * @final
  */
-goog.dom.pattern.Repeat = function(pattern,
-                                   opt_minimum,
-                                   opt_maximum) {
+goog.dom.pattern.Repeat = function(pattern, opt_minimum, opt_maximum) {
   /**
    * Pattern to repetitively match.
    *
@@ -144,7 +142,7 @@ goog.dom.pattern.Repeat.prototype.matchToken = function(token, type) {
       this.count++;
 
       // NOTE(nicksantos): This line of code is broken. this.patterns_ doesn't
-      // exist, and this.currentPosition_ doesn't exit. When this is fixed,
+      // exist, and this.currentPosition_ doesn't exist. When this is fixed,
       // remove the missingProperties suppression above.
       if (this.currentPosition_ == this.patterns_.length) {
         this.needsReset_ = true;

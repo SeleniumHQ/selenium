@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using OpenQA.Selenium.Interactions.Internal;
 
 namespace OpenQA.Selenium.Remote

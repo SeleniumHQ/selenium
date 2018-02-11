@@ -1,4 +1,4 @@
-﻿// <copyright file="SafariOptions.cs" company="WebDriver Committers">
+// <copyright file="SafariOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,14 +16,12 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+using OpenQA.Selenium.Remote;
+
 namespace OpenQA.Selenium.Safari
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using OpenQA.Selenium.Remote;
-
     /// <summary>
     /// Class to manage options specific to <see cref="SafariDriver"/>
     /// </summary>
@@ -47,59 +45,15 @@ namespace OpenQA.Selenium.Safari
     /// </example>
     public class SafariOptions : DriverOptions
     {
-        private int port;
-        private bool skipExtensionInstallation;
-        private string customExtensionPath;
-        private string safariLocation = string.Empty;
+        private const string BrowserNameValue = "safari";
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariOptions"/> class.
         /// </summary>
-        public SafariOptions()
+        public SafariOptions() : base()
         {
-        }
-
-        /// <summary>
-        /// Gets or sets the install location of the Safari browser.
-        /// </summary>
-        public string SafariLocation
-        {
-            get { return this.safariLocation; }
-            set { this.safariLocation = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the port on which the SafariDriver will listen for commands.
-        /// </summary>
-        public int Port
-        {
-            get { return this.port; }
-            set { this.port = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the path to the SafariDriver.safariextz file from which the extension will be installed.
-        /// </summary>
-        [Obsolete("No longer used, as the extension now must be manually installed by the user. Will be removed in a future version.")]
-        public string CustomExtensionPath
-        {
-            get { return this.customExtensionPath; }
-            set { this.customExtensionPath = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to skip the installation of the SafariDriver extension.
-        /// </summary>
-        /// <remarks>
-        /// Set this property to <see langword="true"/> if the SafariDriver extension is already installed
-        /// in Safari, and you don't want to overwrite it with the version included with WebDriver.
-        /// </remarks>
-        [Obsolete("No longer used, as the extension now must be manually installed by the user. Will be removed in a future version.")]
-        public bool SkipExtensionInstallation
-        {
-            get { return this.skipExtensionInstallation; }
-            set { this.skipExtensionInstallation = value; }
+            this.BrowserName = BrowserNameValue;
         }
 
         /// <summary>
@@ -132,7 +86,7 @@ namespace OpenQA.Selenium.Safari
         /// <returns>The ICapabilities for Safari with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = DesiredCapabilities.Safari();
+            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {
                 capabilities.SetCapability(pair.Key, pair.Value);

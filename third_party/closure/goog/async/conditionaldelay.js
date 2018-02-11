@@ -136,8 +136,8 @@ goog.async.ConditionalDelay.prototype.disposeInternal = function() {
  *     than the invocation interval, the function will be called when the
  *     timeout is exceeded. A negative value means no timeout. Default is 0.
  */
-goog.async.ConditionalDelay.prototype.start = function(opt_interval,
-                                                       opt_timeout) {
+goog.async.ConditionalDelay.prototype.start = function(
+    opt_interval, opt_timeout) {
   this.stop();
   this.isDone_ = false;
 

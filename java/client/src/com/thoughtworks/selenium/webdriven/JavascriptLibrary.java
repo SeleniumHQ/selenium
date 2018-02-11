@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.JavascriptExecutor;
@@ -27,6 +25,7 @@ import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -109,9 +108,9 @@ public class JavascriptLibrary {
     }
 
     try {
-      return Resources.toString(url, Charsets.UTF_8);
+      return Resources.toString(url, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 }

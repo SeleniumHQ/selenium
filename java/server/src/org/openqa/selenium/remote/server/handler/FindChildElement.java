@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.handler;
 
 import com.google.common.collect.ImmutableMap;
@@ -34,7 +33,6 @@ public class FindChildElement extends WebElementHandler<Map<String, String>> imp
     super(session);
   }
 
-  @SuppressWarnings("unchecked")
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     by = newBySelector().pickFromJsonParameters(allParameters);
   }

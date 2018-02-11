@@ -17,10 +17,13 @@
 
 import os
 import platform
-import time
 import subprocess
 
-from selenium.webdriver.remote.command import Command
+try:
+    import http.client as http_client
+except ImportError:
+    import httplib as http_client
+
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.ui import WebDriverWait

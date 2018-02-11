@@ -46,18 +46,34 @@ goog.editor.Plugin = function() {
    * @private
    */
   this.enabled_ = this.activeOnUneditableFields();
+
+  /**
+   * The field object this plugin is attached to.
+   * @type {goog.editor.Field}
+   * @protected
+   * @deprecated Use goog.editor.Plugin.getFieldObject and
+   *     goog.editor.Plugin.setFieldObject.
+   */
+  this.fieldObject = null;
+
+  /**
+   * Indicates if this plugin should be automatically disposed when the
+   * registered field is disposed. This should be changed to false for
+   * plugins used as multi-field plugins.
+   * @type {boolean}
+   * @private
+   */
+  this.autoDispose_ = true;
+
+  /**
+   * The logger for this plugin.
+   * @type {?goog.log.Logger}
+   * @protected
+   */
+  this.logger = goog.log.getLogger('goog.editor.Plugin');
+
 };
 goog.inherits(goog.editor.Plugin, goog.events.EventTarget);
-
-
-/**
- * The field object this plugin is attached to.
- * @type {goog.editor.Field}
- * @protected
- * @deprecated Use goog.editor.Plugin.getFieldObject and
- *     goog.editor.Plugin.setFieldObject.
- */
-goog.editor.Plugin.prototype.fieldObject = null;
 
 
 /**
@@ -67,25 +83,6 @@ goog.editor.Plugin.prototype.fieldObject = null;
 goog.editor.Plugin.prototype.getFieldDomHelper = function() {
   return this.getFieldObject() && this.getFieldObject().getEditableDomHelper();
 };
-
-
-/**
- * Indicates if this plugin should be automatically disposed when the
- * registered field is disposed. This should be changed to false for
- * plugins used as multi-field plugins.
- * @type {boolean}
- * @private
- */
-goog.editor.Plugin.prototype.autoDispose_ = true;
-
-
-/**
- * The logger for this plugin.
- * @type {goog.log.Logger}
- * @protected
- */
-goog.editor.Plugin.prototype.logger =
-    goog.log.getLogger('goog.editor.Plugin');
 
 
 /**
@@ -141,8 +138,9 @@ goog.editor.Plugin.prototype.enable = function(fieldObject) {
   if (this.getFieldObject() == fieldObject) {
     this.enabled_ = true;
   } else {
-    goog.log.error(this.logger, 'Trying to enable an unregistered field with ' +
-        'this plugin.');
+    goog.log.error(
+        this.logger, 'Trying to enable an unregistered field with ' +
+            'this plugin.');
   }
 };
 
@@ -155,8 +153,9 @@ goog.editor.Plugin.prototype.disable = function(fieldObject) {
   if (this.getFieldObject() == fieldObject) {
     this.enabled_ = false;
   } else {
-    goog.log.error(this.logger, 'Trying to disable an unregistered field ' +
-        'with this plugin.');
+    goog.log.error(
+        this.logger, 'Trying to disable an unregistered field ' +
+            'with this plugin.');
   }
 };
 
@@ -246,8 +245,8 @@ goog.editor.Plugin.Op = {
  * A map from plugin operations to the names of the methods that
  * invoke those operations.
  */
-goog.editor.Plugin.OPCODE = goog.object.transpose(
-    goog.reflect.object(goog.editor.Plugin, {
+goog.editor.Plugin.OPCODE =
+    goog.object.transpose(goog.reflect.object(goog.editor.Plugin, {
       handleKeyDown: goog.editor.Plugin.Op.KEYDOWN,
       handleKeyPress: goog.editor.Plugin.Op.KEYPRESS,
       handleKeyUp: goog.editor.Plugin.Op.KEYUP,
@@ -460,4 +459,20 @@ goog.editor.Plugin.prototype.cleanContentsHtml;
  */
 goog.editor.Plugin.prototype.isSupportedCommand = function(command) {
   return false;
+};
+
+
+/**
+ * Saves the field's scroll position.  See b/7279077 for context.
+ * Currently only does anything in Edge, since all other browsers
+ * already seem to work correctly.
+ * @return {function()} A function to restore the current scroll position.
+ * @protected
+ */
+goog.editor.Plugin.prototype.saveScrollPosition = function() {
+  if (this.getFieldObject() && goog.userAgent.EDGE) {
+    var win = this.getFieldObject().getEditableDomHelper().getWindow();
+    return win.scrollTo.bind(win, win.scrollX, win.scrollY);
+  }
+  return function() {};
 };

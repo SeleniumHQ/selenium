@@ -39,13 +39,14 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.HasIdentity;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.io.Zip;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -53,11 +54,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
                                          FindsByTagName, FindsByClassName, FindsByCssSelector,
                                          FindsByXPath, WrapsDriver, Locatable, HasIdentity,
                                          TakesScreenshot {
-
   private String foundBy;
   protected String id;
   protected RemoteWebDriver parent;
-  protected RemoteMouse mouse;
   protected FileDetector fileDetector;
 
   protected void setFoundBy(SearchContext foundFrom, String locator, String term) {
@@ -66,7 +65,6 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   public void setParent(RemoteWebDriver parent) {
     this.parent = parent;
-    mouse = (RemoteMouse) parent.getMouse();
   }
 
   public String getId() {
@@ -86,40 +84,20 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void submit() {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
-    } else {
-      WebElement form = findElement(By.xpath("./ancestor-or-self::form"));
-      parent.executeScript("var e = arguments[0].ownerDocument.createEvent('Event');" +
-                           "e.initEvent('submit', true, true);" +
-                           "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form);
-    }
+    execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
   }
 
   public void sendKeys(CharSequence... keysToSend) {
+    if (keysToSend == null) {
+      throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
+    }
     File localFile = fileDetector.getLocalFile(keysToSend);
     if (localFile != null) {
       String remotePath = upload(localFile);
       keysToSend = new CharSequence[]{remotePath};
     }
 
-    CharSequence[] keys;
-
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      keys = keysToSend;
-    } else {
-      StringBuilder sb = new StringBuilder();
-      for (CharSequence s : keysToSend) {
-        sb.append(s);
-      }
-
-      keys = new CharSequence[sb.length()];
-      for (int i = 0; i < sb.length(); i++) {
-        keys[i] = Character.toString(sb.charAt(i));
-      }
-    }
-
-    execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keys));
+    execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keysToSend));
   }
 
   private String upload(File localFile) {
@@ -128,7 +106,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     }
 
     try {
-      String zip = new Zip().zipFile(localFile.getParentFile(), localFile);
+      String zip = Zip.zip(localFile);
       Response response = execute(DriverCommand.UPLOAD_FILE, ImmutableMap.of("file", zip));
       return (String) response.getValue();
     } catch (IOException e) {
@@ -146,13 +124,16 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public String getAttribute(String name) {
-    Object value =
+    return stringValueOf(
         execute(DriverCommand.GET_ELEMENT_ATTRIBUTE, ImmutableMap.of("id", id, "name", name))
-            .getValue();
-    if (value == null) {
+        .getValue());
+  }
+
+  private static String stringValueOf(Object o) {
+    if (o == null) {
       return null;
     }
-    return String.valueOf(value);
+    return String.valueOf(o);
   }
 
   public boolean isSelected() {
@@ -214,6 +195,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
                                 ImmutableMap.of("id", id, "using", using, "value", value));
     Object responseValue = response.getValue();
+    if (responseValue == null) { // see https://github.com/SeleniumHQ/selenium/issues/4555
+      return Collections.emptyList();
+    }
     List<WebElement> allElements;
     try {
       allElements = (List<WebElement>) responseValue;
@@ -228,19 +212,11 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public WebElement findElementById(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElement("id", using);
-    } else {
-      return findElementByCssSelector("#" + RemoteWebDriver.cssEscape(using));
-    }
+    return findElement("id", using);
   }
 
   public List<WebElement> findElementsById(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElements("id", using);
-    } else {
-      return findElementsByCssSelector("#" + RemoteWebDriver.cssEscape(using));
-    }
+    return findElements("id", using);
   }
 
   public WebElement findElementByLinkText(String using) {
@@ -252,35 +228,19 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public WebElement findElementByName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElement("name", using);
-    } else {
-      return findElementByCssSelector("*[name='" + using + "']");
-    }
+    return findElement("name", using);
   }
 
   public List<WebElement> findElementsByName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElements("name", using);
-    } else {
-      return findElementsByCssSelector("*[name='" + using + "']");
-    }
+    return findElements("name", using);
   }
 
   public WebElement findElementByClassName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElement("class name", using);
-    } else {
-      return findElementByCssSelector("." + RemoteWebDriver.cssEscape(using));
-    }
+    return findElement("class name", using);
   }
 
   public List<WebElement> findElementsByClassName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElements("class name", using);
-    } else {
-      return findElementsByCssSelector("." + RemoteWebDriver.cssEscape(using));
-    }
+    return findElements("class name", using);
   }
 
   public WebElement findElementByCssSelector(String using) {
@@ -308,19 +268,11 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public WebElement findElementByTagName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElement("tag name", using);
-    } else {
-      return findElementByCssSelector(using);
-    }
+    return findElement("tag name", using);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    if (parent.getW3CStandardComplianceLevel() == 0) {
-      return findElements("tag name", using);
-    } else {
-      return findElementsByCssSelector(using);
-    }
+    return findElements("tag name", using);
   }
 
   protected Response execute(String command, Map<String, ?> parameters) {
@@ -376,9 +328,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings({"unchecked"})
   public Point getLocation() {
-    Response response = parent.getW3CStandardComplianceLevel() == 0
-                      ? execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id))
-                      : execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
+    Response response = execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id));
     Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
     int x = ((Number) rawPoint.get("x")).intValue();
     int y = ((Number) rawPoint.get("y")).intValue();
@@ -387,9 +337,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings({"unchecked"})
   public Dimension getSize() {
-    Response response = parent.getW3CStandardComplianceLevel() == 0
-                        ? execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id))
-                        : execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
+    Response response = execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
     Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
     int width = ((Number) rawSize.get("width")).intValue();
     int height = ((Number) rawSize.get("height")).intValue();
@@ -414,22 +362,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       }
 
       public Point inViewPort() {
-        if (parent.getW3CStandardComplianceLevel() == 0) {
-          Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-                                      ImmutableMap.of("id", getId()));
+        Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
+                                    ImmutableMap.of("id", getId()));
 
-          @SuppressWarnings("unchecked")
-          Map<String, Number> mapped = (Map<String, Number>) response.getValue();
-          return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
-
-        } else {
-          @SuppressWarnings("unchecked")
-          Map<String, Number> mapped = (Map<String, Number>) parent.executeScript(
-            "return arguments[0].getBoundingClientRect()", RemoteWebElement.this);
-
-          return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
-        }
-
+        @SuppressWarnings("unchecked")
+        Map<String, Number> mapped = (Map<String, Number>) response.getValue();
+        return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
       }
 
       public Point onPage() {
@@ -464,5 +402,11 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       return String.format("[%s -> unknown locator]", super.toString());
     }
     return String.format("[%s]", foundBy);
+  }
+
+  public Map<String, Object> toJson() {
+    return ImmutableMap.of(
+        Dialect.OSS.getEncodedElementKey(), getId(),
+        Dialect.W3C.getEncodedElementKey(), getId());
   }
 }

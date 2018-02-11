@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriver;
@@ -66,6 +65,6 @@ public class DeleteSession extends WebDriverHandler<Void> {
 
   @Override
   public String toString() {
-    return String.format("[delete session: %s]", getRealSessionId());
+    return String.format("[delete session: %s]", getSessionId());
   }
 }

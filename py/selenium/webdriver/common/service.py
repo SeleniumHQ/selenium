@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import errno
 import os
 import platform
@@ -23,14 +24,25 @@ import time
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
+try:
+    from subprocess import DEVNULL
+    _HAS_NATIVE_DEVNULL = True
+except ImportError:
+    DEVNULL = -3
+    _HAS_NATIVE_DEVNULL = False
+
+
 class Service(object):
 
-    def __init__(self, executable, port=0, log_file=PIPE, env=None, start_error_message=""):
+    def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message=""):
         self.path = executable
 
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
+
+        if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL:
+            log_file = open(os.devnull, 'wb')
 
         self.start_error_message = start_error_message
         self.log_file = log_file
@@ -41,7 +53,7 @@ class Service(object):
         """
         Gets the url of the Service
         """
-        return "http://localhost:%d" % self.port
+        return "http://%s" % utils.join_host_port('localhost', self.port)
 
     def command_line_args(self):
         raise NotImplemented("This method needs to be implemented in a sub class")
@@ -59,7 +71,9 @@ class Service(object):
             cmd.extend(self.command_line_args())
             self.process = subprocess.Popen(cmd, env=self.env,
                                             close_fds=platform.system() != 'Windows',
-                                            stdout=self.log_file, stderr=self.log_file)
+                                            stdout=self.log_file,
+                                            stderr=self.log_file,
+                                            stdin=PIPE)
         except TypeError:
             raise
         except OSError as err:
@@ -78,14 +92,24 @@ class Service(object):
         except Exception as e:
             raise WebDriverException(
                 "The executable %s needs to be available in the path. %s\n%s" %
-                (os.path.basename(self.path), self.start_error_message, str(e))
-                )
+                (os.path.basename(self.path), self.start_error_message, str(e)))
         count = 0
-        while not self.is_connectable():
+        while True:
+            self.assert_process_still_running()
+            if self.is_connectable():
+                break
             count += 1
             time.sleep(1)
             if count == 30:
                 raise WebDriverException("Can not connect to the Service %s" % self.path)
+
+    def assert_process_still_running(self):
+        return_code = self.process.poll()
+        if return_code is not None:
+            raise WebDriverException(
+                'Service %s unexpectedly exited. Status code was: %s'
+                % (self.path, return_code)
+            )
 
     def is_connectable(self):
         return utils.is_connectable(self.port)
@@ -100,21 +124,21 @@ class Service(object):
             URLError = urllib2.URLError
 
         try:
-            url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
+            url_request.urlopen("%s/shutdown" % self.service_url)
         except URLError:
             return
-        count = 0
-        while self.is_connectable():
-            if count == 30:
+
+        for x in range(30):
+            if not self.is_connectable():
                 break
-            count += 1
-            time.sleep(1)
+            else:
+                time.sleep(1)
 
     def stop(self):
         """
         Stops the service.
         """
-        if self.log_file != PIPE:
+        if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
             try:
                 self.log_file.close()
             except Exception:
@@ -138,14 +162,17 @@ class Service(object):
                     except AttributeError:
                         pass
                 self.process.terminate()
-                self.process.kill()
                 self.process.wait()
+                self.process.kill()
                 self.process = None
         except OSError:
-            # kill may not be available under windows environment
             pass
 
     def __del__(self):
-        # subprocess.Popen doesn't send signal on __del__;
-        # we have to try to stop the launched process.
-        self.stop()
+        # `subprocess.Popen` doesn't send signal on `__del__`;
+        # so we attempt to close the launched process when `__del__`
+        # is triggered.
+        try:
+            self.stop()
+        except Exception:
+            pass

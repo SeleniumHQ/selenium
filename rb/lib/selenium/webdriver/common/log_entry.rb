@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -23,12 +21,12 @@ module Selenium
       attr_reader :level, :timestamp, :message
 
       def initialize(level, timestamp, message)
-        @level      = level
+        @level = level
         @timestamp = timestamp
-        @message    = message
+        @message = message
       end
 
-      def as_json(opts = nil)
+      def as_json(*)
         {
           'level'     => level,
           'timestamp' => timestamp,
@@ -43,7 +41,6 @@ module Selenium
       def time
         Time.at timestamp / 1000
       end
-
     end # LogEntry
   end # WebDriver
 end # Selenium

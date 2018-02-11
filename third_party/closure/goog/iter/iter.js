@@ -42,7 +42,7 @@ goog.iter.Iterable;
 goog.iter.StopIteration = ('StopIteration' in goog.global) ?
     // For script engines that support legacy iterators.
     goog.global['StopIteration'] :
-    { message: 'StopIteration', stack: ''};
+    {message: 'StopIteration', stack: ''};
 
 
 
@@ -146,12 +146,12 @@ goog.iter.toIterator = function(iterable) {
  */
 goog.iter.forEach = function(iterable, f, opt_obj) {
   if (goog.isArrayLike(iterable)) {
-    /** @preserveTry */
+
     try {
       // NOTES: this passes the index number to the second parameter
       // of the callback contrary to the documentation above.
-      goog.array.forEach(/** @type {goog.array.ArrayLike} */(iterable), f,
-                         opt_obj);
+      goog.array.forEach(
+          /** @type {IArrayLike<?>} */ (iterable), f, opt_obj);
     } catch (ex) {
       if (ex !== goog.iter.StopIteration) {
         throw ex;
@@ -159,7 +159,7 @@ goog.iter.forEach = function(iterable, f, opt_obj) {
     }
   } else {
     iterable = goog.iter.toIterator(iterable);
-    /** @preserveTry */
+
     try {
       while (true) {
         f.call(opt_obj, iterable.next(), undefined, iterable);
@@ -333,9 +333,8 @@ goog.iter.map = function(iterable, f, opt_obj) {
  */
 goog.iter.reduce = function(iterable, f, val, opt_obj) {
   var rval = val;
-  goog.iter.forEach(iterable, function(val) {
-    rval = f.call(opt_obj, rval, val);
-  });
+  goog.iter.forEach(
+      iterable, function(val) { rval = f.call(opt_obj, rval, val); });
   return rval;
 };
 
@@ -358,7 +357,7 @@ goog.iter.reduce = function(iterable, f, val, opt_obj) {
  */
 goog.iter.some = function(iterable, f, opt_obj) {
   iterable = goog.iter.toIterator(iterable);
-  /** @preserveTry */
+
   try {
     while (true) {
       if (f.call(opt_obj, iterable.next(), undefined, iterable)) {
@@ -392,7 +391,7 @@ goog.iter.some = function(iterable, f, opt_obj) {
  */
 goog.iter.every = function(iterable, f, opt_obj) {
   iterable = goog.iter.toIterator(iterable);
-  /** @preserveTry */
+
   try {
     while (true) {
       if (!f.call(opt_obj, iterable.next(), undefined, iterable)) {
@@ -425,7 +424,7 @@ goog.iter.chain = function(var_args) {
 /**
  * Takes a single iterable containing zero or more iterables and returns one
  * iterator that will iterate over each one in the order given.
- * @see http://docs.python.org/2/library/itertools.html#itertools.chain.from_iterable
+ * @see https://goo.gl/5NRp5d
  * @param {goog.iter.Iterable} iterable The iterable of iterables to chain.
  * @return {!goog.iter.Iterator<VALUE>} Returns a new iterator that will
  *     iterate over all the contents of the iterables contained within
@@ -530,13 +529,11 @@ goog.iter.takeWhile = function(iterable, f, opt_obj) {
 goog.iter.toArray = function(iterable) {
   // Fast path for array-like.
   if (goog.isArrayLike(iterable)) {
-    return goog.array.toArray(/** @type {!goog.array.ArrayLike} */(iterable));
+    return goog.array.toArray(/** @type {!IArrayLike<?>} */ (iterable));
   }
   iterable = goog.iter.toIterator(iterable);
   var array = [];
-  goog.iter.forEach(iterable, function(val) {
-    array.push(val);
-  });
+  goog.iter.forEach(iterable, function(val) { array.push(val); });
   return array;
 };
 
@@ -561,9 +558,8 @@ goog.iter.equals = function(iterable1, iterable2, opt_equalsFn) {
   var fillValue = {};
   var pairs = goog.iter.zipLongest(fillValue, iterable1, iterable2);
   var equalsFn = opt_equalsFn || goog.array.defaultCompareEquality;
-  return goog.iter.every(pairs, function(pair) {
-    return equalsFn(pair[0], pair[1]);
-  });
+  return goog.iter.every(
+      pairs, function(pair) { return equalsFn(pair[0], pair[1]); });
 };
 
 
@@ -594,16 +590,15 @@ goog.iter.nextOrValue = function(iterable, defaultValue) {
  * combination of one element chosen from each set.  For example,
  * ([1, 2], [3, 4]) gives ([1, 3], [1, 4], [2, 3], [2, 4]).
  * @see http://docs.python.org/library/itertools.html#itertools.product
- * @param {...!goog.array.ArrayLike<VALUE>} var_args Zero or more sets, as
+ * @param {...!IArrayLike<VALUE>} var_args Zero or more sets, as
  *     arrays.
  * @return {!goog.iter.Iterator<!Array<VALUE>>} An iterator that gives each
  *     n-tuple (as an array).
  * @template VALUE
  */
 goog.iter.product = function(var_args) {
-  var someArrayEmpty = goog.array.some(arguments, function(arr) {
-    return !arr.length;
-  });
+  var someArrayEmpty =
+      goog.array.some(arguments, function(arr) { return !arr.length; });
 
   // An empty set in a cartesian product gives an empty set.
   if (someArrayEmpty || !arguments.length) {
@@ -757,7 +752,7 @@ goog.iter.repeat = function(value) {
  * {@code iterable}. For example, the array {@code [1, 2, 3, 4, 5]} yields
  * {@code 1 -> 3 -> 6 -> 10 -> 15}.
  * @see http://docs.python.org/3.2/library/itertools.html#itertools.accumulate
- * @param {!goog.iter.Iterable<number>} iterable The iterable of numbers to
+ * @param {!goog.iter.Iterable} iterable The iterable of numbers to
  *     accumulate.
  * @return {!goog.iter.Iterator<number>} A new iterator that returns the
  *     numbers in the series.
@@ -796,9 +791,7 @@ goog.iter.zip = function(var_args) {
   if (args.length > 0) {
     var iterators = goog.array.map(args, goog.iter.toIterator);
     iter.next = function() {
-      var arr = goog.array.map(iterators, function(it) {
-        return it.next();
-      });
+      var arr = goog.array.map(iterators, function(it) { return it.next(); });
       return arr;
     };
   }
@@ -879,9 +872,8 @@ goog.iter.zipLongest = function(fillValue, var_args) {
 goog.iter.compress = function(iterable, selectors) {
   var selectorIterator = goog.iter.toIterator(selectors);
 
-  return goog.iter.filter(iterable, function() {
-    return !!selectorIterator.next();
-  });
+  return goog.iter.filter(
+      iterable, function() { return !!selectorIterator.next(); });
 };
 
 
@@ -890,7 +882,7 @@ goog.iter.compress = function(iterable, selectors) {
  * Implements the {@code goog.iter.groupBy} iterator.
  * @param {!goog.iter.Iterator<VALUE>|!goog.iter.Iterable} iterable The
  *     iterable to group.
- * @param {function(...VALUE): KEY=} opt_keyFunc  Optional function for
+ * @param {function(VALUE): KEY=} opt_keyFunc  Optional function for
  *     determining the key value for each group in the {@code iterable}. Default
  *     is the identity function.
  * @constructor
@@ -910,7 +902,7 @@ goog.iter.GroupByIterator_ = function(iterable, opt_keyFunc) {
    * A function for determining the key value for each element in the iterable.
    * If no function is provided, the identity function is used and returns the
    * element unchanged.
-   * @type {function(...VALUE): KEY}
+   * @type {function(VALUE): KEY}
    */
   this.keyFunc = opt_keyFunc || goog.functions.identity;
 
@@ -980,7 +972,7 @@ goog.iter.GroupByIterator_.prototype.groupItems_ = function(targetKey) {
  * @see http://docs.python.org/2/library/itertools.html#itertools.groupby
  * @param {!goog.iter.Iterator<VALUE>|!goog.iter.Iterable} iterable The
  *     iterable to group.
- * @param {function(...VALUE): KEY=} opt_keyFunc  Optional function for
+ * @param {function(VALUE): KEY=} opt_keyFunc  Optional function for
  *     determining the key value for each group in the {@code iterable}. Default
  *     is the identity function.
  * @return {!goog.iter.Iterator<!Array<?>>} A new iterator that returns
@@ -1000,7 +992,7 @@ goog.iter.groupBy = function(iterable, opt_keyFunc) {
  * Similar to {@see goog.iter#map} but allows the function to accept multiple
  * arguments from the iterable.
  *
- * @param {!goog.iter.Iterable<!goog.iter.Iterable>} iterable The iterable of
+ * @param {!goog.iter.Iterable} iterable The iterable of
  *     iterables to iterate over.
  * @param {function(this:THIS,...*):RESULT} f The function to call for every
  *     element.  This function takes N+2 arguments, where N represents the
@@ -1040,15 +1032,12 @@ goog.iter.starMap = function(iterable, f, opt_obj) {
 goog.iter.tee = function(iterable, opt_num) {
   var iterator = goog.iter.toIterator(iterable);
   var num = goog.isNumber(opt_num) ? opt_num : 2;
-  var buffers = goog.array.map(goog.array.range(num), function() {
-    return [];
-  });
+  var buffers =
+      goog.array.map(goog.array.range(num), function() { return []; });
 
   var addNextIteratorValueToBuffers = function() {
     var val = iterator.next();
-    goog.array.forEach(buffers, function(buffer) {
-      buffer.push(val);
-    });
+    goog.array.forEach(buffers, function(buffer) { buffer.push(val); });
   };
 
   var createIterator = function(buffer) {
@@ -1174,7 +1163,7 @@ goog.iter.slice = function(iterable, start, opt_end) {
 
 /**
  * Checks an array for duplicate elements.
- * @param {Array<VALUE>|goog.array.ArrayLike} arr The array to check for
+ * @param {?IArrayLike<VALUE>} arr The array to check for
  *     duplicates.
  * @return {boolean} True, if the array contains duplicates, false otherwise.
  * @private
@@ -1212,9 +1201,8 @@ goog.iter.permutations = function(iterable, opt_length) {
   var sets = goog.array.repeat(elements, length);
   var product = goog.iter.product.apply(undefined, sets);
 
-  return goog.iter.filter(product, function(arr) {
-    return !goog.iter.hasDuplicates_(arr);
-  });
+  return goog.iter.filter(
+      product, function(arr) { return !goog.iter.hasDuplicates_(arr); });
 };
 
 
@@ -1240,15 +1228,12 @@ goog.iter.combinations = function(iterable, length) {
   var indexIterator = goog.iter.permutations(indexes, length);
   // sortedIndexIterator will now give arrays of with the given length that
   // indicate what indexes into "elements" should be returned on each iteration.
-  var sortedIndexIterator = goog.iter.filter(indexIterator, function(arr) {
-    return goog.array.isSorted(arr);
-  });
+  var sortedIndexIterator = goog.iter.filter(
+      indexIterator, function(arr) { return goog.array.isSorted(arr); });
 
   var iter = new goog.iter.Iterator();
 
-  function getIndexFromElements(index) {
-    return elements[index];
-  }
+  function getIndexFromElements(index) { return elements[index]; }
 
   iter.next = function() {
     return goog.array.map(sortedIndexIterator.next(), getIndexFromElements);
@@ -1266,8 +1251,8 @@ goog.iter.combinations = function(iterable, length) {
  * iterables and filtering those whose elements appear in the order they are
  * encountered in {@code iterable}. For example, the 2-length combinations of
  * {@code [1,2,3]} are {@code [[1,1], [1,2], [1,3], [2,2], [2,3], [3,3]]}.
- * @see http://docs.python.org/2/library/itertools.html#itertools.combinations_with_replacement
- * @see http://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
+ * @see https://goo.gl/C0yXe4
+ * @see https://goo.gl/djOCsk
  * @param {!goog.iter.Iterator<VALUE>|!goog.iter.Iterable} iterable The
  *     iterable to combine.
  * @param {number} length The length of each combination.
@@ -1282,15 +1267,12 @@ goog.iter.combinationsWithReplacement = function(iterable, length) {
   var indexIterator = goog.iter.product.apply(undefined, sets);
   // sortedIndexIterator will now give arrays of with the given length that
   // indicate what indexes into "elements" should be returned on each iteration.
-  var sortedIndexIterator = goog.iter.filter(indexIterator, function(arr) {
-    return goog.array.isSorted(arr);
-  });
+  var sortedIndexIterator = goog.iter.filter(
+      indexIterator, function(arr) { return goog.array.isSorted(arr); });
 
   var iter = new goog.iter.Iterator();
 
-  function getIndexFromElements(index) {
-    return elements[index];
-  }
+  function getIndexFromElements(index) { return elements[index]; }
 
   iter.next = function() {
     return goog.array.map(

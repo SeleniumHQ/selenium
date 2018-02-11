@@ -15,12 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import base64
+import os
+
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Options(object):
+    KEY = "goog:chromeOptions"
 
     def __init__(self):
         self._binary_location = ''
@@ -108,11 +110,12 @@ class Options(object):
         to the ChromeDriver
 
         :Args:
-         - extension: path to the *.crx file
+         - extension: path to the \*.crx file
         """
         if extension:
-            if os.path.exists(extension):
-                self._extension_files.append(extension)
+            extension_to_add = os.path.abspath(os.path.expanduser(extension))
+            if os.path.exists(extension_to_add):
+                self._extension_files.append(extension_to_add)
             else:
                 raise IOError("Path to the extension doesn't exist")
         else:
@@ -148,6 +151,26 @@ class Options(object):
         """
         self._experimental_options[name] = value
 
+    @property
+    def headless(self):
+        """
+        Returns whether or not the headless argument is set
+        """
+        return '--headless' in self._arguments
+
+    def set_headless(self, headless=True):
+        """
+        Sets the headless argument
+
+        Args:
+          headless: boolean value indicating to set the headless option
+        """
+        args = {'--headless', '--disable-gpu'}
+        if headless:
+            self._arguments.extend(args)
+        else:
+            self._arguments = list(set(self._arguments) - args)
+
     def to_capabilities(self):
         """
             Creates a capabilities with all the options that have been set and
@@ -164,6 +187,6 @@ class Options(object):
         if self.debugger_address:
             chrome_options["debuggerAddress"] = self.debugger_address
 
-        chrome["chromeOptions"] = chrome_options
+        chrome[self.KEY] = chrome_options
 
         return chrome

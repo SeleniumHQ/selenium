@@ -1,3 +1,0 @@
-
-java_library(name = "commons_cli",
-  deps = [ "commons-cli-1.2.jar" ])

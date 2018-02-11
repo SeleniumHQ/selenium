@@ -1,6 +1,0 @@
-prebuilt_jar(name = 'dnssec4j',
-  binary_jar = 'dnssec4j-0.1-SNAPSHOT.jar',
-  visibility = [
-    '//third_party/java/little_proxy:little_proxy',
-  ],
-)

@@ -17,40 +17,25 @@
 
 package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.SessionId;
 
-import java.util.concurrent.FutureTask;
+import java.util.Map;
 
 public interface Session {
 
   void close();
 
-  <X> X execute(FutureTask<X> future) throws Exception;
-
   WebDriver getDriver();
 
   KnownElements getKnownElements();
 
-  Capabilities getCapabilities();
+  Map<String, Object> getCapabilities();
 
   void attachScreenshot(String base64EncodedImage);
 
   String getAndClearScreenshot();
-
-  boolean isTimedOut(long timeout);
-
-    /**
-     * Indicates that the session is in use at this moment (being forwarded to browser)
-     * @return  true if the session is active inside the browser
-     */
-  boolean isInUse();
-
-  void interrupt();
-
-  void updateLastAccessTime();
 
   SessionId getSessionId();
 

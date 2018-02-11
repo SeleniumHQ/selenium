@@ -1,2 +1,0 @@
-java_library(name = "gson",
-  deps = [ "gson-2.3.1.jar" ])

@@ -15,11 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.internal;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -125,6 +125,55 @@ public class CircularOutputStreamTest {
       pw.write("789");
       pw.flush();
       assertEquals("56789", os.toString());
+    }
+  }
+
+  @Test
+  public void testConcurrentWrites() throws InterruptedException {
+    final int bytesToWrite = 10000;
+    CircularOutputStream os = new CircularOutputStream(2 * bytesToWrite);
+
+    Thread t1 = new Thread(new WriteChar(os, 'a', bytesToWrite));
+    Thread t2 = new Thread(new WriteChar(os, 'b', bytesToWrite));
+    t1.start();
+    t2.start();
+    t1.join();
+    t2.join();
+
+    int a = 0;
+    int b = 0;
+    for (char c : os.toString().toCharArray()) {
+      if (c == 'a') {
+        a++;
+      } else if (c == 'b') {
+        b++;
+      }
+    }
+    assertEquals(bytesToWrite, a);
+    assertEquals(bytesToWrite, b);
+  }
+
+  private static class WriteChar implements Runnable {
+    private final CircularOutputStream stream;
+    private final char c;
+    private final int count;
+
+    public WriteChar(CircularOutputStream stream, char c, int count) {
+      this.stream = stream;
+      this.c = c;
+      this.count = count;
+    }
+
+    @Override
+    public void run() {
+      try {
+        for (int i = 0; i < count; i++) {
+          stream.write(c);
+          Thread.yield();
+        }
+      } catch (IOException e) {
+        // Ignore; the test will fail later when we discover that not all writes finished.
+      }
     }
   }
 }

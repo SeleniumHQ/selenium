@@ -1,5 +1,0 @@
-java_library(name = "commons-logging",
-  deps = [
-    "commons-logging-1.2.jar"
-  ]
-)

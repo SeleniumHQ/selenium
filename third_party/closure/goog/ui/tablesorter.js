@@ -195,8 +195,7 @@ goog.ui.TableSorter.prototype.sort_ = function(e) {
   // Determine what column was clicked.
   // TODO(robbyw): If this table cell contains another table, this could break.
   var target = e.target;
-  var th = goog.dom.getAncestorByTagNameAndClass(target,
-      goog.dom.TagName.TH);
+  var th = goog.dom.getAncestorByTagNameAndClass(target, goog.dom.TagName.TH);
 
   // If the user clicks on the same column, sort it in reverse of what it is
   // now.  Otherwise, sort forward.
@@ -225,9 +224,10 @@ goog.ui.TableSorter.prototype.sort = function(column, opt_reverse) {
 
   // Remove old header classes.
   if (this.header_) {
-    goog.dom.classlist.remove(this.header_, this.reversed_ ?
-        goog.getCssName('goog-tablesorter-sorted-reverse') :
-        goog.getCssName('goog-tablesorter-sorted'));
+    goog.dom.classlist.remove(
+        this.header_, this.reversed_ ?
+            goog.getCssName('goog-tablesorter-sorted-reverse') :
+            goog.getCssName('goog-tablesorter-sorted'));
   }
 
   // If the user clicks on the same column, sort it in reverse of what it is
@@ -254,9 +254,7 @@ goog.ui.TableSorter.prototype.sort = function(column, opt_reverse) {
     table.removeChild(tBody);
 
     // Sort the rows, using the resulting array.
-    goog.array.forEach(values, function(row) {
-      tBody.appendChild(row[2]);
-    });
+    goog.array.forEach(values, function(row) { tBody.appendChild(row[2]); });
 
     // Reinstate the tBody.
     table.insertBefore(tBody, nextSibling);
@@ -267,9 +265,10 @@ goog.ui.TableSorter.prototype.sort = function(column, opt_reverse) {
       (table.tHead.rows[this.sortableHeaderRowIndex_].cells[column]);
 
   // Update the header class.
-  goog.dom.classlist.add(this.header_, this.reversed_ ?
-      goog.getCssName('goog-tablesorter-sorted-reverse') :
-      goog.getCssName('goog-tablesorter-sorted'));
+  goog.dom.classlist.add(
+      this.header_, this.reversed_ ?
+          goog.getCssName('goog-tablesorter-sorted-reverse') :
+          goog.getCssName('goog-tablesorter-sorted'));
 
   return true;
 };
@@ -319,7 +318,5 @@ goog.ui.TableSorter.alphaSort = goog.array.defaultCompare;
  *     given sort function.
  */
 goog.ui.TableSorter.createReverseSort = function(sortFunction) {
-  return function(a, b) {
-    return -1 * sortFunction(a, b);
-  };
+  return function(a, b) { return -1 * sortFunction(a, b); };
 };

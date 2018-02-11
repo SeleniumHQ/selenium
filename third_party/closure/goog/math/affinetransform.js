@@ -21,8 +21,6 @@
 
 goog.provide('goog.math.AffineTransform');
 
-goog.require('goog.math');
-
 
 
 /**
@@ -55,15 +53,16 @@ goog.require('goog.math');
  * @constructor
  * @final
  */
-goog.math.AffineTransform = function(opt_m00, opt_m10, opt_m01,
-    opt_m11, opt_m02, opt_m12) {
+goog.math.AffineTransform = function(
+    opt_m00, opt_m10, opt_m01, opt_m11, opt_m02, opt_m12) {
   if (arguments.length == 6) {
-    this.setTransform(/** @type {number} */ (opt_m00),
-                      /** @type {number} */ (opt_m10),
-                      /** @type {number} */ (opt_m01),
-                      /** @type {number} */ (opt_m11),
-                      /** @type {number} */ (opt_m02),
-                      /** @type {number} */ (opt_m12));
+    this.setTransform(
+        /** @type {number} */ (opt_m00),
+        /** @type {number} */ (opt_m10),
+        /** @type {number} */ (opt_m01),
+        /** @type {number} */ (opt_m11),
+        /** @type {number} */ (opt_m02),
+        /** @type {number} */ (opt_m12));
   } else if (arguments.length != 0) {
     throw Error('Insufficient matrix parameters');
   } else {
@@ -77,8 +76,8 @@ goog.math.AffineTransform = function(opt_m00, opt_m10, opt_m01,
  * @return {boolean} Whether this transform is the identity transform.
  */
 goog.math.AffineTransform.prototype.isIdentity = function() {
-  return this.m00_ == 1 && this.m10_ == 0 && this.m01_ == 0 &&
-      this.m11_ == 1 && this.m02_ == 0 && this.m12_ == 0;
+  return this.m00_ == 1 && this.m10_ == 0 && this.m01_ == 0 && this.m11_ == 1 &&
+      this.m02_ == 0 && this.m12_ == 0;
 };
 
 
@@ -86,8 +85,8 @@ goog.math.AffineTransform.prototype.isIdentity = function() {
  * @return {!goog.math.AffineTransform} A copy of this transform.
  */
 goog.math.AffineTransform.prototype.clone = function() {
-  return new goog.math.AffineTransform(this.m00_, this.m10_, this.m01_,
-      this.m11_, this.m02_, this.m12_);
+  return new goog.math.AffineTransform(
+      this.m00_, this.m10_, this.m01_, this.m11_, this.m02_, this.m12_);
 };
 
 
@@ -102,8 +101,8 @@ goog.math.AffineTransform.prototype.clone = function() {
  * @param {number} m12 The m12 coordinate of the transform.
  * @return {!goog.math.AffineTransform} This affine transform.
  */
-goog.math.AffineTransform.prototype.setTransform = function(m00, m10, m01,
-    m11, m02, m12) {
+goog.math.AffineTransform.prototype.setTransform = function(
+    m00, m10, m01, m11, m02, m12) {
   if (!goog.isNumber(m00) || !goog.isNumber(m10) || !goog.isNumber(m01) ||
       !goog.isNumber(m11) || !goog.isNumber(m02) || !goog.isNumber(m12)) {
     throw Error('Invalid transform parameters');
@@ -407,10 +406,10 @@ goog.math.AffineTransform.prototype.preConcatenate = function(tx) {
  *     point pairs.
  * @param {number} dstOff The offset of the location of the first transformed
  *     point in the destination array.
- * @param {number} numPts The number of points to tranform.
+ * @param {number} numPts The number of points to transform.
  */
-goog.math.AffineTransform.prototype.transform = function(src, srcOff, dst,
-    dstOff, numPts) {
+goog.math.AffineTransform.prototype.transform = function(
+    src, srcOff, dst, dstOff, numPts) {
   var i = srcOff;
   var j = dstOff;
   var srcEnd = srcOff + 2 * numPts;
@@ -439,9 +438,7 @@ goog.math.AffineTransform.prototype.getDeterminant = function() {
  */
 goog.math.AffineTransform.prototype.isInvertible = function() {
   var det = this.getDeterminant();
-  return goog.math.isFiniteNumber(det) &&
-      goog.math.isFiniteNumber(this.m02_) &&
-      goog.math.isFiniteNumber(this.m12_) &&
+  return isFinite(det) && isFinite(this.m02_) && isFinite(this.m12_) &&
       det != 0;
 };
 
@@ -453,10 +450,7 @@ goog.math.AffineTransform.prototype.isInvertible = function() {
 goog.math.AffineTransform.prototype.createInverse = function() {
   var det = this.getDeterminant();
   return new goog.math.AffineTransform(
-      this.m11_ / det,
-      -this.m10_ / det,
-      -this.m01_ / det,
-      this.m00_ / det,
+      this.m11_ / det, -this.m10_ / det, -this.m01_ / det, this.m00_ / det,
       (this.m01_ * this.m12_ - this.m11_ * this.m02_) / det,
       (this.m10_ * this.m02_ - this.m00_ * this.m12_) / det);
 };
@@ -562,8 +556,8 @@ goog.math.AffineTransform.prototype.setToShear = function(shx, shy) {
 goog.math.AffineTransform.prototype.setToRotation = function(theta, x, y) {
   var cos = Math.cos(theta);
   var sin = Math.sin(theta);
-  return this.setTransform(cos, sin, -sin, cos,
-      x - x * cos + y * sin, y - x * sin - y * cos);
+  return this.setTransform(
+      cos, sin, -sin, cos, x - x * cos + y * sin, y - x * sin - y * cos);
 };
 
 
@@ -580,10 +574,6 @@ goog.math.AffineTransform.prototype.equals = function(tx) {
   if (!tx) {
     return false;
   }
-  return this.m00_ == tx.m00_ &&
-      this.m01_ == tx.m01_ &&
-      this.m02_ == tx.m02_ &&
-      this.m10_ == tx.m10_ &&
-      this.m11_ == tx.m11_ &&
-      this.m12_ == tx.m12_;
+  return this.m00_ == tx.m00_ && this.m01_ == tx.m01_ && this.m02_ == tx.m02_ &&
+      this.m10_ == tx.m10_ && this.m11_ == tx.m11_ && this.m12_ == tx.m12_;
 };

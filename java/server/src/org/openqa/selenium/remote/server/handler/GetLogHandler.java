@@ -39,9 +39,8 @@ public class GetLogHandler extends WebDriverHandler<LogEntries> implements JsonP
   public LogEntries call() throws Exception {
     if (LogType.SERVER.equals(type)) {
       return LoggingManager.perSessionLogHandler().getSessionLog(getSessionId());
-    } else {
-      return getDriver().manage().logs().get(type);
     }
+    return getDriver().manage().logs().get(type);
   }
 
   @Override

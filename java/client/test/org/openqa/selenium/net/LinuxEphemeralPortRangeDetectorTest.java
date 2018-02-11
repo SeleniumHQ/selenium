@@ -48,7 +48,7 @@ public class LinuxEphemeralPortRangeDetectorTest {
   }
 
   @Test
-  public void currentValues(){
+  public void currentValues() {
     LinuxEphemeralPortRangeDetector detector = LinuxEphemeralPortRangeDetector.getInstance();
     assertTrue( detector.getLowestEphemeralPort() > 1024);
     assertTrue( detector.getHighestEphemeralPort() < 65536);

@@ -17,40 +17,44 @@
 
 package org.openqa.selenium.support;
 
+import org.openqa.selenium.By;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 
 /**
- * Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
+ * <p>Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
  * element or a list of elements. Used in conjunction with
  * {@link org.openqa.selenium.support.PageFactory}
- * this allows users to quickly and easily create PageObjects.
+ * this allows users to quickly and easily create PageObjects.</p>
  *
- * It can be used on a types as well, but will not be processed by default.
+ * <p>It can be used on a types as well, but will not be processed by default.</p>
  *
  * <p>
  * You can either use this annotation by specifying both "how" and "using" or by specifying one of
  * the location strategies (eg: "id") with an appropriate value to use. Both options will delegate
- * down to the matching {@link org.openqa.selenium.By} methods in By class.
+ * down to the matching {@link org.openqa.selenium.By} methods in By class.</p>
  *
- * For example, these two annotations point to the same element:
+ * <p>For example, these two annotations point to the same element:</p>
  *
- * <pre>{@code
+ * <pre class="code">
  * &#64;FindBy(id = "foobar") WebElement foobar;
  * &#64;FindBy(how = How.ID, using = "foobar") WebElement foobar;
- * }</pre>
+ * </pre>
  *
- * and these two annotations point to the same list of elements:
+ * <p>and these two annotations point to the same list of elements:</p>
  *
- * <pre>{@code
- * &#64;FindBy(tagName = "a") List<WebElement> links;
- * &#64;FindBy(how = How.TAG_NAME, using = "a") List<WebElement> links;
- * }</pre>
+ * <pre class="code">
+ * &#64;FindBy(tagName = "a") List&lt;WebElement&gt; links;
+ * &#64;FindBy(how = How.TAG_NAME, using = "a") List&lt;WebElement&gt; links;
+ * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
+@PageFactoryFinder(FindBy.FindByBuilder.class)
 public @interface FindBy {
   How how() default How.UNSET;
 
@@ -71,4 +75,21 @@ public @interface FindBy {
   String partialLinkText() default "";
 
   String xpath() default "";
+
+  public static class FindByBuilder extends AbstractFindByBuilder {
+    public By buildIt(Object annotation, Field field) {
+      FindBy findBy = (FindBy) annotation;
+      assertValidFindBy(findBy);
+
+      By ans = buildByFromShortFindBy(findBy);
+      if (ans == null) {
+        ans = buildByFromLongFindBy(findBy);
+      }
+
+      return ans;
+
+    }
+
+  }
+
 }

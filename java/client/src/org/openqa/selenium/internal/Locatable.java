@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.internal;
 
-import org.openqa.selenium.interactions.internal.Coordinates;
+/**
+ * @deprecated Use {@link org.openqa.selenium.interactions.internal.Locatable} instead.
+ */
+@Deprecated
+public interface Locatable extends org.openqa.selenium.interactions.internal.Locatable {
 
-public interface Locatable {
-  Coordinates getCoordinates();
 }

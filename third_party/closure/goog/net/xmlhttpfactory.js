@@ -29,8 +29,7 @@ goog.require('goog.net.XhrLike');
  * Abstract base class for an XmlHttpRequest factory.
  * @constructor
  */
-goog.net.XmlHttpFactory = function() {
-};
+goog.net.XmlHttpFactory = function() {};
 
 
 /**

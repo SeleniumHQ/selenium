@@ -52,35 +52,27 @@ goog.require('goog.userAgent');
  *     document we want to render in.
  * @return {!goog.ui.BaseRoundedPanel} An instance of a
  *     goog.ui.BaseRoundedPanel subclass.
+ * TODO(user): deprecate this class, which has <5 usages and only really
+ *            matters for IE8, and then only stylistically.
  */
-goog.ui.RoundedPanel.create = function(radius,
-                                       borderWidth,
-                                       borderColor,
-                                       opt_backgroundColor,
-                                       opt_corners,
-                                       opt_domHelper) {
+goog.ui.RoundedPanel.create = function(
+    radius, borderWidth, borderColor, opt_backgroundColor, opt_corners,
+    opt_domHelper) {
   // This variable checks for the presence of Safari 3.0+ or Gecko 1.9+,
   // which can leverage special CSS styles to create rounded corners.
-  var isCssReady = goog.userAgent.WEBKIT &&
-      goog.userAgent.isVersionOrHigher('500') ||
-      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9a');
+  var isCssReady =
+      (goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('500')) ||
+      (goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9a')) ||
+      goog.userAgent.EDGE;
 
   if (isCssReady) {
     // Safari 3.0+ and Firefox 3.0+ support this instance.
     return new goog.ui.CssRoundedPanel(
-        radius,
-        borderWidth,
-        borderColor,
-        opt_backgroundColor,
-        opt_corners,
+        radius, borderWidth, borderColor, opt_backgroundColor, opt_corners,
         opt_domHelper);
   } else {
     return new goog.ui.GraphicsRoundedPanel(
-        radius,
-        borderWidth,
-        borderColor,
-        opt_backgroundColor,
-        opt_corners,
+        radius, borderWidth, borderColor, opt_backgroundColor, opt_corners,
         opt_domHelper);
   }
 };
@@ -94,13 +86,13 @@ goog.ui.RoundedPanel.Corner = {
   NONE: 0,
   BOTTOM_LEFT: 2,
   TOP_LEFT: 4,
-  LEFT: 6, // BOTTOM_LEFT | TOP_LEFT
+  LEFT: 6,  // BOTTOM_LEFT | TOP_LEFT
   TOP_RIGHT: 8,
-  TOP: 12, // TOP_LEFT | TOP_RIGHT
+  TOP: 12,  // TOP_LEFT | TOP_RIGHT
   BOTTOM_RIGHT: 1,
-  BOTTOM: 3, // BOTTOM_LEFT | BOTTOM_RIGHT
-  RIGHT: 9, // TOP_RIGHT | BOTTOM_RIGHT
-  ALL: 15 // TOP | BOTTOM
+  BOTTOM: 3,  // BOTTOM_LEFT | BOTTOM_RIGHT
+  RIGHT: 9,   // TOP_RIGHT | BOTTOM_RIGHT
+  ALL: 15     // TOP | BOTTOM
 };
 
 
@@ -139,12 +131,9 @@ goog.ui.RoundedPanel.Classes_ = {
  * @extends {goog.ui.Component}
  * @constructor
  */
-goog.ui.BaseRoundedPanel = function(radius,
-                                    borderWidth,
-                                    borderColor,
-                                    opt_backgroundColor,
-                                    opt_corners,
-                                    opt_domHelper) {
+goog.ui.BaseRoundedPanel = function(
+    radius, borderWidth, borderColor, opt_backgroundColor, opt_corners,
+    opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
 
   /**
@@ -212,12 +201,13 @@ goog.ui.BaseRoundedPanel.prototype.contentElement_;
  */
 goog.ui.BaseRoundedPanel.prototype.decorateInternal = function(element) {
   goog.ui.BaseRoundedPanel.superClass_.decorateInternal.call(this, element);
-  goog.dom.classlist.add(goog.asserts.assert(this.getElement()),
+  goog.dom.classlist.add(
+      goog.asserts.assert(this.getElement()),
       goog.ui.RoundedPanel.Classes_.PANEL);
 
   // Create backgroundElement_, and add it to the DOM.
-  this.backgroundElement_ = this.getDomHelper().createElement(
-      goog.dom.TagName.DIV);
+  this.backgroundElement_ =
+      this.getDomHelper().createElement(goog.dom.TagName.DIV);
   this.backgroundElement_.className = goog.ui.RoundedPanel.Classes_.BACKGROUND;
   this.getElement().appendChild(this.backgroundElement_);
 
@@ -272,19 +262,12 @@ goog.ui.BaseRoundedPanel.prototype.getContentElement = function() {
  * @constructor
  * @final
  */
-goog.ui.CssRoundedPanel = function(radius,
-                                   borderWidth,
-                                   borderColor,
-                                   opt_backgroundColor,
-                                   opt_corners,
-                                   opt_domHelper) {
-  goog.ui.BaseRoundedPanel.call(this,
-                                radius,
-                                borderWidth,
-                                borderColor,
-                                opt_backgroundColor,
-                                opt_corners,
-                                opt_domHelper);
+goog.ui.CssRoundedPanel = function(
+    radius, borderWidth, borderColor, opt_backgroundColor, opt_corners,
+    opt_domHelper) {
+  goog.ui.BaseRoundedPanel.call(
+      this, radius, borderWidth, borderColor, opt_backgroundColor, opt_corners,
+      opt_domHelper);
 };
 goog.inherits(goog.ui.CssRoundedPanel, goog.ui.BaseRoundedPanel);
 
@@ -300,9 +283,8 @@ goog.ui.CssRoundedPanel.prototype.decorateInternal = function(element) {
   goog.ui.CssRoundedPanel.superClass_.decorateInternal.call(this, element);
 
   // Set the border width and background color, if needed.
-  this.backgroundElement_.style.border = this.borderWidth_ +
-      'px solid ' +
-      this.borderColor_;
+  this.backgroundElement_.style.border =
+      this.borderWidth_ + 'px solid ' + this.borderColor_;
   if (this.backgroundColor_) {
     this.backgroundElement_.style.backgroundColor = this.backgroundColor_;
   }
@@ -313,13 +295,10 @@ goog.ui.CssRoundedPanel.prototype.decorateInternal = function(element) {
     this.backgroundElement_.style[styleName] = this.radius_ + 'px';
   } else {
     var topLeftRadius =
-        this.corners_ & goog.ui.RoundedPanel.Corner.TOP_LEFT ?
-        this.radius_ :
-        0;
+        this.corners_ & goog.ui.RoundedPanel.Corner.TOP_LEFT ? this.radius_ : 0;
     var cornerStyle = this.getStyle_(goog.ui.RoundedPanel.Corner.TOP_LEFT);
     this.backgroundElement_.style[cornerStyle] = topLeftRadius + 'px';
-    var topRightRadius =
-        this.corners_ & goog.ui.RoundedPanel.Corner.TOP_RIGHT ?
+    var topRightRadius = this.corners_ & goog.ui.RoundedPanel.Corner.TOP_RIGHT ?
         this.radius_ :
         0;
     cornerStyle = this.getStyle_(goog.ui.RoundedPanel.Corner.TOP_RIGHT);
@@ -331,9 +310,8 @@ goog.ui.CssRoundedPanel.prototype.decorateInternal = function(element) {
     cornerStyle = this.getStyle_(goog.ui.RoundedPanel.Corner.BOTTOM_RIGHT);
     this.backgroundElement_.style[cornerStyle] = bottomRightRadius + 'px';
     var bottomLeftRadius =
-        this.corners_ & goog.ui.RoundedPanel.Corner.BOTTOM_LEFT ?
-        this.radius_ :
-        0;
+        this.corners_ & goog.ui.RoundedPanel.Corner.BOTTOM_LEFT ? this.radius_ :
+                                                                  0;
     cornerStyle = this.getStyle_(goog.ui.RoundedPanel.Corner.BOTTOM_LEFT);
     this.backgroundElement_.style[cornerStyle] = bottomLeftRadius + 'px';
   }
@@ -375,9 +353,8 @@ goog.ui.CssRoundedPanel.prototype.getStyle_ = function(corner) {
       break;
   }
 
-  return goog.userAgent.WEBKIT ?
-      'WebkitBorder' + cssCorner + 'Radius' :
-      'MozBorderRadius' + cssCorner;
+  return goog.userAgent.WEBKIT ? 'WebkitBorder' + cssCorner + 'Radius' :
+                                 'MozBorderRadius' + cssCorner;
 };
 
 
@@ -398,19 +375,12 @@ goog.ui.CssRoundedPanel.prototype.getStyle_ = function(corner) {
  * @constructor
  * @final
  */
-goog.ui.GraphicsRoundedPanel = function(radius,
-                                        borderWidth,
-                                        borderColor,
-                                        opt_backgroundColor,
-                                        opt_corners,
-                                        opt_domHelper) {
-  goog.ui.BaseRoundedPanel.call(this,
-                                radius,
-                                borderWidth,
-                                borderColor,
-                                opt_backgroundColor,
-                                opt_corners,
-                                opt_domHelper);
+goog.ui.GraphicsRoundedPanel = function(
+    radius, borderWidth, borderColor, opt_backgroundColor, opt_corners,
+    opt_domHelper) {
+  goog.ui.BaseRoundedPanel.call(
+      this, radius, borderWidth, borderColor, opt_backgroundColor, opt_corners,
+      opt_domHelper);
 };
 goog.inherits(goog.ui.GraphicsRoundedPanel, goog.ui.BaseRoundedPanel);
 
@@ -485,10 +455,8 @@ goog.ui.GraphicsRoundedPanel.BORDER_WIDTH_FACTOR_ = 1 / 2;
  * @protected
  * @override
  */
-goog.ui.GraphicsRoundedPanel.prototype.decorateInternal =
-    function(element) {
-  goog.ui.GraphicsRoundedPanel.superClass_.decorateInternal.call(this,
-                                                                 element);
+goog.ui.GraphicsRoundedPanel.prototype.decorateInternal = function(element) {
+  goog.ui.GraphicsRoundedPanel.superClass_.decorateInternal.call(this, element);
 
   // Calculate the points and angles for creating the rounded corners. Then
   // instantiate a Graphics object for drawing purposes.
@@ -498,8 +466,7 @@ goog.ui.GraphicsRoundedPanel.prototype.decorateInternal =
       /** @type {number} */ (elementSize.width),
       /** @type {number} */ (elementSize.height),
       /** @type {number} */ (elementSize.width),
-      /** @type {number} */ (elementSize.height),
-      this.getDomHelper());
+      /** @type {number} */ (elementSize.height), this.getDomHelper());
   this.graphics_.createDom();
 
   // Create the path, starting from the bottom-right corner, moving clockwise.
@@ -529,12 +496,10 @@ goog.ui.GraphicsRoundedPanel.prototype.decorateInternal =
       path.arcTo(rx, ry, fromAngle, extent);
     } else if (i == 0) {
       // If we're just starting out (ie. i == 0), move to the starting point.
-      path.moveTo(this.cornerStarts_[i].x,
-                  this.cornerStarts_[i].y);
+      path.moveTo(this.cornerStarts_[i].x, this.cornerStarts_[i].y);
     } else {
       // Otherwise, draw a line to the starting point.
-      path.lineTo(this.cornerStarts_[i].x,
-                  this.cornerStarts_[i].y);
+      path.lineTo(this.cornerStarts_[i].x, this.cornerStarts_[i].y);
     }
   }
 
@@ -571,8 +536,8 @@ goog.ui.GraphicsRoundedPanel.prototype.disposeInternal = function() {
  * @param {goog.math.Size} elementSize The size of element_.
  * @private
  */
-goog.ui.GraphicsRoundedPanel.prototype.calculateArcParameters_ =
-    function(elementSize) {
+goog.ui.GraphicsRoundedPanel.prototype.calculateArcParameters_ = function(
+    elementSize) {
   // Initialize the arrays containing the key points and angles.
   this.radii_ = [];
   this.cornerStarts_ = [];
@@ -583,8 +548,8 @@ goog.ui.GraphicsRoundedPanel.prototype.calculateArcParameters_ =
   // Set the start points, circle centers, and angles for the bottom-right,
   // bottom-left, top-left and top-right corners, in that order.
   var angleInterval = 90;
-  var borderWidthOffset = this.borderWidth_ *
-      goog.ui.GraphicsRoundedPanel.BORDER_WIDTH_FACTOR_;
+  var borderWidthOffset =
+      this.borderWidth_ * goog.ui.GraphicsRoundedPanel.BORDER_WIDTH_FACTOR_;
   var radius, xStart, yStart, xCenter, yCenter, startAngle, endAngle;
   for (var i = 0; i < 4; i++) {
     var corner = Math.pow(2, i);  // Determines which corner we're dealing with.
@@ -613,12 +578,10 @@ goog.ui.GraphicsRoundedPanel.prototype.calculateArcParameters_ =
     }
 
     // Calculate the circle centers and start/end angles.
-    xCenter = isLeft ?
-        radius + borderWidthOffset :
-        elementSize.width - radius - borderWidthOffset;
-    yCenter = isTop ?
-        radius + borderWidthOffset :
-        elementSize.height - radius - borderWidthOffset;
+    xCenter = isLeft ? radius + borderWidthOffset :
+                       elementSize.width - radius - borderWidthOffset;
+    yCenter = isTop ? radius + borderWidthOffset :
+                      elementSize.height - radius - borderWidthOffset;
     startAngle = angleInterval * i;
     endAngle = startAngle + angleInterval;
 

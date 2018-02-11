@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 
@@ -34,6 +35,7 @@ import java.util.Map;
  * and Maps to catch nested references. All other values pass through the converter unchanged.
  */
 public class JsonToWebElementConverter implements Function<Object, Object> {
+
   private final RemoteWebDriver driver;
 
   public JsonToWebElementConverter(RemoteWebDriver driver) {
@@ -48,19 +50,18 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
 
     if (result instanceof Map<?, ?>) {
       Map<?, ?> resultAsMap = (Map<?, ?>) result;
-      if (resultAsMap.containsKey("ELEMENT")) {
-        RemoteWebElement element = newRemoteWebElement();
-        element.setId(String.valueOf(resultAsMap.get("ELEMENT")));
-        element.setFileDetector(driver.getFileDetector());
-        return element;
-      } else if (resultAsMap.containsKey("element-6066-11e4-a52e-4f735466cecf")) {
-        RemoteWebElement element = newRemoteWebElement();
-        element.setId(String.valueOf(resultAsMap.get("element-6066-11e4-a52e-4f735466cecf")));
-        element.setFileDetector(driver.getFileDetector());
-        return element;
+      String elementKey = getElementKey(resultAsMap);
+		  if (null != elementKey) {
+			  RemoteWebElement element = newRemoteWebElement();
+			  element.setId(String.valueOf(resultAsMap.get(elementKey)));
+			  return element;
       } else {
         return Maps.transformValues(resultAsMap, this);
       }
+    }
+
+    if (result instanceof RemoteWebElement) {
+      return setOwner((RemoteWebElement) result);
     }
 
     if (result instanceof Number) {
@@ -74,8 +75,23 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
   }
 
   protected RemoteWebElement newRemoteWebElement() {
-    RemoteWebElement toReturn = new RemoteWebElement();
-    toReturn.setParent(driver);
-    return toReturn;
+    return setOwner(new RemoteWebElement());
   }
+
+  private RemoteWebElement setOwner(RemoteWebElement element) {
+    if (driver != null) {
+      element.setParent(driver);
+      element.setFileDetector(driver.getFileDetector());
+    }
+    return element;
+  }
+  private String getElementKey(Map<?, ?> resultAsMap) {
+		for (Dialect d : Dialect.values()) {
+			String elementKeyForDialect = d.getEncodedElementKey();
+			if (resultAsMap.containsKey(elementKeyForDialect)) {
+				return elementKeyForDialect;
+			}
+		}
+		return null;
+	}
 }

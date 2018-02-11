@@ -1,10 +1,10 @@
 ﻿using NUnit.Framework;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Html5
 {
     [TestFixture]
-    public class LocalStorageTest : DriverTestFixture
+	[IgnoreBrowser(Browser.Safari, "Unimplemented feature")]
+	public class LocalStorageTest : DriverTestFixture
     {
         IHasWebStorage hasWebStorageDriver;
         ILocalStorage storage = null;

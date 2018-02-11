@@ -15,15 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.lift.match;
-
-import org.openqa.selenium.WebElement;
 
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.openqa.selenium.WebElement;
 
 /**
  * Matcher to match a selected element (e.g. a radio button).

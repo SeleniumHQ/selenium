@@ -1,22 +1,10 @@
 prebuilt_jar(
-  name = 'guice',
-  maven_coords = 'com.google.inject:guice:jar:4.0',
-  binary_jar = 'guice-4.0.jar',
-  source_jar = 'guice-4.0-sources.jar',
-  deps = [
-    ':javax.inject',
-    '//third_party/java/aopalliance:aopalliance',
-    '//third_party/java/guava:guava'
-  ],
-  visibility = [
-    '//third_party/java/testng:testng'
-  ],
-)
-
-prebuilt_jar(
   name = 'javax.inject',
   maven_coords = 'javax.inject:javax.inject:jar:1',
   binary_jar = 'javax.inject-1.jar',
   source_jar = 'javax.inject-1-sources.jar',
+  visibility = [
+    '//third_party/java/enterprise:cdi-api'
+  ],
 )
 

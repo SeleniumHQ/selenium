@@ -82,8 +82,8 @@ goog.ui.emoji.EmojiPaletteRenderer.getCssClass = function() {
  *     an individual emoji image or a sprite.
  * @return {!HTMLDivElement} The palette item for this emoji.
  */
-goog.ui.emoji.EmojiPaletteRenderer.prototype.createPaletteItem =
-    function(dom, id, spriteInfo, displayUrl) {
+goog.ui.emoji.EmojiPaletteRenderer.prototype.createPaletteItem = function(
+    dom, id, spriteInfo, displayUrl) {
   var el;
 
   if (spriteInfo) {
@@ -100,6 +100,7 @@ goog.ui.emoji.EmojiPaletteRenderer.prototype.createPaletteItem =
   var outerdiv = dom.createDom(
       goog.dom.TagName.DIV, goog.getCssName('goog-palette-cell-wrapper'), el);
   outerdiv.setAttribute(goog.ui.emoji.Emoji.ATTRIBUTE, id);
+  outerdiv.setAttribute(goog.ui.emoji.Emoji.DATA_ATTRIBUTE, id);
   return /** @type {!HTMLDivElement} */ (outerdiv);
 };
 
@@ -171,18 +172,21 @@ goog.ui.emoji.EmojiPaletteRenderer.prototype.createCell = function(node, dom) {
   // empty div, to prevent trying to fetch a null url.
   if (!node) {
     var elem = this.defaultImgUrl_ ?
-               dom.createDom(goog.dom.TagName.IMG, {src: this.defaultImgUrl_}) :
-               dom.createDom(goog.dom.TagName.DIV);
-    node = dom.createDom(goog.dom.TagName.DIV,
-                         goog.getCssName('goog-palette-cell-wrapper'), elem);
+        dom.createDom(goog.dom.TagName.IMG, {src: this.defaultImgUrl_}) :
+        dom.createDom(goog.dom.TagName.DIV);
+    node = dom.createDom(
+        goog.dom.TagName.DIV, goog.getCssName('goog-palette-cell-wrapper'),
+        elem);
   }
 
-  var cell = dom.createDom(goog.dom.TagName.TD, {
-    'class': goog.getCssName(this.getCssClass(), 'cell'),
-    // Cells must have an ID, for accessibility, so we generate one here.
-    'id': this.getCssClass() + '-cell-' +
-        goog.ui.emoji.EmojiPaletteRenderer.cellId_++
-  }, node);
+  var cell = dom.createDom(
+      goog.dom.TagName.TD, {
+        'class': goog.getCssName(this.getCssClass(), 'cell'),
+        // Cells must have an ID, for accessibility, so we generate one here.
+        'id': this.getCssClass() + '-cell-' +
+            goog.ui.emoji.EmojiPaletteRenderer.cellId_++
+      },
+      node);
   goog.a11y.aria.setRole(cell, 'gridcell');
   return cell;
 };
@@ -196,8 +200,8 @@ goog.ui.emoji.EmojiPaletteRenderer.prototype.createCell = function(node, dom) {
  * @return {Node} The corresponding palette item (null if not found).
  * @override
  */
-goog.ui.emoji.EmojiPaletteRenderer.prototype.getContainingItem =
-    function(palette, node) {
+goog.ui.emoji.EmojiPaletteRenderer.prototype.getContainingItem = function(
+    palette, node) {
   var root = palette.getElement();
   while (node && node.nodeType == goog.dom.NodeType.ELEMENT && node != root) {
     if (node.tagName == goog.dom.TagName.TD) {

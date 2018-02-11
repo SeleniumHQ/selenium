@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.html5;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
@@ -25,24 +24,28 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CAC
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-@Ignore({IE, SAFARI, MARIONETTE})
+@Ignore(HTMLUNIT)
+@Ignore(IE)
+@Ignore(SAFARI)
+@Ignore(MARIONETTE)
 public class Html5CapabilitiesTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -74,11 +77,6 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
-  public void requiredWebStorageCapabilityShouldHavePriority() {
-    configureCapabilityTwice(SUPPORTS_WEB_STORAGE, true);
-  }
-
-  @Test
   public void enableApplicationCacheCapability() {
     configureCapability(SUPPORTS_APPLICATION_CACHE, true);
     // TODO: Checks that application cache is enabled
@@ -88,11 +86,6 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
   public void disableApplicationCacheCapability() {
     configureCapability(SUPPORTS_APPLICATION_CACHE, false);
     // TODO: Checks that application cache is disabled
-  }
-
-  @Test
-  public void requiredApplicatonCacheCapabilityShouldHavePriority() {
-    configureCapabilityTwice(SUPPORTS_APPLICATION_CACHE, true);
   }
 
   @Test
@@ -108,11 +101,6 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
-  public void requiredLocationCapabilityShouldHavePriority() {
-    configureCapabilityTwice(SUPPORTS_LOCATION_CONTEXT, true);
-  }
-
-  @Test
   public void enableDatabaseCapability() {
     configureCapability(SUPPORTS_SQL_DATABASE, true);
     // TODO: Checks that SQL database is enabled
@@ -124,36 +112,14 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
     // TODO: Checks that SQL database is disabled
   }
 
-  @Test
-  public void requiredDatabaseCapabilityShouldHavePriority() {
-    configureCapabilityTwice(SUPPORTS_SQL_DATABASE, true);
-  }
-
   private void configureCapability(String capability, boolean isEnabled) {
-    DesiredCapabilities requiredCaps = new DesiredCapabilities();
-    requiredCaps.setCapability(capability, isEnabled);
-    WebDriverBuilder builder = new WebDriverBuilder().setRequiredCapabilities(requiredCaps);
-    localDriver = builder.get();
+    Capabilities desiredCaps = new ImmutableCapabilities(capability, isEnabled);
+    localDriver = new WebDriverBuilder().get(desiredCaps);
     Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
     assertTrue(String.format("The %s capability should be included in capabilities " +
         "for the session", capability), caps.getCapability(capability) != null);
     assertTrue(String.format("Capability %s should be set to %b", capability, isEnabled),
         caps.is(capability) == isEnabled);
-  }
-
-  private void configureCapabilityTwice(String capability, boolean isEnabled) {
-    DesiredCapabilities desiredCaps = new DesiredCapabilities();
-    desiredCaps.setCapability(capability, !isEnabled);
-    DesiredCapabilities requiredCaps = new DesiredCapabilities();
-    requiredCaps.setCapability(capability, isEnabled);
-    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).
-        setRequiredCapabilities(requiredCaps);
-    localDriver = builder.get();
-    Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
-    assertTrue(String.format("The %s capability should be included in capabilities " +
-        "for the session", capability), caps.getCapability(capability) != null);
-    assertEquals(String.format("Capability %s should be set to %b", capability, isEnabled),
-        caps.is(capability), isEnabled);
   }
 
   @After

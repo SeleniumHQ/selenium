@@ -58,4 +58,3 @@ goog.editor.plugins.LinkShortcutPlugin.prototype.handleKeyboardShortcut =
 
   return false;
 };
-

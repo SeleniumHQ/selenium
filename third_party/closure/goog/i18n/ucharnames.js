@@ -48,7 +48,8 @@ goog.i18n.uCharNames.toName = function(ch) {
     return names[ch];
   } else if (chCodeStr in names) {
     return names[chCode];
-  } else if (0xFE00 <= chCode && chCode <= 0xFE0F ||
+  } else if (
+      0xFE00 <= chCode && chCode <= 0xFE0F ||
       0xE0100 <= chCode && chCode <= 0xE01EF) {
     var seqnum;
     if (0xFE00 <= chCode && chCode <= 0xFE0F) {
@@ -60,8 +61,8 @@ goog.i18n.uCharNames.toName = function(ch) {
     }
 
     /** @desc Variation selector with the sequence number. */
-    var MSG_VARIATION_SELECTOR_SEQNUM =
-        goog.getMsg('Variation Selector - {$seqnum}', {'seqnum': seqnum});
+    var MSG_VARIATION_SELECTOR_SEQNUM = goog.getMsg(
+        'Variation Selector - {$seqnum}', {'seqnum': String(seqnum)});
     return MSG_VARIATION_SELECTOR_SEQNUM;
   }
   return null;

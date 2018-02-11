@@ -56,7 +56,8 @@ goog.dom.fullscreen.EventType = {
 goog.dom.fullscreen.isSupported = function(opt_domHelper) {
   var doc = goog.dom.fullscreen.getDocument_(opt_domHelper);
   var body = doc.body;
-  return !!(body.webkitRequestFullscreen ||
+  return !!(
+      body.webkitRequestFullscreen ||
       (body.mozRequestFullScreen && doc.mozFullScreenEnabled) ||
       (body.msRequestFullscreen && doc.msFullscreenEnabled) ||
       (body.requestFullscreen && doc.fullscreenEnabled));
@@ -84,8 +85,7 @@ goog.dom.fullscreen.requestFullScreen = function(element) {
  * Requests putting the element in full screen with full keyboard access.
  * @param {!Element} element The element to put full screen.
  */
-goog.dom.fullscreen.requestFullScreenWithKeys = function(
-    element) {
+goog.dom.fullscreen.requestFullScreenWithKeys = function(element) {
   if (element.mozRequestFullScreenWithKeys) {
     element.mozRequestFullScreenWithKeys();
   } else if (element.webkitRequestFullscreen) {
@@ -125,8 +125,9 @@ goog.dom.fullscreen.isFullScreen = function(opt_domHelper) {
   var doc = goog.dom.fullscreen.getDocument_(opt_domHelper);
   // IE 11 doesn't have similar boolean property, so check whether
   // document.msFullscreenElement is null instead.
-  return !!(doc.webkitIsFullScreen || doc.mozFullScreen ||
-      doc.msFullscreenElement || doc.fullscreenElement);
+  return !!(
+      doc.webkitIsFullScreen || doc.mozFullScreen || doc.msFullscreenElement ||
+      doc.fullscreenElement);
 };
 
 
@@ -139,10 +140,8 @@ goog.dom.fullscreen.isFullScreen = function(opt_domHelper) {
 goog.dom.fullscreen.getFullScreenElement = function(opt_domHelper) {
   var doc = goog.dom.fullscreen.getDocument_(opt_domHelper);
   var element_list = [
-    doc.webkitFullscreenElement,
-    doc.mozFullScreenElement,
-    doc.msFullscreenElement,
-    doc.fullscreenElement
+    doc.webkitFullscreenElement, doc.mozFullScreenElement,
+    doc.msFullscreenElement, doc.fullscreenElement
   ];
   for (var i = 0; i < element_list.length; i++) {
     if (element_list[i] != null) {
@@ -161,7 +160,6 @@ goog.dom.fullscreen.getFullScreenElement = function(opt_domHelper) {
  * @private
  */
 goog.dom.fullscreen.getDocument_ = function(opt_domHelper) {
-  return opt_domHelper ?
-      opt_domHelper.getDocument() :
-      goog.dom.getDomHelper().getDocument();
+  return opt_domHelper ? opt_domHelper.getDocument() :
+                         goog.dom.getDomHelper().getDocument();
 };

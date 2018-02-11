@@ -1,9 +1,0 @@
-prebuilt_jar(name = 'apache-mime4j',
-  binary_jar = 'apache-mime4j-0.6.jar',
-  deps = [
-    '//third_party/java/commons-logging:commons-logging',
-  ],
-  visibility = [
-    '//third_party/java/...',
-  ],
-)

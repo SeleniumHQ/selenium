@@ -40,6 +40,8 @@
  */
 
 (function() {
+  window.errors = [];
+  window.onerror = function() { window.errors.push(arguments); console.log(arguments); };
   var scripts = document.getElementsByTagName('script');
   var directoryPath = './';
   var thisFile = 'test_bootstrap.js';

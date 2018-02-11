@@ -122,8 +122,9 @@ bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
   // Lookup frame by id
   var elements = bot.locators.findElements({id: nameOrId}, domWindow.document);
   for (var i = 0; i < elements.length; i++) {
-    if (bot.frame.isFrame_(elements[i])) {
-      return goog.dom.getFrameContentWindow(elements[i]);
+    var frameElement = elements[i];
+    if (frameElement && bot.frame.isFrame_(frameElement)) {
+      return goog.dom.getFrameContentWindow(frameElement);
     }
   }
   return null;

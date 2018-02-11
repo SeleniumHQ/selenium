@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,13 +34,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
@@ -50,8 +51,6 @@ import org.openqa.selenium.support.PageFactory;
 import java.lang.reflect.Field;
 import java.util.List;
 
-/**
- */
 @RunWith(JUnit4.class)
 public class DefaultFieldDecoratorTest {
 
@@ -184,6 +183,7 @@ public class DefaultFieldDecoratorTest {
     final Mouse mouse = mock(Mouse.class);
 
     when(driver.getMouse()).thenReturn(mouse);
+    when(element.getCoordinates()).thenReturn(mock(Coordinates.class));
     when(driver.findElement(By.id("foo"))).thenReturn(element);
 
     Page page = new Page();
@@ -202,7 +202,7 @@ public class DefaultFieldDecoratorTest {
   }
 
   private interface AllDriver extends WebDriver, FindsById, FindsByLinkText, FindsByName,
-      FindsByXPath, HasInputDevices {
+                                      FindsByXPath, HasInputDevices {
     // Place holder
   }
 

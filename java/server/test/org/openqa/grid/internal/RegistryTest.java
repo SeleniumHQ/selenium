@@ -19,8 +19,6 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +27,10 @@ import org.openqa.grid.common.exception.CapabilityNotPresentOnTheGridException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,10 +42,9 @@ public class RegistryTest {
 
   private static final int TOTAL_THREADS = 100;
 
-
   @Test
-  public void addProxy() {
-    Registry registry = Registry.newInstance();
+  public void addProxy() throws Exception {
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 =
         RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
     RemoteProxy p2 =
@@ -66,8 +65,8 @@ public class RegistryTest {
   }
 
   @Test
-  public void addDuppedProxy() {
-    Registry registry = Registry.newInstance();
+  public void addDuppedProxy() throws Exception {
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 =
         RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine1:4444/", registry);
     RemoteProxy p2 =
@@ -95,19 +94,19 @@ public class RegistryTest {
 
   @Before
   public void prepareReqRequest() {
-    Map<String, Object> config = new HashMap<>();
+    GridNodeConfiguration config = new GridNodeConfiguration();
     app1.put(CapabilityType.BROWSER_NAME, "app1");
     app2.put(CapabilityType.BROWSER_NAME, "app2");
-    config.put(REMOTE_HOST, "http://machine1:4444");
-    config.put(MAX_SESSION, 5);
-    req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    config.host = "machine1";
+    config.port = 4444;
+    config.maxSession = 5;
+    config.capabilities.add(new DesiredCapabilities(app1));
+    req = new RegistrationRequest(config);
   }
 
   @Test
   public void emptyRegistry() throws Throwable {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     try {
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
@@ -120,7 +119,7 @@ public class RegistryTest {
 
   // @Test(timeout=2000) //excepted timeout here.How to specify that in junit ?
   public void emptyRegistryParam() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     registry.setThrowOnCapabilityNotPresent(false);
     try {
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
@@ -132,7 +131,7 @@ public class RegistryTest {
 
   @Test
   public void CapabilityNotPresentRegistry() throws Throwable {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     try {
       registry.add(new BaseRemoteProxy(req, registry));
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
@@ -148,7 +147,7 @@ public class RegistryTest {
 
   // @Test(timeout = 2000) //excepted timeout here.How to specify that in junit ?
   public void CapabilityNotPresentRegistryParam() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     registry.setThrowOnCapabilityNotPresent(false);
     try {
       registry.add(new BaseRemoteProxy(req, registry));
@@ -163,17 +162,15 @@ public class RegistryTest {
 
   @Test(timeout = 2000)
   public void registerAtTheSameTime() throws InterruptedException {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     final CountDownLatch latch = new CountDownLatch(TOTAL_THREADS);
 
     try {
       for (int i = 0; i < TOTAL_THREADS; i++) {
-        new Thread(new Runnable() { // Thread safety reviewed
-
-          public void run() {
-            registry.add(new BaseRemoteProxy(req, registry));
-            latch.countDown();
-          }
+        // Thread safety reviewed
+        new Thread(() -> {
+          registry.add(new BaseRemoteProxy(req, registry));
+          latch.countDown();
         }).start();
       }
 
@@ -194,7 +191,7 @@ public class RegistryTest {
    */
   class MyRemoteProxy extends BaseRemoteProxy implements RegistrationListener {
 
-    public MyRemoteProxy(RegistrationRequest request, Registry registry) {
+    public MyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
 
     }
@@ -213,17 +210,15 @@ public class RegistryTest {
 
   @Test(timeout = 2000)
   public void registerAtTheSameTimeWithListener() throws InterruptedException {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     final AtomicInteger counter = new AtomicInteger();
 
     try {
       for (int i = 0; i < TOTAL_THREADS; i++) {
-        new Thread(new Runnable() { // Thread safety reviewed
-
-          public void run() {
-            registry.add(new MyRemoteProxy(req, registry));
-            counter.incrementAndGet();
-          }
+        // Thread safety reviewed
+        new Thread(() -> {
+          registry.add(new MyRemoteProxy(req, registry));
+          counter.incrementAndGet();
         }).start();
       }
       while (counter.get() != TOTAL_THREADS) {
@@ -235,5 +230,4 @@ public class RegistryTest {
       registry.stop();
     }
   }
-
 }

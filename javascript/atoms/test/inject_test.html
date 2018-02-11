@@ -28,7 +28,6 @@ limitations under the License.
     goog.require('bot.userAgent');
     goog.require('goog.Promise');
     goog.require('goog.dom');
-    goog.require('goog.dom.TagName');
     goog.require('goog.events');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -189,6 +188,15 @@ limitations under the License.
       assertTrue(goog.object.containsKey(wrapped[0], bot.inject.ELEMENT_KEY));
       assertEquals(document.body, bot.inject.cache.getElement(
           wrapped[0][bot.inject.ELEMENT_KEY]));
+    }
+
+
+    function testShouldThrowWhenWrappingRecursiveStructure() {
+      var obj1 = {};
+      var obj2 = {};
+      obj1['obj2'] = obj2;
+      obj2['obj1'] = obj1;
+      assertThrows(goog.partial(bot.inject.wrapValue, obj1));
     }
 
 
@@ -515,7 +523,7 @@ limitations under the License.
       assertEquals(wrapped[bot.inject.ELEMENT_KEY],
                    value[0][bot.inject.ELEMENT_KEY]);
 
-      assertEquals(goog.dom.TagName.BODY, value[1]);
+      assertEquals('BODY', value[1]);
     }
 
     function testCorrectlyUnwrapsArgsForInjectedAsyncScripts() {
@@ -541,7 +549,7 @@ limitations under the License.
         assertEquals(wrapped[bot.inject.ELEMENT_KEY],
                      value[0][bot.inject.ELEMENT_KEY]);
 
-        assertEquals(goog.dom.TagName.BODY, value[1]);
+        assertEquals('BODY', value[1]);
       });
     }
 

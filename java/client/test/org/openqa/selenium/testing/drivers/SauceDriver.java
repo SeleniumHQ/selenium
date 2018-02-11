@@ -19,12 +19,12 @@ package org.openqa.selenium.testing.drivers;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -93,9 +93,8 @@ public class SauceDriver extends RemoteWebDriver {
     try {
       return new URL(String.format("http://%s:%s@%s/wd/hub", sauceUsername, sauceKey, sauceUrl));
     } catch (MalformedURLException e) {
-      Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
-    throw new IllegalStateException("Should have returned or thrown");
   }
 
   private static Capabilities munge(Capabilities desiredCapabilities, String seleniumVersion, String browserVersion, Platform platform) {
@@ -124,7 +123,7 @@ public class SauceDriver extends RemoteWebDriver {
       mungedCapabilities.setCapability("name", jobName);
     }
 
-    if (DesiredCapabilities.internetExplorer().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
+    if (BrowserType.IE.equals(desiredCapabilities.getBrowserName())) {
       String ieDriverVersion = System.getenv(SELENIUM_IEDRIVER_ENV_NAME);
       if (ieDriverVersion != null) {
         mungedCapabilities.setCapability("iedriver-version", ieDriverVersion);
@@ -132,7 +131,7 @@ public class SauceDriver extends RemoteWebDriver {
       mungedCapabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
     }
 
-    if (DesiredCapabilities.chrome().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
+    if (BrowserType.CHROME.equals(desiredCapabilities.getBrowserName())) {
       String chromeDriverVersion = System.getenv(SELENIUM_CHROMEDRIVER_ENV_NAME);
       if (chromeDriverVersion != null) {
         System.out.println("Setting chromedriver-version capability to " + chromeDriverVersion);

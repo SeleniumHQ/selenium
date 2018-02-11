@@ -26,6 +26,7 @@ goog.require('goog.date.DateTime');
 goog.require('goog.dom');
 goog.require('goog.dom.InputType');
 goog.require('goog.dom.TagName');
+goog.require('goog.i18n.DateTimeParse');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.DatePicker');
@@ -56,8 +57,8 @@ goog.ui.InputDatePicker = function(
   this.dateTimeFormatter_ = dateTimeFormatter;
   this.dateTimeParser_ = dateTimeParser;
 
-  this.popupDatePicker_ = new goog.ui.PopupDatePicker(
-      opt_datePicker, opt_domHelper);
+  this.popupDatePicker_ =
+      new goog.ui.PopupDatePicker(opt_datePicker, opt_domHelper);
   this.addChild(this.popupDatePicker_);
   this.popupDatePicker_.setAllowAutoFocus(false);
 };
@@ -232,8 +233,9 @@ goog.ui.InputDatePicker.prototype.getInputValueAsDate_ = function() {
  * @override
  */
 goog.ui.InputDatePicker.prototype.createDom = function() {
-  this.setElementInternal(this.getDomHelper().createDom(
-      goog.dom.TagName.INPUT, {'type': goog.dom.InputType.TEXT}));
+  this.setElementInternal(
+      this.getDomHelper().createDom(
+          goog.dom.TagName.INPUT, {'type': goog.dom.InputType.TEXT}));
   this.popupDatePicker_.createDom();
 };
 
@@ -267,8 +269,8 @@ goog.ui.InputDatePicker.prototype.enterDocument = function() {
   // less intrusive option.
   //
   // See cl/100837907 for more context and the discussion around this decision.
-  (this.popupParentElement_ || this.getDomHelper().getDocument().body).
-      appendChild(this.popupDatePicker_.getElement());
+  (this.popupParentElement_ || this.getDomHelper().getDocument().body)
+      .appendChild(this.popupDatePicker_.getElement());
 
   goog.ui.InputDatePicker.superClass_.enterDocument.call(this);
   var el = this.getElement();
@@ -279,10 +281,11 @@ goog.ui.InputDatePicker.prototype.enterDocument = function() {
   this.popupDatePicker_.setDate(this.getInputValueAsDate_());
 
   var handler = this.getHandler();
-  handler.listen(this.popupDatePicker_, goog.ui.DatePicker.Events.CHANGE,
-                 this.onDateChanged_);
-  handler.listen(this.popupDatePicker_, goog.ui.PopupBase.EventType.SHOW,
-                 this.onPopup_);
+  handler.listen(
+      this.popupDatePicker_, goog.ui.DatePicker.Events.CHANGE,
+      this.onDateChanged_);
+  handler.listen(
+      this.popupDatePicker_, goog.ui.PopupBase.EventType.SHOW, this.onPopup_);
 };
 
 

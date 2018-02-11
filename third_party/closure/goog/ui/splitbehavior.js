@@ -51,8 +51,8 @@ goog.require('goog.ui.registry');
  * @constructor
  * @extends {goog.Disposable}
  */
-goog.ui.SplitBehavior = function(first, second, opt_behaviorHandler,
-    opt_eventType, opt_domHelper) {
+goog.ui.SplitBehavior = function(
+    first, second, opt_behaviorHandler, opt_eventType, opt_domHelper) {
   goog.Disposable.call(this);
 
   /**
@@ -72,8 +72,8 @@ goog.ui.SplitBehavior = function(first, second, opt_behaviorHandler,
    * @type {function(!goog.ui.Control, !Event)}
    * @private
    */
-  this.behaviorHandler_ = opt_behaviorHandler ||
-                          goog.ui.SplitBehavior.DefaultHandlers.CAPTION;
+  this.behaviorHandler_ =
+      opt_behaviorHandler || goog.ui.SplitBehavior.DefaultHandlers.CAPTION;
 
   /**
    * Event type triggering the behavior.
@@ -129,14 +129,14 @@ goog.ui.SplitBehavior.DefaultHandlers = {
   NONE: goog.nullFunction,
   CAPTION: function(targetControl, e) {
     var item = /** @type {goog.ui.MenuItem} */ (e.target);
-    var value = (/** @type {string} */((item && item.getValue()) || ''));
+    var value = (/** @type {string} */ ((item && item.getValue()) || ''));
     var button = /** @type {goog.ui.Button} */ (targetControl);
     button.setCaption && button.setCaption(value);
     button.setValue && button.setValue(value);
   },
   VALUE: function(targetControl, e) {
     var item = /** @type {goog.ui.MenuItem} */ (e.target);
-    var value = (/** @type {string} */(item && item.getValue()) || '');
+    var value = (/** @type {string} */ (item && item.getValue()) || '');
     var button = /** @type {goog.ui.Button} */ (targetControl);
     button.setValue && button.setValue(value);
   }
@@ -182,8 +182,8 @@ goog.ui.SplitBehavior.prototype.getEventType = function() {
  * @param {boolean} disposeSecond Whether to dispose the second control
  *     when dispose is called.
  */
-goog.ui.SplitBehavior.prototype.setDisposeControls = function(disposeFirst,
-    disposeSecond) {
+goog.ui.SplitBehavior.prototype.setDisposeControls = function(
+    disposeFirst, disposeSecond) {
   this.disposeFirst_ = !!disposeFirst;
   this.disposeSecond_ = !!disposeSecond;
 };
@@ -265,7 +265,8 @@ goog.ui.SplitBehavior.prototype.setActive = function(activate) {
   }
   this.isActive_ = activate;
   if (activate) {
-    this.eventHandler_.listen(this.second_, this.eventType_,
+    this.eventHandler_.listen(
+        this.second_, this.eventType_,
         goog.bind(this.behaviorHandler_, this, this.first_));
     // TODO(user): should we call the handler here to sync between
     // first_ and second_.
@@ -294,18 +295,18 @@ goog.ui.SplitBehavior.prototype.disposeInternal = function() {
  * @param {Element} element An element to render two of it's child nodes.
  * @private
  */
-goog.ui.SplitBehavior.prototype.decorateChildren_ = function(
-    element) {
+goog.ui.SplitBehavior.prototype.decorateChildren_ = function(element) {
   var childNodes = element.childNodes;
   var len = childNodes.length;
   var finished = false;
   for (var i = 0; i < len && !finished; i++) {
     var child = childNodes[i];
     if (child.nodeType == goog.dom.NodeType.ELEMENT) {
+      var el = /** @type {!Element} */ (child);
       if (!this.first_) {
-        this.first_ = /** @type {goog.ui.Control} */ (goog.ui.decorate(child));
+        this.first_ = /** @type {goog.ui.Control} */ (goog.ui.decorate(el));
       } else if (!this.second_) {
-        this.second_ = /** @type {goog.ui.Control} */ (goog.ui.decorate(child));
+        this.second_ = /** @type {goog.ui.Control} */ (goog.ui.decorate(el));
         finished = true;
       }
     }
@@ -329,7 +330,6 @@ goog.ui.SplitBehavior.prototype.collapseSides_ = function(first, second) {
 
 
 // Register a decorator factory function for goog.ui.Buttons.
-goog.ui.registry.setDecoratorByClassName(goog.ui.SplitBehavior.CSS_CLASS,
-    function() {
-      return new goog.ui.SplitBehavior(null, null);
-    });
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.SplitBehavior.CSS_CLASS,
+    function() { return new goog.ui.SplitBehavior(null, null); });

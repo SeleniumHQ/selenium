@@ -114,8 +114,8 @@ goog.date.relative.setTimeDeltaFormatter = function(formatter) {
  */
 goog.date.relative.formatMonth_ = function(date) {
   if (!goog.date.relative.monthDateFormatter_) {
-    goog.date.relative.monthDateFormatter_ = new goog.i18n.DateTimeFormat(
-        goog.i18n.DateTimePatterns.MONTH_DAY_ABBR);
+    goog.date.relative.monthDateFormatter_ =
+        new goog.i18n.DateTimeFormat(goog.i18n.DateTimePatterns.MONTH_DAY_ABBR);
   }
   return goog.date.relative.monthDateFormatter_.format(date);
 };
@@ -144,8 +144,8 @@ goog.date.relative.formatShortTime_ = function(date) {
  */
 goog.date.relative.formatFullDate_ = function(date) {
   if (!goog.date.relative.fullDateFormatter_) {
-    goog.date.relative.fullDateFormatter_ = new goog.i18n.DateTimeFormat(
-        goog.i18n.DateTimeFormat.Format.FULL_DATE);
+    goog.date.relative.fullDateFormatter_ =
+        new goog.i18n.DateTimeFormat(goog.i18n.DateTimeFormat.Format.FULL_DATE);
   }
   return goog.date.relative.fullDateFormatter_.format(date);
 };
@@ -169,13 +169,13 @@ goog.date.relative.format = function(dateMs) {
     delta *= -1;
   }
 
-  if (delta < 60) { // Minutes.
+  if (delta < 60) {  // Minutes.
     return goog.date.relative.formatTimeDelta_(
         delta, future, goog.date.relative.Unit.MINUTES);
 
   } else {
     delta = Math.floor(delta / 60);
-    if (delta < 24) { // Hours.
+    if (delta < 24) {  // Hours.
       return goog.date.relative.formatTimeDelta_(
           delta, future, goog.date.relative.Unit.HOURS);
 
@@ -190,8 +190,8 @@ goog.date.relative.format = function(dateMs) {
       midnight.setMilliseconds(0);
 
       // Convert to days ago.
-      delta = Math.ceil(
-          (midnight.getTime() - dateMs) / goog.date.relative.DAY_MS_);
+      delta =
+          Math.ceil((midnight.getTime() - dateMs) / goog.date.relative.DAY_MS_);
 
       if (future) {
         delta *= -1;
@@ -252,8 +252,8 @@ goog.date.relative.formatDay = function(dateMs, opt_formatter) {
 
   var yesterday = new Date(today.getTime() - goog.date.relative.DAY_MS_);
   var tomorrow = new Date(today.getTime() + goog.date.relative.DAY_MS_);
-  var dayAfterTomorrow = new Date(today.getTime() +
-      2 * goog.date.relative.DAY_MS_);
+  var dayAfterTomorrow =
+      new Date(today.getTime() + 2 * goog.date.relative.DAY_MS_);
 
   var message;
   if (dateMs >= tomorrow.getTime() && dateMs < dayAfterTomorrow.getTime()) {
@@ -386,14 +386,14 @@ goog.date.relative.getMessage_ = function(delta, future, unit) {
      * (singular).
      */
     var MSG_MINUTES_AGO_SINGULAR =
-        goog.getMsg('{$num} minute ago', {'num' : deltaFormatted});
+        goog.getMsg('{$num} minute ago', {'num': deltaFormatted});
 
     /**
      * @desc Relative date indicating how many minutes ago something happened
      * (plural).
      */
     var MSG_MINUTES_AGO_PLURAL =
-        goog.getMsg('{$num} minutes ago', {'num' : deltaFormatted});
+        goog.getMsg('{$num} minutes ago', {'num': deltaFormatted});
 
     return delta == 1 ? MSG_MINUTES_AGO_SINGULAR : MSG_MINUTES_AGO_PLURAL;
 
@@ -403,14 +403,14 @@ goog.date.relative.getMessage_ = function(delta, future, unit) {
      * (singular).
      */
     var MSG_IN_MINUTES_SINGULAR =
-        goog.getMsg('in {$num} minute', {'num' : deltaFormatted});
+        goog.getMsg('in {$num} minute', {'num': deltaFormatted});
 
     /**
      * @desc Relative date indicating in how many minutes something happens
      * (plural).
      */
     var MSG_IN_MINUTES_PLURAL =
-        goog.getMsg('in {$num} minutes', {'num' : deltaFormatted});
+        goog.getMsg('in {$num} minutes', {'num': deltaFormatted});
 
     return delta == 1 ? MSG_IN_MINUTES_SINGULAR : MSG_IN_MINUTES_PLURAL;
 
@@ -420,14 +420,14 @@ goog.date.relative.getMessage_ = function(delta, future, unit) {
      * (singular).
      */
     var MSG_HOURS_AGO_SINGULAR =
-        goog.getMsg('{$num} hour ago', {'num' : deltaFormatted});
+        goog.getMsg('{$num} hour ago', {'num': deltaFormatted});
 
     /**
      * @desc Relative date indicating how many hours ago something happened
      * (plural).
      */
     var MSG_HOURS_AGO_PLURAL =
-        goog.getMsg('{$num} hours ago', {'num' : deltaFormatted});
+        goog.getMsg('{$num} hours ago', {'num': deltaFormatted});
 
     return delta == 1 ? MSG_HOURS_AGO_SINGULAR : MSG_HOURS_AGO_PLURAL;
 
@@ -437,14 +437,14 @@ goog.date.relative.getMessage_ = function(delta, future, unit) {
      * (singular).
      */
     var MSG_IN_HOURS_SINGULAR =
-        goog.getMsg('in {$num} hour', {'num' : deltaFormatted});
+        goog.getMsg('in {$num} hour', {'num': deltaFormatted});
 
     /**
      * @desc Relative date indicating in how many hours something happens
      * (plural).
      */
     var MSG_IN_HOURS_PLURAL =
-        goog.getMsg('in {$num} hours', {'num' : deltaFormatted});
+        goog.getMsg('in {$num} hours', {'num': deltaFormatted});
 
     return delta == 1 ? MSG_IN_HOURS_SINGULAR : MSG_IN_HOURS_PLURAL;
 
@@ -454,14 +454,14 @@ goog.date.relative.getMessage_ = function(delta, future, unit) {
      * (singular).
      */
     var MSG_DAYS_AGO_SINGULAR =
-        goog.getMsg('{$num} day ago', {'num' : deltaFormatted});
+        goog.getMsg('{$num} day ago', {'num': deltaFormatted});
 
     /**
      * @desc Relative date indicating how many days ago something happened
      * (plural).
      */
     var MSG_DAYS_AGO_PLURAL =
-        goog.getMsg('{$num} days ago', {'num' : deltaFormatted});
+        goog.getMsg('{$num} days ago', {'num': deltaFormatted});
 
     return delta == 1 ? MSG_DAYS_AGO_SINGULAR : MSG_DAYS_AGO_PLURAL;
 
@@ -471,14 +471,14 @@ goog.date.relative.getMessage_ = function(delta, future, unit) {
      * (singular).
      */
     var MSG_IN_DAYS_SINGULAR =
-        goog.getMsg('in {$num} day', {'num' : deltaFormatted});
+        goog.getMsg('in {$num} day', {'num': deltaFormatted});
 
     /**
      * @desc Relative date indicating in how many days something happens
      * (plural).
      */
     var MSG_IN_DAYS_PLURAL =
-        goog.getMsg('in {$num} days', {'num' : deltaFormatted});
+        goog.getMsg('in {$num} days', {'num': deltaFormatted});
 
     return delta == 1 ? MSG_IN_DAYS_SINGULAR : MSG_IN_DAYS_PLURAL;
 

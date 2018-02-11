@@ -21,9 +21,8 @@ The ApplicationCache implementaion.
 
 from selenium.webdriver.remote.command import Command
 
+
 class ApplicationCache(object):
-    """
-    """
 
     UNCACHED = 0
     IDLE = 1
@@ -31,7 +30,7 @@ class ApplicationCache(object):
     DOWNLOADING = 3
     UPDATE_READY = 4
     OBSOLETE = 5
-    
+
     def __init__(self, driver):
         """
         Creates a new Aplication Cache.

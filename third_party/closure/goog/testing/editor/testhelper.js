@@ -18,6 +18,7 @@
  * @author robbyw@google.com (Robby Walker)
  */
 
+goog.setTestOnly('goog.testing.editor.TestHelper');
 goog.provide('goog.testing.editor.TestHelper');
 
 goog.require('goog.Disposable');
@@ -73,7 +74,7 @@ goog.testing.editor.TestHelper.prototype.setRoot = function(root) {
 
 
 /**
- * Make the root element editable.  Alse saves its HTML to be restored
+ * Make the root element editable.  Also saves its HTML to be restored
  * in tearDown.
  */
 goog.testing.editor.TestHelper.prototype.setUpEditableElement = function() {
@@ -155,8 +156,8 @@ goog.testing.editor.TestHelper.prototype.findTextNode = function(textOrRegexp) {
  *     selection at.
  * @return {!goog.dom.AbstractRange}
  */
-goog.testing.editor.TestHelper.prototype.select = function(from, fromOffset,
-    opt_to, opt_toOffset) {
+goog.testing.editor.TestHelper.prototype.select = function(
+    from, fromOffset, opt_to, opt_toOffset) {
   var end;
   var start = end = goog.isString(from) ? this.findTextNode(from) : from;
   var endOffset;
@@ -167,8 +168,8 @@ goog.testing.editor.TestHelper.prototype.select = function(from, fromOffset,
     endOffset = opt_toOffset;
   }
 
-  var range = goog.dom.Range.createFromNodes(
-      start, startOffset, end, endOffset);
+  var range =
+      goog.dom.Range.createFromNodes(start, startOffset, end, endOffset);
   range.select();
   return range;
 };

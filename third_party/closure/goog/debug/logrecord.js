@@ -35,8 +35,8 @@ goog.provide('goog.debug.LogRecord');
  * @param {number=} opt_sequenceNumber Sequence number of this log record. This
  *     should only be passed in when restoring a log record from persistence.
  */
-goog.debug.LogRecord = function(level, msg, loggerName,
-    opt_time, opt_sequenceNumber) {
+goog.debug.LogRecord = function(
+    level, msg, loggerName, opt_time, opt_sequenceNumber) {
   this.reset(level, msg, loggerName, opt_time, opt_sequenceNumber);
 };
 
@@ -115,11 +115,12 @@ goog.debug.LogRecord.nextSequenceNumber_ = 0;
  * @param {number=} opt_sequenceNumber Sequence number of this log record. This
  *     should only be passed in when restoring a log record from persistence.
  */
-goog.debug.LogRecord.prototype.reset = function(level, msg, loggerName,
-    opt_time, opt_sequenceNumber) {
+goog.debug.LogRecord.prototype.reset = function(
+    level, msg, loggerName, opt_time, opt_sequenceNumber) {
   if (goog.debug.LogRecord.ENABLE_SEQUENCE_NUMBERS) {
     this.sequenceNumber_ = typeof opt_sequenceNumber == 'number' ?
-        opt_sequenceNumber : goog.debug.LogRecord.nextSequenceNumber_++;
+        opt_sequenceNumber :
+        goog.debug.LogRecord.nextSequenceNumber_++;
   }
 
   this.time_ = opt_time || goog.now();
@@ -239,4 +240,3 @@ goog.debug.LogRecord.prototype.setMillis = function(time) {
 goog.debug.LogRecord.prototype.getSequenceNumber = function() {
   return this.sequenceNumber_;
 };
-

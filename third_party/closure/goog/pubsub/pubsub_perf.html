@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2009 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<!--
+Author:  attila@google.com (Attila Bodis)
+-->
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Closure Performance Tests - goog.pubsub.PubSub</title>
+  <link rel="stylesheet" href="../testing/performancetable.css" />
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.events');
+    goog.require('goog.events.EventTarget');
+    goog.require('goog.pubsub.PubSub');
+    goog.require('goog.testing.PerformanceTable');
+    goog.require('goog.testing.PerformanceTimer');
+    goog.require('goog.testing.jsunit');
+  </script>
+</head>
+<body>
+  <h1>goog.pubsub.PubSub Performance Tests</h1>
+  <p>
+    <b>User-agent:</b> <script>document.write(navigator.userAgent);</script>
+  </p>
+  <p>
+    Compares the performance of the event system (<code>goog.events.*</code>)
+    with the <code>goog.pubsub.PubSub</code> class.
+  </p>
+  <p>
+    The baseline test creates 1000 event targets and 1000 objects that handle
+    events dispatched by the event targets, and has each event target dispatch
+    2 events 5 times each.
+  </p>
+  <p>
+    The single-<code>PubSub</code> test creates 1000 publishers, 1000
+    subscribers, and a single pubsub channel.  Each subscriber subscribes to
+    topics on the same pubsub channel.  Each publisher publishes 5 messages to
+    2 topics each via the pubsub channel.
+  </p>
+  <p>
+    The multi-<code>PubSub</code> test creates 1000 publishers that are
+    subclasses of <code>goog.pubsub.PubSub</code> and 1000 subscribers.  Each
+    subscriber subscribes to its own publisher.  Each publisher publishes 5
+    messages to 2 topics each via its own pubsub channel.
+  </p>
+  <div id="perfTable"></div>
+  <hr>
+  <script>
+    var targets, publishers, pubsubs, handlers;
+
+    // Number of objects to test per run.
+    var SAMPLES_PER_RUN = 1000;
+
+    // The performance table & performance timer.
+    var table, timer;
+
+    // Event/topic identifiers.
+    var ACTION = 'action';
+    var CHANGE = 'change';
+
+    // Number of times handlers have been called.
+    var actionCount = 0;
+    var changeCount = 0;
+
+    // Generic event handler class.
+    function Handler() {
+    }
+    Handler.prototype.handleAction = function() {
+      actionCount++;
+    };
+    Handler.prototype.handleChange = function() {
+      changeCount++;
+    };
+
+    // Generic publisher class that uses a global pubsub channel.
+    function Publisher(pubsub, id) {
+      this.pubsub = pubsub;
+      this.id = id;
+    }
+    Publisher.prototype.publish = function(topic) {
+      this.pubsub.publish(this.id + '.' + topic);
+    };
+
+    // PubSub subclass; allows clients to subscribe and uses itself to publish.
+    function PubSub() {
+      goog.pubsub.PubSub.call(this);
+    }
+    goog.inherits(PubSub, goog.pubsub.PubSub);
+
+    // EventTarget subclass; uses goog.events.* to dispatch events.
+    function Target() {
+      goog.events.EventTarget.call(this);
+    }
+    goog.inherits(Target, goog.events.EventTarget);
+    Target.prototype.fireEvent = function(type) {
+      this.dispatchEvent(type);
+    };
+
+    function initHandlers(count) {
+      for (var i = 0; i < count; i++) {
+        handlers[i] = new Handler();
+      }
+    }
+
+    function initPublishers(pubsub, count) {
+      for (var i = 0; i < count; i++) {
+        publishers[i] = new Publisher(pubsub, i);
+      }
+    }
+
+    function initPubSubs(count) {
+      for (var i = 0; i < count; i++) {
+        pubsubs[i] = new PubSub();
+      }
+    }
+
+    function initTargets(count) {
+      for (var i = 0; i < count; i++) {
+        targets[i] = new Target();
+      }
+    }
+
+    function createEventListeners(count) {
+      initHandlers(count);
+      initTargets(count);
+      for (var i = 0; i < count; i++) {
+        goog.events.listen(targets[i], ACTION, Handler.prototype.handleAction,
+            false, handlers[i]);
+        goog.events.listen(targets[i], CHANGE, Handler.prototype.handleChange,
+            false, handlers[i]);
+      }
+    }
+
+    function createGlobalSubscriptions(pubsub, count) {
+      initHandlers(count);
+      initPublishers(pubsub, count);
+      for (var i = 0; i < count; i++) {
+        pubsub.subscribe(i + '.' + ACTION, Handler.prototype.handleAction,
+            handlers[i]);
+        pubsub.subscribe(i + '.' + CHANGE, Handler.prototype.handleChange,
+            handlers[i]);
+      }
+    }
+
+    function createSubscriptions(count) {
+      initHandlers(count);
+      initPubSubs(count);
+      for (var i = 0; i < count; i++) {
+        pubsubs[i].subscribe(ACTION, Handler.prototype.handleAction,
+            handlers[i]);
+        pubsubs[i].subscribe(CHANGE, Handler.prototype.handleChange,
+            handlers[i]);
+      }
+    }
+
+    function dispatchEvents(count) {
+      for (var i = 0; i < count; i++) {
+        for (var j = 0; j < 5; j++) {
+          targets[i].fireEvent(ACTION);
+          targets[i].fireEvent(CHANGE);
+        }
+      }
+    }
+
+    function publishGlobalMessages(count) {
+      for (var i = 0; i < count; i++) {
+        for (var j = 0; j < 5; j++) {
+          publishers[i].publish(ACTION);
+          publishers[i].publish(CHANGE);
+        }
+      }
+    }
+
+    function publishMessages(count) {
+      for (var i = 0; i < count; i++) {
+        for (var j = 0; j < 5; j++) {
+          pubsubs[i].publish(ACTION);
+          pubsubs[i].publish(CHANGE);
+        }
+      }
+    }
+
+    function setUpPage() {
+      timer = new goog.testing.PerformanceTimer();
+      timer.setNumSamples(10);
+      timer.setTimeoutInterval(9000);
+      timer.setDiscardOutliers(true);
+      table = new goog.testing.PerformanceTable(
+          goog.dom.getElement('perfTable'), timer);
+    }
+
+    function setUp() {
+      actionCount = 0;
+      changeCount = 0;
+      handlers = [];
+      publishers = [];
+      pubsubs = [];
+      targets = [];
+    }
+
+    function testCreateEventListeners() {
+      table.run(goog.partial(createEventListeners, SAMPLES_PER_RUN),
+          '1A: Create event listeners');
+      assertEquals(0, actionCount);
+      assertEquals(0, changeCount);
+    }
+
+    function testCreateGlobalSubscriptions() {
+      var pubsub = new goog.pubsub.PubSub();
+      table.run(
+          goog.partial(createGlobalSubscriptions, pubsub, SAMPLES_PER_RUN),
+          '1B: Create global subscriptions');
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 2,
+          pubsub.getCount());
+      assertEquals(0, actionCount);
+      assertEquals(0, changeCount);
+      pubsub.dispose();
+    }
+
+    function testCreateSubscripions() {
+      table.run(goog.partial(createSubscriptions, SAMPLES_PER_RUN),
+          '1C: Create subscriptions');
+      assertEquals(0, actionCount);
+      assertEquals(0, changeCount);
+    }
+
+    function testDispatchEvents() {
+      createEventListeners(SAMPLES_PER_RUN);
+      table.run(goog.partial(dispatchEvents, SAMPLES_PER_RUN),
+          '2A: Dispatch events');
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, actionCount);
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, changeCount);
+    }
+
+    function testPublishGlobalMessages() {
+      var pubsub = new goog.pubsub.PubSub();
+      createGlobalSubscriptions(pubsub, SAMPLES_PER_RUN);
+      table.run(
+          goog.partial(publishGlobalMessages, SAMPLES_PER_RUN),
+          '2B: Publish global messages');
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, actionCount);
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, changeCount);
+      pubsub.dispose();
+    }
+
+    function testPublishMessages() {
+      createSubscriptions(SAMPLES_PER_RUN);
+      table.run(goog.partial(publishMessages, SAMPLES_PER_RUN),
+          '2C: Publish messages');
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, actionCount);
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, changeCount);
+    }
+
+    function testEvents() {
+      table.run(function() {
+        createEventListeners(SAMPLES_PER_RUN);
+        dispatchEvents(SAMPLES_PER_RUN);
+      }, '3A: Events');
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, actionCount);
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, changeCount);
+    }
+
+    function testSinglePubSub() {
+      table.run(function() {
+        var pubsub = new goog.pubsub.PubSub();
+        createGlobalSubscriptions(pubsub, SAMPLES_PER_RUN);
+        publishGlobalMessages(SAMPLES_PER_RUN);
+        pubsub.dispose();
+      }, '3B: Single PubSub');
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, actionCount);
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, changeCount);
+    }
+
+    function testMultiPubSub() {
+      table.run(function() {
+        createSubscriptions(SAMPLES_PER_RUN);
+        publishMessages(SAMPLES_PER_RUN);
+      }, '3C: Multi PubSub');
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, actionCount);
+      assertEquals(SAMPLES_PER_RUN * timer.getNumSamples() * 5, changeCount);
+    }
+  </script>
+</body>
+</html>

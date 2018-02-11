@@ -6,9 +6,18 @@ module Rake
   end
 end
 
+class DetonatingHandler
+  def handle(fun, dir, args)
+#    raise "No longer handling: //#{dir}:#{args[:name]}"
+  end
+end
+
 class CrazyFun
   def initialize
     @mappings = {}
+    add_mapping('java_binary', DetonatingHandler.new)
+    add_mapping('java_library', DetonatingHandler.new)
+    add_mapping('java_test', DetonatingHandler.new)
   end
 
   def add_mapping(type_name, handler)
@@ -64,30 +73,4 @@ class CrazyFun
       end
     end
   end
-end
-
-if __FILE__ == $0
-  require "rubygems"
-  require "spec/autorun"
-
-  describe CrazyFun do
-    let(:fun) { CrazyFun.new }
-
-    it "finds prebuilts with normal paths" do
-      fun.prebuilt_roots << "firefox/prebuilt"
-      expected_result = "firefox/prebuilt/i386/libnoblur.so"
-      File.should_receive(:exists?).with(expected_result).and_return(true)
-
-      fun.find_prebuilt("build/firefox/i386/libnoblur.so").should == expected_result
-    end
-
-    it "finds prebuilts with windows paths" do
-      fun.prebuilt_roots << "firefox/prebuilt"
-      expected_result = "firefox/prebuilt/i386/libnoblur.so"
-      File.should_receive(:exists?).with(expected_result).and_return(true)
-
-      fun.find_prebuilt("build\\firefox\\i386\\libnoblur.so").should == expected_result
-    end
-  end
-
 end

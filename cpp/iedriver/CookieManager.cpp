@@ -15,14 +15,18 @@
 // limitations under the License.
 
 #include "CookieManager.h"
+
 #include <map>
 #include <UrlMon.h>
 #include <wininet.h>
-#include "BrowserCookie.h"
+
 #include "errorcodes.h"
-#include "HookProcessor.h"
 #include "logging.h"
+
+#include "BrowserCookie.h"
+#include "HookProcessor.h"
 #include "messages.h"
+#include "StringUtilities.h"
 
 #define TICKS_PER_SECOND 10000000
 #define UNIX_TIME_OFFSET_SECONDS 11644473600L

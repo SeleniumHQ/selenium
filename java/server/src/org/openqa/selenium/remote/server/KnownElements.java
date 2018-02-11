@@ -21,7 +21,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 
 import java.lang.reflect.InvocationHandler;
@@ -62,7 +62,7 @@ public class KnownElements {
         } else {
           try {
           return method.invoke(element, objects);
-          } catch (InvocationTargetException e){
+          } catch (InvocationTargetException e) {
             throw e.getTargetException();
           }
         }

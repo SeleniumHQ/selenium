@@ -27,6 +27,22 @@ import org.openqa.selenium.WebElement;
  */
 public abstract class AbstractWebDriverEventListener implements WebDriverEventListener {
 
+  public void beforeAlertAccept(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void afterAlertAccept(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void afterAlertDismiss(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void beforeAlertDismiss(WebDriver driver) {
+    // Do nothing.
+  }
+
   public void beforeNavigateTo(String url, WebDriver driver) {
     // Do nothing.
   }
@@ -51,6 +67,14 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
     // Do nothing.
   }
 
+  public void beforeNavigateRefresh(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void afterNavigateRefresh(WebDriver driver) {
+    // Do nothing.
+  }
+
   public void beforeFindBy(By by, WebElement element, WebDriver driver) {
     // Do nothing.
   }
@@ -67,11 +91,11 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
     // Do nothing.
   }
 
-  public void beforeChangeValueOf(WebElement element, WebDriver driver) {
+  public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
     // Do nothing.
   }
 
-  public void afterChangeValueOf(WebElement element, WebDriver driver) {
+  public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
     // Do nothing.
   }
 

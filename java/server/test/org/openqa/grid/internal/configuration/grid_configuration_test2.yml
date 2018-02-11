@@ -1,9 +1,0 @@
-hub:
-   port: 4444
-   environments:
-       - name:    "Firefox 4; MacOS X: 10.6.7"
-         browser: "*firefox"
-       - name:    "windows_internet_explorer_8"
-         browser: "*iexplorecustom"
-       - name:    "linux_firefox_3_6"
-         browser: "*firefox /opt/firefox/firefox-3.6/firefox-bin"

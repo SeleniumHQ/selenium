@@ -151,6 +151,14 @@ FirefoxDriver.prototype.close = function(respond) {
     allWindows.getNext();
   }
 
+  // Here we go!
+  try {
+    var browser = respond.session.getBrowser();
+    browser.contentWindow.close();
+  } catch (e) {
+    goog.log.warning(FirefoxDriver.LOG_, 'Error closing window', e);
+  }
+
   // If we're on a Mac we may close all the windows but not quit, so
   // ensure that we do actually quit. For Windows, if we don't quit,
   // Firefox will crash. So, whatever the case may be, if that's the last
@@ -160,20 +168,12 @@ FirefoxDriver.prototype.close = function(respond) {
 
     // Use an nsITimer to give the response time to go out.
     var event = function(timer) {
-        appService.quit(forceQuit);
+      appService.quit(forceQuit);
     };
 
     FirefoxDriver.nstimer = new fxdriver.Timer();
     FirefoxDriver.nstimer.setTimeout(event, 500);
     return;  // The client should catch the fact that the socket suddenly closes
-  }
-
-  // Here we go!
-  try {
-    var browser = respond.session.getBrowser();
-    browser.contentWindow.close();
-  } catch (e) {
-    goog.log.warning(FirefoxDriver.LOG_, 'Error closing window', e);
   }
 
   // Send the response so the client doesn't get a connection refused socket
@@ -306,7 +306,11 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
         }
 
         var result = unwrappedDoc['__webdriver_evaluate']['result'];
-        respond.value = Utils.wrapResult(result, doc);
+        try {
+          respond.value = Utils.wrapResult(result, doc);
+        } catch (e) {
+          respond.sendError(new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR, e));
+        }
         respond.status = unwrappedDoc['__webdriver_evaluate']['code'];
 
         // I have no idea why this started happening. Roll on m-day
@@ -857,7 +861,8 @@ FirefoxDriver.prototype.setTimeout = function(respond, parameters) {
       break;
 
     default:
-      break;
+      throw new WebDriverError(bot.ErrorCode.INVALID_ARGUMENT,
+          'Unrecognised timeout type: ' + parameters.type);
   }
   respond.send();
 };
@@ -971,75 +976,28 @@ FirefoxDriver.prototype.setAlertValue = function(respond, parameters) {
 
 // IME library mapping
 FirefoxDriver.prototype.imeGetAvailableEngines = function(respond) {
-  var obj = Utils.getNativeIME();
-  var engines = {};
-
-  try {
-    obj.imeGetAvailableEngines(engines);
-    var returnArray = Utils.convertNSIArrayToNative(engines.value);
-
-    respond.value = returnArray;
-  } catch (e) {
-    throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
-        'IME not available on the host: ' + e);
-  }
-  respond.send();
+  throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
+      'IME not available on the host: ' + e);
 };
 
 FirefoxDriver.prototype.imeGetActiveEngine = function(respond) {
-  var obj = Utils.getNativeIME();
-  var activeEngine = {};
-  try {
-    obj.imeGetActiveEngine(activeEngine);
-    respond.value = activeEngine.value;
-  } catch (e) {
-    throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
-        'IME not available on the host: ' + e);
-  }
-  respond.send();
+  throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
+      'IME not available on the host: ' + e);
 };
 
 FirefoxDriver.prototype.imeIsActivated = function(respond) {
-  var obj = Utils.getNativeIME();
-  var isActive = {};
-  try {
-    obj.imeIsActivated(isActive);
-    respond.value = isActive.value;
-  } catch (e) {
-    throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
-        'IME not available on the host: ' + e);
-  }
-  respond.send();
+  throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
+      'IME not available on the host: ' + e);
 };
 
 FirefoxDriver.prototype.imeDeactivate = function(respond) {
-  var obj = Utils.getNativeIME();
-  try {
-    obj.imeDeactivate();
-  } catch (e) {
-    throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
-        'IME not available on the host: ' + e);
-  }
-
-  respond.send();
+  throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
+      'IME not available on the host: ' + e);
 };
 
 FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
-  var obj = Utils.getNativeIME();
-  var successfulActivation = {};
-  var engineToActivate = parameters['engine'];
-  try {
-    obj.imeActivateEngine(engineToActivate, successfulActivation);
-  } catch (e) {
-    throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
-        'IME not available on the host: ' + e);
-  }
-
-  if (! successfulActivation.value) {
-    throw new WebDriverError(bot.ErrorCode.IME_ENGINE_ACTIVATION_FAILED,
-        'Activation of engine failed: ' + engineToActivate);
-  }
-  respond.send();
+  throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
+      'IME not available on the host: ' + e);
 };
 
 // HTML 5
@@ -1172,11 +1130,9 @@ FirefoxDriver.prototype.mouseDoubleClick = function(respond, parameters) {
 FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) {
   Utils.installWindowCloseListener(respond);
 
-  var currentlyActiveElement = Utils.getActiveElement(respond.session.getDocument());
-
-  var useElement = currentlyActiveElement;
-  var tagName = useElement.tagName.toLowerCase();
-  if (tagName == 'body' && useElement.ownerDocument.defaultView.frameElement) {
+  var useElement = Utils.getActiveElement(respond.session.getDocument());
+  if (useElement && useElement.tagName.toLowerCase() == 'body'
+      && useElement.ownerDocument.defaultView.frameElement) {
     useElement.ownerDocument.defaultView.focus();
 
     // Turns out, this is what we should be using as the target

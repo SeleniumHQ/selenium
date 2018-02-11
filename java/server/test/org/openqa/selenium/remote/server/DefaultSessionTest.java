@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,7 +39,9 @@ public class DefaultSessionTest {
     when(factory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
     final TemporaryFilesystem tempFs = mock(TemporaryFilesystem.class);
 
-    Session session = DefaultSession.createSession(factory, tempFs, new SystemClock(), null, DesiredCapabilities.firefox());
+    Session session = DefaultSession.createSession(
+        factory, tempFs,
+        DesiredCapabilities.firefox());
 
     session.close();
     verify(tempFs).deleteTemporaryFiles();

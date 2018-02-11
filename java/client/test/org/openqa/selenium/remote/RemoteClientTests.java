@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote;
 
 import org.junit.runner.RunWith;
@@ -27,8 +26,12 @@ import org.openqa.selenium.remote.internal.CircularOutputStreamTest;
     AugmenterTest.class,
     ErrorHandlerTest.class,
     CircularOutputStreamTest.class,
+    Gecko013ProtocolResponseTest.class,
+    JsonWireProtocolResponseTest.class,
+    ProtocolHandshakeTest.class,
     RemoteLogsTest.class,
-    RemoteWebDriverInitializationTest.class
+    RemoteWebDriverInitializationTest.class,
+    W3CHandshakeResponseTest.class
 })
 public class RemoteClientTests {
 }

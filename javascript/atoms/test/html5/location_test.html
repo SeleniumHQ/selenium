@@ -23,12 +23,15 @@
     // WebDriver does not enable geolocation for Firefox.
     // WebDriver does not enable geolocation for IE 9.
     // WebDriver does not enable geolocation for Safari.
+    // Chrome 50+ disables geolocation APIs on insecure origins; see
+    // https://goo.gl/rStTGz.
     var GEOLOCATION_NOT_WORKING =
         !bot.html5.isSupported(bot.html5.API.GEOLOCATION) ||
         goog.userAgent.product.ANDROID ||
         goog.userAgent.product.EDGE ||
         goog.userAgent.product.FIREFOX ||
         goog.userAgent.product.SAFARI ||
+        goog.userAgent.product.CHROME ||
         // Geolocation is blocked by user consent screen on Chrome for Android.
         (goog.labs.userAgent.platform.isAndroid() &&
             goog.userAgent.product.CHROME) ||

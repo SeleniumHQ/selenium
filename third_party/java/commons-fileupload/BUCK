@@ -1,6 +1,0 @@
-prebuilt_jar(name = 'commons-fileupload',
-  binary_jar = 'commons-fileupload-1.2.2.jar',
-  visibility = [
-    '//java/client/test/org/openqa/selenium/environment:environment',
-  ],
-)

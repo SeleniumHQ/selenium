@@ -1,7 +1,9 @@
 [java]
   src_roots = /java/client/src, /java/client/test, /java/server/src, /java/server/test
-  source_level = 7
-  target_level = 7
+  source_level = 8 
+  target_level = 8
+  jar_spool_mode = direct_to_jar
+  compile_against_abis = true
 
 [project]
   ignore = \
@@ -10,6 +12,18 @@
       build, \
       java/client/build, \
       java/server/build
+
+[build]
+  metadata_storage = sqlite
+
+[cache]
+  mode = dir
+
+[parser]
+  polyglot_parsing_enabled = true
+
+[resources]
+  resource_aware_scheduling_enabled = true
 
 [test]
   # Maximum timeout of 10 minutes per test (since each suite counts as a test)
@@ -22,7 +36,6 @@
 [alias]
   chrome   = //java/client/src/org/openqa/selenium/chrome:chrome
   firefox  = //java/client/src/org/openqa/selenium/firefox:firefox
-  htmlunit = //java/client/src/org/openqa/selenium/htmlunit:htmlunit
   remote   = //java/client/src/org/openqa/selenium/remote:remote
   safari   = //java/client/src/org/openqa/selenium/safari:safari
 
@@ -31,8 +44,16 @@
   rc-server     = //java/server/src/org/openqa/selenium/server:rc
   selenium-java = //java/client/src/org/openqa/selenium:selenium-java
 
-  se3-server    = //java/server/src/org/openqa/selenium/remote/server:standalone-server
+  selenium-server-standalone = //java/server/src/org/openqa/grid/selenium:selenium
+  htmlrunner = //java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner
 
   # Tests
-  firefox-test  = //java/client/test/org/openqa/selenium/firefox:test-synthesized
+  chrome-test   = //java/client/test/org/openqa/selenium/chrome:chrome
+  firefox-test  = //java/client/test/org/openqa/selenium/firefox:marionette
+  legacy-firefox-test = //java/client/test/org/openqa/selenium/firefox:test-synthesized
+  internal-grid-test = //java/server/test/org/openqa/grid/common:common //java/server/test/org/openqa/grid:grid //java/server/test/org/openqa/grid/e2e:e2e
+  grid-test     = //java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests
   htmlunit-test = //java/client/test/org/openqa/selenium/htmlunit:htmlunit
+  ie-test       = //java/client/test/org/openqa/selenium/ie:ie
+  opera-test    = //java/client/test/org/openqa/selenium/opera:opera
+  java-small-tests = //java/client/test/org/openqa/selenium:small-tests //java/client/test/org/openqa/selenium/json:small-tests //java/client/test/org/openqa/selenium/support:small-tests //java/client/test/org/openqa/selenium/remote:common-tests //java/client/test/org/openqa/selenium/remote:client-tests //java/server/test/org/openqa/grid/selenium/node:node //java/server/test/org/openqa/grid/selenium/proxy:proxy //java/server/test/org/openqa/selenium/remote/server:small-tests //java/server/test/org/openqa/selenium/remote/server/log:test

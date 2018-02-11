@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+
 import org.junit.Ignore;
 import org.junit.Test;
 

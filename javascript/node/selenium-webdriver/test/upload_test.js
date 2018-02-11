@@ -17,23 +17,22 @@
 
 'use strict';
 
-var fs = require('fs');
+const assert = require('assert');
+const fs = require('fs');
 
-var Browser = require('..').Browser,
-    By = require('..').By,
-    until = require('..').until,
-    io = require('../io'),
-    remote = require('../remote'),
-    assert = require('../testing/assert'),
-    test = require('../lib/test'),
-    Pages = test.Pages;
+const io = require('../io');
+const remote = require('../remote');
+const test = require('../lib/test');
+const {Browser, By, until} = require('..');
+
+const Pages = test.Pages;
 
 test.suite(function(env) {
   var LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
   var FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
 
   var fp;
-  test.before(function() {
+  before(function() {
     return fp = io.tmpFile().then(function(fp) {
       fs.writeFileSync(fp, FILE_HTML);
       return fp;
@@ -41,45 +40,39 @@ test.suite(function(env) {
   })
 
   var driver;
-  test.before(function() {
-    driver = env.builder().build();
+  before(async function() {
+    driver = await env.builder().build();
   });
 
-  test.after(function() {
+  after(function() {
     if (driver) {
-      driver.quit();
+      return driver.quit();
     }
   });
 
-  test.ignore(env.browsers(
-      Browser.IPAD,
-      Browser.IPHONE,
-      // Uploads broken in PhantomJS 2.0.
-      // See https://github.com/ariya/phantomjs/issues/12506
-      Browser.PHANTOM_JS,
-      Browser.SAFARI)).
-  it('can upload files', function() {
+  test.ignore(env.browsers(Browser.SAFARI)).
+  it('can upload files', async function() {
     driver.setFileDetector(new remote.FileDetector);
 
-    driver.get(Pages.uploadPage);
+    await driver.get(Pages.uploadPage);
 
-    var fp = driver.call(function() {
-      return io.tmpFile().then(function(fp) {
-        fs.writeFileSync(fp, FILE_HTML);
-        return fp;
-      });
+    var fp = await io.tmpFile().then(function(fp) {
+      fs.writeFileSync(fp, FILE_HTML);
+      return fp;
     });
 
-    driver.findElement(By.id('upload')).sendKeys(fp);
-    driver.findElement(By.id('go')).submit();
+    await driver.findElement(By.id('upload')).sendKeys(fp);
+    await driver.findElement(By.id('go')).click();
 
     // Uploading files across a network may take a while, even if they're small.
-    var label = driver.findElement(By.id('upload_label'));
-    driver.wait(until.elementIsNotVisible(label),
+    var label = await driver.findElement(By.id('upload_label'));
+    await driver.wait(until.elementIsNotVisible(label),
         10 * 1000, 'File took longer than 10 seconds to upload!');
 
-    driver.switchTo().frame('upload_target');
-    assert(driver.findElement(By.css('body')).getText())
-        .equalTo(LOREM_IPSUM_TEXT);
+    var frame = await driver.findElement(By.id('upload_target'));
+    await driver.switchTo().frame(frame);
+    assert.equal(
+        await driver.findElement(By.css('body')).getText(),
+        LOREM_IPSUM_TEXT);
   });
 });

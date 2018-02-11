@@ -45,8 +45,9 @@ goog.inherits(goog.ui.FormPost, goog.ui.Component);
 
 /** @override */
 goog.ui.FormPost.prototype.createDom = function() {
-  this.setElementInternal(this.getDomHelper().createDom(goog.dom.TagName.FORM,
-      {'method': 'POST', 'style': 'display:none'}));
+  this.setElementInternal(
+      this.getDomHelper().createDom(
+          goog.dom.TagName.FORM, {'method': 'POST', 'style': 'display:none'}));
 };
 
 
@@ -105,6 +106,7 @@ goog.ui.FormPost.prototype.setParameters_ = function(form, parameters) {
  * @private
  */
 goog.ui.FormPost.prototype.createInput_ = function(name, value) {
-  return goog.html.SafeHtml.create('input',
+  return goog.html.SafeHtml.create(
+      'input',
       {'type': goog.dom.InputType.HIDDEN, 'name': name, 'value': value});
 };

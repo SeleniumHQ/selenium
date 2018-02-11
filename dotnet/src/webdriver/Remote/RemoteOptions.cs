@@ -16,12 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using OpenQA.Selenium.Internal;
-
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
@@ -56,6 +50,14 @@ namespace OpenQA.Selenium.Remote
         public IWindow Window
         {
             get { return new RemoteWindow(this.driver); }
+        }
+
+        /// <summary>
+        /// Gets an object allowing the user to examine the logs of the current driver instance.
+        /// </summary>
+        public ILogs Logs
+        {
+            get { return new RemoteLogs(this.driver); }
         }
 
         /// <summary>

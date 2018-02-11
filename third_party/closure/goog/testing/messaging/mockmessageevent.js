@@ -17,6 +17,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.messaging.MockMessageEvent');
 goog.provide('goog.testing.messaging.MockMessageEvent');
 
 goog.require('goog.events.BrowserEvent');

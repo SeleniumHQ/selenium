@@ -1,6 +1,4 @@
-﻿using System;
 using NUnit.Framework;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Html5
 {
@@ -9,6 +7,7 @@ namespace OpenQA.Selenium.Html5
     {
         [Test]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
+        [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of geolocation.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support setting altitude value.")]
         public void ShouldSetAndGetLocation()

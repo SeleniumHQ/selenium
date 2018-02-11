@@ -22,12 +22,11 @@ import static org.mockito.Mockito.verify;
 
 import com.thoughtworks.selenium.webdriven.ElementFinder;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class TypeKeysTest {
   private ElementFinder elementFinder;

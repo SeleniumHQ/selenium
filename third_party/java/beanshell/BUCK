@@ -1,9 +1,0 @@
-prebuilt_jar(
-  name = 'bsh',
-  maven_coords = 'org.beanshell:bsh:jar:2.0b4',
-  binary_jar = 'bsh-2.0b4.jar',
-  visibility = [
-    '//third_party/java/testng:testng'
-  ],
-)
-

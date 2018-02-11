@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,26 +15,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../../spec_helper", __FILE__)
+require File.expand_path('../../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
     module Remote
       module Http
         describe Common do
-
-          it "sends non-empty body header for POST requests without command data" do
+          it 'sends non-empty body header for POST requests without command data' do
             common = Common.new
-            common.server_url = URI.parse("http://server")
+            common.server_url = URI.parse('http://server')
 
-            expect(common).to receive(:request).
-                  with(:post, URI.parse("http://server/clear"),
-                        hash_including("Content-Length" => "2"), "{}")
+            expect(common).to receive(:request)
+              .with(:post, URI.parse('http://server/clear'),
+                    hash_including('Content-Length' => '2'), '{}')
 
-            common.call(:post, "clear", nil)
+            common.call(:post, 'clear', nil)
           end
-
-        end # Common
+        end
       end # Http
     end # Remote
   end # WebDriver

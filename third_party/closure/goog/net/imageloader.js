@@ -150,8 +150,7 @@ goog.net.ImageLoader.IMAGE_LOAD_EVENTS_ = [
   goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('11') ?
       goog.net.EventType.READY_STATE_CHANGE :
       goog.events.EventType.LOAD,
-  goog.net.EventType.ABORT,
-  goog.net.EventType.ERROR
+  goog.net.EventType.ABORT, goog.net.EventType.ERROR
 ];
 
 
@@ -174,8 +173,8 @@ goog.net.ImageLoader.prototype.addImage = function(
     // For now, we just store the source URL for the image.
     this.imageIdToRequestMap_[id] = {
       src: src,
-      corsRequestType: goog.isDef(opt_corsRequestType) ?
-          opt_corsRequestType : null
+      corsRequestType: goog.isDef(opt_corsRequestType) ? opt_corsRequestType :
+                                                         null
     };
   }
 };
@@ -195,8 +194,8 @@ goog.net.ImageLoader.prototype.removeImage = function(id) {
     delete this.imageIdToImageMap_[id];
 
     // Stop listening for events on the image.
-    this.handler_.unlisten(image, goog.net.ImageLoader.IMAGE_LOAD_EVENTS_,
-        this.onNetworkEvent_);
+    this.handler_.unlisten(
+        image, goog.net.ImageLoader.IMAGE_LOAD_EVENTS_, this.onNetworkEvent_);
 
     // If this was the last image, raise a COMPLETE event.
     if (goog.object.isEmpty(this.imageIdToImageMap_) &&
@@ -217,14 +216,13 @@ goog.net.ImageLoader.prototype.start = function() {
   // the initial queued images in case any event handlers decide to add more
   // images before this loop has finished executing.
   var imageIdToRequestMap = this.imageIdToRequestMap_;
-  goog.array.forEach(goog.object.getKeys(imageIdToRequestMap),
-      function(id) {
-        var imageRequest = imageIdToRequestMap[id];
-        if (imageRequest) {
-          delete imageIdToRequestMap[id];
-          this.loadImage_(imageRequest, id);
-        }
-      }, this);
+  goog.array.forEach(goog.object.getKeys(imageIdToRequestMap), function(id) {
+    var imageRequest = imageIdToRequestMap[id];
+    if (imageRequest) {
+      delete imageIdToRequestMap[id];
+      this.loadImage_(imageRequest, id);
+    }
+  }, this);
 };
 
 
@@ -255,8 +253,8 @@ goog.net.ImageLoader.prototype.loadImage_ = function(imageRequest, id) {
     image.crossOrigin = imageRequest.corsRequestType;
   }
 
-  this.handler_.listen(image, goog.net.ImageLoader.IMAGE_LOAD_EVENTS_,
-      this.onNetworkEvent_);
+  this.handler_.listen(
+      image, goog.net.ImageLoader.IMAGE_LOAD_EVENTS_, this.onNetworkEvent_);
   this.imageIdToImageMap_[id] = image;
 
   image.id = id;

@@ -17,33 +17,30 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import static org.openqa.selenium.remote.server.DriverServlet.SESSIONS_KEY;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Supplier;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Splitter;
 
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.DefaultDriverSessions;
-import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.Session;
+import org.openqa.selenium.remote.server.ActiveSession;
+import org.openqa.selenium.remote.server.ActiveSessionFactory;
+import org.openqa.selenium.remote.server.ActiveSessionListener;
+import org.openqa.selenium.remote.server.ActiveSessions;
+import org.openqa.selenium.remote.NewSessionPayload;
+import org.openqa.selenium.remote.server.NewSessionPipeline;
+import org.openqa.selenium.remote.server.WebDriverServlet;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -56,52 +53,38 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class WebDriverBackedSeleniumServlet extends HttpServlet {
 
-  private static final Random UUID_SEED = new Random();
-
   // Prepare the shared set of thingies
-  static Cache<SessionId, CommandProcessor> SESSIONS = CacheBuilder.newBuilder()
-    .expireAfterAccess(5, TimeUnit.MINUTES)
-    .removalListener(new RemovalListener<SessionId, CommandProcessor>() {
+  private static final Map<SessionId, CommandProcessor> PROCESSORS = new ConcurrentHashMap<>();
+
+  private NewSessionPipeline pipeline;
+  private ActiveSessions sessions;
+  private ActiveSessionListener listener;
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    Object attribute = getServletContext().getAttribute(WebDriverServlet.ACTIVE_SESSIONS_KEY);
+    if (attribute == null) {
+      attribute = new ActiveSessions(5, MINUTES);
+    }
+    sessions = (ActiveSessions) attribute;
+
+    listener = new ActiveSessionListener() {
       @Override
-      public void onRemoval(RemovalNotification<SessionId, CommandProcessor> notification) {
-        CommandProcessor holder = notification.getValue();
-        if (holder != null) {
-          try {
-            holder.stop();
-          } catch (Exception e) {
-            // Nothing sane to do.
-          }
-        }
-      }
-    })
-    .build();
-
-  private final ImmutableMap<String, DesiredCapabilities> drivers =
-    ImmutableMap.<String, DesiredCapabilities>builder()
-      .put("*" + BrowserType.FIREFOX_PROXY, DesiredCapabilities.firefox())
-      .put("*" + BrowserType.FIREFOX, DesiredCapabilities.firefox())
-      .put("*" + BrowserType.CHROME, DesiredCapabilities.firefox())
-      .put("*" + BrowserType.FIREFOX_CHROME, DesiredCapabilities.firefox())
-      .put("*" + BrowserType.IEXPLORE_PROXY, DesiredCapabilities.internetExplorer())
-      .put("*" + BrowserType.SAFARI, DesiredCapabilities.safari())
-      .put("*" + BrowserType.IE_HTA, DesiredCapabilities.internetExplorer())
-      .put("*" + BrowserType.IEXPLORE, DesiredCapabilities.internetExplorer())
-      .put("*" + BrowserType.GOOGLECHROME, DesiredCapabilities.chrome())
-      .build();
-
-  private final Supplier<DriverSessions> sessionsSupplier;
-
-  public WebDriverBackedSeleniumServlet() {
-    this.sessionsSupplier = new Supplier<DriverSessions>() {
-      @Override
-      public DriverSessions get() {
-        Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
-        if (attribute == null) {
-          attribute = new DefaultDriverSessions();
-        }
-        return (DriverSessions) attribute;
+      public void onStop(ActiveSession session) {
+        PROCESSORS.remove(session.getId());
       }
     };
+
+    this.pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory()).create();
+  }
+
+  @Override
+  public void destroy() {
+    if (listener != null) {
+      sessions.removeListener(listener);
+    }
+    super.destroy();
   }
 
   @Override
@@ -120,52 +103,140 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
     StringBuilder printableArgs = new StringBuilder("[");
     Joiner.on(", ").appendTo(printableArgs, args);
     printableArgs.append("]");
-    getServletContext().log(
-      String.format("Command request: %s%s on session %s", cmd, printableArgs, sessionId));
+    log( String.format("Command request: %s%s on session %s", cmd, printableArgs, sessionId));
 
     if ("getNewBrowserSession".equals(cmd)) {
-      // We wait until we see the start command before actually getting the webdriver instance. For
-      // now, pre-allocate a session id we can use to refer to the session properly.
-
-      // browserStartCommand, browserURL, extensionJs, optionsString
-      final DesiredCapabilities capabilities = new DesiredCapabilities(drivers.get(args[0]));
-
-      try {
-        sessionId = sessionsSupplier.get().newSession(capabilities);
-        Session session = sessionsSupplier.get().get(sessionId);
-        WebDriver driver = session.getDriver();
-        CommandProcessor commandProcessor = new WebDriverCommandProcessor(args[1], driver);
-        SESSIONS.put(sessionId, commandProcessor);
-        sendResponse(resp, sessionId.toString());
-      } catch (Exception e) {
-        sendError(resp, "Unable to create session: " + e.getMessage());
-      }
+      // Figure out what to do. If the first arg is "*webdriver", check for a session id and use
+      // that existing session if present. Otherwise, start a new session with whatever comes to
+      // hand. If, however, the first parameter specifies something else, then create a session
+      // using a webdriver-backed instance of that.
+      startNewSession(resp, args[0], args[1], args.length == 4 ? args[3] : "");
       return;
     } else if ("testComplete".equals(cmd)) {
-      sessionsSupplier.get().deleteSession(sessionId);
+      CommandProcessor commandProcessor = PROCESSORS.get(sessionId);
 
-      CommandProcessor commandProcessor = SESSIONS.getIfPresent(sessionId);
+      sessions.invalidate(sessionId);
+
       if (commandProcessor == null) {
         resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
       }
-      SESSIONS.invalidate(sessionId);
       sendResponse(resp, null);
       return;
     }
 
     // Common case.
-      CommandProcessor commandProcessor = SESSIONS.getIfPresent(sessionId);
-      if (commandProcessor == null) {
-        resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+    CommandProcessor commandProcessor = PROCESSORS.get(sessionId);
+    if (commandProcessor == null) {
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+      return;
+    }
+    try {
+      String result = commandProcessor.doCommand(cmd, args);
+      sendResponse(resp, result);
+    } catch (SeleniumException e) {
+      sendError(resp, e.getMessage());
+    }
+  }
+
+  private void startNewSession(
+    HttpServletResponse resp,
+    String browserString,
+    String baseUrl,
+    String options) throws IOException {
+    SessionId sessionId = null;
+
+    if (options.startsWith("webdriver.remote.sessionid")) {
+      // We may have a hit
+      List<String> split = Splitter.on("=")
+        .omitEmptyStrings()
+        .trimResults()
+        .limit(2)
+        .splitToList(options);
+      if (!"webdriver.remote.sessionid".equals(split.get(0))) {
+        log( "Unable to find existing webdriver session. Wrong parameter name: " + options);
+        sendError(
+          resp,
+          "Unable to find existing webdriver session. Wrong parameter name: " + options);
         return;
       }
-      try {
-        String result = commandProcessor.doCommand(cmd, args);
-        sendResponse(resp, result);
-      } catch (SeleniumException e) {
-        sendError(resp, e.getMessage());
+      if (split.size() != 2) {
+        log("Attempted to find webdriver id, but none specified. Bailing");
+        sendError(resp, "Unable to find existing webdriver session. No ID specified");
+        return;
+      }
+      sessionId = new SessionId(split.get(1));
     }
+
+    if (sessionId == null) {
+      // Let's see if the user chose "webdriver" or something specific.
+      DesiredCapabilities caps;
+      switch (browserString) {
+        case "*webdriver":
+          caps = new DesiredCapabilities();
+          break;
+
+        case "*chrome":
+        case "*firefox":
+        case "*firefoxproxy":
+        case "*firefoxchrome":
+        case "*pifirefox":
+          caps = DesiredCapabilities.firefox();
+          break;
+
+        case "*iehta":
+        case "*iexplore":
+        case "*iexploreproxy":
+        case "*piiexplore":
+          caps = DesiredCapabilities.internetExplorer();
+          break;
+
+        case "*googlechrome":
+          caps = DesiredCapabilities.chrome();
+          break;
+
+        case "*MicrosoftEdge":
+          caps = DesiredCapabilities.edge();
+          break;
+
+        case "*opera":
+        case "*operablink":
+          caps = DesiredCapabilities.operaBlink();
+          break;
+
+        case "*safari":
+        case "*safariproxy":
+          caps = DesiredCapabilities.safari();
+          break;
+
+        default:
+          sendError(resp, "Unable to match browser string: " + browserString);
+          return;
+      }
+
+      try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
+        ActiveSession session = pipeline.createNewSession(payload);
+        sessions.put(session);
+        sessionId = session.getId();
+      } catch (Exception e) {
+        log("Unable to start session", e);
+        sendError(
+          resp,
+          "Unable to start session. Cause can be found in logs. Message is: " + e.getMessage());
+        return;
+      }
+    }
+
+    ActiveSession session = sessions.get(sessionId);
+    if (session == null) {
+      log("Attempt to use non-existent session: " + sessionId);
+      sendError(resp, "Attempt to use non-existent session: " + sessionId);
+      return;
+    }
+
+    PROCESSORS.put(sessionId, new WebDriverCommandProcessor(baseUrl, session.getWrappedDriver()));
+
+    sendResponse(resp, sessionId.toString());
   }
 
   private void sendResponse(HttpServletResponse resp, String result) throws IOException {

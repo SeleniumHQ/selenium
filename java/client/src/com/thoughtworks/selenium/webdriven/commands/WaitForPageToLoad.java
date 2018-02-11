@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium.webdriven.commands;
 
-import com.google.common.base.Throwables;
-
 import com.thoughtworks.selenium.Wait;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
@@ -88,7 +86,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
     try {
       Thread.sleep(duration);
     } catch (InterruptedException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 

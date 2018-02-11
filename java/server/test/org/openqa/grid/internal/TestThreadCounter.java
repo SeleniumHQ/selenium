@@ -59,7 +59,7 @@ public class TestThreadCounter {
 
   public void waitUntilDone(int done) {
     int i = 0;
-    while (done != completed.get() && i++ < 20){
+    while (done != completed.get() && i++ < 20) {
       if (i > 20) throw new RuntimeException("Time out waiting for completion");
       try {
         Thread.sleep(50);
@@ -72,7 +72,7 @@ public class TestThreadCounter {
 
   public void waitUntilStarted(int num) {
     int i = 0;
-    while (num != started.get() && i++ < 20){
+    while (num != started.get() && i++ < 20) {
       if (i > 20) throw new RuntimeException("Time out waiting for completion");
       try {
         Thread.sleep(50);

@@ -52,8 +52,9 @@ goog.storage.mechanism.PrefixedMechanism = function(mechanism, prefix) {
    */
   this.prefix_ = prefix + '::';
 };
-goog.inherits(goog.storage.mechanism.PrefixedMechanism,
-              goog.storage.mechanism.IterableMechanism);
+goog.inherits(
+    goog.storage.mechanism.PrefixedMechanism,
+    goog.storage.mechanism.IterableMechanism);
 
 
 /** @override */

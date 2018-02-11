@@ -39,7 +39,7 @@ goog.define('goog.dom.classlist.ALWAYS_USE_DOM_TOKEN_LIST', false);
 /**
  * Gets an array-like object of class names on an element.
  * @param {Element} element DOM node to get the classes of.
- * @return {!goog.array.ArrayLike} Class names on {@code element}.
+ * @return {!IArrayLike<?>} Class names on {@code element}.
  */
 goog.dom.classlist.get = function(element) {
   if (goog.dom.classlist.ALWAYS_USE_DOM_TOKEN_LIST || element.classList) {
@@ -94,8 +94,8 @@ goog.dom.classlist.add = function(element, className) {
 
   if (!goog.dom.classlist.contains(element, className)) {
     // Ensure we add a space if this is not the first class name added.
-    element.className += element.className.length > 0 ?
-        (' ' + className) : className;
+    element.className +=
+        element.className.length > 0 ? (' ' + className) : className;
   }
 };
 
@@ -103,7 +103,7 @@ goog.dom.classlist.add = function(element, className) {
 /**
  * Convenience method to add a number of class names at once.
  * @param {Element} element The element to which to add classes.
- * @param {goog.array.ArrayLike<string>} classesToAdd An array-like object
+ * @param {IArrayLike<string>} classesToAdd An array-like object
  * containing a collection of class names to add to the element.
  * This method may throw a DOM exception if classesToAdd contains invalid
  * or empty class names.
@@ -119,22 +119,19 @@ goog.dom.classlist.addAll = function(element, classesToAdd) {
   var classMap = {};
 
   // Get all current class names into a map.
-  goog.array.forEach(goog.dom.classlist.get(element),
-      function(className) {
-        classMap[className] = true;
-      });
+  goog.array.forEach(goog.dom.classlist.get(element), function(className) {
+    classMap[className] = true;
+  });
 
   // Add new class names to the map.
-  goog.array.forEach(classesToAdd,
-      function(className) {
-        classMap[className] = true;
-      });
+  goog.array.forEach(
+      classesToAdd, function(className) { classMap[className] = true; });
 
   // Flatten the keys of the map into the className.
   element.className = '';
   for (var className in classMap) {
-    element.className += element.className.length > 0 ?
-        (' ' + className) : className;
+    element.className +=
+        element.className.length > 0 ? (' ' + className) : className;
   }
 };
 
@@ -153,11 +150,11 @@ goog.dom.classlist.remove = function(element, className) {
 
   if (goog.dom.classlist.contains(element, className)) {
     // Filter out the class name.
-    element.className = goog.array.filter(
-        goog.dom.classlist.get(element),
-        function(c) {
-          return c != className;
-        }).join(' ');
+    element.className = goog.array
+                            .filter(
+                                goog.dom.classlist.get(element),
+                                function(c) { return c != className; })
+                            .join(' ');
   }
 };
 
@@ -167,7 +164,7 @@ goog.dom.classlist.remove = function(element, className) {
  * repeatedly calling {@code goog.dom.classlist.remove} if you want to remove
  * a large set of class names at once.
  * @param {Element} element The element from which to remove classes.
- * @param {goog.array.ArrayLike<string>} classesToRemove An array-like object
+ * @param {IArrayLike<string>} classesToRemove An array-like object
  * containing a collection of class names to remove from the element.
  * This method may throw a DOM exception if classesToRemove contains invalid
  * or empty class names.
@@ -180,13 +177,16 @@ goog.dom.classlist.removeAll = function(element, classesToRemove) {
     return;
   }
   // Filter out those classes in classesToRemove.
-  element.className = goog.array.filter(
-      goog.dom.classlist.get(element),
-      function(className) {
-        // If this class is not one we are trying to remove,
-        // add it to the array of new class names.
-        return !goog.array.contains(classesToRemove, className);
-      }).join(' ');
+  element.className =
+      goog.array
+          .filter(
+              goog.dom.classlist.get(element),
+              function(className) {
+                // If this class is not one we are trying to remove,
+                // add it to the array of new class names.
+                return !goog.array.contains(classesToRemove, className);
+              })
+          .join(' ');
 };
 
 
@@ -213,14 +213,13 @@ goog.dom.classlist.enable = function(element, className, enabled) {
  * method may throw a DOM exception for an invalid or empty class name if
  * DOMTokenList is used.
  * @param {!Element} element DOM node to add or remove the class on.
- * @param {goog.array.ArrayLike<string>} classesToEnable An array-like object
+ * @param {?IArrayLike<string>} classesToEnable An array-like object
  *     containing a collection of class names to add or remove from the element.
  * @param {boolean} enabled Whether to add or remove the classes (true adds,
  *     false removes).
  */
 goog.dom.classlist.enableAll = function(element, classesToEnable, enabled) {
-  var f = enabled ? goog.dom.classlist.addAll :
-      goog.dom.classlist.removeAll;
+  var f = enabled ? goog.dom.classlist.addAll : goog.dom.classlist.removeAll;
   f(element, classesToEnable);
 };
 

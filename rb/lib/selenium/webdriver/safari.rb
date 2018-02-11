@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,49 +15,42 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'websocket'
-require 'pathname'
+require 'selenium/webdriver/safari/driver'
+require 'selenium/webdriver/safari/service'
 
 module Selenium
   module WebDriver
     module Safari
-
       class << self
+        def technology_preview
+          "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
+        end
+
+        def technology_preview!
+          self.driver_path = technology_preview
+        end
+
         def path=(path)
           Platform.assert_executable(path)
           @path = path
         end
 
         def path
-          @path ||= (
-            path = case Platform.os
-                   when :windows
-                     Platform.find_in_program_files("Safari\\Safari.exe")
-                   when :macosx
-                     "/Applications/Safari.app/Contents/MacOS/Safari"
-                   else
-                     Platform.find_binary("Safari")
-                   end
-
-            unless File.file?(path) && File.executable?(path)
-              raise Error::WebDriverError, "unable to find the Safari executable, please set Selenium::WebDriver::Safari.path= or add it to your PATH."
-            end
-
-            path
-          )
+          @path ||= '/Applications/Safari.app/Contents/MacOS/Safari'
+          return @path if File.file?(@path) && File.executable?(@path)
+          raise Error::WebDriverError, 'Safari is only supported on Mac' unless Platform.os.mac?
+          raise Error::WebDriverError, 'Unable to find Safari'
         end
 
-        def resource_path
-          @resource_path ||= Pathname.new(File.expand_path("../safari/resources", __FILE__))
+        def driver_path=(path)
+          Platform.assert_executable path
+          @driver_path = path
+        end
+
+        def driver_path
+          @driver_path ||= nil
         end
       end
-
     end # Safari
   end # WebDriver
 end # Selenium
-
-require 'selenium/webdriver/safari/browser'
-require 'selenium/webdriver/safari/server'
-require 'selenium/webdriver/safari/options'
-require 'selenium/webdriver/safari/bridge'
-

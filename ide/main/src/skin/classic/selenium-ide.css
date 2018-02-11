@@ -200,6 +200,43 @@ toolbarbutton.toolbar2[disabled="true"] {
     list-style-image: url("spiral_disabled.png");
 }
 
+#browser-button {
+    list-style-image: url("fa-globe.png");
+}
+#browser-button:hover:not([disabled="true"]) {
+    list-style-image: url("fa-globe_on.png");
+}
+#browser-button.fx {
+    list-style-image: url("fa-firefox.png");
+}
+#browser-button.fx:hover:not([disabled="true"]) {
+    list-style-image: url("fa-firefox_on.png");
+}
+#browser-button.gc {
+    list-style-image: url("fa-chrome.png");
+}
+#browser-button.gc:hover:not([disabled="true"]) {
+    list-style-image: url("fa-chrome_on.png");
+}
+#browser-button.ie {
+    list-style-image: url("fa-internet-explorer.png");
+}
+#browser-button.ie:hover:not([disabled="true"]) {
+    list-style-image: url("fa-internet-explorer_on.png");
+}
+#browser-button.sa {
+    list-style-image: url("fa-safari.png");
+}
+#browser-button.sa:hover:not([disabled="true"]) {
+    list-style-image: url("fa-safari_on.png");
+}
+
+#close-webdriver-button {
+    list-style-image: url("fa-times-circle-o.png");
+}
+#close-webdriver-button:hover:not([disabled="true"]) {
+    list-style-image: url("fa-times-circle-o_on.png");
+}
 #reload-button:not([disabled="true"]) {
     list-style-image: url("reload.png");
 }
