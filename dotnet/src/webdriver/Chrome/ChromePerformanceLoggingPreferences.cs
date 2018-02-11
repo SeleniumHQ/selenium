@@ -1,4 +1,4 @@
-﻿// <copyright file="ChromePerformanceLoggingPreferences.cs" company="WebDriver Committers">
+// <copyright file="ChromePerformanceLoggingPreferences.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -58,6 +58,7 @@ namespace OpenQA.Selenium.Chrome
         /// Defaults to <see langword="true"/>, but is set to <see langword="false"/> when tracing
         /// is enabled by adding one or more tracing categories.
         /// </summary>
+        [Obsolete("Setting 'enableTimeline is no longer supported by chromedriver. This preference will no longer be sent to chromedriver. This property will be removed in a future release.")]
         public bool IsCollectingTimelineEvents
         {
             get { return this.isCollectingTimelineEvents; }

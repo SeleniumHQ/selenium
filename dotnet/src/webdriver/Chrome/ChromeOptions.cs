@@ -639,7 +639,6 @@ namespace OpenQA.Selenium.Chrome
             Dictionary<string, object> perfLoggingPrefsDictionary = new Dictionary<string, object>();
             perfLoggingPrefsDictionary["enableNetwork"] = this.perfLoggingPreferences.IsCollectingNetworkEvents;
             perfLoggingPrefsDictionary["enablePage"] = this.perfLoggingPreferences.IsCollectingPageEvents;
-            perfLoggingPrefsDictionary["enableTimeline"] = this.perfLoggingPreferences.IsCollectingTimelineEvents;
 
             string tracingCategories = this.perfLoggingPreferences.TracingCategories;
             if (!string.IsNullOrEmpty(tracingCategories))
