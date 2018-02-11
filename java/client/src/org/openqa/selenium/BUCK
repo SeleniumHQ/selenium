@@ -117,6 +117,7 @@ java_library(name = 'web-element',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:core',
+    '//java/client/src/org/openqa/selenium/remote:remote-web-element',
   ],
 )
 
