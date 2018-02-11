@@ -74,10 +74,10 @@ java_library(name = 'core',
     ':exceptions',
     ':platform',
     ':primitives',
+    ':remote-web-element',
     '//java/client/src/org/openqa/selenium/interactions:core',
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/logging:api',
-    '//java/client/src/org/openqa/selenium/remote:remote-web-element',
   ],
   visibility = [
     'PUBLIC',
@@ -192,6 +192,15 @@ java_library(
   ],
 )
 
+java_library(
+    name = 'remote-web-element',
+    exported_deps = [
+      '//java/client/src/org/openqa/selenium/RemoteWebElement.java'
+    ],
+    visibility = [
+      '//java/client/src/org/openqa/selenium:core'
+    ],
+)
 
 # This isn't very elegant, but we can build a dist zip like this:
 zip_file(
