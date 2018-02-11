@@ -79,7 +79,7 @@ java_library(name = 'core',
     '//java/client/src/org/openqa/selenium/logging:api',
   ],
   deps = [
-    ':remote-web-element',
+    '//java/client/src/org/openqa/selenium/remote:remote-web-element',
   ],
   visibility = [
     'PUBLIC',
@@ -192,16 +192,6 @@ java_library(
     '//java/server/src/org/openqa/grid/selenium:classes',
     '//java/server/test/org/openqa/selenium:lib',
   ],
-)
-
-java_library(
-    name = 'remote-web-element',
-    srcs = [
-      '//java/client/src/org/openqa/selenium/Remote/RemoteWebElement.java'
-    ],
-    visibility = [
-      '//java/client/src/org/openqa/selenium:core'
-    ],
 )
 
 # This isn't very elegant, but we can build a dist zip like this:
