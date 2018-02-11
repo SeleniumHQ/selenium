@@ -1,5 +1,5 @@
 {
-  "DriverServiceLocation":  "C:\\Projects\\WebDriverServers",
+  "DriverServiceLocation":  "",
   "ActiveDriverConfig": "Chrome",
   "ActiveWebsiteConfig": "Default",
   "WebsiteConfigs": {

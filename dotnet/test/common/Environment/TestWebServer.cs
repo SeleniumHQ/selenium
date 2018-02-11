@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
@@ -27,9 +27,10 @@ namespace OpenQA.Selenium.Environment
                 {
                     throw new FileNotFoundException(
                         string.Format(
-                            "Test webserver jar at {0} didn't exist - please build it using something like {1}",
+                            "Test webserver jar at {0} didn't exist. Project root is {2}. Please build it using something like {1}.",
                             standaloneTestJar,
-                            "go //java/client/test/org/openqa/selenium/environment:webserver"));
+                            "go //java/client/test/org/openqa/selenium/environment:webserver",
+                            projectRootPath));
                 }
 
                 string javaExecutableName = "java";

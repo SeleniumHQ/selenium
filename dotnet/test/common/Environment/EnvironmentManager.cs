@@ -25,9 +25,10 @@ namespace OpenQA.Selenium.Environment
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
             string activeDriverConfig = TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
             string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
+            string driverServiceLocation = TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
             DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
             WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
-            this.driverFactory = new DriverFactory(env.DriverServiceLocation);
+            this.driverFactory = new DriverFactory(driverServiceLocation);
 
             Assembly driverAssembly = Assembly.Load(driverConfig.AssemblyName);
             driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
@@ -37,7 +38,7 @@ namespace OpenQA.Selenium.Environment
             urlBuilder = new UrlBuilder(websiteConfig);
 
             DirectoryInfo info = new DirectoryInfo(currentDirectory);
-            while (info != info.Root && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
+            while (info != info.Root && string.Compare(info.Name, "buck-out", StringComparison.OrdinalIgnoreCase) != 0 && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
             {
                 info = info.Parent;
             }
