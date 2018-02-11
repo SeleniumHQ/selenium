@@ -48,8 +48,8 @@ java_library(
     'RemoteWebElement.java',
   ],
   exported_deps = [
-    '//java/client/src/org/openqa/selenium:web-element',
-  ]
+    '//java/client/src/org/openqa/selenium:web-element'
+  ],
   visibility = [
     "//java/client/src/org/openqa/selenium:core",
   ]
