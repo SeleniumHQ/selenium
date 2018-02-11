@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <None Remove="build.desc" />
+    <None Remove="Selenium.WebDriverBackedSelenium.Tests.nunit" />
     <None Remove="Settings.StyleCop" />
   </ItemGroup>
 
