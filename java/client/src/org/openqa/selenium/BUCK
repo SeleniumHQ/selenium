@@ -194,7 +194,7 @@ java_library(
 
 java_library(
     name = 'remote-web-element',
-    exported_deps = [
+    srcs = [
       '//java/client/src/org/openqa/selenium/Remote/RemoteWebElement.java'
     ],
     visibility = [
