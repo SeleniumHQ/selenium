@@ -114,7 +114,12 @@ java_library(name = 'web-element',
     'Rectangle.java',
     'OutputType.java',
     'WebDriverException.java',
-    'internal/FindsBy*.java'
+    'internal/FindsByClassName.java',
+    'internal/FindsByCssSelector.java',
+    'internal/FindsById.java',
+    'internal/FindsByLinkText.java',
+    'internal/FindsByTagName.java',
+    'internal/FindsByXPath.java',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:core',
