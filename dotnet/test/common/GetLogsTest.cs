@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -95,19 +96,12 @@ namespace OpenQA.Selenium
 
         private void CreateWebDriverWithLogging(string logType, LogLevel logLevel)
         {
-            if (TestUtilities.IsFirefox(driver))
+            if (TestUtilities.IsChrome(driver))
             {
-                Dictionary<string, object> firefoxLogs = new Dictionary<string, object>();
-                firefoxLogs[logType] = logLevel.ToString().ToUpperInvariant();
-                DesiredCapabilities caps = DesiredCapabilities.Firefox();
-                caps.SetCapability(CapabilityType.LoggingPreferences, firefoxLogs);
-                localDriver = new FirefoxDriver(caps);
-            }
-            else if (TestUtilities.IsChrome(driver))
-            {
+                ChromeDriverService service = ChromeDriverService.CreateDefaultService(EnvironmentManager.Instance.DriverServiceDirectory);
                 ChromeOptions options = new ChromeOptions();
                 options.SetLoggingPreference(logType, logLevel);
-                localDriver = new ChromeDriver(options);
+                localDriver = new ChromeDriver(service, options);
             }
 
             localDriver.Url = simpleTestPage;

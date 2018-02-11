@@ -14,7 +14,8 @@ namespace OpenQA.Selenium.Environment
         private IWebDriver driver;
         private UrlBuilder urlBuilder;
         private TestWebServer webServer;
-        RemoteSeleniumServer remoteServer;
+        private DriverFactory driverFactory;
+        private RemoteSeleniumServer remoteServer;
         private string remoteCapabilities;
 
         private EnvironmentManager()
@@ -26,6 +27,7 @@ namespace OpenQA.Selenium.Environment
             string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
             DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
             WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
+            this.driverFactory = new DriverFactory(env.DriverServiceLocation);
 
             Assembly driverAssembly = Assembly.Load(driverConfig.AssemblyName);
             driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
@@ -66,6 +68,11 @@ namespace OpenQA.Selenium.Environment
             get { return browser; }
         }
 
+        public string DriverServiceDirectory
+        {
+            get { return this.driverFactory.DriverServicePath; }
+        }
+
         public string CurrentDirectory
         {
             get
@@ -103,7 +110,7 @@ namespace OpenQA.Selenium.Environment
 
         public IWebDriver CreateDriverInstance()
         {
-            return (IWebDriver)Activator.CreateInstance(driverType);
+            return driverFactory.CreateDriver(driverType);
         }
 
         public IWebDriver CreateFreshDriver()

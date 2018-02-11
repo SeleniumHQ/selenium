@@ -8,7 +8,7 @@ namespace OpenQA.Selenium
     public class ExecutingAsyncJavascriptTest : DriverTestFixture
     {
         private IJavaScriptExecutor executor;
-        private TimeSpan originalTimeout;
+        private TimeSpan originalTimeout = TimeSpan.MinValue;
 
         [SetUp]
         public void SetUpEnvironment()
@@ -18,8 +18,14 @@ namespace OpenQA.Selenium
                 executor = (IJavaScriptExecutor)driver;
             }
 
-            originalTimeout = driver.Manage().Timeouts().AsynchronousJavaScript;
-            driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(1);
+            try
+            {
+                originalTimeout = driver.Manage().Timeouts().AsynchronousJavaScript;
+                driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(1);
+            }
+            catch (NotImplementedException)
+            {
+            }
         }
 
         [TearDown]

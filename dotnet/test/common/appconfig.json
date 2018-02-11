@@ -1,4 +1,5 @@
 {
+  "DriverServiceLocation":  "C:\\Projects\\WebDriverServers",
   "ActiveDriverConfig": "Chrome",
   "ActiveWebsiteConfig": "Default",
   "WebsiteConfigs": {
@@ -65,7 +66,7 @@
       "AssemblyName": "WebDriver.Remote.Tests",
       "BrowserValue": "Remote",
       "RemoteCapabilities": "internet explorer",
-      "AutoStartRemoteServer":  true
+      "AutoStartRemoteServer": true
     }
   }
 }
