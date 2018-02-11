@@ -104,7 +104,11 @@ java_library(name = 'beta',
 )
 
 java_library(name = 'web-element',
-  srcs = [ 'WebElement.java' ],
+  srcs = [
+    'WebElement.java',
+    'SearchContext.java',
+    'TakesScreenshot.java',
+  ],
   visibility = [
     '//java/client/src/org/openqa/selenium:core',
   ],
