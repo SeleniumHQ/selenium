@@ -113,7 +113,8 @@ java_library(name = 'web-element',
     'Dimension.java',
     'Rectangle.java',
     'OutputType.java',
-    'WebDriverException.java'
+    'WebDriverException.java',
+    'internal/FingsBy*.java'
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:core',
