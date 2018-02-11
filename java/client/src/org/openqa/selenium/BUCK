@@ -77,10 +77,10 @@ java_library(name = 'core',
     '//java/client/src/org/openqa/selenium/interactions:core',
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/logging:api',
+    ':web-element',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium/remote:remote-web-element',
-    ':web-element'
   ],
   visibility = [
     'PUBLIC',
