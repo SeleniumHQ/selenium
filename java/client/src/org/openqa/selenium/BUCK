@@ -74,10 +74,12 @@ java_library(name = 'core',
     ':exceptions',
     ':platform',
     ':primitives',
-    ':remote-web-element',
     '//java/client/src/org/openqa/selenium/interactions:core',
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/logging:api',
+  ],
+  deps = [
+    ':remote-web-element',
   ],
   visibility = [
     'PUBLIC',
