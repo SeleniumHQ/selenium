@@ -129,7 +129,7 @@ java_library(name = 'web-element',
     'internal/Locatable.java',
     'internal/HasIdentity.java',
   ],
-    exported_deps = ['//java/client/src/org/openqa/selenium/interaction/locatable'],
+    deps = ['//java/client/src/org/openqa/selenium/interaction/locatable'],
   visibility = [
     '//java/client/src/org/openqa/selenium:core',
     '//java/client/src/org/openqa/selenium/remote:remote-web-element',
