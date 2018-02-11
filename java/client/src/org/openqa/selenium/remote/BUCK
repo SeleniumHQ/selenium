@@ -44,7 +44,10 @@ java_library(
 
 java_library(
   name = 'remote-web-element',
-  srcs = [ 'RemoteWebElement.java' ],
+  srcs = [
+    'RemoteWebElement.java',
+    '//java/client/src/org/openqa/selenium/WebElement.java',
+  ],
   visibility = [
     "//java/client/src/org/openqa/selenium:core",
   ]
