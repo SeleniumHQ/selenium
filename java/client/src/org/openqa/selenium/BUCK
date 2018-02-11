@@ -80,6 +80,7 @@ java_library(name = 'core',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium/remote:remote-web-element',
+    ':web-element'
   ],
   visibility = [
     'PUBLIC',
@@ -99,6 +100,13 @@ java_library(name = 'beta',
     '//java/client/src/org/openqa/selenium/logging:api',
     '//java/client/src/org/openqa/selenium/logging:logging',
     '//java/client/src/org/openqa/selenium/os:os',
+  ],
+)
+
+java_library(name = 'web-element',
+  srcs = [ 'WebElement.java' ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:core',
   ],
 )
 
