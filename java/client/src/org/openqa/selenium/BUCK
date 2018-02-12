@@ -80,7 +80,7 @@ java_library(name = 'core',
 
 genrule(name = 'manifest',
   out = 'manifest.mf',
-  cmd = 'python -c "print(\'\\n\\nName: Selenium\\nSelenium-Version: {}\\n\\n\')" >> $OUT'.format(SE_VERSION),
+  cmd = 'python -c "print(\'\\n\\nName: Build-Info\\nSelenium-Version: {}\\n\\n\')" >> $OUT'.format(SE_VERSION),
 )
 
 java_library(name = 'beta',
