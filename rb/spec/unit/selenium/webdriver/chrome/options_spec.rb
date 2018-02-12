@@ -99,29 +99,47 @@ module Selenium
               subject.add_argument('foo')
               subject.add_argument('bar')
 
-              expect(subject.args).to eq %w[foo bar]
+              expect(subject.args).to eq(%w[foo bar])
             end
 
-            it 'should not add same argument more than once' do
+            it 'should not add the same argument more than once' do
               subject.add_argument('foo')
               subject.add_argument('foo')
 
-              expect(subject.args).to eq ['foo']
+              expect(subject.args).to eq(['foo'])
             end
           end
         end
 
         describe '#headless!' do
-          it 'should add the --headless command-line argument' do
-            subject.headless!
-            expect(subject.args).to eql ['--headless']
+          context 'on windows' do
+            before(:each) do
+              allow(WebDriver::Platform).to receive(:windows?).and_return true
+            end
+
+            it 'should add the --headless and --disable-gpu command-line argument' do
+              subject.headless!
+              expect(subject.args).to eql(%w[--headless --disable-gpu])
+            end
           end
 
-          it 'should not add the --headless command-line argument if already present' do
-            subject.add_argument('--headless')
-            subject.headless!
-            expect(subject.args).to eql ['--headless']
+          context 'on non-windows' do
+            before(:each) do
+              allow(WebDriver::Platform).to receive(:windows?).and_return false
+            end
+
+            it 'should add the --headless command-line argument' do
+              subject.headless!
+              expect(subject.args).to eql(['--headless'])
+            end
+
+            it 'should not add the --headless command-line argument if already present' do
+              subject.add_argument('--headless')
+              subject.headless!
+              expect(subject.args).to eql(['--headless'])
+            end
           end
+
         end
 
         describe '#add_option' do
