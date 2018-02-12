@@ -975,19 +975,44 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool 
     }
   }
 
-  if (HIBYTE(key_info.key_code) == 1 && !input_state->is_shift_pressed) {
-    // Requested key is a Shift + <key>. Thus, don't use the key code.
-    // Instead, send a Shift keystroke, and use the scan code of the key.
+
+  unsigned short modifier_key_info = HIBYTE(key_info.key_code);
+  if (modifier_key_info != 0) {
+    // Requested key is a <modifier keys> + <key>. Thus, don't use the key code.
+    // Instead, send the modifier keystrokes, and use the scan code of the key.
+    bool is_shift_required = (modifier_key_info & 1) != 0 && !input_state->is_shift_pressed;
+    bool is_control_required = (modifier_key_info & 2) != 0 && !input_state->is_control_pressed;
+    bool is_alt_required = (modifier_key_info & 4) != 0 && !input_state->is_alt_pressed;
     if (!key_up) {
-      KeyInfo shift_key_info = { VK_SHIFT, 0, false, false };
-      this->CreateKeyboardInputItem(shift_key_info, 0, false);
+      if (is_shift_required) {
+        KeyInfo shift_key_info = { VK_SHIFT, 0, false, false };
+        this->CreateKeyboardInputItem(shift_key_info, 0, false);
+      }
+      if (is_control_required) {
+        KeyInfo control_key_info = { VK_CONTROL, 0, false, false };
+        this->CreateKeyboardInputItem(control_key_info, 0, false);
+      }
+      if (is_alt_required) {
+        KeyInfo alt_key_info = { VK_MENU, 0, false, false };
+        this->CreateKeyboardInputItem(alt_key_info, 0, false);
+      }
     }
 
     this->CreateKeyboardInputItem(key_info, KEYEVENTF_SCANCODE, key_up);
 
     if (key_up) {
-      KeyInfo shift_key_info = { VK_SHIFT, 0, false, false };
-      this->CreateKeyboardInputItem(shift_key_info, 0, true);
+      if (is_shift_required) {
+        KeyInfo shift_key_info = { VK_SHIFT, 0, false, false };
+        this->CreateKeyboardInputItem(shift_key_info, 0, true);
+      }
+      if (is_control_required) {
+        KeyInfo control_key_info = { VK_CONTROL, 0, false, false };
+        this->CreateKeyboardInputItem(control_key_info, 0, true);
+      }
+      if (is_alt_required) {
+        KeyInfo alt_key_info = { VK_MENU, 0, false, false };
+        this->CreateKeyboardInputItem(alt_key_info, 0, true);
+      }
     }
   } else {
     this->CreateKeyboardInputItem(key_info, 0, key_up);
