@@ -96,7 +96,7 @@ public class OkHttpClient implements HttpClient {
         break;
 
       case POST:
-        String rawType = Optional.of(request.getHeader("Content-Type"))
+        String rawType = Optional.ofNullable(request.getHeader("Content-Type"))
             .orElse("application/json; charset=utf-8");
         MediaType type = MediaType.parse(rawType);
         RequestBody body = RequestBody.create(type, request.getContent());
