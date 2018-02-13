@@ -53,7 +53,6 @@ java_library(name = 'core',
     'WebElement.java',
     'internal/ElementScrollBehavior.java',
     'internal/HasIdentity.java',
-    'internal/Locatable.java',
     'internal/WrapsDriver.java',
     'internal/WrapsElement.java',
   ] + glob([
