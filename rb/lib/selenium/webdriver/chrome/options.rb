@@ -39,7 +39,7 @@ module Selenium
         #
 
         def initialize(**opts)
-          @args = opts.delete(:args) || []
+          @args = Set.new(opts.delete(:args) || [])
           @binary = opts.delete(:binary) || Chrome.path
           @prefs = opts.delete(:prefs) || {}
           @extensions = opts.delete(:extensions) || []
@@ -89,8 +89,6 @@ module Selenium
         #
 
         def add_argument(arg)
-          return if @args.include?(arg)
-
           @args << arg
         end
 
@@ -173,7 +171,7 @@ module Selenium
 
           opts = @options
           opts[:binary] = @binary if @binary
-          opts[:args] = @args if @args.any?
+          opts[:args] = @args.to_a if @args.any?
           opts[:extensions] = extensions if extensions.any?
           opts[:mobileEmulation] = @emulation unless @emulation.empty?
           opts[:prefs] = @prefs unless @prefs.empty?

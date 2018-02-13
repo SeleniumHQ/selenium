@@ -24,7 +24,7 @@ module Selenium
         describe '#initialize' do
           it 'sets passed args' do
             opt = Options.new(args: %w[foo bar])
-            expect(opt.args).to eq(%w[foo bar])
+            expect(opt.args.to_a).to eq(%w[foo bar])
           end
 
           it 'sets passed prefs' do
@@ -91,23 +91,7 @@ module Selenium
         describe '#add_argument' do
           it 'adds a command-line argument' do
             subject.add_argument('foo')
-            expect(subject.args).to include('foo')
-          end
-
-          context 'multiple arguments' do
-            it 'should add only unique arguments' do
-              subject.add_argument('foo')
-              subject.add_argument('bar')
-
-              expect(subject.args).to eq(%w[foo bar])
-            end
-
-            it 'should not add the same argument more than once' do
-              subject.add_argument('foo')
-              subject.add_argument('foo')
-
-              expect(subject.args).to eq(['foo'])
-            end
+            expect(subject.args.to_a).to eq(['foo'])
           end
         end
 
@@ -115,12 +99,11 @@ module Selenium
           it 'should add necessary command-line arguments' do
             subject.headless!
             if WebDriver::Platform.windows?
-              expect(subject.args).to eql(%w[--headless --disable-gpu])
+              expect(subject.args.to_a).to eql(%w[--headless --disable-gpu])
             else
-              expect(subject.args).to eql(['--headless'])
+              expect(subject.args.to_a).to eql(['--headless'])
             end
           end
-
         end
 
         describe '#add_option' do
@@ -173,7 +156,7 @@ module Selenium
                                options: {foo: :bar},
                                emulation: {c: 3})
             json = opts.as_json
-            expect(json[:args]).to include('foo')
+            expect(json[:args]).to eq(['foo'])
             expect(json[:binary]).to eq('/foo/bar')
             expect(json[:prefs]).to include(a: 1)
             expect(json[:extensions]).to include('bar')

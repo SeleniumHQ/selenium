@@ -41,7 +41,7 @@ module Selenium
         #
 
         def initialize(**opts)
-          @args = opts.delete(:args) || []
+          @args = Set.new(opts.delete(:args) || [])
           @binary = opts.delete(:binary)
           @profile = opts.delete(:profile)
           @log_level = opts.delete(:log_level)
@@ -136,7 +136,7 @@ module Selenium
           opts = @options
 
           opts[:profile] = @profile.encoded if @profile
-          opts[:args] = @args if @args.any?
+          opts[:args] = @args.to_a if @args.any?
           opts[:binary] = @binary if @binary
           opts[:prefs] = @prefs unless @prefs.empty?
           opts[:log] = {level: @log_level} if @log_level
