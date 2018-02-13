@@ -22,6 +22,12 @@
     <Filter Include="Source Files\CommandHandlers">
       <UniqueIdentifier>{b7774b14-7039-48b6-adf4-8b63455f97dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ActionSimulators">
+      <UniqueIdentifier>{7bf88dc1-65a0-43f2-8897-dd7eb9849d0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ActionSimulators">
+      <UniqueIdentifier>{f76b4321-f28e-4b10-a2d9-07971aa4b2ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alert.cpp">
@@ -555,6 +561,9 @@
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="IElementManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

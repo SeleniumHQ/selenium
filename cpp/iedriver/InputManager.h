@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "CustomTypes.h"
+#include "InputState.h"
 #include "ElementScrollBehavior.h"
 
 namespace Json {
@@ -36,16 +37,6 @@ struct KeyInfo {
   bool is_extended_key;
   bool is_webdriver_key;
   bool is_ignored_key;
-};
-
-struct InputState {
-  bool is_shift_pressed;
-  bool is_control_pressed;
-  bool is_alt_pressed;
-  bool is_left_button_pressed;
-  bool is_right_button_pressed;
-  long mouse_x;
-  long mouse_y;
 };
 
 // Forward declaration of classes to avoid
@@ -96,18 +87,18 @@ public:
   VARIANT mouse_state(void) const { return this->mouse_state_; }
   void set_mouse_state(VARIANT state) { this->mouse_state_ = state; }
 
-  bool is_shift_pressed(void) const { return this->is_shift_pressed_; }
-  bool is_control_pressed(void) const { return this->is_control_pressed_; }
-  bool is_alt_pressed(void) const { return this->is_alt_pressed_; }
+  bool is_shift_pressed(void) const { return this->current_input_state_.is_shift_pressed; }
+  bool is_control_pressed(void) const { return this->current_input_state_.is_control_pressed; }
+  bool is_alt_pressed(void) const { return this->current_input_state_.is_alt_pressed; }
 
-  long last_known_mouse_x(void) const { return this->last_known_mouse_x_; }
+  long last_known_mouse_x(void) const { return this->current_input_state_.mouse_x; }
   void set_last_known_mouse_x(const long x_coordinate) {
-    this->last_known_mouse_x_ = x_coordinate; 
+    this->current_input_state_.mouse_x = x_coordinate;
   }
 
-  long last_known_mouse_y(void) const { return this->last_known_mouse_y_; }
+  long last_known_mouse_y(void) const { return this->current_input_state_.mouse_y; }
   void set_last_known_mouse_y(const long y_coordinate) {
-    this->last_known_mouse_y_ = y_coordinate;
+    this->current_input_state_.mouse_y = y_coordinate;
   }
 
  private:
@@ -154,19 +145,15 @@ public:
   void SetupKeyDescriptions(void);
   std::wstring GetKeyDescription(const wchar_t character);
 
+  int GetTicks(const Json::Value& sequences, Json::Value* ticks);
+  HANDLE AcquireMutex(void);
+  void ReleaseMutex(HANDLE mutex_handle);
+
   bool use_native_events_;
   bool use_persistent_hover_;
   bool require_window_focus_;
-  long last_known_mouse_x_;
-  long last_known_mouse_y_;
 
-  bool is_shift_pressed_;
-  bool is_control_pressed_;
-  bool is_alt_pressed_;
-  bool is_left_button_pressed_;
-  bool is_right_button_pressed_;
-
-  clock_t last_click_time_;
+  InputState current_input_state_;
 
   ElementScrollBehavior scroll_behavior_;
 

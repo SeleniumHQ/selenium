@@ -31,6 +31,8 @@
 
 #include <vector>
 
+#include "InputState.h"
+
 namespace webdriver {
 
 class EventFiringData;
@@ -41,48 +43,33 @@ class InteractionsManager {
   ~InteractionsManager(void);
 
   void SendKeyDownMessage(HWND window_handle,
-                          bool shift_pressed,
-                          bool control_pressed,
-                          bool alt_pressed,
+                          InputState input_state,
                           int key_code,
                           int scan_code,
                           bool extended,
                           bool unicode,
-                          bool shifted,
                           HKL layout,
                           std::vector<BYTE>* keyboard_state);
   void SendKeyUpMessage(HWND window_handle,
-                        bool shift_pressed,
-                        bool control_pressed,
-                        bool alt_pressed,
+                        InputState input_state,
                         int key_code,
                         int scan_code,
                         bool extended,
                         bool unicode,
-                        bool shifted,
                         HKL layout,
                         std::vector<BYTE>* keyboard_state);
 
   void SendMouseMoveMessage(HWND window_handle,
-                            bool shift_pressed,
-                            bool control_pressed,
-                            bool left_pressed,
-                            bool right_pressed,
+                            InputState input_state,
                             int x,
                             int y);
   void SendMouseUpMessage(HWND window_handle,
-                          bool shift_pressed,
-                          bool control_pressed,
-                          bool left_pressed,
-                          bool right_pressed,
+                          InputState input_state,
                           int button,
                           int x,
                           int y);
   void SendMouseDownMessage(HWND window_handle,
-                            bool shift_pressed,
-                            bool control_pressed,
-                            bool left_pressed,
-                            bool right_pressed,
+                            InputState input_state,
                             int button,
                             int x,
                             int y,

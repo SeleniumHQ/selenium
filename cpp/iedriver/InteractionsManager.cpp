@@ -201,13 +201,20 @@ DWORD WINAPI InteractionsManager::MouseEventFiringFunction(LPVOID lpParam)
   return 0;
 }
 
-void InteractionsManager::SendKeyDownMessage(HWND window_handle, bool shift_pressed, bool control_pressed, bool alt_pressed, int key_code, int scan_code, bool extended, bool unicode, bool shifted, HKL layout, std::vector<BYTE>* keyboard_state) {
+void InteractionsManager::SendKeyDownMessage(HWND window_handle,
+                                             InputState input_state,
+                                             int key_code,
+                                             int scan_code,
+                                             bool extended,
+                                             bool unicode,
+                                             HKL layout,
+                                             std::vector<BYTE>* keyboard_state) {
   LPARAM lparam = 0;
   clock_t max_wait = clock() + 250;
 
-  shiftPressed = shift_pressed;
-  controlPressed = control_pressed;
-  altPressed = alt_pressed;
+  shiftPressed = input_state.is_shift_pressed;
+  controlPressed = input_state.is_control_pressed;
+  altPressed = input_state.is_alt_pressed;
 
   if (key_code == VK_SHIFT || key_code == VK_CONTROL || key_code == VK_MENU) {
     (*keyboard_state)[key_code] |= 0x80;
@@ -269,7 +276,14 @@ void InteractionsManager::SendKeyDownMessage(HWND window_handle, bool shift_pres
   }
 }
 
-void InteractionsManager::SendKeyUpMessage(HWND window_handle, bool shift_pressed, bool control_pressed, bool alt_pressed, int key_code, int scan_code, bool extended, bool unicode, bool shifted, HKL layout, std::vector<BYTE>* keyboard_state) {
+void InteractionsManager::SendKeyUpMessage(HWND window_handle,
+                                           InputState input_state,
+                                           int key_code,
+                                           int scan_code,
+                                           bool extended,
+                                           bool unicode,
+                                           HKL layout,
+                                           std::vector<BYTE>* keyboard_state) {
   LPARAM lparam = 0;
 
   if (key_code == VK_SHIFT || key_code == VK_CONTROL || key_code == VK_MENU) {
@@ -308,30 +322,44 @@ void InteractionsManager::SendKeyUpMessage(HWND window_handle, bool shift_presse
   }
 }
 
-void InteractionsManager::SendMouseMoveMessage(HWND window_handle, bool shift_pressed, bool control_pressed, bool left_pressed, bool right_pressed, int x, int y) {
+void InteractionsManager::SendMouseMoveMessage(HWND window_handle,
+                                               InputState input_state,
+                                               int x,
+                                               int y) {
   LRESULT message_timeout = 0;
   DWORD_PTR send_message_result = 0;
   WPARAM button_value = 0;
-  if (left_pressed) {
+  if (input_state.is_left_button_pressed) {
     button_value |= MK_LBUTTON;
   }
-  if (right_pressed) {
+  if (input_state.is_right_button_pressed) {
     button_value |= MK_RBUTTON;
   }
-  if (shift_pressed) {
+  if (input_state.is_shift_pressed) {
     button_value |= MK_SHIFT;
   }
-  if (control_pressed) {
+  if (input_state.is_control_pressed) {
     button_value |= MK_CONTROL;
   }
   LPARAM coordinates = MAKELPARAM(x, y);
-  message_timeout = ::SendMessageTimeout(window_handle, WM_MOUSEMOVE, button_value, coordinates, SMTO_NORMAL, 100, &send_message_result);
+  message_timeout = ::SendMessageTimeout(window_handle,
+                                         WM_MOUSEMOVE,
+                                         button_value,
+                                         coordinates,
+                                         SMTO_NORMAL,
+                                         100,
+                                         &send_message_result);
   if (message_timeout == 0) {
     LOGERR(WARN) << "MouseMove: SendMessageTimeout failed";
   }
 }
 
-void InteractionsManager::SendMouseDownMessage(HWND window_handle, bool shift_pressed, bool control_pressed, bool left_pressed, bool right_pressed, int button, int x, int y, bool is_double_click) {
+void InteractionsManager::SendMouseDownMessage(HWND window_handle,
+                                               InputState input_state,
+                                               int button,
+                                               int x,
+                                               int y,
+                                               bool is_double_click) {
   UINT msg = WM_LBUTTONDOWN;
   WPARAM button_value = MK_LBUTTON;
   if (is_double_click) {
@@ -345,10 +373,10 @@ void InteractionsManager::SendMouseDownMessage(HWND window_handle, bool shift_pr
     }
   }
   int modifier = 0;
-  if (shift_pressed) {
+  if (input_state.is_shift_pressed) {
     modifier |= MK_SHIFT;
   }
-  if (control_pressed) {
+  if (input_state.is_control_pressed) {
     modifier |= MK_CONTROL;
   }
   button_value |= modifier;
@@ -365,7 +393,11 @@ void InteractionsManager::SendMouseDownMessage(HWND window_handle, bool shift_pr
 }
 
 
-void InteractionsManager::SendMouseUpMessage(HWND window_handle, bool shift_pressed, bool control_pressed, bool left_pressed, bool right_pressed, int button, int x, int y) {
+void InteractionsManager::SendMouseUpMessage(HWND window_handle,
+                                             InputState input_state,
+                                             int button,
+                                             int x,
+                                             int y) {
   UINT msg = WM_LBUTTONUP;
   WPARAM button_value = MK_LBUTTON;
   if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
@@ -373,10 +405,10 @@ void InteractionsManager::SendMouseUpMessage(HWND window_handle, bool shift_pres
     button_value = MK_RBUTTON;
   }
   int modifier = 0;
-  if (shift_pressed) {
+  if (input_state.is_shift_pressed) {
     modifier |= MK_SHIFT;
   }
-  if (control_pressed) {
+  if (input_state.is_control_pressed) {
     modifier |= MK_CONTROL;
   }
   button_value |= modifier;

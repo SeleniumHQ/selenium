@@ -336,6 +336,7 @@
     <ClInclude Include="IEServer.h" />
     <ClInclude Include="IESession.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="InputState.h" />
     <ClInclude Include="InteractionsManager.h" />
     <ClInclude Include="LocationInfo.h" />
     <ClInclude Include="messages.h" />
