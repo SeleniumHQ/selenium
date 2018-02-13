@@ -1,14 +1,13 @@
 using System;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
-using NMock;
+using Moq;
 
 namespace OpenQA.Selenium.Support.UI
 {
     [TestFixture]
     public class DefaultWaitTest
     {
-        private MockFactory mocks;
         private Mock<IWebDriver> mockDriver;
         private Mock<IClock> mockClock;
 
@@ -19,9 +18,8 @@ namespace OpenQA.Selenium.Support.UI
         [SetUp]
         public void Setup()
         {
-            mocks = new MockFactory();
-            mockDriver = mocks.CreateMock<IWebDriver>();
-            mockClock = mocks.CreateMock<IClock>();
+            mockDriver = new Mock<IWebDriver>();
+            mockClock = new Mock<IClock>();
             executionCount = 0;
         }
 
@@ -30,10 +28,10 @@ namespace OpenQA.Selenium.Support.UI
         {
             var condition = GetCondition(() => defaultReturnValue,
                                          () => defaultReturnValue);
-            mockClock.Expects.One.Method(_ => _.LaterBy(TimeSpan.Zero)).With(TimeSpan.FromMilliseconds(0)).WillReturn(startDate.Add(TimeSpan.FromSeconds(2)));
-            mockClock.Expects.One.Method(_ => _.IsNowBefore(DateTime.MinValue)).With(startDate.Add(TimeSpan.FromSeconds(2))).WillReturn(true);
+            mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
+            mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(true);
 
-            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.MockObject, mockClock.MockObject);
+            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
             wait.Timeout = TimeSpan.FromMilliseconds(0);
             wait.PollingInterval = TimeSpan.FromSeconds(2);
             wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(NoSuchFrameException));
@@ -46,10 +44,10 @@ namespace OpenQA.Selenium.Support.UI
         {
             var condition = GetCondition(() => true,
                                          () => true);
-            mockClock.Expects.One.Method(_ => _.LaterBy(TimeSpan.Zero)).With(TimeSpan.FromMilliseconds(0)).WillReturn(startDate.Add(TimeSpan.FromSeconds(2)));
-            mockClock.Expects.One.Method(_ => _.IsNowBefore(DateTime.MinValue)).With(startDate.Add(TimeSpan.FromSeconds(2))).WillReturn(true);
+            mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
+            mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(true);
 
-            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.MockObject, mockClock.MockObject);
+            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
             wait.Timeout = TimeSpan.FromMilliseconds(0);
             wait.PollingInterval = TimeSpan.FromSeconds(2);
             wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(NoSuchFrameException));
@@ -62,10 +60,10 @@ namespace OpenQA.Selenium.Support.UI
         {
             var condition = GetCondition(() => null,
                                          () => defaultReturnValue);
-            mockClock.Expects.One.Method(_ => _.LaterBy(TimeSpan.Zero)).With(TimeSpan.FromMilliseconds(0)).WillReturn(startDate.Add(TimeSpan.FromSeconds(2)));
-            mockClock.Expects.One.Method(_ => _.IsNowBefore(DateTime.MinValue)).With(startDate.Add(TimeSpan.FromSeconds(2))).WillReturn(false);
+            mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
+            mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(false);
 
-            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.MockObject, mockClock.MockObject);
+            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
             wait.Timeout = TimeSpan.FromMilliseconds(0);
 
             Assert.Throws<WebDriverTimeoutException>(() => wait.Until(condition), "Timed out after 0 seconds");
@@ -77,10 +75,10 @@ namespace OpenQA.Selenium.Support.UI
             var condition = GetCondition(() => { throw new NoSuchElementException(); },
                                          () => { throw new NoSuchFrameException(); },
                                          () => defaultReturnValue);
-            mockClock.Expects.One.Method(_ => _.LaterBy(TimeSpan.Zero)).With(TimeSpan.FromMilliseconds(0)).WillReturn(startDate.Add(TimeSpan.FromSeconds(2)));
-            mockClock.Expects.Exactly(3).Method(_ => _.IsNowBefore(DateTime.MinValue)).With(startDate.Add(TimeSpan.FromSeconds(2))).WillReturn(true);
+            mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
+            mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(true);
 
-            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.MockObject, mockClock.MockObject);
+            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
             wait.Timeout = TimeSpan.FromMilliseconds(0);
             wait.PollingInterval = TimeSpan.FromSeconds(2);
             wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(NoSuchFrameException));
@@ -93,10 +91,10 @@ namespace OpenQA.Selenium.Support.UI
         {
             var ex = new NoSuchWindowException("");
             var condition = GetCondition<object>(() => { NonInlineableThrow(ex); return null; });
-            mockClock.Expects.One.Method(_ => _.LaterBy(TimeSpan.Zero)).With(TimeSpan.FromMilliseconds(0)).WillReturn(startDate.Add(TimeSpan.FromSeconds(2)));
-            mockClock.Expects.One.Method(_ => _.IsNowBefore(DateTime.MinValue)).With(startDate.Add(TimeSpan.FromSeconds(2))).WillReturn(true);
+            mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
+            mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(true);
 
-            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.MockObject, mockClock.MockObject);
+            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
             wait.Timeout = TimeSpan.FromMilliseconds(0);
             wait.PollingInterval = TimeSpan.FromSeconds(2);
             wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(NoSuchFrameException));
@@ -113,10 +111,10 @@ namespace OpenQA.Selenium.Support.UI
         {
             var ex = new NoSuchWindowException("");
             var condition = GetCondition<object>(() => { throw ex; });
-            mockClock.Expects.One.Method(_ => _.LaterBy(TimeSpan.Zero)).With(TimeSpan.FromMilliseconds(0)).WillReturn(startDate.Add(TimeSpan.FromSeconds(2)));
-            mockClock.Expects.One.Method(_ => _.IsNowBefore(DateTime.MinValue)).With(startDate.Add(TimeSpan.FromSeconds(2))).WillReturn(false);
+            mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
+            mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(false);
 
-            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.MockObject, mockClock.MockObject);
+            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
             wait.Timeout = TimeSpan.FromMilliseconds(0);
             wait.PollingInterval = TimeSpan.FromSeconds(2);
             wait.IgnoreExceptionTypes(typeof(NoSuchWindowException));
@@ -129,11 +127,10 @@ namespace OpenQA.Selenium.Support.UI
         public void TmeoutMessageIncludesCustomMessage()
         {
             var condition = GetCondition(() => false);
-            mockClock.Expects.One.Method(_ => _.LaterBy(TimeSpan.Zero)).With(TimeSpan.FromMilliseconds(0)).WillReturn(startDate.Add(TimeSpan.FromSeconds(2)));
-            mockClock.Expects.One.Method(_ => _.IsNowBefore(DateTime.MinValue)).With(startDate.Add(TimeSpan.FromSeconds(2))).WillReturn(false);
-            mockClock.Expects.One.Method(_ => _.IsNowBefore(startDate.Add(TimeSpan.FromSeconds(2)))).WillReturn(false);
+            mockClock.Setup(_ => _.LaterBy(It.Is<TimeSpan>(x => x == TimeSpan.FromMilliseconds(0)))).Returns(startDate.Add(TimeSpan.FromSeconds(2)));
+            mockClock.Setup(_ => _.IsNowBefore(It.Is<DateTime>(x => x == startDate.Add(TimeSpan.FromSeconds(2))))).Returns(false);
 
-            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.MockObject, mockClock.MockObject);
+            IWait<IWebDriver> wait = new DefaultWait<IWebDriver>(mockDriver.Object, mockClock.Object);
             wait.Timeout = TimeSpan.FromMilliseconds(0);
             wait.Message = "Expected custom timeout message";
 

@@ -1,5 +1,5 @@
 using System;
-using NMock;
+using Moq;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium.Support.UI
@@ -13,58 +13,52 @@ namespace OpenQA.Selenium.Support.UI
         private static readonly TimeSpan ONE_SECONDS = TimeSpan.FromSeconds(1);
         private static readonly TimeSpan FIVE_SECONDS = TimeSpan.FromSeconds(5);
 
-        private MockFactory mocks;
         private bool executed;
 
         [SetUp]
         public void SetUp()
         {
-            mocks = new MockFactory();
             executed = false;
         }
         
         [Test]
         public void CanGetListOfOptions()
         {
-            var mockDriver = mocks.CreateMock<IWebDriver>();
+            var mockDriver = new Mock<IWebDriver>();
             var condition = GetCondition(() => null, () => SOME_STRING);
 
-            var wait = new WebDriverWait(new TickingClock(), mockDriver.MockObject, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver.Object, FIVE_SECONDS, ZERO_SECONDS);
             Assert.AreEqual(SOME_STRING, wait.Until(condition));
-            
-            mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void WaitsForBaseObjectType()
         {
-            var mockDriver = mocks.CreateMock<IWebDriver>();
+            var mockDriver = new Mock<IWebDriver>();
             var condition = GetCondition(() => null, () => new object());
 
-            var wait = new WebDriverWait(new TickingClock(), mockDriver.MockObject, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver.Object, FIVE_SECONDS, ZERO_SECONDS);
             Assert.IsNotNull(wait.Until(condition));
-
-            mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         [Test]
         public void WaitsUntilABooleanResultIsTrue()
         {
-            var mockDriver = mocks.CreateMock<IWebDriver>();
+            var mockDriver = new Mock<IWebDriver>();
             var condition = GetCondition(() => false, () => true);
 
-            var wait = new WebDriverWait(new TickingClock(), mockDriver.MockObject, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver.Object, FIVE_SECONDS, ZERO_SECONDS);
             Assert.True(wait.Until(condition));
         }
 
         [Test]
         public void ThrowsForInvalidTypes()
         {
-            var mockDriver = mocks.CreateMock<IWebDriver>();
+            var mockDriver = new Mock<IWebDriver>();
             var nullableBooleanCondition = GetCondition<bool?>(() => null, () => true);
             var intCondition = GetCondition(() => 1, () => 2);
 
-            var wait = new WebDriverWait(new TickingClock(), mockDriver.MockObject, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver.Object, FIVE_SECONDS, ZERO_SECONDS);
             
             Assert.Throws(typeof(ArgumentException), () => wait.Until(nullableBooleanCondition));
             Assert.Throws(typeof(ArgumentException), () => wait.Until(intCondition));
@@ -73,8 +67,8 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void ThrowsAnExceptionIfTheTimerRunsOut()
         {
-            var mockDriver = mocks.CreateMock<IWebDriver>();
-            var wait = new WebDriverWait(GetClock(), mockDriver.MockObject, ONE_SECONDS, ZERO_SECONDS);
+            var mockDriver = new Mock<IWebDriver>();
+            var wait = new WebDriverWait(GetClock(), mockDriver.Object, ONE_SECONDS, ZERO_SECONDS);
 
             Assert.Throws(typeof(WebDriverTimeoutException), () => wait.Until(driver => false));
         }
@@ -82,37 +76,37 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void SilentlyCapturesNoSuchElementExceptions()
         {
-            var mockDriver = mocks.CreateMock<IWebDriver>();
-            var element = mocks.CreateMock<IWebElement>();
-            var condition = GetCondition(() => { throw new NoSuchElementException(); }, () => element.MockObject);
+            var mockDriver = new Mock<IWebDriver>();
+            var element = new Mock<IWebElement>();
+            var condition = GetCondition(() => { throw new NoSuchElementException(); }, () => element.Object);
 
-            var wait = new WebDriverWait(new TickingClock(), mockDriver.MockObject, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver.Object, FIVE_SECONDS, ZERO_SECONDS);
 
-            Assert.AreEqual(element.MockObject, wait.Until(condition));
+            Assert.AreEqual(element.Object, wait.Until(condition));
         }
 
         [Test]
         public void PassesWebDriverFromConstructorToExpectation()
         {
-            var mockDriver = mocks.CreateMock<IWebDriver>();
-            mockDriver.Expects.One.GetProperty(_ => _.CurrentWindowHandle).WillReturn(SOME_STRING);
+            var mockDriver = new Mock<IWebDriver>();
+            mockDriver.SetupGet<string>(_ => _.CurrentWindowHandle).Returns(SOME_STRING);
 
             Func<IWebDriver, string> condition = driver => driver.CurrentWindowHandle;
 
-            var wait = new WebDriverWait(new TickingClock(), mockDriver.MockObject, FIVE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(new TickingClock(), mockDriver.Object, FIVE_SECONDS, ZERO_SECONDS);
             
             Assert.AreEqual(SOME_STRING, wait.Until(condition));
             
-            mocks.VerifyAllExpectationsHaveBeenMet();
+            mockDriver.Verify(_ => _.CurrentWindowHandle, Times.Once);
         }
 
         [Test]
         public void ChainsNoSuchElementExceptionWhenTimingOut()
         {
-            var mockDriver = mocks.CreateMock<IWebDriver>();
+            var mockDriver = new Mock<IWebDriver>();
             var condition = GetCondition<string>(() => { throw new NoSuchElementException(); }, () => { throw new NoSuchElementException(); });
 
-            var wait = new WebDriverWait(GetClock(), mockDriver.MockObject, ONE_SECONDS, ZERO_SECONDS);
+            var wait = new WebDriverWait(GetClock(), mockDriver.Object, ONE_SECONDS, ZERO_SECONDS);
 
             try
             {

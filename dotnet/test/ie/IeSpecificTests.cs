@@ -72,7 +72,7 @@ namespace OpenQA.Selenium.IE
                 }
 
                 actions.SendKeys("1");
-                
+
                 // Alternatively, the following single line of code would release
                 // all modifier keys, instead of looping through each key.
                 // actions.SendKeys(Keys.Null);
@@ -208,7 +208,7 @@ namespace OpenQA.Selenium.IE
 
             ReadOnlyCollection<string> windowHandles = driver.WindowHandles;
             Assert.AreEqual(2, windowHandles.Count);
-            
+
             string dialogHandle = string.Empty;
             foreach (string handle in windowHandles)
             {
@@ -218,9 +218,9 @@ namespace OpenQA.Selenium.IE
                     break;
                 }
             }
-            
+
             Assert.AreNotEqual(string.Empty, dialogHandle);
-            
+
             driver.SwitchTo().Window(dialogHandle);
             IWebElement closeElement = driver.FindElement(By.Id("close"));
             closeElement.Click();
@@ -267,7 +267,7 @@ namespace OpenQA.Selenium.IE
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
             string parentHandle = driver.CurrentWindowHandle;
- 
+
             // Launch first modal
             driver.FindElement(By.CssSelector("input[type='button'][value='btn1']")).Click();
             WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
@@ -302,7 +302,7 @@ namespace OpenQA.Selenium.IE
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
             string parentHandle = driver.CurrentWindowHandle;
- 
+
             // Launch first modal
             driver.FindElement(By.CssSelector("a[id='lnk1']")).Click();
             WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
