@@ -35,7 +35,6 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,10 +44,9 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * @deprecated Visibility will be reduced. Use {@link Json#toType(Object, Type)}.
+ * Utility class for converting between JSON and Java Objects.
  */
-@Deprecated
-public class JsonToBeanConverter {
+class JsonToBeanConverter {
 
   private ErrorCodes errorCodes = new ErrorCodes();
 
@@ -238,9 +236,7 @@ public class JsonToBeanConverter {
   private Method getMethod(Class<?> clazz, String methodName) {
     try {
       return clazz.getMethod(methodName, String.class);
-    } catch (SecurityException e) {
-      // fall through
-    } catch (NoSuchMethodException e) {
+    } catch (SecurityException | NoSuchMethodException e) {
       // fall through
     }
 
@@ -315,11 +311,7 @@ public class JsonToBeanConverter {
           value = null;
         }
         write.invoke(t, convert(type, value, depth + 1));
-      } catch (IllegalArgumentException e) {
-        throw propertyWriteException(property, value, type, e);
-      } catch (IllegalAccessException e) {
-        throw propertyWriteException(property, value, type, e);
-      } catch (InvocationTargetException e) {
+      } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
         throw propertyWriteException(property, value, type, e);
       }
     }
@@ -330,9 +322,7 @@ public class JsonToBeanConverter {
   private <T> T newInstance(Class<T> clazz) {
     try {
       return clazz.newInstance();
-    } catch (InstantiationException e) {
-      throw new WebDriverException(e);
-    } catch (IllegalAccessException e) {
+    } catch (InstantiationException | IllegalAccessException e) {
       throw new WebDriverException(e);
     }
   }

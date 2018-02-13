@@ -43,11 +43,8 @@ import java.util.logging.Level;
 
 /**
  * Utility class for converting between JSON and Java Objects.
- *
- * @deprecated Visisibility will be reduced.
  */
-@Deprecated
-public class BeanToJsonConverter {
+class BeanToJsonConverter {
 
   private static final int MAX_DEPTH = 5;
 
@@ -101,7 +98,7 @@ public class BeanToJsonConverter {
   }
 
   @SuppressWarnings("unchecked")
-  private JsonElement convertObject(Object toConvert, int maxDepth) throws Exception {
+  private JsonElement convertObject(Object toConvert, int maxDepth) {
     if (toConvert == null) {
       return JsonNull.INSTANCE;
     }
