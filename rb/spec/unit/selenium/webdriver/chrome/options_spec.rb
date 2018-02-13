@@ -112,30 +112,11 @@ module Selenium
         end
 
         describe '#headless!' do
-          context 'on windows' do
-            before(:each) do
-              allow(WebDriver::Platform).to receive(:windows?).and_return true
-            end
-
-            it 'should add the --headless and --disable-gpu command-line argument' do
-              subject.headless!
+          it 'should add necessary command-line arguments' do
+            subject.headless!
+            if WebDriver::Platform.windows?
               expect(subject.args).to eql(%w[--headless --disable-gpu])
-            end
-          end
-
-          context 'on non-windows' do
-            before(:each) do
-              allow(WebDriver::Platform).to receive(:windows?).and_return false
-            end
-
-            it 'should add the --headless command-line argument' do
-              subject.headless!
-              expect(subject.args).to eql(['--headless'])
-            end
-
-            it 'should not add the --headless command-line argument if already present' do
-              subject.add_argument('--headless')
-              subject.headless!
+            else
               expect(subject.args).to eql(['--headless'])
             end
           end
