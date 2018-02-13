@@ -39,7 +39,10 @@ import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URL;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -83,7 +86,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldAddUrlParameters() throws Exception {
+  public void shouldAddUrlParameters() {
     HttpRequest request = new HttpRequest(GET, "/query");
     String value = request.getQueryParameter("cheese");
     assertNull(value);
@@ -127,6 +130,42 @@ abstract public class HttpClientTestBase {
 
     assertEquals(ImmutableList.of("cheddar", "gouda"), values.get("cheese"));
     assertEquals(ImmutableList.of("peas"), values.get("vegetable"));
+  }
+
+  @Test
+  public void shouldAllowUrlsWithSchemesToBeUsed() throws Exception {
+    Server server = new Server(PortProber.findFreePort());
+    ServletContextHandler handler = new ServletContextHandler();
+    handler.setContextPath("");
+
+    class Canned extends HttpServlet {
+      @Override
+      protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try (PrintWriter writer = resp.getWriter()) {
+          writer.append("Hello, World!");
+        }
+      }
+    }
+    ServletHolder holder = new ServletHolder(new Canned());
+    handler.addServlet(holder, "/*");
+    server.setHandler(handler);
+
+    server.start();
+    try {
+      // This is a terrible choice of URL
+      HttpClient client = createFactory().createClient(new URL("http://example.com"));
+
+      URI uri = server.getURI();
+      HttpRequest request = new HttpRequest(
+          GET,
+          String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
+
+      HttpResponse response = client.execute(request);
+
+      assertEquals("Hello, World!", response.getContentString());
+    } finally {
+      server.stop();
+    }
   }
 
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers)

@@ -44,24 +44,30 @@ import java.net.BindException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.AbstractMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpClient {
 
   private static final int MAX_REDIRECTS = 10;
+  private static final int MAX_CACHED_HOSTS = 50;
 
   private final URL url;
-  private final HttpHost targetHost;
   private final HttpClient client;
+  private final Map<Map.Entry<String, Integer>, HttpHost> cachedHosts;
 
   public ApacheHttpClient(HttpClient client, URL url) {
     this.client = checkNotNull(client, "null HttpClient");
     this.url = checkNotNull(url, "null URL");
 
-    // Some machines claim "localhost.localdomain" is the same as "localhost".
-    // This assumption is not always true.
-    String host = url.getHost().replace(".localdomain", "");
-    this.targetHost = new HttpHost(host, url.getPort(), url.getProtocol());
+    this.cachedHosts = new LinkedHashMap<Map.Entry<String, Integer>, HttpHost>(200) {
+      @Override
+      protected boolean removeEldestEntry(Map.Entry eldest) {
+        return size() > MAX_CACHED_HOSTS;
+      }
+    };
   }
 
   @Override
@@ -148,7 +154,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
   private org.apache.http.HttpResponse fallBackExecute(
       HttpContext context, HttpUriRequest httpMethod) throws IOException {
     try {
-      return client.execute(targetHost, httpMethod, context);
+      return client.execute(getHost(httpMethod), httpMethod, context);
     } catch (BindException | NoHttpResponseException e) {
       // If we get this, there's a chance we've used all the local ephemeral sockets
       // Sleep for a bit to let the OS reclaim them, then try the request again.
@@ -158,7 +164,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
         throw new RuntimeException(ie);
       }
     }
-    return client.execute(targetHost, httpMethod, context);
+    return client.execute(getHost(httpMethod), httpMethod, context);
   }
 
   private org.apache.http.HttpResponse followRedirects(
@@ -190,10 +196,42 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
 
       HttpGet get = new HttpGet(uri);
       get.setHeader("Accept", "application/json; charset=utf-8");
-      org.apache.http.HttpResponse newResponse = client.execute(targetHost, get, context);
+      org.apache.http.HttpResponse newResponse = client.execute(getHost(get), get, context);
       return followRedirects(client, context, newResponse, redirectCount + 1);
     } catch (URISyntaxException | IOException e) {
       throw new WebDriverException(e);
+    }
+  }
+
+  private HttpHost getHost(HttpUriRequest method) {
+    // Some machines claim "localhost.localdomain" is the same as "localhost".
+    // This assumption is not always true.
+    String host = method.getURI().getHost().replace(".localdomain", "");
+    int port = method.getURI().getPort();
+    if (port == -1) {
+      switch (method.getURI().getScheme()) {
+        case "http":
+          port = 80;
+          break;
+
+        case "https":
+          port = 443;
+          break;
+
+        default:
+          // Do nothing
+          break;
+      }
+    }
+
+    synchronized (cachedHosts) {
+      Map.Entry<String, Integer> entry =
+          new AbstractMap.SimpleImmutableEntry<>(host, port);
+      HttpHost
+          httpHost =
+          cachedHosts.computeIfAbsent(entry, e -> new HttpHost(e.getKey(), e.getValue()));
+      System.out.println("cachedHosts = " + cachedHosts);
+      return httpHost;
     }
   }
 

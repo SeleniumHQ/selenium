@@ -64,7 +64,13 @@ public class OkHttpClient implements HttpClient {
 
     HttpUrl.Builder url;
     try {
-      String rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
+      String rawUrl;
+      if (request.getUri().startsWith("http:") || request.getUri().startsWith("https:")) {
+        rawUrl = request.getUri();
+      } else {
+        rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
+      }
+
       url = HttpUrl.parse(rawUrl).newBuilder();
     } catch (NullPointerException e) {
       throw new IOException("Unable to parse URL: " + baseUrl.toString() + request.getUri());
