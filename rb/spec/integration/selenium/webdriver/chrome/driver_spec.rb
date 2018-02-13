@@ -43,6 +43,57 @@ module Selenium
             'upload_throughput' => 789
           )
         end
+
+        context "DevTools communication" do
+          it 'can send commands to DevTools' do
+            driver.send_devtools_command('Page.navigate', url: url_for('blank.html'))
+            expect(driver.title).to eq('blank')
+            driver.send_devtools_command('Page.navigate', url: url_for('colorPage.html'))
+            expect(driver.title).to eq('Color Page')
+          end
+
+          describe('#set_download_path') do
+            let(:download_path) { Dir.mktmpdir }
+            let(:file_to_download) { "blank.html" }
+            let(:final_path_to_downloaded_file) { download_path + "/" + file_to_download }
+            let(:page_to_download_from) do
+              'data:text/html,'\
+              '<!DOCTYPE html>'\
+                '<div>'\
+                  '<a download="" href="' + url_for(file_to_download) + '">Go!</a>'\
+                '</div>'\
+              '</html>'
+            end
+
+            before(:each) do
+              File.delete(final_path_to_downloaded_file) if File.exist?(final_path_to_downloaded_file)
+            end
+
+            it 'can download files in headless mode' do
+              options = Selenium::WebDriver::Chrome::Options.new
+              options.headless!
+              local_driver = WebDriver::Driver.for(:chrome, options: options)
+              local_driver.download_path = download_path
+              local_driver.get(page_to_download_from)
+
+              local_driver.find_element(css: 'a').click
+
+              sleep 3
+              local_driver.quit
+              expect(File).to exist(final_path_to_downloaded_file)
+            end
+
+            it 'can download files in non-headless mode' do
+              driver.download_path = download_path
+              driver.get(page_to_download_from)
+
+              driver.find_element(css: 'a').click
+
+              sleep 3
+              expect(File).to exist(final_path_to_downloaded_file)
+            end
+          end
+        end
       end
     end # Chrome
   end # WebDriver
