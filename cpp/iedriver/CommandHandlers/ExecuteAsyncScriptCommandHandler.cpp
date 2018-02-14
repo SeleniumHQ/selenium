@@ -137,7 +137,6 @@ void ExecuteAsyncScriptCommandHandler::ExecuteInternal(
   async_script_wrapper.set_polling_source_code(polling_script);
   status_code = async_script_wrapper.ExecuteAsync(executor,
                                                   json_args,
-                                                  0,
                                                   &async_executor_handle);
   browser_wrapper->set_script_executor_handle(async_executor_handle);
 

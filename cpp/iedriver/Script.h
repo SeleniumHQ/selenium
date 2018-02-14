@@ -82,6 +82,12 @@ class Script {
   bool ResultIsIDispatch(void);
 
   int Execute(void);
+  int Execute(const IECommandExecutor& command_executor,
+              const Json::Value& args,
+              Json::Value* result);
+  int ExecuteAsync(const IECommandExecutor& command_executor,
+                   const Json::Value& args,
+                   HWND* async_executor_handle);
   int ExecuteAsync(const IECommandExecutor& command_executor,
                    const Json::Value& args,
                    const int timeout_override_in_milliseconds,

@@ -271,6 +271,23 @@ int Script::Execute() {
   return return_code;
 }
 
+int Script::Execute(const IECommandExecutor& command_executor,
+                    const Json::Value& args,
+                    Json::Value* result) {
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(command_executor);
+  int status_code = this->AddArguments(mutable_executor.element_manager(),
+                                       args);
+  status_code = this->Execute();
+  status_code = this->ConvertResultToJsonValue(command_executor, result);
+  return status_code;
+}
+
+int Script::ExecuteAsync(const IECommandExecutor& command_executor,
+                         const Json::Value& args,
+                         HWND* async_executor_handle) {
+  return this->ExecuteAsync(command_executor, args, 0, async_executor_handle);
+}
+
 int Script::ExecuteAsync(const IECommandExecutor& command_executor,
                          const Json::Value& args,
                          const int timeout_override_in_milliseconds,
@@ -310,21 +327,21 @@ int Script::ExecuteAsync(const IECommandExecutor& command_executor,
   for (Json::UInt i = 0; i < required_elements.size(); ++i) {
     std::string element_id = required_elements[i].asString();
     this->SetAsyncScriptElementArgument(*async_executor_handle,
-                                command_executor,
-                                element_id);
+                                        command_executor,
+                                        element_id);
   }
 
   // Note: this is hard-coded to 200 milliseconds per element, but since
   // we're just accessing the known element repository via a direct call,
   // that should be way more than enough time.
   int execution_prep_timeout = 200 * required_elements.size();
-  int retry_counter = static_cast<int>(execution_prep_timeout / 10);
+  int retry_counter = static_cast<int>(execution_prep_timeout / SCRIPT_WAIT_TIME_IN_MILLISECONDS);
   bool is_execution_ready = ::SendMessage(*async_executor_handle,
                                           WD_ASYNC_SCRIPT_IS_EXECUTION_READY,
                                           NULL,
                                           NULL) != 0;
   while (!is_execution_ready && --retry_counter > 0) {
-    ::Sleep(10);
+    ::Sleep(SCRIPT_WAIT_TIME_IN_MILLISECONDS);
     is_execution_ready = ::SendMessage(*async_executor_handle,
                                        WD_ASYNC_SCRIPT_IS_EXECUTION_READY,
                                        NULL,
@@ -334,19 +351,20 @@ int Script::ExecuteAsync(const IECommandExecutor& command_executor,
   ::PostMessage(*async_executor_handle, WD_ASYNC_SCRIPT_EXECUTE, NULL, NULL);
   if (timeout_override_in_milliseconds > 0) {
     // If we set a timeout override, that means we expect relatively quick
-    // execution with no need to retrieve elements as part of the script result.
-    // We will wait a short bit and poll for the execution of the script to be
-    // complete. This will allow us to say synchronous for short-running scripts
-    // like clearing an input element, yet still be able to continue processing
-    // when the script is blocked, as when an alert() window is present.
+    // execution with no need to retrieve elements as part of the script
+    // result. We will wait a short bit and poll for the execution of the
+    // script to be complete. This will allow us to say synchronous fo
+    // short-running scripts like clearing an input element, yet still be
+    // able to continue processing when the script is blocked, as when an
+    // alert() window is present.
     LOG(TRACE) << "Waiting for async script execution to be complete";
-    int execution_retry_counter = static_cast<int>(timeout_override_in_milliseconds / 10);
+    int execution_retry_counter = static_cast<int>(timeout_override_in_milliseconds / SCRIPT_WAIT_TIME_IN_MILLISECONDS);
     bool is_execution_finished = ::SendMessage(*async_executor_handle,
                                                WD_ASYNC_SCRIPT_IS_EXECUTION_COMPLETE,
                                                NULL,
                                                NULL) != 0;
     while (!is_execution_finished && --retry_counter > 0) {
-      ::Sleep(10);
+      ::Sleep(SCRIPT_WAIT_TIME_IN_MILLISECONDS);
       is_execution_finished = ::SendMessage(*async_executor_handle,
                                             WD_ASYNC_SCRIPT_IS_EXECUTION_COMPLETE,
                                             NULL,
@@ -355,14 +373,14 @@ int Script::ExecuteAsync(const IECommandExecutor& command_executor,
 
     if (is_execution_finished) {
       // TODO: Marshal the actual result from the AsyncScriptExecutor window
-      // thread to this one. At present, the asynchronous execution of JavaScript
-      // is only used for Automation Atoms on an element which could cause an
-      // alert to appear (e.g., clear, click, or submit), and do not return any
-      // return values back to the caller. In this case, the return code of the
-      // execution method is sufficent. Marshaling the return will require two
-      // more messages, one for determining the variant type of the return value,
-      // and another for actually retrieving that value from the worker window's
-      // thread.
+      // thread to this one. At present, this asynchronous execution of
+      // JavaScript (where we wait inline, and do not pass execution control
+      // back to the main command executor), is only used for Automation Atoms
+      // on an element which could cause an // alert to appear (e.g., clear,
+      // click, or submit), and do not return any return values back to the
+      // caller. In this case, the return code of the  execution method is
+      // sufficent. To return the acutal marshalled value of the script result,
+      // do not override the timeout.
       LOG(TRACE) << "Async script execution completed, getting result";
       Json::Value script_result;
       int status_code = static_cast<int>(::SendMessage(*async_executor_handle,
