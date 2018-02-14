@@ -505,7 +505,7 @@ unsigned int WINAPI IECommandExecutor::WaitThreadProc(LPVOID lpParameter) {
 unsigned int WINAPI IECommandExecutor::ScriptWaitThreadProc(LPVOID lpParameter) {
   LOG(TRACE) << "Entering IECommandExecutor::ScriptWaitThreadProc";
   HWND window_handle = reinterpret_cast<HWND>(lpParameter);
-  ::Sleep(WAIT_TIME_IN_MILLISECONDS);
+  ::Sleep(SCRIPT_WAIT_TIME_IN_MILLISECONDS);
   ::PostMessage(window_handle, WD_SCRIPT_WAIT, NULL, NULL);
   return 0;
 }
