@@ -101,6 +101,7 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper,
   }
 
   this->inputs_.clear();
+  this->current_input_state_.last_click_time = 0;
   InputState current_input_state = this->CloneCurrentInputState();
   for (size_t i = 0; i < ticks.size(); ++i) {
     Json::UInt tick_index = static_cast<Json::UInt>(i);
@@ -709,7 +710,6 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper,
         }
       }
       this->AddMouseInput(browser_window_handle, MOUSEEVENTF_MOVE, end_x, end_y);
-      this->AddPauseInput(browser_window_handle, 50);
     }
     input_state->mouse_x = end_x;
     input_state->mouse_y = end_y;
@@ -766,7 +766,6 @@ int InputManager::PointerDown(BrowserHandle browser_wrapper,
                         button_event_value,
                         input_state->mouse_x,
                         input_state->mouse_y);
-    this->AddPauseInput(browser_window_handle, 50);
     if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
       input_state->is_right_button_pressed = true;
     } else {
@@ -810,7 +809,6 @@ int InputManager::PointerUp(BrowserHandle browser_wrapper,
                         button_event_value,
                         input_state->mouse_x,
                         input_state->mouse_y);
-    this->AddPauseInput(browser_window_handle, 50);
     if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
       input_state->is_right_button_pressed = false;
     } else {

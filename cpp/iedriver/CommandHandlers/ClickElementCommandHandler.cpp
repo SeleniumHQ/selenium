@@ -86,10 +86,6 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
           action_array.append(down_action);
           action_array.append(up_action);
             
-          // Check to make sure we're not within the double-click time for this element
-          // since the last click.
-          int double_click_time = ::GetDoubleClickTime();
-
           Json::Value parameters_value;
           parameters_value["pointerType"] = "mouse";
 
@@ -105,7 +101,6 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
           IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
           status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
           browser_wrapper->set_wait_required(true);
-          ::Sleep(double_click_time + 10);
           if (status_code != WD_SUCCESS) {
             if (status_code == EELEMENTCLICKPOINTNOTSCROLLED) {
               // We hard-code the error code here to be "Element not visible"
