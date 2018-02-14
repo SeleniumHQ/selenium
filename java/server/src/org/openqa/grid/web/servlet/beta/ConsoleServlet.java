@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 public class ConsoleServlet extends RegistryBasedServlet {
 
   private static final long serialVersionUID = 8484071790930378855L;
-  private static final Logger log = Logger.getLogger(ConsoleServlet.class.getName());
   private static String coreVersion;
 
   public static final String CONSOLE_PATH_PARAMETER = "webdriver.server.consoleservlet.path";
