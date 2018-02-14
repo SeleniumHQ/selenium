@@ -37,4 +37,9 @@ public class TickingClock implements Clock, Sleeper {
   public void sleep(Duration duration) {
     now += duration.in(TimeUnit.MILLISECONDS);
   }
+
+  @Override
+  public void sleep(java.time.Duration duration) throws InterruptedException {
+    now += duration.toMillis();
+  }
 }

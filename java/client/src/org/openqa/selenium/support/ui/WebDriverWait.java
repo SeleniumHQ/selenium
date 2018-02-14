@@ -24,13 +24,13 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 /**
  * A specialization of {@link FluentWait} that uses WebDriver instances.
  */
 public class WebDriverWait extends FluentWait<WebDriver> {
-  public final static long DEFAULT_SLEEP_TIMEOUT = 500;
   private final WebDriver driver;
 
   /**
@@ -70,8 +70,8 @@ public class WebDriverWait extends FluentWait<WebDriver> {
   public WebDriverWait(WebDriver driver, Clock clock, Sleeper sleeper, long timeOutInSeconds,
       long sleepTimeOut) {
     super(driver, clock, sleeper);
-    withTimeout(timeOutInSeconds, TimeUnit.SECONDS);
-    pollingEvery(sleepTimeOut, TimeUnit.MILLISECONDS);
+    withTimeout(Duration.ofSeconds(timeOutInSeconds));
+    pollingEvery(Duration.ofMillis(sleepTimeOut));
     ignoring(NotFoundException.class);
     this.driver = driver;
   }
