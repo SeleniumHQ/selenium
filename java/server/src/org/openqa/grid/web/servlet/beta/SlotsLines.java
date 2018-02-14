@@ -25,9 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SlotsLines {
-  Map<MiniCapability, List<TestSlot>> slots = new HashMap<>();
-
+class SlotsLines {
+  private Map<MiniCapability, List<TestSlot>> slots = new HashMap<>();
 
   public void add(TestSlot slot) {
     MiniCapability c = new MiniCapability(slot);

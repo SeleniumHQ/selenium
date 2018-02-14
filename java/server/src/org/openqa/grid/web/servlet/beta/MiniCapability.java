@@ -29,19 +29,18 @@ import java.io.InputStream;
 /**
  * the browser on the console will be organized per browserName and version only.
  */
-public class MiniCapability {
+class MiniCapability {
   private String browser;
   private String version;
   private DesiredCapabilities capabilities;
   private RemoteProxy proxy;
 
-  public MiniCapability(TestSlot slot) {
+  MiniCapability(TestSlot slot) {
     DesiredCapabilities cap = new DesiredCapabilities(slot.getCapabilities());
     browser = cap.getBrowserName();
     version = cap.getVersion();
     capabilities = cap;
     this.proxy = slot.getProxy();
-
   }
 
   public String getVersion() {
