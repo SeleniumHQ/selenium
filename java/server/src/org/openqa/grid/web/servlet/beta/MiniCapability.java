@@ -17,8 +17,6 @@
 
 package org.openqa.grid.web.servlet.beta;
 
-import org.openqa.grid.internal.GridRegistry;
-import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -33,14 +31,12 @@ class MiniCapability {
   private String browser;
   private String version;
   private DesiredCapabilities capabilities;
-  private RemoteProxy proxy;
 
   MiniCapability(TestSlot slot) {
     DesiredCapabilities cap = new DesiredCapabilities(slot.getCapabilities());
     browser = cap.getBrowserName();
     version = cap.getVersion();
     capabilities = cap;
-    this.proxy = slot.getProxy();
   }
 
   public String getVersion() {
@@ -48,7 +44,7 @@ class MiniCapability {
   }
 
   public String getIcon() {
-    return getConsoleIconPath(new DesiredCapabilities(capabilities), proxy.getRegistry());
+    return getConsoleIconPath(new DesiredCapabilities(capabilities));
   }
 
   /**
@@ -56,12 +52,11 @@ class MiniCapability {
    * null.
    *
    * @param cap - Capability
-   * @param registry - GridRegistry
    * @return String with path to icon image file.  Can be <i>null</i> if no icon
    *         file if available.
    */
-  private String getConsoleIconPath(DesiredCapabilities cap, GridRegistry registry) {
-    String name = consoleIconName(cap, registry);
+  private String getConsoleIconPath(DesiredCapabilities cap) {
+    String name = consoleIconName(cap);
     String path = "org/openqa/grid/images/";
     InputStream in =
         Thread.currentThread().getContextClassLoader()
@@ -72,7 +67,7 @@ class MiniCapability {
     return "/grid/resources/" + path + name + ".png";
   }
 
-  private String consoleIconName(DesiredCapabilities cap, GridRegistry registry) {
+  private String consoleIconName(DesiredCapabilities cap) {
     String browserString = cap.getBrowserName();
     if (browserString == null || "".equals(browserString)) {
       return "missingBrowserName";
