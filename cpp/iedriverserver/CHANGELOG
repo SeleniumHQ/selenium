@@ -9,6 +9,23 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.9.0.2
+========
+ * Reduced overall wait interval time.
+ * Shortened IE sleep interval looping for JavaScript execution completion.
+   This prevents excessively long delays for Selenium commands executed via
+   executeScript, like submit(), isDisplayed(), or getAttribute(). Partially
+   fixes issue #5024.
+ * Moved double-click detection logic inside InputManager for IE. This also
+   will prevents unnecessary expensive sleeps in the click command handler.
+   Partially fixes issue #5024.
+ * Updated to better handle non-US keyboards in sendKeys. In the transition
+   to support the W3C specification, using sendKeys on non-US keyboard layouts
+   got broken. This is an attempt to resolve that issue. Previously, we were
+   only checking a high-order byte for the need to press the shift key, and 
+   not other modifier keys (control or alt) in sending keystrokes. This
+   behavior has been restored. Fixes issue #4253.
+
 v3.9.0.1
 ========
  * Made JavaScript execution asynchronous for executeScript in IE.
