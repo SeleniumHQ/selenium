@@ -149,16 +149,18 @@ namespace OpenQA.Selenium.Support.PageObjects
             }
 
             List<By> bys = new List<By>();
-            var attributes = Attribute.GetCustomAttributes(member, typeof(FindsByAttribute), true);
+            var attributes = Attribute.GetCustomAttributes(member, typeof(AbstractFindsByAttribute), true);
             if (attributes.Length > 0)
             {
                 Array.Sort(attributes);
                 foreach (var attribute in attributes)
                 {
-                    var castedAttribute = (FindsByAttribute)attribute;
-                    if (castedAttribute.Using == null)
+                    var castedAttribute = (AbstractFindsByAttribute)attribute;
+
+                    var findsByAttribute = attribute as FindsByAttribute;
+                    if (findsByAttribute != null && findsByAttribute.Using == null)
                     {
-                        castedAttribute.Using = member.Name;
+                        findsByAttribute.Using = member.Name;
                     }
 
                     bys.Add(castedAttribute.Finder);

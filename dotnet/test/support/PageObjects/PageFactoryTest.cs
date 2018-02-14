@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             mockElement = mocks.CreateMock<IWebElement>();
             mockExplicitDriver = mocks.CreateMock<IWebDriver>();
         }
-        
+
         [TearDown]
         public void TearDown()
         {
@@ -34,7 +34,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         public void ElementShouldBeNullUntilInitElementsCalled()
         {
             var page = new Page();
-            
+
             Assert.Null(page.formElement);
 
             PageFactory.InitElements(mockDriver.MockObject, page);
@@ -49,19 +49,19 @@ namespace OpenQA.Selenium.Support.PageObjects
             Assert.IsInstanceOf<GenericFactoryPage>(page);
             Assert.NotNull(page.formElement);
         }
-        
+
         [Test]
         public void FindsElement()
         {
             var page = new Page();
             AssertFindsElementByExactlyOneLookup(page, () => page.formElement);
         }
-        
+
         [Test]
         public void FindsElementEachAccess()
         {
             var page = new Page();
-            
+
             AssertFindsElementByExactlyOneLookup(page, () => page.formElement);
             mocks.VerifyAllExpectationsHaveBeenMet();
 
@@ -196,10 +196,21 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         [Test]
+        public void UsingCustomFindsByAttribute()
+        {
+            mockDriver.Expects.Exactly(1).Method(_ => _.FindElement(null)).With(new CustomBy("customCriteria")).WillReturn(mockElement.MockObject);
+            mockElement.Expects.Exactly(1).GetProperty(_ => _.TagName).WillReturn("form");
+
+            var page = new CustomFindsByAttributePage();
+
+            AssertFindsElement(page, () => page.customFoundElement);
+        }
+
+        [Test]
         public void UsingCustomByNotFound()
         {
             mockDriver.Expects.One.Method(_ => _.FindElement(null)).With(new CustomBy("customCriteriaNotFound")).Will(Throw.Exception(new NoSuchElementException()));
-            
+
             var page = new CustomByNotFoundPage();
             PageFactory.InitElements(mockDriver.MockObject, page);
             Assert.Throws<NoSuchElementException>(page.customFoundElement.Clear);
@@ -291,7 +302,7 @@ namespace OpenQA.Selenium.Support.PageObjects
 
             AssertFoundElement(getElement());
         }
-        
+
         /// <summary>
         /// Asserts that the element has been found and can be interacted with
         /// </summary>
@@ -307,9 +318,9 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             Assert.AreEqual(tagName, element.TagName.ToLower());
         }
-        
+
         #endregion
-        
+
         #region Page classes for tests
         #pragma warning disable 649 //We set fields through reflection, so expect an always-null warning
 
@@ -317,7 +328,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             [FindsBy(How = How.Name, Using = "someForm")]
             public IWebElement formElement;
-            
+
             public WebDriverConstructorPage(IWebDriver driver)
             {
             }
@@ -327,7 +338,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             [FindsBy(How = How.Name, Using = "someForm")]
             public IWebElement formElement;
-            
+
             public ParameterlessConstructorPage()
             {
             }
@@ -444,7 +455,7 @@ namespace OpenQA.Selenium.Support.PageObjects
                         throw new NoSuchElementException();
                     }
 
-                    Mock<IWebElement> mockElement =  mocks.CreateMock<IWebElement>();
+                    Mock<IWebElement> mockElement = mocks.CreateMock<IWebElement>();
                     return mockElement.MockObject;
                 };
             }
@@ -465,9 +476,17 @@ namespace OpenQA.Selenium.Support.PageObjects
                         throw new NoSuchElementException();
                     }
 
-                    Mock<IWebElement> mockElement =  mocks.CreateMock<IWebElement>();
+                    Mock<IWebElement> mockElement = mocks.CreateMock<IWebElement>();
                     return mockElement.MockObject;
                 };
+            }
+        }
+
+        private sealed class CustomFindsByAttribute : AbstractFindsByAttribute
+        {
+            public override By Finder
+            {
+                get { return new CustomBy("customCriteria"); }
             }
         }
 
@@ -480,6 +499,12 @@ namespace OpenQA.Selenium.Support.PageObjects
         private class CustomByNotFoundPage
         {
             [FindsBy(How = How.Custom, Using = "customCriteriaNotFound", CustomFinderType = typeof(CustomBy))]
+            public IWebElement customFoundElement;
+        }
+
+        private class CustomFindsByAttributePage
+        {
+            [CustomFindsBy]
             public IWebElement customFoundElement;
         }
 
