@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableSortedMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CapabilityType;
@@ -66,10 +65,9 @@ public class SafariOptions extends MutableCapabilities {
     options.put(Option.PORT, 0);
 
     setUseTechnologyPreview(false);
-    setUseCleanSession(false);
+    useCleanSession(false);
 
     setCapability(CapabilityType.BROWSER_NAME, "safari");
-    setCapability(CapabilityType.PLATFORM, Platform.MAC);
   }
 
   public SafariOptions(Capabilities source) {
@@ -206,7 +204,7 @@ public class SafariOptions extends MutableCapabilities {
    */
   @Deprecated
   public int getPort() {
-    return (int) options.getOrDefault(Option.PORT, 0);
+    return ((Number) options.getOrDefault(Option.PORT, 0)).intValue();
   }
 
   /**
