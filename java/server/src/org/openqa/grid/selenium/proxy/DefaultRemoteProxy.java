@@ -29,7 +29,7 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.HtmlRenderer;
-import org.openqa.grid.web.servlet.beta.WebProxyHtmlRendererBeta;
+import org.openqa.grid.web.servlet.console.DefaultProxyHtmlRenderer;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
@@ -97,7 +97,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executing ...");
   }
 
-  private final HtmlRenderer renderer = new WebProxyHtmlRendererBeta(this);
+  private final HtmlRenderer renderer = new DefaultProxyHtmlRenderer(this);
 
   @Override
   public HtmlRenderer getHtmlRender() {

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.web.servlet.beta;
+package org.openqa.grid.web.servlet.console;
 
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.selenium.remote.BrowserType;

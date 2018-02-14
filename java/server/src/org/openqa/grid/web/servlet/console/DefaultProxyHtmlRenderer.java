@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.web.servlet.beta;
+package org.openqa.grid.web.servlet.console;
 
 import com.google.gson.JsonObject;
 
@@ -28,14 +28,14 @@ import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 
-public class WebProxyHtmlRendererBeta implements HtmlRenderer {
+public class DefaultProxyHtmlRenderer implements HtmlRenderer {
 
   private RemoteProxy proxy;
 
   @SuppressWarnings("unused")
-  private WebProxyHtmlRendererBeta() {}
+  private DefaultProxyHtmlRenderer() {}
 
-  public WebProxyHtmlRendererBeta(RemoteProxy proxy) {
+  public DefaultProxyHtmlRenderer(RemoteProxy proxy) {
     this.proxy = proxy;
   }
 

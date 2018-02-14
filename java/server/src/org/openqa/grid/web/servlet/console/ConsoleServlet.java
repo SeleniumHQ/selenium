@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.web.servlet.beta;
+package org.openqa.grid.web.servlet.console;
 
 import com.google.common.io.ByteStreams;
 
@@ -212,7 +212,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
     StringBuilder builder = new StringBuilder();
 
-    GridHubConfiguration config = getRegistry().getConfiguration();
+    GridHubConfiguration config = getRegistry().getHub().getConfiguration();
     builder.append("<div  id='hub-config'>");
     builder.append("<b>Config for the hub :</b><br/>");
     builder.append(prettyHtmlPrint(config));

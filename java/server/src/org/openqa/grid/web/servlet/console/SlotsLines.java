@@ -15,11 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.web.servlet.beta;
+package org.openqa.grid.web.servlet.console;
 
 import org.openqa.grid.internal.TestSlot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +31,7 @@ class SlotsLines {
 
   public void add(TestSlot slot) {
     MiniCapability c = new MiniCapability(slot);
-    List<TestSlot> l = slots.get(c);
-    if (l == null) {
-      l = new ArrayList<>();
-      slots.put(c, l);
-    }
+    List<TestSlot> l = slots.computeIfAbsent(c, k -> new ArrayList<>());
     l.add(slot);
   }
 

@@ -33,7 +33,7 @@ import org.openqa.grid.web.servlet.ProxyStatusServlet;
 import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.servlet.TestSessionStatusServlet;
-import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;

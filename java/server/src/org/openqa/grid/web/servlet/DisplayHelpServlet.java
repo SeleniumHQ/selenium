@@ -21,7 +21,7 @@ import com.google.common.io.ByteStreams;
 import com.google.gson.GsonBuilder;
 
 import org.openqa.grid.common.GridRole;
-import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.selenium.internal.BuildInfo;
 
 import java.io.BufferedReader;

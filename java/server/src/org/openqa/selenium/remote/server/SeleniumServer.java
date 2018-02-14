@@ -28,7 +28,7 @@ import org.openqa.grid.selenium.node.ChromeMutator;
 import org.openqa.grid.selenium.node.FirefoxMutator;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
-import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
