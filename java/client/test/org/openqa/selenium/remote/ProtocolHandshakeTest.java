@@ -403,8 +403,7 @@ public class ProtocolHandshakeTest {
       return execute(request, true);
     }
 
-    @Override
-    public HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
+    private HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
       this.request = request;
       request.getContentString();
       return response;

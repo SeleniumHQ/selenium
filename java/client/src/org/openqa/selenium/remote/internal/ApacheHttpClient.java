@@ -72,11 +72,6 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
 
   @Override
   public HttpResponse execute(HttpRequest request) throws IOException {
-    return execute(request, true);
-  }
-
-  @Override
-  public HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
     HttpContext context = createContext();
 
     URL url = HttpUrlBuilder.toUrl(this.url, request);
@@ -95,9 +90,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     }
 
     org.apache.http.HttpResponse response = fallBackExecute(context, httpMethod);
-    if (followRedirects) {
-      response = followRedirects(client, context, response, /* redirect count */0);
-    }
+    response = followRedirects(client, context, response, /* redirect count */0);
     return createResponse(response, context);
   }
 

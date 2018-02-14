@@ -51,15 +51,6 @@ public class OkHttpClient implements HttpClient {
 
   @Override
   public HttpResponse execute(HttpRequest request) throws IOException {
-    return execute(request, true);
-  }
-
-  @Override
-  public HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
-    if (followRedirects != client.followRedirects()) {
-      throw new IllegalArgumentException("Unable to change how the http client follows redirets");
-    }
-
     Request.Builder builder = new Request.Builder();
 
     HttpUrl.Builder url;
