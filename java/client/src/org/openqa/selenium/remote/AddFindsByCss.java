@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FindsByCssSelector;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 public class AddFindsByCss implements AugmenterProvider {
@@ -31,19 +30,16 @@ public class AddFindsByCss implements AugmenterProvider {
   }
 
   public InterfaceImplementation getImplementation(Object value) {
-    return new InterfaceImplementation() {
+    return (executeMethod, self, method, args) -> {
+      Map<String, ?> commandArgs = ImmutableMap.of("using", "css selector", "value", args[0]);
 
-      public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
-        Map<String, ?> commandArgs = ImmutableMap.of("using", "css selector", "value", args[0]);
-
-        if ("findElementByCssSelector".equals(method.getName())) {
-          return executeMethod.execute(DriverCommand.FIND_ELEMENT, commandArgs);
-        } else if ("findElementsByCssSelector".equals(method.getName())) {
-          return executeMethod.execute(DriverCommand.FIND_ELEMENTS, commandArgs);
-        }
-
-        throw new WebDriverException("Unmapped method: " + method.getName());
+      if ("findElementByCssSelector".equals(method.getName())) {
+        return executeMethod.execute(DriverCommand.FIND_ELEMENT, commandArgs);
+      } else if ("findElementsByCssSelector".equals(method.getName())) {
+        return executeMethod.execute(DriverCommand.FIND_ELEMENTS, commandArgs);
       }
+
+      throw new WebDriverException("Unmapped method: " + method.getName());
     };
   }
 }

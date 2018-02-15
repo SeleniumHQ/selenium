@@ -31,12 +31,7 @@ import java.util.logging.Level;
 public class LogEntry {
 
   private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT =
-      new ThreadLocal<SimpleDateFormat>() {
-        @Override
-        protected SimpleDateFormat initialValue() {
-          return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-        }
-      };
+      ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"));
 
   private final Level level;
   private final long timestamp;

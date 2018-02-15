@@ -46,9 +46,7 @@ import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
 import org.openqa.selenium.support.events.internal.EventFiringMouse;
 import org.openqa.selenium.support.events.internal.EventFiringTouch;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
@@ -78,16 +76,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       .newProxyInstance(
           WebDriverEventListener.class.getClassLoader(),
           new Class[] {WebDriverEventListener.class},
-          new InvocationHandler() {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-              try {
-              for (WebDriverEventListener eventListener : eventListeners) {
-                method.invoke(eventListener, args);
-              }
-              return null;
-              } catch (InvocationTargetException e) {
-                throw e.getTargetException();
-              }
+          (proxy, method, args) -> {
+            try {
+            for (WebDriverEventListener eventListener : eventListeners) {
+              method.invoke(eventListener, args);
+            }
+            return null;
+            } catch (InvocationTargetException e) {
+              throw e.getTargetException();
             }
           }
       );
@@ -98,21 +94,19 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     this.driver = (WebDriver) Proxy.newProxyInstance(
         WebDriverEventListener.class.getClassLoader(),
         allInterfaces,
-        new InvocationHandler() {
-          public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if ("getWrappedDriver".equals(method.getName())) {
-              return driver;
-            }
+        (proxy, method, args) -> {
+          if ("getWrappedDriver".equals(method.getName())) {
+            return driver;
+          }
 
-            try {
-              return method.invoke(driver, args);
-            } catch (InvocationTargetException e) {
-              dispatcher.onException(e.getTargetException(), driver);
-              throw e.getTargetException();
-            }
+          try {
+            return method.invoke(driver, args);
+          } catch (InvocationTargetException e) {
+            dispatcher.onException(e.getTargetException(), driver);
+            throw e.getTargetException();
           }
         }
-        );
+    );
   }
 
   private Class<?>[] extractInterfaces(Object object) {
@@ -366,20 +360,18 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       this.element = (WebElement) Proxy.newProxyInstance(
           WebDriverEventListener.class.getClassLoader(),
           extractInterfaces(element),
-          new InvocationHandler() {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-              if (method.getName().equals("getWrappedElement")) {
-                return element;
-              }
-              try {
-                return method.invoke(element, args);
-              } catch (InvocationTargetException e) {
-                dispatcher.onException(e.getTargetException(), driver);
-                throw e.getTargetException();
-              }
+          (proxy, method, args) -> {
+            if (method.getName().equals("getWrappedElement")) {
+              return element;
+            }
+            try {
+              return method.invoke(element, args);
+            } catch (InvocationTargetException e) {
+              dispatcher.onException(e.getTargetException(), driver);
+              throw e.getTargetException();
             }
           }
-          );
+      );
       this.underlyingElement = element;
     }
 

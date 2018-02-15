@@ -34,7 +34,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsById;
@@ -48,7 +47,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 @RunWith(JUnit4.class)
@@ -86,11 +84,7 @@ public class DefaultFieldDecoratorTest {
   private List<Object> list8;
 
   private FieldDecorator createDecoratorWithNullLocator() {
-    return new DefaultFieldDecorator(new ElementLocatorFactory() {
-      public ElementLocator createLocator(Field field) {
-        return null;
-      }
-    });
+    return new DefaultFieldDecorator(field -> null);
   }
 
   private FieldDecorator createDecoratorWithDefaultLocator() {

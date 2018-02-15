@@ -66,12 +66,7 @@ public class TestChromeDriver extends RemoteWebDriver {
       }
 
       // Fugly.
-      Runtime.getRuntime().addShutdownHook(new Thread() {
-        @Override
-        public void run() {
-          service.stop();
-        }
-      });
+      Runtime.getRuntime().addShutdownHook(new Thread(() -> service.stop()));
     }
     return service.getUrl();
   }

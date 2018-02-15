@@ -84,20 +84,17 @@ public class AugmenterTest extends BaseAugmenterTest {
       }
 
       public InterfaceImplementation getImplementation(Object value) {
-        return new InterfaceImplementation() {
-          public Object invoke(ExecuteMethod executeMethod, Object self,
-              Method method, Object... args) {
-            if (quitMethod.equals(method)) {
-              return null;
-            }
+        return (executeMethod, self, method, args) -> {
+          if (quitMethod.equals(method)) {
+            return null;
+          }
 
-            try {
-              return method.invoke(driver, args);
-            } catch (IllegalAccessException e) {
-              throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-              throw new RuntimeException(e.getTargetException());
-            }
+          try {
+            return method.invoke(driver, args);
+          } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+          } catch (InvocationTargetException e) {
+            throw new RuntimeException(e.getTargetException());
           }
         };
       }
