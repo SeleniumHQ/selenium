@@ -126,17 +126,8 @@ public class WebDriverTestContext implements TestContext {
   }
 
   public void waitFor(final Finder<WebElement, WebDriver> finder, final long timeoutMillis) {
-    final ExpectedCondition<Boolean> elementsDisplayedPredicate = new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver driver) {
-        final Collection<WebElement> elements = finder.findFrom(driver);
-        for (WebElement webElement : elements) {
-          if (webElement.isDisplayed()) {
-            return true;
-          }
-        }
-        return false;
-      }
-    };
+    final ExpectedCondition<Boolean> elementsDisplayedPredicate = driver ->
+        finder.findFrom(driver).stream().anyMatch(WebElement::isDisplayed);
 
     final long defaultSleepTimeoutMillis = FluentWait.FIVE_HUNDRED_MILLIS.in(TimeUnit.MILLISECONDS);
     final long sleepTimeout = (timeoutMillis > defaultSleepTimeoutMillis)
