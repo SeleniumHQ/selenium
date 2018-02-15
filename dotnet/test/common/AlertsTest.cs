@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
@@ -69,6 +69,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
+        [IgnoreBrowser(Browser.IE, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         [IgnoreBrowser(Browser.Chrome)]
 		[IgnoreBrowser(Browser.Safari)]
 		[IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
