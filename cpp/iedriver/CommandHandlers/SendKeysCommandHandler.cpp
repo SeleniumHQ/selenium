@@ -833,13 +833,14 @@ bool SendKeysCommandHandler::WaitUntilElementFocused(IHTMLElement* element) {
   CComPtr<IHTMLElement> active_element;
   if (document->get_activeElement(&active_element) == S_OK) {
     if (active_element.IsEqualObject(element)) {
+      if (this->IsContentEditable(element)) {
+        this->SetElementFocus(element);
+      }
       return true;
     }
   }
 
-  CComPtr<IHTMLElement2> element2;
-  element->QueryInterface<IHTMLElement2>(&element2);
-  element2->focus();
+  this->SetElementFocus(element);
 
   // Hard-coded 1 second timeout here. Possible TODO is make this adjustable.
   clock_t max_wait = clock() + CLOCKS_PER_SEC;
@@ -847,6 +848,8 @@ bool SendKeysCommandHandler::WaitUntilElementFocused(IHTMLElement* element) {
     WindowUtilities::Wait(1);
     CComPtr<IHTMLElement> active_wait_element;
     if (document->get_activeElement(&active_wait_element) == S_OK && active_wait_element != NULL) {
+      CComPtr<IHTMLElement2> element2;
+      element->QueryInterface<IHTMLElement2>(&element2);
       CComPtr<IHTMLElement2> active_wait_element2;
       active_wait_element->QueryInterface<IHTMLElement2>(&active_wait_element2);
       if (element2.IsEqualObject(active_wait_element2)) {
@@ -872,13 +875,7 @@ bool SendKeysCommandHandler::SetInsertionPoint(IHTMLElement* element) {
     if (SUCCEEDED(hr) && text_area_element) {
       text_area_element->createTextRange(&range);
     } else {
-      CComPtr<IHTMLElement3> element3;
-      element->QueryInterface<IHTMLElement3>(&element3);
-      VARIANT_BOOL is_content_editable_variant = VARIANT_FALSE;
-      if (element3) {
-        element3->get_isContentEditable(&is_content_editable_variant);
-      }
-      bool is_content_editable = is_content_editable_variant == VARIANT_TRUE;
+      bool is_content_editable = this->IsContentEditable(element);
       if (is_content_editable) {
         CComPtr<IDispatch> dispatch;
         hr = element->get_document(&dispatch);
@@ -909,6 +906,22 @@ bool SendKeysCommandHandler::SetInsertionPoint(IHTMLElement* element) {
   }
 
   return false;
+}
+
+bool SendKeysCommandHandler::IsContentEditable(IHTMLElement* element) {
+  CComPtr<IHTMLElement3> element3;
+  element->QueryInterface<IHTMLElement3>(&element3);
+  VARIANT_BOOL is_content_editable_variant = VARIANT_FALSE;
+  if (element3) {
+    element3->get_isContentEditable(&is_content_editable_variant);
+  }
+  return is_content_editable_variant == VARIANT_TRUE;
+}
+
+void SendKeysCommandHandler::SetElementFocus(IHTMLElement* element) {
+  CComPtr<IHTMLElement2> element2;
+  element->QueryInterface<IHTMLElement2>(&element2);
+  element2->focus();
 }
 
 } // namespace webdriver

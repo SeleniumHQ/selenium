@@ -61,8 +61,10 @@ class SendKeysCommandHandler : public IECommandHandler {
 
   bool VerifyPageHasFocus(HWND top_level_window_handle,
                           HWND browser_pane_window_handle);
-  bool WaitUntilElementFocused(IHTMLElement *element);
+  bool WaitUntilElementFocused(IHTMLElement* element);
   bool SetInsertionPoint(IHTMLElement* element);
+  bool IsContentEditable(IHTMLElement* element);
+  void SetElementFocus(IHTMLElement* element);
 
   static std::wstring error_text;
 };
