@@ -46,18 +46,18 @@ inline int wd_snprintf(char* str, size_t size, const char* format, ...) {
 namespace webdriver {
 
 Server::Server(const int port) {
-  this->Initialize(port, "", "", "", SERVER_DEFAULT_WHITELIST);
+  this->Initialize(port, "", "", "", "");
 }
 
 Server::Server(const int port, const std::string& host) {
-  this->Initialize(port, host, "", "", SERVER_DEFAULT_WHITELIST);
+  this->Initialize(port, host, "", "", "");
 }
 
 Server::Server(const int port,
                const std::string& host,
                const std::string& log_level,
                const std::string& log_file) {
-  this->Initialize(port, host, log_level, log_file, SERVER_DEFAULT_WHITELIST);
+  this->Initialize(port, host, log_level, log_file, "");
 }
 
 Server::Server(const int port,
@@ -89,8 +89,6 @@ void Server::Initialize(const int port,
   this->host_ = host;
   if (acl.size() > 0) {
     this->ProcessWhitelist(acl);
-  } else {
-    this->whitelist_.push_back(SERVER_DEFAULT_WHITELIST);
   }
   this->PopulateCommandRepository();
 }
@@ -109,54 +107,114 @@ void Server::ProcessWhitelist(const std::string& whitelist) {
   }
 }
 
-int Server::OnNewHttpRequest(struct mg_connection* conn) {
-  mg_context* context = mg_get_context(conn);
-  Server* current_server = reinterpret_cast<Server*>(mg_get_user_data(context));
-  mg_request_info* request_info = mg_get_request_info(conn);
-  int handler_result_code = current_server->ProcessRequest(conn, request_info);
-  return handler_result_code;
-}
-
-bool Server::Start() {
-  LOG(TRACE) << "Entering Server::Start";
+std::string Server::GetListeningPorts(const bool use_ipv6) {
   std::string port_format_string = "%s:%d";
   if (this->host_.size() == 0) {
-    // If the host name is an empty string, then we don't want the colon
-    // in the listening ports string. Remove it from the format string,
-    // and when we use printf to format, the %s will be replaced by an
-    // empty string.
+    // If the host name is an empty string, then we want to bind
+    // to the local loopback address on both IPv4 and IPv6 if we
+    // can. Using the addresses in the listening port format string
+    // will prevent connection from external IP addresses.
+    port_format_string = "%s127.0.0.1:%d";
+    if (use_ipv6) {
+      port_format_string.append(",[::1]:%d");
+    }
+  } else if (this->whitelist_.size() > 0) {
+    // If there are white-listed IP addresses, we can only use IPv4,
+    // and we don't want the colon in the listening ports string.
+    // Instead, we want to bind to all adapters, and use the access
+    // control list to determine which addresses can connect. So to
+    // remove the host from the format string, when we use printf to
+    // format, the %s will be replaced by an empty string.
     port_format_string = "%s%d";
   }
   int formatted_string_size = snprintf(NULL,
                                        0,
                                        port_format_string.c_str(),
                                        this->host_.c_str(),
+                                       this->port_,
                                        this->port_) + 1;
-  char* listening_ports_buffer = new char[formatted_string_size];
-  snprintf(listening_ports_buffer,
+  std::vector<char> listening_ports_buffer(formatted_string_size);
+  snprintf(&listening_ports_buffer[0],
            formatted_string_size,
            port_format_string.c_str(),
            this->host_.c_str(),
+           this->port_,
            this->port_);
+  return &listening_ports_buffer[0];
+}
 
-  std::string acl = SERVER_DEFAULT_BLACKLIST;
-  for (std::vector<std::string>::const_iterator it = this->whitelist_.begin();
-       it < this->whitelist_.end();
-       ++it) {
-    acl.append(",+").append(*it);
+std::string Server::GetAccessControlList() {
+  std::string acl = "";
+  if (this->whitelist_.size() > 0) {
+    acl = SERVER_DEFAULT_BLACKLIST;
+    for (std::vector<std::string>::const_iterator it = this->whitelist_.begin();
+      it < this->whitelist_.end();
+      ++it) {
+      acl.append(",+").append(*it);
+    }
+    LOG(DEBUG) << "Civetweb ACL is " << acl;
   }
-  LOG(DEBUG) << "Civetweb ACL is " << acl;
+  return acl;
+}
 
-  const char* options[] = { "listening_ports", listening_ports_buffer,
-                            "access_control_list", acl.c_str(),
-                            // "enable_keep_alive", "yes",
-                            NULL };
+void Server::GenerateOptionsList(std::vector<const char*>* options) {
+  std::map<std::string, std::string>::const_iterator it = this->options_.begin();
+  for (; it != this->options_.end(); ++it) {
+    options->push_back(it->first.c_str());
+    options->push_back(it->second.c_str());
+  }
+  options->push_back(NULL);
+}
+
+int Server::OnNewHttpRequest(struct mg_connection* conn) {
+  mg_context* context = mg_get_context(conn);
+  Server* current_server = reinterpret_cast<Server*>(mg_get_user_data(context));
+  const mg_request_info* request_info = mg_get_request_info(conn);
+  int handler_result_code = current_server->ProcessRequest(conn, request_info);
+  return handler_result_code;
+}
+
+bool Server::Start() {
+  LOG(TRACE) << "Entering Server::Start";
+
+  std::string listening_port_option = this->GetListeningPorts(true);
+  this->options_["listening_ports"] = listening_port_option;
+
+  std::string acl_option = this->GetAccessControlList();
+  if (acl_option.size() > 0) {
+    this->options_["access_control_list"] = acl_option;
+  }
+
+  this->options_["enable_keep_alive"] = "yes";
+
+  std::vector<const char*> options;
+  this->GenerateOptionsList(&options);
+
   mg_callbacks callbacks = {};
   callbacks.begin_request = &OnNewHttpRequest;
-  context_ = mg_start(&callbacks, this, options);
+  context_ = mg_start(&callbacks, this, &options[0]);
   if (context_ == NULL) {
-    LOG(WARN) << "Failed to start Civetweb";
-    return false;
+    std::string ipv4_port_option = this->GetListeningPorts(false);
+    if (listening_port_option == ipv4_port_option) {
+      // If the IPv4 and IPv6 versions of the port option string
+      // are equal, then either a host to bind to or an ACL was
+      // specified, so there is no need to retry.
+      LOG(WARN) << "Failed to start Civetweb";
+      return false;
+    } else {
+      // If we fail, a host and ACL aren't specified, we might not
+      // be able to bind to an IPv6 address. Try again to bind to
+      // the IPv4 loopback only.
+      LOG(INFO) << "Failed first attempt to start Civetweb. Attempt start with IPv4 only";
+      this->options_["listening_ports"] = listening_port_option;
+      options.clear();
+      this->GenerateOptionsList(&options);
+      context_ = mg_start(&callbacks, this, &options[0]);
+      if (context_ == NULL) {
+        LOG(WARN) << "Failed to start Civetweb";
+        return false;
+      }
+    }
   }
   return true;
 }
@@ -181,17 +239,17 @@ int Server::ProcessRequest(struct mg_connection* conn,
   }
 
   LOG(TRACE) << "Process request with:"
-             << " URI: "  << request_info->uri
+             << " URI: "  << request_info->local_uri
              << " HTTP verb: " << http_verb << std::endl
              << "body: " << request_body;
 
-  if (strcmp(request_info->uri, "/") == 0) {
+  if (strcmp(request_info->local_uri, "/") == 0) {
     this->SendHttpOk(conn,
                      request_info,
                      SERVER_DEFAULT_PAGE,
                      HTML_CONTENT_TYPE);
     http_response_code = 0;
-  } else if (strcmp(request_info->uri, "/shutdown") == 0) {
+  } else if (strcmp(request_info->local_uri, "/shutdown") == 0) {
     this->SendHttpOk(conn,
                      request_info,
                      SERVER_DEFAULT_PAGE,
@@ -199,7 +257,7 @@ int Server::ProcessRequest(struct mg_connection* conn,
     http_response_code = 0;
     this->ShutDown();
   } else {
-    std::string serialized_response = this->DispatchCommand(request_info->uri,
+    std::string serialized_response = this->DispatchCommand(request_info->local_uri,
                                                              http_verb,
                                                              request_body);
     http_response_code = this->SendResponseToClient(conn,

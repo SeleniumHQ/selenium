@@ -79,6 +79,9 @@ class Server {
                   const std::string& acl);
 
   void ProcessWhitelist(const std::string& whitelist);
+  std::string GetListeningPorts(const bool use_ipv6);
+  std::string GetAccessControlList(void);
+  void GenerateOptionsList(std::vector<const char*>* options);
 
   std::string ListSessions(void);
   std::string LookupCommand(const std::string& uri,
@@ -133,6 +136,8 @@ class Server {
   // List of whitelisted IPv4 addresses allowed to connect
   // to this server.
   std::vector<std::string> whitelist_;
+  // Map of options for the HTTP server
+  std::map<std::string, std::string> options_;
   // The map of all command URIs (URL and HTTP verb), and 
   // the corresponding numerical value of the command.
   UrlMap commands_;
