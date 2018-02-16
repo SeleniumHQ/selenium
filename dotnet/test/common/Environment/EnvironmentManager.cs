@@ -23,6 +23,7 @@ namespace OpenQA.Selenium.Environment
             string currentDirectory = this.CurrentDirectory;
             string content = File.ReadAllText(Path.Combine(currentDirectory, "appconfig.json"));
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
+
             string activeDriverConfig = TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
             string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
             string driverServiceLocation = TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
@@ -56,8 +57,14 @@ namespace OpenQA.Selenium.Environment
 
         ~EnvironmentManager()
         {
-            remoteServer.Stop();
-            webServer.Stop();
+            if (remoteServer != null)
+            {
+                remoteServer.Stop();
+            }
+            if (webServer != null)
+            {
+                webServer.Stop();
+            }
             if (driver != null)
             {
                 driver.Quit();
@@ -78,7 +85,13 @@ namespace OpenQA.Selenium.Environment
         {
             get
             {
-                return TestContext.CurrentContext.TestDirectory;
+                string assemblyLocation = Path.GetDirectoryName(typeof(EnvironmentManager).Assembly.Location);
+                string testDirectory = TestContext.CurrentContext.TestDirectory;
+                if (assemblyLocation != testDirectory)
+                {
+                    return assemblyLocation;
+                }
+                return testDirectory;
             }
         }
         
