@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFrameworks>net45;netcoreapp2.0</TargetFrameworks>
     <AssemblyName>WebDriver.Opera.Tests</AssemblyName>
   </PropertyGroup>
 
