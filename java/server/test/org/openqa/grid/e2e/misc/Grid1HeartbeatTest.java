@@ -18,12 +18,8 @@
 package org.openqa.grid.e2e.misc;
 
 import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +28,12 @@ import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.internal.OkHttpClient;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URL;
 
 public class Grid1HeartbeatTest {
@@ -56,22 +53,13 @@ public class Grid1HeartbeatTest {
         new URL(String.format("http://%s:%s/heartbeat?host=localhost&port=5000", hub.getConfiguration().host,
             hub.getConfiguration().port));
 
-    HttpRequest request = new HttpGet(heartbeatUrl.toString());
+    HttpRequest request = new HttpRequest(GET, heartbeatUrl.toString());
 
-    HttpClientFactory httpClientFactory = new HttpClientFactory();
-    try {
-      HttpClient client = httpClientFactory.getHttpClient();
-      HttpHost host = new HttpHost(hub.getConfiguration().host, hub.getConfiguration().port);
-      HttpResponse response = client.execute(host, request);
+    HttpClient client = new OkHttpClient.Factory().createClient(hub.getUrl());
+    HttpResponse response = client.execute(request);
 
-      BufferedReader body =
-          new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-      assertEquals(response.getStatusLine().getStatusCode(), 200);
-      assertEquals(body.readLine(), "Hub : Not Registered");
-    } finally {
-      httpClientFactory.close();
-    }
+    assertEquals(200, response.getStatus());
+    assertEquals("Hub : Not Registered", response.getContentString());
   }
 
   @Test
@@ -93,27 +81,17 @@ public class Grid1HeartbeatTest {
             .getConfiguration().port, selenium1.getConfiguration().host, selenium1
             .getConfiguration().port));
 
-    HttpRequest request = new HttpGet(heartbeatUrl.toString());
+    HttpRequest request = new HttpRequest(GET, heartbeatUrl.toString());
 
-    HttpClientFactory httpClientFactory = new HttpClientFactory();
+    HttpClient client = new OkHttpClient.Factory().createClient(hub.getUrl());
+    HttpResponse response = client.execute(request);
 
-    HttpClient client = httpClientFactory.getHttpClient();
-    try {
-      HttpHost host = new HttpHost(hub.getConfiguration().host, hub.getConfiguration().port);
-      HttpResponse response = client.execute(host, request);
-
-      BufferedReader body =
-          new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-      assertEquals(response.getStatusLine().getStatusCode(), 200);
-      assertEquals(body.readLine(), "Hub : OK");
-    } finally {
-      httpClientFactory.close();
-    }
+    assertEquals(200, response.getStatus());
+    assertEquals("Hub : OK", response.getContentString());
   }
 
   @After
-  public void teardown() throws Exception {
+  public void teardown() {
     hub.stop();
   }
 }

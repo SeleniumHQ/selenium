@@ -17,23 +17,19 @@
 
 package org.openqa.grid.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,18 +38,22 @@ import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.internal.OkHttpClient;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StatusServletTests {
@@ -61,13 +61,12 @@ public class StatusServletTests {
   private Hub hub;
 
   private RemoteProxy p1;
-  private HttpClientFactory httpClientFactory;
 
   private URL proxyApi;
   private URL hubApi;
   private URL testSessionApi;
-  private HttpHost host;
   private TestSession session;
+  private HttpClient client;
 
   @Before
   public void setup() throws Exception {
@@ -77,12 +76,10 @@ public class StatusServletTests {
     c.host = "localhost";
     hub = new Hub(c);
     GridRegistry registry = hub.getRegistry();
-    httpClientFactory = new HttpClientFactory();
+    client = new OkHttpClient.Factory().createClient(hub.getUrl());
     hubApi = hub.getUrl("/grid/api/hub");
     proxyApi = hub.getUrl("/grid/api/proxy");
     testSessionApi = hub.getUrl("/grid/api/testsession");
-
-    host = new HttpHost(hub.getConfiguration().host, hub.getConfiguration().port);
 
     hub.start();
 
@@ -122,182 +119,158 @@ public class StatusServletTests {
   @Test
   public void testGet() throws IOException {
     String id = "http://machine1:4444";
-    HttpClient client = httpClientFactory.getHttpClient();
 
-    BasicHttpRequest r = new BasicHttpRequest("GET", proxyApi.toExternalForm() + "?id=" + id);
+    HttpRequest request = new HttpRequest(GET, proxyApi.toExternalForm() + "?id=" + id);
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject o = extractObject(response);
-    assertEquals(id, o.get("id").getAsString());
+    HttpResponse response = client.execute(request);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> o = extractObject(response);
+    assertEquals(id, o.get("id"));
   }
 
   @Test
   public void testGetNegative() throws IOException {
     String id = "http://wrongOne:4444";
-    HttpClient client = httpClientFactory.getHttpClient();
 
-    BasicHttpRequest r = new BasicHttpRequest("GET", proxyApi.toExternalForm() + "?id=" + id);
+    HttpRequest r = new HttpRequest(GET, proxyApi.toExternalForm() + "?id=" + id);
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject o = extractObject(response);
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> o = extractObject(response);
 
-    assertEquals(false, o.get("success").getAsBoolean());
-    // System.out.println(o.get("msg"));
+    assertEquals(false, o.get("success"));
   }
 
   @Test
   public void testPost() throws IOException {
     String id = "http://machine1:4444";
-    HttpClient client = httpClientFactory.getHttpClient();
 
-    JsonObject o = new JsonObject();
-    o.addProperty("id", id);
+    Map<String, Object> o = ImmutableMap.of("id", id);
 
-    BasicHttpEntityEnclosingRequest r =
-        new BasicHttpEntityEnclosingRequest("POST", proxyApi.toExternalForm());
-    r.setEntity(new StringEntity(o.toString()));
+    HttpRequest r = new HttpRequest(POST, proxyApi.toExternalForm());
+    r.setContent(new Json().toJson(o).getBytes(UTF_8));
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject res = extractObject(response);
-    assertEquals(id, res.get("id").getAsString());
-
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> res = extractObject(response);
+    assertEquals(id, res.get("id"));
   }
 
   @Test
   public void testPostReflection() throws IOException {
     String id = "http://machine5:4444";
-    HttpClient client = httpClientFactory.getHttpClient();
 
-    JsonObject o = new JsonObject();
-    o.addProperty("id", id);
-    o.addProperty("getURL", "");
-    o.addProperty("getBoolean", "");
-    o.addProperty("getString", "");
+    Map<String, Object> o = ImmutableMap.of(
+        "id", id,
+        "getURL", "",
+        "getBoolean", "",
+        "getString", "");
 
-    BasicHttpEntityEnclosingRequest r =
-        new BasicHttpEntityEnclosingRequest("POST", proxyApi.toExternalForm());
-    r.setEntity(new StringEntity(o.toString()));
+    HttpRequest r = new HttpRequest(POST, proxyApi.toExternalForm());
+    r.setContent(new Json().toJson(o).getBytes(UTF_8));
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject res = extractObject(response);
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> res = extractObject(response);
 
-    assertEquals(MyCustomProxy.MY_BOOLEAN, res.get("getBoolean").getAsBoolean());
-    assertEquals(MyCustomProxy.MY_STRING, res.get("getString").getAsString());
+    assertEquals(MyCustomProxy.MY_BOOLEAN, res.get("getBoolean"));
+    assertEquals(MyCustomProxy.MY_STRING, res.get("getString"));
     // url converted to string
-    assertEquals(MyCustomProxy.MY_URL.toString(), res.get("getURL").getAsString());
+    assertEquals(MyCustomProxy.MY_URL.toString(), res.get("getURL"));
   }
 
   @Test
   public void testSessionApi() throws IOException {
     ExternalSessionKey s = session.getExternalKey();
-    HttpClient client = httpClientFactory.getHttpClient();
 
-    JsonObject o = new JsonObject();
-    o.addProperty("session", s.toString());
-    BasicHttpEntityEnclosingRequest r =
-        new BasicHttpEntityEnclosingRequest("POST", testSessionApi.toExternalForm());
-    r.setEntity(new StringEntity(o.toString()));
+    Map<String, Object> o = ImmutableMap.of("session", s.toString());
+    HttpRequest r = new HttpRequest(POST, testSessionApi.toExternalForm());
+    r.setContent(new Json().toJson(o).getBytes(UTF_8));
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject res = extractObject(response);
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> res = extractObject(response);
 
-    assertTrue(res.get("success").getAsBoolean());
+    assertTrue((boolean) res.get("success"));
 
     assertNotNull(res.get("internalKey"));
-    assertEquals(s, ExternalSessionKey.fromJSON(res.get("session").getAsString()));
+    assertEquals(s, ExternalSessionKey.fromJSON((String) res.get("session")));
     assertNotNull(res.get("inactivityTime"));
-    assertEquals(p1.getId(), res.get("proxyId").getAsString());
+    assertEquals(p1.getId(), res.get("proxyId"));
   }
 
   @Test
   public void testSessionGet() throws IOException {
     ExternalSessionKey s = session.getExternalKey();
 
-    HttpClient client = httpClientFactory.getHttpClient();
-
     String url =
         testSessionApi.toExternalForm() + "?session=" + URLEncoder.encode(s.getKey(), "UTF-8");
-    BasicHttpRequest r = new BasicHttpRequest("GET", url);
+    HttpRequest r = new HttpRequest(GET, url);
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject o = extractObject(response);
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> o = extractObject(response);
 
-    assertTrue(o.get("success").getAsBoolean());
+    assertTrue((boolean) o.get("success"));
 
     assertNotNull(o.get("internalKey"));
-    assertEquals(s, ExternalSessionKey.fromJSON(o.get("session").getAsString()));
+    assertEquals(s, ExternalSessionKey.fromJSON((String) o.get("session")));
     assertNotNull(o.get("inactivityTime"));
-    assertEquals(p1.getId(), o.get("proxyId").getAsString());
-
+    assertEquals(p1.getId(), o.get("proxyId"));
   }
 
 
   /**
    * if a certain set of parameters are requested to the hub, only those params are returned.
-   * @throws IOException
    */
   @Test
   public void testHubGetSpecifiedConfig() throws IOException {
-
-    HttpClient client = httpClientFactory.getHttpClient();
-
     String url = hubApi.toExternalForm();
-    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+    System.out.println("url = " + url);
+    HttpRequest r = new HttpRequest(POST, url);
 
-    JsonObject j = new JsonObject();
+    Map<String, Object> j = ImmutableMap.of(
+        "configuration", ImmutableList.of(
+            "timeout",
+            "I'm not a valid key",
+            "servlets"));
 
-    JsonArray keys = new JsonArray();
-    keys.add(new JsonPrimitive("timeout"));
-    keys.add(new JsonPrimitive("I'm not a valid key"));
-    keys.add(new JsonPrimitive("servlets"));
+    r.setContent(new Json().toJson(j).getBytes(UTF_8));
 
-    j.add("configuration", keys);
-    r.setEntity(new StringEntity(j.toString()));
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> o = extractObject(response);
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject o = extractObject(response);
-
-    assertTrue(o.get("success").getAsBoolean());
-    assertEquals(12345, o.get("timeout").getAsInt());
+    assertTrue((Boolean) o.get("success"));
+    assertEquals(12345L, o.get("timeout"));
     assertNull(o.get("I'm not a valid key"));
-    assertTrue(o.getAsJsonArray("servlets").size() == 0);
-    assertFalse(o.has("capabilityMatcher"));
+    assertTrue(((Collection) o.get("servlets")).size() == 0);
+    assertNull(o.get("capabilityMatcher"));
   }
 
   /**
    * if a certain set of parameters are requested to the hub, only those params are returned.
-   * @throws IOException
    */
   @Test
   public void testHubGetSpecifiedConfigWithQueryString() throws IOException {
-
-    HttpClient client = httpClientFactory.getHttpClient();
-
-    ArrayList<String> keys = new ArrayList<>();
+    List<String> keys = new ArrayList<>();
     keys.add(URLEncoder.encode("timeout", "UTF-8"));
     keys.add(URLEncoder.encode("I'm not a valid key", "UTF-8"));
     keys.add(URLEncoder.encode("servlets", "UTF-8"));
 
     String query = "?configuration=" + String.join(",",keys);
     String url = hubApi.toExternalForm() + query ;
-    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+    HttpRequest r = new HttpRequest(GET, url);
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject o = extractObject(response);
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> o = extractObject(response);
 
-    assertTrue(o.get("success").getAsBoolean());
-    assertEquals(12345, o.get("timeout").getAsInt());
+    assertTrue((Boolean) o.get("success"));
+    assertEquals(12345L, o.get("timeout"));
     assertNull(o.get("I'm not a valid key"));
-    assertTrue(o.getAsJsonArray("servlets").size() == 0);
-    assertFalse(o.has("capabilityMatcher"));
+    assertTrue(((Collection<?>) o.get("servlets")).size() == 0);
+    assertFalse(o.containsKey("capabilityMatcher"));
   }
 
   /**
@@ -306,131 +279,100 @@ public class StatusServletTests {
    */
   @Test
   public void testHubGetAllConfig() throws IOException {
-
-    HttpClient client = httpClientFactory.getHttpClient();
-
     String url = hubApi.toExternalForm();
-    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+    HttpRequest r = new HttpRequest(GET, url);
 
-    JsonObject j = new JsonObject();
-    JsonArray keys = new JsonArray();
+    Map<String, Object> j = ImmutableMap.of("configuration", ImmutableList.of());
 
-    j.add("configuration", keys);
-    r.setEntity(new StringEntity(j.toString()));
+    r.setContent(new Json().toJson(j).getBytes(UTF_8));
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject o = extractObject(response);
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> o = extractObject(response);
 
-    assertTrue(o.get("success").getAsBoolean());
+    assertTrue((boolean) o.get("success"));
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
-                 o.get("capabilityMatcher").getAsString());
+                 o.get("capabilityMatcher"));
     assertNull(o.get("prioritizer"));
   }
 
   @Test
   public void testHubGetAllConfigNoParamsWhenNoPostBody() throws IOException {
-
-    HttpClient client = httpClientFactory.getHttpClient();
-
     String url = hubApi.toExternalForm();
-    BasicHttpRequest r = new BasicHttpRequest("GET", url);
+    HttpRequest r = new HttpRequest(GET, url);
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject o = extractObject(response);
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> o = extractObject(response);
 
-    assertTrue(o.get("success").getAsBoolean());
+    assertTrue((Boolean) o.get("success"));
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
-                 o.get("capabilityMatcher").getAsString());
+                 o.get("capabilityMatcher"));
     assertNull(o.get("prioritizer"));
   }
 
   @Test
   public void testHubGetNewSessionRequestCount() throws IOException {
-    HttpClient client = httpClientFactory.getHttpClient();
-
     String url = hubApi.toExternalForm();
-    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+    HttpRequest r = new HttpRequest(GET, url);
 
-    JsonObject j = new JsonObject();
+    Map<String, Object> j = ImmutableMap.of(
+        "configuration", ImmutableList.of("newSessionRequestCount"));
 
-    JsonArray keys = new JsonArray();
-    keys.add(new JsonPrimitive("newSessionRequestCount"));
+    r.setContent(new Json().toJson(j).getBytes(UTF_8));
 
-    j.add("configuration", keys);
-    r.setEntity(new StringEntity(j.toString()));
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> o = extractObject(response);
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject o = extractObject(response);
-
-    assertTrue(o.get("success").getAsBoolean());
-    assertEquals(0, o.get("newSessionRequestCount").getAsInt());
+    assertTrue((Boolean) o.get("success"));
+    assertEquals(0L, o.get("newSessionRequestCount"));
   }
 
   @Test
   public void testHubGetSlotCounts() throws IOException {
-    HttpClient client = httpClientFactory.getHttpClient();
-
     String url = hubApi.toExternalForm();
-    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+    HttpRequest r = new HttpRequest(GET, url);
 
-    JsonObject j = new JsonObject();
+    Map<String, Object> j = ImmutableMap.of("configuration", ImmutableList.of("slotCounts"));
 
-    JsonArray keys = new JsonArray();
-    keys.add(new JsonPrimitive("slotCounts"));
+    r.setContent(new Json().toJson(j).getBytes(UTF_8));
 
-    j.add("configuration", keys);
-    r.setEntity(new StringEntity(j.toString()));
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> o = extractObject(response);
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject o = extractObject(response);
-
-    assertTrue(o.get("success").getAsBoolean());
+    assertTrue((Boolean) o.get("success"));
 
     assertNotNull(o.get("slotCounts"));
-    JsonObject slotCounts = o.get("slotCounts").getAsJsonObject();
-    assertEquals(4, slotCounts.get("free").getAsInt());
-    assertEquals(5, slotCounts.get("total").getAsInt());
+    Map<?, ?> slotCounts = (Map<?, ?>) o.get("slotCounts");
+    assertEquals(4L, slotCounts.get("free"));
+    assertEquals(5L, slotCounts.get("total"));
   }
 
   @Test
   public void testSessionApiNeg() throws IOException {
     String s = "non-existing session";
-    HttpClient client = httpClientFactory.getHttpClient();
 
-    JsonObject o = new JsonObject();
-    o.addProperty("session", s);
-    BasicHttpEntityEnclosingRequest r =
-        new BasicHttpEntityEnclosingRequest("POST", testSessionApi.toExternalForm());
-    r.setEntity(new StringEntity(o.toString()));
+    Map<String, Object> o = ImmutableMap.of("session", s);
+    HttpRequest r = new HttpRequest(POST, testSessionApi.toExternalForm());
+    r.setContent(new Json().toJson(o).getBytes(UTF_8));
 
-    HttpResponse response = client.execute(host, r);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    JsonObject res = extractObject(response);
+    HttpResponse response = client.execute(r);
+    assertEquals(200, response.getStatus());
+    Map<String, Object> res = extractObject(response);
 
-    assertFalse(res.get("success").getAsBoolean());
-
+    assertFalse((boolean) res.get("success"));
   }
 
   @After
-  public void teardown() throws Exception {
+  public void teardown() {
     hub.stop();
-    httpClientFactory.close();
   }
 
-  private JsonObject extractObject(HttpResponse resp) throws IOException {
-    BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-    StringBuilder s = new StringBuilder();
-    String line;
-    while ((line = rd.readLine()) != null) {
-      s.append(line);
-    }
-    rd.close();
-
-    return new JsonParser().parse(s.toString()).getAsJsonObject();
+  private Map<String, Object> extractObject(HttpResponse resp) {
+    System.out.println("resp = " + resp.getContentString());
+    return new Json().toType(resp.getContentString(), MAP_TYPE);
   }
 
 }

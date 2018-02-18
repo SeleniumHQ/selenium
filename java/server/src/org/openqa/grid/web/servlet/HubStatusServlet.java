@@ -76,7 +76,11 @@ public class HubStatusServlet extends RegistryBasedServlet {
     process(request, response);
   }
 
-
+  @Override
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+    process(req, resp);
+  }
 
   protected void process(HttpServletRequest request, HttpServletResponse response)
       throws IOException {

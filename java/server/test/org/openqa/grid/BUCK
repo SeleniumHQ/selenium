@@ -12,10 +12,8 @@ java_test(name = 'grid',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/server/src/org/openqa/grid:grid',
     '//third_party/java/beust:jcommander',
-    '//third_party/java/gson:gson',
-    '//third_party/java/httpcomponents:httpclient',
+    '//third_party/java/guava:guava',
     '//third_party/java/junit:junit',
-    '//third_party/java/servlet:javax.servlet-api',
   ],
 )
 
