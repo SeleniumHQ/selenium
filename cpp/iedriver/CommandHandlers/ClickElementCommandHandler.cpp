@@ -98,6 +98,12 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
           Json::Value actions(Json::arrayValue);
           actions.append(value);
 
+          int double_click_time = ::GetDoubleClickTime();
+          int milliseconds_since_last_click = (clock() - executor.input_manager()->last_click_time()) * CLOCKS_PER_SEC / 1000;
+          if (double_click_time - milliseconds_since_last_click > 0) {
+            ::Sleep(double_click_time - milliseconds_since_last_click);
+          }
+
           IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
           status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
           browser_wrapper->set_wait_required(true);
