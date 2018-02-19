@@ -34,7 +34,6 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Gives the context for a test, holds page state, and interacts with the {@link WebDriver}.
@@ -138,7 +137,7 @@ public class WebDriverTestContext implements TestContext {
       }
     };
 
-    final long defaultSleepTimeoutMillis = FluentWait.FIVE_HUNDRED_MILLIS.in(TimeUnit.MILLISECONDS);
+    final long defaultSleepTimeoutMillis = 500;
     final long sleepTimeout = (timeoutMillis > defaultSleepTimeoutMillis)
         ? defaultSleepTimeoutMillis : timeoutMillis / 2;
 

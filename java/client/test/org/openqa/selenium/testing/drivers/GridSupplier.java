@@ -32,8 +32,9 @@ import org.openqa.selenium.support.ui.Wait;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 public class GridSupplier implements Supplier<WebDriver> {
@@ -85,7 +86,7 @@ public class GridSupplier implements Supplier<WebDriver> {
     Json json = new Json();
     Wait<HttpClient> wait = new FluentWait<>(client)
         .ignoring(RuntimeException.class)
-        .withTimeout(30, TimeUnit.SECONDS);
+        .withTimeout(Duration.ofSeconds(30));
     wait.until(c -> {
       HttpRequest req = new HttpRequest(HttpMethod.GET, "/status");
       HttpResponse response = null;
