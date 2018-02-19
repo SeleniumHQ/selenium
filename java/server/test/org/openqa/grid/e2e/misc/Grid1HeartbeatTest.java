@@ -31,7 +31,6 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.OkHttpClient;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.URL;
@@ -55,7 +54,7 @@ public class Grid1HeartbeatTest {
 
     HttpRequest request = new HttpRequest(GET, heartbeatUrl.toString());
 
-    HttpClient client = new OkHttpClient.Factory().createClient(hub.getUrl());
+    HttpClient client = HttpClient.Factory.createDefault().createClient(hub.getUrl());
     HttpResponse response = client.execute(request);
 
     assertEquals(200, response.getStatus());
@@ -83,7 +82,7 @@ public class Grid1HeartbeatTest {
 
     HttpRequest request = new HttpRequest(GET, heartbeatUrl.toString());
 
-    HttpClient client = new OkHttpClient.Factory().createClient(hub.getUrl());
+    HttpClient client = HttpClient.Factory.createDefault().createClient(hub.getUrl());
     HttpResponse response = client.execute(request);
 
     assertEquals(200, response.getStatus());

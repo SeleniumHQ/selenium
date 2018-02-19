@@ -45,7 +45,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.OkHttpClient;
 
 import java.io.IOException;
 import java.net.URL;
@@ -76,7 +75,7 @@ public class StatusServletTests {
     c.host = "localhost";
     hub = new Hub(c);
     GridRegistry registry = hub.getRegistry();
-    client = new OkHttpClient.Factory().createClient(hub.getUrl());
+    client = HttpClient.Factory.createDefault().createClient(hub.getUrl());
     hubApi = hub.getUrl("/grid/api/hub");
     proxyApi = hub.getUrl("/grid/api/proxy");
     testSessionApi = hub.getUrl("/grid/api/testsession");
