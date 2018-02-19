@@ -24,11 +24,8 @@ import java.util.concurrent.TimeUnit;
  */
 public interface Sleeper {
 
-  public static final Sleeper SYSTEM_SLEEPER = new Sleeper() {
-    public void sleep(Duration duration) throws InterruptedException {
-      Thread.sleep(duration.in(TimeUnit.MILLISECONDS));
-    }
-  };
+  public static final Sleeper SYSTEM_SLEEPER =
+      duration -> Thread.sleep(duration.in(TimeUnit.MILLISECONDS));
 
   /**
    * Sleeps for the specified duration of time.

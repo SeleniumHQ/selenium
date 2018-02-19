@@ -160,30 +160,16 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<Set<String>> windowHandleCountToBe(final int count) {
-    return new ExpectedCondition<Set<String>>() {
-      public Set<String> apply(WebDriver driver) {
-        Set<String> handles = driver.getWindowHandles();
-
-        if (handles.size() == count) {
-          return handles;
-        }
-        return null;
-      }
+    return driver -> {
+      Set<String> handles = driver.getWindowHandles();
+      return handles.size() == count ? handles : null;
     };
   }
 
   public static ExpectedCondition<Set<String>> windowHandleCountToBeGreaterThan(final int count) {
-
-    return new ExpectedCondition<Set<String>>() {
-      @Override
-      public Set<String> apply(WebDriver driver) {
-        Set<String> handles = driver.getWindowHandles();
-
-        if (handles.size() > count) {
-          return handles;
-        }
-        return null;
-      }
+    return driver -> {
+      Set<String> handles = driver.getWindowHandles();
+      return handles.size() > count ? handles : null;
     };
   }
 

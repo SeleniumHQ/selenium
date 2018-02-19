@@ -33,13 +33,11 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.pagefactory.FieldDecorator;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.TickingClock;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class PageFactoryTest {
@@ -111,11 +109,7 @@ public class PageFactoryTest {
     WebElement q = mock(WebElement.class);
     page.q = q;
 
-    PageFactory.initElements(new FieldDecorator() {
-      public Object decorate(ClassLoader loader, Field field) {
-        return null;
-      }
-    }, page);
+    PageFactory.initElements((loader, field) -> null, page);
 
     assertThat(page.q, equalTo(q));
   }
@@ -125,11 +119,7 @@ public class PageFactoryTest {
     NonWebElementsPage page = new NonWebElementsPage();
     // Assign not-null values
 
-    PageFactory.initElements(new FieldDecorator() {
-      public Object decorate(ClassLoader loader, Field field) {
-        return new Integer(5);
-      }
-    }, page);
+    PageFactory.initElements((loader, field) -> new Integer(5), page);
 
     assertThat(page.num, equalTo(new Integer(5)));
   }
