@@ -72,8 +72,12 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     unregisterDelay = config.unregisterIfStillDownAfter != null ? config.unregisterIfStillDownAfter : DEFAULT_UNREGISTER_DELAY;
     downPollingLimit = config.downPollingLimit != null ? config.downPollingLimit : DEFAULT_DOWN_POLLING_LIMIT;
 
-    new JMXHelper().unregister(this.getObjectName());
-    new JMXHelper().register(this);
+    // Only attempt to register the remote proxy as a JMX bean if it's managed.
+    if (this.getClass().getAnnotation(ManagedService.class) != null) {
+      JMXHelper helper = new JMXHelper();
+      helper.unregister(this.getObjectName());
+      helper.register(this);
+    }
   }
 
   public void beforeRelease(TestSession session) {
