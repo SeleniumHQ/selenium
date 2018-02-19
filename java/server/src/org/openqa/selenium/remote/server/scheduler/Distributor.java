@@ -101,4 +101,32 @@ public class Distributor {
       readLock.unlock();
     }
   }
+
+  public void remove(String hostName) {
+    Objects.requireNonNull(hostName, "Cannot remove host without a name");
+
+    ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      getHosts().filter(host -> host.getName().equals(hostName)).forEach(this::remove);
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  public void remove(Host host) {
+    Objects.requireNonNull(host, "Cannot remove null host");
+
+    ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      if (hosts.remove(host)) {
+        LOG.info("Removing host: " + host);
+      } else {
+        LOG.warning("Asked to remove host, but not present in distribution list: " + host);
+      }
+    } finally {
+      writeLock.unlock();
+    }
+  }
 }

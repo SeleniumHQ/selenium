@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.remote.server.scheduler;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static java.time.Duration.ofSeconds;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -80,7 +81,7 @@ public class DistributorTest {
         .add(lightest)
         .add(massive);
 
-    ImmutableList<Host> results = distributor.getHosts().collect(ImmutableList.toImmutableList());
+    ImmutableList<Host> results = distributor.getHosts().collect(toImmutableList());
 
     assertEquals(ImmutableList.of(lightest, medium, heavy, massive), results);
   }
@@ -136,7 +137,7 @@ public class DistributorTest {
 
     ImmutableList<SessionFactoryAndCapabilities> matches = distributor.match(
         new FirefoxOptions(),
-        stream -> stream.collect(ImmutableList.toImmutableList()));
+        stream -> stream.collect(toImmutableList()));
 
     assertEquals(1, matches.size());
   }
@@ -285,12 +286,24 @@ public class DistributorTest {
     // Toggle the status
     status.set(false);
 
-    Wait<Host> wait = new FluentWait<>(host).withTimeout(2, SECONDS);
+    Wait<Host> wait = new FluentWait<>(host).withTimeout(ofSeconds(2));
     wait.until(h -> h.getStatus() == DOWN);
 
     // Now bring the server up again
     status.set(true);
     wait.until(h -> h.getStatus() == UP);
+  }
+
+  @Test
+  public void shouldAllowAHostToBeRemoved() {
+    Host remain = Host.builder().name("remain").add(new FakeSessionFactory(caps -> true)).create();
+    Host leave = Host.builder().name("leave").add(new FakeSessionFactory(caps -> true)).create();
+
+    Distributor distributor = new Distributor().add(remain).add(leave);
+
+    distributor.remove("leave");
+
+    assertEquals(ImmutableList.of(remain), distributor.getHosts().collect(toImmutableList()));
   }
 
   @Test
