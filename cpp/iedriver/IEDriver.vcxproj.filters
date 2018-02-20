@@ -87,9 +87,6 @@
     <ClCompile Include="InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InteractionsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ProxyManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -282,6 +279,18 @@
     <ClCompile Include="CommandHandlers\GetNamedCookieCommandHandler.cpp">
       <Filter>Source Files\CommandHandlers</Filter>
     </ClCompile>
+    <ClCompile Include="ActionSimulators\SendMessageActionSimulator.cpp">
+      <Filter>Source Files\ActionSimulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionSimulators\ActionSimulator.cpp">
+      <Filter>Source Files\ActionSimulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionSimulators\SendInputActionSimulator.cpp">
+      <Filter>Source Files\ActionSimulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionSimulators\JavaScriptActionSimulator.cpp">
+      <Filter>Source Files\ActionSimulators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alert.h">
@@ -348,9 +357,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InteractionsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LocationInfo.h">
@@ -565,6 +571,24 @@
     </ClInclude>
     <ClInclude Include="InputState.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSimulators\SendMessageActionSimulator.h">
+      <Filter>Header Files\ActionSimulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSimulators\ActionSimulator.h">
+      <Filter>Header Files\ActionSimulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSimulators\SendInputActionSimulator.h">
+      <Filter>Header Files\ActionSimulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSimulators\JavaScriptActionSimulator.h">
+      <Filter>Header Files\ActionSimulators</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandlers\stdafx.h">
+      <Filter>Header Files\CommandHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSimulators\stdafx.h">
+      <Filter>Header Files\ActionSimulators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

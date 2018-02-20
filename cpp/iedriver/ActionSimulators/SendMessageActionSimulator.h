@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_INTERACTIONSMANAGER_H_
-#define WEBDRIVER_IE_INTERACTIONSMANAGER_H_
+#ifndef WEBDRIVER_IE_SENDMESSAGEACTIONSIMULATOR_H_
+#define WEBDRIVER_IE_SENDMESSAGEACTIONSIMULATOR_H_
 
 // definitions for mouse buttons
 // NOTE: These values correspond to GDK mouse button values.
@@ -31,17 +31,22 @@
 
 #include <vector>
 
-#include "InputState.h"
+#include "ActionSimulator.h"
 
 namespace webdriver {
 
 class EventFiringData;
 
-class InteractionsManager {
+class SendMessageActionSimulator : public ActionSimulator {
  public:
-  InteractionsManager(void);
-  ~InteractionsManager(void);
+  SendMessageActionSimulator(void);
+  virtual ~SendMessageActionSimulator(void);
 
+  int SimulateActions(BrowserHandle browser_wrapper,
+                     std::vector<INPUT> inputs,
+                     InputState* input_state);
+
+ private:
   void SendKeyDownMessage(HWND window_handle,
                           InputState input_state,
                           int key_code,
@@ -75,46 +80,11 @@ class InteractionsManager {
                             int y,
                             bool is_double_click);
 
-  void stopPersistentEventFiring();
-  void setEnablePersistentHover(bool enablePersistentHover);
+  bool IsInputDoubleClick(INPUT current_input, InputState input_state);
 
-  static DWORD WINAPI MouseEventFiringFunction(LPVOID lpParam);
-
-  // Defaults to false, unless the driver explicitly turns this on.
-  static bool gEnablePersistentEventFiring;
-  // Thread for firing event
-  static HANDLE hConstantEventsThread;
-
- private:
-
-  void resumePersistentEventsFiring(HWND inputTo,
-                                    long toX,
-                                    long toY,
-                                    WPARAM buttonValue);
-  // Resume without changing the target. Used after pausing evennt
-  // firing for mouse actions.
-  void resumePersistentEventsFiring();
-  // Pauses persistent event firing by the background thread.
-  void pausePersistentEventsFiring();
-  // When the state of the shift key changes, update the background thread
-  // so that subsequent mouse over events will have the right keyboard state.
-  void updateShiftKeyState(bool isShiftPressed);
-  // When the left mouse button is pressed, update the background thread.
-  // Otherwise IE gets confused.
-  void updateLeftMouseButtonState(bool isButtonPressed);
-
-  void setStateByFlag(bool shouldSetFlag, UINT flagValue);
-
-  EventFiringData* EVENT_FIRING_DATA;
-
-  bool shiftPressed;
-  bool controlPressed;
-  bool altPressed;
-
-  bool leftMouseButtonPressed;
-
+  std::vector<BYTE> keyboard_state_buffer_;
 };
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_INTERACTIONSMANAGER_H_
+#endif // WEBDRIVER_IE_SENDMESSAGEACTIONSIMULATOR_H_

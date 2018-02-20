@@ -84,7 +84,6 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
 
   this->managed_elements_ = new ElementRepository();
   this->input_manager_ = new InputManager();
-  this->input_manager_->Initialize(this->managed_elements_);
   this->proxy_manager_ = new ProxyManager();
   this->factory_ = new BrowserFactory();
   this->element_finder_ = new ElementFinder();
@@ -341,7 +340,7 @@ LRESULT IECommandExecutor::OnQuit(UINT uMsg,
                                   WPARAM wParam,
                                   LPARAM lParam,
                                   BOOL& bHandled) {
-  this->input_manager_->StopPersistentEvents();
+  //this->input_manager_->StopPersistentEvents();
   return 0;
 }
 
@@ -795,7 +794,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   }
 
   // Set persistent hover functionality in the interactions implementation. 
-  this->input_manager_->StartPersistentEvents();
+  //this->input_manager_->StartPersistentEvents();
   LOG(INFO) << "Persistent hovering set to: " << this->input_manager_->use_persistent_hover();
 
   this->proxy_manager_->SetProxySettings(process_window_info.hwndBrowser);

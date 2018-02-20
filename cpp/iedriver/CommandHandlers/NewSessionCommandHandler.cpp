@@ -419,15 +419,17 @@ void NewSessionCommandHandler::SetProxySettings(const IECommandExecutor& executo
 
 void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  InputManagerSettings input_manager_settings;
+  input_manager_settings.element_repository = mutable_executor.element_manager();
 
   Json::Value enable_native_events = this->GetCapability(capabilities, NATIVE_EVENTS_CAPABILITY, Json::booleanValue, true);
-  mutable_executor.input_manager()->set_enable_native_events(enable_native_events.asBool());
+  input_manager_settings.use_native_events = enable_native_events.asBool();
 
   Json::Value scroll_behavior = this->GetCapability(capabilities, ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, Json::intValue, 0);
-  mutable_executor.input_manager()->set_scroll_behavior(static_cast<ElementScrollBehavior>(scroll_behavior.asInt()));
+  input_manager_settings.scroll_behavior = static_cast<ElementScrollBehavior>(scroll_behavior.asInt());
 
   Json::Value require_window_focus = this->GetCapability(capabilities, REQUIRE_WINDOW_FOCUS_CAPABILITY, Json::booleanValue, false);
-  mutable_executor.input_manager()->set_require_window_focus(require_window_focus.asBool());
+  input_manager_settings.require_window_focus = require_window_focus.asBool();
 
   Json::Value file_upload_dialog_timeout = this->GetCapability(capabilities, FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY, Json::intValue, 0);
   if (file_upload_dialog_timeout.asInt() > 0) {
@@ -438,10 +440,11 @@ void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executo
   if (require_window_focus.asBool() || !enable_native_events.asBool()) {
     // Setting "require_window_focus" implies SendInput() API, and does not therefore require
     // persistent hover. Likewise, not using native events requires no persistent hover either.
-    mutable_executor.input_manager()->set_use_persistent_hover(false);
+    input_manager_settings.enable_persistent_hover = false;
   } else {
-    mutable_executor.input_manager()->set_use_persistent_hover(enable_persistent_hover.asBool());
+    input_manager_settings.enable_persistent_hover = enable_persistent_hover.asBool();
   }
+  mutable_executor.input_manager()->Initialize(input_manager_settings);
 }
 
 Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommandExecutor& executor) {

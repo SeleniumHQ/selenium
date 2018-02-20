@@ -164,6 +164,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActionSimulators\ActionSimulator.cpp" />
+    <ClCompile Include="ActionSimulators\JavaScriptActionSimulator.cpp" />
+    <ClCompile Include="ActionSimulators\SendInputActionSimulator.cpp" />
+    <ClCompile Include="ActionSimulators\SendMessageActionSimulator.cpp" />
     <ClCompile Include="Alert.cpp" />
     <ClCompile Include="AsyncScriptExecutor.cpp" />
     <ClCompile Include="Browser.cpp" />
@@ -239,7 +243,6 @@
     <ClCompile Include="IEServer.cpp" />
     <ClCompile Include="IESession.cpp" />
     <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="InteractionsManager.cpp" />
     <ClCompile Include="ProxyManager.cpp" />
     <ClCompile Include="RegistryUtilities.cpp" />
     <ClCompile Include="Script.cpp" />
@@ -255,6 +258,11 @@
     <ClCompile Include="WindowUtilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActionSimulators\ActionSimulator.h" />
+    <ClInclude Include="ActionSimulators\JavaScriptActionSimulator.h" />
+    <ClInclude Include="ActionSimulators\SendInputActionSimulator.h" />
+    <ClInclude Include="ActionSimulators\SendMessageActionSimulator.h" />
+    <ClInclude Include="ActionSimulators\stdafx.h" />
     <ClInclude Include="Alert.h" />
     <ClInclude Include="AsyncScriptExecutor.h" />
     <ClInclude Include="Browser.h" />
@@ -315,6 +323,7 @@
     <ClInclude Include="CommandHandlers\SetAlertCredentialsCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SetTimeoutsCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SetWindowRectCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\stdafx.h" />
     <ClInclude Include="CommandHandlers\SwitchToFrameCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SwitchToParentFrameCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SwitchToWindowCommandHandler.h" />
@@ -337,7 +346,6 @@
     <ClInclude Include="IESession.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InputState.h" />
-    <ClInclude Include="InteractionsManager.h" />
     <ClInclude Include="LocationInfo.h" />
     <ClInclude Include="messages.h" />
     <ClInclude Include="ProxyManager.h" />
