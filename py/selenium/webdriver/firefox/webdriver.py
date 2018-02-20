@@ -57,7 +57,7 @@ class WebDriver(RemoteWebDriver):
                  timeout=30, capabilities=None, proxy=None,
                  executable_path="geckodriver", options=None,
                  log_path="geckodriver.log", firefox_options=None,
-                 service_args=None):
+                 service_args=None, desired_capabilities=None):
         """Starts a new local session of Firefox.
 
         Based on the combination and specificity of the various keyword
@@ -101,6 +101,9 @@ class WebDriver(RemoteWebDriver):
             defaults to picking up the binary from the system path.
         :param options: Instance of ``options.Options``.
         :param log_path: Where to log information from the driver.
+        :param desired_capabilities: alias of capabilities. In future
+            versions of this library, this will replace 'capabilities'.
+            This will make the signature consistent with RemoteWebDriver.
 
         """
         if firefox_options:
@@ -109,6 +112,11 @@ class WebDriver(RemoteWebDriver):
         self.binary = None
         self.profile = None
         self.service = None
+
+        # If desired capabilities is set, alias it to capabilities.
+        # If both are set ignore desired capabilities.
+        if capabilities is None and desired_capabilities:
+            capabilities = desired_capabilities
 
         if capabilities is None:
             capabilities = DesiredCapabilities.FIREFOX.copy()
