@@ -220,10 +220,8 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     synchronized (cachedHosts) {
       Map.Entry<String, Integer> entry =
           new AbstractMap.SimpleImmutableEntry<>(host, port);
-      HttpHost
-          httpHost =
+      HttpHost httpHost =
           cachedHosts.computeIfAbsent(entry, e -> new HttpHost(e.getKey(), e.getValue()));
-      System.out.println("cachedHosts = " + cachedHosts);
       return httpHost;
     }
   }
