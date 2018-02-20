@@ -9,6 +9,29 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.9.0.3
+========
+ * Refactored user input simulation code in IE driver. This commit breaks out
+   the three modes of user input simulation (native events using SendMessage,
+   native events using SendInput, simulated events using JavaScript) into
+   separate classes, making it easier to debug. Additionally, this commit
+   removes the code for enabling persistent hovers. This code had been
+   inadvertently disabled in a separate refactor some months ago, and there
+   have been no issue reports in that area, leading the IE driver development
+   team to believe that the issue in IE that required persistent hovers has
+   been resolved (at least in IE11). The code for persistent hovers has been
+   retained in a new, separate class in the project, but this class is not
+   built as part of the IE driver at this time. If issue reports warrent
+   its inclusion in the future, it can be easily re-added.
+ * Added support allowing binding to IPv6 loopback in IE driver. When no host
+   is specified on the command line, and no list of whitelisted IP addresses
+   are specified, IEDriverServer.exe will now bind to both the IPv4 and IPv6
+   loopback adapters. If no IPv6 stack is found on the OS, the executable
+   will retry binding only to IPv4. Note that when using whitelisted IP
+   addresses, only IPv4 is supported. This is a limitation of the Civetweb
+   HTTP server upon which IEDriverServer.exe relies. This commit also updates
+   the version of Civetweb to 1.10.
+
 v3.9.0.2
 ========
  * Reduced overall wait interval time.
