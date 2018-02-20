@@ -17,23 +17,12 @@
 
 package org.openqa.grid.internal;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.util.EntityUtils;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.ClientGoneException;
 import org.openqa.grid.common.exception.GridException;
@@ -44,11 +33,17 @@ import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -207,7 +202,7 @@ public class TestSession {
   }
 
 
-  private HttpClient getClient() {
+  private HttpClient getClient(URL url) {
     GridRegistry reg = slot.getProxy().getRegistry();
     long browserTimeout = TimeUnit.SECONDS.toMillis(reg.getConfiguration().browserTimeout);
     if (browserTimeout > 0) {
@@ -215,7 +210,10 @@ public class TestSession {
       browserTimeout += (selenium_server_cleanup_cycle + MAX_NETWORK_LATENCY);
       browserTimeout *=2; // Lets not let this happen too often
     }
-    return slot.getProxy().getHttpClientFactory().getGridHttpClient((int)browserTimeout, (int)browserTimeout);
+
+    return new ApacheHttpClient(
+        slot.getProxy().getHttpClientFactory().getGridHttpClient((int) browserTimeout, (int) browserTimeout),
+        url);
   }
 
   /*
@@ -242,64 +240,56 @@ public class TestSession {
 
       HttpResponse proxyResponse = sendRequestToNode(proxyRequest);
       lastActivity = clock.millis();
-      HttpEntity responseBody = proxyResponse.getEntity();
-      try {
-        final int statusCode = proxyResponse.getStatusLine().getStatusCode();
-        response.setStatus(statusCode);
-        processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
+      final int statusCode = proxyResponse.getStatus();
+      response.setStatus(statusCode);
+      processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
 
-        byte[] consumedNewWebDriverSessionBody = null;
-        if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
-            statusCode != HttpServletResponse.SC_NOT_FOUND &&
-            statusCode != HttpServletResponse.SC_BAD_REQUEST &&
-            statusCode != HttpServletResponse.SC_UNAUTHORIZED) {
-          consumedNewWebDriverSessionBody = updateHubIfNewWebDriverSession(request, proxyResponse);
-        }
-        if (newSessionRequest &&
-            (statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR ||
-            statusCode == HttpServletResponse.SC_BAD_REQUEST ||
-            statusCode == HttpServletResponse.SC_UNAUTHORIZED)) {
-          removeIncompleteNewSessionRequest();
-        }
-
-        consumedNewWebDriverSessionBody = closeSessionIfNecessary(
-            consumedNewWebDriverSessionBody,
-            request,
-            proxyResponse);
-
-        byte[] contentBeingForwarded = null;
-        if (responseBody != null) {
-          InputStream in;
-          if (consumedNewWebDriverSessionBody == null) {
-            in = responseBody.getContent();
-            if (request.getRequestType() == RequestType.START_SESSION && request instanceof LegacySeleniumRequest) {
-              res = getResponseUtf8Content(in);
-
-              updateHubNewSeleniumSession(res);
-
-              in = new ByteArrayInputStream(res.getBytes("UTF-8"));
-            }
-          } else {
-            in = new ByteArrayInputStream(consumedNewWebDriverSessionBody);
-          }
-
-          contentBeingForwarded = drainInputStream(in);
-        }
-
-        if (slot.getProxy() instanceof CommandListener) {
-          SeleniumBasedResponse wrappedResponse = new SeleniumBasedResponse(response);
-          wrappedResponse.setForwardedContent(contentBeingForwarded);
-          ((CommandListener) slot.getProxy()).afterCommand(this, request, wrappedResponse);
-          contentBeingForwarded = wrappedResponse.getForwardedContentAsByteArray();
-        }
-
-        if (contentBeingForwarded != null) {
-          writeRawBody(response, contentBeingForwarded);
-        }
-        response.flushBuffer();
-      } finally {
-        EntityUtils.consume(responseBody);
+      byte[] consumedNewWebDriverSessionBody = null;
+      if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
+          statusCode != HttpServletResponse.SC_NOT_FOUND &&
+          statusCode != HttpServletResponse.SC_BAD_REQUEST &&
+          statusCode != HttpServletResponse.SC_UNAUTHORIZED) {
+        consumedNewWebDriverSessionBody = updateHubIfNewWebDriverSession(request, proxyResponse);
       }
+      if (newSessionRequest &&
+          (statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR ||
+          statusCode == HttpServletResponse.SC_BAD_REQUEST ||
+          statusCode == HttpServletResponse.SC_UNAUTHORIZED)) {
+        removeIncompleteNewSessionRequest();
+      }
+
+      consumedNewWebDriverSessionBody = closeSessionIfNecessary(
+          consumedNewWebDriverSessionBody,
+          request,
+          proxyResponse);
+
+      byte[] contentBeingForwarded = null;
+      if (proxyResponse.getContentString() != null) {
+        contentBeingForwarded = proxyResponse.getContent();
+        if (consumedNewWebDriverSessionBody == null) {
+          if (request.getRequestType() == RequestType.START_SESSION && request instanceof LegacySeleniumRequest) {
+            res = proxyResponse.getContentString();
+
+            updateHubNewSeleniumSession(res);
+
+            contentBeingForwarded = res.getBytes("UTF-8");
+          }
+        } else {
+          contentBeingForwarded = consumedNewWebDriverSessionBody;
+        }
+      }
+
+      if (slot.getProxy() instanceof CommandListener) {
+        SeleniumBasedResponse wrappedResponse = new SeleniumBasedResponse(response);
+        wrappedResponse.setForwardedContent(contentBeingForwarded);
+        ((CommandListener) slot.getProxy()).afterCommand(this, request, wrappedResponse);
+        contentBeingForwarded = wrappedResponse.getForwardedContentAsByteArray();
+      }
+
+      if (contentBeingForwarded != null) {
+        writeRawBody(response, contentBeingForwarded);
+      }
+      response.flushBuffer();
       response.flushBuffer();
 
       return res;
@@ -307,17 +297,6 @@ public class TestSession {
       forwardingRequest = false;
       Thread.currentThread().setName(currentThreadName);
     }
-  }
-
-  private Charset detectEncoding(HttpResponse proxyResponse) {
-    Header typeHeader = proxyResponse.getFirstHeader("Content-Type");
-    Charset encoding;
-    try {
-      encoding = MediaType.parse(typeHeader.getValue()).charset().or(UTF_8);
-    } catch (IllegalArgumentException | NullPointerException e) {
-      encoding = UTF_8;
-    }
-    return encoding;
   }
 
   private byte[] closeSessionIfNecessary(
@@ -330,27 +309,25 @@ public class TestSession {
     // 3. W3C WebDriver Protocol --- {"value": {"error": "invalid session id"}}
     // In the webdriver cases, the status code should also indicate an error
     if (request instanceof LegacySeleniumRequest) {
-      if (proxyResponse.getStatusLine().getStatusCode() == HttpServletResponse.SC_NOT_FOUND) {
+      if (proxyResponse.getStatus() == HttpServletResponse.SC_NOT_FOUND) {
         removeSessionBrowserTimeout();
       }
       return consumed;
     }
 
     // We have a webdriver response.
-    if (proxyResponse.getEntity() == null) {
+    if (proxyResponse.getContentString() == null) {
       // But there's nothing we can do.
       return consumed;
     }
 
     if (consumed == null) {
-      try (InputStream in = proxyResponse.getEntity().getContent()) {
-        consumed = ByteStreams.toByteArray(in);
-      }
+      consumed = proxyResponse.getContent();
     }
 
     try (InputStream in = new ByteArrayInputStream(consumed);
-         Reader reader = new InputStreamReader(in, detectEncoding(proxyResponse))) {
-      Object body = new GsonBuilder().setLenient().create().fromJson(reader, Object.class);
+         Reader reader = new InputStreamReader(in, proxyResponse.getContentEncoding())) {
+      Object body = new Json().newInput(reader).read(Object.class);
       if (body instanceof Map) {
         Map<?, ?> json = (Map<?, ?>) body;
         Object raw = json.get("status");
@@ -368,7 +345,7 @@ public class TestSession {
           }
         }
       }
-    } catch (JsonParseException e) {
+    } catch (JsonException e) {
       // Nothing to do --- poorly formed payload.
     }
 
@@ -405,22 +382,19 @@ public class TestSession {
       return null;
     }
 
-    Header h = proxyResponse.getFirstHeader("Location");
+    String h = proxyResponse.getHeader("Location");
     if (h != null) {
       // The new session has sent a redirect. Extract the session key from it
-      ExternalSessionKey key = ExternalSessionKey.fromWebDriverRequest(h.getValue());
+      ExternalSessionKey key = ExternalSessionKey.fromWebDriverRequest(h);
       setExternalKey(key);
       return null;
     }
 
-    if (isSuccessJsonResponse(proxyResponse) && proxyResponse.getEntity() != null) {
+    if (isSuccessJsonResponse(proxyResponse) && proxyResponse.getContent() != null) {
       // Determine the character encoding from the response. Default to UTF-8
-      Charset encoding = detectEncoding(proxyResponse);
+      Charset encoding = proxyResponse.getContentEncoding();
 
-      byte[] consumedData;
-      try (InputStream stream = proxyResponse.getEntity().getContent()) {
-        consumedData = ByteStreams.toByteArray(stream);
-      }
+      byte[] consumedData = proxyResponse.getContent();
 
       String contentString = new String(consumedData, encoding);
       ExternalSessionKey key = ExternalSessionKey.fromJsonResponseBody(contentString);
@@ -437,11 +411,11 @@ public class TestSession {
   }
 
   private static boolean isSuccessJsonResponse(HttpResponse response) {
-    if (response.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
-      for (Header header : response.getHeaders("Content-Type")) {
+    if (response.getStatus() == HttpServletResponse.SC_OK) {
+      for (String header : response.getHeaders("Content-Type")) {
         MediaType type;
         try {
-          type = MediaType.parse(header.getValue());
+          type = MediaType.parse(header);
         } catch (IllegalArgumentException ignored) {
           continue;
         }
@@ -455,11 +429,9 @@ public class TestSession {
   }
 
   private HttpResponse sendRequestToNode(HttpRequest proxyRequest) throws IOException {
-    HttpClient client = getClient();
-    URL remoteURL = slot.getRemoteURL();
-    HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort(), remoteURL.getProtocol());
+    HttpClient client = getClient(slot.getRemoteURL());
 
-    return client.execute(host, proxyRequest);
+    return client.execute(proxyRequest);
   }
 
   private HttpRequest prepareProxyRequest(HttpServletRequest request) throws IOException {
@@ -486,12 +458,10 @@ public class TestSession {
     HttpRequest proxyRequest;
 
     if (body != null) {
-      BasicHttpEntityEnclosingRequest r =
-          new BasicHttpEntityEnclosingRequest(request.getMethod(), uri);
-      r.setEntity(new InputStreamEntity(body, request.getContentLength()));
-      proxyRequest = r;
+      proxyRequest = new HttpRequest(HttpMethod.valueOf(request.getMethod()), uri);
+      proxyRequest.setContent(ByteStreams.toByteArray(body));
     } else {
-      proxyRequest = new BasicHttpRequest(request.getMethod(), uri);
+      proxyRequest = new HttpRequest(HttpMethod.valueOf(request.getMethod()), uri);
     }
 
     for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements(); ) {
@@ -527,65 +497,36 @@ public class TestSession {
     }
   }
 
-  private byte[] drainInputStream(InputStream in) throws IOException {
-    try {
-      return ByteStreams.toByteArray(in);
-    } finally {
-      in.close();
-    }
-  }
-
-  private String getResponseUtf8Content(InputStream in) {
-    String res;
-    StringBuilder sb = new StringBuilder();
-    String line;
-    try {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-      while ((line = reader.readLine()) != null) {
-        // TODO freynaud bug ?
-        sb.append(line);/* .append("\n") */
-      }
-      in.close();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    res = sb.toString();
-    return res;
-  }
-
   private void processResponseHeaders(
       HttpServletRequest request,
       HttpServletResponse response,
       URL remoteURL,
       HttpResponse proxyResponse) throws MalformedURLException {
     String pathSpec = request.getServletPath() + request.getContextPath();
-    for (Header header : proxyResponse.getAllHeaders()) {
-      String name = header.getName();
-      String value = header.getValue();
+    for (String name : proxyResponse.getHeaderNames()) {
+      for (String value : proxyResponse.getHeaders(name)) {
+        // HttpEntity#getContent() chews up the chunk-size octet (i.e., the InputStream does not
+        // actually map 1:1 to the underlying response body). This breaks any client expecting the
+        // chunk size. We could try to recreate it, but since the chunks are already read in and
+        // decoded, you'd end up with a single chunk, which isn't all that useful. So, we return the
+        // response as a traditional response with a Content-Length header, obviating the need for
+        // the Transfer-Encoding header.
+        if (name.equalsIgnoreCase("Transfer-Encoding") && value.equalsIgnoreCase("chunked")) {
+          continue;
+        }
 
-      // HttpEntity#getContent() chews up the chunk-size octet (i.e., the InputStream does not
-      // actually map 1:1 to the underlying response body). This breaks any client expecting the
-      // chunk size. We could
-      // try to recreate it, but since the chunks are already read in and decoded, you'd end up with
-      // a
-      // single chunk, which isn't all that useful. So, we return the response as a traditional
-      // response with a
-      // Content-Length header, obviating the need for the Transfer-Encoding header.
-      if (name.equalsIgnoreCase("Transfer-Encoding") && value.equalsIgnoreCase("chunked")) {
-        continue;
-      }
-
-      // the location needs to point to the hub that will proxy
-      // everything.
-      if (name.equalsIgnoreCase("Location")) {
-        URL returnedLocation = new URL(remoteURL, value);
-        String driverPath = remoteURL.getPath();
-        String wrongPath = returnedLocation.getPath();
-        String correctPath = wrongPath.replace(driverPath, "");
-        Hub hub = slot.getProxy().getRegistry().getHub();
-        response.setHeader(name, hub.getUrl(pathSpec + correctPath).toString());
-      } else {
-        response.setHeader(name, value);
+        // the location needs to point to the hub that will proxy
+        // everything.
+        if (name.equalsIgnoreCase("Location")) {
+          URL returnedLocation = new URL(remoteURL, value);
+          String driverPath = remoteURL.getPath();
+          String wrongPath = returnedLocation.getPath();
+          String correctPath = wrongPath.replace(driverPath, "");
+          Hub hub = slot.getProxy().getRegistry().getHub();
+          response.setHeader(name, hub.getUrl(pathSpec + correctPath).toString());
+        } else {
+          response.setHeader(name, value);
+        }
       }
     }
   }
@@ -623,38 +564,30 @@ public class TestSession {
     HttpRequest request;
     switch (slot.getProtocol()) {
       case Selenium:
-        request =
-            new BasicHttpRequest("POST", remoteURL.toExternalForm()
-                                         + "/?cmd=testComplete&sessionId=" + getExternalKey()
-                .getKey());
+        request = new HttpRequest(
+            POST,
+            remoteURL.toExternalForm() + "/?cmd=testComplete&sessionId=" + getExternalKey().getKey());
         break;
+
       case WebDriver:
         String uri = remoteURL.toString() + "/session/" + externalKey;
-        request = new BasicHttpRequest("DELETE", uri);
+        request = new HttpRequest(DELETE, uri);
         break;
+
       default:
         throw new GridException("Error, protocol not implemented.");
     }
 
-    HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort());
-    HttpEntity responseBody = null;
     boolean ok;
     try {
-      HttpClient client = getClient();
-      HttpResponse response = client.execute(host, request);
-      responseBody = response.getEntity();
-      int code = response.getStatusLine().getStatusCode();
+      HttpClient client = getClient(remoteURL);
+      HttpResponse response = client.execute(request);
+      int code = response.getStatus();
       ok = (code >= 200) && (code <= 299);
     } catch (Throwable e) {
       ok = false;
       // corrupted or the something else already sent the DELETE.
       log.severe("Unable to send DELETE request for the current session " + e.getMessage());
-    } finally {
-      try {
-        EntityUtils.consume(responseBody);
-      } catch (IOException e) {
-        log.warning("Consuming the response body when DELETE to the node " + e.getMessage());
-      }
     }
     return ok;
   }
@@ -671,7 +604,6 @@ public class TestSession {
       lastActivity = clock.millis();
     }
     this.ignoreTimeout = ignore;
-
   }
 
   public boolean isForwardingRequest() {
