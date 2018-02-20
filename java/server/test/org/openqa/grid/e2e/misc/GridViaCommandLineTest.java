@@ -56,6 +56,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -173,7 +174,7 @@ public class GridViaCommandLineTest {
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
                                            DesiredCapabilities.htmlUnit());
     long start = System.currentTimeMillis();
-    new FluentWait<>(tempLog).withTimeout(100, TimeUnit.SECONDS)
+    new FluentWait<>(tempLog).withTimeout(Duration.ofSeconds(100))
         .until(file -> readAll(file).contains("Removing session"));
     long end = System.currentTimeMillis();
     assertThat(end - start, greaterThan(5000L));
@@ -313,7 +314,7 @@ public class GridViaCommandLineTest {
 
   private void waitForTextOnHubConsole(Integer hubPort, String text) throws MalformedURLException {
     new FluentWait<>(new URL(String.format("http://localhost:%d/grid/console", hubPort)))
-        .withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
+        .withTimeout(Duration.ofSeconds(5)).pollingEvery(Duration.ofMillis(50))
         .until((Function<URL, Boolean>) u -> {
           try (InputStream is = u.openConnection().getInputStream();
                InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);

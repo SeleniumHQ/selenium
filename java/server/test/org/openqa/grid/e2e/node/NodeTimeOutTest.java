@@ -17,7 +17,6 @@
 
 package org.openqa.grid.e2e.node;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 
 import com.google.common.base.Function;
@@ -38,7 +37,7 @@ import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
-import java.net.MalformedURLException;
+import java.time.Duration;
 
 /**
  * checks that the browser is properly stopped when a selenium1 session times out.
@@ -47,7 +46,7 @@ public class NodeTimeOutTest {
 
   private Hub hub;
   private SelfRegisteringRemote node;
-  private Wait<Object> wait = new FluentWait<Object>("").withTimeout(8, SECONDS);
+  private Wait<Object> wait = new FluentWait<Object>("").withTimeout(Duration.ofSeconds(8));
 
   @Before
   public void setup() throws Exception {
@@ -68,28 +67,25 @@ public class NodeTimeOutTest {
 
   @Test
   @Ignore("Not passing from the command line")
-  public void webDriverTimesOut() throws InterruptedException, MalformedURLException {
+  public void webDriverTimesOut() {
     String url = hub.getConsoleURL().toString();
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
     WebDriver driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
     driver.get(url);
     assertEquals(driver.getTitle(), "Grid Console");
-    wait.until(new Function<Object, Integer>() {
-      @Override
-      public Integer apply(Object input) {
-        Integer i = hub.getRegistry().getActiveSessions().size();
-        if (i != 0) {
-          return null;
-        }
-        return i;
+    wait.until((Function<Object, Integer>) input -> {
+      Integer i = hub.getRegistry().getActiveSessions().size();
+      if (i != 0) {
+        return null;
       }
+      return i;
     });
     assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
   }
 
   @After
-  public void teardown() throws Exception {
+  public void teardown() {
     node.stopRemoteServer();
     hub.stop();
   }
