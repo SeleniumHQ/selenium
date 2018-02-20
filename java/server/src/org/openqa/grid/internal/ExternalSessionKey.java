@@ -17,11 +17,13 @@
 
 package org.openqa.grid.internal;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import org.openqa.grid.internal.exception.NewSessionException;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
+
+import java.util.Map;
 
 public class ExternalSessionKey {
 
@@ -100,19 +102,19 @@ public class ExternalSessionKey {
    */
   public static ExternalSessionKey fromJsonResponseBody(String responseBody) {
     try {
-      JsonObject json = new JsonParser().parse(responseBody).getAsJsonObject();
-      if (json.has("sessionId") && !json.get("sessionId").isJsonNull()) {
-        return new ExternalSessionKey(json.get("sessionId").getAsString());
+      Map<String, Object> json = new Json().toType(responseBody, MAP_TYPE);
+      if (json.get("sessionId") instanceof String) {
+        return new ExternalSessionKey((String) json.get("sessionId"));
       }
 
       // W3C response
-      if (json.has("value") && json.get("value").isJsonObject()) {
-        JsonObject value = json.getAsJsonObject("value");
-        if (value.has("sessionId") && !value.get("sessionId").isJsonNull()) {
-          return new ExternalSessionKey(value.get("sessionId").getAsString());
+      if (json.get("value") instanceof Map) {
+        Map<?, ?> value = (Map<?, ?>) json.get("value");
+        if (value.get("sessionId") instanceof String) {
+          return new ExternalSessionKey((String) value.get("sessionId"));
         }
       }
-    } catch (JsonSyntaxException e) {
+    } catch (JsonException | ClassCastException e) {
       return null;
     }
 
