@@ -28,10 +28,11 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Function;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.selenium.GridLauncherV3;
 import org.openqa.grid.shared.Stoppable;
+import org.openqa.grid.web.Hub;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.PortProber;
@@ -50,6 +51,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -212,32 +214,131 @@ public class GridViaCommandLineTest {
     urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(
         String.format("http://localhost:%d/wd/hub/status", nodePort)));
 
-    new FluentWait<>(new URL(String.format("http://localhost:%d/grid/console", hubPort)))
-      .withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
-      .until((Function<URL, Boolean>) u -> {
-        try (InputStream is = u.openConnection().getInputStream();
-             InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(isr)) {
-          return reader.lines().anyMatch(l -> l.contains("htmlunit"));
-        } catch (IOException ioe) {
-          return false;
-        }
-      });
+    waitForTextOnHubConsole(hubPort, "htmlunit");
+    checkPresenceOfElementOnHubConsole(hubPort, By.cssSelector("img[src$='htmlunit.png']"));
 
-    WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", hubPort)),
-                                                   DesiredCapabilities.htmlUnit());
+    node.ifPresent(Stoppable::stop);
+    hub.ifPresent(Stoppable::stop);
+  }
+
+  @Test
+  public void canStartHubeUsingConfigFile() throws Exception {
+    Integer hubPort = PortProber.findFreePort();
+    Path hubConfig = Files.createTempFile("hub", ".json");
+    String hubJson = String.format(
+        "{ \"port\": %s,\n"
+        + " \"newSessionWaitTimeout\": -1,\n"
+        + " \"servlets\" : [],\n"
+        + " \"withoutServlets\": [],\n"
+        + " \"custom\": {},\n"
+        + " \"capabilityMatcher\": \"org.openqa.grid.internal.utils.DefaultCapabilityMatcher\",\n"
+        + " \"registry\": \"org.openqa.grid.internal.DefaultGridRegistry\",\n"
+        + " \"throwOnCapabilityNotPresent\": true,\n"
+        + " \"cleanUpCycle\": 10000,\n"
+        + " \"role\": \"hub\",\n"
+        + " \"debug\": false,\n"
+        + " \"browserTimeout\": 30000,\n"
+        + " \"timeout\": 3600\n"
+        + "}", hubPort);
+    Files.write(hubConfig, hubJson.getBytes());
+    String[] hubArgs = {"-role", "hub", "-hubConfig", hubConfig.toString()};
+    Optional<Stoppable> hub = new GridLauncherV3(hubArgs).launch();
+    UrlChecker urlChecker = new UrlChecker();
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(
+        String.format("http://localhost:%d/grid/console", hubPort)));
+
+    assertThat(hub.get(), instanceOf(Hub.class));
+    GridHubConfiguration realHubConfig = ((Hub) hub.get()).getConfiguration();
+    assertEquals(10000, realHubConfig.cleanUpCycle.intValue());
+    assertEquals(30000, realHubConfig.browserTimeout.intValue());
+    assertEquals(3600, realHubConfig.timeout.intValue());
+
+    Integer nodePort = PortProber.findFreePort();
+    String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort,
+                         "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
+    Optional<Stoppable> node = new GridLauncherV3(nodeArgs).launch();
+    urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(
+        String.format("http://localhost:%d/wd/hub/status", nodePort)));
+
+    waitForTextOnHubConsole(hubPort, "htmlunit");
+    checkPresenceOfElementOnHubConsole(hubPort, By.cssSelector("img[src$='htmlunit.png']"));
+
+    node.ifPresent(Stoppable::stop);
+    hub.ifPresent(Stoppable::stop);
+  }
+
+  @Test
+  public void canStartNodeUsingConfigFile() throws Exception {
+    Integer hubPort = PortProber.findFreePort();
+    String[] hubArgs = {"-role", "hub", "-port", hubPort.toString()};
+    Optional<Stoppable> hub = new GridLauncherV3(hubArgs).launch();
+    UrlChecker urlChecker = new UrlChecker();
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(
+        String.format("http://localhost:%d/grid/console", hubPort)));
+
+    Integer nodePort = PortProber.findFreePort();
+    Path nodeConfig = Files.createTempFile("node", ".json");
+    String nodeJson = String.format(
+        "{\n"
+        + " \"capabilities\": [ { \"browserName\": \"htmlunit\", \"maxInstances\": 1 } ],\n"
+        + " \"proxy\": \"org.openqa.grid.selenium.proxy.DefaultRemoteProxy\",\n"
+        + " \"maxSession\": 10,\n"
+        + " \"port\": %s,\n"
+        + " \"register\": true,\n"
+        + " \"registerCycle\": 10000,\n"
+        + " \"hub\": \"http://localhost:%s\",\n"
+        + " \"nodeStatusCheckTimeout\": 10000,\n"
+        + " \"nodePolling\": 10000,\n"
+        + " \"role\": \"node\",\n"
+        + " \"unregisterIfStillDownAfter\": 20000,\n"
+        + " \"downPollingLimit\": 2,\n"
+        + " \"debug\": false,\n"
+        + " \"servlets\" : [],\n"
+        + " \"withoutServlets\": [],\n"
+        + " \"custom\": {}\n"
+        + "}", nodePort, hubPort);
+    Files.write(nodeConfig, nodeJson.getBytes());
+
+    String[] nodeArgs = {"-role", "node", "-nodeConfig", nodeConfig.toString() };
+    Optional<Stoppable> node = new GridLauncherV3(nodeArgs).launch();
+    urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(
+        String.format("http://localhost:%d/wd/hub/status", nodePort)));
+
+    waitForTextOnHubConsole(hubPort, "htmlunit");
+    checkPresenceOfElementOnHubConsole(hubPort, By.cssSelector("img[src$='htmlunit.png']"));
+
+    node.ifPresent(Stoppable::stop);
+    hub.ifPresent(Stoppable::stop);
+  }
+
+  private void waitForTextOnHubConsole(Integer hubPort, String text) throws MalformedURLException {
+    new FluentWait<>(new URL(String.format("http://localhost:%d/grid/console", hubPort)))
+        .withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
+        .until((Function<URL, Boolean>) u -> {
+          try (InputStream is = u.openConnection().getInputStream();
+               InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+               BufferedReader reader = new BufferedReader(isr)) {
+            return reader.lines().anyMatch(l -> l.contains(text));
+          } catch (IOException ioe) {
+            return false;
+          }
+        });
+  }
+
+  private void checkPresenceOfElementOnHubConsole(Integer hubPort, By locator)
+      throws MalformedURLException {
+    WebDriver driver = new RemoteWebDriver(
+        new URL(String.format("http://localhost:%d/wd/hub", hubPort)),
+        DesiredCapabilities.htmlUnit());
 
     try {
       driver.get(String.format("http://localhost:%d/grid/console", hubPort));
       assertEquals("Should only have one htmlunit registered to the hub",
-                   1, driver.findElements(By.cssSelector("img[src$='htmlunit.png']")).size());
+                   1, driver.findElements(locator).size());
     } finally {
       try {
         driver.quit();
       } catch (Exception ignore) {}
     }
-
-    node.ifPresent(Stoppable::stop);
-    hub.ifPresent(Stoppable::stop);
   }
 }
