@@ -90,6 +90,9 @@ class AsyncScriptExecutor : public CWindowImpl<AsyncScriptExecutor>, public IEle
   void GetElementIdList(const Json::Value& json_object);
   bool WaitForPollingScript(void);
   void TransferReturnedElements(void);
+  void ReplaceTransferredElementResult(std::string original_element_id,
+                                       std::string element_id,
+                                       Json::Value* result);
 
   ElementRepository* element_repository_;
   HWND main_element_repository_handle_;

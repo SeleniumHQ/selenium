@@ -34,6 +34,11 @@ struct ElementInfo {
   LPSTREAM element_stream;
 };
 
+struct RemappedElementInfo {
+  std::string original_element_id;
+  std::string element_id;
+};
+
 // Forward declaration of classes.
 class IECommandExecutor;
 class IElementManager;

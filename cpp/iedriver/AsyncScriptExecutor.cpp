@@ -137,7 +137,7 @@ LRESULT AsyncScriptExecutor::OnGetRequiredElementList(UINT uMsg,
   LOG(TRACE) << "Entering AsyncScriptExecutor::OnGetRequiredElementList";
   Json::Value element_id_list(Json::arrayValue);
   std::vector<std::string>::const_iterator it = this->element_id_list_.begin();
-  for (; it < this->element_id_list_.end(); ++it) {
+  for (; it != this->element_id_list_.end(); ++it) {
     element_id_list.append(*it);
   }
   Json::FastWriter writer;
@@ -184,25 +184,27 @@ LRESULT AsyncScriptExecutor::OnExecuteScript(UINT uMsg,
   if (!this->is_listener_attached_) {
     ::PostMessage(this->m_hWnd, WM_CLOSE, NULL, NULL);
   } else {
-    if (this->status_code_ == WD_SUCCESS && this->polling_script_source_code_.size() > 0) {
-      bool polling_script_succeeded = WaitForPollingScript();
-      if (!polling_script_succeeded) {
-        // The polling script either detected a page reload, or it timed out.
-        // In either case, this script execution is completed.
-        this->is_execution_completed_ = true;
+    if (this->status_code_ == WD_SUCCESS) {
+      if (this->polling_script_source_code_.size() > 0) {
+          bool polling_script_succeeded = this->WaitForPollingScript();
+          if (!polling_script_succeeded) {
+            // The polling script either detected a page reload, or it timed out.
+            // In either case, this script execution is completed.
+            this->is_execution_completed_ = true;
+            return 0;
+          }
+      } else {
+        this->status_code_ = script_to_execute.ConvertResultToJsonValue(this,
+                                                                        &this->script_result_);
+      }
+      if (this->element_id_list_.size() > 0) {
+        // There are newly discovered elements to be managed, and they
+        // need to be marshaled back to the main executor thread. Note
+        // that we return without setting execution complete, because
+        // execution isn't done until the marshalling is done.
+        TransferReturnedElements();
         return 0;
       }
-    } else {
-      script_to_execute.ConvertResultToJsonValue(this,
-                                                 &this->script_result_);
-    }
-    if (this->element_id_list_.size() > 0) {
-      // There are newly discovered elements to be managed, and they
-      // need to be marshaled back to the main executor thread. Note
-      // that we return without setting execution complete, because
-      // execution isn't done until the marshalling is done.
-      TransferReturnedElements();
-      return 0;
     }
   }
   this->is_execution_completed_ = true;
@@ -248,17 +250,43 @@ LRESULT AsyncScriptExecutor::OnNotifyElementTransferred(UINT uMsg,
                                                         LPARAM lParam,
                                                         BOOL& bHandled) {
   LOG(TRACE) << "Entering AsyncScriptExecutor::OnNotifyElementTransferred";
-  ElementInfo* info = reinterpret_cast<ElementInfo*>(lParam);
+  RemappedElementInfo* info = reinterpret_cast<RemappedElementInfo*>(lParam);
   std::string element_id = info->element_id;
+  std::string original_element_id = info->original_element_id;
   delete info;
-  std::vector<std::string>::iterator item = std::find(this->element_id_list_.begin(),
-                                                      this->element_id_list_.end(),
-                                                      element_id);
+  this->ReplaceTransferredElementResult(original_element_id, element_id, &this->script_result_);
+  std::vector<std::string>::const_iterator item = std::find(this->element_id_list_.begin(),
+                                                            this->element_id_list_.end(),
+                                                            original_element_id);
   this->element_id_list_.erase(item);
   if (this->element_id_list_.size() == 0) {
     this->is_execution_completed_ = true;
   }
   return WD_SUCCESS;
+}
+void AsyncScriptExecutor::ReplaceTransferredElementResult(std::string original_element_id,
+                                                          std::string element_id,
+                                                          Json::Value* result) {
+  if (result->isArray()) {
+    for (Json::ArrayIndex i = 0; i < result->size(); ++i) {
+      this->ReplaceTransferredElementResult(original_element_id,
+                                            element_id,
+                                            &((*result)[i]));
+    }
+  } else if (result->isObject()) {
+    if (result->isMember(JSON_ELEMENT_PROPERTY_NAME) &&
+        (*result)[JSON_ELEMENT_PROPERTY_NAME] == original_element_id) {
+      (*result)[JSON_ELEMENT_PROPERTY_NAME] = element_id;
+    } else {
+      std::vector<std::string> member_names = result->getMemberNames();
+      std::vector<std::string>::const_iterator it = member_names.begin();
+      for (; it != member_names.end(); ++it) {
+        this->ReplaceTransferredElementResult(original_element_id,
+                                              element_id,
+                                              &((*result)[*it]));
+      }
+    }
+  }
 }
 
 int AsyncScriptExecutor::GetManagedElement(const std::string& element_id,
@@ -311,8 +339,8 @@ void AsyncScriptExecutor::GetElementIdList(const Json::Value& json_object) {
     } else {
       std::vector<std::string> property_names = json_object.getMemberNames();
       std::vector<std::string>::const_iterator it = property_names.begin();
-      for (; it < property_names.end(); ++it) {
-        GetElementIdList(json_object[*it]);
+      for (; it != property_names.end(); ++it) {
+        this->GetElementIdList(json_object[*it]);
       }
     }
   }
@@ -321,7 +349,7 @@ void AsyncScriptExecutor::GetElementIdList(const Json::Value& json_object) {
 void AsyncScriptExecutor::TransferReturnedElements() {
   LOG(TRACE) << "Entering AsyncScriptExecutor::TransferReturnedElements";
   std::vector<std::string>::const_iterator it = this->element_id_list_.begin();
-  for (; it < this->element_id_list_.end(); ++it) {
+  for (; it != this->element_id_list_.end(); ++it) {
     std::string element_id = *it;
     ElementHandle element_handle;
     this->element_repository_->GetManagedElement(element_id,

@@ -467,13 +467,13 @@ LRESULT IECommandExecutor::OnTransferManagedElement(UINT uMsg,
                                    IID_IHTMLElement,
                                    reinterpret_cast<void**>(&element));
   delete info;
-  ElementHandle element_handle(new Element(element,
-                                           browser_handle->GetContentWindowHandle(),
-                                           element_id));
-  this->managed_elements_->AddManagedElement(element_handle);
-  ElementInfo* return_info = new ElementInfo;
-  return_info->element_id = element_id.c_str();
-  return_info->element_stream = NULL;
+  ElementHandle element_handle;
+  this->managed_elements_->AddManagedElement(browser_handle,
+                                             element,
+                                             &element_handle);
+  RemappedElementInfo* return_info = new RemappedElementInfo;
+  return_info->original_element_id = element_id;
+  return_info->element_id = element_handle->element_id();
   ::PostMessage(browser_handle->script_executor_handle(),
                 WD_ASYNC_SCRIPT_NOTIFY_ELEMENT_TRANSFERRED,
                 NULL,
