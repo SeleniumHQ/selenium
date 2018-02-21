@@ -1,6 +1,6 @@
 {
-  "DriverServiceLocation":  "C:\\Projects\\webdriver\\build\\cli\\Debug\\netcoreapp2.0",
-  "ActiveDriverConfig": "Remote",
+  "DriverServiceLocation":  "",
+  "ActiveDriverConfig": "Chrome",
   "ActiveWebsiteConfig": "Default",
   "WebsiteConfigs": {
     "Default": {
