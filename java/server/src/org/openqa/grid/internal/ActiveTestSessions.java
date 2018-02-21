@@ -32,7 +32,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 
 import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
 
 /**
  * The set of active test sessions.
