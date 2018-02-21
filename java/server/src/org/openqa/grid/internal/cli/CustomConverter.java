@@ -15,14 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.internal.utils.configuration.converters;
+package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.IStringConverter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CustomConverter implements IStringConverter<Map<String,String>> {
+class CustomConverter implements IStringConverter<Map<String,String>> {
   @Override
   public Map<String,String> convert(String value) {
     Map<String,String> custom = new HashMap<>();

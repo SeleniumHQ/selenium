@@ -17,11 +17,10 @@
 
 package org.openqa.grid.e2e.utils;
 
-import com.beust.jcommander.JCommander;
-
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
+import org.openqa.grid.internal.cli.GridNodeCliOptions;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
@@ -30,7 +29,6 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class GridTestHelper {
@@ -44,8 +42,7 @@ public class GridTestHelper {
                      "-host","localhost",
                      "-hub",hub.toString(),
                      "-port",String.valueOf(PortProber.findFreePort())};
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    JCommander.newBuilder().addObject(config).build().parse(args);
+    GridNodeConfiguration config = new GridNodeCliOptions().parse(args).toConfiguration();
     RegistrationRequest req = RegistrationRequest.build(config);
     SelfRegisteringRemote remote = new SelfRegisteringRemote(req);
     remote.deleteAllBrowsers();
@@ -89,8 +86,7 @@ public class GridTestHelper {
     return hub;
   }
 
-  public static RemoteWebDriver getRemoteWebDriver(DesiredCapabilities caps, Hub hub)
-      throws MalformedURLException {
+  public static RemoteWebDriver getRemoteWebDriver(DesiredCapabilities caps, Hub hub) {
     return new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
   }
 }

@@ -53,7 +53,6 @@ public class GridConfigurationTest {
     assertEquals(GridConfiguration.DEFAULT_TIMEOUT, gc.timeout);
     assertEquals(GridConfiguration.DEFAULT_BROWSER_TIMEOUT, gc.browserTimeout);
     assertEquals(GridConfiguration.DEFAULT_DEBUG_TOGGLE, gc.debug);
-    assertFalse(gc.help);
     assertNull(gc.jettyMaxThreads);
     assertNull(gc.log);
     assertEquals("standalone", gc.role);

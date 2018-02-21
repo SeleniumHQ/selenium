@@ -24,11 +24,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import com.beust.jcommander.JCommander;
-
 import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.cli.GridNodeCliOptions;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -377,8 +376,6 @@ public class RegistrationRequestTest {
   }
 
   private GridNodeConfiguration parseCliOptions(String... args) {
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    JCommander.newBuilder().addObject(config).build().parse(args);
-    return config;
+    return new GridNodeCliOptions().parse(args).toConfiguration();
   }
 }

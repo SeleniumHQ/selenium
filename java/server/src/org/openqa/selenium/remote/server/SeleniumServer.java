@@ -24,6 +24,7 @@ import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
+import org.openqa.grid.internal.cli.StandaloneCliOptions;
 import org.openqa.grid.selenium.node.ChromeMutator;
 import org.openqa.grid.selenium.node.FirefoxMutator;
 import org.openqa.grid.shared.GridNodeServer;
@@ -289,19 +290,16 @@ public class SeleniumServer implements GridNodeServer {
   }
 
   public static void main(String[] argv) {
-    StandaloneConfiguration configuration = new StandaloneConfiguration();
-    JCommander jCommander = JCommander.newBuilder().addObject(configuration).build();
-    jCommander.setProgramName("selenium-3-server");
-    jCommander.parse(argv);
+    StandaloneCliOptions options = new StandaloneCliOptions().parse(argv);
 
-    if (configuration.help) {
+    if (options.help) {
       StringBuilder message = new StringBuilder();
-      jCommander.usage(message);
+      new JCommander(options).usage(message);
       System.err.println(message.toString());
       return;
     }
 
-    SeleniumServer server = new SeleniumServer(configuration);
+    SeleniumServer server = new SeleniumServer(options.toConfiguration());
     server.boot();
   }
 
@@ -309,8 +307,7 @@ public class SeleniumServer implements GridNodeServer {
     if (msg != null) {
       System.out.println(msg);
     }
-    StandaloneConfiguration args = new StandaloneConfiguration();
-    JCommander jCommander = new JCommander(args);
+    JCommander jCommander = new JCommander(new StandaloneCliOptions());
     jCommander.usage();
   }
 }

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.internal.utils.configuration.validators;
+package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.IValueValidator;
 import com.beust.jcommander.ParameterException;

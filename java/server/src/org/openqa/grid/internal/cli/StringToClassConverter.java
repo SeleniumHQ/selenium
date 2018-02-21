@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.internal.utils.configuration.converters;
+package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.IStringConverter;
 
@@ -23,7 +23,7 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 
-public abstract class StringToClassConverter<E> {
+abstract class StringToClassConverter<E> {
   public E convert(String clazz) {
     try {
       return (E) Class.forName(clazz).newInstance();
@@ -32,7 +32,7 @@ public abstract class StringToClassConverter<E> {
     }
   }
 
-  public static class CapabilityMatcherStringConverter extends StringToClassConverter<CapabilityMatcher> implements IStringConverter<CapabilityMatcher>{}
+  static class CapabilityMatcherStringConverter extends StringToClassConverter<CapabilityMatcher> implements IStringConverter<CapabilityMatcher>{}
 
-  public static class PrioritizerStringConverter extends StringToClassConverter<Prioritizer> implements IStringConverter<Prioritizer>{}
+  static class PrioritizerStringConverter extends StringToClassConverter<Prioritizer> implements IStringConverter<Prioritizer>{}
 }

@@ -29,14 +29,9 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.Expose;
 
-import com.beust.jcommander.Parameter;
-
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.utils.configuration.converters.BrowserDesiredCapabilityConverter;
-import org.openqa.grid.internal.utils.configuration.converters.NoOpParameterSplitter;
-import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
@@ -54,7 +49,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class GridNodeConfiguration extends GridConfiguration {
-  public static final String DEFAULT_NODE_CONFIG_FILE = "defaults/DefaultNodeWebDriver.json";
+  public static final String DEFAULT_NODE_CONFIG_FILE = "org/openqa/grid/common/defaults/DefaultNodeWebDriver.json";
   public static final String CONFIG_UUID_CAPABILITY = "se:CONFIG_UUID";
 
   /*
@@ -150,11 +145,6 @@ public class GridNodeConfiguration extends GridConfiguration {
   /**
    * Node specific json config file to use. Defaults to {@code null}.
    */
-  @Parameter(
-    names = "-nodeConfig",
-    description = "<String> filename : JSON configuration file for the node. Overrides default values",
-    validateValueWith = FileExistsValueValidator.class
-  )
   public String nodeConfigFile;
 
   /*
@@ -166,11 +156,7 @@ public class GridNodeConfiguration extends GridConfiguration {
    * Setting a value overrides the default (http://<host>:<port>).
    */
   @Expose
-  @Parameter(
-    names = "-remoteHost",
-    description = "<String> URL: Address to report to the hub. Used to override default (http://<host>:<port>)."
-  )
-  String remoteHost;
+  public String remoteHost;
 
   // used to read a Selenium 2.x nodeConfig.json file and throw a friendly exception
   @Expose( serialize = false )
@@ -185,30 +171,18 @@ public class GridNodeConfiguration extends GridConfiguration {
    * The host name or IP of the hub. Defaults to {@code null}.
    */
   @Expose
-  @Parameter(
-    names = "-hubHost",
-    description = "<String> IP or hostname : the host address of the hub we're attempting to register with. If -hub is specified the -hubHost is determined from it."
-  )
-  String hubHost;
+  public String hubHost;
 
   /**
    * The port of the hub. Defaults to {@code null}.
    */
   @Expose
-  @Parameter(
-    names = "-hubPort",
-    description = "<Integer> : the port of the hub we're attempting to register with. If -hub is specified the -hubPort is determined from it."
-  )
-  Integer hubPort;
+  public Integer hubPort;
 
   /**
    * The id tu use for this node. Automatically generated when {@code null}. Defaults to {@code null}.
    */
   @Expose
-  @Parameter(
-    names = "-id",
-    description = "<String> : optional unique identifier for the node. Defaults to the url of the remoteHost, when not specified."
-  )
   public String id;
 
   /**
@@ -217,34 +191,17 @@ public class GridNodeConfiguration extends GridConfiguration {
    * can not be loaded.
    */
   @Expose
-  @Parameter(
-    names = { "-capabilities", "-browser" },
-    description = "<String> : comma separated Capability values. Example: -capabilities browserName=firefox,platform=linux -capabilities browserName=chrome,platform=linux",
-    listConverter = BrowserDesiredCapabilityConverter.class,
-    converter = BrowserDesiredCapabilityConverter.class,
-    splitter = NoOpParameterSplitter.class
-  )
   public List<MutableCapabilities> capabilities = DefaultDesiredCapabilitiesBuilder.getCapabilities();
 
   /**
    * The down polling limit for the node. Defaults to {@code null}.
    */
   @Expose
-  @Parameter(
-    names = "-downPollingLimit",
-    description = "<Integer> : node is marked as \"down\" if the node hasn't responded after the number of checks specified in [downPollingLimit]."
-  )
   public Integer downPollingLimit = DEFAULT_DOWN_POLLING_LIMIT;
 
   /**
    * The hub url. Defaults to {@code http://localhost:4444}.
    */
-  @Parameter(
-    names = "-hub",
-    description = "<String> : the url that will be used to post the registration request. This option takes precedence over -hubHost and -hubPort options."
-  )
-  private String hubOption;
-
   @Expose
   public String hub = DEFAULT_HUB;
 
@@ -252,72 +209,42 @@ public class GridNodeConfiguration extends GridConfiguration {
    * How often to pull the node. Defaults to 5000 ms
    */
   @Expose
-  @Parameter(
-    names = "-nodePolling",
-    description = "<Integer> in ms : specifies how often the hub will poll to see if the node is still responding."
-  )
   public Integer nodePolling = DEFAULT_POLLING_INTERVAL;
 
   /**
    * When to time out a node status check. Defaults is after 5000 ms.
    */
   @Expose
-  @Parameter(
-    names = "-nodeStatusCheckTimeout",
-    description = "<Integer> in ms : connection/socket timeout, used for node \"nodePolling\" check."
-  )
   public Integer nodeStatusCheckTimeout = DEFAULT_NODE_STATUS_CHECK_TIMEOUT;
 
   /**
    * The proxy class name to use. Defaults to org.openqa.grid.selenium.proxy.DefaultRemoteProxy.
    */
   @Expose
-  @Parameter(
-    names = "-proxy",
-    description = "<String> : the class used to represent the node proxy. Default is [org.openqa.grid.selenium.proxy.DefaultRemoteProxy]."
-  )
   public String proxy = DEFAULT_PROXY;
 
   /**
    * Whether to register this node with the hub. Defaults to {@code true}
    */
   @Expose
-  @Parameter(
-    names = "-register",
-    description = "if specified, node will attempt to re-register itself automatically with its known grid hub if the hub becomes unavailable.",
-    arity = 1
-  )
   public Boolean register = DEFAULT_REGISTER_TOGGLE;
 
   /**
    * How often to re-register this node with the hub. Defaults to every 5000 ms.
    */
   @Expose
-  @Parameter(
-    names = "-registerCycle",
-    description = "<Integer> in ms : specifies how often the node will try to register itself again. Allows administrator to restart the hub without restarting (or risk orphaning) registered nodes. Must be specified with the \"-register\" option."
-  )
   public Integer registerCycle = DEFAULT_REGISTER_CYCLE;
 
   /**
    * How long to wait before marking this node down. Defaults is 60000 ms.
    */
   @Expose
-  @Parameter(
-    names = "-unregisterIfStillDownAfter",
-    description = "<Integer> in ms : if the node remains down for more than [unregisterIfStillDownAfter] ms, it will stop attempting to re-register from the hub."
-  )
   public Integer unregisterIfStillDownAfter = DEFAULT_UNREGISTER_DELAY;
 
   /**
    * Whether or not to drop capabilities that does not belong to the current platform family
    */
   @Expose
-  @Parameter(
-      names = "-enablePlatformVerification",
-      arity = 1,
-      description = "<Boolean>: Whether or not to drop capabilities that does not belong to the current platform family. Defaults to true."
-  )
   public boolean enablePlatformVerification = true;
 
   /**
@@ -341,8 +268,7 @@ public class GridNodeConfiguration extends GridConfiguration {
   private HostPort getHubHostPort() {
     if (hubHostPort == null) { // parse options
       // -hub has precedence
-      if (hubOption != null) {
-        hub = hubOption;
+      if (hub != null) {
         try {
           URL u = new URL(hub);
           hubHostPort = new HostPort(u.getHost(), u.getPort());
@@ -394,8 +320,8 @@ public class GridNodeConfiguration extends GridConfiguration {
     if (isMergeAble(other.downPollingLimit, downPollingLimit)) {
       downPollingLimit = other.downPollingLimit;
     }
-    if (isMergeAble(other.hubOption, hubOption)) {
-      hubOption = other.hubOption;
+    if (isMergeAble(other.hub, hub)) {
+      hub = other.hub;
     }
     if (isMergeAble(other.hubHost, hubHost)) {
       hubHost = other.hubHost;

@@ -24,6 +24,10 @@ import com.google.common.collect.ImmutableMap;
 import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.common.GridRole;
+import org.openqa.grid.internal.cli.CommonCliOptions;
+import org.openqa.grid.internal.cli.GridHubCliOptions;
+import org.openqa.grid.internal.cli.GridNodeCliOptions;
+import org.openqa.grid.internal.cli.StandaloneCliOptions;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
@@ -61,12 +65,13 @@ public class GridLauncherV3 {
   private String[] args;
 
   private interface GridItemLauncher {
-    StandaloneConfiguration getConfiguration();
+    CommonCliOptions getOptions();
     Stoppable launch() throws Exception;
     default void printUsage(PrintStream out) {
       StringBuilder sb = new StringBuilder();
-      new JCommander(getConfiguration()).usage(sb);
+      new JCommander(getOptions()).usage(sb);
       out.print(sb);
+
     }
   }
 
@@ -95,18 +100,18 @@ public class GridLauncherV3 {
       return Optional.empty();
     }
 
-    if (launcher.getConfiguration().help) {
+    if (launcher.getOptions().help) {
       launcher.printUsage(out);
       return Optional.empty();
     }
 
-    if (launcher.getConfiguration().version) {
+    if (launcher.getOptions().version) {
       out.println(String.format("Selenium server version: %s, revision: %s",
                                 buildInfo.getReleaseLabel(), buildInfo.getBuildRevision()));
       return Optional.empty();
     }
 
-    configureLogging(launcher.getConfiguration());
+    configureLogging(launcher.getOptions().toConfiguration());
 
     log.info(String.format(
         "Selenium build info: version: '%s', revision: '%s'",
@@ -248,16 +253,16 @@ public class GridLauncherV3 {
     ImmutableMap.Builder<String, Function<String[], GridItemLauncher>> launchers =
       ImmutableMap.<String, Function<String[], GridItemLauncher>>builder()
         .put(GridRole.NOT_GRID.toString(), (args) -> new GridItemLauncher() {
-          StandaloneConfiguration configuration = new StandaloneConfiguration();
-          {
-            JCommander.newBuilder().addObject(configuration).build().parse(args);
+          StandaloneCliOptions options = new StandaloneCliOptions().parse(args);
+
+          @Override
+          public CommonCliOptions getOptions() {
+            return options;
           }
 
-          public StandaloneConfiguration getConfiguration() {
-            return configuration;
-          }
-
+          @Override
           public Stoppable launch() {
+            StandaloneConfiguration configuration = options.toConfiguration();
             log.info(String.format(
                 "Launching a standalone Selenium Server on port %s", configuration.port));
             SeleniumServer server = new SeleniumServer(configuration);
@@ -267,26 +272,19 @@ public class GridLauncherV3 {
             server.boot();
             return server;
           }
+
         })
         .put(GridRole.HUB.toString(), (args) -> new GridItemLauncher() {
-          GridHubConfiguration configuration;
-          {
-            GridHubConfiguration pending = new GridHubConfiguration();
-            JCommander.newBuilder().addObject(pending).build().parse(args);
-            configuration = pending;
-            //re-parse the args using any -hubConfig specified to init
-            if (pending.hubConfig != null) {
-              configuration = GridHubConfiguration.loadFromJSON(pending.hubConfig);
-              //args take precedence
-              JCommander.newBuilder().addObject(configuration).build().parse(args);
-            }
+          GridHubCliOptions options = new GridHubCliOptions().parse(args);
+
+          @Override
+          public CommonCliOptions getOptions() {
+            return options;
           }
 
-          public StandaloneConfiguration getConfiguration() {
-            return configuration;
-          }
-
+          @Override
           public Stoppable launch() throws Exception {
+            GridHubConfiguration configuration = options.toConfiguration();
             log.info(String.format(
                 "Launching Selenium Grid hub on port %s", configuration.port));
             Hub hub = new Hub(configuration);
@@ -295,27 +293,16 @@ public class GridLauncherV3 {
           }
         })
         .put(GridRole.NODE.toString(), (args) -> new GridItemLauncher() {
-          GridNodeConfiguration configuration;
-          {
-            GridNodeConfiguration pending = new GridNodeConfiguration();
-            JCommander.newBuilder().addObject(pending).build().parse(args);
-            configuration = pending;
-            //re-parse the args using any -nodeConfig specified to init
-            if (pending.nodeConfigFile != null) {
-              configuration = GridNodeConfiguration.loadFromJSON(pending.nodeConfigFile);
-              //args take precedence
-              JCommander.newBuilder().addObject(configuration).build().parse(args);
-            }
-            if (configuration.port == null) {
-              configuration.port = 5555;
-            }
+          GridNodeCliOptions options = new GridNodeCliOptions().parse(args);
+
+          @Override
+          public CommonCliOptions getOptions() {
+            return options;
           }
 
-          public StandaloneConfiguration getConfiguration() {
-            return configuration;
-          }
-
+          @Override
           public Stoppable launch() throws Exception {
+            GridNodeConfiguration configuration = options.toConfiguration();
             log.info(String.format(
                 "Launching a Selenium Grid node on port %s", configuration.port));
             SelfRegisteringRemote remote = new SelfRegisteringRemote(configuration);

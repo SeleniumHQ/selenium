@@ -24,19 +24,15 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import com.beust.jcommander.Parameter;
-
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.grid.internal.utils.configuration.converters.StringToClassConverter;
-import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
 
 import java.io.IOException;
 
 public class GridHubConfiguration extends GridConfiguration {
-  public static final String DEFAULT_HUB_CONFIG_FILE = "defaults/DefaultHub.json";
+  public static final String DEFAULT_HUB_CONFIG_FILE = "org/openqa/grid/common/defaults/DefaultHub.json";
 
   /*
    * IMPORTANT - Keep these constant values in sync with the ones specified in
@@ -80,11 +76,6 @@ public class GridHubConfiguration extends GridConfiguration {
   /**
    * Hub specific json config file to use. Defaults to {@code null}.
    */
-  @Parameter(
-    names = "-hubConfig",
-    description =  "<String> filename: a JSON file (following grid2 format), which defines the hub properties",
-    validateValueWith = FileExistsValueValidator.class
-  )
   public String hubConfig;
 
   /*
@@ -95,50 +86,27 @@ public class GridHubConfiguration extends GridConfiguration {
    * Capability matcher to use. Defaults to {@link DefaultCapabilityMatcher}
    */
   @Expose
-  @Parameter(
-    names = { "-matcher", "-capabilityMatcher" },
-    description = "<String> class name : a class implementing the CapabilityMatcher interface. Specifies the logic the hub will follow to define whether a request can be assigned to a node. For example, if you want to have the matching process use regular expressions instead of exact match when specifying browser version. ALL nodes of a grid ecosystem would then use the same capabilityMatcher, as defined here.",
-    converter = StringToClassConverter.CapabilityMatcherStringConverter.class
-  )
   public CapabilityMatcher capabilityMatcher = new DefaultCapabilityMatcher();
 
   /**
    * Timeout for new session requests. Defaults to unlimited.
    */
   @Expose
-  @Parameter(
-    names = "-newSessionWaitTimeout",
-    description = "<Integer> in ms : The time after which a new test waiting for a node to become available will time out. When that happens, the test will throw an exception before attempting to start a browser. An unspecified, zero, or negative value means wait indefinitely."
-  )
   public Integer newSessionWaitTimeout = DEFAULT_NEW_SESSION_WAIT_TIMEOUT;
 
   /**
    * Prioritizer for new honoring session requests based on some priority. Defaults to {@code null}.
    */
   @Expose
-  @Parameter(
-    names = "-prioritizer",
-    description = "<String> class name : a class implementing the Prioritizer interface. Specify a custom Prioritizer if you want to sort the order in which new session requests are processed when there is a queue. Default to null ( no priority = FIFO )",
-    converter = StringToClassConverter.PrioritizerStringConverter.class
-  )
   public Prioritizer prioritizer;
 
   /**
    * Whether to throw an Exception when there are no capabilities available that match the request. Defaults to {@code true}.
    */
   @Expose
-  @Parameter(
-    names = "-throwOnCapabilityNotPresent",
-    description = "<Boolean> true or false : If true, the hub will reject all test requests if no compatible proxy is currently registered. If set to false, the request will queue until a node supporting the capability is registered with the grid.",
-    arity = 1
-  )
   public Boolean throwOnCapabilityNotPresent = DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE;
 
   @Expose
-  @Parameter(
-      names = "-registry",
-      description = "<String> class name : a class implementing the GridRegistry interface. Specifies the registry the hub will use."
-  )
   public String registry = DEFAULT_HUB_REGISTRY_CLASS;
 
   /**

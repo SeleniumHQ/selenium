@@ -19,10 +19,9 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 
-import com.beust.jcommander.JCommander;
-
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.cli.GridNodeCliOptions;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
@@ -33,9 +32,8 @@ public class UserDefinedCapabilityMatcherTests {
   @Test
   public void defaultsToDefaultMatcher() {
     GridRegistry registry = DefaultGridRegistry.newInstance();
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    JCommander.newBuilder().addObject(nodeConfiguration).build().parse(
-        "-role", "webdriver","-id", "abc","-host","localhost");
+    String[] args = new String[]{"-role", "webdriver","-id", "abc","-host","localhost"};
+    GridNodeConfiguration nodeConfiguration = new GridNodeCliOptions().parse(args).toConfiguration();
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
@@ -50,9 +48,8 @@ public class UserDefinedCapabilityMatcherTests {
     GridHubConfiguration hubConfig = new GridHubConfiguration();
     hubConfig.capabilityMatcher = new MyCapabilityMatcher();
     Hub hub = new Hub(hubConfig);
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    JCommander.newBuilder().addObject(nodeConfiguration).build().parse(
-        "-role", "webdriver","-id", "abc","-host","localhost");
+    String[] args = new String[]{"-role", "webdriver","-id", "abc","-host","localhost"};
+    GridNodeConfiguration nodeConfiguration = new GridNodeCliOptions().parse(args).toConfiguration();
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, hub.getRegistry());

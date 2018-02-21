@@ -15,14 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.internal.utils.configuration.converters;
+package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.converters.IParameterSplitter;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class NoOpParameterSplitter implements IParameterSplitter {
+class NoOpParameterSplitter implements IParameterSplitter {
   @Override
   public List<String> split(String value) {
     return Arrays.asList(value);

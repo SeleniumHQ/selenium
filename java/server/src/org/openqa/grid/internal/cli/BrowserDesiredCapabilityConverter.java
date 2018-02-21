@@ -15,14 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.internal.utils.configuration.converters;
+package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.IStringConverter;
 
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class BrowserDesiredCapabilityConverter implements IStringConverter<DesiredCapabilities> {
+class BrowserDesiredCapabilityConverter implements IStringConverter<DesiredCapabilities> {
   @Override
   public DesiredCapabilities convert(String value) {
     DesiredCapabilities capabilities = new DesiredCapabilities();

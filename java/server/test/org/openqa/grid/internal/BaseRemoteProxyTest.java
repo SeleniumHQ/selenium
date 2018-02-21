@@ -23,13 +23,12 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.gson.Gson;
 
-import com.beust.jcommander.JCommander;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.cli.GridNodeCliOptions;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
@@ -190,8 +189,6 @@ public class BaseRemoteProxyTest {
   }
 
   private GridNodeConfiguration parseCliOptions(String... args) {
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    JCommander.newBuilder().addObject(config).build().parse(args);
-    return config;
+    return new GridNodeCliOptions().parse(args).toConfiguration();
   }
 }

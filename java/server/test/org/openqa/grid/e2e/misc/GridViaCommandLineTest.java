@@ -212,7 +212,7 @@ public class GridViaCommandLineTest {
     String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort,
                          "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
     Optional<Stoppable> node = new GridLauncherV3(nodeArgs).launch();
-    urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(
         String.format("http://localhost:%d/wd/hub/status", nodePort)));
 
     waitForTextOnHubConsole(hubPort, "htmlunit");
@@ -223,7 +223,7 @@ public class GridViaCommandLineTest {
   }
 
   @Test
-  public void canStartHubeUsingConfigFile() throws Exception {
+  public void canStartHubUsingConfigFile() throws Exception {
     Integer hubPort = PortProber.findFreePort();
     Path hubConfig = Files.createTempFile("hub", ".json");
     String hubJson = String.format(
@@ -258,7 +258,7 @@ public class GridViaCommandLineTest {
     String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort,
                          "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
     Optional<Stoppable> node = new GridLauncherV3(nodeArgs).launch();
-    urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(
         String.format("http://localhost:%d/wd/hub/status", nodePort)));
 
     waitForTextOnHubConsole(hubPort, "htmlunit");
@@ -302,7 +302,7 @@ public class GridViaCommandLineTest {
 
     String[] nodeArgs = {"-role", "node", "-nodeConfig", nodeConfig.toString() };
     Optional<Stoppable> node = new GridLauncherV3(nodeArgs).launch();
-    urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(
         String.format("http://localhost:%d/wd/hub/status", nodePort)));
 
     waitForTextOnHubConsole(hubPort, "htmlunit");
