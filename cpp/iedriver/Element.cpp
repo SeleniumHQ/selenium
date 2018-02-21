@@ -319,7 +319,7 @@ int Element::GetPropertyValue(const std::string& property_name,
   }
 
   if (status_code == WD_SUCCESS) {
-    *value_is_null = !VariantUtilities::ConvertVariantToString(property_value_variant, property_value);
+    *value_is_null = !VariantUtilities::VariantAsString(property_value_variant, property_value);
   } else {
     LOG(WARN) << "Failed to determine element attribute";
   }

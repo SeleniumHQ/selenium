@@ -550,14 +550,14 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
 int Script::ConvertResultToJsonValue(IElementManager* element_manager,
                                      Json::Value* value) {
   LOG(TRACE) << "Entering Script::ConvertResultToJsonValue";
-  return VariantUtilities::ConvertVariantToJsonValue(element_manager,
-                                                     this->result_,
-                                                     value);
+  return VariantUtilities::VariantAsJsonValue(element_manager,
+                                              this->result_,
+                                              value);
 }
 
 bool Script::ConvertResultToString(std::string* value) {
   LOG(TRACE) << "Entering Script::ConvertResultToString";
-  return VariantUtilities::ConvertVariantToString(this->result_, value);
+  return VariantUtilities::VariantAsString(this->result_, value);
 }
 
 bool Script::CreateAnonymousFunction(VARIANT* result) {
