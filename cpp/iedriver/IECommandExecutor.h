@@ -219,9 +219,10 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   void PopulateElementFinderMethods(void);
 
   bool IsAlertActive(BrowserHandle browser, HWND* alert_handle);
-  std::string HandleUnexpectedAlert(BrowserHandle browser,
-                                    HWND alert_handle,
-                                    bool force_use_dismiss);
+  bool HandleUnexpectedAlert(BrowserHandle browser,
+                             HWND alert_handle,
+                             bool force_use_dismiss,
+                             std::string* alert_text);
 
   BrowserMap managed_browsers_;
   ElementRepository* managed_elements_;

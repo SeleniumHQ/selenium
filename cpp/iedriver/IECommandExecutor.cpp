@@ -399,23 +399,37 @@ LRESULT IECommandExecutor::OnScriptWait(UINT uMsg,
         }
       } else {
         Response response;
-        Json::Value script_result;
-        ::SendMessage(browser->script_executor_handle(),
-                      WD_ASYNC_SCRIPT_DETACH_LISTENTER,
-                      NULL,
-                      NULL);
-        int status_code = static_cast<int>(::SendMessage(browser->script_executor_handle(),
-                                                         WD_ASYNC_SCRIPT_GET_RESULT,
-                                                         NULL,
-                                                         reinterpret_cast<LPARAM>(&script_result)));
-        if (status_code != WD_SUCCESS) {
-          std::string error_message = "Error executing JavaScript";
-          if (script_result.isString()) {
-            error_message = script_result.asString();
+        if (is_alert_active) {
+          std::string alert_text;
+          bool is_notify_unexpected_alert = this->HandleUnexpectedAlert(browser,
+                                                                        alert_handle,
+                                                                        false,
+                                                                        &alert_text);
+          if (is_notify_unexpected_alert) {
+            // To keep pace with what Firefox does, we'll return the text of the
+            // alert in the error response.
+            response.SetErrorResponse(EUNEXPECTEDALERTOPEN, "Modal dialog present");
+            response.AddAdditionalData("text", alert_text);
           }
-          response.SetErrorResponse(status_code, error_message);
         } else {
-          response.SetSuccessResponse(script_result);
+          Json::Value script_result;
+          ::SendMessage(browser->script_executor_handle(),
+                        WD_ASYNC_SCRIPT_DETACH_LISTENTER,
+                        NULL,
+                        NULL);
+          int status_code = static_cast<int>(::SendMessage(browser->script_executor_handle(),
+                                                           WD_ASYNC_SCRIPT_GET_RESULT,
+                                                           NULL,
+                                                           reinterpret_cast<LPARAM>(&script_result)));
+          if (status_code != WD_SUCCESS) {
+            std::string error_message = "Error executing JavaScript";
+            if (script_result.isString()) {
+              error_message = script_result.asString();
+            }
+            response.SetErrorResponse(status_code, error_message);
+          } else {
+            response.SetSuccessResponse(script_result);
+          }
         }
         ::SendMessage(browser->script_executor_handle(), WM_CLOSE, NULL, NULL);
         browser->set_script_executor_handle(NULL);
@@ -445,7 +459,8 @@ LRESULT IECommandExecutor::OnHandleUnexpectedAlerts(UINT uMsg,
   for (; it != this->managed_browsers_.end(); ++it) {
     HWND alert_handle = it->second->GetActiveDialogWindowHandle();
     if (alert_handle != NULL) {
-      this->HandleUnexpectedAlert(it->second, alert_handle, true);
+      std::string alert_text;
+      this->HandleUnexpectedAlert(it->second, alert_handle, true, &alert_text);
       it->second->Close();
     }
   }
@@ -612,15 +627,12 @@ void IECommandExecutor::DispatchCommand() {
             LOG(DEBUG) << "Alert is detected, and the sent command is valid";
           } else {
             LOG(DEBUG) << "Unexpected alert is detected, and the sent command is invalid when an alert is present";
-            bool is_notify_unexpected_alert =
-                this->unexpected_alert_behavior_.size() == 0 ||
-                this->unexpected_alert_behavior_ == IGNORE_UNEXPECTED_ALERTS ||
-                this->unexpected_alert_behavior_ == DISMISS_AND_NOTIFY_UNEXPECTED_ALERTS ||
-                this->unexpected_alert_behavior_ == ACCEPT_AND_NOTIFY_UNEXPECTED_ALERTS;
+            std::string alert_text;
             bool is_quit_command = command_type == webdriver::CommandType::Quit;
-            std::string alert_text = this->HandleUnexpectedAlert(browser,
-                                                                 alert_handle,
-                                                                 is_quit_command);
+            bool is_notify_unexpected_alert = this->HandleUnexpectedAlert(browser,
+                                                                          alert_handle,
+                                                                          is_quit_command,
+                                                                          &alert_text);
             if (!is_quit_command && is_notify_unexpected_alert) {
               // To keep pace with what Firefox does, we'll return the text of the
               // alert in the error response.
@@ -689,12 +701,13 @@ bool IECommandExecutor::IsAlertActive(BrowserHandle browser, HWND* alert_handle)
   return false;
 }
 
-std::string IECommandExecutor::HandleUnexpectedAlert(BrowserHandle browser,
-                                                     HWND alert_handle,
-                                                     bool force_use_dismiss) {
+bool IECommandExecutor::HandleUnexpectedAlert(BrowserHandle browser,
+                                              HWND alert_handle,
+                                              bool force_use_dismiss,
+                                              std::string* alert_text) {
   LOG(TRACE) << "Entering IECommandExecutor::HandleUnexpectedAlert";
   Alert dialog(browser, alert_handle);
-  std::string alert_text = dialog.GetText();
+  *alert_text = dialog.GetText();
   if (this->unexpected_alert_behavior_ == ACCEPT_UNEXPECTED_ALERTS ||
       this->unexpected_alert_behavior_ == ACCEPT_AND_NOTIFY_UNEXPECTED_ALERTS) {
     LOG(DEBUG) << "Automatically accepting the alert";
@@ -714,7 +727,12 @@ std::string IECommandExecutor::HandleUnexpectedAlert(BrowserHandle browser,
       dialog.Accept();
     }
   }
-  return alert_text;
+  bool is_notify_unexpected_alert =
+    this->unexpected_alert_behavior_.size() == 0 ||
+    this->unexpected_alert_behavior_ == IGNORE_UNEXPECTED_ALERTS ||
+    this->unexpected_alert_behavior_ == DISMISS_AND_NOTIFY_UNEXPECTED_ALERTS ||
+    this->unexpected_alert_behavior_ == ACCEPT_AND_NOTIFY_UNEXPECTED_ALERTS;
+  return is_notify_unexpected_alert;
 }
 
 int IECommandExecutor::GetCurrentBrowser(BrowserHandle* browser_wrapper) const {

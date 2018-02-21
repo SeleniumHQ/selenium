@@ -9,6 +9,27 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.9.0.4
+========
+ * Fixed behavior for user prompts appearing during JavaScript execution.
+   The W3C WebDriver Specification states that when performing the
+   executeScript or executeAsyncScript commands, if the script brings up
+   a user prompt ('alert', 'confirm', or 'prompt'), the user prompt handler
+   should be invoked immediately, and the proper notification (if any) be
+   sent as the response to the command. Previously, the user prompt handler
+   would not be invoked until the next command.
+ * Updated get active element command in IE to handle missing body element.
+   This change is required to make the driver compliant with the W3C WebDriver
+   Specification.
+ * Changed new session command in IE to allow empty timeouts list. This change
+   is required to make the driver compliant with the W3C WebDriver
+   Specification.
+ * Fixed IE driver element detection for user-executed JavaScript. This commit
+   fixes a corner case where elements added to the known element repository
+   via non-JavaScript means were not being properly detected when the same
+   element was located via user-executed JavaScript. We now properly sync up
+   the element repository once the user's JavaScript has completed.
+
 v3.9.0.3
 ========
  * Refactored user input simulation code in IE driver. This commit breaks out
