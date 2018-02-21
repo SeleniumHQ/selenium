@@ -18,16 +18,12 @@
 package org.openqa.grid.internal;
 
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.util.EntityUtils;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
@@ -38,12 +34,13 @@ import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -54,6 +51,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -438,38 +436,33 @@ public class BaseRemoteProxy implements RemoteProxy {
     return getRegistry().getHttpClientFactory();
   }
 
-  /**
-   * @throws GridException If the node if down or doesn't recognize the /wd/hub/status request.
-   */
-  public JsonObject getStatus() throws GridException {
+  public HttpClient getHttpClient(URL url) {
+    return getRegistry().getHttpClient(url);
+  }
+
+  public Map<String, Object> getProxyStatus() {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
-    BasicHttpRequest r = new BasicHttpRequest("GET", url);
-    HttpClient client = getHttpClientFactory().getGridHttpClient(config.nodeStatusCheckTimeout, config.nodeStatusCheckTimeout);
-    HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort(), getRemoteHost().getProtocol());
+
+    HttpRequest r = new HttpRequest(GET, url);
+    HttpClient client = getHttpClient(getRemoteHost());
     HttpResponse response;
     String existingName = Thread.currentThread().getName();
-    HttpEntity entity = null;
     try {
       Thread.currentThread().setName("Probing status of " + url);
-      response = client.execute(host, r);
-      entity = response.getEntity();
-      int code = response.getStatusLine().getStatusCode();
+      response = client.execute(r);
+      int code = response.getStatus();
 
       if (code == 200) {
-        JsonObject status = new JsonObject();
+        Map<String, Object> status = new TreeMap<>();
         try {
-          status = extractObject(response);
+          status = new Json().toType(response.getContentString(), MAP_TYPE);
         } catch (Exception e) {
           // ignored due it's not required from node to return anything. Just 200 code is enough.
         }
-        EntityUtils.consume(response.getEntity());
         return status;
       } else if (code == 404) { // selenium RC case
-        JsonObject status = new JsonObject();
-        EntityUtils.consume(response.getEntity());
-        return status;
+        return new TreeMap<>();
       } else {
-        EntityUtils.consume(response.getEntity());
         throw new GridException("server response code : " + code);
       }
 
@@ -477,26 +470,16 @@ public class BaseRemoteProxy implements RemoteProxy {
       throw new GridException(e.getMessage(), e);
     } finally {
       Thread.currentThread().setName(existingName);
-      try { //Added by jojo to release connection thoroughly
-          EntityUtils.consume(entity);
-          } catch (IOException e) {
-            log.info("Exception thrown when consume entity");
-          }
-
     }
   }
 
-  private JsonObject extractObject(HttpResponse resp) throws IOException {
-    BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-    StringBuilder s = new StringBuilder();
-    String line;
-
-    while ((line = rd.readLine()) != null) {
-      s.append(line);
-    }
-    rd.close();
-
-    return new JsonParser().parse(s.toString()).getAsJsonObject();
+  /**
+   * @deprecated Use {@link #getProxyStatus()}.
+   */
+  @Deprecated
+  public JsonObject getStatus() throws GridException {
+    Map<String, Object> status = getProxyStatus();
+    return new Gson().toJsonTree(status).getAsJsonObject();
   }
 
   @ManagedAttribute

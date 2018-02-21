@@ -19,7 +19,11 @@ package org.openqa.grid.internal;
 
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
+
+import java.net.URL;
 
 public abstract class BaseGridRegistry implements GridRegistry {
   protected final HttpClientFactory httpClientFactory;
@@ -65,9 +69,15 @@ public abstract class BaseGridRegistry implements GridRegistry {
 
   /**
    * @see GridRegistry#getHttpClientFactory()
+   * @deprecated Use {@link #getHttpClient(URL)}.
    */
+  @Deprecated
   public HttpClientFactory getHttpClientFactory() {
     return httpClientFactory;
   }
 
+  @Override
+  public HttpClient getHttpClient(URL url) {
+    return new ApacheHttpClient.Factory(httpClientFactory).createClient(url);
+  }
 }

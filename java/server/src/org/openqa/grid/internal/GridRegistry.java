@@ -21,8 +21,10 @@ import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
@@ -162,8 +164,14 @@ public interface GridRegistry {
 
   /**
    * @return the {@link HttpClientFactory} to use
+   * @deprecated Use {@link #getHttpClient(URL)}
    */
   HttpClientFactory getHttpClientFactory();
+
+  /**
+    * @return the {@link HttpClient.Factory} to use.
+   */
+  HttpClient getHttpClient(URL url);
 
   /**
    * Remove a new session request from the registry
