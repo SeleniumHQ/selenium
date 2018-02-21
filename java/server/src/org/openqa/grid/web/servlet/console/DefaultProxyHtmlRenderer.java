@@ -17,8 +17,6 @@
 
 package org.openqa.grid.web.servlet.console;
 
-import com.google.gson.JsonObject;
-
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.RemoteProxy;
@@ -27,6 +25,8 @@ import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
+
+import java.util.Map;
 
 public class DefaultProxyHtmlRenderer implements HtmlRenderer {
 
@@ -73,13 +73,13 @@ public class DefaultProxyHtmlRenderer implements HtmlRenderer {
 
   private String getHtmlNodeVersion() {
     try {
-      JsonObject object = proxy.getStatus();
-      String version = object.get("value").getAsJsonObject()
-          .get("build").getAsJsonObject()
-          .get("version").getAsString();
-      return " (version : "+version+ ")";
-    }catch (Exception e) {
-      return " unknown version,"+e.getMessage();
+      Map<String, Object> object = proxy.getProxyStatus();
+      Map<?, ?> value = (Map<?, ?>) object.get("value");
+      Map<?, ?> build = (Map<?, ?>) value.get("build");
+      String version = (String) build.get("version");
+      return " (version : " + version + ")";
+    } catch (Exception e) {
+      return " unknown version," + e.getMessage();
     }
   }
 

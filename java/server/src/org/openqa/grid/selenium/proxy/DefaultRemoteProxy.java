@@ -121,7 +121,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   @ManagedAttribute
   public boolean isAlive() {
     try {
-      getStatus();
+      getProxyStatus();
       return true;
     } catch (Exception e) {
       LOG.fine("Failed to check status of node: " + e.getMessage());
