@@ -21,14 +21,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-import com.beust.jcommander.JCommander;
-
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.DefaultGridRegistry;
 import org.openqa.grid.internal.GridRegistry;
+import org.openqa.grid.internal.cli.GridNodeCliOptions;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
@@ -75,10 +74,10 @@ public class DefaultRemoteProxyTest {
     GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     registry.getHub().getConfiguration().timeout = 1;
     registry.getHub().getConfiguration().cleanUpCycle = cleanupCycle;
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    String[] args = new String[]{"-role", "webdriver"};
+    GridNodeConfiguration nodeConfiguration = new GridNodeCliOptions().parse(args).toConfiguration();
     nodeConfiguration.port = new Random().nextInt(100);
     nodeConfiguration.timeout = 1;
-    JCommander.newBuilder().addObject(nodeConfiguration).build().parse("-role", "webdriver");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = DefaultRemoteProxy.class.getName();
     BaseRemoteProxy p = createMockProxyWithPollingDisabled(req, registry);
