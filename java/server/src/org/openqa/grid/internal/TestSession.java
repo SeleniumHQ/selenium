@@ -34,6 +34,7 @@ import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -326,7 +327,7 @@ public class TestSession {
 
     try (InputStream in = new ByteArrayInputStream(consumed);
          Reader reader = new InputStreamReader(in, proxyResponse.getContentEncoding())) {
-      Object body = new Json().newInput(reader).read(Object.class);new GsonBuilder().setLenient().create().fromJson(reader, Object.class);
+      Object body = new Json().newInput(reader).read(Object.class);
       if (body instanceof Map) {
         Map<?, ?> json = (Map<?, ?>) body;
         Object raw = json.get("status");
@@ -344,7 +345,7 @@ public class TestSession {
           }
         }
       }
-    } catch (JsonParseException e) {
+    } catch (JsonException e) {
       // Nothing to do --- poorly formed payload.
     }
 
