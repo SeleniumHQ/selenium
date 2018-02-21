@@ -723,12 +723,6 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                    << " object contains correct property names.";
         Json::Value timeouts = capabilities[capability_name];
         std::vector<std::string> timeout_names = timeouts.getMemberNames();
-        if (timeout_names.size() == 0) {
-          *error_message = "Invalid capabilities in " +
-                           capability_set_name + ": " +
-                           "no timeouts specified";
-          return false;
-        }
         std::vector<std::string>::const_iterator timeout_name_iterator = timeout_names.begin();
         for (; timeout_name_iterator != timeout_names.end(); ++timeout_name_iterator) {
           std::string timeout_name = *timeout_name_iterator;
