@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.server.scheduler;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.Dialect;
@@ -30,6 +32,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 class NewSessionRequest {
 
@@ -53,7 +56,7 @@ class NewSessionRequest {
 
   Optional<ActiveSession> getResult() {
     try {
-      latch.await();
+      latch.await(5, MINUTES);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new SessionNotCreatedException("Interrupted while creating session", e);
