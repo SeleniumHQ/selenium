@@ -172,7 +172,7 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    * @deprecated Use {@link #getProxyStatus()}.
    */
   @Deprecated
-  JsonObject getStatus() ;
+  JsonObject getStatus();
 
   Map<String, Object> getProxyStatus();
 
