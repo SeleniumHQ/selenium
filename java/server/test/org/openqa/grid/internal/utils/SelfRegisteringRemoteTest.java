@@ -36,10 +36,10 @@ import javax.servlet.Servlet;
 public class SelfRegisteringRemoteTest {
 
   private final class DummyGridNodeServer implements GridNodeServer {
-    public Map<String, Class<? extends Servlet>> extraServlets;
+    private Map<String, Class<? extends Servlet>> extraServlets;
 
     @Override
-    public boolean boot() throws Exception { return true; }
+    public boolean boot() { return true; }
 
     @Override
     public void stop() { }

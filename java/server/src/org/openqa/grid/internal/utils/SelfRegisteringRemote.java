@@ -17,16 +17,13 @@
 
 package org.openqa.grid.internal.utils;
 
-import com.google.common.io.CharStreams;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
@@ -39,13 +36,12 @@ import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.internal.OkHttpClient;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
@@ -62,7 +58,7 @@ public class SelfRegisteringRemote {
 
   private final RegistrationRequest registrationRequest;
 
-  private final HttpClientFactory httpClientFactory;
+  private final HttpClient.Factory httpClientFactory;
 
   private final Map<String, Class<? extends Servlet>> nodeServlets;
 
@@ -74,7 +70,7 @@ public class SelfRegisteringRemote {
 
   public SelfRegisteringRemote(RegistrationRequest request) {
     this.registrationRequest = request;
-    this.httpClientFactory = new HttpClientFactory();
+    this.httpClientFactory = new OkHttpClient.Factory();
     this.nodeServlets = new HashMap<>();
 
     registrationRequest.validate();
@@ -251,23 +247,19 @@ public class SelfRegisteringRemote {
         "http://" + registrationRequest.getConfiguration().getHubHost() + ":"
         + registrationRequest.getConfiguration().getHubPort() + "/grid/register";
 
-      HttpClient client = httpClientFactory.getHttpClient();
       try {
         URL registration = new URL(tmp);
         LOG.info("Registering the node to the hub: " + registration);
 
-        BasicHttpEntityEnclosingRequest r =
-            new BasicHttpEntityEnclosingRequest("POST", registration.toExternalForm());
+        HttpRequest request = new HttpRequest(POST, registration.toExternalForm());
         updateConfigWithRealPort();
         String json = registrationRequest.toJson().toString();
-        r.setEntity(new StringEntity(json,"UTF-8"));
+        request.setContent(json.getBytes(UTF_8));
 
-        HttpHost host = new HttpHost(registration.getHost(), registration.getPort());
-        HttpResponse response = client.execute(host, r);
-        if (response.getStatusLine().getStatusCode() != 200) {
-          throw new GridException(String.format("The hub responded with %s:%s",
-                                                response.getStatusLine().getStatusCode(),
-                                                response.getStatusLine().getReasonPhrase()));
+        HttpClient client = httpClientFactory.createClient(registration);
+        HttpResponse response = client.execute(request);
+        if (response.getStatus() != 200) {
+          throw new GridException(String.format("The hub responded with %s", response.getStatus()));
         }
 
         try {
@@ -343,38 +335,32 @@ public class SelfRegisteringRemote {
       "http://" + registrationRequest.getConfiguration().getHubHost() + ":"
       + registrationRequest.getConfiguration().getHubPort() + "/grid/api/hub";
 
-    HttpClient client = httpClientFactory.getHttpClient();
-
     URL api = new URL(hubApi);
-    HttpHost host = new HttpHost(api.getHost(), api.getPort());
+    HttpClient client = httpClientFactory.createClient(api);
     String url = api.toExternalForm();
-    BasicHttpRequest r = new BasicHttpRequest("GET", url);
+    HttpRequest request = new HttpRequest(GET, url);
 
-    HttpResponse response = client.execute(host, r);
+    HttpResponse response = client.execute(request);
     return GridHubConfiguration.loadFromJSON(extractObject(response));
   }
 
   private boolean isAlreadyRegistered(RegistrationRequest node) {
-
-    HttpClient client = httpClientFactory.getHttpClient();
     try {
       String tmp =
           "http://" + node.getConfiguration().getHubHost() + ":"
               + node.getConfiguration().getHubPort() + "/grid/api/proxy";
       URL api = new URL(tmp);
-      HttpHost host = new HttpHost(api.getHost(), api.getPort());
+      HttpClient client = httpClientFactory.createClient(api);
 
       String id = node.getConfiguration().id;
       if (id == null) {
         id = node.getConfiguration().getRemoteHost();
       }
-      BasicHttpRequest r = new BasicHttpRequest("GET", api.toExternalForm() + "?id=" + id);
+      HttpRequest request = new HttpRequest(GET, api.toExternalForm() + "?id=" + id);
 
-      HttpResponse response = client.execute(host, r);
-      if (response.getStatusLine().getStatusCode() != 200) {
-        throw new GridException(String.format("The hub responded with %s:%s",
-                                              response.getStatusLine().getStatusCode(),
-                                              response.getStatusLine().getReasonPhrase()));
+      HttpResponse response = client.execute(request);
+      if (response.getStatus() != 200) {
+        throw new GridException(String.format("The hub responded with %s", response.getStatus()));
       }
       JsonObject o = extractObject(response);
       return o.get("success").getAsBoolean();
@@ -383,12 +369,7 @@ public class SelfRegisteringRemote {
     }
   }
 
-  private static JsonObject extractObject(HttpResponse resp) throws IOException {
-    try (Reader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()))) {
-      StringBuilder s = new StringBuilder();
-      CharStreams.copy(rd, s);
-      return new JsonParser().parse(s.toString()).getAsJsonObject();
-    }
+  private static JsonObject extractObject(HttpResponse resp) {
+      return new JsonParser().parse(resp.getContentString()).getAsJsonObject();
   }
-
 }
