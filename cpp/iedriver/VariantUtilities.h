@@ -51,8 +51,6 @@ class VariantUtilities {
   static int VariantAsJsonValue(IElementManager* element_manager,
                                 VARIANT variant_value,
                                 Json::Value* value);
-  static bool VariantAsString(VARIANT variant_value,
-                              std::string* value);
   static bool GetVariantObjectPropertyValue(IDispatch* variant_object,
                                             std::wstring property_name,
                                             VARIANT* property_value);

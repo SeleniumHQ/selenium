@@ -246,8 +246,7 @@ int Element::GetClickLocation(const ElementScrollBehavior scroll_behavior,
 }
 
 int Element::GetAttributeValue(const std::string& attribute_name,
-                               std::string* attribute_value,
-                               bool* value_is_null) {
+                               VARIANT* attribute_value) {
   LOG(TRACE) << "Entering Element::GetAttributeValue";
 
   std::wstring wide_attribute_name = StringUtilities::ToWString(attribute_name);
@@ -268,7 +267,7 @@ int Element::GetAttributeValue(const std::string& attribute_name,
   status_code = script_wrapper.Execute();
   
   if (status_code == WD_SUCCESS) {
-    *value_is_null = !script_wrapper.ConvertResultToString(attribute_value);
+    *attribute_value = script_wrapper.result();
   } else {
     LOG(WARN) << "Failed to determine element attribute";
   }
@@ -277,8 +276,7 @@ int Element::GetAttributeValue(const std::string& attribute_name,
 }
 
 int Element::GetPropertyValue(const std::string& property_name,
-                              std::string* property_value,
-                              bool* value_is_null) {
+                              VARIANT* property_value) {
   LOG(TRACE) << "Entering Element::GetPropertyValue";
 
   std::wstring wide_property_name = StringUtilities::ToWString(property_name);
@@ -294,34 +292,25 @@ int Element::GetPropertyValue(const std::string& property_name,
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Unable to get dispatch ID (dispid) for property "
                     << property_name;
-    *property_value = "";
-    *value_is_null = true;
+    property_value->vt = VT_EMPTY;
     return WD_SUCCESS;
   }
 
   // get the value of eval result
-  CComVariant property_value_variant;
   DISPPARAMS no_args_dispatch_parameters = { 0 };
   hr = this->element_->Invoke(dispid_property,
                               IID_NULL,
                               LOCALE_USER_DEFAULT,
                               DISPATCH_PROPERTYGET,
                               &no_args_dispatch_parameters,
-                              &property_value_variant,
+                              property_value,
                               NULL,
                               NULL);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Unable to get result for property "
                     << property_name;
-    *property_value = "";
-    *value_is_null = true;
+    property_value->vt = VT_EMPTY;
     return WD_SUCCESS;
-  }
-
-  if (status_code == WD_SUCCESS) {
-    *value_is_null = !VariantUtilities::VariantAsString(property_value_variant, property_value);
-  } else {
-    LOG(WARN) << "Failed to determine element attribute";
   }
 
   return WD_SUCCESS;
@@ -347,13 +336,13 @@ int Element::GetCssPropertyValue(const std::string& property_name,
   status_code = script_wrapper.Execute();
 
   if (status_code == WD_SUCCESS) {
-    std::string raw_value = "";
-    script_wrapper.ConvertResultToString(&raw_value);
+    std::wstring raw_value(script_wrapper.result().bstrVal);
+    std::string value = StringUtilities::ToString(raw_value);
     std::transform(raw_value.begin(),
-                    raw_value.end(),
-                    raw_value.begin(),
-                    tolower);
-    *property_value = raw_value;
+                   raw_value.end(),
+                   raw_value.begin(),
+                   tolower);
+    *property_value = value;
   } else {
     LOG(WARN) << "Failed to get value of CSS property";
   }
@@ -444,8 +433,8 @@ bool Element::IsHiddenByOverflow() {
   script_wrapper.AddArgument(this->element_);
   int status_code = script_wrapper.Execute();
   if (status_code == WD_SUCCESS) {
-    std::string overflow_state = "";
-    script_wrapper.ConvertResultToString(&overflow_state);
+    std::wstring raw_overflow_state(script_wrapper.result().bstrVal);
+    std::string overflow_state = StringUtilities::ToString(raw_overflow_state);
     isOverflow = (overflow_state == "scroll");
   } else {
     LOG(WARN) << "Unable to determine is element hidden by overflow";
@@ -454,7 +443,8 @@ bool Element::IsHiddenByOverflow() {
   return isOverflow;
 }
 
-bool Element::IsLocationVisibleInFrames(const LocationInfo location, const std::vector<LocationInfo> frame_locations) {
+bool Element::IsLocationVisibleInFrames(const LocationInfo location,
+                                        const std::vector<LocationInfo> frame_locations) {
   std::vector<LocationInfo>::const_iterator iterator = frame_locations.begin();
   for (; iterator != frame_locations.end(); ++iterator) {
     if (location.x < iterator->x || 

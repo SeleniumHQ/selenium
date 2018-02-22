@@ -19,6 +19,7 @@
 #include "../Browser.h"
 #include "../Element.h"
 #include "../IECommandExecutor.h"
+#include "../VariantUtilities.h"
 
 namespace webdriver {
 
@@ -54,22 +55,18 @@ void GetElementPropertyCommandHandler::ExecuteInternal(
     ElementHandle element_wrapper;
     status_code = this->GetElement(executor, element_id, &element_wrapper);
     if (status_code == WD_SUCCESS) {
-      std::string value = "";
-      bool is_null;
+      CComVariant value;
       status_code = element_wrapper->GetPropertyValue(name,
-                                                      &value,
-                                                      &is_null);
+                                                      &value);
       if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get property");
         return;
       } else {
-        if (is_null) {
-          response->SetSuccessResponse(Json::Value::null);
-          return;
-        } else {
-          response->SetSuccessResponse(value);
-          return;
-        }
+        Json::Value json_value;
+        IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+        VariantUtilities::VariantAsJsonValue(mutable_executor.element_manager(), value, &json_value);
+        response->SetSuccessResponse(json_value);
+        return;
       }
     } else if (status_code == ENOSUCHELEMENT) {
       response->SetErrorResponse(ERROR_NO_SUCH_ELEMENT, "Invalid internal element ID requested: " + element_id);

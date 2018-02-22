@@ -555,11 +555,6 @@ int Script::ConvertResultToJsonValue(IElementManager* element_manager,
                                               value);
 }
 
-bool Script::ConvertResultToString(std::string* value) {
-  LOG(TRACE) << "Entering Script::ConvertResultToString";
-  return VariantUtilities::VariantAsString(this->result_, value);
-}
-
 bool Script::CreateAnonymousFunction(VARIANT* result) {
   LOG(TRACE) << "Entering Script::CreateAnonymousFunction";
 

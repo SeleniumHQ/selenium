@@ -52,11 +52,9 @@ class Element {
                        LocationInfo* element_location,
                        LocationInfo* click_location);
   int GetAttributeValue(const std::string& attribute_name,
-                        std::string* attribute_value,
-                        bool* value_is_null);
+                        VARIANT* attribute_value);
   int GetPropertyValue(const std::string& property_name,
-                       std::string* property_value,
-                       bool* value_is_null);
+                       VARIANT* property_value);
   int GetCssPropertyValue(const std::string& property_name,
                           std::string* property_value);
 

@@ -101,7 +101,6 @@ class Script {
                                Json::Value* value);
   int ConvertResultToJsonValue(IElementManager* element_manager,
                                Json::Value* value);
-  bool ConvertResultToString(std::string* value);
 
   std::wstring polling_source_code(void) const { return this->polling_source_code_; }
   void set_polling_source_code(const std::wstring& value) { this->polling_source_code_ = value; }
