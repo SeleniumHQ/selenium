@@ -17,26 +17,27 @@
 
 package org.openqa.grid.web.servlet;
 
-import com.google.common.io.CharStreams;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import org.openqa.grid.common.exception.GridException;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.gson.JsonElement;
+
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonOutput;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -62,6 +63,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class HubStatusServlet extends RegistryBasedServlet {
 
+  private final Json json = new Json();
+
   public HubStatusServlet() {
     super(null);
   }
@@ -72,13 +75,12 @@ public class HubStatusServlet extends RegistryBasedServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     process(req, resp);
   }
 
@@ -87,56 +89,54 @@ public class HubStatusServlet extends RegistryBasedServlet {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
-    JsonObject res;
-    try {
-      res = getResponse(request);
-      response.getWriter().print(res);
-      response.getWriter().close();
-    } catch (JsonSyntaxException e) {
-      throw new GridException(e.getMessage());
+    try (Writer writer = response.getWriter();
+         JsonOutput out = json.newOutput(writer)) {
+      Map<String, Object> res = getResponse(request);
+      out.write(res, MAP_TYPE);
     }
-
   }
 
-  private JsonObject getResponse(HttpServletRequest request) throws IOException {
-    JsonObject res = new JsonObject();
-    res.addProperty("success", true);
+  private Map<String, Object> getResponse(HttpServletRequest request) {
+    Map<String, Object> res = new TreeMap<>();
+    res.put("success", true);
+
     try {
       if (request.getInputStream() != null) {
-        JsonObject requestJSON = getRequestJSON(request);
+        Map<String, Object> requestJSON = getRequestJSON(request);
         List<String> keysToReturn = null;
 
         if (request.getParameter("configuration") != null && !"".equals(request.getParameter("configuration"))) {
           keysToReturn = Arrays.asList(request.getParameter("configuration").split(","));
-        } else if (requestJSON != null && requestJSON.has("configuration")) {
-          keysToReturn = new Gson().fromJson(requestJSON.getAsJsonArray("configuration"), ArrayList.class);
+        } else if (requestJSON != null && requestJSON.containsKey("configuration")) {
+          //noinspection unchecked
+          keysToReturn = (List<String>) requestJSON.get("configuration");
         }
 
         GridRegistry registry = getRegistry();
         JsonElement config = registry.getConfiguration().toJson();
         for (Map.Entry<String, JsonElement> entry : config.getAsJsonObject().entrySet()) {
           if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains(entry.getKey())) {
-            res.add(entry.getKey(), entry.getValue());
+            res.put(entry.getKey(), entry.getValue());
           }
         }
         if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("newSessionRequestCount")) {
-          res.addProperty("newSessionRequestCount", registry.getNewSessionRequestCount());
+          res.put("newSessionRequestCount", registry.getNewSessionRequestCount());
         }
 
         if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("slotCounts")) {
-          res.add("slotCounts", getSlotCounts());
+          res.put("slotCounts", getSlotCounts());
         }
       }
     } catch (Exception e) {
       res.remove("success");
-      res.addProperty("success", false);
-      res.addProperty("msg", e.getMessage());
+      res.put("success", false);
+      res.put("msg", e.getMessage());
     }
     return res;
 
   }
 
-  private JsonObject getSlotCounts() {
+  private Map<String, Object> getSlotCounts() {
     int totalSlots = 0;
     int usedSlots = 0;
 
@@ -144,23 +144,19 @@ public class HubStatusServlet extends RegistryBasedServlet {
       totalSlots += Math.min(proxy.getMaxNumberOfConcurrentTestSessions(), proxy.getTestSlots().size());
       usedSlots += proxy.getTotalUsed();
     }
-    JsonObject result = new JsonObject();
-    result.addProperty("free", totalSlots - usedSlots);
-    result.addProperty("total", totalSlots);
-    return result;
+
+    return ImmutableSortedMap.of(
+        "free", totalSlots - usedSlots,
+        "total", totalSlots);
   }
 
-  private JsonObject getRequestJSON(HttpServletRequest request) throws IOException {
-    JsonObject requestJSON = new JsonObject();
-
-    try (BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
-      StringBuilder s = new StringBuilder();
-      CharStreams.copy(rd, s);
-      String json = s.toString();
-      if (!"".equals(json)) {
-        requestJSON = new JsonParser().parse(json).getAsJsonObject();
-      }
+  private Map<String, Object> getRequestJSON(HttpServletRequest request) throws IOException {
+    Json json = new Json();
+    try (BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
+         JsonInput jin = json.newInput(rd)) {
+      return jin.read(MAP_TYPE);
+    } catch (JsonException e) {
+      throw new IOException(e);
     }
-    return requestJSON;
   }
 }
