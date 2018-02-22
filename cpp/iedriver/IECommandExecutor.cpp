@@ -399,37 +399,23 @@ LRESULT IECommandExecutor::OnScriptWait(UINT uMsg,
         }
       } else {
         Response response;
-        if (is_alert_active) {
-          std::string alert_text;
-          bool is_notify_unexpected_alert = this->HandleUnexpectedAlert(browser,
-                                                                        alert_handle,
-                                                                        false,
-                                                                        &alert_text);
-          if (is_notify_unexpected_alert) {
-            // To keep pace with what Firefox does, we'll return the text of the
-            // alert in the error response.
-            response.SetErrorResponse(EUNEXPECTEDALERTOPEN, "Modal dialog present");
-            response.AddAdditionalData("text", alert_text);
+        Json::Value script_result;
+        ::SendMessage(browser->script_executor_handle(),
+                      WD_ASYNC_SCRIPT_DETACH_LISTENTER,
+                      NULL,
+                      NULL);
+        int status_code = static_cast<int>(::SendMessage(browser->script_executor_handle(),
+                                                          WD_ASYNC_SCRIPT_GET_RESULT,
+                                                          NULL,
+                                                          reinterpret_cast<LPARAM>(&script_result)));
+        if (status_code != WD_SUCCESS) {
+          std::string error_message = "Error executing JavaScript";
+          if (script_result.isString()) {
+            error_message = script_result.asString();
           }
+          response.SetErrorResponse(status_code, error_message);
         } else {
-          Json::Value script_result;
-          ::SendMessage(browser->script_executor_handle(),
-                        WD_ASYNC_SCRIPT_DETACH_LISTENTER,
-                        NULL,
-                        NULL);
-          int status_code = static_cast<int>(::SendMessage(browser->script_executor_handle(),
-                                                           WD_ASYNC_SCRIPT_GET_RESULT,
-                                                           NULL,
-                                                           reinterpret_cast<LPARAM>(&script_result)));
-          if (status_code != WD_SUCCESS) {
-            std::string error_message = "Error executing JavaScript";
-            if (script_result.isString()) {
-              error_message = script_result.asString();
-            }
-            response.SetErrorResponse(status_code, error_message);
-          } else {
-            response.SetSuccessResponse(script_result);
-          }
+          response.SetSuccessResponse(script_result);
         }
         ::SendMessage(browser->script_executor_handle(), WM_CLOSE, NULL, NULL);
         browser->set_script_executor_handle(NULL);
