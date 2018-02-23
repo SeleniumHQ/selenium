@@ -104,6 +104,22 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
             ::Sleep(double_click_time - milliseconds_since_last_click);
           }
 
+          // Scroll the target element into view before executing the action
+          // sequence.
+          LocationInfo location = {};
+          std::vector<LocationInfo> frame_locations;
+          status_code = element_wrapper->GetLocationOnceScrolledIntoView(executor.input_manager()->scroll_behavior(),
+                                                                         &location,
+                                                                         &frame_locations);
+
+          bool displayed;
+          status_code = element_wrapper->IsDisplayed(true, &displayed);
+          if (status_code != WD_SUCCESS || !displayed) {
+            response->SetErrorResponse(EELEMENTNOTDISPLAYED,
+                                       "Element is not displayed");
+            return;
+          }
+
           IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
           status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
           browser_wrapper->set_wait_required(true);

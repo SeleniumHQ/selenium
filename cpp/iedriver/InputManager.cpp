@@ -54,6 +54,7 @@ InputManager::InputManager() {
   this->current_input_state_.is_alt_pressed = false;
   this->current_input_state_.is_control_pressed = false;
   this->current_input_state_.is_shift_pressed = false;
+  this->current_input_state_.is_meta_pressed = false;
   this->current_input_state_.is_left_button_pressed = false;
   this->current_input_state_.is_right_button_pressed = false;
   this->current_input_state_.mouse_x = 0;
@@ -239,6 +240,7 @@ InputState InputManager::CloneCurrentInputState(void) {
   current_input_state.is_alt_pressed = this->current_input_state_.is_alt_pressed;
   current_input_state.is_control_pressed = this->current_input_state_.is_control_pressed;
   current_input_state.is_shift_pressed = this->current_input_state_.is_shift_pressed;
+  current_input_state.is_meta_pressed = this->current_input_state_.is_meta_pressed;
   current_input_state.is_left_button_pressed = this->current_input_state_.is_left_button_pressed;
   current_input_state.is_right_button_pressed = this->current_input_state_.is_right_button_pressed;
   current_input_state.mouse_x = this->current_input_state_.mouse_x;
@@ -395,10 +397,13 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper,
     long end_y = start_y;
     if (element_specified) {
       LocationInfo element_location;
-      LocationInfo move_location;
-      status_code = target_element->GetClickLocation(this->scroll_behavior_,
-                                                     &element_location,
-                                                     &move_location);
+      // Note: The caller of the action sequence is responsible for making
+      // sure the target element is in the view port. In particular, the
+      // high-level click and sendKeys implementations do this in their
+      // command handlers. Further note that offsets specified in this
+      // move action will be relative to the center of the element as
+      // calculated here.
+      status_code = target_element->GetStaticClickLocation(&element_location);
       // We can't use the status code alone here. Even though the center of the
       // element may not reachable via the mouse, we might still be able to move
       // to whatever portion of the element *is* visible in the viewport, especially
@@ -420,11 +425,6 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper,
       // move will be at some offset from the element origin.
       end_x = element_location.x;
       end_y = element_location.y;
-      if (!offset_specified) {
-        // No offset was specified, which means move to the center of the element. 
-        end_x = move_location.x;
-        end_y = move_location.y;
-      }
     }
 
     if (origin == "viewport") {
@@ -441,9 +441,20 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper,
       }
     }
 
+
     LOG(DEBUG) << "Queueing SendInput structure for mouse move (origin: " << origin
                << ", x: " << end_x << ", y: " << end_y << ")";
     HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
+    RECT window_rect;
+    ::GetWindowRect(browser_window_handle, &window_rect);
+    POINT click_point = { end_x, end_y };
+    ::ClientToScreen(browser_window_handle, &click_point);
+    if (click_point.x < window_rect.left ||
+        click_point.x > window_rect.right ||
+        click_point.y < window_rect.top ||
+        click_point.y > window_rect.bottom) {
+      return EMOVETARGETOUTOFBOUNDS;
+    }
     if (end_x == input_state->mouse_x && end_y == input_state->mouse_y) {
       LOG(DEBUG) << "Omitting SendInput structure for mouse move; no movement required (x: "
                  << end_x << ", y: " << end_y << ")";
@@ -685,6 +696,25 @@ void InputManager::AddKeyboardInput(HWND window_handle,
       }
       this->UpdatePressedKeys(WD_KEY_ALT, input_state->is_alt_pressed);
     }
+
+    // If the character represents the Meta (Windows) key, or represents 
+    // the "release all modifiers" key and the Meta key is down, send
+    // the appropriate down or up keystroke for the Meta key.
+    if (character == WD_KEY_META ||
+        character == WD_KEY_R_META ||
+        (character == WD_KEY_NULL && input_state->is_meta_pressed)) {
+      //modifier_key_info.key_code = VK_LWIN;
+      //this->CreateKeyboardInputItem(modifier_key_info,
+      //                              0,
+      //                              input_state->is_meta_pressed);
+      //if (input_state->is_meta_pressed) {
+      //  input_state->is_meta_pressed = false;
+      //} else {
+      //  input_state->is_meta_pressed = true;
+      //}
+      //this->UpdatePressedKeys(WD_KEY_META, input_state->is_meta_pressed);
+    }
+
     return;
   }
 
@@ -803,9 +833,11 @@ bool InputManager::IsModifierKey(wchar_t character) {
   return character == WD_KEY_SHIFT ||
          character == WD_KEY_CONTROL ||
          character == WD_KEY_ALT ||
+         character == WD_KEY_META ||
          character == WD_KEY_R_SHIFT ||
          character == WD_KEY_R_CONTROL ||
          character == WD_KEY_R_ALT ||
+         character == WD_KEY_R_META ||
          character == WD_KEY_NULL;
 }
 
@@ -999,6 +1031,56 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
     key_info.scan_code = VK_DIVIDE;
     key_info.is_extended_key = true;
   }
+  else if (character == WD_KEY_R_PAGEUP) {
+    key_info.key_code = VK_PRIOR;
+    key_info.scan_code = VK_PRIOR;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_PAGEDN) {
+    key_info.key_code = VK_NEXT;
+    key_info.scan_code = VK_NEXT;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_END) {  // end
+    key_info.key_code = VK_END;
+    key_info.scan_code = VK_END;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_HOME) {  // home
+    key_info.key_code = VK_HOME;
+    key_info.scan_code = VK_HOME;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_LEFT) {  // left arrow
+    key_info.key_code = VK_LEFT;
+    key_info.scan_code = VK_LEFT;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_UP) {  // up arrow
+    key_info.key_code = VK_UP;
+    key_info.scan_code = VK_UP;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_RIGHT) {  // right arrow
+    key_info.key_code = VK_RIGHT;
+    key_info.scan_code = VK_RIGHT;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_DOWN) {  // down arrow
+    key_info.key_code = VK_DOWN;
+    key_info.scan_code = VK_DOWN;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_INSERT) {  // insert
+    key_info.key_code = VK_INSERT;
+    key_info.scan_code = VK_INSERT;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_DELETE) {  // delete
+    key_info.key_code = VK_DELETE;
+    key_info.scan_code = VK_DELETE;
+    key_info.is_extended_key = true;
+  }
   else if (character == WD_KEY_F1) {  // F1
     key_info.key_code = VK_F1;
     key_info.scan_code = VK_F1;
@@ -1046,14 +1128,6 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
   else if (character == WD_KEY_F12) {  // F12
     key_info.key_code = VK_F12;
     key_info.scan_code = VK_F12;
-  }
-  else if (character == WD_KEY_META) {  // Meta
-    key_info.key_code = VK_LWIN;
-    key_info.scan_code = VK_LWIN;
-  }
-  else if (character == WD_KEY_R_META) {  // Meta
-    key_info.key_code = VK_RWIN;
-    key_info.scan_code = VK_RWIN;
   }
   else if (character == L'\n') {    // line feed
     key_info.key_code = VK_RETURN;

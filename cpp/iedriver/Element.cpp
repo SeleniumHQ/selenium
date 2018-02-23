@@ -245,6 +245,15 @@ int Element::GetClickLocation(const ElementScrollBehavior scroll_behavior,
   return status_code;
 }
 
+int Element::GetStaticClickLocation(LocationInfo* click_location) {
+  std::vector<LocationInfo> frame_locations;
+  LocationInfo element_location = {};
+  int result = this->GetLocation(&element_location, &frame_locations);
+  bool document_contains_frames = frame_locations.size() != 0;
+  *click_location = this->CalculateClickPoint(element_location, document_contains_frames);
+  return result;
+}
+
 int Element::GetAttributeValue(const std::string& attribute_name,
                                VARIANT* attribute_value) {
   LOG(TRACE) << "Entering Element::GetAttributeValue";

@@ -48,6 +48,7 @@ class Element {
   int GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
                                       LocationInfo* location,
                                       std::vector<LocationInfo>* frame_locations);
+  int GetStaticClickLocation(LocationInfo* click_location);
   int GetClickLocation(const ElementScrollBehavior scroll_behavior,
                        LocationInfo* element_location,
                        LocationInfo* click_location);

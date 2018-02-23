@@ -25,6 +25,7 @@ struct InputState {
   bool is_shift_pressed;
   bool is_control_pressed;
   bool is_alt_pressed;
+  bool is_meta_pressed;
   bool is_left_button_pressed;
   bool is_right_button_pressed;
   long mouse_x;

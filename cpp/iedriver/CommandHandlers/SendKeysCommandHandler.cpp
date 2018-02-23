@@ -92,11 +92,13 @@ void SendKeysCommandHandler::ExecuteInternal(
     if (status_code == WD_SUCCESS) {
       CComPtr<IHTMLElement> element(element_wrapper->element());
 
+      // Scroll the target element into view before executing the action
+      // sequence.
       LocationInfo location = {};
       std::vector<LocationInfo> frame_locations;
       element_wrapper->GetLocationOnceScrolledIntoView(executor.input_manager()->scroll_behavior(),
-                                                        &location,
-                                                        &frame_locations);
+                                                       &location,
+                                                       &frame_locations);
 
       CComPtr<IHTMLInputFileElement> file;
       element->QueryInterface<IHTMLInputFileElement>(&file);

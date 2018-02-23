@@ -51,7 +51,12 @@ void ActionsCommandHandler::ExecuteInternal(
   }
   status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions_parameter_iterator->second);
   if (status_code != WD_SUCCESS) {
-    response->SetErrorResponse(status_code, "Unexpected error performing action sequence.");
+    if (status_code == EMOVETARGETOUTOFBOUNDS) {
+      response->SetErrorResponse(status_code, "The requested mouse movement would be outside the bounds of the current view port.");
+    } else {
+      response->SetErrorResponse(status_code, "Unexpected error performing action sequence.");
+    }
+    return;
   }
   response->SetSuccessResponse(Json::Value::null);
 }
