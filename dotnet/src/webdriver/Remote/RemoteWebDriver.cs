@@ -1381,11 +1381,11 @@ namespace OpenQA.Selenium.Remote
                             throw new StaleElementReferenceException(errorMessage);
 
                         case WebDriverResult.ElementNotDisplayed:
+                        case WebDriverResult.ElementNotInteractable:
                             throw new ElementNotVisibleException(errorMessage);
 
                         case WebDriverResult.InvalidElementState:
                         case WebDriverResult.ElementNotSelectable:
-                        case WebDriverResult.ElementNotInteractable:
                             throw new InvalidElementStateException(errorMessage);
 
                         case WebDriverResult.UnhandledError:
