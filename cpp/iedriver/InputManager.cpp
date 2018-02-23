@@ -17,6 +17,8 @@
 #include "InputManager.h"
 
 #include <ctime>
+#include <codecvt>
+#include <locale>
 
 #include "errorcodes.h"
 #include "json.h"
@@ -532,8 +534,7 @@ int InputManager::KeyDown(BrowserHandle browser_wrapper,
     this->inputs_.push_back(input_element);
   } else {
     HWND window_handle = browser_wrapper->GetContentWindowHandle();
-    wchar_t character = key[0];
-    this->AddKeyboardInput(window_handle, character, false, input_state);
+    this->AddKeyboardInput(window_handle, key, false, input_state);
   }
   return status_code;
 }
@@ -547,8 +548,7 @@ int InputManager::KeyUp(BrowserHandle browser_wrapper,
 
   if (!this->action_simulator_->UseExtraInfo()) {
     HWND window_handle = browser_wrapper->GetContentWindowHandle();
-    wchar_t character = key[0];
-    this->AddKeyboardInput(window_handle, character, true, input_state);
+    this->AddKeyboardInput(window_handle, key, true, input_state);
   }
   return status_code;
 }
@@ -585,18 +585,40 @@ void InputManager::AddMouseInput(HWND window_handle, long input_action, int x, i
 }
 
 void InputManager::AddKeyboardInput(HWND window_handle,
-                                    wchar_t character,
+                                    std::wstring key,
                                     bool key_up,
                                     InputState* input_state) {
   LOG(TRACE) << "Entering InputManager::AddKeyboardInput";
 
-  std::wstring log_key = this->GetKeyDescription(character);
+  wchar_t character = key[0];
+  std::wstring log_key = key;
+  if (key.size() == 1) {
+    log_key = this->GetKeyDescription(character);
+  }
   std::string log_event = "key down";
   if (key_up) {
     log_event = "key up";
   }
   LOG(DEBUG) << "Queueing SendInput structure for " << log_event
              << " (key: " << LOGWSTRING(log_key) << ")";
+
+  if (key.size() > 1) {
+    // If the key string passed in is greater than a single character,
+    // we've been sent a Unicode character with surrogate pairs. Do
+    // no further processing, just create the input items for the
+    // individual pieces of the surrogate pair, and let the system
+    // input manager do the rest.
+    std::wstring::const_iterator it = key.begin();
+    for (; it != key.end(); ++it) {
+      KeyInfo surrogate_key_info;
+      surrogate_key_info.scan_code = static_cast<WORD>(*it);
+      surrogate_key_info.key_code = 0;
+      surrogate_key_info.is_extended_key = false;
+
+      this->CreateKeyboardInputItem(surrogate_key_info, KEYEVENTF_UNICODE, key_up);
+    }
+    return;
+  }
 
   if (this->IsModifierKey(character)) {
     KeyInfo modifier_key_info = { 0, 0, false, false, false, character };
@@ -1014,6 +1036,14 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
   else if (character == WD_KEY_F12) {  // F12
     key_info.key_code = VK_F12;
     key_info.scan_code = VK_F12;
+  }
+  else if (character == WD_KEY_META) {  // Meta
+    key_info.key_code = VK_LWIN;
+    key_info.scan_code = VK_LWIN;
+  }
+  else if (character == WD_KEY_R_META) {  // Meta
+    key_info.key_code = VK_RWIN;
+    key_info.scan_code = VK_RWIN;
   }
   else if (character == L'\n') {    // line feed
     key_info.key_code = VK_RETURN;

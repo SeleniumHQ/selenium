@@ -106,7 +106,7 @@ public:
             const Json::Value& pause_action);
 
   void AddMouseInput(HWND window_handle, long input_action, int x, int y);
-  void AddKeyboardInput(HWND window_handle, wchar_t character, bool key_up, InputState* input_state);
+  void AddKeyboardInput(HWND window_handle, std::wstring key, bool key_up, InputState* input_state);
   void AddPauseInput(HWND window_handle, int duration);
 
   void CreateKeyboardInputItem(KeyInfo key_info, DWORD initial_flags, bool is_generating_keyup);
