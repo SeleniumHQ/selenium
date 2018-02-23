@@ -1385,6 +1385,7 @@ namespace OpenQA.Selenium.Remote
 
                         case WebDriverResult.InvalidElementState:
                         case WebDriverResult.ElementNotSelectable:
+                        case WebDriverResult.ElementNotInteractable:
                             throw new InvalidElementStateException(errorMessage);
 
                         case WebDriverResult.UnhandledError:
