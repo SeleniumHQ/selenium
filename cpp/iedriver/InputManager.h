@@ -116,6 +116,7 @@ public:
   KeyInfo GetKeyInfo(HWND windows_handle, wchar_t character);
   InputState CloneCurrentInputState(void);
   void UpdatePressedKeys(wchar_t character, bool press_key);
+  bool IsKeyPressed(wchar_t character);
 
   void SetupKeyDescriptions(void);
   std::wstring GetKeyDescription(const wchar_t character);

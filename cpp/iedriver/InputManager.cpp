@@ -641,68 +641,147 @@ void InputManager::AddKeyboardInput(HWND window_handle,
     return;
   }
 
+  if (character == WD_KEY_NULL) {
+    std::vector<WORD> modifier_key_codes;
+    if (input_state->is_shift_pressed) {
+      if (this->IsKeyPressed(WD_KEY_SHIFT)) {
+        modifier_key_codes.push_back(VK_SHIFT);
+        this->UpdatePressedKeys(WD_KEY_SHIFT, false);
+      }
+      if (this->IsKeyPressed(WD_KEY_R_SHIFT)) {
+        modifier_key_codes.push_back(VK_RSHIFT);
+        this->UpdatePressedKeys(WD_KEY_R_SHIFT, false);
+      }
+      input_state->is_shift_pressed = false;
+    }
+
+    if (input_state->is_control_pressed) {
+      if (this->IsKeyPressed(WD_KEY_CONTROL)) {
+        modifier_key_codes.push_back(VK_CONTROL);
+        this->UpdatePressedKeys(WD_KEY_CONTROL, false);
+      }
+      if (this->IsKeyPressed(WD_KEY_R_CONTROL)) {
+        modifier_key_codes.push_back(VK_RCONTROL);
+        this->UpdatePressedKeys(WD_KEY_R_CONTROL, false);
+      }
+      input_state->is_control_pressed = false;
+    }
+
+    if (input_state->is_alt_pressed) {
+      if (this->IsKeyPressed(WD_KEY_ALT)) {
+        modifier_key_codes.push_back(VK_MENU);
+        this->UpdatePressedKeys(WD_KEY_ALT, false);
+      }
+      if (this->IsKeyPressed(WD_KEY_R_ALT)) {
+        modifier_key_codes.push_back(VK_RMENU);
+        this->UpdatePressedKeys(WD_KEY_R_ALT, false);
+      }
+      input_state->is_alt_pressed = false;
+    }
+
+    if (input_state->is_meta_pressed) {
+      if (this->IsKeyPressed(WD_KEY_META)) {
+        modifier_key_codes.push_back(VK_LWIN);
+        this->UpdatePressedKeys(WD_KEY_META, false);
+      }
+      if (this->IsKeyPressed(WD_KEY_R_META)) {
+        modifier_key_codes.push_back(VK_RWIN);
+        this->UpdatePressedKeys(WD_KEY_R_META, false);
+      }
+      input_state->is_meta_pressed = false;
+    }
+
+    std::vector<WORD>::const_iterator it = modifier_key_codes.begin();
+    for (; it != modifier_key_codes.end(); ++it) {
+      KeyInfo modifier_key_info = { 0, 0, false, false, false, character };
+      UINT scan_code = ::MapVirtualKey(*it, MAPVK_VK_TO_VSC);
+      modifier_key_info.key_code = *it;
+      modifier_key_info.scan_code = scan_code;
+      this->CreateKeyboardInputItem(modifier_key_info,
+                                    KEYEVENTF_SCANCODE,
+                                    true);
+    }
+    return;
+  }
+
   if (this->IsModifierKey(character)) {
     KeyInfo modifier_key_info = { 0, 0, false, false, false, character };
     // If the character represents the Shift key, or represents the 
     // "release all modifiers" key and the Shift key is down, send
     // the appropriate down or up keystroke for the Shift key.
     if (character == WD_KEY_SHIFT ||
-        character == WD_KEY_R_SHIFT ||
-        (character == WD_KEY_NULL && input_state->is_shift_pressed)) {
+        character == WD_KEY_R_SHIFT) {
+      WORD key_code = VK_SHIFT;
+      if (character == WD_KEY_R_SHIFT) {
+        key_code = VK_RSHIFT;
+      }
+      UINT scan_code = ::MapVirtualKey(key_code, MAPVK_VK_TO_VSC);
       modifier_key_info.key_code = VK_SHIFT;
+      modifier_key_info.scan_code = scan_code;
       this->CreateKeyboardInputItem(modifier_key_info,
-                                    0,
+                                    KEYEVENTF_SCANCODE,
                                     input_state->is_shift_pressed);
       if (input_state->is_shift_pressed) {
         input_state->is_shift_pressed = false;
       } else {
         input_state->is_shift_pressed = true;
       }
-      this->UpdatePressedKeys(WD_KEY_SHIFT, input_state->is_shift_pressed);
+      this->UpdatePressedKeys(character, input_state->is_shift_pressed);
     }
 
     // If the character represents the Control key, or represents the 
     // "release all modifiers" key and the Control key is down, send
     // the appropriate down or up keystroke for the Control key.
     if (character == WD_KEY_CONTROL ||
-        character == WD_KEY_R_CONTROL ||
-        (character == WD_KEY_NULL && input_state->is_control_pressed)) {
+        character == WD_KEY_R_CONTROL) {
+      WORD key_code = VK_CONTROL;
+      if (character == WD_KEY_R_CONTROL) {
+        key_code = VK_RCONTROL;
+        modifier_key_info.is_extended_key = true;
+      }
+      UINT scan_code = ::MapVirtualKey(key_code, MAPVK_VK_TO_VSC);
       modifier_key_info.key_code = VK_CONTROL;
+      modifier_key_info.scan_code = scan_code;
       this->CreateKeyboardInputItem(modifier_key_info,
-                                    0,
+                                    KEYEVENTF_SCANCODE,
                                     input_state->is_control_pressed);
       if (input_state->is_control_pressed) {
         input_state->is_control_pressed = false;
       } else {
         input_state->is_control_pressed = true;
       }
-      this->UpdatePressedKeys(WD_KEY_CONTROL, input_state->is_control_pressed);
+      this->UpdatePressedKeys(character, input_state->is_control_pressed);
     }
 
     // If the character represents the Alt key, or represents the 
     // "release all modifiers" key and the Alt key is down, send
     // the appropriate down or up keystroke for the Alt key.
     if (character == WD_KEY_ALT ||
-        character == WD_KEY_R_ALT ||
-        (character == WD_KEY_NULL && input_state->is_alt_pressed)) {
+        character == WD_KEY_R_ALT) {
+      WORD key_code = VK_MENU;
+      if (character == WD_KEY_R_ALT) {
+        key_code = VK_RMENU;
+        modifier_key_info.is_extended_key = true;
+      }
+      UINT scan_code = ::MapVirtualKey(key_code, MAPVK_VK_TO_VSC);
       modifier_key_info.key_code = VK_MENU;
+      modifier_key_info.scan_code = scan_code;
       this->CreateKeyboardInputItem(modifier_key_info,
-                                    0,
+                                    KEYEVENTF_SCANCODE,
                                     input_state->is_alt_pressed);
       if (input_state->is_alt_pressed) {
         input_state->is_alt_pressed = false;
       } else {
         input_state->is_alt_pressed = true;
       }
-      this->UpdatePressedKeys(WD_KEY_ALT, input_state->is_alt_pressed);
+      this->UpdatePressedKeys(character, input_state->is_alt_pressed);
     }
 
     // If the character represents the Meta (Windows) key, or represents 
     // the "release all modifiers" key and the Meta key is down, send
     // the appropriate down or up keystroke for the Meta key.
     if (character == WD_KEY_META ||
-        character == WD_KEY_R_META ||
-        (character == WD_KEY_NULL && input_state->is_meta_pressed)) {
+        character == WD_KEY_R_META) {
       //modifier_key_info.key_code = VK_LWIN;
       //this->CreateKeyboardInputItem(modifier_key_info,
       //                              0,
@@ -737,7 +816,6 @@ void InputManager::AddKeyboardInput(HWND window_handle,
       return;
     }
   }
-
 
   unsigned short modifier_key_info = HIBYTE(key_info.key_code);
   if (modifier_key_info != 0) {
@@ -783,6 +861,12 @@ void InputManager::AddKeyboardInput(HWND window_handle,
   } else {
     this->CreateKeyboardInputItem(key_info, 0, key_up);
   }
+}
+
+bool InputManager::IsKeyPressed(wchar_t character) {
+  return std::find(this->pressed_keys_.begin(),
+                   this->pressed_keys_.end(),
+                   character) != this->pressed_keys_.end();
 }
 
 void InputManager::UpdatePressedKeys(wchar_t character, bool press_key) {
@@ -1015,6 +1099,7 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
   else if (character == WD_KEY_SEPARATOR) {  // separator
     key_info.key_code = VkKeyScanExW(L',', layout);
     key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_extended_key = true;
   }
   else if (character == WD_KEY_SUBTRACT) {  // subtract
     key_info.key_code = VK_SUBTRACT;
