@@ -1,6 +1,6 @@
 [java]
   src_roots = /java/client/src, /java/client/test, /java/server/src, /java/server/test
-  source_level = 8 
+  source_level = 8
   target_level = 8
   jar_spool_mode = direct_to_jar
   compile_against_abis = true
@@ -56,4 +56,5 @@
   htmlunit-test = //java/client/test/org/openqa/selenium/htmlunit:htmlunit
   ie-test       = //java/client/test/org/openqa/selenium/ie:ie
   opera-test    = //java/client/test/org/openqa/selenium/opera:opera
+  safari-test   = //java/client/test/org/openqa/selenium/safari:safari
   java-small-tests = //java/client/test/org/openqa/selenium:small-tests //java/client/test/org/openqa/selenium/json:small-tests //java/client/test/org/openqa/selenium/support:small-tests //java/client/test/org/openqa/selenium/remote:common-tests //java/client/test/org/openqa/selenium/remote:client-tests //java/server/test/org/openqa/grid/selenium/node:node //java/server/test/org/openqa/grid/selenium/proxy:proxy //java/server/test/org/openqa/selenium/remote/server:small-tests //java/server/test/org/openqa/selenium/remote/server/log:test
