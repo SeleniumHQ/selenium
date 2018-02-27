@@ -28,7 +28,7 @@ import org.openqa.selenium.testing.TestUtilities;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    //StandardSeleniumTests.class,
+    StandardSeleniumTests.class,
     //AlertsTest.class,
     CleanSessionTest.class,
     CrossDomainTest.class,
