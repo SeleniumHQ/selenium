@@ -101,6 +101,9 @@ public class SafariOptions extends MutableCapabilities {
    */
   public static SafariOptions fromCapabilities(Capabilities capabilities)
       throws WebDriverException {
+    if (capabilities instanceof SafariOptions) {
+      return (SafariOptions) capabilities;
+    }
     Object cap = capabilities.getCapability(SafariOptions.CAPABILITY);
     if (cap instanceof SafariOptions) {
       return (SafariOptions) cap;

@@ -64,7 +64,13 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
       })
       .put(Browser.htmlunit, DesiredCapabilities::htmlUnit)
       .put(Browser.operablink, OperaOptions::new)
-      .put(Browser.safari, SafariOptions::new)
+      .put(Browser.safari, () -> {
+        SafariOptions options = new SafariOptions();
+        if (Boolean.getBoolean("selenium.safari.tp")) {
+          options.setUseTechnologyPreview(true);
+        }
+        return options;
+      })
       .build();
 
   public static Capabilities getStandardCapabilitiesFor(Browser browser) {
