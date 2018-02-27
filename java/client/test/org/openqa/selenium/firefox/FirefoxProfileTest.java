@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.testing.InProject;
-import org.openqa.selenium.testing.drivers.Firebug;
+import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -190,7 +190,7 @@ public class FirefoxProfileTest {
 
   @Test
   public void shouldInstallExtensionUsingClasspath() throws IOException {
-    profile.addExtension(Firebug.class, FIREBUG_RESOURCE_PATH);
+    profile.addExtension(SynthesizedFirefoxDriver.class, FIREBUG_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
     assertTrue(extensionDir.exists());
