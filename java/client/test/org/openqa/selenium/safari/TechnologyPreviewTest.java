@@ -41,13 +41,21 @@ public class TechnologyPreviewTest extends JUnit4TestBase {
 
   @Test
   public void canStartTechnologyPreview() {
+    removeDriver();
     SafariOptions options = new SafariOptions();
     options.setUseTechnologyPreview(true);
 
-    WebDriver driver = new SafariDriver(options);
+    WebDriver driver2 = null;
+    try {
+      driver2 = new SafariDriver(options);
 
-    driver.get(pages.xhtmlTestPage);
-    assertEquals("XHTML Test Page", driver.getTitle());
+      driver2.get(pages.xhtmlTestPage);
+      assertEquals("XHTML Test Page", driver2.getTitle());
+    } finally {
+      if (driver2 != null) {
+        driver2.quit();
+      }
+    }
   }
 
 }

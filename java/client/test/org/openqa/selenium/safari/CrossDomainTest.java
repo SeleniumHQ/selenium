@@ -45,7 +45,7 @@ public class CrossDomainTest extends JUnit4TestBase {
 
   @AfterClass
   public static void quitDriver() {
-    JUnit4TestBase.removeDriver();
+    removeDriver();
   }
 
 

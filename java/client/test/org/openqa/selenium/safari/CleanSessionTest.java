@@ -19,15 +19,17 @@ package org.openqa.selenium.safari;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class CleanSessionTest extends JUnit4TestBase {
@@ -36,7 +38,7 @@ public class CleanSessionTest extends JUnit4TestBase {
 
   @AfterClass
   public static void quitDriver() {
-    JUnit4TestBase.removeDriver();
+    removeDriver();
   }
 
   private void createCleanSession() {
@@ -44,18 +46,12 @@ public class CleanSessionTest extends JUnit4TestBase {
 
     SafariOptions safariOptions = new SafariOptions();
     safariOptions.setUseCleanSession(true);
-    WebDriver otherDriver = null;
-    try {
-      otherDriver = new SafariDriver(safariOptions);
-      driver.get(pages.alertsPage);
-    } finally {
-      if (otherDriver != null) {
-        otherDriver.quit();
-      }
-    }
+    driver = new SafariDriver(safariOptions);
+    driver.get(pages.alertsPage);
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void shouldClearCookiesWhenStartingWithACleanSession() {
     createCleanSession();
     assertNoCookies();
@@ -86,6 +82,7 @@ public class CleanSessionTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void executeAsyncScriptIsResilientToPagesRedefiningSetTimeout() {
     driver.get(appServer.whereIs("messages.html"));
 
