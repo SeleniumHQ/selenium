@@ -44,7 +44,6 @@ import org.openqa.selenium.testing.TestUtilities;
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
  */
-@Ignore(value = SAFARI, reason = "not implemented (issue 4136)")
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   private Actions getBuilder(WebDriver driver) {
@@ -66,6 +65,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(SAFARI)
   public void testSendingKeyDownOnly() {
     driver.get(appServer.whereIs("key_logger.html"));
 
@@ -87,6 +87,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(SAFARI)
   public void testSendingKeyUp() {
     driver.get(appServer.whereIs("key_logger.html"));
 
@@ -112,6 +113,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
+  @NotYetImplemented(SAFARI)
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
 
@@ -138,6 +140,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testSendingKeysToActiveElement() {
     driver.get(pages.bodyTypingPage);
 
@@ -171,6 +174,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void canGenerateKeyboardShortcuts() {
     driver.get(appServer.whereIs("keyboard_shortcut.html"));
 

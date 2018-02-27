@@ -41,6 +41,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -95,6 +96,7 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @NotYetImplemented(SAFARI)
   public void testDragAndDropElementWithOffsetInIframeAtBottom() {
     driver.get(appServer.whereIs("iframeAtBottom.html"));
 
@@ -113,6 +115,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Test
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
   @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
 
@@ -139,6 +142,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(FIREFOX)
+  @NotYetImplemented(SAFARI)
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
@@ -161,6 +165,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   // window, otherwise we are stuck with a small window for the rest of the tests.
   // TODO(dawagner): Remove @NoDriverAfterTest when we can reliably do window resizing
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 

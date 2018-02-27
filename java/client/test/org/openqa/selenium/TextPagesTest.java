@@ -37,7 +37,7 @@ public class TextPagesTest extends JUnit4TestBase {
   private String textPage;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 

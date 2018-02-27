@@ -30,7 +30,7 @@ public class RotatableTest extends JUnit4TestBase {
   private Rotatable rotatable;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     assumeTrue(driver instanceof Rotatable);
     rotatable = (Rotatable) driver;
   }

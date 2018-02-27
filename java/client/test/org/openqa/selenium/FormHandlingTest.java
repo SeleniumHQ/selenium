@@ -90,7 +90,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   @NotYetImplemented(
     value = MARIONETTE, reason = "Delegates to JS and so the wrong exception is returned")
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
@@ -156,7 +156,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = SAFARI, reason = "issue 4220")
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
@@ -172,7 +171,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = SAFARI, reason = "issue 4220")
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
       throws IOException {
     assumeFalse("IE before 9 doesn't handle pages served with an XHTML content type,"
@@ -193,7 +191,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = SAFARI, reason = "issue 4220")
+  @NotYetImplemented(value = SAFARI)
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -229,6 +227,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("inputWithText"));
@@ -239,6 +238,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testSendingKeyboardEventsShouldAppendTextInTextAreas() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
@@ -257,7 +257,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(SAFARI)
+  @Ignore(value = SAFARI, reason = "Does not support alerts yet")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
@@ -271,19 +271,16 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(SAFARI)
   public void testCanClickOnASubmitButton() {
     checkSubmitButton("internal_explicit_submit");
   }
 
   @Test
-  @Ignore(SAFARI)
   public void testCanClickOnASubmitButtonNestedSpan() {
     checkSubmitButton("internal_span_submit");
   }
 
   @Test
-  @Ignore(SAFARI)
   public void testCanClickOnAnImplicitSubmitButton() {
     assumeFalse(isIe6(driver) || isIe7(driver) );
     checkSubmitButton("internal_implicit_submit");
@@ -291,19 +288,18 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(SAFARI)
   public void testCanClickOnAnExternalSubmitButton() {
     checkSubmitButton("external_explicit_submit");
   }
 
   @Test
   @Ignore(IE)
-  @Ignore(SAFARI)
   public void testCanClickOnAnExternalImplicitSubmitButton() {
     checkSubmitButton("external_implicit_submit");
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void canSubmitFormWithSubmitButtonIdEqualToSubmit() {
     String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
     driver.get(appServer.create(new Page().withBody(
@@ -316,6 +312,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void canSubmitFormWithSubmitButtonNameEqualToSubmit() {
     String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
     driver.get(appServer.create(new Page().withBody(

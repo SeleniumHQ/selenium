@@ -42,6 +42,7 @@ import java.util.Set;
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(MARIONETTE)
+@Ignore(SAFARI)
 public class AvailableLogsTest extends JUnit4TestBase {
 
   private WebDriver localDriver;

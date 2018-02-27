@@ -25,6 +25,7 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
@@ -136,6 +137,7 @@ public class ClearTest extends JUnit4TestBase {
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(IE)
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearRangeInput() {
     shouldBeAbleToClearInput(By.name("range_input"), "42");
   }
@@ -145,6 +147,7 @@ public class ClearTest extends JUnit4TestBase {
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(IE)
+  @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearCheckboxInput() {
     shouldBeAbleToClearInput(By.name("checkbox_input"), "Checkbox");
   }
@@ -154,6 +157,7 @@ public class ClearTest extends JUnit4TestBase {
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearColorInput() {
     shouldBeAbleToClearInput(By.name("color_input"), "#00ffff");
   }
