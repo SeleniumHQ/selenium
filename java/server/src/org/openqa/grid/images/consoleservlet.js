@@ -28,10 +28,11 @@
   }
 
   $(document).ready(function() {
-    $(".tabs li").click(function() {
+    $(".tabs li").click(function(event) {
       var currentProxy = $(this).closest('.proxy');
       var type = $(this).attr('type');
       show(currentProxy, type);
+      event.preventDefault(); // Prevent the click from going to the top of the page
     });
     showDefaults();
   });
