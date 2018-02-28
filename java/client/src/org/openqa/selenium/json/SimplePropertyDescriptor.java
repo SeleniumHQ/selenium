@@ -46,7 +46,7 @@ public class SimplePropertyDescriptor {
     return writeMethod;
   }
 
-  public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<? extends Object> clazz) {
+  public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
     HashMap<String, SimplePropertyDescriptor> properties = new HashMap<>();
     for (Method m : clazz.getMethods()) {
       String methodName = m.getName();

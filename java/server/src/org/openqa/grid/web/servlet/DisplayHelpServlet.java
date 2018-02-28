@@ -18,11 +18,11 @@
 package org.openqa.grid.web.servlet;
 
 import com.google.common.io.ByteStreams;
-import com.google.gson.GsonBuilder;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.json.Json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,19 +51,31 @@ public class DisplayHelpServlet extends HttpServlet {
     String version;
     String type;
     String consoleLink;
+
+    public String getVersion() {
+      return version;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public String getConsoleLink() {
+      return consoleLink;
+    }
   }
 
   private final DisplayHelpServletConfig servletConfig = new DisplayHelpServletConfig();
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
@@ -93,7 +104,7 @@ public class DisplayHelpServlet extends HttpServlet {
       if (in == null) {
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
       } else {
-        final String json = new GsonBuilder().serializeNulls().create().toJson(servletConfig);
+        final String json = new Json().toJson(servletConfig);
         final String jsonUtf8 = new String(json.getBytes(), "UTF-8");
         final String htmlTemplate =
           new BufferedReader(new InputStreamReader(in, "UTF-8")).lines().collect(Collectors.joining("\n"));
@@ -156,8 +167,7 @@ public class DisplayHelpServlet extends HttpServlet {
     return value;
   }
 
-  private InputStream getResourceInputStream(String resource)
-    throws IOException {
+  private InputStream getResourceInputStream(String resource) {
     InputStream in = Thread.currentThread().getContextClassLoader()
       .getResourceAsStream(HELPER_SERVLET_RESOURCE_PATH + resource);
     if (in == null) {
