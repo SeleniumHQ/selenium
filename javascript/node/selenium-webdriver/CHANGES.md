@@ -1,3 +1,10 @@
+## v.next
+
+### API Changes
+
+*  Export `lib/input.Origin` from the top level `selenium-webdriver` module.
+
+
 ## v4.0.0-alpha.1
 
 ### Notice
