@@ -32,13 +32,11 @@ import org.openqa.selenium.safari.SafariOptions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.stream.Stream;
