@@ -314,11 +314,10 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/906")
-  @NotYetImplemented(SAFARI)
+  @Ignore(value = SAFARI, reason = "Allows only one instance")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
 
-    removeDriver();
     WebDriver driver2 = new WebDriverBuilder().get();
     try {
       // topmost
