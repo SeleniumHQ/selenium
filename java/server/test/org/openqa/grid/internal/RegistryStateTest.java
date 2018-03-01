@@ -67,7 +67,7 @@ public class RegistryStateTest {
   public void sessionIsRemoved() {
     GridRegistry registry = DefaultGridRegistry.newInstance();
 
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -86,7 +86,7 @@ public class RegistryStateTest {
   @Test(timeout = 5000)
   public void basicChecks() {
     GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -115,7 +115,7 @@ public class RegistryStateTest {
   @Test(timeout = 4000)
   public void sessionIsRemoved2() {
     GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -134,7 +134,7 @@ public class RegistryStateTest {
   @Test(timeout = 4000)
   public void sessionByExtKey() {
     GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -163,7 +163,7 @@ public class RegistryStateTest {
   @Test
   public void sessionByExtKeyNull() {
     GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);

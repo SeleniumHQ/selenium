@@ -24,8 +24,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.DefaultGridRegistry;
-import org.openqa.grid.internal.DetachedRemoteProxy;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.RegistrationListener;
@@ -42,7 +42,7 @@ public class RegistrationListenerTest {
 
   private boolean serverUp = false;
 
-  private class MyRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
+  private class MyRemoteProxy extends BaseRemoteProxy implements RegistrationListener {
 
     public MyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
@@ -90,7 +90,7 @@ public class RegistrationListenerTest {
    *
    * @author François Reynaud
    */
-  private class MyBuggyRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
+  private class MyBuggyRemoteProxy extends BaseRemoteProxy implements RegistrationListener {
 
     public MyBuggyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
@@ -120,7 +120,7 @@ public class RegistrationListenerTest {
 
   private boolean slowRemoteUp = false;
 
-  private class MySlowRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
+  private class MySlowRemoteProxy extends BaseRemoteProxy implements RegistrationListener {
 
     public MySlowRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
@@ -146,12 +146,9 @@ public class RegistrationListenerTest {
   public void registerSomeSlow() {
     final GridRegistry registry = DefaultGridRegistry.newInstance();
     try {
-      registry.add(new DetachedRemoteProxy(req, registry));
-      new Thread(new Runnable() { // Thread safety reviewed
-        public void run() {
-          registry.add(new MySlowRemoteProxy(req, registry));
-        }
-      }).start();
+      registry.add(new BaseRemoteProxy(req, registry));
+      // Thread safety reviewed
+      new Thread(() -> registry.add(new MySlowRemoteProxy(req, registry))).start();
 
       // slow proxy hasn't finished to start slow remote, isn't accessible via
       // the registry yet

@@ -36,8 +36,8 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.DefaultGridRegistry;
-import org.openqa.grid.internal.DetachedRemoteProxy;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
@@ -67,7 +67,7 @@ public class CommandListenerTest {
 
   private static final byte[] responseBytes = new byte[] { 0, 0, 0, 0, 0 };
 
-  static class MyRemoteProxy extends DetachedRemoteProxy implements CommandListener {
+  static class MyRemoteProxy extends BaseRemoteProxy implements CommandListener {
 
     public MyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);

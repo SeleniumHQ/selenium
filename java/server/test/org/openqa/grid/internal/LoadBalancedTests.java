@@ -62,7 +62,7 @@ public class LoadBalancedTests {
   private void register5ProxiesOf5Slots() {
     // add 5 proxies. Total = 5 proxies * 5 slots each = 25 firefox.
     for (int i = 0; i < 5; i++) {
-      registry.add(new DetachedRemoteProxy(getRequestOfNSlots(5, "name" + i), registry));
+      registry.add(new BaseRemoteProxy(getRequestOfNSlots(5, "name" + i), registry));
     }
   }
 
@@ -71,9 +71,9 @@ public class LoadBalancedTests {
   // proxy 2 -> 4 slots
   // proxy 3 -> 6 slots
   private void register3ProxiesVariableSlotSize() {
-    proxy1 = new DetachedRemoteProxy(getRequestOfNSlots(2, "proxy1"), registry2);
-    proxy2 = new DetachedRemoteProxy(getRequestOfNSlots(4, "proxy2"), registry2);
-    proxy3 = new DetachedRemoteProxy(getRequestOfNSlots(6, "proxy3"), registry2);
+    proxy1 = new BaseRemoteProxy(getRequestOfNSlots(2, "proxy1"), registry2);
+    proxy2 = new BaseRemoteProxy(getRequestOfNSlots(4, "proxy2"), registry2);
+    proxy3 = new BaseRemoteProxy(getRequestOfNSlots(6, "proxy3"), registry2);
 
     registry2.add(proxy1);
     registry2.add(proxy2);

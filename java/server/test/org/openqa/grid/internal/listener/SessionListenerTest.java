@@ -25,8 +25,8 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.DefaultGridRegistry;
-import org.openqa.grid.internal.DetachedRemoteProxy;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
@@ -54,7 +54,7 @@ public class SessionListenerTest {
     req.getConfiguration().capabilities.add(new DesiredCapabilities(app1));
   }
 
-  private static class MyRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
+  private static class MyRemoteProxy extends BaseRemoteProxy implements TestSessionListener {
 
     public MyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
@@ -94,7 +94,7 @@ public class SessionListenerTest {
    *
    * @author Francois Reynaud
    */
-  static class MyBuggyBeforeRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
+  static class MyBuggyBeforeRemoteProxy extends BaseRemoteProxy implements TestSessionListener {
 
     private boolean firstCall = true;
 
@@ -150,7 +150,7 @@ public class SessionListenerTest {
    *
    * @author Francois Reynaud
    */
-  static class MyBuggyAfterRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
+  static class MyBuggyAfterRemoteProxy extends BaseRemoteProxy implements TestSessionListener {
 
     public MyBuggyAfterRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
@@ -188,13 +188,11 @@ public class SessionListenerTest {
 
       final RequestHandler req2 = GridHelper.createNewSessionHandler(registry, app1);
 
-      new Thread(new Runnable() { // Thread safety reviewed
-
-            public void run() {
-              req2.process();
-              processed = true;
-            }
-          }).start();
+      // Thread safety reviewed
+      new Thread(() -> {
+        req2.process();
+        processed = true;
+      }).start();
 
       Thread.sleep(100);
       assertFalse(processed);
@@ -203,7 +201,7 @@ public class SessionListenerTest {
     }
   }
 
-  class SlowAfterSession extends DetachedRemoteProxy implements TestSessionListener, TimeoutListener {
+  class SlowAfterSession extends BaseRemoteProxy implements TestSessionListener, TimeoutListener {
 
     private Lock lock = new ReentrantLock();
     private boolean firstTime = true;

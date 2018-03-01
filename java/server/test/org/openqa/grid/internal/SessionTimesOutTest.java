@@ -55,7 +55,7 @@ public class SessionTimesOutTest {
     req.getConfiguration().host = "localhost";
   }
 
-  class MyRemoteProxyTimeout extends DetachedRemoteProxy implements TimeoutListener {
+  class MyRemoteProxyTimeout extends BaseRemoteProxy implements TimeoutListener {
 
     public MyRemoteProxyTimeout(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
@@ -96,7 +96,7 @@ public class SessionTimesOutTest {
 
   private static boolean timeoutDone = false;
 
-  class MyRemoteProxyTimeoutSlow extends DetachedRemoteProxy implements TimeoutListener {
+  class MyRemoteProxyTimeoutSlow extends BaseRemoteProxy implements TimeoutListener {
 
     public MyRemoteProxyTimeoutSlow(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
@@ -153,7 +153,7 @@ public class SessionTimesOutTest {
     }
   }
 
-  class MyBuggyRemoteProxyTimeout extends DetachedRemoteProxy implements TimeoutListener {
+  class MyBuggyRemoteProxyTimeout extends BaseRemoteProxy implements TimeoutListener {
 
     public MyBuggyRemoteProxyTimeout(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
@@ -196,7 +196,7 @@ public class SessionTimesOutTest {
     }
   }
 
-  class MyStupidConfig extends DetachedRemoteProxy implements TimeoutListener {
+  class MyStupidConfig extends BaseRemoteProxy implements TimeoutListener {
 
     public MyStupidConfig(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
