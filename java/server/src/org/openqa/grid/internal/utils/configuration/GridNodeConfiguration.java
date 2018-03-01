@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 
 public class GridNodeConfiguration extends GridConfiguration {
   public static final String DEFAULT_NODE_CONFIG_FILE = "org/openqa/grid/common/defaults/DefaultNodeWebDriver.json";
-  public static final String CONFIG_UUID_CAPABILITY = "se:CONFIG_UUID";
+  public static final String CONFIG_UUID_CAPABILITY = "server:CONFIG_UUID";
 
   /*
    * IMPORTANT - Keep these constant values in sync with the ones specified in
