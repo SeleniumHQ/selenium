@@ -252,10 +252,6 @@ class Entry {
 }
 
 
-/** @typedef {(string|function(): string)} */
-let Loggable;
-
-
 /**
  * An object used to log debugging messages. Loggers use a hierarchical,
  * dot-separated naming scheme. For instance, "foo" is considered the parent of
@@ -523,7 +519,7 @@ function getLogger(name) {
 
 /**
  * Pads a number to ensure it has a minimum of two digits.
- * 
+ *
  * @param {number} n the number to be padded.
  * @return {string} the padded number.
  */
