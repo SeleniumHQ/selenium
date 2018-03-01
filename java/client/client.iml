@@ -43,6 +43,7 @@
     <orderEntry type="library" scope="TEST" name="github" level="project" />
     <orderEntry type="library" name="javaparser" level="project" />
     <orderEntry type="library" name="okhttp" level="project" />
+    <orderEntry type="library" scope="TEST" name="jetty-orig" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />
