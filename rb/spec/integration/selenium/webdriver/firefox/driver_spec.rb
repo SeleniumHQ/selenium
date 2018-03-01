@@ -34,7 +34,7 @@ module Selenium
           expect(caps.page_load_timeout).to be == 300000
           expect(caps.script_timeout).to be == 30000
 
-          expect(caps.remote_session_id).not_to be_nil
+          expect(caps.remote_session_id).not_to be_nil if GlobalTestEnv.driver == :remote
         end
       end
 
