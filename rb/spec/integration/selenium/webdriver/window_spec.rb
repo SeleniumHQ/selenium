@@ -107,7 +107,6 @@ module Selenium
         window.size = old_size = Dimension.new(200, 200)
 
         window.maximize
-
         wait.until { window.size != old_size }
 
         new_size = window.size
@@ -117,13 +116,12 @@ module Selenium
 
       # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
       it 'can make window full screen', only: {window_manager: true, browser: [:ie, :firefox]} do
-        window.maximize
-        old_size = window.size
+        window.size = old_size = Dimension.new(200, 200)
 
         window.full_screen
         wait.until { window.size != old_size }
-        new_size = window.size
 
+        new_size = window.size
         expect(new_size.width).to be > old_size.width
         expect(new_size.height).to be > old_size.height
       end
