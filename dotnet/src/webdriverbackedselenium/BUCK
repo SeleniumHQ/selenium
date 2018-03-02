@@ -46,8 +46,9 @@ genrule(
     '(if not exist %OUT% mkdir %OUT%) && ' +
     'for %%G in (%SRCS%) do (' +
       'set target_dir=%%G&& ' +
+      'set platform_dir=%%G\\..&& ' +
       'for %%H in (!target_dir!) do (' +
-        'set platform_moniker=%%~nxH&& ' +
+        'for %%I in (!platform_dir!) do set platform_moniker=%%~nxI&& ' +
         '(if not exist %OUT%\\!platform_moniker! mkdir %OUT%\\!platform_moniker!) && ' +
         'copy !target_dir!\\Selenium.WebDriverBackedSelenium.dll %OUT%\\!platform_moniker! &&' +
         'copy !target_dir!\\Selenium.WebDriverBackedSelenium.xml %OUT%\\!platform_moniker!' +
@@ -105,8 +106,10 @@ genrule(
     '(if not exist %OUT% mkdir %OUT%) && ' +
     'for %%G in (%SRCS%) do (' +
       'set target_dir=%%G&& ' +
+      'set platform_dir=%%G\\..&& ' +
       'for %%H in (!target_dir!) do (' +
-        'set platform_moniker=%%~nxH&& ' +
+        'for %%I in (!platform_dir!) do set full_platform_moniker=%%~nxI&& ' +
+        'for /f \"delims=_\" %%J in (\"!full_platform_moniker!\") do set platform_moniker=%%J&& ' +
         '(if not exist %OUT%\\!platform_moniker! mkdir %OUT%\\!platform_moniker!) && ' +
         'copy !target_dir!\\Selenium.WebDriverBackedSelenium.dll %OUT%\\!platform_moniker! &&' +
         'copy !target_dir!\\Selenium.WebDriverBackedSelenium.xml %OUT%\\!platform_moniker!' +
