@@ -1,3 +1,30 @@
+v3.10.0
+=======
+ * Removed Proxy property from instance of HttpWebRequest in .NET. This
+   fixes the case for .NET Core when running RemoteWebDriver by avoiding
+   a platform-specific property of the ServicePoint object. This obviates
+   the need for creating a custom IWebProxy implementation simply for fixing
+   this issue, and prevents a bloat of the number of RemoteWebDriver
+   constructors for creating an instance of that proxy object. While there
+   may be a compelling use case for supporting an IWebProxy implementation
+   for use with WebDriver to proxy communication between the language bindings
+   and the driver, this use case is not it. Fixes issue #4770.
+ * (on behalf of dnknitro)  Added no-cache header to HTTP GET command of
+   RemoteWebDriver. When Selenium RemoteWebDriver is connecting to Selenium
+   Server (e.g. SauceLabs) through HTTP proxy, same/repetitive HTTP commands
+   can be cached by the proxy. This leads to unexpected and unwanted behavior
+   that HTTP commands return cached and outdated data from the server (e.g.
+   screenshots). Fixes issue #5404.
+ * Removed support for timeline perf logging preference in .NET ChromeDriver.
+   According to chromedriver bug #2034
+   (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2034),
+   the enableTimeline performance logging preference is no longer accepted
+   by chromedriver.exe. The .NET language bindings will no longer send that
+   preference to the driver executable. Additionally, the peroperty setting
+   the preference has been deprecated, and will generate a compile-time
+   warning. The property will be remvoed in a future release. Fixes
+   issue #5481.
+
 v3.9.1
 ======
  * Updated build process and packaging to correctly distribute strongly-
