@@ -27,6 +27,18 @@ module Selenium
             caps = described_class.new(proxy: proxy)
             expect(caps.as_json['proxy']['proxyType']).to eq('manual')
           end
+
+          it 'converts noProxy from string to array' do
+            proxy = Selenium::WebDriver::Proxy.new(no_proxy: 'proxy_url, localhost')
+            caps = described_class.new(proxy: proxy)
+            expect(caps.as_json['proxy']['noProxy']).to eq(['proxy_url', 'localhost'])
+          end
+
+          it 'does not convert noProxy if it is already array' do
+            proxy = Selenium::WebDriver::Proxy.new(no_proxy: ['proxy_url'])
+            caps = described_class.new(proxy: proxy)
+            expect(caps.as_json['proxy']['noProxy']).to eq(['proxy_url'])
+          end
         end
       end # W3C
     end # Remote
