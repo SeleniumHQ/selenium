@@ -33,8 +33,6 @@ module Selenium
           expect(caps.implicit_timeout).to be_zero
           expect(caps.page_load_timeout).to be == 300000
           expect(caps.script_timeout).to be == 30000
-
-          expect(caps.remote_session_id).not_to be_nil if GlobalTestEnv.driver == :remote
         end
       end
 
@@ -51,6 +49,12 @@ module Selenium
           expect(caps.takes_screenshot).to_not be_nil
           expect(caps.native_events).to_not be_nil
           expect(caps.rotatable).to_not be_nil
+        end
+      end
+
+      it 'has remote session ID', only: {driver: :remote}, except: {browser: :ff_esr} do
+        create_driver! do |driver|
+          expect(driver.capabilities.remote_session_id).to be
         end
       end
 
