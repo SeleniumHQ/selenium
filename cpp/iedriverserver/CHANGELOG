@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.10.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
 v3.9.0.4
 ========
  * Fixed behavior for user prompts appearing during JavaScript execution.
