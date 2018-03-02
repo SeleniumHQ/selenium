@@ -9,6 +9,10 @@ Ruby:
 Chrome:
   * Added Chrome::Options#headless! shortcut to enable headless mode (thanks @pulkitsharma07)
 
+IE:
+  * Added support for getting local storage using Driver#local_storage
+  * Added support for getting session storage using Driver#session_storage
+
 3.9.0 (2018-02-06)
 ==================
 
