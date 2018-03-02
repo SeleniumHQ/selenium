@@ -1,3 +1,14 @@
+3.10.0 (Unreleased)
+===================
+
+Ruby:
+  * Added Errno::EAFNOSUPPORT to the list of ignored errors when finding port (thanks @jtarchie)
+  * Added automatic conversion of noProxy to the list of strings as required
+    by W3C WebDriver Specification (issue #5004)
+
+Chrome:
+  * Added Chrome::Options#headless! shortcut to enable headless mode (thanks @pulkitsharma07)
+
 3.9.0 (2018-02-06)
 ==================
 
