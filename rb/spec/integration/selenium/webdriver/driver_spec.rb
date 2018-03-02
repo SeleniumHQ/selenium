@@ -277,7 +277,7 @@ module Selenium
 
       describe 'execute async script' do
         before do
-          driver.manage.timeouts.script_timeout = 0
+          driver.manage.timeouts.script_timeout = 1
           driver.navigate.to url_for('ajaxy_page.html')
         end
 
