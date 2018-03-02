@@ -63,7 +63,10 @@ module Selenium
       end
 
       context 'window switching' do
-        after { quit_driver }
+        after do
+          sleep 1 if ENV['TRAVIS']
+          quit_driver
+        end
 
         it 'should switch to a window and back when given a block' do
           driver.navigate.to url_for('xhtmlTest.html')
@@ -129,6 +132,7 @@ module Selenium
           # Sometimes it's opened in a new window (Firefox 55), sometimes
           # in the same window (Firefox 57). In any event, this has nothing
           # to do with Selenium test.
+          sleep 1 if ENV['TRAVIS']
           reset_driver!
         end
 
