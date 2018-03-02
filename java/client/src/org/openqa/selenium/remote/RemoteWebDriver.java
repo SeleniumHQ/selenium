@@ -127,18 +127,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     try {
-      startClient(capabilities);
-    } catch (RuntimeException e) {
-      try {
-        stopClient(capabilities);
-      } catch (Exception ignored) {
-        // Ignore the clean-up exception. We'll propagate the original failure.
-      }
-
-      throw e;
-    }
-
-    try {
       startSession(capabilities);
     } catch (RuntimeException e) {
       try {
@@ -257,48 +245,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     this.capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
-  }
-
-  /**
-   * Method called before {@link #startSession(Capabilities) starting a new session}. The default
-   * implementation is a no-op, but subtypes should override this method to define custom behavior.
-   *
-   * @deprecated No longer used, as behaviour is now in {@link CommandExecutor} instances.
-   */
-  @Deprecated
-  protected void startClient() {
-  }
-
-  /**
-   * Method called before {@link #startSession(Capabilities) starting a new session}. The default
-   * implementation is a no-op, but subtypes should override this method to define custom behavior.
-   *
-   * @deprecated No longer used, as behaviour is now in {@link CommandExecutor} instances.
-   */
-  @Deprecated
-  protected void startClient(Capabilities capabilities) {
-    startClient();
-  }
-
-  /**
-   * Method called after executing a {@link #quit()} command. The default implementation is a no-op,
-   * but subtypes should override this method to define custom behavior.
-   *
-   * @deprecated No longer used, as behaviour is now in {@link CommandExecutor} instances.
-   */
-  @Deprecated
-  protected void stopClient() {
-  }
-
-  /**
-   * Method called after executing a {@link #quit()} command. The default implementation is a no-op,
-   * but subtypes should override this method to define custom behavior.
-   *
-   * @deprecated No longer used, as behaviour is now in {@link CommandExecutor} instances.
-   */
-  @Deprecated
-  protected void stopClient(Capabilities capabilities) {
-    stopClient();
   }
 
   public ErrorHandler getErrorHandler() {
@@ -497,7 +443,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       execute(DriverCommand.QUIT);
     } finally {
       sessionId = null;
-      stopClient();
     }
   }
 
