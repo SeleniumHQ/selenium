@@ -84,7 +84,7 @@ class Preferences {
     } finally {
       try {
         Closeables.close(reader, true);
-      } catch (IOException ignoted) {
+      } catch (IOException ignored) {
       }
     }
   }
