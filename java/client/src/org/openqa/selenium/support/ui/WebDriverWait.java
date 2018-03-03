@@ -25,7 +25,6 @@ import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 
 /**
  * A specialization of {@link FluentWait} that uses WebDriver instances.
