@@ -68,9 +68,7 @@ public class ProtocolHandshakeTest {
 
     new ProtocolHandshake().createSession(client, command);
 
-    HttpRequest request = client.getRequest();
-    Map<String, Object> json = new Gson()
-        .fromJson(request.getContentString(), new TypeToken<Map<String, Object>>(){}.getType());
+    Map<String, Object> json = getRequestPayloadAsMap(client);
 
     assertEquals(ImmutableMap.of(), json.get("desiredCapabilities"));
   }
@@ -88,9 +86,7 @@ public class ProtocolHandshakeTest {
 
     new ProtocolHandshake().createSession(client, command);
 
-    HttpRequest request = client.getRequest();
-    Map<String, Object> json = new Gson()
-        .fromJson(request.getContentString(), new TypeToken<Map<String, Object>>(){}.getType());
+    Map<String, Object> json = getRequestPayloadAsMap(client);
     Map<String, Object> capabilities = (Map<String, Object>) json.get("capabilities");
 
     assertEquals(ImmutableMap.of(), capabilities.get("desiredCapabilities"));
@@ -109,9 +105,7 @@ public class ProtocolHandshakeTest {
 
     new ProtocolHandshake().createSession(client, command);
 
-    HttpRequest request = client.getRequest();
-    Map<String, Object> json = new Gson()
-        .fromJson(request.getContentString(), new TypeToken<Map<String, Object>>(){}.getType());
+    Map<String, Object> json = getRequestPayloadAsMap(client);
 
     List<Map<String, Object>> caps = mergeW3C(json);
 
@@ -180,10 +174,7 @@ public class ProtocolHandshakeTest {
 
     new ProtocolHandshake().createSession(client, command);
 
-    HttpRequest request = client.getRequest();
-    Map<String, Object> handshakeRequest = new Gson().fromJson(
-        request.getContentString(),
-        new TypeToken<Map<String, Object>>() {}.getType());
+    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
 
     Object rawCaps = handshakeRequest.get("capabilities");
     assertTrue(rawCaps instanceof Map);
@@ -215,11 +206,7 @@ public class ProtocolHandshakeTest {
 
     new ProtocolHandshake().createSession(client, command);
 
-    HttpRequest request = client.getRequest();
-
-    Map<String, Object> handshakeRequest = new Gson().fromJson(
-        request.getContentString(),
-        new TypeToken<Map<String, Object>>() {}.getType());
+    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
 
     Object rawCaps = handshakeRequest.get("capabilities");
     assertTrue(rawCaps instanceof Map);
@@ -258,10 +245,7 @@ public class ProtocolHandshakeTest {
 
     new ProtocolHandshake().createSession(client, command);
 
-    HttpRequest request = client.getRequest();
-    Map<String, Object> handshakeRequest = new Gson().fromJson(
-        request.getContentString(),
-        new TypeToken<Map<String, Object>>() {}.getType());
+    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
 
     List<Map<String, Object>> capabilities = mergeW3C(handshakeRequest);
 
@@ -288,10 +272,7 @@ public class ProtocolHandshakeTest {
 
     new ProtocolHandshake().createSession(client, command);
 
-    HttpRequest request = client.getRequest();
-    Map<String, Object> handshakeRequest = new Gson().fromJson(
-        request.getContentString(),
-        new TypeToken<Map<String, Object>>() {}.getType());
+    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
 
     List<Map<String, Object>> w3c = mergeW3C(handshakeRequest);
 
@@ -320,10 +301,7 @@ public class ProtocolHandshakeTest {
 
     new ProtocolHandshake().createSession(client, command);
 
-    HttpRequest request = client.getRequest();
-    Map<String, Object> handshakeRequest = new Gson().fromJson(
-        request.getContentString(),
-        new TypeToken<Map<String, Object>>() {}.getType());
+    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
 
     mergeW3C(handshakeRequest).forEach(always -> {
           Map<String, ?> seenProxy = (Map<String, ?>) always.get("proxy");
@@ -353,10 +331,7 @@ public class ProtocolHandshakeTest {
 
     new ProtocolHandshake().createSession(client, command);
 
-    HttpRequest request = client.getRequest();
-    Map<String, Object> handshakeRequest = new Gson().fromJson(
-        request.getContentString(),
-        new TypeToken<Map<String, Object>>() {}.getType());
+    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
 
     mergeW3C(handshakeRequest)
         .forEach(capabilities -> {
@@ -389,33 +364,33 @@ public class ProtocolHandshakeTest {
     return allCaps;
   }
 
+  private Map<String, Object> getRequestPayloadAsMap(RecordingHttpClient client) {
+    return new Gson().fromJson(
+        client.getRequestPayload(), new TypeToken<Map<String, Object>>(){}.getType());
+  }
+
   class RecordingHttpClient implements HttpClient {
 
     private final HttpResponse response;
-    private HttpRequest request;
+    private String payload;
 
-    public RecordingHttpClient(HttpResponse response) {
+    RecordingHttpClient(HttpResponse response) {
       this.response = response;
     }
 
     @Override
-    public HttpResponse execute(HttpRequest request) throws IOException {
-      return execute(request, true);
-    }
-
-    private HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
-      this.request = request;
-      request.getContentString();
+    public HttpResponse execute(HttpRequest request) {
+      payload = request.getContentString();
       return response;
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
       // Does nothing
     }
 
-    public HttpRequest getRequest() {
-      return request;
+    String getRequestPayload() {
+      return payload;
     }
   }
 }
