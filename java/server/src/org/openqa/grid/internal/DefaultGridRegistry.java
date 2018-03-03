@@ -21,6 +21,7 @@ import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.internal.listeners.RegistrationListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -84,16 +85,6 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-  }
-
-  /**
-   * Creates a new {@link GridRegistry} that is not associated with a Hub and starts it.
-   *
-   * @return the registry
-   */
-  @SuppressWarnings({"NullableProblems"})
-  public static GridRegistry newInstance() {
-    return newInstance(null);
   }
 
   /**

@@ -33,6 +33,8 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -72,7 +74,7 @@ public class SessionListenerTest {
 
   @Test
   public void beforeAfterRan() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     registry.add(new MyRemoteProxy(req, registry));
 
     RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);
@@ -117,7 +119,7 @@ public class SessionListenerTest {
    */
   @Test(timeout = 500000)
   public void buggyBefore() throws InterruptedException {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     registry.add(new MyBuggyBeforeRemoteProxy(req, registry));
 
     RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);
@@ -170,7 +172,7 @@ public class SessionListenerTest {
    */
   @Test(timeout = 1000)
   public void buggyAfter() throws InterruptedException {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     try {
       registry.add(new MyBuggyAfterRemoteProxy(req, registry));
 
@@ -252,7 +254,7 @@ public class SessionListenerTest {
     req.getConfiguration().maxSession = 2;
     req.getConfiguration().capabilities.add(new DesiredCapabilities(cap));
 
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     try {
       final SlowAfterSession proxy = new SlowAfterSession(req, registry);
       proxy.setupTimeoutListener();

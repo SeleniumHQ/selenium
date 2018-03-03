@@ -42,7 +42,9 @@ import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
@@ -152,7 +154,7 @@ public class CommandListenerTest {
 
   @Test
   public void canModifyResponseWithListener() throws IOException {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     registry.add(new MyRemoteProxy(req, registry));
 
     RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);

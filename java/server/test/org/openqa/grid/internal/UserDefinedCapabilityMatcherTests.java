@@ -31,7 +31,7 @@ public class UserDefinedCapabilityMatcherTests {
 
   @Test
   public void defaultsToDefaultMatcher() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     String[] args = new String[]{"-role", "webdriver","-id", "abc","-host","localhost"};
     GridNodeConfiguration nodeConfiguration = new GridNodeCliOptions().parse(args).toConfiguration();
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);

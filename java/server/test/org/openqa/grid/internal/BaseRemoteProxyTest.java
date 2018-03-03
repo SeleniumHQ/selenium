@@ -47,7 +47,7 @@ public class BaseRemoteProxyTest {
 
   @Before
   public void before() {
-    registry = DefaultGridRegistry.newInstance();
+    registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
   }
 
   @Test
@@ -102,9 +102,9 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void proxyConfigOverwritesRegistryConfig() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
-    registry.getConfiguration().cleanUpCycle = 42;
-    registry.getConfiguration().maxSession = 1;
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    registry.getHub().getConfiguration().cleanUpCycle = 42;
+    registry.getHub().getConfiguration().maxSession = 1;
 
     GridNodeConfiguration nodeConfiguration = parseCliOptions(
         "-role", "webdriver", "-cleanUpCycle", "100", "-maxSession", "50");
@@ -122,7 +122,7 @@ public class BaseRemoteProxyTest {
   @Test
   public void proxyTakesRemoteAsIdIfIdNotSpecified() {
     String remoteHost ="http://machine1:5555";
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
 
     GridNodeConfiguration nodeConfiguration = parseCliOptions(
         "-role", "webdriver","-host", "machine1", "-port", "5555");
@@ -136,7 +136,7 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void proxyWithIdSpecified() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     GridNodeConfiguration nodeConfiguration = parseCliOptions(
         "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
@@ -149,7 +149,7 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void timeouts() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     GridNodeConfiguration nodeConfiguration = parseCliOptions(
         "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc","-timeout", "23", "-browserTimeout", "12");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);

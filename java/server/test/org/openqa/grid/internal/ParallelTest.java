@@ -26,6 +26,8 @@ import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -65,7 +67,7 @@ public class ParallelTest {
 
   @Test
   public void canGetApp2() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -84,7 +86,8 @@ public class ParallelTest {
    */
   @Test
   public void cannotGet2App2() {
-    final GridRegistry registry = DefaultGridRegistry.newInstance();
+    final GridRegistry registry =
+        DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -110,7 +113,8 @@ public class ParallelTest {
    */
   @Test(timeout = 2000)
   public void canGet5App1() {
-    final GridRegistry registry = DefaultGridRegistry.newInstance();
+    final GridRegistry registry =
+        DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -129,7 +133,8 @@ public class ParallelTest {
    */
   @Test(timeout = 1000)
   public void cannotGet6App1() {
-    final GridRegistry registry = DefaultGridRegistry.newInstance();
+    final GridRegistry registry =
+        DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -163,7 +168,8 @@ public class ParallelTest {
    */
   @Test(timeout = 1000)
   public void cannotGetApp2() {
-    final GridRegistry registry = DefaultGridRegistry.newInstance();
+    final GridRegistry registry =
+        DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
@@ -192,7 +198,7 @@ public class ParallelTest {
 
   @Test(timeout = 10000)
   public void releaseAndReserve() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     RemoteProxy p1;
     RegistrationRequest req;
     Map<String, Object> app1 = new HashMap<>();

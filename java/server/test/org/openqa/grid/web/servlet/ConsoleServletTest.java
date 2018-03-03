@@ -27,6 +27,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.grid.internal.DefaultGridRegistry;
 import org.openqa.grid.internal.GridRegistry;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
@@ -45,7 +47,8 @@ public class ConsoleServletTest extends BaseServletTest {
       @Override
       public ServletContext getServletContext() {
         final ContextHandler.Context servletContext = new ContextHandler().getServletContext();
-        servletContext.setAttribute(GridRegistry.KEY, DefaultGridRegistry.newInstance());
+        servletContext.setAttribute(GridRegistry.KEY, DefaultGridRegistry
+            .newInstance(new Hub(new GridHubConfiguration())));
         return servletContext;
       }
     };

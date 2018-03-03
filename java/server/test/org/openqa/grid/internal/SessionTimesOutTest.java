@@ -30,6 +30,8 @@ import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -71,7 +73,7 @@ public class SessionTimesOutTest {
   @Test(timeout = 10000)
   public void testTimeout() throws InterruptedException {
 
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     RemoteProxy p1 = new MyRemoteProxyTimeout(req, registry);
     p1.setupTimeoutListener();
 
@@ -115,9 +117,9 @@ public class SessionTimesOutTest {
   @Ignore(value = "flaky in travis CI")
   @Test(timeout = 20000)
   public void testTimeoutSlow() throws InterruptedException {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
-    registry.getConfiguration().timeout = 1800;
-    registry.getConfiguration().cleanUpCycle = null;
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    registry.getHub().getConfiguration().timeout = 1800;
+    registry.getHub().getConfiguration().cleanUpCycle = null;
     RemoteProxy p1 = new MyRemoteProxyTimeoutSlow(req, registry);
     p1.setupTimeoutListener();
 
@@ -167,7 +169,8 @@ public class SessionTimesOutTest {
   // a proxy throwing an exception will end up not releasing the resources.
   @Test(timeout = 5000)
   public void testTimeoutBug() throws InterruptedException {
-    final GridRegistry registry = DefaultGridRegistry.newInstance();
+    final GridRegistry registry =
+        DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     RemoteProxy p1 = new MyBuggyRemoteProxyTimeout(req, registry);
     p1.setupTimeoutListener();
 
@@ -222,7 +225,8 @@ public class SessionTimesOutTest {
         // timeout is in seconds
         int timeout = (Integer) c[0];
         int cycle = (Integer) c[1];
-        GridRegistry registry = DefaultGridRegistry.newInstance();
+        GridRegistry registry =
+            DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
         registryList.add(registry);
 
         RegistrationRequest req = new RegistrationRequest();

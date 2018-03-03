@@ -27,7 +27,9 @@ import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -50,8 +52,8 @@ public class LoadBalancedTests {
 
   @Before
   public void setup() {
-    registry = DefaultGridRegistry.newInstance();
-    registry2 = DefaultGridRegistry.newInstance();
+    registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    registry2 = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
 
     register5ProxiesOf5Slots();
     register3ProxiesVariableSlotSize();
