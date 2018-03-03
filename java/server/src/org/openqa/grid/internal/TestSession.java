@@ -74,7 +74,6 @@ import javax.servlet.http.HttpServletResponse;
  * available for a test. <p> The session is destroyed when the test ends ( ended by the client or
  * timed out)
  */
-@SuppressWarnings("JavaDoc")
 @ManagedService
 public class TestSession {
 
@@ -376,7 +375,7 @@ public class TestSession {
 
   private byte[] updateHubIfNewWebDriverSession(
       SeleniumBasedRequest request,
-      HttpResponse proxyResponse) throws IOException {
+      HttpResponse proxyResponse) {
     if (!(request.getRequestType() == RequestType.START_SESSION &&
           request instanceof WebDriverRequest)) {
       return null;
