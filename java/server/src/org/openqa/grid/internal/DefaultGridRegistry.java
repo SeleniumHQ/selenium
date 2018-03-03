@@ -205,8 +205,6 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
     matcherThread.interrupt();
     newSessionQueue.stop();
     proxies.teardown();
-    httpClientFactory.close();
-
   }
 
   /**

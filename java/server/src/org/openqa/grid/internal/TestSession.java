@@ -40,7 +40,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 
@@ -210,9 +209,7 @@ public class TestSession {
       browserTimeout *=2; // Lets not let this happen too often
     }
 
-    return new ApacheHttpClient(
-        slot.getProxy().getHttpClientFactory().getGridHttpClient((int) browserTimeout, (int) browserTimeout),
-        url);
+    return slot.getProxy().getHttpClient(url);
   }
 
   /*

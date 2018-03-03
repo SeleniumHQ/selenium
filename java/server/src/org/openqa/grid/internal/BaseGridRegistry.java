@@ -19,19 +19,18 @@ package org.openqa.grid.internal;
 
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.internal.OkHttpClient;
 
 import java.net.URL;
 
 public abstract class BaseGridRegistry implements GridRegistry {
-  protected final HttpClientFactory httpClientFactory;
+  protected final HttpClient.Factory httpClientFactory;
 
   // The following needs to be volatile because we expose a public setters
   protected volatile Hub hub;
 
   public BaseGridRegistry(Hub hub) {
-    this.httpClientFactory = new HttpClientFactory();
+    this.httpClientFactory = new OkHttpClient.Factory();
     this.hub = hub;
   }
 
@@ -49,17 +48,8 @@ public abstract class BaseGridRegistry implements GridRegistry {
     this.hub = hub;
   }
 
-  /**
-   * @see GridRegistry#getHttpClientFactory()
-   * @deprecated Use {@link #getHttpClient(URL)}.
-   */
-  @Deprecated
-  public HttpClientFactory getHttpClientFactory() {
-    return httpClientFactory;
-  }
-
   @Override
   public HttpClient getHttpClient(URL url) {
-    return new ApacheHttpClient.Factory(httpClientFactory).createClient(url);
+    return httpClientFactory.createClient(url);
   }
 }

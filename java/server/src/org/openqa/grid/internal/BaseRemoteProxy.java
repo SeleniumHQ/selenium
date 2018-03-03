@@ -38,7 +38,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
 import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 
 import java.lang.reflect.Constructor;
@@ -429,11 +428,6 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   public int getTimeOut() {
     return config.timeout * 1000;
-  }
-
-
-  public HttpClientFactory getHttpClientFactory() {
-    return getRegistry().getHttpClientFactory();
   }
 
   public HttpClient getHttpClient(URL url) {
