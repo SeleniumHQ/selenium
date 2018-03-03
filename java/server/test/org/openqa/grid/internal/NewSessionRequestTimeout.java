@@ -46,7 +46,7 @@ public class NewSessionRequestTimeout {
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);
     // after 1 sec in the queue, request are kicked out.
-    registry.getConfiguration().newSessionWaitTimeout = 1000;
+    registry.getHub().getConfiguration().newSessionWaitTimeout = 1000;
   }
 
   @Test(timeout = 5000)

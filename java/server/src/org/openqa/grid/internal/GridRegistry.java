@@ -32,13 +32,6 @@ public interface GridRegistry {
   String KEY = GridRegistry.class.getName();
 
   /**
-   * @return the {@link GridHubConfiguration} for this registry
-   * @deprecated use #getHub() to access the {@link GridHubConfiguration} instead.
-   */
-  @Deprecated
-  GridHubConfiguration getConfiguration();
-
-  /**
    * Ends this test session, releasing the resources in the registry. Resources should be released
    * on a separate thread so the call does not block. MUST honor listeners for the {@link TestSlot} which
    * is being released.

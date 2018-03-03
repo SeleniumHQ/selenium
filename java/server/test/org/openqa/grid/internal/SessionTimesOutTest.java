@@ -237,8 +237,8 @@ public class SessionTimesOutTest {
         req.getConfiguration().cleanUpCycle = cycle;
         req.getConfiguration().host = "localhost";
 
-        registry.getConfiguration().cleanUpCycle = cycle;
-        registry.getConfiguration().timeout = timeout;
+        registry.getHub().getConfiguration().cleanUpCycle = cycle;
+        registry.getHub().getConfiguration().timeout = timeout;
 
         final MyStupidConfig proxy = new MyStupidConfig(req, registry);
         proxy.setupTimeoutListener();

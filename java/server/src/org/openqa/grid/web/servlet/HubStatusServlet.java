@@ -113,7 +113,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
         }
 
         GridRegistry registry = getRegistry();
-        JsonElement config = registry.getConfiguration().toJson();
+        JsonElement config = registry.getHub().getConfiguration().toJson();
         for (Map.Entry<String, JsonElement> entry : config.getAsJsonObject().entrySet()) {
           if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains(entry.getKey())) {
             res.put(entry.getKey(), entry.getValue());

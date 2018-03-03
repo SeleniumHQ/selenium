@@ -65,7 +65,7 @@ public class Hub implements Stoppable {
 
   private static final Logger log = Logger.getLogger(Hub.class.getName());
 
-  private GridHubConfiguration config;
+  private final GridHubConfiguration config;
   private final GridRegistry registry;
   private final Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
 
@@ -85,7 +85,7 @@ public class Hub implements Stoppable {
   }
 
   public Hub(GridHubConfiguration gridHubConfiguration) {
-    config = gridHubConfiguration;
+    config = gridHubConfiguration == null ? new GridHubConfiguration() : gridHubConfiguration;
 
     try {
       registry = (GridRegistry) Class.forName(config.registry).newInstance();

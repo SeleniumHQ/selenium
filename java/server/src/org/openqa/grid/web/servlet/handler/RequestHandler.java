@@ -28,6 +28,7 @@ import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.NewSessionPayload;
 
@@ -188,8 +189,9 @@ public class RequestHandler implements Comparable<RequestHandler> {
   public void waitForSessionBound() throws InterruptedException, TimeoutException {
     // Maintain compatibility with Grid 1.x, which had the ability to
     // specify how long to wait before canceling a request.
-    Integer newSessionWaitTimeout = registry.getConfiguration().newSessionWaitTimeout != null ?
-                                    registry.getConfiguration().newSessionWaitTimeout : 0;
+    GridHubConfiguration configuration = getRegistry().getHub().getConfiguration();
+    Integer newSessionWaitTimeout = configuration.newSessionWaitTimeout != null ?
+                                    configuration.newSessionWaitTimeout : 0;
     if (newSessionWaitTimeout > 0) {
       if (!sessionAssigned.await(newSessionWaitTimeout.longValue(), TimeUnit.MILLISECONDS)) {
         throw new TimeoutException("Request timed out waiting for a node to become available.");
@@ -215,9 +217,11 @@ public class RequestHandler implements Comparable<RequestHandler> {
   }
 
   public int compareTo(RequestHandler o) {
-    if (registry.getConfiguration().prioritizer != null) {
-      return registry.getConfiguration().prioritizer.compareTo(this.getRequest().getDesiredCapabilities(), o.getRequest()
-          .getDesiredCapabilities());
+    GridHubConfiguration configuration = getRegistry().getHub().getConfiguration();
+    if (configuration.prioritizer != null) {
+      return configuration.prioritizer.compareTo(
+          this.getRequest().getDesiredCapabilities(),
+          o.getRequest().getDesiredCapabilities());
     }
     return 0;
   }

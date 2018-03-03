@@ -235,7 +235,9 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
       try {
         testSessionAvailable.await(5, TimeUnit.SECONDS);
 
-        newSessionQueue.processQueue(this::takeRequestHandler, configuration.prioritizer);
+        newSessionQueue.processQueue(
+            this::takeRequestHandler,
+            getHub().getConfiguration().prioritizer);
         // Just make sure we delete anything that is logged on this thread from memory
         LoggingManager.perSessionLogHandler().clearThreadTempLogs();
       } catch (InterruptedException e) {

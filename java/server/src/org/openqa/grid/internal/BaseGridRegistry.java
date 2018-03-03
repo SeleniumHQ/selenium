@@ -17,7 +17,6 @@
 
 package org.openqa.grid.internal;
 
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
@@ -27,8 +26,6 @@ import java.net.URL;
 
 public abstract class BaseGridRegistry implements GridRegistry {
   protected final HttpClientFactory httpClientFactory;
-  @Deprecated
-  protected GridHubConfiguration configuration;
 
   // The following needs to be volatile because we expose a public setters
   protected volatile Hub hub;
@@ -36,18 +33,6 @@ public abstract class BaseGridRegistry implements GridRegistry {
   public BaseGridRegistry(Hub hub) {
     this.httpClientFactory = new HttpClientFactory();
     this.hub = hub;
-
-    this.configuration = (hub != null) ?
-       hub.getConfiguration() : new GridHubConfiguration();
-  }
-
-  /**
-   * @see GridRegistry#getConfiguration()
-   */
-  @Deprecated
-  public GridHubConfiguration getConfiguration() {
-    return (hub != null) ? hub.getConfiguration() :
-           (configuration != null) ? configuration : new GridHubConfiguration();
   }
 
   /**
@@ -62,9 +47,6 @@ public abstract class BaseGridRegistry implements GridRegistry {
    */
   public void setHub(Hub hub) {
     this.hub = hub;
-    if (hub != null) {
-      this.configuration = hub.getConfiguration();
-    }
   }
 
   /**

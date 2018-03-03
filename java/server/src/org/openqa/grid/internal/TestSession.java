@@ -204,7 +204,7 @@ public class TestSession {
 
   private HttpClient getClient(URL url) {
     GridRegistry reg = slot.getProxy().getRegistry();
-    long browserTimeout = TimeUnit.SECONDS.toMillis(reg.getConfiguration().browserTimeout);
+    long browserTimeout = TimeUnit.SECONDS.toMillis(reg.getHub().getConfiguration().browserTimeout);
     if (browserTimeout > 0) {
       final long selenium_server_cleanup_cycle = browserTimeout / 10;
       browserTimeout += (selenium_server_cleanup_cycle + MAX_NETWORK_LATENCY);
