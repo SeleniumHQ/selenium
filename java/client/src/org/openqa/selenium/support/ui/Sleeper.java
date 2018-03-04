@@ -37,7 +37,7 @@ public interface Sleeper {
    */
   @Deprecated
   default void sleep(Duration duration) throws InterruptedException {
-    sleep(java.time.Duration.of(duration.in(TimeUnit.MILLISECONDS), ChronoUnit.MICROS));
+    sleep(java.time.Duration.of(duration.in(TimeUnit.MILLISECONDS), ChronoUnit.MILLIS));
   }
 
   /**
