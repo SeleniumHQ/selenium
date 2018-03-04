@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.support.ui;
 
-import java.util.concurrent.TimeUnit;
-
 public class TickingClock implements Clock, Sleeper {
   private long now = 0;
 
@@ -34,12 +32,8 @@ public class TickingClock implements Clock, Sleeper {
     return now < endInMillis;
   }
 
-  public void sleep(Duration duration) {
-    now += duration.in(TimeUnit.MILLISECONDS);
-  }
-
   @Override
-  public void sleep(java.time.Duration duration) throws InterruptedException {
+  public void sleep(java.time.Duration duration) {
     now += duration.toMillis();
   }
 }
