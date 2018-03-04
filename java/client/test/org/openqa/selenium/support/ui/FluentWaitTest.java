@@ -38,7 +38,6 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 
 @RunWith(JUnit4.class)

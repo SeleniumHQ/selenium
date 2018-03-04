@@ -33,7 +33,6 @@ import org.openqa.selenium.support.ui.Wait;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.function.Supplier;
 
