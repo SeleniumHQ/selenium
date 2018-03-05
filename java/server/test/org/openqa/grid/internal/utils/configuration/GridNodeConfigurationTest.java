@@ -34,6 +34,7 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.cli.GridNodeCliOptions;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.IOException;
@@ -186,7 +187,7 @@ public class GridNodeConfigurationTest {
                  + "\"debug\":false,"
                  + "\"port\":5555,"
                  + "\"role\":\"node\","
-                 + "\"timeout\":1800}", gnc.toJson().toString());
+                 + "\"timeout\":1800}", new Json().toJson(gnc.toJson()));
   }
 
   @Test
