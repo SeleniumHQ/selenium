@@ -1,3 +1,11 @@
+Selenium 3.10.0
+
+* make tests to check clicking on disabled element work for w3c compliant drivers (#5561)
+* add docstring for InvalidElementStateException. Fixes #5520
+* Deleting unused imports
+* Making python specification in IDEA project more generic
+* It should be possible to use a custom safaridriver executable to run Selenium's test suite.
+
 Selenium 3.9.0
 
 * Add docstrings to WebElement find methods (#5384)
