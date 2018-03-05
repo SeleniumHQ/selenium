@@ -61,13 +61,13 @@ public class RegistrationServlet extends RegistryBasedServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
@@ -105,11 +105,10 @@ public class RegistrationServlet extends RegistryBasedServlet {
 
     reply(response, "ok");
 
-    new Thread(new Runnable() {  // Thread safety reviewed
-      public void run() {
-        getRegistry().add(proxy);
-        log.fine("proxy added " + proxy.getRemoteHost());
-      }
+    // Thread safety reviewed
+    new Thread(() -> {
+      getRegistry().add(proxy);
+      log.fine("proxy added " + proxy.getRemoteHost());
     }).start();
   }
 
