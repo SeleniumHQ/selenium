@@ -27,10 +27,11 @@ import com.google.gson.annotations.SerializedName;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesDeSerializer;
-import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesSerializer;
 import org.openqa.selenium.MutableCapabilities;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Helper to register to the grid. Using JSON to exchange the object between the node and the hub.
@@ -117,17 +118,13 @@ public class RegistrationRequest {
     return configuration;
   }
 
-  public JsonObject toJson() {
-    GsonBuilder builder = new GsonBuilder();
-    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
-                                new CollectionOfDesiredCapabilitiesSerializer());
-
-    // note: it's very important that nulls are serialized for this type.
-    return builder.serializeNulls()
-        .excludeFieldsWithoutExposeAnnotation()
-        .create()
-        .toJsonTree(this, RegistrationRequest.class)
-        .getAsJsonObject();
+  public Map<String, Object> toJson() {
+    Map<String, Object> json = new TreeMap<>();
+    json.put("class", getClass());
+    json.put("name", getName());
+    json.put("description", getDescription());
+    json.put("configuration", getConfiguration());
+    return json;
   }
 
   /**

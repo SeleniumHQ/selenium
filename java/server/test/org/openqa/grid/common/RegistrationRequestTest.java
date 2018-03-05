@@ -31,6 +31,7 @@ import org.openqa.grid.internal.cli.GridNodeCliOptions;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -67,7 +68,7 @@ public class RegistrationRequestTest {
       req.getConfiguration().capabilities.add(cap);
     }
 
-    String json = req.toJson().toString();
+    String json = new Json().toJson(req.toJson());
 
     RegistrationRequest req2 = RegistrationRequest.fromJson(json);
 
