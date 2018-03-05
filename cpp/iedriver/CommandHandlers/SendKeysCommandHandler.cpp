@@ -222,14 +222,14 @@ void SendKeysCommandHandler::ExecuteInternal(
       bool displayed;
       status_code = element_wrapper->IsDisplayed(true, &displayed);
       if (status_code != WD_SUCCESS || !displayed) {
-        response->SetErrorResponse(EELEMENTNOTDISPLAYED,
-                                    "Element is not displayed");
+        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
+                                   "Element cannot be interacted with via the keyboard because it is not displayed");
         return;
       }
 
       if (!element_wrapper->IsEnabled()) {
-        response->SetErrorResponse(EELEMENTNOTENABLED,
-                                    "Element is not enabled");
+        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
+                                   "Element cannot be interacted with via the keyboard because it is not enabled");
         return;
       }
 
