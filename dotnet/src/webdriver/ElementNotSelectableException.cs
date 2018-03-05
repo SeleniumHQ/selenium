@@ -1,4 +1,4 @@
-// <copyright file="ElementNotVisibleException.cs" company="WebDriver Committers">
+// <copyright file="ElementNotSelectableException.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -25,47 +25,47 @@ namespace OpenQA.Selenium
     /// The exception that is thrown when an element is not visible.
     /// </summary>
     [Serializable]
-    public class ElementNotVisibleException : ElementNotInteractableException
+    public class ElementNotSelectableException : InvalidElementStateException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementNotVisibleException"/> class.
+        /// Initializes a new instance of the <see cref="ElementNotInteractableException"/> class.
         /// </summary>
-        public ElementNotVisibleException()
+        public ElementNotSelectableException()
             : base()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementNotVisibleException"/> class with
+        /// Initializes a new instance of the <see cref="ElementNotInteractableException"/> class with
         /// a specified error message.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
-        public ElementNotVisibleException(string message)
+        public ElementNotSelectableException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementNotVisibleException"/> class with
+        /// Initializes a new instance of the <see cref="ElementNotInteractableException"/> class with
         /// a specified error message and a reference to the inner exception that is the
         /// cause of this exception.
         /// </summary>
         /// <param name="message">The error message that explains the reason for the exception.</param>
         /// <param name="innerException">The exception that is the cause of the current exception,
         /// or <see langword="null"/> if no inner exception is specified.</param>
-        public ElementNotVisibleException(string message, Exception innerException)
+        public ElementNotSelectableException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementNotVisibleException"/> class with serialized data.
+        /// Initializes a new instance of the <see cref="ElementNotInteractableException"/> class with serialized data.
         /// </summary>
         /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
         /// object data about the exception being thrown.</param>
         /// <param name="context">The <see cref="StreamingContext"/> that contains contextual
         /// information about the source or destination.</param>
-        protected ElementNotVisibleException(SerializationInfo info, StreamingContext context)
+        protected ElementNotSelectableException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
