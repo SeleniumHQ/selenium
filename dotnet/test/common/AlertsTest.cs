@@ -201,7 +201,7 @@ namespace OpenQA.Selenium
                 alert.SendKeys("cheese");
                 Assert.Fail("Expected exception");
             }
-            catch (ElementNotVisibleException)
+            catch (ElementNotInteractableException)
             {
             }
             finally
