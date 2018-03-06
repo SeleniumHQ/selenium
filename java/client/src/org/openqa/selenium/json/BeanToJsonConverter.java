@@ -245,8 +245,9 @@ class BeanToJsonConverter {
         continue;
       }
 
+      // Only include methods not on java.lang.Object to stop things being super-noisy
       Method readMethod = pd.getReadMethod();
-      if (readMethod == null) {
+      if (readMethod == null || Object.class.equals(readMethod.getDeclaringClass())) {
         continue;
       }
 
