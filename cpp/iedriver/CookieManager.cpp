@@ -499,7 +499,7 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
       // Mimic the format of the old persistent cookie files for ease of
       // transmission back to the driver and parsing.
       std::wstring all_cookies = L"";
-      for (int cookie_index = 0; cookie_index < cookie_count; ++cookie_index) {
+      for (DWORD cookie_index = 0; cookie_index < cookie_count; ++cookie_index) {
         if (all_cookies.size() > 0) {
           all_cookies.append(L"\n*\n");
         }
