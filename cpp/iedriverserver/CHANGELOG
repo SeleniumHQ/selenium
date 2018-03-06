@@ -9,6 +9,63 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.10.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Updated clear element command handler to return W3C compliant errors for IE.
+ * Updated IE error response to be spec compliant for sendKeys
+ * Fixed IE cookie retrieval for IE 10 and 11. Internet Explorer relies on a
+   Windows component called WinINet to communicate over the Internet. This
+   includes WinINet APIs for getting and setting cookies. Prior to Windows 10,
+   persistent cookies were stored in files on the hard drive. A change in
+   WinINet moved the persistent cookie storage from files on the disk to an
+   Extensible Storage Engine (ESE or "Jet Blue") database, which rendered them
+   unreadable by the IE driver. This commit restores the functionality of
+   getting cookies by using an API function called InternetGetCookieEx2.
+
+   This API function was introduced in the Windows 8.1 SDK, which means that
+   it won't be available to older versions of WinINet. In that case, we fall
+   back to the original behavior of attempting to parse cookie files from the
+   disk. There is a chance that the detection of the availability of this API
+   is flawed in the IE driver.
+ * Revamped handling of modifier keys. The IE driver is now able to
+   distinguish between the left and right modifier keys (Shift, Control,
+   Alt) on the keyboard.
+ * Modified mouse event handling to match W3C Specification.
+
+   THIS IS A POTENTIAL BREAKING CHANGE.
+
+   The simulation of mouse movement for the actions command now conforms
+   to the W3C WebDriver Specification for mouse movement. This means
+   that offsets in elements are now measured from the center of the
+   element instead of the top-left, which was the previous behavior.
+   Additionally, attempting to move the mouse pointer outside the
+   browser view port will result in a "mouse movement out of bounds"
+   error. While users should be aware that this might cause code
+   using user interactions to fail, not that the behavior is now
+   consistent with the behavior outlined in the specification, and
+   the behavior of geckodriver in particular.
+ * Modified processing of pause actions in keyboard action sequences.
+   The vast majority of use of pause actions in a keyboard action
+   sequence are used to synchronize the entire action chain with other
+   (mouse) action sequences. To allow the driver to properly synchronize
+   the input sequences, the driver will now ignore the duration property
+   of pause events in keyboard action sequences. This is deliberately in
+   violation of the W3C specification, and may be revisited in the future.
+ * Fixed sending keystrokes outside the Basic Multilingual Plane. This
+   allows emoji and other Unicode characters that are represented by
+   surrogate pairs in UTF-16 to be sent to IE.
+ * Fixed getElementProperty to return proper data type. Previously,
+   the getElementProperty command would coerce the property value to a
+   string. This is not correct behavior as specified in the W3C spec.
+ * Revert behavior of user prompts appearing during JavaScript execution.
+   This behavior causes too many problems in too many scenarios where a
+   prompt can appear. Reverting to the previous behavior, which is that
+   encountering a user prompt ('alert', 'confirm', 'prompt') when calling
+   JavaScript with executeScript will immediately return control back to
+   the WebDriver code (returning null), and rely on the immediately
+   following command to handle the user prompt.
+
 v3.10.0.0
 =========
  * Release to synchronize with release of Selenium project.
