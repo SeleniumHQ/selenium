@@ -56,11 +56,17 @@ void ClearElementCommandHandler::ExecuteInternal(
       // does not return the proper error code when this error condition is encountered.
       // Thus, we'll check the interactable and editable states of the element before 
       // attempting to clear it.
-      if (!element_wrapper->IsInteractable() || !element_wrapper->IsEditable()) {
-        response->SetErrorResponse(EELEMENTNOTENABLED,
-                                    "Element must not be hidden, disabled or read-only");
+      if (!element_wrapper->IsEditable() || !element_wrapper->IsEnabled()) {
+        response->SetErrorResponse(ERROR_INVALID_ELEMENT_STATE,
+                                   "Element must not be read-only or disabled");
         return;
       }
+      if (!element_wrapper->IsInteractable()) {
+        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
+                                   "Element is not interactable, it must not be hidden and it must be able to receive focus");
+        return;
+      }
+
       // The atom is just the definition of an anonymous
       // function: "function() {...}"; Wrap it in another function so we can
       // invoke it with our arguments without polluting the current namespace.
