@@ -21,41 +21,58 @@ package org.openqa.selenium.safari;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
 
-import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class TechnologyPreviewTest extends JUnit4TestBase {
+public class SafariDriverTest extends JUnit4TestBase {
 
-  @Before
-  public void checkTechnologyPreviewInstalled() {
+  private boolean technologyPreviewInstalled() {
     Path driverShim =
       Paths.get("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
-    assumeTrue("Technology Preview not installed", Files.exists(driverShim));
+    return Files.exists(driverShim);
+  }
+
+  private SafariDriverService service;
+  private WebDriver driver2;
+
+  @After
+  public void stopAll() {
+    if (driver2 != null) {
+      driver2.quit();
+    }
+    if (service != null) {
+      service.stop();
+    }
+  }
+
+  @Test
+  public void canStartADriverUsingAService() throws IOException {
+    removeDriver();
+    int port = PortProber.findFreePort();
+    service = new SafariDriverService.Builder().usingPort(port).build();
+    service.start();
+    driver2 = new SafariDriver(service);
+    driver2.get(pages.xhtmlTestPage);
+    assertEquals("XHTML Test Page", driver2.getTitle());
   }
 
   @Test
   public void canStartTechnologyPreview() {
+    assumeTrue(technologyPreviewInstalled());
     removeDriver();
     SafariOptions options = new SafariOptions();
     options.setUseTechnologyPreview(true);
-
-    WebDriver driver2 = null;
-    try {
-      driver2 = new SafariDriver(options);
-
-      driver2.get(pages.xhtmlTestPage);
-      assertEquals("XHTML Test Page", driver2.getTitle());
-    } finally {
-      if (driver2 != null) {
-        driver2.quit();
-      }
-    }
+    driver2 = new SafariDriver(options);
+    driver2.get(pages.xhtmlTestPage);
+    assertEquals("XHTML Test Page", driver2.getTitle());
   }
 
 }
