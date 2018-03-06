@@ -30,6 +30,8 @@ class StringUtilities {
   static std::wstring ToWString(const std::string& input);
   static std::string ToString(const std::wstring& input);
 
+  static std::wstring CreateGuid(void);
+
   static std::string Format(const char* format, ...);
   static std::wstring Format(const wchar_t* format, ...);
   
