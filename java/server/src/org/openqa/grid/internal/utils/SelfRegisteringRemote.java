@@ -39,7 +39,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.OkHttpClient;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.net.MalformedURLException;
@@ -65,12 +64,12 @@ public class SelfRegisteringRemote {
   private boolean hasId;
 
   public SelfRegisteringRemote(GridNodeConfiguration configuration) {
-    this(RegistrationRequest.build(configuration));
+    this(RegistrationRequest.build(configuration, null, null));
   }
 
   public SelfRegisteringRemote(RegistrationRequest request) {
     this.registrationRequest = request;
-    this.httpClientFactory = new OkHttpClient.Factory();
+    this.httpClientFactory = HttpClient.Factory.createDefault();
     this.nodeServlets = new HashMap<>();
 
     registrationRequest.validate();

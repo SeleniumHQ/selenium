@@ -19,7 +19,6 @@ package org.openqa.grid.internal;
 
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.OkHttpClient;
 
 import java.net.URL;
 
@@ -30,7 +29,7 @@ public abstract class BaseGridRegistry implements GridRegistry {
   protected volatile Hub hub;
 
   public BaseGridRegistry(Hub hub) {
-    this.httpClientFactory = new OkHttpClient.Factory();
+    this.httpClientFactory = HttpClient.Factory.createDefault();
     this.hub = hub;
   }
 
