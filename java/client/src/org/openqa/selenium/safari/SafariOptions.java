@@ -61,8 +61,6 @@ public class SafariOptions extends MutableCapabilities {
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
-    useCleanSession(false);
-
     setCapability(CapabilityType.BROWSER_NAME, "safari");
   }
 
@@ -121,18 +119,12 @@ public class SafariOptions extends MutableCapabilities {
    * session data.
    *
    * @param useCleanSession If true, the SafariDriver will erase all existing session data.
+   * @deprecated SafariDriver always runs a clean session
    */
+  @Deprecated
   public SafariOptions useCleanSession(boolean useCleanSession) {
     options.put(Option.CLEAN_SESSION, useCleanSession);
     return this;
-  }
-
-  /**
-   * @deprecated Use {@link #useCleanSession(boolean)} instead
-   */
-  @Deprecated
-  public SafariOptions setUseCleanSession(boolean useCleanSession) {
-    return useCleanSession(useCleanSession);
   }
 
   /**
@@ -151,8 +143,6 @@ public class SafariOptions extends MutableCapabilities {
   public void setCapability(String key, Object value) {
     if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
       setUseTechnologyPreview(Boolean.valueOf(value.toString()));
-    } else if (Option.CLEAN_SESSION.equals(key)) {
-      useCleanSession(Boolean.valueOf(value.toString()));
     } else {
       super.setCapability(key, value);
     }
@@ -162,8 +152,6 @@ public class SafariOptions extends MutableCapabilities {
   public void setCapability(String key, boolean value) {
     if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
       setUseTechnologyPreview(value);
-    } else if (Option.CLEAN_SESSION.equals(key)) {
-      useCleanSession(value);
     } else {
       super.setCapability(key, value);
     }
@@ -176,20 +164,6 @@ public class SafariOptions extends MutableCapabilities {
 
   // Getters
 
-  /**
-   * @return Whether the SafariDriver should erase all session data before launching Safari.
-   * @see #setUseCleanSession(boolean)
-   * @deprecated Getters are not needed in browser Options classes.
-   */
-  @Deprecated
-  public boolean getUseCleanSession() {
-    return (boolean) options.getOrDefault(Option.CLEAN_SESSION, false);
-  }
-
-  /**
-   * @deprecated Getters are not needed in browser Options classes.
-   */
-  @Deprecated
   public boolean getUseTechnologyPreview() {
     return (boolean) options.getOrDefault(Option.TECHNOLOGY_PREVIEW, false);
   }
@@ -203,11 +177,6 @@ public class SafariOptions extends MutableCapabilities {
    */
   private static SafariOptions fromJsonMap(Map<?, ?> options)  {
     SafariOptions safariOptions = new SafariOptions();
-
-    Boolean useCleanSession = (Boolean) options.get(Option.CLEAN_SESSION);
-    if (useCleanSession != null) {
-      safariOptions.useCleanSession(useCleanSession);
-    }
 
     Boolean useTechnologyPreview = (Boolean) options.get(Option.TECHNOLOGY_PREVIEW);
     if (useTechnologyPreview != null) {

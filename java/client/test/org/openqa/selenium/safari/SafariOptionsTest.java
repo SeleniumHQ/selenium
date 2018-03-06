@@ -23,22 +23,11 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 
-import java.util.Map;
-
 public class SafariOptionsTest {
 
   @Test
-  public void commonUsagePatternWorks() {
-    SafariOptions options = new SafariOptions().useCleanSession(true);
-    Map<String, ?> caps = options.asMap();
-    assertEquals(((Map<String, ?>) caps.get(SafariOptions.CAPABILITY)).get("cleanSession"), true);
-  }
-
-  @Test
   public void roundTrippingToCapabilitiesAndBackWorks() {
-    SafariOptions expected = new SafariOptions()
-        .useCleanSession(true)
-        .setUseTechnologyPreview(true);
+    SafariOptions expected = new SafariOptions().setUseTechnologyPreview(true);
 
     // Convert to a Map so we can create a standalone capabilities instance, which we then use to
     // create a new set of options. This is the round trip, ladies and gentlemen.
@@ -50,9 +39,8 @@ public class SafariOptionsTest {
   @Test
   public void canConstructFromCapabilities() {
     SafariOptions options = new SafariOptions(
-        new ImmutableCapabilities("cleanSession", true, "technologyPreview", true));
+        new ImmutableCapabilities("technologyPreview", true));
 
-    assertTrue(options.getUseCleanSession());
     assertTrue(options.getUseTechnologyPreview());
   }
 
