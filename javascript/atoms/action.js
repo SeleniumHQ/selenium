@@ -87,21 +87,25 @@ bot.action.clear = function(element) {
         'Element must be user-editable in order to clear it.');
   }
 
-  bot.action.LegacyDevice_.focusOnElement(element);
   if (element.value) {
+    bot.action.LegacyDevice_.focusOnElement(element);
     element.value = '';
     bot.events.fire(element, bot.events.EventType.CHANGE);
+    bot.events.fire(element, bot.events.EventType.BLUR);
+    bot.action.LegacyDevice_.focusOnElement(document.body);
   } else if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
              (element.getAttribute('type') && element.getAttribute('type').toLowerCase() == "number")) {
     // number input fields that have invalid inputs
     // report their value as empty string with no way to tell if there is a
     // current value or not
+    bot.action.LegacyDevice_.focusOnElement(element);
     element.value = '';
   }
 
   if (bot.dom.isContentEditable(element)) {
     // A single space is required, if you put empty string here you'll not be
     // able to interact with this element anymore in Firefox.
+    bot.action.LegacyDevice_.focusOnElement(element);
     element.innerHTML = ' ';
     // contentEditable does not generate onchange event.
   }
