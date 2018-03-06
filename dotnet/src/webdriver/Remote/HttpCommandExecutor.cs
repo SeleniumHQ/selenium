@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.Remote
     /// <summary>
     /// Provides a way of executing Commands over HTTP
     /// </summary>
-    internal class HttpCommandExecutor : ICommandExecutor
+    public class HttpCommandExecutor : ICommandExecutor
     {
         private const string JsonMimeType = "application/json";
         private const string PngMimeType = "image/png";
