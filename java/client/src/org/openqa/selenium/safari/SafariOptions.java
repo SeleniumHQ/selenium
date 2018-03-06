@@ -25,7 +25,6 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CapabilityType;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -56,14 +55,11 @@ public class SafariOptions extends MutableCapabilities {
   private interface Option {
     String CLEAN_SESSION = "cleanSession";
     String TECHNOLOGY_PREVIEW = "technologyPreview";
-    String PORT = "port";
   }
 
   private Map<String, Object> options = new TreeMap<>();
 
   public SafariOptions() {
-    options.put(Option.PORT, 0);
-
     setUseTechnologyPreview(false);
     useCleanSession(false);
 
@@ -108,32 +104,13 @@ public class SafariOptions extends MutableCapabilities {
     if (cap instanceof SafariOptions) {
       return (SafariOptions) cap;
     } else if (cap instanceof Map) {
-      try {
-        return SafariOptions.fromJsonMap((Map<?, ?>) cap);
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
+      return SafariOptions.fromJsonMap((Map<?, ?>) cap);
     } else {
       return new SafariOptions();
     }
   }
 
   // Setters
-
-  /**
-   * Set the port the {@link SafariDriverService} should be started on. Defaults to 0, in which case
-   * the server selects a free port.
-   *
-   * @param port The port the {@link SafariDriverService} should be started on,
-   *    or 0 if the server should select a free port.
-   * @deprecated Create a {@link SafariDriverService} to specify driver service port and pass
-   * the service instance to a {@link SafariDriver} constructor.
-   */
-  @Deprecated
-  SafariOptions setPort(int port) {
-    options.put(Option.PORT, port);
-    return this;
-  }
 
   /**
    * Instruct the SafariDriver to delete all existing session data when starting a new session.
@@ -200,17 +177,6 @@ public class SafariOptions extends MutableCapabilities {
   // Getters
 
   /**
-   * @return The port the {@link SafariDriverService} should be started on.
-   *    If 0, the server should select a free port.
-   * @see #setPort(int)
-   * @deprecated Getters are not needed in browser Options classes.
-   */
-  @Deprecated
-  public int getPort() {
-    return ((Number) options.getOrDefault(Option.PORT, 0)).intValue();
-  }
-
-  /**
    * @return Whether the SafariDriver should erase all session data before launching Safari.
    * @see #setUseCleanSession(boolean)
    * @deprecated Getters are not needed in browser Options classes.
@@ -235,13 +201,8 @@ public class SafariOptions extends MutableCapabilities {
    *
    * @return A {@link SafariOptions} instance associated with these extensions.
    */
-  private static SafariOptions fromJsonMap(Map<?, ?> options) throws IOException {
+  private static SafariOptions fromJsonMap(Map<?, ?> options)  {
     SafariOptions safariOptions = new SafariOptions();
-
-    Number port = (Number) options.get(Option.PORT);
-    if (port != null) {
-      safariOptions.setPort(port.intValue());
-    }
 
     Boolean useCleanSession = (Boolean) options.get(Option.CLEAN_SESSION);
     if (useCleanSession != null) {

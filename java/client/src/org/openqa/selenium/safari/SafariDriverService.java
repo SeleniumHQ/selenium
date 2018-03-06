@@ -29,7 +29,6 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 public class SafariDriverService extends DriverService {
 
@@ -49,12 +48,11 @@ public class SafariDriverService extends DriverService {
   /**
    * Use {@link #createDefaultService()} instead.
    */
-  @Deprecated
   public static SafariDriverService createDefaultService(SafariOptions options) {
     File exe = options.getUseTechnologyPreview() ?
                TP_SAFARI_DRIVER_EXECUTABLE : SAFARI_DRIVER_EXECUTABLE;
     if (exe.exists()) {
-      return new Builder().usingPort(options.getPort()).usingDriverExecutable(exe).build();
+      return new Builder().usingDriverExecutable(exe).build();
     }
     throw new WebDriverException("SafariDriver requires Safari 10 running on OSX El Capitan or greater.");
   }
@@ -64,7 +62,7 @@ public class SafariDriverService extends DriverService {
   }
 
   @Override
-  protected void waitUntilAvailable() throws MalformedURLException {
+  protected void waitUntilAvailable() {
     try {
       PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
     } catch (RuntimeException e) {
