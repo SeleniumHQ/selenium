@@ -254,19 +254,6 @@ public class ChromeOptions extends MutableCapabilities {
     return this;
   }
 
-  /**
-   * Returns DesiredCapabilities for Chrome with these options included as
-   * capabilities. This does not copy the options. Further changes will be
-   * reflected in the returned capabilities.
-   *
-   * @return DesiredCapabilities for Chrome with these options.
-   * @deprecated This class is already an instance of {@link MutableCapabilities}.
-   */
-  @Deprecated
-  MutableCapabilities toCapabilities() {
-    return this;
-  }
-
   @Override
   protected int amendHashCode() {
     return Objects.hash(

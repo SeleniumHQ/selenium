@@ -71,15 +71,4 @@ public class EdgeOptions extends MutableCapabilities {
     setCapability(CapabilityType.PROXY, proxy);
     return this;
   }
-
-  /**
-   * Returns DesiredCapabilities for Edge with these options included as capabilities. This does not
-   * copy the options. Further changes will be reflected in the returned capabilities.
-   *
-   * @return DesiredCapabilities for Edge with these options.
-   * @deprecated These are already {@link MutableCapabilities}.
-   */
-  MutableCapabilities toCapabilities() {
-    return this;
-  }
 }

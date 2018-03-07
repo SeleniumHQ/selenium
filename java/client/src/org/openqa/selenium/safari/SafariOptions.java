@@ -186,19 +186,6 @@ public class SafariOptions extends MutableCapabilities {
     return safariOptions;
   }
 
-  /**
-   * Returns DesiredCapabilities for Safari with these options included as
-   * capabilities. This does not copy the object. Further changes will be
-   * reflected in the returned capabilities.
-   *
-   * @return DesiredCapabilities for Safari with these extensions.
-   * @deprecated {@code SafariOptions} are already {@link MutableCapabilities}.
-   */
-  @Deprecated
-  MutableCapabilities toCapabilities() {
-    return this;
-  }
-
   @Override
   protected int amendHashCode() {
     return options.hashCode();
