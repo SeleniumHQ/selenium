@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.Maps;
-
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
@@ -99,7 +97,7 @@ public class RemoteTouchScreen implements TouchScreen {
   }
 
   private static Map<String, Object> paramsFromCoordinates(Coordinates where) {
-    Map<String, Object> params = Maps.newHashMap();
+    Map<String, Object> params = new HashMap<>();
 
     if (where != null) {
       String id = (String) where.getAuxiliary();

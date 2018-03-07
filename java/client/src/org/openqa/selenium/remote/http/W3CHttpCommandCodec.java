@@ -68,8 +68,6 @@ import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.WebDriverException;
@@ -184,8 +182,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         String using = (String) parameters.get("using");
         String value = (String) parameters.get("value");
 
-        Map<String, Object> toReturn = new HashMap<>();
-        toReturn.putAll(parameters);
+        Map<String, Object> toReturn = new HashMap<>(parameters);
 
         switch (using) {
           case "class name":
@@ -402,12 +399,12 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     // Escape the quote marks
     script = script.replaceAll("\"", "\\\"");
 
-    Iterable<Object> convertedArgs = Iterables.transform(
-      Lists.newArrayList(args), new WebElementToJsonConverter());
+    List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
+        Collectors.toList());
 
     return ImmutableMap.of(
       "script", script,
-      "args", Lists.newArrayList(convertedArgs));
+      "args", convertedArgs);
   }
 
   private Map<String, String> asElement(Object id) {

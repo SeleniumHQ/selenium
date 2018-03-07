@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium.testing;
 
-import com.google.common.collect.Lists;
-
 import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -32,6 +30,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class SeleniumTestEnvironment implements TestEnvironment {
@@ -44,7 +43,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       Path serverJar = new BuckBuild()
         .of("//java/server/test/org/openqa/selenium:server-with-tests").go();
 
-      ArrayList<Object> args = Lists.newArrayList();
+      List<Object> args = new ArrayList<>();
       if (Boolean.getBoolean("webdriver.debug")) {
         args.add("-Xdebug");
         args.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005");

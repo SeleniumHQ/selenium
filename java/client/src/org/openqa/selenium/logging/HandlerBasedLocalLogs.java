@@ -19,8 +19,8 @@ package org.openqa.selenium.logging;
 
 import com.google.common.collect.ImmutableSet;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -38,7 +38,7 @@ class HandlerBasedLocalLogs extends LocalLogs {
 
   public LogEntries get(String logType) {
     if (LogType.CLIENT.equals(logType) && logTypesToInclude.contains(logType)) {
-      List<LogEntry> entries = loggingHandler.getRecords();
+      Collection<LogEntry> entries = loggingHandler.getRecords();
       loggingHandler.flush();
       return new LogEntries(entries);
     }

@@ -18,8 +18,6 @@
 package org.openqa.selenium.remote.server.log;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogEntries;
@@ -32,6 +30,7 @@ import org.openqa.selenium.remote.SessionId;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,12 +76,12 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
     this.capacity = capacity;
     this.formatter = formatter;
     this.storeLogsOnSessionQuit = captureLogsOnQuit;
-    this.perSessionRecords = Maps.<SessionId, List<LogRecord>>newHashMap();
-    this.perThreadTempRecords = Maps.<ThreadKey, List<LogRecord>>newHashMap();
-    this.threadToSessionMap = Maps.<ThreadKey, SessionId>newHashMap();
-    this.sessionToThreadMap = Maps.<SessionId, ThreadKey>newHashMap();
+    this.perSessionRecords = new HashMap<>();
+    this.perThreadTempRecords = new HashMap<>();
+    this.threadToSessionMap = new HashMap<>();
+    this.sessionToThreadMap = new HashMap<>();
     this.logFileRepository = new SessionLogsToFileRepository();
-    this.perSessionDriverEntries = Maps.<SessionId, Map<String, LogEntries>>newHashMap();
+    this.perSessionDriverEntries = new HashMap<>();
   }
 
 
@@ -218,7 +217,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
    * @throws IOException If there was a problem reading from file.
    */
   public synchronized LogEntries getSessionLog(SessionId sessionId) throws IOException {
-    List<LogEntry> entries = Lists.<LogEntry>newLinkedList();
+    List<LogEntry> entries = new ArrayList<>();
     LogRecord[] records = records(sessionId);
     if (records != null) {
       for (LogRecord record : records) {
@@ -239,7 +238,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
   public synchronized void fetchAndStoreLogsFromDriver(SessionId sessionId, WebDriver driver)
     throws IOException {
     if (!perSessionDriverEntries.containsKey(sessionId)) {
-      perSessionDriverEntries.put(sessionId, Maps.<String, LogEntries>newHashMap());
+      perSessionDriverEntries.put(sessionId, new HashMap<>());
     }
     Map<String, LogEntries> typeToEntriesMap = perSessionDriverEntries.get(sessionId);
     if (storeLogsOnSessionQuit) {

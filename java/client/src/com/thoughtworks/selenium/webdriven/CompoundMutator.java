@@ -17,8 +17,7 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import com.google.common.collect.Lists;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +27,7 @@ import java.util.List;
  */
 public class CompoundMutator implements ScriptMutator {
   // The ordering of mutators matters
-  private final List<ScriptMutator> mutators = Lists.newArrayList();
+  private final List<ScriptMutator> mutators = new ArrayList<>();
 
   public CompoundMutator(String baseUrl) {
     addMutator(new VariableDeclaration("selenium", "var selenium = {};"));

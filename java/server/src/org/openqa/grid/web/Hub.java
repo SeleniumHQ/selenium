@@ -17,8 +17,6 @@
 
 package org.openqa.grid.web;
 
-import com.google.common.collect.Maps;
-
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
@@ -51,6 +49,7 @@ import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -67,7 +66,7 @@ public class Hub implements Stoppable {
 
   private final GridHubConfiguration config;
   private final GridRegistry registry;
-  private final Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
+  private final Map<String, Class<? extends Servlet>> extraServlet = new HashMap<>();
 
   private Server server;
 

@@ -53,7 +53,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllE
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfNestedElementsLocatedBy;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import org.junit.Before;
@@ -71,6 +70,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -295,7 +295,7 @@ public class ExpectedConditionsTest {
 
   @Test
   public void waitingForVisibilityOfAllElementsLocatedByReturnsListOfElements() {
-    List<WebElement> webElements = Lists.newArrayList(mockElement);
+    List<WebElement> webElements = singletonList(mockElement);
     String testSelector = "testSelector";
 
     when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
@@ -308,7 +308,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = TimeoutException.class)
   public void waitingForVisibilityOfAllElementsLocatedByThrowsTimeoutExceptionWhenElementNotDisplayed() {
-    List<WebElement> webElements = Lists.newArrayList(mockElement);
+    List<WebElement> webElements = singletonList(mockElement);
     String testSelector = "testSelector";
 
     when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
@@ -319,7 +319,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = StaleElementReferenceException.class)
   public void waitingForVisibilityOfAllElementsLocatedByThrowsStaleExceptionWhenElementIsStale() {
-    List<WebElement> webElements = Lists.newArrayList(mockElement);
+    List<WebElement> webElements = singletonList(mockElement);
     String testSelector = "testSelector";
 
     when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
@@ -330,7 +330,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = TimeoutException.class)
   public void waitingForVisibilityOfAllElementsLocatedByThrowsTimeoutExceptionWhenNoElementsFound() {
-    List<WebElement> webElements = Lists.newArrayList();
+    List<WebElement> webElements = new ArrayList<>();
     String testSelector = "testSelector";
 
     when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
@@ -340,7 +340,7 @@ public class ExpectedConditionsTest {
 
   @Test
   public void waitingForVisibilityOfAllElementsReturnsListOfElements() {
-    List<WebElement> webElements = Lists.newArrayList(mockElement);
+    List<WebElement> webElements = singletonList(mockElement);
     when(mockElement.isDisplayed()).thenReturn(true);
 
     List<WebElement> returnedElements = wait.until(visibilityOfAllElements(webElements));
@@ -349,7 +349,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = TimeoutException.class)
   public void waitingForVisibilityOfAllElementsThrowsTimeoutExceptionWhenElementNotDisplayed() {
-    List<WebElement> webElements = Lists.newArrayList(mockElement);
+    List<WebElement> webElements = singletonList(mockElement);
     when(mockElement.isDisplayed()).thenReturn(false);
 
     wait.until(visibilityOfAllElements(webElements));
@@ -357,7 +357,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = StaleElementReferenceException.class)
   public void waitingForVisibilityOfAllElementsThrowsStaleElementReferenceExceptionWhenElementIsStale() {
-    List<WebElement> webElements = Lists.newArrayList(mockElement);
+    List<WebElement> webElements = singletonList(mockElement);
 
     when(mockElement.isDisplayed()).thenThrow(new StaleElementReferenceException("Stale element"));
 
@@ -366,7 +366,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = TimeoutException.class)
   public void waitingForVisibilityOfAllElementsThrowsTimeoutExceptionWhenNoElementsFound() {
-    List<WebElement> webElements = Lists.newArrayList();
+    List<WebElement> webElements = new ArrayList<>();
 
     wait.until(visibilityOfAllElements(webElements));
   }

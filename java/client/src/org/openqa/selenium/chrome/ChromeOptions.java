@@ -25,8 +25,6 @@ import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIO
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
 import org.openqa.selenium.Capabilities;
@@ -40,8 +38,10 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -77,10 +77,10 @@ public class ChromeOptions extends MutableCapabilities {
   public static final String CAPABILITY = "goog:chromeOptions";
 
   private String binary;
-  private List<String> args = Lists.newArrayList();
-  private List<File> extensionFiles = Lists.newArrayList();
-  private List<String> extensions = Lists.newArrayList();
-  private Map<String, Object> experimentalOptions = Maps.newHashMap();
+  private List<String> args = new ArrayList<>();
+  private List<File> extensionFiles = new ArrayList<>();
+  private List<String> extensions = new ArrayList<>();
+  private Map<String, Object> experimentalOptions = new HashMap<>();
 
   public ChromeOptions() {
     setCapability(CapabilityType.BROWSER_NAME, BrowserType.CHROME);

@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.collect.Maps;
-
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -49,7 +48,7 @@ public class AddCookie extends WebDriverHandler<Void> implements JsonParametersA
     if (allParameters == null) {
       return;
     }
-    rawCookie = Maps.newHashMap((Map<String, Object>) allParameters.get("cookie"));
+    rawCookie = new HashMap<>((Map<String, Object>) allParameters.get("cookie"));
   }
 
   protected Cookie createCookie() {

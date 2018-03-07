@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.json;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -29,8 +30,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -447,7 +446,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testProperlyConvertsNulls() {
-    Map<String, Object> frameId = Maps.newHashMap();
+    Map<String, Object> frameId = new HashMap<>();
     frameId.put("id", null);
     String payload = new BeanToJsonConverter().convert(frameId);
     assertEquals("{\"id\":null}", payload);
@@ -487,7 +486,7 @@ public class BeanToJsonConverterTest {
     long timestamp = new Date().getTime();
     final LogEntry entry1 = new LogEntry(Level.OFF, timestamp, "entry1");
     final LogEntry entry2 = new LogEntry(Level.WARNING, timestamp, "entry2");
-    LogEntries entries = new LogEntries(Lists.newArrayList(entry1, entry2));
+    LogEntries entries = new LogEntries(asList(entry1, entry2));
 
     String json = new BeanToJsonConverter().convert(entries);
 

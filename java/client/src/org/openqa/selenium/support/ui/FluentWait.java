@@ -22,12 +22,12 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -86,7 +86,7 @@ public class FluentWait<T> implements Wait<T> {
   private java.time.Duration interval = DEFAULT_WAIT_DURATION;
   private Supplier<String> messageSupplier = () -> null;
 
-  private List<Class<? extends Throwable>> ignoredExceptions = Lists.newLinkedList();
+  private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
   /**
    * @param input The input value to pass to the evaluated conditions.
