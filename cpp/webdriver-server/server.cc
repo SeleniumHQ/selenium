@@ -370,26 +370,39 @@ std::string Server::DispatchCommand(const std::string& uri,
         serialized_response.append(" does not exist\" }");
       }
     } else {
-      // Compile the serialized JSON representation of the command by hand.
-      std::string serialized_command = "{ \"name\" : \"" + command + "\"";
-      serialized_command.append(", \"locator\" : ");
-      serialized_command.append(locator_parameters);
-      serialized_command.append(", \"parameters\" : ");
-      serialized_command.append(command_body);
-      serialized_command.append(" }");
-      if (command == webdriver::CommandType::NewSession) {
-        session_handle = this->InitializeSession();
-      }
-      bool session_is_valid = session_handle->ExecuteCommand(
-          serialized_command,
-          &serialized_response);
-      if (command == webdriver::CommandType::NewSession) {
-        Response new_session_response;
-        new_session_response.Deserialize(serialized_response);
-        this->sessions_[new_session_response.GetSessionId()] = session_handle;
-      }
-      if (!session_is_valid) {
-        this->ShutDownSession(session_id);
+      if (command == webdriver::CommandType::NewSession &&
+          this->sessions_.size() > 0) {
+        // According to the W3C Specification, only a single session is
+        // allowed by a single driver instance.
+        serialized_response.append("{ \"value\" : { ");
+        serialized_response.append("\"error\" : \"session not created\", ");
+        serialized_response.append("\"message\" : \"only one session may ");
+        serialized_response.append("be created at a time, and a session ");
+        serialized_response.append("already exists\", ");
+        serialized_response.append("\"stacktrace\" : \"\" }");
+        serialized_response.append("}");
+      } else {
+        // Compile the serialized JSON representation of the command by hand.
+        std::string serialized_command = "{ \"name\" : \"" + command + "\"";
+        serialized_command.append(", \"locator\" : ");
+        serialized_command.append(locator_parameters);
+        serialized_command.append(", \"parameters\" : ");
+        serialized_command.append(command_body);
+        serialized_command.append(" }");
+        if (command == webdriver::CommandType::NewSession) {
+          session_handle = this->InitializeSession();
+        }
+        bool session_is_valid = session_handle->ExecuteCommand(
+            serialized_command,
+            &serialized_response);
+        if (command == webdriver::CommandType::NewSession) {
+          Response new_session_response;
+          new_session_response.Deserialize(serialized_response);
+          this->sessions_[new_session_response.GetSessionId()] = session_handle;
+        }
+        if (!session_is_valid) {
+          this->ShutDownSession(session_id);
+        }
       }
     }
   }
