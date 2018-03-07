@@ -1,4 +1,4 @@
-﻿// <copyright file="Actions.cs" company="WebDriver Committers">
+// <copyright file="Actions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,15 +18,34 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
     /// <summary>
+    /// Provides values that indicate from where element offsets for MoveToElement
+    /// are calculated.
+    /// </summary>
+    public enum MoveToElementOffsetOrigin
+    {
+        /// <summary>
+        /// Offsets are calculated from the top-left corner of the element.
+        /// </summary>
+        TopLeft,
+
+        /// <summary>
+        /// Offsets are calcuated from the center of the element.
+        /// </summary>
+        Center
+    }
+
+    /// <summary>
     /// Provides a mechanism for building advanced interactions with the browser.
     /// </summary>
     public class Actions : IAction
     {
+        private readonly TimeSpan DefaultMouseMoveDuration = TimeSpan.FromMilliseconds(250);
         private IWebDriver driver;
         private ActionBuilder actionBuilder = new ActionBuilder();
         private PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, "default mouse");
@@ -100,7 +119,7 @@ namespace OpenQA.Selenium.Interactions
             this.action.AddAction(new KeyDownAction(this.keyboard, this.mouse, target, theKey));
             if (element != null)
             {
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, TimeSpan.FromMilliseconds(250)));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
             }
@@ -141,7 +160,7 @@ namespace OpenQA.Selenium.Interactions
             this.action.AddAction(new KeyUpAction(this.keyboard, this.mouse, target, theKey));
             if (element != null)
             {
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, TimeSpan.FromMilliseconds(250)));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
             }
@@ -177,7 +196,7 @@ namespace OpenQA.Selenium.Interactions
             this.action.AddAction(new SendKeysAction(this.keyboard, this.mouse, target, keysToSend));
             if (element != null)
             {
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, TimeSpan.FromMilliseconds(250)));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
             }
@@ -297,7 +316,7 @@ namespace OpenQA.Selenium.Interactions
 
             ILocatable target = GetLocatableFromElement(toElement);
             this.action.AddAction(new MoveMouseAction(this.mouse, target));
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, 0, 0, TimeSpan.FromMilliseconds(250)));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, 0, 0, DefaultMouseMoveDuration));
             return this;
         }
 
@@ -310,9 +329,35 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY)
         {
+            return this.MoveToElement(toElement, offsetX, offsetY, MoveToElementOffsetOrigin.TopLeft);
+        }
+
+        /// <summary>
+        /// Moves the mouse to the specified offset of the top-left corner of the specified element.
+        /// </summary>
+        /// <param name="toElement">The element to which to move the mouse.</param>
+        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY, MoveToElementOffsetOrigin offsetOrigin)
+        {
             ILocatable target = GetLocatableFromElement(toElement);
-            this.action.AddAction(new MoveToOffsetAction(this.mouse, target, offsetX, offsetY));
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, offsetX, offsetY, TimeSpan.FromMilliseconds(250)));
+            Size elementSize = toElement.Size;
+            Point elementLocation = toElement.Location;
+            if (offsetOrigin == MoveToElementOffsetOrigin.TopLeft)
+            {
+                int modifiedOffsetX = offsetX - (elementSize.Width / 2);
+                int modifiedOffsetY = offsetY - (elementSize.Height / 2);
+                this.action.AddAction(new MoveToOffsetAction(this.mouse, target, offsetX, offsetY));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, modifiedOffsetX, modifiedOffsetY, DefaultMouseMoveDuration));
+            }
+            else
+            {
+                int modifiedOffsetX = offsetX + (elementSize.Width / 2);
+                int modifiedOffsetY = offsetY + (elementSize.Height / 2);
+                this.action.AddAction(new MoveToOffsetAction(this.mouse, target, modifiedOffsetX, modifiedOffsetY));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, offsetX, offsetY, DefaultMouseMoveDuration));
+            }
             return this;
         }
 
@@ -325,7 +370,7 @@ namespace OpenQA.Selenium.Interactions
         public Actions MoveByOffset(int offsetX, int offsetY)
         {
             this.action.AddAction(new MoveToOffsetAction(this.mouse, null, offsetX, offsetY));
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(CoordinateOrigin.Pointer, offsetX, offsetY, TimeSpan.FromMilliseconds(250)));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(CoordinateOrigin.Pointer, offsetX, offsetY, DefaultMouseMoveDuration));
             return this;
         }
 
