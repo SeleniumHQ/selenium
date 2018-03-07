@@ -20,8 +20,6 @@ import static org.junit.Assert.fail;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import com.google.common.collect.Lists;
-
 import org.openqa.selenium.testing.InProject;
 
 import java.io.BufferedReader;
@@ -34,7 +32,7 @@ import java.util.logging.Logger;
 public class Build {
   private static Logger log = Logger.getLogger(Build.class.getName());
 
-  private List<String> targets = Lists.newArrayList();
+  private List<String> targets = new ArrayList<>();
 
   public Build of(String... targets) {
     this.targets.addAll(Arrays.asList(targets));

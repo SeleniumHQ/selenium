@@ -23,7 +23,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Maps;
 
 import org.apache.commons.exec.DaemonExecutor;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -84,7 +83,7 @@ class OsProcess {
   }
 
   private Map<String, String> getMergedEnv() {
-    HashMap<String, String> newEnv = Maps.newHashMap(System.getenv());
+    HashMap<String, String> newEnv = new HashMap<>(System.getenv());
     newEnv.putAll(env);
     return newEnv;
   }

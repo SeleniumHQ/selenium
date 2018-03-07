@@ -23,7 +23,6 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
 
 import org.junit.After;
@@ -44,6 +43,7 @@ import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.server.handler.AbstractHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -55,7 +55,7 @@ public class ProxySettingTest extends JUnit4TestBase {
   @Rule
   public ErrorCollector errorCollector = new ErrorCollector();
 
-  private final List<Callable<Object>> tearDowns = Lists.newLinkedList();
+  private final List<Callable<Object>> tearDowns = new ArrayList<>();
 
   private ProxyServer proxyServer;
 

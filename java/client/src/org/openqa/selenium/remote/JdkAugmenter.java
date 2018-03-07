@@ -20,8 +20,6 @@ package org.openqa.selenium.remote;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.common.reflect.AbstractInvocationHandler;
 
 import org.openqa.selenium.Beta;
@@ -32,6 +30,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,10 +65,9 @@ public class JdkAugmenter extends BaseAugmenter {
   protected <X> X create(RemoteWebDriver driver, Map<String, AugmenterProvider> augmentors,
       X objectToAugment) {
     Map<String, ?> capabilities = driver.getCapabilities().asMap();
-    Map<Method, InterfaceImplementation> augmentationHandlers = Maps.newHashMap();
+    Map<Method, InterfaceImplementation> augmentationHandlers = new HashMap<>();
 
-
-    Set<Class<?>> proxiedInterfaces = Sets.newHashSet();
+    Set<Class<?>> proxiedInterfaces = new HashSet<>();
     Class<?> superClass = objectToAugment.getClass();
 
     while (null != superClass) {

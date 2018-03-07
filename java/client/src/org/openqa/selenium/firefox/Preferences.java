@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Maps;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Closeables;
 import com.google.common.io.LineReader;
@@ -34,6 +33,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,8 +58,8 @@ class Preferences {
   private static final Pattern PREFERENCE_PATTERN =
       Pattern.compile("user_pref\\(\"([^\"]+)\", (\"?.+?\"?)\\);");
 
-  private Map<String, Object> immutablePrefs = Maps.newHashMap();
-  private Map<String, Object> allPrefs = Maps.newHashMap();
+  private Map<String, Object> immutablePrefs = new HashMap<>();
+  private Map<String, Object> allPrefs = new HashMap<>();
 
   public Preferences(Reader defaults) {
     readDefaultPreferences(defaults);

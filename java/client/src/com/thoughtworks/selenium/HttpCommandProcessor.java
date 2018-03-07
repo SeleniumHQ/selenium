@@ -19,8 +19,6 @@ package com.thoughtworks.selenium;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.google.common.collect.Lists;
-
 import org.openqa.selenium.net.Urls;
 
 import java.io.BufferedWriter;
@@ -32,9 +30,9 @@ import java.io.Writer;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -299,7 +297,7 @@ public class HttpCommandProcessor implements CommandProcessor {
    * @return the string array resulting from parsing this string
    */
   public static String[] parseCSV(String input) {
-    List<String> output = Lists.newArrayList();
+    List<String> output = new ArrayList<>();
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < input.length(); i++) {
       char c = input.charAt(i);

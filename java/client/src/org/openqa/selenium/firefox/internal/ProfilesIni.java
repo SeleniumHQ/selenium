@@ -20,8 +20,6 @@ package org.openqa.selenium.firefox.internal;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import com.google.common.collect.Maps;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -33,10 +31,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ProfilesIni {
-  private Map<String, File> profiles = Maps.newHashMap();
+  private Map<String, File> profiles;
 
   public ProfilesIni() {
     File appData = locateAppDataDirectory(Platform.getCurrent());
@@ -44,7 +43,7 @@ public class ProfilesIni {
   }
 
   protected Map<String, File> readProfiles(File appData) {
-    Map<String, File> toReturn = Maps.newHashMap();
+    Map<String, File> toReturn = new HashMap<>();
 
     File profilesIni = new File(appData, "profiles.ini");
     if (!profilesIni.exists()) {

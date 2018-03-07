@@ -21,12 +21,12 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
@@ -89,7 +89,7 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
     Comparator<Capabilities> byFuzzyPlatform =
         Comparator.comparingInt(c -> fuzzyPlatformScorer.score(c.getPlatform()));
 
-    compareWith = Ordering.compound(Lists.newArrayList(
+    compareWith = Ordering.compound(Arrays.asList(
         byBrowserName,
         byVersion,
         byJavaScript,

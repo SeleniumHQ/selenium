@@ -25,13 +25,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.collect.Maps;
-
 import org.junit.Test;
 import org.openqa.grid.web.servlet.ResourceServlet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 public class GridConfigurationTest {
@@ -73,13 +72,13 @@ public class GridConfigurationTest {
     GridConfiguration gc = new GridConfiguration();
     GridConfiguration other = new GridConfiguration();
     other.cleanUpCycle = 10;
-    Map<String, String> custom = Maps.newHashMap();
+    Map<String, String> custom = new HashMap<>();
     custom.put("foo", "bar");
     other.custom = custom;
     other.host = "10.10.10.1";
     other.maxSession = 20;
-    other.servlets = Arrays.asList(new String[] { "com.foo.ServletA" });
-    other.withoutServlets = Arrays.asList(new String[] { "com.foo.ServletB" });
+    other.servlets = Arrays.asList("com.foo.ServletA");
+    other.withoutServlets = Arrays.asList("com.foo.ServletB");
     gc.merge(other);
 
     assertEquals(other.cleanUpCycle, gc.cleanUpCycle);

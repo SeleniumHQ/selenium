@@ -24,14 +24,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-
-import com.beust.jcommander.JCommander;
 
 import org.junit.Test;
 import org.openqa.grid.internal.cli.StandaloneCliOptions;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -116,14 +114,14 @@ public class StandaloneConfigurationTest {
     assertFalse(sc.isMergeAble(null, "b"));
 
     // test with Collections
-    assertTrue(sc.isMergeAble(Arrays.asList(new String[]{"a", "b"}),
-                              Arrays.asList(new String[]{"b", "c"})));
-    assertTrue(sc.isMergeAble(Arrays.asList(new String[]{"a", "b"}),
-                              Arrays.asList(new String[]{"a", "b"})));
-    assertTrue(sc.isMergeAble(Arrays.asList(new String[]{"b", "c"}), Arrays.asList()));
-    assertTrue(sc.isMergeAble(Arrays.asList(new String[]{"b", "c"}), null));
-    assertFalse(sc.isMergeAble(Arrays.asList(), Arrays.asList(new String[]{"b", "c"})));
-    assertFalse(sc.isMergeAble(null, Arrays.asList(new String[]{"b", "c"})));
+    assertTrue(sc.isMergeAble(Arrays.asList("a", "b"),
+                              Arrays.asList("b", "c")));
+    assertTrue(sc.isMergeAble(Arrays.asList("a", "b"),
+                              Arrays.asList("a", "b")));
+    assertTrue(sc.isMergeAble(Arrays.asList("b", "c"), Collections.emptyList()));
+    assertTrue(sc.isMergeAble(Arrays.asList("b", "c"), null));
+    assertFalse(sc.isMergeAble(Collections.emptyList(), Arrays.asList("b", "c")));
+    assertFalse(sc.isMergeAble(null, Arrays.asList("b", "c")));
 
     // test with Maps
     Map<String, Integer> map = new ImmutableMap.Builder<String, Integer>()
@@ -136,7 +134,7 @@ public class StandaloneConfigurationTest {
 
     Map<String, Integer> map3 = new HashMap<>();
     map3.put("five", 5);
-    assertTrue(sc.isMergeAble(map3, Maps.newHashMap()));
+    assertTrue(sc.isMergeAble(map3, new HashMap<>()));
 
     assertFalse(sc.isMergeAble(new ImmutableMap.Builder<String, Integer>().build(), map3));
     assertFalse(sc.isMergeAble(null, map3));

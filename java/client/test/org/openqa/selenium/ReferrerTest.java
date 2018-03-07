@@ -32,7 +32,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
 import com.google.common.net.HttpHeaders;
 
@@ -59,6 +58,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
@@ -498,7 +498,7 @@ public class ReferrerTest extends JUnit4TestBase {
     private final List<HttpRequest> requests;
 
     TestServer() {
-      requests = Lists.newCopyOnWriteArrayList();
+      requests = new CopyOnWriteArrayList<>();
       addHandler(new PageRequestHandler(requests));
     }
 
@@ -513,7 +513,7 @@ public class ReferrerTest extends JUnit4TestBase {
     private String pacFileContents;
 
     ProxyServer() {
-      requests = Lists.newCopyOnWriteArrayList();
+      requests = new CopyOnWriteArrayList<>();
       addHandler(new PageRequestHandler(requests) {
         @Override
         public void handle(String s, Request baseRequest, HttpServletRequest request,

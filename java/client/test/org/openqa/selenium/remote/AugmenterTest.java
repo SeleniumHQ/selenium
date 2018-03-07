@@ -28,7 +28,6 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +40,7 @@ import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 @RunWith(JUnit4.class)
 public class AugmenterTest extends BaseAugmenterTest {
@@ -69,8 +69,7 @@ public class AugmenterTest extends BaseAugmenterTest {
   public void canUseTheAugmenterToInterceptConcreteMethodCalls() throws Exception {
     Capabilities caps = new ImmutableCapabilities(SUPPORTS_JAVASCRIPT, true);
     StubExecutor stubExecutor = new StubExecutor(caps);
-    stubExecutor.expect(DriverCommand.GET_TITLE, Maps.<String, Object>newHashMap(),
-        "StubTitle");
+    stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<>(), "StubTitle");
 
     final WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 

@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
@@ -44,8 +41,7 @@ public class ExecuteAsyncScript extends WebDriverHandler<Object>
 
     List<?> params = (List<?>) allParameters.get("args");
 
-    args.addAll(Lists.newArrayList(
-      Iterables.transform(params, new ArgumentConverter(getKnownElements()))));
+    params.stream().map(new ArgumentConverter(getKnownElements())).forEach(args::add);
   }
 
   @Override

@@ -20,8 +20,6 @@ package org.openqa.selenium.os;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import com.google.common.collect.Maps;
-
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Platform;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RunWith(JUnit4.class)
@@ -80,7 +79,7 @@ public class CommandLineTest {
 
   @Test
   public void testSetEnvironmentVariablesWithNullValueThrows() {
-    Map<String, String> input = Maps.newHashMap();
+    Map<String, String> input = new HashMap<>();
     input.put("key1", "value1");
     input.put("key2", null);
     CommandLine commandLine = new CommandLine(testExecutable);
@@ -94,7 +93,7 @@ public class CommandLineTest {
 
   @Test
   public void testSetEnvironmentVariablesWithNonNullValueSetsAll() {
-    Map<String, String> input = Maps.newHashMap();
+    Map<String, String> input = new HashMap<>();
     input.put("key1", "value1");
     input.put("key2", "value2");
     CommandLine commandLine = new CommandLine(testExecutable);

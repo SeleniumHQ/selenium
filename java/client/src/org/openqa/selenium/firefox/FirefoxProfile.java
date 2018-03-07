@@ -18,7 +18,6 @@
 package org.openqa.selenium.firefox;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.Beta;
@@ -37,6 +36,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -48,7 +48,7 @@ public class FirefoxProfile {
 
   private Preferences additionalPrefs;
 
-  private Map<String, Extension> extensions = Maps.newHashMap();
+  private Map<String, Extension> extensions = new HashMap<>();
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
   private boolean untrustedCertIssuer;

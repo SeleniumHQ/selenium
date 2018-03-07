@@ -25,8 +25,6 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEX
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 
-import com.google.common.collect.Maps;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.html5.AddApplicationCache;
@@ -34,6 +32,7 @@ import org.openqa.selenium.remote.html5.AddLocationContext;
 import org.openqa.selenium.remote.html5.AddWebStorage;
 import org.openqa.selenium.remote.mobile.AddNetworkConnection;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -44,8 +43,8 @@ import java.util.Map;
  * Note: this class is still experimental. Use at your own risk.
  */
 public abstract class BaseAugmenter {
-  private final Map<String, AugmenterProvider> driverAugmentors = Maps.newHashMap();
-  private final Map<String, AugmenterProvider> elementAugmentors = Maps.newHashMap();
+  private final Map<String, AugmenterProvider> driverAugmentors = new HashMap<>();
+  private final Map<String, AugmenterProvider> elementAugmentors = new HashMap<>();
 
   public BaseAugmenter() {
     addDriverAugmentation(SUPPORTS_FINDING_BY_CSS, new AddFindsByCss());

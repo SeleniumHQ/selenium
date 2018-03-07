@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.testing;
 
-import com.google.common.collect.Lists;
-
 import org.littleshoot.proxy.HttpFilters;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.HttpFiltersSourceAdapter;
@@ -33,12 +31,13 @@ import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProxyServer {
   private HttpProxyServer proxyServer;
   private final String baseUrl;
-  private final List<String> uris = Lists.newLinkedList();
+  private final List<String> uris = new ArrayList<>();
 
   public ProxyServer() {
     int port = PortProber.findFreePort();

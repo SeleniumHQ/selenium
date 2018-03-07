@@ -97,7 +97,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.json.Json;
@@ -261,7 +260,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
       throw new UnsupportedCommandException(
           encodedCommand.getMethod() + " " + encodedCommand.getUri());
     }
-    Map<String, Object> parameters = Maps.newHashMap();
+    Map<String, Object> parameters = new HashMap<>();
     spec.parsePathParameters(parts, parameters);
 
     String content = encodedCommand.getContentString();
