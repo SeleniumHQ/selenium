@@ -54,7 +54,7 @@ module Selenium
         expect { driver.keyboard.press :return }.to raise_error(ArgumentError)
       end
 
-      it 'can press and release modifier keys', except: {browser: :safari} do
+      it 'can press and release modifier keys', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('javascriptPage.html')
 
         event_input = driver.find_element(id: 'theworks')

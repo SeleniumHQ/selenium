@@ -294,7 +294,7 @@ module Selenium
         end
 
         # Safari - Raises wrong error
-        context 'unhandled alert error', exclude: {browser: %i[safari safari_preview]} do
+        context 'unhandled alert error', except: {browser: %i[safari safari_preview]} do
           after { reset_driver! }
 
           it 'raises an UnhandledAlertError if an alert has not been dealt with', except: {browser: %i[ie firefox]} do

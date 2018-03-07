@@ -21,8 +21,8 @@ module Selenium
   module WebDriver
     describe Driver do
       it_behaves_like 'driver that can be started concurrently', except: [{browser: :edge},
-                                                                          {driver: :safari}],
-                                                                 exclude: {browser: :safari_preview}
+                                                                          {driver: :safari},
+                                                                          {browser: :safari_preview}]
 
       it 'should get the page title' do
         driver.navigate.to url_for('xhtmlTest.html')
