@@ -92,7 +92,7 @@ bot.action.clear = function(element) {
     element.value = '';
     bot.events.fire(element, bot.events.EventType.CHANGE);
     bot.events.fire(element, bot.events.EventType.BLUR);
-    bot.action.LegacyDevice_.focusOnElement(document.body);
+    bot.action.LegacyDevice_.focusOnElement(bot.getDocument().body);
   } else if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
              (element.getAttribute('type') && element.getAttribute('type').toLowerCase() == "number")) {
     // number input fields that have invalid inputs
