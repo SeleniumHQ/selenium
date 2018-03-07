@@ -1,4 +1,4 @@
-﻿// <copyright file="ExpectedConditions.cs" company="WebDriver Committers">
+// <copyright file="ExpectedConditions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -32,6 +32,7 @@ namespace OpenQA.Selenium.Support.UI
     /// IWebElement element = wait.Until(ExpectedConditions.ElementExists(By.Id("foo")));
     /// </code>
     /// </example>
+    [Obsolete("The ExpectedConditions implementation in the .NET bindings is deprecated and will be removed in a future release. This portion of the code has been migrated to the DotNetSeleniumExtras repository on GitHub (https://github.com/DotNetSeleniumTools/DotNetSeleniumExtras)")]
     public sealed class ExpectedConditions
     {
         /// <summary>
