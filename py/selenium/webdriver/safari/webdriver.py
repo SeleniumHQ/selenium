@@ -22,6 +22,7 @@ except ImportError:
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from .service import Service
 
 
 class WebDriver(RemoteWebDriver):
@@ -46,6 +47,7 @@ class WebDriver(RemoteWebDriver):
 
         self._reuse_service = reuse_service
         if not reuse_service:
+            self.service = Service(executable_path, port=port, quiet=quiet)
             self.service.start()
 
         RemoteWebDriver.__init__(
