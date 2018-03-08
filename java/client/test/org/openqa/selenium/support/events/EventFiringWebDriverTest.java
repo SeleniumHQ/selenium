@@ -17,14 +17,16 @@
 
 package org.openqa.selenium.support.events;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,7 +34,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,10 +58,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * @author Michael Tamm
@@ -174,7 +176,7 @@ public class EventFiringWebDriverTest {
     order.verify(listener).afterSwitchToWindow(eq(windowName), any(WebDriver.class));
     verifyNoMoreInteractions(mockedTargetLocator, listener);
   }
-
+  
   @Test
   public void changeValueEvent() {
     final WebDriver mockedDriver = mock(WebDriver.class);
@@ -455,8 +457,8 @@ public class EventFiringWebDriverTest {
   
   @Test
   public void getScreenshotAs() {
-	final String DATA = "data";
-	WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(TakesScreenshot.class));
+    final String DATA = "data";
+    WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(TakesScreenshot.class));
     WebDriverEventListener listener = mock(WebDriverEventListener.class);
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
     

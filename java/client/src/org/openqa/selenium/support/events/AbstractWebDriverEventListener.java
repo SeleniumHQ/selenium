@@ -121,10 +121,11 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
   }
   
   public <X> void beforeGetScreenshotAs(OutputType<X> target) {
-	// Do nothing
+    // Do nothing
   }
+
   public <X> void afterGetScreenshotAs(OutputType<X> target, X screenshot) {
-	// Do nothing
+    // Do nothing
   }
-  
+
 }

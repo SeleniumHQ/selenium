@@ -234,7 +234,7 @@ public interface WebDriverEventListener {
    *
    * @param <X> Return type for getScreenshotAs.
    * @param target target type, @see OutputType
-   * @param X screenshot screenshot output of the specified type
+   * @param screenshot screenshot output of the specified type
    */
   <X> void afterGetScreenshotAs(OutputType<X> target, X screenshot);
 
