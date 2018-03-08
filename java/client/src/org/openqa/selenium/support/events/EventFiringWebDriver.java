@@ -281,13 +281,16 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-    if (driver instanceof TakesScreenshot) {
-      return ((TakesScreenshot) driver).getScreenshotAs(target);
-    }
+	    if (driver instanceof TakesScreenshot) {
+	        dispatcher.beforeGetScreenshotAs(target);
+	        X screenshot = ((TakesScreenshot) driver).getScreenshotAs(target);
+	        dispatcher.afterGetScreenshotAs(target, screenshot);
+	        return screenshot;
+	    }
 
-    throw new UnsupportedOperationException(
-        "Underlying driver instance does not support taking screenshots");
-  }
+	    throw new UnsupportedOperationException(
+	        "Underlying driver instance does not support taking screenshots");
+	  }
 
   public TargetLocator switchTo() {
     return new EventFiringTargetLocator(driver.switchTo());
