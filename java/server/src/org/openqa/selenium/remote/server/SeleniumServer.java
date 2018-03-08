@@ -218,7 +218,7 @@ public class SeleniumServer implements GridNodeServer {
             builder.addCapabilitiesMutator(new ChromeMutator(caps));
             builder.addCapabilitiesMutator(new FirefoxMutator(caps));
             builder.addCapabilitiesMutator(c -> new ImmutableCapabilities(c.asMap().entrySet().stream()
-                .filter(e -> ! e.getKey().startsWith("se:"))
+                .filter(e -> ! e.getKey().startsWith("server:"))
                 .filter(e -> e.getValue() != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
           }
