@@ -31,7 +31,7 @@ import java.util.function.Function;
 
 public class FirefoxMutator implements Function<Capabilities, Capabilities> {
 
-  private static final String CONFIG_UUID_CAPABILITY = "se:CONFIG_UUID";
+  private static final String CONFIG_UUID_CAPABILITY = "server:CONFIG_UUID";
 
   private final Capabilities config;
 
