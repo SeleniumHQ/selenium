@@ -17,16 +17,14 @@
 
 package org.openqa.selenium.support.events;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,10 +32,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,9 +43,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StubDriver;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebDriver.TargetLocator;
@@ -58,7 +51,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael Tamm
@@ -175,26 +171,6 @@ public class EventFiringWebDriverTest {
     order.verify(mockedTargetLocator).window(windowName);
     order.verify(listener).afterSwitchToWindow(eq(windowName), any(WebDriver.class));
     verifyNoMoreInteractions(mockedTargetLocator, listener);
-  }
-  
-  @Test
-  public void getScreenshotAs() {
-	final String DATA = "data";
-	WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(TakesScreenshot.class));
-    WebDriverEventListener listener = mock(WebDriverEventListener.class);
-    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
-    
-    Mockito.doReturn(DATA).when((TakesScreenshot)mockedDriver).getScreenshotAs(OutputType.BASE64);
-    
-    String screenshot = ((TakesScreenshot)testedDriver).getScreenshotAs(OutputType.BASE64);
-    assertTrue(screenshot.equals(DATA));
-    
-    InOrder order = Mockito.inOrder(mockedDriver, listener);
-    order.verify(listener).beforeGetScreenshotAs(OutputType.BASE64);
-    order.verify((TakesScreenshot)mockedDriver).getScreenshotAs(OutputType.BASE64);
-    order.verify(listener).afterGetScreenshotAs(OutputType.BASE64, screenshot);
-    verifyNoMoreInteractions(mockedDriver, listener);
-  
   }
 
   @Test
