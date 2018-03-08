@@ -46,8 +46,8 @@ class WebDriver(RemoteWebDriver):
         """
 
         self._reuse_service = reuse_service
+        self.service = Service(executable_path, port=port, quiet=quiet)
         if not reuse_service:
-            self.service = Service(executable_path, port=port, quiet=quiet)
             self.service.start()
 
         RemoteWebDriver.__init__(
