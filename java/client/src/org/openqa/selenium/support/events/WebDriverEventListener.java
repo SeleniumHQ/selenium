@@ -232,7 +232,6 @@ public interface WebDriverEventListener {
    * allows the implementation to determine which type of output was generated
    * and to access the output itself
    *
-   * @param <X> Return type for getScreenshotAs.
    * @param target target type, @see OutputType
    * @param X screenshot screenshot output of the specified type
    */
