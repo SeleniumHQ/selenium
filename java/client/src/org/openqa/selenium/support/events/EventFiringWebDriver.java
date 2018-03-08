@@ -72,7 +72,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
   private final List<WebDriverEventListener> eventListeners =
       new ArrayList<>();
-  
   private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy
       .newProxyInstance(
           WebDriverEventListener.class.getClassLoader(),
@@ -280,13 +279,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     return result;
   }
-  
+
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
     if (driver instanceof TakesScreenshot) {
-        dispatcher.beforeGetScreenshotAs(target);
-        X screenshot = ((TakesScreenshot) driver).getScreenshotAs(target);
-        dispatcher.afterGetScreenshotAs(target, screenshot);
-        return screenshot;
+      return ((TakesScreenshot) driver).getScreenshotAs(target);
     }
 
     throw new UnsupportedOperationException(
