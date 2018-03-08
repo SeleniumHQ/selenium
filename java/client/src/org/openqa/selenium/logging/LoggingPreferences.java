@@ -87,6 +87,25 @@ public class LoggingPreferences implements Serializable {
     return this;
   }
 
+  @Override
+  public int hashCode() {
+    return prefs.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof LoggingPreferences)) {
+      return false;
+    }
+
+    LoggingPreferences that = (LoggingPreferences) o;
+
+    return prefs.equals(that.prefs);
+  }
+
   @Beta
   public Map<String, Object> toJson() {
     TreeMap<String, Object> converted = new TreeMap<>();
