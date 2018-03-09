@@ -18,6 +18,7 @@
 package org.openqa.selenium.support.events;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -118,4 +119,13 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
   public void onException(Throwable throwable, WebDriver driver) {
     // Do nothing
   }
+  
+  public <X> void beforeGetScreenshotAs(OutputType<X> target) {
+    // Do nothing
+  }
+
+  public <X> void afterGetScreenshotAs(OutputType<X> target, X screenshot) {
+    // Do nothing
+  }
+
 }
