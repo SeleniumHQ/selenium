@@ -1,3 +1,17 @@
+v3.11.0
+=======
+
+* Implemented `equals` and `hashCode` for `LoggingPreferences`
+* Deleted deprecated methods from `*Options` and `MutableCapabilities`
+* Converting an object to JSON now doesn't include the object's hash
+  code.
+* Removed deprecated methods from `RemoteWebDriver`.
+* Switching Grid to use OkHttp rather than the Apache HttpClient.
+* Internal change to better use Selenium's abstractions for handing
+  JSON in Grid.
+* Removed deprecated `GridRegistry.getHttpClientFactory` method.
+* Removed `Registry.getConfiguration`
+
 v3.10.0
 =======
 
