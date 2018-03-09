@@ -77,7 +77,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("unclickable"));
-            Assert.Throws<ElementNotInteractableException>(() => element.Click());
+            Assert.That(() => element.Click(), Throws.InstanceOf<ElementNotInteractableException>());
         }
 
         [Test]
@@ -86,7 +86,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("unclickable"));
-            Assert.Throws<ElementNotInteractableException>(() => element.SendKeys("You don't see me"));
+            Assert.That(() => element.SendKeys("You don't see me"), Throws.InstanceOf<ElementNotInteractableException>());
 
             Assert.AreNotEqual(element.GetAttribute("value"), "You don't see me");
         }
@@ -97,7 +97,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("untogglable"));
-            Assert.Throws<ElementNotInteractableException>(() => element.Click());
+            Assert.That(() => element.Click(), Throws.InstanceOf<ElementNotInteractableException>());
         }
 
         [Test]
