@@ -42,7 +42,7 @@ class ActionSimulator {
   ActionSimulator(void);
   virtual ~ActionSimulator();
 
-  bool UseExtraInfo(void) const { return false; }
+  virtual bool UseExtraInfo(void) const { return false; }
 
   virtual int SimulateActions(BrowserHandle browser_wrapper,
                               std::vector<INPUT> inputs,
