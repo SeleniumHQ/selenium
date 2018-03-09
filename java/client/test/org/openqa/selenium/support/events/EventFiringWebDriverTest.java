@@ -43,7 +43,9 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StubDriver;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebDriver.TargetLocator;
@@ -450,4 +452,25 @@ public class EventFiringWebDriverTest {
   }
 
   private static class ChildDriver extends StubDriver {}
+  
+  @Test
+  public void getScreenshotAs() {
+    final String DATA = "data";
+    WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(TakesScreenshot.class));
+    WebDriverEventListener listener = mock(WebDriverEventListener.class);
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
+    
+    Mockito.doReturn(DATA).when((TakesScreenshot)mockedDriver).getScreenshotAs(OutputType.BASE64);
+    
+    String screenshot = ((TakesScreenshot)testedDriver).getScreenshotAs(OutputType.BASE64);
+    assertTrue(screenshot.equals(DATA));
+    
+    InOrder order = Mockito.inOrder(mockedDriver, listener);
+    order.verify(listener).beforeGetScreenshotAs(OutputType.BASE64);
+    order.verify((TakesScreenshot)mockedDriver).getScreenshotAs(OutputType.BASE64);
+    order.verify(listener).afterGetScreenshotAs(OutputType.BASE64, screenshot);
+    verifyNoMoreInteractions(mockedDriver, listener);
+  
+  }
+
 }
