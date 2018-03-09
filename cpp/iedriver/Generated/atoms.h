@@ -1625,12 +1625,14 @@ const wchar_t* const CLEAR[] = {
     L"(12,\"Element is not currently interactable and may not be manipulated",
     L"\");if(!(Ic(a)||v(a,\"INPUT\")&&\"file\"==a.type.toLowerCase())||lb(a,",
     L"\"readOnly\"))throw new Da(12,\"Element must be user-editable in order",
-    L" to clear it.\");a.value?(pd(a),a.value=\"\",dd(a,cd),dd(a,bd),pd(docu",
-    L"ment.body)):v(a,\"INPUT\")&&a.getAttribute(\"type\")&&\"number\"==a.ge",
-    L"tAttribute(\"type\").toLowerCase()&&(pd(a),a.value=\"\");Mc(a)&&(pd(a)",
-    L",a.innerHTML=\" \")});; return this._.apply(null,arguments);}.apply({n",
-    L"avigator:typeof window!='undefined'?window.navigator:null,document:typ",
-    L"eof window!='undefined'?window.document:null}, arguments);}",
+    L" to clear it.\");if(a.value){pd(a);a.value=\"\";dd(a,cd);dd(a,bd);var ",
+    L"b=ka.document.body;if(b)pd(b);else throw new Da(13,\"Cannot unfocus el",
+    L"ement after clearing.\");}else v(a,\"INPUT\")&&a.getAttribute(\"type\"",
+    L")&&\"number\"==a.getAttribute(\"type\").toLowerCase()&&\n(pd(a),a.valu",
+    L"e=\"\");Mc(a)&&(pd(a),a.innerHTML=\" \")});; return this._.apply(null,",
+    L"arguments);}.apply({navigator:typeof window!='undefined'?window.naviga",
+    L"tor:null,document:typeof window!='undefined'?window.document:null}, ar",
+    L"guments);}",
     NULL
 };
 
