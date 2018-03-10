@@ -35,6 +35,7 @@ import org.openqa.grid.web.servlet.NodeW3CStatusServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -252,7 +253,7 @@ public class SelfRegisteringRemote {
 
         HttpRequest request = new HttpRequest(POST, registration.toExternalForm());
         updateConfigWithRealPort();
-        String json = registrationRequest.toJson().toString();
+        String json = new Json().toJson(registrationRequest);
         request.setContent(json.getBytes(UTF_8));
 
         HttpClient client = httpClientFactory.createClient(registration);
