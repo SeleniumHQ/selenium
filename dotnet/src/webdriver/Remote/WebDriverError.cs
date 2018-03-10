@@ -203,6 +203,7 @@ namespace OpenQA.Selenium.Remote
         private static void InitializeResultMap()
         {
             resultMap = new Dictionary<string, WebDriverResult>();
+            resultMap[ElementClickIntercepted] = WebDriverResult.ElementClickIntercepted;
             resultMap[ElementNotSelectable] = WebDriverResult.ElementNotSelectable;
             resultMap[ElementNotVisible] = WebDriverResult.ElementNotDisplayed;
             resultMap[ElementNotInteractable] = WebDriverResult.ElementNotInteractable;
