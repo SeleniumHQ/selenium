@@ -250,6 +250,7 @@ public class GridViaCommandLineTest {
         + " \"servlets\" : [],\n"
         + " \"withoutServlets\": [],\n"
         + " \"custom\": {},\n"
+        + " \"prioritizer\": null,\n"
         + " \"capabilityMatcher\": \"org.openqa.grid.internal.utils.DefaultCapabilityMatcher\",\n"
         + " \"registry\": \"org.openqa.grid.internal.DefaultGridRegistry\",\n"
         + " \"throwOnCapabilityNotPresent\": true,\n"

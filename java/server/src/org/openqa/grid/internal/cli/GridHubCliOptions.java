@@ -49,7 +49,7 @@ public class GridHubCliOptions extends CommonGridCliOptions {
     map.remove("custom");
     return optionName -> {
       String option = optionName.replaceAll("-", "");
-      return map.containsKey(option) ? map.get(option).toString() : null;
+      return map.containsKey(option) && map.get(option) != null ? map.get(option).toString() : null;
     };
   }
 
