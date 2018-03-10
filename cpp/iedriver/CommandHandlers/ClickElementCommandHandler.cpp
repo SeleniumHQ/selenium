@@ -120,6 +120,19 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
             return;
           }
 
+          LocationInfo click_location = {};
+          std::string obscuring_element_description;
+          bool obscured = element_wrapper->IsObscured(&click_location,
+                                                      &obscuring_element_description);
+          if (obscured) {
+            std::string error_msg = StringUtilities::Format("Element not clickable at point (%d,%d). Other element would receive the click: %s",
+                                                            click_location.x,
+                                                            click_location.y,
+                                                            obscuring_element_description.c_str());
+            response->SetErrorResponse(ERROR_ELEMENT_CLICK_INTERCEPTED, error_msg);
+            return;
+          }
+
           IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
           status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
           browser_wrapper->set_wait_required(true);

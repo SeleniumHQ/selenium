@@ -188,6 +188,70 @@ bool Element::IsInteractable() {
   return result;
 }
 
+bool Element::IsObscured(LocationInfo* click_location,
+                         std::string* obscuring_element_description) {
+  CComPtr<ISVGElement> svg_element;
+  HRESULT hr = this->element_->QueryInterface<ISVGElement>(&svg_element);
+  if (SUCCEEDED(hr) && svg_element != NULL) {
+    // SVG elements can have complex paths making them non-hierarchical
+    // when drawn. We'll just assume the user knows what they're doing
+    // and bail on this test here.
+    return false;
+  }
+
+  bool is_obscured = false;
+  int status_code = this->GetStaticClickLocation(click_location);
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+
+  CComPtr<IHTMLDocument8> elements_doc;
+  hr = doc.QueryInterface<IHTMLDocument8>(&elements_doc);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "QueryInterface for IHTMLDocument8 failed";
+  }
+
+  CComPtr<IHTMLDOMChildrenCollection> elements_hit;
+  hr = elements_doc->elementsFromPoint(static_cast<float>(click_location->x),
+                                       static_cast<float>(click_location->y),
+                                       &elements_hit);
+  if (SUCCEEDED(hr) && elements_hit != NULL) {
+    long element_count;
+    elements_hit->get_length(&element_count);
+    for (long index = 0; index < element_count; ++index) {
+      CComPtr<IDispatch> dispatch_in_list;
+      elements_hit->item(index, &dispatch_in_list);
+
+      CComPtr<IHTMLElement> element_in_list;
+      hr = dispatch_in_list->QueryInterface<IHTMLElement>(&element_in_list);
+      bool are_equal = element_in_list.IsEqualObject(this->element_);
+      if (index == 0) {
+        // Return the top-most element in the event we find an obscuring
+        // element in the tree between this element and the top-most one.
+        // Note that since it's the top-most element, it will have no
+        // descendants, so its outerHTML property will contain only itself.
+        CComBSTR outer_html_bstr;
+        hr = element_in_list->get_outerHTML(&outer_html_bstr);
+        std::wstring outer_html = outer_html_bstr;
+        *obscuring_element_description = StringUtilities::ToString(outer_html);
+      }
+
+    
+      VARIANT_BOOL is_child;
+      hr = this->element_->contains(element_in_list, &is_child);
+      VARIANT_BOOL is_ancestor;
+      hr = element_in_list->contains(this->element_, &is_ancestor);
+      is_obscured = is_obscured ||
+                    (is_child != VARIANT_TRUE && is_ancestor != VARIANT_TRUE);
+      if (is_obscured || are_equal) {
+        break;
+      }
+    }
+  }
+
+  return is_obscured;
+}
+
 bool Element::IsEditable() {
   LOG(TRACE) << "Entering Element::IsEditable";
 
