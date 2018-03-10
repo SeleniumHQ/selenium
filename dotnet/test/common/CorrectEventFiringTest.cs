@@ -379,7 +379,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE doesn't support detecting overlapped elements")]
         public void ClickOverlappingElements()
         {
             if (TestUtilities.IsOldIE(driver))
@@ -388,8 +387,7 @@ namespace OpenQA.Selenium
             }
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/overlapping_elements.html");
-            var ex = Assert.Throws<WebDriverException>(() => driver.FindElement(By.Id("under")).Click());
-            Assert.That(ex.Message.Contains("Other element would receive the click"));
+            Assert.That(() => driver.FindElement(By.Id("under")).Click(), Throws.InstanceOf<WebDriverException>().With.Message.Contains("Other element would receive the click"));
         }
 
         [Test]
@@ -422,8 +420,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Safari)]
         public void NativelyClickOverlappingElements()
         {
