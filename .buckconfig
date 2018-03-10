@@ -42,7 +42,7 @@
   grid          = //java/server/src/org/openqa/grid/selenium:selenium
   leg-rc        = //java/client/src/com/thoughtworks/selenium:legacy-selenium-client
   rc-server     = //java/server/src/org/openqa/selenium/server:rc
-  selenium-java = //java/client/src/org/openqa/selenium:selenium-java
+  selenium-java = //java/client/src/org/openqa/selenium:selenium
 
   selenium-server-standalone = //java/server/src/org/openqa/grid/selenium:selenium
   htmlrunner = //java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner
