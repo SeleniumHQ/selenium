@@ -205,7 +205,7 @@ public class SeleniumServer implements GridNodeServer {
       }
     }
 
-    LOG.info("Starting Selenium for Workgroups....");
+    LOG.info("Welcome to Selenium for Workgroups....");
     LOG.info(String.format("Selenium Server is up and running on port %s", configuration.port));
     return true;
   }
