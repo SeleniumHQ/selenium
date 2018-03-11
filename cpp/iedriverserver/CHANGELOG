@@ -9,6 +9,19 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.11.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Added additional logging to new session command.
+ * Added detection of intercepted element clicks to IE. This brings the IE
+   driver into alignment with the Chrome and Firefox (geckodriver) drivers,
+   in that it detects when an element attempting to be clicked on is covered
+   in the z-order by another element. Do note that this may cause different
+   behavior from previous versions of the IE driver for WebDriver code that
+   runs only on IE. For code that runs cross-browser, this should now yield 
+   the same behavior across platforms.
+
+
 v3.10.0.2
 =========
  * Updates to JavaScript automation atoms.
