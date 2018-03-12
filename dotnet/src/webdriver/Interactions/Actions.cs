@@ -46,13 +46,13 @@ namespace OpenQA.Selenium.Interactions
     public class Actions : IAction
     {
         private readonly TimeSpan DefaultMouseMoveDuration = TimeSpan.FromMilliseconds(250);
-        private IWebDriver driver;
         private ActionBuilder actionBuilder = new ActionBuilder();
         private PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, "default mouse");
         private KeyInputDevice defaultKeyboard = new KeyInputDevice("default keyboard");
 
         private IKeyboard keyboard;
         private IMouse mouse;
+        private IActionExecutor actionExecutor;
         private CompositeAction action = new CompositeAction();
 
         /// <summary>
@@ -61,31 +61,22 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="driver">The <see cref="IWebDriver"/> object on which the actions built will be performed.</param>
         public Actions(IWebDriver driver)
         {
-            this.driver = driver;
-            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
-            if (inputDevicesDriver == null)
-            {
-                IWrapsDriver wrapper = driver as IWrapsDriver;
-                while (wrapper != null)
-                {
-                    inputDevicesDriver = wrapper.WrappedDriver as IHasInputDevices;
-                    if (inputDevicesDriver != null)
-                    {
-                        this.driver = wrapper.WrappedDriver;
-                        break;
-                    }
-
-                    wrapper = wrapper.WrappedDriver as IWrapsDriver;
-                }
-            }
-
+            //this.driver = driver;
+            IHasInputDevices inputDevicesDriver = GetDriverAs<IHasInputDevices>(driver);
             if (inputDevicesDriver == null)
             {
                 throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IHasInputDevices.", "driver");
             }
 
+            IActionExecutor actionExecutor = GetDriverAs<IActionExecutor>(driver);
+            if (actionExecutor == null)
+            {
+                throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IActionExecutor.", "driver");
+            }
+
             this.keyboard = inputDevicesDriver.Keyboard;
             this.mouse = inputDevicesDriver.Mouse;
+            this.actionExecutor = actionExecutor;
         }
 
         /// <summary>
@@ -436,10 +427,9 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         public void Perform()
         {
-            IActionExecutor actionExecutor = this.driver as IActionExecutor;
-            if (actionExecutor.IsActionExecutor)
+            if (this.actionExecutor.IsActionExecutor)
             {
-                actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
+                this.actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
             }
             else
             {
@@ -490,6 +480,28 @@ namespace OpenQA.Selenium.Interactions
         protected void AddAction(IAction actionToAdd)
         {
             this.action.AddAction(actionToAdd);
+        }
+
+        private T GetDriverAs<T>(IWebDriver driver) where T : class
+        {
+            T driverAsType = driver as T;
+            if (driverAsType == null)
+            {
+                IWrapsDriver wrapper = driver as IWrapsDriver;
+                while (wrapper != null)
+                {
+                    driverAsType = wrapper.WrappedDriver as T;
+                    if (driverAsType != null)
+                    {
+                        driver = wrapper.WrappedDriver;
+                        break;
+                    }
+
+                    wrapper = wrapper.WrappedDriver as IWrapsDriver;
+                }
+            }
+
+            return driverAsType;
         }
     }
 }
