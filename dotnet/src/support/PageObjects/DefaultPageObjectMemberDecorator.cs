@@ -72,7 +72,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// a class's member.</param>
         /// <param name="locator">The <see cref="IElementLocator"/> used to locate elements.</param>
         /// <returns>A transparent proxy to the WebDriver element object.</returns>
-        public object Decorate(MemberInfo member, IElementLocator locator)
+        public virtual object Decorate(MemberInfo member, IElementLocator locator)
         {
             FieldInfo field = member as FieldInfo;
             PropertyInfo property = member as PropertyInfo;
@@ -182,7 +182,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             return bys.AsReadOnly();
         }
 
-        private static object CreateProxyObject(Type memberType, IElementLocator locator, IEnumerable<By> bys, bool cache)
+        protected static object CreateProxyObject(Type memberType, IElementLocator locator, IEnumerable<By> bys, bool cache)
         {
             object proxyObject = null;
             if (memberType == typeof(IList<IWebElement>))
