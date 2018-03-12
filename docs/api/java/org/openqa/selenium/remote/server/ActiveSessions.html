@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -151,26 +151,30 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessions.html#addListener-org.openqa.selenium.remote.server.ActiveSessionListener-">addListener</a></span>(<a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionListener.html" title="class in org.openqa.selenium.remote.server">ActiveSessionListener</a>&nbsp;listener)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessions.html#cleanUp--">cleanUp</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessions.html#get-org.openqa.selenium.remote.SessionId-">get</a></span>(<a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code>&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.Collection&lt;<a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessions.html#getAllSessions--">getAllSessions</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessions.html#invalidate-org.openqa.selenium.remote.SessionId-">invalidate</a></span>(<a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessions.html#put-org.openqa.selenium.remote.server.ActiveSession-">put</a></span>(<a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a>&nbsp;session)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessions.html#removeListener-org.openqa.selenium.remote.server.ActiveSessionListener-">removeListener</a></span>(<a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionListener.html" title="class in org.openqa.selenium.remote.server">ActiveSessionListener</a>&nbsp;listener)</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessions.html#toString--">toString</a></span>()</code>&nbsp;</td>
 </tr>
@@ -248,6 +252,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getAllSessions</h4>
 <pre>public&nbsp;java.util.Collection&lt;<a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a>&gt;&nbsp;getAllSessions()</pre>
+</li>
+</ul>
+<a name="cleanUp--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cleanUp</h4>
+<pre>public&nbsp;void&nbsp;cleanUp()</pre>
 </li>
 </ul>
 <a name="addListener-org.openqa.selenium.remote.server.ActiveSessionListener-">

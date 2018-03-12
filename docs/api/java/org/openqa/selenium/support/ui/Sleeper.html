@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var methods = {"i0":50,"i1":6};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -133,14 +133,22 @@ var activeTableTab = "activeTableTab";
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t5" class="tableTab"><span><a href="javascript:show(16);">Default Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code>default void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html#sleep-org.openqa.selenium.support.ui.Duration-">sleep</a></span>(<a href="../../../../../org/openqa/selenium/support/ui/Duration.html" title="class in org.openqa.selenium.support.ui">Duration</a>&nbsp;duration)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">use <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html#sleep-java.time.Duration-"><code>sleep(java.time.Duration)</code></a></span></div>
+</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html#sleep-java.time.Duration-">sleep</a></span>(java.time.Duration&nbsp;duration)</code>
 <div class="block">Sleeps for the specified duration of time.</div>
 </td>
 </tr>
@@ -179,10 +187,29 @@ var activeTableTab = "activeTableTab";
 <a name="sleep-org.openqa.selenium.support.ui.Duration-">
 <!--   -->
 </a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sleep</h4>
+<pre>@Deprecated
+default&nbsp;void&nbsp;sleep(<a href="../../../../../org/openqa/selenium/support/ui/Duration.html" title="class in org.openqa.selenium.support.ui">Duration</a>&nbsp;duration)
+                        throws java.lang.InterruptedException</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html#sleep-java.time.Duration-"><code>sleep(java.time.Duration)</code></a></span></div>
+<div class="block">Sleeps for the specified duration of time.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>duration</code> - How long to sleep.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.InterruptedException</code> - If the thread is interrupted while sleeping.</dd>
+</dl>
+</li>
+</ul>
+<a name="sleep-java.time.Duration-">
+<!--   -->
+</a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>sleep</h4>
-<pre>void&nbsp;sleep(<a href="../../../../../org/openqa/selenium/support/ui/Duration.html" title="class in org.openqa.selenium.support.ui">Duration</a>&nbsp;duration)
+<pre>void&nbsp;sleep(java.time.Duration&nbsp;duration)
     throws java.lang.InterruptedException</pre>
 <div class="block">Sleeps for the specified duration of time.</div>
 <dl>

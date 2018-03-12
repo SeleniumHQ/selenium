@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":38,"i1":6,"i2":38};
+var methods = {"i0":38,"i1":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -152,16 +152,6 @@ var activeTableTab = "activeTableTab";
 <div class="block">Executes the given request, following any redirects if necessary.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html#execute-org.openqa.selenium.remote.http.HttpRequest-boolean-">execute</a></span>(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-       boolean&nbsp;followRedirects)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">All call sites found set <code>followRedirects</code> to <code>true</code>. Use
-   <a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html#execute-org.openqa.selenium.remote.http.HttpRequest-"><code>execute(HttpRequest)</code></a>.</span></div>
-</div>
-</td>
-</tr>
 </table>
 </li>
 </ul>
@@ -177,30 +167,6 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="execute-org.openqa.selenium.remote.http.HttpRequest-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>execute</h4>
-<pre>@Deprecated
-<a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;execute(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-                                 boolean&nbsp;followRedirects)
-                          throws java.io.IOException</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">All call sites found set <code>followRedirects</code> to <code>true</code>. Use
-   <a href="../../../../../org/openqa/selenium/remote/http/HttpClient.html#execute-org.openqa.selenium.remote.http.HttpRequest-"><code>execute(HttpRequest)</code></a>.</span></div>
-<div class="block">Executes the given request.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>request</code> - the request to execute.</dd>
-<dd><code>followRedirects</code> - whether to automatically follow redirects.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the final response.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - if an I/O error occurs.</dd>
-</dl>
-</li>
-</ul>
 <a name="execute-org.openqa.selenium.remote.http.HttpRequest-">
 <!--   -->
 </a>

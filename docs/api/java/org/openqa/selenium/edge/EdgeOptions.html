@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -73,13 +73,13 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -142,27 +142,6 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/edge/EdgeOptions.html#CAPABILITY">CAPABILITY</a></span></code>
-<div class="block">Key used to store a set of EdgeOptions in a <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> object.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -237,6 +216,10 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/edge/EdgeOptions.html#setProxy-org.openqa.selenium.Proxy-">setProxy</a></span>(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</code>&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.Object&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/edge/EdgeOptions.html#toJson--">toJson</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/edge/EdgeOptions.html#toString--">toString</a></span>()</code>&nbsp;</td>
 </tr>
@@ -270,28 +253,6 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="CAPABILITY">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>CAPABILITY</h4>
-<pre>public static final&nbsp;java.lang.String CAPABILITY</pre>
-<div class="block">Key used to store a set of EdgeOptions in a <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> object.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.edge.EdgeOptions.CAPABILITY">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
@@ -363,21 +324,6 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/edge/EdgeOptions.html" title="class in org.openqa.selenium.edge">EdgeOptions</a>&nbsp;setProxy(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</pre>
 </li>
 </ul>
-<a name="asMap--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>asMap</h4>
-<pre>public&nbsp;java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;asMap()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/Capabilities.html#asMap--">asMap</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The capabilities as a Map</dd>
-</dl>
-</li>
-</ul>
 <a name="getPlatform--">
 <!--   -->
 </a>
@@ -408,6 +354,30 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote"><code>CapabilityType</code></a></dd>
 </dl>
+</li>
+</ul>
+<a name="asMap--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asMap</h4>
+<pre>public&nbsp;java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;asMap()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/Capabilities.html#asMap--">asMap</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The capabilities as a Map</dd>
+</dl>
+</li>
+</ul>
+<a name="toJson--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toJson</h4>
+<pre>public&nbsp;java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;toJson()</pre>
 </li>
 </ul>
 <a name="amendHashCode--">
@@ -512,13 +482,13 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

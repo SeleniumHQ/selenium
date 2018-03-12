@@ -73,13 +73,13 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.org.openqa.selenium.support.ui.FluentWait">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -131,23 +131,12 @@ extends <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" 
 <!--   -->
 </a>
 <h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#DEFAULT_SLEEP_TIMEOUT">DEFAULT_SLEEP_TIMEOUT</a></span></code>&nbsp;</td>
-</tr>
-</table>
 <ul class="blockList">
 <li class="blockList"><a name="fields.inherited.from.class.org.openqa.selenium.support.ui.FluentWait">
 <!--   -->
 </a>
 <h3>Fields inherited from class&nbsp;org.openqa.selenium.support.ui.<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a></h3>
-<code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#FIVE_HUNDRED_MILLIS">FIVE_HUNDRED_MILLIS</a></code></li>
+<code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#DEFAULT_SLEEP_TIMEOUT">DEFAULT_SLEEP_TIMEOUT</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#FIVE_HUNDRED_MILLIS">FIVE_HUNDRED_MILLIS</a></code></li>
 </ul>
 </li>
 </ul>
@@ -212,7 +201,7 @@ extends <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" 
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.support.ui.<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a></h3>
-<code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoreAll-java.util.Collection-">ignoreAll</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring-java.lang.Class-">ignoring</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring-java.lang.Class-java.lang.Class-">ignoring</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#pollingEvery-long-java.util.concurrent.TimeUnit-">pollingEvery</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until-java.util.function.Function-">until</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withMessage-java.lang.String-">withMessage</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withMessage-java.util.function.Supplier-">withMessage</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withTimeout-long-java.util.concurrent.TimeUnit-">withTimeout</a></code></li>
+<code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoreAll-java.util.Collection-">ignoreAll</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring-java.lang.Class-">ignoring</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring-java.lang.Class-java.lang.Class-">ignoring</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#pollingEvery-java.time.Duration-">pollingEvery</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#pollingEvery-long-java.util.concurrent.TimeUnit-">pollingEvery</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until-java.util.function.Function-">until</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withMessage-java.lang.String-">withMessage</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withMessage-java.util.function.Supplier-">withMessage</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withTimeout-java.time.Duration-">withTimeout</a>, <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withTimeout-long-java.util.concurrent.TimeUnit-">withTimeout</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -229,27 +218,6 @@ extends <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" 
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="DEFAULT_SLEEP_TIMEOUT">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>DEFAULT_SLEEP_TIMEOUT</h4>
-<pre>public static final&nbsp;long DEFAULT_SLEEP_TIMEOUT</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#org.openqa.selenium.support.ui.WebDriverWait.DEFAULT_SLEEP_TIMEOUT">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
@@ -403,13 +371,13 @@ extends <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" 
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.org.openqa.selenium.support.ui.FluentWait">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
