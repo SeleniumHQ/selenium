@@ -1,3 +1,7 @@
+Selenium 3.11.0
+
+No changes just keeping python version in step with the rest of the project.
+
 Selenium 3.10.0
 
 * make tests to check clicking on disabled element work for w3c compliant drivers (#5561)
