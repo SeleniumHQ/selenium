@@ -209,6 +209,183 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         /// <summary>
+        /// An expectation for checking child WebElement as a part of parent element to present.
+        /// </summary>
+        /// <param name="parent">The locator used to check parent element. For example table with locator By.xpath("//table")</param>
+        /// <param name="childLocator">The locator used to find child element. For example td By.xpath("./tr/td")</param>
+        /// <returns>The list of <see cref="IWebElement"/> once it is located.</returns>
+        public static Func<IWebDriver, IWebElement> PresenceOfNestedElementLocatedBy(By parent, By childLocator)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var current = driver.FindElement(parent);
+                    return current.FindElement(childLocator);
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
+            };
+        }
+
+        /// <summary>
+        /// An expectation for checking child WebElement as a part of parent element to present.
+        /// </summary>
+        /// <param name="parent">The element used as parent element. For example table with locator By.xpath("//table")</param>
+        /// <param name="childLocator">The locator used to find child elements. For example td By.xpath("./tr/td")</param>
+        /// <returns>The list of <see cref="IWebElement"/> once it is located.</returns>
+        public static Func<IWebDriver, ReadOnlyCollection<IWebElement>> PresenceOfNestedElementsLocatedBy(IWebElement parent, By childLocator)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var allChildren = parent.FindElements(childLocator);
+
+                    return allChildren.Any() ? allChildren : throw new NoSuchElementException();
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
+            };
+        }
+
+        /// <summary>
+        /// An expectation for checking child WebElement as a part of parent element to present.
+        /// </summary>
+        /// <param name="parent">The locator used to check parent element. For example table with locator By.xpath("//table")</param>
+        /// <param name="childLocator">The locator used to find child elements. For example td By.xpath("./tr/td")</param>
+        /// <returns>The list of <see cref="IWebElement"/> once it is located.</returns>
+        public static Func<IWebDriver, ReadOnlyCollection<IWebElement>> PresenceOfNestedElementsLocatedBy(By parent, By childLocator)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var current = driver.FindElement(parent);
+                    var allChildren = current.FindElements(childLocator);
+
+                    return !allChildren.Any() ? allChildren : throw new NoSuchElementException();
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
+            };
+        }
+
+        /// <summary>
+        /// An expectation for checking child WebElement as a part of parent element to be visible.
+        /// </summary>
+        /// <param name="parent">The element used as parent element. For example table with locator</param>
+        /// <param name="childLocator">The locator used to find the ultimate child element.</param>
+        /// <returns>The list of <see cref="IWebElement"/> once it is located.</returns>
+        public static Func<IWebDriver, ReadOnlyCollection<IWebElement>> VisibilityOfNestedElementsLocatedBy(IWebElement parent, By childLocator)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var allChildren = parent.FindElements(childLocator);
+
+                    // The original code only checked the first element. Fair enough.
+                    if (allChildren.Any() && allChildren.First().Displayed)
+                    {
+                        return allChildren;
+                    }
+
+                    return null;
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
+            };
+        }
+
+        /// <summary>
+        /// An expectation for checking child WebElement as a part of parent element to be visible.
+        /// </summary>
+        /// <param name="parent">The locator used to check parent element. For example table with locator</param>
+        /// <param name="childLocator">The locator used to find the ultimate child element.</param>
+        /// <returns>The list of <see cref="IWebElement"/> once it is located.</returns>
+        public static Func<IWebDriver, ReadOnlyCollection<IWebElement>> VisibilityOfNestedElementsLocatedBy(By parent, By childLocator)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var current = driver.FindElement(parent);
+                    var allChildren = current.FindElements(childLocator);
+
+                    // The original code only checked the first element. Fair enough.
+                    if (allChildren.Any() && allChildren.First().Displayed)
+                    {
+                        return allChildren;
+                    }
+
+                    return null;
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
+            };
+        }
+
+        /// <summary>
+        /// An expectation for checking child WebElement as a part of parent element to be visible.
+        /// </summary>
+        /// <param name="parent">The element used as parent element. For example table with locator</param>
+        /// <param name="childLocator">The locator used to find the ultimate child element.</param>
+        /// <returns>The list of <see cref="IWebElement"/> once it is located.</returns>
+        public static Func<IWebDriver, IWebElement> VisibilityOfFirstNestedElementLocatedBy(By parent, By childLocator)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var current = driver.FindElement(parent);
+                    var allChildren = current.FindElements(childLocator);
+
+                    if (allChildren.Any() && allChildren.First().Displayed)
+                    {
+                        return allChildren.First();
+                    }
+
+                    return null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
+            };
+        }
+
+        /// <summary>
         /// An expectation for checking if the given text is present in the specified element.
         /// </summary>
         /// <param name="element">The WebElement</param>
