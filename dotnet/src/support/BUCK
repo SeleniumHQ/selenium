@@ -120,7 +120,7 @@ genrule(
 
 genrule(
   name = 'pack_strongnamed',
-  srcs = ['WebDriver.Support.nuspec'],
+  srcs = ['WebDriver.Support.StrongNamed.nuspec'],
   cmd_exe = "$(exe //third_party/dotnet/nuget:nuget) pack %SRCS% /Properties packageid=Selenium.Support.StrongNamed;version={} /Version {} /BasePath $(location :merge_strongnamed) /OutputDirectory %OUT%".format(SE_VERSION, SE_VERSION),
   out = 'dist',
   visibility = [ 'PUBLIC' ]
