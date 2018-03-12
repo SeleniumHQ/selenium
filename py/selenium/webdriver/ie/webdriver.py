@@ -83,9 +83,6 @@ class WebDriver(RemoteWebDriver):
 
         self.iedriver.start()
 
-        if capabilities is None:
-            capabilities = DesiredCapabilities.INTERNETEXPLORER.copy()
-
         RemoteWebDriver.__init__(
             self,
             command_executor='http://localhost:%d' % self.port,
