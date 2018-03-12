@@ -71,7 +71,7 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
     response.setStatus(200);
     try (Writer writer = response.getWriter();
          JsonOutput out = json.newOutput(writer)){
-      out.write(getResponse(request), MAP_TYPE);
+      out.write(getResponse(request));
     } catch (JsonException e) {
       throw new GridException(e.getMessage());
     }

@@ -22,7 +22,6 @@ import com.google.gson.stream.JsonWriter;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.lang.reflect.Type;
 
 public class JsonOutput implements Closeable {
   private final JsonWriter jsonWriter;
@@ -39,9 +38,9 @@ public class JsonOutput implements Closeable {
     jsonWriter.close();
   }
 
-  public JsonOutput write(JsonInput input, Type type) {
+  public JsonOutput write(JsonInput input) {
     try {
-      Object read = input.read(type);
+      Object read = input.read(Json.OBJECT_TYPE);
       jsonWriter.jsonValue(toJson.convert(read));
       return this;
     } catch (IOException e) {
@@ -49,7 +48,7 @@ public class JsonOutput implements Closeable {
     }
   }
 
-  public JsonOutput write(Object input, Type type) {
+  public JsonOutput write(Object input) {
     try {
       jsonWriter.jsonValue(toJson.convert(input));
       return this;

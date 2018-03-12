@@ -92,7 +92,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
     try (Writer writer = response.getWriter();
          JsonOutput out = json.newOutput(writer)) {
       Map<String, Object> res = getResponse(request);
-      out.write(res, MAP_TYPE);
+      out.write(res);
     }
   }
 

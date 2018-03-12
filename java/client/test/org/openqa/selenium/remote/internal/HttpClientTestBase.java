@@ -211,7 +211,7 @@ abstract public class HttpClientTestBase {
               .forEach((key, value) -> {
                 json.name(key);
                 json.beginArray();
-                Stream.of(value).forEach(v -> json.write(v, String.class));
+                Stream.of(value).forEach(json::write);
                 json.endArray();
               });
           json.endObject();
