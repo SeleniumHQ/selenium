@@ -1,4 +1,10 @@
-3.10.0 (Unreleased)
+3.11.0 (2018-03-11)
+===================
+
+Ruby:
+  * No changes in Ruby bindings for this release
+
+3.10.0 (2018-03-02)
 ===================
 
 Ruby:
