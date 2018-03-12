@@ -81,6 +81,57 @@
     <ProjectReference Include="..\webdriver\WebDriver.csproj" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(BuildSystem)' == 'buck'">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\java\client\src\com\thoughtworks\selenium\webdriven\injectableSelenium.js\injectableSelenium.js">
+      <Visible>False</Visible>
+      <LogicalName>injectableSelenium.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\java\client\src\com\thoughtworks\selenium\webdriven\htmlutils.js\htmlutils.js">
+      <Visible>False</Visible>
+      <LogicalName>htmlutils.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\findElement.js">
+      <Visible>False</Visible>
+      <LogicalName>findElement.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\findOption.js">
+      <Visible>False</Visible>
+      <LogicalName>findOption.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\fireEvent.js">
+      <Visible>False</Visible>
+      <LogicalName>fireEvent.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\fireEventAt.js">
+      <Visible>False</Visible>
+      <LogicalName>fireEventAt.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\getText.js">
+      <Visible>False</Visible>
+      <LogicalName>getText.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\linkLocator.js">
+      <Visible>False</Visible>
+      <LogicalName>linkLocator.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\isElementPresent.js">
+      <Visible>False</Visible>
+      <LogicalName>isElementPresent.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\isSomethingSelected.js">
+      <Visible>False</Visible>
+      <LogicalName>isSomethingSelected.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\isVisible.js">
+      <Visible>False</Visible>
+      <LogicalName>isVisible.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\type.js">
+      <Visible>False</Visible>
+      <LogicalName>type.js</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildSystem)' == 'visual-studio'">
     <Exec Command="copy /y &quot;$(ProjectDir)..\..\..\java\client\src\com\thoughtworks\selenium\webdriven\injectableSelenium.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;copy /y &quot;$(ProjectDir)..\..\..\java\client\src\com\thoughtworks\selenium\webdriven\htmlutils.js&quot; &quot;$(TargetDir)&quot; &gt; &quot;NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\findElement.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\findElement.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\findOption.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\findOption.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\fireEvent.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\fireEvent.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\fireEventAt.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\fireEventAt.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\getText.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\getText.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\linkLocator.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\linkLocator.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isElementPresent.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isElementPresent.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isSomethingSelected.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isSomethingSelected.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isTextPresent.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isTextPresent.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isVisible.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isVisible.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\type.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\type.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;" />
   </Target>
