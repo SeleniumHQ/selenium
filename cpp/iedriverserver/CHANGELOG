@@ -9,6 +9,19 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.11.1.0
+=========
+ * Updated all C++ projects for the IE driver to use the Windows 8.1 SDK.
+   This has the unfortunate side effect that the driver executable will no
+   longer launch on Windows XP.
+ * Removed direct call to InternetGetCookieEx2 API. Versions of IE prior to
+   11 do not have access to this API. Linking directly to it via the Windows
+   8.1 SDK creates an import entry in the IEDriver.dll library used by the
+   driver. So that the driver can continue to be used against earlier releases,
+   we will call the API using GetModuleHandle and GetProcAddress only if it
+   exists in the version of WinINet being used by the browser. Fixes issue #5603.
+ * Properly initializing JSON values in IE driver. Fixes issue #5519.
+
 v3.11.0.0
 =========
  * Release to synchronize with release of Selenium project.
