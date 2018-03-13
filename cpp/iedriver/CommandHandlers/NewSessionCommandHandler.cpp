@@ -300,7 +300,7 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
       LOG(DEBUG) << "Processing matched capability set with index " << i;
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
 
-      Json::Value unexpected_alert_behavior = this->GetCapability(merged_capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, "");
+      Json::Value unexpected_alert_behavior = this->GetCapability(merged_capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, Json::Value(Json::stringValue));
       mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
 
       Json::Value page_load_strategy = this->GetCapability(merged_capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
@@ -367,7 +367,7 @@ void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor
     Json::Value ignore_zoom_setting = this->GetCapability(capabilities, IGNORE_ZOOM_SETTING_CAPABILITY, Json::booleanValue, false);
     factory_settings.ignore_zoom_setting = ignore_zoom_setting.asBool();
 
-    Json::Value browser_attach_timeout = this->GetCapability(capabilities, BROWSER_ATTACH_TIMEOUT_CAPABILITY, Json::intValue, 0);
+    Json::Value browser_attach_timeout = this->GetCapability(capabilities, BROWSER_ATTACH_TIMEOUT_CAPABILITY, Json::intValue, Json::Value(Json::intValue));
     factory_settings.browser_attach_timeout = browser_attach_timeout.asInt();
 
     Json::Value initial_url = this->GetCapability(capabilities, INITIAL_BROWSER_URL_CAPABILITY, Json::stringValue, default_initial_url);
@@ -379,7 +379,7 @@ void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor
     Json::Value force_shell_windows_api = this->GetCapability(capabilities, FORCE_SHELL_WINDOWS_API_CAPABILITY, Json::booleanValue, false);
     factory_settings.force_shell_windows_api = force_shell_windows_api.asBool();
 
-    Json::Value browser_command_line_switches = this->GetCapability(capabilities, BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY, Json::stringValue, "");
+    Json::Value browser_command_line_switches = this->GetCapability(capabilities, BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY, Json::stringValue, Json::Value(Json::stringValue));
     factory_settings.browser_command_line_switches = browser_command_line_switches.asString();
 
     Json::Value ensure_clean_session = this->GetCapability(capabilities, ENSURE_CLEAN_SESSION_CAPABILITY, Json::booleanValue, false);
@@ -444,13 +444,13 @@ void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executo
   Json::Value enable_native_events = this->GetCapability(capabilities, NATIVE_EVENTS_CAPABILITY, Json::booleanValue, true);
   input_manager_settings.use_native_events = enable_native_events.asBool();
 
-  Json::Value scroll_behavior = this->GetCapability(capabilities, ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, Json::intValue, 0);
+  Json::Value scroll_behavior = this->GetCapability(capabilities, ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, Json::intValue, Json::Value(Json::intValue));
   input_manager_settings.scroll_behavior = static_cast<ElementScrollBehavior>(scroll_behavior.asInt());
 
   Json::Value require_window_focus = this->GetCapability(capabilities, REQUIRE_WINDOW_FOCUS_CAPABILITY, Json::booleanValue, false);
   input_manager_settings.require_window_focus = require_window_focus.asBool();
 
-  Json::Value file_upload_dialog_timeout = this->GetCapability(capabilities, FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY, Json::intValue, 0);
+  Json::Value file_upload_dialog_timeout = this->GetCapability(capabilities, FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY, Json::intValue, Json::Value(Json::intValue));
   if (file_upload_dialog_timeout.asInt() > 0) {
     mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
   }
