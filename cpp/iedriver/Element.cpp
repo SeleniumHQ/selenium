@@ -208,7 +208,11 @@ bool Element::IsObscured(LocationInfo* click_location,
   CComPtr<IHTMLDocument8> elements_doc;
   hr = doc.QueryInterface<IHTMLDocument8>(&elements_doc);
   if (FAILED(hr)) {
+    // If we failed to QI for IHTMLDocument8, we can't easily determine if
+    // the element is obscured or not. We will assume we are not obscured
+    // and bail, even though that may not be the case.
     LOGHR(WARN, hr) << "QueryInterface for IHTMLDocument8 failed";
+    return false;
   }
 
   CComPtr<IHTMLDOMChildrenCollection> elements_hit;
