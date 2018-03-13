@@ -452,6 +452,24 @@ unsigned int WINAPI CookieManager::ThreadProc(LPVOID lpParameter) {
 extern "C" {
 #endif
 
+// In order to run the IE driver against versions of IE that do not include
+// a version of WinINet.dll that supports the InternetGetCookiesEx2 API,
+// we must access the API in a way that does not import it into our DLL.
+// To that end, we duplicate the INTERNET_COOKIE2 structure here, and will
+// call the API (if it exists) via GetModuleHandle and GetProcAddress.
+typedef struct {
+  PWSTR pwszName;
+  PWSTR pwszValue;
+  PWSTR pwszDomain;
+  PWSTR pwszPath;
+  DWORD dwFlags;
+  FILETIME ftExpires;
+  BOOL fExpiresSet;
+} INTERNETCOOKIE2;
+
+typedef void* (__stdcall *InternetFreeCookiesProc)(INTERNETCOOKIE2*, DWORD);
+typedef DWORD(__stdcall *InternetGetCookieEx2Proc)(PCWSTR, PCWSTR, DWORD, INTERNETCOOKIE2**, PDWORD);
+
 LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
   CWPSTRUCT* call_window_proc_struct = reinterpret_cast<CWPSTRUCT*>(lParam);
   if (WM_COPYDATA == call_window_proc_struct->message) {
@@ -472,29 +490,30 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
     CComBSTR path_bstr;
     uri_pointer->GetPath(&path_bstr);
     
-    // Get only the cookies for the base URL, omitting port, if there is one.
-    // N.B., we only return cookies secure cookies when browsing a site using
-    // SSL. The browser won't see cookies with the 'secure' flag for sites
-    // visited using plain http.
-    std::wstring parsed_uri = L"http";
-    if ((WD_GET_SECURE_COOKIES == call_window_proc_struct->message ||
-         WD_GET_SCRIPTABLE_COOKIES == call_window_proc_struct->message) && 
-        URL_SCHEME_HTTPS == scheme) {
-      parsed_uri.append(L"s");
-    }
+    std::wstring parsed_uri = scheme_bstr;
     parsed_uri.append(L"://");
     parsed_uri.append(host_bstr);
     parsed_uri.append(path_bstr);
 
-    // Allocate a static array for cookies, since IE is documented
-    // to limit the number of cookies to 50.
+    InternetGetCookieEx2Proc get_cookie_proc = NULL;
+    InternetFreeCookiesProc free_cookies_proc = NULL;
+    HMODULE wininet_handle = ::GetModuleHandle(L"wininet");
+    if (wininet_handle) {
+      get_cookie_proc = reinterpret_cast<InternetGetCookieEx2Proc>(::GetProcAddress(wininet_handle, "InternetGetCookieEx2"));
+      free_cookies_proc = reinterpret_cast<InternetFreeCookiesProc>(::GetProcAddress(wininet_handle, "InternetFreeCookies"));
+    }
+
     DWORD cookie_count = 0;
-    INTERNET_COOKIE2* cookie_pointer;
-    DWORD success = ::InternetGetCookieEx2(parsed_uri.c_str(),
-                                           NULL,
-                                           INTERNET_COOKIE_NON_SCRIPT,
-                                           &cookie_pointer,
-                                           &cookie_count);
+    INTERNETCOOKIE2* cookie_pointer = NULL;
+    DWORD success = 1;
+    if (get_cookie_proc) {
+      success = get_cookie_proc(parsed_uri.c_str(),
+                                NULL,
+                                INTERNET_COOKIE_NON_SCRIPT,
+                                &cookie_pointer,
+                                &cookie_count);
+    }
+
     if (success == 0) {
       // Mimic the format of the old persistent cookie files for ease of
       // transmission back to the driver and parsing.
@@ -503,7 +522,7 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
         if (all_cookies.size() > 0) {
           all_cookies.append(L"\n*\n");
         }
-        INTERNET_COOKIE2* current_cookie = cookie_pointer + cookie_index;
+        INTERNETCOOKIE2* current_cookie = cookie_pointer + cookie_index;
         std::wstring cookie_name = current_cookie->pwszName;
         std::wstring cookie_value = current_cookie->pwszValue;
         std::wstring cookie_domain = current_cookie->pwszDomain;
@@ -524,7 +543,7 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
           all_cookies.append(L"\n\n");
         }
       }
-      ::InternetFreeCookies(cookie_pointer, cookie_count);
+      free_cookies_proc(cookie_pointer, cookie_count);
       webdriver::HookProcessor::CopyWStringToBuffer(all_cookies);
     } else {
       webdriver::HookProcessor::SetDataBufferSize(sizeof(wchar_t));
