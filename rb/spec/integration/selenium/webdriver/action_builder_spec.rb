@@ -141,8 +141,7 @@ module Selenium
           expect(text).to eq('Dropped!')
         end
 
-        # Pending bug with Firefox
-        it 'double clicks an element', except: {browser: :firefox} do
+        it 'double clicks an element' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
