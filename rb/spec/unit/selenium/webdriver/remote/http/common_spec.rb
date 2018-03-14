@@ -28,7 +28,9 @@ module Selenium
 
             expect(common).to receive(:request)
               .with(:post, URI.parse('http://server/clear'),
-                    hash_including('Content-Length' => '2'), '{}')
+                    hash_including('Content-Length' => '2',
+                                   'Content-Type' => 'application/json'),
+                    '{}')
 
             common.call(:post, 'clear', nil)
           end
