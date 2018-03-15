@@ -99,3 +99,8 @@ class WebDriver(RemoteWebDriver):
             return None
 
         return value
+
+    # First available in Safari 11.1 and Safari Technology Preview 42.
+    def debug(self):
+        self.execute("ATTACH_DEBUGGER")
+        self.execute_script("debugger;")

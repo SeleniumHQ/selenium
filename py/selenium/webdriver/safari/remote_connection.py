@@ -24,3 +24,4 @@ class SafariRemoteConnection(RemoteConnection):
 
         self._commands["GET_PERMISSIONS"] = ('GET', '/session/$sessionId/apple/permissions')
         self._commands["SET_PERMISSIONS"] = ('POST', '/session/$sessionId/apple/permissions')
+        self._commands["ATTACH_DEBUGGER"] = ('POST', '/session/$sessionId/apple/attach_debugger')
