@@ -556,7 +556,8 @@ bool NewSessionCommandHandler::MatchCapabilities(const IECommandExecutor& execut
     }
 
     if (capability_name.find(":") != std::string::npos &&
-        capability_name != IE_DRIVER_EXTENSIONS_CAPABILITY) {
+        (capability_name != IE_DRIVER_EXTENSIONS_CAPABILITY &&
+        capability_name.find("test:") == std::string::npos)) {
       *error_message = capability_name + " is an unknown extension capability for IE";
       return false;
     }
