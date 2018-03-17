@@ -86,10 +86,30 @@ void SendKeysCommandHandler::ExecuteInternal(
     HWND window_handle = browser_wrapper->GetContentWindowHandle();
     HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
 
-    ElementHandle element_wrapper;
-    status_code = this->GetElement(executor, element_id, &element_wrapper);
+    ElementHandle initial_element;
+    status_code = this->GetElement(executor, element_id, &initial_element);
 
     if (status_code == WD_SUCCESS) {
+      ElementHandle element_wrapper = initial_element;
+      CComPtr<IHTMLOptionElement> option;
+      HRESULT hr = initial_element->element()->QueryInterface<IHTMLOptionElement>(&option);
+      if (SUCCEEDED(hr) && option) {
+        // If this is an <option> element, we want to operate on its parent
+        // <select> element.
+        CComPtr<IHTMLElement> parent_node;
+        hr = initial_element->element()->get_parentElement(&parent_node);
+        while (SUCCEEDED(hr) && parent_node) {
+          CComPtr<IHTMLSelectElement> select;
+          HRESULT select_hr = parent_node->QueryInterface<IHTMLSelectElement>(&select);
+          if (SUCCEEDED(select_hr) && select) {
+            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+            mutable_executor.AddManagedElement(parent_node, &element_wrapper);
+            break;
+          }
+          hr = parent_node->get_parentElement(&parent_node);
+        }
+      }
+
       CComPtr<IHTMLElement> element(element_wrapper->element());
 
       // Scroll the target element into view before executing the action
@@ -230,6 +250,12 @@ void SendKeysCommandHandler::ExecuteInternal(
       if (!element_wrapper->IsEnabled()) {
         response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
                                    "Element cannot be interacted with via the keyboard because it is not enabled");
+        return;
+      }
+
+      if (!element_wrapper->IsFocusable()) {
+        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
+                                   "Element cannot be interacted with via the keyboard because it is not focusable");
         return;
       }
 
