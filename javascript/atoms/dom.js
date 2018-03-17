@@ -292,6 +292,21 @@ bot.dom.isFileInput = function(element) {
 
 /**
  * @param {!Element} element The element to check.
+ * @param {string} inputType The type of input to check.
+ * @return {boolean} Whether the element is an input with specified type.
+ */
+bot.dom.isInputType = function(element, inputType) {
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
+    var type = element.type.toLowerCase();
+    return type == inputType;
+  }
+
+  return false;
+};
+
+
+/**
+ * @param {!Element} element The element to check.
  * @return {boolean} Whether the element is contentEditable.
  */
 bot.dom.isContentEditable = function(element) {
@@ -331,7 +346,9 @@ bot.dom.isContentEditable = function(element) {
  * @return {boolean} Whether the element accepts user-typed text.
  */
 bot.dom.isEditable = function(element) {
-  return (bot.dom.isTextual(element) || bot.dom.isFileInput(element)) &&
+  return (bot.dom.isTextual(element) ||
+          bot.dom.isFileInput(element) ||
+          bot.dom.isInputType(element, 'range')) &&
       !bot.dom.getProperty(element, 'readOnly');
 };
 
