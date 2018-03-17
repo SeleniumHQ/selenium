@@ -64,6 +64,7 @@ class Element {
   bool IsSelected(void);
   bool IsInteractable(void);
   bool IsEditable(void);
+  bool IsFocusable(void);
   bool IsAttachedToDom(void);
   bool IsDocumentFocused(IHTMLDocument2* focused_doc);
   bool IsObscured(LocationInfo* click_location,

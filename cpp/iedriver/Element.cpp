@@ -188,6 +188,53 @@ bool Element::IsInteractable() {
   return result;
 }
 
+bool Element::IsFocusable() {
+  LOG(TRACE) << "Entering Element::IsFocusable";
+
+  bool result = false;
+
+  CComPtr<IHTMLBodyElement> body;
+  HRESULT hr = this->element_->QueryInterface<IHTMLBodyElement>(&body);
+  if (SUCCEEDED(hr) && body) {
+    // The <body> element is explicitly focusable.
+    return true;
+  }
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+
+  CComPtr<IHTMLDocument3> document_element_doc;
+  hr = doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
+  if (SUCCEEDED(hr) && document_element_doc) {
+    CComPtr<IHTMLElement> doc_element;
+    hr = document_element_doc->get_documentElement(&doc_element);
+    if (SUCCEEDED(hr) && doc_element && this->element_.IsEqualObject(doc_element)) {
+      // The document's documentElement is explicitly focusable.
+      return true;
+    }
+  }
+
+  // The atom is just the definition of an anonymous
+  // function: "function() {...}"; Wrap it in another function so we can
+  // invoke it with our arguments without polluting the current namespace.
+  std::wstring script_source(L"(function() { return (");
+  script_source += atoms::asString(atoms::IS_FOCUSABLE);
+  script_source += L")})();";
+
+  
+  Script script_wrapper(doc, script_source, 1);
+  script_wrapper.AddArgument(this->element_);
+  int status_code = script_wrapper.Execute();
+
+  if (status_code == WD_SUCCESS) {
+    result = script_wrapper.result().boolVal == VARIANT_TRUE;
+  } else {
+    LOG(WARN) << "Failed to determine is element enabled";
+  }
+
+  return result;
+}
+
 bool Element::IsObscured(LocationInfo* click_location,
                          std::string* obscuring_element_description) {
   CComPtr<ISVGElement> svg_element;
