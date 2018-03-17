@@ -247,10 +247,38 @@ bool Element::IsObscured(LocationInfo* click_location,
   }
 
   bool is_obscured = false;
-  int status_code = this->GetStaticClickLocation(click_location);
 
   CComPtr<IHTMLDocument2> doc;
   this->GetContainingDocument(false, &doc);
+
+  std::vector<LocationInfo> frame_locations;
+  LocationInfo element_location = {};
+  int status_code = this->GetLocation(&element_location, &frame_locations);
+  bool document_contains_frames = frame_locations.size() != 0;
+  *click_location = this->CalculateClickPoint(element_location,
+                                              document_contains_frames);
+  long x = click_location->x;
+  long y = click_location->y;
+  if (document_contains_frames) {
+    // If the document contains frames, we'll need to do elementsFromPoint
+    // for the framed document, ignoring the frame offsets.
+    CComPtr<IHTMLElement2> rect_element;
+    this->element_->QueryInterface<IHTMLElement2>(&rect_element);
+    CComPtr<IHTMLRect> rect;
+    rect_element->getBoundingClientRect(&rect);
+    long top = 0, bottom = 0, left = 0, right = 0;
+
+    rect->get_top(&top);
+    rect->get_left(&left);
+    rect->get_bottom(&bottom);
+    rect->get_right(&right);
+
+    long width = right - left;
+    long height = bottom - top;
+
+    x = left + (width / 2);
+    y = top + (height / 2);
+  }
 
   CComPtr<IHTMLDocument8> elements_doc;
   hr = doc.QueryInterface<IHTMLDocument8>(&elements_doc);
@@ -263,8 +291,8 @@ bool Element::IsObscured(LocationInfo* click_location,
   }
 
   CComPtr<IHTMLDOMChildrenCollection> elements_hit;
-  hr = elements_doc->elementsFromPoint(static_cast<float>(click_location->x),
-                                       static_cast<float>(click_location->y),
+  hr = elements_doc->elementsFromPoint(static_cast<float>(x),
+                                       static_cast<float>(y),
                                        &elements_hit);
   if (SUCCEEDED(hr) && elements_hit != NULL) {
     long element_count;
