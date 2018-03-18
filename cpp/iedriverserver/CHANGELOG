@@ -9,6 +9,34 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.11.1.1
+=========
+ * Separated out detection of focusable elements for sendKeys in IE. Allows
+   separate error messages for attempting to send keys to a non-focusable
+   element. Also fixes sending keystrokes to <option> elements by forwarding
+   the detections to the parent <select> element.
+ * Fixed obscured element detection in IE for elements in frames.
+ * Added support for extension capabilites starting with "test:" in IE. This
+   is basically to support the web-platform-tests WebDriver test suite. Adding
+   an extension capability with name starting with "test:" will allow a user
+   to create a session, but will have no effect on the session. It is a no-op.
+ * Added IsFocusable method to IE driver Element class.
+ * Added Protected Mode boundary crossing detection mechanism in IE. When a
+   Protected Mode boundary is crossed by navigation (entering or exiting
+   Protected Mode), the existing browser instance is destroyed and a new one
+   created in its place by Interent Explorer. This commit adds detection for
+   when a browser instance is being closed, but without an explicit call to
+   the WebDriver close() or quit() methods. When this is detected, it's likely
+   a Protected Mode boundary is being crossed, and all subsequent commands in
+   the WebDriver session will fail. In this case, the driver will now write
+   to the log that the browser has been asked to exit without the user
+   explicitly requesting it. The detection is not perfect, since it's
+   possible to legitimately click a link that closes the browser window, and
+   this is indistinguishable from clicking a link that navigates to a URL
+   that causes a Protected Mode boundary crossing. Nevertheless, this logging
+   is being added so that users can see what may be happening when they
+   receive errors like "Unable to get current browser."
+
 v3.11.1.0
 =========
  * Updated all C++ projects for the IE driver to use the Windows 8.1 SDK.
@@ -280,15 +308,15 @@ v3.5.1.1
    * Implement the "minimize window" command
    * Implement the "fullscreen window" command
    * Update "set window rect" command to correctly recognize and restore 
-     from minimized or full screen state
+    from minimized or full screen state
    * Fix the "release actions" command to properly roll back all pending
-     actions
+    actions
    * Update the "perform actions" command to be more robust for pointer
-     actions
+    actions
    * Fix alert handling to handle dialogs with the "Do not show any more
-     dialogs" check box
+    dialogs" check box
    * Added handling for the "dismiss and notify" and "accept and notify"
-     user prompt handler states
+    user prompt handler states
    * Updated proxy handling to more closely align with the spec language
 
 v3.5.1.0
@@ -763,13 +791,13 @@ v2.45.0.2
    pageLoadStrategy when creating a session with the IE driver will now change
    the wait behavior when navigating to a new page. The valid values are:
 
-     "normal" - Waits for document.readyState to be 'complete'. This is the
-                default, and is the same behavior as all previous versions of
-                the IE driver.
-     "eager"  - Will abort the wait when document.readyState is
-                'interactive' instead of waiting for 'complete'.
-     "none"   - Will abort the wait immediately, without waiting for any of
-                the page to load.
+    "normal" - Waits for document.readyState to be 'complete'. This is the
+            default, and is the same behavior as all previous versions of
+            the IE driver.
+    "eager"  - Will abort the wait when document.readyState is
+            'interactive' instead of waiting for 'complete'.
+    "none"   - Will abort the wait immediately, without waiting for any of
+            the page to load.
 
    Setting the capability to an invalid value will result in use of the
    "normal" page load strategy.
@@ -1370,9 +1398,9 @@ v2.32.1.0
    the registry value before launching IE. Patch for this fix provided by Alex
    Savchuk.The registry settings are:
 
-     Key: HKEY_CURRENT_USER\Software\Microsoft\InternetExplorer\Main
-     Value Name: TabProcGrowth
-     Value: "0"
+    Key: HKEY_CURRENT_USER\Software\Microsoft\InternetExplorer\Main
+    Value Name: TabProcGrowth
+    Value: "0"
 
  * Fixed Element::IsAttachedToDom() when used with SVG for IEDriver.
    Patch for this fix provided by Patrick Gansterer.
@@ -1808,11 +1836,11 @@ v2.24.2.0
  * Added logging message to a large portion of the IE driver (on behalf of 
    AlexandrSavchuk). Set the log file with
 
-       --log-file="C:\full\path\to\filename.log"
+      --log-file="C:\full\path\to\filename.log"
 
    (default is to log to the console). Set the logging level with
 
-       --log-level=LOGLEVEL
+      --log-level=LOGLEVEL
 
    where LOGLEVEL is one of TRACE, DEBUG, INFO, WARN, ERROR, or FATAL (default
    is FATAL). Fixes issue #4159
