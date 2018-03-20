@@ -16,6 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using System.Collections.Generic;
+
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
@@ -137,5 +139,25 @@ namespace OpenQA.Selenium.Remote
         /// Capability name used to indicate whether the driver supports web storage.
         /// </summary>
         public static readonly string SupportsWebStorage = "webStorageEnabled";
+
+        private static readonly List<string> KnownSpecCompliantCapabilityNames = new List<string>() {
+            BrowserName,
+            BrowserVersion,
+            PlatformName,
+            AcceptInsecureCertificates,
+            PageLoadStrategy,
+            Proxy,
+            UnhandledPromptBehavior
+        };
+
+        public static bool IsSpecCompliantCapabilityName(string capabilityName)
+        {
+            if (KnownSpecCompliantCapabilityNames.Contains(capabilityName) || capabilityName.Contains(":"))
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

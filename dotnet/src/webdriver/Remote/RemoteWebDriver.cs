@@ -1158,7 +1158,7 @@ namespace OpenQA.Selenium.Remote
             DesiredCapabilities capabilitiesObject = capabilitiesToConvert as DesiredCapabilities;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
-                if (entry.Key != CapabilityType.Version && entry.Key != CapabilityType.Platform)
+                if (CapabilityType.IsSpecCompliantCapabilityName(entry.Key))
                 {
                     capabilitiesDictionary.Add(entry.Key, entry.Value);
                 }
