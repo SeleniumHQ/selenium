@@ -68,15 +68,12 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 public class NewSessionPayload implements Closeable {
-
-  private static final Logger LOG = Logger.getLogger(NewSessionPayload.class.getName());
 
   private final Set<CapabilitiesFilter> adapters;
   private final Set<CapabilityTransform> transforms;
