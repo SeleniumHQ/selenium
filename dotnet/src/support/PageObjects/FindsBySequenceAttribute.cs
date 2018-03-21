@@ -42,7 +42,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// </code>
     /// </para>
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class)]
     public sealed class FindsBySequenceAttribute : Attribute
     {
     }

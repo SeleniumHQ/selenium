@@ -57,7 +57,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// </code>
     /// </para>
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = true)]
     public sealed class FindsByAttribute : Attribute, IComparable
     {
         private By finder = null;
