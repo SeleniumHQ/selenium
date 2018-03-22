@@ -110,6 +110,11 @@ namespace OpenQA.Selenium
         /// to save the image to.</param>
         public void SaveAsFile(string fileName, ScreenshotImageFormat format)
         {
+            if (!Directory.Exists(Path.GetDirectoryName(fileName)))
+            {
+                throw new DirectoryNotFoundException("Output Directory does not exist");
+            }
+
 #if NETCOREAPP2_0 || NETSTANDARD2_0
             if (format != ScreenshotImageFormat.Png)
             {
