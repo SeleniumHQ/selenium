@@ -9,6 +9,22 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.11.1.2
+=========
+ * Changed COM variant to JSON serialization in IE. There is an expectation
+   that if a result from JavaScript is "integral," that it is serialized for
+   return to the calling code as an integral number rather than a floating-
+   point number. Previous versions of the JSON serializer used by the IE
+   driver would (incorrectly) serialize a floating-point value with no
+   decimal part as being an integer. After updating to a later version, the
+   serializer now (correctly) serializes floating-point values as floating-
+   point values, with a trailing ".0" to indicate a floating-point value.
+   While this is the correct behavior by the serializer, it breaks the
+   expectations of the language bindings. Therefore, we check to see if the
+   variant value has a decimal part, and if it has none, convert it to an
+   integer for serialization by the JSON library.
+ * Updated JsonCpp library to latest source code. Fixes issue #5664.
+
 v3.11.1.1
 =========
  * Separated out detection of focusable elements for sendKeys in IE. Allows

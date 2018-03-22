@@ -188,7 +188,17 @@ int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager
   } else if (VariantIsInteger(variant_value)) {
     *value = variant_value.lVal;
   } else if (VariantIsDouble(variant_value)) {
-    *value = variant_value.dblVal;
+    double int_part;
+    if (std::modf(variant_value.dblVal, &int_part) == 0.0) {
+      // This bears some explaining. Due to inconsistencies between versions
+      // of the JSON serializer we use, if the value is floating-point, but
+      // has no fractional part, convert it to a 64-bit integer so that it
+      // will be serialized in a way consistent with language bindings'
+      // expectations.
+      *value = static_cast<long long>(int_part);
+    } else {
+      *value = variant_value.dblVal;
+    }
   } else if (VariantIsBoolean(variant_value)) {
     *value = variant_value.boolVal == VARIANT_TRUE;
   } else if (VariantIsEmpty(variant_value)) {
