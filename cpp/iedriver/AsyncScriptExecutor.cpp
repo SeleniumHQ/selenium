@@ -51,8 +51,14 @@ LRESULT AsyncScriptExecutor::OnCreate(UINT uMsg,
   std::wstring serialized_args = context->serialized_script_args;
   this->main_element_repository_handle_ = context->main_element_repository_handle;
   if (serialized_args.size() > 0) {
-    Json::Reader json_reader;
-    json_reader.parse(StringUtilities::ToString(serialized_args), this->script_args_);
+    std::string parse_errors;
+    std::stringstream json_stream;
+    json_stream.str(StringUtilities::ToString(serialized_args));
+    Json::parseFromStream(Json::CharReaderBuilder(),
+                          json_stream,
+                          &this->script_args_,
+                          &parse_errors);
+
     if (this->script_args_.isArray()) {
       this->GetElementIdList(this->script_args_);
       this->script_argument_count_ = this->script_args_.size();
@@ -140,8 +146,8 @@ LRESULT AsyncScriptExecutor::OnGetRequiredElementList(UINT uMsg,
   for (; it != this->element_id_list_.end(); ++it) {
     element_id_list.append(*it);
   }
-  Json::FastWriter writer;
-  std::string serialized_element_list = writer.write(element_id_list);
+  Json::StreamWriterBuilder writer;
+  std::string serialized_element_list = Json::writeString(writer, element_id_list);
   std::string* return_string = reinterpret_cast<std::string*>(lParam);
   *return_string = serialized_element_list.c_str();
   return 0;

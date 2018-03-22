@@ -36,12 +36,18 @@ void Command::Deserialize(const std::string& json) {
   LOG(DEBUG) << "Raw JSON command: " << json;
 
   Json::Value root;
-  Json::Reader reader;
-  bool successful_parse = reader.parse(json, root);
+  std::string parse_errors;
+  std::stringstream json_stream;
+  json_stream.str(json);
+  bool successful_parse = Json::parseFromStream(Json::CharReaderBuilder(),
+                                                json_stream,
+                                                &root,
+                                                &parse_errors);
+
   if (!successful_parse) {
     // report to the user the failure and their locations in the document.
-    LOG(WARN) << "Failed to parse configuration due "
-              << reader.getFormattedErrorMessages() << std::endl
+    LOG(WARN) << "Failed to parse configuration due to "
+              << parse_errors << std::endl
               << "JSON command: '" << json << "'";
   }
 
@@ -95,8 +101,8 @@ std::string Command::Serialize() {
     parameters_object[it->first] = it->second;
   }
   json_object["parameters"] = parameters_object;
-  Json::FastWriter writer;
-  std::string output(writer.write(json_object));
+  Json::StreamWriterBuilder writer;
+  std::string output(Json::writeString(writer, json_object));
   return output;
 }
 

@@ -295,8 +295,8 @@ int Script::ExecuteAsync(const IECommandExecutor& command_executor,
   LOG(TRACE) << "Entering Script::ExecuteAsync";
   int return_code = WD_SUCCESS;
 
-  Json::FastWriter writer;
-  std::wstring serialized_args = StringUtilities::ToWString(writer.write(args));
+  Json::StreamWriterBuilder writer;
+  std::wstring serialized_args = StringUtilities::ToWString(Json::writeString(writer, args));
   this->argument_count_ = args.size();
   return_code = this->CreateAsyncScriptExecutor(command_executor.window_handle(),
                                                 serialized_args,
@@ -320,9 +320,14 @@ int Script::ExecuteAsync(const IECommandExecutor& command_executor,
                 WD_ASYNC_SCRIPT_GET_REQUIRED_ELEMENT_LIST,
                 NULL,
                 reinterpret_cast<LPARAM>(&required_element_list));
-  Json::Reader reader;
   Json::Value required_elements;
-  reader.parse(required_element_list, required_elements);
+  std::string parse_errors;
+  std::stringstream json_stream;
+  json_stream.str(required_element_list);
+  Json::parseFromStream(Json::CharReaderBuilder(),
+                        json_stream,
+                        &required_elements,
+                        &parse_errors);
 
   for (Json::UInt i = 0; i < required_elements.size(); ++i) {
     std::string element_id = required_elements[i].asString();
@@ -693,7 +698,7 @@ int Script::WalkObject(IElementManager* element_manager,
   LOG(TRACE) << "Entering Script::WalkObject";
 
   int status_code = WD_SUCCESS;
-  Json::Value::iterator it = object_value.begin();
+  Json::Value::const_iterator it = object_value.begin();
   int counter = 0;
   std::string object_script = "(function(){ return function() { return {";
   for (; it != object_value.end(); ++it) {
@@ -701,7 +706,7 @@ int Script::WalkObject(IElementManager* element_manager,
       object_script += ",";
     }
     std::string counter_string = std::to_string(static_cast<long long>(counter));
-    std::string name = it.memberName();
+    std::string name = it.name();
     object_script += "\"" + name + "\"" + ":arguments[" + counter_string + "]";
     ++counter;
   }
@@ -709,7 +714,7 @@ int Script::WalkObject(IElementManager* element_manager,
 
   Script object_script_wrapper(this->script_engine_host_, object_script, counter);
   for (it = object_value.begin(); it != object_value.end(); ++it) {
-    status_code = object_script_wrapper.AddArgument(element_manager, object_value[it.memberName()]);
+    status_code = object_script_wrapper.AddArgument(element_manager, object_value[it.name()]);
     if (status_code != WD_SUCCESS) {
       break;
     }
