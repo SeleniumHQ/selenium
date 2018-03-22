@@ -102,7 +102,7 @@ namespace OpenQA.Selenium.Firefox
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class.
         /// </summary>
         public FirefoxDriver()
-            : this(new FirefoxOptions(null, null))
+            : this(new FirefoxOptions(null, null, null))
         {
         }
 
@@ -113,7 +113,7 @@ namespace OpenQA.Selenium.Firefox
         /// to be used in starting Firefox.</param>
         [Obsolete("FirefoxDriver should not be constructed with a FirefoxProfile object. Use FirefoxOptions instead. This constructor will be removed in a future release.")]
         public FirefoxDriver(FirefoxProfile profile)
-            : this(new FirefoxOptions(profile, null))
+            : this(new FirefoxOptions(profile, null, null))
         {
         }
 
@@ -137,7 +137,7 @@ namespace OpenQA.Selenium.Firefox
         /// to be used in starting Firefox.</param>
         [Obsolete("FirefoxDriver should not be constructed with a FirefoxBinary object. Use FirefoxOptions instead. This constructor will be removed in a future release.")]
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile)
-            : this(new FirefoxOptions(profile, binary))
+            : this(new FirefoxOptions(profile, binary, null))
         {
         }
 
@@ -151,7 +151,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         [Obsolete("FirefoxDriver should not be constructed  with a FirefoxBinary object. Use FirefoxOptions instead. This constructor will be removed in a future release.")]
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
-            : this((FirefoxDriverService)null, new FirefoxOptions(profile, binary), commandTimeout)
+            : this((FirefoxDriverService)null, new FirefoxOptions(profile, binary, null), commandTimeout)
         {
         }
 
@@ -341,16 +341,7 @@ namespace OpenQA.Selenium.Firefox
             FirefoxProfile profile = ExtractProfile(capabilities);
             DesiredCapabilities desiredCaps = RemoveUnneededCapabilities(capabilities) as DesiredCapabilities;
 
-            FirefoxOptions options = new FirefoxOptions(profile, binary);
-            if (desiredCaps != null)
-            {
-                Dictionary<string, object> capsDictionary = desiredCaps.ToDictionary();
-                foreach (KeyValuePair<string, object> capability in capsDictionary)
-                {
-                    options.AddAdditionalCapability(capability.Key, capability.Value);
-                }
-            }
-
+            FirefoxOptions options = new FirefoxOptions(profile, binary, desiredCaps);
             return options;
         }
 

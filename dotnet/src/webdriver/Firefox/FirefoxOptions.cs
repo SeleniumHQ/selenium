@@ -92,7 +92,8 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="profile">The <see cref="FirefoxProfile"/> to use in the options.</param>
         /// <param name="binary">The <see cref="FirefoxBinary"/> to use in the options.</param>
-        internal FirefoxOptions(FirefoxProfile profile, FirefoxBinary binary)
+        /// <param name="capabilities">The <see cref="DesiredCapabilities"/> to copy into the options.</param>
+        internal FirefoxOptions(FirefoxProfile profile, FirefoxBinary binary, DesiredCapabilities capabilities)
         {
             this.BrowserName = BrowserNameValue;
             if (profile != null)
@@ -103,6 +104,11 @@ namespace OpenQA.Selenium.Firefox
             if (binary != null)
             {
                 this.browserBinaryLocation = binary.BinaryExecutable.ExecutablePath;
+            }
+
+            if (capabilities != null)
+            {
+                this.ImportCapabilities(capabilities);
             }
         }
 
@@ -414,6 +420,79 @@ namespace OpenQA.Selenium.Firefox
             }
 
             this.profilePreferences[preferenceName] = preferenceValue;
+        }
+
+        private void ImportCapabilities(DesiredCapabilities capabilities)
+        {
+            foreach (KeyValuePair<string, object> pair in capabilities.CapabilitiesDictionary)
+            {
+                if (pair.Key == CapabilityType.BrowserName)
+                {
+                }
+                else if (pair.Key == CapabilityType.BrowserVersion)
+                {
+                    this.BrowserVersion = pair.Value.ToString();
+                }
+                else if (pair.Key == CapabilityType.PlatformName)
+                {
+                    this.PlatformName = pair.Value.ToString();
+                }
+                else if (pair.Key == CapabilityType.Proxy)
+                {
+                    this.Proxy = new Proxy(pair.Value as Dictionary<string, object>);
+                }
+                else if (pair.Key == CapabilityType.UnhandledPromptBehavior)
+                {
+                    this.UnhandledPromptBehavior = (UnhandledPromptBehavior)Enum.Parse(typeof(UnhandledPromptBehavior), pair.Value.ToString(), true);
+                }
+                else if (pair.Key == CapabilityType.PageLoadStrategy)
+                {
+                    this.PageLoadStrategy = (PageLoadStrategy)Enum.Parse(typeof(PageLoadStrategy), pair.Value.ToString(), true);
+                }
+                else if (pair.Key == FirefoxOptionsCapability)
+                {
+                    Dictionary<string, object> mozFirefoxOptions = pair.Value as Dictionary<string, object>;
+                    foreach (KeyValuePair<string, object> option in mozFirefoxOptions)
+                    {
+                        if (option.Key == FirefoxArgumentsCapability)
+                        {
+                            object[] args = option.Value as object[];
+                            for (int i = 0; i < args.Length; i++)
+                            {
+                                this.firefoxArguments.Add(args[i].ToString());
+                            }
+                        }
+                        else if (option.Key == FirefoxPrefsCapability)
+                        {
+                            this.profilePreferences = option.Value as Dictionary<string, object>;
+                        }
+                        else if (option.Key == FirefoxLogCapability)
+                        {
+                            Dictionary<string, object> logDictionary = option.Value as Dictionary<string, object>;
+                            if (logDictionary.ContainsKey("level"))
+                            {
+                                this.logLevel = (FirefoxDriverLogLevel)Enum.Parse(typeof(FirefoxDriverLogLevel), logDictionary["level"].ToString(), true);
+                            }
+                        }
+                        else if (option.Key == FirefoxBinaryCapability)
+                        {
+                            this.browserBinaryLocation = option.Value.ToString();
+                        }
+                        else if (option.Key == FirefoxProfileCapability)
+                        {
+                            this.profile = FirefoxProfile.FromBase64String(option.Value.ToString());
+                        }
+                        else
+                        {
+                            this.AddAdditionalCapability(option.Key, option.Value);
+                        }
+                    }
+                }
+                else
+                {
+                    this.AddAdditionalCapability(pair.Key, pair.Value, true);
+                }
+            }
         }
     }
 }
