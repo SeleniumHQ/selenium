@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * Represent a pool of {@link LogEntry}.  This class also provides filtering mechanisms based on
@@ -56,15 +58,25 @@ public class LogEntries implements Iterable<LogEntry> {
    * @return all log entries for that level and above
    */
   public List<LogEntry> filter(Level level) {
-    List<LogEntry> toReturn = new ArrayList<>();
+    return filter(entry -> entry.getLevel().intValue() >= level.intValue());
+  }
 
-    for (LogEntry entry : entries) {
-      if (entry.getLevel().intValue() >= level.intValue()) {
-        toReturn.add(entry);
-      }
-    }
+  /**
+   * @param lowestLevelInclusive {@link Level} the lowest level to filter the log entries
+   * @param highestLevelInclusive {@link Level} the highest level to filter the log entries
+   * @return all log entries which levels are equal or higher than {@code lowestLevelInclusive} and
+   * lower or equal than {@code highestLevelInclusive}
+   */
+  public List<LogEntry> filter(Level lowestLevelInclusive, Level highestLevelInclusive) {
+    return filter(entry -> {
+      int logEntryLevel = entry.getLevel().intValue();
+      return logEntryLevel >= lowestLevelInclusive.intValue()
+             && logEntryLevel <= highestLevelInclusive.intValue();
+    });
+  }
 
-    return toReturn;
+  private List<LogEntry> filter(Predicate<LogEntry> logEntryPredicate) {
+    return entries.stream().filter(logEntryPredicate).collect(Collectors.toList());
   }
 
   public Iterator<LogEntry> iterator() {

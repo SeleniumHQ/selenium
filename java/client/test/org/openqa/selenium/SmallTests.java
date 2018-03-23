@@ -25,6 +25,7 @@ import org.openqa.selenium.interactions.PointerInputTest;
 import org.openqa.selenium.io.FileHandlerTest;
 import org.openqa.selenium.io.TemporaryFilesystemTest;
 import org.openqa.selenium.io.ZipTest;
+import org.openqa.selenium.logging.LogEntriesTest;
 import org.openqa.selenium.logging.LoggingTest;
 import org.openqa.selenium.logging.PerformanceLoggingMockTest;
 import org.openqa.selenium.net.LinuxEphemeralPortRangeDetectorTest;
@@ -48,6 +49,7 @@ import org.openqa.selenium.testing.drivers.IgnoreComparatorUnitTest;
     IndividualMouseActionsTest.class,
     KeysTest.class,
     LinuxEphemeralPortRangeDetectorTest.class,
+    LogEntriesTest.class,
     LoggingTest.class,
     NetworkUtilsTest.class,
     OutputTypeTest.class,
