@@ -53,6 +53,7 @@ module Selenium
               WebDriver.logger.debug("     > #{headers.inspect}")
             elsif verb == :post
               payload = '{}'
+              headers['Content-Type']   = CONTENT_TYPE
               headers['Content-Length'] = '2'
             end
 
