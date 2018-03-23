@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.11.1.3
+=========
+ * Fixed detection of obscured elements when top element is not displayed.
+   Fixes issue #5668.
+
 v3.11.1.2
 =========
  * Changed COM variant to JSON serialization in IE. There is an expectation

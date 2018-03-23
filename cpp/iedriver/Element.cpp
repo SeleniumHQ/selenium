@@ -290,6 +290,7 @@ bool Element::IsObscured(LocationInfo* click_location,
     return false;
   }
 
+  long top_most_element_index = -1;
   CComPtr<IHTMLDOMChildrenCollection> elements_hit;
   hr = elements_doc->elementsFromPoint(static_cast<float>(x),
                                        static_cast<float>(y),
@@ -304,26 +305,32 @@ bool Element::IsObscured(LocationInfo* click_location,
       CComPtr<IHTMLElement> element_in_list;
       hr = dispatch_in_list->QueryInterface<IHTMLElement>(&element_in_list);
       bool are_equal = element_in_list.IsEqualObject(this->element_);
-      if (index == 0) {
-        // Return the top-most element in the event we find an obscuring
-        // element in the tree between this element and the top-most one.
-        // Note that since it's the top-most element, it will have no
-        // descendants, so its outerHTML property will contain only itself.
-        CComBSTR outer_html_bstr;
-        hr = element_in_list->get_outerHTML(&outer_html_bstr);
-        std::wstring outer_html = outer_html_bstr;
-        *obscuring_element_description = StringUtilities::ToString(outer_html);
+      if (are_equal) {
+        break;
       }
 
-    
-      VARIANT_BOOL is_child;
-      hr = this->element_->contains(element_in_list, &is_child);
-      VARIANT_BOOL is_ancestor;
-      hr = element_in_list->contains(this->element_, &is_ancestor);
-      is_obscured = is_obscured ||
-                    (is_child != VARIANT_TRUE && is_ancestor != VARIANT_TRUE);
-      if (is_obscured || are_equal) {
-        break;
+      bool is_list_element_displayed;
+      Element element_wrapper(element_in_list,
+                                   this->containing_window_handle_);
+      status_code = element_wrapper.IsDisplayed(false,
+                                                &is_list_element_displayed);
+      if (is_list_element_displayed) {
+        VARIANT_BOOL is_child;
+        hr = this->element_->contains(element_in_list, &is_child);
+        VARIANT_BOOL is_ancestor;
+        hr = element_in_list->contains(this->element_, &is_ancestor);
+        is_obscured = is_child != VARIANT_TRUE && is_ancestor != VARIANT_TRUE;
+        if (is_obscured) {
+          // Return the top-most element in the event we find an obscuring
+          // element in the tree between this element and the top-most one.
+          // Note that since it's the top-most element, it will have no
+          // descendants, so its outerHTML property will contain only itself.
+          CComBSTR outer_html_bstr;
+          hr = element_in_list->get_outerHTML(&outer_html_bstr);
+          std::wstring outer_html = outer_html_bstr;
+          *obscuring_element_description = StringUtilities::ToString(outer_html);
+          break;
+        }
       }
     }
   }
