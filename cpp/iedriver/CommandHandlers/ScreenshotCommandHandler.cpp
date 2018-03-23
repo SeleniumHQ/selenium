@@ -1,4 +1,4 @@
-// Licensed to the Software Freedom Conservancy (SFC) under one
+﻿// Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership. The SFC licenses this file
@@ -126,11 +126,19 @@ void ScreenshotCommandHandler::CaptureWindow(HWND window_handle,
 }
 
 bool ScreenshotCommandHandler::IsSameColour() {
-  COLORREF firstPixelColour = this->image_->GetPixel(0, 0);
+  bool ScreenshotCommandHandler::IsSameColour() {
+  BYTE* byteptr = (BYTE*)this->image_->GetBits();
+  int pitch = this->image_->GetPitch();
+  int bytePerPixel = this->image_->GetBPP() / 8;
+  int firstPixelR = *(byteptr);
+  int firstPixelG = *(byteptr + 1);
+  int firstPixelB = *(byteptr + 2);
 
   for (int i = 0; i < this->image_->GetWidth(); i++) {
     for (int j = 0; j < this->image_->GetHeight(); j++) {
-      if (firstPixelColour != this->image_->GetPixel(i, j)) {
+      if (firstPixelR != *(byteptr + pitch*j + bytePerPixel * i) ||
+            firstPixelG != *(byteptr + pitch*j + bytePerPixel * i + 1) ||
+            firstPixelB != *(byteptr + pitch*j + bytePerPixel * i + 2)) {
         return false;
       }
     }
