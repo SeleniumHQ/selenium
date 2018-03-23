@@ -22,7 +22,10 @@ module Selenium
         class Common
           MAX_REDIRECTS   = 20 # same as chromium/gecko
           CONTENT_TYPE    = 'application/json'.freeze
-          DEFAULT_HEADERS = {'Accept' => CONTENT_TYPE}.freeze
+          DEFAULT_HEADERS = {
+            'Accept' => CONTENT_TYPE,
+            'Content-Type' => "#{CONTENT_TYPE}; charset=UTF-8"
+          }.freeze
 
           attr_accessor :timeout
           attr_writer :server_url
