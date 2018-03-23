@@ -333,6 +333,14 @@ namespace OpenQA.Selenium.IE
             driver.SwitchTo().Window(parentHandle);
         }
 
+        [Test]
+        public void TestInvisibleZOrder()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("elementObscuredByInvisibleElement.html");
+            IWebElement element = driver.FindElement(By.CssSelector("#gLink"));
+            element.Click();
+        }
+
         private long GetScrollTop()
         {
             return (long)((IJavaScriptExecutor)driver).ExecuteScript("return document.body.scrollTop;");
