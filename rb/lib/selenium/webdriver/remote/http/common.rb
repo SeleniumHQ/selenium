@@ -49,7 +49,6 @@ module Selenium
 
             if command_hash
               payload                   = JSON.generate(command_hash)
-              headers['Content-Type']   = "#{CONTENT_TYPE}; charset=utf-8"
               headers['Content-Length'] = payload.bytesize.to_s if [:post, :put].include?(verb)
 
               WebDriver.logger.info("   >>> #{url} | #{payload}")
