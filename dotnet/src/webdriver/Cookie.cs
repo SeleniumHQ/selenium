@@ -222,7 +222,7 @@ namespace OpenQA.Selenium
             }
 
             string name = rawCookie["name"].ToString();
-            string value = rawCookie["value"].ToString();
+            string value = rawCookie["value"] != null ? rawCookie["value"].ToString() : string.Empty;
 
             string path = "/";
             if (rawCookie.ContainsKey("path") && rawCookie["path"] != null)
