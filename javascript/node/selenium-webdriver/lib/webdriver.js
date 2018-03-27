@@ -764,7 +764,7 @@ class WebDriver {
   }
 
   /** @override */
-  wait(condition, timeout = 0, message = undefined) {
+  wait(condition, timeout = 0, message = undefined, interval = undefined) {
     if (typeof timeout !== 'number' || timeout < 0) {
       throw TypeError('timeout must be a number >= 0: ' + timeout);
     }
@@ -835,7 +835,7 @@ class WebDriver {
                   (message ? `${message}\n` : '')
                         + `Wait timed out after ${elapsed}ms`));
           } else {
-            setTimeout(pollCondition, 0);
+            setTimeout(pollCondition, interval || 0);
           }
         }, reject);
       };
