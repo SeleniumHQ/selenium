@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http;
 
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.internal.OkHttpClient;
 
@@ -27,6 +29,13 @@ import java.net.URL;
  * Defines a simple client for making HTTP requests.
  */
 public interface HttpClient {
+
+  String USER_AGENT = String.format(
+      "selenium/%s (java %s)",
+      new BuildInfo().getReleaseLabel(),
+      (Platform.getCurrent().family() == null ?
+          Platform.getCurrent().toString().toLowerCase() :
+          Platform.getCurrent().family().toString().toLowerCase()));
 
   /**
    * Executes the given request, following any redirects if necessary.

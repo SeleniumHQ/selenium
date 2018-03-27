@@ -85,6 +85,10 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       }
     }
 
+    if (request.getHeader("User-Agent") == null) {
+      httpMethod.addHeader("User-Agent", USER_AGENT);
+    }
+
     if (httpMethod instanceof HttpPost) {
       ((HttpPost) httpMethod).setEntity(new ByteArrayEntity(request.getContent()));
     }

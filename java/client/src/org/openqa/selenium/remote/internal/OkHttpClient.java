@@ -81,6 +81,10 @@ public class OkHttpClient implements HttpClient {
       }
     }
 
+    if (request.getHeader("User-Agent") == null) {
+      builder.addHeader("User-Agent", USER_AGENT);
+    }
+
     switch (request.getMethod()) {
       case GET:
         builder.get();
