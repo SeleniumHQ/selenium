@@ -355,6 +355,16 @@ class element_located_selection_state_to_be(object):
         except StaleElementReferenceException:
             return False
 
+class number_of_elements_to_be(object):
+    """ An expectation for the number of elements to be a certain value """
+
+    def __init__(self, locator, num_elements):
+        self.locator = locator
+        self.num_elements = num_elements
+
+    def __call__(self, driver):
+        return len(_find_elements(driver, self.locator)) == self.num_elements
+
 
 class number_of_windows_to_be(object):
     """ An expectation for the number of windows to be a certain value."""
