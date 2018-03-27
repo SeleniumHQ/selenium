@@ -61,7 +61,6 @@ java_library(name = 'core',
      'internal/FindsBy*.java',
      'mobile/*.java',
   ]),
-  manifest_file = ':manifest',
   exported_deps = [
     # This list of dependencies MUST NOT include anything other than code
     # from the selenium project. That means no guava and no gson.
@@ -123,6 +122,7 @@ java_library(name = 'exceptions',
     'WebDriverException.java',
     'internal/BuildInfo.java',
   ],
+  manifest_file = ':manifest',
   deps = [
     ':beta',
   ],
