@@ -22,6 +22,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -35,6 +36,7 @@ namespace OpenQA.Selenium.Remote
         private const string CharsetType = "charset=utf-8";
         private const string ContentTypeHeader = JsonMimeType + ";" + CharsetType;
         private const string RequestAcceptHeader = JsonMimeType + ", " + PngMimeType;
+        private const string UserAgentHeaderTemplate = "selenium/{0} (.net {1})";
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
         private bool enableKeepAlive;
@@ -84,6 +86,8 @@ namespace OpenQA.Selenium.Remote
             {
                 HttpWebRequest.DefaultMaximumErrorResponseLength = -1;
             }
+
+
         }
 
         public event EventHandler<BeforeRemoteHttpRequestEventArgs> BeforeRemoteHttpRequest;
@@ -175,6 +179,8 @@ namespace OpenQA.Selenium.Remote
                 request.PreAuthenticate = true;
             }
 
+            string userAgentString = string.Format(CultureInfo.InvariantCulture, UserAgentHeaderTemplate, ResourceUtilities.AssemblyVersion, ResourceUtilities.PlatformFamily);
+            request.UserAgent = userAgentString;
             request.Method = requestInfo.HttpMethod;
             request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
