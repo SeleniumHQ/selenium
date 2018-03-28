@@ -187,7 +187,9 @@ namespace OpenQA.Selenium.Chrome
                     throw new ArgumentNullException("value", "value must not be null");
                 }
 
-                this.Execute(SetNetworkConditionsCommand, value.ToDictionary());
+                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                dictionary["network_conditions"] = value.ToDictionary();
+                this.Execute(SetNetworkConditionsCommand, dictionary);
             }
         }
 
