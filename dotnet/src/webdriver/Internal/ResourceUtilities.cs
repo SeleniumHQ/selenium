@@ -134,7 +134,7 @@ namespace OpenQA.Selenium.Internal
         {
             string platformName = "unknown";
 #if NETSTANDARD2_0 || NETCOREAPP2_0
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 platformName = "windows";
             }
