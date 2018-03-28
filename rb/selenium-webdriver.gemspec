@@ -1,10 +1,12 @@
 root = File.expand_path(File.dirname(__FILE__))
 raise "cwd must be #{root} when reading gemspec" if root != Dir.pwd
-require 'selenium'
+
+$LOAD_PATH.push(File.expand_path('lib', root))
+require 'selenium/webdriver/version'
 
 Gem::Specification.new do |s|
   s.name = 'selenium-webdriver'
-  s.version = Selenium::VERSION
+  s.version = Selenium::WebDriver::VERSION
 
   s.authors = ['Alex Rodionov', 'Titus Fortner']
   s.email = ['p0deje@gmail.com', 'titusfortner@gmail.com']

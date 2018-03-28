@@ -25,7 +25,7 @@ module Selenium
           DEFAULT_HEADERS = {
             'Accept' => CONTENT_TYPE,
             'Content-Type' => "#{CONTENT_TYPE}; charset=UTF-8",
-            'User-Agent' => "selenium/#{Selenium::VERSION} (ruby #{Platform.os})"
+            'User-Agent' => "selenium/#{WebDriver::VERSION} (ruby #{Platform.os})"
           }.freeze
 
           attr_accessor :timeout

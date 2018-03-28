@@ -15,4 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver'
+module Selenium
+  module WebDriver
+    VERSION = '3.11.0'.freeze
+  end
+end

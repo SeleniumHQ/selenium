@@ -24,6 +24,7 @@ require 'set'
 
 require 'selenium/webdriver/common'
 require 'selenium/webdriver/atoms'
+require 'selenium/webdriver/version'
 
 module Selenium
   module WebDriver
