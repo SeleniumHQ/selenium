@@ -16,3 +16,7 @@
 # under the License.
 
 require 'selenium/webdriver'
+
+module Selenium
+  VERSION = "3.11.0".freeze
+end

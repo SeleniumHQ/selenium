@@ -32,6 +32,20 @@ module Selenium
 
             common.call(:post, 'clear', nil)
           end
+
+          it 'sends a standard User-Agent by default' do
+            common = Common.new
+            common.server_url = URI.parse('http://server')
+
+            expect(common).to receive(:request)
+              .with(:post, URI.parse('http://server/session'),
+                    hash_including(
+                      'User-Agent' =>
+                      a_string_matching(/^selenium\/#{Selenium::VERSION} \(ruby .*\)$/)),
+                    '{}')
+
+            common.call(:post, 'session', nil)
+          end
         end
       end # Http
     end # Remote
