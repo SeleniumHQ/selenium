@@ -181,7 +181,7 @@ class RemoteConnection(object):
         headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json;charset=UTF-8',
-            'User-Agent': 'selenium/%s (python %s)' % (__version__, system)
+            'User-Agent': 'selenium/{} (python {})'.format(__version__, system)
         }
 
         if parsed_url.username:
