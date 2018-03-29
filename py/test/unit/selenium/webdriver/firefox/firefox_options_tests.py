@@ -118,13 +118,13 @@ def test_set_log_level(options):
 
 
 def test_set_headless(options):
-    options.set_headless()
+    options.headless = True
     assert '-headless' in options._arguments
 
 
 def test_unset_headless(options):
     options._arguments = ['-headless']
-    options.set_headless(False)
+    options.headless = False
     assert '-headless' not in options._arguments
 
 

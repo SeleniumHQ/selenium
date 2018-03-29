@@ -112,14 +112,14 @@ def test_get_experimental_options(options):
 
 
 def test_set_headless(options):
-    options.set_headless()
+    options.headless = True
     assert '--headless' in options._arguments
     assert '--disable-gpu' in options._arguments
 
 
 def test_unset_headless(options):
     options._arguments = ['--headless', '--disable-gpu']
-    options.set_headless(False)
+    options.headless = False
     assert '--headless' not in options._arguments
     assert '--disable-gpu' not in options._arguments
 
