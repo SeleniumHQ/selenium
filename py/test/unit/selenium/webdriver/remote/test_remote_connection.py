@@ -21,6 +21,7 @@ try:
 except ImportError:  # above is available in py3+, below is py2.7
     import urlparse as parse
 
+from selenium import __version__
 from selenium.webdriver.remote.remote_connection import (
     RemoteConnection,
 )
@@ -33,7 +34,8 @@ def test_get_remote_connection_headers_defaults():
     assert 'Connection' not in headers.keys()
     assert headers.get('Accept') == 'application/json'
     assert headers.get('Content-Type') == 'application/json;charset=UTF-8'
-    assert headers.get('User-Agent') == 'Python http auth'
+    assert headers.get('User-Agent').startswith("selenium/%s (python " % __version__)
+    assert headers.get('User-Agent').split(' ')[-1] in {'windows)', 'mac)', 'linux)'}
 
 
 def test_get_remote_connection_headers_adds_auth_header_if_pass():
