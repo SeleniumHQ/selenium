@@ -17,6 +17,7 @@
 
 import base64
 import os
+import platform
 import warnings
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -167,7 +168,9 @@ class Options(object):
         Args:
           value: boolean value indicating to set the headless option
         """
-        args = {'--headless', '--disable-gpu'}
+        args = {'--headless'}
+        if platform.system().lower() == 'windows':
+            args.add('--disable-gpu')
         if value is True:
             self._arguments.extend(args)
         else:

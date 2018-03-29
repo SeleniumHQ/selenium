@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import platform
 from os import path
 
 import pytest
@@ -114,14 +114,16 @@ def test_get_experimental_options(options):
 def test_set_headless(options):
     options.headless = True
     assert '--headless' in options._arguments
-    assert '--disable-gpu' in options._arguments
+    if platform.system().lower == 'windows':
+        assert '--disable-gpu' in options._arguments
 
 
 def test_unset_headless(options):
     options._arguments = ['--headless', '--disable-gpu']
     options.headless = False
     assert '--headless' not in options._arguments
-    assert '--disable-gpu' not in options._arguments
+    if platform.system().lower == 'windows':
+        assert '--disable-gpu' not in options._arguments
 
 
 def test_get_headless(options):
