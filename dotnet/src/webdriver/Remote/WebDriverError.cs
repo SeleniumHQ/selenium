@@ -179,6 +179,7 @@ namespace OpenQA.Selenium.Remote
         public const string UnsupportedOperation = "unsupported operation";
 
         private static Dictionary<string, WebDriverResult> resultMap;
+        private static object lockObject = new object();
 
         /// <summary>
         /// Converts a string error to a <see cref="WebDriverResult"/> value.
@@ -187,9 +188,12 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The converted <see cref="WebDriverResult"/> value.</returns>
         public static WebDriverResult ResultFromError(string error)
         {
-            if (resultMap == null)
+            lock(lockObject)
             {
-                InitializeResultMap();
+                if (resultMap == null)
+                {
+                    InitializeResultMap();
+                }
             }
 
             if (!resultMap.ContainsKey(error))
