@@ -1,4 +1,4 @@
-﻿// <copyright file="ICommandExecutor.cs" company="WebDriver Committers">
+// <copyright file="ICommandExecutor.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,12 +16,14 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
     /// Provides a way to send commands to the remote server
     /// </summary>
-    public interface ICommandExecutor
+    public interface ICommandExecutor : IDisposable
     {
         /// <summary>
         /// Gets the repository of objects containin information about commands.
