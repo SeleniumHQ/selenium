@@ -262,12 +262,6 @@ namespace OpenQA.Selenium
         protected DesiredCapabilities GenerateDesiredCapabilities(bool isSpecificationCompliant)
         {
             DesiredCapabilities capabilities = new DesiredCapabilities();
-            ISpecificationCompliant specificationCompliantCapabilities = capabilities as ISpecificationCompliant;
-            if (specificationCompliantCapabilities != null)
-            {
-                specificationCompliantCapabilities.IsSpecificationCompliant = isSpecificationCompliant;
-            }
-
             if (!string.IsNullOrEmpty(this.browserName))
             {
                 capabilities.SetCapability(CapabilityType.BrowserName, this.browserName);
