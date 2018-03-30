@@ -10,12 +10,18 @@ Gem::Specification.new do |s|
 
   s.authors = ['Alex Rodionov', 'Titus Fortner']
   s.email = ['p0deje@gmail.com', 'titusfortner@gmail.com']
-  s.description = 'WebDriver is a tool for writing automated tests of websites.
-It aims to mimic the behaviour of a real user, and as such interacts with the
-HTML of the application.'
+
   s.summary = 'The next generation developer focused tool for automated testing of webapps'
-  s.homepage = 'https://github.com/seleniumhq/selenium'
+  s.description = 'WebDriver is a tool for writing automated tests of websites. ' + \
+                  'It aims to mimic the behaviour of a real user, ' + \
+                  'and as such interacts with the HTML of the application.'
+
   s.license = 'Apache-2.0'
+  s.homepage = 'https://github.com/SeleniumHQ/selenium'
+  s.metadata = {
+    'changelog_uri' => 'https://github.com/SeleniumHQ/selenium/blob/master/rb/CHANGES',
+    'source_code_uri' => 'https://github.com/SeleniumHQ/selenium/tree/master/rb'
+  }
 
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
   s.required_ruby_version = Gem::Requirement.new('>= 2.0')
