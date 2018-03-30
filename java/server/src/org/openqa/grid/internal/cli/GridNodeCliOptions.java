@@ -226,6 +226,9 @@ public class GridNodeCliOptions extends CommonGridCliOptions {
         configuration.hubPort = hubPort;
       }
     }
+    if (configFile != null) {
+      configuration.nodeConfigFile = configFile;
+    }
     if (remoteHost != null) {
       configuration.remoteHost = remoteHost;
     }
