@@ -3,6 +3,8 @@
 ### API Changes
 
 *  Export `lib/input.Origin` from the top level `selenium-webdriver` module.
+*  HTTP requests from this library will now include a User-Agent of the form
+   `selenium/${VERSION} (js ${PLATFORM})`.
 
 
 ## v4.0.0-alpha.1
