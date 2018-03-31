@@ -17,33 +17,24 @@
 
 module Selenium
   module WebDriver
-    module Safari
-      module Bridge
+    module DriverExtensions
+      module HasDebugger
 
-        # https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html
-        COMMANDS = {
-          get_permissions: [:get, '/session/:session_id/apple/permissions'.freeze],
-          set_permissions: [:post, '/session/:session_id/apple/permissions'.freeze],
-          attach_debugger: [:post, '/session/:session_id/apple/attach_debugger'.freeze]
-        }.freeze
-
-        def commands(command)
-          COMMANDS[command] || super
-        end
-
-        def permissions
-          execute(:get_permissions)['permissions']
-        end
-
-        def permissions=(permissions)
-          execute :set_permissions, {}, {permissions: permissions}
-        end
+        #
+        # Attaches debugger to session.
+        #
+        # @example
+        #   driver.attach_debugger
+        #   driver.execute_script('debugger')
+        #
+        # @return [Hash]
+        #
 
         def attach_debugger
-          execute :attach_debugger, {}, {}
+          @bridge.attach_debugger
         end
 
-      end # Bridge
-    end # Safari
+      end # HasDebugger
+    end # DriverExtensions
   end # WebDriver
 end # Selenium
