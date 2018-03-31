@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/safari/bridge'
 require 'selenium/webdriver/safari/driver'
 require 'selenium/webdriver/safari/service'
 
