@@ -198,6 +198,10 @@ class Driver extends webdriver.WebDriver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(options, service = getDefaultService()) {
+    if (!service) {
+      service = getDefaultService();
+    }
+    
     let client = service.start().then(url => new http.HttpClient(url));
     let executor = new http.Executor(client);
 
