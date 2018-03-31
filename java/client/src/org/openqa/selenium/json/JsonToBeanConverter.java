@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.json;
 
+import com.google.common.primitives.Primitives;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -354,46 +355,6 @@ class JsonToBeanConverter {
 
 
   private boolean isPrimitive(Class<?> clazz) {
-    if (clazz.isPrimitive()) {
-      return true;
-    }
-
-    if (Boolean.class.isAssignableFrom(clazz)) {
-      return true;
-    }
-
-    if (Byte.class.isAssignableFrom(clazz)) {
-      return true;
-    }
-
-    if (Character.class.isAssignableFrom(clazz)) {
-      return true;
-    }
-
-    if (Double.class.isAssignableFrom(clazz)) {
-      return true;
-    }
-
-    if (Float.class.isAssignableFrom(clazz)) {
-      return true;
-    }
-
-    if (Integer.class.isAssignableFrom(clazz)) {
-      return true;
-    }
-
-    if (Long.class.isAssignableFrom(clazz)) {
-      return true;
-    }
-
-    if (Short.class.isAssignableFrom(clazz)) {
-      return true;
-    }
-
-    if (Void.class.isAssignableFrom(clazz)) {
-      return true;
-    }
-
-    return false;
+    return clazz.isPrimitive() || Primitives.isWrapperType(clazz);
   }
 }
