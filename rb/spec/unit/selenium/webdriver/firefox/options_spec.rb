@@ -24,7 +24,7 @@ module Selenium
         describe '#initialize' do
           it 'sets passed args' do
             opt = Options.new(args: %w[foo bar])
-            expect(opt.args).to eq(%w[foo bar])
+            expect(opt.args.to_a).to eq(%w[foo bar])
           end
 
           it 'sets passed prefs' do
@@ -85,7 +85,7 @@ module Selenium
         describe '#add_argument' do
           it 'adds a command-line argument' do
             subject.add_argument('foo')
-            expect(subject.args).to include('foo')
+            expect(subject.args.to_a).to eq(['foo'])
           end
         end
 
@@ -116,7 +116,7 @@ module Selenium
                                log_level: :debug)
             json = opts.as_json
 
-            expect(json['moz:firefoxOptions'][:args]).to include('foo')
+            expect(json['moz:firefoxOptions'][:args]).to eq(['foo'])
             expect(json['moz:firefoxOptions'][:binary]).to eq('/foo/bar')
             expect(json['moz:firefoxOptions'][:prefs]).to include(a: 1)
             expect(json['moz:firefoxOptions'][:foo]).to eq(:bar)

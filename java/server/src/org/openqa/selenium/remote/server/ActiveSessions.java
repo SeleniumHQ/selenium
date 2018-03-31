@@ -63,7 +63,7 @@ public class ActiveSessions {
     addListener(new ActiveSessionListener() {
       @Override
       public void onStop(ActiveSession session) {
-        log("Removing session %s", session);
+        LOG.info(String.format("Removing session %s", session));
       }
     });
 
@@ -106,6 +106,10 @@ public class ActiveSessions {
     return allSessions.asMap().values();
   }
 
+  public void cleanUp() {
+    allSessions.cleanUp();
+  }
+
   public void addListener(ActiveSessionListener listener) {
     listeners.add(listener);
   }
@@ -117,13 +121,5 @@ public class ActiveSessions {
   @Override
   public String toString() {
     return allSessions.asMap().toString();
-  }
-
-  private void log(String message, Object... args) {
-    LOG.info(String.format(message, args));
-  }
-
-  private void log(Throwable throwable, String message, Object... args) {
-    LOG.log(Level.WARNING, String.format(message, args), throwable);
   }
 }

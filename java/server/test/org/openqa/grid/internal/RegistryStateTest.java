@@ -27,6 +27,8 @@ import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -65,9 +67,9 @@ public class RegistryStateTest {
 
   @Test
   public void sessionIsRemoved() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
 
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -85,8 +87,8 @@ public class RegistryStateTest {
 
   @Test(timeout = 5000)
   public void basicChecks() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -114,8 +116,8 @@ public class RegistryStateTest {
 
   @Test(timeout = 4000)
   public void sessionIsRemoved2() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -133,8 +135,8 @@ public class RegistryStateTest {
 
   @Test(timeout = 4000)
   public void sessionByExtKey() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -162,8 +164,8 @@ public class RegistryStateTest {
 
   @Test
   public void sessionByExtKeyNull() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
 
     try {
       registry.add(p1);

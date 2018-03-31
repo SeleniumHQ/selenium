@@ -24,11 +24,12 @@ import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
+import org.openqa.grid.internal.cli.StandaloneCliOptions;
 import org.openqa.grid.selenium.node.ChromeMutator;
 import org.openqa.grid.selenium.node.FirefoxMutator;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
-import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
@@ -84,7 +85,7 @@ public class SeleniumServer implements GridNodeServer {
 
   public int getRealPort() {
     if (server.isStarted()) {
-      ServerConnector socket = (ServerConnector)server.getConnectors()[0];
+      ServerConnector socket = (ServerConnector) server.getConnectors()[0];
       return socket.getPort();
     }
     return configuration.port;
@@ -155,17 +156,24 @@ public class SeleniumServer implements GridNodeServer {
     addRcSupport(handler);
     addExtraServlets(handler);
 
-    Constraint constraint = new Constraint();
-    constraint.setName("Disable TRACE");
-    constraint.setAuthenticate(true);
-
-    ConstraintMapping mapping = new ConstraintMapping();
-    mapping.setConstraint(constraint);
-    mapping.setMethod("TRACE");
-    mapping.setPathSpec("/");
-
     ConstraintSecurityHandler securityHandler = (ConstraintSecurityHandler) handler.getSecurityHandler();
-    securityHandler.addConstraintMapping(mapping);
+
+    Constraint disableTrace = new Constraint();
+    disableTrace.setName("Disable TRACE");
+    disableTrace.setAuthenticate(true);
+    ConstraintMapping disableTraceMapping = new ConstraintMapping();
+    disableTraceMapping.setConstraint(disableTrace);
+    disableTraceMapping.setMethod("TRACE");
+    disableTraceMapping.setPathSpec("/");
+    securityHandler.addConstraintMapping(disableTraceMapping);
+
+    Constraint enableOther = new Constraint();
+    enableOther.setName("Enable everything but TRACE");
+    ConstraintMapping enableOtherMapping = new ConstraintMapping();
+    enableOtherMapping.setConstraint(enableOther);
+    enableOtherMapping.setMethodOmissions(new String[] {"TRACE"});
+    enableOtherMapping.setPathSpec("/");
+    securityHandler.addConstraintMapping(enableOtherMapping);
 
     server.setHandler(handler);
 
@@ -210,7 +218,7 @@ public class SeleniumServer implements GridNodeServer {
             builder.addCapabilitiesMutator(new ChromeMutator(caps));
             builder.addCapabilitiesMutator(new FirefoxMutator(caps));
             builder.addCapabilitiesMutator(c -> new ImmutableCapabilities(c.asMap().entrySet().stream()
-                .filter(e -> ! e.getKey().startsWith("se:"))
+                .filter(e -> ! e.getKey().startsWith("server:"))
                 .filter(e -> e.getValue() != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
           }
@@ -282,19 +290,16 @@ public class SeleniumServer implements GridNodeServer {
   }
 
   public static void main(String[] argv) {
-    StandaloneConfiguration configuration = new StandaloneConfiguration();
-    JCommander jCommander = JCommander.newBuilder().addObject(configuration).build();
-    jCommander.setProgramName("selenium-3-server");
-    jCommander.parse(argv);
+    StandaloneCliOptions options = new StandaloneCliOptions().parse(argv);
 
-    if (configuration.help) {
+    if (options.help) {
       StringBuilder message = new StringBuilder();
-      jCommander.usage(message);
+      new JCommander(options).usage(message);
       System.err.println(message.toString());
       return;
     }
 
-    SeleniumServer server = new SeleniumServer(configuration);
+    SeleniumServer server = new SeleniumServer(options.toConfiguration());
     server.boot();
   }
 
@@ -302,8 +307,7 @@ public class SeleniumServer implements GridNodeServer {
     if (msg != null) {
       System.out.println(msg);
     }
-    StandaloneConfiguration args = new StandaloneConfiguration();
-    JCommander jCommander = new JCommander(args);
+    JCommander jCommander = new JCommander(new StandaloneCliOptions());
     jCommander.usage();
   }
 }

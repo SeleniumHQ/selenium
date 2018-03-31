@@ -11,6 +11,9 @@ namespace OpenQA.Selenium.Environment
     class TestEnvironment
     {
         [JsonProperty]
+        public string DriverServiceLocation { get; set; }
+
+        [JsonProperty]
         public string ActiveDriverConfig { get; set; }
 
         [JsonProperty]

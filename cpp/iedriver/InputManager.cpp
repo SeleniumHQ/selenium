@@ -17,22 +17,31 @@
 #include "InputManager.h"
 
 #include <ctime>
+#include <codecvt>
+#include <locale>
 
 #include "errorcodes.h"
 #include "json.h"
 #include "keycodes.h"
 #include "logging.h"
 
+#include "ActionSimulators/JavaScriptActionSimulator.h"
+#include "ActionSimulators/SendInputActionSimulator.h"
+#include "ActionSimulators/SendMessageActionSimulator.h"
+#include "DocumentHost.h"
 #include "Element.h"
-#include "ElementRepository.h"
 #include "HookProcessor.h"
-#include "InteractionsManager.h"
+#include "IElementManager.h"
 #include "Script.h"
 #include "StringUtilities.h"
 #include "Generated/atoms.h"
 
 #define USER_INTERACTION_MUTEX_NAME L"WebDriverUserInteractionMutex"
 #define WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT 100
+
+#define MODIFIER_KEY_SHIFT 1
+#define MODIFIER_KEY_CTRL 2
+#define MODIFIER_KEY_ALT 4
 
 namespace webdriver {
 
@@ -42,42 +51,46 @@ InputManager::InputManager() {
   this->use_persistent_hover_ = false;
   this->require_window_focus_ = true;
   this->scroll_behavior_ = TOP;
-  this->is_alt_pressed_ = false;
-  this->is_control_pressed_ = false;
-  this->is_shift_pressed_ = false;
-  this->is_left_button_pressed_ = false;
-  this->is_right_button_pressed_ = false;
-  this->last_known_mouse_x_ = 0;
-  this->last_known_mouse_y_ = 0;
-  this->last_click_time_ = clock();
+  this->current_input_state_.is_alt_pressed = false;
+  this->current_input_state_.is_control_pressed = false;
+  this->current_input_state_.is_shift_pressed = false;
+  this->current_input_state_.is_meta_pressed = false;
+  this->current_input_state_.is_left_button_pressed = false;
+  this->current_input_state_.is_right_button_pressed = false;
+  this->current_input_state_.mouse_x = 0;
+  this->current_input_state_.mouse_y = 0;
+  this->current_input_state_.last_click_time = clock();
 
-  this->keyboard_state_buffer_.resize(256);
-  ::ZeroMemory(&this->keyboard_state_buffer_[0], this->keyboard_state_buffer_.size());
-
-  CComVariant keyboard_state;
-  keyboard_state.vt = VT_NULL;
-  this->keyboard_state_ = keyboard_state;
-
-  CComVariant mouse_state;
-  mouse_state.vt = VT_NULL;
-  this->mouse_state_ = mouse_state;
-
-  this->interactions_manager_ = new InteractionsManager();
+  this->action_simulator_ = NULL;
 }
 
 InputManager::~InputManager(void) {
-  if (this->interactions_manager_ != NULL) {
-    delete this->interactions_manager_;
+  if (this->action_simulator_ != NULL) {
+    delete this->action_simulator_;
   }
 }
 
-void InputManager::Initialize(ElementRepository* element_map) {
+void InputManager::Initialize(InputManagerSettings settings) {
   LOG(TRACE) << "Entering InputManager::Initialize";
-  this->element_map_ = element_map;
+  this->element_map_ = settings.element_repository;
+  this->scroll_behavior_ = settings.scroll_behavior;
+  this->use_native_events_ = settings.use_native_events;
+  this->use_persistent_hover_ = settings.enable_persistent_hover;
+  this->require_window_focus_ = settings.require_window_focus;
+  if (settings.use_native_events) {
+    if (settings.require_window_focus) {
+      this->action_simulator_ = new SendInputActionSimulator();
+    } else {
+      this->action_simulator_ = new SendMessageActionSimulator();
+    }
+  } else {
+    this->action_simulator_ = new JavaScriptActionSimulator();
+  }
   this->SetupKeyDescriptions();
 }
 
-int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json::Value& sequences) {
+int InputManager::PerformInputSequence(BrowserHandle browser_wrapper,
+                                       const Json::Value& sequences) {
   LOG(TRACE) << "Entering InputManager::PerformInputSequence";
   if (!sequences.isArray()) {
     return EUNHANDLEDERROR;
@@ -86,33 +99,63 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
   int status_code = WD_SUCCESS;
   // Use a single mutex, so that all instances synchronize on the same object 
   // for focus purposes.
-  HANDLE mutex_handle = ::CreateMutex(NULL, FALSE, USER_INTERACTION_MUTEX_NAME);
-  if (mutex_handle != NULL) {
-    // Wait for up to the timeout (currently 30 seconds) for other sessions
-    // to completely initialize.
-    DWORD mutex_wait_status = ::WaitForSingleObject(mutex_handle, 30000);
-    if (mutex_wait_status == WAIT_ABANDONED) {
-      LOG(WARN) << "Acquired mutex, but received wait abandoned status. This "
-                << "could mean the process previously owning the mutex was "
-                << "unexpectedly terminated.";
-    } else if (mutex_wait_status == WAIT_TIMEOUT) {
-      LOG(WARN) << "Could not acquire mutex within the timeout. Multiple "
-                << "instances may have incorrect synchronization for interactions";
-    } else if (mutex_wait_status == WAIT_OBJECT_0) {
-      LOG(DEBUG) << "Mutex acquired for user interaction.";
-    }
-  } else {
-    LOG(WARN) << "Could not create user interaction mutex. Multiple " 
-              << "instances of IE may behave unpredictably.";
+  HANDLE mutex_handle = this->AcquireMutex();
+
+  Json::Value ticks(Json::arrayValue);
+  status_code = this->GetTicks(sequences, &ticks);
+  if (status_code != WD_SUCCESS) {
+    this->ReleaseMutex(mutex_handle);
+    return status_code;
   }
 
-  std::vector<int> tick_durations;
-  Json::Value ticks(Json::arrayValue);
   this->inputs_.clear();
+  this->current_input_state_.last_click_time = 0;
+  InputState current_input_state = this->CloneCurrentInputState();
+  for (size_t i = 0; i < ticks.size(); ++i) {
+    Json::UInt tick_index = static_cast<Json::UInt>(i);
+    Json::Value tick = ticks[tick_index];
+    for (size_t j = 0; j < tick.size(); ++j) {
+      Json::UInt action_index = static_cast<Json::UInt>(j);
+      Json::Value action = tick[action_index];
+      std::string action_subtype = action["type"].asString();
+      if (action_subtype == "pointerMove") {
+        status_code = this->PointerMoveTo(browser_wrapper, action, &current_input_state);
+      } else if (action_subtype == "pointerDown") {
+        status_code = this->PointerDown(browser_wrapper, action, &current_input_state);
+      } else if (action_subtype == "pointerUp") {
+        status_code = this->PointerUp(browser_wrapper, action, &current_input_state);
+      } else if (action_subtype == "keyDown") {
+        status_code = this->KeyDown(browser_wrapper, action, &current_input_state);
+      } else if (action_subtype == "keyUp") {
+        status_code = this->KeyUp(browser_wrapper, action, &current_input_state);
+      } else if (action_subtype == "pause") {
+        status_code = this->Pause(browser_wrapper, action);
+      }
+
+      if (status_code != WD_SUCCESS) {
+        this->ReleaseMutex(mutex_handle);
+        return status_code;
+      }
+    }
+  }
+
+  // If there are inputs in the array, then we've queued up input actions
+  // to be played back. So play them back.
+  if (this->inputs_.size() > 0) {
+    LOG(DEBUG) << "Processing a total of " << this->inputs_.size() << " input events";
+    this->action_simulator_->SimulateActions(browser_wrapper,
+                                             this->inputs_,
+                                             &this->current_input_state_);
+  }
+
+  ::Sleep(50);
+
+  this->ReleaseMutex(mutex_handle);
+  return status_code;
+}
+
+int InputManager::GetTicks(const Json::Value& sequences, Json::Value* ticks) {
   for (size_t i = 0; i < sequences.size(); ++i) {
-    // N.B. If require_window_focus_ is true, all the following methods do is
-    // fill the list of INPUT structs with the appropriate SendInput data
-    // structures. Otherwise, the action gets performed within that method.
     Json::UInt index = static_cast<Json::UInt>(i);
     Json::Value device_sequence = sequences[index];
     if (!device_sequence.isMember("type") && !device_sequence["type"].isString()) {
@@ -137,246 +180,72 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     // TODO: Add guards against bad action structure. Assume correct input for now.
     Json::Value actions = device_sequence["actions"];
     for (size_t j = 0; j < actions.size(); ++j) {
-      if (ticks.size() <= j) {
+      if (ticks->size() <= j) {
         Json::Value tick(Json::arrayValue);
-        ticks.append(tick);
-        tick_durations.push_back(static_cast<int>(j));
+        ticks->append(tick);
       }
       Json::UInt action_index = static_cast<Json::UInt>(j);
       Json::Value action = actions[action_index];
-      if (action.isMember("duration") && action["duration"].isInt() && action["duration"].asInt() >= tick_durations[j]) {
-        tick_durations[j] = action["duration"].asInt();
+      if (device_type == "key" &&
+          action.isMember("type") &&
+          action["type"].isString() &&
+          action["type"].asString() == "pause") {
+        // HACK! Ignore the duration of pause events in keyboard action
+        // sequences. This is deliberately in violation of the W3C spec.
+        // This allows us to better synchronize mixed keyboard and mouse
+        // action sequences.
+        action["duration"] = 0;
       }
-      ticks[action_index].append(action);
+      (*ticks)[action_index].append(action);
     }
   }
-  int tick_duration = 0;
-  InputState current_input_state = this->CloneCurrentInputState();
-  for (size_t i = 0; i < ticks.size(); ++i) {
-    Json::UInt tick_index = static_cast<Json::UInt>(i);
-    Json::Value tick = ticks[tick_index];
-    for (size_t j = 0; j < tick.size(); ++j) {
-      Json::UInt action_index = static_cast<Json::UInt>(j);
-      Json::Value action = tick[action_index];
-      std::string action_subtype = action["type"].asString();
-      if (action_subtype == "pointerMove") {
-        status_code = this->PointerMoveTo(browser_wrapper, action, &current_input_state);
-      } else if (action_subtype == "pointerDown") {
-        status_code = this->PointerDown(browser_wrapper, action, &current_input_state);
-      } else if (action_subtype == "pointerUp") {
-        status_code = this->PointerUp(browser_wrapper, action, &current_input_state);
-      } else if (action_subtype == "keyDown") {
-        status_code = this->KeyDown(browser_wrapper, action, &current_input_state);
-      } else if (action_subtype == "keyUp") {
-        status_code = this->KeyUp(browser_wrapper, action, &current_input_state);
-      } else if (action_subtype == "pause") {
-        status_code = this->Pause(browser_wrapper, action);
-      }
+  return WD_SUCCESS;
+}
 
-      if (status_code != WD_SUCCESS) {
-        return status_code;
-      }
+HANDLE InputManager::AcquireMutex() {
+  HANDLE mutex_handle = ::CreateMutex(NULL, FALSE, USER_INTERACTION_MUTEX_NAME);
+  if (mutex_handle != NULL) {
+    // Wait for up to the timeout (currently 30 seconds) for the mutex to be
+    // released.
+    DWORD mutex_wait_status = ::WaitForSingleObject(mutex_handle, 30000);
+    if (mutex_wait_status == WAIT_ABANDONED) {
+      LOG(WARN) << "Acquired mutex, but received wait abandoned status. This "
+        << "could mean the process previously owning the mutex was "
+        << "unexpectedly terminated.";
+    }
+    else if (mutex_wait_status == WAIT_TIMEOUT) {
+      LOG(WARN) << "Could not acquire mutex within the timeout. Multiple "
+        << "instances may have incorrect synchronization for interactions";
+    }
+    else if (mutex_wait_status == WAIT_OBJECT_0) {
+      LOG(DEBUG) << "Mutex acquired for user interaction.";
     }
   }
-
-  // If there are inputs in the array, then we've queued up input actions
-  // to be played back. So play them back.
-  if (this->inputs_.size() > 0) {
-    LOG(DEBUG) << "Processing a total of " << this->inputs_.size() << " input events";
-    if (this->require_window_focus_) {
-      this->PerformInputWithSendInput(browser_wrapper);
-    } else {
-      this->PerformInputWithSendMessage(browser_wrapper);
-    }
+  else {
+    LOG(WARN) << "Could not create user interaction mutex. Multiple "
+      << "instances of IE may behave unpredictably.";
   }
+  return mutex_handle;
+}
 
-  ::Sleep(50);
-
-  // Must always release the mutex.
+void InputManager::ReleaseMutex(HANDLE mutex_handle) {
   if (mutex_handle != NULL) {
     ::ReleaseMutex(mutex_handle);
     ::CloseHandle(mutex_handle);
   }
-  return status_code;
 }
 
-int InputManager::PerformInputWithSendInput(BrowserHandle browser_wrapper) {
-  LOG(TRACE) << "Entering InputManager::PerformInputWithSendInput";
-  // SendInput simulates mouse and keyboard events at a very low level, so
-  // low that there is no guarantee that IE will have processed the resulting
-  // windows messages before this method returns. Therefore, we'll install
-  // keyboard and mouse hooks that will count the number of Windows messages
-  // processed by any application the system. There is a potential for this
-  // code to be wrong if the user is interacting with the system via mouse and
-  // keyboard during this process. Since this code path should only be hit if
-  // the requireWindowFocus capability is turned on, and since SendInput is 
-  // documented to not allow other input events to be interspersed into the
-  // input queue, the risk is hopefully minimized.
-  HookProcessor keyboard_hook;
-  keyboard_hook.Initialize("KeyboardHookProc", WH_KEYBOARD);
-
-  HookProcessor mouse_hook;
-  mouse_hook.Initialize("MouseHookProc", WH_MOUSE);
-
-  HWND window_handle = browser_wrapper->GetContentWindowHandle();
-  // Loop through all of the input items, and find all of the sleeps.
-  std::vector<size_t> sleep_indexes;
-  for (size_t i = 0; i < this->inputs_.size(); ++i) {
-    INPUT current_input = this->inputs_[i];
-    this->UpdateInputState(current_input);
-    if (current_input.type == INPUT_HARDWARE && current_input.hi.uMsg > 0) {
-      sleep_indexes.push_back(i);
-    } else if (current_input.type == INPUT_MOUSE) {
-      // We use the INPUT structure to store absolute pixel
-      // coordinates for the SendMessage case, but SendInput
-      // requires normalized coordinates.
-      int normalized_x = 0, normalized_y = 0;
-      this->GetNormalizedCoordinates(window_handle,
-                                     current_input.mi.dx,
-                                     current_input.mi.dy,
-                                     &normalized_x,
-                                     &normalized_y);
-      current_input.mi.dx = normalized_x;
-      current_input.mi.dy = normalized_y;
-      this->inputs_[i] = current_input;
-    }
-  }
-
-  // Send all inputs between sleeps, sleeping in between.
-  size_t next_input_index = 0;
-  std::vector<size_t>::const_iterator it = sleep_indexes.begin();
-  for (; it != sleep_indexes.end(); ++it) {
-    size_t sleep_input_index = *it;
-    INPUT sleep_input = this->inputs_[sleep_input_index];
-    size_t number_of_inputs = sleep_input_index - next_input_index;
-    if (number_of_inputs > 0) {
-      this->SetFocusToBrowser(browser_wrapper);
-      HookProcessor::ResetEventCount();
-      int sent_inputs = ::SendInput(static_cast<int>(number_of_inputs), &this->inputs_[next_input_index], sizeof(INPUT));
-      this->WaitForInputEventProcessing(sent_inputs);
-    }
-    LOG(DEBUG) << "Processing pause event";
-    ::Sleep(this->inputs_[sleep_input_index].hi.uMsg);
-    next_input_index = sleep_input_index + 1;
-  }
-  // Now send any inputs after the last sleep, if any.
-  size_t last_inputs = this->inputs_.size() - next_input_index;
-  if (last_inputs > 0) {
-    this->SetFocusToBrowser(browser_wrapper);
-    HookProcessor::ResetEventCount();
-    int sent_inputs = ::SendInput(static_cast<int>(last_inputs), &this->inputs_[next_input_index], sizeof(INPUT));
-    this->WaitForInputEventProcessing(sent_inputs);
-  }
-
-  // We're done here, so uninstall the hooks, and reset the buffer size.
-  keyboard_hook.Dispose();
-  mouse_hook.Dispose();
-
-  return WD_SUCCESS;
-}
-
-int InputManager::PerformInputWithSendMessage(BrowserHandle browser_wrapper) {
-  LOG(TRACE) << "Entering InputManager::PerformInputWithSendMessage";
-  HookProcessor message_processor;
-  message_processor.Initialize("GetMessageProc", WH_GETMESSAGE);
-
-  HWND window_handle = browser_wrapper->GetContentWindowHandle();
-  DWORD browser_thread_id = ::GetWindowThreadProcessId(window_handle, NULL);
-  DWORD current_thread_id = ::GetCurrentThreadId();
-  BOOL attached = ::AttachThreadInput(current_thread_id, browser_thread_id, TRUE);
-
-  HKL layout = GetKeyboardLayout(browser_thread_id);
-
-  int double_click_time = ::GetDoubleClickTime();
-
-  std::vector<INPUT>::const_iterator input_iterator = this->inputs_.begin();
-  for (; input_iterator != this->inputs_.end(); ++input_iterator) {
-    INPUT current_input = *input_iterator;
-    if (current_input.type == INPUT_MOUSE) {
-      if (current_input.mi.dwFlags & MOUSEEVENTF_MOVE) {
-        this->interactions_manager_->SendMouseMoveMessage(window_handle, this->is_shift_pressed_, this->is_control_pressed_, this->is_left_button_pressed_, this->is_right_button_pressed_, current_input.mi.dx, current_input.mi.dy);
-      } else if (current_input.mi.dwFlags & MOUSEEVENTF_LEFTDOWN) {
-        bool is_double_click = false;
-        int time_since_last_click = static_cast<int>(static_cast<float>(clock() - this->last_click_time_) / CLOCKS_PER_SEC * 1000);
-        if (!this->is_left_button_pressed_ &&
-            this->last_known_mouse_x_ == current_input.mi.dx &&
-            this->last_known_mouse_y_ == current_input.mi.dy &&
-            time_since_last_click < double_click_time) {
-          is_double_click = true;
-        }
-        this->interactions_manager_->SendMouseDownMessage(window_handle, this->is_shift_pressed_, this->is_control_pressed_, this->is_left_button_pressed_, this->is_right_button_pressed_, WD_CLIENT_LEFT_MOUSE_BUTTON, current_input.mi.dx, current_input.mi.dy, is_double_click);
-      } else if (current_input.mi.dwFlags & MOUSEEVENTF_LEFTUP) {
-        this->interactions_manager_->SendMouseUpMessage(window_handle, this->is_shift_pressed_, this->is_control_pressed_, this->is_left_button_pressed_, this->is_right_button_pressed_, WD_CLIENT_LEFT_MOUSE_BUTTON, current_input.mi.dx, current_input.mi.dy);
-      } else if (current_input.mi.dwFlags & MOUSEEVENTF_RIGHTDOWN) {
-        bool is_double_click = false;
-        int time_since_last_click = static_cast<int>(static_cast<float>(clock() - this->last_click_time_) / CLOCKS_PER_SEC * 1000);
-        if (!this->is_right_button_pressed_ &&
-            this->last_known_mouse_x_ == current_input.mi.dx &&
-            this->last_known_mouse_y_ == current_input.mi.dy &&
-            time_since_last_click < double_click_time) {
-          is_double_click = true;
-        }
-        this->interactions_manager_->SendMouseDownMessage(window_handle, this->is_shift_pressed_, this->is_control_pressed_, this->is_left_button_pressed_, this->is_right_button_pressed_, WD_CLIENT_RIGHT_MOUSE_BUTTON, current_input.mi.dx, current_input.mi.dy, is_double_click);
-      } else if (current_input.mi.dwFlags & MOUSEEVENTF_RIGHTUP) {
-        this->interactions_manager_->SendMouseUpMessage(window_handle, this->is_shift_pressed_, this->is_control_pressed_, this->is_left_button_pressed_, this->is_right_button_pressed_, WD_CLIENT_RIGHT_MOUSE_BUTTON, current_input.mi.dx, current_input.mi.dy);
-      }
-    } else if (current_input.type == INPUT_KEYBOARD) {
-      bool unicode = (current_input.ki.dwFlags & KEYEVENTF_UNICODE) != 0;
-      bool extended = (current_input.ki.dwFlags & KEYEVENTF_EXTENDEDKEY) != 0;
-      bool shifted = (current_input.ki.dwFlags & KEYEVENTF_SCANCODE) != 0;
-      if (current_input.ki.dwFlags & KEYEVENTF_KEYUP) {
-        this->interactions_manager_->SendKeyUpMessage(window_handle, this->is_shift_pressed_, this->is_control_pressed_, this->is_alt_pressed_, current_input.ki.wVk, current_input.ki.wScan, extended, unicode, shifted, layout, &this->keyboard_state_buffer_);
-      } else {
-        this->interactions_manager_->SendKeyDownMessage(window_handle, this->is_shift_pressed_, this->is_control_pressed_, this->is_alt_pressed_, current_input.ki.wVk, current_input.ki.wScan, extended, unicode, shifted, layout, &this->keyboard_state_buffer_);
-      }
-    } else if (current_input.type == INPUT_HARDWARE) {
-      ::Sleep(current_input.hi.uMsg);
-    }
-    this->UpdateInputState(current_input);
-  }
-  attached = ::AttachThreadInput(current_thread_id, browser_thread_id, FALSE);
-  message_processor.Dispose();
-  return WD_SUCCESS;
-}
-
-void InputManager::UpdateInputState(INPUT current_input) {
-  if (current_input.type == INPUT_MOUSE) {
-    if (current_input.mi.dwFlags & MOUSEEVENTF_MOVE) {
-      this->last_known_mouse_x_ = current_input.mi.dx;
-      this->last_known_mouse_y_ = current_input.mi.dy;
-    } else if (current_input.mi.dwFlags & MOUSEEVENTF_LEFTDOWN) {
-      this->is_left_button_pressed_ = true;
-    } else if (current_input.mi.dwFlags & MOUSEEVENTF_LEFTUP) {
-      if (this->is_left_button_pressed_ && 
-          this->last_known_mouse_x_ == current_input.mi.dx &&
-          this->last_known_mouse_y_ == current_input.mi.dy) {
-        this->last_click_time_ = clock();
-      }
-      this->is_left_button_pressed_ = false;
-    } else if (current_input.mi.dwFlags & MOUSEEVENTF_RIGHTDOWN) {
-      this->is_right_button_pressed_ = true;
-    } else if (current_input.mi.dwFlags & MOUSEEVENTF_RIGHTUP) {
-      this->is_right_button_pressed_ = false;
-    }
-  } else if (current_input.type == INPUT_KEYBOARD) {
-    if (current_input.ki.dwFlags & KEYEVENTF_KEYUP) {
-      if (current_input.ki.wVk == VK_SHIFT) {
-        this->is_shift_pressed_ = false;
-      } else if (current_input.ki.wVk == VK_CONTROL) {
-        this->is_control_pressed_ = false;
-      } else if (current_input.ki.wVk == VK_MENU) {
-        this->is_alt_pressed_ = false;
-      }
-    } else {
-      if (current_input.ki.wVk == VK_SHIFT) {
-        this->is_shift_pressed_ = true;
-      } else if (current_input.ki.wVk == VK_CONTROL) {
-        this->is_control_pressed_ = true;
-      } else if (current_input.ki.wVk == VK_MENU) {
-        this->is_alt_pressed_ = true;
-      }
-    }
-  }
+InputState InputManager::CloneCurrentInputState(void) {
+  InputState current_input_state;
+  current_input_state.is_alt_pressed = this->current_input_state_.is_alt_pressed;
+  current_input_state.is_control_pressed = this->current_input_state_.is_control_pressed;
+  current_input_state.is_shift_pressed = this->current_input_state_.is_shift_pressed;
+  current_input_state.is_meta_pressed = this->current_input_state_.is_meta_pressed;
+  current_input_state.is_left_button_pressed = this->current_input_state_.is_left_button_pressed;
+  current_input_state.is_right_button_pressed = this->current_input_state_.is_right_button_pressed;
+  current_input_state.mouse_x = this->current_input_state_.mouse_x;
+  current_input_state.mouse_y = this->current_input_state_.mouse_y;
+  return current_input_state;
 }
 
 void InputManager::Reset(BrowserHandle browser_wrapper) {
@@ -391,8 +260,9 @@ void InputManager::Reset(BrowserHandle browser_wrapper) {
   mouse_input_source["parameters"] = mouse_parameters;
   mouse_input_source["actions"] = Json::Value(Json::arrayValue);
 
-  if (this->is_left_button_pressed_ || this->is_right_button_pressed_) {
-    if (this->is_left_button_pressed_) {
+  if (this->current_input_state_.is_left_button_pressed ||
+      this->current_input_state_.is_right_button_pressed) {
+    if (this->current_input_state_.is_left_button_pressed) {
       LOG(DEBUG) << "Releasing left mouse button";
       Json::Value left_button_up;
       left_button_up["type"] = "pointerUp";
@@ -400,7 +270,7 @@ void InputManager::Reset(BrowserHandle browser_wrapper) {
       mouse_input_source["actions"].append(left_button_up);
     }
 
-    if (this->is_right_button_pressed_) {
+    if (this->current_input_state_.is_right_button_pressed) {
       LOG(DEBUG) << "Releasing right mouse button";
       Json::Value right_button_up;
       right_button_up["type"] = "pointerUp";
@@ -437,23 +307,11 @@ void InputManager::Reset(BrowserHandle browser_wrapper) {
     this->pressed_keys_.clear();
   }
 
-  if (this->last_known_mouse_x_ > 0 || this->last_known_mouse_y_ > 0) {
+  if (this->current_input_state_.mouse_x > 0 ||
+      this->current_input_state_.mouse_y > 0) {
     LOG(DEBUG) << "Resetting mouse position";
-    this->last_known_mouse_x_ = 0;
-    this->last_known_mouse_y_ = 0;
-    //for (size_t i = 0; i < keyboard_input_source["actions"].size(); ++i) {
-    //  Json::Value pause_action;
-    //  pause_action["type"] = "pause";
-    //  pause_action["duration"] = 250;
-    //  mouse_input_source["actions"].append(pause_action);
-    //}
-
-    //Json::Value reset_position;
-    //reset_position["type"] = "pointerMove";
-    //reset_position["origin"] = "viewport";
-    //reset_position["x"] = 0;
-    //reset_position["y"] = 0;
-    //mouse_input_source["actions"].append(reset_position);
+    this->current_input_state_.mouse_x = 0;
+    this->current_input_state_.mouse_y = 0;
   }
 
   if (mouse_input_source["actions"].size() > 0) {
@@ -469,67 +327,9 @@ void InputManager::Reset(BrowserHandle browser_wrapper) {
   }
 }
 
-InputState InputManager::CloneCurrentInputState(void) {
-  InputState current_input_state;
-  current_input_state.is_alt_pressed = this->is_alt_pressed_;
-  current_input_state.is_control_pressed = this->is_control_pressed_;
-  current_input_state.is_shift_pressed = this->is_shift_pressed_;
-  current_input_state.is_left_button_pressed = this->is_left_button_pressed_;
-  current_input_state.is_right_button_pressed = this->is_right_button_pressed_;
-  current_input_state.mouse_x = this->last_known_mouse_x_;
-  current_input_state.mouse_y = this->last_known_mouse_y_;
-  return current_input_state;
-}
-
-bool InputManager::WaitForInputEventProcessing(int input_count) {
-  LOG(TRACE) << "Entering InputManager::WaitForInputEventProcessing";
-  // Adaptive wait. The total wait time is the number of input messages
-  // expected by the hook multiplied by a static wait time for each
-  // message to be processed (currently 100 milliseconds). We should
-  // exit out of this loop once the number of processed windows keyboard
-  // or mouse messages processed by the system exceeds the number of
-  // input events created by the call to SendInput.
-  int total_timeout_in_milliseconds = input_count * WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT;
-  clock_t end = clock() + static_cast<clock_t>(((total_timeout_in_milliseconds / 1000.0) * CLOCKS_PER_SEC));
-
-  int processed_event_count = HookProcessor::GetEventCount();
-  bool inputs_processed = processed_event_count >= input_count;
-  while (!inputs_processed && clock() < end) {
-    // Sleep a short amount of time to prevent starving the processor.
-    ::Sleep(25);
-    processed_event_count = HookProcessor::GetEventCount();
-    inputs_processed = processed_event_count >= input_count;
-  }
-  LOG(DEBUG) << "Requested waiting for " << input_count << " events, processed "
-             << processed_event_count << " events";
-  return inputs_processed;
-}
-
-bool InputManager::SetFocusToBrowser(BrowserHandle browser_wrapper) {
-  LOG(TRACE) << "Entering InputManager::SetFocusToBrowser";
-  UINT_PTR lock_timeout = 0;
-  DWORD process_id = 0;
-  DWORD thread_id = ::GetWindowThreadProcessId(browser_wrapper->GetContentWindowHandle(), &process_id);
-  DWORD current_thread_id = ::GetCurrentThreadId();
-  DWORD current_process_id = ::GetCurrentProcessId();
-  HWND current_foreground_window = ::GetForegroundWindow();
-  if (current_foreground_window != browser_wrapper->GetTopLevelWindowHandle()) {
-    if (current_thread_id != thread_id) {
-      ::AttachThreadInput(current_thread_id, thread_id, TRUE);
-      ::SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT, 0, &lock_timeout, 0);
-      ::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, 0, SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
-      ::AllowSetForegroundWindow(current_process_id);
-    }
-    ::SetForegroundWindow(browser_wrapper->GetTopLevelWindowHandle());
-    if (current_thread_id != thread_id) {
-      ::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, reinterpret_cast<void*>(lock_timeout), SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
-      ::AttachThreadInput(current_thread_id, thread_id, FALSE);
-    }
-  }
-  return ::GetForegroundWindow() == browser_wrapper->GetTopLevelWindowHandle();
-}
-
-int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value& move_to_action, InputState* input_state) {
+int InputManager::PointerMoveTo(BrowserHandle browser_wrapper,
+                                const Json::Value& move_to_action,
+                                InputState* input_state) {
   LOG(TRACE) << "Entering InputManager::PointerMoveTo";
   int status_code = WD_SUCCESS;
   bool element_specified = false;
@@ -538,8 +338,8 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
     Json::Value origin_value = move_to_action["origin"];
     if (origin_value.isString()) {
       origin = origin_value.asString();
-    } else if (origin_value.isObject() && origin_value.isMember("element-6066-11e4-a52e-4f735466cecf")) {
-      origin = origin_value["element-6066-11e4-a52e-4f735466cecf"].asString();
+    } else if (origin_value.isObject() && origin_value.isMember(JSON_ELEMENT_PROPERTY_NAME)) {
+      origin = origin_value[JSON_ELEMENT_PROPERTY_NAME].asString();
       element_specified = true;
     }
   }
@@ -570,7 +370,26 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
       return status_code;
     }
   }
-  if (this->use_native_events_) {
+  if (this->action_simulator_->UseExtraInfo()) {
+    MouseExtraInfo* extra_info = new MouseExtraInfo();
+    if (element_specified) {
+      extra_info->element = target_element->element();
+    } else {
+      extra_info->element = NULL;
+    }
+    extra_info->offset_specified = offset_specified;
+    extra_info->offset_x = x_offset;
+    extra_info->offset_y = y_offset;
+    INPUT mouse_input;
+    mouse_input.type = INPUT_MOUSE;
+    mouse_input.mi.dwFlags = MOUSEEVENTF_MOVE;
+    mouse_input.mi.dx = 0;
+    mouse_input.mi.dy = 0;
+    mouse_input.mi.dwExtraInfo = reinterpret_cast<ULONG_PTR>(extra_info);
+    mouse_input.mi.mouseData = 0;
+    mouse_input.mi.time = 0;
+    this->inputs_.push_back(mouse_input);
+  } else {
     long start_x = input_state->mouse_x;
     long start_y = input_state->mouse_y;
 
@@ -578,10 +397,13 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
     long end_y = start_y;
     if (element_specified) {
       LocationInfo element_location;
-      LocationInfo move_location;
-      status_code = target_element->GetClickLocation(this->scroll_behavior_,
-                                                     &element_location,
-                                                     &move_location);
+      // Note: The caller of the action sequence is responsible for making
+      // sure the target element is in the view port. In particular, the
+      // high-level click and sendKeys implementations do this in their
+      // command handlers. Further note that offsets specified in this
+      // move action will be relative to the center of the element as
+      // calculated here.
+      status_code = target_element->GetStaticClickLocation(&element_location);
       // We can't use the status code alone here. Even though the center of the
       // element may not reachable via the mouse, we might still be able to move
       // to whatever portion of the element *is* visible in the viewport, especially
@@ -603,11 +425,6 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
       // move will be at some offset from the element origin.
       end_x = element_location.x;
       end_y = element_location.y;
-      if (!offset_specified) {
-        // No offset was specified, which means move to the center of the element. 
-        end_x = move_location.x;
-        end_y = move_location.y;
-      }
     }
 
     if (origin == "viewport") {
@@ -624,14 +441,29 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
       }
     }
 
+
     LOG(DEBUG) << "Queueing SendInput structure for mouse move (origin: " << origin
                << ", x: " << end_x << ", y: " << end_y << ")";
     HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
+    RECT window_rect;
+    ::GetWindowRect(browser_window_handle, &window_rect);
+    POINT click_point = { end_x, end_y };
+    ::ClientToScreen(browser_window_handle, &click_point);
+    if (click_point.x < window_rect.left ||
+        click_point.x > window_rect.right ||
+        click_point.y < window_rect.top ||
+        click_point.y > window_rect.bottom) {
+      return EMOVETARGETOUTOFBOUNDS;
+    }
     if (end_x == input_state->mouse_x && end_y == input_state->mouse_y) {
       LOG(DEBUG) << "Omitting SendInput structure for mouse move; no movement required (x: "
                  << end_x << ", y: " << end_y << ")";
     } else {
-      const int step_count = 10;
+      const int min_duration = 50;
+      int step_count = 10;
+      if (duration <= min_duration) {
+        step_count = 0;
+      }
       long step_sleep = duration / max(step_count, 1);
 
       long x_distance = end_x - input_state->mouse_x;
@@ -648,230 +480,108 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
         }
       }
       this->AddMouseInput(browser_window_handle, MOUSEEVENTF_MOVE, end_x, end_y);
-      this->AddPauseInput(browser_window_handle, 50);
-      if (step_sleep > 0) {
-      }
     }
     input_state->mouse_x = end_x;
     input_state->mouse_y = end_y;
-  } else { 
-    // Fall back on synthesized events.
-    LOG(DEBUG) << "Using synthetic events for mouse move";
-    std::wstring script_source = L"(function() { return function(){" +
-                                 atoms::asString(atoms::INPUTS) +
-                                 L"; return webdriver.atoms.inputs.mouseMove(arguments[0], arguments[1], arguments[2], arguments[3]);" +
-                                 L"};})();";
-
-    CComPtr<IHTMLDocument2> doc;
-    browser_wrapper->GetDocument(&doc);
-    Script script_wrapper(doc, script_source, 4);
-
-    if (element_specified) {
-      script_wrapper.AddArgument(target_element->element());
-    } else {
-      script_wrapper.AddNullArgument();
-    }
-
-    if (offset_specified) {
-      script_wrapper.AddArgument(x_offset);
-      script_wrapper.AddArgument(y_offset);
-    } else {
-      script_wrapper.AddNullArgument();
-      script_wrapper.AddNullArgument();
-    }
-
-    script_wrapper.AddArgument(this->mouse_state_);
-    status_code = script_wrapper.Execute();
-    if (status_code == WD_SUCCESS) {
-      this->mouse_state_ = script_wrapper.result();
-    } else {
-      LOG(WARN) << "Unable to execute js to mouse move";
-    }
   }
   return status_code;
 }
 
-int InputManager::PointerDown(BrowserHandle browser_wrapper, const Json::Value& down_action, InputState* input_state) {
+int InputManager::PointerDown(BrowserHandle browser_wrapper,
+                              const Json::Value& down_action,
+                              InputState* input_state) {
   LOG(TRACE) << "Entering InputManager::PointerDown";
   int button = down_action["button"].asInt();
-  if (this->use_native_events_) {
-    HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
-    LOG(DEBUG) << "Queueing SendInput structure for mouse button down";
-    long button_event_value = MOUSEEVENTF_LEFTDOWN;
-    if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
-      button_event_value = MOUSEEVENTF_RIGHTDOWN;
-    }
-    this->AddMouseInput(browser_window_handle, button_event_value, input_state->mouse_x, input_state->mouse_y);
-    this->AddPauseInput(browser_window_handle, 50);
-    if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
-      input_state->is_right_button_pressed = true;
-    } else {
-      input_state->is_left_button_pressed = true;
-    }
+  HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
+  LOG(DEBUG) << "Queueing SendInput structure for mouse button down";
+  long button_event_value = MOUSEEVENTF_LEFTDOWN;
+  if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
+    button_event_value = MOUSEEVENTF_RIGHTDOWN;
+  }
+  this->AddMouseInput(browser_window_handle,
+                      button_event_value,
+                      input_state->mouse_x,
+                      input_state->mouse_y);
+  if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
+    input_state->is_right_button_pressed = true;
   } else {
-    LOG(DEBUG) << "Using synthetic events for mouse button down";
-    std::wstring script_source = L"(function() { return function(){" +
-                                 atoms::asString(atoms::INPUTS) +
-                                 L"; return webdriver.atoms.inputs.mouseButtonDown(arguments[0]);" +
-                                 L"};})();";
-
-    CComPtr<IHTMLDocument2> doc;
-    browser_wrapper->GetDocument(&doc);
-    Script script_wrapper(doc, script_source, 1);
-    script_wrapper.AddArgument(this->mouse_state_);
-    int status_code = script_wrapper.Execute();
-    if (status_code == WD_SUCCESS) {
-      this->mouse_state_ = script_wrapper.result();
-    } else {
-      LOG(WARN) << "Unable to execute js to perform mouse button down";
-      return status_code;
-    }
+    input_state->is_left_button_pressed = true;
   }
   return WD_SUCCESS;
 }
 
-int InputManager::PointerUp(BrowserHandle browser_wrapper, const Json::Value& up_action, InputState* input_state) {
+int InputManager::PointerUp(BrowserHandle browser_wrapper,
+                            const Json::Value& up_action,
+                            InputState* input_state) {
   LOG(TRACE) << "Entering InputManager::PointerUp";
   int button = up_action["button"].asInt();
-  if (this->use_native_events_) {
-    HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
-    LOG(DEBUG) << "Queueing SendInput structure for mouse button up";
-    long button_event_value = MOUSEEVENTF_LEFTUP;
-    if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
-      button_event_value = MOUSEEVENTF_RIGHTUP;
-    }
-    this->AddMouseInput(browser_window_handle, button_event_value, input_state->mouse_x, input_state->mouse_y);
-    this->AddPauseInput(browser_window_handle, 50);
-    if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
-      input_state->is_right_button_pressed = false;
-    } else {
-      input_state->is_left_button_pressed = false;
-    }
+  HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
+  LOG(DEBUG) << "Queueing SendInput structure for mouse button up";
+  long button_event_value = MOUSEEVENTF_LEFTUP;
+  if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
+    button_event_value = MOUSEEVENTF_RIGHTUP;
+  }
+  this->AddMouseInput(browser_window_handle,
+                      button_event_value,
+                      input_state->mouse_x,
+                      input_state->mouse_y);
+  if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
+    input_state->is_right_button_pressed = false;
   } else {
-    LOG(DEBUG) << "Using synthetic events for mouse button up";
-    std::wstring script_source = L"(function() { return function(){" +
-                                 atoms::asString(atoms::INPUTS) +
-                                 L"; return webdriver.atoms.inputs.mouseButtonUp(arguments[0]);" +
-                                 L"};})();";
-
-    CComPtr<IHTMLDocument2> doc;
-    browser_wrapper->GetDocument(&doc);
-    Script script_wrapper(doc, script_source, 1);
-    script_wrapper.AddArgument(this->mouse_state_);
-    int status_code = script_wrapper.Execute();
-    if (status_code == WD_SUCCESS) {
-      this->mouse_state_ = script_wrapper.result();
-    } else {
-      LOG(WARN) << "Unable to execute js to perform mouse button up";
-      return status_code;
-    }
+    input_state->is_left_button_pressed = false;
   }
   return WD_SUCCESS;
 }
 
-int InputManager::KeyDown(BrowserHandle browser_wrapper, const Json::Value & down_action, InputState* input_state) {
+int InputManager::KeyDown(BrowserHandle browser_wrapper,
+                          const Json::Value& down_action,
+                          InputState* input_state) {
   int status_code = WD_SUCCESS;
   std::string key_value = down_action["value"].asString();
   std::wstring key = StringUtilities::ToWString(key_value);
 
-  if (this->enable_native_events()) {
-    HWND window_handle = browser_wrapper->GetContentWindowHandle();
-    wchar_t character = key[0];
-    this->AddKeyboardInput(window_handle, character, false, input_state);
-  } else {
+  if (this->action_simulator_->UseExtraInfo()) {
     LOG(DEBUG) << "Using synthetic events for sending keys";
-    std::wstring script_source = L"(function() { return function(){" +
-                                 atoms::asString(atoms::INPUTS) +
-                                 L"; return webdriver.atoms.inputs.sendKeys(" +
-                                 L"arguments[0], arguments[1], arguments[2], arguments[3]);" +
-                                 L"};})();";
-    //bool persist_modifier_keys = !auto_release_modifier_keys;
+    KeyboardExtraInfo* extra_info = new KeyboardExtraInfo();
+    extra_info->character = key;
+    INPUT input_element;
+    input_element.type = INPUT_KEYBOARD;
 
-    CComPtr<IHTMLDocument2> doc;
-    browser_wrapper->GetDocument(&doc);
-    Script script_wrapper(doc, script_source, 4);
-
-    script_wrapper.AddNullArgument();
-    script_wrapper.AddArgument(key);
-    script_wrapper.AddArgument(this->keyboard_state());
-    script_wrapper.AddArgument(true);
-    status_code = script_wrapper.Execute();
-    if (status_code == WD_SUCCESS) {
-      this->set_keyboard_state(script_wrapper.result());
-    }
-    else {
-      LOG(WARN) << "Unable to execute js to send keystrokes";
-    }
+    input_element.ki.wVk = 0;
+    input_element.ki.wScan = 0;
+    input_element.ki.dwFlags = 0;
+    input_element.ki.dwExtraInfo = reinterpret_cast<ULONG_PTR>(extra_info);
+    input_element.ki.time = 0;
+    this->inputs_.push_back(input_element);
+  } else {
+    HWND window_handle = browser_wrapper->GetContentWindowHandle();
+    this->AddKeyboardInput(window_handle, key, false, input_state);
   }
   return status_code;
 }
 
-int InputManager::KeyUp(BrowserHandle browser_wrapper, const Json::Value & up_action, InputState* input_state) {
+int InputManager::KeyUp(BrowserHandle browser_wrapper,
+                        const Json::Value& up_action,
+                        InputState* input_state) {
   int status_code = WD_SUCCESS;
   std::string key_value = up_action["value"].asString();
   std::wstring key = StringUtilities::ToWString(key_value);
 
-  if (this->enable_native_events()) {
+  if (!this->action_simulator_->UseExtraInfo()) {
     HWND window_handle = browser_wrapper->GetContentWindowHandle();
-    wchar_t character = key[0];
-    this->AddKeyboardInput(window_handle, character, true, input_state);
-  } else {
-    LOG(DEBUG) << "Using synthetic events for sending keys";
-    std::wstring script_source = L"(function() { return function(){" +
-      atoms::asString(atoms::INPUTS) +
-      L"; return webdriver.atoms.inputs.sendKeys(" +
-      L"arguments[0], arguments[1], arguments[2], arguments[3]);" +
-      L"};})();";
-
-    CComPtr<IHTMLDocument2> doc;
-    browser_wrapper->GetDocument(&doc);
-    Script script_wrapper(doc, script_source, 4);
-
-    script_wrapper.AddNullArgument();
-    script_wrapper.AddArgument(key);
-    script_wrapper.AddArgument(this->keyboard_state());
-    script_wrapper.AddArgument(true);
-    status_code = script_wrapper.Execute();
-    if (status_code == WD_SUCCESS) {
-      this->set_keyboard_state(script_wrapper.result());
-    }
-    else {
-      LOG(WARN) << "Unable to execute js to send keystrokes";
-    }
+    this->AddKeyboardInput(window_handle, key, true, input_state);
   }
   return status_code;
 }
 
-int InputManager::Pause(BrowserHandle browser_wrapper, const Json::Value & pause_action) {
+int InputManager::Pause(BrowserHandle browser_wrapper,
+                        const Json::Value& pause_action) {
   int status_code = 0;
   int duration = pause_action["duration"].asInt();
   if (duration > 0) {
     this->AddPauseInput(browser_wrapper->GetContentWindowHandle(), duration);
   }
   return status_code;
-}
-
-void InputManager::StartPersistentEvents() {
-  if (this->use_persistent_hover_) {
-    this->interactions_manager_->setEnablePersistentHover(true);
-  }
-}
-
-void InputManager::StopPersistentEvents() {
-  this->interactions_manager_->stopPersistentEventFiring();
-}
-
-void InputManager::GetNormalizedCoordinates(HWND window_handle, int x, int y, int* normalized_x, int* normalized_y) {
-  LOG(TRACE) << "Entering InputManager::GetNormalizedCoordinates";
-  POINT cursor_position;
-  cursor_position.x = x;
-  cursor_position.y = y;
-  ::ClientToScreen(window_handle, &cursor_position);
-
-  int screen_width = ::GetSystemMetrics(SM_CXSCREEN) - 1;
-  int screen_height = ::GetSystemMetrics(SM_CYSCREEN) - 1;
-  *normalized_x = static_cast<int>(cursor_position.x * (65535.0f / screen_width));
-  *normalized_y = static_cast<int>(cursor_position.y * (65535.0f / screen_height));
 }
 
 void InputManager::AddPauseInput(HWND window_handle, int duration) {
@@ -895,10 +605,17 @@ void InputManager::AddMouseInput(HWND window_handle, long input_action, int x, i
   this->inputs_.push_back(mouse_input);
 }
 
-void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool key_up, InputState* input_state) {
+void InputManager::AddKeyboardInput(HWND window_handle,
+                                    std::wstring key,
+                                    bool key_up,
+                                    InputState* input_state) {
   LOG(TRACE) << "Entering InputManager::AddKeyboardInput";
 
-  std::wstring log_key = this->GetKeyDescription(character);
+  wchar_t character = key[0];
+  std::wstring log_key = key;
+  if (key.size() == 1) {
+    log_key = this->GetKeyDescription(character);
+  }
   std::string log_event = "key down";
   if (key_up) {
     log_event = "key up";
@@ -906,52 +623,177 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool 
   LOG(DEBUG) << "Queueing SendInput structure for " << log_event
              << " (key: " << LOGWSTRING(log_key) << ")";
 
+  if (key.size() > 1) {
+    // If the key string passed in is greater than a single character,
+    // we've been sent a Unicode character with surrogate pairs. Do
+    // no further processing, just create the input items for the
+    // individual pieces of the surrogate pair, and let the system
+    // input manager do the rest.
+    std::wstring::const_iterator it = key.begin();
+    for (; it != key.end(); ++it) {
+      KeyInfo surrogate_key_info;
+      surrogate_key_info.scan_code = static_cast<WORD>(*it);
+      surrogate_key_info.key_code = 0;
+      surrogate_key_info.is_extended_key = false;
+
+      this->CreateKeyboardInputItem(surrogate_key_info, KEYEVENTF_UNICODE, key_up);
+    }
+    return;
+  }
+
+  if (character == WD_KEY_NULL) {
+    std::vector<WORD> modifier_key_codes;
+    if (input_state->is_shift_pressed) {
+      if (this->IsKeyPressed(WD_KEY_SHIFT)) {
+        modifier_key_codes.push_back(VK_SHIFT);
+        this->UpdatePressedKeys(WD_KEY_SHIFT, false);
+      }
+      if (this->IsKeyPressed(WD_KEY_R_SHIFT)) {
+        modifier_key_codes.push_back(VK_RSHIFT);
+        this->UpdatePressedKeys(WD_KEY_R_SHIFT, false);
+      }
+      input_state->is_shift_pressed = false;
+    }
+
+    if (input_state->is_control_pressed) {
+      if (this->IsKeyPressed(WD_KEY_CONTROL)) {
+        modifier_key_codes.push_back(VK_CONTROL);
+        this->UpdatePressedKeys(WD_KEY_CONTROL, false);
+      }
+      if (this->IsKeyPressed(WD_KEY_R_CONTROL)) {
+        modifier_key_codes.push_back(VK_RCONTROL);
+        this->UpdatePressedKeys(WD_KEY_R_CONTROL, false);
+      }
+      input_state->is_control_pressed = false;
+    }
+
+    if (input_state->is_alt_pressed) {
+      if (this->IsKeyPressed(WD_KEY_ALT)) {
+        modifier_key_codes.push_back(VK_MENU);
+        this->UpdatePressedKeys(WD_KEY_ALT, false);
+      }
+      if (this->IsKeyPressed(WD_KEY_R_ALT)) {
+        modifier_key_codes.push_back(VK_RMENU);
+        this->UpdatePressedKeys(WD_KEY_R_ALT, false);
+      }
+      input_state->is_alt_pressed = false;
+    }
+
+    if (input_state->is_meta_pressed) {
+      if (this->IsKeyPressed(WD_KEY_META)) {
+        modifier_key_codes.push_back(VK_LWIN);
+        this->UpdatePressedKeys(WD_KEY_META, false);
+      }
+      if (this->IsKeyPressed(WD_KEY_R_META)) {
+        modifier_key_codes.push_back(VK_RWIN);
+        this->UpdatePressedKeys(WD_KEY_R_META, false);
+      }
+      input_state->is_meta_pressed = false;
+    }
+
+    std::vector<WORD>::const_iterator it = modifier_key_codes.begin();
+    for (; it != modifier_key_codes.end(); ++it) {
+      KeyInfo modifier_key_info = { 0, 0, false, false, false, character };
+      UINT scan_code = ::MapVirtualKey(*it, MAPVK_VK_TO_VSC);
+      modifier_key_info.key_code = *it;
+      modifier_key_info.scan_code = scan_code;
+      this->CreateKeyboardInputItem(modifier_key_info,
+                                    KEYEVENTF_SCANCODE,
+                                    true);
+    }
+    return;
+  }
+
   if (this->IsModifierKey(character)) {
-    KeyInfo modifier_key_info = { 0, 0, false, false };
-    if (character == WD_KEY_SHIFT || character == WD_KEY_R_SHIFT || (character == WD_KEY_NULL && input_state->is_shift_pressed)) {
-      // If the character represents the Shift key, or represents the 
-      // "release all modifiers" key and the Shift key is down, send
-      // the appropriate down or up keystroke for the Shift key.
+    KeyInfo modifier_key_info = { 0, 0, false, false, false, character };
+    // If the character represents the Shift key, or represents the 
+    // "release all modifiers" key and the Shift key is down, send
+    // the appropriate down or up keystroke for the Shift key.
+    if (character == WD_KEY_SHIFT ||
+        character == WD_KEY_R_SHIFT) {
+      WORD key_code = VK_SHIFT;
+      if (character == WD_KEY_R_SHIFT) {
+        key_code = VK_RSHIFT;
+      }
+      UINT scan_code = ::MapVirtualKey(key_code, MAPVK_VK_TO_VSC);
       modifier_key_info.key_code = VK_SHIFT;
-      this->CreateKeyboardInputItem(modifier_key_info, 0, input_state->is_shift_pressed);
+      modifier_key_info.scan_code = scan_code;
+      this->CreateKeyboardInputItem(modifier_key_info,
+                                    KEYEVENTF_SCANCODE,
+                                    input_state->is_shift_pressed);
       if (input_state->is_shift_pressed) {
         input_state->is_shift_pressed = false;
       } else {
         input_state->is_shift_pressed = true;
-        this->AddPauseInput(window_handle, 20);
       }
-      this->UpdatePressedKeys(WD_KEY_SHIFT, input_state->is_shift_pressed);
+      this->UpdatePressedKeys(character, input_state->is_shift_pressed);
     }
 
-    if (character == WD_KEY_CONTROL || character == WD_KEY_R_CONTROL || (character == WD_KEY_NULL && input_state->is_control_pressed)) {
-      // If the character represents the Control key, or represents the 
-      // "release all modifiers" key and the Control key is down, send
-      // the appropriate down or up keystroke for the Control key.
+    // If the character represents the Control key, or represents the 
+    // "release all modifiers" key and the Control key is down, send
+    // the appropriate down or up keystroke for the Control key.
+    if (character == WD_KEY_CONTROL ||
+        character == WD_KEY_R_CONTROL) {
+      WORD key_code = VK_CONTROL;
+      if (character == WD_KEY_R_CONTROL) {
+        key_code = VK_RCONTROL;
+        modifier_key_info.is_extended_key = true;
+      }
+      UINT scan_code = ::MapVirtualKey(key_code, MAPVK_VK_TO_VSC);
       modifier_key_info.key_code = VK_CONTROL;
-      this->CreateKeyboardInputItem(modifier_key_info, 0, input_state->is_control_pressed);
+      modifier_key_info.scan_code = scan_code;
+      this->CreateKeyboardInputItem(modifier_key_info,
+                                    KEYEVENTF_SCANCODE,
+                                    input_state->is_control_pressed);
       if (input_state->is_control_pressed) {
         input_state->is_control_pressed = false;
       } else {
         input_state->is_control_pressed = true;
-        this->AddPauseInput(window_handle, 20);
       }
-      this->UpdatePressedKeys(WD_KEY_CONTROL, input_state->is_control_pressed);
+      this->UpdatePressedKeys(character, input_state->is_control_pressed);
     }
 
-    if (character == WD_KEY_ALT || character == WD_KEY_R_ALT || (character == WD_KEY_NULL && input_state->is_alt_pressed)) {
-      // If the character represents the Alt key, or represents the 
-      // "release all modifiers" key and the Alt key is down, send
-      // the appropriate down or up keystroke for the Alt key.
+    // If the character represents the Alt key, or represents the 
+    // "release all modifiers" key and the Alt key is down, send
+    // the appropriate down or up keystroke for the Alt key.
+    if (character == WD_KEY_ALT ||
+        character == WD_KEY_R_ALT) {
+      WORD key_code = VK_MENU;
+      if (character == WD_KEY_R_ALT) {
+        key_code = VK_RMENU;
+        modifier_key_info.is_extended_key = true;
+      }
+      UINT scan_code = ::MapVirtualKey(key_code, MAPVK_VK_TO_VSC);
       modifier_key_info.key_code = VK_MENU;
-      this->CreateKeyboardInputItem(modifier_key_info, 0, input_state->is_alt_pressed);
+      modifier_key_info.scan_code = scan_code;
+      this->CreateKeyboardInputItem(modifier_key_info,
+                                    KEYEVENTF_SCANCODE,
+                                    input_state->is_alt_pressed);
       if (input_state->is_alt_pressed) {
         input_state->is_alt_pressed = false;
       } else {
         input_state->is_alt_pressed = true;
-        this->AddPauseInput(window_handle, 20);
       }
-      this->UpdatePressedKeys(WD_KEY_ALT, input_state->is_alt_pressed);
+      this->UpdatePressedKeys(character, input_state->is_alt_pressed);
     }
+
+    // If the character represents the Meta (Windows) key, or represents 
+    // the "release all modifiers" key and the Meta key is down, send
+    // the appropriate down or up keystroke for the Meta key.
+    if (character == WD_KEY_META ||
+        character == WD_KEY_R_META) {
+      //modifier_key_info.key_code = VK_LWIN;
+      //this->CreateKeyboardInputItem(modifier_key_info,
+      //                              0,
+      //                              input_state->is_meta_pressed);
+      //if (input_state->is_meta_pressed) {
+      //  input_state->is_meta_pressed = false;
+      //} else {
+      //  input_state->is_meta_pressed = true;
+      //}
+      //this->UpdatePressedKeys(WD_KEY_META, input_state->is_meta_pressed);
+    }
+
     return;
   }
 
@@ -975,23 +817,56 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool 
     }
   }
 
-  if (HIBYTE(key_info.key_code) == 1 && !input_state->is_shift_pressed) {
-    // Requested key is a Shift + <key>. Thus, don't use the key code.
-    // Instead, send a Shift keystroke, and use the scan code of the key.
+  unsigned short modifier_key_info = HIBYTE(key_info.key_code);
+  if (modifier_key_info != 0) {
+    // Requested key is a <modifier keys> + <key>. Thus, don't use the key code.
+    // Instead, send the modifier keystrokes, and use the scan code of the key.
+    bool is_shift_required = (modifier_key_info & MODIFIER_KEY_SHIFT) != 0 &&
+                             !input_state->is_shift_pressed;
+    bool is_control_required = (modifier_key_info & MODIFIER_KEY_CTRL) != 0 &&
+                               !input_state->is_control_pressed;
+    bool is_alt_required = (modifier_key_info & MODIFIER_KEY_ALT) != 0 &&
+                           !input_state->is_alt_pressed;
     if (!key_up) {
-      KeyInfo shift_key_info = { VK_SHIFT, 0, false, false };
-      this->CreateKeyboardInputItem(shift_key_info, 0, false);
+      if (is_shift_required) {
+        KeyInfo shift_key_info = { VK_SHIFT, 0, false, false, false, character };
+        this->CreateKeyboardInputItem(shift_key_info, 0, false);
+      }
+      if (is_control_required) {
+        KeyInfo control_key_info = { VK_CONTROL, 0, false, false, false, character };
+        this->CreateKeyboardInputItem(control_key_info, 0, false);
+      }
+      if (is_alt_required) {
+        KeyInfo alt_key_info = { VK_MENU, 0, false, false, false, character };
+        this->CreateKeyboardInputItem(alt_key_info, 0, false);
+      }
     }
 
     this->CreateKeyboardInputItem(key_info, KEYEVENTF_SCANCODE, key_up);
 
     if (key_up) {
-      KeyInfo shift_key_info = { VK_SHIFT, 0, false, false };
-      this->CreateKeyboardInputItem(shift_key_info, 0, true);
+      if (is_shift_required) {
+        KeyInfo shift_key_info = { VK_SHIFT, 0, false, false, false, character };
+        this->CreateKeyboardInputItem(shift_key_info, 0, true);
+      }
+      if (is_control_required) {
+        KeyInfo control_key_info = { VK_CONTROL, 0, false, false, false, character };
+        this->CreateKeyboardInputItem(control_key_info, 0, true);
+      }
+      if (is_alt_required) {
+        KeyInfo alt_key_info = { VK_MENU, 0, false, false, false, character };
+        this->CreateKeyboardInputItem(alt_key_info, 0, true);
+      }
     }
   } else {
     this->CreateKeyboardInputItem(key_info, 0, key_up);
   }
+}
+
+bool InputManager::IsKeyPressed(wchar_t character) {
+  return std::find(this->pressed_keys_.begin(),
+                   this->pressed_keys_.end(),
+                   character) != this->pressed_keys_.end();
 }
 
 void InputManager::UpdatePressedKeys(wchar_t character, bool press_key) {
@@ -1025,7 +900,7 @@ void InputManager::CreateKeyboardInputItem(KeyInfo key_info,
   input_element.ki.wVk = key_info.key_code;
   input_element.ki.wScan = key_info.scan_code;
   input_element.ki.dwFlags = initial_flags;
-  input_element.ki.dwExtraInfo = 0;
+  input_element.ki.dwExtraInfo = key_info.character;
   input_element.ki.time = 0;
 
   if (key_info.is_extended_key) {
@@ -1042,9 +917,11 @@ bool InputManager::IsModifierKey(wchar_t character) {
   return character == WD_KEY_SHIFT ||
          character == WD_KEY_CONTROL ||
          character == WD_KEY_ALT ||
+         character == WD_KEY_META ||
          character == WD_KEY_R_SHIFT ||
          character == WD_KEY_R_CONTROL ||
          character == WD_KEY_R_ALT ||
+         character == WD_KEY_R_META ||
          character == WD_KEY_NULL;
 }
 
@@ -1055,6 +932,7 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
   key_info.is_webdriver_key = true;
   key_info.key_code = 0;
   key_info.scan_code = 0;
+  key_info.character = character;
   DWORD process_id = 0;
   DWORD thread_id = ::GetWindowThreadProcessId(window_handle, &process_id);
   HKL layout = ::GetKeyboardLayout(thread_id);
@@ -1221,6 +1099,7 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
   else if (character == WD_KEY_SEPARATOR) {  // separator
     key_info.key_code = VkKeyScanExW(L',', layout);
     key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_extended_key = true;
   }
   else if (character == WD_KEY_SUBTRACT) {  // subtract
     key_info.key_code = VK_SUBTRACT;
@@ -1235,6 +1114,56 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
   else if (character == WD_KEY_DIVIDE) {  // divide
     key_info.key_code = VK_DIVIDE;
     key_info.scan_code = VK_DIVIDE;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_PAGEUP) {
+    key_info.key_code = VK_PRIOR;
+    key_info.scan_code = VK_PRIOR;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_PAGEDN) {
+    key_info.key_code = VK_NEXT;
+    key_info.scan_code = VK_NEXT;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_END) {  // end
+    key_info.key_code = VK_END;
+    key_info.scan_code = VK_END;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_HOME) {  // home
+    key_info.key_code = VK_HOME;
+    key_info.scan_code = VK_HOME;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_LEFT) {  // left arrow
+    key_info.key_code = VK_LEFT;
+    key_info.scan_code = VK_LEFT;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_UP) {  // up arrow
+    key_info.key_code = VK_UP;
+    key_info.scan_code = VK_UP;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_RIGHT) {  // right arrow
+    key_info.key_code = VK_RIGHT;
+    key_info.scan_code = VK_RIGHT;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_DOWN) {  // down arrow
+    key_info.key_code = VK_DOWN;
+    key_info.scan_code = VK_DOWN;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_INSERT) {  // insert
+    key_info.key_code = VK_INSERT;
+    key_info.scan_code = VK_INSERT;
+    key_info.is_extended_key = true;
+  }
+  else if (character == WD_KEY_R_DELETE) {  // delete
+    key_info.key_code = VK_DELETE;
+    key_info.scan_code = VK_DELETE;
     key_info.is_extended_key = true;
   }
   else if (character == WD_KEY_F1) {  // F1
@@ -1383,33 +1312,3 @@ void InputManager::SetupKeyDescriptions() {
 }
 
 } // namespace webdriver
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-LRESULT CALLBACK KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  webdriver::HookProcessor::IncrementEventCount(1);
-  return ::CallNextHookEx(NULL, nCode, wParam, lParam);
-}
-
-LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  webdriver::HookProcessor::IncrementEventCount(1);
-  return ::CallNextHookEx(NULL, nCode, wParam, lParam);
-}
-
-LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  if ((nCode == HC_ACTION) && (wParam == PM_REMOVE)) {
-    MSG* msg = reinterpret_cast<MSG*>(lParam);
-    if (msg->message == WM_USER && msg->wParam == 1234 && msg->lParam == 5678) {
-      int message_count = 50;
-      webdriver::HookProcessor::IncrementEventCount(message_count);
-    }
-  }
-
-  return CallNextHookEx(NULL, nCode, wParam, lParam);
-}
-
-#ifdef __cplusplus
-}
-#endif

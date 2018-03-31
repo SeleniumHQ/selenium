@@ -18,6 +18,7 @@
 package org.openqa.selenium.logging;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,5 +37,18 @@ public class LoggingTest {
     assertEquals(Level.WARNING, LogLevelMapping.toLevel("WARNING"));
     assertEquals(Level.SEVERE, LogLevelMapping.toLevel("SEVERE"));
     assertEquals(Level.OFF, LogLevelMapping.toLevel("OFF"));
+  }
+
+  @Test
+  public void canCompareLoggingPreferences() {
+    LoggingPreferences prefs1 = new LoggingPreferences();
+    LoggingPreferences prefs2 = new LoggingPreferences();
+    assertEquals(prefs1, prefs2);
+
+    prefs1.enable(LogType.BROWSER, Level.ALL);
+    assertNotEquals(prefs1, prefs2);
+
+    prefs2.enable(LogType.BROWSER, Level.ALL);
+    assertEquals(prefs1, prefs2);
   }
 }

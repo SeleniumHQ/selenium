@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http;
 
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.internal.OkHttpClient;
 
@@ -28,18 +30,12 @@ import java.net.URL;
  */
 public interface HttpClient {
 
-  /**
-   * Executes the given request.
-   *
-   * @param request the request to execute.
-   * @param followRedirects whether to automatically follow redirects.
-   * @return the final response.
-   * @throws IOException if an I/O error occurs.
-   * @deprecated All call sites found set {@code followRedirects} to {@code true}. Use
-   *   {@link #execute(HttpRequest)}.
-   */
-  @Deprecated
-  HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException;
+  String USER_AGENT = String.format(
+      "selenium/%s (java %s)",
+      new BuildInfo().getReleaseLabel(),
+      (Platform.getCurrent().family() == null ?
+          Platform.getCurrent().toString().toLowerCase() :
+          Platform.getCurrent().family().toString().toLowerCase()));
 
   /**
    * Executes the given request, following any redirects if necessary.

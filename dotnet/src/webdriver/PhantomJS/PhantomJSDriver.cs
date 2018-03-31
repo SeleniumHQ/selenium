@@ -59,6 +59,7 @@ namespace OpenQA.Selenium.PhantomJS
     /// }
     /// </code>
     /// </example>
+    [Obsolete("Development of PhantomJS has been discontinued, and the project archived. The PhantomJS driver will be removed in a future release.")]
     public class PhantomJSDriver : RemoteWebDriver
     {
         /// <summary>

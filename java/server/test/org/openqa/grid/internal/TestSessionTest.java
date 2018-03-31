@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openqa.grid.common.SeleniumProtocol;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.time.Clock;
@@ -35,7 +37,7 @@ public class TestSessionTest {
   @Test
   public void testIsOrphanedSe1() throws Exception {
 
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     try {
       Map<String, Object> ff = new HashMap<>();
       ff.put(CapabilityType.APPLICATION_NAME, "FF");
@@ -60,7 +62,7 @@ public class TestSessionTest {
   @Test
   public void testIsOrphanedWebDriver() throws Exception {
 
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     try {
       Map<String, Object> ff = new HashMap<>();
       ff.put(CapabilityType.APPLICATION_NAME, "FF");

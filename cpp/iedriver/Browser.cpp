@@ -31,6 +31,7 @@ namespace webdriver {
 
 Browser::Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle) : DocumentHost(hwnd, session_handle) {
   LOG(TRACE) << "Entering Browser::Browser";
+  this->is_explicit_close_requested_ = false;
   this->is_navigation_started_ = false;
   this->browser_ = browser;
   this->AttachEvents();
@@ -52,6 +53,17 @@ void __stdcall Browser::BeforeNavigate2(IDispatch* pObject,
 
 void __stdcall Browser::OnQuit() {
   LOG(TRACE) << "Entering Browser::OnQuit";
+  if (!this->is_explicit_close_requested_) {
+    LOG(WARN) << "This instance of Internet Explorer is exiting without an "
+              << "explicit request to close it. Unless you clicked a link "
+              << "that specifically attempts to close the page, that likely "
+              << "means a Protected Mode boundary has been crossed (either "
+              << "entering or exiting Protected Mode). It is highly likely "
+              << "that any subsequent commands to this driver instance will "
+              << "fail. THIS IS NOT A BUG IN THE IE DRIVER! Fix your code "
+              << "and/or browser configuration so that a Protected Mode "
+              << "boundary is not crossed.";
+  }
   this->PostQuitMessage();
 }
 
@@ -304,6 +316,7 @@ void Browser::DetachEvents() {
 
 void Browser::Close() {
   LOG(TRACE) << "Entering Browser::Close";
+  this->is_explicit_close_requested_ = true;
   // Closing the browser, so having focus on a frame doesn't
   // make any sense.
   this->SetFocusedFrameByElement(NULL);

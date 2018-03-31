@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.collect.Maps;
-
 import org.openqa.selenium.remote.server.Session;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class GetSessionCapabilities extends WebDriverHandler<Map<String, Object>> {
@@ -33,7 +32,7 @@ public class GetSessionCapabilities extends WebDriverHandler<Map<String, Object>
   public Map<String, Object> call() {
     Session session = getSession();
     Map<String, Object> capabilities = session.getCapabilities();
-    capabilities = Maps.newHashMap(capabilities);
+    capabilities = new HashMap<>(capabilities);
 
     // Only servers implementing the server-side webdriver-backed selenium need
     // to return this particular value

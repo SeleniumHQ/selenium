@@ -14,6 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import warnings
+
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
@@ -119,17 +121,24 @@ class Options(object):
         """
         return '-headless' in self._arguments
 
-    def set_headless(self, headless=True):
+    @headless.setter
+    def headless(self, value):
         """
         Sets the headless argument
 
         Args:
-          headless: boolean value indicating to set the headless option
+          value: boolean value indicating to set the headless option
         """
-        if headless:
+        if value is True:
             self._arguments.append('-headless')
         elif '-headless' in self._arguments:
             self._arguments.remove('-headless')
+
+    def set_headless(self, headless=True):
+        """ Deprecated, options.headless = True """
+        warnings.warn('use setter for headless property instead of set_headless',
+                      DeprecationWarning)
+        self.headless = headless
 
     def to_capabilities(self):
         """Marshals the Firefox options to a `moz:firefoxOptions`

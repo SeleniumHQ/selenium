@@ -17,11 +17,16 @@
 
 package org.openqa.selenium.remote.internal;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import com.google.common.base.Strings;
+
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import okhttp3.ConnectionPool;
+import okhttp3.Credentials;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -30,6 +35,8 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 
 public class OkHttpClient implements HttpClient {
@@ -44,20 +51,17 @@ public class OkHttpClient implements HttpClient {
 
   @Override
   public HttpResponse execute(HttpRequest request) throws IOException {
-    return execute(request, true);
-  }
-
-  @Override
-  public HttpResponse execute(HttpRequest request, boolean followRedirects) throws IOException {
-    if (followRedirects != client.followRedirects()) {
-      throw new IllegalArgumentException("Unable to change how the http client follows redirets");
-    }
-
     Request.Builder builder = new Request.Builder();
 
     HttpUrl.Builder url;
     try {
-      String rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
+      String rawUrl;
+      if (request.getUri().startsWith("http:") || request.getUri().startsWith("https:")) {
+        rawUrl = request.getUri();
+      } else {
+        rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
+      }
+
       url = HttpUrl.parse(rawUrl).newBuilder();
     } catch (NullPointerException e) {
       throw new IOException("Unable to parse URL: " + baseUrl.toString() + request.getUri());
@@ -77,13 +81,17 @@ public class OkHttpClient implements HttpClient {
       }
     }
 
+    if (request.getHeader("User-Agent") == null) {
+      builder.addHeader("User-Agent", USER_AGENT);
+    }
+
     switch (request.getMethod()) {
       case GET:
         builder.get();
         break;
 
       case POST:
-        String rawType = Optional.of(request.getHeader("Content-Type"))
+        String rawType = Optional.ofNullable(request.getHeader("Content-Type"))
             .orElse("application/json; charset=utf-8");
         MediaType type = MediaType.parse(rawType);
         RequestBody body = RequestBody.create(type, request.getContent());
@@ -112,16 +120,51 @@ public class OkHttpClient implements HttpClient {
 
   public static class Factory implements HttpClient.Factory {
 
-    private ConnectionPool pool = new ConnectionPool();
+    private final ConnectionPool pool = new ConnectionPool();
+    private final long connectionTimeout;
+    private final long readTimeout;
+
+    public Factory() {
+      this(Duration.ofMinutes(2), Duration.ofHours(3));
+    }
+
+    public Factory(Duration connectionTimeout, Duration readTimeout) {
+      Objects.requireNonNull(connectionTimeout, "Connection timeout cannot be null");
+      Objects.requireNonNull(readTimeout, "Read timeout cannot be null");
+
+      this.connectionTimeout = connectionTimeout.toMillis();
+      this.readTimeout = readTimeout.toMillis();
+    }
 
     @Override
     public HttpClient createClient(URL url) {
-      okhttp3.OkHttpClient client = new okhttp3.OkHttpClient.Builder()
+      okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
           .connectionPool(pool)
           .followRedirects(true)
           .followSslRedirects(true)
-          .build();
-      return new OkHttpClient(client, url);
+          .readTimeout(readTimeout, MILLISECONDS)
+          .connectTimeout(connectionTimeout, MILLISECONDS);
+
+      String info = url.getUserInfo();
+      if (!Strings.isNullOrEmpty(info)) {
+        String[] parts = info.split(":", 2);
+        String user = parts[0];
+        String pass = parts.length > 1 ? parts[1] : null;
+
+        String credentials = Credentials.basic(user, pass);
+
+        client.authenticator((route, response) -> {
+          if (response.request().header("Authorization") != null) {
+            return null; // Give up, we've already attempted to authenticate.
+          }
+
+          return response.request().newBuilder()
+              .header("Authorization", credentials)
+              .build();
+        });
+      }
+
+      return new OkHttpClient(client.build(), url);
     }
 
     @Override

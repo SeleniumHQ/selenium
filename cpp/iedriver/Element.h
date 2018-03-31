@@ -24,6 +24,8 @@
 #include "ElementScrollBehavior.h"
 #include "LocationInfo.h"
 
+#define JSON_ELEMENT_PROPERTY_NAME "element-6066-11e4-a52e-4f735466cecf"
+
 // Forward declaration of classes.
 namespace Json {
   class Value;
@@ -37,21 +39,23 @@ class Browser;
 class Element {
  public:
   Element(IHTMLElement* element, HWND containing_window_handle);
+  Element(IHTMLElement* element,
+          HWND containing_window_handle,
+          const std::string& element_id);
   virtual ~Element(void);
   Json::Value ConvertToJson(void);
   std::string GetTagName(void);
   int GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
                                       LocationInfo* location,
                                       std::vector<LocationInfo>* frame_locations);
+  int GetStaticClickLocation(LocationInfo* click_location);
   int GetClickLocation(const ElementScrollBehavior scroll_behavior,
                        LocationInfo* element_location,
                        LocationInfo* click_location);
   int GetAttributeValue(const std::string& attribute_name,
-                        std::string* attribute_value,
-                        bool* value_is_null);
+                        VARIANT* attribute_value);
   int GetPropertyValue(const std::string& property_name,
-                       std::string* property_value,
-                       bool* value_is_null);
+                       VARIANT* property_value);
   int GetCssPropertyValue(const std::string& property_name,
                           std::string* property_value);
 
@@ -60,7 +64,11 @@ class Element {
   bool IsSelected(void);
   bool IsInteractable(void);
   bool IsEditable(void);
+  bool IsFocusable(void);
   bool IsAttachedToDom(void);
+  bool IsDocumentFocused(IHTMLDocument2* focused_doc);
+  bool IsObscured(LocationInfo* click_location,
+                  std::string* obscuring_element_description);
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }

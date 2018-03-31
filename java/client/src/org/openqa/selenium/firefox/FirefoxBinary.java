@@ -28,8 +28,6 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
@@ -45,7 +43,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -92,8 +92,8 @@ public class FirefoxBinary {
   private static final String PATH_PREFIX = "/" +
       FirefoxBinary.class.getPackage().getName().replace(".", "/") + "/";
 
-  private final Map<String, String> extraEnv = Maps.newHashMap();
-  private final List<String> extraOptions = Lists.newArrayList();
+  private final Map<String, String> extraEnv = new HashMap<>();
+  private final List<String> extraOptions = new ArrayList<>();
   private final Executable executable;
   private CommandLine process;
   private OutputStream stream;
@@ -160,7 +160,7 @@ public class FirefoxBinary {
   }
 
   public void addCommandLineOptions(String... options) {
-    extraOptions.addAll(Lists.newArrayList(options));
+    Collections.addAll(extraOptions, options);
   }
 
   void amendOptions(FirefoxOptions options) {
@@ -183,9 +183,9 @@ public class FirefoxBinary {
       modifyLinkLibraryPath(profileDir);
     }
 
-    List<String> cmdArray = Lists.newArrayList();
+    List<String> cmdArray = new ArrayList<>();
     cmdArray.addAll(extraOptions);
-    cmdArray.addAll(Lists.newArrayList(commandLineFlags));
+    Collections.addAll(cmdArray, commandLineFlags);
     CommandLine command = new CommandLine(getPath(), Iterables.toArray(cmdArray, String.class));
     command.setEnvironmentVariables(getExtraEnv());
     command.updateDynamicLibraryPath(getExtraEnv().get(CommandLine.getLibraryPathPropertyName()));

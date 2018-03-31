@@ -29,7 +29,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -46,7 +45,7 @@ public class CrossDomainTest extends JUnit4TestBase {
 
   @AfterClass
   public static void quitDriver() {
-    JUnit4TestBase.removeDriver();
+    removeDriver();
   }
 
 
@@ -127,10 +126,6 @@ public class CrossDomainTest extends JUnit4TestBase {
   }
 
   private ExpectedCondition<Boolean> frameLocationToBe(final String url) {
-    return new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver ignored) {
-        return url.equals(getPageUrl());
-      }
-    };
+    return ignored -> url.equals(getPageUrl());
   }
 }

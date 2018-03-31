@@ -63,7 +63,13 @@ class HttpUrlBuilder {
         .collect(Collectors.toList());
     parameters.appendTo(queryString, allParams);
 
-    String baseUrl = base.toExternalForm().replaceAll("/$", "") + request.getUri();
+    String baseUrl;
+    if (request.getUri().startsWith("http://") || request.getUri().startsWith("https://")) {
+      baseUrl = request.getUri();
+    } else {
+      baseUrl = base.toExternalForm().replaceAll("/$", "") + request.getUri();
+    }
+
     if (!queryString.toString().isEmpty()) {
       baseUrl += "?" + queryString.toString();
     }

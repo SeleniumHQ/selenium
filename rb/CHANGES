@@ -1,3 +1,24 @@
+3.11.0 (2018-03-11)
+===================
+
+Ruby:
+  * No changes in Ruby bindings for this release
+
+3.10.0 (2018-03-02)
+===================
+
+Ruby:
+  * Added Errno::EAFNOSUPPORT to the list of ignored errors when finding port (thanks @jtarchie)
+  * Added automatic conversion of noProxy to the list of strings as required
+    by W3C WebDriver Specification (issue #5004)
+
+Chrome:
+  * Added Chrome::Options#headless! shortcut to enable headless mode (thanks @pulkitsharma07)
+
+IE:
+  * Added support for getting local storage using Driver#local_storage
+  * Added support for getting session storage using Driver#session_storage
+
 3.9.0 (2018-02-06)
 ==================
 

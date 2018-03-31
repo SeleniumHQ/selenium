@@ -25,8 +25,6 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 
-import com.beust.jcommander.Parameter;
-
 import org.openqa.grid.common.exception.GridConfigurationException;
 
 import java.io.BufferedReader;
@@ -45,7 +43,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StandaloneConfiguration {
-  public static final String DEFAULT_STANDALONE_CONFIG_FILE = "defaults/DefaultStandalone.json";
+  public static final String DEFAULT_STANDALONE_CONFIG_FILE = "org/openqa/grid/common/defaults/DefaultStandalone.json";
 
   /*
    * IMPORTANT - Keep these constant values in sync with the ones specified in
@@ -84,57 +82,19 @@ public class StandaloneConfiguration {
 
 
   /*
-   * config parameters which do not serialize or deserialize to/from json
-   */
-
-  @Parameter(
-      names = {"--version", "-version"},
-      description = "Displays the version and exits."
-  )
-  // initially defaults to false from boolean primitive type
-  public boolean version;
-
-  /*
    * config parameters which do not serialize to json
    */
-
   @Expose( serialize = false )
-  @Parameter(
-    names = {"-avoidProxy"},
-    description = "DO NOT USE: Hack to allow selenium 3.0 server run in SauceLabs",
-    hidden = true
-  )
   // initially defaults to false from boolean primitive type
   private boolean avoidProxy;
 
   @Expose( serialize = false )
-  @Parameter(
-    names = "-browserSideLog",
-    description = "DO NOT USE: Provided for compatibility with 2.0",
-    hidden = true
-  )
   // initially defaults to false from boolean primitive type
   private boolean browserSideLog;
 
   @Expose( serialize = false )
-  @Parameter(
-    names = "-captureLogsOnQuit",
-    description = "DO NOT USE: Provided for compatibility with 2.0",
-    hidden = true
-  )
   // initially defaults to false from boolean primitive type
   private boolean captureLogsOnQuit;
-
-  @Expose( serialize = false )
-  @Parameter(
-    names = {"--help", "-help", "-h"},
-    help = true,
-    hidden = true,
-    description = "Displays this help."
-  )
-
-  // Initially defaults to false from boolean primitive type
-  public boolean help;
 
   /*
    * config parameters which serialize and deserialize to/from json
@@ -144,70 +104,42 @@ public class StandaloneConfiguration {
    * Browser timeout. Default 0 (indefinite wait).
    */
   @Expose
-  @Parameter(
-    names = "-browserTimeout",
-    description = "<Integer> in seconds : number of seconds a browser session is allowed to hang while a WebDriver command is running (example: driver.get(url)). If the timeout is reached while a WebDriver command is still processing, the session will quit. Minimum value is 60. An unspecified, zero, or negative value means wait indefinitely."
-  )
   public Integer browserTimeout = DEFAULT_BROWSER_TIMEOUT;
 
   /**
    * Enable {@code LogLevel.FINE} log messages. Default {@code false}.
    */
   @Expose
-  @Parameter(
-    names = "-debug",
-    description = "<Boolean> : enables LogLevel.FINE."
-  )
   public Boolean debug = DEFAULT_DEBUG_TOGGLE;
 
   /**
    *   Max threads for Jetty. Defaults to {@code null}.
    */
   @Expose
-  @Parameter(
-    names = {"-jettyThreads", "-jettyMaxThreads"},
-    description = "<Integer> : max number of threads for Jetty. An unspecified, zero, or negative value means the Jetty default value (200) will be used."
-  )
   public Integer jettyMaxThreads;
 
   /**
    *   Filename to use for logging. Defaults to {@code null}.
    */
   @Expose
-  @Parameter(
-    names = "-log",
-    description = "<String> filename : the filename to use for logging. If omitted, will log to STDOUT"
-  )
   public String log;
 
   /**
    * Port to bind to. Default determined by configuration type.
    */
   @Expose
-  @Parameter(
-    names = {"-port"},
-    description = "<Integer> : the port number the server will use."
-  )
   public Integer port = DEFAULT_PORT;
 
   /**
    * Server role. Default determined by configuration type.
    */
   @Expose
-  @Parameter(
-    names = "-role",
-    description = "<String> options are [hub], [node], or [standalone]."
-  )
   public String role = DEFAULT_ROLE;
 
   /**
    * Client timeout. Default 1800 sec.
    */
   @Expose
-  @Parameter(
-    names = {"-timeout", "-sessionTimeout"},
-    description = "<Integer> in seconds : Specifies the timeout before the server automatically kills a session that hasn't had any activity in the last X seconds. The test slot will then be released for another test to use. This is typically used to take care of client crashes. For grid hub/node roles, cleanUpCycle must also be set."
-  )
   public Integer timeout = DEFAULT_TIMEOUT;
 
   /**
@@ -302,7 +234,6 @@ public class StandaloneConfiguration {
     StringBuilder sb = new StringBuilder();
     sb.append(toString(format, "browserTimeout", browserTimeout));
     sb.append(toString(format, "debug", debug));
-    sb.append(toString(format, "help", help));
     sb.append(toString(format, "jettyMaxThreads", jettyMaxThreads));
     sb.append(toString(format, "log", log));
     sb.append(toString(format, "port", port));

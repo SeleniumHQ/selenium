@@ -87,21 +87,37 @@ bot.action.clear = function(element) {
         'Element must be user-editable in order to clear it.');
   }
 
-  bot.action.LegacyDevice_.focusOnElement(element);
   if (element.value) {
-    element.value = '';
+    bot.action.LegacyDevice_.focusOnElement(element);
+    if (goog.userAgent.IE && bot.dom.isInputType(element, 'range')) {
+      var min = element.min ? element.min : 0;
+      var max = element.max ? element.max : 100;
+      element.value = (max < min) ? min : min + (max - min) / 2;
+    } else {
+      element.value = '';
+    }
     bot.events.fire(element, bot.events.EventType.CHANGE);
+    bot.events.fire(element, bot.events.EventType.BLUR);
+    var body = bot.getDocument().body;
+    if (body) {
+      bot.action.LegacyDevice_.focusOnElement(body);
+    } else {
+      throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+        'Cannot unfocus element after clearing.');
+    }
   } else if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
              (element.getAttribute('type') && element.getAttribute('type').toLowerCase() == "number")) {
     // number input fields that have invalid inputs
     // report their value as empty string with no way to tell if there is a
     // current value or not
+    bot.action.LegacyDevice_.focusOnElement(element);
     element.value = '';
   }
 
   if (bot.dom.isContentEditable(element)) {
     // A single space is required, if you put empty string here you'll not be
     // able to interact with this element anymore in Firefox.
+    bot.action.LegacyDevice_.focusOnElement(element);
     element.innerHTML = ' ';
     // contentEditable does not generate onchange event.
   }

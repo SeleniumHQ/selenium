@@ -32,7 +32,6 @@ import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 

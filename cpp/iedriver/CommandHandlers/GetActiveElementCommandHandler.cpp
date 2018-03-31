@@ -62,10 +62,18 @@ void GetActiveElementCommandHandler::ExecuteInternal(
     }
   }
 
-  // If we don't have an element at this point, we should return a
-  // null result, as that's what document.activeElement() returns.
+  // If we don't have an element at this point, but the document
+  // has a body element, we should return a null result, as that's
+  // what document.activeElement() returns. However, if there is no
+  // body element, throw no such element.
   if (!element) {
-    response->SetSuccessResponse(Json::Value::null);
+    CComPtr<IHTMLElement> body;
+    hr = doc->get_body(&body);
+    if (body) {
+      response->SetSuccessResponse(Json::Value::null);
+    } else {
+      response->SetErrorResponse(ERROR_NO_SUCH_ELEMENT, "No active element found, and no body element present.");
+    }
     return;
   }
 

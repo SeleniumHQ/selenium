@@ -43,7 +43,35 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
                                  const std::string& element_id,
                                  ElementHandle* element_wrapper) {
   LOG(TRACE) << "Entering IECommandHandler::GetElement";
-  return executor.GetManagedElement(element_id, element_wrapper);
+  ElementHandle candidate_wrapper;
+  int result = executor.GetManagedElement(element_id, &candidate_wrapper);
+  if (result != WD_SUCCESS) {
+    LOG(WARN) << "Unable to get managed element, element not found";
+    return result;
+  } else {
+    if (!candidate_wrapper->IsAttachedToDom()) {
+      LOG(WARN) << "Found managed element is no longer valid";
+      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+      mutable_executor.RemoveManagedElement(element_id);
+      return EOBSOLETEELEMENT;
+    } else {
+      // If the element is attached to the DOM, validate that its document
+      // is the currently-focused document (via frames).
+      BrowserHandle current_browser;
+      executor.GetCurrentBrowser(&current_browser);
+      CComPtr<IHTMLDocument2> focused_doc;
+      current_browser->GetDocument(&focused_doc);
+
+      if (candidate_wrapper->IsDocumentFocused(focused_doc)) {
+        *element_wrapper = candidate_wrapper;
+        return WD_SUCCESS;
+      } else {
+        LOG(WARN) << "Found managed element's document is not currently focused";
+      }
+    }
+  }
+
+  return EOBSOLETEELEMENT;
 }
 
 Json::Value IECommandHandler::RecreateJsonParameterObject(const ParametersMap& command_parameters) {

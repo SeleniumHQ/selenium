@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net45;net40;net35;netstandard2.0</TargetFrameworks>
@@ -26,11 +26,6 @@
     <PackageId>Selenium.WebDriverBackedSelenium</PackageId>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(SignAssembly)'=='true'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\WebDriver.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">
@@ -84,6 +79,57 @@
 
   <ItemGroup>
     <ProjectReference Include="..\webdriver\WebDriver.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(BuildSystem)' == 'buck'">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\java\client\src\com\thoughtworks\selenium\webdriven\injectableSelenium.js\injectableSelenium.js">
+      <Visible>False</Visible>
+      <LogicalName>injectableSelenium.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\java\client\src\com\thoughtworks\selenium\webdriven\htmlutils.js\htmlutils.js">
+      <Visible>False</Visible>
+      <LogicalName>htmlutils.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\findElement.js">
+      <Visible>False</Visible>
+      <LogicalName>findElement.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\findOption.js">
+      <Visible>False</Visible>
+      <LogicalName>findOption.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\fireEvent.js">
+      <Visible>False</Visible>
+      <LogicalName>fireEvent.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\fireEventAt.js">
+      <Visible>False</Visible>
+      <LogicalName>fireEventAt.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\getText.js">
+      <Visible>False</Visible>
+      <LogicalName>getText.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\linkLocator.js">
+      <Visible>False</Visible>
+      <LogicalName>linkLocator.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\isElementPresent.js">
+      <Visible>False</Visible>
+      <LogicalName>isElementPresent.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\isSomethingSelected.js">
+      <Visible>False</Visible>
+      <LogicalName>isSomethingSelected.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\isVisible.js">
+      <Visible>False</Visible>
+      <LogicalName>isVisible.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\type.js">
+      <Visible>False</Visible>
+      <LogicalName>type.js</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildSystem)' == 'visual-studio'">

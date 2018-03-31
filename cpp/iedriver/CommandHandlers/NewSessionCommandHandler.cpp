@@ -100,6 +100,8 @@ Json::Value NewSessionCommandHandler::GetCapability(
     const std::string& capability_name,
     const Json::ValueType& expected_capability_type,
     const Json::Value& default_value) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::GetCapability "
+             << "for capability " << capability_name;
   Json::Value capability_value = capabilities.get(capability_name, default_value);
   if (!this->IsEquivalentType(capability_value.type(), expected_capability_type)) {
     LOG(WARN) << "Invalid capability setting: " << capability_name
@@ -146,6 +148,7 @@ std::string NewSessionCommandHandler::GetJsonTypeDescription(
 
 std::string NewSessionCommandHandler::GetUnexpectedAlertBehaviorValue(
     const std::string& desired_value) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::GetUnexpectedAlertBehaviorValue";
   std::string value = DISMISS_AND_NOTIFY_UNEXPECTED_ALERTS;
   if (desired_value == DISMISS_UNEXPECTED_ALERTS ||
       desired_value == ACCEPT_UNEXPECTED_ALERTS ||
@@ -163,6 +166,7 @@ std::string NewSessionCommandHandler::GetUnexpectedAlertBehaviorValue(
 
 std::string NewSessionCommandHandler::GetPageLoadStrategyValue(
     const std::string& desired_value) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::GetPageLoadStrategyValue";
   std::string value = NORMAL_PAGE_LOAD_STRATEGY;
   if (desired_value == NORMAL_PAGE_LOAD_STRATEGY ||
       desired_value == EAGER_PAGE_LOAD_STRATEGY ||
@@ -176,7 +180,10 @@ std::string NewSessionCommandHandler::GetPageLoadStrategyValue(
   return value;
 }
 
-Json::Value NewSessionCommandHandler::ProcessLegacyCapabilities(const IECommandExecutor& executor, const Json::Value& capabilities, std::string* error_message) {
+Json::Value NewSessionCommandHandler::ProcessLegacyCapabilities(const IECommandExecutor& executor,
+                                                                const Json::Value& capabilities,
+                                                                std::string* error_message) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::ProcessLegacyCapabilities";
   this->SetBrowserFactorySettings(executor, capabilities);
 
   this->SetInputSettings(executor, capabilities);
@@ -197,7 +204,9 @@ Json::Value NewSessionCommandHandler::ProcessLegacyCapabilities(const IECommandE
   return this->CreateReturnedCapabilities(executor);
 }
 
-Json::Value NewSessionCommandHandler::ValidateArguments(const Json::Value& capabilities, std::string* error_message) {
+Json::Value NewSessionCommandHandler::ValidateArguments(const Json::Value& capabilities,
+                                                        std::string* error_message) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::ValidateArguments";
   Json::Value validated_capabilities(Json::arrayValue);
   if (!capabilities.isObject()) {
     *error_message = "'capabilities' in new session request body is not a JSON object.";
@@ -213,6 +222,7 @@ Json::Value NewSessionCommandHandler::ValidateArguments(const Json::Value& capab
     }
   }
 
+  LOG(DEBUG) << "Validating alwaysMatch capability set";
   if (this->ValidateCapabilities(always_match, "alwaysMatch", error_message)) {
     Json::Value empty_capabilities(Json::objectValue);
     Json::Value first_match_candidates(Json::arrayValue);
@@ -233,6 +243,7 @@ Json::Value NewSessionCommandHandler::ValidateArguments(const Json::Value& capab
       bool first_match_validation_failure = false;
       Json::Value validated_first_match_candidates(Json::arrayValue);
       for (size_t i = 0; i < first_match_candidates.size(); ++i) {
+        LOG(DEBUG) << "Validating firstMatch capability set with index " << i;
         std::string first_match_validation_error = "";
         Json::Value first_match_candidate = first_match_candidates[static_cast<int>(i)];
         if (this->ValidateCapabilities(first_match_candidate, "firstMatch element " + std::to_string(i), &first_match_validation_error)) {
@@ -278,14 +289,18 @@ Json::Value NewSessionCommandHandler::ValidateArguments(const Json::Value& capab
   return validated_capabilities;
 }
 
-Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecutor& executor, const Json::Value& capabilities, std::string* error_message) {
+Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecutor& executor,
+                                                          const Json::Value& capabilities,
+                                                          std::string* error_message) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::ProcessCapabilities";
   for (size_t i = 0; i < capabilities.size(); ++i) {
     std::string match_error = "";
     Json::Value merged_capabilities = capabilities[static_cast<int>(i)];
     if (this->MatchCapabilities(executor, merged_capabilities, &match_error)) {
+      LOG(DEBUG) << "Processing matched capability set with index " << i;
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
 
-      Json::Value unexpected_alert_behavior = this->GetCapability(merged_capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, "");
+      Json::Value unexpected_alert_behavior = this->GetCapability(merged_capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, Json::Value(Json::stringValue));
       mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
 
       Json::Value page_load_strategy = this->GetCapability(merged_capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
@@ -328,6 +343,7 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
 }
 
 void NewSessionCommandHandler::SetTimeoutSettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::SetTimeoutSettings";
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
   if (capabilities.isMember("implicit")) {
     mutable_executor.set_implicit_wait_timeout(capabilities["implicit"].asUInt64());
@@ -341,6 +357,7 @@ void NewSessionCommandHandler::SetTimeoutSettings(const IECommandExecutor& execu
 }
 
 void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::SetBrowserFactorySettings";
   std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
   if (!capabilities.isNull()) {
     BrowserFactorySettings factory_settings;
@@ -350,7 +367,7 @@ void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor
     Json::Value ignore_zoom_setting = this->GetCapability(capabilities, IGNORE_ZOOM_SETTING_CAPABILITY, Json::booleanValue, false);
     factory_settings.ignore_zoom_setting = ignore_zoom_setting.asBool();
 
-    Json::Value browser_attach_timeout = this->GetCapability(capabilities, BROWSER_ATTACH_TIMEOUT_CAPABILITY, Json::intValue, 0);
+    Json::Value browser_attach_timeout = this->GetCapability(capabilities, BROWSER_ATTACH_TIMEOUT_CAPABILITY, Json::intValue, Json::Value(Json::intValue));
     factory_settings.browser_attach_timeout = browser_attach_timeout.asInt();
 
     Json::Value initial_url = this->GetCapability(capabilities, INITIAL_BROWSER_URL_CAPABILITY, Json::stringValue, default_initial_url);
@@ -362,7 +379,7 @@ void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor
     Json::Value force_shell_windows_api = this->GetCapability(capabilities, FORCE_SHELL_WINDOWS_API_CAPABILITY, Json::booleanValue, false);
     factory_settings.force_shell_windows_api = force_shell_windows_api.asBool();
 
-    Json::Value browser_command_line_switches = this->GetCapability(capabilities, BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY, Json::stringValue, "");
+    Json::Value browser_command_line_switches = this->GetCapability(capabilities, BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY, Json::stringValue, Json::Value(Json::stringValue));
     factory_settings.browser_command_line_switches = browser_command_line_switches.asString();
 
     Json::Value ensure_clean_session = this->GetCapability(capabilities, ENSURE_CLEAN_SESSION_CAPABILITY, Json::booleanValue, false);
@@ -374,6 +391,7 @@ void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor
 }
 
 void NewSessionCommandHandler::SetProxySettings(const IECommandExecutor& executor, const Json::Value& proxy_capability, const bool use_per_process_proxy) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::SetProxySettings";
   ProxySettings proxy_settings = { false, "", "", "", "", "", "", "", "", "" };
   if (!proxy_capability.isNull()) {
     // TODO(JimEvans): Validate the members of the proxy JSON object.
@@ -418,18 +436,21 @@ void NewSessionCommandHandler::SetProxySettings(const IECommandExecutor& executo
 }
 
 void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::SetInputSettings";
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  InputManagerSettings input_manager_settings;
+  input_manager_settings.element_repository = mutable_executor.element_manager();
 
   Json::Value enable_native_events = this->GetCapability(capabilities, NATIVE_EVENTS_CAPABILITY, Json::booleanValue, true);
-  mutable_executor.input_manager()->set_enable_native_events(enable_native_events.asBool());
+  input_manager_settings.use_native_events = enable_native_events.asBool();
 
-  Json::Value scroll_behavior = this->GetCapability(capabilities, ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, Json::intValue, 0);
-  mutable_executor.input_manager()->set_scroll_behavior(static_cast<ElementScrollBehavior>(scroll_behavior.asInt()));
+  Json::Value scroll_behavior = this->GetCapability(capabilities, ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, Json::intValue, Json::Value(Json::intValue));
+  input_manager_settings.scroll_behavior = static_cast<ElementScrollBehavior>(scroll_behavior.asInt());
 
   Json::Value require_window_focus = this->GetCapability(capabilities, REQUIRE_WINDOW_FOCUS_CAPABILITY, Json::booleanValue, false);
-  mutable_executor.input_manager()->set_require_window_focus(require_window_focus.asBool());
+  input_manager_settings.require_window_focus = require_window_focus.asBool();
 
-  Json::Value file_upload_dialog_timeout = this->GetCapability(capabilities, FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY, Json::intValue, 0);
+  Json::Value file_upload_dialog_timeout = this->GetCapability(capabilities, FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY, Json::intValue, Json::Value(Json::intValue));
   if (file_upload_dialog_timeout.asInt() > 0) {
     mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
   }
@@ -438,13 +459,15 @@ void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executo
   if (require_window_focus.asBool() || !enable_native_events.asBool()) {
     // Setting "require_window_focus" implies SendInput() API, and does not therefore require
     // persistent hover. Likewise, not using native events requires no persistent hover either.
-    mutable_executor.input_manager()->set_use_persistent_hover(false);
+    input_manager_settings.enable_persistent_hover = false;
   } else {
-    mutable_executor.input_manager()->set_use_persistent_hover(enable_persistent_hover.asBool());
+    input_manager_settings.enable_persistent_hover = enable_persistent_hover.asBool();
   }
+  mutable_executor.input_manager()->Initialize(input_manager_settings);
 }
 
 Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommandExecutor& executor) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::CreateReturnedCapabilities";
   Json::Value capabilities;
   capabilities[BROWSER_NAME_CAPABILITY] = "internet explorer";
   capabilities[BROWSER_VERSION_CAPABILITY] = std::to_string(static_cast<long long>(executor.browser_factory()->browser_version()));
@@ -489,6 +512,7 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
 }
 
 bool NewSessionCommandHandler::MatchCapabilities(const IECommandExecutor& executor, const Json::Value& merged_capabilities, std::string* error_message) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::MatchCapabilities";
   std::vector<std::string> capability_names = merged_capabilities.getMemberNames();
   std::vector<std::string>::const_iterator name_iterator = capability_names.begin();
   for (; name_iterator != capability_names.end(); ++name_iterator) {
@@ -532,7 +556,8 @@ bool NewSessionCommandHandler::MatchCapabilities(const IECommandExecutor& execut
     }
 
     if (capability_name.find(":") != std::string::npos &&
-        capability_name != IE_DRIVER_EXTENSIONS_CAPABILITY) {
+        (capability_name != IE_DRIVER_EXTENSIONS_CAPABILITY &&
+        capability_name.find("test:") == std::string::npos)) {
       *error_message = capability_name + " is an unknown extension capability for IE";
       return false;
     }
@@ -546,6 +571,7 @@ bool NewSessionCommandHandler::MergeCapabilities(
     const Json::Value& secondary_capabilities,
     Json::Value* merged_capabilities,
     std::string* error_message) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::MergeCapabilities";
   std::vector<std::string> primary_property_names = primary_capabilities.getMemberNames();
   for (size_t i = 0; i < primary_property_names.size(); ++i) {
     std::string property_name = primary_property_names[i];
@@ -569,6 +595,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     const Json::Value& capabilities,
     const std::string& capability_set_name,
     std::string* error_message) {
+  LOG(TRACE) << "Entering NewSessionCommandHandler::ValidateCapabilities";
   LOG(DEBUG) << "Validating capabilities object";
   if (!capabilities.isObject() && !capabilities.isNull()) {
     *error_message = capability_set_name + " is not a JSON object.";
@@ -720,12 +747,6 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                    << " object contains correct property names.";
         Json::Value timeouts = capabilities[capability_name];
         std::vector<std::string> timeout_names = timeouts.getMemberNames();
-        if (timeout_names.size() == 0) {
-          *error_message = "Invalid capabilities in " +
-                           capability_set_name + ": " +
-                           "no timeouts specified";
-          return false;
-        }
         std::vector<std::string>::const_iterator timeout_name_iterator = timeout_names.begin();
         for (; timeout_name_iterator != timeout_names.end(); ++timeout_name_iterator) {
           std::string timeout_name = *timeout_name_iterator;

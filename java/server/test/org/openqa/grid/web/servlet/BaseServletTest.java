@@ -19,11 +19,13 @@ package org.openqa.grid.web.servlet;
 
 import com.google.gson.JsonObject;
 
+import org.openqa.selenium.json.Json;
 import org.openqa.testing.FakeHttpServletRequest;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.openqa.testing.UrlInfo;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -41,14 +43,16 @@ public class BaseServletTest {
 
   protected FakeHttpServletResponse sendCommand(String method, String commandPath)
     throws IOException, ServletException {
-    return sendCommand(method, commandPath, null);
+    return sendCommand(method, commandPath, (Map<String, Object>) null);
   }
 
-  protected FakeHttpServletResponse sendCommand(String method, String commandPath,
-                                              JsonObject parameters) throws IOException, ServletException {
+  protected FakeHttpServletResponse sendCommand(
+      String method,
+      String commandPath,
+      Map<String, Object> parameters) throws IOException, ServletException {
     FakeHttpServletRequest request = new FakeHttpServletRequest(method, createUrl(commandPath));
     if (parameters != null) {
-      request.setBody(parameters.toString());
+      request.setBody(new Json().toJson(parameters));
     }
     FakeHttpServletResponse response = new FakeHttpServletResponse();
     servlet.service(request, response);

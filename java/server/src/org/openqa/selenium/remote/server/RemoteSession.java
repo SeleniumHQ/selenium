@@ -163,13 +163,15 @@ public abstract class RemoteSession implements ActiveSession {
 
         Response response = result.createResponse();
         //noinspection unchecked
-        return Optional.of(newActiveSession(
+        Optional<ActiveSession> activeSession = Optional.of(newActiveSession(
             additionalData,
             downstream,
             upstream,
             codec,
             new SessionId(response.getSessionId()),
             (Map<String, Object>) response.getValue()));
+        activeSession.ifPresent(session -> log.info("Started new session " + session));
+        return activeSession;
       } catch (IOException | IllegalStateException | NullPointerException e) {
         log.log(Level.WARNING, e.getMessage(), e);
         return Optional.empty();

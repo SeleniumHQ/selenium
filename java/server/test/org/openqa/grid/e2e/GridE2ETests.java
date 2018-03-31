@@ -17,11 +17,6 @@
 
 package org.openqa.grid.e2e;
 
-/**
- * Created with IntelliJ IDEA. User: alexei Date: 05.05.13 Time: 15:29 To change this template use
- * File | Settings | File Templates.
- */
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.grid.e2e.misc.ConfigInheritanceTest;

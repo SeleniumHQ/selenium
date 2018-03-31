@@ -25,7 +25,7 @@ module Selenium
         describe '#initialize' do
           it 'sets passed args' do
             opt = Options.new(args: %w[foo bar])
-            expect(opt.args).to eq(%w[foo bar])
+            expect(opt.args.to_a).to eq(%w[foo bar])
           end
 
           it 'sets passed browser_attach_timeout' do
@@ -107,7 +107,7 @@ module Selenium
         describe '#add_argument' do
           it 'adds a command-line argument' do
             subject.add_argument('foo')
-            expect(subject.args).to include('foo')
+            expect(subject.args.to_a).to eq(['foo'])
           end
         end
 

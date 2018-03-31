@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.logging;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -29,11 +27,11 @@ public abstract class LocalLogs implements Logs {
 
   private static final LocalLogs NULL_LOGGER = new LocalLogs() {
     public LogEntries get(String logType) {
-      return new LogEntries(ImmutableList.<LogEntry>of());
+      return new LogEntries(Collections.emptyList());
     }
 
     public Set<String> getAvailableLogTypes() {
-      return ImmutableSet.of();
+      return Collections.emptySet();
     }
 
     public void addEntry(String logType, LogEntry entry) {

@@ -17,24 +17,17 @@
 
 package org.openqa.grid.internal;
 
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.http.HttpClient;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
 public interface GridRegistry {
   String KEY = GridRegistry.class.getName();
-
-  /**
-   * @return the {@link GridHubConfiguration} for this registry
-   * @deprecated use #getHub() to access the {@link GridHubConfiguration} instead.
-   */
-  @Deprecated
-  GridHubConfiguration getConfiguration();
 
   /**
    * Ends this test session, releasing the resources in the registry. Resources should be released
@@ -161,15 +154,14 @@ public interface GridRegistry {
   void stop();
 
   /**
-   * @return the {@link HttpClientFactory} to use
+    * @return the {@link HttpClient.Factory} to use.
    */
-  HttpClientFactory getHttpClientFactory();
+  HttpClient getHttpClient(URL url);
 
   /**
    * Remove a new session request from the registry
    *
    * @param requestHandler the {@link RequestHandler}
-   * @return
    */
   boolean removeNewSessionRequest(RequestHandler requestHandler);
 

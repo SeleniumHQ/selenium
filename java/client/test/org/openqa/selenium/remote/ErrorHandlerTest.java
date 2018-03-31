@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
@@ -28,7 +29,6 @@ import static org.junit.Assert.fail;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -297,7 +297,7 @@ public class ErrorHandlerTest {
   public void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
-        "stackTrace", Lists.newArrayList(
+        "stackTrace", asList(
             ImmutableMap.of("lineNumber", 1224,
                 "methodName", "someMethod",
                 "className", "MyClass",
@@ -332,7 +332,7 @@ public class ErrorHandlerTest {
   public void testToleratesNonNumericLineNumber() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
-        "stackTrace", Lists.newArrayList(
+        "stackTrace", asList(
             ImmutableMap.of("lineNumber", "some string, might be empty or 'Not avalable'",
                 "methodName", "someMethod",
                 "className", "MyClass",
@@ -367,7 +367,7 @@ public class ErrorHandlerTest {
   public void testToleratesNumericLineNumberAsString() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
-        "stackTrace", Lists.newArrayList(
+        "stackTrace", asList(
             ImmutableMap.of("lineNumber", "1224", // number as a string
                 "methodName", "someMethod",
                 "className", "MyClass",

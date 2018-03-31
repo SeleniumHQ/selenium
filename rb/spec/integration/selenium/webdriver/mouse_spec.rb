@@ -57,7 +57,7 @@ module Selenium
         end
       end
 
-      it 'context clicks an element', exclude: {browser: :safari} do
+      it 'context clicks an element', except: {browser: :safari} do
         driver.navigate.to url_for('javascriptPage.html')
         element = driver.find_element(id: 'doubleClickField')
 

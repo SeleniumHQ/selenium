@@ -19,15 +19,15 @@ package org.openqa.selenium.support.ui;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -68,17 +68,25 @@ import java.util.function.Supplier;
  */
 public class FluentWait<T> implements Wait<T> {
 
-  public static final Duration FIVE_HUNDRED_MILLIS = new Duration(500, MILLISECONDS);
+  protected final static long DEFAULT_SLEEP_TIMEOUT = 500;
+
+  /**
+   * @deprecated use {@link #DEFAULT_WAIT_DURATION}
+   */
+  @Deprecated
+  public static final Duration FIVE_HUNDRED_MILLIS = new Duration(DEFAULT_SLEEP_TIMEOUT, MILLISECONDS);
+
+  private static final java.time.Duration DEFAULT_WAIT_DURATION = java.time.Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
   private final T input;
   private final Clock clock;
   private final Sleeper sleeper;
 
-  private Duration timeout = FIVE_HUNDRED_MILLIS;
-  private Duration interval = FIVE_HUNDRED_MILLIS;
+  private java.time.Duration timeout = DEFAULT_WAIT_DURATION;
+  private java.time.Duration interval = DEFAULT_WAIT_DURATION;
   private Supplier<String> messageSupplier = () -> null;
 
-  private List<Class<? extends Throwable>> ignoredExceptions = Lists.newLinkedList();
+  private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
   /**
    * @param input The input value to pass to the evaluated conditions.
@@ -102,12 +110,27 @@ public class FluentWait<T> implements Wait<T> {
    * Sets how long to wait for the evaluated condition to be true. The default timeout is
    * {@link #FIVE_HUNDRED_MILLIS}.
    *
+   * @deprecated use {@link #withTimeout(java.time.Duration)}
+   *
    * @param duration The timeout duration.
    * @param unit The unit of time.
    * @return A self reference.
    */
+  @Deprecated
   public FluentWait<T> withTimeout(long duration, TimeUnit unit) {
-    this.timeout = new Duration(duration, unit);
+    return withTimeout(java.time.Duration.of(duration, toChronoUnit(unit)));
+  }
+
+
+  /**
+   * Sets how long to wait for the evaluated condition to be true. The default timeout is
+   * {@link #DEFAULT_WAIT_DURATION}.
+   *
+   * @param timeout The timeout duration.
+   * @return A self reference.
+   */
+  public FluentWait<T> withTimeout(java.time.Duration timeout) {
+    this.timeout = timeout;
     return this;
   }
 
@@ -140,12 +163,29 @@ public class FluentWait<T> implements Wait<T> {
    * In reality, the interval may be greater as the cost of actually evaluating a condition function
    * is not factored in. The default polling interval is {@link #FIVE_HUNDRED_MILLIS}.
    *
+   * @deprecated use {@link #pollingEvery(java.time.Duration)}
+   *
    * @param duration The timeout duration.
    * @param unit The unit of time.
    * @return A self reference.
    */
+  @Deprecated
   public FluentWait<T> pollingEvery(long duration, TimeUnit unit) {
-    this.interval = new Duration(duration, unit);
+    return pollingEvery(java.time.Duration.of(duration, toChronoUnit(unit)));
+  }
+
+  /**
+   * Sets how often the condition should be evaluated.
+   *
+   * <p>
+   * In reality, the interval may be greater as the cost of actually evaluating a condition function
+   * is not factored in. The default polling interval is {@link #DEFAULT_WAIT_DURATION}.
+   *
+   * @param interval The timeout duration.
+   * @return A self reference.
+   */
+  public FluentWait<T> pollingEvery(java.time.Duration interval) {
+    this.interval = interval;
     return this;
   }
 
@@ -201,7 +241,7 @@ public class FluentWait<T> implements Wait<T> {
    */
   @Override
   public <V> V until(Function<? super T, V> isTrue) {
-    long end = clock.laterBy(timeout.in(MILLISECONDS));
+    long end = clock.laterBy(timeout.toMillis());
     Throwable lastException;
     while (true) {
       try {
@@ -225,9 +265,9 @@ public class FluentWait<T> implements Wait<T> {
             messageSupplier.get() : null;
 
         String timeoutMessage = String.format(
-            "Expected condition failed: %s (tried for %d second(s) with %s interval)",
+            "Expected condition failed: %s (tried for %d second(s) with %d milliseconds interval)",
             message == null ? "waiting for " + isTrue : message,
-            timeout.in(SECONDS), interval);
+            timeout.getSeconds(), interval.toMillis());
         throw timeoutException(timeoutMessage, lastException);
       }
 
@@ -261,5 +301,34 @@ public class FluentWait<T> implements Wait<T> {
    */
   protected RuntimeException timeoutException(String message, Throwable lastException) {
     throw new TimeoutException(message, lastException);
+  }
+
+  /**
+   * Converts the {@code TimeUnit} to the equivalent {@code ChronoUnit}.
+   *
+   * This is a backport from Java 9, see https://bugs.openjdk.java.net/browse/JDK-8141452.
+   *
+   * @param timeUnit the TimeUnit to convert
+   * @return the converted equivalent ChronoUnit
+   */
+  private ChronoUnit toChronoUnit(TimeUnit timeUnit) {
+    switch (timeUnit) {
+      case NANOSECONDS:
+        return ChronoUnit.NANOS;
+      case MICROSECONDS:
+        return ChronoUnit.MICROS;
+      case MILLISECONDS:
+        return ChronoUnit.MILLIS;
+      case SECONDS:
+        return ChronoUnit.SECONDS;
+      case MINUTES:
+        return ChronoUnit.MINUTES;
+      case HOURS:
+        return ChronoUnit.HOURS;
+      case DAYS:
+        return ChronoUnit.DAYS;
+      default:
+        throw new IllegalArgumentException("No ChronoUnit equivalent for " + timeUnit);
+    }
   }
 }

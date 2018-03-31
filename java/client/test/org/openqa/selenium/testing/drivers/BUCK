@@ -11,7 +11,6 @@ java_library(name = 'browser',
 
 java_library(name = 'drivers',
   srcs = glob(['*Driver.java', '*Supplier.java',]) + [
-    'Firebug.java',
     'IgnoreComparator.java',
     'OutOfProcessSeleniumServer.java',
     'TestIgnorance.java',

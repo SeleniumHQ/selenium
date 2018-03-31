@@ -108,7 +108,7 @@ public class RemoteProxyFactory {
   }
 
   private static RemoteProxy createProxy(GridRegistry registry, RegistrationRequest req) {
-    final RemoteProxy remoteProxy = new DetachedRemoteProxy(req, registry);
+    final RemoteProxy remoteProxy = new BaseRemoteProxy(req, registry);
     remoteProxy.setupTimeoutListener();
     return remoteProxy;
   }

@@ -22,7 +22,11 @@ module Selenium
         class Common
           MAX_REDIRECTS   = 20 # same as chromium/gecko
           CONTENT_TYPE    = 'application/json'.freeze
-          DEFAULT_HEADERS = {'Accept' => CONTENT_TYPE}.freeze
+          DEFAULT_HEADERS = {
+            'Accept' => CONTENT_TYPE,
+            'Content-Type' => "#{CONTENT_TYPE}; charset=UTF-8",
+            'User-Agent' => "selenium/#{WebDriver::VERSION} (ruby #{Platform.os})"
+          }.freeze
 
           attr_accessor :timeout
           attr_writer :server_url
@@ -46,7 +50,6 @@ module Selenium
 
             if command_hash
               payload                   = JSON.generate(command_hash)
-              headers['Content-Type']   = "#{CONTENT_TYPE}; charset=utf-8"
               headers['Content-Length'] = payload.bytesize.to_s if [:post, :put].include?(verb)
 
               WebDriver.logger.info("   >>> #{url} | #{payload}")

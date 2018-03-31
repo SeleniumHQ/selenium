@@ -21,8 +21,8 @@ module Selenium
   module WebDriver
     describe Driver do
       it_behaves_like 'driver that can be started concurrently', except: [{browser: :edge},
-                                                                          {driver: :safari}],
-                                                                 exclude: {browser: :safari_preview}
+                                                                          {driver: :safari},
+                                                                          {browser: :safari_preview}]
 
       it 'should get the page title' do
         driver.navigate.to url_for('xhtmlTest.html')
@@ -277,7 +277,7 @@ module Selenium
 
       describe 'execute async script' do
         before do
-          driver.manage.timeouts.script_timeout = 0
+          driver.manage.timeouts.script_timeout = 1
           driver.navigate.to url_for('ajaxy_page.html')
         end
 

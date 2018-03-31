@@ -441,6 +441,22 @@ namespace OpenQA.Selenium
         /// dialect of the wire protocol.</returns>
         internal Dictionary<string, object> ToCapability()
         {
+            return this.AsDictionary(true);
+        }
+
+        /// <summary>
+        /// Returns a dictionary suitable for serializing to the OSS dialect of the
+        /// wire protocol.
+        /// </summary>
+        /// <returns>A dictionary suitable for serializing to the OSS dialect of the
+        /// wire protocol.</returns>
+        internal Dictionary<string, object> ToLegacyCapability()
+        {
+            return this.AsDictionary(false);
+        }
+
+        private Dictionary<string, object> AsDictionary(bool isSpecCompliant)
+        {
             Dictionary<string, object> serializedDictionary = null;
             if (this.proxyKind != ProxyKind.Unspecified)
             {
@@ -484,17 +500,32 @@ namespace OpenQA.Selenium
 
                 if (this.noProxyAddresses.Count > 0)
                 {
-                    List<object> addressList = new List<object>();
-                    foreach (string address in this.noProxyAddresses)
-                    {
-                        addressList.Add(address);
-                    }
-
-                    serializedDictionary["noProxy"] = addressList;
+                    serializedDictionary["noProxy"] = this.GetNoProxyAddressList(isSpecCompliant);
                 }
             }
 
             return serializedDictionary;
+        }
+
+        private object GetNoProxyAddressList(bool isSpecCompliant)
+        {
+            object addresses = null;
+            if (isSpecCompliant)
+            {
+                List<object> addressList = new List<object>();
+                foreach (string address in this.noProxyAddresses)
+                {
+                    addressList.Add(address);
+                }
+
+                addresses = addressList;
+            }
+            else
+            {
+                addresses = this.BypassProxyAddresses;
+            }
+
+            return addresses;
         }
 
         private void VerifyProxyTypeCompatilibily(ProxyKind compatibleProxy)

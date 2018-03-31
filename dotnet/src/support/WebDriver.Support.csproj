@@ -28,11 +28,6 @@
     <FileVersion>3.0.0.0</FileVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(SignAssembly)'=='true'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\WebDriver.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">
     <DocumentationFile>..\..\..\build\cli\Release\net35\WebDriver.Support.xml</DocumentationFile>
   </PropertyGroup>
@@ -76,6 +71,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="BUCK" />
     <None Remove="build.desc" />
     <None Remove="Settings.StyleCop" />
     <None Remove="WebDriver.Support.ruleset" />

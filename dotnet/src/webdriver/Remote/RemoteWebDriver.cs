@@ -1158,7 +1158,7 @@ namespace OpenQA.Selenium.Remote
             DesiredCapabilities capabilitiesObject = capabilitiesToConvert as DesiredCapabilities;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
-                if (entry.Key != CapabilityType.Version && entry.Key != CapabilityType.Platform)
+                if (CapabilityType.IsSpecCompliantCapabilityName(entry.Key))
                 {
                     capabilitiesDictionary.Add(entry.Key, entry.Value);
                 }
@@ -1379,6 +1379,12 @@ namespace OpenQA.Selenium.Remote
 
                         case WebDriverResult.ObsoleteElement:
                             throw new StaleElementReferenceException(errorMessage);
+
+                        case WebDriverResult.ElementClickIntercepted:
+                            throw new ElementClickInterceptedException(errorMessage);
+
+                        case WebDriverResult.ElementNotInteractable:
+                            throw new ElementNotInteractableException(errorMessage);
 
                         case WebDriverResult.ElementNotDisplayed:
                             throw new ElementNotVisibleException(errorMessage);

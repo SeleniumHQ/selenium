@@ -17,7 +17,6 @@
 
 package org.openqa.grid.e2e.node;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -43,6 +42,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.net.MalformedURLException;
+import java.time.Duration;
 import java.util.function.Function;
 
 
@@ -51,7 +51,7 @@ public class CrashWhenStartingBrowserTest {
   private Hub hub;
   private SelfRegisteringRemote remote;
   private GridRegistry registry;
-  private Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
+  private Wait<Object> wait = new FluentWait<Object>("").withTimeout(Duration.ofSeconds(30));
 
   private String proxyId;
 
@@ -75,7 +75,7 @@ public class CrashWhenStartingBrowserTest {
   }
 
   @Test
-  public void serverCrashesStartingFirefox() throws MalformedURLException {
+  public void serverCrashesStartingFirefox() {
     // should be up
     DefaultRemoteProxy p;
     assertTrue(registry.getAllProxies().size() == 1);

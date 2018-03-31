@@ -17,15 +17,11 @@
 
 package org.openqa.selenium.remote.server;
 
-import java.util.logging.Logger;
-
 /**
  * Used to represent the {@link NewSessionPipeline} that is typically used in the
  * {@link SeleniumServer}}.
  */
 public class DefaultPipeline {
-
-  private static final Logger LOG = Logger.getLogger(DefaultPipeline.class.getName());
 
   private DefaultPipeline() {
     // Utility class

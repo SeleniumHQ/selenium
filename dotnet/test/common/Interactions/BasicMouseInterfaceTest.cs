@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
 using System.Drawing;
@@ -305,13 +305,13 @@ namespace OpenQA.Selenium.Interactions
             Size size = redbox.Size;
 
             new Actions(driver).MoveToElement(greenbox, 1, 1).Perform();
-            Assert.AreEqual("rgba(0, 128, 0, 1)", redbox.GetCssValue("background-color"));
+            Assert.That(redbox.GetCssValue("background-color"), Is.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
 
             new Actions(driver).MoveToElement(redbox).Perform();
-            Assert.AreEqual("rgba(255, 0, 0, 1)", redbox.GetCssValue("background-color"));
+            Assert.That(redbox.GetCssValue("background-color"), Is.EqualTo("rgba(255, 0, 0, 1)").Or.EqualTo("rgb(255, 0, 0)"));
 
             new Actions(driver).MoveToElement(redbox, size.Width + 2, size.Height + 2).Perform();
-            Assert.AreEqual("rgba(0, 128, 0, 1)", redbox.GetCssValue("background-color"));
+            Assert.That(redbox.GetCssValue("background-color"), Is.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
         }
 
         private Func<bool> FuzzyMatchingOfCoordinates(IWebElement element, int x, int y)

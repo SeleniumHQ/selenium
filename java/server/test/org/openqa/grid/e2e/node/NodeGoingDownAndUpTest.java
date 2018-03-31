@@ -17,10 +17,6 @@
 
 package org.openqa.grid.e2e.node;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import com.google.common.base.Function;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,12 +32,15 @@ import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
+import java.time.Duration;
+import java.util.function.Function;
+
 public class NodeGoingDownAndUpTest {
 
   private Hub hub;
   private GridRegistry registry;
   private SelfRegisteringRemote remote;
-  private Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
+  private Wait<Object> wait = new FluentWait<Object>("").withTimeout(Duration.ofSeconds(30));
 
   @Before
   public void prepare() throws Exception {
@@ -93,25 +92,15 @@ public class NodeGoingDownAndUpTest {
   }
 
   private Function<Object, Boolean> isUp(final DefaultRemoteProxy proxy) {
-    return new Function<Object, Boolean>() {
-      @Override
-      public Boolean apply(Object input) {
-        return !proxy.isDown();
-      }
-    };
+    return input -> !proxy.isDown();
   }
 
   private Function<Object, Boolean> isDown(final DefaultRemoteProxy proxy) {
-    return new Function<Object, Boolean>() {
-      @Override
-      public Boolean apply(Object input) {
-        return proxy.isDown();
-      }
-    };
+    return input -> proxy.isDown();
   }
 
   @After
-  public void stop() throws Exception {
+  public void stop() {
     hub.stop();
     remote.stopRemoteServer();
   }

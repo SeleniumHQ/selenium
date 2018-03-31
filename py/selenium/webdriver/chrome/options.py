@@ -17,6 +17,8 @@
 
 import base64
 import os
+import platform
+import warnings
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
@@ -158,18 +160,27 @@ class Options(object):
         """
         return '--headless' in self._arguments
 
-    def set_headless(self, headless=True):
+    @headless.setter
+    def headless(self, value):
         """
         Sets the headless argument
 
         Args:
-          headless: boolean value indicating to set the headless option
+          value: boolean value indicating to set the headless option
         """
-        args = {'--headless', '--disable-gpu'}
-        if headless:
+        args = {'--headless'}
+        if platform.system().lower() == 'windows':
+            args.add('--disable-gpu')
+        if value is True:
             self._arguments.extend(args)
         else:
             self._arguments = list(set(self._arguments) - args)
+
+    def set_headless(self, headless=True):
+        """ Deprecated, options.headless = True """
+        warnings.warn('use setter for headless property instead of set_headless',
+                      DeprecationWarning)
+        self.headless = headless
 
     def to_capabilities(self):
         """

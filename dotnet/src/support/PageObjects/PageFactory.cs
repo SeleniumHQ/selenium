@@ -26,6 +26,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// <summary>
     /// Provides the ability to produce Page Objects modeling a page. This class cannot be inherited.
     /// </summary>
+    [Obsolete("The PageFactory implementation in the .NET bindings is deprecated and will be removed in a future release. This portion of the code has been migrated to the DotNetSeleniumExtras repository on GitHub (https://github.com/DotNetSeleniumTools/DotNetSeleniumExtras)")]
     public sealed class PageFactory
     {
         /// <summary>

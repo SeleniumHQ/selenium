@@ -24,7 +24,6 @@ import org.openqa.selenium.interactions.internal.KeysRelatedAction;
 import org.openqa.selenium.interactions.internal.Locatable;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Sending a sequence of keys to an element.

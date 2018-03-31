@@ -26,7 +26,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -40,7 +39,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,12 +92,7 @@ public abstract class BaseAugmenterTest {
       }
 
       public InterfaceImplementation getImplementation(Object value) {
-        return new InterfaceImplementation() {
-          public Object invoke(ExecuteMethod executeMethod, Object self, Method method,
-              Object... args) {
-            return "Hello World";
-          }
-        };
+        return (executeMethod, self, method, args) -> "Hello World";
       }
     });
 
@@ -239,7 +233,7 @@ public abstract class BaseAugmenterTest {
 
   protected static class StubExecutor implements CommandExecutor {
     private final Capabilities capabilities;
-    private final List<Data> expected = Lists.newArrayList();
+    private final List<Data> expected = new ArrayList<>();
 
     protected StubExecutor(Capabilities capabilities) {
       this.capabilities = capabilities;
@@ -347,13 +341,7 @@ public abstract class BaseAugmenterTest {
 
     @Override
     public InterfaceImplementation getImplementation(Object value) {
-      return new InterfaceImplementation() {
-        @Override
-        public Object invoke(ExecuteMethod executeMethod, Object self, Method method,
-                             Object... args) {
-          return null;
-        }
-      };
+      return (executeMethod, self, method, args) -> null;
     }
   }
 }

@@ -115,6 +115,9 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   bool IsFullScreen(void);
   bool SetFullScreen(bool is_full_screen);
 
+  bool is_explicit_close_requested(void) const {
+    return this->is_explicit_close_requested_;
+  }
   IWebBrowser2* browser(void) { return this->browser_; }
 
  private:
@@ -130,6 +133,7 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
 
   CComPtr<IWebBrowser2> browser_;
   bool is_navigation_started_;
+  bool is_explicit_close_requested_;
 };
 
 } // namespace webdriver

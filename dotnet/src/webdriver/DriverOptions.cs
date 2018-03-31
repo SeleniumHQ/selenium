@@ -333,6 +333,11 @@ namespace OpenQA.Selenium
             if (this.Proxy != null)
             {
                 Dictionary<string, object> proxyCapability = this.Proxy.ToCapability();
+                if (!isSpecificationCompliant)
+                {
+                    proxyCapability = this.Proxy.ToLegacyCapability();
+                }
+
                 if (proxyCapability != null)
                 {
                     capabilities.SetCapability(CapabilityType.Proxy, proxyCapability);

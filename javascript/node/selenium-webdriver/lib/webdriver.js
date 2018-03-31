@@ -1440,8 +1440,8 @@ class Window {
 
   /**
    * Sets the current top-level window's size and position. You may update just
-   * the size by omitting `width` & `height`, or just the position by omitting
-   * `x` & `y` options.
+   * the size by omitting `x` & `y`, or just the position by omitting
+   * `width` & `height` options.
    *
    * @param {{x: (number|undefined),
    *          y: (number|undefined),

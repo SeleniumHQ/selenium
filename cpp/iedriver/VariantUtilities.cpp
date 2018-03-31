@@ -22,6 +22,7 @@
 
 #include "Element.h"
 #include "IECommandExecutor.h"
+#include "Script.h"
 #include "StringUtilities.h"
 
 namespace webdriver {
@@ -121,62 +122,59 @@ bool VariantUtilities::VariantIsObject(VARIANT value) {
   return false;
 }
 
-bool VariantUtilities::ConvertVariantToString(VARIANT variant_value,
-                                             std::string* value) {
-  VARTYPE type = variant_value.vt;
-  switch (type) {
-
-  case VT_BOOL:
-    LOG(DEBUG) << "Result type is boolean";
-    *value = variant_value.boolVal == VARIANT_TRUE ? "true" : "false";
-    return true;
-
-  case VT_BSTR:
-    LOG(DEBUG) << "Result type is string";
-    if (!variant_value.bstrVal) {
-      *value = "";
-    }
-    else {
-      std::wstring str_value = variant_value.bstrVal;
-      *value = StringUtilities::ToString(str_value);
-    }
-    return true;
-
-  case VT_I4:
-    LOG(DEBUG) << "Result type is int";
-    *value = std::to_string(static_cast<long long>(variant_value.lVal));
-    return true;
-
-  case VT_R4:
-    LOG(DEBUG) << "Result type is real";
-    *value = std::to_string(variant_value.dblVal);
-    return true;
-
-  case VT_EMPTY:
-  case VT_NULL:
-    LOG(DEBUG) << "Result type is empty";
-    *value = "";
-    return false;
-
-    // This is lame
-  case VT_DISPATCH:
-    LOG(DEBUG) << "Result type is dispatch";
-    *value = "";
-    return true;
-
-  default:
-    LOG(DEBUG) << "Result type is unknown: " << type;
+int VariantUtilities::VariantAsJsonValue(IElementManager* element_manager,
+                                         VARIANT variant_value,
+                                         Json::Value* value) {
+  std::vector<IDispatch*> visited;
+  if (HasSelfReferences(variant_value, &visited)) {
+    return EUNEXPECTEDJSERROR;
   }
-  return false;
+  return ConvertVariantToJsonValue(element_manager, variant_value, value);
 }
 
-int VariantUtilities::ConvertVariantToJsonValue(const IECommandExecutor& executor,
-                                                VARIANT variant_value,
-                                                Json::Value* value) {
-  return ConvertVariantToJsonValue(executor.window_handle(), variant_value, value);
+bool VariantUtilities::HasSelfReferences(VARIANT current_object,
+                                         std::vector<IDispatch*>* visited) {
+  int status_code = WD_SUCCESS;
+  bool has_self_references = false;
+  if (VariantIsArray(current_object) || VariantIsObject(current_object)) {
+    std::vector<std::wstring> property_names;
+    if (VariantIsArray(current_object)) {
+      long length = 0;
+      status_code = GetArrayLength(current_object.pdispVal, &length);
+      for (long index = 0; index < length; ++index) {
+        std::wstring index_string = std::to_wstring(static_cast<long long>(index));
+        property_names.push_back(index_string);
+      }
+    } else {
+      status_code = GetPropertyNameList(current_object.pdispVal,
+                                        &property_names);
+    }
+
+    visited->push_back(current_object.pdispVal);
+    for (size_t i = 0; i < property_names.size(); ++i) {
+      CComVariant property_value;
+      GetVariantObjectPropertyValue(current_object.pdispVal,
+                                    property_names[i],
+                                    &property_value);
+      if (VariantIsIDispatch(property_value)) {
+        for (size_t i = 0; i < visited->size(); ++i) {
+          CComPtr<IDispatch> visited_dispatch((*visited)[i]);
+          if (visited_dispatch.IsEqualObject(property_value.pdispVal)) {
+            return true;
+          }
+        }
+        has_self_references = has_self_references || HasSelfReferences(property_value, visited);
+        if (has_self_references) {
+          break;
+        }
+      }
+    }
+    visited->pop_back();
+  }
+  return has_self_references;
 }
 
-int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
+int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager,
                                                 VARIANT variant_value,
                                                 Json::Value* value) {
   int status_code = WD_SUCCESS;
@@ -190,7 +188,17 @@ int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
   } else if (VariantIsInteger(variant_value)) {
     *value = variant_value.lVal;
   } else if (VariantIsDouble(variant_value)) {
-    *value = variant_value.dblVal;
+    double int_part;
+    if (std::modf(variant_value.dblVal, &int_part) == 0.0) {
+      // This bears some explaining. Due to inconsistencies between versions
+      // of the JSON serializer we use, if the value is floating-point, but
+      // has no fractional part, convert it to a 64-bit integer so that it
+      // will be serialized in a way consistent with language bindings'
+      // expectations.
+      *value = static_cast<long long>(int_part);
+    } else {
+      *value = variant_value.dblVal;
+    }
   } else if (VariantIsBoolean(variant_value)) {
     *value = variant_value.boolVal == VARIANT_TRUE;
   } else if (VariantIsEmpty(variant_value)) {
@@ -206,11 +214,14 @@ int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
       status_code = GetArrayLength(variant_value.pdispVal, &length);
 
       for (long i = 0; i < length; ++i) {
-        Json::Value array_item_result;
-        int array_item_status = GetArrayItem(element_repository_handle,
-                                             variant_value.pdispVal,
+        CComVariant array_item;
+        int array_item_status = GetArrayItem(variant_value.pdispVal,
                                              i,
-                                             &array_item_result);
+                                             &array_item);
+        Json::Value array_item_result;
+        ConvertVariantToJsonValue(element_manager,
+                                  array_item,
+                                  &array_item_result);
         result_array[i] = array_item_result;
       }
       *value = result_array;
@@ -227,7 +238,7 @@ int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
                                       &property_value_variant);
 
         Json::Value property_value;
-        ConvertVariantToJsonValue(element_repository_handle,
+        ConvertVariantToJsonValue(element_manager,
                                   property_value_variant,
                                   &property_value);
 
@@ -237,13 +248,12 @@ int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
       *value = result_object;
     } else {
       LOG(INFO) << "Unknown type of dispatch is found in result, assuming IHTMLElement";
-      ElementInfo info;
       CComPtr<IHTMLElement> node;
       variant_value.pdispVal->QueryInterface<IHTMLElement>(&node);
-      info.element = node;
-      status_code = static_cast<int>(::SendMessage(element_repository_handle, WD_ADD_MANAGED_ELEMENT, NULL, reinterpret_cast<LPARAM>(&info)));
+      ElementHandle element_wrapper;
+      bool element_added = element_manager->AddManagedElement(node, &element_wrapper);
       Json::Value element_value(Json::objectValue);
-      element_value["element-6066-11e4-a52e-4f735466cecf"] = info.element_id;
+      element_value[JSON_ELEMENT_PROPERTY_NAME] = element_wrapper->element_id();
       *value = element_value;
     }
   } else {
@@ -252,6 +262,7 @@ int VariantUtilities::ConvertVariantToJsonValue(HWND element_repository_handle,
   }
   return status_code;
 }
+
 bool VariantUtilities::GetVariantObjectPropertyValue(IDispatch* variant_object_dispatch,
                                                      std::wstring property_name,
                                                      VARIANT* property_value) {
@@ -316,13 +327,17 @@ int VariantUtilities::GetPropertyNameList(IDispatch* object_dispatch,
   CComPtr<IDispatchEx> dispatchex;
   HRESULT hr = object_dispatch->QueryInterface<IDispatchEx>(&dispatchex);
   DISPID current_disp_id;
-  hr = dispatchex->GetNextDispID(fdexEnumAll, DISPID_STARTENUM, &current_disp_id);
+  hr = dispatchex->GetNextDispID(fdexEnumAll,
+                                 DISPID_STARTENUM,
+                                 &current_disp_id);
   while (hr == S_OK) {
     CComBSTR member_name_bstr;
     dispatchex->GetMemberName(current_disp_id, &member_name_bstr);
     std::wstring member_name = member_name_bstr;
     property_names->push_back(member_name);
-    hr = dispatchex->GetNextDispID(fdexEnumAll, current_disp_id, &current_disp_id);
+    hr = dispatchex->GetNextDispID(fdexEnumAll,
+                                   current_disp_id,
+                                   &current_disp_id);
   }
   return WD_SUCCESS;
 }
@@ -342,25 +357,20 @@ int VariantUtilities::GetArrayLength(IDispatch* array_dispatch, long* length) {
   return WD_SUCCESS;
 }
 
-int VariantUtilities::GetArrayItem(HWND element_repository_handle,
-                                   IDispatch* array_dispatch,
+int VariantUtilities::GetArrayItem(IDispatch* array_dispatch,
                                    long index,
-                                   Json::Value* item){
+                                   VARIANT* item){
   LOG(TRACE) << "Entering Script::GetArrayItem";
   std::wstring index_string = std::to_wstring(static_cast<long long>(index));
   CComVariant array_item_variant;
   bool get_array_item_success = GetVariantObjectPropertyValue(array_dispatch,
                                                               index_string,
-                                                              &array_item_variant);
+                                                              item);
 
   if (!get_array_item_success) {
     // Failure already logged by GetVariantObjectPropertyValue
     return EUNEXPECTEDJSERROR;
   }
-  
-  int array_item_status = ConvertVariantToJsonValue(element_repository_handle,
-                                                    array_item_variant,
-                                                    item);
   return WD_SUCCESS;
 }
 } // namespace webdriver

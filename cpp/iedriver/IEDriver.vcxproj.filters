@@ -22,6 +22,12 @@
     <Filter Include="Source Files\CommandHandlers">
       <UniqueIdentifier>{b7774b14-7039-48b6-adf4-8b63455f97dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ActionSimulators">
+      <UniqueIdentifier>{7bf88dc1-65a0-43f2-8897-dd7eb9849d0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ActionSimulators">
+      <UniqueIdentifier>{f76b4321-f28e-4b10-a2d9-07971aa4b2ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alert.cpp">
@@ -79,9 +85,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InteractionsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ProxyManager.cpp">
@@ -276,6 +279,18 @@
     <ClCompile Include="CommandHandlers\GetNamedCookieCommandHandler.cpp">
       <Filter>Source Files\CommandHandlers</Filter>
     </ClCompile>
+    <ClCompile Include="ActionSimulators\SendMessageActionSimulator.cpp">
+      <Filter>Source Files\ActionSimulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionSimulators\ActionSimulator.cpp">
+      <Filter>Source Files\ActionSimulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionSimulators\SendInputActionSimulator.cpp">
+      <Filter>Source Files\ActionSimulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionSimulators\JavaScriptActionSimulator.cpp">
+      <Filter>Source Files\ActionSimulators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alert.h">
@@ -342,9 +357,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InteractionsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LocationInfo.h">
@@ -553,6 +565,30 @@
     </ClInclude>
     <ClInclude Include="CommandHandlers\GetNamedCookieCommandHandler.h">
       <Filter>Header Files\CommandHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="IElementManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSimulators\SendMessageActionSimulator.h">
+      <Filter>Header Files\ActionSimulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSimulators\ActionSimulator.h">
+      <Filter>Header Files\ActionSimulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSimulators\SendInputActionSimulator.h">
+      <Filter>Header Files\ActionSimulators</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSimulators\JavaScriptActionSimulator.h">
+      <Filter>Header Files\ActionSimulators</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandlers\stdafx.h">
+      <Filter>Header Files\CommandHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSimulators\stdafx.h">
+      <Filter>Header Files\ActionSimulators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

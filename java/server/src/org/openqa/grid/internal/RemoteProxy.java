@@ -24,6 +24,7 @@ import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.net.URL;
@@ -159,19 +160,20 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
   int getTimeOut();
 
   /**
-   * Retrieves the global factory for creating HTTP clients.
-   *
-   * @return The thread-safe HTTP client factory.
+   * @return an {@link }HttpClient} for a particular {@link URL}.
    */
-  HttpClientFactory getHttpClientFactory();
+  HttpClient getHttpClient(URL url);
 
   /**
    * Renders the status of the node as JSON.  Useful for APIs.
    *
    * @return the node status.
-   *
+   * @deprecated Use {@link #getProxyStatus()}.
    */
-  JsonObject getStatus() ;
+  @Deprecated
+  JsonObject getStatus();
+
+  Map<String, Object> getProxyStatus();
 
   /**
    * Checks if the node has the capability requested.

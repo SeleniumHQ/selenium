@@ -17,20 +17,16 @@
 
 package org.openqa.selenium.remote.http;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
-import java.util.Collection;
 import java.util.Objects;
 
 public class HttpRequest extends HttpMessage {
 
   private final HttpMethod method;
   private final String uri;
-  private final Multimap<String, String> queryParameters = Multimaps.newListMultimap(
-      Maps.<String, Collection<String>>newHashMap(), Lists::newLinkedList);
+  private final Multimap<String, String> queryParameters = ArrayListMultimap.create();
 
   public HttpRequest(HttpMethod method, String uri) {
     this.method = method;

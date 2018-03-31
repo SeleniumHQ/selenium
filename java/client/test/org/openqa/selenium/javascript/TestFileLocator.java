@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 /**
@@ -86,7 +87,8 @@ class TestFileLocator {
     Iterable<String> splitExcludes = Splitter.on(',').omitEmptyStrings().split(excludedFiles);
 
     return ImmutableSet.copyOf(
-      Iterables.transform(splitExcludes, input -> testDirectory.resolve(input)));
+        StreamSupport.stream(splitExcludes.spliterator(), false)
+            .map(testDirectory::resolve).collect(Collectors.toList()));
   }
 
   public static String getTestFilePath(Path baseDir, Path testFile) {

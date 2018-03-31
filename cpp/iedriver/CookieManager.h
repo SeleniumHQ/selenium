@@ -45,14 +45,17 @@ class CookieManager {
                                     HookProcessor* hook);
   void ParseCookieString(const std::wstring& cookie_string,
                          std::map<std::string, std::string>* cookies);
-  BrowserCookie ParsePersistentCookieInfo(const std::string& cookie);
-  void ReadPersistentCookieFile(const std::wstring& file_name,
-                                const bool include_secure_cookies,
-                                std::map<std::string, BrowserCookie>* cookies);
+  BrowserCookie ParseSingleCookie(const std::string& cookie);
+  void ParseCookieList(const std::string& cookie_file_contents,
+                       const bool include_secure_cookies,
+                       std::map<std::string, BrowserCookie>* cookies);
+  std::string ReadCookieFile(const std::wstring& file_name);
 
   bool RecursivelyDeleteCookie(const std::string& url, const BrowserCookie& cookie);
   bool RecurseCookiePath(const std::string& url, const BrowserCookie& cookie);
   bool RecurseCookieDomain(const std::string& url, const BrowserCookie& cookie);
+
+  bool IsAdvancedCookiesApi(void);
 
   HWND window_handle_;
 };

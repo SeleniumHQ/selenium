@@ -27,6 +27,7 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -86,6 +87,7 @@ public class I18nTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
+  @NotYetImplemented(SAFARI)
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&

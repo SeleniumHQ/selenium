@@ -40,6 +40,12 @@ indent_size = 4
 end_of_line = crlf
 charset = utf-8
 
+[*.h]
+indent_style = space
+indent_size = 2
+end_of_line = crlf
+charset = utf-8
+
 [*.cpp]
 indent_style = space
 indent_size = 2

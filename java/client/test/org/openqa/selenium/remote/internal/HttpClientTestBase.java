@@ -28,6 +28,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 
 import org.junit.Test;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.PortProber;
@@ -39,7 +41,10 @@ import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URL;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -83,7 +88,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldAddUrlParameters() throws Exception {
+  public void shouldAddUrlParameters() {
     HttpRequest request = new HttpRequest(GET, "/query");
     String value = request.getQueryParameter("cheese");
     assertNull(value);
@@ -129,57 +134,112 @@ abstract public class HttpClientTestBase {
     assertEquals(ImmutableList.of("peas"), values.get("vegetable"));
   }
 
+  @Test
+  public void shouldAllowUrlsWithSchemesToBeUsed() throws Exception {
+    Server server = new Server(PortProber.findFreePort());
+    ServletContextHandler handler = new ServletContextHandler();
+    handler.setContextPath("");
+
+    class Canned extends HttpServlet {
+      @Override
+      protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try (PrintWriter writer = resp.getWriter()) {
+          writer.append("Hello, World!");
+        }
+      }
+    }
+    ServletHolder holder = new ServletHolder(new Canned());
+    handler.addServlet(holder, "/*");
+    server.setHandler(handler);
+
+    server.start();
+    try {
+      // This is a terrible choice of URL
+      HttpClient client = createFactory().createClient(new URL("http://example.com"));
+
+      URI uri = server.getURI();
+      HttpRequest request = new HttpRequest(
+          GET,
+          String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
+
+      HttpResponse response = client.execute(request);
+
+      assertEquals("Hello, World!", response.getContentString());
+    } finally {
+      server.stop();
+    }
+  }
+
+  @Test
+  public void shouldIncludeAUserAgentHeader() throws Exception {
+    HttpResponse response = executeWithinServer(
+        new HttpRequest(GET, "/foo"),
+        new HttpServlet() {
+          @Override
+          protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+              throws IOException {
+            try (Writer writer = resp.getWriter()) {
+              writer.write(req.getHeader("user-agent"));
+            }
+          }
+        });
+
+
+    String label = new BuildInfo().getReleaseLabel();
+    Platform platform = Platform.getCurrent();
+    Platform family = platform.family() == null ? platform : platform.family();
+
+    assertEquals(
+        response.getContentString(),
+        String.format(
+            "selenium/%s (java %s)",
+            label,
+            family.toString().toLowerCase()),
+        response.getContentString());
+  }
+
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers)
+      throws Exception {
+    return executeWithinServer(
+        new HttpRequest(GET, "/foo"),
+        new HttpServlet() {
+          @Override
+          protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+            headers.forEach(resp::addHeader);
+            resp.setContentLengthLong(0);
+          }
+        });
+  }
+
+  private HttpResponse getQueryParameterResponse(HttpRequest request) throws Exception {
+    return executeWithinServer(
+        request,
+        new HttpServlet() {
+          @Override
+          protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+              throws IOException {
+            try (Writer writer = resp.getWriter()) {
+              JsonOutput json = new Json().newOutput(writer);
+              json.beginObject();
+              req.getParameterMap()
+                  .forEach((key, value) -> {
+                    json.name(key);
+                    json.beginArray();
+                    Stream.of(value).forEach(json::write);
+                    json.endArray();
+                  });
+              json.endObject();
+            }
+          }
+        });
+  }
+
+  private HttpResponse executeWithinServer(HttpRequest request, HttpServlet servlet)
       throws Exception {
     Server server = new Server(PortProber.findFreePort());
     ServletContextHandler handler = new ServletContextHandler();
     handler.setContextPath("");
-
-    class Headers extends HttpServlet {
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        headers.forEach(resp::addHeader);
-        resp.setContentLengthLong(0);
-      }
-    }
-    ServletHolder holder = new ServletHolder(new Headers());
-    handler.addServlet(holder, "/*");
-
-    server.setHandler(handler);
-
-    server.start();
-    try {
-      HttpClient client = createFactory().createClient(server.getURI().toURL());
-      HttpRequest request = new HttpRequest(GET, "/foo");
-      return client.execute(request);
-    } finally {
-      server.stop();
-    }
-  }
-
-  private HttpResponse getQueryParameterResponse(HttpRequest request) throws Exception {
-    Server server = new Server(PortProber.findFreePort());
-    ServletContextHandler handler = new ServletContextHandler();
-    handler.setContextPath("");
-
-    class Parameters extends HttpServlet {
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try (Writer writer = resp.getWriter()) {
-          JsonOutput json = new Json().newOutput(writer);
-          json.beginObject();
-          req.getParameterMap()
-              .forEach((key, value) -> {
-                json.name(key);
-                json.beginArray();
-                Stream.of(value).forEach(v -> json.write(v, String.class));
-                json.endArray();
-              });
-          json.endObject();
-        }
-      }
-    }
-    ServletHolder holder = new ServletHolder(new Parameters());
+    ServletHolder holder = new ServletHolder(servlet);
     handler.addServlet(holder, "/*");
 
     server.setHandler(handler);
@@ -192,6 +252,4 @@ abstract public class HttpClientTestBase {
       server.stop();
     }
   }
-
-
 }

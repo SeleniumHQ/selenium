@@ -30,6 +30,7 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 public class MiscTest extends JUnit4TestBase {
 
@@ -74,7 +75,7 @@ public class MiscTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "returns XML content formatted for display as HTML document")
-  @Ignore(value = SAFARI, reason = "returns XML content formatted for display as HTML document")
+  @NotYetImplemented(value = SAFARI, reason = "returns XML content formatted for display as HTML document")
   @Ignore(IE)
   public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
     driver.get(pages.simpleXmlDocument);
@@ -85,8 +86,7 @@ public class MiscTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = ALL, reason = "issue 2282")
-  public void testStimulatesStrangeOnloadInteractionInFirefox()
-      throws Exception {
+  public void testStimulatesStrangeOnloadInteractionInFirefox()  {
     driver.get(pages.documentWrite);
 
     // If this command succeeds, then all is well.
@@ -97,7 +97,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testClickingShouldNotTrampleWOrHInGlobalScope() throws Throwable {
+  public void testClickingShouldNotTrampleWOrHInGlobalScope() {
     driver.get(appServer.whereIs("globalscope.html"));
     String[] vars = new String[]{"w", "h"};
     for (String var : vars) {

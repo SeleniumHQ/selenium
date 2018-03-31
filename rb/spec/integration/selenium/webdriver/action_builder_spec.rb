@@ -78,7 +78,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcddcba')
         end
 
-        it 'can send non-ASCII keys' do
+        it 'can send non-ASCII keys', except: {browser: :safari} do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -141,8 +141,7 @@ module Selenium
           expect(text).to eq('Dropped!')
         end
 
-        # Pending bug with Firefox
-        it 'double clicks an element', except: {browser: :firefox} do
+        it 'double clicks an element' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -150,7 +149,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('DoubleClicked')
         end
 
-        it 'context clicks an element', exclude: {browser: %i[safari safari_preview]} do
+        it 'context clicks an element', except: {browser: %i[safari]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -158,7 +157,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', exclude: {browser: :safari}, only: {browser: :firefox} do
+        it 'can release pressed buttons via release action', except: {browser: :safari}, only: {browser: :firefox} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')

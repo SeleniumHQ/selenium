@@ -34,7 +34,7 @@ public class SlowLoadingPageTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBlockUntilIFramesAreLoaded() throws Exception {
+  public void testShouldBlockUntilIFramesAreLoaded() {
     long start = System.currentTimeMillis();
     driver.get(pages.slowIframes);
     long now = System.currentTimeMillis();

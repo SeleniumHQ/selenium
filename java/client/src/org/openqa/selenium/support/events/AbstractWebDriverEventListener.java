@@ -107,6 +107,14 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
     // Do nothing
   }
 
+  public void afterSwitchToWindow(String windowName, WebDriver driver) {
+      // Do nothing
+  }
+
+  public void beforeSwitchToWindow(String windowName, WebDriver driver) {
+      // Do nothing
+  }
+
   public void onException(Throwable throwable, WebDriver driver) {
     // Do nothing
   }

@@ -66,7 +66,7 @@ import java.util.Map;
 public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     assumeTrue(driver instanceof JavascriptExecutor);
   }
 
@@ -267,7 +267,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad() {
@@ -512,7 +512,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
-  @Ignore(SAFARI)
   @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
@@ -529,7 +528,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test(timeout = 10000)
   @Ignore(CHROME)
   @Ignore(IE)
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/904")
   public void shouldReturnDocumentElementIfDocumentIsReturned() {
     driver.get(pages.simpleTestPage);
@@ -542,7 +541,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Test(timeout = 10000)
   @Ignore(value = IE, reason = "returns WebElement")
-  @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
   public void shouldHandleObjectThatThatHaveToJSONMethod() {
     driver.get(pages.simpleTestPage);
@@ -555,7 +553,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test(timeout = 10000)
   @Ignore(CHROME)
   @Ignore(value = IE, issue = "540")
-  @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
   public void shouldHandleRecursiveStructures() {
     driver.get(pages.simpleTestPage);

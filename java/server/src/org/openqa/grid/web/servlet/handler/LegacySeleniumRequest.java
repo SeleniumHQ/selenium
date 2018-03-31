@@ -17,8 +17,6 @@
 
 package org.openqa.grid.web.servlet.handler;
 
-import com.google.common.collect.Maps;
-
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.selenium.Platform;
@@ -94,7 +92,7 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
   }
 
   private Map<String, Object> parseGrid2Environment(String environment) {
-    Map<String, Object> ret = Maps.newHashMap();
+    Map<String, Object> ret = new HashMap<>();
 
     String[] details = environment.split(" ");
     if (details.length == 1) {

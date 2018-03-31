@@ -105,7 +105,7 @@ class Passthrough implements SessionCodec {
           Writer out = new OutputStreamWriter(os, UTF_8)) {
         CharStreams.copy(in, out);
       }
-      LOG.info("To upstream: " + logWriter.toString());
+      LOG.fine("To upstream: " + logWriter.toString());
     }
 
     resp.setStatus(connection.getResponseCode());
@@ -129,7 +129,7 @@ class Passthrough implements SessionCodec {
     String charSet = connection.getContentEncoding() != null ? connection.getContentEncoding() : UTF_8.name();
      try (Reader reader = new InputStreamReader(in, charSet)) {
       String content = CharStreams.toString(reader);
-      LOG.info("To downstream: " + content);
+      LOG.fine("To downstream: " + content);
       resp.setContent(content.getBytes(charSet));
     } finally {
       in.close();

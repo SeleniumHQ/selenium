@@ -9,6 +9,247 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.11.1.3
+=========
+ * Fixed detection of obscured elements when top element is not displayed.
+   Fixes issue #5668.
+
+v3.11.1.2
+=========
+ * Changed COM variant to JSON serialization in IE. There is an expectation
+   that if a result from JavaScript is "integral," that it is serialized for
+   return to the calling code as an integral number rather than a floating-
+   point number. Previous versions of the JSON serializer used by the IE
+   driver would (incorrectly) serialize a floating-point value with no
+   decimal part as being an integer. After updating to a later version, the
+   serializer now (correctly) serializes floating-point values as floating-
+   point values, with a trailing ".0" to indicate a floating-point value.
+   While this is the correct behavior by the serializer, it breaks the
+   expectations of the language bindings. Therefore, we check to see if the
+   variant value has a decimal part, and if it has none, convert it to an
+   integer for serialization by the JSON library.
+ * Updated JsonCpp library to latest source code. Fixes issue #5664.
+
+v3.11.1.1
+=========
+ * Separated out detection of focusable elements for sendKeys in IE. Allows
+   separate error messages for attempting to send keys to a non-focusable
+   element. Also fixes sending keystrokes to <option> elements by forwarding
+   the detections to the parent <select> element.
+ * Fixed obscured element detection in IE for elements in frames.
+ * Added support for extension capabilites starting with "test:" in IE. This
+   is basically to support the web-platform-tests WebDriver test suite. Adding
+   an extension capability with name starting with "test:" will allow a user
+   to create a session, but will have no effect on the session. It is a no-op.
+ * Added IsFocusable method to IE driver Element class.
+ * Added Protected Mode boundary crossing detection mechanism in IE. When a
+   Protected Mode boundary is crossed by navigation (entering or exiting
+   Protected Mode), the existing browser instance is destroyed and a new one
+   created in its place by Interent Explorer. This commit adds detection for
+   when a browser instance is being closed, but without an explicit call to
+   the WebDriver close() or quit() methods. When this is detected, it's likely
+   a Protected Mode boundary is being crossed, and all subsequent commands in
+   the WebDriver session will fail. In this case, the driver will now write
+   to the log that the browser has been asked to exit without the user
+   explicitly requesting it. The detection is not perfect, since it's
+   possible to legitimately click a link that closes the browser window, and
+   this is indistinguishable from clicking a link that navigates to a URL
+   that causes a Protected Mode boundary crossing. Nevertheless, this logging
+   is being added so that users can see what may be happening when they
+   receive errors like "Unable to get current browser."
+
+v3.11.1.0
+=========
+ * Updated all C++ projects for the IE driver to use the Windows 8.1 SDK.
+   This has the unfortunate side effect that the driver executable will no
+   longer launch on Windows XP.
+ * Removed direct call to InternetGetCookieEx2 API. Versions of IE prior to
+   11 do not have access to this API. Linking directly to it via the Windows
+   8.1 SDK creates an import entry in the IEDriver.dll library used by the
+   driver. So that the driver can continue to be used against earlier releases,
+   we will call the API using GetModuleHandle and GetProcAddress only if it
+   exists in the version of WinINet being used by the browser. Fixes issue #5603.
+ * Properly initializing JSON values in IE driver. Fixes issue #5519.
+
+v3.11.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Added additional logging to new session command.
+ * Added detection of intercepted element clicks to IE. This brings the IE
+   driver into alignment with the Chrome and Firefox (geckodriver) drivers,
+   in that it detects when an element attempting to be clicked on is covered
+   in the z-order by another element. Do note that this may cause different
+   behavior from previous versions of the IE driver for WebDriver code that
+   runs only on IE. For code that runs cross-browser, this should now yield 
+   the same behavior across platforms.
+
+
+v3.10.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Fixed clear element command to handle cases where the element's parent
+   document is undefined.
+ * Fixed sending keystrokes with native events disabled. Because apparently,
+   the driver's developer can't remember how function binding works in C++
+   when using a pointer to the object instead of the object itself. Fixes
+   issue #5584.
+
+v3.10.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Updated clear element command handler to return W3C compliant errors for IE.
+ * Updated IE error response to be spec compliant for sendKeys
+ * Fixed IE cookie retrieval for IE 10 and 11. Internet Explorer relies on a
+   Windows component called WinINet to communicate over the Internet. This
+   includes WinINet APIs for getting and setting cookies. Prior to Windows 10,
+   persistent cookies were stored in files on the hard drive. A change in
+   WinINet moved the persistent cookie storage from files on the disk to an
+   Extensible Storage Engine (ESE or "Jet Blue") database, which rendered them
+   unreadable by the IE driver. This commit restores the functionality of
+   getting cookies by using an API function called InternetGetCookieEx2.
+
+   This API function was introduced in the Windows 8.1 SDK, which means that
+   it won't be available to older versions of WinINet. In that case, we fall
+   back to the original behavior of attempting to parse cookie files from the
+   disk. There is a chance that the detection of the availability of this API
+   is flawed in the IE driver.
+ * Revamped handling of modifier keys. The IE driver is now able to
+   distinguish between the left and right modifier keys (Shift, Control,
+   Alt) on the keyboard.
+ * Modified mouse event handling to match W3C Specification.
+
+   THIS IS A POTENTIAL BREAKING CHANGE.
+
+   The simulation of mouse movement for the actions command now conforms
+   to the W3C WebDriver Specification for mouse movement. This means
+   that offsets in elements are now measured from the center of the
+   element instead of the top-left, which was the previous behavior.
+   Additionally, attempting to move the mouse pointer outside the
+   browser view port will result in a "mouse movement out of bounds"
+   error. While users should be aware that this might cause code
+   using user interactions to fail, not that the behavior is now
+   consistent with the behavior outlined in the specification, and
+   the behavior of geckodriver in particular.
+ * Modified processing of pause actions in keyboard action sequences.
+   The vast majority of use of pause actions in a keyboard action
+   sequence are used to synchronize the entire action chain with other
+   (mouse) action sequences. To allow the driver to properly synchronize
+   the input sequences, the driver will now ignore the duration property
+   of pause events in keyboard action sequences. This is deliberately in
+   violation of the W3C specification, and may be revisited in the future.
+ * Fixed sending keystrokes outside the Basic Multilingual Plane. This
+   allows emoji and other Unicode characters that are represented by
+   surrogate pairs in UTF-16 to be sent to IE.
+ * Fixed getElementProperty to return proper data type. Previously,
+   the getElementProperty command would coerce the property value to a
+   string. This is not correct behavior as specified in the W3C spec.
+ * Revert behavior of user prompts appearing during JavaScript execution.
+   This behavior causes too many problems in too many scenarios where a
+   prompt can appear. Reverting to the previous behavior, which is that
+   encountering a user prompt ('alert', 'confirm', 'prompt') when calling
+   JavaScript with executeScript will immediately return control back to
+   the WebDriver code (returning null), and rely on the immediately
+   following command to handle the user prompt.
+
+v3.10.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v3.9.0.4
+========
+ * Fixed behavior for user prompts appearing during JavaScript execution.
+   The W3C WebDriver Specification states that when performing the
+   executeScript or executeAsyncScript commands, if the script brings up
+   a user prompt ('alert', 'confirm', or 'prompt'), the user prompt handler
+   should be invoked immediately, and the proper notification (if any) be
+   sent as the response to the command. Previously, the user prompt handler
+   would not be invoked until the next command.
+ * Updated get active element command in IE to handle missing body element.
+   This change is required to make the driver compliant with the W3C WebDriver
+   Specification.
+ * Changed new session command in IE to allow empty timeouts list. This change
+   is required to make the driver compliant with the W3C WebDriver
+   Specification.
+ * Fixed IE driver element detection for user-executed JavaScript. This commit
+   fixes a corner case where elements added to the known element repository
+   via non-JavaScript means were not being properly detected when the same
+   element was located via user-executed JavaScript. We now properly sync up
+   the element repository once the user's JavaScript has completed.
+
+v3.9.0.3
+========
+ * Refactored user input simulation code in IE driver. This commit breaks out
+   the three modes of user input simulation (native events using SendMessage,
+   native events using SendInput, simulated events using JavaScript) into
+   separate classes, making it easier to debug. Additionally, this commit
+   removes the code for enabling persistent hovers. This code had been
+   inadvertently disabled in a separate refactor some months ago, and there
+   have been no issue reports in that area, leading the IE driver development
+   team to believe that the issue in IE that required persistent hovers has
+   been resolved (at least in IE11). The code for persistent hovers has been
+   retained in a new, separate class in the project, but this class is not
+   built as part of the IE driver at this time. If issue reports warrent
+   its inclusion in the future, it can be easily re-added.
+ * Added support allowing binding to IPv6 loopback in IE driver. When no host
+   is specified on the command line, and no list of whitelisted IP addresses
+   are specified, IEDriverServer.exe will now bind to both the IPv4 and IPv6
+   loopback adapters. If no IPv6 stack is found on the OS, the executable
+   will retry binding only to IPv4. Note that when using whitelisted IP
+   addresses, only IPv4 is supported. This is a limitation of the Civetweb
+   HTTP server upon which IEDriverServer.exe relies. This commit also updates
+   the version of Civetweb to 1.10.
+
+v3.9.0.2
+========
+ * Reduced overall wait interval time.
+ * Shortened IE sleep interval looping for JavaScript execution completion.
+   This prevents excessively long delays for Selenium commands executed via
+   executeScript, like submit(), isDisplayed(), or getAttribute(). Partially
+   fixes issue #5024.
+ * Moved double-click detection logic inside InputManager for IE. This also
+   will prevents unnecessary expensive sleeps in the click command handler.
+   Partially fixes issue #5024.
+ * Updated to better handle non-US keyboards in sendKeys. In the transition
+   to support the W3C specification, using sendKeys on non-US keyboard layouts
+   got broken. This is an attempt to resolve that issue. Previously, we were
+   only checking a high-order byte for the need to press the shift key, and 
+   not other modifier keys (control or alt) in sending keystrokes. This
+   behavior has been restored. Fixes issue #4253.
+
+v3.9.0.1
+========
+ * Made JavaScript execution asynchronous for executeScript in IE.
+
+   Prior to this change, the execution of JavaScript via the executeScript
+   method was synchronous. This would mean that if the script passed into the
+   driver called the JavaScript `alert()`, `confirm()`, or `prompt()`
+   functions, the WebDriver code would hang until the dialog was manually
+   dismissed. Moving this to asynchronous execution allows the driver to be
+   compliant with the W3C WebDriver Specification, that mandates that user
+   prompts triggered by executeScript should be able to be handled by the
+   WebDriver alert handling functions. However, this spec compliance comes at
+   several costs.
+
+   The first cost is complexity. The IE driver uses COM interfaces to
+   communicate with Internet Explorer. COM is inherently single-threaded, and
+   requires a fair amount of manipulation to allow accessing the objects on
+   separate threads. This leads to requiring a fairly complex system of
+   communication and synchronization between the threads to give the illusion
+   of a synchronous script execution.
+
+   The second cost is performance. Because of the need for synchronization,
+   this change **may** introduce a performance hit in the IE driver. This is
+   unfortunate, but unavoidable. The benefit of having user-initiated
+   JavaScript not block and hang WebDriver code far outweighs whatever
+   relatively small performance hit has been introduced.
+
+   Finally, there is every chance that, despite all efforts to the contrary,
+   it's possible that there are new regressions introduced by this change.
+   Multiple test suites have been run using this change, and none have
+   failed thus far due to the changes herein. Claims that this change is
+   causing a specific failure should be accompanied by a full test case, or
+   issues reported against this change will be summarily closed.
+
 v3.9.0.0
 ========
  * Refactor IE user-initiated JavaScript execution to use JSON objects.
@@ -88,15 +329,15 @@ v3.5.1.1
    * Implement the "minimize window" command
    * Implement the "fullscreen window" command
    * Update "set window rect" command to correctly recognize and restore 
-     from minimized or full screen state
+    from minimized or full screen state
    * Fix the "release actions" command to properly roll back all pending
-     actions
+    actions
    * Update the "perform actions" command to be more robust for pointer
-     actions
+    actions
    * Fix alert handling to handle dialogs with the "Do not show any more
-     dialogs" check box
+    dialogs" check box
    * Added handling for the "dismiss and notify" and "accept and notify"
-     user prompt handler states
+    user prompt handler states
    * Updated proxy handling to more closely align with the spec language
 
 v3.5.1.0
@@ -571,13 +812,13 @@ v2.45.0.2
    pageLoadStrategy when creating a session with the IE driver will now change
    the wait behavior when navigating to a new page. The valid values are:
 
-     "normal" - Waits for document.readyState to be 'complete'. This is the
-                default, and is the same behavior as all previous versions of
-                the IE driver.
-     "eager"  - Will abort the wait when document.readyState is
-                'interactive' instead of waiting for 'complete'.
-     "none"   - Will abort the wait immediately, without waiting for any of
-                the page to load.
+    "normal" - Waits for document.readyState to be 'complete'. This is the
+            default, and is the same behavior as all previous versions of
+            the IE driver.
+    "eager"  - Will abort the wait when document.readyState is
+            'interactive' instead of waiting for 'complete'.
+    "none"   - Will abort the wait immediately, without waiting for any of
+            the page to load.
 
    Setting the capability to an invalid value will result in use of the
    "normal" page load strategy.
@@ -1178,9 +1419,9 @@ v2.32.1.0
    the registry value before launching IE. Patch for this fix provided by Alex
    Savchuk.The registry settings are:
 
-     Key: HKEY_CURRENT_USER\Software\Microsoft\InternetExplorer\Main
-     Value Name: TabProcGrowth
-     Value: "0"
+    Key: HKEY_CURRENT_USER\Software\Microsoft\InternetExplorer\Main
+    Value Name: TabProcGrowth
+    Value: "0"
 
  * Fixed Element::IsAttachedToDom() when used with SVG for IEDriver.
    Patch for this fix provided by Patrick Gansterer.
@@ -1616,11 +1857,11 @@ v2.24.2.0
  * Added logging message to a large portion of the IE driver (on behalf of 
    AlexandrSavchuk). Set the log file with
 
-       --log-file="C:\full\path\to\filename.log"
+      --log-file="C:\full\path\to\filename.log"
 
    (default is to log to the console). Set the logging level with
 
-       --log-level=LOGLEVEL
+      --log-level=LOGLEVEL
 
    where LOGLEVEL is one of TRACE, DEBUG, INFO, WARN, ERROR, or FATAL (default
    is FATAL). Fixes issue #4159

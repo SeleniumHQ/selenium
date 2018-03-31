@@ -84,7 +84,7 @@ module Selenium
               # http://msdn.microsoft.com/en-us/library/aa560610%28v=bts.20%29.aspx
               raise if retries >= MAX_RETRIES
               retries += 1
-
+              sleep 2
               retry
             rescue Errno::EADDRNOTAVAIL => ex
               # a retry is sometimes needed when the port becomes temporarily unavailable

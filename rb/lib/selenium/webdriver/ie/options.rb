@@ -84,7 +84,7 @@ module Selenium
         #
 
         def initialize(**opts)
-          @args = opts.delete(:args) || []
+          @args = Set.new(opts.delete(:args) || [])
           @options = opts
           @options[:native_events] ||= true
         end
@@ -125,7 +125,7 @@ module Selenium
             capability_value = @options.delete(capability_alias)
             opts[capability_name] = capability_value unless capability_value.nil?
           end
-          opts['ie.browserCommandLineSwitches'] = @args.join(' ') if @args.any?
+          opts['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
           opts.merge!(@options)
 
           {KEY => opts}

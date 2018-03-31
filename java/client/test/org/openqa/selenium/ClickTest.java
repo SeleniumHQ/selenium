@@ -135,14 +135,8 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(SAFARI)
-  public void testShouldClickOnFirstBoundingClientRectWithNonZeroSize() {
-    driver.findElement(By.id("twoClientRects")).click();
-    wait.until(titleIs("XHTML Test Page"));
-  }
-
-  @Test
   @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 
@@ -153,9 +147,15 @@ public class ClickTest extends JUnit4TestBase {
     assertEquals("parent matches? true", log);
   }
 
+  @Test
+  @NotYetImplemented(SAFARI)
+  public void testShouldClickOnFirstBoundingClientRectWithNonZeroSize() {
+    driver.findElement(By.id("twoClientRects")).click();
+    wait.until(titleIs("XHTML Test Page"));
+  }
+
   @NoDriverAfterTest
   @Test
-  @Ignore(value = SAFARI, reason = "issue 3693")
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);
     String current = driver.getWindowHandle();
@@ -189,6 +189,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testCanClickOnALinkWithEnclosedImage() {
     driver.findElement(By.id("link-with-enclosed-image")).click();
 
@@ -203,6 +204,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testCanClickOnALinkThatContainsTextWrappedInASpan() {
     driver.findElement(By.id("link-with-enclosed-span")).click();
 
@@ -237,6 +239,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testClicksASurroundingStrongTag() {
     driver.get(appServer.whereIs("ClickTest_testClicksASurroundingStrongTag.html"));
     driver.findElement(By.tagName("a")).click();
@@ -246,6 +249,7 @@ public class ClickTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testCanClickAnImageMapArea() {
     driver.get(appServer.whereIs("click_tests/google_map.html"));
     driver.findElement(By.id("rectG")).click();
@@ -277,6 +281,7 @@ public class ClickTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/901")
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big_in_frame.html");
     driver.get(url);
@@ -355,7 +360,7 @@ public class ClickTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(MARIONETTE)
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine() {
     driver.get(appServer.whereIs("click_tests/wrapped_overlapping_elements.html"));
 

@@ -25,6 +25,7 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
@@ -46,6 +47,7 @@ import java.util.logging.Level;
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(MARIONETTE)
+@Ignore(SAFARI)
 public class PerformanceLogTypeTest extends JUnit4TestBase {
 
   private WebDriver localDriver;

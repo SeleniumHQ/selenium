@@ -84,7 +84,9 @@ matrix:
       <<: *firefox-nightly
     - env: BUCK="test java-small-tests"
       <<: *java
-    - env: MARIONETTE=1 BUCK="test internal-grid-test grid-test"
+    - env: BUCK="test internal-grid-test"
+      <<: *java
+    - env: MARIONETTE=1 BUCK="test grid-test"
       <<: *java
       <<: *firefox-nightly
     - env: BUCK="test htmlunit-test"

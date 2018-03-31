@@ -49,12 +49,12 @@ public class AppServerTest {
   private static WebDriver driver;
 
   @BeforeClass
-  public static void startDriver() throws Throwable {
+  public static void startDriver() {
     driver = new WebDriverBuilder().get();
   }
 
   @Before
-  public void startServer() throws Throwable {
+  public void startServer() {
     server = new JettyAppServer();
     server.start();
   }
@@ -132,7 +132,7 @@ public class AppServerTest {
     String FILE_CONTENTS = "Uploaded file";
     File testFile = File.createTempFile("webdriver", "tmp");
     testFile.deleteOnExit();
-    Files.write(FILE_CONTENTS, testFile, StandardCharsets.UTF_8);
+    Files.asCharSink(testFile, StandardCharsets.UTF_8).write(FILE_CONTENTS);
 
     driver.get(server.whereIs("upload.html"));
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());

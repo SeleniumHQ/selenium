@@ -40,7 +40,7 @@ public class SessionLogs {
 
   public LogEntries getLogs(String logType) {
     if (logType == null || !logTypeToEntriesMap.containsKey(logType)) {
-      return new LogEntries(Collections.<LogEntry>emptyList());
+      return new LogEntries(Collections.emptyList());
     }
     return logTypeToEntriesMap.get(logType);
   }

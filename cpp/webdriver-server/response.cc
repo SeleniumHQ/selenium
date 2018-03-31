@@ -30,8 +30,14 @@ void Response::Deserialize(const std::string& json) {
   LOG(TRACE) << "Entering Response::Deserialize";
 
   Json::Value response_object;
-  Json::Reader reader;
-  reader.parse(json, response_object);
+  std::string parse_errors;
+  std::stringstream json_stream;
+  json_stream.str(json);
+  Json::parseFromStream(Json::CharReaderBuilder(),
+                        json_stream,
+                        &response_object,
+                        &parse_errors);
+
   Json::Value value_object;
   if (response_object.isMember("value")) {
     value_object = response_object["value"];
@@ -63,8 +69,8 @@ std::string Response::Serialize(void) {
   } else {
     json_object["value"] = this->value_;
   }
-  Json::FastWriter writer;
-  std::string output(writer.write(json_object));
+  Json::StreamWriterBuilder writer;
+  std::string output(Json::writeString(writer, json_object));
   return output;
 }
 
@@ -178,6 +184,8 @@ std::string Response::ConvertErrorCode(const int error_code) {
     return ERROR_INVALID_COOKIE_DOMAIN;
   } else if (error_code == ESCRIPTTIMEOUT) {
     return ERROR_SCRIPT_TIMEOUT;
+  } else if (error_code == EMOVETARGETOUTOFBOUNDS) {
+    return ERROR_MOVE_TARGET_OUT_OF_BOUNDS;
   }
 
   return "";

@@ -50,7 +50,7 @@ void SwitchToFrameCommandHandler::ExecuteInternal(
   if (frame_id.isNull()) {
     status_code = browser_wrapper->SetFocusedFrameByElement(NULL);
   } else if (frame_id.isObject()) {
-    Json::Value element_id = frame_id.get("element-6066-11e4-a52e-4f735466cecf", Json::Value::null);
+    Json::Value element_id = frame_id.get(JSON_ELEMENT_PROPERTY_NAME, Json::Value::null);
 
     if (element_id.isNull()) {
       status_code = ENOSUCHFRAME;

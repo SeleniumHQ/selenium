@@ -26,7 +26,8 @@ import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
-import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -66,8 +67,8 @@ public class ParallelTest {
 
   @Test
   public void canGetApp2() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
@@ -82,26 +83,23 @@ public class ParallelTest {
 
   /**
    * cannot reserve 2 app2
-   *
-   * @throws InterruptedException
    */
   @Test
-  public void cannotGet2App2() throws InterruptedException {
-    final GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+  public void cannotGet2App2() {
+    final GridRegistry registry =
+        DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
       MockedRequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
 
       TestThreadCounter testThreadCounter = new TestThreadCounter();
-      testThreadCounter.start(new Runnable() {
-        public void run() {
-          MockedRequestHandler newSessionRequest =
-              GridHelper.createNewSessionHandler(registry, app2);
-          newSessionRequest.process();
-          processed = true;
-        }
+      testThreadCounter.start(() -> {
+        MockedRequestHandler newSessionRequest1 =
+            GridHelper.createNewSessionHandler(registry, app2);
+        newSessionRequest1.process();
+        processed = true;
       });
       testThreadCounter.waitUntilStarted(1);
       assertFalse(processed); // Can race, but should *never* fail
@@ -115,8 +113,9 @@ public class ParallelTest {
    */
   @Test(timeout = 2000)
   public void canGet5App1() {
-    final GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+    final GridRegistry registry =
+        DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
       for (int i = 0; i < 5; i++) {
@@ -131,24 +130,21 @@ public class ParallelTest {
 
   /**
    * cannot get 6 app1
-   *
-   * @throws InterruptedException
    */
   @Test(timeout = 1000)
-  public void cannotGet6App1() throws InterruptedException {
-    final GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+  public void cannotGet6App1() {
+    final GridRegistry registry =
+        DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
       final AtomicInteger count = new AtomicInteger();
       TestThreadCounter testThreadCounter = new TestThreadCounter();
       for (int i = 0; i < 6; i++) {
-        testThreadCounter.start(new Runnable() {
-          public void run() {
-            RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
-            newSessionRequest.process();
-            count.incrementAndGet();
-          }
+        testThreadCounter.start(() -> {
+          RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
+          newSessionRequest.process();
+          count.incrementAndGet();
         });
       }
       testThreadCounter.waitUntilDone(5);
@@ -169,33 +165,28 @@ public class ParallelTest {
 
   /**
    * cannot get app2 if 5 app1 are reserved.
-   *
-   * @throws InterruptedException
    */
   @Test(timeout = 1000)
-  public void cannotGetApp2() throws InterruptedException {
-    final GridRegistry registry = DefaultGridRegistry.newInstance();
-    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
+  public void cannotGetApp2() {
+    final GridRegistry registry =
+        DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
     try {
       registry.add(p1);
 
       TestThreadCounter testThreadCounter = new TestThreadCounter();
       for (int i = 0; i < 5; i++) {
-        testThreadCounter.start(new Runnable() {
-          public void run() {
-            RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
-            newSessionRequest.process();
-          }
+        testThreadCounter.start(() -> {
+          RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
+          newSessionRequest.process();
         });
       }
       testThreadCounter.waitUntilDone(5);
 
-      testThreadCounter.start(new Runnable() {
-        public void run() {
-          RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
-          newSessionRequest.process();
-          app6Done = true;
-        }
+      testThreadCounter.start(() -> {
+        RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
+        newSessionRequest.process();
+        app6Done = true;
       });
 
       testThreadCounter.waitUntilStarted(6);
@@ -207,12 +198,11 @@ public class ParallelTest {
 
   @Test(timeout = 10000)
   public void releaseAndReserve() {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     RemoteProxy p1;
     RegistrationRequest req;
     Map<String, Object> app1 = new HashMap<>();
     Map<String, Object> app2 = new HashMap<>();
-    GridNodeConfiguration config = new GridNodeConfiguration();
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
     app1.put(MAX_INSTANCES, 5);
 
@@ -225,7 +215,7 @@ public class ParallelTest {
     req.getConfiguration().maxSession = 5;
     req.getConfiguration().capabilities.add(new DesiredCapabilities(app1));
     req.getConfiguration().capabilities.add(new DesiredCapabilities(app2));
-    req.getConfiguration().proxy = DetachedRemoteProxy.class.getCanonicalName();
+    req.getConfiguration().proxy = BaseRemoteProxy.class.getCanonicalName();
 
     p1 = BaseRemoteProxy.getNewInstance(req, registry);
 

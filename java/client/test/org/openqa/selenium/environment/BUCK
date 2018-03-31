@@ -23,6 +23,9 @@ java_binary(name = 'webserver',
   main_class = 'org.openqa.selenium.environment.webserver.JettyAppServer',
   deps = [
     ':environment'
+  ],
+  visibility = [
+    '//dotnet/test/...',
   ]
 )
 

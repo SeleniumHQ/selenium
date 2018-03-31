@@ -86,17 +86,39 @@ void SendKeysCommandHandler::ExecuteInternal(
     HWND window_handle = browser_wrapper->GetContentWindowHandle();
     HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
 
-    ElementHandle element_wrapper;
-    status_code = this->GetElement(executor, element_id, &element_wrapper);
+    ElementHandle initial_element;
+    status_code = this->GetElement(executor, element_id, &initial_element);
 
     if (status_code == WD_SUCCESS) {
+      ElementHandle element_wrapper = initial_element;
+      CComPtr<IHTMLOptionElement> option;
+      HRESULT hr = initial_element->element()->QueryInterface<IHTMLOptionElement>(&option);
+      if (SUCCEEDED(hr) && option) {
+        // If this is an <option> element, we want to operate on its parent
+        // <select> element.
+        CComPtr<IHTMLElement> parent_node;
+        hr = initial_element->element()->get_parentElement(&parent_node);
+        while (SUCCEEDED(hr) && parent_node) {
+          CComPtr<IHTMLSelectElement> select;
+          HRESULT select_hr = parent_node->QueryInterface<IHTMLSelectElement>(&select);
+          if (SUCCEEDED(select_hr) && select) {
+            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+            mutable_executor.AddManagedElement(parent_node, &element_wrapper);
+            break;
+          }
+          hr = parent_node->get_parentElement(&parent_node);
+        }
+      }
+
       CComPtr<IHTMLElement> element(element_wrapper->element());
 
+      // Scroll the target element into view before executing the action
+      // sequence.
       LocationInfo location = {};
       std::vector<LocationInfo> frame_locations;
       element_wrapper->GetLocationOnceScrolledIntoView(executor.input_manager()->scroll_behavior(),
-                                                        &location,
-                                                        &frame_locations);
+                                                       &location,
+                                                       &frame_locations);
 
       CComPtr<IHTMLInputFileElement> file;
       element->QueryInterface<IHTMLInputFileElement>(&file);
@@ -220,14 +242,20 @@ void SendKeysCommandHandler::ExecuteInternal(
       bool displayed;
       status_code = element_wrapper->IsDisplayed(true, &displayed);
       if (status_code != WD_SUCCESS || !displayed) {
-        response->SetErrorResponse(EELEMENTNOTDISPLAYED,
-                                    "Element is not displayed");
+        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
+                                   "Element cannot be interacted with via the keyboard because it is not displayed");
         return;
       }
 
       if (!element_wrapper->IsEnabled()) {
-        response->SetErrorResponse(EELEMENTNOTENABLED,
-                                    "Element is not enabled");
+        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
+                                   "Element cannot be interacted with via the keyboard because it is not enabled");
+        return;
+      }
+
+      if (!element_wrapper->IsFocusable()) {
+        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
+                                   "Element cannot be interacted with via the keyboard because it is not focusable");
         return;
       }
 
@@ -833,13 +861,14 @@ bool SendKeysCommandHandler::WaitUntilElementFocused(IHTMLElement* element) {
   CComPtr<IHTMLElement> active_element;
   if (document->get_activeElement(&active_element) == S_OK) {
     if (active_element.IsEqualObject(element)) {
+      if (this->IsContentEditable(element)) {
+        this->SetElementFocus(element);
+      }
       return true;
     }
   }
 
-  CComPtr<IHTMLElement2> element2;
-  element->QueryInterface<IHTMLElement2>(&element2);
-  element2->focus();
+  this->SetElementFocus(element);
 
   // Hard-coded 1 second timeout here. Possible TODO is make this adjustable.
   clock_t max_wait = clock() + CLOCKS_PER_SEC;
@@ -847,6 +876,8 @@ bool SendKeysCommandHandler::WaitUntilElementFocused(IHTMLElement* element) {
     WindowUtilities::Wait(1);
     CComPtr<IHTMLElement> active_wait_element;
     if (document->get_activeElement(&active_wait_element) == S_OK && active_wait_element != NULL) {
+      CComPtr<IHTMLElement2> element2;
+      element->QueryInterface<IHTMLElement2>(&element2);
       CComPtr<IHTMLElement2> active_wait_element2;
       active_wait_element->QueryInterface<IHTMLElement2>(&active_wait_element2);
       if (element2.IsEqualObject(active_wait_element2)) {
@@ -872,13 +903,7 @@ bool SendKeysCommandHandler::SetInsertionPoint(IHTMLElement* element) {
     if (SUCCEEDED(hr) && text_area_element) {
       text_area_element->createTextRange(&range);
     } else {
-      CComPtr<IHTMLElement3> element3;
-      element->QueryInterface<IHTMLElement3>(&element3);
-      VARIANT_BOOL is_content_editable_variant = VARIANT_FALSE;
-      if (element3) {
-        element3->get_isContentEditable(&is_content_editable_variant);
-      }
-      bool is_content_editable = is_content_editable_variant == VARIANT_TRUE;
+      bool is_content_editable = this->IsContentEditable(element);
       if (is_content_editable) {
         CComPtr<IDispatch> dispatch;
         hr = element->get_document(&dispatch);
@@ -909,6 +934,22 @@ bool SendKeysCommandHandler::SetInsertionPoint(IHTMLElement* element) {
   }
 
   return false;
+}
+
+bool SendKeysCommandHandler::IsContentEditable(IHTMLElement* element) {
+  CComPtr<IHTMLElement3> element3;
+  element->QueryInterface<IHTMLElement3>(&element3);
+  VARIANT_BOOL is_content_editable_variant = VARIANT_FALSE;
+  if (element3) {
+    element3->get_isContentEditable(&is_content_editable_variant);
+  }
+  return is_content_editable_variant == VARIANT_TRUE;
+}
+
+void SendKeysCommandHandler::SetElementFocus(IHTMLElement* element) {
+  CComPtr<IHTMLElement2> element2;
+  element->QueryInterface<IHTMLElement2>(&element2);
+  element2->focus();
 }
 
 } // namespace webdriver

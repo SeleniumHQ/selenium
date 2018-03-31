@@ -52,7 +52,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   private static final Random random = new Random();
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     domainHelper = new DomainHelper(appServer);
     assumeTrue(domainHelper.checkIsOnValidHostname());
     cookiePage = domainHelper.getUrlForFirstValidHostname("/common/cookie");
@@ -266,7 +266,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
+  public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
 
@@ -604,7 +604,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  public void deleteAllCookies() throws Exception {
+  public void deleteAllCookies() {
     assumeTrue(domainHelper.checkHasValidAlternateHostname());
 
     Cookie cookie1 = new Cookie.Builder("fish1", "cod")

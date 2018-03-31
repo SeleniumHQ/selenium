@@ -36,7 +36,6 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -55,6 +54,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1381519")
+  @NotYetImplemented(SAFARI)
   public void testDocumentShouldReflectLatestDom() {
     driver.get(pages.javascriptPage);
     String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
@@ -90,6 +90,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("change")).sendKeys("foo");
@@ -157,7 +158,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = SAFARI, reason = "issue 4061")
+  @NotYetImplemented(value = SAFARI)
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
 
@@ -223,7 +224,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    */
   @NeedsFreshDriver
   @Test
-  @Ignore(value = SAFARI, reason = "issue 3693")
   public void testShouldBeAbleToClickALinkThatClosesAWindow() {
     driver.get(pages.javascriptPage);
 

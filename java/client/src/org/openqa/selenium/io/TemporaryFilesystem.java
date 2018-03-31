@@ -31,12 +31,8 @@ public class TemporaryFilesystem {
 
   private final Set<File> temporaryFiles = new CopyOnWriteArraySet<>();
   private final File baseDir;
-  private final Thread shutdownHook = new Thread() {  // Thread safety reviewed
-    @Override
-    public void run() {
-      deleteTemporaryFiles();
-    }
-  };
+  // Thread safety reviewed
+  private final Thread shutdownHook = new Thread(this::deleteTemporaryFiles);
 
   private static File sysTemp = new File(System.getProperty("java.io.tmpdir"));
   private static TemporaryFilesystem instance = new TemporaryFilesystem(sysTemp);

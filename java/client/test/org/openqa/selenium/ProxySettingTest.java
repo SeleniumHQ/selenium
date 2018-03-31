@@ -23,7 +23,6 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
 
 import org.junit.After;
@@ -44,10 +43,10 @@ import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.server.handler.AbstractHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -56,7 +55,7 @@ public class ProxySettingTest extends JUnit4TestBase {
   @Rule
   public ErrorCollector errorCollector = new ErrorCollector();
 
-  private final List<Callable<Object>> tearDowns = Lists.newLinkedList();
+  private final List<Callable<Object>> tearDowns = new ArrayList<>();
 
   private ProxyServer proxyServer;
 
@@ -114,7 +113,7 @@ public class ProxySettingTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @NeedsLocalEnvironment
-  public void canUsePACThatOnlyProxiesCertainHosts() throws Exception {
+  public void canUsePACThatOnlyProxiesCertainHosts() {
     Server helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
     Server goodbyeServer = createSimpleHttpServer(
@@ -162,7 +161,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     return createServer(new AbstractHandler() {
       @Override
       public void handle(String s, Request baseRequest, HttpServletRequest request,
-                         HttpServletResponse response) throws IOException, ServletException {
+                         HttpServletResponse response) throws IOException {
         response.setContentType("text/html; charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println(responseHtml);
@@ -175,7 +174,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     return createServer(new AbstractHandler() {
       @Override
       public void handle(String s, Request baseRequest, HttpServletRequest request,
-                         HttpServletResponse response) throws IOException, ServletException {
+                         HttpServletResponse response) throws IOException {
         response.setContentType("application/x-javascript-config; charset=us-ascii");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println(pacFileContents);

@@ -26,6 +26,7 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
+        include DriverExtensions::HasWebStorage
         include DriverExtensions::TakesScreenshot
 
         def initialize(opts = {})

@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
 

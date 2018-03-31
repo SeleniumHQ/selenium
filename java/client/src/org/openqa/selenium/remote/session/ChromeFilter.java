@@ -17,14 +17,9 @@
 
 package org.openqa.selenium.remote.session;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.Ordering;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ChromeFilter implements CapabilitiesFilter {

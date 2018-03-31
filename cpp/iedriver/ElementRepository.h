@@ -30,14 +30,16 @@ class ElementRepository {
   virtual ~ElementRepository(void);
   int GetManagedElement(const std::string& element_id,
                         ElementHandle* element_wrapper) const;
-  void AddManagedElement(BrowserHandle current_browser,
+  bool AddManagedElement(BrowserHandle current_browser,
                          IHTMLElement* element,
                          ElementHandle* element_wrapper);
+  bool AddManagedElement(ElementHandle element_wrapper);
   void RemoveManagedElement(const std::string& element_id);
   void ListManagedElements(void);
   void ClearCache(void);
   void Clear(void);
  private:
+  bool IsElementManaged(IHTMLElement* element, ElementHandle* element_wrapper);
   typedef std::unordered_map<std::string, ElementHandle> ElementMap;
   ElementMap managed_elements_;
 };

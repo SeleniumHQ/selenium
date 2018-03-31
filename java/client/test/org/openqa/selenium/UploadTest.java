@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 
@@ -44,10 +45,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+
 /**
  * Demonstrates how to use WebDriver with a file input element.
  */
-@Ignore(value = SAFARI, reason = "issue 4220")
 public class UploadTest extends JUnit4TestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";
@@ -62,6 +63,7 @@ public class UploadTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @Ignore(value = SAFARI, reason = "Returns wrong text of the frame body")
   public void testFileUploading() {
     assumeFalse(
         "This test as written assumes a file on local disk is accessible to the browser. "
@@ -83,7 +85,6 @@ public class UploadTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(SAFARI)
   public void testCleanFileInput() {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
@@ -95,7 +96,7 @@ public class UploadTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(CHROME)
-  @Ignore(SAFARI)
+  @NotYetImplemented(value = SAFARI, reason = "Throws WebDriverException")
   @Ignore(HTMLUNIT)
   public void testClickFileInput() {
     driver.get(pages.uploadPage);
@@ -105,6 +106,7 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = SAFARI, reason = "Hangs forever in sendKeys")
   public void testUploadingWithHiddenFileInput() {
     driver.get(appServer.whereIs("upload_invisible.html"));
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());

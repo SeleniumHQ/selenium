@@ -18,8 +18,8 @@
 package org.openqa.selenium.logging;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class LogCombiner {
@@ -28,7 +28,6 @@ public class LogCombiner {
 
   public static LogEntries combine(LogEntries... entries) {
     return new LogEntries(
-        Iterables.mergeSorted(Lists.newArrayList(entries),
-        LOG_ENTRY_TIMESTAMP_COMPARATOR));
+        Iterables.mergeSorted(Arrays.asList(entries), LOG_ENTRY_TIMESTAMP_COMPARATOR));
   }
 }

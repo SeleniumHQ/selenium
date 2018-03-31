@@ -1,4 +1,4 @@
-// Licensed to the Software Freedom Conservancy (SFC) under one
+﻿// Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership. The SFC licenses this file
@@ -126,12 +126,34 @@ void ScreenshotCommandHandler::CaptureWindow(HWND window_handle,
 }
 
 bool ScreenshotCommandHandler::IsSameColour() {
-  COLORREF firstPixelColour = this->image_->GetPixel(0, 0);
+  int bytes_per_pixel = this->image_->GetBPP() / 8;
+  if (bytes_per_pixel >= 3) {
+    BYTE* root_pixel_pointer = reinterpret_cast<BYTE*>(this->image_->GetBits());
+    int pitch = this->image_->GetPitch();
+    int first_pixel_red = *(root_pixel_pointer);
+    int first_pixel_green = *(root_pixel_pointer + 1);
+    int first_pixel_blue = *(root_pixel_pointer + 2);
 
-  for (int i = 0; i < this->image_->GetWidth(); i++) {
-    for (int j = 0; j < this->image_->GetHeight(); j++) {
-      if (firstPixelColour != this->image_->GetPixel(i, j)) {
-        return false;
+    for (int i = 0; i < this->image_->GetWidth(); ++i) {
+      for (int j = 0; j < this->image_->GetHeight(); ++j) {
+        int current_pixel_offset = (pitch * j) + (bytes_per_pixel * i);
+        int current_pixel_red = *(root_pixel_pointer + current_pixel_offset);
+        int current_pixel_green = *(root_pixel_pointer + current_pixel_offset + 1);
+        int current_pixel_blue = *(root_pixel_pointer + current_pixel_offset + 2);
+        if (first_pixel_red != current_pixel_red ||
+            first_pixel_green != current_pixel_green ||
+            first_pixel_blue != current_pixel_blue) {
+          return false;
+        }
+      }
+    }
+  } else {
+    COLORREF firstPixelColour = this->image_->GetPixel(0, 0);
+    for (int i = 0; i < this->image_->GetWidth(); ++i) {
+      for (int j = 0; j < this->image_->GetHeight(); ++j) {
+        if (this->image_->GetPixel(i, j)) {
+          return false;
+        }
       }
     }
   }

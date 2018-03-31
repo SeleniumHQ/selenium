@@ -75,7 +75,7 @@ public class ConfigInheritanceTest {
   }
 
   @After
-  public void stop() throws Exception {
+  public void stop() {
     hub.stop();
   }
 }

@@ -35,6 +35,10 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'core-scripts',
-  binary_jar = '//javascript/selenium-core:selenium-core',
+  binary_jar = ':core-scripts.jar',
 )
 
+export_file(
+  name = 'core-scripts.jar',
+  src = '//javascript/selenium-core:selenium-core',
+)

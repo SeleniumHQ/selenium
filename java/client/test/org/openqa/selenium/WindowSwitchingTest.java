@@ -30,6 +30,7 @@ import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreater
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Rule;
@@ -41,6 +42,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -110,6 +112,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest(failedOnly = true)
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "Throws no exception")
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -127,6 +130,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest(failedOnly = true)
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "Throws no exception")
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -147,6 +151,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest(failedOnly = true)
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "Throws StaleElementReferenceException")
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -166,6 +171,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(IE)
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToIterateOverAllOpenWindows() {
     driver.get(pages.xhtmlTestPage);
     String original = driver.getWindowHandle();

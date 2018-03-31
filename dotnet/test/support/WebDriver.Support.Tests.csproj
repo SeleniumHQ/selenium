@@ -29,8 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NMock3" Version="3.5.44" />
-    <PackageReference Include="NUnit" Version="3.8.1" />
+    <PackageReference Include="Moq" Version="4.8.1" />
+    <PackageReference Include="NUnit" Version="3.10.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +44,10 @@
     <None Update="WebDriver.Support.Tests.nunit">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 
 </Project>

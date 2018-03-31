@@ -38,7 +38,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -381,35 +380,10 @@ public class FirefoxOptions extends MutableCapabilities {
     return toReturn;
   }
 
-  /**
-   * @deprecated Use {@link #merge(Capabilities)}.
-   */
-  @Deprecated
-  public FirefoxOptions addCapabilities(Capabilities capabilities) {
-    merge(capabilities);
-    return this;
-  }
-
   @Override
   public FirefoxOptions merge(Capabilities capabilities) {
     super.merge(capabilities);
     return this;
-  }
-
-  /**
-   * @deprecated No replacement. We are already {@link Capabilities}.
-   */
-  @Deprecated
-  public Capabilities toCapabilities() {
-    return this;
-  }
-
-  /**
-   * @deprecated Use {@link MutableCapabilities#merge(Capabilities)}.
-   */
-  @Deprecated
-  public DesiredCapabilities addTo(DesiredCapabilities capabilities) {
-    return capabilities.merge(this);
   }
 
   @Override

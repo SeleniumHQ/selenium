@@ -19,6 +19,7 @@ import logging
 import socket
 import string
 import base64
+import platform
 
 try:
     import http.client as httplib
@@ -30,6 +31,7 @@ except ImportError:  # above is available in py3+, below is py2.7
     import urlparse as parse
 
 from selenium.webdriver.common import utils as common_utils
+from selenium import __version__
 from .command import Command
 from .errorhandler import ErrorCode
 from . import utils
@@ -172,10 +174,14 @@ class RemoteConnection(object):
          - keep_alive (Boolean) - Is this a keep-alive connection (default: False)
         """
 
+        system = platform.system().lower()
+        if system == "darwin":
+            system = "mac"
+
         headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json;charset=UTF-8',
-            'User-Agent': 'Python http auth'
+            'User-Agent': 'selenium/{} (python {})'.format(__version__, system)
         }
 
         if parsed_url.username:

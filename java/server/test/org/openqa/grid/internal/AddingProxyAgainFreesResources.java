@@ -25,19 +25,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * registering an already existing node assumes the node has been restarted, and all the resources
  * are free again
- *
- * @author freynaud
  */
 public class AddingProxyAgainFreesResources {
 
@@ -51,12 +51,10 @@ public class AddingProxyAgainFreesResources {
 
   /**
    * create a hub with 1 node accepting 1 FF
-   *
-   * @throws InterruptedException
    */
   @Before
   public void setup() throws Exception {
-    registry = DefaultGridRegistry.newInstance();
+    registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
     registry.add(p1);
@@ -75,7 +73,7 @@ public class AddingProxyAgainFreesResources {
     // add the request to the queue
 
     handler2 = GridHelper.createNewSessionHandler(registry, ff);
-    new Thread(() -> {handler2.process();}).start();
+    new Thread(() -> handler2.process()).start();
     // the 1 slot of the node is used.
     assertEquals(1, p1.getTotalUsed());
 
@@ -87,11 +85,11 @@ public class AddingProxyAgainFreesResources {
   }
 
   @Test(timeout = 1000)
-  public void validateRequest2isNowRunningOnTheNode() throws InterruptedException {
+  public void validateRequest2isNowRunningOnTheNode() {
     FluentWait<RequestHandler> wait = new FluentWait<>(handler2);
-    wait.withTimeout(1, TimeUnit.SECONDS).pollingEvery(100, TimeUnit.MILLISECONDS)
+    wait.withTimeout(Duration.ofSeconds(1)).pollingEvery(Duration.ofMillis(100))
       .ignoring(GridException.class)
-      .until((RequestHandler input) -> input.getSession());
+      .until(RequestHandler::getSession);
     assertNotNull(handler2.getSession());
   }
 

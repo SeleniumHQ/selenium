@@ -56,11 +56,17 @@ void ClearElementCommandHandler::ExecuteInternal(
       // does not return the proper error code when this error condition is encountered.
       // Thus, we'll check the interactable and editable states of the element before 
       // attempting to clear it.
-      if (!element_wrapper->IsInteractable() || !element_wrapper->IsEditable()) {
-        response->SetErrorResponse(EELEMENTNOTENABLED,
-                                    "Element must not be hidden, disabled or read-only");
+      if (!element_wrapper->IsEditable() || !element_wrapper->IsEnabled()) {
+        response->SetErrorResponse(ERROR_INVALID_ELEMENT_STATE,
+                                   "Element must not be read-only or disabled");
         return;
       }
+      if (!element_wrapper->IsInteractable()) {
+        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
+                                   "Element is not interactable, it must not be hidden and it must be able to receive focus");
+        return;
+      }
+
       // The atom is just the definition of an anonymous
       // function: "function() {...}"; Wrap it in another function so we can
       // invoke it with our arguments without polluting the current namespace.
@@ -68,11 +74,17 @@ void ClearElementCommandHandler::ExecuteInternal(
       script_source += atoms::asString(atoms::CLEAR);
       script_source += L")})();";
 
+      Json::Value args(Json::arrayValue);
+      args.append(element_wrapper->ConvertToJson());
+
+      HWND async_executor_handle;
       CComPtr<IHTMLDocument2> doc;
       browser_wrapper->GetDocument(&doc);
-      Script script_wrapper(doc, script_source, 1);
-      script_wrapper.AddArgument(element_wrapper);
-      status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
+      Script script_wrapper(doc, script_source);
+      status_code = script_wrapper.ExecuteAsync(executor,
+                                                args,
+                                                ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS,
+                                                &async_executor_handle);
       if (status_code != WD_SUCCESS) {
         // Assume that a JavaScript error returned by the atom is that
         // the element is either invisible, disabled, or read-only.

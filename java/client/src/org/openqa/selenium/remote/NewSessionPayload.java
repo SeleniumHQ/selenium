@@ -68,15 +68,12 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 public class NewSessionPayload implements Closeable {
-
-  private static final Logger LOG = Logger.getLogger(NewSessionPayload.class.getName());
 
   private final Set<CapabilitiesFilter> adapters;
   private final Set<CapabilityTransform> transforms;
@@ -229,14 +226,14 @@ public class NewSessionPayload implements Closeable {
 
       // Write the first capability we get as the desired capability.
       json.name("desiredCapabilities");
-      json.write(first, MAP_TYPE);
+      json.write(first);
 
       // And write the first capability for gecko13
       json.name("capabilities");
       json.beginObject();
 
       json.name("desiredCapabilities");
-      json.write(first, MAP_TYPE);
+      json.write(first);
 
       // Then write everything into the w3c payload. Because of the way we do this, it's easiest
       // to just populate the "firstMatch" section. The spec says it's fine to omit the
@@ -244,7 +241,7 @@ public class NewSessionPayload implements Closeable {
       json.name("firstMatch");
       json.beginArray();
       //noinspection unchecked
-      getW3C().forEach(map -> json.write(map, MAP_TYPE));
+      getW3C().forEach(map -> json.write(map));
       json.endArray();
 
       json.endObject();  // Close "capabilities" object
@@ -271,7 +268,7 @@ public class NewSessionPayload implements Closeable {
 
           default:
             out.name(name);
-            out.write(input.<Object>read(Object.class), Object.class);
+            out.write(input.<Object>read(Object.class));
             break;
         }
       }

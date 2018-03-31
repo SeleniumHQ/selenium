@@ -17,7 +17,6 @@
 
 package org.openqa.testing;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
@@ -81,15 +80,15 @@ public class FakeHttpServletResponse extends HeaderContainer
     throw new UnsupportedOperationException();
   }
 
-  public void sendError(int i, String s) throws IOException {
+  public void sendError(int i, String s) {
     throw new UnsupportedOperationException();
   }
 
-  public void sendError(int i) throws IOException {
+  public void sendError(int i) {
     throw new UnsupportedOperationException();
   }
 
-  public void sendRedirect(String s) throws IOException {
+  public void sendRedirect(String s) {
     setStatus(SC_SEE_OTHER);
     setHeader("Location", s);
   }
@@ -110,11 +109,11 @@ public class FakeHttpServletResponse extends HeaderContainer
     return getHeader("Content-Type");
   }
 
-  public ServletOutputStream getOutputStream() throws IOException {
+  public ServletOutputStream getOutputStream() {
     return servletOutputStream;
   }
 
-  public PrintWriter getWriter() throws IOException {
+  public PrintWriter getWriter() {
     return printWriter;
   }
 
@@ -144,7 +143,7 @@ public class FakeHttpServletResponse extends HeaderContainer
     throw new UnsupportedOperationException();
   }
 
-  public void flushBuffer() throws IOException {
+  public void flushBuffer() {
     // no-op
   }
 
@@ -177,7 +176,7 @@ public class FakeHttpServletResponse extends HeaderContainer
     }
 
     @Override
-    public void write(int i) throws IOException {
+    public void write(int i) {
       printWriter.write(i);
     }
 

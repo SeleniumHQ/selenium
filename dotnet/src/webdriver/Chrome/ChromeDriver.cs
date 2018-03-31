@@ -147,10 +147,10 @@ namespace OpenQA.Selenium.Chrome
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
             // Add the custom commands unique to Chrome
-            AddCustomChromeCommand(GetNetworkConditionsCommand, CommandInfo.GetCommand, "/session/{sessionId}/chromium/network_connection");
-            AddCustomChromeCommand(SetNetworkConditionsCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/network_connection");
-            AddCustomChromeCommand(DeleteNetworkConditionsCommand, CommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_connection");
-            AddCustomChromeCommand(SendChromeCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
+            this.AddCustomChromeCommand(GetNetworkConditionsCommand, CommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions");
+            this.AddCustomChromeCommand(SetNetworkConditionsCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions");
+            this.AddCustomChromeCommand(DeleteNetworkConditionsCommand, CommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions");
+            this.AddCustomChromeCommand(SendChromeCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
         }
 
         /// <summary>
@@ -187,7 +187,9 @@ namespace OpenQA.Selenium.Chrome
                     throw new ArgumentNullException("value", "value must not be null");
                 }
 
-                this.Execute(SetNetworkConditionsCommand, value.ToDictionary());
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["network_conditions"] = value.ToDictionary();
+                this.Execute(SetNetworkConditionsCommand, parameters);
             }
         }
 

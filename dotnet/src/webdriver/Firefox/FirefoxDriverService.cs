@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxDriverService.cs" company="WebDriver Committers">
+// <copyright file="FirefoxDriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -33,6 +33,7 @@ namespace OpenQA.Selenium.Firefox
         private static readonly Uri FirefoxDriverDownloadUrl = new Uri("https://github.com/mozilla/geckodriver/releases");
 
         private bool connectToRunningBrowser;
+        private bool openBrowserToolbox;
         private int browserCommunicationPort = -1;
         private string browserBinaryPath = string.Empty;
         private string host = string.Empty;
@@ -85,6 +86,16 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.connectToRunningBrowser; }
             set { this.connectToRunningBrowser = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to open the Firefox Browser Toolbox
+        /// when Firefox is launched.
+        /// </summary>
+        public bool OpenBrowserToolbox
+        {
+            get { return this.openBrowserToolbox; }
+            set { this.openBrowserToolbox = value; }
         }
 
         /// <summary>
@@ -154,6 +165,11 @@ namespace OpenQA.Selenium.Firefox
                 if (this.loggingLevel != FirefoxDriverLogLevel.Default)
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log {0}", this.loggingLevel.ToString().ToLowerInvariant()));
+                }
+
+                if (this.openBrowserToolbox)
+                {
+                    argsBuilder.Append(" --jsdebugger");
                 }
 
                 return argsBuilder.ToString().Trim();

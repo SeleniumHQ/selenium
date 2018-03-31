@@ -1,3 +1,74 @@
+v3.11.0
+=======
+ * Added support for intercepted element clicks. This adds a new exception,
+   `ElementClickInterceptedException` to indicate when an element is obscured
+   by another element. This allows users to distinguish between different
+   causes of elements not being clickable.
+ * Marked .NET ExpectedConditions obsolete. Using the ExpectedConditions
+   class provides no benefit over directly using lambda functions (anonymous
+   methods) directly in one's code. Since the community appears to believe
+   that an "official" repository of wait conditions is desireable, the
+   existing code has been migrated to a new repository under a new organization
+   on GitHub (https://github.com/DotNetSeleniumTools/DotNetSeleniumExtras).
+   It is  hoped that this will encourage a volunteer from the community to take
+   ownership of this code. Users should update their references and migrate
+   their code to use `SeleniumExtras.ExpectedConditions`. This implementation
+   will be removed from the .NET language bindings in a future release
+ * Marked .NET PageFactory obsolete. The .NET implementation of PageFactory
+   is deeply flawed. Additionally, using the PageFactory provides no benefit
+   over other methods of Page Object creation in .NET. This is true for code
+   verbosity as well, which is often the reason cited for wanting to use the
+   PageFactory in .NET. The existing code has been migrated to a new repository
+   under a new organization on GitHub
+   (https://github.com/DotNetSeleniumTools/DotNetSeleniumExtras). It is hoped
+   that this will encourage a volunteer from the community to take ownership
+   of this code. Users should update their references and migrate their code
+   to use `SeleniumExtras.PageFactory`. The implementation will be removed
+ * Updated .NET Actions class to change element offsets for W3C mouse move.
+   When the Actions class performs a mouse move that includes a reference to
+   an element and an x-y offset, the offsets are calculated differently
+   depending on whether the remote end adheres to the W3C WebDriver
+   Specification. In the W3C case, the offsets are calculated from the center
+   of the element. This differs from the legacy behavior, which calculates
+   offsets from the top-left corner of the element. This change uses the
+   language bindings to allow the user to optionally choose which origin to
+   use, and by default calculates all offsets from the upper-left, if not
+   specified. This normalizes the mouse move behavior across all types of
+   remote ends.
+
+v3.10.0
+=======
+ * Removed Proxy property from instance of HttpWebRequest in .NET. This
+   fixes the case for .NET Core when running RemoteWebDriver by avoiding
+   a platform-specific property of the ServicePoint object. This obviates
+   the need for creating a custom IWebProxy implementation simply for fixing
+   this issue, and prevents a bloat of the number of RemoteWebDriver
+   constructors for creating an instance of that proxy object. While there
+   may be a compelling use case for supporting an IWebProxy implementation
+   for use with WebDriver to proxy communication between the language bindings
+   and the driver, this use case is not it. Fixes issue #4770.
+ * (on behalf of dnknitro)  Added no-cache header to HTTP GET command of
+   RemoteWebDriver. When Selenium RemoteWebDriver is connecting to Selenium
+   Server (e.g. SauceLabs) through HTTP proxy, same/repetitive HTTP commands
+   can be cached by the proxy. This leads to unexpected and unwanted behavior
+   that HTTP commands return cached and outdated data from the server (e.g.
+   screenshots). Fixes issue #5404.
+ * Removed support for timeline perf logging preference in .NET ChromeDriver.
+   According to chromedriver bug #2034
+   (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2034),
+   the enableTimeline performance logging preference is no longer accepted
+   by chromedriver.exe. The .NET language bindings will no longer send that
+   preference to the driver executable. Additionally, the peroperty setting
+   the preference has been deprecated, and will generate a compile-time
+   warning. The property will be remvoed in a future release. Fixes
+   issue #5481.
+
+v3.9.1
+======
+ * Updated build process and packaging to correctly distribute strongly-
+   named releases. Fixes issue #5254 (for real, this time). No functional
+   changes whatsoever.
+
 v3.9.0
 ======
  * Added commands to get and set network conditions for Chrome in .NET.

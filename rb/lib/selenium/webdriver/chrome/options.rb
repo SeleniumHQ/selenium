@@ -39,7 +39,7 @@ module Selenium
         #
 
         def initialize(**opts)
-          @args = opts.delete(:args) || []
+          @args = Set.new(opts.delete(:args) || [])
           @binary = opts.delete(:binary) || Chrome.path
           @prefs = opts.delete(:prefs) || {}
           @extensions = opts.delete(:extensions) || []
@@ -123,6 +123,21 @@ module Selenium
         end
 
         #
+        # Run Chrome in headless mode.
+        #
+        # @example Enable headless mode
+        #   options = Selenium::WebDriver::Chrome::Options.new
+        #   options.headless!
+        #
+
+        def headless!
+          add_argument '--headless'
+
+          # https://bugs.chromium.org/p/chromium/issues/detail?id=737678#c1
+          add_argument '--disable-gpu' if WebDriver::Platform.windows?
+        end
+
+        #
         # Add an emulation device name
         #
         # @example Start Chrome in mobile emulation mode by device name
@@ -156,7 +171,7 @@ module Selenium
 
           opts = @options
           opts[:binary] = @binary if @binary
-          opts[:args] = @args if @args.any?
+          opts[:args] = @args.to_a if @args.any?
           opts[:extensions] = extensions if extensions.any?
           opts[:mobileEmulation] = @emulation unless @emulation.empty?
           opts[:prefs] = @prefs unless @prefs.empty?

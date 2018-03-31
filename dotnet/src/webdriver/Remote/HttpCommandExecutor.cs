@@ -22,19 +22,21 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
     /// Provides a way of executing Commands over HTTP
     /// </summary>
-    internal class HttpCommandExecutor : ICommandExecutor
+    public class HttpCommandExecutor : ICommandExecutor
     {
         private const string JsonMimeType = "application/json";
         private const string PngMimeType = "image/png";
         private const string CharsetType = "charset=utf-8";
         private const string ContentTypeHeader = JsonMimeType + ";" + CharsetType;
         private const string RequestAcceptHeader = JsonMimeType + ", " + PngMimeType;
+        private const string UserAgentHeaderTemplate = "selenium/{0} (.net {1})";
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
         private bool enableKeepAlive;
@@ -84,12 +86,16 @@ namespace OpenQA.Selenium.Remote
             {
                 HttpWebRequest.DefaultMaximumErrorResponseLength = -1;
             }
-    }
 
-    /// <summary>
-    /// Gets the repository of objects containin information about commands.
-    /// </summary>
-    public CommandInfoRepository CommandInfoRepository
+
+        }
+
+        public event EventHandler<BeforeRemoteHttpRequestEventArgs> BeforeRemoteHttpRequest;
+
+        /// <summary>
+        /// Gets the repository of objects containin information about commands.
+        /// </summary>
+        public CommandInfoRepository CommandInfoRepository
         {
             get { return this.commandInfoRepository; }
         }
@@ -128,6 +134,23 @@ namespace OpenQA.Selenium.Remote
             return toReturn;
         }
 
+        /// <summary>
+        /// Raises the <see cref="BeforeRemoteHttpRequest"/> event.
+        /// </summary>
+        /// <param name="eventArgs">A <see cref="BeforeRemoteHttpRequestEventArgs"/> that contains the event data.</param>
+        protected virtual void OnBeforeRemoteHttpRequest(BeforeRemoteHttpRequestEventArgs eventArgs)
+        {
+            if (eventArgs == null)
+            {
+                throw new ArgumentNullException("eventArgs", "eventArgs must not be null");
+            }
+
+            if (this.BeforeRemoteHttpRequest != null)
+            {
+                this.BeforeRemoteHttpRequest(this, eventArgs);
+            }
+        }
+
         private static string GetTextOfWebResponse(HttpWebResponse webResponse)
         {
             // StreamReader.Close also closes the underlying stream.
@@ -149,10 +172,20 @@ namespace OpenQA.Selenium.Remote
         private HttpResponseInfo MakeHttpRequest(HttpRequestInfo requestInfo)
         {
             HttpWebRequest request = HttpWebRequest.Create(requestInfo.FullUri) as HttpWebRequest;
+            if (!string.IsNullOrEmpty(requestInfo.FullUri.UserInfo) && requestInfo.FullUri.UserInfo.Contains(":"))
+            {
+                string[] userInfo = this.remoteServerUri.UserInfo.Split(new char[] { ':' }, 2);
+                request.Credentials = new NetworkCredential(userInfo[0], userInfo[1]);
+                request.PreAuthenticate = true;
+            }
+
+            string userAgentString = string.Format(CultureInfo.InvariantCulture, UserAgentHeaderTemplate, ResourceUtilities.AssemblyVersion, ResourceUtilities.PlatformFamily);
+            request.UserAgent = userAgentString;
             request.Method = requestInfo.HttpMethod;
             request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
             request.KeepAlive = this.enableKeepAlive;
+            request.Proxy = null;
             request.ServicePoint.ConnectionLimit = 2000;
             if (request.Method == CommandInfo.PostCommand)
             {
@@ -163,6 +196,12 @@ namespace OpenQA.Selenium.Remote
                 requestStream.Write(data, 0, data.Length);
                 requestStream.Close();
             }
+            else if (request.Method == CommandInfo.GetCommand)
+            {
+                request.Headers.Add("Cache-Control", "no-cache");
+            }
+
+            this.OnBeforeRemoteHttpRequest(new BeforeRemoteHttpRequestEventArgs(request));
 
             HttpResponseInfo responseInfo = new HttpResponseInfo();
             HttpWebResponse webResponse = null;

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,11 +25,20 @@ import java.util.concurrent.TimeUnit;
  */
 public interface Sleeper {
 
-  public static final Sleeper SYSTEM_SLEEPER = new Sleeper() {
-    public void sleep(Duration duration) throws InterruptedException {
-      Thread.sleep(duration.in(TimeUnit.MILLISECONDS));
-    }
-  };
+  Sleeper SYSTEM_SLEEPER = duration -> Thread.sleep(duration.toMillis());
+
+  /**
+   * Sleeps for the specified duration of time.
+   *
+   * @deprecated use {@link #sleep(java.time.Duration)}
+   *
+   * @param duration How long to sleep.
+   * @throws InterruptedException If the thread is interrupted while sleeping.
+   */
+  @Deprecated
+  default void sleep(Duration duration) throws InterruptedException {
+    sleep(java.time.Duration.of(duration.in(TimeUnit.MILLISECONDS), ChronoUnit.MILLIS));
+  }
 
   /**
    * Sleeps for the specified duration of time.
@@ -36,5 +46,5 @@ public interface Sleeper {
    * @param duration How long to sleep.
    * @throws InterruptedException If the thread is interrupted while sleeping.
    */
-  void sleep(Duration duration) throws InterruptedException;
+  void sleep(java.time.Duration duration) throws InterruptedException;
 }

@@ -17,8 +17,6 @@
 
 package org.openqa.grid.web;
 
-import com.google.common.collect.Maps;
-
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
@@ -33,7 +31,7 @@ import org.openqa.grid.web.servlet.ProxyStatusServlet;
 import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.servlet.TestSessionStatusServlet;
-import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
@@ -51,6 +49,7 @@ import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -65,9 +64,9 @@ public class Hub implements Stoppable {
 
   private static final Logger log = Logger.getLogger(Hub.class.getName());
 
-  private GridHubConfiguration config;
+  private final GridHubConfiguration config;
   private final GridRegistry registry;
-  private final Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
+  private final Map<String, Class<? extends Servlet>> extraServlet = new HashMap<>();
 
   private Server server;
 
@@ -85,7 +84,7 @@ public class Hub implements Stoppable {
   }
 
   public Hub(GridHubConfiguration gridHubConfiguration) {
-    config = gridHubConfiguration;
+    config = gridHubConfiguration == null ? new GridHubConfiguration() : gridHubConfiguration;
 
     try {
       registry = (GridRegistry) Class.forName(config.registry).newInstance();

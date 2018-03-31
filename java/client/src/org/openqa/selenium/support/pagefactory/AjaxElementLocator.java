@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import com.google.common.collect.Lists;
-
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -27,6 +25,7 @@ import org.openqa.selenium.support.ui.SlowLoadableComponent;
 import org.openqa.selenium.support.ui.SystemClock;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -103,7 +102,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
     try {
       return list.get().getElements();
     } catch (NoSuchElementError e) {
-      return Lists.newArrayList();
+      return new ArrayList<>();
     }
   }
 

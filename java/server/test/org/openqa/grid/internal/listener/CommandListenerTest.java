@@ -17,40 +17,29 @@
 
 package org.openqa.grid.internal.listener;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.DefaultGridRegistry;
-import org.openqa.grid.internal.DetachedRemoteProxy;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -66,7 +55,7 @@ public class CommandListenerTest {
 
   private static final byte[] responseBytes = new byte[] { 0, 0, 0, 0, 0 };
 
-  static class MyRemoteProxy extends DetachedRemoteProxy implements CommandListener {
+  static class MyRemoteProxy extends BaseRemoteProxy implements CommandListener {
 
     public MyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
@@ -93,46 +82,49 @@ public class CommandListenerTest {
       return null;
     }
 
-    @Override
-    public HttpClientFactory getHttpClientFactory() {
-      // Create mocks for network traffic
-      HttpClientFactory factory = mock(HttpClientFactory.class);
-      HttpClient client = mock(HttpClient.class);
-      HttpResponse response = mock(HttpResponse.class);
-      HttpEntity entity = mock(HttpEntity.class);
-      InputStream stream = mock(InputStream.class);
-      StatusLine line = mock(StatusLine.class);
-
-      when(line.getStatusCode()).thenReturn(200);
-      when(response.getStatusLine()).thenReturn(line);
-      when(response.getAllHeaders()).thenReturn(new Header[0]);
-      when(response.getEntity()).thenReturn(entity);
-      try {
-        // Create a fake stream that will only return the a single number
-        Answer<Integer> answer = new Answer<Integer>() {
-          boolean hasBeenRead = false;
-          @Override
-          public Integer answer(InvocationOnMock invocation) {
-            if (hasBeenRead) {
-              return -1;
-            }
-            hasBeenRead = true;
-            return 1;
-          }
-        };
-
-        // Have all the methods return mocks so client.execute returns our
-        // mocked objects
-        when(stream.read(any(byte[].class))).thenAnswer(answer);
-        when(entity.getContent()).thenReturn(stream);
-        when(client.execute(any(HttpHost.class), any(HttpRequest.class))).thenReturn(response);
-        when(factory.getGridHttpClient(anyInt(), anyInt())).thenReturn(client);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-
-      return factory;
-    }
+//    @Override
+//    public HttpClientFactory getHttpClientFactory() {
+//      // Create mocks for network traffic
+//      HttpClientFactory factory = mock(HttpClientFactory.class);
+//      HttpClient client = mock(HttpClient.class);
+//      HttpResponse response = mock(HttpResponse.class);
+//      HttpEntity entity = mock(HttpEntity.class);
+//      InputStream stream = mock(InputStream.class);
+//      StatusLine line = mock(StatusLine.class);
+//
+//      when(line.getStatusCode()).thenReturn(200);
+//      when(response.getStatusLine()).thenReturn(line);
+//      when(response.getAllHeaders()).thenReturn(new Header[0]);
+//      when(response.getEntity()).thenReturn(entity);
+//      try {
+//        // Create a fake stream that will only return the a single number
+//        Answer<Integer> answer = new Answer<Integer>() {
+//          boolean hasBeenRead = false;
+//          @Override
+//          public Integer answer(InvocationOnMock invocation) {
+//            if (hasBeenRead) {
+//              return -1;
+//            }
+//            hasBeenRead = true;
+//            return 1;
+//          }
+//        };
+//
+//        // Have all the methods return mocks so client.execute returns our
+//        // mocked objects
+//        when(stream.read(any(byte[].class))).thenAnswer(answer);
+//        when(entity.getContent()).thenReturn(stream);
+//        when(client.execute(
+//            any(HttpHost.class),
+//            any(HttpRequest.class), any(
+//            HttpContext.class))).thenReturn(response);
+//        when(factory.getGridHttpClient(anyInt(), anyInt())).thenReturn(client);
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//      }
+//
+//      return factory;
+//    }
   }
 
   private RegistrationRequest req = null;
@@ -148,7 +140,7 @@ public class CommandListenerTest {
 
   @Test
   public void canModifyResponseWithListener() throws IOException {
-    GridRegistry registry = DefaultGridRegistry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     registry.add(new MyRemoteProxy(req, registry));
 
     RequestHandler req = GridHelper.createNewSessionHandler(registry, app1);

@@ -36,18 +36,6 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
   virtual void ExecuteInternal(const IECommandExecutor& executor,
                                const ParametersMap& command_parameters,
                                Response* response);
-  int PopulateArgumentArray(const IECommandExecutor& executor,
-                            Script& script_wrapper,
-                            Json::Value json_args);
-  int AddArgument(const IECommandExecutor& executor,
-                  Script& script_wrapper,
-                  Json::Value arg);
-  int WalkArray(const IECommandExecutor& executor,
-                Script& script_wrapper,
-                Json::Value array_value);
-  int WalkObject(const IECommandExecutor& executor,
-                 Script& script_wrapper,
-                 Json::Value object_value);
 };
 
 } // namespace webdriver

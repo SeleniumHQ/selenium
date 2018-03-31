@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.json;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -25,11 +26,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -59,6 +59,10 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 
 import java.awt.*;
+import java.beans.FeatureDescriptor;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -70,6 +74,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 
 @RunWith(JUnit4.class)
@@ -441,7 +446,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testProperlyConvertsNulls() {
-    Map<String, Object> frameId = Maps.newHashMap();
+    Map<String, Object> frameId = new HashMap<>();
     frameId.put("id", null);
     String payload = new BeanToJsonConverter().convert(frameId);
     assertEquals("{\"id\":null}", payload);
@@ -481,7 +486,7 @@ public class BeanToJsonConverterTest {
     long timestamp = new Date().getTime();
     final LogEntry entry1 = new LogEntry(Level.OFF, timestamp, "entry1");
     final LogEntry entry2 = new LogEntry(Level.WARNING, timestamp, "entry2");
-    LogEntries entries = new LogEntries(Lists.newArrayList(entry1, entry2));
+    LogEntries entries = new LogEntries(asList(entry1, entry2));
 
     String json = new BeanToJsonConverter().convert(entries);
 
@@ -532,6 +537,20 @@ public class BeanToJsonConverterTest {
     JsonObject converted = new JsonParser().parse(seen).getAsJsonObject();
 
     assertEquals(url.toExternalForm(), converted.get("url").getAsString());
+  }
+
+  @Test
+  public void shouldNotIncludePropertiesFromJavaLangObjectOtherThanClass()
+      throws IntrospectionException {
+    String json = new BeanToJsonConverter().convert(new SimpleBean());
+
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    Stream.of(SimplePropertyDescriptor.getPropertyDescriptors(Object.class))
+        .filter(pd -> !"class".equals(pd.getName()))
+        .map(SimplePropertyDescriptor::getName)
+        .peek(System.out::println)
+        .forEach(name -> assertFalse(name, converted.keySet().contains(name)));
   }
 
   @SuppressWarnings("unused")

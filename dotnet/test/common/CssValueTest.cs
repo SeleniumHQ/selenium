@@ -14,12 +14,12 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("green-parent"));
             string backgroundColour = element.GetCssValue("background-color");
 
-            Assert.That(backgroundColour, Is.EqualTo("#008000").Or.EqualTo("rgba(0, 128, 0, 1)"));
+            Assert.That(backgroundColour, Is.EqualTo("#008000").Or.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
 
             element = driver.FindElement(By.Id("red-item"));
             backgroundColour = element.GetCssValue("background-color");
 
-            Assert.That(backgroundColour, Is.EqualTo("#ff0000").Or.EqualTo("rgba(255, 0, 0, 1)"));
+            Assert.That(backgroundColour, Is.EqualTo("#ff0000").Or.EqualTo("rgba(255, 0, 0, 1)").Or.EqualTo("rgb(255, 0, 0)"));
         }
 
         [Test]

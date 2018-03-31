@@ -196,6 +196,20 @@ public interface WebDriverEventListener {
   void afterScript(String script, WebDriver driver);
 
   /**
+   * This action will be performed each time before  {@link org.openqa.selenium.WebDriver.TargetLocator#window(java.lang.String)}
+   *
+   * @param driver WebDriver
+   */
+  void beforeSwitchToWindow(String windowName, WebDriver driver);
+
+  /**
+   * This action will be performed each time after  {@link org.openqa.selenium.WebDriver.TargetLocator#window(java.lang.String)}
+   *
+   * @param driver WebDriver
+   */
+  void afterSwitchToWindow(String windowName, WebDriver driver);
+
+  /**
    * Called whenever an exception would be thrown.
    *
    * @param driver WebDriver

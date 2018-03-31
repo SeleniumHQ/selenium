@@ -249,6 +249,9 @@ module Selenium
                 if value
                   hash['proxy'] = value.as_json
                   hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
+                  if hash['proxy']['noProxy'].is_a?(String)
+                    hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ')
+                  end
                 end
               when String, :firefox_binary
                 hash[key.to_s] = value

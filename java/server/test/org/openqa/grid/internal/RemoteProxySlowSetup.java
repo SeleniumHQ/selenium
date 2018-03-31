@@ -25,7 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.RegistrationListener;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.web.Hub;
 
 public class RemoteProxySlowSetup {
 
@@ -36,7 +38,7 @@ public class RemoteProxySlowSetup {
 
   @Before
   public void setup() {
-    registry = DefaultGridRegistry.newInstance();
+    registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     // create 2 proxy that are equal and have a slow onRegistration
     // p1.equals(p2) = true
     GridNodeConfiguration config1 = new GridNodeConfiguration();
