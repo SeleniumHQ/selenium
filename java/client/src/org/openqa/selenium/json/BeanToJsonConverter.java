@@ -84,8 +84,10 @@ class BeanToJsonConverter {
    *
    * @param object which needs conversion
    * @return the JSON object representation of object
+   * @deprecated Use {@link #convert(Object)} and normal java types.
    */
-  public JsonElement convertObject(Object object) {
+  @Deprecated
+  JsonElement convertObject(Object object) {
     if (object == null) {
       return JsonNull.INSTANCE;
     }

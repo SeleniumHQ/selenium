@@ -60,6 +60,10 @@ public class Json {
     return toJson.convert(toConvert);
   }
 
+  /**
+   * @deprecated No replacement. Use raw java types instead.
+   */
+  @Deprecated
   public JsonElement toJsonElement(Object toConvert) {
     return toJson.convertObject(toConvert);
   }
@@ -77,6 +81,7 @@ public class Json {
     } else {
       throw new IllegalArgumentException("Unable to convert type: " + typeOfT);
     }
+    //noinspection unchecked
     return (T) toBean.convert(type, source);
   }
 

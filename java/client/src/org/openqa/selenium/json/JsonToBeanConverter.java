@@ -323,7 +323,7 @@ class JsonToBeanConverter {
   private <T> T newInstance(Class<T> clazz) {
     try {
       return clazz.newInstance();
-    } catch (InstantiationException | IllegalAccessException e) {
+    } catch (ReflectiveOperationException e) {
       throw new WebDriverException(e);
     }
   }
