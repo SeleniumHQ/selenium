@@ -18,13 +18,13 @@
 package org.openqa.selenium.json;
 
 import com.google.common.io.CharStreams;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
@@ -127,7 +127,7 @@ public class Json {
     private final static TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
       @SuppressWarnings("unchecked")
       @Override
-      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+      public <T> TypeAdapter<T> create(Gson gson, com.google.gson.reflect.TypeToken<T> type) {
         if (type.getRawType() == Map.class) {
           return (TypeAdapter<T>) new MapAdapter(gson);
         }
@@ -183,7 +183,7 @@ public class Json {
     private final static TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
       @SuppressWarnings("unchecked")
       @Override
-      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+      public <T> TypeAdapter<T> create(Gson gson, com.google.gson.reflect.TypeToken<T> type) {
         if (type.getRawType() == List.class) {
           return (TypeAdapter<T>) new ListAdapter(gson);
         }
