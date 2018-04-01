@@ -19,6 +19,7 @@ package org.openqa.selenium.json;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SimplePropertyDescriptor {
   private String name;
@@ -47,7 +48,7 @@ public class SimplePropertyDescriptor {
   }
 
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
-    HashMap<String, SimplePropertyDescriptor> properties = new HashMap<>();
+    Map<String, SimplePropertyDescriptor> properties = new HashMap<>();
     for (Method m : clazz.getMethods()) {
       String methodName = m.getName();
       if (methodName.length() > 2 && methodName.startsWith("is")) {
