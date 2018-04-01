@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import java.util.Objects;
+
 public class Response {
 
   private volatile Object value;
@@ -66,5 +68,23 @@ public class Response {
   @Override
   public String toString() {
     return String.format("(Response: SessionID: %s, Status: %s, Value: %s)", getSessionId(), getStatus(), getValue());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Response)) {
+      return false;
+    }
+
+    Response that = (Response) o;
+    return Objects.equals(value, that.value) &&
+           Objects.equals(sessionId, that.sessionId) &&
+           Objects.equals(status, that.status) &&
+           Objects.equals(state, that.state);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(value, sessionId, status, state);
   }
 }
