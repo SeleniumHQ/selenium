@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.11.1.4
+=========
+ * Fixed finding child elements to return proper error if parent element is
+   stale. Fixes issue #5700.
+
 v3.11.1.3
 =========
  * Fixed detection of obscured elements when top element is not displayed.
