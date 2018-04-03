@@ -48,7 +48,7 @@ public interface Capabilities {
       return (Platform) rawPlatform;
     }
 
-    throw new IllegalStateException("Platform was neither a string or a Platform: " + rawPlatform);
+    throw new IllegalStateException("Platform was neither a string nor a Platform: " + rawPlatform);
   }
 
   default String getVersion() {
@@ -57,7 +57,7 @@ public interface Capabilities {
   }
 
   /**
-   * @deprecated Use is(SUPPORTS_JAVASCRIPT) instead
+   * @deprecated Use is(SUPPORTS_JAVASCRIPT) instead.
    * @see #is(String)
    * @see org.openqa.selenium.remote.CapabilityType#SUPPORTS_JAVASCRIPT
    */
@@ -67,7 +67,7 @@ public interface Capabilities {
   }
 
   /**
-   * @return The capabilities as a Map
+   * @return The capabilities as a Map.
    */
   Map<String, ?> asMap();
 
@@ -86,7 +86,7 @@ public interface Capabilities {
   default boolean is(String capabilityName) {
     Object cap = getCapability(capabilityName);
     if (cap == null) {
-      // javascriptEnabled is true if not set explicitly
+      // If it's not set explicitly, javascriptEnabled is true.
       return "javascriptEnabled".equals(capabilityName);
     }
     return cap instanceof Boolean ? (Boolean) cap : Boolean.parseBoolean(String.valueOf(cap));
