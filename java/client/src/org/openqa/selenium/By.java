@@ -54,7 +54,7 @@ public abstract class By {
 
   /**
    * @param linkText The exact text to match against.
-   * @return A By which locates A elements by the exact text they display.
+   * @return A By which locates A elements by the exact text it displays.
    */
   public static By linkText(String linkText) {
     return new ByLinkText(linkText);
@@ -62,7 +62,7 @@ public abstract class By {
 
   /**
    * @param partialLinkText The partial text to match against
-   * @return a By which locates A elements that contain the given link text
+   * @return a By which locates elements that contain the given link text.
    */
   public static By partialLinkText(String partialLinkText) {
     return new ByPartialLinkText(partialLinkText);
@@ -77,8 +77,8 @@ public abstract class By {
   }
 
   /**
-   * @param tagName The element's tagName
-   * @return a By which locates elements by their tag name
+   * @param tagName The element's tag name.
+   * @return A By which locates elements by their tag name.
    */
   public static By tagName(String tagName) {
     return new ByTagName(tagName);
@@ -105,7 +105,7 @@ public abstract class By {
   }
 
   /**
-   * Find elements via the driver's underlying W3 Selector engine. If the browser does not
+   * Find elements via the driver's underlying W3C Selector engine. If the browser does not
    * implement the Selector API, a best effort is made to emulate the API. In this case, we strive
    * for at least CSS2 support, but offer no guarantees.
    *
@@ -168,7 +168,7 @@ public abstract class By {
 
     public ById(String id) {
       if (id == null) {
-        throw new IllegalArgumentException("Cannot find elements with a null id attribute.");
+        throw new IllegalArgumentException("Cannot find elements when the id is null.");
       }
 
       this.id = id;
@@ -204,7 +204,7 @@ public abstract class By {
 
     public ByLinkText(String linkText) {
       if (linkText == null) {
-        throw new IllegalArgumentException("Cannot find elements when link text is null.");
+        throw new IllegalArgumentException("Cannot find elements when the link text is null.");
       }
 
       this.linkText = linkText;
@@ -234,7 +234,7 @@ public abstract class By {
 
     public ByPartialLinkText(String partialLinkText) {
       if (partialLinkText == null) {
-        throw new IllegalArgumentException("Cannot find elements when link text is null.");
+        throw new IllegalArgumentException("Cannot find elements when the link text is null.");
       }
 
       this.partialLinkText = partialLinkText;
@@ -300,7 +300,7 @@ public abstract class By {
 
     public ByTagName(String tagName) {
       if (tagName == null) {
-        throw new IllegalArgumentException("Cannot find elements when name tag name is null.");
+        throw new IllegalArgumentException("Cannot find elements when the tag name is null.");
       }
 
       this.tagName = tagName;
@@ -337,7 +337,7 @@ public abstract class By {
     public ByXPath(String xpathExpression) {
       if (xpathExpression == null) {
         throw new IllegalArgumentException(
-            "Cannot find elements when the XPath expression is null.");
+            "Cannot find elements when the XPath is null.");
       }
 
       this.xpathExpression = xpathExpression;
