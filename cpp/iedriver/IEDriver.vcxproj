@@ -222,6 +222,7 @@
     <ClCompile Include="CommandHandlers\RefreshCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\ReleaseActionsCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\ScreenshotCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\ScreenshotElementCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\SendKeysCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\SendKeysToAlertCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\SetAlertCredentialsCommandHandler.cpp" />
@@ -318,6 +319,7 @@
     <ClInclude Include="CommandHandlers\RefreshCommandHandler.h" />
     <ClInclude Include="CommandHandlers\ReleaseActionsCommandHandler.h" />
     <ClInclude Include="CommandHandlers\ScreenshotCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\ScreenshotElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SendKeysCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SendKeysToAlertCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SetAlertCredentialsCommandHandler.h" />

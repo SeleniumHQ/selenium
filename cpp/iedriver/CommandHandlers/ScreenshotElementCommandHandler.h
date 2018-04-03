@@ -14,43 +14,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_SCREENSHOTCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_SCREENSHOTCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_SCREENSHOTELEMENTCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_SCREENSHOTELEMENTCOMMANDHANDLER_H_
 
-#include "../IECommandHandler.h"
-#include "../DocumentHost.h"
-#include <atlimage.h>
-#include <atlenc.h>
+#include "ScreenshotCommandHandler.h"
 
 namespace webdriver {
 
-class ScreenshotCommandHandler : public IECommandHandler {
+class ScreenshotElementCommandHandler : public ScreenshotCommandHandler {
  public:
-  ScreenshotCommandHandler(void);
-  virtual ~ScreenshotCommandHandler(void);
+  ScreenshotElementCommandHandler(void);
+  virtual ~ScreenshotElementCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
                        Response* response);
-  int GenerateScreenshotImage(BrowserHandle browser_wrapper);
-  HRESULT GetBase64Data(std::string& data);
-  void ClearImage();
-  void CropImage(HWND content_window_handle, LocationInfo element_location);
-
- private:
-  HRESULT CaptureViewport(BrowserHandle browser);
-  void CaptureWindow(HWND window_handle,
-                     long width,
-                     long height);
-  bool IsSameColour();
-  void GetWindowDimensions(HWND window_handle,
-                           int* width,
-                           int* height);
-
-  ATL::CImage* image_;
 };
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_SCREENSHOTCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_SCREENSHOTELEMENTCOMMANDHANDLER_H_
