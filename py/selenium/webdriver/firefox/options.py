@@ -17,6 +17,7 @@
 import warnings
 
 from selenium.common.exceptions import InvalidArgumentException
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
@@ -149,6 +150,7 @@ class Options(object):
         # so if a binary or profile has _not_ been set,
         # it will defer to geckodriver to find the system Firefox
         # and generate a fresh profile.
+        caps = DesiredCapabilities.FIREFOX.copy()
         opts = {}
 
         if self._binary is not None:
@@ -165,5 +167,6 @@ class Options(object):
         opts.update(self.log.to_capabilities())
 
         if len(opts) > 0:
-            return {Options.KEY: opts}
-        return {}
+            caps[Options.KEY] = opts
+
+        return caps

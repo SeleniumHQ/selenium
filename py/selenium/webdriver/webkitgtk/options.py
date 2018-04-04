@@ -84,7 +84,7 @@ class Options(object):
         Creates a capabilities with all the options that have been set and
         returns a dictionary with everything
         """
-        webkitgtk = DesiredCapabilities.WEBKITGTK.copy()
+        caps = DesiredCapabilities.WEBKITGTK.copy()
 
         browser_options = {}
         if self.binary_location:
@@ -93,6 +93,6 @@ class Options(object):
             browser_options["args"] = self.arguments
         browser_options["useOverlayScrollbars"] = self.overlay_scrollbars_enabled
 
-        webkitgtk[Options.KEY] = browser_options
+        caps[Options.KEY] = browser_options
 
-        return webkitgtk
+        return caps
