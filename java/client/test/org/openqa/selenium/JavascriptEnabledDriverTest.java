@@ -29,7 +29,6 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.hamcrest.Matchers;
@@ -53,7 +52,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1381519")
   @NotYetImplemented(SAFARI)
   public void testDocumentShouldReflectLatestDom() {
     driver.get(pages.javascriptPage);
