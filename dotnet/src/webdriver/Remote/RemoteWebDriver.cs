@@ -1208,6 +1208,16 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Creates a <see cref="RemoteWebElement"/> with the specified ID and element attributes.
+        /// </summary>
+        /// <param name="elementId">The ID of this element.</param>
+        /// <param name="elementDictionary">The attributes for this element.</param>
+        /// <returns>A <see cref="RemoteWebElement"/> with the specified ID.</returns>
+        protected virtual RemoteWebElement CreateElement(string id, Dictionary<string, object> elementDictionary) {
+            return CreateElement(id);
+        }
+
+        /// <summary>
         /// Executes JavaScript in the context of the currently selected frame or window using a specific command.
         /// </summary>
         /// <param name="script">The JavaScript code to execute.</param>

@@ -76,7 +76,7 @@ namespace OpenQA.Selenium.Remote
         /// "input" for an element specified by the HTML markup &lt;input name="foo" /&gt;.
         /// </remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public string TagName
+        public virtual string TagName
         {
             get
             {
@@ -92,7 +92,7 @@ namespace OpenQA.Selenium.Remote
         /// and with other whitespace collapsed.
         /// </summary>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public string Text
+        public virtual string Text
         {
             get
             {
@@ -109,7 +109,7 @@ namespace OpenQA.Selenium.Remote
         /// <remarks>The <see cref="Enabled"/> property will generally
         /// return <see langword="true"/> for everything except explicitly disabled input elements.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public bool Enabled
+        public virtual bool Enabled
         {
             get
             {
@@ -126,7 +126,7 @@ namespace OpenQA.Selenium.Remote
         /// <remarks>This operation only applies to input elements such as checkboxes,
         /// options in a select element and radio buttons.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public bool Selected
+        public virtual bool Selected
         {
             get
             {
@@ -142,7 +142,7 @@ namespace OpenQA.Selenium.Remote
         /// of this element relative to the upper-left corner of the page.
         /// </summary>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public Point Location
+        public virtual Point Location
         {
             get
             {
@@ -166,7 +166,7 @@ namespace OpenQA.Selenium.Remote
         /// Gets a <see cref="Size"/> object containing the height and width of this element.
         /// </summary>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public Size Size
+        public virtual Size Size
         {
             get
             {
@@ -193,7 +193,7 @@ namespace OpenQA.Selenium.Remote
         /// of having to parse an element's "style" attribute to determine
         /// visibility of an element.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public bool Displayed
+        public virtual bool Displayed
         {
             get
             {
@@ -219,7 +219,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the point where the element would be when scrolled into view.
         /// </summary>
-        public Point LocationOnScreenOnceScrolledIntoView
+        public virtual Point LocationOnScreenOnceScrolledIntoView
         {
             get
             {
@@ -248,7 +248,7 @@ namespace OpenQA.Selenium.Remote
         /// Gets the coordinates identifying the location of this element using
         /// various frames of reference.
         /// </summary>
-        public ICoordinates Coordinates
+        public virtual ICoordinates Coordinates
         {
             get { return new RemoteCoordinates(this); }
         }
@@ -283,7 +283,7 @@ namespace OpenQA.Selenium.Remote
         /// method will clear the value. It has no effect on other elements. Text entry elements
         /// are defined as elements with INPUT or TEXTAREA tags.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public void Clear()
+        public virtual void Clear()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
@@ -301,7 +301,7 @@ namespace OpenQA.Selenium.Remote
         /// <exception cref="InvalidElementStateException">Thrown when the target element is not enabled.</exception>
         /// <exception cref="ElementNotVisibleException">Thrown when the target element is not visible.</exception>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public void SendKeys(string text)
+        public virtual void SendKeys(string text)
         {
             if (text == null)
             {
@@ -342,7 +342,7 @@ namespace OpenQA.Selenium.Remote
         /// page to change, then this method will attempt to block until the new page
         /// is loaded.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public void Submit()
+        public virtual void Submit()
         {
             if (this.driver.IsSpecificationCompliant)
             {
@@ -382,7 +382,7 @@ namespace OpenQA.Selenium.Remote
         /// <exception cref="InvalidElementStateException">Thrown when the target element is not enabled.</exception>
         /// <exception cref="ElementNotVisibleException">Thrown when the target element is not visible.</exception>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public void Click()
+        public virtual void Click()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
@@ -423,7 +423,7 @@ namespace OpenQA.Selenium.Remote
         /// </list>
         /// </remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public string GetAttribute(string attributeName)
+        public virtual string GetAttribute(string attributeName)
         {
             Response commandResponse = null;
             string attributeValue = string.Empty;
@@ -467,7 +467,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
         /// value is not set or the property does not exist.</returns>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public string GetProperty(string propertyName)
+        public virtual string GetProperty(string propertyName)
         {
             string propertyValue = string.Empty;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -498,7 +498,7 @@ namespace OpenQA.Selenium.Remote
         /// "background-color" property set as "green" in the HTML source, will
         /// return "#008000" for its value.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public string GetCssValue(string propertyName)
+        public virtual string GetCssValue(string propertyName)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.Id);
@@ -522,7 +522,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="by">The locating mechanism to use.</param>
         /// <returns>A <see cref="ReadOnlyCollection{T}"/> of all <see cref="IWebElement">WebElements</see>
         /// matching the current criteria, or an empty list if nothing matches.</returns>
-        public ReadOnlyCollection<IWebElement> FindElements(By by)
+        public virtual ReadOnlyCollection<IWebElement> FindElements(By by)
         {
             if (by == null)
             {
@@ -538,7 +538,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="by">The locating mechanism to use.</param>
         /// <returns>The first matching <see cref="IWebElement"/> on the current context.</returns>
         /// <exception cref="NoSuchElementException">If no element matches the criteria.</exception>
-        public IWebElement FindElement(By by)
+        public virtual IWebElement FindElement(By by)
         {
             if (by == null)
             {
@@ -559,7 +559,7 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementByLinkText("linktext")
         /// </code>
         /// </example>
-        public IWebElement FindElementByLinkText(string linkText)
+        public virtual IWebElement FindElementByLinkText(string linkText)
         {
             return this.FindElement("link text", linkText);
         }
@@ -575,7 +575,7 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByLinkText("linktext")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByLinkText(string linkText)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByLinkText(string linkText)
         {
             return this.FindElements("link text", linkText);
         }
@@ -591,7 +591,7 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementById("id")
         /// </code>
         /// </example>
-        public IWebElement FindElementById(string id)
+        public virtual IWebElement FindElementById(string id)
         {
             if (this.driver.IsSpecificationCompliant)
             {
@@ -612,7 +612,7 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsById("id")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsById(string id)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsById(string id)
         {
             if (this.driver.IsSpecificationCompliant)
             {
@@ -633,7 +633,7 @@ namespace OpenQA.Selenium.Remote
         /// elem = driver.FindElementsByName("name")
         /// </code>
         /// </example>
-        public IWebElement FindElementByName(string name)
+        public virtual IWebElement FindElementByName(string name)
         {
             // Element finding mechanism is not allowed by the W3C WebDriver
             // specification, but rather should be implemented as a function
@@ -660,7 +660,7 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByName("name")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByName(string name)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByName(string name)
         {
             // Element finding mechanism is not allowed by the W3C WebDriver
             // specification, but rather should be implemented as a function
@@ -687,7 +687,7 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementsByTagName("tag")
         /// </code>
         /// </example>
-        public IWebElement FindElementByTagName(string tagName)
+        public virtual IWebElement FindElementByTagName(string tagName)
         {
             // Element finding mechanism is not allowed by the W3C WebDriver
             // specification, but rather should be implemented as a function
@@ -714,7 +714,7 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByTagName("tag")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByTagName(string tagName)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByTagName(string tagName)
         {
             // Element finding mechanism is not allowed by the W3C WebDriver
             // specification, but rather should be implemented as a function
@@ -741,7 +741,7 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementByClassName("classname")
         /// </code>
         /// </example>
-        public IWebElement FindElementByClassName(string className)
+        public virtual IWebElement FindElementByClassName(string className)
         {
             // Element finding mechanism is not allowed by the W3C WebDriver
             // specification, but rather should be implemented as a function
@@ -768,7 +768,7 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByClassName("classname")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
         {
             // Element finding mechanism is not allowed by the W3C WebDriver
             // specification, but rather should be implemented as a function
@@ -795,7 +795,7 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementsByXPath("//table/tbody/tr/td/a");
         /// </code>
         /// </example>
-        public IWebElement FindElementByXPath(string xpath)
+        public virtual IWebElement FindElementByXPath(string xpath)
         {
             return this.FindElement("xpath", xpath);
         }
@@ -811,7 +811,7 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByXpath("//tr/td/a")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByXPath(string xpath)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByXPath(string xpath)
         {
             return this.FindElements("xpath", xpath);
         }
@@ -827,7 +827,7 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementsByPartialLinkText("partOfLink")
         /// </code>
         /// </example>
-        public IWebElement FindElementByPartialLinkText(string partialLinkText)
+        public virtual IWebElement FindElementByPartialLinkText(string partialLinkText)
         {
             return this.FindElement("partial link text", partialLinkText);
         }
@@ -843,7 +843,7 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByPartialLinkText("partOfTheLink")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByPartialLinkText(string partialLinkText)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByPartialLinkText(string partialLinkText)
         {
             return this.FindElements("partial link text", partialLinkText);
         }
@@ -853,7 +853,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="cssSelector">The id to match.</param>
         /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
-        public IWebElement FindElementByCssSelector(string cssSelector)
+        public virtual IWebElement FindElementByCssSelector(string cssSelector)
         {
             return this.FindElement("css selector", cssSelector);
         }
@@ -864,7 +864,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="cssSelector">The CSS selector to match.</param>
         /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
         /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
-        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
         {
             return this.FindElements("css selector", cssSelector);
         }
@@ -873,7 +873,7 @@ namespace OpenQA.Selenium.Remote
         /// Gets a <see cref="Screenshot"/> object representing the image of this element on the screen.
         /// </summary>
         /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
-        public Screenshot GetScreenshot()
+        public virtual Screenshot GetScreenshot()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
@@ -963,7 +963,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="mechanism">The mechanism by which to find the element.</param>
         /// <param name="value">The value to use to search for the element.</param>
         /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
-        protected IWebElement FindElement(string mechanism, string value)
+        protected virtual IWebElement FindElement(string mechanism, string value)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
@@ -979,8 +979,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="mechanism">The mechanism by which to find the elements.</param>
         /// <param name="value">The value to use to search for the elements.</param>
         /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
-        protected ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
-        {
+        protected virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value) {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
             parameters.Add("using", mechanism);
@@ -995,7 +994,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="commandToExecute">The <see cref="DriverCommand"/> to execute against this element.</param>
         /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing names and values of the parameters for the command.</param>
         /// <returns>The <see cref="Response"/> object containing the result of the command execution.</returns>
-        protected Response Execute(string commandToExecute, Dictionary<string, object> parameters)
+        protected virtual Response Execute(string commandToExecute, Dictionary<string, object> parameters)
         {
             return this.driver.InternalExecute(commandToExecute, parameters);
         }
