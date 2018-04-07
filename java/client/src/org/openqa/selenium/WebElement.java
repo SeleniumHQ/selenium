@@ -127,7 +127,8 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   /**
    * Determine whether or not this element is selected or not. This operation only applies to input
    * elements such as checkboxes, options in a select and radio buttons.
-   * This method supports the following elements: BUTTON, INPUT, OPTGROUP, OPTION, SELECT, TEXTAREA.
+   * For more information on which elements this method supports,
+   * refer to the <a href="https://w3c.github.io/webdriver/webdriver-spec.html#is-element-selected">specification</a>.
    *
    * @return True if the element is currently selected or checked, false otherwise.
    */
