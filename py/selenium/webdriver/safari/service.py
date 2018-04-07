@@ -34,7 +34,11 @@ class Service(service.Service):
          - port : Port the service is running on """
 
         if not os.path.exists(executable_path):
-            raise Exception("SafariDriver requires Safari 10 on OSX El Capitan or greater")
+            if "Safari Technology Preview" in executable_path:
+                message = "Safari Technology Preview does not seem to be installed. You can download it at https://developer.apple.com/safari/download/."
+            else
+                message = "SafariDriver was not found; are you running Safari 10 or later? You can download Safari at https://developer.apple.com/safari/download/."
+            raise Exception(message)
 
         if port == 0:
             port = utils.free_port()
