@@ -17,6 +17,24 @@
 
 module Selenium
   module WebDriver
-    VERSION = '3.11.0'.freeze
+    module DriverExtensions
+      module HasDebugger
+
+        #
+        # Attaches debugger to session.
+        #
+        # @example
+        #   driver.attach_debugger
+        #   driver.execute_script('debugger')
+        #
+        # @return [Hash]
+        #
+
+        def attach_debugger
+          @bridge.attach_debugger
+        end
+
+      end # HasDebugger
+    end # DriverExtensions
   end # WebDriver
 end # Selenium

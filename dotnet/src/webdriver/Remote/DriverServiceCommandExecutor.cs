@@ -1,4 +1,4 @@
-﻿// <copyright file="DriverServiceCommandExecutor.cs" company="WebDriver Committers">
+// <copyright file="DriverServiceCommandExecutor.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -27,6 +27,7 @@ namespace OpenQA.Selenium.Remote
     {
         private DriverService service;
         private HttpCommandExecutor internalExecutor;
+        private bool isDisposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverServiceCommandExecutor"/> class.
@@ -87,11 +88,38 @@ namespace OpenQA.Selenium.Remote
             {
                 if (commandToExecute.Name == DriverCommand.Quit)
                 {
-                    this.service.Dispose();
+                    this.Dispose();
                 }
             }
 
             return toReturn;
+        }
+
+        /// <summary>
+        /// Releases all resources used by the <see cref="DriverServiceCommandExecutor"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="HttpCommandExecutor"/> and
+        /// optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
+        /// <see langword="false"/> to only release unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
+            {
+                if (disposing)
+                {
+                    this.service.Dispose();
+                }
+
+                this.isDisposed = true;
+            }
         }
     }
 }

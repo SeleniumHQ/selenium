@@ -40,6 +40,7 @@ namespace OpenQA.Selenium.Remote
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
         private bool enableKeepAlive;
+        private bool isDisposed;
         private CommandInfoRepository commandInfoRepository = new WebDriverWireProtocolCommandInfoRepository();
 
         /// <summary>
@@ -290,6 +291,28 @@ namespace OpenQA.Selenium.Remote
             }
 
             return commandResponse;
+        }
+
+        /// <summary>
+        /// Releases all resources used by the <see cref="HttpCommandExecutor"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="HttpCommandExecutor"/> and
+        /// optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
+        /// <see langword="false"/> to only release unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
+            {
+                this.isDisposed = true;
+            }
         }
 
         private class HttpRequestInfo

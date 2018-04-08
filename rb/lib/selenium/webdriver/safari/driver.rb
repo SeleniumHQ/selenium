@@ -25,6 +25,8 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
+        include DriverExtensions::HasDebugger
+        include DriverExtensions::HasPermissions
         include DriverExtensions::TakesScreenshot
 
         def initialize(opts = {})
@@ -42,6 +44,8 @@ module Selenium
 
           listener = opts.delete(:listener)
           @bridge = Remote::Bridge.handshake(opts)
+          @bridge.extend Bridge
+
           super(@bridge, listener: listener)
         end
 

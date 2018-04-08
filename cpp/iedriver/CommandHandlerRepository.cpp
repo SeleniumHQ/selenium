@@ -67,6 +67,7 @@
 #include "CommandHandlers/RefreshCommandHandler.h"
 #include "CommandHandlers/ReleaseActionsCommandHandler.h"
 #include "CommandHandlers/ScreenshotCommandHandler.h"
+#include "CommandHandlers/ScreenshotElementCommandHandler.h"
 #include "CommandHandlers/SendKeysCommandHandler.h"
 #include "CommandHandlers/SendKeysToAlertCommandHandler.h"
 #include "CommandHandlers/SetAlertCredentialsCommandHandler.h"
@@ -107,7 +108,6 @@ CommandHandlerHandle CommandHandlerRepository::GetCommandHandler(const std::stri
 void CommandHandlerRepository::PopulateCommandHandlers() {
   LOG(TRACE) << "Entering CommandHandlerRepository::PopulateCommandHandlers";
 
-  // TODO: MinimizeWindow, FullscreenWindow, GetElementProperty, ElementScreenshot
   this->command_handlers_[webdriver::CommandType::NoCommand] = CommandHandlerHandle(new IECommandHandler);
   this->command_handlers_[webdriver::CommandType::NewSession] = CommandHandlerHandle(new NewSessionCommandHandler);
   this->command_handlers_[webdriver::CommandType::Quit] = CommandHandlerHandle(new QuitCommandHandler);
@@ -161,6 +161,7 @@ void CommandHandlerRepository::PopulateCommandHandlers() {
   this->command_handlers_[webdriver::CommandType::GetAlertText] = CommandHandlerHandle(new GetAlertTextCommandHandler);
   this->command_handlers_[webdriver::CommandType::SendKeysToAlert] = CommandHandlerHandle(new SendKeysToAlertCommandHandler);
   this->command_handlers_[webdriver::CommandType::Screenshot] = CommandHandlerHandle(new ScreenshotCommandHandler);
+  this->command_handlers_[webdriver::CommandType::ElementScreenshot] = CommandHandlerHandle(new ScreenshotElementCommandHandler);
 
   // Additional commands required to be supported, but not defined
   // in the specification.

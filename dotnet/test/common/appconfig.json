@@ -19,6 +19,13 @@
       "RemoteCapabilities": "chrome"
     },
 
+    "ChromeSpec": {
+      "DriverTypeName": "OpenQA.Selenium.Chrome.SpecCompliantChromeDriver",
+      "AssemblyName": "WebDriver.Chrome.Tests",
+      "BrowserValue": "Chrome",
+      "RemoteCapabilities": "chrome"
+    },
+
     "IE": {
       "DriverTypeName": "OpenQA.Selenium.IE.InternetExplorerDriver",
       "AssemblyName": "WebDriver",

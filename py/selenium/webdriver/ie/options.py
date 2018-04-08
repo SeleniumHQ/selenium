@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class ElementScrollBehavior(object):
@@ -327,6 +328,8 @@ class Options(object):
 
     def to_capabilities(self):
         """ Marshals the IE options to a the correct object """
+        caps = DesiredCapabilities.INTERNETEXPLORER.copy()
+
         opts = self._options.copy()
         if len(self._arguments) > 0:
             opts[self.SWITCHES] = ' '.join(self._arguments)
@@ -335,5 +338,5 @@ class Options(object):
             opts.update(self._additional)
 
         if len(opts) > 0:
-            return {self.KEY: opts}
-        return {}
+            caps[Options.KEY] = opts
+        return caps

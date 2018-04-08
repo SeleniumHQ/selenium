@@ -188,7 +188,7 @@ class Options(object):
 
             returns a dictionary with everything
         """
-        chrome = DesiredCapabilities.CHROME.copy()
+        caps = DesiredCapabilities.CHROME.copy()
 
         chrome_options = self.experimental_options.copy()
         chrome_options["extensions"] = self.extensions
@@ -198,6 +198,6 @@ class Options(object):
         if self.debugger_address:
             chrome_options["debuggerAddress"] = self.debugger_address
 
-        chrome[self.KEY] = chrome_options
+        caps[self.KEY] = chrome_options
 
-        return chrome
+        return caps

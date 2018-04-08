@@ -26,10 +26,9 @@ namespace OpenQA.Selenium.Remote
     /// Class to Create the capabilities of the browser you require for <see cref="IWebDriver"/>.
     /// If you wish to use default values use the static methods
     /// </summary>
-    public class DesiredCapabilities : ICapabilities, ISpecificationCompliant
+    public class DesiredCapabilities : ICapabilities
     {
         private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
-        private bool isSpecCompliant;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
@@ -101,7 +100,6 @@ namespace OpenQA.Selenium.Remote
             this.SetCapability(CapabilityType.BrowserName, browser);
             this.SetCapability(CapabilityType.Version, version);
             this.SetCapability(CapabilityType.Platform, platform);
-            this.isSpecCompliant = isSpecCompliant;
         }
 
         /// <summary>
@@ -180,15 +178,6 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this set of capabilities is compliant with the W3C WebDriver specification.
-        /// </summary>
-        bool ISpecificationCompliant.IsSpecificationCompliant
-        {
-            get { return this.isSpecCompliant; }
-            set { this.isSpecCompliant = value; }
-        }
-
-        /// <summary>
         /// Gets the internal capabilities dictionary.
         /// </summary>
         internal Dictionary<string, object> CapabilitiesDictionary
@@ -215,7 +204,6 @@ namespace OpenQA.Selenium.Remote
         public static DesiredCapabilities PhantomJS()
         {
             DesiredCapabilities dc = new DesiredCapabilities("phantomjs", string.Empty, new Platform(PlatformType.Any));
-            dc.isSpecCompliant = false;
             return dc;
         }
 
@@ -237,7 +225,6 @@ namespace OpenQA.Selenium.Remote
         public static DesiredCapabilities Edge()
         {
             DesiredCapabilities dc = new DesiredCapabilities("MicrosoftEdge", string.Empty, new Platform(PlatformType.Windows));
-            dc.isSpecCompliant = false;
             return dc;
         }
 
@@ -248,7 +235,6 @@ namespace OpenQA.Selenium.Remote
         public static DesiredCapabilities HtmlUnit()
         {
             DesiredCapabilities dc = new DesiredCapabilities("htmlunit", string.Empty, new Platform(PlatformType.Any));
-            dc.isSpecCompliant = false;
             return dc;
         }
 
@@ -260,7 +246,6 @@ namespace OpenQA.Selenium.Remote
         {
             DesiredCapabilities dc = new DesiredCapabilities("htmlunit", string.Empty, new Platform(PlatformType.Any));
             dc.SetCapability(CapabilityType.IsJavaScriptEnabled, true);
-            dc.isSpecCompliant = false;
             return dc;
         }
 
@@ -293,7 +278,6 @@ namespace OpenQA.Selenium.Remote
         {
             // This is strangely inconsistent.
             DesiredCapabilities dc = new DesiredCapabilities("chrome", string.Empty, new Platform(PlatformType.Any));
-            dc.isSpecCompliant = false;
             return dc;
         }
 
@@ -315,7 +299,6 @@ namespace OpenQA.Selenium.Remote
         public static DesiredCapabilities Opera()
         {
             DesiredCapabilities dc = new DesiredCapabilities("opera", string.Empty, new Platform(PlatformType.Any));
-            dc.isSpecCompliant = false;
             return dc;
         }
 
@@ -327,7 +310,6 @@ namespace OpenQA.Selenium.Remote
         public static DesiredCapabilities Safari()
         {
             DesiredCapabilities dc = new DesiredCapabilities("safari", string.Empty, new Platform(PlatformType.Mac));
-            dc.isSpecCompliant = false;
             return dc;
         }
 

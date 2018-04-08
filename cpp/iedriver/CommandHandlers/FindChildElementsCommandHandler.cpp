@@ -101,7 +101,8 @@ void FindChildElementsCommandHandler::ExecuteInternal(
           return;
         }
       } else if (status_code == ENOSUCHWINDOW) {
-        response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to find elements on closed window");
+        response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, 
+                                   "Unable to find elements on closed window");
         return;
       } else {
         response->SetErrorResponse(status_code, found_elements.asString());
@@ -121,7 +122,13 @@ void FindChildElementsCommandHandler::ExecuteInternal(
           "returned an unexpected error");
     }
   } else {
-    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Element is no longer valid");
+    if (status_code == EOBSOLETEELEMENT) {
+      response->SetErrorResponse(ERROR_STALE_ELEMENT_REFERENCE,
+                                 "Specified parent element is no longer attached to the DOM");
+    } else {
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                 "Element is no longer valid");
+    }
   }
 }
 

@@ -500,33 +500,65 @@ class SeleniumServer extends DriverService {
 
 
 /**
- * Options for the Selenium server:
+ * A record object describing configuration options for a {@link SeleniumServer}
+ * instance.
  *
- * - `loopback` - Whether the server should only be accessed on this host's
- *     loopback address.
- * - `port` - The port to start the server on (must be > 0). If the port is
- *     provided as a promise, the service will wait for the promise to resolve
- *     before starting.
- * - `args` - The arguments to pass to the service. If a promise is provided,
- *     the service will wait for it to resolve before starting.
- * - `jvmArgs` - The arguments to pass to the JVM. If a promise is provided,
- *     the service will wait for it to resolve before starting.
- * - `env` - The environment variables that should be visible to the server
- *     process. Defaults to inheriting the current process's environment.
- * - `stdio` - IO configuration for the spawned server process. For more
- *     information, refer to the documentation of `child_process.spawn`.
- *
- * @typedef {{
- *   loopback: (boolean|undefined),
- *   port: (number|!IThenable<number>),
- *   args: !(Array<string>|IThenable<!Array<string>>),
- *   jvmArgs: (!Array<string>|!IThenable<!Array<string>>|undefined),
- *   env: (!Object<string, string>|undefined),
- *   stdio: (string|!Array<string|number|!stream.Stream|null|undefined>|
- *           undefined)
- * }}
+ * @record
  */
-SeleniumServer.Options;
+SeleniumServer.Options = class {
+  constructor() {
+    /**
+     * Whether the server should only be accessible on this host's loopback
+     * address.
+     *
+     * @type {(boolean|undefined)}
+     */
+    this.loopback;
+
+    /**
+     * The port to start the server on (must be > 0). If the port is provided as
+     * a promise, the service will wait for the promise to resolve before
+     * starting.
+     *
+     * @type {(number|!IThenable<number>)}
+     */
+    this.port;
+
+    /**
+     * The arguments to pass to the service. If a promise is provided,
+     * the service will wait for it to resolve before starting.
+     *
+     * @type {!(Array<string>|IThenable<!Array<string>>)}
+     */
+    this.args;
+
+    /**
+     * The arguments to pass to the JVM. If a promise is provided,
+     * the service will wait for it to resolve before starting.
+     *
+     * @type {(!Array<string>|!IThenable<!Array<string>>|undefined)}
+     */
+    this.jvmArgs;
+
+    /**
+     * The environment variables that should be visible to the server
+     * process. Defaults to inheriting the current process's environment.
+     *
+     * @type {(!Object<string, string>|undefined)}
+     */
+    this.env;
+
+    /**
+     * IO configuration for the spawned server process. If unspecified, IO will
+     * be ignored.
+     *
+     * @type {(string|!Array<string|number|!stream.Stream|null|undefined>|
+     *         undefined)}
+     * @see <https://nodejs.org/dist/latest-v8.x/docs/api/child_process.html#child_process_options_stdio>
+     */
+    this.stdio;
+  }
+};
 
 
 

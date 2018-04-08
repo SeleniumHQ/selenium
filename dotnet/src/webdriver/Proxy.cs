@@ -464,6 +464,10 @@ namespace OpenQA.Selenium
                 if (this.proxyKind == ProxyKind.ProxyAutoConfigure)
                 {
                     serializedDictionary["proxyType"] = "pac";
+                    if (!string.IsNullOrEmpty(this.proxyAutoConfigUrl))
+                    {
+                        serializedDictionary["proxyAutoconfigUrl"] = this.proxyAutoConfigUrl;
+                    }
                 }
                 else
                 {

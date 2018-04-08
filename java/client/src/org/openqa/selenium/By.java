@@ -48,71 +48,47 @@ public abstract class By {
    * @param id The value of the "id" attribute to search for.
    * @return A By which locates elements by the value of the "id" attribute.
    */
-  public static By id(final String id) {
-    if (id == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the id is null.");
-
+  public static By id(String id) {
     return new ById(id);
   }
 
   /**
    * @param linkText The exact text to match against.
-   * @return A By which locates A elements by the exact text they display.
+   * @return A By which locates A elements by the exact text it displays.
    */
-  public static By linkText(final String linkText) {
-    if (linkText == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the link text is null.");
-
+  public static By linkText(String linkText) {
     return new ByLinkText(linkText);
   }
 
   /**
-   * @param linkText The text to match against.
-   * @return A By which locates A elements that contain the given text.
+   * @param partialLinkText The partial text to match against
+   * @return a By which locates elements that contain the given link text.
    */
-  public static By partialLinkText(final String linkText) {
-    if (linkText == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the link text is null.");
-
-    return new ByPartialLinkText(linkText);
+  public static By partialLinkText(String partialLinkText) {
+    return new ByPartialLinkText(partialLinkText);
   }
 
   /**
    * @param name The value of the "name" attribute to search for.
    * @return A By which locates elements by the value of the "name" attribute.
    */
-  public static By name(final String name) {
-    if (name == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the name is null.");
-
+  public static By name(String name) {
     return new ByName(name);
   }
 
   /**
-   * @param name The element's tag name.
+   * @param tagName The element's tag name.
    * @return A By which locates elements by their tag name.
    */
-  public static By tagName(final String name) {
-    if (name == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the tag name is null.");
-
-    return new ByTagName(name);
+  public static By tagName(String tagName) {
+    return new ByTagName(tagName);
   }
 
   /**
    * @param xpathExpression The XPath to use.
    * @return A By which locates elements via XPath.
    */
-  public static By xpath(final String xpathExpression) {
-    if (xpathExpression == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the XPath is null.");
-
+  public static By xpath(String xpathExpression) {
     return new ByXPath(xpathExpression);
   }
 
@@ -124,29 +100,20 @@ public abstract class By {
    * @param className The value of the "class" attribute to search for.
    * @return A By which locates elements by the value of the "class" attribute.
    */
-  public static By className(final String className) {
-    if (className == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the class name is null.");
-
+  public static By className(String className) {
     return new ByClassName(className);
   }
 
   /**
-   * Find elements via the driver's underlying W3 Selector engine. If the browser does not
+   * Find elements via the driver's underlying W3C Selector engine. If the browser does not
    * implement the Selector API, a best effort is made to emulate the API. In this case, we strive
    * for at least CSS2 support, but offer no guarantees.
    *
-   * @param selector CSS expression.
+   * @param cssSelector CSS expression.
    * @return A By which locates elements by CSS.
    */
-  public static By cssSelector(final String selector) {
-    if (selector == null)
-      throw new IllegalArgumentException(
-          "Cannot find elements when the CSS selector is null.");
-
-    return new ByCssSelector(selector);
-
+  public static By cssSelector(String cssSelector) {
+    return new ByCssSelector(cssSelector);
   }
 
   /**
@@ -157,9 +124,9 @@ public abstract class By {
    */
   public WebElement findElement(SearchContext context) {
     List<WebElement> allElements = findElements(context);
-    if (allElements == null || allElements.isEmpty())
-      throw new NoSuchElementException("Cannot locate an element using "
-          + toString());
+    if (allElements == null || allElements.isEmpty()) {
+      throw new NoSuchElementException("Cannot locate an element using " + toString());
+    }
     return allElements.get(0);
   }
 
@@ -173,14 +140,13 @@ public abstract class By {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
+    if (!(o instanceof By)) {
       return false;
+    }
 
-    By by = (By) o;
+    By that = (By) o;
 
-    return toString().equals(by.toString());
+    return this.toString().equals(that.toString());
   }
 
   @Override
@@ -201,23 +167,27 @@ public abstract class By {
     private final String id;
 
     public ById(String id) {
+      if (id == null) {
+        throw new IllegalArgumentException("Cannot find elements when the id is null.");
+      }
+
       this.id = id;
     }
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      if (context instanceof FindsById)
+      if (context instanceof FindsById) {
         return ((FindsById) context).findElementsById(id);
-      return ((FindsByXPath) context).findElementsByXPath(".//*[@id = '" + id
-          + "']");
+      }
+      return ((FindsByXPath) context).findElementsByXPath(".//*[@id = '" + id + "']");
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      if (context instanceof FindsById)
+      if (context instanceof FindsById) {
         return ((FindsById) context).findElementById(id);
-      return ((FindsByXPath) context).findElementByXPath(".//*[@id = '" + id
-          + "']");
+      }
+      return ((FindsByXPath) context).findElementByXPath(".//*[@id = '" + id + "']");
     }
 
     @Override
@@ -233,6 +203,10 @@ public abstract class By {
     private final String linkText;
 
     public ByLinkText(String linkText) {
+      if (linkText == null) {
+        throw new IllegalArgumentException("Cannot find elements when the link text is null.");
+      }
+
       this.linkText = linkText;
     }
 
@@ -256,26 +230,29 @@ public abstract class By {
 
     private static final long serialVersionUID = 1163955344140679054L;
 
-    private final String linkText;
+    private final String partialLinkText;
 
-    public ByPartialLinkText(String linkText) {
-      this.linkText = linkText;
+    public ByPartialLinkText(String partialLinkText) {
+      if (partialLinkText == null) {
+        throw new IllegalArgumentException("Cannot find elements when the link text is null.");
+      }
+
+      this.partialLinkText = partialLinkText;
     }
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      return ((FindsByLinkText) context)
-          .findElementsByPartialLinkText(linkText);
+      return ((FindsByLinkText) context).findElementsByPartialLinkText(partialLinkText);
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      return ((FindsByLinkText) context).findElementByPartialLinkText(linkText);
+      return ((FindsByLinkText) context).findElementByPartialLinkText(partialLinkText);
     }
 
     @Override
     public String toString() {
-      return "By.partialLinkText: " + linkText;
+      return "By.partialLinkText: " + partialLinkText;
     }
   }
 
@@ -286,23 +263,27 @@ public abstract class By {
     private final String name;
 
     public ByName(String name) {
+      if (name == null) {
+        throw new IllegalArgumentException("Cannot find elements when name text is null.");
+      }
+
       this.name = name;
     }
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      if (context instanceof FindsByName)
+      if (context instanceof FindsByName) {
         return ((FindsByName) context).findElementsByName(name);
-      return ((FindsByXPath) context).findElementsByXPath(".//*[@name = '"
-          + name + "']");
+      }
+      return ((FindsByXPath) context).findElementsByXPath(".//*[@name = '" + name + "']");
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      if (context instanceof FindsByName)
+      if (context instanceof FindsByName) {
         return ((FindsByName) context).findElementByName(name);
-      return ((FindsByXPath) context).findElementByXPath(".//*[@name = '"
-          + name + "']");
+      }
+      return ((FindsByXPath) context).findElementByXPath(".//*[@name = '" + name + "']");
     }
 
     @Override
@@ -315,29 +296,35 @@ public abstract class By {
 
     private static final long serialVersionUID = 4699295846984948351L;
 
-    private final String name;
+    private final String tagName;
 
-    public ByTagName(String name) {
-      this.name = name;
+    public ByTagName(String tagName) {
+      if (tagName == null) {
+        throw new IllegalArgumentException("Cannot find elements when the tag name is null.");
+      }
+
+      this.tagName = tagName;
     }
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      if (context instanceof FindsByTagName)
-        return ((FindsByTagName) context).findElementsByTagName(name);
-      return ((FindsByXPath) context).findElementsByXPath(".//" + name);
+      if (context instanceof FindsByTagName) {
+        return ((FindsByTagName) context).findElementsByTagName(tagName);
+      }
+      return ((FindsByXPath) context).findElementsByXPath(".//" + tagName);
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      if (context instanceof FindsByTagName)
-        return ((FindsByTagName) context).findElementByTagName(name);
-      return ((FindsByXPath) context).findElementByXPath(".//" + name);
+      if (context instanceof FindsByTagName) {
+        return ((FindsByTagName) context).findElementByTagName(tagName);
+      }
+      return ((FindsByXPath) context).findElementByXPath(".//" + tagName);
     }
 
     @Override
     public String toString() {
-      return "By.tagName: " + name;
+      return "By.tagName: " + tagName;
     }
   }
 
@@ -348,6 +335,11 @@ public abstract class By {
     private final String xpathExpression;
 
     public ByXPath(String xpathExpression) {
+      if (xpathExpression == null) {
+        throw new IllegalArgumentException(
+            "Cannot find elements when the XPath is null.");
+      }
+
       this.xpathExpression = xpathExpression;
     }
 
@@ -374,23 +366,30 @@ public abstract class By {
     private final String className;
 
     public ByClassName(String className) {
+      if (className == null) {
+        throw new IllegalArgumentException(
+            "Cannot find elements when the class name expression is null.");
+      }
+
       this.className = className;
     }
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      if (context instanceof FindsByClassName)
+      if (context instanceof FindsByClassName) {
         return ((FindsByClassName) context).findElementsByClassName(className);
-      return ((FindsByXPath) context).findElementsByXPath(".//*["
-          + containingWord("class", className) + "]");
+      }
+      return ((FindsByXPath) context).findElementsByXPath(
+          ".//*[" + containingWord("class", className) + "]");
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      if (context instanceof FindsByClassName)
+      if (context instanceof FindsByClassName) {
         return ((FindsByClassName) context).findElementByClassName(className);
-      return ((FindsByXPath) context).findElementByXPath(".//*["
-          + containingWord("class", className) + "]");
+      }
+      return ((FindsByXPath) context).findElementByXPath(
+          ".//*[" + containingWord("class", className) + "]");
     }
 
     /**
@@ -403,8 +402,7 @@ public abstract class By {
      * @return XPath fragment
      */
     private String containingWord(String attribute, String word) {
-      return "contains(concat(' ',normalize-space(@" + attribute + "),' '),' "
-          + word + " ')";
+      return "contains(concat(' ',normalize-space(@" + attribute + "),' '),' " + word + " ')";
     }
 
     @Override
@@ -417,37 +415,39 @@ public abstract class By {
 
     private static final long serialVersionUID = -3910258723099459239L;
 
-    private final String selector;
+    private final String cssSelector;
 
-    public ByCssSelector(String selector) {
-      this.selector = selector;
+    public ByCssSelector(String cssSelector) {
+      if (cssSelector == null) {
+        throw new IllegalArgumentException("Cannot find elements when the selector is null");
+      }
+      
+      this.cssSelector = cssSelector;
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
       if (context instanceof FindsByCssSelector) {
-        return ((FindsByCssSelector) context)
-            .findElementByCssSelector(selector);
+        return ((FindsByCssSelector) context).findElementByCssSelector(cssSelector);
       }
 
       throw new WebDriverException(
-          "Driver does not support finding an element by selector: " + selector);
+          "Driver does not support finding an element by selector: " + cssSelector);
     }
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
       if (context instanceof FindsByCssSelector) {
-        return ((FindsByCssSelector) context)
-            .findElementsByCssSelector(selector);
+        return ((FindsByCssSelector) context).findElementsByCssSelector(cssSelector);
       }
 
       throw new WebDriverException(
-          "Driver does not support finding elements by selector: " + selector);
+          "Driver does not support finding elements by selector: " + cssSelector);
     }
 
     @Override
     public String toString() {
-      return "By.cssSelector: " + selector;
+      return "By.cssSelector: " + cssSelector;
     }
   }
 }

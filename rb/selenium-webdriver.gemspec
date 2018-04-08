@@ -12,8 +12,8 @@ Gem::Specification.new do |s|
   s.email = ['p0deje@gmail.com', 'titusfortner@gmail.com']
 
   s.summary = 'The next generation developer focused tool for automated testing of webapps'
-  s.description = 'WebDriver is a tool for writing automated tests of websites. ' + \
-                  'It aims to mimic the behaviour of a real user, ' + \
+  s.description = 'WebDriver is a tool for writing automated tests of websites. ' \
+                  'It aims to mimic the behaviour of a real user, ' \
                   'and as such interacts with the HTML of the application.'
 
   s.license = 'Apache-2.0'

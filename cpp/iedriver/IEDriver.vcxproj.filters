@@ -291,6 +291,9 @@
     <ClCompile Include="ActionSimulators\JavaScriptActionSimulator.cpp">
       <Filter>Source Files\ActionSimulators</Filter>
     </ClCompile>
+    <ClCompile Include="CommandHandlers\ScreenshotElementCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alert.h">
@@ -589,6 +592,9 @@
     </ClInclude>
     <ClInclude Include="ActionSimulators\stdafx.h">
       <Filter>Header Files\ActionSimulators</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandlers\ScreenshotElementCommandHandler.h">
+      <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

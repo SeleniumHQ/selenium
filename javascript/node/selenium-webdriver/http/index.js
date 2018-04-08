@@ -59,6 +59,15 @@ function getRequestOptions(aUrl) {
 }
 
 
+/** @const {string} */
+const USER_AGENT = (function() {
+  const version = require('../package.json').version;
+  const platform =
+      ({'darwin': 'mac', 'win32': 'windows'}[process.platform]) || 'linux';
+  return `selenium/${version} (js ${platform})`;
+})();
+
+
 /**
  * A basic HTTP client used to send messages to a remote end.
  *
@@ -97,6 +106,7 @@ class HttpClient {
       headers[name] = value;
     });
 
+    headers['User-Agent'] = USER_AGENT;
     headers['Content-Length'] = 0;
     if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
       data = JSON.stringify(httpRequest.data);
@@ -209,7 +219,8 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
         search: location.search,
         hash: location.hash,
         headers: {
-          'Accept': 'application/json; charset=utf-8'
+          'Accept': 'application/json; charset=utf-8',
+          'User-Agent': USER_AGENT,
         }
       }, onOk, onError, undefined, opt_proxy);
       return;

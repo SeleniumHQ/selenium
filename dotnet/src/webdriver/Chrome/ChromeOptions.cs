@@ -72,8 +72,10 @@ namespace OpenQA.Selenium.Chrome
         private const string MobileEmulationChromeOption = "mobileEmulation";
         private const string PerformanceLoggingPreferencesChromeOption = "perfLoggingPrefs";
         private const string WindowTypesChromeOption = "windowTypes";
+        private const string UseSpecCompliantProtocolOption = "w3c";
 
         private bool leaveBrowserRunning;
+        private bool useSpecCompliantProtocol;
         private string binaryLocation;
         private string debuggerAddress;
         private string minidumpPath;
@@ -108,6 +110,7 @@ namespace OpenQA.Selenium.Chrome
             this.AddKnownCapabilityName(ChromeOptions.MobileEmulationChromeOption, "EnableMobileEmulation method");
             this.AddKnownCapabilityName(ChromeOptions.PerformanceLoggingPreferencesChromeOption, "PerformanceLoggingPreferences property");
             this.AddKnownCapabilityName(ChromeOptions.WindowTypesChromeOption, "AddWindowTypes method");
+            this.AddKnownCapabilityName(ChromeOptions.UseSpecCompliantProtocolOption, "UseSpecCompliantProtocol property");
         }
 
         /// <summary>
@@ -182,6 +185,17 @@ namespace OpenQA.Selenium.Chrome
         {
             get { return this.perfLoggingPreferences; }
             set { this.perfLoggingPreferences = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the <see cref="ChromeDriver"/> instance
+        /// should use the legacy OSS protocol dialect or a dialect compliant with the W3C
+        /// WebDriver Specification.
+        /// </summary>
+        public bool UseSpecCompliantProtocol
+        {
+            get { return this.useSpecCompliantProtocol; }
+            set { this.useSpecCompliantProtocol = value; }
         }
 
         /// <summary>
@@ -594,6 +608,11 @@ namespace OpenQA.Selenium.Chrome
             if (this.leaveBrowserRunning)
             {
                 chromeOptions[DetachChromeOption] = this.leaveBrowserRunning;
+            }
+
+            if (this.useSpecCompliantProtocol)
+            {
+                chromeOptions[UseSpecCompliantProtocolOption] = this.useSpecCompliantProtocol;
             }
 
             if (!string.IsNullOrEmpty(this.debuggerAddress))

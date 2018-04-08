@@ -19,12 +19,13 @@ package org.openqa.selenium.remote;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Command {
 
-  private SessionId sessionId;
-  private String name;
-  private Map<String, ?> parameters;
+  private final SessionId sessionId;
+  private final String name;
+  private final Map<String, ?> parameters;
 
   public Command(SessionId sessionId, String name) {
     this(sessionId, name, new HashMap<>());
@@ -32,8 +33,8 @@ public class Command {
 
   public Command(SessionId sessionId, String name, Map<String, ?> parameters) {
     this.sessionId = sessionId;
-    this.parameters = parameters;
     this.name = name;
+    this.parameters = parameters == null ? new HashMap<>() : parameters;
   }
 
   public SessionId getSessionId() {
@@ -45,11 +46,28 @@ public class Command {
   }
 
   public Map<String, ?> getParameters() {
-    return parameters == null ? new HashMap<>() : parameters;
+    return parameters;
   }
 
   @Override
   public String toString() {
     return "[" + sessionId + ", " + name + " " + parameters + "]";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Command)) {
+      return false;
+    }
+
+    Command that = (Command) o;
+    return Objects.equals(sessionId, that.sessionId) &&
+           Objects.equals(name, that.name) &&
+           Objects.equals(parameters, that.parameters);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(sessionId, name, parameters);
   }
 }

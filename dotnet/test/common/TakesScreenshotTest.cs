@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using NUnit.Framework;
 
@@ -20,6 +20,26 @@ namespace OpenQA.Selenium
 
             string filename = Path.Combine(Path.GetTempPath(), "snapshot" + new Random().Next().ToString() + ".png");
             Screenshot screenImage = screenshotCapableDriver.GetScreenshot();
+            screenImage.SaveAsFile(filename, ScreenshotImageFormat.Png);
+            Assert.IsTrue(File.Exists(filename));
+            Assert.IsTrue(new FileInfo(filename).Length > 0);
+            File.Delete(filename);
+        }
+
+        [Test]
+        public void ShouldTakeScreenshotsOfAnElement()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement element = driver.FindElement(By.Id("multiline"));
+
+            ITakesScreenshot screenshotCapableElement = element as ITakesScreenshot;
+            if (screenshotCapableElement == null)
+            {
+                return;
+            }
+
+            string filename = Path.Combine(Path.GetTempPath(), "snapshot" + new Random().Next().ToString() + ".png");
+            Screenshot screenImage = screenshotCapableElement.GetScreenshot();
             screenImage.SaveAsFile(filename, ScreenshotImageFormat.Png);
             Assert.IsTrue(File.Exists(filename));
             Assert.IsTrue(new FileInfo(filename).Length > 0);

@@ -17,6 +17,33 @@
 
 module Selenium
   module WebDriver
-    VERSION = '3.11.0'.freeze
+    module DriverExtensions
+      module HasPermissions
+
+        #
+        # Returns permissions.
+        #
+        # @return [Hash]
+        #
+
+        def permissions
+          @bridge.permissions
+        end
+
+        #
+        # Sets permissions.
+        #
+        # @example
+        #   driver.permissions = {'getUserMedia' => true}
+        #
+        # @param [Hash<Symbol, Boolean>] permissions
+        #
+
+        def permissions=(permissions)
+          @bridge.permissions = permissions
+        end
+
+      end # HasPermissions
+    end # DriverExtensions
   end # WebDriver
 end # Selenium

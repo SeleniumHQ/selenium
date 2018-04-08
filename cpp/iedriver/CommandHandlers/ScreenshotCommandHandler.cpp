@@ -44,7 +44,30 @@ void ScreenshotCommandHandler::ExecuteInternal(
     return;
   }
 
-  bool isSameColour = true;
+  status_code = this->GenerateScreenshotImage(browser_wrapper);
+  if (status_code != WD_SUCCESS) {
+    // TODO: Return a meaningful error here.
+    response->SetSuccessResponse("");
+    return;
+  }
+
+  // now either correct or single color image is got
+  std::string base64_screenshot = "";
+  HRESULT hr = this->GetBase64Data(base64_screenshot);
+  if (FAILED(hr)) {
+    // TODO: Return a meaningful error here.
+    LOGHR(WARN, hr) << "Unable to transform browser image to Base64 format";
+    this->ClearImage();
+    response->SetSuccessResponse("");
+    return;
+  }
+
+  this->ClearImage();
+  response->SetSuccessResponse(base64_screenshot);
+}
+
+int ScreenshotCommandHandler::GenerateScreenshotImage(BrowserHandle browser_wrapper) {
+  bool is_same_colour = true;
   HRESULT hr;
   int i = 0;
   int tries = 4;
@@ -56,31 +79,18 @@ void ScreenshotCommandHandler::ExecuteInternal(
     if (FAILED(hr)) {
       LOGHR(WARN, hr) << "Failed to capture browser image at " << i << " try";
       this->ClearImage();
-      response->SetSuccessResponse("");
-      return;
+      return EUNHANDLEDERROR;
     }
 
-    isSameColour = IsSameColour();
-    if (isSameColour) {
+    is_same_colour = IsSameColour();
+    if (is_same_colour) {
       ::Sleep(2000);
       LOG(DEBUG) << "Failed to capture non single color browser image at " << i << " try";
     }
 
-    i++;
-  } while ((i < tries) && isSameColour);
-
-  // now either correct or single color image is got
-  std::string base64_screenshot = "";
-  hr = this->GetBase64Data(base64_screenshot);
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Unable to transform browser image to Base64 format";
-    this->ClearImage();
-    response->SetSuccessResponse("");
-    return;
-  }
-
-  this->ClearImage();
-  response->SetSuccessResponse(base64_screenshot);
+    ++i;
+  } while ((i < tries) && is_same_colour);
+  return WD_SUCCESS;
 }
 
 void ScreenshotCommandHandler::ClearImage() {
@@ -242,6 +252,47 @@ void ScreenshotCommandHandler::GetWindowDimensions(HWND window_handle,
   ::GetWindowRect(window_handle, &window_rect);
   *width = window_rect.right - window_rect.left;
   *height = window_rect.bottom - window_rect.top;
+}
+
+void ScreenshotCommandHandler::CropImage(HWND content_window_handle,
+                                         LocationInfo element_location) {
+  RECT viewport_rect;
+  ::GetWindowRect(content_window_handle, &viewport_rect);
+  ::OffsetRect(&viewport_rect,
+               -1 * viewport_rect.left,
+               -1 * viewport_rect.top);
+
+  POINT element_rect_origin;
+  element_rect_origin.x = element_location.x;
+  element_rect_origin.y = element_location.y;
+
+  RECT element_rect = { element_rect_origin.x, 
+                        element_rect_origin.y,
+                        element_rect_origin.x + element_location.width,
+                        element_rect_origin.y + element_location.height };
+
+  RECT screenshot_rect;
+  ::IntersectRect(&screenshot_rect, &viewport_rect, &element_rect);
+
+  long width = screenshot_rect.right - screenshot_rect.left;
+  long height = screenshot_rect.bottom - screenshot_rect.top;
+
+  RECT destination_rect = { 0, 0, width, height };
+
+  CImage* image = new CImage();
+  image->Create(width, height, 32);
+  HDC device_context = image->GetDC();
+  this->image_->Draw(device_context, destination_rect, screenshot_rect);
+  image->ReleaseDC();
+
+  this->ClearImage();
+  this->image_ = new CImage();
+  this->image_->Create(width, height, 32);
+  HDC dc = this->image_->GetDC();
+  image->BitBlt(dc, 0, 0);
+  this->image_->ReleaseDC();
+  image->Destroy();
+  delete image;
 }
 
 } // namespace webdriver

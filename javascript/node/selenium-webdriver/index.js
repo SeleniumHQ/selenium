@@ -746,6 +746,7 @@ exports.Capability = capabilities.Capability;
 exports.Condition = webdriver.Condition;
 exports.FileDetector = input.FileDetector;
 exports.Key = input.Key;
+exports.Origin = input.Origin;
 exports.Session = session.Session;
 exports.ThenableWebDriver = ThenableWebDriver;
 exports.WebDriver = webdriver.WebDriver;

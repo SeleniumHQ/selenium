@@ -38,6 +38,7 @@ namespace OpenQA.Selenium
         private int driverServicePort;
         private bool silent;
         private bool hideCommandPromptWindow;
+        private bool isDisposed;
         private Process driverServiceProcess;
 
         /// <summary>
@@ -285,9 +286,14 @@ namespace OpenQA.Selenium
         /// <param name="disposing"><see langword="true"/> if the Dispose method was explicitly called; otherwise, <see langword="false"/>.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!this.isDisposed)
             {
-                this.Stop();
+                if (disposing)
+                {
+                    this.Stop();
+                }
+
+                this.isDisposed = true;
             }
         }
 

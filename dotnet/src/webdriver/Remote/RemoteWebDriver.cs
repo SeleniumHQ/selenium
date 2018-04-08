@@ -156,7 +156,7 @@ namespace OpenQA.Selenium.Remote
                 object locationContextCapability = this.capabilities.GetCapability(CapabilityType.SupportsLocationContext);
                 if (locationContextCapability is bool && (bool)locationContextCapability)
                 {
-                this.locationContext = new RemoteLocationContext(this);
+                    this.locationContext = new RemoteLocationContext(this);
                 }
             }
 
@@ -1091,6 +1091,11 @@ namespace OpenQA.Selenium.Remote
             }
             finally
             {
+                if (this.CommandExecutor != null)
+                {
+                    this.CommandExecutor.Dispose();
+                }
+
                 this.StopClient();
                 this.sessionId = null;
             }
@@ -1105,18 +1110,14 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("desiredCapabilities", this.GetLegacyCapabilitiesDictionary(desiredCapabilities));
 
-            ISpecificationCompliant specCompliantCapabilities = desiredCapabilities as ISpecificationCompliant;
-            if (specCompliantCapabilities != null && specCompliantCapabilities.IsSpecificationCompliant)
-            {
-                Dictionary<string, object> firstMatchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
+            Dictionary<string, object> firstMatchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
 
-                List<object> firstMatchCapabilitiesList = new List<object>();
-                firstMatchCapabilitiesList.Add(firstMatchCapabilities);
+            List<object> firstMatchCapabilitiesList = new List<object>();
+            firstMatchCapabilitiesList.Add(firstMatchCapabilities);
 
-                Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
-                specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
-                parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
-            }
+            Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
+            specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
+            parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
 
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 

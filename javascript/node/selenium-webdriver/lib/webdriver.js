@@ -618,8 +618,8 @@ function filterNonW3CCaps(capabilities) {
  */
 class WebDriver {
   /**
-   * @param {!(Session|IThenable<!Session>)} session Either a known session or a
-   *     promise that will be resolved to a session.
+   * @param {!(./session.Session|IThenable<!./session.Session>)} session Either
+   *     a known session or a promise that will be resolved to a session.
    * @param {!command.Executor} executor The executor to use when sending
    *     commands to the browser.
    * @param {(function(this: void): ?)=} onQuit A function to call, if any,

@@ -21,22 +21,37 @@ const childProcess = require('child_process');
 
 
 /**
- * A hash with configuration options for an executed command.
+ * Options for configuring an executed command.
  *
- * - `args` - Command line arguments.
- * - `env` - Command environment; will inherit from the current process if
- *     missing.
- * - `stdio` - IO configuration for the spawned server process. For more
- *     information, refer to the documentation of `child_process.spawn`.
- *
- * @typedef {{
- *   args: (!Array<string>|undefined),
- *   env: (!Object<string, string>|undefined),
- *   stdio: (string|!Array<string|number|!stream.Stream|null|undefined>|
- *           undefined)
- * }}
+ * @record
  */
-var Options;
+class Options {
+  constructor() {
+    /**
+     * Command line arguments for the child process, if any.
+     * @type (!Array<string>|undefined)
+     */
+    this.args;
+
+    /**
+     * Environment variables for the spawned process. If unspecified, the
+     * child will inherit this process' environment.
+     *
+     * @type {(!Object<string, string>|undefined)}
+     */
+    this.env;
+
+    /**
+     * IO conifguration for the spawned server child process. If unspecified,
+     * the child process' IO output will be ignored.
+     *
+     * @type {(string|!Array<string|number|!stream.Stream|null|undefined>|
+     *           undefined)}
+     * @see <https://nodejs.org/dist/latest-v8.x/docs/api/child_process.html#child_process_options_stdio>
+     */
+    this.stdio;
+  }
+}
 
 
 /**
@@ -148,6 +163,5 @@ module.exports = function exec(command, opt_options) {
 // Exported to improve generated API documentation.
 
 module.exports.Command = Command;
-/** @typedef {!Options} */
 module.exports.Options = Options;
 module.exports.Result = Result;

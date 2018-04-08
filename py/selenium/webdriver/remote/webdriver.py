@@ -130,16 +130,18 @@ class WebDriver(object):
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
         """
-        if desired_capabilities is None:
-            raise WebDriverException("Desired Capabilities can't be None")
-        if not isinstance(desired_capabilities, dict):
-            raise WebDriverException("Desired Capabilities must be a dictionary")
+        capabilities = {}
+        if options is not None:
+            capabilities = options.to_capabilities()
+        if desired_capabilities is not None:
+            if not isinstance(desired_capabilities, dict):
+                raise WebDriverException("Desired Capabilities must be a dictionary")
+            else:
+                capabilities.update(desired_capabilities)
         if proxy is not None:
             warnings.warn("Please use FirefoxOptions to set proxy",
                           DeprecationWarning)
-            proxy.add_to_capabilities(desired_capabilities)
-        if options is not None:
-            desired_capabilities.update(options.to_capabilities())
+            proxy.add_to_capabilities(capabilities)
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
             self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
@@ -151,7 +153,7 @@ class WebDriver(object):
         if browser_profile is not None:
             warnings.warn("Please use FirefoxOptions to set browser profile",
                           DeprecationWarning)
-        self.start_session(desired_capabilities, browser_profile)
+        self.start_session(capabilities, browser_profile)
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
         self.file_detector = file_detector or LocalFileDetector()

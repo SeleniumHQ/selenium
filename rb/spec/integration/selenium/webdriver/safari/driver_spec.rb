@@ -15,8 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative '../spec_helper'
+
 module Selenium
   module WebDriver
-    VERSION = '3.11.0'.freeze
+    module Safari
+      describe Driver, only: {driver: :safari_preview} do
+        it 'gets and sets permissions' do
+          driver.permissions = {'getUserMedia' => false}
+          expect(driver.permissions).to eq('getUserMedia' => false)
+        end
+      end
+    end # Safari
   end # WebDriver
 end # Selenium
