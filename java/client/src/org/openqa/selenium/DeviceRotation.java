@@ -24,13 +24,13 @@ import java.util.Objects;
 
 /**
  * Defines an object which represents the three dimensional plane and how a device can be rotated
- * about it. Each of the axis is in positive degrees on the real number scale (0 &lt;= deg &lt;=
+ * about it. Each of the axes is in positive degrees on the real number scale (0 &lt;= deg &lt;=
  * 360).
  *
- * <p>Example Instantiation to rotate device to "Landscape Right": DeviceRotation(0, 0, 90);
+ * <p>Example instantiation to rotate device to "Landscape Right": DeviceRotation(0, 0, 90);
  */
 public class DeviceRotation {
-  //Default orientation is portrait
+  // The default orientation is portrait.
   private int x = 0;
   private int y = 0;
   private int z = 0;
@@ -46,7 +46,7 @@ public class DeviceRotation {
   }
 
   /**
-   * Instantiate a DeviceRotation object based on a HashMap object where the keys are the axis x, y,
+   * Instantiate a DeviceRotation object based on a HashMap object where the keys are the axes x, y,
    * and z respectively: x : xVal y : yVal z : zVal
    */
   public DeviceRotation(Map<String, Number> map) {
@@ -75,22 +75,22 @@ public class DeviceRotation {
     }
   }
 
-  /** @return the x */
+  /** @return The x. */
   public int getX() {
     return x;
   }
 
-  /** @return the y */
+  /** @return The y. */
   public int getY() {
     return y;
   }
 
-  /** @return the z */
+  /** @return The z. */
   public int getZ() {
     return z;
   }
 
-  /** @return returns all axis mapped to a Map */
+  /** @return All axes mapped to a Map. */
   public Map<String, Integer> parameters() {
     HashMap<String, Integer> values = new HashMap<>();
     values.put("x", this.x);
