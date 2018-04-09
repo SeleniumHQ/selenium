@@ -241,7 +241,7 @@ public class NewSessionPayload implements Closeable {
       json.name("firstMatch");
       json.beginArray();
       //noinspection unchecked
-      getW3C().forEach(map -> json.write(map));
+      getW3C().forEach(json::write);
       json.endArray();
 
       json.endObject();  // Close "capabilities" object
@@ -273,28 +273,6 @@ public class NewSessionPayload implements Closeable {
         }
       }
     }
-  }
-
-  private void streamW3CProtocolParameters(JsonOutput out, Map<String, Object> des) {
-    // Technically we should be building up a combination of "alwaysMatch" and "firstMatch" options.
-    // We're going to do a little processing to figure out what we might be able to do, and assume
-    // that people don't really understand the difference between required and desired (which is
-    // commonly the case). Wish us luck. Looking at the current implementations, people may have
-    // set options for multiple browsers, in which case a compliant W3C remote end won't start
-    // a session. If we find this, then we create multiple firstMatch capabilities. Furrfu.
-    // The table of options are:
-    //
-    // Chrome: chromeOptions
-    // Firefox: moz:.*, firefox_binary, firefox_profile, marionette
-    // Edge: none given
-    // IEDriver: ignoreZoomSetting, initialBrowserUrl, enableElementCacheCleanup,
-    //   browserAttachTimeout, enablePersistentHover, requireWindowFocus, logFile, logLevel, host,
-    //   extractPath, silent, ie.*
-    // Opera: operaOptions
-    // SafariDriver: safari.options
-    //
-    // We can't use the constants defined in the classes because it would introduce circular
-    // dependencies between the remote library and the implementations. Yay!
   }
 
   /**
@@ -388,13 +366,12 @@ public class NewSessionPayload implements Closeable {
           .map(this::applyTransforms)
           .map(map -> map.entrySet().stream()
               .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
-             .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue)))
-          .map(map -> (Map<String, Object>) map);
+             .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue)));
     } else {
       fromOss = Stream.of();
     }
 
-    Stream<Map<String, Object>> fromW3c = null;
+    Stream<Map<String, Object>> fromW3c;
     Map<String, Object> alwaysMatch = getAlwaysMatch();
     Collection<Map<String, Object>> firsts = getFirstMatches();
 
