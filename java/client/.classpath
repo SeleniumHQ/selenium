@@ -45,5 +45,10 @@
 	<classpathentry kind="lib" path="/third-party/java/okio/okio-1.13.0.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/auto/auto-common-0.8.jar" sourcepath="/third-party/java/auto/auto-common-0.8-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/service/auto-service-1.0-rc4.jar" sourcepath="/third-party/java/service/auto-service-1.0-rc4-sources.jar"/>
+	<classpathentry kind="src" path=".apt_generated">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
