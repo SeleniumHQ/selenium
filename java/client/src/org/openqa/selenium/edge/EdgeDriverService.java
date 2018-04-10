@@ -64,7 +64,7 @@ public class EdgeDriverService extends DriverService{
   * @return A new EdgeDriverService using the default configuration.
   */
   public static EdgeDriverService createDefaultService() {
-    return new Builder().usingAnyFreePort().build();
+    return new Builder().build();
   }
 
   public static class Builder extends DriverService.Builder<

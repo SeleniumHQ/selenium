@@ -68,11 +68,11 @@ public class GeckoDriverService extends DriverService {
    * @return A new GeckoDriverService using the default configuration.
    */
   public static GeckoDriverService createDefaultService() {
-    return new Builder().usingAnyFreePort().build();
+    return new Builder().build();
   }
 
   static GeckoDriverService createDefaultService(Capabilities caps) {
-    Builder builder = new Builder().usingAnyFreePort();
+    Builder builder = new Builder();
 
     Object binary = caps.getCapability(FirefoxDriver.BINARY);
     if (binary != null) {

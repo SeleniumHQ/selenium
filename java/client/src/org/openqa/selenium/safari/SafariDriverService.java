@@ -73,6 +73,10 @@ public class SafariDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
     SafariDriverService, SafariDriverService.Builder> {
 
+    public Builder() {
+      usingTechnologyPreview(false);
+    }
+
     public SafariDriverService.Builder usingTechnologyPreview(boolean useTechnologyPreview) {
       if (useTechnologyPreview) {
         usingDriverExecutable(TP_SAFARI_DRIVER_EXECUTABLE);

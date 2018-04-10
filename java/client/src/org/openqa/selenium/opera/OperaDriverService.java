@@ -79,7 +79,7 @@ public class OperaDriverService extends DriverService {
    * @return A new OperaDriverService using the default configuration.
    */
   public static OperaDriverService createDefaultService() {
-    return new Builder().usingAnyFreePort().build();
+    return new Builder().build();
   }
 
   /**

@@ -90,7 +90,7 @@ public class InternetExplorerDriverService extends DriverService {
    * @return A new InternetExplorerDriverService using the default configuration.
    */
   public static InternetExplorerDriverService createDefaultService() {
-    return new Builder().usingAnyFreePort().build();
+    return new Builder().build();
   }
 
   /**

@@ -175,7 +175,7 @@ public class XpiDriverService extends DriverService {
    */
   public static XpiDriverService createDefaultService() {
     try {
-      return new XpiDriverService.Builder().usingAnyFreePort().build();
+      return new Builder().build();
     } catch (WebDriverException e) {
       throw new IllegalStateException(e.getMessage(), e.getCause());
     }
@@ -243,6 +243,7 @@ public class XpiDriverService extends DriverService {
 
     private FirefoxBinary binary = null;
     private FirefoxProfile profile = null;
+
 
     private Builder() {
       // Only available through the static factory method in the XpiDriverService
