@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.chrome;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -91,6 +92,7 @@ public class ChromeDriverService extends DriverService {
   /**
    * Builder used to configure new {@link ChromeDriverService} instances.
    */
+  @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
       ChromeDriverService, ChromeDriverService.Builder> {
 

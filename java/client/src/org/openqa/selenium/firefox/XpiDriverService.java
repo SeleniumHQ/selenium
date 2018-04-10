@@ -22,6 +22,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 
+import com.google.auto.service.AutoService;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -239,15 +240,11 @@ public class XpiDriverService extends DriverService {
     return new Builder();
   }
 
+  @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<XpiDriverService, XpiDriverService.Builder> {
 
     private FirefoxBinary binary = null;
     private FirefoxProfile profile = null;
-
-
-    private Builder() {
-      // Only available through the static factory method in the XpiDriverService
-    }
 
     public Builder withBinary(FirefoxBinary binary) {
       this.binary = Preconditions.checkNotNull(binary);

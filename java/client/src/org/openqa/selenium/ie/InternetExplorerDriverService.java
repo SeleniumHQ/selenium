@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.ie;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -96,6 +97,7 @@ public class InternetExplorerDriverService extends DriverService {
   /**
    * Builder used to configure new {@link InternetExplorerDriverService} instances.
    */
+  @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
       InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
 
