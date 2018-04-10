@@ -70,7 +70,7 @@
 
     "SafariTechPreview": {
       "DriverTypeName": "OpenQA.Selenium.Safari.SafariTechnologyPreviewDriver",
-      "AssemblyName": "WebDriver",
+      "AssemblyName": "WebDriver.Safari.Tests",
       "BrowserValue": "Safari",
       "RemoteCapabilities": "safari"
     },
