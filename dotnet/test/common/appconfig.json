@@ -68,6 +68,13 @@
       "RemoteCapabilities": "safari"
     },
 
+    "SafariTechPreview": {
+      "DriverTypeName": "OpenQA.Selenium.Safari.SafariTechnologyPreviewDriver",
+      "AssemblyName": "WebDriver",
+      "BrowserValue": "Safari",
+      "RemoteCapabilities": "safari"
+    },
+
     "Remote": {
       "DriverTypeName": "OpenQA.Selenium.Remote.TestInternetExplorerRemoteWebDriver",
       "AssemblyName": "WebDriver.Remote.Tests",
