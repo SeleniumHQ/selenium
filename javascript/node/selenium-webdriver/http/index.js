@@ -297,6 +297,7 @@ function isRetryableNetworkError(err) {
 
 // PUBLIC API
 
+exports.Agent = http.Agent;
 exports.Executor = httpLib.Executor;
 exports.HttpClient = HttpClient;
 exports.Request = httpLib.Request;
