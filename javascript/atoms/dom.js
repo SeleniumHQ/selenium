@@ -1289,16 +1289,22 @@ bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
   } else if (bot.dom.isElement(node)) {
     var castElem = /** @type {!Element} */ (node);
 
-    if (bot.dom.isElement(node, 'CONTENT')) {
+    if (bot.dom.isElement(node, 'CONTENT') || bot.dom.isElement(node, 'SLOT')) {
       var parentNode = node;
       while (parentNode.parentNode) {
         parentNode = parentNode.parentNode;
       }
       if (parentNode instanceof ShadowRoot) {
-        // If the element is <content> and we're inside a shadow DOM then just 
+        // If the element is <content> and we're inside a shadow DOM then just
         // append the contents of the nodes that have been distributed into it.
         var contentElem = /** @type {!Object} */ (node);
-        goog.array.forEach(contentElem.getDistributedNodes(), function(node) {
+        var shadowChildren;
+        if (bot.dom.isElement(node, 'CONTENT')) {
+          shadowChildren = contentElem.getDistributedNodes();
+        } else {
+          shadowChildren = contentElem.assignedNodes();
+        }
+        goog.array.forEach(shadowChildren, function(node) {
           bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
               node, lines, shown, whitespace, textTransform);
         });
