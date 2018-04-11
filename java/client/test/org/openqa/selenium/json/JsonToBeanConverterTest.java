@@ -29,6 +29,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -36,8 +37,6 @@ import com.google.gson.JsonPrimitive;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -55,17 +54,15 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-@RunWith(JUnit4.class)
 public class JsonToBeanConverterTest {
 
   @Test
-  public void testCanConstructASimpleString() throws Exception {
+  public void testCanConstructASimpleString() {
     String text = new JsonToBeanConverter().convert(String.class, "cheese");
 
     assertThat(text, is("cheese"));
@@ -73,7 +70,7 @@ public class JsonToBeanConverterTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testCanPopulateAMap() throws Exception {
+  public void testCanPopulateAMap() {
     JsonObject toConvert = new JsonObject();
     toConvert.addProperty("cheese", "brie");
     toConvert.addProperty("foodstuff", "cheese");
@@ -85,7 +82,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testCanPopulateAMapThatContainsNull() throws Exception {
+  public void testCanPopulateAMapThatContainsNull() {
     JsonObject toConvert = new JsonObject();
     toConvert.add("foo", JsonNull.INSTANCE);
 
@@ -96,7 +93,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testCanPopulateASimpleBean() throws Exception {
+  public void testCanPopulateASimpleBean() {
     JsonObject toConvert = new JsonObject();
     toConvert.addProperty("value", "time");
 
@@ -106,7 +103,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testWillSilentlyDiscardUnusedFieldsWhenPopulatingABean() throws Exception {
+  public void testWillSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
     JsonObject toConvert = new JsonObject();
     toConvert.addProperty("value", "time");
     toConvert.addProperty("frob", "telephone");
@@ -117,7 +114,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldSetPrimitiveValuesToo() throws Exception {
+  public void testShouldSetPrimitiveValuesToo() {
     JsonObject toConvert = new JsonObject();
     toConvert.addProperty("magicNumber", 3);
 
@@ -127,7 +124,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldPopulateFieldsOnNestedBeans() throws Exception {
+  public void testShouldPopulateFieldsOnNestedBeans() {
     JsonObject toConvert = new JsonObject();
     toConvert.addProperty("name", "frank");
     JsonObject child = new JsonObject();
@@ -142,7 +139,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldProperlyFillInACapabilitiesObject() throws Exception {
+  public void testShouldProperlyFillInACapabilitiesObject() {
     DesiredCapabilities capabilities =
         new DesiredCapabilities("browser", CapabilityType.VERSION, Platform.ANY);
     capabilities.setJavascriptEnabled(true);
@@ -155,7 +152,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldBeAbleToInstantiateBooleans() throws Exception {
+  public void testShouldBeAbleToInstantiateBooleans() {
     JsonArray array = new JsonArray();
     array.add(new JsonPrimitive(true));
     array.add(new JsonPrimitive(false));
@@ -168,7 +165,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldUseAMapToRepresentComplexObjects() throws Exception {
+  public void testShouldUseAMapToRepresentComplexObjects() {
     JsonObject toModel = new JsonObject();
     toModel.addProperty("thing", "hairy");
     toModel.addProperty("hairy", "true");
@@ -180,7 +177,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldConvertAResponseWithAnElementInIt() throws Exception {
+  public void testShouldConvertAResponseWithAnElementInIt() {
     String json =
         "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
     Response
@@ -191,14 +188,14 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testConvertABlankStringAsAStringEvenWhenAskedToReturnAnObject() throws Exception {
+  public void testConvertABlankStringAsAStringEvenWhenAskedToReturnAnObject() {
     Object o = new JsonToBeanConverter().convert(Object.class, "");
 
     assertTrue(o instanceof String);
   }
 
   @Test
-  public void testShouldBeAbleToCopeWithStringsThatLookLikeBooleans() throws Exception {
+  public void testShouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
     String json =
         "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
 
@@ -211,17 +208,17 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldBeAbleToSetAnObjectToABoolean() throws Exception {
+  public void testShouldBeAbleToSetAnObjectToABoolean() {
     String json =
         "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
 
     Response response = new JsonToBeanConverter().convert(Response.class, json);
 
-    assertThat((Boolean) response.getValue(), is(true));
+    assertThat(response.getValue(), is(true));
   }
 
   @Test
-  public void testCanHandleValueBeingAnArray() throws Exception {
+  public void testCanHandleValueBeingAnArray() {
     String[] value = {"Cheese", "Peas"};
 
     Response response = new Response();
@@ -238,7 +235,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldConvertObjectsInArraysToMaps() throws Exception {
+  public void testShouldConvertObjectsInArraysToMaps() {
     Date date = new Date();
     Cookie cookie = new Cookie("foo", "bar", "localhost", "/rooted", date, true, true);
 
@@ -265,7 +262,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldConvertAnArrayBackIntoAnArray() throws Exception {
+  public void testShouldConvertAnArrayBackIntoAnArray() {
     Exception e = new Exception();
     String converted = new BeanToJsonConverter().convert(e);
 
@@ -276,7 +273,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldBeAbleToReconsituteASessionId() throws Exception {
+  public void testShouldBeAbleToReconsituteASessionId() {
     String json = new BeanToJsonConverter().convert(new SessionId("id"));
     SessionId sessionId = new JsonToBeanConverter().convert(SessionId.class, json);
 
@@ -284,14 +281,12 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertACommand() throws Exception {
+  public void testShouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("session id");
-    Command original = new Command(sessionId, DriverCommand.NEW_SESSION,
-                                   new HashMap<String, String>() {
-          {
-            put("food", "cheese");
-          }
-        });
+    Command original = new Command(
+        sessionId,
+        DriverCommand.NEW_SESSION,
+        ImmutableMap.of("food", "cheese"));
     String raw = new BeanToJsonConverter().convert(original);
     Command converted = new JsonToBeanConverter().convert(Command.class, raw);
 
@@ -303,7 +298,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldConvertCapabilitiesToAMapAndIncludeCustomValues() throws Exception {
+  public void testShouldConvertCapabilitiesToAMapAndIncludeCustomValues() {
     Capabilities caps = new ImmutableCapabilities("furrfu", "fishy");
 
     String raw = new BeanToJsonConverter().convert(caps);
@@ -313,7 +308,7 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
-  public void testShouldParseCapabilitiesWithLoggingPreferences() throws Exception {
+  public void testShouldParseCapabilitiesWithLoggingPreferences() {
     JsonObject prefs = new JsonObject();
     prefs.addProperty("browser", "WARNING");
     prefs.addProperty("client", "DEBUG");

@@ -23,10 +23,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
@@ -38,8 +38,6 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -59,10 +57,6 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 
 import java.awt.*;
-import java.beans.FeatureDescriptor;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -77,18 +71,17 @@ import java.util.logging.Level;
 import java.util.stream.Stream;
 
 
-@RunWith(JUnit4.class)
 public class BeanToJsonConverterTest {
 
   @Test
-  public void testShouldBeAbleToConvertASimpleString() throws Exception {
+  public void testShouldBeAbleToConvertASimpleString() {
     String json = new BeanToJsonConverter().convert("cheese");
 
     assertThat(json, is("\"cheese\""));
   }
 
   @Test
-  public void testShouldConvertAMapIntoAJsonObject() throws Exception {
+  public void testShouldConvertAMapIntoAJsonObject() {
     Map<String, String> toConvert = new HashMap<>();
     toConvert.put("cheese", "cheddar");
     toConvert.put("fish", "nice bit of haddock");
@@ -100,7 +93,7 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testShouldConvertASimpleJavaBean() throws Exception {
+  public void testShouldConvertASimpleJavaBean() {
     String json = new BeanToJsonConverter().convert(new SimpleBean());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
@@ -110,7 +103,7 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testShouldConvertArrays() throws Exception {
+  public void testShouldConvertArrays() {
     String json = new BeanToJsonConverter().convert(new BeanWithArray());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
@@ -119,7 +112,7 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testShouldConvertCollections() throws Exception {
+  public void testShouldConvertCollections() {
     String json = new BeanToJsonConverter().convert(new BeanWithCollection());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
@@ -128,7 +121,7 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testShouldConvertNumbersAsLongs() throws Exception {
+  public void testShouldConvertNumbersAsLongs() {
     String json = new BeanToJsonConverter().convert(new Exception());
     Map<?,?> map = new JsonToBeanConverter().convert(Map.class, json);
 
@@ -140,7 +133,7 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testShouldNotChokeWhenCollectionIsNull() throws Exception {
+  public void testShouldNotChokeWhenCollectionIsNull() {
     try {
       new BeanToJsonConverter().convert(new BeanWithNullCollection());
     } catch (Exception e) {
@@ -150,30 +143,30 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testShouldConvertEnumsToStrings() throws Exception {
+  public void testShouldConvertEnumsToStrings() {
     // If this doesn't hang indefinitely, we're all good
     new BeanToJsonConverter().convert(State.INDIFFERENT);
   }
 
   @Test
-  public void testShouldConvertEnumsWithMethods() throws Exception {
+  public void testShouldConvertEnumsWithMethods() {
     // If this doesn't hang indefinitely, we're all good
     new BeanToJsonConverter().convert(WithMethods.CHEESE);
   }
 
   @Test
-  public void testNullAndAnEmptyStringAreEncodedDifferently() throws Exception {
+  public void testNullAndAnEmptyStringAreEncodedDifferently() {
     BeanToJsonConverter
         converter = new BeanToJsonConverter();
 
     String nullValue = converter.convert(null);
     String emptyString = converter.convert("");
 
-    assertFalse(emptyString.equals(nullValue));
+    assertNotEquals(emptyString, nullValue);
   }
 
   @Test
-  public void testShouldBeAbleToConvertAPoint() throws Exception {
+  public void testShouldBeAbleToConvertAPoint() {
     Point point = new Point(65, 75);
 
     try {
@@ -184,7 +177,7 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testShouldEncodeClassNameAsClassProperty() throws Exception {
+  public void testShouldEncodeClassNameAsClassProperty() {
     String json = new BeanToJsonConverter().convert(new SimpleBean());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
@@ -540,8 +533,7 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void shouldNotIncludePropertiesFromJavaLangObjectOtherThanClass()
-      throws IntrospectionException {
+  public void shouldNotIncludePropertiesFromJavaLangObjectOtherThanClass() {
     String json = new BeanToJsonConverter().convert(new SimpleBean());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
@@ -549,7 +541,6 @@ public class BeanToJsonConverterTest {
     Stream.of(SimplePropertyDescriptor.getPropertyDescriptors(Object.class))
         .filter(pd -> !"class".equals(pd.getName()))
         .map(SimplePropertyDescriptor::getName)
-        .peek(System.out::println)
         .forEach(name -> assertFalse(name, converted.keySet().contains(name)));
   }
 
@@ -595,14 +586,14 @@ public class BeanToJsonConverterTest {
     }
   }
 
-  public static enum State {
+  public enum State {
 
     GOOD,
     BAD,
     INDIFFERENT
   }
 
-  public static enum WithMethods {
+  public enum WithMethods {
 
     CHEESE() {
       @Override
