@@ -72,17 +72,8 @@ where each element comes from.
     </div>
 </div>
 </template>
-<template id="neverShownTemplate">
-<div id="neverShownDiv">
-This should never be shown. The ShadowDOM is older than the parent shadowDOM,
-and parent doesn't have a &lt;shadow&gt; element.
-</div>
-</template>
 <script type="text/javascript" >
 if (bot.dom.IS_SHADOW_DOM_ENABLED) {
-  var neverShownShadowRoot = document.querySelector('#innerDiv').createShadowRoot();
-  neverShownShadowRoot.appendChild(document.querySelector('#neverShownTemplate'
-      ).content.cloneNode(true));
   var parentShadowRoot = document.querySelector('#innerDiv').createShadowRoot();
   parentShadowRoot.appendChild(document.querySelector('#parentTemplate'
       ).content.cloneNode(true));
@@ -193,11 +184,6 @@ function testIsShownInComposedDom() {
     var parentHeading = /** @type {!Element} */ (document.querySelector(
       "* /deep/ #parentHeading"));
     var oldChildDiv = document.querySelector("* /deep/ #olderChildDiv");
-    var neverShownDiv = /** @type {!Element} */ (document.querySelector(
-      "* /deep/ #neverShownDiv"));
-
-    // neverShown is in an older shadow DOM, and thus isn't displayed
-    assertFalse(bot.dom.isShown(neverShownDiv));
 
     assert(bot.dom.isShown(parentHeading));
     var oldChildDivDisplay = oldChildDiv.style.display;
