@@ -1,4 +1,4 @@
-// <copyright file="BeforeRemoteHttpRequestEventArgs.cs" company="WebDriver Committers">
+// <copyright file="SendingRemoteHttpRequestEventArgs.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -21,19 +21,25 @@ using System.Net;
 
 namespace OpenQA.Selenium.Remote
 {
-    [Obsolete("Replaced by the SendingRemoteHttpRequestEventArgs class")]
-    public class BeforeRemoteHttpRequestEventArgs : EventArgs
+    public class SendingRemoteHttpRequestEventArgs : EventArgs
     {
         private HttpWebRequest request;
+        private string requestBody;
 
-        public BeforeRemoteHttpRequestEventArgs(HttpWebRequest request)
+        public SendingRemoteHttpRequestEventArgs(HttpWebRequest request, string requestBody)
         {
             this.request = request;
+            this.requestBody = requestBody;
         }
 
         public HttpWebRequest Request
         {
             get { return this.request; }
+        }
+
+        public string RequestBody
+        {
+            get { return this.requestBody; }
         }
     }
 }
