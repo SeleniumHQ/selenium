@@ -36,7 +36,7 @@ class Service(service.Service):
         if not os.path.exists(executable_path):
             if "Safari Technology Preview" in executable_path:
                 message = "Safari Technology Preview does not seem to be installed. You can download it at https://developer.apple.com/safari/download/."
-            else
+            else:
                 message = "SafariDriver was not found; are you running Safari 10 or later? You can download Safari at https://developer.apple.com/safari/download/."
             raise Exception(message)
 
