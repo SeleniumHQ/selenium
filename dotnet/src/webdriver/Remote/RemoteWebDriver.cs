@@ -1091,11 +1091,6 @@ namespace OpenQA.Selenium.Remote
             }
             finally
             {
-                if (this.CommandExecutor != null)
-                {
-                    this.CommandExecutor.Dispose();
-                }
-
                 this.StopClient();
                 this.sessionId = null;
             }
