@@ -1018,13 +1018,13 @@ namespace OpenQA.Selenium.Remote
                 // TODO: Remove this "if" logic once the spec is properly updated
                 // and remote-end implementations comply.
                 string id = string.Empty;
-                if (elementDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
+                if (elementDictionary.ContainsKey(RemoteWebElement.ElementReferencePropertyName))
                 {
-                    id = (string)elementDictionary["element-6066-11e4-a52e-4f735466cecf"];
+                    id = (string)elementDictionary[RemoteWebElement.ElementReferencePropertyName];
                 }
-                else if (elementDictionary.ContainsKey("ELEMENT"))
+                else if (elementDictionary.ContainsKey(RemoteWebElement.LegacyElementReferencePropertyName))
                 {
-                    id = (string)elementDictionary["ELEMENT"];
+                    id = (string)elementDictionary[RemoteWebElement.LegacyElementReferencePropertyName];
                 }
 
                 element = this.CreateElement(id);
@@ -1052,13 +1052,13 @@ namespace OpenQA.Selenium.Remote
                         // TODO: Remove this "if" logic once the spec is properly updated
                         // and remote-end implementations comply.
                         string id = string.Empty;
-                        if (elementDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
+                        if (elementDictionary.ContainsKey(RemoteWebElement.ElementReferencePropertyName))
                         {
-                            id = (string)elementDictionary["element-6066-11e4-a52e-4f735466cecf"];
+                            id = (string)elementDictionary[RemoteWebElement.ElementReferencePropertyName];
                         }
-                        else if (elementDictionary.ContainsKey("ELEMENT"))
+                        else if (elementDictionary.ContainsKey(RemoteWebElement.LegacyElementReferencePropertyName))
                         {
-                            id = (string)elementDictionary["ELEMENT"];
+                            id = (string)elementDictionary[RemoteWebElement.LegacyElementReferencePropertyName];
                         }
 
                         RemoteWebElement element = this.CreateElement(id);
@@ -1297,7 +1297,7 @@ namespace OpenQA.Selenium.Remote
             {
                 // TODO: Remove "ELEMENT" addition when all remote ends are spec-compliant.
                 Dictionary<string, object> elementDictionary = argAsElementReference.ToDictionary();
-                elementDictionary.Add("ELEMENT", argAsElementReference.ElementReferenceId);
+                elementDictionary.Add(RemoteWebElement.LegacyElementReferencePropertyName, argAsElementReference.ElementReferenceId);
                 converted = elementDictionary;
             }
             else if (argAsDictionary != null)
@@ -1474,15 +1474,15 @@ namespace OpenQA.Selenium.Remote
 
             if (resultAsDictionary != null)
             {
-                if (resultAsDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
+                if (resultAsDictionary.ContainsKey(RemoteWebElement.ElementReferencePropertyName))
                 {
-                    string id = (string)resultAsDictionary["element-6066-11e4-a52e-4f735466cecf"];
+                    string id = (string)resultAsDictionary[RemoteWebElement.ElementReferencePropertyName];
                     RemoteWebElement element = this.CreateElement(id);
                     returnValue = element;
                 }
-                else if (resultAsDictionary.ContainsKey("ELEMENT"))
+                else if (resultAsDictionary.ContainsKey(RemoteWebElement.LegacyElementReferencePropertyName))
                 {
-                    string id = (string)resultAsDictionary["ELEMENT"];
+                    string id = (string)resultAsDictionary[RemoteWebElement.LegacyElementReferencePropertyName];
                     RemoteWebElement element = this.CreateElement(id);
                     returnValue = element;
                 }
