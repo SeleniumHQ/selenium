@@ -68,10 +68,6 @@ public class Json {
     return toJson.convertObject(toConvert);
   }
 
-  public <T> T toType(Object source, Class<T> typeOfT) {
-    return toBean.convert(typeOfT, source);
-  }
-
   public <T> T toType(Object source, Type typeOfT) {
     Class<?> type;
     if (typeOfT instanceof ParameterizedType) {
