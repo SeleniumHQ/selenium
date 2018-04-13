@@ -84,7 +84,7 @@ class Responses {
 
     if (reason != null) {
       JsonObject json = new Json().toJsonElement(reason).getAsJsonObject();
-      json.addProperty("screen", screenshot.orElse(null));
+      screenshot.ifPresent(screen -> json.addProperty("screen", screen));
       response.setValue(json);
     }
     return response;
