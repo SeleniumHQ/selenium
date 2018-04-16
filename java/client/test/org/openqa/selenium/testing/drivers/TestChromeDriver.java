@@ -21,8 +21,12 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.SessionStorage;
+import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.html5.RemoteWebStorage;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,10 +42,11 @@ import java.util.logging.Logger;
  * entire test suite. We do not use {@link org.openqa.selenium.chrome.ChromeDriver} since that starts and stops the service
  * with each instance (and that is too expensive for our purposes).
  */
-public class TestChromeDriver extends RemoteWebDriver {
+public class TestChromeDriver extends RemoteWebDriver implements WebStorage {
   private final static Logger LOG = Logger.getLogger(TestChromeDriver.class.getName());
 
   private static ChromeDriverService service;
+  private RemoteWebStorage webStorage;
 
   public TestChromeDriver() {
     super(chromeWithCustomCapabilities(null));
@@ -49,6 +54,7 @@ public class TestChromeDriver extends RemoteWebDriver {
 
   public TestChromeDriver(Capabilities capabilities) throws IOException {
     super(getServiceUrl(), chromeWithCustomCapabilities(capabilities));
+    webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
   private static URL getServiceUrl() throws IOException {
@@ -97,4 +103,13 @@ public class TestChromeDriver extends RemoteWebDriver {
     return target.convertFromBase64Png(base64);
   }
 
+  @Override
+  public LocalStorage getLocalStorage() {
+    return webStorage.getLocalStorage();
+  }
+
+  @Override
+  public SessionStorage getSessionStorage() {
+    return webStorage.getSessionStorage();
+  }
 }

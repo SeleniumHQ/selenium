@@ -31,6 +31,9 @@ public class LocalStorageTest extends JUnit4TestBase {
   @Before
   public void checkHasWebStorage() {
     assumeTrue(driver instanceof WebStorage);
+    driver.get(pages.html5Page);
+    LocalStorage local = ((WebStorage) driver).getLocalStorage();
+    local.clear();
   }
 
   @Test

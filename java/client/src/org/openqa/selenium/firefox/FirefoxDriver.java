@@ -28,9 +28,13 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.SessionStorage;
+import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -49,7 +53,7 @@ import java.util.Set;
  *WebDriver driver = new FirefoxDriver(options);
  * </pre>
  */
-public class FirefoxDriver extends RemoteWebDriver {
+public class FirefoxDriver extends RemoteWebDriver implements WebStorage {
 
   public static final class SystemProperty {
 
@@ -93,6 +97,7 @@ public class FirefoxDriver extends RemoteWebDriver {
   public static final String MARIONETTE = "marionette";
 
   protected FirefoxBinary binary;
+  private RemoteWebStorage webStorage;
 
   public FirefoxDriver() {
     this(new FirefoxOptions());
@@ -118,22 +123,27 @@ public class FirefoxDriver extends RemoteWebDriver {
 
   public FirefoxDriver(FirefoxOptions options) {
     super(toExecutor(options), dropCapabilities(options));
+    webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
   public FirefoxDriver(GeckoDriverService service) {
     super(new DriverCommandExecutor(service), new FirefoxOptions());
+    webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
   public FirefoxDriver(XpiDriverService service) {
     super(new DriverCommandExecutor(service), new FirefoxOptions());
+    webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
   public FirefoxDriver(GeckoDriverService service, FirefoxOptions options) {
     super(new DriverCommandExecutor(service), dropCapabilities(options));
+    webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
   public FirefoxDriver(XpiDriverService service, FirefoxOptions options) {
     super(new DriverCommandExecutor(service), dropCapabilities(options));
+    webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
@@ -163,6 +173,16 @@ public class FirefoxDriver extends RemoteWebDriver {
     throw new WebDriverException(
         "Setting the file detector only works on remote webdriver instances obtained " +
         "via RemoteWebDriver");
+  }
+
+  @Override
+  public LocalStorage getLocalStorage() {
+    return webStorage.getLocalStorage();
+  }
+
+  @Override
+  public SessionStorage getSessionStorage() {
+    return webStorage.getSessionStorage();
   }
 
   private static boolean isLegacy(Capabilities desiredCapabilities) {
