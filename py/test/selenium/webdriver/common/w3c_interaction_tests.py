@@ -166,8 +166,6 @@ def test_context_click(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/mozilla/geckodriver/issues/661')
 def test_double_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
