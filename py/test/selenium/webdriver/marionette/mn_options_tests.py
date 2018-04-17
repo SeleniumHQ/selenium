@@ -22,6 +22,7 @@ try:
 except NameError:  # Python 3.x
     basestring = str
 
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.options import Log, Options
@@ -99,7 +100,7 @@ class TestUnit(object):
 
     def test_to_capabilities(self):
         opts = Options()
-        assert opts.to_capabilities() == {}
+        assert opts.to_capabilities() == DesiredCapabilities.FIREFOX
 
         profile = FirefoxProfile()
         opts.profile = profile
