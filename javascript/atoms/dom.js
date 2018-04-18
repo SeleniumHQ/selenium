@@ -574,24 +574,26 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
         return false;
       }
-      var parent;
-      do {
-        parent = bot.dom.getParentNodeInComposedDom(e);
-        if (parent instanceof ShadowRoot) {
-          if (parent.host.shadowRoot != parent) {
-            // There is a younger shadow root, which will take precedence over
-            // the shadow this element is in, thus this element won't be
-            // displayed.
-            return false;
-          } else {
-            parent = parent.host;
-          }
-        } else if (parent && (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
-            parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT)) {
-          parent = null;
+
+      var parent = bot.dom.getParentNodeInComposedDom(e);
+
+      if (parent instanceof ShadowRoot) {
+        if (parent.host.shadowRoot != parent) {
+          // There is a younger shadow root, which will take precedence over
+          // the shadow this element is in, thus this element won't be
+          // displayed.
+          return false;
+        } else {
+          parent = parent.host;
         }
-      } while (elem && elem.nodeType != goog.dom.NodeType.ELEMENT);
-      return !parent || displayed(parent);
+      }
+
+      if (parent && (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
+          parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT)) {
+        return true;
+      }
+
+      return parent && displayed(parent);
     };
   } else {
     // Any element with a display style equal to 'none' or that has an ancestor
@@ -601,7 +603,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
         return false;
       }
       var parent = bot.dom.getParentElement(e);
-      return !parent || displayed(parent);
+      return parent && displayed(parent);
     };
   }
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
@@ -1260,11 +1262,18 @@ bot.dom.getOpacityNonIE_ = function(elem) {
  */
 bot.dom.getParentNodeInComposedDom = function(node) {
   var /**@type {Node}*/ parent = node.parentNode;
+  // Shadow DOM V0 (deprecated)
   if (node.getDestinationInsertionPoints) {
     var destinations = node.getDestinationInsertionPoints();
     if (destinations.length > 0) {
       parent = destinations[destinations.length - 1];
     }
+  }
+  // Shadow DOM v1
+  if (parent.shadowRoot && node.assignedSlot !== undefined) {
+    // Can be null on purpose, meaning it has no parent as
+    // it hasn't yet been slotted
+    parent = node.assignedSlot;
   }
   return parent;
 };
@@ -1359,8 +1368,10 @@ bot.dom.isNodeDistributedIntoShadowDom = function(node) {
     elemOrText = /** @type {!Text} */ (node);
   }
   return elemOrText != null &&
-      elemOrText.getDestinationInsertionPoints &&
-      elemOrText.getDestinationInsertionPoints().length > 0;
+      (elemOrText.assignedSlot != null ||
+        (elemOrText.getDestinationInsertionPoints &&
+        elemOrText.getDestinationInsertionPoints().length > 0)
+      );
 };
 
 
