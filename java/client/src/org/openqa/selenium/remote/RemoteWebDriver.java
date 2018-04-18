@@ -69,6 +69,7 @@ import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -776,21 +777,24 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     protected class RemoteTimeouts implements Timeouts {
 
-      public Timeouts implicitlyWait(long time, TimeUnit unit) {
-        execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-            "implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
-        return this;
+      @Override
+      public Timeouts implicitlyWait(Duration duration) {
+        return setTimeout("implicit", duration);
       }
 
-      public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-        execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-            "script", TimeUnit.MILLISECONDS.convert(time, unit)));
-        return this;
+      @Override
+      public Timeouts setScriptTimeout(Duration duration) {
+        return setTimeout("script", duration);
       }
 
-      public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
-        execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-            "pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
+      @Override
+      public Timeouts pageLoadTimeout(Duration duration) {
+        return setTimeout("pageLoad", duration);
+      }
+
+      private Timeouts setTimeout(String timeoutType, Duration duration) {
+        execute(DriverCommand.SET_TIMEOUT, Collections.singletonMap(
+            timeoutType, duration.toMillis()));
         return this;
       }
     } // timeouts class.

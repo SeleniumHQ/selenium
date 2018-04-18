@@ -35,10 +35,10 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
@@ -48,7 +48,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   public void setUp() {
     assumeTrue(driver instanceof JavascriptExecutor);
     executor = (JavascriptExecutor) driver;
-    driver.manage().timeouts().setScriptTimeout(0, TimeUnit.MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(0));
   }
 
   @Test
@@ -170,7 +170,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(SAFARI)
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() {
-    driver.manage().timeouts().setScriptTimeout(500, MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(500));
     driver.get(pages.ajaxyPage);
     assertThatExceptionOfType(ScriptTimeoutException.class)
         .isThrownBy(() -> executor.executeAsyncScript(
@@ -182,7 +182,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(IE)
   public void shouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() {
     driver.get(pages.ajaxyPage);
-    driver.manage().timeouts().setScriptTimeout(100, MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(100));
     assertThatExceptionOfType(WebDriverException.class).isThrownBy(
         () -> executor.executeAsyncScript("window.location = '" + pages.dynamicPage + "';"));
   }
@@ -197,7 +197,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Test
   public void shouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous() {
     driver.get(pages.ajaxyPage);
-    driver.manage().timeouts().setScriptTimeout(10, TimeUnit.MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(10));
     assertThat((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"))
         .isTrue();
     assertThat((Boolean) executor.executeAsyncScript(
@@ -244,7 +244,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
         .describedAs("There should only be 1 DIV at this point, which is used for the butter message")
         .isEqualTo(1);
 
-    driver.manage().timeouts().setScriptTimeout(15, TimeUnit.SECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofSeconds(15));
     String text = (String) executor.executeAsyncScript(
         "var callback = arguments[arguments.length - 1];"
         + "window.registerListener(arguments[arguments.length - 1]);");
@@ -291,7 +291,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
         "xhr.send('');"; // empty string to stop firefox 3 from choking
 
     driver.get(pages.ajaxyPage);
-    driver.manage().timeouts().setScriptTimeout(3, TimeUnit.SECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofSeconds(3));
     String response = (String) executor.executeAsyncScript(script, pages.sleepingPage + "?time=2");
     assertThat(response.trim())
         .isEqualTo("<html><head><title>Done</title></head><body>Slept for 2s</body></html>");
@@ -305,7 +305,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlert() {
     driver.get(pages.simpleTestPage);
-    driver.manage().timeouts().setScriptTimeout(5000, MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
     assertThatExceptionOfType(UnhandledAlertException.class)
         .isThrownBy(() -> executor.executeAsyncScript(
             "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An alert!'); }, 50);"));
@@ -321,7 +321,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScript() {
     driver.get(pages.slowLoadingAlertPage);
-    driver.manage().timeouts().setScriptTimeout(5000, MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
     assertThatExceptionOfType(UnhandledAlertException.class)
         .isThrownBy(() -> executor.executeAsyncScript("setTimeout(arguments[0], 1000);"));
     // Shouldn't throw
@@ -336,7 +336,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlertWhichTimesOut() {
     driver.get(pages.simpleTestPage);
-    driver.manage().timeouts().setScriptTimeout(5000, MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
     assertThatExceptionOfType(UnhandledAlertException.class)
         .isThrownBy(() -> executor.executeAsyncScript(
             "setTimeout(function() { window.alert('Look! An alert!'); }, 50);"));
@@ -352,7 +352,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScriptWhichTimesOut() {
     driver.get(pages.slowLoadingAlertPage);
-    driver.manage().timeouts().setScriptTimeout(5000, MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
     assertThatExceptionOfType(UnhandledAlertException.class)
         .isThrownBy(() -> executor.executeAsyncScript(""));
     // Shouldn't throw
@@ -366,7 +366,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void includesAlertTextInUnhandledAlertException() {
-    driver.manage().timeouts().setScriptTimeout(5000, MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
     String alertText = "Look! An alert!";
     assertThatExceptionOfType(UnhandledAlertException.class)
         .isThrownBy(() -> executor.executeAsyncScript(
