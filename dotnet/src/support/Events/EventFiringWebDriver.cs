@@ -727,7 +727,7 @@ namespace OpenQA.Selenium.Support.Events
             List<object> unwrappedArgs = new List<object>();
             foreach (object arg in args)
             {
-                EventFiringWebElement eventElementArg = arg as EventFiringWebElement;
+                IWrapsElement eventElementArg = arg as IWrapsElement;
                 if (eventElementArg != null)
                 {
                     unwrappedArgs.Add(eventElementArg.WrappedElement);

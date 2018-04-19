@@ -457,20 +457,17 @@ namespace OpenQA.Selenium.Interactions
                 return null;
             }
 
-            ILocatable target = element as ILocatable;
+            ILocatable target = null;
+            IWrapsElement wrapper = element as IWrapsElement;
+            while (wrapper != null)
+            {
+                target = wrapper.WrappedElement as ILocatable;
+                wrapper = wrapper.WrappedElement as IWrapsElement;
+            }
+
             if (target == null)
             {
-                IWrapsElement wrapper = element as IWrapsElement;
-                while (wrapper != null)
-                {
-                    target = wrapper.WrappedElement as ILocatable;
-                    if (target != null)
-                    {
-                        break;
-                    }
-
-                    wrapper = wrapper.WrappedElement as IWrapsElement;
-                }
+                target = element as ILocatable;
             }
 
             if (target == null)
