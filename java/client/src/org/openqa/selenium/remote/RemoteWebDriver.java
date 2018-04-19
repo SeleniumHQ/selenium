@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote;
 
-import static java.util.Arrays.asList;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
@@ -59,7 +58,6 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
@@ -693,32 +691,26 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       Set<Cookie> toReturn = new HashSet<>();
 
-      List<Map<String, Object>> cookies =
-          new Json().toType(returned, List.class);
-      if (cookies == null) {
+      if (!(returned instanceof Collection)) {
         return toReturn;
       }
 
-      for (Map<String, Object> rawCookie : cookies) {
-        String name = (String) rawCookie.get("name");
-        String value = (String) rawCookie.get("value");
-        String path = (String) rawCookie.get("path");
-        String domain = (String) rawCookie.get("domain");
-        boolean secure = rawCookie.containsKey("secure") && (Boolean) rawCookie.get("secure");
-        boolean httpOnly = rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly");
+      ((Collection<?>) returned).stream()
+          .map(o -> (Map<String, Object>) o)
+          .map(rawCookie -> {
+            Cookie.Builder builder =
+                new Cookie.Builder((String) rawCookie.get("name"), (String) rawCookie.get("value"))
+                    .path((String) rawCookie.get("path"))
+                    .domain((String) rawCookie.get("domain"))
+                    .isSecure(rawCookie.containsKey("secure") && (Boolean) rawCookie.get("secure"))
+                    .isHttpOnly(
+                        rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly"));
 
-        Number expiryNum = (Number) rawCookie.get("expiry");
-        Date expiry = expiryNum == null ? null : new Date(
-            TimeUnit.SECONDS.toMillis(expiryNum.longValue()));
-
-        toReturn.add(new Cookie.Builder(name, value)
-            .path(path)
-            .domain(domain)
-            .isSecure(secure)
-            .isHttpOnly(httpOnly)
-            .expiresOn(expiry)
-            .build());
-      }
+            Number expiryNum = (Number) rawCookie.get("expiry");
+            builder.expiresOn(expiryNum == null ? null : new Date(SECONDS.toMillis(expiryNum.longValue())));
+            return builder.build();
+          })
+          .forEach(toReturn::add);
 
       return toReturn;
     }

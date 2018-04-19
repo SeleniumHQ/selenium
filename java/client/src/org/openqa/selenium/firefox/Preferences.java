@@ -19,6 +19,7 @@ package org.openqa.selenium.firefox;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.CharStreams;
@@ -92,7 +93,7 @@ class Preferences {
   private void readDefaultPreferences(Reader defaultsReader) {
     try {
       String rawJson = CharStreams.toString(defaultsReader);
-      Map<String, Object> map = new Json().toType(rawJson, Map.class);
+      Map<String, Object> map = new Json().toType(rawJson, MAP_TYPE);
 
       Map<String, Object> frozen = (Map<String, Object>) map.get("frozen");
       for (Map.Entry<String, Object> entry : frozen.entrySet()) {

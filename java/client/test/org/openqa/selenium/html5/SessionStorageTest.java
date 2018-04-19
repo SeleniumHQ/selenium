@@ -20,13 +20,16 @@ package org.openqa.selenium.html5;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.Set;
 
+@Ignore(FIREFOX)
 public class SessionStorageTest extends JUnit4TestBase {
   @Before
   public void checkHasWebStorage() {
