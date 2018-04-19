@@ -287,6 +287,7 @@ function isRetryableNetworkError(err) {
   if (err && err.code) {
     return err.code === 'ECONNABORTED' ||
           err.code === 'ECONNRESET' ||
+          err.code === 'ECONNREFUSED' ||
           err.code === 'EADDRINUSE' ||
           err.code === 'EPIPE';
   }
