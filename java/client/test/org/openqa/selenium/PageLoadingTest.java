@@ -461,7 +461,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
       int duration = (int) (end - start);
       assertThat(duration, greaterThan(2000));
-      assertThat(duration, lessThan(5000));
+      assertThat(duration, lessThan(4000));
     } finally {
       driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
