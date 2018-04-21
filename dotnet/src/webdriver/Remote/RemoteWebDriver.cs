@@ -1,4 +1,4 @@
-﻿// <copyright file="RemoteWebDriver.cs" company="WebDriver Committers">
+// <copyright file="RemoteWebDriver.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -79,6 +79,7 @@ namespace OpenQA.Selenium.Remote
         private IApplicationCache appCache;
         private ILocationContext locationContext;
         private IFileDetector fileDetector = new DefaultFileDetector();
+        private RemoteWebElementFactory elementFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
@@ -141,6 +142,7 @@ namespace OpenQA.Selenium.Remote
             this.StartSession(desiredCapabilities);
             this.mouse = new RemoteMouse(this);
             this.keyboard = new RemoteKeyboard(this);
+            this.elementFactory = new RemoteWebElementFactory(this);
 
             if (this.capabilities.HasCapability(CapabilityType.SupportsApplicationCache))
             {
@@ -434,6 +436,16 @@ namespace OpenQA.Selenium.Remote
         protected ICommandExecutor CommandExecutor
         {
             get { return this.executor; }
+        }
+
+        /// <summary>
+        /// Gets or sets the factory object used to create instances of <see cref="RemoteWebElement"/>
+        /// or its subclasses.
+        /// </summary>
+        protected RemoteWebElementFactory ElementFactory
+        {
+            get { return this.elementFactory; }
+            set { this.elementFactory = value; }
         }
 
         /// <summary>
@@ -1015,19 +1027,7 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> elementDictionary = response.Value as Dictionary<string, object>;
             if (elementDictionary != null)
             {
-                // TODO: Remove this "if" logic once the spec is properly updated
-                // and remote-end implementations comply.
-                string id = string.Empty;
-                if (elementDictionary.ContainsKey(RemoteWebElement.ElementReferencePropertyName))
-                {
-                    id = (string)elementDictionary[RemoteWebElement.ElementReferencePropertyName];
-                }
-                else if (elementDictionary.ContainsKey(RemoteWebElement.LegacyElementReferencePropertyName))
-                {
-                    id = (string)elementDictionary[RemoteWebElement.LegacyElementReferencePropertyName];
-                }
-
-                element = this.CreateElement(id);
+                element = this.elementFactory.CreateElement(elementDictionary);
             }
 
             return element;
@@ -1049,19 +1049,7 @@ namespace OpenQA.Selenium.Remote
                     Dictionary<string, object> elementDictionary = elementObject as Dictionary<string, object>;
                     if (elementDictionary != null)
                     {
-                        // TODO: Remove this "if" logic once the spec is properly updated
-                        // and remote-end implementations comply.
-                        string id = string.Empty;
-                        if (elementDictionary.ContainsKey(RemoteWebElement.ElementReferencePropertyName))
-                        {
-                            id = (string)elementDictionary[RemoteWebElement.ElementReferencePropertyName];
-                        }
-                        else if (elementDictionary.ContainsKey(RemoteWebElement.LegacyElementReferencePropertyName))
-                        {
-                            id = (string)elementDictionary[RemoteWebElement.LegacyElementReferencePropertyName];
-                        }
-
-                        RemoteWebElement element = this.CreateElement(id);
+                        RemoteWebElement element = this.elementFactory.CreateElement(elementDictionary);
                         toReturn.Add(element);
                     }
                 }
@@ -1242,6 +1230,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="elementId">The ID of this element.</param>
         /// <returns>A <see cref="RemoteWebElement"/> with the specified ID.</returns>
+        [Obsolete("This method is no longer called to create RemoteWebElement instances. Implement a subclass of RemoteWebElementFactory and set the ElementFactory property to create instances of custom RemoteWebElement subclasses.")]
         protected virtual RemoteWebElement CreateElement(string elementId)
         {
             RemoteWebElement toReturn = new RemoteWebElement(this, elementId);
