@@ -1262,18 +1262,18 @@ bot.dom.getOpacityNonIE_ = function(elem) {
  */
 bot.dom.getParentNodeInComposedDom = function(node) {
   var /**@type {Node}*/ parent = node.parentNode;
+  // Shadow DOM v1
+  if (parent.shadowRoot && node.assignedSlot !== undefined) {
+    // Can be null on purpose, meaning it has no parent as
+    // it hasn't yet been slotted
+    parent = node.assignedSlot ? node.assignedSlot.parentNode : null;
+  }
   // Shadow DOM V0 (deprecated)
   if (node.getDestinationInsertionPoints) {
     var destinations = node.getDestinationInsertionPoints();
     if (destinations.length > 0) {
       parent = destinations[destinations.length - 1];
     }
-  }
-  // Shadow DOM v1
-  if (parent.shadowRoot && node.assignedSlot !== undefined) {
-    // Can be null on purpose, meaning it has no parent as
-    // it hasn't yet been slotted
-    parent = node.assignedSlot;
   }
   return parent;
 };

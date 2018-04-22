@@ -10,10 +10,10 @@
 <body>
   <h1>Page for Shadow DOM tests</h1>
 
-  <div id="test-is-shown"></div>
-  <div id="test-is-shown-in-shadow"></div>
-  <div id="test-is-shown-directly-in-shadow"></div>
-  <div id="test-is-shown-in-slot"><div>Foo</div></div>
+  <div id="is-shown">Foo</div>
+  <div id="is-shown-in-shadow"></div>
+  <div id="is-shown-directly-in-shadow"></div>
+  <div id="is-shown-in-slot"><div>Foo</div></div>
 
   <div id="get-parent"><div></div></div>
   <div id="get-parent-slot"><div></div></div>
@@ -43,21 +43,21 @@
 
     if (bot.dom.IS_SHADOW_DOM_ENABLED) {
       elementIsShownInShadow =
-        document.querySelector('#test-is-shown-in-shadow');
+        document.querySelector('#is-shown-in-shadow');
       elementIsShownInShadow.attachShadow({ mode: 'open' });
       elementIsShownInShadow.shadowRoot.innerHTML =
         '<div><div class="test">Foo</div></div>';
 
       elementIsShownDirectlyInShadow =
-        document.querySelector('#test-is-shown-directly-in-shadow');
+        document.querySelector('#is-shown-directly-in-shadow');
       elementIsShownDirectlyInShadow.attachShadow({ mode: 'open' });
       elementIsShownDirectlyInShadow.shadowRoot.innerHTML =
         '<div>Foo</div>';
 
-      elementIsShown = document.querySelector('#test-is-shown');
+      elementIsShown = document.querySelector('#is-shown');
 
       elementIsShownInSlot =
-        document.querySelector('#test-is-shown-in-slot');
+        document.querySelector('#is-shown-in-slot');
       elementIsShownInSlot.attachShadow({ mode: 'open' });
       elementIsShownInSlot.shadowRoot.innerHTML =
         '<slot></slot>';
@@ -206,7 +206,7 @@
         return;
       }
 
-      assertEquals('FooBar', bot.dom.getVisibleText(elementGetTextSlots));
+      assertEquals('Foo\nBar', bot.dom.getVisibleText(elementGetTextSlots));
     }
   </script>
 </body>
