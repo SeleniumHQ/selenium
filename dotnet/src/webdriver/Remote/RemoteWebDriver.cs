@@ -1027,7 +1027,7 @@ namespace OpenQA.Selenium.Remote
                     id = (string)elementDictionary["ELEMENT"];
                 }
 
-                element = this.CreateElement(id, elementDictionary);
+                element = this.CreateElement(id);
             }
 
             return element;
@@ -1061,7 +1061,7 @@ namespace OpenQA.Selenium.Remote
                             id = (string)elementDictionary["ELEMENT"];
                         }
 
-                        RemoteWebElement element = this.CreateElement(id, elementDictionary);
+                        RemoteWebElement element = this.CreateElement(id);
                         toReturn.Add(element);
                     }
                 }
@@ -1251,16 +1251,6 @@ namespace OpenQA.Selenium.Remote
         {
             RemoteWebElement toReturn = new RemoteWebElement(this, elementId);
             return toReturn;
-        }
-
-        /// <summary>
-        /// Creates a <see cref="RemoteWebElement"/> with the specified ID and element attributes.
-        /// </summary>
-        /// <param name="elementId">The ID of this element.</param>
-        /// <param name="elementDictionary">The attributes for this element.</param>
-        /// <returns>A <see cref="RemoteWebElement"/> with the specified ID.</returns>
-        protected virtual RemoteWebElement CreateElement(string id, Dictionary<string, object> elementDictionary) {
-            return CreateElement(id);
         }
 
         /// <summary>
