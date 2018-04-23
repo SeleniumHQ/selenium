@@ -567,45 +567,34 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
 bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   var displayed;
 
-  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
-    // Any element with a display style equal to 'none' or that has an ancestor
-    // with display style equal to 'none' is not shown.
-    displayed = function(e) {
-      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
+  // Any element with a display style equal to 'none' or that has an ancestor
+  // with display style equal to 'none' is not shown.
+  displayed = function(e) {
+    if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
+      return false;
+    }
+
+    var parent = bot.dom.getParentNodeInComposedDom(e);
+
+    if (bot.dom.IS_SHADOW_DOM_ENABLED && (parent instanceof ShadowRoot)) {
+      if (parent.host.shadowRoot !== parent) {
+        // There is a younger shadow root, which will take precedence over
+        // the shadow this element is in, thus this element won't be
+        // displayed.
         return false;
+      } else {
+        parent = parent.host;
       }
+    }
 
-      var parent = bot.dom.getParentNodeInComposedDom(e);
+    if (parent && (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
+        parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT)) {
+      return true;
+    }
 
-      if (parent instanceof ShadowRoot) {
-        if (parent.host.shadowRoot != parent) {
-          // There is a younger shadow root, which will take precedence over
-          // the shadow this element is in, thus this element won't be
-          // displayed.
-          return false;
-        } else {
-          parent = parent.host;
-        }
-      }
+    return parent && displayed(parent);
+  };
 
-      if (parent && (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
-          parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT)) {
-        return true;
-      }
-
-      return parent && displayed(parent);
-    };
-  } else {
-    // Any element with a display style equal to 'none' or that has an ancestor
-    // with display style equal to 'none' is not shown.
-    displayed =  function(e) {
-      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
-        return false;
-      }
-      var parent = bot.dom.getParentElement(e);
-      return parent && displayed(parent);
-    };
-  }
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
 };
 
