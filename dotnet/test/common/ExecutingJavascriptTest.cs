@@ -219,7 +219,7 @@ namespace OpenQA.Selenium
                 return;
 
             driver.Url = xhtmlTestPage;
-            Assert.Throws<InvalidOperationException>(() => ExecuteScript("return squiggle();"));
+            Assert.Throws<WebDriverException>(() => ExecuteScript("return squiggle();"));
         }
 
         [Test]

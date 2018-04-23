@@ -387,7 +387,7 @@ namespace OpenQA.Selenium
             }
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/overlapping_elements.html");
-            Assert.That(() => driver.FindElement(By.Id("under")).Click(), Throws.InstanceOf<ElementClickInterceptedException>().Or.InstanceOf<InvalidOperationException>().With.Message.Contains("Other element would receive the click"));
+            Assert.That(() => driver.FindElement(By.Id("under")).Click(), Throws.InstanceOf<ElementClickInterceptedException>().Or.InstanceOf<WebDriverException>().With.Message.Contains("Other element would receive the click"));
         }
 
         [Test]

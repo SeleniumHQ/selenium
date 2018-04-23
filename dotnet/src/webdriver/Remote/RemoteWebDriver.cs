@@ -1379,7 +1379,7 @@ namespace OpenQA.Selenium.Remote
                             throw new InvalidElementStateException(errorMessage);
 
                         case WebDriverResult.UnhandledError:
-                            throw new InvalidOperationException(errorMessage);
+                            throw new WebDriverException(errorMessage);
 
                         case WebDriverResult.NoSuchDocument:
                             throw new NoSuchElementException(errorMessage);
@@ -1391,8 +1391,10 @@ namespace OpenQA.Selenium.Remote
                             throw new NoSuchWindowException(errorMessage);
 
                         case WebDriverResult.InvalidCookieDomain:
+                            throw new InvalidCookieDomainException(errorMessage);
+
                         case WebDriverResult.UnableToSetCookie:
-                            throw new WebDriverException(errorMessage);
+                            throw new UnableToSetCookieException(errorMessage);
 
                         case WebDriverResult.AsyncScriptTimeout:
                             throw new WebDriverTimeoutException(errorMessage);
