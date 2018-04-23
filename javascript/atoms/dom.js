@@ -565,11 +565,12 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
  * @return {boolean} Whether or not the element is visible.
  */
 bot.dom.isShown = function(elem, opt_ignoreOpacity) {
-  var displayed;
-
-  // Any element with a display style equal to 'none' or that has an ancestor
-  // with display style equal to 'none' is not shown.
-  displayed = function(e) {
+  /**
+   * Determines whether an element or its parents have `display: none` set
+   * @param {?Node}
+   * @return {boolean}
+   */
+  function displayed(e) {
     if (bot.dom.isElement(e) && bot.dom.getEffectiveStyle(e, 'display') == 'none') {
       return false;
     }
@@ -593,7 +594,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     }
 
     return parent && displayed(parent);
-  };
+  }
 
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
 };
