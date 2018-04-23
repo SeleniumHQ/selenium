@@ -153,6 +153,7 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.IE, "Clicking without context is perfectly valid for W3C-compliant remote ends.")]
         [IgnoreBrowser(Browser.Firefox, "Clicking without context is perfectly valid for W3C-compliant remote ends.")]
+        [IgnoreBrowser(Browser.Chrome, "Clicking without context is perfectly valid for Chrome.")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
