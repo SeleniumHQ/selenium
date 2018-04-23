@@ -28,7 +28,8 @@ def driver_kwargs(request, driver_kwargs):
     return driver_kwargs
 
 
+@pytest.mark.xfail(reason='https://github.com/mozilla/geckodriver/issues/832')
 def test_invalid_binary(driver_class, driver_kwargs):
     with pytest.raises(WebDriverException) as excinfo:
         driver_class(**driver_kwargs)
-    assert 'Unable to find a matching set of capabilities' in str(excinfo.value)
+    assert 'no such file or directory' in str(excinfo.value)
