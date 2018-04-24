@@ -45,13 +45,6 @@ public class GridConfiguration extends StandaloneConfiguration {
   public Map<String, String> custom = new HashMap<>();
 
   /**
-   * Hostname or IP to use. Defaults to {@code null}. Automatically determined when {@code null}.
-   */
-  @Expose
-  // initially defaults to null from type
-  public String host;
-
-  /**
    * Max "browser" sessions a node can handle. Default determined by configuration type.
    */
   @Expose
@@ -87,7 +80,6 @@ public class GridConfiguration extends StandaloneConfiguration {
     }
     super.merge(other);
 
-    // don't merge 'host'
     if (isMergeAble(other.cleanUpCycle, cleanUpCycle)) {
       cleanUpCycle = other.cleanUpCycle;
     }
@@ -125,7 +117,6 @@ public class GridConfiguration extends StandaloneConfiguration {
     sb.append(super.toString(format));
     sb.append(toString(format, "cleanUpCycle", cleanUpCycle));
     sb.append(toString(format, "custom", custom));
-    sb.append(toString(format, "host", host));
     sb.append(toString(format, "maxSession", maxSession));
     sb.append(toString(format, "servlets", servlets));
     sb.append(toString(format, "withoutServlets", withoutServlets));

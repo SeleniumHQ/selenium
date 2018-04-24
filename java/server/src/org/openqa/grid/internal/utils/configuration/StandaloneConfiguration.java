@@ -125,6 +125,13 @@ public class StandaloneConfiguration {
   public String log;
 
   /**
+   * Hostname or IP to use. Defaults to {@code null}. Automatically determined when {@code null}.
+   */
+  @Expose
+  // initially defaults to null from type
+  public String host;
+
+  /**
    * Port to bind to. Default determined by configuration type.
    */
   @Expose
@@ -188,8 +195,8 @@ public class StandaloneConfiguration {
     if (isMergeAble(other.timeout, timeout)) {
       timeout = other.timeout;
     }
-    // role, port, log, debug, version, enablePassThrough, and help are not merged, they are only consumed by the
-    // immediately running process and should never affect a remote
+    // role, host, port, log, debug, version, enablePassThrough, and help are not merged,
+    // they are only consumed by the immediately running process and should never affect a remote
   }
 
   /**
@@ -236,6 +243,7 @@ public class StandaloneConfiguration {
     sb.append(toString(format, "debug", debug));
     sb.append(toString(format, "jettyMaxThreads", jettyMaxThreads));
     sb.append(toString(format, "log", log));
+    sb.append(toString(format, "host", host));
     sb.append(toString(format, "port", port));
     sb.append(toString(format, "role", role));
     sb.append(toString(format, "timeout", timeout));

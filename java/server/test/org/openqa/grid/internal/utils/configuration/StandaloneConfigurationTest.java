@@ -42,6 +42,8 @@ public class StandaloneConfigurationTest {
     assertEquals(StandaloneConfiguration.DEFAULT_BROWSER_TIMEOUT, sc.browserTimeout);
     assertEquals(StandaloneConfiguration.DEFAULT_DEBUG_TOGGLE, sc.debug);
     assertEquals(StandaloneConfiguration.DEFAULT_TIMEOUT, sc.timeout);
+    assertEquals(StandaloneConfiguration.DEFAULT_PORT, sc.port);
+    assertEquals(null, sc.host);
     assertNull(sc.jettyMaxThreads);
     assertNull(sc.log);
   }
@@ -58,6 +60,8 @@ public class StandaloneConfigurationTest {
     assertEquals(expected.timeout, actual.timeout);
     assertEquals(expected.jettyMaxThreads, actual.jettyMaxThreads);
     assertEquals(expected.log, actual.log);
+    assertEquals(expected.port, actual.port);
+    assertEquals(null, actual.host);
   }
 
   @Test
