@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.server.handler.ConfigureTimeoutTest;
 import org.openqa.selenium.remote.server.handler.UploadFileTest;
 import org.openqa.selenium.remote.server.handler.html5.UtilsTest;
 import org.openqa.selenium.remote.server.handler.interactions.SendKeyToActiveElementTest;
+import org.openqa.selenium.remote.server.rest.ResponsesTest;
 import org.openqa.selenium.remote.server.rest.ResultConfigTest;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
 
@@ -32,6 +33,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     ActiveSessionFactoryTest.class,
     AllHandlersTest.class,
     CapabilitiesComparatorTest.class,
+    ConfigureTimeoutTest.class,
     CrossDomainRpcLoaderTest.class,
     DefaultSessionTest.class,
     DriverFactoryTest.class,
@@ -39,6 +41,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     NewSessionPipelineTest.class,
     PassthroughTest.class,
     ProtocolConverterTest.class,
+    ResponsesTest.class,
     ResultConfigTest.class,
     SendKeyToActiveElementTest.class,
     SessionLogsTest.class,
@@ -46,7 +49,6 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     TeeReaderTest.class,
     UploadFileTest.class,
     org.openqa.selenium.remote.server.commandhandler.UploadFileTest.class,
-    ConfigureTimeoutTest.class,
     UrlTemplateTest.class,
     UtilsTest.class,
     WebDriverServletTest.class
