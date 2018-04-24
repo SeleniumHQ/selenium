@@ -567,12 +567,15 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
 bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   /**
    * Determines whether an element or its parents have `display: none` set
-   * @param {?Node}
+   * @param {!Node} e the element
    * @return {boolean}
    */
   function displayed(e) {
-    if (bot.dom.isElement(e) && bot.dom.getEffectiveStyle(e, 'display') == 'none') {
-      return false;
+    if (bot.dom.isElement(e)) {
+      var elem = /** @type {!Element} */ (e);
+      if (bot.dom.getEffectiveStyle(elem, 'display') == 'none') {
+        return false;
+      }
     }
 
     var parent = bot.dom.getParentNodeInComposedDom(e);
