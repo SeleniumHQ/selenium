@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.server.rest;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
