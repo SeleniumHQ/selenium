@@ -176,6 +176,7 @@ public class Hub implements Stoppable {
       httpConfig.setSecurePort(config.port);
 
       ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+      http.setHost(config.host);
       http.setPort(config.port);
 
       server.addConnector(http);

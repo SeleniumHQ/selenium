@@ -58,16 +58,6 @@ abstract class CommonGridCliOptions extends CommonCliOptions {
   private Map<String, String> custom;
 
   /**
-   * Hostname or IP to use. Defaults to {@code null}. Automatically determined when {@code null}.
-   */
-  @Parameter(
-      names = "-host",
-      description =  "<String> IP or hostname : usually determined automatically. Most commonly useful in exotic network configurations (e.g. network with VPN)"
-  )
-  // initially defaults to null from type
-  private String host;
-
-  /**
    * Max "browser" sessions a node can handle. Default determined by configuration type.
    */
   @Parameter(
@@ -101,9 +91,6 @@ abstract class CommonGridCliOptions extends CommonCliOptions {
     }
     if (custom != null) {
       configuration.custom = custom;
-    }
-    if (host != null) {
-      configuration.host = host;
     }
     if (maxSession != null) {
       configuration.maxSession = maxSession;
