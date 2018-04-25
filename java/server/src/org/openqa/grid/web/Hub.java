@@ -98,8 +98,7 @@ public class Hub implements Stoppable {
     }
 
     if (config.host == null) {
-      NetworkUtils utils = new NetworkUtils();
-      config.host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+      updateHostToNonLoopBackAddressOfThisMachine();
     }
 
     if (config.port == null) {
@@ -180,6 +179,11 @@ public class Hub implements Stoppable {
 
       ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
       http.setHost(config.host);
+      if (config.host.equals("0.0.0.0")) {
+        // though we bind to all IPv4 interfaces, we need to advertise that connections
+        // should come in on a public (non-loopback) interface
+        updateHostToNonLoopBackAddressOfThisMachine();
+      }
       http.setPort(config.port);
 
       server.addConnector(http);
@@ -295,6 +299,11 @@ public class Hub implements Stoppable {
   @ManagedAttribute(name = "NewSessionRequestCount")
   public int getNewSessionRequestCount() {
     return getRegistry().getNewSessionRequestCount();
+  }
+
+  private void updateHostToNonLoopBackAddressOfThisMachine() {
+    NetworkUtils utils = new NetworkUtils();
+    config.host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
   }
 
 }

@@ -166,6 +166,12 @@ public class SelfRegisteringRemote {
    * - register again every X ms is specified in the config of the node.
    */
   public void startRegistrationProcess() {
+    // don't advertise that the remote (node) is bound to all IPv4 interfaces (default behavior)
+    if (registrationRequest.getConfiguration().host.equals("0.0.0.0")) {
+      // remove the value and call fixUpHost to determine the address of a public (non-loopback) IPv4 interface
+      registrationRequest.getConfiguration().host = null;
+      registrationRequest.getConfiguration().fixUpHost();
+    }
     fixUpId();
     LOG.fine("Using the json request : " + registrationRequest.toJson());
 

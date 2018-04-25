@@ -145,6 +145,8 @@ public abstract class CommonCliOptions {
     }
     if (host != null) {
       configuration.host = host;
+    } else if (host == null) {
+      host = "0.0.0.0"; //default to all IPv4 interfaces
     }
     if (port != null) {
       configuration.port = port;

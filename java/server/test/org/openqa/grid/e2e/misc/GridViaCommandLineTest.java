@@ -284,7 +284,7 @@ public class GridViaCommandLineTest {
   @Test
   public void canStartNodeUsingConfigFile() throws Exception {
     Integer hubPort = PortProber.findFreePort();
-    String[] hubArgs = {"-role", "hub",  "-host", "localhost", "-port", hubPort.toString()};
+    String[] hubArgs = {"-role", "hub", "-port", hubPort.toString()};
     server = new GridLauncherV3(hubArgs).launch();
     waitUntilServerIsAvailableOnPort(hubPort);
 
@@ -310,7 +310,7 @@ public class GridViaCommandLineTest {
         + " \"custom\": {}\n"
         + "}", nodePort, hubPort);
     Files.write(nodeConfig, nodeJson.getBytes());
-    String[] nodeArgs = {"-role", "node", "-host", "localhost", "-nodeConfig", nodeConfig.toString() };
+    String[] nodeArgs = {"-role", "node", "-nodeConfig", nodeConfig.toString() };
     node = new GridLauncherV3(nodeArgs).launch();
     waitUntilServerIsAvailableOnPort(nodePort);
 
