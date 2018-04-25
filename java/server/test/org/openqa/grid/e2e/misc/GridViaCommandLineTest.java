@@ -225,13 +225,13 @@ public class GridViaCommandLineTest {
   @Test
   public void testRegisterNodeToHub() throws Exception {
     Integer hubPort = PortProber.findFreePort();
-    String[] hubArgs = {"-role", "hub", "-port", hubPort.toString()};
+    String[] hubArgs = {"-role", "hub", "-host", "localhost", "-port", hubPort.toString()};
 
     server = new GridLauncherV3(hubArgs).launch();
     waitUntilServerIsAvailableOnPort(hubPort);
 
     Integer nodePort = PortProber.findFreePort();
-    String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort,
+    String[] nodeArgs = {"-role", "node", "-host", "localhost", "-hub", "http://localhost:" + hubPort,
                          "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
     node = new GridLauncherV3(nodeArgs).launch();
     waitUntilServerIsAvailableOnPort(nodePort);
@@ -261,7 +261,7 @@ public class GridViaCommandLineTest {
         + " \"timeout\": 3600\n"
         + "}", hubPort);
     Files.write(hubConfig, hubJson.getBytes());
-    String[] hubArgs = {"-role", "hub", "-hubConfig", hubConfig.toString()};
+    String[] hubArgs = {"-role", "hub",  "-host", "localhost", "-hubConfig", hubConfig.toString()};
     server = new GridLauncherV3(hubArgs).launch();
     waitUntilServerIsAvailableOnPort(hubPort);
 
@@ -272,7 +272,7 @@ public class GridViaCommandLineTest {
     assertEquals(3600, realHubConfig.timeout.intValue());
 
     Integer nodePort = PortProber.findFreePort();
-    String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort,
+    String[] nodeArgs = {"-role", "node", "-host", "localhost", "-hub", "http://localhost:" + hubPort,
                          "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
     node = new GridLauncherV3(nodeArgs).launch();
     waitUntilServerIsAvailableOnPort(nodePort);
@@ -284,7 +284,7 @@ public class GridViaCommandLineTest {
   @Test
   public void canStartNodeUsingConfigFile() throws Exception {
     Integer hubPort = PortProber.findFreePort();
-    String[] hubArgs = {"-role", "hub", "-port", hubPort.toString()};
+    String[] hubArgs = {"-role", "hub",  "-host", "localhost", "-port", hubPort.toString()};
     server = new GridLauncherV3(hubArgs).launch();
     waitUntilServerIsAvailableOnPort(hubPort);
 
@@ -310,7 +310,7 @@ public class GridViaCommandLineTest {
         + " \"custom\": {}\n"
         + "}", nodePort, hubPort);
     Files.write(nodeConfig, nodeJson.getBytes());
-    String[] nodeArgs = {"-role", "node", "-nodeConfig", nodeConfig.toString() };
+    String[] nodeArgs = {"-role", "node", "-host", "localhost", "-nodeConfig", nodeConfig.toString() };
     node = new GridLauncherV3(nodeArgs).launch();
     waitUntilServerIsAvailableOnPort(nodePort);
 
