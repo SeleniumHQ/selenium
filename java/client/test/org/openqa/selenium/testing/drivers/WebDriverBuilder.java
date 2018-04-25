@@ -51,8 +51,9 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
   private static Map<Browser, Supplier<Capabilities>> capabilitySuppliers =
     new ImmutableMap.Builder<Browser, Supplier<Capabilities>>()
       .put(Browser.chrome, ChromeOptions::new)
-      .put(Browser.ff, () -> new FirefoxOptions().setLegacy(!Boolean.parseBoolean(
-              System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true"))))
+      .put(Browser.ff, () -> new FirefoxOptions()
+          .setLegacy(!Boolean.parseBoolean(System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true")))
+          .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
       .put(Browser.ie, () -> {
         InternetExplorerOptions options = new InternetExplorerOptions();
         if (Boolean.getBoolean("selenium.browser.native_events")) {
