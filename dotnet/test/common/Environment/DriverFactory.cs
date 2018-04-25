@@ -53,14 +53,6 @@ namespace OpenQA.Selenium.Environment
                 return (IWebDriver)ctorInfo.Invoke(new object[] { service });
             }
 
-            if (typeof(EdgeDriver).IsAssignableFrom(driverType))
-            {
-                EdgeDriverService service = EdgeDriverService.CreateDefaultService(this.driverPath);
-                constructorArgTypeList.Add(typeof(EdgeDriverService));
-                ConstructorInfo ctorInfo = driverType.GetConstructor(constructorArgTypeList.ToArray());
-                return (IWebDriver)ctorInfo.Invoke(new object[] { service });
-            }
-
             if (typeof(FirefoxDriver).IsAssignableFrom(driverType))
             {
                 FirefoxDriverService service = FirefoxDriverService.CreateDefaultService(this.driverPath);
