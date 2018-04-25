@@ -143,11 +143,10 @@ public abstract class CommonCliOptions {
     if (log != null) {
       configuration.log = log;
     }
-    if (host != null) {
-      configuration.host = host;
-    } else if (host == null) {
+    if (host == null) {
       host = "0.0.0.0"; //default to all IPv4 interfaces
     }
+    configuration.host = host;
     if (port != null) {
       configuration.port = port;
     }
