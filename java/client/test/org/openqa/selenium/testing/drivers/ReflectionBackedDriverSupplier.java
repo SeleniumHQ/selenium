@@ -45,6 +45,11 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         return null;
       }
 
+      try {
+        return driverClass.getConstructor(desiredCapabilities.getClass()).newInstance(desiredCapabilities);
+      } catch (InvocationTargetException e) {
+      }
+
       return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapabilities);
     } catch (InvocationTargetException e) {
       throw new RuntimeException(e.getTargetException());
