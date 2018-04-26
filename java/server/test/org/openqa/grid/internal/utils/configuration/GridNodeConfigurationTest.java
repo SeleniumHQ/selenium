@@ -185,6 +185,7 @@ public class GridNodeConfigurationTest {
                  + "\"withoutServlets\":[],"
                  + "\"browserTimeout\":0,"
                  + "\"debug\":false,"
+                 + "\"host\":\"0.0.0.0\","
                  + "\"port\":5555,"
                  + "\"role\":\"node\","
                  + "\"timeout\":1800}", new Json().toJson(gnc.toJson()));
