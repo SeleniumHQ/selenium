@@ -52,7 +52,7 @@ public class StandaloneConfigurationTest {
   public void testConstructorEqualsDefaultConfig() {
     StandaloneConfiguration actual = new StandaloneConfiguration();
     StandaloneConfiguration expected =
-      StandaloneConfiguration.loadFromJSON(StandaloneConfiguration.DEFAULT_STANDALONE_CONFIG_FILE);
+      StandaloneConfiguration.loadFromJson(StandaloneConfiguration.DEFAULT_STANDALONE_CONFIG_FILE, StandaloneConfiguration.class);
 
     assertEquals(expected.role, actual.role);
     assertEquals(expected.browserTimeout, actual.browserTimeout);

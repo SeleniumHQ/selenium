@@ -20,7 +20,6 @@ package org.openqa.grid.web.servlet;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableSortedMap;
-import com.google.gson.JsonElement;
 
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -113,8 +112,8 @@ public class HubStatusServlet extends RegistryBasedServlet {
         }
 
         GridRegistry registry = getRegistry();
-        JsonElement config = registry.getHub().getConfiguration().toJson();
-        for (Map.Entry<String, JsonElement> entry : config.getAsJsonObject().entrySet()) {
+        Map<String, Object> config = registry.getHub().getConfiguration().toJson();
+        for (Map.Entry<String, Object> entry : config.entrySet()) {
           if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains(entry.getKey())) {
             res.put(entry.getKey(), entry.getValue());
           }

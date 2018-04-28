@@ -18,17 +18,16 @@
 package org.openqa.grid.internal.utils;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.NodeW3CStatusServlet;
@@ -36,12 +35,15 @@ import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
@@ -324,7 +326,7 @@ public class SelfRegisteringRemote {
     hasId = true;
   }
 
-  void updateConfigWithRealPort() throws MalformedURLException {
+  void updateConfigWithRealPort() {
     if (registrationRequest.getConfiguration().port != 0) {
       return;
     }
@@ -334,7 +336,6 @@ public class SelfRegisteringRemote {
   /**
    * uses the hub API to get some of its configuration.
    * @return json object of the current hub configuration
-   * @throws Exception
    */
   private GridHubConfiguration getHubConfiguration() throws Exception {
     String hubApi =
@@ -347,7 +348,10 @@ public class SelfRegisteringRemote {
     HttpRequest request = new HttpRequest(GET, url);
 
     HttpResponse response = client.execute(request);
-    return GridHubConfiguration.loadFromJSON(extractObject(response));
+    try (Reader reader = new StringReader(response.getContentString());
+        JsonInput jsonInput = new Json().newInput(reader)) {
+      return StandaloneConfiguration.loadFromJson(jsonInput, GridHubConfiguration.class);
+    }
   }
 
   private boolean isAlreadyRegistered(RegistrationRequest node) {
@@ -368,14 +372,14 @@ public class SelfRegisteringRemote {
       if (response.getStatus() != 200) {
         throw new GridException(String.format("The hub responded with %s", response.getStatus()));
       }
-      JsonObject o = extractObject(response);
-      return o.get("success").getAsBoolean();
+      Map<String, Object> o = extractObject(response);
+      return (Boolean) o.get("success");
     } catch (Exception e) {
       throw new GridException("The hub is down or not responding: " + e.getMessage());
     }
   }
 
-  private static JsonObject extractObject(HttpResponse resp) {
-      return new JsonParser().parse(resp.getContentString()).getAsJsonObject();
+  private static Map<String, Object> extractObject(HttpResponse resp) {
+    return new Json().toType(resp.getContentString(), MAP_TYPE);
   }
 }

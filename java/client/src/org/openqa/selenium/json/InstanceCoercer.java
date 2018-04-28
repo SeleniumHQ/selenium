@@ -23,6 +23,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -91,7 +94,12 @@ class InstanceCoercer extends TypeCoercer<Object> {
   }
 
   private Map<String, TypeAndWriter> getFieldWriters(Constructor<?> constructor) {
-    return Stream.of(constructor.getDeclaringClass().getDeclaredFields())
+    List<Field> fields = new LinkedList<>();
+    for (Class current = constructor.getDeclaringClass(); current != Object.class; current = current.getSuperclass()) {
+      fields.addAll(Arrays.asList(current.getDeclaredFields()));
+    }
+
+    return fields.stream()
         .filter(field -> !Modifier.isFinal(field.getModifiers()))
         .filter(field -> !Modifier.isTransient(field.getModifiers()))
         .peek(field -> field.setAccessible(true))

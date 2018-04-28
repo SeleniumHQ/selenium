@@ -18,21 +18,21 @@
 package org.openqa.grid.internal.utils.configuration;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.PropertySetting;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -86,15 +86,15 @@ public class StandaloneConfiguration {
    */
   @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private boolean avoidProxy;
+  private transient boolean avoidProxy;
 
   @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private boolean browserSideLog;
+  private transient boolean browserSideLog;
 
   @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private boolean captureLogsOnQuit;
+  private transient boolean captureLogsOnQuit;
 
   /*
    * config parameters which serialize and deserialize to/from json
@@ -156,25 +156,19 @@ public class StandaloneConfiguration {
     // nothing to do.
   }
 
-  /**
-   * @param filePath node config json file to load configuration from
-   */
-  public static StandaloneConfiguration loadFromJSON(String filePath) {
-    return loadFromJSON(loadJSONFromResourceOrFile(filePath));
+  public static<T extends StandaloneConfiguration> T loadFromJson(String resource, Class<T> type) {
+    try (JsonInput jsonInput = loadJsonFromResourceOrFile(resource)) {
+      return loadFromJson(jsonInput, type);
+    }
   }
 
-  /**
-   * @param json JsonObject to load configuration from
-   */
-  public static StandaloneConfiguration loadFromJSON(JsonObject json) {
+  public static<T extends StandaloneConfiguration> T loadFromJson(JsonInput jsonInput, Class<T> type) {
     try {
-      GsonBuilder builder = new GsonBuilder();
-      StandaloneConfiguration config =
-        builder.excludeFieldsWithoutExposeAnnotation().create().fromJson(json, StandaloneConfiguration.class);
-      return config;
+      return jsonInput.read(type, PropertySetting.BY_FIELD);
+    } catch (GridConfigurationException e) {
+      throw e;
     } catch (Throwable e) {
-      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
-                                           e);
+      throw new GridConfigurationException(e.getMessage(), e);
     }
   }
 
@@ -276,15 +270,23 @@ public class StandaloneConfiguration {
   /**
    * Return a JsonElement representation of the configuration. Does not serialize nulls.
    */
-  public JsonElement toJson() {
-    GsonBuilder builder = new GsonBuilder();
-    addJsonTypeAdapter(builder);
-    //Note: it's important that nulls ARE NOT serialized, for backwards compatibility
-    return builder.excludeFieldsWithoutExposeAnnotation().create().toJsonTree(this);
-  }
-
-  protected void addJsonTypeAdapter(GsonBuilder builder) {
-    // no default implementation
+  public Map<String, Object> toJson() {
+    return Stream.of(getClass().getDeclaredFields())
+        .filter(field -> field.getAnnotation(Expose.class) != null)
+        .filter(field -> field.getAnnotation(Expose.class).serialize())
+        .peek(field -> field.setAccessible(true))
+        .map(
+            field -> {
+              try {
+                Object value = field.get(StandaloneConfiguration.this);
+                return new AbstractMap.SimpleImmutableEntry<>(field.getName(), value);
+              } catch (ReflectiveOperationException e) {
+                throw new WebDriverException(e);
+              }
+            })
+        // Note: it's important that nulls ARE NOT serialized, for backwards compatibility
+        .filter(entry -> entry.getValue() != null)
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   /**
@@ -293,15 +295,15 @@ public class StandaloneConfiguration {
    * @param resource file or jar resource location
    * @return A JsonObject representing the passed resource argument.
    */
-  protected static JsonObject loadJSONFromResourceOrFile(String resource) {
+  protected static JsonInput loadJsonFromResourceOrFile(String resource) {
     try {
-      return new JsonParser().parse(readFileOrResource(resource)).getAsJsonObject();
-    } catch (JsonSyntaxException e) {
-      throw new GridConfigurationException("Wrong format for the JSON input : " + e.getMessage(), e);
+      return new Json().newInput(readFileOrResource(resource));
+    } catch (RuntimeException e) {
+      throw new GridConfigurationException("Unable to read input", e);
     }
   }
 
-  private static String readFileOrResource(String resource) {
+  private static Reader readFileOrResource(String resource) {
     Stream<Function<String, InputStream>> suppliers = Stream.of(
         (path) -> {
           try {
@@ -320,16 +322,6 @@ public class StandaloneConfiguration {
         .findFirst()
         .orElseThrow(() -> new RuntimeException(resource + " is not a valid resource."));
 
-    try(BufferedReader buffreader = new BufferedReader(new InputStreamReader(in))) {
-      return buffreader.lines().collect(Collectors.joining("\n"));
-    } catch (IOException e) {
-      throw new GridConfigurationException("Cannot read file or resource " + resource + ", " + e.getMessage(), e);
-    } finally {
-      try {
-        in.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+    return new BufferedReader(new InputStreamReader(in));
   }
 }

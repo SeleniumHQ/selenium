@@ -17,16 +17,14 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
-import com.google.common.reflect.TypeToken;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.Expose;
 
 import org.openqa.grid.common.RegistrationRequest;
@@ -35,6 +33,7 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -43,7 +42,9 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -115,14 +116,19 @@ public class GridNodeConfiguration extends GridConfiguration {
   /**
    * Default DesiredCapabilites
    */
+  // TODO: Is this really necessary?
   static final class DefaultDesiredCapabilitiesBuilder {
     static List<MutableCapabilities> getCapabilities() {
-      JsonObject defaults = loadJSONFromResourceOrFile(DEFAULT_NODE_CONFIG_FILE);
-      List<MutableCapabilities> caps = new ArrayList<>();
-      for (JsonElement el : defaults.getAsJsonArray("capabilities")) {
-        caps.add(new Json().toType(el.toString(), DesiredCapabilities.class));
+      try (JsonInput jsonInput = loadJsonFromResourceOrFile(DEFAULT_NODE_CONFIG_FILE)) {
+        Map<String, Object> defaults = jsonInput.read(MAP_TYPE);
+        List<MutableCapabilities> caps = new ArrayList<>();
+        for (Object el : (Collection<?>) defaults.get("capabilities")) {
+          @SuppressWarnings("unchecked")
+          Map<String, Object> map = (Map<String, Object>) el;
+          caps.add(new MutableCapabilities(map));
+        }
+        return caps;
       }
-      return caps;
     }
   }
 
@@ -382,7 +388,7 @@ public class GridNodeConfiguration extends GridConfiguration {
    * @param filePath node config json file to load configuration from
    */
   public static GridNodeConfiguration loadFromJSON(String filePath) {
-    return loadFromJSON(loadJSONFromResourceOrFile(filePath));
+    return StandaloneConfiguration.loadFromJson(filePath, GridNodeConfiguration.class);
   }
 
   /**
@@ -391,7 +397,6 @@ public class GridNodeConfiguration extends GridConfiguration {
   public static GridNodeConfiguration loadFromJSON(JsonObject json) {
     try {
       GsonBuilder builder = new GsonBuilder();
-      GridNodeConfiguration.staticAddJsonTypeAdapter(builder);
       GridNodeConfiguration config =
         builder.excludeFieldsWithoutExposeAnnotation().create().fromJson(json, GridNodeConfiguration.class);
 
@@ -410,36 +415,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     }
   }
 
-  @Override
-  protected void addJsonTypeAdapter(GsonBuilder builder) {
-    super.addJsonTypeAdapter(builder);
-    GridNodeConfiguration.staticAddJsonTypeAdapter(builder);
-  }
-
-  protected static void staticAddJsonTypeAdapter(GsonBuilder builder) {
-    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
-                                new CollectionOfDesiredCapabilitiesSerializer());
-    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
-                                new CollectionOfDesiredCapabilitiesDeSerializer());
-  }
-
-  public static class CollectionOfDesiredCapabilitiesSerializer
-    implements JsonSerializer<List<MutableCapabilities>> {
-
-    @Override
-    public JsonElement serialize(List<MutableCapabilities> desiredCapabilities, Type type,
-                                 JsonSerializationContext jsonSerializationContext) {
-
-      JsonArray capabilities = new JsonArray();
-      Json json = new Json();
-      for (MutableCapabilities dc : desiredCapabilities) {
-        capabilities.add(json.toJsonElement(dc));
-      }
-      return capabilities;
-    }
-  }
-
-  public  static class CollectionOfDesiredCapabilitiesDeSerializer
+  public static class CollectionOfDesiredCapabilitiesDeSerializer
     implements JsonDeserializer<List<MutableCapabilities>> {
 
     @Override

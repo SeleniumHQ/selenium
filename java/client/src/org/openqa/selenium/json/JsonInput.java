@@ -163,7 +163,11 @@ public class JsonInput implements Closeable {
   }
 
   public <T> T read(Type type) {
-    return coercer.coerce(this, type, PropertySetting.BY_NAME);
+    return read(type, PropertySetting.BY_NAME);
+  }
+
+  public <T> T read(Type type, PropertySetting setter) {
+    return coercer.coerce(this, type, setter);
   }
 
   public void skipValue() {
