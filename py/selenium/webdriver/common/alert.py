@@ -103,20 +103,3 @@ class Alert(object):
                                                               'text': keysToSend})
         else:
             self.driver.execute(Command.SET_ALERT_VALUE, {'text': keysToSend})
-
-    def authenticate(self, username, password):
-        """
-        Send the username / password to an Authenticated dialog (like with Basic HTTP Auth).
-        Implicitly 'clicks ok'
-
-        Usage::
-        driver.switch_to.alert.authenticate('cheese', 'secretGouda')
-
-        :Args:
-         -username: string to be set in the username section of the dialog
-         -password: string to be set in the password section of the dialog
-        """
-        self.driver.execute(
-            Command.SET_ALERT_CREDENTIALS,
-            {'username': username, 'password': password})
-        self.accept()
