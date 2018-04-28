@@ -20,6 +20,8 @@ package org.openqa.selenium;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Cookie implements Serializable {
   private static final long serialVersionUID = 4115876353625612383L;
@@ -174,6 +176,35 @@ public class Cookie implements Serializable {
     if (domain != null && domain.contains(":")) {
       throw new IllegalArgumentException("Domain should not contain a port: " + domain);
     }
+  }
+
+  public Map<String, Object> toJson() {
+    Map<String, Object> toReturn = new TreeMap<>();
+
+    if (getDomain() != null) {
+      toReturn.put("domain", getDomain());
+    }
+
+    if (getExpiry() != null) {
+      toReturn.put("expiry", getExpiry());
+    }
+
+    if (getName() != null) {
+      toReturn.put("name", getName());
+    }
+
+    if (getPath() != null) {
+      toReturn.put("path", getPath());
+    }
+
+    if (getValue() != null) {
+      toReturn.put("value", getValue());
+    }
+
+    toReturn.put("secure", isSecure());
+    toReturn.put("httpOnly", isHttpOnly());
+
+    return toReturn;
   }
 
   @Override
