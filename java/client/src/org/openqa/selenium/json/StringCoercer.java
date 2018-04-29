@@ -17,30 +17,29 @@
 
 package org.openqa.selenium.json;
 
-import com.google.gson.JsonParseException;
+import java.lang.reflect.Type;
+import java.util.function.BiFunction;
 
-import org.openqa.selenium.WebDriverException;
+public class StringCoercer extends TypeCoercer<String> {
 
-public class JsonException extends WebDriverException {
-  public JsonException(String message, JsonParseException jpe) {
-    super(message, jpe);
-    setStackTrace(jpe.getStackTrace());
+  @Override
+  public boolean test(Class<?> type) {
+    return CharSequence.class.isAssignableFrom(type);
   }
 
-  public JsonException(JsonParseException jpe) {
-    super(jpe.getMessage(), jpe.getCause());
-    setStackTrace(jpe.getStackTrace());
-  }
+  @Override
+  public BiFunction<JsonInput, PropertySetting, String> apply(Type type) {
+    return (jsonInput, setting) -> {
+      switch (jsonInput.peek()) {
+        case NAME:
+          return jsonInput.nextName();
 
-  public JsonException(String message) {
-    super(message);
-  }
+        case STRING:
+          return jsonInput.nextString();
 
-  public JsonException(Throwable cause) {
-    super(cause);
-  }
-
-  public JsonException(String message, Throwable cause) {
-    super(message, cause);
+        default:
+          throw new JsonException("Expected value to be a string type: " + jsonInput.peek());
+      }
+    };
   }
 }

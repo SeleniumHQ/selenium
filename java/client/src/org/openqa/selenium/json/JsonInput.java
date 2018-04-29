@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.json;
 
-import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -26,12 +26,12 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 
 public class JsonInput implements Closeable {
-  private final Gson gson;
   private final JsonReader jsonReader;
+  private final JsonTypeCoercer coercer;
 
-  JsonInput(Gson gson, JsonReader jsonReader) {
-    this.gson = gson;
+  JsonInput(JsonReader jsonReader, JsonTypeCoercer coercer) {
     this.jsonReader = jsonReader;
+    this.coercer = coercer;
   }
 
   @Override
@@ -43,9 +43,42 @@ public class JsonInput implements Closeable {
     }
   }
 
+  public JsonType peek() {
+    try {
+      JsonToken token = jsonReader.peek();
+      switch (token) {
+        case BEGIN_ARRAY:
+          return JsonType.START_COLLECTION;
+
+        case BEGIN_OBJECT:
+          return JsonType.START_MAP;
+
+        case BOOLEAN:
+          return JsonType.BOOLEAN;
+
+        case NAME:
+          return JsonType.NAME;
+
+        case NULL:
+          return JsonType.NULL;
+
+        case NUMBER:
+          return JsonType.NUMBER;
+
+        case STRING:
+          return JsonType.STRING;
+
+        default:
+          throw new JsonException("Unrecognized underlying type: " + token);
+      }
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
   public void beginObject() {
     try {
-    jsonReader.beginObject();
+      jsonReader.beginObject();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -53,7 +86,7 @@ public class JsonInput implements Closeable {
 
   public void endObject() {
     try {
-    jsonReader.endObject();
+      jsonReader.endObject();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -61,7 +94,7 @@ public class JsonInput implements Closeable {
 
   public void beginArray() {
     try {
-    jsonReader.beginArray();
+      jsonReader.beginArray();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -83,6 +116,14 @@ public class JsonInput implements Closeable {
     }
   }
 
+  public Boolean nextBoolean() {
+    try {
+      return jsonReader.nextBoolean();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
   public String nextName() {
     try {
       return jsonReader.nextName();
@@ -91,8 +132,38 @@ public class JsonInput implements Closeable {
     }
   }
 
+  public Number nextNumber() {
+    try {
+      if (jsonReader.peek() != JsonToken.NUMBER) {
+        throw new JsonException("Expected number but was: " + peek());
+      }
+
+      String raw = jsonReader.nextString();
+      if (raw.contains(".")) {
+        return Double.parseDouble(raw);
+      }
+      return Long.parseLong(raw);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  public String nextString() {
+    try {
+      if (jsonReader.peek() == JsonToken.NULL) {
+        jsonReader.nextNull();
+        return null;
+      }
+
+      return jsonReader.nextString();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+  }
+
   public <T> T read(Type type) {
-    return gson.fromJson(jsonReader, type);
+    return coercer.coerce(this, type, PropertySetting.BY_NAME);
   }
 
   public void skipValue() {

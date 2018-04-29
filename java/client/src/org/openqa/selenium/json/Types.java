@@ -17,30 +17,24 @@
 
 package org.openqa.selenium.json;
 
-import com.google.gson.JsonParseException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
-import org.openqa.selenium.WebDriverException;
-
-public class JsonException extends WebDriverException {
-  public JsonException(String message, JsonParseException jpe) {
-    super(message, jpe);
-    setStackTrace(jpe.getStackTrace());
+class Types {
+  private Types() {
+    // Utility class
   }
 
-  public JsonException(JsonParseException jpe) {
-    super(jpe.getMessage(), jpe.getCause());
-    setStackTrace(jpe.getStackTrace());
-  }
 
-  public JsonException(String message) {
-    super(message);
-  }
+  static Class<?> narrow(Type type) {
+    if (type instanceof Class) {
+      return (Class<?>) type;
+    }
 
-  public JsonException(Throwable cause) {
-    super(cause);
-  }
+    if (type instanceof ParameterizedType) {
+      return narrow(((ParameterizedType) type).getRawType());
+    }
 
-  public JsonException(String message, Throwable cause) {
-    super(message, cause);
+    throw new JsonException("Unable to narrow " + type.getClass());
   }
 }

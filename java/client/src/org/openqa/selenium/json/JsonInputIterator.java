@@ -17,30 +17,39 @@
 
 package org.openqa.selenium.json;
 
-import com.google.gson.JsonParseException;
+import static java.util.Spliterator.IMMUTABLE;
+import static java.util.Spliterator.ORDERED;
 
-import org.openqa.selenium.WebDriverException;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-public class JsonException extends WebDriverException {
-  public JsonException(String message, JsonParseException jpe) {
-    super(message, jpe);
-    setStackTrace(jpe.getStackTrace());
+class JsonInputIterator implements Iterator<JsonInput> {
+
+  private final JsonInput jsonInput;
+
+  JsonInputIterator(JsonInput jsonInput) {
+    this.jsonInput = Objects.requireNonNull(jsonInput);
   }
 
-  public JsonException(JsonParseException jpe) {
-    super(jpe.getMessage(), jpe.getCause());
-    setStackTrace(jpe.getStackTrace());
+  @Override
+  public boolean hasNext() {
+    return jsonInput.hasNext();
   }
 
-  public JsonException(String message) {
-    super(message);
+  @Override
+  public JsonInput next() {
+    return jsonInput;
   }
 
-  public JsonException(Throwable cause) {
-    super(cause);
-  }
+  public Stream<JsonInput> asStream() {
+    Spliterator<JsonInput> spliterator = Spliterators.spliteratorUnknownSize(
+        this,
+        ORDERED & IMMUTABLE);
 
-  public JsonException(String message, Throwable cause) {
-    super(message, cause);
+    return StreamSupport.stream(spliterator, false);
   }
 }

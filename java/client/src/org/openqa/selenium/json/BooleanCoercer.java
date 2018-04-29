@@ -17,30 +17,18 @@
 
 package org.openqa.selenium.json;
 
-import com.google.gson.JsonParseException;
+import java.lang.reflect.Type;
+import java.util.function.BiFunction;
 
-import org.openqa.selenium.WebDriverException;
+public class BooleanCoercer extends TypeCoercer<Boolean> {
 
-public class JsonException extends WebDriverException {
-  public JsonException(String message, JsonParseException jpe) {
-    super(message, jpe);
-    setStackTrace(jpe.getStackTrace());
+  @Override
+  public boolean test(Class<?> aClass) {
+    return Boolean.class.isAssignableFrom(aClass);
   }
 
-  public JsonException(JsonParseException jpe) {
-    super(jpe.getMessage(), jpe.getCause());
-    setStackTrace(jpe.getStackTrace());
-  }
-
-  public JsonException(String message) {
-    super(message);
-  }
-
-  public JsonException(Throwable cause) {
-    super(cause);
-  }
-
-  public JsonException(String message, Throwable cause) {
-    super(message, cause);
+  @Override
+  public BiFunction<JsonInput, PropertySetting, Boolean> apply(Type type) {
+    return ((jsonInput, setting) -> jsonInput.nextBoolean());
   }
 }

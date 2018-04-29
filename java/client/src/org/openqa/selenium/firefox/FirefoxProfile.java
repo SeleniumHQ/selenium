@@ -28,6 +28,7 @@ import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -365,7 +366,11 @@ public class FirefoxProfile {
   }
 
   public static FirefoxProfile fromJson(String json) throws IOException {
-    return new FirefoxProfile(Zip.unzipToTempDir(json, "webdriver", "duplicated"));
+    String zippedProfile = new Json().toType(json, String.class);
+    return new FirefoxProfile(Zip.unzipToTempDir(
+        zippedProfile,
+        "webdriver",
+        "duplicated"));
   }
 
   protected void cleanTemporaryModel() {

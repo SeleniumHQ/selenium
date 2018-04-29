@@ -17,30 +17,16 @@
 
 package org.openqa.selenium.json;
 
-import com.google.gson.JsonParseException;
+import java.lang.reflect.Type;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-import org.openqa.selenium.WebDriverException;
+abstract class TypeCoercer<T> implements Predicate<Class<?>>, Function<Type, BiFunction<JsonInput, PropertySetting, T>> {
 
-public class JsonException extends WebDriverException {
-  public JsonException(String message, JsonParseException jpe) {
-    super(message, jpe);
-    setStackTrace(jpe.getStackTrace());
-  }
+  @Override
+  public abstract boolean test(Class<?> aClass);
 
-  public JsonException(JsonParseException jpe) {
-    super(jpe.getMessage(), jpe.getCause());
-    setStackTrace(jpe.getStackTrace());
-  }
-
-  public JsonException(String message) {
-    super(message);
-  }
-
-  public JsonException(Throwable cause) {
-    super(cause);
-  }
-
-  public JsonException(String message, Throwable cause) {
-    super(message, cause);
-  }
+  @Override
+  public abstract BiFunction<JsonInput, PropertySetting, T> apply(Type type);
 }
