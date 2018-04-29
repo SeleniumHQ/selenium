@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -174,7 +173,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
       JsonArray capabilities = json.get("capabilities").getAsJsonArray();
       Json converter = new Json();
       for (int i = 0; i < capabilities.size(); i++) {
-        MutableCapabilities cap = converter.toType(capabilities.get(i), DesiredCapabilities.class);
+        MutableCapabilities cap = converter.toType(capabilities.get(i).toString(), DesiredCapabilities.class);
         configuration.capabilities.add(cap);
       }
       configuration.fixUpCapabilities();

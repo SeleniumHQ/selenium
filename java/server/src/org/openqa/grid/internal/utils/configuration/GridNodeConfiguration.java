@@ -120,7 +120,7 @@ public class GridNodeConfiguration extends GridConfiguration {
       JsonObject defaults = loadJSONFromResourceOrFile(DEFAULT_NODE_CONFIG_FILE);
       List<MutableCapabilities> caps = new ArrayList<>();
       for (JsonElement el : defaults.getAsJsonArray("capabilities")) {
-        caps.add(new Json().toType(el, DesiredCapabilities.class));
+        caps.add(new Json().toType(el.toString(), DesiredCapabilities.class));
       }
       return caps;
     }
@@ -451,7 +451,7 @@ public class GridNodeConfiguration extends GridConfiguration {
         List<MutableCapabilities> desiredCapabilities = new ArrayList<>();
         Json json = new Json();
         for (JsonElement arrayElement : jsonElement.getAsJsonArray()) {
-          desiredCapabilities.add(json.toType(arrayElement, DesiredCapabilities.class));
+          desiredCapabilities.add(json.toType(arrayElement.toString(), DesiredCapabilities.class));
         }
         return desiredCapabilities;
       }

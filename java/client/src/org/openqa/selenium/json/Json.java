@@ -68,7 +68,7 @@ public class Json {
     return toJson.convertObject(toConvert);
   }
 
-  public <T> T toType(Object source, Type typeOfT) {
+  public <T> T toType(String source, Type typeOfT) {
     Class<?> type;
     if (typeOfT instanceof ParameterizedType) {
       type = (Class<?>) ((ParameterizedType) typeOfT).getRawType();
