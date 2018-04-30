@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.server.rest;
 
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.gson.JsonObject;
 
 import org.openqa.selenium.json.Json;
@@ -24,6 +26,7 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -83,9 +86,11 @@ class Responses {
     response.setState(ERROR_CODES.toState(response.getStatus()));
 
     if (reason != null) {
-      JsonObject json = new Json().toJsonElement(reason).getAsJsonObject();
-      screenshot.ifPresent(screen -> json.addProperty("screen", screen));
-      response.setValue(json);
+      Json json = new Json();
+      String raw = json.toJson(reason);
+      Map<String, Object> value = json.toType(raw, MAP_TYPE);
+      screenshot.ifPresent(screen -> value.put("screen", screen));
+      response.setValue(value);
     }
     return response;
   }

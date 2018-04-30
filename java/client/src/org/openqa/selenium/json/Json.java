@@ -21,7 +21,6 @@ import com.google.common.io.CharStreams;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -32,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Json {
-  final static Gson GSON = new GsonBuilder()
+  static final Gson GSON = new GsonBuilder()
       .setLenient()
       .serializeNulls()
       .disableHtmlEscaping()
@@ -47,14 +46,6 @@ public class Json {
 
   public String toJson(Object toConvert) {
     return toJson.convert(toConvert);
-  }
-
-  /**
-   * @deprecated No replacement. Use raw java types instead.
-   */
-  @Deprecated
-  public JsonElement toJsonElement(Object toConvert) {
-    return toJson.convertObject(toConvert);
   }
 
   public <T> T toType(String source, Type typeOfT) {
