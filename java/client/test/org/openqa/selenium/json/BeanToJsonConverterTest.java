@@ -123,7 +123,7 @@ public class BeanToJsonConverterTest {
   @Test
   public void testShouldConvertNumbersAsLongs() {
     String json = new BeanToJsonConverter().convert(new Exception());
-    Map<?,?> map = new JsonToBeanConverter().convert(Map.class, json);
+    Map<?,?> map = new Json().toType(json, Map.class);
 
     List<?> stack = (List<?>) map.get("stackTrace");
     Map<?,?> line = (Map<?,?>) stack.get(0);

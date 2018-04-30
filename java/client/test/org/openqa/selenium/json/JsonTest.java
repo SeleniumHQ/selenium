@@ -519,7 +519,7 @@ public class JsonTest {
   public static class ContainingBean {
 
     private String name;
-    private JsonToBeanConverterTest.SimpleBean bean;
+    private SimpleBean bean;
 
     public String getName() {
       return name;
@@ -529,11 +529,11 @@ public class JsonTest {
       this.name = name;
     }
 
-    public JsonToBeanConverterTest.SimpleBean getBean() {
+    public SimpleBean getBean() {
       return bean;
     }
 
-    public void setBean(JsonToBeanConverterTest.SimpleBean bean) {
+    public void setBean(SimpleBean bean) {
       this.bean = bean;
     }
   }
