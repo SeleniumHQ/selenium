@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.json;
 
+import com.google.common.primitives.Primitives;
+
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -34,7 +36,7 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
 
   @Override
   public boolean test(Class<?> type) {
-    return stereotype.isAssignableFrom(type);
+    return stereotype.isAssignableFrom(Primitives.wrap(type));
   }
 
   @Override

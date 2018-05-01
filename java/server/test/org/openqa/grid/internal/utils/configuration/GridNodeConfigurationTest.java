@@ -23,11 +23,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
@@ -35,17 +34,21 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.cli.GridNodeCliOptions;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Map;
 
 public class GridNodeConfigurationTest {
 
   @Test
-  public void testLoadFromJson() {
+  public void testLoadFromJson() throws IOException {
     final String configJson = "{"
                               + "\"capabilities\":"
                               + " ["
@@ -60,8 +63,11 @@ public class GridNodeConfigurationTest {
                               + "\"port\": 1234"
                               + "}";
 
-    JsonObject json = new JsonParser().parse(configJson).getAsJsonObject();
-    GridNodeConfiguration gnc = GridNodeConfiguration.loadFromJSON(json);
+    GridNodeConfiguration gnc;
+    try (Reader reader = new StringReader(configJson);
+        JsonInput jsonInput = new Json().newInput(reader)) {
+      gnc = GridNodeConfiguration.loadFromJSON(jsonInput);
+    }
 
     assertEquals("node", gnc.role);
     assertEquals(1234, gnc.port.intValue());
@@ -82,8 +88,7 @@ public class GridNodeConfigurationTest {
                             + "\"port\": 1234"
                             + " }"
                             + "}";
-    JsonObject json = new JsonParser().parse(configJson).getAsJsonObject();
-    GridNodeConfiguration.loadFromJSON(json);
+    GridNodeConfiguration.loadFromJSON(configJson);
   }
 
   @Test
@@ -168,27 +173,34 @@ public class GridNodeConfigurationTest {
     GridNodeConfiguration gnc = parseCliOptions(
         "-capabilities", "browserName=chrome,platform=linux");
 
-    assertEquals("{\"capabilities\":"
-                 + "[{\"browserName\":\"chrome\",\"platform\":\"LINUX\"}],"
-                 + "\"downPollingLimit\":2,"
-                 + "\"hub\":\"http://localhost:4444\","
-                 + "\"nodePolling\":5000,"
-                 + "\"nodeStatusCheckTimeout\":5000,"
-                 + "\"proxy\":\"org.openqa.grid.selenium.proxy.DefaultRemoteProxy\","
-                 + "\"register\":true,"
-                 + "\"registerCycle\":5000,"
-                 + "\"unregisterIfStillDownAfter\":60000,"
-                 + "\"enablePlatformVerification\":true,"
-                 + "\"custom\":{},"
-                 + "\"maxSession\":5,"
-                 + "\"servlets\":[],"
-                 + "\"withoutServlets\":[],"
-                 + "\"browserTimeout\":0,"
-                 + "\"debug\":false,"
-                 + "\"host\":\"0.0.0.0\","
-                 + "\"port\":5555,"
-                 + "\"role\":\"node\","
-                 + "\"timeout\":1800}", new Json().toJson(gnc.toJson()));
+    Json json = new Json();
+    Map<String, Object> expected = json.toType(
+        "{\"capabilities\":"
+        + "[{\"browserName\":\"chrome\",\"platform\":\"LINUX\"}],"
+        + "\"downPollingLimit\":2,"
+        + "\"hub\":\"http://localhost:4444\","
+        + "\"nodePolling\":5000,"
+        + "\"nodeStatusCheckTimeout\":5000,"
+        + "\"proxy\":\"org.openqa.grid.selenium.proxy.DefaultRemoteProxy\","
+        + "\"register\":true,"
+        + "\"registerCycle\":5000,"
+        + "\"unregisterIfStillDownAfter\":60000,"
+        + "\"enablePlatformVerification\":true,"
+        + "\"custom\":{},"
+        + "\"maxSession\":5,"
+        + "\"servlets\":[],"
+        + "\"withoutServlets\":[],"
+        + "\"browserTimeout\":0,"
+        + "\"debug\":false,"
+        + "\"host\":\"0.0.0.0\","
+        + "\"port\":5555,"
+        + "\"role\":\"node\","
+        + "\"timeout\":1800}",
+        MAP_TYPE);
+
+    Map<String, Object> seen = json.toType(json.toJson(gnc.toJson()), MAP_TYPE);
+
+    assertEquals(expected, seen);
   }
 
   @Test

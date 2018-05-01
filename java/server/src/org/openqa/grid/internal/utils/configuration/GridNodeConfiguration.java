@@ -19,12 +19,6 @@ package org.openqa.grid.internal.utils.configuration;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 
 import org.openqa.grid.common.RegistrationRequest;
@@ -32,13 +26,10 @@ import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -120,8 +111,13 @@ public class GridNodeConfiguration extends GridConfiguration {
   static final class DefaultDesiredCapabilitiesBuilder {
     static List<MutableCapabilities> getCapabilities() {
       try (JsonInput jsonInput = loadJsonFromResourceOrFile(DEFAULT_NODE_CONFIG_FILE)) {
-        Map<String, Object> defaults = jsonInput.read(MAP_TYPE);
         List<MutableCapabilities> caps = new ArrayList<>();
+
+        Map<String, Object> defaults = jsonInput.read(MAP_TYPE);
+        if (defaults == null || !(defaults.get("capabilities") instanceof Collection)) {
+          return caps;
+        }
+
         for (Object el : (Collection<?>) defaults.get("capabilities")) {
           @SuppressWarnings("unchecked")
           Map<String, Object> map = (Map<String, Object>) el;
@@ -388,50 +384,28 @@ public class GridNodeConfiguration extends GridConfiguration {
    * @param filePath node config json file to load configuration from
    */
   public static GridNodeConfiguration loadFromJSON(String filePath) {
-    return StandaloneConfiguration.loadFromJson(filePath, GridNodeConfiguration.class);
+    return loadFromJSON(StandaloneConfiguration.loadJsonFromResourceOrFile(filePath));
   }
 
-  /**
-   * @param json JsonObject to load configuration from
-   */
-  public static GridNodeConfiguration loadFromJSON(JsonObject json) {
+  public static GridNodeConfiguration loadFromJSON(JsonInput jsonInput) {
     try {
-      GsonBuilder builder = new GsonBuilder();
-      GridNodeConfiguration config =
-        builder.excludeFieldsWithoutExposeAnnotation().create().fromJson(json, GridNodeConfiguration.class);
+      GridNodeConfiguration config = StandaloneConfiguration.loadFromJson(
+          jsonInput,
+          GridNodeConfiguration.class);
 
       if (config.configuration != null) {
         // caught below
-        throw new GridConfigurationException("Deprecated -nodeConfig file encountered. Please update"
-                                             + " the file to work with Selenium 3. See https://github.com"
-                                             + "/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes-by-json"
-                                             + " for more details.");
-}
+        throw new GridConfigurationException(
+            "Deprecated -nodeConfig file encountered.Please update" +
+                " the file to work with Selenium 3.See https://github.com" +
+                "/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes-by-json" +
+                " for more details.");
+        }
 
       return config;
     } catch (Throwable e) {
       throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
                                            e);
-    }
-  }
-
-  public static class CollectionOfDesiredCapabilitiesDeSerializer
-    implements JsonDeserializer<List<MutableCapabilities>> {
-
-    @Override
-    public List<MutableCapabilities> deserialize(JsonElement jsonElement, Type type,
-                                                 JsonDeserializationContext jsonDeserializationContext)
-      throws JsonParseException {
-
-      if (jsonElement.isJsonArray()) {
-        List<MutableCapabilities> desiredCapabilities = new ArrayList<>();
-        Json json = new Json();
-        for (JsonElement arrayElement : jsonElement.getAsJsonArray()) {
-          desiredCapabilities.add(json.toType(arrayElement.toString(), DesiredCapabilities.class));
-        }
-        return desiredCapabilities;
-      }
-      throw new JsonParseException("capabilities should be expressed as an array of objects.");
     }
   }
 

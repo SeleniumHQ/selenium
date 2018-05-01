@@ -97,7 +97,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
       considerV2Json(registrationRequest.getConfiguration(), json);
     } else {
       // Se3 compatible request.
-      registrationRequest = RegistrationRequest.fromJson(json);
+      registrationRequest = RegistrationRequest.fromJson(requestJsonString);
     }
 
     final RemoteProxy proxy = BaseRemoteProxy.getNewInstance(registrationRequest, getRegistry());
@@ -128,7 +128,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
 
     // if a JsonSyntaxException happens here, so be it. We won't be able to map the request
     // to a grid node configuration anyhow.
-    GridNodeConfiguration pendingConfiguration = GridNodeConfiguration.loadFromJSON(json);
+    GridNodeConfiguration pendingConfiguration = GridNodeConfiguration.loadFromJSON(json.toString());
 
     // add the servlets that were saved off
     if (servlets != null && servlets.isJsonPrimitive() &&

@@ -73,6 +73,7 @@ public class StatusServletTests {
     c.timeout = 12345;
     c.port = PortProber.findFreePort();
     c.host = "localhost";
+
     hub = new Hub(c);
     GridRegistry registry = hub.getRegistry();
     client = HttpClient.Factory.createDefault().createClient(hub.getUrl());
@@ -225,7 +226,6 @@ public class StatusServletTests {
   @Test
   public void testHubGetSpecifiedConfig() throws IOException {
     String url = hubApi.toExternalForm();
-    System.out.println("url = " + url);
     HttpRequest r = new HttpRequest(POST, url);
 
     Map<String, Object> j = ImmutableMap.of(
@@ -331,7 +331,7 @@ public class StatusServletTests {
   @Test
   public void testHubGetSlotCounts() throws IOException {
     String url = hubApi.toExternalForm();
-    HttpRequest r = new HttpRequest(GET, url);
+    HttpRequest r = new HttpRequest(POST, url);
 
     Map<String, Object> j = ImmutableMap.of("configuration", ImmutableList.of("slotCounts"));
 
@@ -370,7 +370,6 @@ public class StatusServletTests {
   }
 
   private Map<String, Object> extractObject(HttpResponse resp) {
-    System.out.println("resp = " + resp.getContentString());
     return new Json().toType(resp.getContentString(), MAP_TYPE);
   }
 

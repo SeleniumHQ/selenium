@@ -19,6 +19,8 @@ package org.openqa.grid.web.servlet;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.GridRegistry;
@@ -34,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -55,52 +58,50 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    process(request, response);
+    Map<String, Object> json = ImmutableMap.of(
+        "session", request.getParameter("session"));
+    process(response, json);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    process(request, response);
-  }
-
-  protected void process(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
-    response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
-    response.setStatus(200);
-    try (Writer writer = response.getWriter();
-         JsonOutput out = json.newOutput(writer)){
-      out.write(getResponse(request));
-    } catch (JsonException e) {
-      throw new GridException(e.getMessage());
-    }
-  }
-
-  private Map<String, Object> getResponse(HttpServletRequest request) throws IOException {
-    Map<String, Object> requestJSON = null;
+    Map<String, Object> requestJSON = new HashMap<>();
     if (request.getInputStream() != null) {
       try (Reader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
            JsonInput jin = json.newInput(rd)) {
         requestJSON = jin.read(MAP_TYPE);
       }
     }
+    process(response, requestJSON);
+  }
 
+  protected void process(HttpServletResponse response, Map<String, Object> requestJson)
+      throws IOException {
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    response.setStatus(200);
+    try (Writer writer = response.getWriter();
+         JsonOutput out = json.newOutput(writer)) {
+      out.write(getResponse(requestJson));
+    } catch (JsonException e) {
+      throw new GridException(e.getMessage());
+    }
+  }
+
+  private Map<String, Object> getResponse(Map<String, Object> requestJson) {
     Map<String, Object> res = new TreeMap<>();
     res.put("success", false);
 
     // the id can be specified via a param, or in the json request.
     String session;
-    if (requestJSON == null) {
-      session = request.getParameter("session");
-    } else {
-      if (!requestJSON.containsKey("session")) {
-        res.put("msg",
-            "you need to specify at least a session or internalKey when call the test slot status service.");
-        return res;
-      }
-      session = String.valueOf(requestJSON.get("session"));
+    if (!requestJson.containsKey("session")) {
+      res.put(
+          "msg",
+          "you need to specify at least a session or internalKey when call the test slot status service.");
+      return res;
     }
+      session = String.valueOf(requestJson.get("session"));
 
     TestSession testSession = getRegistry().getSession(ExternalSessionKey.fromString(session));
 

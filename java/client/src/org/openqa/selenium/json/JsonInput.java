@@ -23,7 +23,7 @@ import com.google.gson.stream.JsonToken;
 
 import java.io.Closeable;
 import java.lang.reflect.Type;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
@@ -45,6 +45,10 @@ public class JsonInput implements Closeable {
     }
     this.setter = Objects.requireNonNull(setter);
     return this;
+  }
+
+  public JsonInput addCoercers(TypeCoercer<?>... coercers) {
+    return addCoercers(Arrays.asList(coercers));
   }
 
   public JsonInput addCoercers(Iterable<TypeCoercer<?>> coercers) {

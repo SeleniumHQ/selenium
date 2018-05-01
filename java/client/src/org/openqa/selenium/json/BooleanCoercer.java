@@ -24,7 +24,7 @@ public class BooleanCoercer extends TypeCoercer<Boolean> {
 
   @Override
   public boolean test(Class<?> aClass) {
-    return Boolean.class.isAssignableFrom(aClass);
+    return Boolean.class.isAssignableFrom(aClass) || boolean.class.isAssignableFrom(aClass);
   }
 
   @Override

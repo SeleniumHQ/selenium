@@ -21,25 +21,36 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.annotations.Expose;
 
+import org.openqa.grid.common.GridConfiguredJson;
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.PropertySetting;
 import org.openqa.selenium.json.TypeCoercer;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -166,10 +177,7 @@ public class StandaloneConfiguration {
 
   public static<T extends StandaloneConfiguration> T loadFromJson(JsonInput jsonInput, Class<T> type) {
     try {
-      return jsonInput
-          .propertySetting(PropertySetting.BY_FIELD)
-          .addCoercers(getCoercers())
-          .read(type);
+      return GridConfiguredJson.toType(jsonInput, type);
     } catch (GridConfigurationException e) {
       throw e;
     } catch (Throwable e) {
@@ -280,7 +288,12 @@ public class StandaloneConfiguration {
    * Return a JsonElement representation of the configuration. Does not serialize nulls.
    */
   public Map<String, Object> toJson() {
-    return Stream.of(getClass().getDeclaredFields())
+    Set<Field> fields = new HashSet<>();
+    for (Class current = getClass(); !current.equals(Object.class); current = current.getSuperclass()) {
+      fields.addAll(Arrays.asList(current.getDeclaredFields()));
+    }
+
+    return fields.stream()
         .filter(field -> field.getAnnotation(Expose.class) != null)
         .filter(field -> field.getAnnotation(Expose.class).serialize())
         .peek(field -> field.setAccessible(true))
@@ -288,6 +301,10 @@ public class StandaloneConfiguration {
             field -> {
               try {
                 Object value = field.get(StandaloneConfiguration.this);
+                // TODO: avoid nastiness like this
+                if (value instanceof CapabilityMatcher || value instanceof Prioritizer) {
+                  value = value.getClass().getName();
+                }
                 return new AbstractMap.SimpleImmutableEntry<>(field.getName(), value);
               } catch (ReflectiveOperationException e) {
                 throw new WebDriverException(e);
@@ -299,7 +316,8 @@ public class StandaloneConfiguration {
   }
 
   /**
-   * load a JSON file from the resource or file system.
+   * load a JSON file from the resource or file system. As a fallback, treats {@code resource} as a
+   * JSON string to be parsed.
    *
    * @param resource file or jar resource location
    * @return A JsonObject representing the passed resource argument.
@@ -322,7 +340,8 @@ public class StandaloneConfiguration {
           } },
         (path) -> Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("org/openqa/grid/common/" + path),
-        (path) -> Thread.currentThread().getContextClassLoader().getResourceAsStream(path)
+        (path) -> Thread.currentThread().getContextClassLoader().getResourceAsStream(path),
+        (path) -> new ByteArrayInputStream(path.getBytes())
     );
 
     InputStream in = suppliers

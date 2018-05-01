@@ -27,9 +27,9 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,13 +41,29 @@ import java.util.stream.Collectors;
 
 class JsonTypeCoercer {
 
+  private final Set<TypeCoercer<?>> additionalCoercers;
   private final Set<TypeCoercer> coercers;
   private final Map<Type, BiFunction<JsonInput, PropertySetting, Object>> knownCoercers = new ConcurrentHashMap<>();
 
   JsonTypeCoercer() {
-    coercers =
+    this(ImmutableSet.of());
+  }
+
+  JsonTypeCoercer(JsonTypeCoercer coercer, Iterable<TypeCoercer<?>> coercers) {
+    this(
+        ImmutableSet.<TypeCoercer<?>>builder()
+            .addAll(coercers)
+            .addAll(coercer.additionalCoercers)
+            .build());
+  }
+
+  JsonTypeCoercer(Iterable<TypeCoercer<?>> coercers) {
+    this.additionalCoercers = ImmutableSet.copyOf(coercers);
+
+    this.coercers =
         // Note: we call out when ordering matters.
         ImmutableSet.<TypeCoercer>builder()
+            .addAll(coercers)
             // Types that don't contain other types first
             // From java
             .add(new BooleanCoercer())
@@ -80,7 +96,7 @@ class JsonTypeCoercer {
             .add(new SessionIdCoercer())
 
             // Container types
-            .add(new CollectionCoercer<>(List.class, this, Collectors.toCollection(LinkedList::new)))
+            .add(new CollectionCoercer<>(List.class, this, Collectors.toCollection(ArrayList::new)))
             .add(new CollectionCoercer<>(Set.class, this, Collectors.toCollection(HashSet::new)))
 
             .add(new MapCoercer<>(
@@ -98,13 +114,6 @@ class JsonTypeCoercer {
             .build();
   }
 
-  JsonTypeCoercer(JsonTypeCoercer coercer, Iterable<TypeCoercer<?>> coercers) {
-    this.coercers = ImmutableSet.<TypeCoercer>builder()
-        .addAll(coercers)
-        .addAll(coercer.coercers)
-        .build();
-  }
-
   <T> T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
     BiFunction<JsonInput, PropertySetting, Object> coercer =
         knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
@@ -120,15 +129,18 @@ class JsonTypeCoercer {
         .filter(coercer -> coercer.test(narrow(type)))
         .findFirst()
         .map(coercer -> coercer.apply(type))
-        .map(func -> (BiFunction<JsonInput, PropertySetting, Object>) (jsonInput, setter) -> {
-          if (jsonInput.peek() == JsonType.NULL) {
-            jsonInput.skipValue();
-            return null;
-          }
+        .map(
+            func ->
+                (BiFunction<JsonInput, PropertySetting, Object>)
+                    (jsonInput, setter) -> {
+                      if (jsonInput.peek() == JsonType.NULL) {
+                        jsonInput.skipValue();
+                        return null;
+                      }
 
-          //noinspection unchecked
-          return func.apply(jsonInput, setter);
-        })
+                      //noinspection unchecked
+                      return func.apply(jsonInput, setter);
+                    })
         .orElseThrow(() -> new JsonException("Unable to find type coercer for " + type));
   }
 
