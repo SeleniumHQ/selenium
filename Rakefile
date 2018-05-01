@@ -606,10 +606,8 @@ namespace :copyright do
         FileList["py/**/*.py"],
         :style => "#")
     Copyright.Update(
-      FileList["rb/**/*.rb"].exclude(
-          "rb/spec/integration/selenium/client/api/screenshot_spec.rb"),
-      :style => "#",
-      :prefix => "# encoding: utf-8\n#\n")
+      FileList["rb/**/*.rb"],
+      :style => "#")
     Copyright.Update(
         FileList["java/**/*.java"].exclude(
             "java/client/src/org/openqa/selenium/internal/Base64Encoder.java",
