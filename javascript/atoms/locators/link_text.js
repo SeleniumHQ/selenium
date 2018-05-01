@@ -50,6 +50,11 @@ bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
 
   var element = goog.array.find(elements, function(element) {
     var text = bot.dom.getVisibleText(element);
+    // getVisibleText replaces non-breaking spaces with plain
+    // spaces, so if these are present at the beginning or end
+    // of the link text, we need to trim the regular spaces off
+    // to be spec compliant for matching on link text.
+    text = text.replace(/^[\s]+|[\s]+$/g, '');
     return (opt_isPartial && text.indexOf(target) != -1) || text == target;
   });
   return /**@type{Element}*/ (element);
@@ -79,6 +84,11 @@ bot.locators.linkText.many_ = function(target, root, opt_isPartial) {
 
   return goog.array.filter(elements, function(element) {
     var text = bot.dom.getVisibleText(element);
+    // getVisibleText replaces non-breaking spaces with plain
+    // spaces, so if these are present at the beginning or end
+    // of the link text, we need to trim the regular spaces off
+    // to be spec compliant for matching on link text.
+    text = text.replace(/^[\s]+|[\s]+$/g, '');
     return (opt_isPartial && text.indexOf(target) != -1) || text == target;
   });
 };
