@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.json;
 
+import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
 import java.io.Closeable;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
+import java.util.concurrent.Callable;
 
 public class JsonInput implements Closeable {
   private final JsonReader jsonReader;
@@ -36,15 +36,11 @@ public class JsonInput implements Closeable {
 
   @Override
   public void close() {
-    try {
-      jsonReader.close();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    execute((VoidCallable) jsonReader::close);
   }
 
   public JsonType peek() {
-    try {
+    return execute(() -> {
       JsonToken token = jsonReader.peek();
       switch (token) {
         case BEGIN_ARRAY:
@@ -71,95 +67,62 @@ public class JsonInput implements Closeable {
         default:
           throw new JsonException("Unrecognized underlying type: " + token);
       }
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    });
   }
 
   public void beginObject() {
-    try {
-      jsonReader.beginObject();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    execute((VoidCallable) jsonReader::beginObject);
   }
 
   public void endObject() {
-    try {
-      jsonReader.endObject();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    execute((VoidCallable) jsonReader::endObject);
   }
 
   public void beginArray() {
-    try {
-      jsonReader.beginArray();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    execute((VoidCallable) jsonReader::beginArray);
   }
 
   public void endArray() {
-    try {
-      jsonReader.endArray();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    execute((VoidCallable) jsonReader::endArray);
   }
 
   public boolean hasNext() {
-    try {
-      return jsonReader.hasNext();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    return execute(jsonReader::hasNext);
   }
 
   public Boolean nextBoolean() {
-    try {
-      return jsonReader.nextBoolean();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    return execute(jsonReader::nextBoolean);
   }
 
   public String nextName() {
-    try {
-      return jsonReader.nextName();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    return execute(jsonReader::nextName);
   }
 
   public Number nextNumber() {
-    try {
-      if (jsonReader.peek() != JsonToken.NUMBER) {
-        throw new JsonException("Expected number but was: " + peek());
-      }
+    return execute(
+        () -> {
+          if (jsonReader.peek() != JsonToken.NUMBER) {
+            throw new JsonException("Expected number but was: " + peek());
+          }
 
-      String raw = jsonReader.nextString();
-      if (raw.contains(".")) {
-        return Double.parseDouble(raw);
-      }
-      return Long.parseLong(raw);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+          String raw = jsonReader.nextString();
+          if (raw.contains(".")) {
+            return Double.parseDouble(raw);
+          }
+          return Long.parseLong(raw);
+        });
   }
 
   public String nextString() {
-    try {
-      if (jsonReader.peek() == JsonToken.NULL) {
-        jsonReader.nextNull();
-        return null;
-      }
+    return execute(
+        () -> {
+          if (jsonReader.peek() == JsonToken.NULL) {
+            jsonReader.nextNull();
+            return null;
+          }
 
-      return jsonReader.nextString();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-
+          return jsonReader.nextString();
+        });
   }
 
   public <T> T read(Type type) {
@@ -171,10 +134,26 @@ public class JsonInput implements Closeable {
   }
 
   public void skipValue() {
+    execute((VoidCallable) jsonReader::skipValue);
+  }
+
+  private <T> T execute(Callable<T> callable) {
     try {
-      jsonReader.skipValue();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      return callable.call();
+    } catch (JsonParseException e) {
+      throw new JsonException(e);
+    } catch (Exception e) {
+      throw new JsonException(e);
+    }
+  }
+
+  private interface VoidCallable extends Callable<Void> {
+    void execute() throws Exception;
+
+    @Override
+    default Void call() throws Exception {
+      execute();
+      return null;
     }
   }
 }
