@@ -22,7 +22,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-abstract class TypeCoercer<T> implements Predicate<Class<?>>, Function<Type, BiFunction<JsonInput, PropertySetting, T>> {
+public abstract class TypeCoercer<T>
+    implements Predicate<Class<?>>, Function<Type, BiFunction<JsonInput, PropertySetting, T>> {
 
   @Override
   public abstract boolean test(Class<?> aClass);

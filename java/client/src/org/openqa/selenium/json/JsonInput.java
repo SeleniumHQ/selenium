@@ -23,15 +23,40 @@ import com.google.gson.stream.JsonToken;
 
 import java.io.Closeable;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class JsonInput implements Closeable {
   private final JsonReader jsonReader;
-  private final JsonTypeCoercer coercer;
+  private volatile boolean readPerformed = false;
+  private volatile JsonTypeCoercer coercer;
+  private volatile PropertySetting setter;
 
   JsonInput(JsonReader jsonReader, JsonTypeCoercer coercer) {
     this.jsonReader = jsonReader;
     this.coercer = coercer;
+    this.setter = PropertySetting.BY_NAME;
+  }
+
+  public JsonInput propertySetting(PropertySetting setter) {
+    if (readPerformed) {
+      throw new JsonException("JsonInput has already been used and may not be modified");
+    }
+    this.setter = Objects.requireNonNull(setter);
+    return this;
+  }
+
+  public JsonInput addCoercers(Iterable<TypeCoercer<?>> coercers) {
+    synchronized (this) {
+      if (readPerformed) {
+        throw new JsonException("JsonInput has already been used and may not be modified");
+      }
+
+      this.coercer = new JsonTypeCoercer(coercer, coercers);
+    }
+
+    return this;
   }
 
   @Override
@@ -126,10 +151,6 @@ public class JsonInput implements Closeable {
   }
 
   public <T> T read(Type type) {
-    return read(type, PropertySetting.BY_NAME);
-  }
-
-  public <T> T read(Type type, PropertySetting setter) {
     return coercer.coerce(this, type, setter);
   }
 
@@ -138,6 +159,7 @@ public class JsonInput implements Closeable {
   }
 
   private <T> T execute(Callable<T> callable) {
+    readPerformed = true;
     try {
       return callable.call();
     } catch (JsonParseException e) {

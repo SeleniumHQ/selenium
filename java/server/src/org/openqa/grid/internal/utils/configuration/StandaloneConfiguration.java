@@ -18,6 +18,7 @@
 package org.openqa.grid.internal.utils.configuration;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.annotations.Expose;
 
 import org.openqa.grid.common.exception.GridConfigurationException;
@@ -25,6 +26,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.PropertySetting;
+import org.openqa.selenium.json.TypeCoercer;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -164,13 +166,20 @@ public class StandaloneConfiguration {
 
   public static<T extends StandaloneConfiguration> T loadFromJson(JsonInput jsonInput, Class<T> type) {
     try {
-      return jsonInput.read(type, PropertySetting.BY_FIELD);
+      return jsonInput
+          .propertySetting(PropertySetting.BY_FIELD)
+          .addCoercers(getCoercers())
+          .read(type);
     } catch (GridConfigurationException e) {
       throw e;
     } catch (Throwable e) {
       throw new GridConfigurationException(e.getMessage(), e);
     }
   }
+
+  protected Collection<TypeCoercer<?>> getCoercers() {
+    return ImmutableSet.of();
+  };
 
   /**
    * copy another configuration's values into this one if they are set.

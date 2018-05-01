@@ -98,6 +98,13 @@ class JsonTypeCoercer {
             .build();
   }
 
+  JsonTypeCoercer(JsonTypeCoercer coercer, Iterable<TypeCoercer<?>> coercers) {
+    this.coercers = ImmutableSet.<TypeCoercer>builder()
+        .addAll(coercers)
+        .addAll(coercer.coercers)
+        .build();
+  }
+
   <T> T coerce(JsonInput json, Type typeOfT, PropertySetting setter) {
     BiFunction<JsonInput, PropertySetting, Object> coercer =
         knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
