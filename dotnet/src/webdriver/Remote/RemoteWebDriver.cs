@@ -1435,6 +1435,9 @@ namespace OpenQA.Selenium.Remote
                         case WebDriverResult.InvalidArgument:
                             throw new WebDriverException(errorMessage);
 
+                        case WebDriverResult.UnexpectedJavaScriptError:
+                            throw new WebDriverException(errorMessage);
+
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));
                     }
