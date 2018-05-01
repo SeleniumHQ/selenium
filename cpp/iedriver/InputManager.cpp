@@ -540,6 +540,10 @@ int InputManager::KeyDown(BrowserHandle browser_wrapper,
   std::string key_value = down_action["value"].asString();
   std::wstring key = StringUtilities::ToWString(key_value);
 
+  if (!this->IsSingleKey(key)) {
+    return EINVALIDARGUMENT;
+  }
+
   if (this->action_simulator_->UseExtraInfo()) {
     LOG(DEBUG) << "Using synthetic events for sending keys";
     KeyboardExtraInfo* extra_info = new KeyboardExtraInfo();
@@ -567,11 +571,48 @@ int InputManager::KeyUp(BrowserHandle browser_wrapper,
   std::string key_value = up_action["value"].asString();
   std::wstring key = StringUtilities::ToWString(key_value);
 
+  if (!this->IsSingleKey(key)) {
+    return EINVALIDARGUMENT;
+  }
+
   if (!this->action_simulator_->UseExtraInfo()) {
     HWND window_handle = browser_wrapper->GetContentWindowHandle();
     this->AddKeyboardInput(window_handle, key, true, input_state);
   }
   return status_code;
+}
+
+bool InputManager::IsSingleKey(const std::wstring& input) {
+  bool is_single_key = true;
+  if (input.size() > 1) {
+    WORD combining_bitmask = C3_NONSPACING | C3_DIACRITIC | C3_VOWELMARK;
+    std::vector<WORD> char_types(input.size());
+    BOOL get_type_success = ::GetStringTypeW(CT_CTYPE3,
+                                             input.c_str(),
+                                             input.size(),
+                                             &char_types[0]);
+    if (get_type_success) {
+      bool found_alpha = false;
+      for (int i = 0; i < char_types.size(); ++i) {
+        if (char_types[i] & combining_bitmask) {
+          continue;
+        }
+
+        if (char_types[i] & C3_ALPHA) {
+          if (!found_alpha) {
+            found_alpha = true;
+          } else {
+            is_single_key = false;
+            break;
+          }
+        }
+      }
+    }
+  }
+  if (!is_single_key) {
+    LOG(WARN) << "key value did not pass validation";
+  }
+  return is_single_key;
 }
 
 int InputManager::Pause(BrowserHandle browser_wrapper,

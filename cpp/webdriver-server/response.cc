@@ -186,6 +186,8 @@ std::string Response::ConvertErrorCode(const int error_code) {
     return ERROR_SCRIPT_TIMEOUT;
   } else if (error_code == EMOVETARGETOUTOFBOUNDS) {
     return ERROR_MOVE_TARGET_OUT_OF_BOUNDS;
+  } else if (error_code == EINVALIDARGUMENT) {
+    return ERROR_INVALID_ARGUMENT;
   }
 
   return "";
