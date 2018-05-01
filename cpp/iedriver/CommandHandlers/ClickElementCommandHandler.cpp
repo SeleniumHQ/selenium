@@ -18,6 +18,7 @@
 
 #include "ClickElementCommandHandler.h"
 #include "errorcodes.h"
+#include "logging.h"
 #include "../Browser.h"
 #include "../Element.h"
 #include "../Generated/atoms.h"
@@ -55,6 +56,10 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
     ElementHandle element_wrapper;
     status_code = this->GetElement(executor, element_id, &element_wrapper);
     if (status_code == WD_SUCCESS) {
+      if (this->IsFileUploadElement(element_wrapper)) {
+        response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Cannot call click on an <input type='file'> element. Use sendKeys to upload files.");
+        return;
+      }
       if (executor.input_manager()->enable_native_events()) {
         if (this->IsOptionElement(element_wrapper)) {
           std::string option_click_error = "";
@@ -236,6 +241,24 @@ int ClickElementCommandHandler::ExecuteAtom(
     }
   }
   return status_code;
+}
+
+bool ClickElementCommandHandler::IsFileUploadElement(ElementHandle element) {
+  CComPtr<IHTMLInputFileElement> file;
+  element->element()->QueryInterface<IHTMLInputFileElement>(&file);
+  CComPtr<IHTMLInputElement> input;
+  element->element()->QueryInterface<IHTMLInputElement>(&input);
+  CComBSTR element_type;
+  if (input) {
+    input->get_type(&element_type);
+    HRESULT hr = element_type.ToLower();
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Failed converting type attribute of <input> element to lowercase using ToLower() method of BSTR";
+    }
+  }
+  bool is_file_element = (file != NULL) ||
+                         (input != NULL && element_type == L"file");
+  return is_file_element;
 }
 
 } // namespace webdriver

@@ -36,6 +36,7 @@ class ClickElementCommandHandler : public IECommandHandler {
                        Response* response);
 
  private:
+  bool IsFileUploadElement(ElementHandle element_wrapper);
   bool IsOptionElement(ElementHandle element_wrapper);
   std::wstring GetSyntheticClickAtom();
   std::wstring GetClickAtom();
