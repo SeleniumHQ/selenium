@@ -9,7 +9,45 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
-v3.11.1.4
+v3.11.1.6
+=========
+ * Changed to throw an error for key actions taking multiple characters in IE.
+   The key actions as defined by the W3C WebDriver Specification take a JSON
+   payload that requires the resulting key for the key down or key up action
+   to resolve to a single Unicode code point or a single grapheme cluster
+   (what appears to be a single logical "character" from a user's
+   perspective). The IE driver will now evaluate the item passed into the key
+   down or key up action, and, taking combining characters into account,
+   attempts to make sure there is only a single grapheme present, if more
+   than one Unicode code point is sent. If the entered string would results
+   in multiple grapheme clusters, the driver now returns an invalid argument
+   error, as per the spec.
+ * Updated find element by link text atom to handle non-breaking spaces.
+   The WebDriver W3C Specification states that when finding by link text, the
+   text of a link element (<a>) should be trimmed of leading and trailing
+   whitespace after calling getVisibleText on the element before comparison.
+   Links with text that contains leading or trailing non-breaking spaces
+   (&nbsp) were having the non-breaking spaces converted to regular spaces,
+   but not trimmed after the fact. This commit corrects that oversight.
+ * Made IE cookie expiration times integer values. Some WebDriver
+   implementations have used floating point values for the expiration time of
+   a cookie as serialized in the wire protocol. The W3C WebDriver Specification
+   dictates that expriation times should be integer values. This commit makes
+   the driver conform to the specification.
+ * Modified to throw exception clicking on file upload elements in IE.
+   The WebDriver W3C Specification states that if a user attempts to click a
+   file upload element (<input type="file">), an error should be returned.
+   This is consistent with the intended behavior of WebDriver from the start,
+   which is that to upload a file, one should use sendKeys, not click() on
+   the input element. This now codifies that behavior with returning an
+   error. Note that if users have erroneously been using click() with file
+   upload elements, then using some external library (Robot Framework,
+   Sikuli, etc.) to handle the resulting file selection dialog, their
+   code will now break, in that the click() method will throw an exception,
+   and the element will not be clicked. Those users should update their code
+   accordingly.
+
+v3.11.1.5
 =========
  * Initial implementation of taking element screenshots. This is an extremely
    naive implmementation, and should not be considered complete.
