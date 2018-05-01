@@ -67,7 +67,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void getStringPreferenceShouldReturnUserSuppliedValueWhenSet() throws Exception {
+  public void getStringPreferenceShouldReturnUserSuppliedValueWhenSet() {
     String key = "cheese";
     String value = "brie";
     profile.setPreference(key, value);
@@ -77,7 +77,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void getStringPreferenceShouldReturnDefaultValueWhenSet() throws Exception {
+  public void getStringPreferenceShouldReturnDefaultValueWhenSet() {
     String key = "cheese";
 
     String defaultValue = "brie";
@@ -92,7 +92,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void getIntegerPreferenceShouldReturnUserSuppliedValueWhenSet() throws Exception {
+  public void getIntegerPreferenceShouldReturnUserSuppliedValueWhenSet() {
     String key = "cheese";
     int value = 1234;
     profile.setPreference(key, value);
@@ -102,7 +102,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void getIntegerPreferenceShouldReturnDefaultValueWhenSet() throws Exception {
+  public void getIntegerPreferenceShouldReturnDefaultValueWhenSet() {
     String key = "cheese";
 
     int defaultValue = 42;
@@ -117,7 +117,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void getBooleanPreferenceShouldReturnUserSuppliedValueWhenSet() throws Exception {
+  public void getBooleanPreferenceShouldReturnUserSuppliedValueWhenSet() {
     String key = "cheese";
     boolean value = true;
     profile.setPreference(key, value);
@@ -127,7 +127,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void getBooleanPreferenceShouldReturnDefaultValueWhenSet() throws Exception {
+  public void getBooleanPreferenceShouldReturnDefaultValueWhenSet() {
     String key = "cheese";
 
     boolean defaultValue = true;
@@ -153,7 +153,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void shouldInstallExtensionFromZip() throws IOException {
+  public void shouldInstallExtensionFromZip() {
     profile.addExtension(InProject.locate(FIREBUG_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
@@ -161,7 +161,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void shouldInstallWebExtensionFromZip() throws IOException {
+  public void shouldInstallWebExtensionFromZip() {
     profile.addExtension(InProject.locate(MOOLTIPASS_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/MooltipassExtension@1.1.87");
@@ -189,7 +189,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void shouldInstallExtensionUsingClasspath() throws IOException {
+  public void shouldInstallExtensionUsingClasspath() {
     profile.addExtension(SynthesizedFirefoxDriver.class, FIREBUG_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");

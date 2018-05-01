@@ -366,9 +366,15 @@ public class FirefoxProfile {
   }
 
   public static FirefoxProfile fromJson(String json) throws IOException {
-    String zippedProfile = new Json().toType(json, String.class);
+    // We used to just pass in the entire string without quotes. If we see that, we're good.
+    // Otherwise, parse the json.
+
+    if (json.trim().startsWith("\"")) {
+      json = new Json().toType(json, String.class);
+    }
+
     return new FirefoxProfile(Zip.unzipToTempDir(
-        zippedProfile,
+        json,
         "webdriver",
         "duplicated"));
   }
