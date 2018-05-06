@@ -17,16 +17,16 @@ Selenium's source code is made available under the [Apache 2.0 license](https://
 
 Narrative documentation:
 
-* [User Manual](http://docs.seleniumhq.org/docs/)
+* [User Manual](https://docs.seleniumhq.org/docs/)
 * [New Handbook](https://seleniumhq.github.io/docs/) (work in progress)
 
 API documentation:
 
-* [C#](http://seleniumhq.github.io/selenium/docs/api/dotnet/)
-* [JavaScript](http://seleniumhq.github.io/selenium/docs/api/javascript/)
-* [Java](http://seleniumhq.github.io/selenium/docs/api/java/index.html)
-* [Python](http://seleniumhq.github.io/selenium/docs/api/py/)
-* [Ruby](http://seleniumhq.github.io/selenium/docs/api/rb/)
+* [C#](https://seleniumhq.github.io/selenium/docs/api/dotnet/)
+* [JavaScript](https://seleniumhq.github.io/selenium/docs/api/javascript/)
+* [Java](https://seleniumhq.github.io/selenium/docs/api/java/index.html)
+* [Python](https://seleniumhq.github.io/selenium/docs/api/py/)
+* [Ruby](https://seleniumhq.github.io/selenium/docs/api/rb/)
 
 ## Pull Requests
 
@@ -39,7 +39,7 @@ Selenium uses a custom build system, aptly named
 [crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build)
 available on all fine platforms (Linux, Mac, Windows).  We are in the
 process of replacing crazyfun with
-[buck](http://facebook.github.io/buck/), so don't be alarmed if you
+[buck](https://buckbuild.com/), so don't be alarmed if you
 see directories carrying multiple build directive files.
 For reference, crazyfun's build files are named *build.desc*,
 while buck's are named simply *BUCK*.
