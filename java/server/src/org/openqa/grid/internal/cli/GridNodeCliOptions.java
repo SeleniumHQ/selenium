@@ -45,7 +45,7 @@ public class GridNodeCliOptions extends CommonGridCliOptions {
   }
 
   private IDefaultProvider defaults(String json) {
-    Map<String, Object> map = (Map<String, Object>) new Json().toType(json, Map.class);
+    Map<String, Object> map = new Json().toType(json, Map.class);
     map.remove("custom");
     map.remove("capabilities");
     map.remove("servlets");
@@ -219,12 +219,8 @@ public class GridNodeCliOptions extends CommonGridCliOptions {
       configuration.hubPort = null;
     } else if (hubHost != null && hubPort != null) {
       configuration.hub = null;
-      if (hubHost != null) {
-        configuration.hubHost = hubHost;
-      }
-      if (hubPort != null) {
-        configuration.hubPort = hubPort;
-      }
+      configuration.hubHost = hubHost;
+      configuration.hubPort = hubPort;
     }
     if (configFile != null) {
       configuration.nodeConfigFile = configFile;
