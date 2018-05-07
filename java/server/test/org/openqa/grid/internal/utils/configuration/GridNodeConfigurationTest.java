@@ -73,7 +73,7 @@ public class GridNodeConfigurationTest {
     assertEquals(1234, gnc.port.intValue());
     assertEquals(5, gnc.maxSession.intValue());
     assertEquals("dummyhost", gnc.host);
-    assertTrue(gnc.capabilities.size() == 1);
+    assertEquals(1, gnc.capabilities.size());
     assertEquals("firefox", gnc.capabilities.get(0).getBrowserName());
     assertEquals(5L, gnc.capabilities.get(0).getCapability("maxInstances"));
   }
@@ -193,7 +193,7 @@ public class GridNodeConfigurationTest {
         + "\"browserTimeout\":0,"
         + "\"debug\":false,"
         + "\"host\":\"0.0.0.0\","
-        + "\"port\":5555,"
+        + "\"port\":-1,"
         + "\"role\":\"node\","
         + "\"timeout\":1800}",
         MAP_TYPE);
@@ -300,12 +300,6 @@ public class GridNodeConfigurationTest {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
     gnc.hub = null;
     gnc.getHubPort();
-  }
-
-  @Test
-  public void testGetRemoteHost_forNullConfig() {
-    GridNodeConfiguration gnc = new GridNodeConfiguration();
-    assertEquals("http://localhost:5555", gnc.getRemoteHost());
   }
 
   @Test

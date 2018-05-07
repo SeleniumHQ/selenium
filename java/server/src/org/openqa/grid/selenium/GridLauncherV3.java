@@ -36,6 +36,7 @@ import org.openqa.grid.shared.Stoppable;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
 import org.openqa.selenium.remote.server.log.TerseFormatter;
@@ -303,6 +304,9 @@ public class GridLauncherV3 {
           @Override
           public Stoppable launch() throws Exception {
             GridNodeConfiguration configuration = options.toConfiguration();
+            if (configuration.port == null || configuration.port == -1) {
+              configuration.port = PortProber.findFreePort();
+            }
             log.info(String.format(
                 "Launching a Selenium Grid node on port %s", configuration.port));
             SelfRegisteringRemote remote = new SelfRegisteringRemote(configuration);

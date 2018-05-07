@@ -55,9 +55,9 @@ public class GridNodeConfiguration extends GridConfiguration {
   static final String DEFAULT_ROLE = "node";
 
   /**
-   * Default hub port
+   * Default node port, -1 means random free port
    */
-  static final Integer DEFAULT_PORT = 5555;
+  static final Integer DEFAULT_PORT = -1;
 
   /**
    * Default node polling
