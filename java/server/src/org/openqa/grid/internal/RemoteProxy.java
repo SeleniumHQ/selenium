@@ -25,7 +25,6 @@ import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.net.URL;
 import java.util.List;
