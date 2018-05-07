@@ -234,11 +234,7 @@ public class DriverService {
     return true;
   }
 
-  /**
-   * @deprecated Visibility will be restricted to 'protected' soon.
-   */
-  @Deprecated
-  public void sendOutputTo(OutputStream outputStream) {
+  protected void sendOutputTo(OutputStream outputStream) {
     this.outputStream = Preconditions.checkNotNull(outputStream);
   }
 
