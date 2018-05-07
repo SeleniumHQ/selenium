@@ -1010,11 +1010,11 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking number of WebElements with given locator
+   * An expectation for checking number of WebElements with given locator being more than defined number
    *
    * @param locator used to find the element
-   * @param number  used to define exact number of elements
-   * @return Boolean true when size of elements list is equal to defined
+   * @param number  used to define minimum number of elements
+   * @return Boolean true when size of elements list is more than defined
    */
   public static ExpectedCondition<List<WebElement>> numberOfElementsToBeMoreThan(final By locator,
                                                                                  final Integer number) {
