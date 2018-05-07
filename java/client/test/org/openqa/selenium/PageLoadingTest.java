@@ -272,7 +272,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = HTMLUNIT,
       reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
-  @NotYetImplemented(SAFARI)
+  @Ignore(value = SAFARI, reason = "Hanging")
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     assumeFalse(
         "chromedriver does not disable popup blocker on Android: "
@@ -372,6 +372,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(FIREFOX)
+  @NotYetImplemented(SAFARI)
   @NeedsLocalEnvironment
   public void testPageLoadTimeoutCanBeChanged() {
     testPageLoadTimeoutIsEnforced(2);
@@ -381,6 +382,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(FIREFOX)
+  @NotYetImplemented(SAFARI)
   @NeedsLocalEnvironment
   public void testCanHandleSequentialPageLoadTimeouts() {
     long pageLoadTimeout = 2;

@@ -51,7 +51,6 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import java.util.Set;
 
 @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
-@Ignore(SAFARI)
 public class AlertsTest extends JUnit4TestBase {
 
   @After
@@ -139,7 +138,8 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(MARIONETTE)
-  public void testShouldGetTextOfAlertOpenedInSetTimeout() throws Exception {
+  @Ignore(SAFARI)
+  public void testShouldGetTextOfAlertOpenedInSetTimeout() {
     driver.get(appServer.create(new Page()
         .withTitle("Testing Alerts")
         .withScripts(
@@ -210,6 +210,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @NotYetImplemented(SAFARI)
   public void testSettingTheValueOfAnAlertThrows() {
     driver.get(alertPage("cheese"));
 
@@ -300,7 +301,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testSwitchingToMissingAlertThrows() throws Exception {
+  public void testSwitchingToMissingAlertThrows() {
     driver.get(alertPage("cheese"));
 
     Throwable t = catchThrowable(() -> driver.switchTo().alert());
@@ -308,7 +309,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
+  public void testSwitchingToMissingAlertInAClosedWindowThrows() {
     String blank = appServer.create(new Page());
     driver.get(appServer.create(new Page()
         .withBody(String.format(
@@ -416,6 +417,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(FIREFOX)
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
+  @Ignore(SAFARI)
   public void testShouldNotHandleAlertInAnotherWindow() {
     String pageWithOnLoad = appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
@@ -445,6 +447,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(SAFARI)
   public void testShouldHandleAlertOnPageUnload() {
     assumeFalse("Firefox 27 does not trigger alerts on before unload",
                 isFirefox(driver) && getFirefoxVersion(driver) >= 27);
@@ -467,6 +470,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldHandleAlertOnPageBeforeUnload() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()
@@ -491,6 +495,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
+  @Ignore(SAFARI)
   public void testShouldHandleAlertOnPageBeforeUnloadAtQuit() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()
@@ -510,6 +515,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(SAFARI)
   public void testShouldHandleAlertOnWindowClose() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
@@ -544,6 +550,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
   @NotYetImplemented(value = MARIONETTE,
       reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
+  @Ignore(SAFARI)
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.get(alertPage("cheese"));
 
@@ -568,6 +575,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void shouldHandleAlertOnFormSubmit() {
     driver.get(appServer.create(new Page().withTitle("Testing Alerts").withBody(
         "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",

@@ -131,7 +131,6 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testCannotSetDisabledOption() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.cssSelector("#visibility .disabled"));
