@@ -622,7 +622,7 @@ void IECommandExecutor::DispatchCommand() {
             if (!is_quit_command && is_notify_unexpected_alert) {
               // To keep pace with what Firefox does, we'll return the text of the
               // alert in the error response.
-              response.SetErrorResponse(EUNEXPECTEDALERTOPEN, "Modal dialog present");
+              response.SetErrorResponse(EUNEXPECTEDALERTOPEN, "Modal dialog present with text: " + alert_text);
               response.AddAdditionalData("text", alert_text);
               this->serialized_response_ = response.Serialize();
               return;
