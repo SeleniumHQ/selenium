@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Edge
         private string host;
         private string package;
         private bool useVerboseLogging;
-        private bool useSpecCompliantProtocol;
+        private bool? useSpecCompliantProtocol;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriverService"/> class.
@@ -78,13 +78,14 @@ namespace OpenQA.Selenium.Edge
         /// should use the a protocol dialect compliant with the W3C WebDriver Specification.
         /// </summary>
         /// <remarks>
-        /// Setting this property for driver executables matched to versions of
-        /// Windows before the 2018 Fall Creators Update will result in a the
-        /// driver executable shutting down without execution, and all commands
-        /// will fail. Do not set this property unless you are certain your version
-        /// of the MicrosoftWebDriver.exe supports the --w3c command-line argument.
+        /// Setting this property to a non-<see langword="null"/> value for driver
+        /// executables matched to versions of Windows before the 2018 Fall Creators
+        /// Update will result in a the driver executable shutting down without
+        /// execution, and all commands will fail. Do not set this property unless
+        /// you are certain your version of the MicrosoftWebDriver.exe supports the
+        /// --w3c and --jwp command-line arguments.
         /// </remarks>
-        public bool UseSpecCompliantProtocol
+        public bool? UseSpecCompliantProtocol
         {
             get { return this.useSpecCompliantProtocol; }
             set { this.useSpecCompliantProtocol = value; }
@@ -98,7 +99,7 @@ namespace OpenQA.Selenium.Edge
         {
             get
             {
-                if (this.useSpecCompliantProtocol)
+                if (this.useSpecCompliantProtocol.HasValue && this.useSpecCompliantProtocol.Value)
                 {
                     return false;
                 }
@@ -118,7 +119,7 @@ namespace OpenQA.Selenium.Edge
             // gets us to the termination point much faster.
             get
             {
-                if (this.useSpecCompliantProtocol)
+                if (this.useSpecCompliantProtocol.HasValue && this.useSpecCompliantProtocol.Value)
                 {
                     return TimeSpan.FromMilliseconds(100);
                 }
@@ -155,9 +156,16 @@ namespace OpenQA.Selenium.Edge
                     argsBuilder.Append(" --silent");
                 }
 
-                if (this.useSpecCompliantProtocol)
+                if (this.useSpecCompliantProtocol.HasValue)
                 {
-                    argsBuilder.Append(" --w3c");
+                    if (this.useSpecCompliantProtocol.Value)
+                    {
+                        argsBuilder.Append(" --w3c");
+                    }
+                    else
+                    {
+                        argsBuilder.Append(" --jwp");
+                    }
                 }
 
                 return argsBuilder.ToString();
