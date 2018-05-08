@@ -80,23 +80,23 @@ public class GridConfiguration extends StandaloneConfiguration {
     }
     super.merge(other);
 
-    if (isMergeAble(other.cleanUpCycle, cleanUpCycle)) {
+    if (isMergeAble(Integer.class, other.cleanUpCycle, cleanUpCycle)) {
       cleanUpCycle = other.cleanUpCycle;
     }
-    if (isMergeAble(other.custom, custom)) {
+    if (isMergeAble(Map.class, other.custom, custom)) {
       if (custom == null) {
         custom = new HashMap<>();
       }
       custom.putAll(other.custom);
     }
-    if (isMergeAble(other.maxSession, maxSession) &&
-        other.maxSession.intValue() > 0) {
+    if (isMergeAble(Integer.class, other.maxSession, maxSession) &&
+        other.maxSession > 0) {
       maxSession = other.maxSession;
     }
-    if (isMergeAble(other.servlets, servlets)) {
+    if (isMergeAble(List.class, other.servlets, servlets)) {
       servlets = other.servlets;
     }
-    if (isMergeAble(other.withoutServlets, withoutServlets)) {
+    if (isMergeAble(List.class, other.withoutServlets, withoutServlets)) {
       withoutServlets = other.withoutServlets;
     }
   }

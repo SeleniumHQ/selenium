@@ -316,43 +316,43 @@ public class GridNodeConfiguration extends GridConfiguration {
     }
     super.merge(other);
 
-    if (isMergeAble(other.capabilities, capabilities)) {
+    if (isMergeAble(List.class, other.capabilities, capabilities)) {
       capabilities = other.capabilities;
     }
-    if (isMergeAble(other.downPollingLimit, downPollingLimit)) {
+    if (isMergeAble(Integer.class, other.downPollingLimit, downPollingLimit)) {
       downPollingLimit = other.downPollingLimit;
     }
-    if (isMergeAble(other.hub, hub)) {
+    if (isMergeAble(String.class, other.hub, hub)) {
       hub = other.hub;
     }
-    if (isMergeAble(other.hubHost, hubHost)) {
+    if (isMergeAble(String.class, other.hubHost, hubHost)) {
       hubHost = other.hubHost;
     }
-    if (isMergeAble(other.hubPort, hubPort)) {
+    if (isMergeAble(Integer.class, other.hubPort, hubPort)) {
       hubPort = other.hubPort;
     }
-    if (isMergeAble(other.id, id)) {
+    if (isMergeAble(String.class, other.id, id)) {
       id = other.id;
     }
-    if (isMergeAble(other.nodePolling, nodePolling)) {
+    if (isMergeAble(Integer.class, other.nodePolling, nodePolling)) {
       nodePolling = other.nodePolling;
     }
-    if (isMergeAble(other.nodeStatusCheckTimeout, nodeStatusCheckTimeout)) {
+    if (isMergeAble(Integer.class, other.nodeStatusCheckTimeout, nodeStatusCheckTimeout)) {
       nodeStatusCheckTimeout = other.nodeStatusCheckTimeout;
     }
-    if (isMergeAble(other.proxy, proxy)) {
+    if (isMergeAble(String.class, other.proxy, proxy)) {
       proxy = other.proxy;
     }
-    if (isMergeAble(other.register, register)) {
+    if (isMergeAble(Boolean.class, other.register, register)) {
       register = other.register;
     }
-    if (isMergeAble(other.registerCycle, registerCycle)) {
+    if (isMergeAble(Integer.class, other.registerCycle, registerCycle)) {
       registerCycle = other.registerCycle;
     }
-    if (isMergeAble(other.remoteHost, remoteHost)) {
+    if (isMergeAble(String.class, other.remoteHost, remoteHost)) {
       remoteHost = other.remoteHost;
     }
-    if (isMergeAble(other.unregisterIfStillDownAfter, unregisterIfStillDownAfter)) {
+    if (isMergeAble(Integer.class, other.unregisterIfStillDownAfter, unregisterIfStillDownAfter)) {
       unregisterIfStillDownAfter = other.unregisterIfStillDownAfter;
     }
 

@@ -192,13 +192,13 @@ public class StandaloneConfiguration {
       return;
     }
 
-    if (isMergeAble(other.browserTimeout, browserTimeout)) {
+    if (isMergeAble(Integer.class, other.browserTimeout, browserTimeout)) {
       browserTimeout = other.browserTimeout;
     }
-    if (isMergeAble(other.jettyMaxThreads, jettyMaxThreads)) {
+    if (isMergeAble(Integer.class, other.jettyMaxThreads, jettyMaxThreads)) {
       jettyMaxThreads = other.jettyMaxThreads;
     }
-    if (isMergeAble(other.timeout, timeout)) {
+    if (isMergeAble(Integer.class, other.timeout, timeout)) {
       timeout = other.timeout;
     }
     // role, host, port, log, debug, version, enablePassThrough, and help are not merged,
@@ -209,11 +209,12 @@ public class StandaloneConfiguration {
    * Determines if one object can be merged onto another object. Checks for {@code null},
    * and empty (Collections & Maps) to make decision.
    *
-   * @param other the object to merge. must be the same type as the 'target'
-   * @param target the object to merge on to. must be the same type as the 'other'
-   * @return whether the 'other' can be merged onto the 'target'
+   * @param targetType The type that both {@code other} and {@code target} must be assignable to.
+   * @param other the object to merge. must be the same type as the 'target'.
+   * @param target the object to merge on to. must be the same type as the 'other'.
+   * @return whether the 'other' can be merged onto the 'target'.
    */
-  protected boolean isMergeAble(Object other, Object target) {
+  protected boolean isMergeAble(Class<?> targetType, Object other, Object target) {
     // don't merge a null value
     if (other == null) {
       return false;
@@ -226,9 +227,8 @@ public class StandaloneConfiguration {
 
     // we know we have two objects with value.. Make sure the types are the same and
     // perform additional checks.
-
-    if (! target.getClass().getSuperclass().getTypeName()
-        .equals(other.getClass().getSuperclass().getTypeName())) {
+    if (!targetType.isAssignableFrom(target.getClass()) ||
+        !targetType.isAssignableFrom(other.getClass())) {
       return false;
     }
 

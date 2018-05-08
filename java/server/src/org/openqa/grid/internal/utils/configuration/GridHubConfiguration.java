@@ -136,19 +136,19 @@ public class GridHubConfiguration extends GridConfiguration {
     }
     super.merge(other);
 
-    if (isMergeAble(other.capabilityMatcher, capabilityMatcher)) {
+    if (isMergeAble(CapabilityMatcher.class, other.capabilityMatcher, capabilityMatcher)) {
       capabilityMatcher = other.capabilityMatcher;
     }
-    if (isMergeAble(other.newSessionWaitTimeout, newSessionWaitTimeout)) {
+    if (isMergeAble(Integer.class, other.newSessionWaitTimeout, newSessionWaitTimeout)) {
       newSessionWaitTimeout = other.newSessionWaitTimeout;
     }
-    if (isMergeAble(other.prioritizer, prioritizer)) {
+    if (isMergeAble(Prioritizer.class, other.prioritizer, prioritizer)) {
       prioritizer = other.prioritizer;
     }
-    if (isMergeAble(other.throwOnCapabilityNotPresent, throwOnCapabilityNotPresent)) {
+    if (isMergeAble(Boolean.class, other.throwOnCapabilityNotPresent, throwOnCapabilityNotPresent)) {
       throwOnCapabilityNotPresent = other.throwOnCapabilityNotPresent;
     }
-    if (isMergeAble(other.registry, registry)) {
+    if (isMergeAble(String.class, other.registry, registry)) {
       registry = other.registry;
     }
   }
