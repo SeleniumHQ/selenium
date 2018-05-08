@@ -8,8 +8,7 @@ v3.12.0
   deprecating places where GSON leaks from our APIs.
 * Grid assignes node to a random free port if not specified.
   explicitly. Fixes #5783.
-* Reduced visibility of DriverService.sendOutputTo.
-* Addressed concerns about backward compatability of Grid's `-host`
+* Addressed concerns about backward compatibility of Grid's `-host`
   parameter.
 * Implemented WebStorage in ChromeDriver and FirefoxDriver.
 * Documentation clean up in `By`.
