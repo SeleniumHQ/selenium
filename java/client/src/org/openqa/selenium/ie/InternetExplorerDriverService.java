@@ -106,8 +106,6 @@ public class InternetExplorerDriverService extends DriverService {
     private String host = null;
     private File extractPath = null;
     private Boolean silent = null;
-    private Boolean forceCreateProcess = null;
-    private String ieSwitches = null;
 
     /**
      * Configures the logging level for the driver server.
