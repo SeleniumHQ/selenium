@@ -1,3 +1,53 @@
+v3.12.0
+=======
+ * Updated unhandled JavaScript errors to throw WebDriverException in .NET.
+ * Added option for .NET EdgeDriverService to use W3C protocol dialect. The
+   Microsoft Edge driver specifies the use of the W3C WebDriver Specification
+   dialect of the JSON wire protocol via a command-line switch. This commit
+   exposes that behavior in the form of a property on the EdgeDriverService
+   object. Note that this command-line switch is only valid for versions of
+   the driver executable for Windows 10 versions later than the 2018 Fall
+   Creators' Update version (this is the code-named "Redstone 4", or "RS4"
+   builds). Attempting to use this property with versions of
+   MicrosoftWebDriver.exe before RS4 will result in errors, as the driver
+   executable will not start properly with an unknown command-line switch.
+   This commit also makes use of the fact that in RS4 and beyond, the driver
+   executable is a feature that is installed in the OS, not a separate
+   download, so the test projects have been updated to reflect this.
+ * Added default value to .NET IE element scroll behavior option.
+ * Changed 'unhandled error' status code to throw WebDriverException in .NET.
+   Previously, this error code would throw an InvalidOperationException.
+ * (on behalf of Christopher Wood) Fixed ExecuteScript and Actions to handle
+   IWrapsElement appropriately. Using EventFiringWebDriver, element targets
+   and args throw exceptions when calling ExecuteScript or Actions methods.
+   This is fixed by casting as IWrapsElement and checking for wrapped elements
+   first. Fixes issue #5810.
+ * Refactored creation of RemoteWebElement to use a factory. Previously, the
+   RemoteWebDriver class had a protected method called CreateElement that took
+   the element ID as a parameter and returned a RemoteWebElement object. That
+   approach is not flexible enough for some downstream projects that implement
+   their own subclasses of RemoteWebDriver and RemoteWebElement. To rectify
+   that, this commit replaces the calling of CreateElement with the use of a
+   RemoteWebElementFactory class that handles the creation of
+   RemoteWebElements. Note carefully that the CreateElement method still
+   exists, so as to prevent compile-time errors for downstream consumers,
+   that method is no longer called. If you are a user who has overridden that
+   method as part of your project, you'll need to create an implementation of
+   RemoteWebElementFactory that creates your custom subclass of
+   RemoteWebElement.
+ * (on behalf of Jacob Kiesel) Fixed obscure window switching bug. This change
+   fixes searching by window name if the current window handle becomes invalid
+   and the name being switched to does not exist.
+ * Fixed .NET HttpCommandExecutor event for RemoteWebDriver. This change moves
+   the firing of the event raised before sending a remote HTTP request to
+   before the setting of the request body. This allows the request settings to
+   be properly set without throwing an exeception. This commit also renames
+   the event and event args object to `SendingReomteHttpRequest` and
+   `SendingRemoteHttpRequestEventArgs`, respectively. The previous event and
+   event args are marked as deprecated for removal in a future release, and
+   the previously named event is now a no-op, and will never be fired, even
+   if a handler is attached.
+
 v3.11.2
 =======
  * Reverted change of ICommandExecutor interface to extend IDisposable. This
