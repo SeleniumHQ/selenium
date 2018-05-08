@@ -9,6 +9,17 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.12.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * Added alert text to error response for unexpected alerts. This is to
+   maintain consistency with other implementations.
+ * Added checking of variant type for returns from JavaScript execution.
+   In order to prevent false positives when checking whether a returned
+   variant is an array or object, make sure the returned type of the
+   variant is VT_DISPATCH.
+
 v3.11.1.6
 =========
  * Changed to throw an error for key actions taking multiple characters in IE.
