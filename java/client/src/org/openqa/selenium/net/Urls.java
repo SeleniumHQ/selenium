@@ -21,11 +21,8 @@ import org.openqa.selenium.WebDriverException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.logging.Logger;
 
 public class Urls {
-  private static Logger log = Logger.getLogger(Urls.class.getName());
-
   /**
    * Encodes the text as an URL using UTF-8.
    *
