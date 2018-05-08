@@ -39,7 +39,9 @@ public class WindowsUtils {
    * Kill processes by name
    *
    * @param name name of the process to kill
+   * @deprecated
    */
+  @Deprecated
   public static void killByName(String name) {
     executeCommand(findTaskKill(), "/f", "/t", "/im", name);
   }
@@ -48,7 +50,9 @@ public class WindowsUtils {
    * Kills the specified process ID
    *
    * @param processID PID to kill
+   * @deprecated
    */
+  @Deprecated
   public static void killPID(String processID) {
     executeCommand(findTaskKill(), "/f", "/t", "/pid", processID);
   }
@@ -130,7 +134,9 @@ public class WindowsUtils {
    * Finds the system root directory, e.g. "c:\windows" or "c:\winnt"
    *
    * @return location of system root
+   * @deprecated
    */
+  @Deprecated
   public static File findSystemRoot() {
     Properties p = loadEnvironment();
     String systemRootPath = p.getProperty("SystemRoot");
@@ -155,7 +161,9 @@ public class WindowsUtils {
    *
    * @return the exact path to taskkill.exe, or just the string "taskkill" if it couldn't be found
    *         (in which case you can pass that to exec to try to run it from the path)
+   * @deprecated
    */
+  @Deprecated
   public static String findTaskKill() {
     if (taskkill != null) {
       return taskkill;

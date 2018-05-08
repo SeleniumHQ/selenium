@@ -46,11 +46,6 @@ public class WindowsUtilsUnitTest {
     minorVersion = Integer.parseInt(m.group(2));
   }
 
-  private boolean isXpOrHigher() {
-    return majorVersion > 5
-        || (majorVersion == 5 && minorVersion >= 1);
-  }
-
   @Test
   public void testLoadEnvironment() {
     if (!WindowsUtils.thisIsWindows()) return;
@@ -58,12 +53,5 @@ public class WindowsUtilsUnitTest {
     assertFalse("Environment appears to be empty!", p.isEmpty());
     assertNotNull("SystemRoot env var apparently not set on Windows!",
         WindowsUtils.findSystemRoot());
-  }
-
-  @Test
-  public void testTaskKill() {
-    if (!WindowsUtils.thisIsWindows()) return;
-    if (!isXpOrHigher()) return;
-    assertFalse("taskkill should be found", "taskkill".equals(WindowsUtils.findTaskKill()));
   }
 }
