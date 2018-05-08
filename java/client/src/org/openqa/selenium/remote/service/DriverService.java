@@ -234,7 +234,7 @@ public class DriverService {
     return true;
   }
 
-  protected void sendOutputTo(OutputStream outputStream) {
+  public void sendOutputTo(OutputStream outputStream) {
     this.outputStream = Preconditions.checkNotNull(outputStream);
   }
 
