@@ -51,7 +51,10 @@ public class InternetExplorerDriverService extends DriverService {
 
   /**
    * System property that defines the implementation of the driver engine to use.
+   *
+   * @deprecated There are no more multiple IE driver engines
    */
+  @Deprecated
   public static final String IE_DRIVER_ENGINE_PROPERTY = "webdriver.ie.driver.engine";
 
   /**
@@ -102,7 +105,6 @@ public class InternetExplorerDriverService extends DriverService {
       InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
 
     private InternetExplorerDriverLogLevel logLevel;
-    private InternetExplorerDriverEngine engineImplementation;
     private String host = null;
     private File extractPath = null;
     private Boolean silent = null;
@@ -123,9 +125,11 @@ public class InternetExplorerDriverService extends DriverService {
      *
      * @param engineImplementation The engine implementation to be used.
      * @return A self reference.
+     * 
+     * @deprecated There are no more multiple IE driver engines
      */
+    @Deprecated
     public Builder withEngineImplementation(InternetExplorerDriverEngine engineImplementation) {
-      this.engineImplementation = engineImplementation;
       return this;
     }
 
@@ -183,12 +187,6 @@ public class InternetExplorerDriverService extends DriverService {
           logLevel = InternetExplorerDriverLogLevel.valueOf(level);
         }
       }
-      if (engineImplementation == null) {
-        String engineToUse = System.getProperty(IE_DRIVER_ENGINE_PROPERTY);
-        if (engineToUse != null) {
-          engineImplementation = InternetExplorerDriverEngine.valueOf(engineToUse);
-        }
-      }
       if (host == null) {
         String hostProperty = System.getProperty(IE_DRIVER_HOST_PROPERTY);
         if (hostProperty != null) {
@@ -215,9 +213,6 @@ public class InternetExplorerDriverService extends DriverService {
       }
       if (logLevel != null) {
         argsBuilder.add(String.format("--log-level=%s", logLevel.toString()));
-      }
-      if (engineImplementation != null) {
-        argsBuilder.add(String.format("--implementation=%s", engineImplementation.toString()));
       }
       if (host != null) {
         argsBuilder.add(String.format("--host=%s", host));
