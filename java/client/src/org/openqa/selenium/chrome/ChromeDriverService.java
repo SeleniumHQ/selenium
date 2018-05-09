@@ -17,15 +17,20 @@
 
 package org.openqa.selenium.chrome;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Manages the life and death of a chromedriver server.
@@ -75,6 +80,37 @@ public class ChromeDriverService extends DriverService {
   public ChromeDriverService(File executable, int port, ImmutableList<String> args,
       ImmutableMap<String, String> environment) throws IOException {
     super(executable, port, args, environment);
+  }
+
+  @Override
+  protected void waitUntilAvailable() throws MalformedURLException {
+    // As a workaround we probe a more specific IPv4/IPv6 localhost because Chrome WebDriver does
+    // currently not support dual stack environments. After successfully probing either we
+    // stick to that address family.
+    // https://bugs.chromium.org/p/chromedriver/issues/detail?id=779
+    int port = this.getUrl().getPort();
+    URL[] urls =
+      new URL[]{
+        new URL(String.format("http://127.0.0.1:%d", port)),
+        new URL(String.format("http://[::1]:%d", port)),
+      };
+    URL[] statusURLs = new URL[urls.length];
+    for (int i = 0; i < urls.length; i++) {
+      statusURLs[i] = new URL(urls[i] + "/status");
+    }
+    URL preferredStatusURL;
+    try {
+      preferredStatusURL = new UrlChecker().waitUntilAvailable(20, SECONDS, statusURLs);
+    } catch (UrlChecker.TimeoutException e) {
+      throw new WebDriverException("Timed out waiting for driver server to start.", e);
+    }
+    URL preferredURL =
+      new URL(
+        preferredStatusURL.getProtocol(),
+        preferredStatusURL.getHost(),
+        preferredStatusURL.getPort(),
+        "");
+    this.setURL(preferredURL);
   }
 
   /**

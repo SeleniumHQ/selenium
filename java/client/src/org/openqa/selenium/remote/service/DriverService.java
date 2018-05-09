@@ -55,7 +55,7 @@ public class DriverService {
   /**
    * The base URL for the managed server.
    */
-  private final URL url;
+  private URL url;
 
   /**
    * Controls access to {@link #process}.
@@ -102,6 +102,11 @@ public class DriverService {
    */
   public URL getUrl() {
     return url;
+  }
+
+  /** Sets a new base URL for the managed driver server. */
+  protected void setURL(URL url) {
+    this.url = url;
   }
 
   /**
