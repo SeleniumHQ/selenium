@@ -49,6 +49,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+@Deprecated
 public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpClient {
 
   private static final int MAX_REDIRECTS = 10;
@@ -247,6 +248,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
            && response.containsHeader("location");
   }
 
+  @Deprecated
   public static class Factory implements org.openqa.selenium.remote.http.HttpClient.Factory {
 
     private static HttpClientFactory defaultClientFactory;
