@@ -68,7 +68,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,20 +78,7 @@ public class NewSessionPayload implements Closeable {
   private final Set<CapabilityTransform> transforms;
 
   private static final Dialect DEFAULT_DIALECT = Dialect.OSS;
-  private final static Predicate<String> ACCEPTED_W3C_PATTERNS = Stream.of(
-      "^[\\w-]+:.*$",
-      "^acceptInsecureCerts$",
-      "^browserName$",
-      "^browserVersion$",
-      "^platformName$",
-      "^pageLoadStrategy$",
-      "^proxy$",
-      "^setWindowRect$",
-      "^timeouts$",
-      "^unhandledPromptBehavior$")
-      .map(Pattern::compile)
-      .map(Pattern::asPredicate)
-      .reduce(identity -> false, Predicate::or);
+  private final static Predicate<String> ACCEPTED_W3C_PATTERNS = new AcceptedW3CCapabilityKeys();
 
   private final Json json = new Json();
   private final FileBackedOutputStream backingStore;
@@ -398,8 +384,7 @@ public class NewSessionPayload implements Closeable {
       return null;
     }
 
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.putAll(capabilities);
+    Map<String, Object> toReturn = new TreeMap<>(capabilities);
 
     // Platform name
     if (capabilities.containsKey(PLATFORM) && !capabilities.containsKey(PLATFORM_NAME)) {

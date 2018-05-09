@@ -31,7 +31,6 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
 import com.google.common.base.Preconditions;
@@ -43,13 +42,11 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.internal.ElementScrollBehavior;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -100,16 +97,12 @@ public class InternetExplorerOptions extends MutableCapabilities {
   private Map<String, Object> ieOptions = new HashMap<>();
 
   public InternetExplorerOptions() {
-    this(DesiredCapabilities.internetExplorer());
+    setCapability(BROWSER_NAME, BrowserType.IE);
+    setCapability(IE_OPTIONS, ieOptions);
   }
 
   public InternetExplorerOptions(Capabilities source) {
     super();
-
-    setCapability(IE_OPTIONS, ieOptions);
-    setCapability(BROWSER_NAME, BrowserType.IE);
-    setCapability(PLATFORM, Platform.WINDOWS);
-    setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
 
     merge(source);
   }

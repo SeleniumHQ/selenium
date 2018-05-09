@@ -143,6 +143,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     this(new HttpCommandExecutor(remoteAddress), capabilities);
   }
 
+  @Beta
+  static RemoteWebDriverBuilder builder() {
+    return new RemoteWebDriverBuilder();
+  }
+
   private void init(Capabilities capabilities) {
     capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
 
