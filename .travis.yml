@@ -94,7 +94,7 @@ matrix:
       <<: *chrome
     - env: BUCK="test safari-test"
       os: osx
-      <<: *java
+      osx_image: xcode9.3
     - env: BUCK="test htmlunit-test"
       <<: *java
     - env: TASK=javadocs
