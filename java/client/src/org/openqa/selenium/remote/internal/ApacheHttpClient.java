@@ -290,9 +290,4 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       return defaultClientFactory;
     }
   }
-
-  @Deprecated
-  @Override
-  public void close() throws IOException {
-  }
 }

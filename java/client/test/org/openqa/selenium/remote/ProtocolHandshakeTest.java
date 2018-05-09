@@ -384,11 +384,6 @@ public class ProtocolHandshakeTest {
       return response;
     }
 
-    @Override
-    public void close() {
-      // Does nothing
-    }
-
     String getRequestPayload() {
       return payload;
     }

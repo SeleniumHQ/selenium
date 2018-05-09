@@ -46,15 +46,6 @@ public interface HttpClient {
    */
   HttpResponse execute(HttpRequest request) throws IOException;
 
-  /**
-	 * Closes the connections associated with this client.
-	 *
-	 * @throws  IOException  if an I/O error occurs.
-   * @deprecated This responsibility moved to Factory
-	 */
-  @Deprecated
-  void close() throws IOException;
-
   interface Factory {
 
     static Factory createDefault() {

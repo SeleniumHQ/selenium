@@ -113,11 +113,6 @@ public class OkHttpClient implements HttpClient {
     return toReturn;
   }
 
-  @Override
-  public void close() {
-    // No-op
-  }
-
   public static class Factory implements HttpClient.Factory {
 
     private final ConnectionPool pool = new ConnectionPool();
