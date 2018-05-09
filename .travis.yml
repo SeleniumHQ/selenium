@@ -89,6 +89,9 @@ matrix:
     - env: MARIONETTE=1 BUCK="test grid-test"
       <<: *java
       <<: *firefox-nightly
+    - env: CHROME=1 BUCK="test chrome-test"
+      <<: *java
+      <<: *chrome
     - env: BUCK="test htmlunit-test"
       <<: *java
     - env: TASK=javadocs
