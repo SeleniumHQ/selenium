@@ -246,7 +246,7 @@ public class Proxy {
   /**
    * Sets proxy bypass (noproxy) addresses
    *
-   * @param noProxy The proxy bypass (noproxy) addresses
+   * @param noProxy The proxy bypass (noproxy) addresses separated by commas
    * @return reference to self
    */
   public Proxy setNoProxy(String noProxy) {

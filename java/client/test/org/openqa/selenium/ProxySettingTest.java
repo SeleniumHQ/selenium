@@ -18,6 +18,7 @@
 package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -81,6 +82,24 @@ public class ProxySettingTest extends JUnit4TestBase {
 
     WebDriver driver = new WebDriverBuilder().get(caps);
     registerDriverTeardown(driver);
+
+    driver.get(appServer.whereElseIs("simpleTest.html"));
+    assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
+  }
+
+  @Test
+  @Ignore(SAFARI)
+  @NeedsLocalEnvironment
+  public void canConfigureNoProxy() {
+    Proxy proxyToUse = proxyServer.asProxy();
+    proxyToUse.setNoProxy("localhost, 127.0.0.*");
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxyToUse);
+
+    WebDriver driver = new WebDriverBuilder().get(caps);
+    registerDriverTeardown(driver);
+
+    driver.get(appServer.whereIs("simpleTest.html"));
+    assertFalse("Proxy should not have been called", proxyServer.hasBeenCalled("simpleTest.html"));
 
     driver.get(appServer.whereElseIs("simpleTest.html"));
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
