@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
@@ -197,7 +196,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "Need to release atoms fix from #4351")
-  @NotYetImplemented(value = IE, reason = "Need to release atoms fix from #4351")
   public void testShouldNotReturnRootElementWhenFindingChildrenById() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.id("test_id"));
