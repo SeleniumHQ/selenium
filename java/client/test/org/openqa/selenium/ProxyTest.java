@@ -33,6 +33,7 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.json.Json;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -221,7 +222,7 @@ public class ProxyTest {
     assertEquals(5, json.get("socksVersion"));
     assertEquals("test1", json.get("socksUsername"));
     assertEquals("test2", json.get("socksPassword"));
-    assertEquals("localhost,127.0.0.*", json.get("noProxy"));
+    assertEquals(Arrays.asList("localhost", "127.0.0.*"), json.get("noProxy"));
     assertEquals(9, json.entrySet().size());
   }
 
