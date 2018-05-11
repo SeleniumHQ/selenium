@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.base.Joiner;
@@ -35,6 +36,7 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.ProxyServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.seleniumhq.jetty9.server.Handler;
@@ -89,6 +91,7 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
+  @NotYetImplemented(CHROME)
   @NeedsLocalEnvironment
   public void canConfigureNoProxy() {
     Proxy proxyToUse = proxyServer.asProxy();
