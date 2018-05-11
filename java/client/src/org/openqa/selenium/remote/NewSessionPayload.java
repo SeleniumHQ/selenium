@@ -225,6 +225,7 @@ public class NewSessionPayload implements Closeable {
           if (rawData instanceof List) {
             proxyMap.put("noProxy", ((List<String>) rawData).stream().collect(Collectors.joining(",")));
           }
+          first.put(CapabilityType.PROXY, proxyMap);
         }
       }
 
