@@ -91,7 +91,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @NotYetImplemented(CHROME)
   @NeedsLocalEnvironment
   public void canConfigureNoProxy() {
     Proxy proxyToUse = proxyServer.asProxy();

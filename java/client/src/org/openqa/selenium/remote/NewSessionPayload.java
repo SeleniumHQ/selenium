@@ -35,6 +35,7 @@ import com.google.common.io.FileBackedOutputStream;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
@@ -49,6 +50,7 @@ import org.openqa.selenium.remote.session.ProxyTransform;
 import org.openqa.selenium.remote.session.SafariFilter;
 import org.openqa.selenium.remote.session.StripAnyPlatform;
 import org.openqa.selenium.remote.session.W3CPlatformNameNormaliser;
+import org.testng.util.Strings;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -208,6 +210,23 @@ public class NewSessionPayload implements Closeable {
         first = (Map<String, Object>) stream().findFirst()
             .orElse(new ImmutableCapabilities())
             .asMap();
+      }
+      if (first.containsKey(CapabilityType.PROXY)) {
+        Map<String, Object> proxyMap;
+        Object rawProxy = first.get(CapabilityType.PROXY);
+        if (rawProxy instanceof Proxy) {
+          proxyMap = ((Proxy) rawProxy).toJson();
+        } else if (rawProxy instanceof Map) {
+          proxyMap = (Map<String, Object>) rawProxy;
+        } else {
+          proxyMap = new HashMap<>();
+        }
+        if (proxyMap.containsKey("noProxy")) {
+          Object rawData = proxyMap.get("noProxy");
+          if (rawData instanceof List) {
+            proxyMap.put("noProxy", ((List<String>) rawData).stream().collect(Collectors.joining(",")));
+          }
+        }
       }
 
       // Write the first capability we get as the desired capability.
