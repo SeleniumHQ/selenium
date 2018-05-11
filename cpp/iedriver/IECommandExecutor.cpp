@@ -79,6 +79,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->async_script_timeout_ = 30000;
   this->page_load_timeout_ = 300000;
   this->is_waiting_ = false;
+  this->is_quitting_ = false;
   this->page_load_strategy_ = "normal";
   this->file_upload_dialog_timeout_ = DEFAULT_FILE_UPLOAD_DIALOG_TIMEOUT_IN_MILLISECONDS;
 
@@ -256,6 +257,10 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
   delete[] str;
   BrowserMap::iterator found_iterator = this->managed_browsers_.find(browser_id);
   if (found_iterator != this->managed_browsers_.end()) {
+    bool is_explicit_close = found_iterator->second->is_closing();
+    if (is_explicit_close) {
+      this->is_waiting_ = false;
+    }
     // If there's still an alert window active, repost this message to
     // ourselves, since the alert will be handled either automatically or
     // manually by the user.
@@ -273,6 +278,19 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
       if (this->managed_browsers_.size() == 0) {
         this->current_browser_id_ = "";
       }
+    }
+    if (is_explicit_close && !this->is_quitting_) {
+      Json::Value handles(Json::arrayValue);
+      std::vector<std::string> handle_list;
+      this->GetManagedBrowserHandles(&handle_list);
+      std::vector<std::string>::const_iterator handle_iterator = handle_list.begin();
+      for (; handle_iterator != handle_list.end(); ++handle_iterator) {
+        handles.append(*handle_iterator);
+      }
+
+      Response close_window_response;
+      close_window_response.SetSuccessResponse(handles);
+      this->serialized_response_ = close_window_response.Serialize();
     }
   } else {
     LOG(WARN) << "Unable to find browser to quit with ID " << browser_id;
@@ -640,22 +658,30 @@ void IECommandExecutor::DispatchCommand() {
 
     status_code = this->GetCurrentBrowser(&browser);
     if (status_code == WD_SUCCESS) {
-      this->is_waiting_ = browser->wait_required();
-      if (this->is_waiting_) {
+      if (browser->wait_required()) {
+        // Case 1: The command handler has explicitly asked to wait for page
+        // load, so the executor must wait for page load or timeout.
+        this->is_waiting_ = true;
         if (this->page_load_timeout_ >= 0) {
           this->wait_timeout_ = clock() + (static_cast<int>(this->page_load_timeout_) / 1000 * CLOCKS_PER_SEC);
         }
         ::PostMessage(this->m_hWnd, WD_WAIT, NULL, NULL);
-      } else {
-        HWND script_executor_handle = browser->script_executor_handle();
-        this->is_waiting_ = script_executor_handle != NULL;
-        if (this->is_waiting_) {
-          if (this->async_script_timeout_ >= 0) {
-            this->wait_timeout_ = clock() + (static_cast<int>(this->async_script_timeout_) / 1000 * CLOCKS_PER_SEC);
-          }
-          ::PostMessage(this->m_hWnd, WD_SCRIPT_WAIT, NULL, NULL);
-          return;
+      } else if (browser->script_executor_handle() != NULL) {
+        // Case 2: There is a pending asynchronous JavaScript execution in
+        // progress, so the executor must wait for the script to complete
+        // or a timeout.
+        this->is_waiting_ = true;
+        if (this->async_script_timeout_ >= 0) {
+          this->wait_timeout_ = clock() + (static_cast<int>(this->async_script_timeout_) / 1000 * CLOCKS_PER_SEC);
         }
+        ::PostMessage(this->m_hWnd, WD_SCRIPT_WAIT, NULL, NULL);
+        return;
+      } else if (browser->is_closing()) {
+        // Case 3: The browser window is closing, so the executor must
+        // wait for the browser window to be closed and removed from the
+        // list of managed browser windows.
+        this->is_waiting_ = true;
+        return;
       }
     } else {
       if (this->current_command_.command_type() != webdriver::CommandType::Quit) {

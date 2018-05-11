@@ -31,6 +31,9 @@ void QuitCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  mutable_executor.set_is_quitting(true);
+
   std::vector<std::string> managed_browser_handles;
   executor.GetManagedBrowserHandles(&managed_browser_handles);
 
@@ -46,9 +49,7 @@ void QuitCommandHandler::ExecuteInternal(
   }
 
   // Calling quit will always result in an invalid session.
-  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
   mutable_executor.set_is_valid(false);
-  mutable_executor.set_is_quitting(true);
   response->SetSuccessResponse(Json::Value::null);
 }
 

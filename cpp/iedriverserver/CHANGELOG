@@ -9,6 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.12.0.1
+=========
+ * Update close window command to return list of remaining window handles.
+   This makes the command consistent with the W3C WebDriver Specification.
+   Unfortunately, to accurately return the proper list, however, this
+   requires the driver to wait for the window to be completely closed. In
+   previous versions, this was an asynchronous operation, and could return
+   immediately. With this change, the driver must wait for the window to
+   be successfully closed, and this change therefore introduces a slight
+   performance delay when windows are closed. The performance hit is
+   unfortunate, but unavoidable.
+
 v3.12.0.0
 =========
  * Release to synchronize with release of Selenium project.

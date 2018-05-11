@@ -51,8 +51,9 @@ void CloseWindowCommandHandler::ExecuteInternal(
     IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
     mutable_executor.set_is_valid(false);
     mutable_executor.set_is_quitting(true);
+    Json::Value handles(Json::arrayValue);
+    response->SetSuccessResponse(handles);
   }
-  response->SetSuccessResponse(Json::Value::null);
 }
 
 } // namespace webdriver

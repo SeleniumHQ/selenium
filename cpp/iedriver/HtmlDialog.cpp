@@ -80,6 +80,7 @@ void HtmlDialog::Close() {
   LOG(TRACE) << "Entering HtmlDialog::Close";
   if (!this->is_closing()) {
     this->is_navigating_ = false;
+    this->set_is_closing(true);
     // Closing the browser, so having focus on a frame doesn't
     // make any sense.
     this->SetFocusedFrameByElement(NULL);
