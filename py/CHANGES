@@ -1,3 +1,17 @@
+Selenium 3.12.0
+
+* Add desired_capabilities keyword to IE and Firefox drivers for driver consitency
+* Fix bug with creating Safari webdriver instance (#5578)
+* Add support for Safari extension command
+* Deprecate Options `set_headless` methods in favor of property setter
+* Only set --disable-gpu for Chrome headless when on Windows
+* Add selenium User-Agent header (#5696)
+* Remote webdriver can now be started when passing options
+* All Options.to_capabilities now start with default DesiredCapabilities
+* Improve the error message that is raised when safaridriver cannot be found (#5739)
+* IeOptions class is now imported to selenium.webdriver
+* Remove the beta `authenticate` methods from `Alert`
+
 Selenium 3.11.0
 
 No changes just keeping python version in step with the rest of the project.
