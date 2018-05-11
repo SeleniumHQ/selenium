@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -74,7 +75,14 @@ public class Proxy {
       setHttpProxy((String) raw.get("httpProxy"));
     }
     if (raw.containsKey("noProxy") && raw.get("noProxy") != null) {
-      setNoProxy((String) raw.get("noProxy"));
+      Object rawData = raw.get("noProxy");
+      if (rawData instanceof List) {
+        // w3c
+        setNoProxy(String.join(", ", (List) rawData));
+      } else {
+        // legacy
+        setNoProxy((String) rawData);
+      }
     }
     if (raw.containsKey("sslProxy") && raw.get("sslProxy") != null) {
       setSslProxy((String) raw.get("sslProxy"));

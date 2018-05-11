@@ -92,7 +92,7 @@ public class ProxySettingTest extends JUnit4TestBase {
   @NeedsLocalEnvironment
   public void canConfigureNoProxy() {
     Proxy proxyToUse = proxyServer.asProxy();
-    proxyToUse.setNoProxy("localhost, 127.0.0.*");
+    proxyToUse.setNoProxy("localhost, 127.0.0.1, " + appServer.getHostName());
     Capabilities caps = new ImmutableCapabilities(PROXY, proxyToUse);
 
     WebDriver driver = new WebDriverBuilder().get(caps);
