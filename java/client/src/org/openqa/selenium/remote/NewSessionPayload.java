@@ -50,7 +50,6 @@ import org.openqa.selenium.remote.session.ProxyTransform;
 import org.openqa.selenium.remote.session.SafariFilter;
 import org.openqa.selenium.remote.session.StripAnyPlatform;
 import org.openqa.selenium.remote.session.W3CPlatformNameNormaliser;
-import org.testng.util.Strings;
 
 import java.io.Closeable;
 import java.io.IOException;
