@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
@@ -68,11 +69,11 @@ public class GeckoDriverService extends DriverService {
    * @return A new GeckoDriverService using the default configuration.
    */
   public static GeckoDriverService createDefaultService() {
-    return new Builder().usingAnyFreePort().build();
+    return new Builder().build();
   }
 
   static GeckoDriverService createDefaultService(Capabilities caps) {
-    Builder builder = new Builder().usingAnyFreePort();
+    Builder builder = new Builder();
 
     Object binary = caps.getCapability(FirefoxDriver.BINARY);
     if (binary != null) {
@@ -105,6 +106,7 @@ public class GeckoDriverService extends DriverService {
   /**
    * Builder used to configure new {@link GeckoDriverService} instances.
    */
+  @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
     GeckoDriverService, GeckoDriverService.Builder> {
 

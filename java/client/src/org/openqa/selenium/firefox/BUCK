@@ -14,8 +14,18 @@ java_library(name = 'firefox',
   exported_deps = [
     '//java/client/src/org/openqa/selenium/remote:remote',
   ],
+  provided_deps = [
+    '//third_party/java/service:auto-service',
+  ],
+  annotation_processor_deps = [
+    '//third_party/java/auto:auto-common',
+    '//third_party/java/service:auto-service',
+    '//third_party/java/guava:guava',
+  ],
+  annotation_processors = [
+    'com.google.auto.service.processor.AutoServiceProcessor',
+  ],
   deps = [
-    ':prefs',
     '//third_party/java/guava:guava',
   ],
   visibility = [ 'PUBLIC' ],

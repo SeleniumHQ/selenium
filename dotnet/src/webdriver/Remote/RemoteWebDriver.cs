@@ -79,6 +79,7 @@ namespace OpenQA.Selenium.Remote
         private IApplicationCache appCache;
         private ILocationContext locationContext;
         private IFileDetector fileDetector = new DefaultFileDetector();
+        private RemoteWebElementFactory elementFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
@@ -141,6 +142,7 @@ namespace OpenQA.Selenium.Remote
             this.StartSession(desiredCapabilities);
             this.mouse = new RemoteMouse(this);
             this.keyboard = new RemoteKeyboard(this);
+            this.elementFactory = new RemoteWebElementFactory(this);
 
             if (this.capabilities.HasCapability(CapabilityType.SupportsApplicationCache))
             {
@@ -434,6 +436,16 @@ namespace OpenQA.Selenium.Remote
         protected ICommandExecutor CommandExecutor
         {
             get { return this.executor; }
+        }
+
+        /// <summary>
+        /// Gets or sets the factory object used to create instances of <see cref="RemoteWebElement"/>
+        /// or its subclasses.
+        /// </summary>
+        protected RemoteWebElementFactory ElementFactory
+        {
+            get { return this.elementFactory; }
+            set { this.elementFactory = value; }
         }
 
         /// <summary>
@@ -1015,19 +1027,7 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> elementDictionary = response.Value as Dictionary<string, object>;
             if (elementDictionary != null)
             {
-                // TODO: Remove this "if" logic once the spec is properly updated
-                // and remote-end implementations comply.
-                string id = string.Empty;
-                if (elementDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
-                {
-                    id = (string)elementDictionary["element-6066-11e4-a52e-4f735466cecf"];
-                }
-                else if (elementDictionary.ContainsKey("ELEMENT"))
-                {
-                    id = (string)elementDictionary["ELEMENT"];
-                }
-
-                element = this.CreateElement(id);
+                element = this.elementFactory.CreateElement(elementDictionary);
             }
 
             return element;
@@ -1049,19 +1049,7 @@ namespace OpenQA.Selenium.Remote
                     Dictionary<string, object> elementDictionary = elementObject as Dictionary<string, object>;
                     if (elementDictionary != null)
                     {
-                        // TODO: Remove this "if" logic once the spec is properly updated
-                        // and remote-end implementations comply.
-                        string id = string.Empty;
-                        if (elementDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
-                        {
-                            id = (string)elementDictionary["element-6066-11e4-a52e-4f735466cecf"];
-                        }
-                        else if (elementDictionary.ContainsKey("ELEMENT"))
-                        {
-                            id = (string)elementDictionary["ELEMENT"];
-                        }
-
-                        RemoteWebElement element = this.CreateElement(id);
+                        RemoteWebElement element = this.elementFactory.CreateElement(elementDictionary);
                         toReturn.Add(element);
                     }
                 }
@@ -1091,11 +1079,6 @@ namespace OpenQA.Selenium.Remote
             }
             finally
             {
-                if (this.CommandExecutor != null)
-                {
-                    this.CommandExecutor.Dispose();
-                }
-
                 this.StopClient();
                 this.sessionId = null;
             }
@@ -1247,6 +1230,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="elementId">The ID of this element.</param>
         /// <returns>A <see cref="RemoteWebElement"/> with the specified ID.</returns>
+        [Obsolete("This method is no longer called to create RemoteWebElement instances. Implement a subclass of RemoteWebElementFactory and set the ElementFactory property to create instances of custom RemoteWebElement subclasses.")]
         protected virtual RemoteWebElement CreateElement(string elementId)
         {
             RemoteWebElement toReturn = new RemoteWebElement(this, elementId);
@@ -1302,7 +1286,7 @@ namespace OpenQA.Selenium.Remote
             {
                 // TODO: Remove "ELEMENT" addition when all remote ends are spec-compliant.
                 Dictionary<string, object> elementDictionary = argAsElementReference.ToDictionary();
-                elementDictionary.Add("ELEMENT", argAsElementReference.ElementReferenceId);
+                elementDictionary.Add(RemoteWebElement.LegacyElementReferencePropertyName, argAsElementReference.ElementReferenceId);
                 converted = elementDictionary;
             }
             else if (argAsDictionary != null)
@@ -1395,7 +1379,7 @@ namespace OpenQA.Selenium.Remote
                             throw new InvalidElementStateException(errorMessage);
 
                         case WebDriverResult.UnhandledError:
-                            throw new InvalidOperationException(errorMessage);
+                            throw new WebDriverException(errorMessage);
 
                         case WebDriverResult.NoSuchDocument:
                             throw new NoSuchElementException(errorMessage);
@@ -1407,8 +1391,10 @@ namespace OpenQA.Selenium.Remote
                             throw new NoSuchWindowException(errorMessage);
 
                         case WebDriverResult.InvalidCookieDomain:
+                            throw new InvalidCookieDomainException(errorMessage);
+
                         case WebDriverResult.UnableToSetCookie:
-                            throw new WebDriverException(errorMessage);
+                            throw new UnableToSetCookieException(errorMessage);
 
                         case WebDriverResult.AsyncScriptTimeout:
                             throw new WebDriverTimeoutException(errorMessage);
@@ -1449,6 +1435,9 @@ namespace OpenQA.Selenium.Remote
                         case WebDriverResult.InvalidArgument:
                             throw new WebDriverException(errorMessage);
 
+                        case WebDriverResult.UnexpectedJavaScriptError:
+                            throw new WebDriverException(errorMessage);
+
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));
                     }
@@ -1479,15 +1468,15 @@ namespace OpenQA.Selenium.Remote
 
             if (resultAsDictionary != null)
             {
-                if (resultAsDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
+                if (resultAsDictionary.ContainsKey(RemoteWebElement.ElementReferencePropertyName))
                 {
-                    string id = (string)resultAsDictionary["element-6066-11e4-a52e-4f735466cecf"];
+                    string id = (string)resultAsDictionary[RemoteWebElement.ElementReferencePropertyName];
                     RemoteWebElement element = this.CreateElement(id);
                     returnValue = element;
                 }
-                else if (resultAsDictionary.ContainsKey("ELEMENT"))
+                else if (resultAsDictionary.ContainsKey(RemoteWebElement.LegacyElementReferencePropertyName))
                 {
-                    string id = (string)resultAsDictionary["ELEMENT"];
+                    string id = (string)resultAsDictionary[RemoteWebElement.LegacyElementReferencePropertyName];
                     RemoteWebElement element = this.CreateElement(id);
                     returnValue = element;
                 }

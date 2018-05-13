@@ -113,11 +113,6 @@ public class OkHttpClient implements HttpClient {
     return toReturn;
   }
 
-  @Override
-  public void close() {
-    // No-op
-  }
-
   public static class Factory implements HttpClient.Factory {
 
     private final ConnectionPool pool = new ConnectionPool();
@@ -142,6 +137,7 @@ public class OkHttpClient implements HttpClient {
           .connectionPool(pool)
           .followRedirects(true)
           .followSslRedirects(true)
+          .retryOnConnectionFailure(false)
           .readTimeout(readTimeout, MILLISECONDS)
           .connectTimeout(connectionTimeout, MILLISECONDS);
 

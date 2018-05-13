@@ -95,7 +95,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = SAFARI)
+  @NotYetImplemented(SAFARI)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initLocalDriver("none");
@@ -272,7 +272,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = HTMLUNIT,
       reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
-  @NotYetImplemented(SAFARI)
+  @Ignore(value = SAFARI, reason = "Hanging")
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     assumeFalse(
         "chromedriver does not disable popup blocker on Android: "
@@ -372,6 +372,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(FIREFOX)
+  @NotYetImplemented(SAFARI)
   @NeedsLocalEnvironment
   public void testPageLoadTimeoutCanBeChanged() {
     testPageLoadTimeoutIsEnforced(2);
@@ -381,6 +382,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(FIREFOX)
+  @NotYetImplemented(SAFARI)
   @NeedsLocalEnvironment
   public void testCanHandleSequentialPageLoadTimeouts() {
     long pageLoadTimeout = 2;
@@ -442,6 +444,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   @NeedsLocalEnvironment
+  @NotYetImplemented(CHROME)
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
     // Get the sleeping servlet with a pause of 5 seconds
     String slowPage = appServer.whereIs("sleep?time=5");
@@ -461,7 +464,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
       int duration = (int) (end - start);
       assertThat(duration, greaterThan(2000));
-      assertThat(duration, lessThan(5000));
+      assertThat(duration, lessThan(4000));
     } finally {
       driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }

@@ -166,14 +166,14 @@ namespace OpenQA.Selenium
         public void ShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError()
         {
             driver.Url = ajaxyPage;
-            Assert.Throws<InvalidOperationException>(() => executor.ExecuteAsyncScript("window.location = '" + dynamicPage + "';"));
+            Assert.That(() => executor.ExecuteAsyncScript("window.location = '" + dynamicPage + "';"), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void ShouldCatchErrorsWhenExecutingInitialScript()
         {
             driver.Url = ajaxyPage;
-            Assert.Throws<InvalidOperationException>(() => executor.ExecuteAsyncScript("throw Error('you should catch this!');"));
+            Assert.That(() => executor.ExecuteAsyncScript("throw Error('you should catch this!');"), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]

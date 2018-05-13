@@ -224,6 +224,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone, "Not implemented for browser")]
         [IgnoreBrowser(Browser.PhantomJS, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.Edge, "Not implemented for browser")]
         public void ShouldTimeoutIfAPageTakesTooLongToLoad()
         {
             if (TestUtilities.IsMarionette(driver))

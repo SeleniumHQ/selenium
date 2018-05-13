@@ -91,7 +91,10 @@ namespace OpenQA.Selenium.Remote
 
         }
 
+        [Obsolete("Replaced by the SendingRemoteHttpRequest event. This event is a no-op, and event handlers for it will no longer be called.")]
         public event EventHandler<BeforeRemoteHttpRequestEventArgs> BeforeRemoteHttpRequest;
+
+        public event EventHandler<SendingRemoteHttpRequestEventArgs> SendingRemoteHttpRequest;
 
         /// <summary>
         /// Gets the repository of objects containin information about commands.
@@ -136,19 +139,19 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Raises the <see cref="BeforeRemoteHttpRequest"/> event.
+        /// Raises the <see cref="SendingRemoteHttpRequest"/> event.
         /// </summary>
-        /// <param name="eventArgs">A <see cref="BeforeRemoteHttpRequestEventArgs"/> that contains the event data.</param>
-        protected virtual void OnBeforeRemoteHttpRequest(BeforeRemoteHttpRequestEventArgs eventArgs)
+        /// <param name="eventArgs">A <see cref="SendingRemoteHttpRequestEventArgs"/> that contains the event data.</param>
+        protected virtual void OnSendingRemoteHttpRequest(SendingRemoteHttpRequestEventArgs eventArgs)
         {
             if (eventArgs == null)
             {
                 throw new ArgumentNullException("eventArgs", "eventArgs must not be null");
             }
 
-            if (this.BeforeRemoteHttpRequest != null)
+            if (this.SendingRemoteHttpRequest != null)
             {
-                this.BeforeRemoteHttpRequest(this, eventArgs);
+                this.SendingRemoteHttpRequest(this, eventArgs);
             }
         }
 
@@ -188,21 +191,23 @@ namespace OpenQA.Selenium.Remote
             request.KeepAlive = this.enableKeepAlive;
             request.Proxy = null;
             request.ServicePoint.ConnectionLimit = 2000;
+            if (request.Method == CommandInfo.GetCommand)
+            {
+                request.Headers.Add("Cache-Control", "no-cache");
+            }
+
+            SendingRemoteHttpRequestEventArgs eventArgs = new SendingRemoteHttpRequestEventArgs(request, requestInfo.RequestBody);
+            this.OnSendingRemoteHttpRequest(eventArgs);
+
             if (request.Method == CommandInfo.PostCommand)
             {
-                string payload = requestInfo.RequestBody;
+                string payload = eventArgs.RequestBody;
                 byte[] data = Encoding.UTF8.GetBytes(payload);
                 request.ContentType = ContentTypeHeader;
                 Stream requestStream = request.GetRequestStream();
                 requestStream.Write(data, 0, data.Length);
                 requestStream.Close();
             }
-            else if (request.Method == CommandInfo.GetCommand)
-            {
-                request.Headers.Add("Cache-Control", "no-cache");
-            }
-
-            this.OnBeforeRemoteHttpRequest(new BeforeRemoteHttpRequestEventArgs(request));
 
             HttpResponseInfo responseInfo = new HttpResponseInfo();
             HttpWebResponse webResponse = null;

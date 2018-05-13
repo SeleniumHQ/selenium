@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.opera;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -79,12 +80,13 @@ public class OperaDriverService extends DriverService {
    * @return A new OperaDriverService using the default configuration.
    */
   public static OperaDriverService createDefaultService() {
-    return new Builder().usingAnyFreePort().build();
+    return new Builder().build();
   }
 
   /**
    * Builder used to configure new {@link OperaDriverService} instances.
    */
+  @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
       OperaDriverService, OperaDriverService.Builder> {
 

@@ -146,7 +146,15 @@ namespace OpenQA.Selenium.Remote
                 catch (NoSuchWindowException)
                 {
                     // simulate search by name
-                    string original = this.driver.CurrentWindowHandle;
+                    string original = null;
+                    try
+                    {
+                        original = this.driver.CurrentWindowHandle;
+                    }
+                    catch (NoSuchWindowException)
+                    {
+                    }
+
                     foreach (string handle in this.driver.WindowHandles)
                     {
                         this.Window(handle);
@@ -156,7 +164,11 @@ namespace OpenQA.Selenium.Remote
                         }
                     }
 
-                    this.Window(original);
+                    if (original != null)
+                    {
+                        this.Window(original);
+                    }
+
                     throw;
                 }
             }

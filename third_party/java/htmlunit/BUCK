@@ -1,17 +1,17 @@
 prebuilt_jar(
   name = 'htmlunit',
-  maven_coords = 'net.sourceforge.htmlunit:htmlunit:jar:2.29',
-  binary_jar = 'htmlunit-2.29.jar',
-  source_jar = 'htmlunit-2.29-sources.jar',
+  maven_coords = 'net.sourceforge.htmlunit:htmlunit:jar:2.30',
+  binary_jar = 'htmlunit-2.30.jar',
+  source_jar = 'htmlunit-2.30-sources.jar',
   deps = [
     ':htmlunit-core-js',
     ':neko-htmlunit',
+    ':htmlunit-cssparser',
     '//third_party/java/commons:commons-lang3',
     '//third_party/java/commons:commons-text',
     '//third_party/java/commons-io:commons-io',
     '//third_party/java/commons-logging:commons-logging',
     '//third_party/java/commons-net:commons-net',
-    '//third_party/java/cssparser:cssparser',
     '//third_party/java/httpcomponents:httpmime',
     '//third_party/java/websocket:websocket-client',
     '//third_party/java/xalan:xalan'
@@ -34,11 +34,17 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'neko-htmlunit',
-  maven_coords = 'net.sourceforge.htmlunit:neko-htmlunit:jar:2.28',
-  binary_jar = 'neko-htmlunit-2.28.jar',
-  source_jar = 'neko-htmlunit-2.28-sources.jar',
+  maven_coords = 'net.sourceforge.htmlunit:neko-htmlunit:jar:2.30',
+  binary_jar = 'neko-htmlunit-2.30.jar',
+  source_jar = 'neko-htmlunit-2.30-sources.jar',
   deps = [
     '//third_party/java/xerces:xercesImpl'
   ],
 )
 
+prebuilt_jar(
+  name = 'htmlunit-cssparser',
+  maven_coords = 'net.sourceforge.htmlunit:htmlunit-cssparser:jar:1.0.0',
+  binary_jar = 'htmlunit-cssparser-1.0.0.jar',
+  source_jar = 'htmlunit-cssparser-1.0.0-sources.jar',
+)

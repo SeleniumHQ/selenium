@@ -35,6 +35,16 @@ namespace OpenQA.Selenium.Remote
     /// <seealso cref="ILocatable"/>
     public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable, ITakesScreenshot, IWebElementReference
     {
+        /// <summary>
+        /// The property name that represents a web element in the wire protocol.
+        /// </summary>
+        public const string ElementReferencePropertyName = "element-6066-11e4-a52e-4f735466cecf";
+
+        /// <summary>
+        /// The property name that represents a web element in the legacy dialect of the wire protocol.
+        /// </summary>
+        public const string LegacyElementReferencePropertyName = "ELEMENT";
+
         private RemoteWebDriver driver;
         private string elementId;
 
@@ -943,7 +953,7 @@ namespace OpenQA.Selenium.Remote
         Dictionary<string, object> IWebElementReference.ToDictionary()
         {
             Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
-            elementDictionary.Add("element-6066-11e4-a52e-4f735466cecf", this.elementId);
+            elementDictionary.Add(ElementReferencePropertyName, this.elementId);
             return elementDictionary;
         }
 

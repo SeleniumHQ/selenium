@@ -63,7 +63,7 @@ public class UploadTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = SAFARI, reason = "Returns wrong text of the frame body")
+  @NotYetImplemented(value = SAFARI, reason = "Returns wrong text of the frame body")
   public void testFileUploading() {
     assumeFalse(
         "This test as written assumes a file on local disk is accessible to the browser. "

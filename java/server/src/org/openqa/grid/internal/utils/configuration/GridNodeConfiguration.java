@@ -17,16 +17,8 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.gson.annotations.Expose;
 
 import org.openqa.grid.common.RegistrationRequest;
@@ -34,16 +26,16 @@ import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -63,9 +55,9 @@ public class GridNodeConfiguration extends GridConfiguration {
   static final String DEFAULT_ROLE = "node";
 
   /**
-   * Default hub port
+   * Default node port, -1 means random free port
    */
-  static final Integer DEFAULT_PORT = 5555;
+  static final Integer DEFAULT_PORT = -1;
 
   /**
    * Default node polling
@@ -115,14 +107,24 @@ public class GridNodeConfiguration extends GridConfiguration {
   /**
    * Default DesiredCapabilites
    */
+  // TODO: Is this really necessary?
   static final class DefaultDesiredCapabilitiesBuilder {
     static List<MutableCapabilities> getCapabilities() {
-      JsonObject defaults = loadJSONFromResourceOrFile(DEFAULT_NODE_CONFIG_FILE);
-      List<MutableCapabilities> caps = new ArrayList<>();
-      for (JsonElement el : defaults.getAsJsonArray("capabilities")) {
-        caps.add(new Json().toType(el, DesiredCapabilities.class));
+      try (JsonInput jsonInput = loadJsonFromResourceOrFile(DEFAULT_NODE_CONFIG_FILE)) {
+        List<MutableCapabilities> caps = new ArrayList<>();
+
+        Map<String, Object> defaults = jsonInput.read(MAP_TYPE);
+        if (defaults == null || !(defaults.get("capabilities") instanceof Collection)) {
+          return caps;
+        }
+
+        for (Object el : (Collection<?>) defaults.get("capabilities")) {
+          @SuppressWarnings("unchecked")
+          Map<String, Object> map = (Map<String, Object>) el;
+          caps.add(new MutableCapabilities(map));
+        }
+        return caps;
       }
-      return caps;
     }
   }
 
@@ -314,43 +316,43 @@ public class GridNodeConfiguration extends GridConfiguration {
     }
     super.merge(other);
 
-    if (isMergeAble(other.capabilities, capabilities)) {
+    if (isMergeAble(List.class, other.capabilities, capabilities)) {
       capabilities = other.capabilities;
     }
-    if (isMergeAble(other.downPollingLimit, downPollingLimit)) {
+    if (isMergeAble(Integer.class, other.downPollingLimit, downPollingLimit)) {
       downPollingLimit = other.downPollingLimit;
     }
-    if (isMergeAble(other.hub, hub)) {
+    if (isMergeAble(String.class, other.hub, hub)) {
       hub = other.hub;
     }
-    if (isMergeAble(other.hubHost, hubHost)) {
+    if (isMergeAble(String.class, other.hubHost, hubHost)) {
       hubHost = other.hubHost;
     }
-    if (isMergeAble(other.hubPort, hubPort)) {
+    if (isMergeAble(Integer.class, other.hubPort, hubPort)) {
       hubPort = other.hubPort;
     }
-    if (isMergeAble(other.id, id)) {
+    if (isMergeAble(String.class, other.id, id)) {
       id = other.id;
     }
-    if (isMergeAble(other.nodePolling, nodePolling)) {
+    if (isMergeAble(Integer.class, other.nodePolling, nodePolling)) {
       nodePolling = other.nodePolling;
     }
-    if (isMergeAble(other.nodeStatusCheckTimeout, nodeStatusCheckTimeout)) {
+    if (isMergeAble(Integer.class, other.nodeStatusCheckTimeout, nodeStatusCheckTimeout)) {
       nodeStatusCheckTimeout = other.nodeStatusCheckTimeout;
     }
-    if (isMergeAble(other.proxy, proxy)) {
+    if (isMergeAble(String.class, other.proxy, proxy)) {
       proxy = other.proxy;
     }
-    if (isMergeAble(other.register, register)) {
+    if (isMergeAble(Boolean.class, other.register, register)) {
       register = other.register;
     }
-    if (isMergeAble(other.registerCycle, registerCycle)) {
+    if (isMergeAble(Integer.class, other.registerCycle, registerCycle)) {
       registerCycle = other.registerCycle;
     }
-    if (isMergeAble(other.remoteHost, remoteHost)) {
+    if (isMergeAble(String.class, other.remoteHost, remoteHost)) {
       remoteHost = other.remoteHost;
     }
-    if (isMergeAble(other.unregisterIfStillDownAfter, unregisterIfStillDownAfter)) {
+    if (isMergeAble(Integer.class, other.unregisterIfStillDownAfter, unregisterIfStillDownAfter)) {
       unregisterIfStillDownAfter = other.unregisterIfStillDownAfter;
     }
 
@@ -382,80 +384,28 @@ public class GridNodeConfiguration extends GridConfiguration {
    * @param filePath node config json file to load configuration from
    */
   public static GridNodeConfiguration loadFromJSON(String filePath) {
-    return loadFromJSON(loadJSONFromResourceOrFile(filePath));
+    return loadFromJSON(StandaloneConfiguration.loadJsonFromResourceOrFile(filePath));
   }
 
-  /**
-   * @param json JsonObject to load configuration from
-   */
-  public static GridNodeConfiguration loadFromJSON(JsonObject json) {
+  public static GridNodeConfiguration loadFromJSON(JsonInput jsonInput) {
     try {
-      GsonBuilder builder = new GsonBuilder();
-      GridNodeConfiguration.staticAddJsonTypeAdapter(builder);
-      GridNodeConfiguration config =
-        builder.excludeFieldsWithoutExposeAnnotation().create().fromJson(json, GridNodeConfiguration.class);
+      GridNodeConfiguration config = StandaloneConfiguration.loadFromJson(
+          jsonInput,
+          GridNodeConfiguration.class);
 
       if (config.configuration != null) {
         // caught below
-        throw new GridConfigurationException("Deprecated -nodeConfig file encountered. Please update"
-                                             + " the file to work with Selenium 3. See https://github.com"
-                                             + "/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes-by-json"
-                                             + " for more details.");
-}
+        throw new GridConfigurationException(
+            "Deprecated -nodeConfig file encountered.Please update" +
+                " the file to work with Selenium 3.See https://github.com" +
+                "/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes-by-json" +
+                " for more details.");
+        }
 
       return config;
     } catch (Throwable e) {
       throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
                                            e);
-    }
-  }
-
-  @Override
-  protected void addJsonTypeAdapter(GsonBuilder builder) {
-    super.addJsonTypeAdapter(builder);
-    GridNodeConfiguration.staticAddJsonTypeAdapter(builder);
-  }
-
-  protected static void staticAddJsonTypeAdapter(GsonBuilder builder) {
-    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
-                                new CollectionOfDesiredCapabilitiesSerializer());
-    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
-                                new CollectionOfDesiredCapabilitiesDeSerializer());
-  }
-
-  public static class CollectionOfDesiredCapabilitiesSerializer
-    implements JsonSerializer<List<MutableCapabilities>> {
-
-    @Override
-    public JsonElement serialize(List<MutableCapabilities> desiredCapabilities, Type type,
-                                 JsonSerializationContext jsonSerializationContext) {
-
-      JsonArray capabilities = new JsonArray();
-      Json json = new Json();
-      for (MutableCapabilities dc : desiredCapabilities) {
-        capabilities.add(json.toJsonElement(dc));
-      }
-      return capabilities;
-    }
-  }
-
-  public  static class CollectionOfDesiredCapabilitiesDeSerializer
-    implements JsonDeserializer<List<MutableCapabilities>> {
-
-    @Override
-    public List<MutableCapabilities> deserialize(JsonElement jsonElement, Type type,
-                                                 JsonDeserializationContext jsonDeserializationContext)
-      throws JsonParseException {
-
-      if (jsonElement.isJsonArray()) {
-        List<MutableCapabilities> desiredCapabilities = new ArrayList<>();
-        Json json = new Json();
-        for (JsonElement arrayElement : jsonElement.getAsJsonArray()) {
-          desiredCapabilities.add(json.toType(arrayElement, DesiredCapabilities.class));
-        }
-        return desiredCapabilities;
-      }
-      throw new JsonParseException("capabilities should be expressed as an array of objects.");
     }
   }
 

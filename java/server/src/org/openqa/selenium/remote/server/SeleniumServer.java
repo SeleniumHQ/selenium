@@ -184,6 +184,9 @@ public class SeleniumServer implements GridNodeServer {
     if (configuration.port == null) {
       configuration.port = 4444;
     }
+    if (configuration.host != null) {
+      http.setHost(configuration.host);
+    }
     http.setPort(configuration.port);
     http.setIdleTimeout(500000);
 

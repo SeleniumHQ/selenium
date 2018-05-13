@@ -114,6 +114,9 @@ public class GridHubCliOptions extends CommonGridCliOptions {
 
     fillCommonConfiguration(configuration);
     fillCommonGridConfiguration(configuration);
+    if (configFile != null) {
+      configuration.hubConfig = configFile;
+    }
     if (capabilityMatcher != null) {
       configuration.capabilityMatcher = capabilityMatcher;
     }

@@ -17,19 +17,11 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.Expose;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
-import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-
-import java.io.IOException;
 
 public class GridHubConfiguration extends GridConfiguration {
   public static final String DEFAULT_HUB_CONFIG_FILE = "org/openqa/grid/common/defaults/DefaultHub.json";
@@ -123,22 +115,7 @@ public class GridHubConfiguration extends GridConfiguration {
    * @param filePath hub config json file to load configuration from
    */
   public static GridHubConfiguration loadFromJSON(String filePath) {
-    return loadFromJSON(loadJSONFromResourceOrFile(filePath));
-  }
-
-  /**
-   * @param json JsonObject to load configuration from
-   */
-  public static GridHubConfiguration loadFromJSON(JsonObject json) {
-    try {
-      GsonBuilder builder = new GsonBuilder();
-      GridHubConfiguration.staticAddJsonTypeAdapter(builder);
-      return builder.excludeFieldsWithoutExposeAnnotation().create()
-        .fromJson(json, GridHubConfiguration.class);
-    } catch (Throwable e) {
-      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
-                                           e);
-    }
+    return StandaloneConfiguration.loadFromJson(filePath, GridHubConfiguration.class);
   }
 
   /**
@@ -159,19 +136,19 @@ public class GridHubConfiguration extends GridConfiguration {
     }
     super.merge(other);
 
-    if (isMergeAble(other.capabilityMatcher, capabilityMatcher)) {
+    if (isMergeAble(CapabilityMatcher.class, other.capabilityMatcher, capabilityMatcher)) {
       capabilityMatcher = other.capabilityMatcher;
     }
-    if (isMergeAble(other.newSessionWaitTimeout, newSessionWaitTimeout)) {
+    if (isMergeAble(Integer.class, other.newSessionWaitTimeout, newSessionWaitTimeout)) {
       newSessionWaitTimeout = other.newSessionWaitTimeout;
     }
-    if (isMergeAble(other.prioritizer, prioritizer)) {
+    if (isMergeAble(Prioritizer.class, other.prioritizer, prioritizer)) {
       prioritizer = other.prioritizer;
     }
-    if (isMergeAble(other.throwOnCapabilityNotPresent, throwOnCapabilityNotPresent)) {
+    if (isMergeAble(Boolean.class, other.throwOnCapabilityNotPresent, throwOnCapabilityNotPresent)) {
       throwOnCapabilityNotPresent = other.throwOnCapabilityNotPresent;
     }
-    if (isMergeAble(other.registry, registry)) {
+    if (isMergeAble(String.class, other.registry, registry)) {
       registry = other.registry;
     }
   }
@@ -188,37 +165,5 @@ public class GridHubConfiguration extends GridConfiguration {
     sb.append(toString(format, "registry", registry));
 
     return sb.toString();
-  }
-
-  @Override
-  protected void addJsonTypeAdapter(GsonBuilder builder) {
-    super.addJsonTypeAdapter(builder);
-    GridHubConfiguration.staticAddJsonTypeAdapter(builder);
-  }
-  protected static void staticAddJsonTypeAdapter(GsonBuilder builder) {
-    builder.registerTypeAdapter(CapabilityMatcher.class, new CapabilityMatcherAdapter().nullSafe());
-    builder.registerTypeAdapter(Prioritizer.class, new PrioritizerAdapter().nullSafe());
-  }
-
-  protected static class SimpleClassNameAdapter<T> extends TypeAdapter<T> {
-    @Override
-    public void write(JsonWriter out, T value) throws IOException {
-      out.value(value.getClass().getCanonicalName());
-    }
-    @Override
-    public T read(JsonReader in) throws IOException {
-      String value = in.nextString();
-      try {
-        return (T) Class.forName(value).newInstance();
-      } catch (Exception e) {
-        throw new RuntimeException(String.format("String %s could not be coerced to class: %s", value, Class.class.getName()), e);
-      }
-    }
-  }
-
-  protected static class CapabilityMatcherAdapter extends SimpleClassNameAdapter<CapabilityMatcher> {
-  }
-
-  protected static class PrioritizerAdapter extends SimpleClassNameAdapter<Prioritizer> {
   }
 }

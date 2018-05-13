@@ -27,6 +27,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Chrome driver does not yet implement element screenshots.")]
         public void ShouldTakeScreenshotsOfAnElement()
         {
             driver.Url = simpleTestPage;

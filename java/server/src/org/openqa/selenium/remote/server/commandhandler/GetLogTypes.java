@@ -57,7 +57,7 @@ public class GetLogTypes implements CommandHandler {
     types.add(LogType.SERVER);
 
     if (upRes.getStatus() == HTTP_OK) {
-      Map<?, ?> upstream = json.toType(upRes.getContentString(), Json.MAP_TYPE);
+      Map<String, Object> upstream = json.toType(upRes.getContentString(), Json.MAP_TYPE);
       Object raw = upstream.get("value");
       if (raw instanceof Collection) {
         ((Collection<?>) raw).stream().map(String::valueOf).forEach(types::add);

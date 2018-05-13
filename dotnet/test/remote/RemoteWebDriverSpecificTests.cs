@@ -1,5 +1,8 @@
-﻿using System;
+using System;
+using System.Collections.ObjectModel;
+using System.Text;
 using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -62,7 +65,8 @@ namespace OpenQA.Selenium.Remote
 
         private void CreateTempFile(string content)
         {
-            testFile = new System.IO.FileInfo("webdriver.tmp");
+            string testFileName = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "webdriver.tmp");
+            testFile = new System.IO.FileInfo(testFileName);
             if (testFile.Exists)
             {
                 testFile.Delete();

@@ -17,29 +17,31 @@
 
 package org.openqa.selenium.json;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.remote.SessionId;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.stream.Collector;
 
 /**
  * Utility class for converting between JSON and Java Objects.
@@ -50,12 +52,75 @@ class BeanToJsonConverter {
 
   private final Gson gson;
 
+  private final Map<Predicate<Class<?>>, BiFunction<Integer, Object, JsonElement>> converters;
+
   public BeanToJsonConverter() {
     this(Json.GSON);
   }
 
   public BeanToJsonConverter(Gson gson) {
     this.gson = gson;
+
+    this.converters = ImmutableMap.<Predicate<Class<?>>, BiFunction<Integer, Object, JsonElement>>builder()
+        // Java types
+
+        .put(Boolean.class::isAssignableFrom, (depth, o) -> new JsonPrimitive((Boolean) o))
+        .put(CharSequence.class::isAssignableFrom, (depth, o) -> new JsonPrimitive(String.valueOf(o)))
+        .put(Date.class::isAssignableFrom, (depth, o) -> new JsonPrimitive(MILLISECONDS.toSeconds(((Date) o).getTime())))
+        .put(Enum.class::isAssignableFrom, (depth, o) -> new JsonPrimitive(o.toString()))
+        .put(File.class::isAssignableFrom, (depth, o) -> new JsonPrimitive(((File) o).getAbsolutePath()))
+        .put(Number.class::isAssignableFrom, (depth, o) -> new JsonPrimitive((Number) o))
+        .put(URL.class::isAssignableFrom, (depth, o) -> new JsonPrimitive(((URL) o).toExternalForm()))
+
+        // *sigh* gson
+        .put(JsonElement.class::isAssignableFrom, (depth, o) -> (JsonElement) o)
+
+        // Selenium classes
+        .put(Level.class::isAssignableFrom, (depth, o) -> new JsonPrimitive(LogLevelMapping.getName((Level) o)))
+        .put(SessionId.class::isAssignableFrom, (depth, o) -> {
+          JsonObject converted = new JsonObject();
+          converted.addProperty("value", o.toString());
+          return converted;
+        })
+
+
+        // Special handling of asMap and toJson
+        .put(
+            cls -> getMethod(cls, "toJson") != null,
+            (depth, o) -> convertUsingMethod("toJson", o, depth))
+        .put(
+            cls -> getMethod(cls, "asMap") != null,
+            (depth, o) -> convertUsingMethod("asMap", o, depth))
+        .put(
+            cls -> getMethod(cls, "toMap") != null,
+            (depth, o) -> convertUsingMethod("toMap", o, depth))
+
+        // And then the collection types
+        .put(
+            Collection.class::isAssignableFrom,
+            (depth, o) -> ((Collection<?>) o).stream()
+                .map(obj -> convertObject(obj, depth - 1))
+                .collect(Collector.of(JsonArray::new, JsonArray::add, (l, r) -> { l.addAll(r); return l;})))
+        .put(
+            Map.class::isAssignableFrom,
+            (depth, o) -> {
+               JsonObject converted = new JsonObject();
+               ((Map<?, ?>) o).forEach(
+                   (key, value) -> converted.add(String.valueOf(key), convertObject(value, depth - 1)));
+               return converted;
+             })
+        .put(
+            Class::isArray,
+            (depth, o) -> {
+              JsonArray converted = new JsonArray();
+              Arrays.stream(((Object[]) o)).forEach(value -> converted.add(convertObject(value, depth -1)));
+              return converted;
+            }
+        )
+
+        // Finally, attempt to convert as an object
+        .put(cls -> true, (depth, o) -> mapObject(o, depth - 1))
+        .build();
   }
 
   /**
@@ -71,8 +136,10 @@ class BeanToJsonConverter {
     }
 
     try {
-      JsonElement json = convertObject(object);
+      JsonElement json = convertObject(object, MAX_DEPTH);
       return gson.toJson(json);
+    } catch (WebDriverException e) {
+      throw e;
     } catch (Exception e) {
       throw new WebDriverException("Unable to convert: " + object, e);
     }
@@ -88,15 +155,7 @@ class BeanToJsonConverter {
    */
   @Deprecated
   JsonElement convertObject(Object object) {
-    if (object == null) {
-      return JsonNull.INSTANCE;
-    }
-
-    try {
-      return convertObject(object, MAX_DEPTH);
-    } catch (Exception e) {
-      throw new WebDriverException("Unable to convert: " + object, e);
-    }
+    return convertObject(object, MAX_DEPTH);
   }
 
   @SuppressWarnings("unchecked")
@@ -105,124 +164,17 @@ class BeanToJsonConverter {
       return JsonNull.INSTANCE;
     }
 
-    if (toConvert instanceof Boolean) {
-      return new JsonPrimitive((Boolean) toConvert);
-    }
-
-    if (toConvert instanceof CharSequence) {
-      return new JsonPrimitive(String.valueOf(toConvert));
-    }
-
-    if (toConvert instanceof Number) {
-      return new JsonPrimitive((Number) toConvert);
-    }
-
-    if (toConvert instanceof Level) {
-      return new JsonPrimitive(LogLevelMapping.getName((Level) toConvert));
-    }
-
-    if (toConvert.getClass().isEnum() || toConvert instanceof Enum) {
-      return new JsonPrimitive(toConvert.toString());
-    }
-
-    if (toConvert instanceof Map) {
-      Map<String, Object> map = (Map<String, Object>) toConvert;
-      if (map.size() == 1 && map.containsKey("w3c cookie")) {
-        return convertObject(map.get("w3c cookie"));
-      }
-
-      JsonObject converted = new JsonObject();
-      for (Map.Entry<String, Object> entry : map.entrySet()) {
-        converted.add(entry.getKey(), convertObject(entry.getValue(), maxDepth - 1));
-      }
-      return converted;
-    }
-
-    if (toConvert instanceof JsonElement) {
-      return (JsonElement) toConvert;
-    }
-
-    if (toConvert instanceof Collection) {
-      JsonArray array = new JsonArray();
-      for (Object o : (Collection<?>) toConvert) {
-        array.add(convertObject(o, maxDepth - 1));
-      }
-      return array;
-    }
-
-    if (toConvert.getClass().isArray()) {
-      JsonArray converted = new JsonArray();
-      int length = Array.getLength(toConvert);
-      for (int i = 0; i < length; i++) {
-        converted.add(convertObject(Array.get(toConvert, i), maxDepth - 1));
-      }
-      return converted;
-    }
-
-    if (toConvert instanceof SessionId) {
-      JsonObject converted = new JsonObject();
-      converted.addProperty("value", toConvert.toString());
-      return converted;
-    }
-
-    if (toConvert instanceof Date) {
-      return new JsonPrimitive(TimeUnit.MILLISECONDS.toSeconds(((Date) toConvert).getTime()));
-    }
-
-    if (toConvert instanceof File) {
-      return new JsonPrimitive(((File) toConvert).getAbsolutePath());
-    }
-
-    if (toConvert instanceof URL) {
-      return new JsonPrimitive(((URL) toConvert).toExternalForm());
-    }
-
-    Method toJson = getMethod(toConvert, "toJson");
-    if (toJson != null) {
-      try {
-        Object res = toJson.invoke(toConvert);
-        if (res instanceof JsonElement) {
-          return (JsonElement) res;
-        }
-
-        if (res instanceof Map) {
-          return convertObject(res);
-        } else if (res instanceof Collection) {
-          return convertObject(res);
-        } else if (res instanceof String) {
-          try {
-            return new JsonParser().parse((String) res);
-          } catch (JsonParseException e) {
-            return new JsonPrimitive((String) res);
-          }
-        }
-      } catch (ReflectiveOperationException e) {
-        throw new WebDriverException(e);
-      }
-    }
-
-    Method toMap = getMethod(toConvert, "toMap");
-    if (toMap == null) {
-      toMap = getMethod(toConvert, "asMap");
-    }
-    if (toMap != null) {
-      try {
-        return convertObject(toMap.invoke(toConvert), maxDepth - 1);
-      } catch (ReflectiveOperationException e) {
-        throw new WebDriverException(e);
-      }
-    }
-
-    try {
-      return mapObject(toConvert, maxDepth - 1, toConvert instanceof Cookie);
-    } catch (Exception e) {
-      throw new WebDriverException(e);
-    }
+    return converters.entrySet().stream()
+        .filter(entry -> entry.getKey().test(toConvert.getClass()))
+        .map(Map.Entry::getValue)
+        .findFirst()
+        .map(to -> to.apply(maxDepth, toConvert))
+        .orElse(null);
   }
 
-  private Method getMethod(Object toConvert, String methodName) {
+  private Method getMethod(Class<?> clazz, String methodName) {
     try {
-      Method method = toConvert.getClass().getMethod(methodName);
+      Method method = clazz.getMethod(methodName);
       method.setAccessible(true);
       return method;
     } catch (NoSuchMethodException | SecurityException e) {
@@ -233,7 +185,18 @@ class BeanToJsonConverter {
 
   }
 
-  private JsonElement mapObject(Object toConvert, int maxDepth, boolean skipNulls) throws Exception {
+  private JsonElement convertUsingMethod(String methodName, Object toConvert, int depth) {
+    try {
+      Method method = getMethod(toConvert.getClass(), methodName);
+      Object value = method.invoke(toConvert);
+
+      return convertObject(value, depth);
+    } catch (ReflectiveOperationException e) {
+      throw new WebDriverException(e);
+    }
+  }
+
+  private JsonElement mapObject(Object toConvert, int maxDepth) {
     if (maxDepth < 1) {
       return JsonNull.INSTANCE;
     }
@@ -259,9 +222,11 @@ class BeanToJsonConverter {
 
       readMethod.setAccessible(true);
 
-      Object result = readMethod.invoke(toConvert);
-      if (!skipNulls || result != null) {
+      try {
+        Object result = readMethod.invoke(toConvert);
         mapped.add(pd.getName(), convertObject(result, maxDepth - 1));
+      } catch (ReflectiveOperationException e) {
+        throw new WebDriverException(e);
       }
     }
 

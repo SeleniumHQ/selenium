@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -98,7 +97,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
       considerV2Json(registrationRequest.getConfiguration(), json);
     } else {
       // Se3 compatible request.
-      registrationRequest = RegistrationRequest.fromJson(json);
+      registrationRequest = RegistrationRequest.fromJson(requestJsonString);
     }
 
     final RemoteProxy proxy = BaseRemoteProxy.getNewInstance(registrationRequest, getRegistry());
@@ -129,7 +128,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
 
     // if a JsonSyntaxException happens here, so be it. We won't be able to map the request
     // to a grid node configuration anyhow.
-    GridNodeConfiguration pendingConfiguration = GridNodeConfiguration.loadFromJSON(json);
+    GridNodeConfiguration pendingConfiguration = GridNodeConfiguration.loadFromJSON(json.toString());
 
     // add the servlets that were saved off
     if (servlets != null && servlets.isJsonPrimitive() &&
@@ -174,7 +173,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
       JsonArray capabilities = json.get("capabilities").getAsJsonArray();
       Json converter = new Json();
       for (int i = 0; i < capabilities.size(); i++) {
-        MutableCapabilities cap = converter.toType(capabilities.get(i), DesiredCapabilities.class);
+        MutableCapabilities cap = converter.toType(capabilities.get(i).toString(), DesiredCapabilities.class);
         configuration.capabilities.add(cap);
       }
       configuration.fixUpCapabilities();

@@ -79,6 +79,10 @@ bool VariantUtilities::VariantIsElement(VARIANT value) {
 }
 
 bool VariantUtilities::VariantIsArray(VARIANT value) {
+  if (value.vt != VT_DISPATCH) {
+    return false;
+  }
+
   std::wstring type_name = GetVariantObjectTypeName(value);
 
   // If the name is DispStaticNodeList, we can be pretty sure it's an array
@@ -97,7 +101,7 @@ bool VariantUtilities::VariantIsArray(VARIANT value) {
   // Closure library.
   // IMPORTANT: Using this script, user-defined objects with a length
   // property defined will be seen as arrays instead of objects.
-  if (type_name == L"JScriptTypeInfo") {
+  if (type_name == L"JScriptTypeInfo" || type_name == L"") {
     LOG(DEBUG) << "Result type is JScriptTypeInfo";
     LPOLESTR length_property_name = L"length";
     DISPID dispid_length = 0;
@@ -115,6 +119,9 @@ bool VariantUtilities::VariantIsArray(VARIANT value) {
 }
 
 bool VariantUtilities::VariantIsObject(VARIANT value) {
+  if (value.vt != VT_DISPATCH) {
+    return false;
+  }
   std::wstring type_name = GetVariantObjectTypeName(value);
   if (type_name == L"JScriptTypeInfo") {
     return true;

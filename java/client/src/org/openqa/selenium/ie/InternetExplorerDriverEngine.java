@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.ie;
 
+/**
+ * @deprecated There are no more multiple IE driver engines
+ */
+@Deprecated
 public enum InternetExplorerDriverEngine {
   LEGACY,
   AUTODETECT,

@@ -16,6 +16,7 @@
 // under the License.
 package org.openqa.selenium.edge;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -64,9 +65,10 @@ public class EdgeDriverService extends DriverService{
   * @return A new EdgeDriverService using the default configuration.
   */
   public static EdgeDriverService createDefaultService() {
-    return new Builder().usingAnyFreePort().build();
+    return new Builder().build();
   }
 
+  @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
      EdgeDriverService, EdgeDriverService.Builder> {
 

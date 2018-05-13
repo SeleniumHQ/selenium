@@ -18,13 +18,12 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.DeviceRotation;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
 
 public class AddRotatable implements AugmenterProvider {
-    
+
   public Class<?> getDescribedInterface() {
     return Rotatable.class;
   }
@@ -47,7 +46,7 @@ public class AddRotatable implements AugmenterProvider {
           response = ScreenOrientation.valueOf((String) executeMethod.execute(DriverCommand.GET_SCREEN_ORIENTATION, null));
           break;
         case "rotation":
-          response = (DeviceRotation) executeMethod.execute(DriverCommand.GET_SCREEN_ROTATION, null);
+          response = executeMethod.execute(DriverCommand.GET_SCREEN_ROTATION, null);
           break;
         default:
           throw new IllegalArgumentException(method.getName() + ", Not defined in rotatable interface");

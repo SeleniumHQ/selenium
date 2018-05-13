@@ -19,6 +19,7 @@ package org.openqa.selenium.safari;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -70,8 +71,13 @@ public class SafariDriverService extends DriverService {
     }
   }
 
+  @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
     SafariDriverService, SafariDriverService.Builder> {
+
+    public Builder() {
+      usingTechnologyPreview(false);
+    }
 
     public SafariDriverService.Builder usingTechnologyPreview(boolean useTechnologyPreview) {
       if (useTechnologyPreview) {

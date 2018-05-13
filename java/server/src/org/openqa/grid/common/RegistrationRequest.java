@@ -17,19 +17,16 @@
 
 package org.openqa.grid.common;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
-import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesDeSerializer;
-import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -128,35 +125,31 @@ public class RegistrationRequest {
   }
 
   /**
-   * Create an object from a registration request formatted as a JsonObject
-   *
-   * @param json JsonObject
-   * @return
-   */
-  public static RegistrationRequest fromJson(JsonObject json) throws JsonSyntaxException {
-    GsonBuilder builder = new GsonBuilder();
-    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
-                                new CollectionOfDesiredCapabilitiesDeSerializer());
-
-    RegistrationRequest request = builder.excludeFieldsWithoutExposeAnnotation().create()
-      .fromJson(json, RegistrationRequest.class);
-
-    return request;
-  }
-
-  /**
    * Create an object from a registration request formatted as a json string.
    *
-   * @param json JSON String
+   * @param jsonString JSON String
    * @return
    */
-  public static RegistrationRequest fromJson(String json) throws JsonSyntaxException {
-    GsonBuilder builder = new GsonBuilder();
-    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
-                                new CollectionOfDesiredCapabilitiesDeSerializer());
+  public static RegistrationRequest fromJson(String jsonString) throws JsonException {
+    // If we could, we'd just get Json to coerce this for us, but that would lead to endless
+    // recursion as the first thing it would do would be to call this very method. *sigh*
+    Json json = new Json();
+    Map<String, Object> raw = json.toType(jsonString, MAP_TYPE);
+    RegistrationRequest request = new RegistrationRequest();
 
-    RegistrationRequest request = builder.excludeFieldsWithoutExposeAnnotation().create()
-      .fromJson(json, RegistrationRequest.class);
+    if (raw.get("name") instanceof String) {
+      request.name = (String) raw.get("name");
+    }
+
+    if (raw.get("description") instanceof String) {
+      request.description = (String) raw.get("description");
+    }
+
+    if (raw.get("configuration") instanceof Map) {
+      // This is nasty. Look away now!
+      String converted = json.toJson(raw.get("configuration"));
+      request.configuration = GridConfiguredJson.toType(converted, GridNodeConfiguration.class);
+    }
 
     return request;
   }

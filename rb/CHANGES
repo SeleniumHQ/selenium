@@ -1,3 +1,26 @@
+3.12.0 (2018-05-08)
+===================
+
+Ruby:
+  * Added User-Agent header to requests from Selenium to give remote
+    ends more visibility into distribution of clients (thanks @sah)
+  * Added Selenium::WebDriver::VERSION constant (thanks @sah)
+  * Added changelog link to RubyGems page
+  * Fixed a bug when requests were sent with empty Content-Type,
+    which should instead be application/json (issue #5615 and #5659)
+  * Fixed a bug when failed connection attempt was retried without
+    grace period for remote to resolve its problem (thanks @amckinley42)
+  * Fixed a bug with accidentally removed HasNetworkConnection driver extension
+
+Chrome:
+  * Fixed a bug when deprecation message for using Chrome extensions
+    was incorrectly shown (thanks @treby)
+
+Safari:
+  * Added support getting permissions via Driver#permissions
+  * Added support setting permissions via Driver#permissions=
+  * Added support enabling web inspector via Driver#attach_debugger
+
 3.11.0 (2018-03-11)
 ===================
 

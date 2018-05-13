@@ -40,6 +40,13 @@
       "RemoteCapabilities": "MicrosoftEdge"
     },
 
+    "EdgeSpec": {
+      "DriverTypeName": "OpenQA.Selenium.Edge.SpecCompliantEdgeDriver",
+      "AssemblyName": "WebDriver.Edge.Tests",
+      "BrowserValue": "Edge",
+      "RemoteCapabilities": "MicrosoftEdge"
+    },
+
     "Firefox": {
       "DriverTypeName": "OpenQA.Selenium.Firefox.ReleaseFirefoxWebDriver",
       "AssemblyName": "WebDriver.Firefox.Tests",
@@ -64,6 +71,13 @@
     "Safari": {
       "DriverTypeName": "OpenQA.Selenium.Safari.SafariDriver",
       "AssemblyName": "WebDriver",
+      "BrowserValue": "Safari",
+      "RemoteCapabilities": "safari"
+    },
+
+    "SafariTechPreview": {
+      "DriverTypeName": "OpenQA.Selenium.Safari.SafariTechnologyPreviewDriver",
+      "AssemblyName": "WebDriver.Safari.Tests",
       "BrowserValue": "Safari",
       "RemoteCapabilities": "safari"
     },

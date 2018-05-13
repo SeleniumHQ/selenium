@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
-
 
 def testShouldFireClickEventWhenClicking(driver, pages):
     pages.load("javascriptPage.html")
@@ -91,7 +89,6 @@ def testShouldEmitClickEventWhenClickingOnATextInputElement(driver, pages):
     assert clicker.get_attribute("value") == "Clicked"
 
 
-@pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1430571')
 def testClearingAnElementShouldCauseTheOnChangeHandlerToFire(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element_by_id("clearMe")

@@ -933,10 +933,11 @@ class WebDriver(object):
 
     def find_element(self, by=By.ID, value=None):
         """
-        'Private' method used by the find_element_by_* methods.
+        Find an element given a By strategy and locator. Prefer the find_element_by_* methods when
+        possible.
 
         :Usage:
-            Use the corresponding find_element_by_* instead of this.
+            element = driver.find_element(By.ID, 'foo')
 
         :rtype: WebElement
         """
@@ -958,10 +959,11 @@ class WebDriver(object):
 
     def find_elements(self, by=By.ID, value=None):
         """
-        'Private' method used by the find_elements_by_* methods.
+        Find elements given a By strategy and locator. Prefer the find_elements_by_* methods when
+        possible.
 
         :Usage:
-            Use the corresponding find_elements_by_* instead of this.
+            elements = driver.find_elements(By.CLASS_NAME, 'foo')
 
         :rtype: list of WebElement
         """

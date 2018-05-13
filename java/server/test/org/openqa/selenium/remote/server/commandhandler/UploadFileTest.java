@@ -82,9 +82,8 @@ public class UploadFileTest {
     HttpResponse response = new HttpResponse();
     uploadFile.execute(request, response);
 
-    String path = (String) new Json()
-        .toType(response.getContentString(), Response.class)
-        .getValue();
+    Response res = new Json().toType(response.getContentString(), Response.class);
+    String path = (String) res.getValue();
     assertTrue(new File(path).exists());
     assertTrue(path.endsWith(tempFile.getName()));
   }

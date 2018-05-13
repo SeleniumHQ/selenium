@@ -25,7 +25,7 @@ BrowserCookie::BrowserCookie(void) {
   this->value_ = "";
   this->domain_ = "";
   this->path_ = "";
-  this->expiration_time_ = 0.0;
+  this->expiration_time_ = 0;
   this->is_secure_ = false;
   this->is_httponly_ = false;
 }
@@ -42,7 +42,7 @@ BrowserCookie BrowserCookie::FromJson(const Json::Value& json_cookie) {
   Json::Value expiry = json_cookie.get("expiry", Json::Value::null);
   if (!expiry.isNull()) {
     if (expiry.isNumeric()) {
-      cookie.expiration_time_ = expiry.asDouble();
+      cookie.expiration_time_ = expiry.asUInt64();
     }
   }
 

@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Assume;
 import org.junit.Test;
@@ -52,7 +51,7 @@ public class RegistrationRequestTest {
     RegistrationRequest req = new RegistrationRequest(config);
 
     int c = req.getConfiguration().cleanUpCycle;
-    assertTrue(c == 1);
+    assertEquals(1, c);
 
     String url2 = req.getConfiguration().getRemoteHost();
     assertEquals(url2, url.toString());
@@ -104,7 +103,7 @@ public class RegistrationRequestTest {
     assertEquals(4444, req.getConfiguration().getHubPort().longValue());
     // the node defaults to current IP.
     assertNotNull(req.getConfiguration().host);
-    assertEquals(5555, req.getConfiguration().port.longValue());
+    assertEquals(-1, req.getConfiguration().port.longValue());
   }
 
   @Test
@@ -180,7 +179,7 @@ public class RegistrationRequestTest {
     actualConfig.host = null;
     // make sure this merge protected value was preserved, then reset it for the final assert
     assertEquals(1234, actualConfig.port.intValue());
-    actualConfig.port = 5555;
+    actualConfig.port = -1;
 
     // merge actualConfig onto it.. which is what build(config) should do
     GridNodeConfiguration expectedConfig = new GridNodeConfiguration();

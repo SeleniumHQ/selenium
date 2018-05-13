@@ -31,4 +31,16 @@ public class JsonException extends WebDriverException {
     super(jpe.getMessage(), jpe.getCause());
     setStackTrace(jpe.getStackTrace());
   }
+
+  public JsonException(String message) {
+    super(message);
+  }
+
+  public JsonException(Throwable cause) {
+    super(cause);
+  }
+
+  public JsonException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

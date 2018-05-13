@@ -276,8 +276,6 @@ int DocumentHost::SetFocusedFrameByIdentifier(VARIANT frame_identifier) {
 void DocumentHost::PostQuitMessage() {
   LOG(TRACE) << "Entering DocumentHost::PostQuitMessage";
 
-  this->set_is_closing(true);
-
   LPSTR message_payload = new CHAR[this->browser_id_.size() + 1];
   strcpy_s(message_payload, this->browser_id_.size() + 1, this->browser_id_.c_str());
   ::PostMessage(this->executor_handle(),

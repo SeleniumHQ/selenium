@@ -317,6 +317,7 @@ void Browser::DetachEvents() {
 void Browser::Close() {
   LOG(TRACE) << "Entering Browser::Close";
   this->is_explicit_close_requested_ = true;
+  this->set_is_closing(true);
   // Closing the browser, so having focus on a frame doesn't
   // make any sense.
   this->SetFocusedFrameByElement(NULL);

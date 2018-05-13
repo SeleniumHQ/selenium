@@ -31,6 +31,7 @@ import org.openqa.grid.internal.cli.StandaloneCliOptions;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StandaloneConfigurationTest {
@@ -42,6 +43,8 @@ public class StandaloneConfigurationTest {
     assertEquals(StandaloneConfiguration.DEFAULT_BROWSER_TIMEOUT, sc.browserTimeout);
     assertEquals(StandaloneConfiguration.DEFAULT_DEBUG_TOGGLE, sc.debug);
     assertEquals(StandaloneConfiguration.DEFAULT_TIMEOUT, sc.timeout);
+    assertEquals(StandaloneConfiguration.DEFAULT_PORT, sc.port);
+    assertEquals(null, sc.host);
     assertNull(sc.jettyMaxThreads);
     assertNull(sc.log);
   }
@@ -50,7 +53,7 @@ public class StandaloneConfigurationTest {
   public void testConstructorEqualsDefaultConfig() {
     StandaloneConfiguration actual = new StandaloneConfiguration();
     StandaloneConfiguration expected =
-      StandaloneConfiguration.loadFromJSON(StandaloneConfiguration.DEFAULT_STANDALONE_CONFIG_FILE);
+      StandaloneConfiguration.loadFromJson(StandaloneConfiguration.DEFAULT_STANDALONE_CONFIG_FILE, StandaloneConfiguration.class);
 
     assertEquals(expected.role, actual.role);
     assertEquals(expected.browserTimeout, actual.browserTimeout);
@@ -58,6 +61,8 @@ public class StandaloneConfigurationTest {
     assertEquals(expected.timeout, actual.timeout);
     assertEquals(expected.jettyMaxThreads, actual.jettyMaxThreads);
     assertEquals(expected.log, actual.log);
+    assertEquals(expected.port, actual.port);
+    assertEquals(null, actual.host);
   }
 
   @Test
@@ -87,57 +92,59 @@ public class StandaloneConfigurationTest {
     StandaloneConfiguration sc = new StandaloneConfiguration();
 
     // can't merge null onto null
-    assertFalse(sc.isMergeAble(null, null));
+    assertFalse(sc.isMergeAble(String.class,null, null));
 
     // test with Character
-    assertTrue(sc.isMergeAble('a','a'));
-    assertTrue(sc.isMergeAble('a', 'b'));
-    assertTrue(sc.isMergeAble('a', null));
-    assertFalse(sc.isMergeAble(null, 'b'));
+    assertTrue(sc.isMergeAble(Character.class,'a','a'));
+    assertTrue(sc.isMergeAble(Character.class, 'a', 'b'));
+    assertTrue(sc.isMergeAble(Character.class, 'a', null));
+    assertFalse(sc.isMergeAble(Character.class, null, 'b'));
 
     // test with Integer
-    assertTrue(sc.isMergeAble(1, 1));
-    assertTrue(sc.isMergeAble(1, 2));
-    assertTrue(sc.isMergeAble(1, null));
-    assertFalse(sc.isMergeAble(null, 2));
+    assertTrue(sc.isMergeAble(Integer.class,1, 1));
+    assertTrue(sc.isMergeAble(Integer.class,1, 2));
+    assertTrue(sc.isMergeAble(Integer.class,1, null));
+    assertFalse(sc.isMergeAble(Integer.class,null, 2));
 
     // test with Boolean
-    assertTrue(sc.isMergeAble(true, true));
-    assertTrue(sc.isMergeAble(true, false));
-    assertTrue(sc.isMergeAble(true, null));
-    assertFalse(sc.isMergeAble(null, false));
+    assertTrue(sc.isMergeAble(Boolean.class, true, true));
+    assertTrue(sc.isMergeAble(Boolean.class, true, false));
+    assertTrue(sc.isMergeAble(Boolean.class, true, null));
+    assertFalse(sc.isMergeAble(Boolean.class, null, false));
 
     // test with String
-    assertTrue(sc.isMergeAble("a", "a"));
-    assertTrue(sc.isMergeAble("a", "b"));
-    assertTrue(sc.isMergeAble("a", null));
-    assertFalse(sc.isMergeAble(null, "b"));
+    assertTrue(sc.isMergeAble(String.class, "a", "a"));
+    assertTrue(sc.isMergeAble(String.class, "a", "b"));
+    assertTrue(sc.isMergeAble(String.class, "a", null));
+    assertFalse(sc.isMergeAble(String.class, null, "b"));
 
     // test with Collections
-    assertTrue(sc.isMergeAble(Arrays.asList("a", "b"),
+    assertTrue(sc.isMergeAble(List.class,
+                              Arrays.asList("a", "b"),
                               Arrays.asList("b", "c")));
-    assertTrue(sc.isMergeAble(Arrays.asList("a", "b"),
+    assertTrue(sc.isMergeAble(List.class,
+                              Arrays.asList("a", "b"),
                               Arrays.asList("a", "b")));
-    assertTrue(sc.isMergeAble(Arrays.asList("b", "c"), Collections.emptyList()));
-    assertTrue(sc.isMergeAble(Arrays.asList("b", "c"), null));
-    assertFalse(sc.isMergeAble(Collections.emptyList(), Arrays.asList("b", "c")));
-    assertFalse(sc.isMergeAble(null, Arrays.asList("b", "c")));
+    assertTrue(sc.isMergeAble(List.class, Arrays.asList("b", "c"), Collections.emptyList()));
+    assertTrue(sc.isMergeAble(List.class, Arrays.asList("b", "c"), null));
+    assertFalse(sc.isMergeAble(List.class, Collections.emptyList(), Arrays.asList("b", "c")));
+    assertFalse(sc.isMergeAble(List.class, null, Arrays.asList("b", "c")));
 
     // test with Maps
     Map<String, Integer> map = new ImmutableMap.Builder<String, Integer>()
       .put("one", 1).put("two", 2).build();
     Map<String, Integer> map2 = new ImmutableMap.Builder<String, Integer>()
       .put("three", 3).put("four", 4).build();
-    assertTrue(sc.isMergeAble(map, map));
-    assertTrue(sc.isMergeAble(map, map2));
-    assertTrue(sc.isMergeAble(map, null));
+    assertTrue(sc.isMergeAble(Map.class, map, map));
+    assertTrue(sc.isMergeAble(Map.class, map, map2));
+    assertTrue(sc.isMergeAble(Map.class, map, null));
 
     Map<String, Integer> map3 = new HashMap<>();
     map3.put("five", 5);
-    assertTrue(sc.isMergeAble(map3, new HashMap<>()));
+    assertTrue(sc.isMergeAble(Map.class, map3, new HashMap<>()));
 
-    assertFalse(sc.isMergeAble(new ImmutableMap.Builder<String, Integer>().build(), map3));
-    assertFalse(sc.isMergeAble(null, map3));
+    assertFalse(sc.isMergeAble(Map.class, new ImmutableMap.Builder<String, Integer>().build(), map3));
+    assertFalse(sc.isMergeAble(Map.class, null, map3));
   }
 
   @Test
@@ -162,5 +169,4 @@ public class StandaloneConfigurationTest {
     assertNotEquals(other.log, sc.log);
     assertNotEquals(other.role, sc.role);
   }
-
 }

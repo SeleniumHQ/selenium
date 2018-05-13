@@ -140,7 +140,6 @@ public class ContentEditableTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = CHROME, reason = "Prepends text")
   @NotYetImplemented(value = EDGE)
-  @NotYetImplemented(IE)
   @NotYetImplemented(value = MARIONETTE, reason = "Doesn't write anything")
   @NotYetImplemented(value = SAFARI, reason = "Prepends text")
   public void appendsTextToEndOfContentEditableWithMultipleTextNodes() {

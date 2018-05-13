@@ -45,13 +45,6 @@ public class GridConfiguration extends StandaloneConfiguration {
   public Map<String, String> custom = new HashMap<>();
 
   /**
-   * Hostname or IP to use. Defaults to {@code null}. Automatically determined when {@code null}.
-   */
-  @Expose
-  // initially defaults to null from type
-  public String host;
-
-  /**
    * Max "browser" sessions a node can handle. Default determined by configuration type.
    */
   @Expose
@@ -87,24 +80,23 @@ public class GridConfiguration extends StandaloneConfiguration {
     }
     super.merge(other);
 
-    // don't merge 'host'
-    if (isMergeAble(other.cleanUpCycle, cleanUpCycle)) {
+    if (isMergeAble(Integer.class, other.cleanUpCycle, cleanUpCycle)) {
       cleanUpCycle = other.cleanUpCycle;
     }
-    if (isMergeAble(other.custom, custom)) {
+    if (isMergeAble(Map.class, other.custom, custom)) {
       if (custom == null) {
         custom = new HashMap<>();
       }
       custom.putAll(other.custom);
     }
-    if (isMergeAble(other.maxSession, maxSession) &&
-        other.maxSession.intValue() > 0) {
+    if (isMergeAble(Integer.class, other.maxSession, maxSession) &&
+        other.maxSession > 0) {
       maxSession = other.maxSession;
     }
-    if (isMergeAble(other.servlets, servlets)) {
+    if (isMergeAble(List.class, other.servlets, servlets)) {
       servlets = other.servlets;
     }
-    if (isMergeAble(other.withoutServlets, withoutServlets)) {
+    if (isMergeAble(List.class, other.withoutServlets, withoutServlets)) {
       withoutServlets = other.withoutServlets;
     }
   }
@@ -125,7 +117,6 @@ public class GridConfiguration extends StandaloneConfiguration {
     sb.append(super.toString(format));
     sb.append(toString(format, "cleanUpCycle", cleanUpCycle));
     sb.append(toString(format, "custom", custom));
-    sb.append(toString(format, "host", host));
     sb.append(toString(format, "maxSession", maxSession));
     sb.append(toString(format, "servlets", servlets));
     sb.append(toString(format, "withoutServlets", withoutServlets));

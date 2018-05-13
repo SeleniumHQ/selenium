@@ -29,6 +29,11 @@ namespace OpenQA.Selenium.IE
     public enum InternetExplorerElementScrollBehavior
     {
         /// <summary>
+        /// Indicates the behavior is unspecified.
+        /// </summary>
+        Default,
+
+        /// <summary>
         /// Scrolls elements to align with the top of the viewport.
         /// </summary>
         Top,
@@ -126,7 +131,7 @@ namespace OpenQA.Selenium.IE
         private TimeSpan fileUploadDialogTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
         private string browserCommandLineArguments = string.Empty;
-        private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
+        private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Default;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Dictionary<string, object> additionalInternetExplorerOptions = new Dictionary<string, object>();
 
@@ -432,9 +437,16 @@ namespace OpenQA.Selenium.IE
                 internetExplorerOptionsDictionary[InitialBrowserUrlCapability] = this.initialBrowserUrl;
             }
 
-            if (this.elementScrollBehavior == InternetExplorerElementScrollBehavior.Bottom)
+            if (this.elementScrollBehavior != InternetExplorerElementScrollBehavior.Default)
             {
-                internetExplorerOptionsDictionary[ElementScrollBehaviorCapability] = 1;
+                if (this.elementScrollBehavior == InternetExplorerElementScrollBehavior.Bottom)
+                {
+                    internetExplorerOptionsDictionary[ElementScrollBehaviorCapability] = 1;
+                }
+                else
+                {
+                    internetExplorerOptionsDictionary[ElementScrollBehaviorCapability] = 0;
+                }
             }
 
             if (this.browserAttachTimeout != TimeSpan.MinValue)

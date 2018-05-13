@@ -35,6 +35,7 @@ import com.google.common.io.FileBackedOutputStream;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
@@ -68,7 +69,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,20 +79,7 @@ public class NewSessionPayload implements Closeable {
   private final Set<CapabilityTransform> transforms;
 
   private static final Dialect DEFAULT_DIALECT = Dialect.OSS;
-  private final static Predicate<String> ACCEPTED_W3C_PATTERNS = Stream.of(
-      "^[\\w-]+:.*$",
-      "^acceptInsecureCerts$",
-      "^browserName$",
-      "^browserVersion$",
-      "^platformName$",
-      "^pageLoadStrategy$",
-      "^proxy$",
-      "^setWindowRect$",
-      "^timeouts$",
-      "^unhandledPromptBehavior$")
-      .map(Pattern::compile)
-      .map(Pattern::asPredicate)
-      .reduce(identity -> false, Predicate::or);
+  private final static Predicate<String> ACCEPTED_W3C_PATTERNS = new AcceptedW3CCapabilityKeys();
 
   private final Json json = new Json();
   private final FileBackedOutputStream backingStore;
@@ -223,6 +210,24 @@ public class NewSessionPayload implements Closeable {
             .orElse(new ImmutableCapabilities())
             .asMap();
       }
+      if (first.containsKey(CapabilityType.PROXY)) {
+        Map<String, Object> proxyMap;
+        Object rawProxy = first.get(CapabilityType.PROXY);
+        if (rawProxy instanceof Proxy) {
+          proxyMap = ((Proxy) rawProxy).toJson();
+        } else if (rawProxy instanceof Map) {
+          proxyMap = (Map<String, Object>) rawProxy;
+        } else {
+          proxyMap = new HashMap<>();
+        }
+        if (proxyMap.containsKey("noProxy")) {
+          Object rawData = proxyMap.get("noProxy");
+          if (rawData instanceof List) {
+            proxyMap.put("noProxy", ((List<String>) rawData).stream().collect(Collectors.joining(",")));
+          }
+          first.put(CapabilityType.PROXY, proxyMap);
+        }
+      }
 
       // Write the first capability we get as the desired capability.
       json.name("desiredCapabilities");
@@ -241,7 +246,7 @@ public class NewSessionPayload implements Closeable {
       json.name("firstMatch");
       json.beginArray();
       //noinspection unchecked
-      getW3C().forEach(map -> json.write(map));
+      getW3C().forEach(json::write);
       json.endArray();
 
       json.endObject();  // Close "capabilities" object
@@ -273,28 +278,6 @@ public class NewSessionPayload implements Closeable {
         }
       }
     }
-  }
-
-  private void streamW3CProtocolParameters(JsonOutput out, Map<String, Object> des) {
-    // Technically we should be building up a combination of "alwaysMatch" and "firstMatch" options.
-    // We're going to do a little processing to figure out what we might be able to do, and assume
-    // that people don't really understand the difference between required and desired (which is
-    // commonly the case). Wish us luck. Looking at the current implementations, people may have
-    // set options for multiple browsers, in which case a compliant W3C remote end won't start
-    // a session. If we find this, then we create multiple firstMatch capabilities. Furrfu.
-    // The table of options are:
-    //
-    // Chrome: chromeOptions
-    // Firefox: moz:.*, firefox_binary, firefox_profile, marionette
-    // Edge: none given
-    // IEDriver: ignoreZoomSetting, initialBrowserUrl, enableElementCacheCleanup,
-    //   browserAttachTimeout, enablePersistentHover, requireWindowFocus, logFile, logLevel, host,
-    //   extractPath, silent, ie.*
-    // Opera: operaOptions
-    // SafariDriver: safari.options
-    //
-    // We can't use the constants defined in the classes because it would introduce circular
-    // dependencies between the remote library and the implementations. Yay!
   }
 
   /**
@@ -388,13 +371,12 @@ public class NewSessionPayload implements Closeable {
           .map(this::applyTransforms)
           .map(map -> map.entrySet().stream()
               .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
-             .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue)))
-          .map(map -> (Map<String, Object>) map);
+             .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue)));
     } else {
       fromOss = Stream.of();
     }
 
-    Stream<Map<String, Object>> fromW3c = null;
+    Stream<Map<String, Object>> fromW3c;
     Map<String, Object> alwaysMatch = getAlwaysMatch();
     Collection<Map<String, Object>> firsts = getFirstMatches();
 
@@ -421,8 +403,7 @@ public class NewSessionPayload implements Closeable {
       return null;
     }
 
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.putAll(capabilities);
+    Map<String, Object> toReturn = new TreeMap<>(capabilities);
 
     // Platform name
     if (capabilities.containsKey(PLATFORM) && !capabilities.containsKey(PLATFORM_NAME)) {

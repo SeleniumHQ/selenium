@@ -49,7 +49,7 @@ public class GetLogsOfType implements CommandHandler {
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
     String originalPayload = req.getContentString();
 
-    Map<?, ?> args = json.toType(originalPayload, Json.MAP_TYPE);
+    Map<String, Object> args = json.toType(originalPayload, Json.MAP_TYPE);
     String type = (String) args.get("type");
 
     if (!LogType.SERVER.equals(type)) {

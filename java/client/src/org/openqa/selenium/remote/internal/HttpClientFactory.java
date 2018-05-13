@@ -21,7 +21,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolException;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.client.CredentialsProvider;
@@ -76,6 +75,7 @@ public class HttpClientFactory {
         socketFactoryRegistry);
     cm.setMaxTotal(2000);
     cm.setDefaultMaxPerRoute(2000);
+    cm.setValidateAfterInactivity(10000);
     return cm;
   }
 
@@ -137,7 +137,6 @@ public class HttpClientFactory {
 
   protected RequestConfig createRequestConfig(int connectionTimeout, int socketTimeout) {
     return RequestConfig.custom()
-        .setStaleConnectionCheckEnabled(true)
         .setConnectTimeout(connectionTimeout)
         .setSocketTimeout(socketTimeout)
         .build();
@@ -163,13 +162,11 @@ public class HttpClientFactory {
 
   static class MyRedirectHandler implements RedirectStrategy {
 
-    public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context)
-        throws ProtocolException {
+    public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context) {
       return false;
     }
 
-    public HttpUriRequest getRedirect(HttpRequest request, HttpResponse response,
-                                      HttpContext context) throws ProtocolException {
+    public HttpUriRequest getRedirect(HttpRequest request, HttpResponse response, HttpContext context) {
       return null;
     }
   }

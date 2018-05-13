@@ -230,14 +230,6 @@ public class InternetExplorerDriver extends RemoteWebDriver {
         "via RemoteWebDriver");
   }
 
-  public <X> X getScreenshotAs(OutputType<X> target) {
-    // Get the screenshot as base64.
-    String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
-
-    // ... and convert it.
-    return target.convertFromBase64Png(base64);
-  }
-
   protected void assertOnWindows() {
     Platform current = Platform.getCurrent();
     if (!current.is(Platform.WINDOWS)) {

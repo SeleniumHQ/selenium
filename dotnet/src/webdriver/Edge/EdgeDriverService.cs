@@ -1,4 +1,4 @@
-﻿// <copyright file="EdgeDriverService.cs" company="Microsoft">
+// <copyright file="EdgeDriverService.cs" company="Microsoft">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -33,6 +33,7 @@ namespace OpenQA.Selenium.Edge
         private string host;
         private string package;
         private bool useVerboseLogging;
+        private bool? useSpecCompliantProtocol;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriverService"/> class.
@@ -73,6 +74,61 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the <see cref="EdgeDriverService"/> instance
+        /// should use the a protocol dialect compliant with the W3C WebDriver Specification.
+        /// </summary>
+        /// <remarks>
+        /// Setting this property to a non-<see langword="null"/> value for driver
+        /// executables matched to versions of Windows before the 2018 Fall Creators
+        /// Update will result in a the driver executable shutting down without
+        /// execution, and all commands will fail. Do not set this property unless
+        /// you are certain your version of the MicrosoftWebDriver.exe supports the
+        /// --w3c and --jwp command-line arguments.
+        /// </remarks>
+        public bool? UseSpecCompliantProtocol
+        {
+            get { return this.useSpecCompliantProtocol; }
+            set { this.useSpecCompliantProtocol = value; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the service has a shutdown API that can be called to terminate
+        /// it gracefully before forcing a termination.
+        /// </summary>
+        protected override bool HasShutdown
+        {
+            get
+            {
+                if (this.useSpecCompliantProtocol.HasValue && this.useSpecCompliantProtocol.Value)
+                {
+                    return false;
+                }
+
+                return base.HasShutdown;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating the time to wait for the service to terminate before forcing it to terminate.
+        /// </summary>
+        protected override TimeSpan TerminationTimeout
+        {
+            // Use a very small timeout for terminating the Firefox driver,
+            // because the executable does not have a clean shutdown command,
+            // which means we have to kill the process. Using a short timeout
+            // gets us to the termination point much faster.
+            get
+            {
+                if (this.useSpecCompliantProtocol.HasValue && this.useSpecCompliantProtocol.Value)
+                {
+                    return TimeSpan.FromMilliseconds(100);
+                }
+
+                return base.TerminationTimeout;
+            }
+        }
+
+        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
@@ -93,6 +149,23 @@ namespace OpenQA.Selenium.Edge
                 if (this.useVerboseLogging)
                 {
                     argsBuilder.Append(" --verbose");
+                }
+
+                if (this.SuppressInitialDiagnosticInformation)
+                {
+                    argsBuilder.Append(" --silent");
+                }
+
+                if (this.useSpecCompliantProtocol.HasValue)
+                {
+                    if (this.useSpecCompliantProtocol.Value)
+                    {
+                        argsBuilder.Append(" --w3c");
+                    }
+                    else
+                    {
+                        argsBuilder.Append(" --jwp");
+                    }
                 }
 
                 return argsBuilder.ToString();

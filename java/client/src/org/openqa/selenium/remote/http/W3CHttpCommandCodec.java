@@ -244,13 +244,15 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         return toScript("return Object.keys(localStorage)");
 
       case SET_LOCAL_STORAGE_ITEM:
-        return toScript("localStorage.setItem('arguments[0]', 'arguments[1]')");
+        return toScript("localStorage.setItem(arguments[0], arguments[1])",
+                        parameters.get("key"), parameters.get("value"));
 
       case REMOVE_LOCAL_STORAGE_ITEM:
-        return toScript("localStorage.removeItem('arguments[0]')");
+        return toScript("var item = localStorage.getItem(arguments[0]); localStorage.removeItem(arguments[0]); return item",
+                        parameters.get("key"));
 
       case GET_LOCAL_STORAGE_ITEM:
-        return toScript("return localStorage.getItem('arguments[0]')");
+        return toScript("return localStorage.getItem(arguments[0])", parameters.get("key"));
 
       case GET_LOCAL_STORAGE_SIZE:
         return toScript("return localStorage.length");
@@ -262,13 +264,15 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         return toScript("return Object.keys(sessionStorage)");
 
       case SET_SESSION_STORAGE_ITEM:
-        return toScript("sessionStorage.setItem('arguments[0]', 'arguments[1]')");
+        return toScript("sessionStorage.setItem(arguments[0], arguments[1])",
+                        parameters.get("key"), parameters.get("value"));
 
       case REMOVE_SESSION_STORAGE_ITEM:
-        return toScript("sessionStorage.removeItem('arguments[0]')");
+        return toScript("var item = sessionStorage.getItem(arguments[0]); sessionStorage.removeItem(arguments[0]); return item",
+                        parameters.get("key"));
 
       case GET_SESSION_STORAGE_ITEM:
-        return toScript("return sessionStorage.getItem('arguments[0]')");
+        return toScript("return sessionStorage.getItem(arguments[0])", parameters.get("key"));
 
       case GET_SESSION_STORAGE_SIZE:
         return toScript("return sessionStorage.length");

@@ -565,45 +565,40 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
  * @return {boolean} Whether or not the element is visible.
  */
 bot.dom.isShown = function(elem, opt_ignoreOpacity) {
-  var displayed;
+  /**
+   * Determines whether an element or its parents have `display: none` set
+   * @param {!Node} e the element
+   * @return {boolean}
+   */
+  function displayed(e) {
+    if (bot.dom.isElement(e)) {
+      var elem = /** @type {!Element} */ (e);
+      if (bot.dom.getEffectiveStyle(elem, 'display') == 'none') {
+        return false;
+      }
+    }
 
-  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
-    // Any element with a display style equal to 'none' or that has an ancestor
-    // with display style equal to 'none' is not shown.
-    displayed = function(e) {
-      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
+    var parent = bot.dom.getParentNodeInComposedDom(e);
+
+    if (bot.dom.IS_SHADOW_DOM_ENABLED && (parent instanceof ShadowRoot)) {
+      if (parent.host.shadowRoot !== parent) {
+        // There is a younger shadow root, which will take precedence over
+        // the shadow this element is in, thus this element won't be
+        // displayed.
         return false;
+      } else {
+        parent = parent.host;
       }
-      var parent;
-      do {
-        parent = bot.dom.getParentNodeInComposedDom(e);
-        if (parent instanceof ShadowRoot) {
-          if (parent.host.shadowRoot != parent) {
-            // There is a younger shadow root, which will take precedence over
-            // the shadow this element is in, thus this element won't be
-            // displayed.
-            return false;
-          } else {
-            parent = parent.host;
-          }
-        } else if (parent && (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
-            parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT)) {
-          parent = null;
-        }
-      } while (elem && elem.nodeType != goog.dom.NodeType.ELEMENT);
-      return !parent || displayed(parent);
-    };
-  } else {
-    // Any element with a display style equal to 'none' or that has an ancestor
-    // with display style equal to 'none' is not shown.
-    displayed =  function(e) {
-      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
-        return false;
-      }
-      var parent = bot.dom.getParentElement(e);
-      return !parent || displayed(parent);
-    };
+    }
+
+    if (parent && (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
+        parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT)) {
+      return true;
+    }
+
+    return parent && displayed(parent);
   }
+
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
 };
 
@@ -1260,12 +1255,22 @@ bot.dom.getOpacityNonIE_ = function(elem) {
  */
 bot.dom.getParentNodeInComposedDom = function(node) {
   var /**@type {Node}*/ parent = node.parentNode;
+
+  // Shadow DOM v1
+  if (parent.shadowRoot && node.assignedSlot !== undefined) {
+    // Can be null on purpose, meaning it has no parent as
+    // it hasn't yet been slotted
+    return node.assignedSlot ? node.assignedSlot.parentNode : null;
+  }
+
+  // Shadow DOM V0 (deprecated)
   if (node.getDestinationInsertionPoints) {
     var destinations = node.getDestinationInsertionPoints();
     if (destinations.length > 0) {
-      parent = destinations[destinations.length - 1];
+      return destinations[destinations.length - 1];
     }
   }
+
   return parent;
 };
 
@@ -1289,16 +1294,22 @@ bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
   } else if (bot.dom.isElement(node)) {
     var castElem = /** @type {!Element} */ (node);
 
-    if (bot.dom.isElement(node, 'CONTENT')) {
+    if (bot.dom.isElement(node, 'CONTENT') || bot.dom.isElement(node, 'SLOT')) {
       var parentNode = node;
       while (parentNode.parentNode) {
         parentNode = parentNode.parentNode;
       }
       if (parentNode instanceof ShadowRoot) {
-        // If the element is <content> and we're inside a shadow DOM then just 
+        // If the element is <content> and we're inside a shadow DOM then just
         // append the contents of the nodes that have been distributed into it.
         var contentElem = /** @type {!Object} */ (node);
-        goog.array.forEach(contentElem.getDistributedNodes(), function(node) {
+        var shadowChildren;
+        if (bot.dom.isElement(node, 'CONTENT')) {
+          shadowChildren = contentElem.getDistributedNodes();
+        } else {
+          shadowChildren = contentElem.assignedNodes();
+        }
+        goog.array.forEach(shadowChildren, function(node) {
           bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
               node, lines, shown, whitespace, textTransform);
         });
@@ -1353,8 +1364,10 @@ bot.dom.isNodeDistributedIntoShadowDom = function(node) {
     elemOrText = /** @type {!Text} */ (node);
   }
   return elemOrText != null &&
-      elemOrText.getDestinationInsertionPoints &&
-      elemOrText.getDestinationInsertionPoints().length > 0;
+      (elemOrText.assignedSlot != null ||
+        (elemOrText.getDestinationInsertionPoints &&
+        elemOrText.getDestinationInsertionPoints().length > 0)
+      );
 };
 
 

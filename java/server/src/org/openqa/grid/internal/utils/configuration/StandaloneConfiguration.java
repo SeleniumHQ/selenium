@@ -18,26 +18,34 @@
 package org.openqa.grid.internal.utils.configuration;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.annotations.Expose;
 
+import org.openqa.grid.common.GridConfiguredJson;
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.listeners.Prioritizer;
+import org.openqa.grid.internal.utils.CapabilityMatcher;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeCoercer;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Field;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -86,15 +94,15 @@ public class StandaloneConfiguration {
    */
   @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private boolean avoidProxy;
+  private transient boolean avoidProxy;
 
   @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private boolean browserSideLog;
+  private transient boolean browserSideLog;
 
   @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private boolean captureLogsOnQuit;
+  private transient boolean captureLogsOnQuit;
 
   /*
    * config parameters which serialize and deserialize to/from json
@@ -125,6 +133,13 @@ public class StandaloneConfiguration {
   public String log;
 
   /**
+   * Hostname or IP to use. Defaults to {@code null}. Automatically determined when {@code null}.
+   */
+  @Expose
+  // initially defaults to null from type
+  public String host;
+
+  /**
    * Port to bind to. Default determined by configuration type.
    */
   @Expose
@@ -149,27 +164,25 @@ public class StandaloneConfiguration {
     // nothing to do.
   }
 
-  /**
-   * @param filePath node config json file to load configuration from
-   */
-  public static StandaloneConfiguration loadFromJSON(String filePath) {
-    return loadFromJSON(loadJSONFromResourceOrFile(filePath));
-  }
-
-  /**
-   * @param json JsonObject to load configuration from
-   */
-  public static StandaloneConfiguration loadFromJSON(JsonObject json) {
-    try {
-      GsonBuilder builder = new GsonBuilder();
-      StandaloneConfiguration config =
-        builder.excludeFieldsWithoutExposeAnnotation().create().fromJson(json, StandaloneConfiguration.class);
-      return config;
-    } catch (Throwable e) {
-      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
-                                           e);
+  public static<T extends StandaloneConfiguration> T loadFromJson(String resource, Class<T> type) {
+    try (JsonInput jsonInput = loadJsonFromResourceOrFile(resource)) {
+      return loadFromJson(jsonInput, type);
     }
   }
+
+  public static<T extends StandaloneConfiguration> T loadFromJson(JsonInput jsonInput, Class<T> type) {
+    try {
+      return GridConfiguredJson.toType(jsonInput, type);
+    } catch (GridConfigurationException e) {
+      throw e;
+    } catch (Throwable e) {
+      throw new GridConfigurationException(e.getMessage(), e);
+    }
+  }
+
+  protected Collection<TypeCoercer<?>> getCoercers() {
+    return ImmutableSet.of();
+  };
 
   /**
    * copy another configuration's values into this one if they are set.
@@ -179,28 +192,29 @@ public class StandaloneConfiguration {
       return;
     }
 
-    if (isMergeAble(other.browserTimeout, browserTimeout)) {
+    if (isMergeAble(Integer.class, other.browserTimeout, browserTimeout)) {
       browserTimeout = other.browserTimeout;
     }
-    if (isMergeAble(other.jettyMaxThreads, jettyMaxThreads)) {
+    if (isMergeAble(Integer.class, other.jettyMaxThreads, jettyMaxThreads)) {
       jettyMaxThreads = other.jettyMaxThreads;
     }
-    if (isMergeAble(other.timeout, timeout)) {
+    if (isMergeAble(Integer.class, other.timeout, timeout)) {
       timeout = other.timeout;
     }
-    // role, port, log, debug, version, enablePassThrough, and help are not merged, they are only consumed by the
-    // immediately running process and should never affect a remote
+    // role, host, port, log, debug, version, enablePassThrough, and help are not merged,
+    // they are only consumed by the immediately running process and should never affect a remote
   }
 
   /**
    * Determines if one object can be merged onto another object. Checks for {@code null},
    * and empty (Collections & Maps) to make decision.
    *
-   * @param other the object to merge. must be the same type as the 'target'
-   * @param target the object to merge on to. must be the same type as the 'other'
-   * @return whether the 'other' can be merged onto the 'target'
+   * @param targetType The type that both {@code other} and {@code target} must be assignable to.
+   * @param other the object to merge. must be the same type as the 'target'.
+   * @param target the object to merge on to. must be the same type as the 'other'.
+   * @return whether the 'other' can be merged onto the 'target'.
    */
-  protected boolean isMergeAble(Object other, Object target) {
+  protected boolean isMergeAble(Class<?> targetType, Object other, Object target) {
     // don't merge a null value
     if (other == null) {
       return false;
@@ -213,9 +227,8 @@ public class StandaloneConfiguration {
 
     // we know we have two objects with value.. Make sure the types are the same and
     // perform additional checks.
-
-    if (! target.getClass().getSuperclass().getTypeName()
-        .equals(other.getClass().getSuperclass().getTypeName())) {
+    if (!targetType.isAssignableFrom(target.getClass()) ||
+        !targetType.isAssignableFrom(other.getClass())) {
       return false;
     }
 
@@ -236,6 +249,7 @@ public class StandaloneConfiguration {
     sb.append(toString(format, "debug", debug));
     sb.append(toString(format, "jettyMaxThreads", jettyMaxThreads));
     sb.append(toString(format, "log", log));
+    sb.append(toString(format, "host", host));
     sb.append(toString(format, "port", port));
     sb.append(toString(format, "role", role));
     sb.append(toString(format, "timeout", timeout));
@@ -268,32 +282,50 @@ public class StandaloneConfiguration {
   /**
    * Return a JsonElement representation of the configuration. Does not serialize nulls.
    */
-  public JsonElement toJson() {
-    GsonBuilder builder = new GsonBuilder();
-    addJsonTypeAdapter(builder);
-    //Note: it's important that nulls ARE NOT serialized, for backwards compatibility
-    return builder.excludeFieldsWithoutExposeAnnotation().create().toJsonTree(this);
-  }
+  public Map<String, Object> toJson() {
+    Set<Field> fields = new HashSet<>();
+    for (Class current = getClass(); !current.equals(Object.class); current = current.getSuperclass()) {
+      fields.addAll(Arrays.asList(current.getDeclaredFields()));
+    }
 
-  protected void addJsonTypeAdapter(GsonBuilder builder) {
-    // no default implementation
+    return fields.stream()
+        .filter(field -> field.getAnnotation(Expose.class) != null)
+        .filter(field -> field.getAnnotation(Expose.class).serialize())
+        .peek(field -> field.setAccessible(true))
+        .map(
+            field -> {
+              try {
+                Object value = field.get(StandaloneConfiguration.this);
+                // TODO: avoid nastiness like this
+                if (value instanceof CapabilityMatcher || value instanceof Prioritizer) {
+                  value = value.getClass().getName();
+                }
+                return new AbstractMap.SimpleImmutableEntry<>(field.getName(), value);
+              } catch (ReflectiveOperationException e) {
+                throw new WebDriverException(e);
+              }
+            })
+        // Note: it's important that nulls ARE NOT serialized, for backwards compatibility
+        .filter(entry -> entry.getValue() != null)
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   /**
-   * load a JSON file from the resource or file system.
+   * load a JSON file from the resource or file system. As a fallback, treats {@code resource} as a
+   * JSON string to be parsed.
    *
    * @param resource file or jar resource location
    * @return A JsonObject representing the passed resource argument.
    */
-  protected static JsonObject loadJSONFromResourceOrFile(String resource) {
+  protected static JsonInput loadJsonFromResourceOrFile(String resource) {
     try {
-      return new JsonParser().parse(readFileOrResource(resource)).getAsJsonObject();
-    } catch (JsonSyntaxException e) {
-      throw new GridConfigurationException("Wrong format for the JSON input : " + e.getMessage(), e);
+      return new Json().newInput(readFileOrResource(resource));
+    } catch (RuntimeException e) {
+      throw new GridConfigurationException("Unable to read input", e);
     }
   }
 
-  private static String readFileOrResource(String resource) {
+  private static Reader readFileOrResource(String resource) {
     Stream<Function<String, InputStream>> suppliers = Stream.of(
         (path) -> {
           try {
@@ -303,7 +335,8 @@ public class StandaloneConfiguration {
           } },
         (path) -> Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("org/openqa/grid/common/" + path),
-        (path) -> Thread.currentThread().getContextClassLoader().getResourceAsStream(path)
+        (path) -> Thread.currentThread().getContextClassLoader().getResourceAsStream(path),
+        (path) -> new ByteArrayInputStream(path.getBytes())
     );
 
     InputStream in = suppliers
@@ -312,16 +345,6 @@ public class StandaloneConfiguration {
         .findFirst()
         .orElseThrow(() -> new RuntimeException(resource + " is not a valid resource."));
 
-    try(BufferedReader buffreader = new BufferedReader(new InputStreamReader(in))) {
-      return buffreader.lines().collect(Collectors.joining("\n"));
-    } catch (IOException e) {
-      throw new GridConfigurationException("Cannot read file or resource " + resource + ", " + e.getMessage(), e);
-    } finally {
-      try {
-        in.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+    return new BufferedReader(new InputStreamReader(in));
   }
 }

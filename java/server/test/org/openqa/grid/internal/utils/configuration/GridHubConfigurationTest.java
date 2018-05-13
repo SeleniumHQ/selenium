@@ -24,13 +24,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import com.beust.jcommander.JCommander;
-
 import org.junit.Test;
 import org.openqa.grid.internal.cli.GridHubCliOptions;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 
 public class GridHubConfigurationTest {
 
@@ -96,10 +97,13 @@ public class GridHubConfigurationTest {
   }
 
   @Test
-  public void testLoadFromJson() {
-    JsonObject json = new JsonParser()
-      .parse("{ \"host\": \"dummyhost\", \"port\": 1234 }").getAsJsonObject();
-    GridHubConfiguration ghc = GridHubConfiguration.loadFromJSON(json);
+  public void testLoadFromJson() throws IOException {
+    GridHubConfiguration ghc;
+
+    try (Reader reader = new StringReader("{ \"host\": \"dummyhost\", \"port\": 1234 }");
+        JsonInput jsonInput = new Json().newInput(reader)) {
+          ghc = GridHubConfiguration.loadFromJson(jsonInput, GridHubConfiguration.class);
+    }
 
     assertEquals("hub", ghc.role);
     assertEquals(1234, ghc.port.intValue());

@@ -20,7 +20,6 @@ package org.openqa.grid.web.servlet;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableSortedMap;
-import com.google.gson.JsonElement;
 
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -34,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -76,33 +76,42 @@ public class HubStatusServlet extends RegistryBasedServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    process(request, response);
+    process(request, response, new HashMap());
   }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    process(req, resp);
+    if (req.getInputStream() != null) {
+      Map<String, Object> json = getRequestJSON(req);
+      process(req, resp, json);
+    } else {
+      process(req, resp, new HashMap<>());
+    }
+
   }
 
-  protected void process(HttpServletRequest request, HttpServletResponse response)
+  protected void process(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Map<String, Object> requestJson)
       throws IOException {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
     try (Writer writer = response.getWriter();
          JsonOutput out = json.newOutput(writer)) {
-      Map<String, Object> res = getResponse(request);
+      Map<String, Object> res = getResponse(request, requestJson);
       out.write(res);
     }
   }
 
-  private Map<String, Object> getResponse(HttpServletRequest request) {
+  private Map<String, Object> getResponse(
+      HttpServletRequest request,
+      Map<String, Object> requestJSON) {
     Map<String, Object> res = new TreeMap<>();
     res.put("success", true);
 
     try {
-      if (request.getInputStream() != null) {
-        Map<String, Object> requestJSON = getRequestJSON(request);
         List<String> keysToReturn = null;
 
         if (request.getParameter("configuration") != null && !"".equals(request.getParameter("configuration"))) {
@@ -113,8 +122,8 @@ public class HubStatusServlet extends RegistryBasedServlet {
         }
 
         GridRegistry registry = getRegistry();
-        JsonElement config = registry.getHub().getConfiguration().toJson();
-        for (Map.Entry<String, JsonElement> entry : config.getAsJsonObject().entrySet()) {
+        Map<String, Object> config = registry.getHub().getConfiguration().toJson();
+        for (Map.Entry<String, Object> entry : config.entrySet()) {
           if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains(entry.getKey())) {
             res.put(entry.getKey(), entry.getValue());
           }
@@ -126,7 +135,6 @@ public class HubStatusServlet extends RegistryBasedServlet {
         if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("slotCounts")) {
           res.put("slotCounts", getSlotCounts());
         }
-      }
     } catch (Exception e) {
       res.remove("success");
       res.put("success", false);

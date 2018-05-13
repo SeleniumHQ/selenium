@@ -17,89 +17,169 @@
 
 package org.openqa.selenium.json;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 
 import java.io.Closeable;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.concurrent.Callable;
 
 public class JsonInput implements Closeable {
-  private final Gson gson;
   private final JsonReader jsonReader;
+  private volatile boolean readPerformed = false;
+  private volatile JsonTypeCoercer coercer;
+  private volatile PropertySetting setter;
 
-  JsonInput(Gson gson, JsonReader jsonReader) {
-    this.gson = gson;
+  JsonInput(JsonReader jsonReader, JsonTypeCoercer coercer) {
     this.jsonReader = jsonReader;
+    this.coercer = coercer;
+    this.setter = PropertySetting.BY_NAME;
+  }
+
+  public JsonInput propertySetting(PropertySetting setter) {
+    if (readPerformed) {
+      throw new JsonException("JsonInput has already been used and may not be modified");
+    }
+    this.setter = Objects.requireNonNull(setter);
+    return this;
+  }
+
+  public JsonInput addCoercers(TypeCoercer<?>... coercers) {
+    return addCoercers(Arrays.asList(coercers));
+  }
+
+  public JsonInput addCoercers(Iterable<TypeCoercer<?>> coercers) {
+    synchronized (this) {
+      if (readPerformed) {
+        throw new JsonException("JsonInput has already been used and may not be modified");
+      }
+
+      this.coercer = new JsonTypeCoercer(coercer, coercers);
+    }
+
+    return this;
   }
 
   @Override
   public void close() {
-    try {
-      jsonReader.close();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    execute((VoidCallable) jsonReader::close);
+  }
+
+  public JsonType peek() {
+    return execute(() -> {
+      JsonToken token = jsonReader.peek();
+      switch (token) {
+        case BEGIN_ARRAY:
+          return JsonType.START_COLLECTION;
+
+        case BEGIN_OBJECT:
+          return JsonType.START_MAP;
+
+        case BOOLEAN:
+          return JsonType.BOOLEAN;
+
+        case NAME:
+          return JsonType.NAME;
+
+        case NULL:
+          return JsonType.NULL;
+
+        case NUMBER:
+          return JsonType.NUMBER;
+
+        case STRING:
+          return JsonType.STRING;
+
+        default:
+          throw new JsonException("Unrecognized underlying type: " + token);
+      }
+    });
   }
 
   public void beginObject() {
-    try {
-    jsonReader.beginObject();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    execute((VoidCallable) jsonReader::beginObject);
   }
 
   public void endObject() {
-    try {
-    jsonReader.endObject();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    execute((VoidCallable) jsonReader::endObject);
   }
 
   public void beginArray() {
-    try {
-    jsonReader.beginArray();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    execute((VoidCallable) jsonReader::beginArray);
   }
 
   public void endArray() {
-    try {
-      jsonReader.endArray();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    execute((VoidCallable) jsonReader::endArray);
   }
 
   public boolean hasNext() {
-    try {
-      return jsonReader.hasNext();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    return execute(jsonReader::hasNext);
+  }
+
+  public Boolean nextBoolean() {
+    return execute(jsonReader::nextBoolean);
   }
 
   public String nextName() {
-    try {
-      return jsonReader.nextName();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    return execute(jsonReader::nextName);
+  }
+
+  public Number nextNumber() {
+    return execute(
+        () -> {
+          if (jsonReader.peek() != JsonToken.NUMBER) {
+            throw new JsonException("Expected number but was: " + peek());
+          }
+
+          String raw = jsonReader.nextString();
+          if (raw.contains(".")) {
+            return Double.parseDouble(raw);
+          }
+          return Long.parseLong(raw);
+        });
+  }
+
+  public String nextString() {
+    return execute(
+        () -> {
+          if (jsonReader.peek() == JsonToken.NULL) {
+            jsonReader.nextNull();
+            return null;
+          }
+
+          return jsonReader.nextString();
+        });
   }
 
   public <T> T read(Type type) {
-    return gson.fromJson(jsonReader, type);
+    return coercer.coerce(this, type, setter);
   }
 
   public void skipValue() {
+    execute((VoidCallable) jsonReader::skipValue);
+  }
+
+  private <T> T execute(Callable<T> callable) {
+    readPerformed = true;
     try {
-      jsonReader.skipValue();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      return callable.call();
+    } catch (JsonParseException e) {
+      throw new JsonException(e);
+    } catch (Exception e) {
+      throw new JsonException(e);
+    }
+  }
+
+  private interface VoidCallable extends Callable<Void> {
+    void execute() throws Exception;
+
+    @Override
+    default Void call() throws Exception {
+      execute();
+      return null;
     }
   }
 }

@@ -1,8 +1,8 @@
 prebuilt_jar(
   name = 'gson',
-  maven_coords = 'com.google.code.gson:gson:jar:2.8.2',
-  binary_jar = 'gson-2.8.2.jar',
-  source_jar = 'gson-2.8.2-sources.jar',
+  maven_coords = 'com.google.code.gson:gson:jar:2.8.4',
+  binary_jar = 'gson-2.8.4.jar',
+  source_jar = 'gson-2.8.4-sources.jar',
   visibility = [
     '//java/client/src/org/openqa/selenium/json:json',
     '//third_party/java/github:org.eclipse.egit.github.core',
@@ -17,4 +17,3 @@ prebuilt_jar(
     '//java/server/test/...',
   ],
 )
-

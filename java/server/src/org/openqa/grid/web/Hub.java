@@ -38,12 +38,15 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
+import org.seleniumhq.jetty9.security.ConstraintMapping;
+import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
+import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.net.BindException;
@@ -95,8 +98,7 @@ public class Hub implements Stoppable {
     }
 
     if (config.host == null) {
-      NetworkUtils utils = new NetworkUtils();
-      config.host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+      updateHostToNonLoopBackAddressOfThisMachine();
     }
 
     if (config.port == null) {
@@ -176,12 +178,38 @@ public class Hub implements Stoppable {
       httpConfig.setSecurePort(config.port);
 
       ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+      http.setHost(config.host);
+      if (config.host.equals("0.0.0.0")) {
+        // though we bind to all IPv4 interfaces, we need to advertise that connections
+        // should come in on a public (non-loopback) interface
+        updateHostToNonLoopBackAddressOfThisMachine();
+      }
       http.setPort(config.port);
 
       server.addConnector(http);
 
-      ServletContextHandler root = new ServletContextHandler(ServletContextHandler.SESSIONS);
+      ServletContextHandler root = new ServletContextHandler(ServletContextHandler.SESSIONS + ServletContextHandler.SECURITY);
       root.setContextPath("/");
+
+      ConstraintSecurityHandler securityHandler = (ConstraintSecurityHandler) root.getSecurityHandler();
+
+      Constraint disableTrace = new Constraint();
+      disableTrace.setName("Disable TRACE");
+      disableTrace.setAuthenticate(true);
+      ConstraintMapping disableTraceMapping = new ConstraintMapping();
+      disableTraceMapping.setConstraint(disableTrace);
+      disableTraceMapping.setMethod("TRACE");
+      disableTraceMapping.setPathSpec("/");
+      securityHandler.addConstraintMapping(disableTraceMapping);
+
+      Constraint enableOther = new Constraint();
+      enableOther.setName("Enable everything but TRACE");
+      ConstraintMapping enableOtherMapping = new ConstraintMapping();
+      enableOtherMapping.setConstraint(enableOther);
+      enableOtherMapping.setMethodOmissions(new String[] {"TRACE"});
+      enableOtherMapping.setPathSpec("/");
+      securityHandler.addConstraintMapping(enableOtherMapping);
+
       server.setHandler(root);
 
       root.setAttribute(GridRegistry.KEY, registry);
@@ -271,6 +299,11 @@ public class Hub implements Stoppable {
   @ManagedAttribute(name = "NewSessionRequestCount")
   public int getNewSessionRequestCount() {
     return getRegistry().getNewSessionRequestCount();
+  }
+
+  private void updateHostToNonLoopBackAddressOfThisMachine() {
+    NetworkUtils utils = new NetworkUtils();
+    config.host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
   }
 
 }

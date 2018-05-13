@@ -21,6 +21,7 @@ using System.Net;
 
 namespace OpenQA.Selenium.Remote
 {
+    [Obsolete("Replaced by the SendingRemoteHttpRequestEventArgs class")]
     public class BeforeRemoteHttpRequestEventArgs : EventArgs
     {
         private HttpWebRequest request;

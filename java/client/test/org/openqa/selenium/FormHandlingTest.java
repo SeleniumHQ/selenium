@@ -191,7 +191,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = SAFARI)
+  @Ignore(value = SAFARI, reason = "Hanging")
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
