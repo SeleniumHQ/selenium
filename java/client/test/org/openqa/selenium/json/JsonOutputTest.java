@@ -57,7 +57,10 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 
 import java.awt.*;
+import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
@@ -71,11 +74,11 @@ import java.util.logging.Level;
 import java.util.stream.Stream;
 
 
-public class BeanToJsonConverterTest {
+public class JsonOutputTest {
 
   @Test
   public void testShouldBeAbleToConvertASimpleString() {
-    String json = new BeanToJsonConverter().convert("cheese");
+    String json = convert("cheese");
 
     assertThat(json, is("\"cheese\""));
   }
@@ -86,7 +89,7 @@ public class BeanToJsonConverterTest {
     toConvert.put("cheese", "cheddar");
     toConvert.put("fish", "nice bit of haddock");
 
-    String json = new BeanToJsonConverter().convert(toConvert);
+    String json = convert(toConvert);
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
     assertThat(converted.get("cheese").getAsString(), is("cheddar"));
@@ -94,7 +97,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testShouldConvertASimpleJavaBean() {
-    String json = new BeanToJsonConverter().convert(new SimpleBean());
+    String json = convert(new SimpleBean());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
     assertThat(converted.get("foo").getAsString(), is("bar"));
@@ -104,7 +107,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testShouldConvertArrays() {
-    String json = new BeanToJsonConverter().convert(new BeanWithArray());
+    String json = convert(new BeanWithArray());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
     JsonArray allNames = converted.get("names").getAsJsonArray();
@@ -113,7 +116,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testShouldConvertCollections() {
-    String json = new BeanToJsonConverter().convert(new BeanWithCollection());
+    String json = convert(new BeanWithCollection());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
     JsonArray allNames = converted.get("something").getAsJsonArray();
@@ -122,7 +125,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testShouldConvertNumbersAsLongs() {
-    String json = new BeanToJsonConverter().convert(new Exception());
+    String json = convert(new Exception());
     Map<?,?> map = new Json().toType(json, Map.class);
 
     List<?> stack = (List<?>) map.get("stackTrace");
@@ -135,7 +138,7 @@ public class BeanToJsonConverterTest {
   @Test
   public void testShouldNotChokeWhenCollectionIsNull() {
     try {
-      new BeanToJsonConverter().convert(new BeanWithNullCollection());
+      convert(new BeanWithNullCollection());
     } catch (Exception e) {
       e.printStackTrace();
       fail("That shouldn't have happened");
@@ -145,13 +148,13 @@ public class BeanToJsonConverterTest {
   @Test
   public void testShouldConvertEnumsToStrings() {
     // If this doesn't hang indefinitely, we're all good
-    new BeanToJsonConverter().convert(State.INDIFFERENT);
+    convert(State.INDIFFERENT);
   }
 
   @Test
   public void testShouldConvertEnumsWithMethods() {
     // If this doesn't hang indefinitely, we're all good
-    new BeanToJsonConverter().convert(WithMethods.CHEESE);
+    convert(WithMethods.CHEESE);
   }
 
   @Test
@@ -170,7 +173,7 @@ public class BeanToJsonConverterTest {
     Point point = new Point(65, 75);
 
     try {
-      new BeanToJsonConverter().convert(point);
+      convert(point);
     } catch (StackOverflowError e) {
       fail("This should never happen");
     }
@@ -178,7 +181,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testShouldEncodeClassNameAsClassProperty() {
-    String json = new BeanToJsonConverter().convert(new SimpleBean());
+    String json = convert(new SimpleBean());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
@@ -188,7 +191,7 @@ public class BeanToJsonConverterTest {
   @Test
   public void testShouldBeAbleToConvertASessionId() {
     SessionId sessionId = new SessionId("some id");
-    String json = new BeanToJsonConverter().convert(sessionId);
+    String json = convert(sessionId);
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
@@ -199,7 +202,7 @@ public class BeanToJsonConverterTest {
   public void testShouldBeAbleToConvertAJsonObject() {
     JsonObject obj = new JsonObject();
     obj.addProperty("key", "value");
-    String json = new BeanToJsonConverter().convert(obj);
+    String json = convert(obj);
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
@@ -210,7 +213,7 @@ public class BeanToJsonConverterTest {
   public void testShouldBeAbleToConvertACapabilityObject() {
     Capabilities caps = new ImmutableCapabilities("key", "alpha");
 
-    String json = new BeanToJsonConverter().convert(caps);
+    String json = convert(caps);
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
@@ -227,7 +230,7 @@ public class BeanToJsonConverterTest {
     Map<String, ?> asMap = ImmutableMap.of("desiredCapabilities", caps);
     Command command = new Command(new SessionId("empty"), DriverCommand.NEW_SESSION, asMap);
 
-    String json = new BeanToJsonConverter().convert(command.getParameters());
+    String json = convert(command.getParameters());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
     JsonObject capsAsMap = converted.get("desiredCapabilities").getAsJsonObject();
@@ -239,13 +242,13 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testShouldCallToJsonMethodIfPresent() {
-    String json = new BeanToJsonConverter().convert(new JsonAware("converted"));
+    String json = convert(new JsonAware("converted"));
     assertEquals("\"converted\"", json);
   }
 
   @Test
   public void testShouldPreferToJsonMethodToToMapMethod() {
-    String json = new BeanToJsonConverter().convert(new MappableJsonAware("converted"));
+    String json = convert(new MappableJsonAware("converted"));
     assertEquals("\"converted\"", json);
   }
 
@@ -258,7 +261,7 @@ public class BeanToJsonConverterTest {
       }
     }
 
-    String json = new BeanToJsonConverter().convert(new ToJsonReturnsMap());
+    String json = convert(new ToJsonReturnsMap());
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
     assertEquals(1, converted.entrySet().size());
@@ -274,7 +277,7 @@ public class BeanToJsonConverterTest {
       }
     }
 
-    String json = new BeanToJsonConverter().convert(new ToJsonReturnsCollection());
+    String json = convert(new ToJsonReturnsCollection());
     JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
 
     assertEquals(2, converted.size());
@@ -286,13 +289,13 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testShouldCallAsMapMethodIfPresent() {
-    String json = new BeanToJsonConverter().convert(new Mappable1("a key", "a value"));
+    String json = convert(new Mappable1("a key", "a value"));
     assertEquals("{\"a key\":\"a value\"}", json);
   }
 
   @Test
   public void testShouldCallToMapMethodIfPresent() {
-    String json = new BeanToJsonConverter().convert(new Mappable2("a key", "a value"));
+    String json = convert(new Mappable2("a key", "a value"));
     assertEquals("{\"a key\":\"a value\"}", json);
   }
 
@@ -311,7 +314,7 @@ public class BeanToJsonConverterTest {
     } catch (JsonSyntaxException expected) {
     }
 
-    String json = new BeanToJsonConverter().convert(new JsonAware(raw));
+    String json = convert(new JsonAware(raw));
     assertEquals("\"gnu/linux\"", json);
   }
 
@@ -341,7 +344,7 @@ public class BeanToJsonConverterTest {
   public void testShouldBeAbleToConvertARuntimeException() {
     RuntimeException clientError = new RuntimeException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
-    String json = new BeanToJsonConverter().convert(clientError);
+    String json = convert(clientError);
     assertTrue(json.contains("\"message\":\"foo bar baz!\""));
     assertTrue(json.contains("\"class\":\"java.lang.RuntimeException\""));
     assertTrue(json.contains("\"stackTrace\""));
@@ -352,7 +355,7 @@ public class BeanToJsonConverterTest {
   public void testShouldBeAbleToConvertAWebDriverException() {
     RuntimeException clientError = new WebDriverException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
-    String raw = new BeanToJsonConverter().convert(clientError);
+    String raw = convert(clientError);
 
     JsonObject converted = new JsonParser().parse(raw).getAsJsonObject();
 
@@ -372,7 +375,7 @@ public class BeanToJsonConverterTest {
   public void testShouldConvertUnhandledAlertException() {
     RuntimeException clientError = new UnhandledAlertException("unhandled alert", "cheese!");
     Map<?, ?> obj = new Gson()
-        .fromJson(new StringReader(new BeanToJsonConverter().convert(clientError)), Map.class);
+        .fromJson(new StringReader(convert(clientError)), Map.class);
     assertTrue(obj.containsKey("alert"));
     assertEquals(ImmutableMap.of("text", "cheese!"), obj.get("alert"));
   }
@@ -380,7 +383,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testShouldConvertDatesToMillisecondsInUtcTime() {
-    String jsonStr = new BeanToJsonConverter().convert(new Date(0));
+    String jsonStr = convert(new Date(0));
     assertEquals(0, Integer.valueOf(jsonStr).intValue());
   }
 
@@ -401,7 +404,7 @@ public class BeanToJsonConverterTest {
 
     Date date = new Date(123456789L);
     Bean bean = new Bean(date);
-    String jsonStr = new BeanToJsonConverter().convert(bean);
+    String jsonStr = convert(bean);
 
     JsonObject converted = new JsonParser().parse(jsonStr).getAsJsonObject();
 
@@ -414,7 +417,7 @@ public class BeanToJsonConverterTest {
     Date expiry = new Date();
     Cookie cookie = new Cookie("name", "value", "domain", "/path", expiry, true, true);
 
-    String jsonStr = new BeanToJsonConverter().convert(cookie);
+    String jsonStr = convert(cookie);
 
     JsonObject converted = new JsonParser().parse(jsonStr).getAsJsonObject();
 
@@ -431,7 +434,7 @@ public class BeanToJsonConverterTest {
   @Test
   public void testUnsetCookieFieldsAreUndefined() {
     Cookie cookie = new Cookie("name", "value");
-    String jsonStr = new BeanToJsonConverter().convert(cookie);
+    String jsonStr = convert(cookie);
     // assertThat(jsonStr, not(containsString("path")));
     assertThat(jsonStr, not(containsString("domain")));
     assertThat(jsonStr, not(containsString("expiry")));
@@ -441,7 +444,7 @@ public class BeanToJsonConverterTest {
   public void testProperlyConvertsNulls() {
     Map<String, Object> frameId = new HashMap<>();
     frameId.put("id", null);
-    String payload = new BeanToJsonConverter().convert(frameId);
+    String payload = convert(frameId);
     assertEquals("{\"id\":null}", payload);
   }
 
@@ -453,7 +456,7 @@ public class BeanToJsonConverterTest {
     prefs.enable(LogType.DRIVER, Level.ALL);
     prefs.enable(LogType.SERVER, Level.OFF);
 
-    String json = new BeanToJsonConverter().convert(prefs);
+    String json = convert(prefs);
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
@@ -465,7 +468,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testConvertsLogEntryToJson() {
-    String raw = new BeanToJsonConverter().convert(new LogEntry(Level.OFF, 17, "foo"));
+    String raw = convert(new LogEntry(Level.OFF, 17, "foo"));
 
     JsonObject converted = new JsonParser().parse(raw).getAsJsonObject();
 
@@ -481,7 +484,7 @@ public class BeanToJsonConverterTest {
     final LogEntry entry2 = new LogEntry(Level.WARNING, timestamp, "entry2");
     LogEntries entries = new LogEntries(asList(entry1, entry2));
 
-    String json = new BeanToJsonConverter().convert(entries);
+    String json = convert(entries);
 
     JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
 
@@ -504,7 +507,7 @@ public class BeanToJsonConverterTest {
     parameters.put("param2", "value2");
     Command command = new Command(sessionId, commandName, parameters);
 
-    String json = new BeanToJsonConverter().convert(command);
+    String json = convert(command);
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
@@ -534,7 +537,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void shouldNotIncludePropertiesFromJavaLangObjectOtherThanClass() {
-    String json = new BeanToJsonConverter().convert(new SimpleBean());
+    String json = convert(new SimpleBean());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
@@ -542,6 +545,16 @@ public class BeanToJsonConverterTest {
         .filter(pd -> !"class".equals(pd.getName()))
         .map(SimplePropertyDescriptor::getName)
         .forEach(name -> assertFalse(name, converted.keySet().contains(name)));
+  }
+
+  private String convert(Object toConvert) {
+    try (Writer writer = new StringWriter();
+         JsonOutput jsonOutput = new Json().newOutput(writer)) {
+      jsonOutput.write(toConvert);
+      return writer.toString();
+    } catch (IOException e) {
+      throw new JsonException(e);
+    }
   }
 
   @SuppressWarnings("unused")
