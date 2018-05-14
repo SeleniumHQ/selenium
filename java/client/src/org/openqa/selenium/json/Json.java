@@ -25,7 +25,9 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UncheckedIOException;
+import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +47,13 @@ public class Json {
   private final BeanToJsonConverter toJson = new BeanToJsonConverter();
 
   public String toJson(Object toConvert) {
-    return toJson.convert(toConvert);
+    try (Writer writer = new StringWriter();
+        JsonOutput jsonOutput = newOutput(writer)) {
+      jsonOutput.write(toConvert);
+      return writer.toString();
+    } catch (IOException e) {
+      throw new JsonException(e);
+    }
   }
 
   public <T> T toType(String source, Type typeOfT) {
