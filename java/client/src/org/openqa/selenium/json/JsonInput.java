@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
@@ -166,8 +165,6 @@ public class JsonInput implements Closeable {
     readPerformed = true;
     try {
       return callable.call();
-    } catch (JsonParseException e) {
-      throw new JsonException(e);
     } catch (Exception e) {
       throw new JsonException(e);
     }
