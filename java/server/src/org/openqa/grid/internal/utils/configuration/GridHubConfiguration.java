@@ -17,11 +17,11 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
-import com.google.gson.annotations.Expose;
-
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+
+import java.util.Map;
 
 public class GridHubConfiguration extends GridConfiguration {
   public static final String DEFAULT_HUB_CONFIG_FILE = "org/openqa/grid/common/defaults/DefaultHub.json";
@@ -77,28 +77,23 @@ public class GridHubConfiguration extends GridConfiguration {
   /**
    * Capability matcher to use. Defaults to {@link DefaultCapabilityMatcher}
    */
-  @Expose
   public CapabilityMatcher capabilityMatcher = new DefaultCapabilityMatcher();
 
   /**
    * Timeout for new session requests. Defaults to unlimited.
    */
-  @Expose
   public Integer newSessionWaitTimeout = DEFAULT_NEW_SESSION_WAIT_TIMEOUT;
 
   /**
    * Prioritizer for new honoring session requests based on some priority. Defaults to {@code null}.
    */
-  @Expose
   public Prioritizer prioritizer;
 
   /**
    * Whether to throw an Exception when there are no capabilities available that match the request. Defaults to {@code true}.
    */
-  @Expose
   public Boolean throwOnCapabilityNotPresent = DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE;
 
-  @Expose
   public String registry = DEFAULT_HUB_REGISTRY_CLASS;
 
   /**
@@ -151,6 +146,17 @@ public class GridHubConfiguration extends GridConfiguration {
     if (isMergeAble(String.class, other.registry, registry)) {
       registry = other.registry;
     }
+  }
+
+  @Override
+  protected void serializeFields(Map<String, Object> appendTo) {
+    super.serializeFields(appendTo);
+
+    appendTo.put("capabilityMatcher", capabilityMatcher.getClass().getName());
+    appendTo.put("newSessionWaitTimeout", newSessionWaitTimeout);
+    appendTo.put("prioritizer", prioritizer == null ?  null : prioritizer.getClass().getName());
+    appendTo.put("throwOnCapabilityNotPresent", throwOnCapabilityNotPresent);
+    appendTo.put("registry", registry);
   }
 
   @Override

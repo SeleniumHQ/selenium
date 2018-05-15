@@ -17,8 +17,6 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
-import com.google.gson.annotations.Expose;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,33 +32,28 @@ public class GridConfiguration extends StandaloneConfiguration {
   /**
    * Clean up cycle for remote proxies. Default determined by configuration type.
    */
-  @Expose
   // initially defaults to null from type
   public Integer cleanUpCycle;
 
   /**
    * Custom key/value pairs for the hub registry. Default empty.
    */
-  @Expose
   public Map<String, String> custom = new HashMap<>();
 
   /**
    * Max "browser" sessions a node can handle. Default determined by configuration type.
    */
-  @Expose
   // initially defaults to null from type
   public Integer maxSession;
 
   /**
    * Extra servlets to initialize/use on the hub or node. Default empty.
    */
-  @Expose
   public List<String> servlets = new ArrayList<>();
 
   /**
    * Default servlets to exclude on the hub or node. Default empty.
    */
-  @Expose
   public List<String> withoutServlets = new ArrayList<>();
 
   /**
@@ -109,6 +102,16 @@ public class GridConfiguration extends StandaloneConfiguration {
     return withoutServlets != null &&
            servlet != null &&
            withoutServlets.contains(servlet.getCanonicalName());
+  }
+
+  protected void serializeFields(Map<String, Object> appendTo) {
+    super.serializeFields(appendTo);
+
+    appendTo.put("cleanUpCycle", cleanUpCycle);
+    appendTo.put("custom", custom);
+    appendTo.put("maxSession", maxSession);
+    appendTo.put("servlets", servlets);
+    appendTo.put("withoutServlets", withoutServlets);
   }
 
   @Override

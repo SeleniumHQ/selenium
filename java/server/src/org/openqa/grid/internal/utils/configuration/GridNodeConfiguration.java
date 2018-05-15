@@ -19,8 +19,6 @@ package org.openqa.grid.internal.utils.configuration;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.gson.annotations.Expose;
-
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridConfigurationException;
@@ -157,11 +155,9 @@ public class GridNodeConfiguration extends GridConfiguration {
    * The address to report to the hub. By default it's generated based on the host and port specified.
    * Setting a value overrides the default (http://<host>:<port>).
    */
-  @Expose
   public String remoteHost;
 
   // used to read a Selenium 2.x nodeConfig.json file and throw a friendly exception
-  @Expose( serialize = false )
   @Deprecated
   private Object configuration;
 
@@ -172,19 +168,16 @@ public class GridNodeConfiguration extends GridConfiguration {
   /**
    * The host name or IP of the hub. Defaults to {@code null}.
    */
-  @Expose
   public String hubHost;
 
   /**
    * The port of the hub. Defaults to {@code null}.
    */
-  @Expose
   public Integer hubPort;
 
   /**
    * The id tu use for this node. Automatically generated when {@code null}. Defaults to {@code null}.
    */
-  @Expose
   public String id;
 
   /**
@@ -192,61 +185,51 @@ public class GridNodeConfiguration extends GridConfiguration {
    * {@link #DEFAULT_NODE_CONFIG_FILE} or an empty list if the {@link #DEFAULT_NODE_CONFIG_FILE}
    * can not be loaded.
    */
-  @Expose
   public List<MutableCapabilities> capabilities = DefaultDesiredCapabilitiesBuilder.getCapabilities();
 
   /**
    * The down polling limit for the node. Defaults to {@code null}.
    */
-  @Expose
   public Integer downPollingLimit = DEFAULT_DOWN_POLLING_LIMIT;
 
   /**
    * The hub url. Defaults to {@code http://localhost:4444}.
    */
-  @Expose
   public String hub = DEFAULT_HUB;
 
   /**
    * How often to pull the node. Defaults to 5000 ms
    */
-  @Expose
   public Integer nodePolling = DEFAULT_POLLING_INTERVAL;
 
   /**
    * When to time out a node status check. Defaults is after 5000 ms.
    */
-  @Expose
   public Integer nodeStatusCheckTimeout = DEFAULT_NODE_STATUS_CHECK_TIMEOUT;
 
   /**
    * The proxy class name to use. Defaults to org.openqa.grid.selenium.proxy.DefaultRemoteProxy.
    */
-  @Expose
   public String proxy = DEFAULT_PROXY;
 
   /**
    * Whether to register this node with the hub. Defaults to {@code true}
    */
-  @Expose
   public Boolean register = DEFAULT_REGISTER_TOGGLE;
 
   /**
    * How often to re-register this node with the hub. Defaults to every 5000 ms.
    */
-  @Expose
   public Integer registerCycle = DEFAULT_REGISTER_CYCLE;
 
   /**
    * How long to wait before marking this node down. Defaults is 60000 ms.
    */
-  @Expose
   public Integer unregisterIfStillDownAfter = DEFAULT_UNREGISTER_DELAY;
 
   /**
    * Whether or not to drop capabilities that does not belong to the current platform family
    */
-  @Expose
   public boolean enablePlatformVerification = true;
 
   /**
@@ -357,6 +340,26 @@ public class GridNodeConfiguration extends GridConfiguration {
     }
 
     // never merge configuration. it should always be null.
+  }
+
+  @Override
+  protected void serializeFields(Map<String, Object> appendTo) {
+    super.serializeFields(appendTo);
+
+    appendTo.put("remoteHost", remoteHost);
+    appendTo.put("hubHost", hubHost);
+    appendTo.put("hubPort", hubPort);
+    appendTo.put("id", id);
+    appendTo.put("capabilities", capabilities);
+    appendTo.put("downPollingLimit", downPollingLimit);
+    appendTo.put("hub", hub);
+    appendTo.put("nodePolling", nodePolling);
+    appendTo.put("nodeStatusCheckTimeout", nodeStatusCheckTimeout);
+    appendTo.put("proxy", proxy);
+    appendTo.put("register", register);
+    appendTo.put("registerCycle", registerCycle);
+    appendTo.put("unregisterIfStillDownAfter", unregisterIfStillDownAfter);
+    appendTo.put("enablePlatformVerification", enablePlatformVerification);
   }
 
   @Override

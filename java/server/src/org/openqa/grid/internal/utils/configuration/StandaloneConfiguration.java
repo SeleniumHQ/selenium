@@ -17,9 +17,13 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import static com.google.common.collect.ImmutableSortedMap.toImmutableSortedMap;
+import static com.google.common.collect.Ordering.natural;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.annotations.Expose;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.Ordering;
 
 import org.openqa.grid.common.GridConfiguredJson;
 import org.openqa.grid.common.exception.GridConfigurationException;
@@ -41,6 +45,7 @@ import java.lang.reflect.Field;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -92,17 +97,14 @@ public class StandaloneConfiguration {
   /*
    * config parameters which do not serialize to json
    */
-  @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private transient boolean avoidProxy;
+  private boolean avoidProxy;
 
-  @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private transient boolean browserSideLog;
+  private boolean browserSideLog;
 
-  @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private transient boolean captureLogsOnQuit;
+  private boolean captureLogsOnQuit;
 
   /*
    * config parameters which serialize and deserialize to/from json
@@ -111,50 +113,42 @@ public class StandaloneConfiguration {
   /**
    * Browser timeout. Default 0 (indefinite wait).
    */
-  @Expose
   public Integer browserTimeout = DEFAULT_BROWSER_TIMEOUT;
 
   /**
    * Enable {@code LogLevel.FINE} log messages. Default {@code false}.
    */
-  @Expose
   public Boolean debug = DEFAULT_DEBUG_TOGGLE;
 
   /**
    *   Max threads for Jetty. Defaults to {@code null}.
    */
-  @Expose
   public Integer jettyMaxThreads;
 
   /**
    *   Filename to use for logging. Defaults to {@code null}.
    */
-  @Expose
   public String log;
 
   /**
    * Hostname or IP to use. Defaults to {@code null}. Automatically determined when {@code null}.
    */
-  @Expose
   // initially defaults to null from type
   public String host;
 
   /**
    * Port to bind to. Default determined by configuration type.
    */
-  @Expose
   public Integer port = DEFAULT_PORT;
 
   /**
    * Server role. Default determined by configuration type.
    */
-  @Expose
   public String role = DEFAULT_ROLE;
 
   /**
    * Client timeout. Default 1800 sec.
    */
-  @Expose
   public Integer timeout = DEFAULT_TIMEOUT;
 
   /**
@@ -283,31 +277,25 @@ public class StandaloneConfiguration {
    * Return a JsonElement representation of the configuration. Does not serialize nulls.
    */
   public Map<String, Object> toJson() {
-    Set<Field> fields = new HashSet<>();
-    for (Class current = getClass(); !current.equals(Object.class); current = current.getSuperclass()) {
-      fields.addAll(Arrays.asList(current.getDeclaredFields()));
-    }
+    Map<String, Object> json = new HashMap<>();
+    json.put("browserTimeout", browserTimeout);
+    json.put("debug", debug);
+    json.put("jettyMaxThreads", jettyMaxThreads);
+    json.put("log", log);
+    json.put("host", host);
+    json.put("port", port);
+    json.put("role", role);
+    json.put("timeout", timeout);
 
-    return fields.stream()
-        .filter(field -> field.getAnnotation(Expose.class) != null)
-        .filter(field -> field.getAnnotation(Expose.class).serialize())
-        .peek(field -> field.setAccessible(true))
-        .map(
-            field -> {
-              try {
-                Object value = field.get(StandaloneConfiguration.this);
-                // TODO: avoid nastiness like this
-                if (value instanceof CapabilityMatcher || value instanceof Prioritizer) {
-                  value = value.getClass().getName();
-                }
-                return new AbstractMap.SimpleImmutableEntry<>(field.getName(), value);
-              } catch (ReflectiveOperationException e) {
-                throw new WebDriverException(e);
-              }
-            })
-        // Note: it's important that nulls ARE NOT serialized, for backwards compatibility
+    serializeFields(json);
+
+    return json.entrySet().stream()
         .filter(entry -> entry.getValue() != null)
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(toImmutableSortedMap(natural(), Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  protected void serializeFields(Map<String, Object> appendTo) {
+    // Do nothing here.
   }
 
   /**
