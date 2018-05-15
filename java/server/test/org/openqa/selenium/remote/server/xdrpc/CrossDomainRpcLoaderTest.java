@@ -28,8 +28,6 @@ import com.google.gson.JsonObject;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -38,10 +36,6 @@ import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Unit tests for {@link CrossDomainRpcLoader}.
- */
-@RunWith(JUnit4.class)
 public class CrossDomainRpcLoaderTest {
 
   private HttpServletRequest mockRequest;
@@ -88,7 +82,7 @@ public class CrossDomainRpcLoaderTest {
     HttpServletRequest mockRequest = createJsonRequest("GET", "/", json);
 
     CrossDomainRpc rpc = new CrossDomainRpcLoader().loadRpc(mockRequest);
-    assertEquals("{\"foo\":\"bar\"}", rpc.getData());
+    assertEquals("{\"foo\": \"bar\"}", rpc.getData());
   }
 
   private HttpServletRequest createJsonRequest(final String method,

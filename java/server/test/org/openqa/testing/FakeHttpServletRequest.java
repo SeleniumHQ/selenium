@@ -17,6 +17,11 @@
 
 package org.openqa.testing;
 
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.google.common.net.MediaType;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -217,7 +222,16 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   public String getCharacterEncoding() {
-    throw new UnsupportedOperationException();
+    try {
+      String contentType = getHeader(CONTENT_TYPE);
+      if (contentType != null) {
+        MediaType mediaType = MediaType.parse(contentType);
+        return mediaType.charset().or(UTF_8).toString();
+      }
+    } catch (IllegalArgumentException ignored) {
+      // Do nothing.
+    }
+    return UTF_8.toString();
   }
 
   public void setCharacterEncoding(String s) throws UnsupportedEncodingException {
