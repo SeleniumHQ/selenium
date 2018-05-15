@@ -163,15 +163,11 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    */
   HttpClient getHttpClient(URL url);
 
-  /**
+    /**
    * Renders the status of the node as JSON.  Useful for APIs.
    *
    * @return the node status.
-   * @deprecated Use {@link #getProxyStatus()}.
    */
-  @Deprecated
-  JsonObject getStatus();
-
   Map<String, Object> getProxyStatus();
 
   /**

@@ -21,9 +21,6 @@ import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
@@ -465,15 +462,6 @@ public class BaseRemoteProxy implements RemoteProxy {
     } finally {
       Thread.currentThread().setName(existingName);
     }
-  }
-
-  /**
-   * @deprecated Use {@link #getProxyStatus()}.
-   */
-  @Deprecated
-  public JsonObject getStatus() throws GridException {
-    Map<String, Object> status = getProxyStatus();
-    return new Gson().toJsonTree(status).getAsJsonObject();
   }
 
   @ManagedAttribute
