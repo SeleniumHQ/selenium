@@ -19,9 +19,6 @@ package org.openqa.grid.common;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.json.Json;
@@ -41,14 +38,8 @@ public class RegistrationRequest {
   public static final String SELENIUM_PROTOCOL = "seleniumProtocol";
   public static final String PATH = "path";
 
-  @SerializedName( "class" )
-  @Expose( deserialize = false)
-  private final String clazz = RegistrationRequest.class.getCanonicalName();
-  @Expose
   private String name;
-  @Expose
   private String description;
-  @Expose
   private GridNodeConfiguration configuration;
 
   /**
@@ -126,9 +117,6 @@ public class RegistrationRequest {
 
   /**
    * Create an object from a registration request formatted as a json string.
-   *
-   * @param jsonString JSON String
-   * @return
    */
   public static RegistrationRequest fromJson(String jsonString) throws JsonException {
     // If we could, we'd just get Json to coerce this for us, but that would lead to endless
@@ -156,7 +144,6 @@ public class RegistrationRequest {
 
   /**
    * Build a RegistrationRequest.
-   * @return
    */
   public static RegistrationRequest build() {
     return RegistrationRequest.build(new GridNodeConfiguration(), null, null);
