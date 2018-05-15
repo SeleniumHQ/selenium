@@ -227,7 +227,7 @@ public class JsonTest {
     DesiredCapabilities capabilities =
         new DesiredCapabilities("browser", CapabilityType.VERSION, Platform.ANY);
     capabilities.setJavascriptEnabled(true);
-    String text = new BeanToJsonConverter().convert(capabilities);
+    String text = new Json().toJson(capabilities);
 
     Capabilities readCapabilities = new Json().toType(text, DesiredCapabilities.class);
 
@@ -286,7 +286,7 @@ public class JsonTest {
     response.setValue(value);
     response.setStatus(1512);
 
-    String json = new BeanToJsonConverter().convert(response);
+    String json = new Json().toJson(response);
     Response converted = new Json().toType(json, Response.class);
 
     assertEquals("bar", response.getSessionId());
@@ -299,7 +299,7 @@ public class JsonTest {
     Date date = new Date();
     Cookie cookie = new Cookie("foo", "bar", "localhost", "/rooted", date, true, true);
 
-    String rawJson = new BeanToJsonConverter().convert(Collections.singletonList(cookie));
+    String rawJson = new Json().toJson(Collections.singletonList(cookie));
     List<?> list = new Json().toType(rawJson, List.class);
 
     Object first = list.get(0);
@@ -324,7 +324,7 @@ public class JsonTest {
   @Test
   public void testShouldConvertAnArrayBackIntoAnArray() {
     Exception e = new Exception();
-    String converted = new BeanToJsonConverter().convert(e);
+    String converted = new Json().toJson(e);
 
     Map<?,?> reconstructed = new Json().toType(converted, Map.class);
     List<?> trace = (List<?>) reconstructed.get("stackTrace");
@@ -334,7 +334,7 @@ public class JsonTest {
 
   @Test
   public void testShouldBeAbleToReconsituteASessionId() {
-    String json = new BeanToJsonConverter().convert(new SessionId("id"));
+    String json = new Json().toJson(new SessionId("id"));
     SessionId sessionId = new Json().toType(json, SessionId.class);
 
     assertEquals("id", sessionId.toString());
@@ -347,7 +347,7 @@ public class JsonTest {
         sessionId,
         DriverCommand.NEW_SESSION,
         ImmutableMap.of("food", "cheese"));
-    String raw = new BeanToJsonConverter().convert(original);
+    String raw = new Json().toJson(original);
     Command converted = new Json().toType(raw, Command.class);
 
     assertEquals(sessionId.toString(), converted.getSessionId().toString());
@@ -361,7 +361,7 @@ public class JsonTest {
   public void testShouldConvertCapabilitiesToAMapAndIncludeCustomValues() {
     Capabilities caps = new ImmutableCapabilities("furrfu", "fishy");
 
-    String raw = new BeanToJsonConverter().convert(caps);
+    String raw = new Json().toJson(caps);
     Capabilities converted = new Json().toType(raw, Capabilities.class);
 
     assertEquals("fishy", converted.getCapability("furrfu"));

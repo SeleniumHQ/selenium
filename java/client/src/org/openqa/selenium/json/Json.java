@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import com.google.common.io.CharStreams;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,7 +43,6 @@ public class Json {
   public static final Type OBJECT_TYPE = new TypeToken<Object>() {}.getType();
 
   private final JsonTypeCoercer fromJson = new JsonTypeCoercer();
-  private final BeanToJsonConverter toJson = new BeanToJsonConverter();
 
   public String toJson(Object toConvert) {
     try (Writer writer = new StringWriter();
@@ -76,10 +74,6 @@ public class Json {
   }
 
   public JsonOutput newOutput(Appendable to) throws UncheckedIOException {
-    try {
-      return new JsonOutput(toJson, GSON.newJsonWriter(CharStreams.asWriter(to)));
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    return new JsonOutput(to);
   }
 }

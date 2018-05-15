@@ -24,10 +24,13 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.gson.Gson;
@@ -159,11 +162,8 @@ public class JsonOutputTest {
 
   @Test
   public void testNullAndAnEmptyStringAreEncodedDifferently() {
-    BeanToJsonConverter
-        converter = new BeanToJsonConverter();
-
-    String nullValue = converter.convert(null);
-    String emptyString = converter.convert("");
+    String nullValue = convert(null);
+    String emptyString = convert("");
 
     assertNotEquals(emptyString, nullValue);
   }
@@ -290,13 +290,19 @@ public class JsonOutputTest {
   @Test
   public void testShouldCallAsMapMethodIfPresent() {
     String json = convert(new Mappable1("a key", "a value"));
-    assertEquals("{\"a key\":\"a value\"}", json);
+
+    Map<String, Object> value = new Json().toType(json, MAP_TYPE);
+
+    assertEquals(ImmutableMap.of("a key", "a value"), value);
   }
 
   @Test
   public void testShouldCallToMapMethodIfPresent() {
     String json = convert(new Mappable2("a key", "a value"));
-    assertEquals("{\"a key\":\"a value\"}", json);
+
+    Map<String, Object> value = new Json().toType(json, MAP_TYPE);
+
+    assertEquals(ImmutableMap.of("a key", "a value"), value);
   }
 
   @Test
@@ -323,16 +329,16 @@ public class JsonOutputTest {
     for (StackTraceElement e : stackTrace) {
       if (e.getFileName() != null) {
         // Native methods may have null filenames
-        assertTrue("Filename not found", json.contains("\"fileName\":\"" + e.getFileName() + "\""));
+        assertTrue("Filename not found", json.contains("\"fileName\": \"" + e.getFileName() + "\""));
       }
       assertTrue("Line number not found",
-          json.contains("\"lineNumber\":" + e.getLineNumber() + ""));
+          json.contains("\"lineNumber\": " + e.getLineNumber() + ""));
       assertTrue("class not found.",
-          json.contains("\"class\":\"" + e.getClass().getName() + "\""));
+          json.contains("\"class\": \"" + e.getClass().getName() + "\""));
       assertTrue("class name not found",
-          json.contains("\"className\":\"" + e.getClassName() + "\""));
+          json.contains("\"className\": \"" + e.getClassName() + "\""));
       assertTrue("method name not found.",
-          json.contains("\"methodName\":\"" + e.getMethodName() + "\""));
+          json.contains("\"methodName\": \"" + e.getMethodName() + "\""));
 
       int posOfCurrStackTraceElement = json.indexOf(e.getMethodName());
       assertTrue("Mismatch in order of stack trace elements.",
@@ -345,8 +351,8 @@ public class JsonOutputTest {
     RuntimeException clientError = new RuntimeException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
     String json = convert(clientError);
-    assertTrue(json.contains("\"message\":\"foo bar baz!\""));
-    assertTrue(json.contains("\"class\":\"java.lang.RuntimeException\""));
+    assertTrue(json.contains("\"message\": \"foo bar baz!\""));
+    assertTrue(json.contains("\"class\": \"java.lang.RuntimeException\""));
     assertTrue(json.contains("\"stackTrace\""));
     verifyStackTraceInJson(json, stackTrace);
   }
@@ -445,7 +451,10 @@ public class JsonOutputTest {
     Map<String, Object> frameId = new HashMap<>();
     frameId.put("id", null);
     String payload = convert(frameId);
-    assertEquals("{\"id\":null}", payload);
+
+    Map<String, Object> result = new Json().toType(payload, MAP_TYPE);
+    assertTrue(result.containsKey("id"));
+    assertNull(result.get("id"));
   }
 
   @Test
@@ -545,6 +554,38 @@ public class JsonOutputTest {
         .filter(pd -> !"class".equals(pd.getName()))
         .map(SimplePropertyDescriptor::getName)
         .forEach(name -> assertFalse(name, converted.keySet().contains(name)));
+  }
+
+  @Test
+  public void shouldAllowValuesToBeStreamedToACollection() throws IOException {
+    StringBuilder builder = new StringBuilder();
+
+    try (JsonOutput jsonOutput = new Json().newOutput(builder)) {
+      jsonOutput.beginArray()
+          .write("brie")
+          .write("peas")
+          .endArray();
+    }
+
+    assertEquals(
+        ImmutableList.of("brie", "peas"),
+        new Json().toType(builder.toString(), Object.class));
+  }
+
+  @Test
+  public void shouldAllowValuesToBeStreamedToAnObject() {
+    StringBuilder builder = new StringBuilder();
+
+    try (JsonOutput jsonOutput = new Json().newOutput(builder)) {
+      jsonOutput.beginObject()
+          .name("cheese").write("brie")
+          .name("vegetable").write("peas")
+          .endObject();
+    }
+
+    assertEquals(
+        ImmutableMap.of("cheese", "brie", "vegetable", "peas"),
+        new Json().toType(builder.toString(), MAP_TYPE));
   }
 
   private String convert(Object toConvert) {

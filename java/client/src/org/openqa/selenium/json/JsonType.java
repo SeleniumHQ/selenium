@@ -23,7 +23,9 @@ public enum JsonType {
   NULL,
   NUMBER,
   START_MAP,
+  END_MAP,
   START_COLLECTION,
+  END_COLLECTION,
   STRING
   ;
 }

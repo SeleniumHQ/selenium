@@ -113,7 +113,7 @@ public class JsonHttpCommandCodecTest {
     codec.defineCommand("foo", POST, "/foo/:bar/baz");
     Command command = new Command(null, "foo", ImmutableMap.of("bar", "apples123"));
 
-    String encoding = "{\"bar\":\"apples123\"}";
+    String encoding = "{\"bar\": \"apples123\"}";
 
     HttpRequest request = codec.encode(command);
     assertThat(request.getMethod(), is(POST));

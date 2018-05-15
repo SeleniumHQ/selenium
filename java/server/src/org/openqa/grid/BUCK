@@ -17,6 +17,7 @@ java_library(name = 'grid',
   ]),
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/json:json',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/firefox:firefox',
     '//java/client/src/org/openqa/selenium/safari:safari',
