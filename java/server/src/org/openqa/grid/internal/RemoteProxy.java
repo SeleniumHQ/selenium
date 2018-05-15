@@ -17,8 +17,6 @@
 
 package org.openqa.grid.internal;
 
-import com.google.gson.JsonObject;
-
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
@@ -159,7 +157,7 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
   int getTimeOut();
 
   /**
-   * @return an {@link }HttpClient} for a particular {@link URL}.
+   * @return an {@link HttpClient} for a particular {@link URL}.
    */
   HttpClient getHttpClient(URL url);
 
