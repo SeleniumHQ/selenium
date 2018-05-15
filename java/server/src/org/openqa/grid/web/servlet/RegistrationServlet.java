@@ -17,12 +17,10 @@
 
 package org.openqa.grid.web.servlet;
 
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
@@ -32,11 +30,12 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 public class RegistrationServlet extends RegistryBasedServlet {
   private static final long serialVersionUID = -8670670577712086527L;
   private static final Logger log = Logger.getLogger(RegistrationServlet.class.getName());
+  private static final Json JSON = new Json();
 
   public RegistrationServlet() {
     this(null);
@@ -80,9 +80,9 @@ public class RegistrationServlet extends RegistryBasedServlet {
     log.fine("getting the following registration request  : " + requestJsonString);
 
     // getting the settings from the registration
-    JsonObject json = new JsonParser().parse(requestJsonString).getAsJsonObject();
+    Map<String, Object> json = JSON.toType(requestJsonString, MAP_TYPE);
 
-    if (!json.has("configuration")) {
+    if (!(json.get("configuration") instanceof Map)) {
       // bad request. there must be a configuration for the proxy
       throw new GridConfigurationException("No configuration received for proxy.");
     }
@@ -90,8 +90,8 @@ public class RegistrationServlet extends RegistryBasedServlet {
     final RegistrationRequest registrationRequest;
     if (isV2RegistrationRequestJson(json)) {
       // Se2 compatible request
-      GridNodeConfiguration nodeConfiguration =
-        mapV2Configuration(json.getAsJsonObject("configuration"));
+      @SuppressWarnings("unchecked") GridNodeConfiguration nodeConfiguration =
+        mapV2Configuration((Map<String, Object>) json.get("configuration"));
       registrationRequest = new RegistrationRequest(nodeConfiguration);
       // get the "capabilities" and "id" from the v2 json request
       considerV2Json(registrationRequest.getConfiguration(), json);
@@ -116,24 +116,28 @@ public class RegistrationServlet extends RegistryBasedServlet {
    * That said V2 nodes do need to be able to register with a V3 hub.
    */
   @Deprecated
-  private GridNodeConfiguration mapV2Configuration(JsonObject json) {
+  private GridNodeConfiguration mapV2Configuration(Map<String, Object> json) {
     // servlets should result in a parse error since the type changed from String to
     // List<String> with V3. So, we need to save it off and then parse normally.
-    JsonElement servlets = json.has("servlets") ? json.get("servlets") : null;
+    Object servlets = json.get("servlets");
     // V3 beta versions send a V2 RegistrationRequest which specifies servlets as a List<String>
     // When this is the case, we don't need to remove it for parsing.
-    if (servlets != null && servlets.isJsonPrimitive()) {
+    if (servlets != null && servlets instanceof String) {
       json.remove("servlets");
     }
 
     // if a JsonSyntaxException happens here, so be it. We won't be able to map the request
     // to a grid node configuration anyhow.
-    GridNodeConfiguration pendingConfiguration = GridNodeConfiguration.loadFromJSON(json.toString());
+    // It's entirely possible that there's a less elegant way of doing thing, but I'm not sure what
+    // it is.
+    // TODO: Don't be this horrible
+    GridNodeConfiguration pendingConfiguration =
+        GridNodeConfiguration.loadFromJSON(JSON.toJson(json));
 
     // add the servlets that were saved off
-    if (servlets != null && servlets.isJsonPrimitive() &&
+    if (servlets != null && servlets instanceof String &&
         (pendingConfiguration.servlets == null || pendingConfiguration.servlets.isEmpty())) {
-      pendingConfiguration.servlets = Lists.newArrayList(servlets.getAsString().split(","));
+      pendingConfiguration.servlets = Lists.newArrayList(servlets.toString().split(","));
     }
 
     return pendingConfiguration;
@@ -145,8 +149,8 @@ public class RegistrationServlet extends RegistryBasedServlet {
    * with a V3 hub.
    */
   @Deprecated
-  private boolean isV2RegistrationRequestJson(JsonObject json) {
-    return json.has("capabilities") && json.has("configuration");
+  private boolean isV2RegistrationRequestJson(Map<String, Object> json) {
+    return json.containsKey("capabilities") && json.containsKey("configuration");
   }
 
   /**
@@ -155,27 +159,24 @@ public class RegistrationServlet extends RegistryBasedServlet {
    * to be able to register with a V3 hub.
    */
   @Deprecated
-  private void considerV2Json(GridNodeConfiguration configuration, JsonObject json) {
+  private void considerV2Json(GridNodeConfiguration configuration, Map<String, Object> json) {
     // Backwards compatible with Selenium 2.x remotes which might send a
     // registration request with the json field "id". 3.x remotes will include the "id" with the
     // "configuration" object. The presence of { "id": "value" } should always override
     // { "configuration": { "id": "value" } }
-    if (json.has("id")) {
-      configuration.id = json.get("id").getAsString();
+    if (json.get("id") instanceof String) {
+      configuration.id = json.get("id").toString();
     }
 
     // Backwards compatible with Selenium 2.x remotes which send a registration request with the
     // json object "capabilities". 3.x remotes will include the "capabilities" object with the
     // "configuration" object. The presence of { "capabilities": [ {...}, {...} ] } should always
     // override { "configuration": { "capabilities": [ {...}, {...} ] } }
-    if (json.has("capabilities")) {
+    if (json.get("capabilities") instanceof Collection) {
       configuration.capabilities.clear();
-      JsonArray capabilities = json.get("capabilities").getAsJsonArray();
-      Json converter = new Json();
-      for (int i = 0; i < capabilities.size(); i++) {
-        MutableCapabilities cap = converter.toType(capabilities.get(i).toString(), DesiredCapabilities.class);
-        configuration.capabilities.add(cap);
-      }
+      @SuppressWarnings("unchecked") Collection<Map<String, Object>> capabilities =
+          (Collection<Map<String, Object>>) json.get("capabilities");
+      capabilities.stream().map(MutableCapabilities::new).forEach(configuration.capabilities::add);
       configuration.fixUpCapabilities();
     }
   }
