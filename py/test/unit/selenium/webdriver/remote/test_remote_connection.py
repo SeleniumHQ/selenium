@@ -37,6 +37,16 @@ def test_get_remote_connection_headers_defaults():
     assert headers.get('User-Agent').startswith("selenium/%s (python " % __version__)
     assert headers.get('User-Agent').split(' ')[-1] in {'windows)', 'mac)', 'linux)'}
 
+def test_get_remote_connection_headers_defaults_https():
+    url = 'https://remote'
+    headers = RemoteConnection.get_remote_connection_headers(parse.urlparse(url))
+    assert 'Authorization' not in headers.keys()
+    assert 'Connection' not in headers.keys()
+    assert headers.get('Accept') == 'application/json'
+    assert headers.get('Content-Type') == 'application/json;charset=UTF-8'
+    assert headers.get('User-Agent').startswith("selenium/%s (python " % __version__)
+    assert headers.get('User-Agent').split(' ')[-1] in {'windows)', 'mac)', 'linux)'}
+
 
 def test_get_remote_connection_headers_adds_auth_header_if_pass():
     url = 'http://user:pass@remote'
@@ -44,8 +54,20 @@ def test_get_remote_connection_headers_adds_auth_header_if_pass():
     assert headers.get('Authorization') == 'Basic dXNlcjpwYXNz'
 
 
+def test_get_remote_connection_headers_adds_auth_header_if_pass_https():
+    url = 'https://user:pass@remote'
+    headers = RemoteConnection.get_remote_connection_headers(parse.urlparse(url))
+    assert headers.get('Authorization') == 'Basic dXNlcjpwYXNz'
+
+
 def test_get_remote_connection_headers_adds_keep_alive_if_requested():
     url = 'http://remote'
+    headers = RemoteConnection.get_remote_connection_headers(parse.urlparse(url), keep_alive=True)
+    assert headers.get('Connection') == 'keep-alive'
+
+
+def test_get_remote_connection_headers_adds_keep_alive_if_requested_https():
+    url = 'https://remote'
     headers = RemoteConnection.get_remote_connection_headers(parse.urlparse(url), keep_alive=True)
     assert headers.get('Connection') == 'keep-alive'
 

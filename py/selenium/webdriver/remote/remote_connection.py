@@ -20,6 +20,7 @@ import socket
 import string
 import base64
 import platform
+import ssl
 
 try:
     import http.client as httplib
@@ -197,11 +198,21 @@ class RemoteConnection(object):
 
         return headers
 
-    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=True):
+    def __init__(self, remote_server_addr, verify=None, keep_alive=False, resolve_ip=True):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
         parsed_url = parse.urlparse(remote_server_addr)
         addr = parsed_url.hostname
+
+        if parsed_url.scheme == "https":
+            if verify is not None:
+                self._ssl_ctx = ssl.create_default_context()
+                if not verify:
+                    self._ssl_ctx.check_hostname = False
+                    self._ssl_ctx.verify_mode = ssl.CERT_NONE
+                else:
+                    self._ssl_ctx.load_verify_locations(verify)
+
         if parsed_url.hostname and resolve_ip:
             port = parsed_url.port or None
             if parsed_url.scheme == "https":
@@ -524,13 +535,16 @@ class RemoteConnection(object):
             for key, val in headers.items():
                 request.add_header(key, val)
 
+            opener = url_request.OpenerDirector()
+            opener.add_handler(url_request.HTTPRedirectHandler())
+            opener.add_handler(HttpErrorHandler())
+
             if password_manager:
-                opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
-                                                  HttpErrorHandler(),
-                                                  url_request.HTTPBasicAuthHandler(password_manager))
-            else:
-                opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
-                                                  HttpErrorHandler())
+                opener.add_handler(url_request.HTTPBasicAuthHandler(password_manager))
+
+            if hasattr(self, '_ssl_ctx'):
+                opener.add_handler(url_request.HTTPSHandler(context=self._ssl_ctx))
+
             resp = opener.open(request, timeout=self._timeout)
             statuscode = resp.code
             if not hasattr(resp, 'getheader'):
