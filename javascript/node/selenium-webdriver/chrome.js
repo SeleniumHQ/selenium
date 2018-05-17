@@ -324,7 +324,7 @@ function getDefaultService() {
 }
 
 
-const OPTIONS_CAPABILITY_KEY = 'chromeOptions';
+const OPTIONS_CAPABILITY_KEY = 'goog:chromeOptions';
 
 
 /**
