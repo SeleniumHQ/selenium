@@ -98,7 +98,7 @@ public class Hub implements Stoppable {
     }
 
     if (config.host == null) {
-      updateHostToNonLoopBackAddressOfThisMachine();
+      config.host = "0.0.0.0"; //default to all adapters
     }
 
     if (config.port == null) {
