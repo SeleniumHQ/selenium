@@ -52,9 +52,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Tests for {@link JsonHttpCommandCodec}.
- */
+
 @RunWith(JUnit4.class)
 public class JsonHttpCommandCodecTest {
 
@@ -103,9 +101,9 @@ public class JsonHttpCommandCodecTest {
     HttpRequest request = codec.encode(command);
     assertThat(request.getMethod(), is(POST));
     assertThat(request.getHeader(CONTENT_TYPE), is(JSON_UTF_8.toString()));
-    assertThat(request.getHeader(CONTENT_LENGTH), is("2"));
+    assertThat(request.getHeader(CONTENT_LENGTH), is("3"));
     assertThat(request.getUri(), is("/foo/bar"));
-    assertThat(new String(request.getContent(), UTF_8), is("{}"));
+    assertThat(new String(request.getContent(), UTF_8), is("{\n}"));
   }
 
   @Test
@@ -113,7 +111,7 @@ public class JsonHttpCommandCodecTest {
     codec.defineCommand("foo", POST, "/foo/:bar/baz");
     Command command = new Command(null, "foo", ImmutableMap.of("bar", "apples123"));
 
-    String encoding = "{\"bar\": \"apples123\"}";
+    String encoding = "{\n  \"bar\": \"apples123\"\n}";
 
     HttpRequest request = codec.encode(command);
     assertThat(request.getMethod(), is(POST));

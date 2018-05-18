@@ -60,9 +60,10 @@ public class DisplayHelpServletTest extends BaseServletTest {
     FakeHttpServletResponse response = sendCommand("GET", "/");
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     assertNotNull(response.getBody());
+
     assertTrue(response.getBody().contains("Whoops! The URL specified routes to this help page."));
-    assertTrue(response.getBody().contains("\"type\":\"Standalone\""));
-    assertTrue(response.getBody().contains("\"consoleLink\":\"/wd/hub\""));
+    assertTrue(response.getBody().contains("\"type\": \"Standalone\""));
+    assertTrue(response.getBody().contains("\"consoleLink\": \"/wd/hub\""));
   }
 
   @Test

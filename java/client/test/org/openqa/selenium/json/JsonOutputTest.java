@@ -80,6 +80,20 @@ import java.util.stream.Stream;
 public class JsonOutputTest {
 
   @Test
+  public void emptyObjectsLookNice() {
+    String json = convert(ImmutableMap.of());
+
+    assertEquals("{\n}", json);
+  }
+
+  @Test
+  public void emptyCollectionsLookNice() {
+    String json = convert(ImmutableList.of());
+
+    assertEquals("[\n]", json);
+  }
+
+  @Test
   public void testShouldBeAbleToConvertASimpleString() {
     String json = convert("cheese");
 

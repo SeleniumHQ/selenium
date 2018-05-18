@@ -52,6 +52,7 @@ public class JsonOutput implements Closeable {
   private final Appendable appendable;
   private final Consumer<String> appender;
   private Deque<Node> stack;
+  private String indent = "";
 
   JsonOutput(Appendable appendable) {
     this.appendable = Objects.requireNonNull(appendable);
@@ -141,7 +142,8 @@ public class JsonOutput implements Closeable {
   }
 
   public JsonOutput beginObject() {
-    stack.getFirst().write("{");
+    stack.getFirst().write("{\n");
+    indent += "  ";
     stack.addFirst(new JsonObject());
     return this;
   }
@@ -155,26 +157,41 @@ public class JsonOutput implements Closeable {
   }
 
   public JsonOutput endObject() {
-    if (!(stack.getFirst() instanceof JsonObject)) {
+    Node topOfStack = stack.getFirst();
+    if (!(topOfStack instanceof JsonObject)) {
       throw new JsonException("Attempt to close a json object, but not writing a json object");
     }
     stack.removeFirst();
-    appender.accept("}");
+    indent = indent.substring(0, indent.length() - 2);
+
+    if (topOfStack.isEmpty) {
+      appender.accept(indent + "}");
+    } else {
+      appender.accept("\n" + indent + "}");
+    }
     return this;
   }
 
   public JsonOutput beginArray() {
-    append("[");
+    append("[\n");
+    indent += "  ";
     stack.addFirst(new JsonCollection());
     return this;
   }
 
   public JsonOutput endArray() {
-    if (!(stack.getFirst() instanceof JsonCollection)) {
+    Node topOfStack = stack.getFirst();
+    if (!(topOfStack instanceof JsonCollection)) {
       throw new JsonException("Attempt to close a json array, but not writing a json array");
     }
     stack.removeFirst();
-    appender.accept("]");
+    indent = indent.substring(0, indent.length() - 2);
+
+    if (topOfStack.isEmpty) {
+      appender.accept(indent + "]");
+    } else {
+      appender.accept("\n" + indent + "]");
+    }
     return this;
   }
 
@@ -305,9 +322,10 @@ public class JsonOutput implements Closeable {
       if (isEmpty) {
         isEmpty = false;
       } else {
-        appender.accept(", ");
+        appender.accept(",\n");
       }
 
+      appender.accept(indent);
       appender.accept(text);
     }
   }
@@ -362,5 +380,17 @@ public class JsonOutput implements Closeable {
         throw new JsonException(e);
       }
     }
+  }
+
+  public static void main(String[] args) {
+    StringBuilder builder = new StringBuilder();
+    JsonOutput jsonOutput = new Json().newOutput(builder);
+
+    jsonOutput.beginObject()
+        .name("cheeses").beginArray().write("brie").write("gouda").endArray()
+        .name("nested").beginObject().name("key").write("value").endObject()
+        .endObject();
+
+    System.out.println(builder.toString());
   }
 }
