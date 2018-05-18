@@ -37,12 +37,16 @@ module Selenium
         }.freeze
 
         DEFAULTS.each_key do |key|
-          define_method key do
-            @capabilities.fetch(key)
+          if key != :javascript_enabled
+            define_method key do
+              @capabilities.fetch(key)
+            end
           end
 
-          define_method "#{key}=" do |value|
-            @capabilities[key] = value
+          if key != :proxy
+            define_method "#{key}=" do |value|
+              @capabilities[key] = value
+            end
           end
         end
 

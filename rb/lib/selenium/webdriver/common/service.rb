@@ -129,7 +129,7 @@ module Selenium
       end
 
       def process_running?
-        @process && @process.alive?
+        defined?(@process) && @process && @process.alive?
       end
 
       def process_exited?
