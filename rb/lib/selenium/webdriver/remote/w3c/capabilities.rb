@@ -60,10 +60,9 @@ module Selenium
               @capabilities.fetch(key)
             end
 
-            if key != :proxy
-              define_method "#{key}=" do |value|
-                @capabilities[key] = value
-              end
+            next if key == :proxy
+            define_method "#{key}=" do |value|
+              @capabilities[key] = value
             end
           end
 
