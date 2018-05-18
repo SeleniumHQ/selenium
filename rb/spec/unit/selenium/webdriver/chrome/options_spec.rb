@@ -156,12 +156,12 @@ module Selenium
                                options: {foo: :bar},
                                emulation: {c: 3})
             json = opts.as_json
-            expect(json[:args]).to eq(['foo'])
-            expect(json[:binary]).to eq('/foo/bar')
-            expect(json[:prefs]).to include(a: 1)
-            expect(json[:extensions]).to include('bar')
-            expect(json[:foo]).to eq(:bar)
-            expect(json[:mobileEmulation]).to include(c: 3)
+            expect(json['goog:chromeOptions'][:args]).to eq(['foo'])
+            expect(json['goog:chromeOptions'][:binary]).to eq('/foo/bar')
+            expect(json['goog:chromeOptions'][:prefs]).to include(a: 1)
+            expect(json['goog:chromeOptions'][:extensions]).to include('bar')
+            expect(json['goog:chromeOptions'][:foo]).to eq(:bar)
+            expect(json['goog:chromeOptions'][:mobileEmulation]).to include(c: 3)
           end
         end
       end # Options

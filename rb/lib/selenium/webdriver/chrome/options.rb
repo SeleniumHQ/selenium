@@ -22,6 +22,8 @@ module Selenium
         attr_reader :args, :prefs, :options, :emulation, :extensions, :encoded_extensions
         attr_accessor :binary
 
+        KEY = 'goog:chromeOptions'.freeze
+
         #
         # Create a new Options instance.
         #
@@ -175,7 +177,8 @@ module Selenium
           opts[:extensions] = extensions if extensions.any?
           opts[:mobileEmulation] = @emulation unless @emulation.empty?
           opts[:prefs] = @prefs unless @prefs.empty?
-          opts
+
+          {KEY => opts}
         end
       end # Options
     end # Chrome
