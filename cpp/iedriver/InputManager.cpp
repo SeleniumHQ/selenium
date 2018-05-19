@@ -589,7 +589,7 @@ bool InputManager::IsSingleKey(const std::wstring& input) {
     std::vector<WORD> char_types(input.size());
     BOOL get_type_success = ::GetStringTypeW(CT_CTYPE3,
                                              input.c_str(),
-                                             input.size(),
+                                             static_cast<int>(input.size()),
                                              &char_types[0]);
     if (get_type_success) {
       bool found_alpha = false;
