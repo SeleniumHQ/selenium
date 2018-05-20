@@ -51,8 +51,11 @@ def test_works_as_context_manager(mocker):
     quit_ = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.quit')
 
     with WebDriver():
-        assert execute.call_count == 1
+        pass
 
+    expected_params = {'capabilities': {'alwaysMatch': {}, 'firstMatch': [{}]},
+                       'desiredCapabilities': {}}
+    execute.assert_called_with(Command.NEW_SESSION, expected_params)
     assert quit_.call_count == 1
 
 
