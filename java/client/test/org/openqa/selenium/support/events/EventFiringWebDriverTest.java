@@ -34,13 +34,18 @@ import static org.mockito.Mockito.withSettings;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
@@ -63,6 +68,9 @@ import java.util.Map;
  */
 @RunWith(JUnit4.class)
 public class EventFiringWebDriverTest {
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
   @Test
   public void alertEvents() {
@@ -470,7 +478,29 @@ public class EventFiringWebDriverTest {
     order.verify((TakesScreenshot)mockedDriver).getScreenshotAs(OutputType.BASE64);
     order.verify(listener).afterGetScreenshotAs(OutputType.BASE64, screenshot);
     verifyNoMoreInteractions(mockedDriver, listener);
-  
+  }
+
+  @Test
+  public void shouldReturnCapabilitiesWhenUnderlyingDriverImplementsInterfac() {
+    WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(HasCapabilities.class));
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
+
+    final Capabilities caps = new ImmutableCapabilities();
+    when(((HasCapabilities) mockedDriver).getCapabilities()).thenReturn(caps);
+
+    assertSame(caps, testedDriver.getCapabilities());
+  }
+
+  @Test
+  public void shouldThrowExceptionWhenUnderlyingDriverDoesNotImplementInterfac() {
+    WebDriver mockedDriver = mock(WebDriver.class);
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
+
+    expectedException.expect(UnsupportedOperationException.class);
+    expectedException.expectMessage(equalTo("Underlying driver does not implement getting"
+                                            + " capabilities yet."));
+
+    testedDriver.getCapabilities();
   }
 
 }

@@ -20,8 +20,10 @@ package org.openqa.selenium.support.events;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
@@ -66,7 +68,7 @@ import java.util.stream.Collectors;
  */
 public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
                                              WrapsDriver, HasInputDevices, HasTouchScreen,
-                                             Interactive {
+                                             Interactive, HasCapabilities {
 
   private final WebDriver driver;
 
@@ -353,6 +355,16 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
                                             + " user interactions yet.");
 
   }
+
+  @Override
+  public Capabilities getCapabilities() {
+    if (driver instanceof HasCapabilities) {
+      return ((HasCapabilities) driver).getCapabilities();
+    }
+    throw new UnsupportedOperationException(
+        "Underlying driver does not implement getting capabilities yet.");
+  }
+
 
   private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver, Locatable {
 
