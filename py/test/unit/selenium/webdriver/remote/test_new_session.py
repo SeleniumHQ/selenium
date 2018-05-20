@@ -50,7 +50,7 @@ def test_works_as_context_manager(mocker):
     execute = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.execute')
     quit_ = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.quit')
 
-    with WebDriver(desired_capabilities={}):
+    with WebDriver():
         assert execute.call_count == 1
 
     assert quit_.call_count == 1
