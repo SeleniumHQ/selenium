@@ -22,14 +22,9 @@ import static com.google.common.collect.Ordering.natural;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.Ordering;
 
 import org.openqa.grid.common.GridConfiguredJson;
 import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeCoercer;
@@ -41,18 +36,13 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Field;
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StandaloneConfiguration {

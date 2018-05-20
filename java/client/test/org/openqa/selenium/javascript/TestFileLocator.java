@@ -23,7 +23,6 @@ import static java.lang.System.getProperty;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
 import org.openqa.selenium.testing.InProject;
 
