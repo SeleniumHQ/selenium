@@ -50,7 +50,7 @@ public class TestSession implements Session {
     this.capabilities = (Map<String, Object>) capabilities.asMap();
     this.knownElements = new KnownElements();
     this.executor = new ThreadPoolExecutor(1, 1, 600L, TimeUnit.SECONDS,
-        new LinkedBlockingQueue<Runnable>());
+        new LinkedBlockingQueue<>());
   }
 
   public void close() {
