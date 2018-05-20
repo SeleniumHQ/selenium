@@ -27,7 +27,6 @@ import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -60,7 +59,7 @@ public class SelfRegisteringRemoteTest {
 
 
   @Test
-  public void testHubRegistrationWhenPortExplicitlyZeroedOut() throws MalformedURLException {
+  public void testHubRegistrationWhenPortExplicitlyZeroedOut() {
     GridNodeServer server = new DummyGridNodeServer();
     RegistrationRequest request = new RegistrationRequest();
     request.getConfiguration().port = 0;

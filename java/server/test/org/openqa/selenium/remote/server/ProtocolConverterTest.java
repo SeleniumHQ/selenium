@@ -69,7 +69,7 @@ public class ProtocolConverterTest {
         new JsonHttpCommandCodec(),
         new JsonHttpResponseCodec()) {
       @Override
-      protected HttpResponse makeRequest(HttpRequest request) throws IOException {
+      protected HttpResponse makeRequest(HttpRequest request) {
         HttpResponse response = new HttpResponse();
 
         response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
@@ -118,7 +118,7 @@ public class ProtocolConverterTest {
         new W3CHttpCommandCodec(),
         new W3CHttpResponseCodec()) {
       @Override
-      protected HttpResponse makeRequest(HttpRequest request) throws IOException {
+      protected HttpResponse makeRequest(HttpRequest request) {
         assertEquals(String.format("/session/%s/execute/sync", sessionId), request.getUri());
         Map<String, Object> params = gson.fromJson(request.getContentString(), MAP_TYPE.getType());
 
@@ -174,7 +174,7 @@ public class ProtocolConverterTest {
         new JsonHttpCommandCodec(),
         new JsonHttpResponseCodec()) {
       @Override
-      protected HttpResponse makeRequest(HttpRequest request) throws IOException {
+      protected HttpResponse makeRequest(HttpRequest request) {
         HttpResponse response = new HttpResponse();
 
         response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());

@@ -89,7 +89,7 @@ public class CircularOutputStreamTest {
   }
 
   @Test
-  public void testLongerMultiLineOutputPreservesJustTheEnd() throws Exception {
+  public void testLongerMultiLineOutputPreservesJustTheEnd() {
     int maxSize = 64;
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();

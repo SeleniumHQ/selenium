@@ -42,7 +42,7 @@ public class DriverFactoryTest {
   private DefaultDriverFactory factory;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     factory = new DefaultDriverFactory(Platform.getCurrent());
   }
 

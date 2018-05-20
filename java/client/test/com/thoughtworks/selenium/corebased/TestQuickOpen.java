@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestQuickOpen extends InternalSelenseTestBase {
   @Test
-  public void testQuickOpen() throws Exception {
+  public void testQuickOpen() {
     // <tr>
     // <td>setTimeout</td>
     // <td>5000</td>

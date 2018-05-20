@@ -48,7 +48,6 @@ import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -152,7 +151,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void throwsIfEncodedCommandHasNoMapping() throws URISyntaxException {
+  public void throwsIfEncodedCommandHasNoMapping() {
     HttpRequest request = new HttpRequest(GET, "/foo/bar/baz");
     try {
       codec.decode(request);
@@ -163,7 +162,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void canDecodeCommandWithNoParameters() throws URISyntaxException {
+  public void canDecodeCommandWithNoParameters() {
     HttpRequest request = new HttpRequest(GET, "/foo/bar/baz");
     codec.defineCommand("foo", GET, "/foo/bar/baz");
 
@@ -174,7 +173,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void canExtractSessionIdFromPathParameters() throws URISyntaxException {
+  public void canExtractSessionIdFromPathParameters() {
     HttpRequest request = new HttpRequest(GET, "/foo/bar/baz");
     codec.defineCommand("foo", GET, "/foo/:sessionId/baz");
 
@@ -183,7 +182,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void removesSessionIdFromParameterMap() throws URISyntaxException {
+  public void removesSessionIdFromParameterMap() {
     HttpRequest request = new HttpRequest(GET, "/foo/bar/baz");
     codec.defineCommand("foo", GET, "/foo/:sessionId/baz");
 
@@ -193,7 +192,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void canExtractSessionIdFromRequestBody() throws URISyntaxException {
+  public void canExtractSessionIdFromRequestBody() {
     JsonObject json = new JsonObject();
     json.addProperty("sessionId", "sessionX");
     String data = json.toString();
@@ -206,7 +205,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void extractsAllParametersFromUrl() throws URISyntaxException {
+  public void extractsAllParametersFromUrl() {
     HttpRequest request = new HttpRequest(GET, "/fruit/apple/size/large");
     codec.defineCommand("pick", GET, "/fruit/:fruit/size/:size");
 
@@ -217,7 +216,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void extractsAllParameters() throws URISyntaxException {
+  public void extractsAllParameters() {
     JsonObject json = new JsonObject();
     json.addProperty("sessionId", "sessionX");
     json.addProperty("fruit", "apple");
@@ -236,7 +235,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void ignoresNullSessionIdInSessionBody() throws URISyntaxException {
+  public void ignoresNullSessionIdInSessionBody() {
     JsonObject json = new JsonObject();
     json.add("sessionId", JsonNull.INSTANCE);
     json.addProperty("fruit", "apple");

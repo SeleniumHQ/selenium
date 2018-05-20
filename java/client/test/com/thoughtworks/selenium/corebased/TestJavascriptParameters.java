@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class TestJavascriptParameters extends InternalSelenseTestBase {
   @Test
-  public void testJavascriptParameters() throws Exception {
+  public void testJavascriptParameters() {
     selenium.open("../tests/html/test_store_value.html");
     selenium.type("theText", selenium.getEval("[1,2,3,4,5].join(':')"));
     verifyEquals(selenium.getValue("theText"), "1:2:3:4:5");

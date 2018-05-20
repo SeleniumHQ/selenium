@@ -34,7 +34,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -64,7 +63,7 @@ public class GridDistributionTest {
 
   @Test(timeout = 45000)
   @Ignore("Times out")
-  public void testLoadIsDistributedEvenly() throws MalformedURLException {
+  public void testLoadIsDistributedEvenly() {
     for (int i=0; i < 8; i++) {
       drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
     }
@@ -117,7 +116,7 @@ public class GridDistributionTest {
   }
 
   @Test
-  public void testLeastRecentlyUsedNodesPickedFirst() throws Throwable {
+  public void testLeastRecentlyUsedNodesPickedFirst() {
     ProxySet ps = hub.getRegistry().getAllProxies();
 
     for (int i=0; i < 4; i++) {
@@ -191,7 +190,7 @@ public class GridDistributionTest {
   }
 
   @After
-  public void stop() throws Exception {
+  public void stop() {
     stopDrivers(drivers);
     hub.stop();
   }

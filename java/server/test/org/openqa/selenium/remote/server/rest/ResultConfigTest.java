@@ -65,7 +65,7 @@ public class ResultConfigTest {
   }
 
   @Test
-  public void testShouldSetNamedParametersOnHandler() throws Exception {
+  public void testShouldSetNamedParametersOnHandler() {
     ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger
     );
     Command command = new Command(dummySessionId, "foo", ImmutableMap.of("bar", "fishy"));

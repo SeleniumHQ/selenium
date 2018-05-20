@@ -34,8 +34,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
-import java.net.MalformedURLException;
-
 public class SmokeTest {
 
   private Hub hub;
@@ -63,7 +61,7 @@ public class SmokeTest {
   }
 
   @Test
-  public void browserOnWebDriver() throws MalformedURLException {
+  public void browserOnWebDriver() {
     WebDriver driver = null;
     try {
       DesiredCapabilities caps = DesiredCapabilities.htmlUnit();
@@ -78,7 +76,7 @@ public class SmokeTest {
   }
 
   @After
-  public void stop() throws Exception {
+  public void stop() {
     hub.stop();
   }
 }

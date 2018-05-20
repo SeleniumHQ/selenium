@@ -104,7 +104,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  public void testGetsYieldToPageLoadLogEntries() throws Exception {
+  public void testGetsYieldToPageLoadLogEntries() {
     startLoggingDriver();
     loggingDriver.get(pages.formPage);
     loggingDriver.findElement(By.id("submitButton")).click();

@@ -74,7 +74,7 @@ public class NewRequestCrashesDuringNewSessionTest {
    * state
    */
   @Test(timeout = 1000)
-  public void requestIsremovedFromTheQeueAfterItcrashes() throws InterruptedException {
+  public void requestIsremovedFromTheQeueAfterItcrashes() {
     // should work
     try {
       SeleniumBasedRequest newSession = GridHelper.createNewSessionRequest(registry, SeleniumProtocol.WebDriver, ff);

@@ -35,7 +35,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @Ignore(FIREFOX)
@@ -63,7 +62,7 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canStartDriverWithSpecifiedBinary() throws IOException {
+  public void canStartDriverWithSpecifiedBinary() {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
     localDriver = new FirefoxDriver(new FirefoxOptions().setBinary(binary));
@@ -86,7 +85,7 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canStartDriverWithSpecifiedBinaryAndProfile() throws IOException {
+  public void canStartDriverWithSpecifiedBinaryAndProfile() {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
     FirefoxProfile profile = new FirefoxProfile();
@@ -170,7 +169,7 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canPassCapabilitiesBinaryAndProfileSeparately() throws IOException {
+  public void canPassCapabilitiesBinaryAndProfileSeparately() {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
     FirefoxProfile profile = new FirefoxProfile();

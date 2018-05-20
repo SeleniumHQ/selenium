@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestBrowserVersion extends InternalSelenseTestBase {
   @Test
-  public void testBrowserVersion() throws Exception {
+  public void testBrowserVersion() {
     System.out.println(selenium.getEval("browserVersion.name"));
   }
 }

@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestVisibility extends InternalSelenseTestBase {
   @Test
-  public void testVisibility() throws Exception {
+  public void testVisibility() {
     selenium.open("../tests/html/test_visibility.html");
     verifyTrue(selenium.isVisible("visibleParagraph"));
     verifyFalse(selenium.isVisible("hiddenParagraph"));

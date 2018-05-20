@@ -62,7 +62,7 @@ public class ProxySetTest {
   }
 
   @Test
-  public void testProxySortingByIdle() throws Exception {
+  public void testProxySortingByIdle() {
     GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     try {
       ProxySet set = registry.getAllProxies();

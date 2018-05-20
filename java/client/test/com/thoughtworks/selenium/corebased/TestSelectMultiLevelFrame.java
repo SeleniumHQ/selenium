@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestSelectMultiLevelFrame extends InternalSelenseTestBase {
   @Test
-  public void testSelectMultiLevelFrame() throws Exception {
+  public void testSelectMultiLevelFrame() {
     selenium.open("../tests/html/test_multi_level_frame.html");
     // Select first level frame
     selenium.selectFrame("frame2");
