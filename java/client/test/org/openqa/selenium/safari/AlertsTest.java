@@ -44,7 +44,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     driver.get(pages.alertsPage);
   }
 

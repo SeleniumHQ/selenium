@@ -44,7 +44,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   private WebDriver driver2;
 
   @After
-  public void quitDriver() throws Exception {
+  public void quitDriver() {
     if (driver2 != null) {
       driver2.quit();
     }

@@ -475,7 +475,7 @@ public class ReferrerTest extends JUnit4TestBase {
       addHandler(new AbstractHandler() {
         @Override
         public void handle(String s, Request baseRequest, HttpServletRequest request,
-                           HttpServletResponse response) throws IOException, ServletException {
+                           HttpServletResponse response) throws IOException {
           response.setContentType("application/x-javascript-config; charset=us-ascii");
           response.setStatus(HttpServletResponse.SC_OK);
           response.getWriter().println(getPacFileContents());

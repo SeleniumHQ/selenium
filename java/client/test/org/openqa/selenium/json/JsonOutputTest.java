@@ -571,7 +571,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void shouldAllowValuesToBeStreamedToACollection() throws IOException {
+  public void shouldAllowValuesToBeStreamedToACollection() {
     StringBuilder builder = new StringBuilder();
 
     try (JsonOutput jsonOutput = new Json().newOutput(builder)) {

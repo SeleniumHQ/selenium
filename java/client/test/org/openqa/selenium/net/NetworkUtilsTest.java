@@ -25,7 +25,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class NetworkUtilsTest {
   @Test
-  public void testGetPrivateLocalAddress() throws Exception {
+  public void testGetPrivateLocalAddress() {
     NetworkUtils networkUtils =
         new NetworkUtils(StubNetworkInterfaceProvider.getUbuntu1010SingleNICAndWlan());
     String s = networkUtils.obtainLoopbackIp4Address();
@@ -34,7 +34,7 @@ public class NetworkUtilsTest {
   }
 
   @Test
-  public void testPrivateLocalAddress() throws Exception {
+  public void testPrivateLocalAddress() {
     NetworkUtils networkUtils =
         new NetworkUtils(StubNetworkInterfaceProvider.getWindowsXpWithIp4Only());
     String s = networkUtils.obtainLoopbackIp4Address();
@@ -43,7 +43,7 @@ public class NetworkUtilsTest {
   }
 
   @Test
-  public void testRHELBox() throws Exception {
+  public void testRHELBox() {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getRHEL5Box());
     String s = networkUtils.obtainLoopbackIp4Address();
     assertEquals("localhost.localdomain", s);
@@ -51,7 +51,7 @@ public class NetworkUtilsTest {
   }
 
   @Test
-  public void testSolarisBox() throws Exception {
+  public void testSolarisBox() {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getSolarisBox());
     String s = networkUtils.obtainLoopbackIp4Address();
     assertEquals("localhost", s);
@@ -59,7 +59,7 @@ public class NetworkUtilsTest {
   }
 
   @Test
-  public void testUbuntu9X() throws Exception {
+  public void testUbuntu9X() {
     NetworkUtils networkUtils =
         new NetworkUtils(StubNetworkInterfaceProvider.getUbuntu09XSingleNIC());
     String s = networkUtils.obtainLoopbackIp4Address();
@@ -68,7 +68,7 @@ public class NetworkUtilsTest {
   }
 
   @Test
-  public void testOsXSnowLeopard() throws Exception {
+  public void testOsXSnowLeopard() {
     NetworkUtils networkUtils =
         new NetworkUtils(StubNetworkInterfaceProvider.getOsXWiredAndWireless());
     String s = networkUtils.obtainLoopbackIp4Address();
@@ -77,7 +77,7 @@ public class NetworkUtilsTest {
   }
 
   @Test
-  public void testFreeBsd() throws Exception {
+  public void testFreeBsd() {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getFreeBsd());
     String s = networkUtils.obtainLoopbackIp4Address();
     assertEquals("localhost.apache.org", s);
@@ -85,7 +85,7 @@ public class NetworkUtilsTest {
   }
 
   @Test
-  public void testVistaBox() throws Exception {
+  public void testVistaBox() {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getVistaBox());
     String s = networkUtils.obtainLoopbackIp4Address();
     assertEquals("127.0.0.1", s);
@@ -93,7 +93,7 @@ public class NetworkUtilsTest {
   }
 
   @Test
-  public void testWindows7Box() throws Exception {
+  public void testWindows7Box() {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getWindows7Box());
     String s = networkUtils.obtainLoopbackIp4Address();
     assertEquals("127.0.0.1", s);

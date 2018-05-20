@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestDomainCookie extends InternalSelenseTestBase {
   @Test
-  public void testDomainCookie() throws Exception {
+  public void testDomainCookie() {
     String host =
         selenium
             .getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).host;");

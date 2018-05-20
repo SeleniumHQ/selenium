@@ -163,8 +163,7 @@ public class HttpCommandProcessorUnitTest {
     }
 
     @Override
-    protected int getResponseCode(HttpURLConnection conn)
-        throws IOException {
+    protected int getResponseCode(HttpURLConnection conn) {
       return HttpURLConnection.HTTP_OK;
     }
 
@@ -186,7 +185,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testGetBooleanArray() throws Exception {
+  public void testGetBooleanArray() {
     HttpCommandProcessor processor =
         new HttpCommandProcessor("localhost", 4444, "*chrome", "http://www.openqa.org");
     processor = spy(processor);

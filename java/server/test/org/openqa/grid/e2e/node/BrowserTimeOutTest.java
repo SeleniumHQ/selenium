@@ -34,7 +34,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
-import java.net.MalformedURLException;
 import java.util.Collections;
 
 /**
@@ -71,7 +70,7 @@ public class BrowserTimeOutTest {
 
 
   @Test
-  public void testWebDriverTimesOut() throws InterruptedException, MalformedURLException {
+  public void testWebDriverTimesOut() {
     String url = hub.getUrl("/grid/admin/SlowServlet").toExternalForm();
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
     WebDriver driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
@@ -85,7 +84,7 @@ public class BrowserTimeOutTest {
   }
 
   @After
-  public void teardown() throws Exception {
+  public void teardown() {
     node.stopRemoteServer();
     hub.stop();
   }

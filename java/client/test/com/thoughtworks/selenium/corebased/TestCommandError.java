@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestCommandError extends InternalSelenseTestBase {
   @Test
-  public void testCommandError() throws Exception {
+  public void testCommandError() {
     selenium.open("../tests/html/test_verifications.html");
     try {
       selenium.click("notALink");

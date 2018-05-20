@@ -52,14 +52,14 @@ public class ThreadGuardTest {
   }
 
   @Test
-  public void testProtectSuccess() throws Exception {
+  public void testProtectSuccess() {
     WebDriver actual = mock(WebDriver.class);
     final WebDriver protect = ThreadGuard.protect(actual);
     assertNull(protect.findElement(By.id("foo")));
   }
 
   @Test
-  public void testInterfacesProxiedProperly() throws Exception {
+  public void testInterfacesProxiedProperly() {
     WebDriver actual = mock(WebDriver.class,
                             withSettings().extraInterfaces(HasTouchScreen.class));
     final WebDriver webdriver = ThreadGuard.protect(actual);

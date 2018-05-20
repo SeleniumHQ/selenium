@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestFramesSpecialTargets extends InternalSelenseTestBase {
   @Test
-  public void testFramesSpecialTargets() throws Exception {
+  public void testFramesSpecialTargets() {
     selenium.openWindow("../tests/html/Frames.html", "SpecialTargets");
     selenium.waitForPopUp("SpecialTargets", "10000");
     selenium.selectWindow("SpecialTargets");

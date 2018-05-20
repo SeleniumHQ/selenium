@@ -42,8 +42,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,7 +77,7 @@ public class DefaultProxyInjectsConfigurationUuidTest {
   }
 
   @Test(timeout = 5000)
-  public void testProxyInjectsConfigurationUUID() throws MalformedURLException {
+  public void testProxyInjectsConfigurationUUID() {
     Map<String, Object> req_caps = new HashMap<>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     req_caps.put(CapabilityType.VERSION, "20");
@@ -97,7 +95,7 @@ public class DefaultProxyInjectsConfigurationUuidTest {
   }
 
   @After
-  public void teardown() throws Exception {
+  public void teardown() {
     remote.stopRemoteServer();
     hub.stop();
   }
@@ -131,7 +129,7 @@ public class DefaultProxyInjectsConfigurationUuidTest {
     }
 
     @Override
-    protected void forwardRequest(TestSession session, RequestHandler handler) throws IOException {}
+    protected void forwardRequest(TestSession session, RequestHandler handler) {}
 
     @Override
     public void forwardNewSessionRequestAndUpdateRegistry(TestSession session)

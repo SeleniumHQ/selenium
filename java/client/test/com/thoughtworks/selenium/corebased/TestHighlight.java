@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestHighlight extends InternalSelenseTestBase {
   @Test
-  public void testHighlight() throws Exception {
+  public void testHighlight() {
     selenium.open("../tests/html/test_locators.html");
     selenium.highlight("id1");
   }

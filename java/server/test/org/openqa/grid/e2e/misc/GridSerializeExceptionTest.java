@@ -46,12 +46,12 @@ public class GridSerializeExceptionTest {
   }
 
   @Test(expected = WebDriverException.class)
-  public void testwebdriver() throws Throwable {
+  public void testwebdriver() {
     GridTestHelper.getRemoteWebDriver(GridTestHelper.getDefaultBrowserCapability(), hub);
   }
 
   @After
-  public void stop() throws Exception {
+  public void stop() {
     hub.stop();
   }
 }

@@ -108,7 +108,7 @@ public class WindowTest extends JUnit4TestBase {
   @Ignore(value = SAFARI,
       reason = "getPosition after setPosition doesn't match up exactly, " +
           "as expected - probably due to nuances in Mac OSX window manager.")
-  public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {
+  public void testSetsThePositionOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
@@ -136,7 +136,7 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   @Ignore(travis = true)
-  public void testCanMaximizeTheWindow() throws InterruptedException {
+  public void testCanMaximizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
@@ -149,7 +149,7 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(travis = true)
-  public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
+  public void testCanMaximizeTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
@@ -165,7 +165,7 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(travis = true)
-  public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
+  public void testCanMaximizeTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));

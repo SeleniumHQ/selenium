@@ -215,7 +215,7 @@ public class WebDriverPriorityDemo {
   }
 
   @After
-  public void stop() throws Exception {
+  public void stop() {
     if (remote != null) {
       remote.stopRemoteServer();
     }

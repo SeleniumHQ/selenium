@@ -39,7 +39,7 @@ public class LinuxEphemeralPortRangeDetectorTest {
   }
 
   @Test
-  public void decodeEphemeralPorts() throws Exception {
+  public void decodeEphemeralPorts() {
     String range ="1234 65533";
     EphemeralPortRangeDetector ephemeralEphemeralPortDetector =
         new LinuxEphemeralPortRangeDetector(new StringReader(range));

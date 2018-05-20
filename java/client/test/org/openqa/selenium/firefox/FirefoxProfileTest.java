@@ -55,7 +55,7 @@ public class FirefoxProfileTest {
   private FirefoxProfile profile;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     profile = new FirefoxProfile();
   }
 

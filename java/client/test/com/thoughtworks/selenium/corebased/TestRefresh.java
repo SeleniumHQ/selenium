@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestRefresh extends InternalSelenseTestBase {
   @Test
-  public void testRefresh() throws Exception {
+  public void testRefresh() {
     selenium.open("../tests/html/test_page.slow.html");
     verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_page\\.slow\\.html$"));
     verifyEquals(selenium.getTitle(), "Slow Loading Page");

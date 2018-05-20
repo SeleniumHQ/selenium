@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestGetTextContent extends InternalSelenseTestBase {
   @Test
-  public void testGetTextContent() throws Exception {
+  public void testGetTextContent() {
     selenium.open("../tests/html/test_gettextcontent.html");
     verifyTrue(selenium.isTextPresent("Text1"));
 

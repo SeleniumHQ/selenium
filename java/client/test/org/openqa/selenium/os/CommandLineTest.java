@@ -36,7 +36,7 @@ public class CommandLineTest {
   private static String testExecutable;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     // ping can be found on every platform we support.
     testExecutable = "ping";
   }

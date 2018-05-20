@@ -171,7 +171,7 @@ public class DefaultFieldDecoratorTest {
   }
 
   @Test
-  public void testDecoratingProxyImplementsRequiredInterfaces() throws Exception {
+  public void testDecoratingProxyImplementsRequiredInterfaces() {
     final AllDriver driver = mock(AllDriver.class);
     final AllElement element = mock(AllElement.class);
     final Mouse mouse = mock(Mouse.class);
