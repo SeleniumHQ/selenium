@@ -151,6 +151,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
 
+  @Override
   public WebDriver getWrappedDriver() {
     if (driver instanceof WrapsDriver) {
       return ((WrapsDriver) driver).getWrappedDriver();
@@ -158,20 +159,24 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     return driver;
   }
 
+  @Override
   public void get(String url) {
     dispatcher.beforeNavigateTo(url, driver);
     driver.get(url);
     dispatcher.afterNavigateTo(url, driver);
   }
 
+  @Override
   public String getCurrentUrl() {
     return driver.getCurrentUrl();
   }
 
+  @Override
   public String getTitle() {
     return driver.getTitle();
   }
 
+  @Override
   public List<WebElement> findElements(By by) {
     dispatcher.beforeFindBy(by, null, driver);
     List<WebElement> temp = driver.findElements(by);
@@ -183,6 +188,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     return result;
   }
 
+  @Override
   public WebElement findElement(By by) {
     dispatcher.beforeFindBy(by, null, driver);
     WebElement temp = driver.findElement(by);
@@ -190,26 +196,32 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     return createWebElement(temp);
   }
 
+  @Override
   public String getPageSource() {
     return driver.getPageSource();
   }
 
+  @Override
   public void close() {
     driver.close();
   }
 
+  @Override
   public void quit() {
     driver.quit();
   }
 
+  @Override
   public Set<String> getWindowHandles() {
     return driver.getWindowHandles();
   }
 
+  @Override
   public String getWindowHandle() {
     return driver.getWindowHandle();
   }
 
+  @Override
   public Object executeScript(String script, Object... args) {
     if (driver instanceof JavascriptExecutor) {
       dispatcher.beforeScript(script, driver);
@@ -222,6 +234,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
         "Underlying driver instance does not support executing javascript");
   }
 
+  @Override
   public Object executeAsyncScript(String script, Object... args) {
     if (driver instanceof JavascriptExecutor) {
       dispatcher.beforeScript(script, driver);
@@ -282,6 +295,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     return result;
   }
 
+   @Override
    public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
      if (driver instanceof TakesScreenshot) {
         dispatcher.beforeGetScreenshotAs(target);
@@ -294,14 +308,17 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
         "Underlying driver instance does not support taking screenshots");
   }
 
+  @Override
   public TargetLocator switchTo() {
     return new EventFiringTargetLocator(driver.switchTo());
   }
 
+  @Override
   public Navigation navigate() {
     return new EventFiringNavigation(driver.navigate());
   }
 
+  @Override
   public Options manage() {
     return new EventFiringOptions(driver.manage());
   }
@@ -310,6 +327,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     return new EventFiringWebElement(from);
   }
 
+  @Override
   public Keyboard getKeyboard() {
     if (driver instanceof HasInputDevices) {
       return new EventFiringKeyboard(driver, dispatcher);
@@ -318,6 +336,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
         + " user interactions yet.");
   }
 
+  @Override
   public Mouse getMouse() {
     if (driver instanceof HasInputDevices) {
       return new EventFiringMouse(driver, dispatcher);
@@ -326,6 +345,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
         + " user interactions yet.");
   }
 
+  @Override
   public TouchScreen getTouch() {
     if (driver instanceof HasTouchScreen) {
       return new EventFiringTouch(driver, dispatcher);
@@ -390,68 +410,83 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       this.underlyingElement = element;
     }
 
+    @Override
     public void click() {
       dispatcher.beforeClickOn(element, driver);
       element.click();
       dispatcher.afterClickOn(element, driver);
     }
 
+    @Override
     public void submit() {
       element.submit();
     }
 
+    @Override
     public void sendKeys(CharSequence... keysToSend) {
       dispatcher.beforeChangeValueOf(element, driver, keysToSend);
       element.sendKeys(keysToSend);
       dispatcher.afterChangeValueOf(element, driver, keysToSend);
     }
 
+    @Override
     public void clear() {
       dispatcher.beforeChangeValueOf(element, driver, null);
       element.clear();
       dispatcher.afterChangeValueOf(element, driver, null);
     }
 
+    @Override
     public String getTagName() {
       return element.getTagName();
     }
 
+    @Override
     public String getAttribute(String name) {
       return element.getAttribute(name);
     }
 
+    @Override
     public boolean isSelected() {
       return element.isSelected();
     }
 
+    @Override
     public boolean isEnabled() {
       return element.isEnabled();
     }
 
+    @Override
     public String getText() {
       return element.getText();
     }
 
+    @Override
     public boolean isDisplayed() {
       return element.isDisplayed();
     }
 
+    @Override
     public Point getLocation() {
       return element.getLocation();
     }
 
+    @Override
     public Dimension getSize() {
       return element.getSize();
     }
 
+    @Override
     public Rectangle getRect() {
       return element.getRect();
     }
 
+    @Override
     public String getCssValue(String propertyName) {
       return element.getCssValue(propertyName);
     }
 
+    @Override
     public WebElement findElement(By by) {
       dispatcher.beforeFindBy(by, element, driver);
       WebElement temp = element.findElement(by);
@@ -459,6 +494,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return createWebElement(temp);
     }
 
+    @Override
     public List<WebElement> findElements(By by) {
       dispatcher.beforeFindBy(by, element, driver);
       List<WebElement> temp = element.findElements(by);
@@ -470,6 +506,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return result;
     }
 
+    @Override
     public WebElement getWrappedElement() {
       return underlyingElement;
     }
@@ -498,14 +535,17 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return underlyingElement.toString();
     }
 
+    @Override
     public WebDriver getWrappedDriver() {
       return driver;
     }
 
+    @Override
     public Coordinates getCoordinates() {
       return ((Locatable) underlyingElement).getCoordinates();
     }
 
+    @Override
     public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
       return element.getScreenshotAs(outputType);
     }
@@ -519,28 +559,33 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       this.navigation = navigation;
     }
 
+    @Override
     public void to(String url) {
       dispatcher.beforeNavigateTo(url, driver);
       navigation.to(url);
       dispatcher.afterNavigateTo(url, driver);
     }
 
+    @Override
     public void to(URL url) {
       to(String.valueOf(url));
     }
 
+    @Override
     public void back() {
       dispatcher.beforeNavigateBack(driver);
       navigation.back();
       dispatcher.afterNavigateBack(driver);
     }
 
+    @Override
     public void forward() {
       dispatcher.beforeNavigateForward(driver);
       navigation.forward();
       dispatcher.afterNavigateForward(driver);
     }
 
+    @Override
     public void refresh() {
       dispatcher.beforeNavigateRefresh(driver);
       navigation.refresh();
@@ -556,42 +601,52 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       this.options = options;
     }
 
+    @Override
     public Logs logs() {
       return options.logs();
     }
 
+    @Override
     public void addCookie(Cookie cookie) {
       options.addCookie(cookie);
     }
 
+    @Override
     public void deleteCookieNamed(String name) {
       options.deleteCookieNamed(name);
     }
 
+    @Override
     public void deleteCookie(Cookie cookie) {
       options.deleteCookie(cookie);
     }
 
+    @Override
     public void deleteAllCookies() {
       options.deleteAllCookies();
     }
 
+    @Override
     public Set<Cookie> getCookies() {
       return options.getCookies();
     }
 
+    @Override
     public Cookie getCookieNamed(String name) {
       return options.getCookieNamed(name);
     }
 
+    @Override
     public Timeouts timeouts() {
       return new EventFiringTimeouts(options.timeouts());
     }
 
+    @Override
     public ImeHandler ime() {
       return options.ime();
     }
 
+    @Override
     @Beta
     public Window window() {
       return new EventFiringWindow(options.window());
@@ -606,16 +661,19 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       this.timeouts = timeouts;
     }
 
+    @Override
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
       timeouts.implicitlyWait(time, unit);
       return this;
     }
 
+    @Override
     public Timeouts setScriptTimeout(long time, TimeUnit unit) {
       timeouts.setScriptTimeout(time, unit);
       return this;
     }
 
+    @Override
     public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
       timeouts.pageLoadTimeout(time, unit);
       return this;
@@ -630,22 +688,27 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       this.targetLocator = targetLocator;
     }
 
+    @Override
     public WebDriver frame(int frameIndex) {
       return targetLocator.frame(frameIndex);
     }
 
+    @Override
     public WebDriver frame(String frameName) {
       return targetLocator.frame(frameName);
     }
 
+    @Override
     public WebDriver frame(WebElement frameElement) {
       return targetLocator.frame(frameElement);
     }
 
+    @Override
     public WebDriver parentFrame() {
       return targetLocator.parentFrame();
     }
 
+    @Override
     public WebDriver window(String windowName) {
       dispatcher.beforeSwitchToWindow(windowName, driver);
       WebDriver driverToReturn = targetLocator.window(windowName);
@@ -653,14 +716,17 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return driverToReturn;
     }
 
+    @Override
     public WebDriver defaultContent() {
       return targetLocator.defaultContent();
     }
 
+    @Override
     public WebElement activeElement() {
       return targetLocator.activeElement();
     }
 
+    @Override
     public Alert alert() {
       return new EventFiringAlert(this.targetLocator.alert());
     }
@@ -674,26 +740,32 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       this.window = window;
     }
 
+    @Override
     public void setSize(Dimension targetSize) {
       window.setSize(targetSize);
     }
 
+    @Override
     public void setPosition(Point targetLocation) {
       window.setPosition(targetLocation);
     }
 
+    @Override
     public Dimension getSize() {
       return window.getSize();
     }
 
+    @Override
     public Point getPosition() {
       return window.getPosition();
     }
 
+    @Override
     public void maximize() {
       window.maximize();
     }
 
+    @Override
     public void fullscreen() {
       window.fullscreen();
     }
@@ -706,22 +778,26 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       this.alert = alert;
     }
 
+    @Override
     public void dismiss() {
       dispatcher.beforeAlertDismiss(driver);
       alert.dismiss();
       dispatcher.afterAlertDismiss(driver);
     }
 
+    @Override
     public void accept() {
       dispatcher.beforeAlertAccept(driver);
       alert.accept();
       dispatcher.afterAlertAccept(driver);
     }
 
+    @Override
     public String getText() {
       return alert.getText();
     }
 
+    @Override
     public void sendKeys(String keysToSend) {
       alert.sendKeys(keysToSend);
     }
