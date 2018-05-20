@@ -9,6 +9,25 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.12.0.2
+=========
+ * Added log warning for mismatched bitness of driver and browser when
+   sending keys.
+ * Updated to better support using CreateProcess API for launching IE.
+   The driver checks the registry for the location of the iexplore.exe
+   executable. In the case of a 32-bit driver on 64-bit Windows, the
+   registry calls are redirected to the Wow6432Node in the registry,
+   which ultimately points to ielowutl.exe instead of iexplore.exe. In
+   this case, we will now bypass the registry redirection, and read the
+   proper location from the 64-bit browser executable. A side effect of
+   this is that users wanting to use the CreateProcess API will need to
+   use the 64-bit version of the IE driver on 64-bit Windows, contrary to
+   most expectations. It is important to note that using this API and
+   launching the browser in this way is not consistent with how the user
+   will launch IE, and if the driver is used for testing purposes, it will
+   not be giving identical results to what the end-user of the application
+   being tested will use when running IE.
+
 v3.12.0.1
 =========
  * Update close window command to return list of remaining window handles.
