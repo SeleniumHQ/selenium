@@ -112,13 +112,18 @@ public class W3CRemoteDriverTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void doesNotAllowFirstMatchToBeUsedAsAMetadataName() {
+  public void doesNotAllowFirstMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
     RemoteWebDriver.builder().addMetadata("firstMatch", new HashMap<>());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void doesNotAllowAlwaysMatchToBeUsedAsAMetadataName() {
+  public void doesNotAllowAlwaysMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
     RemoteWebDriver.builder().addMetadata("alwaysMatch", ImmutableList.of(ImmutableMap.of()));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void doesNotAllowCapabilitiesToBeUsedAsAMetadataName() {
+    RemoteWebDriver.builder().addMetadata("capabilities", ImmutableList.of(ImmutableMap.of()));
   }
 
   @Test
@@ -260,6 +265,8 @@ public class W3CRemoteDriverTest {
 
   private List<Capabilities> listCapabilities(RemoteWebDriverBuilder builder) {
     Map<String, Object> value = getPayload(builder);
+    //noinspection unchecked
+    value = (Map<String, Object>) value.get("capabilities");
 
     @SuppressWarnings("unchecked")
     Map<String, Object> always =

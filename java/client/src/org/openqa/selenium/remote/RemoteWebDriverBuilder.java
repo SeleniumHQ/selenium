@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.remote;
 
+import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -25,9 +29,16 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
+import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -39,12 +50,18 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
 @Beta
 class RemoteWebDriverBuilder {
 
-  private final static Set<String> ILLEGAL_METADATA_KEYS = ImmutableSet.of("alwaysMatch", "firstMatch");
+  private final static Set<String> ILLEGAL_METADATA_KEYS = ImmutableSet.of(
+      "alwaysMatch",
+      "capabilities",
+      "firstMatch");
   private final static AcceptedW3CCapabilityKeys OK_KEYS = new AcceptedW3CCapabilityKeys();
   private final List<Map<String, Object>> options = new ArrayList<>();
   private final Map<String, Object> metadata = new TreeMap<>();
@@ -105,7 +122,33 @@ class RemoteWebDriverBuilder {
       throw new SessionNotCreatedException("Refusing to create session without any capabilities");
     }
 
-    return null;
+    Plan plan = getPlan();
+
+    CommandExecutor executor;
+    if (plan.isUsingDriverService()) {
+      AtomicReference<DriverService> serviceRef = new AtomicReference<>();
+
+      executor = new SpecCompliantExecutor(
+          () -> {
+            if (serviceRef.get() != null && serviceRef.get().isRunning()) {
+              throw new SessionNotCreatedException(
+                  "Attempt to start the underlying service more than once");
+            }
+            try {
+              serviceRef.set(plan.getDriverService());
+              serviceRef.get().start();
+              return serviceRef.get().getUrl();
+            } catch (IOException e) {
+              throw new SessionNotCreatedException(e.getMessage(), e);
+            }
+          },
+          plan::writePayload,
+          () -> serviceRef.get().stop());
+    } else {
+      executor = new SpecCompliantExecutor(() -> remoteHost, plan::writePayload, () -> {});
+    }
+
+    return new RemoteWebDriver(executor, new ImmutableCapabilities());
   }
 
   private Map<String, Object> validate(Capabilities options) {
@@ -200,6 +243,8 @@ class RemoteWebDriverBuilder {
     void writePayload(JsonOutput out) {
       out.beginObject();
 
+      out.name("capabilities");
+      out.beginObject();
       // Try and minimise payload by finding keys that have the same value in every option. This isn't
       // terribly efficient, but we expect the number of entries to be very low in almost every case,
       // so this should be fine.
@@ -239,6 +284,7 @@ class RemoteWebDriverBuilder {
         out.endObject();
       });
       out.endArray();
+      out.endObject();  // Close the "capabilities" entry
 
       metadata.forEach((key, value) -> {
         out.name(key);
@@ -246,6 +292,69 @@ class RemoteWebDriverBuilder {
       });
 
       out.endObject();
+    }
+  }
+
+  private static class SpecCompliantExecutor implements CommandExecutor {
+
+    private final CommandCodec<HttpRequest> commandCodec = new W3CHttpCommandCodec();
+    private final ResponseCodec<HttpResponse> responseCodec = new W3CHttpResponseCodec();
+
+    private final Supplier<URL> onStart;
+    private final Consumer<JsonOutput> writePayload;
+    private final Runnable onQuit;
+    private HttpClient client;
+
+    public SpecCompliantExecutor(
+        Supplier<URL> onStart,
+        Consumer<JsonOutput> writePayload,
+        Runnable onQuit) {
+      this.onStart = onStart;
+      this.writePayload = writePayload;
+      this.onQuit = onQuit;
+    }
+
+    @Override
+    public Response execute(Command command) throws IOException {
+      HttpRequest request;
+
+      if (DriverCommand.NEW_SESSION.equals(command.getName())) {
+        URL url = onStart.get();
+        this.client = HttpClient.Factory.createDefault().createClient(url);
+
+        request = new HttpRequest(POST, "/session");
+        request.setHeader("Cache-Control", "none");
+        request.setHeader("Content-Type", JSON_UTF_8.toString());
+        StringBuilder payload = new StringBuilder();
+        try (JsonOutput jsonOutput = new Json().newOutput(payload)) {
+          writePayload.accept(jsonOutput);
+        }
+        request.setContent(payload.toString().getBytes(UTF_8));
+      } else {
+        request = commandCodec.encode(command);
+      }
+
+      try {
+        HttpResponse response = client.execute(request);
+        Response decodedResponse = responseCodec.decode(response);
+
+        if (decodedResponse.getSessionId() == null && decodedResponse.getValue() instanceof Map) {
+          Map<?, ?> value = (Map<?, ?>) decodedResponse.getValue();
+          if (value.get("sessionId") instanceof String) {
+            decodedResponse.setSessionId((String) value.get("sessionId"));
+          }
+        }
+
+        if (decodedResponse.getSessionId() == null && response.getTargetHost() != null) {
+          decodedResponse.setSessionId(HttpSessionId.getSessionId(response.getTargetHost()));
+        }
+
+        return decodedResponse;
+      } finally {
+        if (DriverCommand.QUIT.equals(command.getName())) {
+          onQuit.run();
+        }
+      }
     }
   }
 }
