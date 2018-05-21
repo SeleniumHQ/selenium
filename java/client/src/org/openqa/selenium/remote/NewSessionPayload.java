@@ -501,4 +501,15 @@ public class NewSessionPayload implements Closeable {
     }
     return toReturn;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder res = new StringBuilder();
+    try {
+      writeTo(res);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return res.toString();
+  }
 }
