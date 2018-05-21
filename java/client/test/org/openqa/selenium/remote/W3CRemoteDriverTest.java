@@ -42,6 +42,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
@@ -187,9 +188,15 @@ public class W3CRemoteDriverTest {
     assertEquals(expected, plan.getRemoteHost());
   }
 
+  static class FakeDriverService extends DriverService {
+    public FakeDriverService() throws IOException {
+      super(new File("."), 0, null, null);
+    }
+  }
+
   @Test
-  public void shouldUseADriverServiceIfGivenOneRegardlessOfOtherChoices() {
-    GeckoDriverService expected = GeckoDriverService.createDefaultService();
+  public void shouldUseADriverServiceIfGivenOneRegardlessOfOtherChoices() throws IOException {
+    DriverService expected = new FakeDriverService();
 
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
         .addAlternative(new InternetExplorerOptions())
@@ -202,11 +209,11 @@ public class W3CRemoteDriverTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void settingBothDriverServiceAndUrlIsAnError() {
+  public void settingBothDriverServiceAndUrlIsAnError() throws IOException {
     RemoteWebDriver.builder()
         .addAlternative(new InternetExplorerOptions())
         .url("http://example.com/cheese/peas/wd")
-        .withDriverService(GeckoDriverService.createDefaultService());
+        .withDriverService(new FakeDriverService());
   }
 
   @Test
