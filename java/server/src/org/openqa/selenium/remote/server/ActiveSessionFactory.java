@@ -58,7 +58,7 @@ public class ActiveSessionFactory implements SessionFactory {
   private final static Function<String, Class<?>> CLASS_EXISTS = name -> {
     try {
       return Class.forName(name);
-    } catch (ClassNotFoundException cnfe) {
+    } catch (ClassNotFoundException | NoClassDefFoundError e) {
       return null;
     }
   };
