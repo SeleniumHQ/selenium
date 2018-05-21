@@ -104,16 +104,61 @@ public class W3CRemoteDriverTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void doesNotAllowFirstMatchToBeUsedAsAMetadataName() {
-    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-        .addMetadata("firstMatch", new HashMap<>());
+    RemoteWebDriver.builder().addMetadata("firstMatch", new HashMap<>());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void doesNotAllowAlwaysMatchToBeUsedAsAMetadataName() {
-    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-        .addMetadata("alwaysMatch", ImmutableList.of(ImmutableMap.of()));
+    RemoteWebDriver.builder().addMetadata("alwaysMatch", ImmutableList.of(ImmutableMap.of()));
   }
 
+  @Test
+  public void shouldAllowCapabilitiesToBeSetGlobally() {
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+        .addOptions(new FirefoxOptions())
+        .addOptions(new ChromeOptions())
+        .setCapability("se:cheese", "brie");
+
+    // We expect the global to be in the "alwaysMatch" section for obvious reasons, but that's not
+    // a requirement. Get the capabilities and check each of them.
+    List<Capabilities> allCaps = listCapabilities(builder);
+
+    assertEquals(2, allCaps.size());
+    assertEquals("brie", allCaps.get(0).getCapability("se:cheese"));
+    assertEquals("brie", allCaps.get(1).getCapability("se:cheese"));
+  }
+
+  @Test
+  public void shouldSetCapabilityToOptionsAddedAfterTheCallToSetCapabilities() {
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+        .addOptions(new FirefoxOptions())
+        .setCapability("se:cheese", "brie")
+        .addOptions(new ChromeOptions());
+
+    // We expect the global to be in the "alwaysMatch" section for obvious reasons, but that's not
+    // a requirement. Get the capabilities and check each of them.
+    List<Capabilities> allCaps = listCapabilities(builder);
+
+    assertEquals(2, allCaps.size());
+    assertEquals("brie", allCaps.get(0).getCapability("se:cheese"));
+    assertEquals("brie", allCaps.get(1).getCapability("se:cheese"));
+  }
+
+  @Test
+  public void additionalCapabilitiesOverrideOnesSetOnCapabilitiesAlready() {
+    ChromeOptions options = new ChromeOptions();
+    options.setCapability("se:cheese", "cheddar");
+
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+        .addOptions(options)
+        .setCapability("se:cheese", "brie");
+
+    List<Capabilities> allCaps = listCapabilities(builder);
+
+    assertEquals(1, allCaps.size());
+    assertEquals("brie", allCaps.get(0).getCapability("se:cheese"));
+  }
+  
   private List<Capabilities> listCapabilities(RemoteWebDriverBuilder builder) {
     Map<String, Object> value = getPayload(builder);
 

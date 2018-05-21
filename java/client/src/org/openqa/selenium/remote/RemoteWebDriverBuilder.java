@@ -41,6 +41,7 @@ class RemoteWebDriverBuilder {
   private final static AcceptedW3CCapabilityKeys OK_KEYS = new AcceptedW3CCapabilityKeys();
   private final List<Map<String, Object>> options = new ArrayList<>();
   private final Map<String, Object> metadata = new TreeMap<>();
+  private final Map<String, Object> additionalCapabilities = new TreeMap<>();
 
   public RemoteWebDriverBuilder addOptions(Capabilities options) {
     Map<String, Object> serialized = validate(Objects.requireNonNull(options));
@@ -53,6 +54,18 @@ class RemoteWebDriverBuilder {
       throw new IllegalArgumentException(key + " is a reserved key");
     }
     metadata.put(Objects.requireNonNull(key), Objects.requireNonNull(value));
+    return this;
+  }
+
+  public RemoteWebDriverBuilder setCapability(String capabilityName, String value) {
+    if (!OK_KEYS.test(capabilityName)) {
+      throw new IllegalArgumentException("Capability is not valid");
+    }
+    if (value == null) {
+      throw new IllegalArgumentException("Null values are not allowed");
+    }
+
+    additionalCapabilities.put(capabilityName, value);
     return this;
   }
 
@@ -98,6 +111,7 @@ class RemoteWebDriverBuilder {
         }
       }
     }
+    always.putAll(additionalCapabilities);
 
     out.name("alwaysMatch");
     out.beginObject();
@@ -113,6 +127,7 @@ class RemoteWebDriverBuilder {
       out.beginObject();
       option.entrySet().stream()
           .filter(entry -> !always.containsKey(entry.getKey()))
+          .filter(entry -> !additionalCapabilities.containsKey(entry.getKey()))
           .forEach(entry -> {
             out.name(entry.getKey());
             out.write(entry.getValue());
