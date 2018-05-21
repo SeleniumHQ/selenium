@@ -21,7 +21,9 @@ import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -99,6 +101,21 @@ public class ChromeDriverService extends DriverService {
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
+
+    @Override
+    public int score(Capabilities capabilites) {
+      int score = 0;
+
+      if (BrowserType.CHROME.equals(capabilites.getBrowserName())) {
+        score++;
+      }
+
+      if (capabilites.getCapability(ChromeOptions.CAPABILITY) != null) {
+        score++;
+      }
+
+      return score;
+    }
 
     /**
      * Configures the driver server verbosity.

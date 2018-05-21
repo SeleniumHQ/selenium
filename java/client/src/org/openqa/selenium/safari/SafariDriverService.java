@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -79,6 +80,21 @@ public class SafariDriverService extends DriverService {
       usingTechnologyPreview(false);
     }
 
+    @Override
+    public int score(Capabilities capabilites) {
+      int score = 0;
+
+      if (BrowserType.SAFARI.equals(capabilites.getBrowserName())) {
+        score++;
+      }
+
+      if (capabilites.getCapability(SafariOptions.CAPABILITY) != null) {
+        score++;
+      }
+
+      return score;
+    }
+
     public SafariDriverService.Builder usingTechnologyPreview(boolean useTechnologyPreview) {
       if (useTechnologyPreview) {
         usingDriverExecutable(TP_SAFARI_DRIVER_EXECUTABLE);
@@ -96,8 +112,11 @@ public class SafariDriverService extends DriverService {
       return ImmutableList.of("--port", String.valueOf(getPort()));
     }
 
-    protected SafariDriverService createDriverService(File exe, int port, ImmutableList<String> args,
-                                              ImmutableMap<String, String> environment) {
+    protected SafariDriverService createDriverService(
+        File exe,
+        int port,
+        ImmutableList<String> args,
+        ImmutableMap<String, String> environment) {
       try {
         return new SafariDriverService(exe, port, args, environment);
       } catch (IOException e) {

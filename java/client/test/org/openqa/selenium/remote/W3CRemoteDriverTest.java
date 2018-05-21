@@ -21,22 +21,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeNotNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -194,7 +200,7 @@ public class W3CRemoteDriverTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void settingBothDriverServiceAndUrlIsAnError() {
-    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+    RemoteWebDriver.builder()
         .addOptions(new InternetExplorerOptions())
         .url("http://example.com/cheese/peas/wd")
         .withDriverService(GeckoDriverService.createDefaultService());
@@ -202,7 +208,44 @@ public class W3CRemoteDriverTest {
 
   @Test
   public void shouldDetectDriverServicesAndUseThoseIfNoOtherChoiceMade() {
+    // Make sure we have at least one of the services available
+    Capabilities caps = null;
+    Class<? extends DriverService> expectedServiceClass = null;
 
+    try {
+      InternetExplorerDriverService.createDefaultService();
+      caps = new InternetExplorerOptions();
+      expectedServiceClass = InternetExplorerDriverService.class;
+    } catch (IllegalStateException e) {
+      // Fall through
+    }
+
+    if (caps == null) {
+      try {
+        GeckoDriverService.createDefaultService();
+        caps = new FirefoxOptions();
+        expectedServiceClass = GeckoDriverService.class;
+      } catch (IllegalStateException e) {
+        // Fall through
+      }
+    }
+
+    if (caps == null) {
+      try {
+        ChromeDriverService.createDefaultService();
+        caps = new ChromeOptions();
+        expectedServiceClass = ChromeDriverService.class;
+      } catch (IllegalStateException e) {
+        // Fall through
+      }
+    }
+
+    assumeNotNull(caps, expectedServiceClass);
+
+    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder().addOptions(caps).getPlan();
+
+    assertTrue(plan.isUsingDriverService());
+    assertEquals(expectedServiceClass, plan.getDriverService().getClass());
   }
 
   private List<Capabilities> listCapabilities(RemoteWebDriverBuilder builder) {

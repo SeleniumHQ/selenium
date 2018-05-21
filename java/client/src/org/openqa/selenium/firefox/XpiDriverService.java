@@ -34,6 +34,7 @@ import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -245,6 +246,26 @@ public class XpiDriverService extends DriverService {
 
     private FirefoxBinary binary = null;
     private FirefoxProfile profile = null;
+
+    @Override
+    public int score(Capabilities capabilites) {
+      int score = 0;
+
+      if (BrowserType.FIREFOX.equals(capabilites.getBrowserName())) {
+        score++;
+      }
+
+      if (capabilites.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
+        score++;
+      }
+
+      // This is the legacy firefox driver that they've asked for. Bind very strongly.
+      if (capabilites.getCapability(FirefoxDriver.MARIONETTE) == Boolean.FALSE) {
+        score += 5;
+      }
+
+      return score;
+    }
 
     public Builder withBinary(FirefoxBinary binary) {
       this.binary = Preconditions.checkNotNull(binary);

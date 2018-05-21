@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.service.DriverService;
@@ -35,8 +36,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.StreamSupport;
 
 @Beta
 class RemoteWebDriverBuilder {
@@ -147,7 +150,41 @@ class RemoteWebDriverBuilder {
     }
 
     DriverService getDriverService() {
-      return service;
+      if (service != null) {
+        return service;
+      }
+
+      ServiceLoader<DriverService.Builder> allLoaders =
+          ServiceLoader.load(DriverService.Builder.class);
+
+      // We need to extract each of the capabilities from the payload.
+      return options
+          .stream()
+          .map(HashMap::new) // Make a copy so we don't alter the original values
+          .map(
+              map -> {
+                map.putAll(additionalCapabilities);
+                return map;
+              })
+          .map(ImmutableCapabilities::new)
+          .map(
+              caps ->
+                  StreamSupport.stream(allLoaders.spliterator(), true)
+                      .filter(builder -> builder.score(caps) > 0)
+                      .findFirst()
+                      .orElse(null))
+          .filter(Objects::nonNull)
+          .map(
+              bs -> {
+                try {
+                  return bs.build();
+                } catch (Throwable e) {
+                  return null;
+                }
+              })
+          .filter(Objects::nonNull)
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException("Unable to find a driver service"));
     }
 
 

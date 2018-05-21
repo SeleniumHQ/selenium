@@ -69,7 +69,7 @@ import java.util.stream.Stream;
 @Beta
 public class InternetExplorerOptions extends MutableCapabilities {
 
-  private final static String IE_OPTIONS = "se:ieOptions";
+  final static String IE_OPTIONS = "se:ieOptions";
 
   private static final String FULL_PAGE_SCREENSHOT = "ie.enableFullPageScreenshot";
   private static final String UPLOAD_DIALOG_TIMEOUT = "ie.fileUploadDialogTimeout";
