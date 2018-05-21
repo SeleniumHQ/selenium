@@ -67,12 +67,12 @@ public class UrlChecker {
     this.timeLimiter = timeLimiter;
   }
 
-  public void waitUntilAvailable(long timeout, TimeUnit unit, final URL... urls)
+  public URL waitUntilAvailable(long timeout, TimeUnit unit, final URL... urls)
       throws TimeoutException {
     long start = System.nanoTime();
     log.fine("Waiting for " + Arrays.toString(urls));
     try {
-      timeLimiter.callWithTimeout((Callable<Void>) () -> {
+      return timeLimiter.callWithTimeout((Callable<URL>) () -> {
         HttpURLConnection connection = null;
 
         long sleepMillis = MIN_POLL_INTERVAL_MS;
@@ -82,7 +82,7 @@ public class UrlChecker {
               log.fine("Polling " + url);
               connection = connectToUrl(url);
               if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                return null;
+                return url;
               }
             } catch (IOException e) {
               // Ok, try again.
