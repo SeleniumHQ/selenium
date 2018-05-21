@@ -18,6 +18,8 @@
 package org.openqa.selenium.remote;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
@@ -31,6 +33,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
@@ -39,6 +42,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -158,7 +163,48 @@ public class W3CRemoteDriverTest {
     assertEquals(1, allCaps.size());
     assertEquals("brie", allCaps.get(0).getCapability("se:cheese"));
   }
-  
+
+  @Test
+  public void ifARemoteUrlIsGivenThatIsUsedForTheSession() throws MalformedURLException {
+    URL expected = new URL("http://localhost:3000/woohoo/cheese");
+
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+        .addOptions(new InternetExplorerOptions())
+        .url(expected.toExternalForm());
+
+    RemoteWebDriverBuilder.Plan plan = builder.getPlan();
+
+    assertFalse(plan.isUsingDriverService());
+    assertEquals(expected, plan.getRemoteHost());
+  }
+
+  @Test
+  public void shouldUseADriverServiceIfGivenOneRegardlessOfOtherChoices() {
+    GeckoDriverService expected = GeckoDriverService.createDefaultService();
+
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+        .addOptions(new InternetExplorerOptions())
+        .withDriverService(expected);
+
+    RemoteWebDriverBuilder.Plan plan = builder.getPlan();
+
+    assertTrue(plan.isUsingDriverService());
+    assertEquals(expected, plan.getDriverService());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void settingBothDriverServiceAndUrlIsAnError() {
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+        .addOptions(new InternetExplorerOptions())
+        .url("http://example.com/cheese/peas/wd")
+        .withDriverService(GeckoDriverService.createDefaultService());
+  }
+
+  @Test
+  public void shouldDetectDriverServicesAndUseThoseIfNoOtherChoiceMade() {
+
+  }
+
   private List<Capabilities> listCapabilities(RemoteWebDriverBuilder builder) {
     Map<String, Object> value = getPayload(builder);
 
@@ -184,7 +230,7 @@ public class W3CRemoteDriverTest {
 
     try (Writer writer = new StringWriter();
          JsonOutput jsonOutput = json.newOutput(writer)) {
-      builder.writePayload(jsonOutput);
+      builder.getPlan().writePayload(jsonOutput);
 
       return json.toType(writer.toString(), MAP_TYPE);
     } catch (IOException e) {

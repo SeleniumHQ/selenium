@@ -25,7 +25,11 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.service.DriverService;
 
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +46,8 @@ class RemoteWebDriverBuilder {
   private final List<Map<String, Object>> options = new ArrayList<>();
   private final Map<String, Object> metadata = new TreeMap<>();
   private final Map<String, Object> additionalCapabilities = new TreeMap<>();
+  private URL remoteHost;
+  private DriverService service;
 
   public RemoteWebDriverBuilder addOptions(Capabilities options) {
     Map<String, Object> serialized = validate(Objects.requireNonNull(options));
@@ -69,6 +75,20 @@ class RemoteWebDriverBuilder {
     return this;
   }
 
+  public RemoteWebDriverBuilder url(String url) {
+    try {
+      return url(new URL(url));
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  public RemoteWebDriverBuilder url(URL url) {
+    this.remoteHost = Objects.requireNonNull(url);
+    validateDriverServiceAndUrlConstraint();
+    return this;
+  }
+
   public RemoteWebDriver build() {
     if (options.isEmpty()) {
       throw new SessionNotCreatedException("Refusing to create session without any capabilities");
@@ -93,54 +113,94 @@ class RemoteWebDriverBuilder {
   }
 
   @VisibleForTesting
-  void writePayload(JsonOutput out) {
-    out.beginObject();
+  Plan getPlan() {
+    return new Plan();
+  }
 
-    // Try and minimise payload by finding keys that have the same value in every option. This isn't
-    // terribly efficient, but we expect the number of entries to be very low in almost every case,
-    // so this should be fine.
-    Map<String, Object> always = new HashMap<>(options.get(0));
-    for (Map<String, Object> option : options) {
-      for (Map.Entry<String, Object> entry : option.entrySet()) {
-        if (!always.containsKey(entry.getKey())) {
-          continue;
-        }
+  public RemoteWebDriverBuilder withDriverService(DriverService service) {
+    this.service = Objects.requireNonNull(service);
+    validateDriverServiceAndUrlConstraint();
+    return this;
+  }
 
-        if (!always.get(entry.getKey()).equals(entry.getValue())) {
-          always.remove(entry.getKey());
+  private void validateDriverServiceAndUrlConstraint() {
+    if (remoteHost != null && service != null) {
+      throw new IllegalArgumentException(
+          "You may only set one of the remote url or the driver service to use.");
+    }
+  }
+
+  @VisibleForTesting
+  class Plan {
+
+    private Plan() {
+      // Not for public consumption
+    }
+
+    boolean isUsingDriverService() {
+      return remoteHost == null;
+    }
+
+    @VisibleForTesting
+    URL getRemoteHost() {
+      return remoteHost;
+    }
+
+    DriverService getDriverService() {
+      return service;
+    }
+
+
+    @VisibleForTesting
+    void writePayload(JsonOutput out) {
+      out.beginObject();
+
+      // Try and minimise payload by finding keys that have the same value in every option. This isn't
+      // terribly efficient, but we expect the number of entries to be very low in almost every case,
+      // so this should be fine.
+      Map<String, Object> always = new HashMap<>(options.get(0));
+      for (Map<String, Object> option : options) {
+        for (Map.Entry<String, Object> entry : option.entrySet()) {
+          if (!always.containsKey(entry.getKey())) {
+            continue;
+          }
+
+          if (!always.get(entry.getKey()).equals(entry.getValue())) {
+            always.remove(entry.getKey());
+          }
         }
       }
-    }
-    always.putAll(additionalCapabilities);
+      always.putAll(additionalCapabilities);
 
-    out.name("alwaysMatch");
-    out.beginObject();
-    always.forEach((key, value) -> {
-      out.name(key);
-      out.write(value);
-    });
-    out.endObject();
-
-    out.name("firstMatch");
-    out.beginArray();
-    options.forEach(option -> {
+      out.name("alwaysMatch");
       out.beginObject();
-      option.entrySet().stream()
-          .filter(entry -> !always.containsKey(entry.getKey()))
-          .filter(entry -> !additionalCapabilities.containsKey(entry.getKey()))
-          .forEach(entry -> {
-            out.name(entry.getKey());
-            out.write(entry.getValue());
-          });
+      always.forEach((key, value) -> {
+        out.name(key);
+        out.write(value);
+      });
       out.endObject();
-    });
-    out.endArray();
 
-    metadata.forEach((key, value) -> {
-      out.name(key);
-      out.write(value);
-    });
+      out.name("firstMatch");
+      out.beginArray();
+      options.forEach(option -> {
+        out.beginObject();
+        option.entrySet().stream()
+            .filter(entry -> !always.containsKey(entry.getKey()))
+            .filter(entry -> !additionalCapabilities.containsKey(entry.getKey()))
+            .forEach(entry -> {
+              out.name(entry.getKey());
+              out.write(entry.getValue());
+            });
+        out.endObject();
+      });
+      out.endArray();
 
-    out.endObject();
+      metadata.forEach((key, value) -> {
+        out.name(key);
+        out.write(value);
+      });
+
+      out.endObject();
+    }
   }
 }
