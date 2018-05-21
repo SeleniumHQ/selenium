@@ -328,7 +328,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void UploadingFileShouldFireOnChangeEvent()
         {
             driver.Url = formsPage;
@@ -352,7 +351,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldReportTheXAndYCoordinatesWhenClicking()
         {
             driver.Url = clickEventPage;

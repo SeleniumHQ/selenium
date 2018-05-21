@@ -13,7 +13,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.PhantomJS)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldReturnNullWhenGettingTheValueOfAPropertyThatIsNotListed()
@@ -28,7 +27,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.PhantomJS)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void CanRetrieveTheCurrentValueOfAProperty()

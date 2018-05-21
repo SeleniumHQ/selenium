@@ -27,7 +27,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldAllowFileUploading()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -52,7 +51,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldAllowFileUploadingUsingTransparentUploadElement()
         {
             if (TestUtilities.IsMarionette(driver))

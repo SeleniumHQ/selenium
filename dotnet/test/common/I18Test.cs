@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium
 {
@@ -15,7 +15,6 @@ namespace OpenQA.Selenium
         private string linkText = "\u4E2D\u56FD\u4E4B\u58F0";
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldBeAbleToReadChinese()
         {
             driver.Url = chinesePage;

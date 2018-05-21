@@ -314,7 +314,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "SVG elements crash the iWebDriver app (issue 1134)")]
         public void GetAttributeDoesNotReturnAnObjectForSvgProperties()
         {
             if (TestUtilities.IsOldIE(driver))
@@ -370,8 +369,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         public void ShouldReturnNullForNonPresentBooleanAttributes()
         {
             driver.Url = booleanAttributes;
@@ -382,8 +379,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.Android)]
         public void ShouldReturnTrueForPresentBooleanAttributes()
         {
             driver.Url = booleanAttributes;

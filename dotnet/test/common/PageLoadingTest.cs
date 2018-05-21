@@ -64,7 +64,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE happily will navigate to invalid URLs")]
-        [IgnoreBrowser(Browser.IPhone)]
         public void ShouldThrowIfUrlIsMalformed()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -77,7 +76,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone)]
         public void ShouldReturnWhenGettingAUrlThatDoesNotConnect()
         {
             // Here's hoping that there's nothing here. There shouldn't be
@@ -107,7 +105,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone)]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ShouldDoNothingIfThereIsNothingToGoBackTo()
         {
@@ -126,7 +123,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
         public void ShouldBeAbleToNavigateBackInTheBrowserHistory()
         {
             driver.Url = formsPage;
@@ -155,7 +151,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
         public void ShouldBeAbleToNavigateForwardsInTheBrowserHistory()
         {
             driver.Url = formsPage;
@@ -202,7 +197,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "Browser does, in fact, hang in this case.")]
-        [IgnoreBrowser(Browser.IPhone, "Untested user-agent")]
         public void ShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -218,11 +212,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented for browser")]
-        [IgnoreBrowser(Browser.IPhone, "Not implemented for browser")]
-        [IgnoreBrowser(Browser.PhantomJS, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Edge, "Not implemented for browser")]
         public void ShouldTimeoutIfAPageTakesTooLongToLoad()

@@ -8,7 +8,7 @@ namespace OpenQA.Selenium
     [TestFixture]
     public class TextHandlingTest : DriverTestFixture
     {
-        private string newLine = "\r\n";
+        private readonly string NewLine = "\r\n";
 
         [Test]
         public void ShouldReturnTheTextContentOfASingleElementWithNoChildren()
@@ -50,8 +50,8 @@ namespace OpenQA.Selenium
             driver.Url = (simpleTestPage);
             string text = driver.FindElement(By.Id("multiline")).Text;
 
-            Assert.IsTrue(text.StartsWith("A div containing" + newLine));
-            Assert.IsTrue(text.Contains("More than one line of text" + newLine));
+            Assert.IsTrue(text.StartsWith("A div containing" + NewLine));
+            Assert.IsTrue(text.Contains("More than one line of text" + NewLine));
             Assert.IsTrue(text.EndsWith("and block level elements"));
         }
 
@@ -160,7 +160,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement textarea = driver.FindElement(By.Id("withText"));
             textarea.Clear();
-            string expectedText = "I like cheese" + newLine + newLine + "It's really nice";
+            string expectedText = "I like cheese" + NewLine + NewLine + "It's really nice";
             textarea.SendKeys(expectedText);
 
             string seenText = textarea.GetAttribute("value");
@@ -198,7 +198,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldReturnEmptyStringWhenTagIsSelfClosing()
         {
             driver.Url = (xhtmlFormPage);
@@ -208,7 +207,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldNotTrimSpacesWhenLineWraps()
         {
             driver.Url = simpleTestPage;
@@ -224,19 +222,18 @@ namespace OpenQA.Selenium
 
             string text = driver.FindElement(By.Id("twoblocks")).Text;
 
-            Assert.AreEqual(text, "Some text" + newLine + "Some more text");
+            Assert.AreEqual(text, "Some text" + NewLine + "Some more text");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldHandleNestedBlockLevelElements()
         {
             driver.Url = (simpleTestPage);
 
             string text = driver.FindElement(By.Id("nestedblocks")).Text;
 
-            Assert.AreEqual("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine
-                                + "and also" + newLine + "Brie", text);
+            Assert.AreEqual("Cheese" + NewLine + "Some text" + NewLine + "Some more text" + NewLine
+                                + "and also" + NewLine + "Brie", text);
         }
 
         [Test]
@@ -312,9 +309,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Fails on IE")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Fails on IE")]
-        [IgnoreBrowser(Browser.Android, "untested")]
-        [IgnoreBrowser(Browser.IPhone, "untested")]
         public void TextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping()
         {
             driver.Url = formsPage;
@@ -327,9 +321,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "Fails on IE")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Fails on IE")]
-        [IgnoreBrowser(Browser.Android, "untested")]
-        [IgnoreBrowser(Browser.IPhone, "untested")]
         public void TextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue()
         {
             driver.Url = formsPage;

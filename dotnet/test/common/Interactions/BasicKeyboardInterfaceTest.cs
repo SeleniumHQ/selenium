@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -18,9 +18,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowBasicKeyboardInput()
         {
@@ -39,9 +37,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeyDownOnly()
         {
@@ -66,9 +62,7 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeyUp()
         {
@@ -94,9 +88,7 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithShiftPressed()
         {
@@ -123,9 +115,7 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithLeftShiftPressed()
         {
@@ -150,9 +140,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeysToActiveElement()
         {
@@ -168,9 +156,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowBasicKeyboardInputOnActiveElement()
         {

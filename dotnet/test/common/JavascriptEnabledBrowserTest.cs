@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Drawing;
 using NUnit.Framework.Constraints;
@@ -36,7 +36,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "does not detect that a new page loaded.")]
         public void ShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad()
         {
             driver.Url = formsPage;
@@ -48,7 +47,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "does not detect that a new page loaded.")]
         public void ShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
         {
             driver.Url = formsPage;
@@ -87,7 +85,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "sendKeys not implemented correctly")]
         public void ShouldFireOnChangeEventWhenSettingAnElementsValue()
         {
             driver.Url = javascriptPage;
@@ -136,7 +133,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "iPhone: focus doesn't change as expected")]
         public void ShouldBeAbleToSwitchToFocusedElement()
         {
             driver.Url = javascriptPage;
@@ -232,8 +228,6 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Windows Phone driver does not support multiple windows")]
         public void ShouldBeAbleToClickALinkThatClosesAWindow()
         {
             if (TestUtilities.IsMarionette(driver))

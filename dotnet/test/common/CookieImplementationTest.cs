@@ -452,7 +452,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
-        [IgnoreBrowser(Browser.PhantomJS, "Untested browser")]
         [IgnoreBrowser(Browser.Safari, "Untested browser")]
         public void ShouldRetainCookieSecure()
         {

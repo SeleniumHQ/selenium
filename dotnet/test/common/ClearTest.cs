@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium
 {
@@ -6,7 +6,6 @@ namespace OpenQA.Selenium
     public class ClearTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         public void WritableTextInputShouldClear()
         {
             driver.Url = readOnlyPage;
@@ -16,7 +15,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         public void TextInputShouldNotClearWhenDisabled()
         {
             driver.Url = readOnlyPage;
@@ -26,7 +24,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Opera, "Untested feature")]
         public void TextInputShouldNotClearWhenReadOnly()
         {
@@ -36,7 +33,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         public void WritableTextAreaShouldClear()
         {
             driver.Url = readOnlyPage;
@@ -46,7 +42,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         public void TextAreaShouldNotClearWhenDisabled()
         {
             driver.Url = readOnlyPage;
@@ -55,7 +50,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Opera, "Untested feature")]
         public void TextAreaShouldNotClearWhenReadOnly()
         {
@@ -65,9 +59,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Untested feature")]
-        [IgnoreBrowser(Browser.IPhone, "Untested feature")]
         public void ContentEditableAreaShouldClear()
         {
             driver.Url = readOnlyPage;

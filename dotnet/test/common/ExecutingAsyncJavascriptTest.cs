@@ -243,12 +243,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Edge, "Does not handle async alerts")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IE, "Handling async alerts isn't done by the ExecuteAsyncScript command.")]
-        [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
@@ -271,12 +268,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Edge, "Does not handle async alerts")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IE, "Handling async alerts isn't done by the ExecuteAsyncScript command.")]
-        [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
@@ -298,12 +292,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Edge, "Does not handle async alerts")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IE, "Handling async alerts isn't done by the ExecuteAsyncScript command.")]
-        [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
@@ -326,12 +317,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Edge, "Does not handle async alerts")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IE, "Handling async alerts isn't done by the ExecuteAsyncScript command.")]
-        [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
@@ -353,12 +341,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Edge, "Does not handle async alerts")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IE, "Handling async alerts isn't done by the ExecuteAsyncScript command.")]
-        [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]

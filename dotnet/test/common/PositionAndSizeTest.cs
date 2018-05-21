@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
@@ -121,11 +121,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Chrome, "WebKit bug 28804")]
-        [IgnoreBrowser(Browser.IPhone, "WebKit bug 28804")]
-        [IgnoreBrowser(Browser.PhantomJS, "WebKit bug 28804")]
         [IgnoreBrowser(Browser.IE, "Position and size are always integer in IE")]
         public void ShouldHandleNonIntegerPositionAndSize()
         {

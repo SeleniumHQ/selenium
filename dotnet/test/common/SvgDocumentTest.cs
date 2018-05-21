@@ -6,7 +6,6 @@ namespace OpenQA.Selenium
     public class SvgDocumentTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit, "SVG tests only in rendered browsers")]
         [IgnoreBrowser(Browser.Opera, "Not tested")]
         [IgnoreBrowser(Browser.Chrome, "Test not supported in Chrome yet")]
         public void ClickOnSvgElement()
@@ -25,7 +24,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit, "SVG tests only in rendered browsers")]
         [IgnoreBrowser(Browser.Opera, "Not tested")]
         public void ExecuteScriptInSvgDocument()
         {

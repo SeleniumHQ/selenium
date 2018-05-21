@@ -73,8 +73,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
-        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement()
@@ -85,8 +83,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
-        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements()
@@ -96,8 +92,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
-        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement()
@@ -108,8 +102,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
-        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements()
@@ -121,8 +113,6 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
-        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement()
@@ -132,8 +122,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
-        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements()
@@ -143,8 +131,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
-        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement()
@@ -155,8 +141,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "InvalidSelectorException not implemented for driver")]
-        [IgnoreBrowser(Browser.IPhone, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Opera, "InvalidSelectorException not implemented for driver")]
         [IgnoreBrowser(Browser.Remote, "InvalidSelectorException not implemented for driver")]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements()

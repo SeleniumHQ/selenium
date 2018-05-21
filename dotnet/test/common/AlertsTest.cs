@@ -12,12 +12,7 @@ namespace OpenQA.Selenium
     {
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldBeAbleToOverrideTheWindowAlertMethod()
         {
             driver.Url = alertsPage;
@@ -29,12 +24,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldAllowUsersToAcceptAnAlertManually()
         {
             driver.Url = alertsPage;
@@ -49,11 +39,24 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldThrowArgumentNullExceptionWhenKeysNull()
+        {
+            driver.Url = alertsPage;
+
+            driver.FindElement(By.Id("alert")).Click();
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
+            try
+            {
+                Assert.That(() => alert.SendKeys(null), Throws.ArgumentNullException);
+            }
+            finally
+            {
+                alert.Accept();
+            }
+        }
+
+        [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldAllowUsersToAcceptAnAlertWithNoTextManually()
         {
             driver.Url = alertsPage;
@@ -72,8 +75,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         [IgnoreBrowser(Browser.Chrome)]
 		[IgnoreBrowser(Browser.Safari)]
-		[IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldGetTextOfAlertOpenedInSetTimeout()
         {
             driver.Url = alertsPage;
@@ -96,12 +97,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldAllowUsersToDismissAnAlertManually()
         {
             driver.Url = alertsPage;
@@ -117,13 +113,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        //[IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldAllowAUserToAcceptAPrompt()
         {
             driver.Url = alertsPage;
@@ -139,12 +129,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldAllowAUserToDismissAPrompt()
         {
             driver.Url = alertsPage;
@@ -160,12 +145,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldAllowAUserToSetTheValueOfAPrompt()
         {
             driver.Url = alertsPage;
@@ -182,13 +162,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not throw when setting the text of an alert")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void SettingTheValueOfAnAlertThrows()
         {
             driver.Url = alertsPage;
@@ -212,12 +187,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldAllowTheUserToGetTheTextOfAnAlert()
         {
             driver.Url = alertsPage;
@@ -232,12 +202,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldAllowTheUserToGetTheTextOfAPrompt()
         {
             driver.Url = alertsPage;
@@ -252,12 +217,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void AlertShouldNotAllowAdditionalCommandsIfDimissed()
         {
             driver.Url = alertsPage;
@@ -272,13 +232,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldAllowUsersToAcceptAnAlertInAFrame()
         {
             driver.Url = alertsPage;
@@ -295,10 +250,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldAllowUsersToAcceptAnAlertInANestedFrame()
         {
             driver.Url = alertsPage;
@@ -316,12 +268,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void SwitchingToMissingAlertThrows()
         {
             driver.Url = alertsPage;
@@ -331,13 +278,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome, "Issue 2764")]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void SwitchingToMissingAlertInAClosedWindowThrows()
         {
             driver.Url = alertsPage;
@@ -370,12 +312,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void PromptShouldUseDefaultValueIfNoKeysSent()
         {
             driver.Url = alertsPage;
@@ -391,12 +328,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void PromptShouldHaveNullValueIfDismissed()
         {
             driver.Url = alertsPage;
@@ -411,14 +343,9 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Edge, "Hangs browser")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void HandlesTwoAlertsFromOneInteraction()
         {
             driver.Url = alertsPage;
@@ -442,8 +369,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldHandleAlertOnPageLoad()
         {
             driver.Url = alertsPage;
@@ -461,8 +386,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldHandleAlertOnPageLoadUsingGet()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnLoad.html");
@@ -479,9 +402,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Firefox, "Firefox waits too long, may be hangs")]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldNotHandleAlertInAnotherWindow()
         {
             driver.Url = alertsPage;
@@ -521,11 +442,9 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
 		[IgnoreBrowser(Browser.Chrome)]
 		[IgnoreBrowser(Browser.Safari)]
-		[IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldHandleAlertOnPageUnload()
         {
             driver.Url = alertsPage;
@@ -545,11 +464,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android, "alerts do not pop up when a window is closed")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldHandleAlertOnWindowClose()
         {
             driver.Url = alertsPage;
@@ -578,15 +494,10 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Opera)]
 		[IgnoreBrowser(Browser.Safari)]
-		[IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void IncludesAlertTextInUnhandledAlertException()
         {
             driver.Url = alertsPage;
@@ -607,8 +518,6 @@ namespace OpenQA.Selenium
         [Test]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void CanQuitWhenAnAlertIsPresent()
         {
             driver.Url = alertsPage;
@@ -618,9 +527,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
-		[IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldHandleOnBeforeUnloadAlert()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
@@ -640,9 +547,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldHandleOnBeforeUnloadAlertAtClose()
         {
@@ -658,8 +563,6 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert()
         {
             IHasCapabilities capabilitiesDriver = driver as IHasCapabilities;
@@ -704,18 +607,13 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldBeAbleToHandleAuthenticationDialog()
         {
             driver.Url = authenticationPage;
@@ -727,18 +625,13 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldBeAbleToDismissAuthenticationDialog()
         {
             driver.Url = authenticationPage;
@@ -748,17 +641,12 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Alert handling not yet implemented on Windows Phone")]
         public void ShouldThrowAuthenticatingOnStandardAlert()
         {
             driver.Url = alertsPage;

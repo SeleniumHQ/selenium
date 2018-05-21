@@ -126,9 +126,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.PhantomJS)]
         public void ElementHiddenByOverflowXIsNotVisible()
         {
             string[] pages = new string[]{
@@ -148,9 +146,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.PhantomJS)]
         public void ElementHiddenByOverflowYIsNotVisible()
         {
             string[] pages = new string[]{
@@ -224,8 +220,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
         public void tooSmallAWindowWithOverflowHiddenIsNotAProblem()
         {
@@ -250,7 +244,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE does not support the hidden attribute")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldShowElementNotVisibleWithHiddenAttribute()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");
@@ -261,7 +254,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE does not support the hidden attribute")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");
@@ -288,7 +280,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldBeAbleToSelectOptionsFromAnInvisibleSelect()
         {

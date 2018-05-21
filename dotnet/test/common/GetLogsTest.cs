@@ -12,7 +12,6 @@ namespace OpenQA.Selenium
     [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
     [IgnoreBrowser(Browser.Edge, "Edge driver does not support logs API")]
 	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
-	[IgnoreBrowser(Browser.PhantomJS, "PhantomJS driver does not support logs API")]
     public class GetLogsTest : DriverTestFixture
     {
         private IWebDriver localDriver;

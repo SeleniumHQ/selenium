@@ -60,11 +60,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.PhantomJS)]
         public void ShouldNotBeAbleToSubmitAFormThatDoesNotExist()
         {
             driver.Url = formsPage;
@@ -134,9 +131,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldBeAbleToAlterTheContentsOfAFileUploadInputElement()
         {
             string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
@@ -158,9 +152,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
         {
             // IE before 9 doesn't handle pages served with an XHTML content type, and just prompts for to
@@ -189,9 +180,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldBeAbleToUploadTheSameFileTwice()
         {
             string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
@@ -241,7 +229,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented going to the end of the line first")]
         public void SendingKeyboardEventsShouldAppendTextInTextAreas()
         {
             driver.Url = formsPage;
@@ -295,13 +282,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Untested")]
-        [IgnoreBrowser(Browser.IPhone, "Untested")]
         [IgnoreBrowser(Browser.Opera, "Untested")]
-        [IgnoreBrowser(Browser.PhantomJS, "Untested")]
         [IgnoreBrowser(Browser.Safari, "Untested")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support alert handling")]
         [IgnoreBrowser(Browser.Firefox, "Dismissing alert causes entire window to close.")]
         public void HandleFormWithJavascriptAction()
         {
@@ -317,25 +299,18 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.IPhone, "Untested")]
         public void CanClickOnASubmitButton()
         {
             CheckSubmitButton("internal_explicit_submit");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.IPhone, "Untested")]
         public void CanClickOnAnImplicitSubmitButton()
         {
             CheckSubmitButton("internal_implicit_submit");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.IPhone, "Untested")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Fails on HtmlUnit")]
         [IgnoreBrowser(Browser.IE, "Fails on IE")]
         public void CanClickOnAnExternalSubmitButton()
         {
@@ -343,9 +318,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.IPhone, "Untested")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Fails on HtmlUnit")]
         [IgnoreBrowser(Browser.IE, "Fails on IE")]
         public void CanClickOnAnExternalImplicitSubmitButton()
         {

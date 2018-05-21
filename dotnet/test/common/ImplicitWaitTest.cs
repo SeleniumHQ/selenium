@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 
@@ -90,9 +90,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.PhantomJS)]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting()
         {

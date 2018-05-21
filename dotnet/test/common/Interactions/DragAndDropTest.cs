@@ -22,9 +22,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropRelative()
         {
@@ -42,9 +39,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropToElement()
         {
@@ -58,9 +52,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropRelativeAndToElement()
         {
@@ -140,9 +131,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void ElementInDiv()
         {
@@ -157,11 +145,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "Dragging too far in IE causes the element not to move, instead of moving to 0,0.")]
-        //[IgnoreBrowser(Browser.Chrome, "Dragging too far in Chrome causes the element not to move, instead of moving to 0,0.")]
-        [IgnoreBrowser(Browser.PhantomJS, "Dragging too far in PhantomJS causes the element not to move, as PhantomJS doesn't support dragging outside the viewport.")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragTooFar()
         {
@@ -188,9 +171,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         [IgnoreBrowser(Browser.Firefox, "Problem with drag off viewport. See issue #1771")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void ShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort()
@@ -229,9 +209,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropOnJQueryItems()
         {
@@ -270,9 +247,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera, "Untested")]
-        [IgnoreBrowser(Browser.PhantomJS, "Untested")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void CanDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow()
         {

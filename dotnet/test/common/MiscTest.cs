@@ -34,7 +34,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Opera)]

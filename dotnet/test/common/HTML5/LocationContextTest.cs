@@ -6,7 +6,6 @@ namespace OpenQA.Selenium.Html5
     public class LocationContextTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of geolocation.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support setting altitude value.")]

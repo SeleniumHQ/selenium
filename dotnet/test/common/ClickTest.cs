@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
@@ -50,7 +50,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "Frame switching is unsupported")]
         public void CanClickOnALinkThatUpdatesAnotherFrame()
         {
             driver.SwitchTo().Frame("source");
@@ -63,7 +62,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "Frame switching is unsupported")]
         public void ElementsFoundByJsCanLoadUpdatesInAnotherFrame()
         {
             driver.SwitchTo().Frame("source");
@@ -77,7 +75,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "Frame switching is unsupported")]
         public void JsLocatedElementsCanUpdateFramesIfFoundSomehowElse()
         {
             driver.SwitchTo().Frame("source");
@@ -116,7 +113,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldSetRelatedTargetForMouseOver()
         {
@@ -142,8 +138,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("JavaScript")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.IPhone, "Doesn't support multiple windows")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.Edge, "Hangs browser")]
         public void ShouldOnlyFollowHrefOnce()
@@ -164,7 +158,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.WindowsPhone)]
         public void ClickingLabelShouldSetCheckbox()
         {
             driver.Url = formsPage;

@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Firefox;
@@ -9,7 +9,6 @@ namespace OpenQA.Selenium
     [TestFixture]
     [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
     [IgnoreBrowser(Browser.Edge, "Edge driver does not support logs API")]
-    [IgnoreBrowser(Browser.PhantomJS, "PhantomJS driver does not support logs API")]
 	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
 	public class AvailableLogsTest : DriverTestFixture
     {

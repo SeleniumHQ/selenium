@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
@@ -9,7 +9,6 @@ namespace OpenQA.Selenium
     public class WindowSwitchingTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations()
         {
             driver.Url = xhtmlTestPage;
@@ -54,7 +53,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle()
         {
             driver.Url = (xhtmlTestPage);
@@ -88,7 +86,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed()
         {
             driver.Url = (xhtmlTestPage);
@@ -135,7 +132,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed()
         {
             driver.Url = (xhtmlTestPage);
@@ -301,7 +297,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         public void CanCloseWindowWhenMultipleWindowsAreOpen()
         {
@@ -337,7 +332,6 @@ namespace OpenQA.Selenium
         //////////////////////////////////////////////////////////
 
         [Test]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldGetBrowserHandles()
         {
             driver.Url = xhtmlTestPage;

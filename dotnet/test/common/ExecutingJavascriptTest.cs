@@ -447,7 +447,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone)]
         public void ShouldBeAbleToExecuteScriptAndReturnElementsList()
         {
             driver.Url = formsPage;
@@ -509,9 +508,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Android not tested")]
         [IgnoreBrowser(Browser.Opera, "Opera obeys the method contract.")]
-        [IgnoreBrowser(Browser.HtmlUnit, "HtmlUnit obeys the method contract.")]
         [IgnoreBrowser(Browser.Firefox)]
         public void ShouldBeAbleToPassADictionaryAsAParameter()
         {

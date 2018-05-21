@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using OpenQA.Selenium.Internal;
 using System.Collections.ObjectModel;
 
@@ -32,8 +32,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
         [IgnoreBrowser(Browser.Remote, "Shift-click implementation not complete")]
-        [IgnoreBrowser(Browser.IPhone, "Shift-click implementation not complete")]
-        [IgnoreBrowser(Browser.Android, "Shift-click implementation not complete")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowClickingOnFormElements()
         {
@@ -60,8 +58,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not respond to combined input using SendMessage, only SendInput")]
         [IgnoreBrowser(Browser.Remote, "Control-click implementation not complete")]
-        [IgnoreBrowser(Browser.IPhone, "Control-click implementation not complete")]
-        [IgnoreBrowser(Browser.Android, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSelectingMultipleItems()
         {
@@ -104,10 +100,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void CanClickOnLinks()
         {
             this.NavigateToClicksPageAndClickLink();
@@ -115,10 +108,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void CanClickOnLinksWithAnOffset()
         {
             driver.Url = clicksPage;
@@ -141,10 +131,7 @@ namespace OpenQA.Selenium.Interactions
          */
         [Test]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void MouseMovementWorksWhenNavigatingToAnotherPage()
         {
             NavigateToClicksPageAndClickLink();
@@ -160,10 +147,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Firefox, "Windows native events library does not support storing modifiers state yet.")]
         public void ChordControlCutAndPaste()
@@ -214,10 +198,7 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not respond to combined input using SendMessage, only SendInput")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
         public void CombiningShiftAndClickResultsInANewWindow()
         {
@@ -256,10 +237,7 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not respond to combined input using SendMessage, only SendInput")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
         public void HoldingDownShiftKeyWhileClicking()
         {

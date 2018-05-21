@@ -21,8 +21,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowDraggingElementWithMouseMovesItToAnotherList()
         {
             PerformDragAndDropWithMouse();
@@ -33,8 +31,6 @@ namespace OpenQA.Selenium.Interactions
         // This test is very similar to DraggingElementWithMouse. The only
         // difference is that this test also verifies the correct events were fired.
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void DraggingElementWithMouseFiresEvents()
         {
             PerformDragAndDropWithMouse();
@@ -44,8 +40,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowDoubleClickThenNavigate()
         {
             driver.Url = javascriptPage;
@@ -60,8 +54,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowDragAndDrop()
         {
             driver.Url = droppableItems;
@@ -100,8 +92,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowDoubleClick()
         {
             driver.Url = javascriptPage;
@@ -116,9 +106,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        //[IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not perform this yet")]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowContextClick()
         {
             driver.Url = javascriptPage;
@@ -133,9 +120,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowMoveAndClick()
         {
@@ -154,9 +139,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.IE, "Clicking without context is perfectly valid for W3C-compliant remote ends.")]
         [IgnoreBrowser(Browser.Firefox, "Clicking without context is perfectly valid for W3C-compliant remote ends.")]
         [IgnoreBrowser(Browser.Chrome, "Clicking without context is perfectly valid for Chrome.")]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldNotMoveToANullLocator()
         {
@@ -186,8 +169,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Opera, "API not implemented in driver")]
         public void ShouldClickElementInIFrame()
         {
@@ -208,9 +189,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void ShouldAllowUsersToHoverOverElements()
         {
@@ -242,7 +221,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MovingMouseByRelativeOffset()
         {
@@ -262,7 +240,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MovingMouseToRelativeElementOffset()
         {
@@ -279,7 +256,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [Category("Javascript")]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
-        [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MoveRelativeToBody()
         {
@@ -295,7 +271,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [Category("Javascript")]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
-        [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void CanMouseOverAndOutOfAnElement()
         {

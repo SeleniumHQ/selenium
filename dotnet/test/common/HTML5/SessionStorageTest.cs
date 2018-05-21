@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.Html5
 {
@@ -21,7 +21,6 @@ namespace OpenQA.Selenium.Html5
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void SetGetStorage()
         {
@@ -36,7 +35,6 @@ namespace OpenQA.Selenium.Html5
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void ClearStorage()
         {
@@ -52,7 +50,6 @@ namespace OpenQA.Selenium.Html5
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void RemoveStorage()
         {
@@ -68,7 +65,6 @@ namespace OpenQA.Selenium.Html5
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void GetAllStoredKeys()
         {
@@ -87,7 +83,6 @@ namespace OpenQA.Selenium.Html5
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void GetStorageSize()
         {

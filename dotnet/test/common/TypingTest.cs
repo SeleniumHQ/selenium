@@ -123,7 +123,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldBeAbleToUseArrowKeys()
         {
             driver.Url = javascriptPage;
@@ -237,9 +236,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "Firefox-specific test. IE does not report key press event.")]
-        [IgnoreBrowser(Browser.HtmlUnit, "firefox-specific")]
         [IgnoreBrowser(Browser.Chrome, "Firefox-specific test. Chrome does not report key press event.")]
-        [IgnoreBrowser(Browser.PhantomJS, "Firefox-specific test. PhantomJS does not report key press event.")]
         public void ShouldReportKeyCodeOfArrowKeys()
         {
             driver.Url = javascriptPage;
@@ -265,7 +262,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ShouldReportKeyCodeOfArrowKeysUpDownEvents()
         {
             driver.Url = javascriptPage;
@@ -313,7 +309,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void NumericShiftKeys()
         {
             driver.Url = javascriptPage;
@@ -345,7 +340,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void UppercaseAlphaKeys()
         {
             driver.Url = javascriptPage;
@@ -363,7 +357,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void AllPrintableKeys()
         {
             driver.Url = javascriptPage;
@@ -382,7 +375,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ArrowKeysAndPageUpAndDown()
         {
             driver.Url = javascriptPage;
@@ -396,7 +388,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void HomeAndEndAndPageUpAndPageDownKeys()
         {
             // FIXME: macs don't have HOME keys, would PGUP work?
@@ -417,7 +408,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void DeleteAndBackspaceKeys()
         {
             driver.Url = javascriptPage;
@@ -436,7 +426,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void SpecialSpaceKeys()
         {
             driver.Url = javascriptPage;
@@ -449,7 +438,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void NumberpadKeys()
         {
             driver.Url = javascriptPage;
@@ -465,7 +453,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void NumberpadAndFunctionKeys()
         {
             driver.Url = javascriptPage;
@@ -479,7 +466,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ShiftSelectionDeletes()
         {
             driver.Url = javascriptPage;
@@ -497,7 +483,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ChordControlHomeShiftEndDelete()
         {
             // FIXME: macs don't have HOME keys, would PGUP work?
@@ -523,7 +508,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ChordReveseShiftHomeSelectionDeletes()
         {
             // FIXME: macs don't have HOME keys, would PGUP work?
@@ -561,8 +545,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
-        [IgnoreBrowser(Browser.WindowsPhone, "JavaScript-only implementations cannot use system clipboard")]
         public void ChordControlCutAndPaste()
         {
             // FIXME: macs don't have HOME keys, would PGUP work?
@@ -634,7 +616,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.PhantomJS, "firefox-specific")]
         public void GenerateKeyPressEventEvenWhenElementPreventsDefault()
         {
             driver.Url = javascriptPage;
@@ -648,13 +629,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
-        [IgnoreBrowser(Browser.PhantomJS, "Cannot type on contentEditable with synthetic events")]
-        [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
-        [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Cannot type on contentEditable with synthetic events")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -678,12 +654,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
-        [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
-        [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver 2 does not support contentEditable")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Cannot type on contentEditable with synthetic events")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -729,13 +701,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
-        [IgnoreBrowser(Browser.PhantomJS, "Cannot type on contentEditable with synthetic events")]
-        [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
-        [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Cannot type on contentEditable with synthetic events")]
         public void ShouldBeAbleToTypeIntoEmptyContentEditableElement()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -771,7 +738,6 @@ namespace OpenQA.Selenium
             Assert.AreEqual(initialText + ", edited", editable.Text);
         }
 
-        [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.IE, "Untested browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [Test]
