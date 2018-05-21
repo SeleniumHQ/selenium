@@ -27,13 +27,11 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -73,7 +71,7 @@ public class W3CRemoteDriverTest {
   @Test
   public void simpleCaseShouldBeADropIn() {
     List<Capabilities> caps =
-        listCapabilities(RemoteWebDriver.builder().addOptions(new FirefoxOptions()));
+        listCapabilities(RemoteWebDriver.builder().addAlternative(new FirefoxOptions()));
 
     assertEquals(1, caps.size());
     assertEquals("firefox", caps.get(0).getBrowserName());
@@ -81,13 +79,13 @@ public class W3CRemoteDriverTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void requireAllOptionsAreW3CCompatible() {
-    RemoteWebDriver.builder().addOptions(new ImmutableCapabilities("unknownOption", "cake"));
+    RemoteWebDriver.builder().addAlternative(new ImmutableCapabilities("unknownOption", "cake"));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void shouldRejectOldJsonWireProtocolNames() {
     RemoteWebDriver.builder()
-        .addOptions(new ImmutableCapabilities("platform", Platform.getCurrent()));
+        .addAlternative(new ImmutableCapabilities("platform", Platform.getCurrent()));
   }
 
   @Test
@@ -97,7 +95,7 @@ public class W3CRemoteDriverTest {
         new ChromeOptions(),
         new FirefoxOptions(),
         new InternetExplorerOptions())
-        .map(options -> RemoteWebDriver.builder().addOptions(options))
+        .map(options -> RemoteWebDriver.builder().addAlternative(options))
         .forEach(this::listCapabilities);
   }
 
@@ -105,7 +103,7 @@ public class W3CRemoteDriverTest {
   public void shouldAllowMetaDataToBeSet() {
     Map<String, String> expected = ImmutableMap.of("cheese", "brie");
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-        .addOptions(new InternetExplorerOptions())
+        .addAlternative(new InternetExplorerOptions())
         .addMetadata("cloud:options", expected);
 
     Map<String, Object> payload = getPayload(builder);
@@ -126,8 +124,8 @@ public class W3CRemoteDriverTest {
   @Test
   public void shouldAllowCapabilitiesToBeSetGlobally() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-        .addOptions(new FirefoxOptions())
-        .addOptions(new ChromeOptions())
+        .addAlternative(new FirefoxOptions())
+        .addAlternative(new ChromeOptions())
         .setCapability("se:cheese", "brie");
 
     // We expect the global to be in the "alwaysMatch" section for obvious reasons, but that's not
@@ -142,9 +140,9 @@ public class W3CRemoteDriverTest {
   @Test
   public void shouldSetCapabilityToOptionsAddedAfterTheCallToSetCapabilities() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-        .addOptions(new FirefoxOptions())
+        .addAlternative(new FirefoxOptions())
         .setCapability("se:cheese", "brie")
-        .addOptions(new ChromeOptions());
+        .addAlternative(new ChromeOptions());
 
     // We expect the global to be in the "alwaysMatch" section for obvious reasons, but that's not
     // a requirement. Get the capabilities and check each of them.
@@ -161,7 +159,7 @@ public class W3CRemoteDriverTest {
     options.setCapability("se:cheese", "cheddar");
 
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-        .addOptions(options)
+        .addAlternative(options)
         .setCapability("se:cheese", "brie");
 
     List<Capabilities> allCaps = listCapabilities(builder);
@@ -175,7 +173,7 @@ public class W3CRemoteDriverTest {
     URL expected = new URL("http://localhost:3000/woohoo/cheese");
 
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-        .addOptions(new InternetExplorerOptions())
+        .addAlternative(new InternetExplorerOptions())
         .url(expected.toExternalForm());
 
     RemoteWebDriverBuilder.Plan plan = builder.getPlan();
@@ -189,7 +187,7 @@ public class W3CRemoteDriverTest {
     GeckoDriverService expected = GeckoDriverService.createDefaultService();
 
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-        .addOptions(new InternetExplorerOptions())
+        .addAlternative(new InternetExplorerOptions())
         .withDriverService(expected);
 
     RemoteWebDriverBuilder.Plan plan = builder.getPlan();
@@ -201,7 +199,7 @@ public class W3CRemoteDriverTest {
   @Test(expected = IllegalArgumentException.class)
   public void settingBothDriverServiceAndUrlIsAnError() {
     RemoteWebDriver.builder()
-        .addOptions(new InternetExplorerOptions())
+        .addAlternative(new InternetExplorerOptions())
         .url("http://example.com/cheese/peas/wd")
         .withDriverService(GeckoDriverService.createDefaultService());
   }
@@ -242,10 +240,22 @@ public class W3CRemoteDriverTest {
 
     assumeNotNull(caps, expectedServiceClass);
 
-    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder().addOptions(caps).getPlan();
+    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder().addAlternative(caps).getPlan();
 
     assertTrue(plan.isUsingDriverService());
     assertEquals(expectedServiceClass, plan.getDriverService().getClass());
+  }
+
+  @Test
+  public void oneOfWillClearOutTheCurrentlySetCapabilities() {
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+        .addAlternative(new ChromeOptions())
+        .oneOf(new FirefoxOptions());
+
+    List<Capabilities> allCaps = listCapabilities(builder);
+
+    assertEquals(1, allCaps.size());
+    assertEquals("firefox", allCaps.get(0).getBrowserName());
   }
 
   private List<Capabilities> listCapabilities(RemoteWebDriverBuilder builder) {

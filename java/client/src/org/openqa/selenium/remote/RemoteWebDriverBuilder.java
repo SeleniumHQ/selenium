@@ -52,7 +52,15 @@ class RemoteWebDriverBuilder {
   private URL remoteHost;
   private DriverService service;
 
-  public RemoteWebDriverBuilder addOptions(Capabilities options) {
+  public RemoteWebDriverBuilder oneOf(Capabilities... oneOfTheseOptions) {
+    options.clear();
+    for (int i = 0; i < oneOfTheseOptions.length; i++) {
+      addAlternative(oneOfTheseOptions[i]);
+    }
+    return this;
+  }
+
+  public RemoteWebDriverBuilder addAlternative(Capabilities options) {
     Map<String, Object> serialized = validate(Objects.requireNonNull(options));
     this.options.add(serialized);
     return this;
