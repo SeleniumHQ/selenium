@@ -472,6 +472,8 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @Ignore(value = FIREFOX, reason = "Non W3C conformant")
+  @Ignore(value = HTMLUNIT, reason = "Non W3C conformant")
+  @Ignore(value = CHROME, reason = "Non W3C conformant")
   public void testShouldImplicitlyHandleAlertOnPageBeforeUnload() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()
