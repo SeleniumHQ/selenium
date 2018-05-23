@@ -37,7 +37,7 @@ public class PreferencesTest {
   private StringReader defaults;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     defaults = new StringReader(emptyDefaults);
   }
 
@@ -125,7 +125,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void canOverrideAFrozenPreferenceWithTheFrozenValue() throws Exception {
+  public void canOverrideAFrozenPreferenceWithTheFrozenValue() {
     StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
 

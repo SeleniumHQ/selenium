@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestElementIndex extends InternalSelenseTestBase {
   @Test
-  public void testElementIndex() throws Exception {
+  public void testElementIndex() {
     selenium.open("../tests/html/test_element_order.html");
     assertEquals(selenium.getElementIndex("d2"), "1");
     assertEquals(selenium.getElementIndex("d1.1.1"), "0");

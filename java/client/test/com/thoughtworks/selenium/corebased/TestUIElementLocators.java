@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestUIElementLocators extends InternalSelenseTestBase {
   @Test
-  public void testUIElementLocators() throws Exception {
+  public void testUIElementLocators() {
     selenium.addScript(getUiMap(), "uimap");
     selenium.open("../tests/html/test_locators.html");
     verifyEquals(selenium.getText("ui=pageset1::linksWithId()"), "this is the first element");

@@ -30,7 +30,7 @@ public class NetworkConnectionTest extends JUnit4TestBase {
   private NetworkConnection networkConnectionDriver;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     WebDriver augmented = new Augmenter().augment(driver);
     Assume.assumeTrue(augmented instanceof NetworkConnection);
     networkConnectionDriver = (NetworkConnection) augmented;

@@ -57,7 +57,7 @@ public class PassthroughTest {
   }
 
   @Test
-  public void shouldForwardRequestsToEndPoint() throws IOException {
+  public void shouldForwardRequestsToEndPoint() {
 //    SessionCodec handler = new Passthrough(server.url);
 //    FakeHttpServletRequest req = new FakeHttpServletRequest("GET", new UrlInfo(server.url.toString(), "", "/ok"));
 //    req.addHeader("X-Cheese", "Cake");
@@ -69,7 +69,7 @@ public class PassthroughTest {
   }
 
   @Test
-  public void shouldStripKeepAliveHeader() throws IOException {
+  public void shouldStripKeepAliveHeader() {
 //    SessionCodec handler = new Passthrough(server.url);
 //    FakeHttpServletRequest req = new FakeHttpServletRequest("GET", new UrlInfo(server.url.toString(), "", "/ok"));
 //    req.addHeader("Keep-Alive", "timeout=600");

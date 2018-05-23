@@ -29,7 +29,6 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +39,7 @@ public class AllHandlersTest {
 
   static class NoArgs implements CommandHandler {
     @Override
-    public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+    public void execute(HttpRequest req, HttpResponse resp) {
       // Does nothing
     }
   }
@@ -61,7 +60,7 @@ public class AllHandlersTest {
     }
 
     @Override
-    public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+    public void execute(HttpRequest req, HttpResponse resp) {
       // Does nothing
     }
   }
@@ -94,12 +93,12 @@ public class AllHandlersTest {
     }
 
     @Override
-    public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+    public void execute(HttpRequest req, HttpResponse resp) {
       // Does nothing
     }
   }
   @Test
-  public void willCallLongestConstructor() throws IOException {
+  public void willCallLongestConstructor() {
     SessionId id = new SessionId("12345678");
     String cake = "cheese";
 
@@ -122,7 +121,7 @@ public class AllHandlersTest {
     }
 
     @Override
-    public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+    public void execute(HttpRequest req, HttpResponse resp) {
       // Do nothing
     }
   }

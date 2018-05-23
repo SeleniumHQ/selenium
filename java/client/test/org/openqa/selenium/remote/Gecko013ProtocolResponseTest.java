@@ -29,14 +29,13 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 
-import java.net.MalformedURLException;
 import java.util.Optional;
 
 
 public class Gecko013ProtocolResponseTest {
 
   @Test
-  public void successfulResponseGetsParsedProperly() throws MalformedURLException {
+  public void successfulResponseGetsParsedProperly() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     ImmutableMap<String, ?> payload =
         ImmutableMap.of(

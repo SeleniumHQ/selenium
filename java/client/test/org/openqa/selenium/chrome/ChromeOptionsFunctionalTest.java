@@ -45,7 +45,7 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
   private ChromeDriver driver = null;
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     if (driver != null) {
       driver.quit();
     }
@@ -65,7 +65,7 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
 
   @NeedsLocalEnvironment
   @Test
-  public void optionsStayEqualAfterSerialization() throws Exception {
+  public void optionsStayEqualAfterSerialization() {
     ChromeOptions options1 = new ChromeOptions();
     ChromeOptions options2 = new ChromeOptions();
     assertEquals("empty chrome options should be equal", options1, options2);

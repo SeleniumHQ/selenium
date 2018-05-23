@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 // TODO(simon): The verifications should not be commented out
 public class TestGet extends InternalSelenseTestBase {
   @Test
-  public void testGet() throws Exception {
+  public void testGet() {
     // test API getters
     selenium.open("../tests/html/test_get.html");
     // IE uppercases the property names of the style.

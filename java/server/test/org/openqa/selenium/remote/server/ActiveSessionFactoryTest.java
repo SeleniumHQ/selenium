@@ -29,14 +29,13 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Dialect;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
 public class ActiveSessionFactoryTest {
 
   @Test
-  public void factoriesFoundViaServiceLoadersAreUsedFirst() throws IOException {
+  public void factoriesFoundViaServiceLoadersAreUsedFirst() {
     WebDriver driver = Mockito.mock(WebDriver.class);
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
     DriverProvider provider = new StubbedProvider(caps, driver);
@@ -53,7 +52,7 @@ public class ActiveSessionFactoryTest {
   }
 
   @Test
-  public void canBindNewFactoriesAtRunTime() throws IOException {
+  public void canBindNewFactoriesAtRunTime() {
     ActiveSession session = Mockito.mock(ActiveSession.class);
 
     ActiveSessionFactory sessionFactory = new ActiveSessionFactory()

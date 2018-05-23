@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestAddLocationStrategy extends InternalSelenseTestBase {
   @Test
-  public void testAddLocationStrategy() throws Exception {
+  public void testAddLocationStrategy() {
     selenium.open("../tests/html/test_click_page1.html");
     selenium.addLocationStrategy("foo", "return inDocument.getElementById(locator);");
     assertTrue(selenium.isElementPresent("foo=link"));

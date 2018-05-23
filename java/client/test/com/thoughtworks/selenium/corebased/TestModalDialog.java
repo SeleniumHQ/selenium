@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestModalDialog extends InternalSelenseTestBase {
   @Test
-  public void testModalDialog() throws Exception {
+  public void testModalDialog() {
     selenium.open("../tests/html/test_modal_dialog.html");
     verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_modal_dialog\\.html$"));
     verifyEquals(selenium.getTitle(), "Modal Dialog Host Window");

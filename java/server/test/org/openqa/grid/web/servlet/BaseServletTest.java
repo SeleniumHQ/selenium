@@ -17,8 +17,6 @@
 
 package org.openqa.grid.web.servlet;
 
-import com.google.gson.JsonObject;
-
 import org.openqa.selenium.json.Json;
 import org.openqa.testing.FakeHttpServletRequest;
 import org.openqa.testing.FakeHttpServletResponse;

@@ -45,7 +45,7 @@ public class ProxySetTest {
 
       set.add(p1);
 
-      p1.getTestSlots().get(0).getNewSession(new HashMap<String, Object>());
+      p1.getTestSlots().get(0).getNewSession(new HashMap<>());
 
       // Make sure the proxy and its test session show up in the registry.
       assertEquals(1, set.size());
@@ -62,7 +62,7 @@ public class ProxySetTest {
   }
 
   @Test
-  public void testProxySortingByIdle() throws Exception {
+  public void testProxySortingByIdle() {
     GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     try {
       ProxySet set = registry.getAllProxies();

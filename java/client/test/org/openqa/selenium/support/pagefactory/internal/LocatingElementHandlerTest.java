@@ -79,7 +79,7 @@ public class LocatingElementHandlerTest {
   }
 
   @Test
-  public void shouldNotRepeatedlyLookUpElementsMarkedAsNeverChanging() throws Exception {
+  public void shouldNotRepeatedlyLookUpElementsMarkedAsNeverChanging() {
     final ElementLocator locator = mock(ElementLocator.class);
     final WebElement element = mock(WebElement.class);
 

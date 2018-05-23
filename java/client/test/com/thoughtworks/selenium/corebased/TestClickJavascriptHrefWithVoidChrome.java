@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestClickJavascriptHrefWithVoidChrome extends
     InternalSelenseTestBase {
   @Test
-  public void testClickJavascriptHrefWithVoidChrome() throws Exception {
+  public void testClickJavascriptHrefWithVoidChrome() {
     selenium.open("../tests/html/test_click_javascript_href_void_chrome.html");
     selenium.click("linkWithJavascriptVoidHref");
     verifyEquals(selenium.getAlert(), "onclick:voidHref");

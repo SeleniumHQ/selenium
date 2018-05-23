@@ -148,14 +148,14 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void stringBasedBinaryRemainsAbsoluteIfSetAsAbsolute() throws IOException {
+  public void stringBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, ?> json = new FirefoxOptions().setBinary("/i/like/cheese").asMap();
 
     assertEquals("/i/like/cheese", ((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary"));
   }
 
   @Test
-  public void pathBasedBinaryRemainsAbsoluteIfSetAsAbsolute() throws IOException {
+  public void pathBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, ?> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).asMap();
 
     assertEquals("/i/like/cheese", ((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary"));
@@ -185,7 +185,7 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void shouldPickUpLegacyValueFromSystemProperty() throws IOException {
+  public void shouldPickUpLegacyValueFromSystemProperty() {
     JreSystemProperty property = new JreSystemProperty(DRIVER_USE_MARIONETTE);
     String resetValue = property.get();
 
@@ -224,7 +224,7 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void shouldPickUpProfileFromSystemProperty() throws IOException {
+  public void shouldPickUpProfileFromSystemProperty() {
     FirefoxProfile defaultProfile = new ProfilesIni().getProfile("default");
     assumeNotNull(defaultProfile);
 

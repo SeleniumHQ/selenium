@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestXPathLocatorInXHtml extends InternalSelenseTestBase {
   @Test
-  public void testXPathLocatorInXHtml() throws Exception {
+  public void testXPathLocatorInXHtml() {
     selenium.open("../tests/html/test_locators.xhtml");
     verifyTrue(selenium.isElementPresent("xpath=//x:body"));
   }

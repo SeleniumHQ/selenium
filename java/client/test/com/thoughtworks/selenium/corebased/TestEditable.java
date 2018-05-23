@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestEditable extends InternalSelenseTestBase {
   @Test
-  public void testEditable() throws Exception {
+  public void testEditable() {
     selenium.open("../tests/html/test_editable.html");
     verifyTrue(selenium.isEditable("normal_text"));
     verifyTrue(selenium.isEditable("normal_select"));

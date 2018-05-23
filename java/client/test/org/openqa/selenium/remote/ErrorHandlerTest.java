@@ -217,7 +217,7 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
-  public void testShouldBeAbleToRebuildASerializedException() throws Exception {
+  public void testShouldBeAbleToRebuildASerializedException() {
     RuntimeException serverError = new RuntimeException("foo bar baz!\nCommand duration or timeout: 123 milliseconds");
 
     try {
@@ -241,7 +241,7 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
-  public void testShouldIncludeScreenshotIfProvided() throws Exception {
+  public void testShouldIncludeScreenshotIfProvided() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
     data.put("screen", "screenGrabText");
@@ -269,8 +269,7 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
-  public void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified()
-      throws Exception {
+  public void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
     data.remove("class");
@@ -399,8 +398,7 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
-  public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed()
-      throws Exception {
+  public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
 
     handler.setIncludeServerErrors(false);
@@ -418,8 +416,7 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
-  public void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled()
-      throws Exception {
+  public void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
     data.put("screen", "screenGrabText");
@@ -520,7 +517,7 @@ public class ErrorHandlerTest {
   }
 
   @SuppressWarnings({"unchecked"})
-  private static Map<String, Object> toMap(Object o) throws Exception {
+  private static Map<String, Object> toMap(Object o) {
     String rawJson = new Json().toJson(o);
     return new Json().toType(rawJson, Map.class);
   }

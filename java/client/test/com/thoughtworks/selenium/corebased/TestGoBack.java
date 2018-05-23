@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestGoBack extends InternalSelenseTestBase {
   @Test
-  public void testGoBack() throws Exception {
+  public void testGoBack() {
     selenium.open("../tests/html/test_click_page1.html");
     verifyEquals(selenium.getTitle(), "Click Page 1");
     // Click a regular link

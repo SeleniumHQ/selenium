@@ -33,7 +33,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -49,7 +48,7 @@ public class UrlCheckerTest {
       @Override
       public void handle(String s, Request request, HttpServletRequest httpServletRequest,
                          HttpServletResponse httpServletResponse)
-        throws IOException, ServletException {
+        throws IOException {
         httpServletResponse.setStatus(200);
         httpServletResponse.getWriter().println("<h1>Working</h1>");
         request.setHandled(true);

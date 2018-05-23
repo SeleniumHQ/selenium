@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestWaitInPopupWindow extends InternalSelenseTestBase {
   @Test
-  public void testWaitInPopupWindow() throws Exception {
+  public void testWaitInPopupWindow() {
     selenium.open("../tests/html/test_select_window.html");
     selenium.click("popupPage");
     selenium.waitForPopUp("myPopupWindow", "5000");

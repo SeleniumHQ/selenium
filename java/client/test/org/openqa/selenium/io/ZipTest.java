@@ -43,7 +43,7 @@ public class ZipTest {
   private TemporaryFilesystem tmpFs;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     File baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
     baseForTest.mkdir();
     tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest);
@@ -53,7 +53,7 @@ public class ZipTest {
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     tmpFs.deleteTemporaryFiles();
   }
 

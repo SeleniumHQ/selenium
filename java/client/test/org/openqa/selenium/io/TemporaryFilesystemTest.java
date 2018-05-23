@@ -34,7 +34,7 @@ public class TemporaryFilesystemTest {
   private TemporaryFilesystem tmpFs;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     File baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
     baseForTest.mkdir();
 

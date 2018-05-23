@@ -32,7 +32,7 @@ public class OperaOptionsFunctionalTest extends JUnit4TestBase {
   private OperaDriver driver = null;
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     if (driver != null) {
       driver.quit();
     }
@@ -52,7 +52,7 @@ public class OperaOptionsFunctionalTest extends JUnit4TestBase {
 
   @NeedsLocalEnvironment
   @Test
-  public void optionsStayEqualAfterSerialization() throws Exception {
+  public void optionsStayEqualAfterSerialization() {
     OperaOptions options1 = new OperaOptions();
     OperaOptions options2 = new OperaOptions();
     assertTrue("empty opera options should be equal", options1.equals(options2));

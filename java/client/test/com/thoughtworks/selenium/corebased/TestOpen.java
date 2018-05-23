@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestOpen extends InternalSelenseTestBase {
   @Test
-  public void testOpen() throws Exception {
+  public void testOpen() {
     selenium.open("../tests/html/test_open.html");
     verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_open\\.html$"));
   }

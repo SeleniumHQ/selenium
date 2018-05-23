@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class TestCssLocators extends InternalSelenseTestBase {
   @Test
-  public void testCssLocators() throws Exception {
+  public void testCssLocators() {
 
     // Unimplemented features:
     // namespace

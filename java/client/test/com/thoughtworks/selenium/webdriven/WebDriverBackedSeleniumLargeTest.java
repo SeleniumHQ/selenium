@@ -34,7 +34,7 @@ public class WebDriverBackedSeleniumLargeTest extends JUnit4TestBase {
   private Selenium selenium;
 
   @Before
-  public void setUpEnvironment() throws Exception {
+  public void setUpEnvironment() {
     String base = GlobalTestEnvironment.get().getAppServer().whereIs("");
     selenium = new WebDriverBackedSelenium(driver, base);
   }

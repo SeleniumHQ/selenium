@@ -85,7 +85,7 @@ public class TestSession {
   private volatile long sessionCreatedAt;
   private volatile long lastActivity;
   private final Map<String, Object> requestedCapabilities;
-  private Map<String, Object> objects = Collections.synchronizedMap(new HashMap<String, Object>());
+  private Map<String, Object> objects = Collections.synchronizedMap(new HashMap<>());
   private volatile boolean ignoreTimeout = false;
   private final Clock clock;
   private volatile boolean forwardingRequest;

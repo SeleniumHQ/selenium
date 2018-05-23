@@ -32,14 +32,14 @@ public class ActiveTestSessionsTest {
   private final ActiveTestSessions activeTestSessions = new ActiveTestSessions();
 
   @Test
-  public void testAdd() throws Exception {
+  public void testAdd() {
     activeTestSessions.add(createTestSession());
     assertEquals(1, activeTestSessions.unmodifiableSet().size());
   }
 
 
   @Test
-  public void testRemove() throws Exception {
+  public void testRemove() {
     TestSession testSession = createTestSession();
     activeTestSessions.add(testSession);
     assertEquals(1, activeTestSessions.unmodifiableSet().size());
@@ -48,7 +48,7 @@ public class ActiveTestSessionsTest {
   }
 
   @Test
-  public void testRemoveWithoutExternalKey() throws Exception {
+  public void testRemoveWithoutExternalKey() {
     TestSession testSession = createTestSession();
     testSession.setExternalKey(null);
     activeTestSessions.add(testSession);
@@ -58,7 +58,7 @@ public class ActiveTestSessionsTest {
   }
 
   @Test
-  public void testFindSessionByInternalKey() throws Exception {
+  public void testFindSessionByInternalKey() {
     TestSession testSession = createTestSession();
     activeTestSessions.add(testSession);
     assertEquals(testSession,
@@ -66,7 +66,7 @@ public class ActiveTestSessionsTest {
   }
 
   @Test
-  public void testGetExistingSession() throws Exception {
+  public void testGetExistingSession() {
     TestSession testSession = createTestSession();
     activeTestSessions.add(testSession);
     assertEquals(testSession, activeTestSessions.getExistingSession(testSession.getExternalKey()));
@@ -74,7 +74,7 @@ public class ActiveTestSessionsTest {
   }
 
   @Test
-  public void testGetTerminatedSession() throws Exception {
+  public void testGetTerminatedSession() {
     TestSession testSession = createTestSession();
     activeTestSessions.add(testSession);
     activeTestSessions.remove( testSession, SessionTerminationReason.ORPHAN);
@@ -88,7 +88,7 @@ public class ActiveTestSessionsTest {
   }
 
   @Test
-  public void testFindSessionByExternalKey() throws Exception {
+  public void testFindSessionByExternalKey() {
     TestSession testSession = createTestSession();
     activeTestSessions.add(testSession);
     assertEquals(testSession,
