@@ -722,10 +722,12 @@ class WebDriver(object):
         """
         Maximizes the current window that webdriver is using
         """
-        command = Command.MAXIMIZE_WINDOW
-        if self.w3c:
-            command = Command.W3C_MAXIMIZE_WINDOW
-        self.execute(command, {"windowHandle": "current"})
+        params = None
+        command = Command.W3C_MAXIMIZE_WINDOW
+        if not self.w3c:
+            command = Command.MAXIMIZE_WINDOW
+            params = {'windowHandle': 'current'}
+        self.execute(command, params)
 
     def fullscreen_window(self):
         """
