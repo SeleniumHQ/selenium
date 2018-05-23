@@ -495,6 +495,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @Ignore(value = CHROME, reason = "Unstable")
   public void testShouldNotSwitchMagicallyToTheTopWindow() {
     String baseUrl = appServer.whereIs("frame_switching_tests/");
     driver.get(baseUrl + "bug4876.html");
