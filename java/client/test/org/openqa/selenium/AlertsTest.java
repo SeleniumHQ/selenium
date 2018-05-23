@@ -471,7 +471,8 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  public void testShouldHandleAlertOnPageBeforeUnload() {
+  @Ignore(value = FIREFOX, reason = "Non W3C conformant")
+  public void testShouldImplicitlyHandleAlertOnPageBeforeUnload() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()
         .withTitle("Page with onbeforeunload handler")
@@ -480,36 +481,8 @@ public class AlertsTest extends JUnit4TestBase {
 
     setSimpleOnBeforeUnload("onbeforeunload message");
 
-    WebElement element = driver.findElement(By.id("link"));
-    element.click();
-
-    Alert alert = wait.until(alertIsPresent());
-    alert.dismiss();
-    assertThat(driver.getTitle(), is("Page with onbeforeunload handler"));
-
-    element.click();
-    alert = wait.until(alertIsPresent());
-    alert.accept();
+    driver.findElement(By.id("link")).click();
     wait.until(titleIs("Success"));
-  }
-
-  @NoDriverAfterTest
-  @Test
-  @Ignore(SAFARI)
-  public void testShouldHandleAlertOnPageBeforeUnloadAtQuit() {
-    String blank = appServer.create(new Page().withTitle("Success"));
-    driver.get(appServer.create(new Page()
-        .withTitle("Page with onbeforeunload handler")
-        .withBody(String.format(
-            "<a id='link' href='%s'>Click here to navigate to another page.</a>", blank))));
-
-    setSimpleOnBeforeUnload("onbeforeunload message");
-
-    WebElement element = driver.findElement(By.id("link"));
-    element.click();
-    wait.until(alertIsPresent());
-
-    driver.quit();
   }
 
   @Test
