@@ -240,32 +240,14 @@ def testShouldHandleAlertOnPageLoadUsingGet(driver, pages):
     WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.TAG_NAME, "p"), "Page with onload event handler"))
 
 
+@pytest.mark.xfail_firefox(reason='Non W3C conformant')
+@pytest.mark.xfail_chrome(reason='Non W3C conformant')
 def testShouldHandleAlertOnPageBeforeUnload(driver, pages):
     pages.load("pageWithOnBeforeUnloadMessage.html")
 
     element = driver.find_element(By.ID, "navigate")
     element.click()
-
-    alert = _waitForAlert(driver)
-    alert.dismiss()
-    assert "pageWithOnBeforeUnloadMessage.html" in driver.current_url
-
-    element.click()
-    alert = _waitForAlert(driver)
-    alert.accept()
     WebDriverWait(driver, 3).until(EC.title_is("Testing Alerts"))
-
-
-def _testShouldHandleAlertOnPageBeforeUnloadAtQuit(driver, pages):
-    # TODO: Add the ability to get a new session
-    pages.load("pageWithOnBeforeUnloadMessage.html")
-
-    element = driver.find_element(By.ID, "navigate")
-    element.click()
-
-    _waitForAlert(driver)
-
-    driver.quit()
 
 
 def testShouldAllowTheUserToGetTheTextOfAnAlert(driver, pages):
