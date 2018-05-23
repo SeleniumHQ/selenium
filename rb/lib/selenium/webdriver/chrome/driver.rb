@@ -26,6 +26,7 @@ module Selenium
 
       class Driver < WebDriver::Driver
         include DriverExtensions::HasNetworkConditions
+        include DriverExtensions::CommunicatesToDevTools
         include DriverExtensions::HasTouchScreen
         include DriverExtensions::HasWebStorage
         include DriverExtensions::TakesScreenshot

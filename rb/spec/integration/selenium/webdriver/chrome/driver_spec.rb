@@ -43,6 +43,65 @@ module Selenium
             'upload_throughput' => 789
           )
         end
+
+        context "DevTools communication" do
+          it 'can send commands to DevTools' do
+            driver.send_devtools_command('Page.navigate', url: url_for('blank.html'))
+            expect(driver.title).to eq('blank')
+            driver.send_devtools_command('Page.navigate', url: url_for('colorPage.html'))
+            expect(driver.title).to eq('Color Page')
+          end
+
+          describe('#download_path=') do
+            before(:all) do
+              @page_to_download_from = "file://" + File.expand_path('../download_test.html', __FILE__)
+              @download_dir = Dir.mktmpdir
+              @downloaded_file_path = @download_dir + "/sample.crx"
+            end
+
+            after(:all) do
+              FileUtils.rm_r(@download_dir)
+            end
+
+            after(:each) do
+              File.delete(@downloaded_file_path) if File.exist?(@downloaded_file_path)
+            end
+
+            # Works since Chrome 65 / chromedriver 2.36
+            it 'can download files in headless mode' do
+              options = Selenium::WebDriver::Chrome::Options.new
+              options.headless!
+
+              create_driver!(options: options) do |driver|
+                driver.download_path = @download_dir
+                driver.get(@page_to_download_from)
+                driver.find_element(css: 'a').click
+
+                # Wait for file to download
+                5.times do
+                  break if File.exist?(@downloaded_file_path)
+                  sleep 1
+                end
+              end
+
+              expect(File).to exist(@downloaded_file_path)
+            end
+
+            it 'can download files in non-headless mode' do
+              driver.download_path = @download_dir
+              driver.get(@page_to_download_from)
+              driver.find_element(css: 'a').click
+
+              # Wait for file to download
+              5.times do
+                break if File.exist?(@downloaded_file_path)
+                sleep 1
+              end
+
+              expect(File).to exist(@downloaded_file_path)
+            end
+          end
+        end
       end
     end # Chrome
   end # WebDriver
