@@ -96,6 +96,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @Ignore(CHROME)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initLocalDriver("none");
