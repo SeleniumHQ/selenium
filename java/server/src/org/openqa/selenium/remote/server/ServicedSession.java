@@ -21,6 +21,7 @@ package org.openqa.selenium.remote.server;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
@@ -157,8 +158,8 @@ public class ServicedSession extends RemoteSession {
         URL url = service.getUrl();
 
         return performHandshake(service, url, downstreamDialects, capabilities);
-      } catch (IOException | IllegalStateException | NullPointerException e) {
-        log.log(Level.WARNING, e.getMessage(), e);
+      } catch (IOException | IllegalStateException | NullPointerException | InvalidArgumentException e) {
+        log.log(Level.INFO, e.getMessage(), e);
         service.stop();
         return Optional.empty();
       }
