@@ -29,6 +29,7 @@ module Selenium
         include DriverExtensions::HasTouchScreen
         include DriverExtensions::HasWebStorage
         include DriverExtensions::TakesScreenshot
+        include DriverExtensions::DownloadsFiles
 
         def initialize(opts = {})
           opts[:desired_capabilities] = create_capabilities(opts)
