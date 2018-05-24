@@ -22,6 +22,7 @@ import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -57,6 +58,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -210,6 +212,7 @@ public class NewSessionPayload implements Closeable {
             .orElse(new ImmutableCapabilities())
             .asMap();
       }
+      Map<String, Object> ossFirst = new HashMap<>(first);
       if (first.containsKey(CapabilityType.PROXY)) {
         Map<String, Object> proxyMap;
         Object rawProxy = first.get(CapabilityType.PROXY);
@@ -221,17 +224,18 @@ public class NewSessionPayload implements Closeable {
           proxyMap = new HashMap<>();
         }
         if (proxyMap.containsKey("noProxy")) {
+          Map<String, Object> ossProxyMap = new HashMap<>(proxyMap);
           Object rawData = proxyMap.get("noProxy");
           if (rawData instanceof List) {
-            proxyMap.put("noProxy", ((List<String>) rawData).stream().collect(Collectors.joining(",")));
+            ossProxyMap.put("noProxy", ((List<String>) rawData).stream().collect(Collectors.joining(",")));
           }
-          first.put(CapabilityType.PROXY, proxyMap);
+          ossFirst.put(CapabilityType.PROXY, ossProxyMap);
         }
       }
 
       // Write the first capability we get as the desired capability.
       json.name("desiredCapabilities");
-      json.write(first);
+      json.write(ossFirst);
 
       // And write the first capability for gecko13
       json.name("capabilities");
@@ -408,6 +412,26 @@ public class NewSessionPayload implements Closeable {
     // Platform name
     if (capabilities.containsKey(PLATFORM) && !capabilities.containsKey(PLATFORM_NAME)) {
       toReturn.put(PLATFORM_NAME, String.valueOf(capabilities.get(PLATFORM)));
+    }
+
+    if (capabilities.containsKey(PROXY)) {
+      Map<String, Object> proxyMap;
+      Object rawProxy = capabilities.get(CapabilityType.PROXY);
+      if (rawProxy instanceof Proxy) {
+        proxyMap = ((Proxy) rawProxy).toJson();
+      } else if (rawProxy instanceof Map) {
+        proxyMap = (Map<String, Object>) rawProxy;
+      } else {
+        proxyMap = new HashMap<>();
+      }
+      if (proxyMap.containsKey("noProxy")) {
+        Map<String, Object> w3cProxyMap = new HashMap<>(proxyMap);
+        Object rawData = proxyMap.get("noProxy");
+        if (rawData instanceof String) {
+          w3cProxyMap.put("noProxy", Arrays.asList(((String) rawData).split(",\\s*")));
+        }
+        toReturn.put(CapabilityType.PROXY, w3cProxyMap);
+      }
     }
 
     return toReturn;

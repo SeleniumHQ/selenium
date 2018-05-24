@@ -35,6 +35,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
 
 import java.util.List;
@@ -169,7 +170,7 @@ public class ActiveSessionFactory implements SessionFactory {
 
   @Override
   public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities caps) {
-    LOG.info("Capabilities are: " + caps);
+    LOG.info("Capabilities are: " + new Json().toJson(caps));
     return factories.stream()
         .filter(factory -> factory.isSupporting(caps))
         .peek(factory -> LOG.info(String.format("Matched factory %s", factory)))
