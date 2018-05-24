@@ -98,6 +98,8 @@ public class OutOfProcessSeleniumServer {
       throw new RuntimeException(e);
     }
 
+    Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
+
     return this;
   }
 
