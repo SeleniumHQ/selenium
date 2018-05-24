@@ -17,32 +17,23 @@
 
 module Selenium
   module WebDriver
-    module Chrome
-      module Bridge
+    module DriverExtensions
+      module DownloadsFiles
 
-        COMMANDS = {
-          get_network_conditions: [:get, '/session/:session_id/chromium/network_conditions'.freeze],
-          set_network_conditions: [:post, '/session/:session_id/chromium/network_conditions'.freeze],
-          send_command: [:post, '/session/:session_id/chromium/send_command'.freeze]
-        }.freeze
+        #
+        # sets downloading of files to spcified location
+        #
+        #
 
-        def commands(command)
-          COMMANDS[command] || super
+        def downloads_files_to(path:"tmp")
+          params = {
+                    'cmd' =>'Page.setDownloadBehavior',
+                    "params" => {"behavior" => 'allow', 'downloadPath' => path }
+                   }
+          @bridge.send_command(params)
         end
 
-        def network_conditions
-          execute :get_network_conditions
-        end
-
-        def send_command(command_params)
-          execute :send_command, {}, command_params
-        end
-        
-        def network_conditions=(conditions)
-          execute :set_network_conditions, {}, {network_conditions: conditions}
-        end
-
-      end # Bridge
-    end # Chrome
+      end # HasNetworkConditions
+    end # DriverExtensions
   end # WebDriver
 end # Selenium
