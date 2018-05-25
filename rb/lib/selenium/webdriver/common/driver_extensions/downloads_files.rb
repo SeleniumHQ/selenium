@@ -21,19 +21,23 @@ module Selenium
       module DownloadsFiles
 
         #
-        # sets downloading of files to spcified location
+        # Sets download path for Chromium.
         #
+        # @param [String] path
         #
 
-        def downloads_files_to(path:"tmp")
+        def download_path=(path)
           params = {
-                    'cmd' =>'Page.setDownloadBehavior',
-                    "params" => {"behavior" => 'allow', 'downloadPath' => path }
-                   }
+            'cmd' =>'Page.setDownloadBehavior',
+            'params' => {
+              'behavior' => 'allow',
+              'downloadPath' => path
+            }
+          }
           @bridge.send_command(params)
         end
 
-      end # HasNetworkConditions
+      end # DownloadsFiles
     end # DriverExtensions
   end # WebDriver
 end # Selenium
