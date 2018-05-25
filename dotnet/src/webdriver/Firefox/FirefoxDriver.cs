@@ -211,6 +211,16 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="service">The <see cref="FirefoxDriverService"/> to use.</param>
         /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
+        public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
+            : this(service, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified options, driver service, and timeout. Uses the Mozilla-provided Marionette driver implementation.
+        /// </summary>
+        /// <param name="service">The <see cref="FirefoxDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, TimeSpan commandTimeout)
             : base(CreateExecutor(service, options, commandTimeout), ConvertOptionsToCapabilities(options))
