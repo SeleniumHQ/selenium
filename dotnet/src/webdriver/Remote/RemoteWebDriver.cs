@@ -195,37 +195,7 @@ namespace OpenQA.Selenium.Remote
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("url", value);
-
-                try
-                {
-                    this.Execute(DriverCommand.Get, parameters);
-                }
-                catch (WebDriverTimeoutException)
-                {
-                    // WebDriverTimeoutException is a subclass of WebDriverException,
-                    // and should be rethrown instead of caught by the catch block
-                    // for WebDriverExceptions.
-                    throw;
-                }
-                catch (WebDriverException)
-                {
-                    // Catch the exeception, if any. This is consistent with other
-                    // drivers, in that no exeception is thrown when going to an
-                    // invalid URL.
-                }
-                catch (InvalidOperationException)
-                {
-                    // Catch the exeception, if any. This is consistent with other
-                    // drivers, in that no exeception is thrown when going to an
-                    // invalid URL.
-                }
-                catch (NotImplementedException)
-                {
-                    // Chrome throws NotImplementedException if the URL is invalid.
-                    // Catch the exeception, if any. This is consistent with other
-                    // drivers, in that no exeception is thrown when going to an
-                    // invalid URL.
-                }
+                this.Execute(DriverCommand.Get, parameters);
             }
         }
 
