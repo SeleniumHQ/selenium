@@ -24,6 +24,7 @@
 
 #include "Alert.h"
 #include "BrowserFactory.h"
+#include "CustomTypes.h"
 #include "messages.h"
 #include "StringUtilities.h"
 
@@ -450,7 +451,7 @@ bool Browser::IsBusy() {
 bool Browser::Wait(const std::string& page_load_strategy) {
   LOG(TRACE) << "Entering Browser::Wait";
   
-  if (page_load_strategy == "none") {
+  if (page_load_strategy == NONE_PAGE_LOAD_STRATEGY) {
     LOG(DEBUG) << "Page load strategy is 'none'. Aborting wait.";
     this->set_wait_required(false);
     return true;
@@ -470,7 +471,7 @@ bool Browser::Wait(const std::string& page_load_strategy) {
 
   // Navigate events completed. Waiting for browser.Busy != false...
   is_navigating = this->is_navigation_started_;
-  if (is_navigating || this->IsBusy()) {
+  if (is_navigating || (page_load_strategy == NORMAL_PAGE_LOAD_STRATEGY && this->IsBusy())) {
     if (is_navigating) {
       LOG(DEBUG) << "DocumentComplete event fired, indicating a new navigation.";
     } else {
@@ -480,7 +481,7 @@ bool Browser::Wait(const std::string& page_load_strategy) {
   }
 
   READYSTATE expected_ready_state = READYSTATE_COMPLETE;
-  if (page_load_strategy == "eager") {
+  if (page_load_strategy == EAGER_PAGE_LOAD_STRATEGY) {
     expected_ready_state = READYSTATE_INTERACTIVE;
   }
 
@@ -550,10 +551,10 @@ bool Browser::IsDocumentNavigating(const std::string& page_load_strategy,
   } else {
     std::wstring ready_state = ready_state_bstr;
     if ((ready_state == L"complete") ||
-        (page_load_strategy == "eager" && ready_state == L"interactive")) {
+        (page_load_strategy == EAGER_PAGE_LOAD_STRATEGY && ready_state == L"interactive")) {
       is_navigating = false;
     } else {
-      if (page_load_strategy == "eager") {
+      if (page_load_strategy == EAGER_PAGE_LOAD_STRATEGY) {
         LOG(DEBUG) << "document.readyState is not 'complete' or 'interactive'; it was " << LOGWSTRING(ready_state);
       } else {
         LOG(DEBUG) << "document.readyState is not 'complete'; it was " << LOGWSTRING(ready_state);

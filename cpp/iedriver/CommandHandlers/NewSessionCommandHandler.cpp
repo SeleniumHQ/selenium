@@ -719,9 +719,9 @@ bool NewSessionCommandHandler::ValidateCapabilities(
         LOG(DEBUG) << "Validating " << PAGE_LOAD_STRATEGY_CAPABILITY << " capability"
                    << " is a valid value.";
         page_load_strategy = capabilities[capability_name].asString();
-        if (page_load_strategy != "none" &&
-            page_load_strategy != "eager" &&
-            page_load_strategy != "normal") {
+        if (page_load_strategy != NONE_PAGE_LOAD_STRATEGY &&
+            page_load_strategy != EAGER_PAGE_LOAD_STRATEGY &&
+            page_load_strategy != NORMAL_PAGE_LOAD_STRATEGY) {
           *error_message = "Invalid capabilities in " +
                            capability_set_name + ": " +
                            "pageLoadStrategy is " + page_load_strategy +
