@@ -177,6 +177,32 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous()
+        {
+            driver.Url = ajaxyPage;
+            driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromMilliseconds(1000);
+            Assert.IsTrue((bool)executor.ExecuteAsyncScript("arguments[arguments.length - 1](true);"));
+            Assert.IsTrue((bool)executor.ExecuteAsyncScript("var cb = arguments[arguments.length - 1]; window.setTimeout(function(){cb(true);}, 9);"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ShouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript()
+        {
+            driver.Url = ajaxyPage;
+            string js = "function functionB() { throw Error('errormessage'); };"
+                        + "function functionA() { functionB(); };"
+                        + "functionA();";
+            Exception ex = Assert.Catch(() => executor.ExecuteAsyncScript(js));
+            Assert.That(ex, Is.InstanceOf<WebDriverException>());
+            Assert.That(ex.Message.Contains("errormessage"));
+            Assert.That(ex.StackTrace.Contains("functionB"));
+        }
+
+        [Test]
         public void ShouldBeAbleToExecuteAsynchronousScripts()
         {
             // Reset the timeout to the 30-second default instead of zero.

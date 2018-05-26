@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -41,6 +42,45 @@ namespace OpenQA.Selenium
             input.SendKeys(tmunot);
 
             Assert.AreEqual(tmunot, input.GetAttribute("value"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Driver does not properly handle surrogate pairs for SendKeys")]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver only supports characters in the BMP")]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void ShouldBeAbleToEnterSupplementaryCharacters()
+        {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                // IE: versions less thank 10 have issue 5069
+                return;
+            }
+
+            driver.Url = chinesePage;
+
+            string input = string.Empty;
+            input += char.ConvertFromUtf32(0x20000);
+            input += char.ConvertFromUtf32(0x2070E);
+            input += char.ConvertFromUtf32(0x2000B);
+            input += char.ConvertFromUtf32(0x2A190);
+            input += char.ConvertFromUtf32(0x2A6B2);
+
+            IWebElement el = driver.FindElement(By.Name("i18n"));
+            el.SendKeys(input);
+
+            Assert.AreEqual(input, el.GetAttribute("value"));
+        }
+
+        [Test]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
+        public void ShouldBeAbleToReturnTheTextInAPage()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("encoding");
+            driver.Url = url;
+
+            string text = driver.FindElement(By.TagName("body")).Text;
+
+            Assert.AreEqual(shalom, text);
         }
     }
 }

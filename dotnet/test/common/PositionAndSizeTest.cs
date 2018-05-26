@@ -8,7 +8,20 @@ namespace OpenQA.Selenium
     public class PositionAndSizeTest : DriverTestFixture
     {
         [Test]
-        public void ShouldGetCoordinatesOfAnElementInViewPort()
+        [Category("Javascript")]
+        public void ShouldBeAbleToDetermineTheLocationOfAnElement()
+        {
+            driver.Url = xhtmlTestPage;
+
+            IWebElement element = driver.FindElement(By.Id("username"));
+            Point location = element.Location;
+
+            Assert.Greater(location.X, 0);
+            Assert.Greater(location.Y, 0);
+        }
+
+        [Test]
+        public void ShouldGetCoordinatesOfAnElement()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/simple_page.html");
             Assert.AreEqual(new Point(10, 10), GetLocationInViewPort(By.Id("box")));
@@ -139,6 +152,22 @@ namespace OpenQA.Selenium
             string height = r2.GetCssValue("height");
             Assert.IsTrue(height.StartsWith("49.3"), "height (\"" + left + "\") should start with \"49.3\".");
             Assert.AreEqual(r2.Size, new Size(49, 49));
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToDetermineTheSizeOfAnElement()
+        {
+            driver.Url = xhtmlTestPage;
+
+            IWebElement element = driver.FindElement(By.Id("username"));
+            Size size = element.Size;
+
+            Assert.Greater(size.Width, 0);
+            Assert.Greater(size.Height, 0);
         }
 
         private Point GetLocationInViewPort(By locator)

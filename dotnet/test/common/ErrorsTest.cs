@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium
 {
@@ -13,7 +13,6 @@ namespace OpenQA.Selenium
         /// </summary>
         [Test]
         [Category("JavaScript")]
-        [IgnoreBrowser(Browser.IE, "IE does not support onerror")]
         public void ShouldNotGenerateErrorsWhenOpeningANewPage()
         {
             driver.Url = errorsPage;

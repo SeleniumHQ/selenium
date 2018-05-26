@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -20,6 +21,20 @@ namespace OpenQA.Selenium
             backgroundColour = element.GetCssValue("background-color");
 
             Assert.That(backgroundColour, Is.EqualTo("#ff0000").Or.EqualTo("rgba(255, 0, 0, 1)").Or.EqualTo("rgb(255, 0, 0)"));
+        }
+
+        [Test]
+        public void GetCssValueShouldReturnStandardizedColour()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("colorPage.html");
+
+            IWebElement element = driver.FindElement(By.Id("namedColor"));
+            string backgroundColour = element.GetCssValue("background-color");
+            Assert.That(backgroundColour, Is.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
+
+            element = driver.FindElement(By.Id("rgb"));
+            backgroundColour = element.GetCssValue("background-color");
+            Assert.That(backgroundColour, Is.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
         }
 
         [Test]

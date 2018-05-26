@@ -241,21 +241,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldBeAbleToClearTextFromInputElements()
-        {
-            driver.Url = formsPage;
-            IWebElement element = driver.FindElement(By.Id("working"));
-            element.SendKeys("Some text");
-            String value = element.GetAttribute("value");
-            Assert.IsTrue(value.Length > 0);
-
-            element.Clear();
-            value = element.GetAttribute("value");
-
-            Assert.AreEqual(value.Length, 0);
-        }
-
-        [Test]
         public void EmptyTextBoxesShouldReturnAnEmptyStringNotNull()
         {
             driver.Url = formsPage;
@@ -264,21 +249,6 @@ namespace OpenQA.Selenium
 
             IWebElement emptyTextArea = driver.FindElement(By.Id("emptyTextArea"));
             Assert.AreEqual(emptyTextBox.GetAttribute("value"), "");
-        }
-
-        [Test]
-        public void ShouldBeAbleToClearTextFromTextAreas()
-        {
-            driver.Url = formsPage;
-            IWebElement element = driver.FindElement(By.Id("withText"));
-            element.SendKeys("Some text");
-            String value = element.GetAttribute("value");
-            Assert.IsTrue(value.Length > 0);
-
-            element.Clear();
-            value = element.GetAttribute("value");
-
-            Assert.AreEqual(value.Length, 0);
         }
 
         [Test]
@@ -305,6 +275,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void CanClickOnASubmitButtonNestedSpan()
+        {
+            CheckSubmitButton("internal_span_submit");
+        }
+
+        [Test]
         public void CanClickOnAnImplicitSubmitButton()
         {
             CheckSubmitButton("internal_implicit_submit");
@@ -322,6 +298,69 @@ namespace OpenQA.Selenium
         public void CanClickOnAnExternalImplicitSubmitButton()
         {
             CheckSubmitButton("external_implicit_submit");
+        }
+
+        //[Test]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void CanSubmitFormWithSubmitButtonIdEqualToSubmit()
+        {
+            // TODO: Cherry-pick dynamic page generation code from branch
+            //String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
+            //driver.get(appServer.create(new Page().withBody(
+            //    String.format("<form action='%s'>", blank),
+            //    "  <input type='submit' id='submit' value='Submit'>",
+            //    "</form>")));
+
+            driver.FindElement(By.Id("submit")).Submit();
+            WaitFor(TitleToBe("Submitted Successfully!"), "Title was not expected value");
+        }
+
+        //[Test]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void CanSubmitFormWithSubmitButtonNameEqualToSubmit()
+        {
+            // TODO: Cherry-pick dynamic page generation code from branch
+            //String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
+            //driver.get(appServer.create(new Page().withBody(
+            //    String.format("<form action='%s'>", blank),
+            //    "  <input type='submit' name='submit' value='Submit'>",
+            //    "</form>")));
+
+            driver.FindElement(By.Name("submit")).Submit();
+            WaitFor(TitleToBe("Submitted Successfully!"), "Title was not expected value");
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        public void ShouldBeAbleToClearTextFromInputElements()
+        {
+            driver.Url = formsPage;
+            IWebElement element = driver.FindElement(By.Id("working"));
+            element.SendKeys("Some text");
+            String value = element.GetAttribute("value");
+            Assert.IsTrue(value.Length > 0);
+
+            element.Clear();
+            value = element.GetAttribute("value");
+
+            Assert.AreEqual(value.Length, 0);
+        }
+
+        [Test]
+        public void ShouldBeAbleToClearTextFromTextAreas()
+        {
+            driver.Url = formsPage;
+            IWebElement element = driver.FindElement(By.Id("withText"));
+            element.SendKeys("Some text");
+            String value = element.GetAttribute("value");
+            Assert.IsTrue(value.Length > 0);
+
+            element.Clear();
+            value = element.GetAttribute("value");
+
+            Assert.AreEqual(value.Length, 0);
         }
 
         private void CheckSubmitButton(string buttonId)

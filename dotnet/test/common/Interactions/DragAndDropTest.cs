@@ -53,19 +53,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
-        public void DragAndDropRelativeAndToElement()
-        {
-            driver.Url = dragAndDropPage;
-            IWebElement img1 = driver.FindElement(By.Id("test1"));
-            IWebElement img2 = driver.FindElement(By.Id("test2"));
-            Actions actionProvider = new Actions(driver);
-            actionProvider.DragAndDropToOffset(img1, 100, 100).DragAndDrop(img2, img1).Perform();
-            Assert.AreEqual(img1.Location, img2.Location);
-        }
-
-        [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropToElementInIframe()
         {
             driver.Url = iframePage;
@@ -265,6 +252,22 @@ namespace OpenQA.Selenium.Interactions
             new Actions(driver).DragAndDropToOffset(toDrag, 0, yOffset).Perform();
 
             Assert.AreEqual(dragTo.Location, toDrag.Location);
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
+        public void DragAndDropRelativeAndToElement()
+        {
+            driver.Url = dragAndDropPage;
+            IWebElement img1 = driver.FindElement(By.Id("test1"));
+            IWebElement img2 = driver.FindElement(By.Id("test2"));
+            Actions actionProvider = new Actions(driver);
+            actionProvider.DragAndDropToOffset(img1, 100, 100).DragAndDrop(img2, img1).Perform();
+            Assert.AreEqual(img1.Location, img2.Location);
         }
 
         //[Test]

@@ -235,7 +235,7 @@ namespace OpenQA.Selenium
 
             IWebElement element = driver.FindElement(By.Name("readonly"));
             string readOnlyAttribute = element.GetAttribute("readonly");
-            
+
             Assert.IsNotNull(readOnlyAttribute);
 
             IWebElement textInput = driver.FindElement(By.Name("x"));
@@ -250,7 +250,7 @@ namespace OpenQA.Selenium
         {
             if (!TestUtilities.IsIE10OrHigher(driver))
             {
-                Assert.Ignore("IE8 or below does not handle textContent attribute; IE9 loads page in quirks mode, so no textContent attribute");
+                Assert.Ignore("IE8 or earlier does not handle textContent attribute; IE9 loads page in quirks mode, so no textContent attribute");
             }
 
             driver.Url = simpleTestPage;
@@ -318,7 +318,7 @@ namespace OpenQA.Selenium
         {
             if (TestUtilities.IsOldIE(driver))
             {
-                Assert.Ignore("IE8 and below do not support SVG");
+                Assert.Ignore("IE8 and earlier do not support SVG");
             }
 
             driver.Url = svgPage;
@@ -357,17 +357,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame()
-        {
-            driver.Url = iframePage;
-            driver.SwitchTo().Frame("iframe1");
-
-            IWebElement wallace = driver.FindElement(By.XPath("//div[@id='wallace']"));
-            String className = wallace.GetAttribute("class");
-            Assert.AreEqual("gromit", className);
-        }
-
-        [Test]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldReturnNullForNonPresentBooleanAttributes()
         {
@@ -392,6 +381,65 @@ namespace OpenQA.Selenium
             Assert.AreEqual("true", element4.GetAttribute("required"));
             IWebElement element5 = driver.FindElement(By.Id("unwrappable"));
             Assert.AreEqual("true", element5.GetAttribute("nowrap"));
+        }
+
+        [Test]
+        public void MultipleAttributeShouldBeNullWhenNotSet()
+        {
+            driver.Url = selectPage;
+            IWebElement element = driver.FindElement(By.Id("selectWithoutMultiple"));
+            Assert.AreEqual(null, element.GetAttribute("multiple"));
+        }
+
+        [Test]
+        public void MultipleAttributeShouldBeTrueWhenSet()
+        {
+            driver.Url = selectPage;
+            IWebElement element = driver.FindElement(By.Id("selectWithMultipleEqualsMultiple"));
+            Assert.AreEqual("true", element.GetAttribute("multiple"));
+        }
+
+        [Test]
+        public void MultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsBlank()
+        {
+            driver.Url = selectPage;
+            IWebElement element = driver.FindElement(By.Id("selectWithEmptyStringMultiple"));
+            Assert.AreEqual("true", element.GetAttribute("multiple"));
+        }
+
+        [Test]
+        public void MultipleAttributeShouldBeTrueWhenSelectHasMultipleWithoutAValue()
+        {
+            driver.Url = selectPage;
+            IWebElement element = driver.FindElement(By.Id("selectWithMultipleWithoutValue"));
+            Assert.AreEqual("true", element.GetAttribute("multiple"));
+        }
+
+        [Test]
+        public void MultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsSomethingElse()
+        {
+            driver.Url = selectPage;
+            IWebElement element = driver.FindElement(By.Id("selectWithRandomMultipleValue"));
+            Assert.AreEqual("true", element.GetAttribute("multiple"));
+        }
+
+        [Test]
+        public void GetAttributeOfUserDefinedProperty()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("userDefinedProperty.html");
+            IWebElement element = driver.FindElement(By.Id("d"));
+            Assert.AreEqual("sampleValue", element.GetAttribute("dynamicProperty"));
+        }
+
+        [Test]
+        public void ShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame()
+        {
+            driver.Url = iframePage;
+            driver.SwitchTo().Frame("iframe1");
+
+            IWebElement wallace = driver.FindElement(By.XPath("//div[@id='wallace']"));
+            String className = wallace.GetAttribute("class");
+            Assert.AreEqual("gromit", className);
         }
     }
 }

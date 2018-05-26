@@ -93,15 +93,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        public void ShouldNotBeAbleToSelectAnElementThatIsNotDisplayed()
-        {
-            driver.Url = javascriptPage;
-            IWebElement element = driver.FindElement(By.Id("untogglable"));
-            Assert.That(() => element.Click(), Throws.InstanceOf<ElementNotInteractableException>());
-        }
-
-        [Test]
-        [Category("Javascript")]
         public void ZeroSizedDivIsShownIfDescendantHasSize()
         {
             driver.Url = javascriptPage;
@@ -221,7 +212,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera)]
-        public void tooSmallAWindowWithOverflowHiddenIsNotAProblem()
+        public void TooSmallAWindowWithOverflowHiddenIsNotAProblem()
         {
             IWindow window = driver.Manage().Window;
             Size originalSize = window.Size;
@@ -309,6 +300,18 @@ namespace OpenQA.Selenium
 
             bool isShown = area.Displayed;
             Assert.IsTrue(isShown, "The element and the enclosing map should be considered shown.");
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        [Category("Javascript")]
+        public void ShouldNotBeAbleToSelectAnElementThatIsNotDisplayed()
+        {
+            driver.Url = javascriptPage;
+            IWebElement element = driver.FindElement(By.Id("untogglable"));
+            Assert.That(() => element.Click(), Throws.InstanceOf<ElementNotInteractableException>());
         }
 
         [Test]

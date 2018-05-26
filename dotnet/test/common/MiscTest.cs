@@ -1,10 +1,22 @@
 using NUnit.Framework;
+using OpenQA.Selenium.Environment;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium
 {
     [TestFixture]
     public class MiscTest : DriverTestFixture
     {
+        [Test]
+        public void ShouldReturnTitleOfPageIfSet()
+        {
+            driver.Url = xhtmlTestPage;
+            Assert.That(driver.Title, Is.EqualTo("XHTML Test Page"));
+
+            driver.Url = simpleTestPage;
+            Assert.That(driver.Title, Is.EqualTo("Hello WebDriver"));
+        }
+
         [Test]
         public void ShouldReportTheCurrentUrlCorrectly()
         {
@@ -19,7 +31,15 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnPageSource()
+        public void ShouldReturnTagName()
+        {
+            driver.Url = formsPage;
+            IWebElement selectBox = driver.FindElement(By.Id("cheese"));
+            Assert.That(selectBox.TagName.ToLower(), Is.EqualTo("input"));
+        }
+
+        [Test]
+        public void ShouldReturnTheSourceOfAPage()
         {
             string pageSource;
             driver.Url = simpleTestPage;
@@ -34,7 +54,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "returns XML content formatted for display as HTML document")]
+        [IgnoreBrowser(Browser.Safari, "returns XML content formatted for display as HTML document")]
         [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldBeAbleToGetTheSourceOfAnXmlDocument()
@@ -45,28 +66,44 @@ namespace OpenQA.Selenium
             Assert.AreEqual("<xml><foo><bar>baz</bar></foo></xml>", source);
         }
 
-        ////////////////////////////////////////////////////////
-        // Tests below here do not appear in the Java bindings
-        ////////////////////////////////////////////////////////
+        // Test is ignored for all browsers, but is kept here in the source code for
+        // ease of comparison to Java test suite.
+        //[Test]
+        //[IgnoreBrowser(Browser.All, "issue 2282")]
+        //public void StimulatesStrangeOnloadInteractionInFirefox()
+        //{
+        //    driver.Url = documentWrite;
+
+        //    // If this command succeeds, then all is well.
+        //    driver.FindElement(By.XPath("//body"));
+
+        //    driver.Url = simpleTestPage;
+        //    driver.FindElement(By.Id("links"));
+        //}
 
         [Test]
-        public void ShouldReturnTitle()
+        public void ClickingShouldNotTrampleWOrHInGlobalScope()
         {
-            driver.Url = macbethPage;
-            Assert.AreEqual(driver.Title, macbethTitle);
-        }
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("globalscope.html");
+            List<string> values = new List<string>() { "w", "h" };
 
-        [Test]
-        public void ShouldNotHaveProblemOpeningNonExistingPage()
-        {
-            if (TestUtilities.IsMarionette(driver))
+            foreach (string val in values)
             {
-                Assert.Ignore("Marionette does not handle malformed URLs.");
+                Assert.AreEqual(val, GetGlobalVar(driver, val));
             }
 
-            driver.Url = "www.doesnotexist.comx";
-            Assert.Throws<NoSuchElementException>(() => { IWebElement e = driver.FindElement(By.Id("Bla")); });
+            driver.FindElement(By.Id("toclick")).Click();
+
+            foreach (string val in values)
+            {
+                Assert.AreEqual(val, GetGlobalVar(driver, val));
+            }
         }
 
+        private string GetGlobalVar(IWebDriver driver, string value)
+        {
+            object val = ((IJavaScriptExecutor)driver).ExecuteScript("return window." + value + ";");
+            return val == null ? "null" : val.ToString();
+        }
     }
 }

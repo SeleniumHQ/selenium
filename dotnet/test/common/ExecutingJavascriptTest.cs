@@ -180,6 +180,20 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE)]
+        public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAComplexObject()
+        {
+            driver.Url = javascriptPage;
+
+            object result = ExecuteScript("return window.location;");
+
+            Assert.IsTrue(result is Dictionary<string, object>, "result was: " + result + " (" + result.GetType().ToString() + ")");
+            Dictionary<string, object> map = (Dictionary<string, object>)result;
+            Assert.AreEqual("http:", map["protocol"]);
+            Assert.AreEqual(javascriptPage, map["href"]);
+        }
+
+        [Test]
         [Category("Javascript")]
         public void PassingAndReturningALongShouldReturnAWholeNumber()
         {
@@ -220,6 +234,23 @@ namespace OpenQA.Selenium
 
             driver.Url = xhtmlTestPage;
             Assert.That(() => ExecuteScript("return squiggle();"), Throws.InstanceOf<WebDriverException>());
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad()
+        {
+            driver.Url = xhtmlTestPage;
+            string js = "function functionB() { throw Error('errormessage'); };"
+                        + "function functionA() { functionB(); };"
+                        + "functionA();";
+            Exception ex = Assert.Catch(() => ExecuteScript(js));
+            Assert.That(ex, Is.InstanceOf<WebDriverException>());
+            Assert.That(ex.Message.Contains("errormessage"));
+            Assert.That(ex.StackTrace.Contains("functionB"));
         }
 
         [Test]
@@ -460,27 +491,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
-        [Ignore("Reason for ignore: Failure indicates hang condition, which would break the test suite. Really needs a timeout set.")]
-        public void ShouldThrowExceptionIfExecutingOnNoPage()
-        {
-            bool exceptionCaught = false;
-            try
-            {
-                ((IJavaScriptExecutor)driver).ExecuteScript("return 1;");
-            }
-            catch (WebDriverException)
-            {
-                exceptionCaught = true;
-            }
-
-            if (!exceptionCaught)
-            {
-                Assert.Fail("Expected an exception to be caught");
-            }
-        }
-
-        [Test]
         [Category("Javascript")]
         public void ShouldBeAbleToCreateAPersistentValue()
         {
@@ -544,9 +554,77 @@ namespace OpenQA.Selenium
             Assert.Throws<StaleElementReferenceException>(() => executor.ExecuteScript("return undefined;", args));
         }
 
-        ///////////////////////////////////////////////////////
-        // Tests below here are unique to the .NET bindings.
-        ///////////////////////////////////////////////////////
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.IE)]
+        public void ShouldBeAbleToReturnADateObject()
+        {
+            driver.Url = simpleTestPage;
+
+            string date = (string)ExecuteScript("return new Date();");
+            DateTime.Parse(date);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ShouldReturnDocumentElementIfDocumentIsReturned()
+        {
+            driver.Url = simpleTestPage;
+
+            object value = ExecuteScript("return document");
+
+            Assert.IsTrue(value is IWebElement);
+            Assert.IsTrue(((IWebElement)value).Text.Contains("A single line of text"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "returns IWebElement")]
+        public void ShouldHandleObjectThatThatHaveToJSONMethod()
+        {
+            driver.Url = simpleTestPage;
+
+            object value = ExecuteScript("return window.performance.timing");
+
+            Assert.IsTrue(value is Dictionary<string, object>);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.IE, "Issue 540")]
+        public void ShouldHandleRecursiveStructures()
+        {
+            driver.Url = simpleTestPage;
+
+            Assert.That(() => ExecuteScript("var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1"), Throws.InstanceOf<WebDriverException>());
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
+        [Ignore("Reason for ignore: Failure indicates hang condition, which would break the test suite. Really needs a timeout set.")]
+        public void ShouldThrowExceptionIfExecutingOnNoPage()
+        {
+            bool exceptionCaught = false;
+            try
+            {
+                ((IJavaScriptExecutor)driver).ExecuteScript("return 1;");
+            }
+            catch (WebDriverException)
+            {
+                exceptionCaught = true;
+            }
+
+            if (!exceptionCaught)
+            {
+                Assert.Fail("Expected an exception to be caught");
+            }
+        }
 
         [Test]
         public void ExecutingLargeJavaScript()

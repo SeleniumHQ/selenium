@@ -1,6 +1,9 @@
 using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.Internal;
+using System;
 using System.Collections.ObjectModel;
+using System.Drawing;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -31,9 +34,31 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
-        [IgnoreBrowser(Browser.Remote, "Shift-click implementation not complete")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
-        public void ShouldAllowClickingOnFormElements()
+        public void PlainClickingOnMultiSelectionList()
+        {
+            driver.Url = formSelectionPage;
+
+            ReadOnlyCollection<IWebElement> options = driver.FindElements(By.TagName("option"));
+
+            Actions actionBuider = new Actions(driver);
+            IAction selectThreeOptions = actionBuider.Click(options[1])
+                .Click(options[2])
+                .Click(options[3]).Build();
+
+            selectThreeOptions.Perform();
+
+            IWebElement showButton = driver.FindElement(By.Name("showselected"));
+            showButton.Click();
+
+            IWebElement resultElement = driver.FindElement(By.Id("result"));
+            Assert.AreEqual("cheddar", resultElement.Text, "Should have picked the third option only.");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
+        public void ShiftClickingOnMultiSelectionList()
         {
             driver.Url = formSelectionPage;
 
@@ -56,10 +81,32 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Browser does not respond to combined input using SendMessage, only SendInput")]
-        [IgnoreBrowser(Browser.Remote, "Control-click implementation not complete")]
+        [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
-        public void ShouldAllowSelectingMultipleItems()
+        public void ControlClickingOnMultiSelectionList()
+        {
+            driver.Url = formSelectionPage;
+
+            ReadOnlyCollection<IWebElement> options = driver.FindElements(By.TagName("option"));
+
+            Actions actionBuider = new Actions(driver);
+            IAction selectThreeOptions = actionBuider.Click(options[1])
+                .KeyDown(Keys.Control)
+                .Click(options[3])
+                .KeyUp(Keys.Control).Build();
+
+            selectThreeOptions.Perform();
+
+            IWebElement showButton = driver.FindElement(By.Name("showselected"));
+            showButton.Click();
+
+            IWebElement resultElement = driver.FindElement(By.Id("result"));
+            Assert.AreEqual("roquefort cheddar", resultElement.Text, "Should have picked the first and third options.");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
+        public void ControlClickingOnCustomMultiSelectionList()
         {
             driver.Url = selectableItemsPage;
 
@@ -84,30 +131,39 @@ namespace OpenQA.Selenium.Interactions
             Assert.AreEqual("#item7", reportingElement.Text);
         }
 
-        private void NavigateToClicksPageAndClickLink()
+        [Test]
+        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
+        public void CanMoveMouseToAnElementInAnIframeAndClick()
         {
-            driver.Url = clicksPage;
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/click_in_iframe.html");
 
-            WaitFor(() => { return driver.FindElement(By.Id("normal")); }, "Could not find element with id 'normal'");
-            IWebElement link = driver.FindElement(By.Id("normal"));
+            WaitFor<IWebElement>(() => driver.FindElement(By.Id("ifr")), "Did not find element");
+            driver.SwitchTo().Frame("ifr");
 
-            new Actions(driver)
-                .Click(link)
-                .Perform();
+            try
+            {
+                IWebElement link = driver.FindElement(By.Id("link"));
 
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title is not 'XHTML Test Page'");
+                new Actions(driver)
+                    .MoveToElement(link)
+                    .Click()
+                    .Perform();
+
+                WaitFor(() => driver.Title == "Submitted Successfully!", "Browser title not correct");
+            }
+            finally
+            {
+                driver.SwitchTo().DefaultContent();
+            }
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.Safari)]
         public void CanClickOnLinks()
         {
             this.NavigateToClicksPageAndClickLink();
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void CanClickOnLinksWithAnOffset()
         {
@@ -124,13 +180,47 @@ namespace OpenQA.Selenium.Interactions
             WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title is not 'XHTML Test Page'");
         }
 
+        [Test]
+        public void ClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition()
+        {
+            driver.Url = clickEventPage;
+
+            IWebElement element = driver.FindElement(By.Id("eventish"));
+            Point location = element.Location;
+
+            new Actions(driver)
+                .MoveToElement(element, 20, 10)
+                .Click()
+                .Perform();
+
+            WaitFor<IWebElement>(() => driver.FindElement(By.Id("pageX")), "Did not find element with ID pageX");
+
+            // This will fail for IE 9 or earlier. The correct code would look something like
+            // this:
+            // int x;
+            // int y;
+            // if (TestUtilities.IsInternetExplorer(driver) && !TestUtilities.IsIE10OrHigher(driver))
+            //{
+            //    x = int.Parse(driver.FindElement(By.Id("clientX")).Text);
+            //    y = int.Parse(driver.FindElement(By.Id("clientY")).Text);
+            //}
+            //else
+            //{
+            //    x = int.Parse(driver.FindElement(By.Id("pageX")).Text);
+            //    y = int.Parse(driver.FindElement(By.Id("pageY")).Text);
+            //}
+            int x = int.Parse(driver.FindElement(By.Id("pageX")).Text);
+            int y = int.Parse(driver.FindElement(By.Id("pageY")).Text);
+
+            Assert.IsTrue(FuzzyPositionMatching(location.X + 20, location.Y + 10, string.Format("{0},{1}", x, y)));
+        }
+
         /**
          * This test demonstrates the following problem: When the representation of
          * the mouse in the driver keeps the wrong state, mouse movement will end
          * up at the wrong coordinates.
          */
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void MouseMovementWorksWhenNavigatingToAnotherPage()
         {
@@ -146,10 +236,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
-        [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Firefox, "Windows native events library does not support storing modifiers state yet.")]
         public void ChordControlCutAndPaste()
         {
             // FIXME: macs don't have CONRTROL key
@@ -167,6 +254,9 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = javascriptPage;
 
             IWebElement element = driver.FindElement(By.Id("keyReporter"));
+
+            // Must scroll element into view for W3C-compliant drivers.
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
 
             new Actions(driver)
                 .SendKeys(element, "abc def")
@@ -196,17 +286,11 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Browser does not respond to combined input using SendMessage, only SendInput")]
-        [IgnoreBrowser(Browser.Remote)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.Opera)]
         public void CombiningShiftAndClickResultsInANewWindow()
         {
-            if (!IsNativeEventsEnabled || (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux)))
-            {
-                //Assert.Ignore("Skipping CombiningShiftAndClickResultsInANewWindow: Only works with native events on Linux.");
-            }
-
             driver.Url = linkedImage;
             IWebElement link = driver.FindElement(By.Id("link"));
             string originalTitle = driver.Title;
@@ -214,7 +298,7 @@ namespace OpenQA.Selenium.Interactions
             new Actions(driver)
                 .MoveToElement(link)
                 .KeyDown(Keys.Shift)
-                .Click(link)
+                .Click()
                 .KeyUp(Keys.Shift)
                 .Perform();
             WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Did not receive new window");
@@ -235,17 +319,10 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Browser does not respond to combined input using SendMessage, only SendInput")]
-        [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.Opera)]
         public void HoldingDownShiftKeyWhileClicking()
         {
-            if (!IsNativeEventsEnabled || (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux)))
-            {
-                //Assert.Ignore("Skipping CombiningShiftAndClickResultsInANewWindow: Only works with native events on Linux.");
-            }
-
             driver.Url = clickEventPage;
 
             IWebElement toClick = driver.FindElement(By.Id("eventish"));
@@ -291,7 +368,6 @@ namespace OpenQA.Selenium.Interactions
         [Category("Javascript")]
         public void CanClickOnSuckerFishMenuItem()
         {
-
             driver.Url = javascriptPage;
 
             // Move to a different element to make sure the mouse is not over the
@@ -309,6 +385,31 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement result = driver.FindElement(By.Id("result"));
             WaitFor(() => { return result.Text.Contains("item 1"); }, "Result element does not contain text 'item 1'");
+        }
+
+        private bool FuzzyPositionMatching(int expectedX, int expectedY, string locationTuple)
+        {
+            string[] splitString = locationTuple.Split(',');
+            int gotX = int.Parse(splitString[0].Trim());
+            int gotY = int.Parse(splitString[1].Trim());
+
+            // Everything within 5 pixels range is OK
+            const int ALLOWED_DEVIATION = 5;
+            return Math.Abs(expectedX - gotX) < ALLOWED_DEVIATION && Math.Abs(expectedY - gotY) < ALLOWED_DEVIATION;
+        }
+
+        private void NavigateToClicksPageAndClickLink()
+        {
+            driver.Url = clicksPage;
+
+            WaitFor(() => { return driver.FindElement(By.Id("normal")); }, "Could not find element with id 'normal'");
+            IWebElement link = driver.FindElement(By.Id("normal"));
+
+            new Actions(driver)
+                .Click(link)
+                .Perform();
+
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title is not 'XHTML Test Page'");
         }
     }
 }

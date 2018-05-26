@@ -7,8 +7,131 @@ namespace OpenQA.Selenium
     [TestFixture]
     public class PageLoadingTest : DriverTestFixture
     {
+        private IWebDriver localDriver;
+
+        [SetUp]
+        public void RestartOriginalDriver()
+        {
+            driver = EnvironmentManager.Instance.GetCurrentDriver();
+        }
+
+        [TearDown]
+        public void QuitAdditionalDriver()
+        {
+            if (localDriver != null)
+            {
+                localDriver.Quit();
+                localDriver = null;
+            }
+        }
+
         [Test]
-        public void ShouldWaitForDocumentToBeLoaded()
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void NoneStrategyShouldNotWaitForPageToLoad()
+        {
+            InitLocalDriver(PageLoadStrategy.None);
+
+            string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=5");
+
+            DateTime start = DateTime.Now;
+            localDriver.Url = slowPage;
+            DateTime end = DateTime.Now;
+
+            TimeSpan duration = end - start;
+            // The slow loading resource on that page takes 6 seconds to return,
+            // but with 'none' page loading strategy 'get' operation should not wait.
+            Assert.IsTrue(duration.TotalMilliseconds < 1000, "Took too long to load page: " + duration.TotalMilliseconds);
+        }
+
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void NoneStrategyShouldNotWaitForPageToRefresh()
+        {
+            InitLocalDriver(PageLoadStrategy.None);
+
+            string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=5");
+
+            // We discard the element, but want a check to make sure the page is loaded
+            WaitFor(() => localDriver.FindElement(By.TagName("body")), TimeSpan.FromSeconds(10), "did not find body");
+
+            DateTime start = DateTime.Now;
+            localDriver.Navigate().Refresh();
+            DateTime end = DateTime.Now;
+
+            TimeSpan duration = end - start;
+            // The slow loading resource on that page takes 6 seconds to return,
+            // but with 'none' page loading strategy 'refresh' operation should not wait.
+            Assert.IsTrue(duration.TotalMilliseconds < 1000, "Took too long to load page: " + duration.TotalMilliseconds);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void EagerStrategyShouldNotWaitForResources()
+        {
+            InitLocalDriver(PageLoadStrategy.Eager);
+
+            string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("slowLoadingResourcePage.html");
+
+            DateTime start = DateTime.Now;
+            localDriver.Url = slowPage;
+            // We discard the element, but want a check to make sure the GET actually
+            // completed.
+            WaitFor(() => localDriver.FindElement(By.Id("peas")), TimeSpan.FromSeconds(10), "did not find element");
+            DateTime end = DateTime.Now;
+
+            // The slow loading resource on that page takes 6 seconds to return. If we
+            // waited for it, our load time should be over 6 seconds.
+            TimeSpan duration = end - start;
+            Assert.IsTrue(duration.TotalMilliseconds < 5 * 1000, "Took too long to load page: " + duration.TotalMilliseconds);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void EagerStrategyShouldNotWaitForResourcesOnRefresh()
+        {
+            InitLocalDriver(PageLoadStrategy.Eager);
+
+            string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("slowLoadingResourcePage.html");
+            localDriver.Url = slowPage;
+
+            // We discard the element, but want a check to make sure the GET actually
+            // completed.
+            WaitFor(() => localDriver.FindElement(By.Id("peas")), TimeSpan.FromSeconds(10), "did not find element");
+
+            DateTime start = DateTime.Now;
+            localDriver.Navigate().Refresh();
+            // We discard the element, but want a check to make sure the GET actually
+            // completed.
+            WaitFor(() => localDriver.FindElement(By.Id("peas")), TimeSpan.FromSeconds(10), "did not find element");
+            DateTime end = DateTime.Now;
+
+            // The slow loading resource on that page takes 6 seconds to return. If we
+            // waited for it, our load time should be over 6 seconds.
+            TimeSpan duration = end - start;
+            Assert.IsTrue(duration.TotalMilliseconds < 5 * 1000, "Took too long to load page: " + duration.TotalMilliseconds);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        public void EagerStrategyShouldWaitForDocumentToBeLoaded()
+        {
+            InitLocalDriver(PageLoadStrategy.Eager);
+
+            string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=3");
+
+            localDriver.Url = slowPage;
+
+            // We discard the element, but want a check to make sure the GET actually completed.
+            WaitFor(() => localDriver.FindElement(By.TagName("body")), TimeSpan.FromSeconds(10), "did not find body");
+        }
+
+        [Test]
+        public void NormalStrategyShouldWaitForDocumentToBeLoaded()
         {
             driver.Url = simpleTestPage;
 
@@ -63,16 +186,19 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE happily will navigate to invalid URLs")]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ShouldThrowIfUrlIsMalformed()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                // Don't run this test on Marionette.
-                Assert.Ignore("Browser hangs when executed via Marionette");
-            }
+            Assert.That(() => driver.Url = "www.test.com", Throws.InstanceOf<WebDriverException>());
+        }
 
-            driver.Url = "www.test.com";
+        [Test]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
+        public void ShouldThrowIfUrlIsMalformedInPortPart()
+        {
+            Assert.That(() => driver.Url = "http://localhost:30001bla", Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
@@ -168,18 +294,17 @@ namespace OpenQA.Selenium
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
-        //TODO (jimevan): Implement SSL secure http function
-        //[Test]
-        //[IgnoreBrowser(Browser.Chrome)]
-        //[IgnoreBrowser(Browser.IE)]
-        //public void ShouldBeAbleToAccessPagesWithAnInsecureSslCertificate()
-        //{
-        //    String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
-        //    driver.Url = url;
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Browser does not support using insecure SSL certs")]
+        [IgnoreBrowser(Browser.Safari, "Browser does not support using insecure SSL certs")]
+        public void ShouldBeAbleToAccessPagesWithAnInsecureSslCertificate()
+        {
+            String url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("simpleTest.html");
+            driver.Url = url;
 
-        //    // This should work
-        //    Assert.AreEqual(driver.Title, "Hello WebDriver");
-        //}
+            // This should work
+            Assert.AreEqual(driver.Title, "Hello WebDriver");
+        }
 
         [Test]
         public void ShouldBeAbleToRefreshAPage()
@@ -197,55 +322,204 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "Browser does, in fact, hang in this case.")]
+        [IgnoreBrowser(Browser.Firefox, "Browser does, in fact, hang in this case.")]
         public void ShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                // Don't run this test on Marionette.
-                Assert.Ignore("Browser hangs when executed via Marionette");
-            }
-
             driver.Url = documentWrite;
 
             // If this command succeeds, then all is well.
             driver.FindElement(By.XPath("//body"));
         }
 
+        // Note: If this test ever fixed/enabled on Firefox, check if it also needs [NeedsFreshDriver] OR
+        // if [NeedsFreshDriver] can be removed from some other tests in this class.
+        [Test]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Safari)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
+        public void PageLoadTimeoutCanBeChanged()
+        {
+            TestPageLoadTimeoutIsEnforced(2);
+            TestPageLoadTimeoutIsEnforced(3);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Safari)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
+        public void CanHandleSequentialPageLoadTimeouts()
+        {
+            long pageLoadTimeout = 2;
+            long pageLoadTimeBuffer = 10;
+            string slowLoadingPageUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=" + (pageLoadTimeout + pageLoadTimeBuffer));
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(2);
+            AssertPageLoadTimeoutIsEnforced(() => driver.Url = slowLoadingPageUrl, pageLoadTimeout, pageLoadTimeBuffer);
+            AssertPageLoadTimeoutIsEnforced(() => driver.Url = slowLoadingPageUrl, pageLoadTimeout, pageLoadTimeBuffer);
+        }
+
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Edge, "Not implemented for browser")]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldTimeoutIfAPageTakesTooLongToLoad()
         {
-            if (TestUtilities.IsMarionette(driver))
+            try
             {
-                // Don't run this test on Marionette.
-                Assert.Ignore("Driver does not return control from timeout wait when executed via Marionette");
+                TestPageLoadTimeoutIsEnforced(2);
             }
+            finally
+            {
+                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(300);
+            }
+
+            // Load another page after get() timed out but before test HTTP server served previous page.
+            driver.Url = xhtmlTestPage;
+            WaitFor(TitleToBeEqualTo("XHTML Test Page"), "Title was not expected value");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.Edge, "Not implemented for browser")]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
+        public void ShouldTimeoutIfAPageTakesTooLongToLoadAfterClick()
+        {
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(2);
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("page_with_link_to_slow_loading_page.html");
+            IWebElement link = WaitFor(() => driver.FindElement(By.Id("link-to-slow-loading-page")), "Could not find link");
+
+            try
+            {
+                AssertPageLoadTimeoutIsEnforced(() => link.Click(), 2, 3);
+            }
+            finally
+            {
+                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(300);
+            }
+
+            // Load another page after get() timed out but before test HTTP server served previous page.
+            driver.Url = xhtmlTestPage;
+            WaitFor(TitleToBeEqualTo("XHTML Test Page"), "Title was not expected value");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
+        public void ShouldTimeoutIfAPageTakesTooLongToRefresh()
+        {
+            // Get the sleeping servlet with a pause of 5 seconds
+            long pageLoadTimeout = 2;
+            long pageLoadTimeBuffer = 0;
+            string slowLoadingPageUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=" + (pageLoadTimeout + pageLoadTimeBuffer));
+            driver.Url = slowLoadingPageUrl;
 
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(2);
 
             try
             {
-                // Get the sleeping servlet with a pause of 5 seconds
-                string slowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=5");
-
-                driver.Url = slowPage;
-
-                Assert.Fail("I should have timed out");
-            }
-            catch (WebDriverTimeoutException)
-            {
+                AssertPageLoadTimeoutIsEnforced(() => driver.Navigate().Refresh(), 2, 4);
             }
             finally
             {
-                driver.Manage().Timeouts().PageLoad = TimeSpan.MinValue;
+                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(300);
             }
+
+            // Load another page after get() timed out but before test HTTP server served previous page.
+            driver.Url = xhtmlTestPage;
+            WaitFor(TitleToBeEqualTo("XHTML Test Page"), "Title was not expected value");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.Safari, "Not implemented for browser")]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
+        public void ShouldNotStopLoadingPageAfterTimeout()
+        {
+            try
+            {
+                TestPageLoadTimeoutIsEnforced(1);
+            }
+            finally
+            {
+                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(300);
+            }
+
+            WaitFor(() =>
+            {
+                try
+                {
+                    string text = driver.FindElement(By.TagName("body")).Text;
+                    return text == "Slept for 11s";
+                }
+                catch (NoSuchElementException)
+                {
+                }
+                catch (StaleElementReferenceException)
+                {
+                }
+                return false;
+            }, TimeSpan.FromSeconds(30), "Did not find expected text");
         }
 
         private Func<bool> TitleToBeEqualTo(string expectedTitle)
         {
             return () => { return driver.Title == expectedTitle; };
+        }
+
+        /**
+         * Sets given pageLoadTimeout to the {@link #driver} and asserts that attempt to navigate to a
+         * page that takes much longer (10 seconds longer) to load results in a TimeoutException.
+         * <p>
+         * Side effects: 1) {@link #driver} is configured to use given pageLoadTimeout,
+         * 2) test HTTP server still didn't serve the page to browser (some browsers may still
+         * be waiting for the page to load despite the fact that driver responded with the timeout).
+         */
+        private void TestPageLoadTimeoutIsEnforced(long webDriverPageLoadTimeoutInSeconds)
+        {
+            // Test page will load this many seconds longer than WD pageLoadTimeout.
+            long pageLoadTimeBufferInSeconds = 10;
+            string slowLoadingPageUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=" + (webDriverPageLoadTimeoutInSeconds + pageLoadTimeBufferInSeconds));
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(webDriverPageLoadTimeoutInSeconds);
+            AssertPageLoadTimeoutIsEnforced(() => driver.Url = slowLoadingPageUrl, webDriverPageLoadTimeoutInSeconds, pageLoadTimeBufferInSeconds);
+        }
+
+        private void AssertPageLoadTimeoutIsEnforced(TestDelegate delegateToTest, long webDriverPageLoadTimeoutInSeconds, long pageLoadTimeBufferInSeconds)
+        {
+            DateTime start = DateTime.Now;
+            WebDriverTimeoutException ex = Assert.Throws<WebDriverTimeoutException>(delegateToTest, "I should have timed out after " + webDriverPageLoadTimeoutInSeconds + " seconds");
+            DateTime end = DateTime.Now;
+            TimeSpan duration = end - start;
+            Assert.That(duration.TotalSeconds, Is.GreaterThan(webDriverPageLoadTimeoutInSeconds));
+            Assert.That(duration.TotalSeconds, Is.LessThan(webDriverPageLoadTimeoutInSeconds + pageLoadTimeBufferInSeconds));
+        }
+
+        private void InitLocalDriver(PageLoadStrategy strategy)
+        {
+            EnvironmentManager.Instance.CloseCurrentDriver();
+            if (localDriver != null)
+            {
+                localDriver.Quit();
+            }
+
+            PageLoadStrategyOptions options = new PageLoadStrategyOptions();
+            options.PageLoadStrategy = strategy;
+            localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
+        }
+
+        private class PageLoadStrategyOptions : DriverOptions
+        {
+            public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
+            {
+            }
+
+            public override ICapabilities ToCapabilities()
+            {
+                return null;
+            }
         }
     }
 }

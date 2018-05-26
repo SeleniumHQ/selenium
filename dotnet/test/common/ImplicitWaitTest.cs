@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium
 {
@@ -65,7 +66,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("JavaScript")]
         [NeedsFreshDriver]
-        public void ShouldStillFailToFindAnElemenstWhenImplicitWaitsAreEnabled()
+        public void ShouldStillFailToFindElementsWhenImplicitWaitsAreEnabled()
         {
             driver.Url = dynamicPage;
 
@@ -111,6 +112,31 @@ namespace OpenQA.Selenium
             {
                 Assert.Fail("Element should have been visible");
             }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfWindowSwitchTo()
+        {
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+            driver.Url = xhtmlTestPage;
+            driver.FindElement(By.Name("windowOne")).Click();
+
+            string originalHandle = driver.CurrentWindowHandle;
+            WaitFor(() => driver.WindowHandles.Count == 2, "Window handle count was not 2");
+            List<string> handles = new List<string>(driver.WindowHandles);
+            handles.Remove(originalHandle);
+
+            IWebDriver newWindow = driver.SwitchTo().Window(handles[0]);
+
+            DateTime start = DateTime.Now;
+            newWindow.FindElements(By.Id("this-crazy-thing-does-not-exist"));
+            DateTime end = DateTime.Now;
+            TimeSpan time = end - start;
+
+            driver.Close();
+            driver.SwitchTo().Window(originalHandle);
+            Assert.IsTrue(time.TotalMilliseconds >= 1000);
         }
     }
 }

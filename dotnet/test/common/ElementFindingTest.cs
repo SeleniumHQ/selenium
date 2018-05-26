@@ -20,11 +20,51 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldBeAbleToFindASingleElementByNumericId()
+        {
+            driver.Url = nestedPage;
+            IWebElement element = driver.FindElement(By.Id("2"));
+            Assert.That(element.GetAttribute("id"), Is.EqualTo("2"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")]
+        [IgnoreBrowser(Browser.IE)]
+        public void ShouldBeAbleToFindASingleElementByIdWithNonAlphanumericCharacters()
+        {
+            driver.Url = nestedPage;
+            IWebElement element = driver.FindElement(By.Id("white space"));
+            Assert.That(element.Text, Is.EqualTo("space"));
+            IWebElement element2 = driver.FindElement(By.Id("css#.chars"));
+            Assert.That(element2.Text, Is.EqualTo("css escapes"));
+        }
+
+        [Test]
         public void ShouldBeAbleToFindMultipleElementsById()
         {
             driver.Url = nestedPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("2"));
             Assert.AreEqual(8, elements.Count);
+        }
+
+        [Test]
+        public void ShouldBeAbleToFindMultipleElementsByNumericId()
+        {
+            driver.Url = nestedPage;
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("2"));
+            Assert.That(elements.Count, Is.EqualTo(8));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")]
+        [IgnoreBrowser(Browser.IE)]
+        public void ShouldBeAbleToFindMultipleElementsByIdWithNonAlphanumericCharacters()
+        {
+            driver.Url = nestedPage;
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("white space"));
+            Assert.That(elements.Count, Is.EqualTo(2));
+            ReadOnlyCollection<IWebElement> elements2 = driver.FindElements(By.Id("css#.chars"));
+            Assert.That(elements2.Count, Is.EqualTo(2));
         }
 
         // By.id negative
@@ -52,7 +92,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void FindingMultipleElementsByEmptyIdShouldThrow()
+        public void FindingMultipleElementsByEmptyIdShouldReturnEmptyList()
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id(""));
@@ -67,7 +107,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void FindingMultipleElementsByIdWithSpaceShouldThrow()
+        public void FindingMultipleElementsByIdWithSpaceShouldReturnEmptyList()
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("nonexistent button"));
@@ -125,7 +165,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void FindingMultipleElementsByEmptyNameShouldThrow()
+        public void FindingMultipleElementsByEmptyNameShouldReturnEmptyList()
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name(""));
@@ -140,7 +180,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void FindingMultipleElementsByNameWithSpaceShouldThrow()
+        public void FindingMultipleElementsByNameWithSpaceShouldReturnEmptyList()
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name("nonexistent button"));
@@ -204,7 +244,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void FindingMultipleElementsByTagNameWithSpaceShouldThrow()
+        public void FindingMultipleElementsByTagNameWithSpaceShouldReturnEmptyList()
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("nonexistent button"));
@@ -395,6 +435,28 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.XPath("//a[contains(.,'hello world')]"));
             Assert.IsTrue(element.Text.Contains("hello world"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void ShouldBeAbleToFindElementByXPathWithNamespace()
+        {
+            driver.Url = svgPage;
+            IWebElement element = driver.FindElement(By.XPath("//svg:svg//svg:text"));
+            Assert.That(element.Text, Is.EqualTo("Test Chart"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void ShouldBeAbleToFindElementByXPathInXmlDocument()
+        {
+            driver.Url = simpleXmlDocument;
+            IWebElement element = driver.FindElement(By.XPath("//foo"));
+            Assert.That(element.Text, Is.EqualTo("baz"));
         }
 
         // By.XPath negative

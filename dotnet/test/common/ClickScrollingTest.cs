@@ -72,6 +72,17 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Issue #716")]
+        [IgnoreBrowser(Browser.Firefox, "Issue #716")]
+        public void ShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_partially_hidden_element.html");
+
+            driver.FindElement(By.Id("btn")).Click();
+            WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldNotScrollOverflowElementsWhichAreVisible()
         {
@@ -229,6 +240,18 @@ namespace OpenQA.Selenium
             long scrollTop = GetScrollTop();
             Size ignoredSize = driver.FindElement(By.Id("button1")).Size;
             Assert.AreEqual(scrollTop, GetScrollTop());
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        [IgnoreBrowser(Browser.Firefox)]
+        public void testShouldBeAbleToClickElementInATallFrame()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_tall_frame.html");
+            driver.SwitchTo().Frame("tall_frame");
+            IWebElement element = driver.FindElement(By.Name("checkbox"));
+            element.Click();
+            Assert.IsTrue(element.Selected);
         }
 
         private long GetScrollTop()

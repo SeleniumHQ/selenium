@@ -50,6 +50,58 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        public void ShouldBeAbleToSetTheSizeOfTheCurrentWindowFromFrame()
+        {
+            IWindow window = driver.Manage().Window;
+            Size size = window.Size;
+            driver.Url = framesetPage;
+            driver.SwitchTo().Frame("fourth");
+
+            try
+            {
+                // resize relative to the initial size, since we don't know what it is
+                Size targetSize = new Size(size.Width - 20, size.Height - 20);
+                window.Size = targetSize;
+
+
+                Size newSize = window.Size;
+                Assert.AreEqual(targetSize.Width, newSize.Width);
+                Assert.AreEqual(targetSize.Height, newSize.Height);
+            }
+            finally
+            {
+                driver.SwitchTo().DefaultContent();
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        public void ShouldBeAbleToSetTheSizeOfTheCurrentWindowFromIFrame()
+        {
+            IWindow window = driver.Manage().Window;
+            Size size = window.Size;
+            driver.Url = iframePage;
+            driver.SwitchTo().Frame("iframe1-name");
+
+            try
+            {
+                // resize relative to the initial size, since we don't know what it is
+                Size targetSize = new Size(size.Width - 20, size.Height - 20);
+                window.Size = targetSize;
+
+
+                Size newSize = window.Size;
+                Assert.AreEqual(targetSize.Width, newSize.Width);
+                Assert.AreEqual(targetSize.Height, newSize.Height);
+            }
+            finally
+            {
+                driver.SwitchTo().DefaultContent();
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToGetThePositionOfTheCurrentWindow()
         {
             Point position = driver.Manage().Window.Position;
@@ -57,6 +109,60 @@ namespace OpenQA.Selenium
             Assert.Greater(position.Y, 0);
         }
 
+        [Test]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        public void ShouldBeAbleToMaximizeTheCurrentWindow()
+        {
+            Size targetSize = new Size(450, 275);
+
+            ChangeSizeTo(targetSize);
+
+            Maximize();
+
+            IWindow window = driver.Manage().Window;
+            Assert.Greater(window.Size.Height, targetSize.Height);
+            Assert.Greater(window.Size.Width, targetSize.Width);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        public void ShouldBeAbleToMaximizeTheWindowFromFrame()
+        {
+            driver.Url = framesetPage;
+            ChangeSizeTo(new Size(450, 275));
+
+            driver.SwitchTo().Frame("fourth");
+            try
+            {
+                Maximize();
+            }
+            finally
+            {
+                driver.SwitchTo().DefaultContent();
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        public void ShouldBeAbleToMaximizeTheWindowFromIframe()
+        {
+            driver.Url = iframePage;
+            ChangeSizeTo(new Size(450, 275));
+
+            driver.SwitchTo().Frame("iframe1-name");
+            try
+            {
+                Maximize();
+            }
+            finally
+            {
+                driver.SwitchTo().DefaultContent();
+            }
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
         [Test]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToSetThePositionOfTheCurrentWindow()
@@ -115,57 +221,6 @@ namespace OpenQA.Selenium
             Assert.Less(windowPosition.Y, 0);
         }
 
-        [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
-        public void ShouldBeAbleToMaximizeTheCurrentWindow()
-        {
-            Size targetSize = new Size(450, 275);
-
-            ChangeSizeTo(targetSize);
-
-            Maximize();
-
-            IWindow window = driver.Manage().Window;
-            Assert.Greater(window.Size.Height, targetSize.Height);
-            Assert.Greater(window.Size.Width, targetSize.Width);
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
-        public void ShouldBeAbleToMaximizeTheWindowFromFrame()
-        {
-            driver.Url = framesetPage;
-            ChangeSizeTo(new Size(450, 275));
-
-            driver.SwitchTo().Frame("fourth");
-            try
-            {
-                Maximize();
-            }
-            finally
-            {
-                driver.SwitchTo().DefaultContent();
-            }
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
-        public void ShouldBeAbleToMaximizeTheWindowFromIframe()
-        {
-            driver.Url = iframePage;
-            ChangeSizeTo(new Size(450, 275));
-
-            driver.SwitchTo().Frame("iframe1-name");
-            try
-            {
-                Maximize();
-            }
-            finally
-            {
-                driver.SwitchTo().DefaultContent();
-            }
-        }
-
         private void FullScreen()
         {
             IWindow window = driver.Manage().Window;
@@ -195,6 +250,13 @@ namespace OpenQA.Selenium
             window.Size = targetSize;
             WaitFor(WindowHeightToBeEqualTo(targetSize.Height), "Window height was not " + targetSize.Height.ToString());
             WaitFor(WindowWidthToBeEqualTo(targetSize.Width), "Window width was not " + targetSize.Width.ToString());
+        }
+
+        private void ChangeSizeBy(int deltaX, int deltaY)
+        {
+            IWindow window = driver.Manage().Window;
+            Size size = window.Size;
+            ChangeSizeTo(new Size(size.Width + deltaX, size.Height + deltaY));
         }
 
         private Func<bool> WindowHeightToBeEqualTo(int height)

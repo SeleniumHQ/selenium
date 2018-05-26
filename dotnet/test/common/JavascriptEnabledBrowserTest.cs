@@ -59,32 +59,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        public void ShouldBeAbleToDetermineTheLocationOfAnElement()
-        {
-            driver.Url = xhtmlTestPage;
-
-            IWebElement element = driver.FindElement(By.Id("username"));
-            Point location = element.Location;
-
-            Assert.Greater(location.X, 0);
-            Assert.Greater(location.Y, 0);
-        }
-
-        [Test]
-        [Category("Javascript")]
-        public void ShouldBeAbleToDetermineTheSizeOfAnElement()
-        {
-            driver.Url = xhtmlTestPage;
-
-            IWebElement element = driver.FindElement(By.Id("username"));
-            Size size = element.Size;
-
-            Assert.Greater(size.Width, 0);
-            Assert.Greater(size.Height, 0);
-        }
-
-        [Test]
-        [Category("Javascript")]
         public void ShouldFireOnChangeEventWhenSettingAnElementsValue()
         {
             driver.Url = javascriptPage;

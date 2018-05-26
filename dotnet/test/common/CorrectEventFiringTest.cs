@@ -4,6 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Interactions;
 
 namespace OpenQA.Selenium
 {
@@ -15,9 +16,35 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
-            AssertEventFired("focus");
+            AssertEventFired("focus", driver);
+        }
+
+        [Test]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/906")]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void ShouldFireFocusEventInNonTopmostWindow()
+        {
+            IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
+            try
+            {
+                // topmost
+                driver2.Url = javascriptPage;
+                ClickOnElementWhichRecordsEvents(driver2);
+                AssertEventFired("focus", driver2);
+
+                // non-topmost
+                driver.Url = javascriptPage;
+                ClickOnElementWhichRecordsEvents(driver);
+                AssertEventFired("focus", driver);
+
+            }
+            finally
+            {
+                driver2.Quit();
+            }
         }
 
         [Test]
@@ -26,9 +53,9 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
-            AssertEventFired("click");
+            AssertEventFired("click", driver);
         }
 
         [Test]
@@ -37,9 +64,9 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
-            AssertEventFired("mousedown");
+            AssertEventFired("mousedown", driver);
         }
 
         [Test]
@@ -48,9 +75,9 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
-            AssertEventFired("mouseup");
+            AssertEventFired("mouseup", driver);
         }
 
         [Test]
@@ -59,9 +86,9 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
-            AssertEventFired("mouseover");
+            AssertEventFired("mouseover", driver);
         }
 
         [Test]
@@ -71,9 +98,16 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            // This bears some explanation. In certain cases, if the prior test
+            // leaves the mouse cursor immediately over the wrong element, then
+            // the mousemove event may not get fired, because the mouse does not
+            // actually move. Prevent this situation by forcing the mouse to move
+            // to the origin.
+            new Actions(driver).MoveToElement(driver.FindElement(By.TagName("body"))).Perform();
 
-            AssertEventFired("mousemove");
+            ClickOnElementWhichRecordsEvents(driver);
+
+            AssertEventFired("mousemove", driver);
         }
 
         [Test]
@@ -90,7 +124,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
             string text = driver.FindElement(By.Id("result")).Text;
 
@@ -245,7 +279,46 @@ namespace OpenQA.Selenium
             element.SendKeys("foo");
             IWebElement element2 = driver.FindElement(By.Id("changeable"));
             element2.SendKeys("bar");
-            AssertEventFired("blur");
+            AssertEventFired("blur", driver);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/906")]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow()
+        {
+            IWebElement element = null;
+            IWebElement element2 = null;
+            IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
+            try
+            {
+                // topmost
+                driver2.Url = javascriptPage;
+                element = driver2.FindElement(By.Id("theworks"));
+                element.SendKeys("foo");
+                element2 = driver2.FindElement(By.Id("changeable"));
+                element2.SendKeys("bar");
+                AssertEventFired("blur", driver2);
+
+                // non-topmost
+                driver.Url = javascriptPage;
+                element = driver.FindElement(By.Id("theworks"));
+                element.SendKeys("foo");
+                element2 = driver.FindElement(By.Id("changeable"));
+                element2.SendKeys("bar");
+                AssertEventFired("blur", driver);
+            }
+            finally
+            {
+                driver2.Quit();
+            }
+
+            driver.Url = javascriptPage;
+            element = driver.FindElement(By.Id("theworks"));
+            element.SendKeys("foo");
+            element2 = driver.FindElement(By.Id("changeable"));
+            element2.SendKeys("bar");
+            AssertEventFired("blur", driver);
         }
 
         [Test]
@@ -255,7 +328,7 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("theworks"));
             element.SendKeys("foo");
-            AssertEventFired("focus");
+            AssertEventFired("focus", driver);
         }
 
         [Test]
@@ -296,13 +369,37 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Clicking on child does blur parent, whether focused or not.")]
+        public void ClickingAnUnfocusableChildShouldNotBlurTheParent()
+        {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                return;
+            }
+
+            driver.Url = javascriptPage;
+            // Click on parent, giving it the focus.
+            IWebElement parent = driver.FindElement(By.Id("hideOnBlur"));
+            parent.Click();
+            AssertEventNotFired("blur");
+            // Click on child. It is not focusable, so focus should stay on the parent.
+            driver.FindElement(By.Id("hideOnBlurChild")).Click();
+            System.Threading.Thread.Sleep(2000);
+            Assert.IsTrue(parent.Displayed, "#hideOnBlur should still be displayed after click");
+            AssertEventNotFired("blur");
+            // Click elsewhere, and let the element disappear.
+            driver.FindElement(By.Id("result")).Click();
+            AssertEventFired("blur", driver);
+        }
+
+        [Test]
         [Category("Javascript")]
         public void SubmittingFormFromFormElementShouldFireOnSubmitForThatForm()
         {
             driver.Url = javascriptPage;
             IWebElement formElement = driver.FindElement(By.Id("submitListeningForm"));
             formElement.Submit();
-            AssertEventFired("form-onsubmit");
+            AssertEventFired("form-onsubmit", driver);
         }
 
         [Test]
@@ -312,7 +409,7 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
             IWebElement submit = driver.FindElement(By.Id("submitListeningForm-submit"));
             submit.Submit();
-            AssertEventFired("form-onsubmit");
+            AssertEventFired("form-onsubmit", driver);
         }
 
         [Test]
@@ -322,7 +419,7 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
             IWebElement submit = driver.FindElement(By.Id("submitListeningForm-submit"));
             submit.Submit();
-            AssertEventFired("form-onsubmit");
+            AssertEventFired("form-onsubmit", driver);
             AssertEventNotFired("text-onclick");
         }
 
@@ -471,14 +568,14 @@ namespace OpenQA.Selenium
             Assert.IsFalse(text.Contains(eventName), eventName + " fired: " + text);
         }
 
-        private void ClickOnElementWhichRecordsEvents()
+        private void ClickOnElementWhichRecordsEvents(IWebDriver focusedDriver)
         {
-            driver.FindElement(By.Id("plainButton")).Click();
+            focusedDriver.FindElement(By.Id("plainButton")).Click();
         }
 
-        private void AssertEventFired(String eventName)
+        private void AssertEventFired(string eventName, IWebDriver focusedDriver)
         {
-            IWebElement result = driver.FindElement(By.Id("result"));
+            IWebElement result = focusedDriver.FindElement(By.Id("result"));
             string text = result.Text;
             Assert.IsTrue(text.Contains(eventName), "No " + eventName + " fired: " + text);
         }

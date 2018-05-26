@@ -104,14 +104,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldClickOnFirstBoundingClientRectWithNonZeroSize()
-        {
-            driver.FindElement(By.Id("twoClientRects")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-            Assert.AreEqual("XHTML Test Page", driver.Title);
-        }
-
-        [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldSetRelatedTargetForMouseOver()
@@ -133,6 +125,14 @@ namespace OpenQA.Selenium
             {
                 Assert.AreEqual("parent matches? true", log);
             }
+        }
+
+        [Test]
+        public void ShouldClickOnFirstBoundingClientRectWithNonZeroSize()
+        {
+            driver.FindElement(By.Id("twoClientRects")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+            Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
         [Test]
@@ -205,15 +205,6 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("link-with-enclosed-span")).FindElement(By.TagName("span")).Click();
             WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
             Assert.AreEqual("XHTML Test Page", driver.Title);
-        }
-
-        [Test]
-        public void ShouldBeAbleToClickLinkContainingLineBreak()
-        {
-            driver.Url = simpleTestPage;
-            driver.FindElement(By.Id("multilinelink")).Click();
-            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
-            Assert.AreEqual("We Arrive Here", driver.Title);
         }
 
         // See http://code.google.com/p/selenium/issues/attachmentText?id=2700
@@ -364,6 +355,27 @@ namespace OpenQA.Selenium
 
             WaitFor(() => driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
             Assert.AreEqual("Submitted Successfully!", driver.Title);
+        }
+
+        [Test]
+        public void ClickingOnADisabledElementIsANoOp()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/disabled_element.html");
+
+            IWebElement element = driver.FindElement(By.Name("disabled"));
+            element.Click();
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        public void ShouldBeAbleToClickLinkContainingLineBreak()
+        {
+            driver.Url = simpleTestPage;
+            driver.FindElement(By.Id("multilinelink")).Click();
+            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
+            Assert.AreEqual("We Arrive Here", driver.Title);
         }
     }
 }

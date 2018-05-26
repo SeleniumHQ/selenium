@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -136,36 +137,80 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Clicking without context is perfectly valid for W3C-compliant remote ends.")]
-        [IgnoreBrowser(Browser.Firefox, "Clicking without context is perfectly valid for W3C-compliant remote ends.")]
-        [IgnoreBrowser(Browser.Chrome, "Clicking without context is perfectly valid for Chrome.")]
-        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldNotMoveToANullLocator()
         {
             driver.Url = javascriptPage;
 
-            try
-            {
-                IAction contextClick = new Actions(driver).MoveToElement(null).Build();
+            Assert.That(() => new Actions(driver).MoveToElement(null).Perform(), Throws.InstanceOf<ArgumentException>());
+        }
 
-                contextClick.Perform();
-                Assert.Fail("Shouldn't be allowed to click on null element.");
-            }
-            catch (ArgumentException)
-            {
-                // Expected.
-            }
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Edge)]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Safari)]
+        public void MousePositionIsNotPreservedInActionsChain()
+        {
+            driver.Url = javascriptPage;
+            IWebElement toMoveTo = driver.FindElement(By.Id("clickField"));
 
-            try
-            {
-                new Actions(driver).Click().Build().Perform();
-                Assert.Fail("Shouldn't be allowed to click without a context.");
-            }
-            catch (Exception)
-            {
-                // expected
-            }
+            new Actions(driver).MoveToElement(toMoveTo).Perform();
+            Assert.That(() => new Actions(driver).Click().Perform(), Throws.InstanceOf<WebDriverException>());
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.All, "Behaviour not finalized yet regarding linked images.")]
+        public void MovingIntoAnImageEnclosedInALink()
+        {
+            driver.Url = linkedImage;
+
+            // Note: For some reason, the Accessibility API in Firefox will not be available before we
+            // click on something. As a work-around, click on a different element just to get going.
+            driver.FindElement(By.Id("linkToAnchorOnThisPage")).Click();
+
+            IWebElement linkElement = driver.FindElement(By.Id("linkWithEnclosedImage"));
+
+            // Image is 644 x 41 - move towards the end.
+            // Note: The width of the link element itself is correct - 644 pixels. However,
+            // the height is 17 pixels and the rectangle containing it is *underneath* the image.
+            // For this reason, this action will fail.
+            new Actions(driver).MoveToElement(linkElement, 500, 30).Click().Perform();
+
+            WaitFor(TitleToBe("We Arrive Here"), "Title was not expected value");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Edge)]
+        [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Safari)]
+        public void MovingMouseBackAndForthPastViewPort()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("veryLargeCanvas.html");
+
+            IWebElement firstTarget = driver.FindElement(By.Id("r1"));
+            new Actions(driver).MoveToElement(firstTarget).Click().Perform();
+
+            IWebElement resultArea = driver.FindElement(By.Id("result"));
+            String expectedEvents = "First";
+            WaitFor(ElementTextToEqual(resultArea, expectedEvents), "Element text did not equal " + expectedEvents);
+
+            // Move to element with id 'r2', at (2500, 50) to (2580, 100)
+            new Actions(driver).MoveByOffset(2540 - 150, 75 - 125).Click().Perform();
+            expectedEvents += " Second";
+            WaitFor(ElementTextToEqual(resultArea, expectedEvents), "Element text did not equal " + expectedEvents);
+
+            // Move to element with id 'r3' at (60, 1500) to (140, 1550)
+            new Actions(driver).MoveByOffset(100 - 2540, 1525 - 75).Click().Perform();
+            expectedEvents += " Third";
+            WaitFor(ElementTextToEqual(resultArea, expectedEvents), "Element text did not equal " + expectedEvents);
+
+            // Move to element with id 'r4' at (220,180) to (320, 230)
+            new Actions(driver).MoveByOffset(270 - 100, 205 - 1525).Click().Perform();
+            expectedEvents += " Fourth";
+            WaitFor(ElementTextToEqual(resultArea, expectedEvents), "Element text did not equal " + expectedEvents);
         }
 
         [Test]
@@ -211,11 +256,35 @@ namespace OpenQA.Selenium.Interactions
             Assert.AreEqual("", item.Text);
 
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
-            //element.Hover();
             Actions actionBuilder = new Actions(driver);
             actionBuilder.MoveToElement(element).Perform();
 
             item = driver.FindElement(By.Id("item1"));
+            Assert.AreEqual("Item 1", item.Text);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
+        public void HoverPersists()
+        {
+            driver.Url = javascriptPage;
+            // Move to a different element to make sure the mouse is not over the
+            // element with id 'item1' (from a previous test).
+            new Actions(driver).MoveToElement(driver.FindElement(By.Id("dynamo"))).Perform();
+
+            IWebElement element = driver.FindElement(By.Id("menu1"));
+
+            IWebElement item = driver.FindElement(By.Id("item1"));
+            Assert.AreEqual(string.Empty, item.Text);
+
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
+            new Actions(driver).MoveToElement(element).Perform();
+
+            // Intentionally wait to make sure hover persists.
+            System.Threading.Thread.Sleep(2000);
+
+            WaitFor(ElementTextToNotEqual(item, ""), "Element text was empty after timeout");
+
             Assert.AreEqual("Item 1", item.Text);
         }
 
@@ -254,6 +323,19 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        public void MovingMouseToRelativeZeroElementOffset()
+        {
+            driver.Url = mouseTrackerPage;
+
+            IWebElement trackerDiv = driver.FindElement(By.Id("mousetracker"));
+            new Actions(driver).MoveToElement(trackerDiv, 0, 0).Perform();
+
+            IWebElement reporter = driver.FindElement(By.Id("status"));
+
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 0, 0), "Coordinate matching was not within tolerance");
+        }
+
+        [Test]
         [Category("Javascript")]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
@@ -269,8 +351,29 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
-        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
+        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
+        public void MoveMouseByOffsetOverAndOutOfAnElement()
+        {
+            driver.Url = mouseOverPage;
+
+            IWebElement greenbox = driver.FindElement(By.Id("greenbox"));
+            IWebElement redbox = driver.FindElement(By.Id("redbox"));
+            Point greenboxPosition = greenbox.Location;
+            Point redboxPosition = redbox.Location;
+            int shiftX = redboxPosition.X - greenboxPosition.X;
+            int shiftY = redboxPosition.Y - greenboxPosition.Y;
+
+            new Actions(driver).MoveToElement(greenbox, 2, 2).Perform();
+            WaitFor(ElementColorToBe(redbox, Color.Green), "element color was not green");
+
+            new Actions(driver).MoveToElement(greenbox, 2, 2).MoveByOffset(shiftX, shiftY).Perform();
+            WaitFor(ElementColorToBe(redbox, Color.Red), "element color was not red");
+
+            new Actions(driver).MoveToElement(greenbox, 2, 2).MoveByOffset(shiftX, shiftY).MoveByOffset(-shiftX, -shiftY).Perform();
+            WaitFor(ElementColorToBe(redbox, Color.Green), "element color was not red");
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void CanMouseOverAndOutOfAnElement()
         {
@@ -347,6 +450,32 @@ namespace OpenQA.Selenium.Interactions
             {
                 return false;
             }
+        }
+
+        private Func<bool> TitleToBe(string desiredTitle)
+        {
+            return () => driver.Title == desiredTitle;
+        }
+
+        private Func<bool> ElementTextToEqual(IWebElement element, string text)
+        {
+            return () => element.Text == text;
+        }
+
+        private Func<bool> ElementTextToNotEqual(IWebElement element, string text)
+        {
+            return () => element.Text != text;
+        }
+
+        private Func<bool> ElementColorToBe(IWebElement element, Color color)
+        {
+            return () =>
+            {
+                string rgb = string.Format("rgb({0}, {1}, {2})", color.R, color.G, color.B);
+                string rgba = string.Format("rgba({0}, {1}, {2}, 1)", color.R, color.G, color.B);
+                string value = element.GetCssValue("background-color");
+                return value == rgb || value == rgba;
+            };
         }
     }
 }

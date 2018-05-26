@@ -144,14 +144,25 @@ namespace OpenQA.Selenium
         public void ShouldRetainTheFormatingOfTextWithinAPreElement()
         {
             driver.Url = simpleTestPage;
-            string text = driver.FindElement(By.Id("div-with-pre")).Text;
+            string text = driver.FindElement(By.Id("preformatted")).Text;
 
-            Assert.AreEqual("before pre" + System.Environment.NewLine + 
+            Assert.That(text, Is.EqualTo("   This section has a preformatted" +System.Environment.NewLine +
+                "    text block    " + System.Environment.NewLine +
+                "  split in four lines" + System.Environment.NewLine +
+                "         "));
+        }
+
+        [Test]
+        public void ShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock()
+        {
+            driver.Url = simpleTestPage;
+            string text = driver.FindElement(By.Id("div-with-pre")).Text;
+            Assert.That(text, Is.EqualTo("before pre" + System.Environment.NewLine +
                 "   This section has a preformatted" + System.Environment.NewLine +
                 "    text block    " + System.Environment.NewLine +
                 "  split in four lines" + System.Environment.NewLine +
                 "         " + System.Environment.NewLine +
-                "after pre", text);
+                "after pre"));
         }
 
         [Test]
@@ -345,6 +356,55 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement element = driver.FindElement(By.Id("complexJsonText"));
             Assert.AreEqual("{a=\"\\\\b\\\\\\\"\'\\\'\"}", element.Text);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.All, "Hidden LTR Unicode marks are currently returned by WebDriver but shouldn't, issue 4473")]
+        public void ShouldNotReturnLtrMarks()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("utf8/unicode_ltr.html");
+            IWebElement element = driver.FindElement(By.Id("EH")).FindElement(By.TagName("nobr"));
+            string text = element.Text;
+            String expected = "Some notes";
+            Assert.AreNotSame(8206, (int)text[0], "RTL mark should not be present");
+            // Note: If this assertion fails but the content of the strings *looks* the same
+            // it may be because of hidden unicode LTR character being included in the string.
+            // That's the reason for the previous assert.
+            Assert.Equals(expected, element.Text);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.All, "Not all unicode whitespace characters are trimmed, issue 6072")]
+        public void ShouldTrimTextWithMultiByteWhitespaces()
+        {
+            driver.Url = simpleTestPage;
+            String text = driver.FindElement(By.Id("trimmedSpace")).Text;
+
+            Assert.AreEqual("test", text);
+        }
+
+        [Test]
+        public void CanHandleTextThatLooksLikeANumber()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(
+                new InlinePage().WithBody("<div id='point'>12.345</div>",
+                                          "<div id='comma'>12,345</div>",
+                                          "<div id='space'>12 345</div>"));
+
+            Assert.That(driver.FindElement(By.Id("point")).Text, Is.EqualTo("12.345"));
+            Assert.That(driver.FindElement(By.Id("comma")).Text, Is.EqualTo("12,345"));
+            Assert.That(driver.FindElement(By.Id("space")).Text, Is.EqualTo("12 345"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")]
+        [IgnoreBrowser(Browser.Safari, "getText does not normalize spaces")]
+        public void CanHandleTextTransformProperty()
+        {
+            driver.Url = simpleTestPage;
+            Assert.That(driver.FindElement(By.Id("capitalized")).Text, Is.EqualTo("Hello, World! Bla-Bla-BLA").Or.EqualTo("Hello, World! Bla-bla-BLA"));
+            Assert.That(driver.FindElement(By.Id("lowercased")).Text, Is.EqualTo("hello, world! bla-bla-bla"));
+            Assert.That(driver.FindElement(By.Id("uppercased")).Text, Is.EqualTo("HELLO, WORLD! BLA-BLA-BLA"));
         }
     }
 }

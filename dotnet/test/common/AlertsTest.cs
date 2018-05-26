@@ -253,7 +253,13 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertInANestedFrame()
         {
-            driver.Url = alertsPage;
+            string iframe = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
+            string iframe2 = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithBody(string.Format("<iframe src='{0}' name='iframeWithAlert'></iframe>", iframe)));
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithTitle("Testing Alerts")
+                .WithBody(string.Format("<iframe src='{0}' name='iframeWithIframe'></iframe>", iframe2)));
 
             driver.SwitchTo().Frame("iframeWithIframe").SwitchTo().Frame("iframeWithAlert");
 
@@ -463,6 +469,39 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ShouldHandleAlertOnPageBeforeUnload()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
+            IWebElement element = driver.FindElement(By.Id("navigate"));
+            element.Click();
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
+            alert.Dismiss();
+            Assert.IsTrue(driver.Url.Contains("pageWithOnBeforeUnloadMessage.html"));
+
+            // Can't move forward or even quit the driver
+            // until the alert is accepted.
+            element.Click();
+            alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
+            alert.Accept();
+            WaitFor(() => { return driver.Url.Contains(alertsPage); }, "Browser URL does not contain " + alertsPage);
+            Assert.IsTrue(driver.Url.Contains(alertsPage));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Safari)]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
+        public void ShouldHandleAlertOnPageBeforeUnloadAlertAtQuit()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
+            IWebElement element = driver.FindElement(By.Id("navigate"));
+            element.Click();
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
+            driver.Quit();
+            driver = null;
+        }
+
+        [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
@@ -527,36 +566,19 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
-        public void ShouldHandleOnBeforeUnloadAlert()
+        [IgnoreBrowser(Browser.Safari, "Untested")]
+        [IgnoreBrowser(Browser.Firefox, "Dismissing alert causes entire window to close.")]
+        public void ShouldHandleAlertOnFormSubmit()
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
-            IWebElement element = driver.FindElement(By.Id("navigate"));
-            element.Click();
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-            alert.Dismiss();
-            Assert.IsTrue(driver.Url.Contains("pageWithOnBeforeUnloadMessage.html"));
-
-            // Can't move forward or even quit the driver
-            // until the alert is accepted.
-            element.Click();
-            alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("form_handling_js_submit.html");
+            driver.Url = url;
+            IWebElement element = driver.FindElement(By.Id("theForm"));
+            element.Submit();
+            IAlert alert = driver.SwitchTo().Alert();
+            string text = alert.Text;
             alert.Accept();
-            WaitFor(() => { return driver.Url.Contains(alertsPage); }, "Browser URL does not contain " + alertsPage);
-            Assert.IsTrue(driver.Url.Contains(alertsPage));
-        }
 
-        [Test]
-        [IgnoreBrowser(Browser.Safari)]
-        [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        public void ShouldHandleOnBeforeUnloadAlertAtClose()
-        {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
-            IWebElement element = driver.FindElement(By.Id("navigate"));
-            element.Click();
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-            driver.Quit();
-            driver = null;
+            Assert.AreEqual("Tasty cheese", text);
         }
 
         //------------------------------------------------------------------

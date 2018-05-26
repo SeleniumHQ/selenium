@@ -184,6 +184,22 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Safari)]
+        public void GetCookiesInAFrame()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("animals");
+            Cookie cookie1 = new Cookie("fish", "cod", "/common/animals");
+            driver.Manage().Cookies.AddCookie(cookie1);
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("frameWithAnimals.html");
+            AssertCookieIsNotPresentWithName(cookie1.Name);
+
+            driver.SwitchTo().Frame("iframe1");
+            AssertCookieIsPresentWithName(cookie1.Name);
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.Opera)]
         public void CannotGetCookiesWithPathDifferingOnlyInCase()
         {
@@ -236,7 +252,7 @@ namespace OpenQA.Selenium
             AssertCookieIsNotPresentWithName("name");
 
             Regex replaceRegex = new Regex(".*?\\.");
-            string shorter = replaceRegex.Replace(this.hostname, "", 1);
+            string shorter = replaceRegex.Replace(this.hostname, ".", 1);
             Cookie cookie = new Cookie("name", "value", shorter, "/", GetTimeInTheFuture());
 
             driver.Manage().Cookies.AddCookie(cookie);
@@ -245,7 +261,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore("Cannot run without creating subdomains in test environment")]
+        //[Ignore("Cannot run without creating subdomains in test environment")]
         public void ShouldNotGetCookiesRelatedToCurrentDomainWithoutLeadingPeriod()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -257,9 +273,15 @@ namespace OpenQA.Selenium
             AssertCookieIsNotPresentWithName(cookieName);
 
             Regex replaceRegex = new Regex(".*?\\.");
-            string shorter = replaceRegex.Replace(this.hostname, ".", 1);
-            Cookie cookie = new Cookie(cookieName, "value", shorter, "/", GetTimeInTheFuture());
+            string subdomain = replaceRegex.Replace(this.hostname, "subdomain.", 1);
+            Cookie cookie = new Cookie(cookieName, "value", subdomain, "/", GetTimeInTheFuture());
+
+            string originalUrl = driver.Url;
+            string subdomainUrl = originalUrl.Replace(this.hostname, subdomain);
+            driver.Url = subdomainUrl;
             driver.Manage().Cookies.AddCookie(cookie);
+
+            driver.Url = originalUrl;
             AssertCookieIsNotPresentWithName(cookieName);
         }
 
@@ -453,6 +475,22 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
         [IgnoreBrowser(Browser.Safari, "Untested browser")]
+        public void CanHandleSecureCookie()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
+
+            Cookie addedCookie = new ReturnedCookie("fish", "cod", null, "/common/animals", null, true, false);
+            driver.Manage().Cookies.AddCookie(addedCookie);
+
+            driver.Navigate().Refresh();
+
+            Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
+            Assert.IsNotNull(retrieved);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
+        [IgnoreBrowser(Browser.Safari, "Untested browser")]
         public void ShouldRetainCookieSecure()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
@@ -466,6 +504,24 @@ namespace OpenQA.Selenium
             Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
             Assert.IsNotNull(retrieved);
             Assert.IsTrue(retrieved.Secure);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Safari, "Untested browser")]
+        public void CanHandleHttpOnlyCookie()
+        {
+            StringBuilder url = new StringBuilder(EnvironmentManager.Instance.UrlBuilder.WhereIs("cookie"));
+            url.Append("?action=add");
+            url.Append("&name=").Append("fish");
+            url.Append("&value=").Append("cod");
+            url.Append("&path=").Append("/common/animals");
+            url.Append("&httpOnly=").Append("true");
+
+            driver.Url = url.ToString();
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("animals");
+            Cookie retrieved = driver.Manage().Cookies.GetCookieNamed("fish");
+            Assert.IsNotNull(retrieved);
         }
 
         [Test]
@@ -523,10 +579,53 @@ namespace OpenQA.Selenium
             AssertCookieHasValue(key, value);
         }
 
-        //////////////////////////////////////////////
-        // Tests unique to the .NET language bindings
-        //////////////////////////////////////////////
+        [Test]
+        public void DeleteNotExistedCookie()
+        {
+            String key = GenerateUniqueKey();
+            AssertCookieIsNotPresentWithName(key);
 
+            driver.Manage().Cookies.DeleteCookieNamed(key);
+        }
+
+        [Test]
+        public void DeleteAllCookiesDifferentUrls()
+        {
+            if (!CheckIsOnValidHostNameForCookieTests())
+            {
+                return;
+            }
+
+            Cookie cookie1 = new Cookie("fish1", "cod", EnvironmentManager.Instance.UrlBuilder.HostName, null, null);
+            Cookie cookie2 = new Cookie("fish2", "tune", EnvironmentManager.Instance.UrlBuilder.AlternateHostName, null, null);
+
+            string url1 = EnvironmentManager.Instance.UrlBuilder.WhereIs("");
+            string url2 = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("");
+
+            IOptions options = driver.Manage();
+
+            options.Cookies.AddCookie(cookie1);
+            AssertCookieIsPresentWithName(cookie1.Name);
+
+            driver.Url = url2;
+            options.Cookies.AddCookie(cookie2);
+            AssertCookieIsNotPresentWithName(cookie1.Name);
+            AssertCookieIsPresentWithName(cookie2.Name);
+
+            driver.Url = url1;
+            AssertCookieIsPresentWithName(cookie1.Name);
+            AssertCookieIsNotPresentWithName(cookie2.Name);
+
+            options.Cookies.DeleteAllCookies();
+            AssertCookieIsNotPresentWithName(cookie1.Name);
+
+            driver.Url = url2;
+            AssertCookieIsPresentWithName(cookie2.Name);
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
         [Test]
         [IgnoreBrowser(Browser.Chrome)]
         public void CanSetCookiesOnADifferentPathOfTheSameHost()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Internal;
 
@@ -26,12 +26,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldThrowAnExceptionWhenTheValueIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new ReturnedCookie("name", null, null, null, DateTime.Now, false, false));
-        }
-
-        [Test]
         public void CookiesShouldAllowSecureToBeSet()
         {
             Cookie cookie = new ReturnedCookie("name", "value", "", "/", DateTime.Now, true, false);
@@ -39,10 +33,33 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void SecureDefaultsToFalse()
+        {
+            Cookie cookie = new Cookie("name", "value");
+            Assert.IsFalse(cookie.Secure);
+        }
+
+        [Test]
         public void CookiesShouldAllowHttpOnlyToBeSet()
         {
             Cookie cookie = new ReturnedCookie("name", "value", "", "/", DateTime.Now, false, true);
             Assert.IsTrue(cookie.IsHttpOnly);
+        }
+
+        [Test]
+        public void HttpOnlyDefaultsToFalse()
+        {
+            Cookie cookie = new Cookie("name", "value");
+            Assert.IsFalse(cookie.IsHttpOnly);
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        public void ShouldThrowAnExceptionWhenTheValueIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new ReturnedCookie("name", null, null, null, DateTime.Now, false, false));
         }
 
         [Test]
