@@ -64,7 +64,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         [IgnoreBrowser(Browser.Firefox, "Not yet implemented = https://github.com/mozilla/geckodriver/issues/667")]
         public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
@@ -79,7 +78,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToTypeIntoTinyMCE()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
@@ -94,8 +92,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Chrome, "Prepends text")]
+        [IgnoreBrowser(Browser.IE, "Prepends text")]
         [IgnoreBrowser(Browser.Safari, "Prepends text")]
         [IgnoreBrowser(Browser.Firefox, "Not yet implemented = https://github.com/mozilla/geckodriver/issues/667")]
         public void ShouldAppendToTinyMCE()
@@ -106,11 +104,13 @@ namespace OpenQA.Selenium
             IWebElement editable = driver.FindElement(By.Id("tinymce"));
 
             editable.SendKeys(" and cheese"); // requires focus on OS X
+            WaitFor(() => editable.Text != "Initial content", "Text remained the original text");
 
             Assert.That(editable.Text, Is.EqualTo("Initial content and cheese"));
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Prepends text")]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox, "Doesn't write anything")]
         [IgnoreBrowser(Browser.Safari, "Prepends text")]
@@ -119,6 +119,7 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("content-editable.html");
             IWebElement input = driver.FindElement(By.Id("editable"));
             input.SendKeys(", world!");
+            WaitFor(() => input.Text != "Why hello", "Text remained the original text");
             Assert.AreEqual("Why hello, world!", input.Text);
         }
     }
