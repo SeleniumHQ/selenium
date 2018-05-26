@@ -9,6 +9,15 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.12.0.3
+=========
+ * Refactored IE waiting for page load on click. This commit restores some
+   previously lost functionality for waiting for a page to load on click of
+   an element. The race condition for detecting when a navigation is started
+   is mitigated by a short wait (50ms) on the click.
+ * Made "eager" page load strategy not wait for frame navigation to be
+   completed before returning.
+
 v3.12.0.2
 =========
  * Added log warning for mismatched bitness of driver and browser when
