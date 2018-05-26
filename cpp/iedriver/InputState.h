@@ -31,6 +31,7 @@ struct InputState {
   long mouse_x;
   long mouse_y;
   clock_t last_click_time;
+  std::string error_info;
 };
 
 } // namespace webdriver

@@ -138,8 +138,9 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
             return;
           }
 
+          std::string error_info = "";
           IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-          status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
+          status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions, &error_info);
           browser_wrapper->set_wait_required(true);
           if (status_code != WD_SUCCESS) {
             if (status_code == EELEMENTCLICKPOINTNOTSCROLLED) {

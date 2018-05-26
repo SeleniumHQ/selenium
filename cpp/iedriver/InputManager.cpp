@@ -38,6 +38,7 @@
 
 #define USER_INTERACTION_MUTEX_NAME L"WebDriverUserInteractionMutex"
 #define WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT 100
+#define MOVE_ERROR_TEMPLATE "The requested mouse movement to (%d, %d) would be outside the bounds of the current view port (left: %d, right: %d, top: %d, bottom: %d)"
 
 #define MODIFIER_KEY_SHIFT 1
 #define MODIFIER_KEY_CTRL 2
@@ -60,6 +61,7 @@ InputManager::InputManager() {
   this->current_input_state_.mouse_x = 0;
   this->current_input_state_.mouse_y = 0;
   this->current_input_state_.last_click_time = clock();
+  this->current_input_state_.error_info = "";
 
   this->action_simulator_ = NULL;
 }
@@ -90,7 +92,8 @@ void InputManager::Initialize(InputManagerSettings settings) {
 }
 
 int InputManager::PerformInputSequence(BrowserHandle browser_wrapper,
-                                       const Json::Value& sequences) {
+                                       const Json::Value& sequences,
+                                       std::string* error_info) {
   LOG(TRACE) << "Entering InputManager::PerformInputSequence";
   if (!sequences.isArray()) {
     return EUNHANDLEDERROR;
@@ -134,6 +137,7 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper,
 
       if (status_code != WD_SUCCESS) {
         this->ReleaseMutex(mutex_handle);
+        *error_info = current_input_state.error_info;
         return status_code;
       }
     }
@@ -245,6 +249,7 @@ InputState InputManager::CloneCurrentInputState(void) {
   current_input_state.is_right_button_pressed = this->current_input_state_.is_right_button_pressed;
   current_input_state.mouse_x = this->current_input_state_.mouse_x;
   current_input_state.mouse_y = this->current_input_state_.mouse_y;
+  current_input_state.error_info = this->current_input_state_.error_info;
   return current_input_state;
 }
 
@@ -323,7 +328,8 @@ void InputManager::Reset(BrowserHandle browser_wrapper) {
   }
 
   if (reset_sequence.size() > 0) {
-    this->PerformInputSequence(browser_wrapper, reset_sequence);
+    std::string error_info = "";
+    this->PerformInputSequence(browser_wrapper, reset_sequence, &error_info);
   }
 }
 
@@ -453,6 +459,14 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper,
         click_point.x > window_rect.right ||
         click_point.y < window_rect.top ||
         click_point.y > window_rect.bottom) {
+      input_state->error_info = StringUtilities::Format(MOVE_ERROR_TEMPLATE,
+                                                        end_x,
+                                                        end_y,
+                                                        window_rect.left,
+                                                        window_rect.right,
+                                                        window_rect.top,
+                                                        window_rect.bottom);
+      LOG(WARN) << input_state->error_info;
       return EMOVETARGETOUTOFBOUNDS;
     }
     if (end_x == input_state->mouse_x && end_y == input_state->mouse_y) {
@@ -593,7 +607,7 @@ bool InputManager::IsSingleKey(const std::wstring& input) {
                                              &char_types[0]);
     if (get_type_success) {
       bool found_alpha = false;
-      for (int i = 0; i < char_types.size(); ++i) {
+      for (size_t i = 0; i < char_types.size(); ++i) {
         if (char_types[i] & combining_bitmask) {
           continue;
         }

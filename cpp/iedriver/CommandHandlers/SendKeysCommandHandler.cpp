@@ -265,8 +265,9 @@ void SendKeysCommandHandler::ExecuteInternal(
       if (!this->WaitUntilElementFocused(element)) {
         LOG(WARN) << "Specified element is not the active element. Keystrokes may go to an unexpected DOM element.";
       }
-      
-      status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
+
+      std::string error_info = "";
+      status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions, &error_info);
       response->SetSuccessResponse(Json::Value::null);
       return;
     } else {
