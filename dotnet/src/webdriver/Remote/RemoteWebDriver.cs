@@ -961,7 +961,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The selector with invalid characters escaped.</returns>
         internal static string EscapeCssSelector(string selector)
         {
-            string escaped = Regex.Replace(selector, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+            string escaped = Regex.Replace(selector, @"([ '""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
             if (selector.Length > 0 && char.IsDigit(selector[0]))
             {
                 escaped = @"\" + (30 + int.Parse(selector.Substring(0, 1), CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture) + " " + selector.Substring(1);
