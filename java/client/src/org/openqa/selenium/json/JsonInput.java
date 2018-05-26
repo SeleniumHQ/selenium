@@ -21,6 +21,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
 import java.io.Closeable;
+import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Objects;
@@ -32,8 +33,8 @@ public class JsonInput implements Closeable {
   private volatile JsonTypeCoercer coercer;
   private volatile PropertySetting setter;
 
-  JsonInput(JsonReader jsonReader, JsonTypeCoercer coercer) {
-    this.jsonReader = jsonReader;
+  JsonInput(Reader reader, JsonTypeCoercer coercer) {
+    this.jsonReader = Json.GSON.newJsonReader(reader);
     this.coercer = coercer;
     this.setter = PropertySetting.BY_NAME;
   }

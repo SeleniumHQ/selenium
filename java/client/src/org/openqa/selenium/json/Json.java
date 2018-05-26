@@ -70,7 +70,7 @@ public class Json {
   }
 
   public JsonInput newInput(Reader from) throws UncheckedIOException {
-    return new JsonInput(GSON.newJsonReader(from), fromJson);
+    return new JsonInput(from, fromJson);
   }
 
   public JsonOutput newOutput(Appendable to) throws UncheckedIOException {
