@@ -234,7 +234,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "Firefox-specific test. IE does not report key press event.")]
         public void ShouldReportKeyCodeOfArrowKeys()
         {
             driver.Url = javascriptPage;
@@ -243,16 +242,16 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
             element.SendKeys(Keys.ArrowDown);
-            Assert.AreEqual("down: 40 press: 40 up: 40", result.Text.Trim());
+            CheckRecordedKeySequence(result, 40);
 
             element.SendKeys(Keys.ArrowUp);
-            Assert.AreEqual("down: 38 press: 38 up: 38", result.Text.Trim());
+            CheckRecordedKeySequence(result, 38);
 
             element.SendKeys(Keys.ArrowLeft);
-            Assert.AreEqual("down: 37 press: 37 up: 37", result.Text.Trim());
+            CheckRecordedKeySequence(result, 37);
 
             element.SendKeys(Keys.ArrowRight);
-            Assert.AreEqual("down: 39 press: 39 up: 39", result.Text.Trim());
+            CheckRecordedKeySequence(result, 39);
 
             // And leave no rubbish/printable keys in the "keyReporter"
             Assert.AreEqual(string.Empty, element.GetAttribute("value"));
@@ -601,7 +600,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 allows typing into elements that prevent keydown")]
         public void ShouldNotTypeIntoElementsThatPreventKeyDownEvents()
         {
             driver.Url = javascriptPage;
@@ -675,7 +673,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented")]
         public void CanClearNumberInputAfterTypingInvalidInput()
         {
             driver.Url = formsPage;
@@ -692,7 +689,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -717,7 +713,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver 2 does not support contentEditable")]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver prepends text in contentEditable")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -746,7 +742,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
         public void ShouldBeAbleToTypeIntoEmptyContentEditableElement()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -764,8 +759,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
-        [IgnoreBrowser(Browser.IE, "IE places cursor at beginning of content")]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver prepends text")]
         public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -783,7 +777,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Untested browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldBeAbleToTypeIntoTinyMCE()
         {
@@ -802,6 +795,13 @@ namespace OpenQA.Selenium
         {
             // Standardize on \n and strip any trailing whitespace.
             return el.GetAttribute("value").Replace("\r\n", "\n").Trim();
+        }
+
+        private void CheckRecordedKeySequence(IWebElement element, int expectedKeyCode)
+        {
+            string withKeyPress = string.Format("down: {0} press: {0} up: {0}", expectedKeyCode);
+            string withoutKeyPress = string.Format("down: {0} up: {0}", expectedKeyCode);
+            Assert.That(element.Text.Trim(), Is.AnyOf(withKeyPress, withoutKeyPress));
         }
     }
 }

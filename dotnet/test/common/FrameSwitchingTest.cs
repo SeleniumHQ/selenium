@@ -152,7 +152,8 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
 
-            driver.SwitchTo().Frame("second");
+            IWebElement frameElement = WaitFor(() => driver.FindElement(By.Name("second")), "did not find frame");
+            driver.SwitchTo().Frame(frameElement);
             Assert.AreEqual("2", driver.FindElement(By.Id("pageNumber")).Text);
 
             try
@@ -531,14 +532,6 @@ namespace OpenQA.Selenium
         // Frame handling behavior tests not included in Java tests
         //
         // ----------------------------------------------------------------------------------------------
-
-        [Test]
-        [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        public void ClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown()
-        {
-            driver.Url = simpleTestPage;
-            driver.Close();
-        }
 
         [Test]
         public void ShouldBeAbleToFlipToAFrameIdentifiedByItsId()

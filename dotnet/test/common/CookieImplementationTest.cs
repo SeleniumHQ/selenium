@@ -732,7 +732,7 @@ namespace OpenQA.Selenium
             driver.Url = macbethPage;
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("Bart", "Simpson", EnvironmentManager.Instance.UrlBuilder.HostName + ".com", EnvironmentManager.Instance.UrlBuilder.Path, null);
-            Assert.That(() => options.Cookies.AddCookie(cookie), Throws.InstanceOf<WebDriverException>());
+            Assert.That(() => options.Cookies.AddCookie(cookie), Throws.InstanceOf<WebDriverException>().Or.InstanceOf<InvalidOperationException>());
             ReadOnlyCollection<Cookie> cookies = options.Cookies.AllCookies;
             Assert.IsFalse(cookies.Contains(cookie), "Invalid cookie was returned");
         }
