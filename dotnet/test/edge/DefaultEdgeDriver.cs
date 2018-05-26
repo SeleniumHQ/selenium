@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Edge
 {
-    public class SpecCompliantEdgeDriver : EdgeDriver
+    public class DefaultEdgeDriver : EdgeDriver
     {
-        public SpecCompliantEdgeDriver()
+        public DefaultEdgeDriver()
             : this(DefaultService, new EdgeOptions())
         {
         }
 
-        public SpecCompliantEdgeDriver(EdgeDriverService service, EdgeOptions options)
+        public DefaultEdgeDriver(EdgeDriverService service, EdgeOptions options)
             : base(service, options)
         {
         }
@@ -23,7 +23,6 @@ namespace OpenQA.Selenium.Edge
             get
             {
                 EdgeDriverService service = EdgeDriverService.CreateDefaultService();
-                service.UseSpecCompliantProtocol = true;
                 return service;
             }
         }

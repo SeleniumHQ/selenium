@@ -8,8 +8,18 @@ namespace OpenQA.Selenium.Firefox
     public class ReleaseFirefoxWebDriver : FirefoxDriver
     {
         public ReleaseFirefoxWebDriver(FirefoxDriverService service)
-            : base(service, new FirefoxOptions() { BrowserExecutableLocation = @"C:\Program Files\Mozilla Firefox\firefox.exe" }, RemoteWebDriver.DefaultCommandTimeout)
+            : this(service, DefaultOptions)
         {
+        }
+
+        public ReleaseFirefoxWebDriver(FirefoxDriverService service, FirefoxOptions options)
+            : base(service, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        public static FirefoxOptions DefaultOptions
+        {
+            get { return new FirefoxOptions() { BrowserExecutableLocation = @"\Program Files\Mozilla Firefox\firefox.exe" }; }
         }
     }
 }
