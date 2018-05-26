@@ -7,7 +7,6 @@ namespace OpenQA.Selenium
     public class CssValueTest : DriverTestFixture
     {
         [Test]
-        [Category("Javascript")]
         public void ShouldPickUpStyleOfAnElement()
         {
             driver.Url = javascriptPage;
@@ -38,7 +37,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldAllowInheritedStylesToBeUsed()
         {

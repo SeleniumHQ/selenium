@@ -24,7 +24,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         public void ShouldGetCookieByName()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -40,7 +39,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         public void ShouldBeAbleToAddCookie()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -91,7 +89,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         public void DeleteAllCookies()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -108,7 +105,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         public void DeleteCookieWithName()
         {
             if (!CheckIsOnValidHostNameForCookieTests())

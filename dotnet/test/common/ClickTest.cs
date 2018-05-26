@@ -37,7 +37,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void CanClickOnAnAnchorAndNotReloadThePage()
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("document.latch = true");
@@ -61,7 +60,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ElementsFoundByJsCanLoadUpdatesInAnotherFrame()
         {
             driver.SwitchTo().Frame("source");
@@ -74,7 +72,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void JsLocatedElementsCanUpdateFramesIfFoundSomehowElse()
         {
             driver.SwitchTo().Frame("source");
@@ -91,7 +88,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
+        
         public void CanClickOnAnElementWithTopSetToANegativeNumber()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("styledPage.html");
@@ -104,7 +101,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldSetRelatedTargetForMouseOver()
         {
@@ -136,7 +132,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.Edge, "Hangs browser")]

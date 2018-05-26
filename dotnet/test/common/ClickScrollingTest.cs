@@ -9,7 +9,6 @@ namespace OpenQA.Selenium
     public class ClickScrollingTest : DriverTestFixture
     {
         [Test]
-        [Category("JavaScript")]
         public void ClickingOnAnchorScrollsPage()
         {
             string scrollScript = "var pageY;";
@@ -233,7 +232,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         public void ShouldNotScrollWhenGettingElementSize()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");

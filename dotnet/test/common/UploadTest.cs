@@ -27,7 +27,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldAllowFileUploading()
         {
             driver.Url = uploadPage;
@@ -90,7 +89,6 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [Category("Javascript")]
         public void ShouldAllowFileUploadingUsingTransparentUploadElement()
         {
             if (TestUtilities.IsMarionette(driver))

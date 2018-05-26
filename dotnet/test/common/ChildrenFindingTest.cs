@@ -231,7 +231,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToFindAnElementByCssSelector()
         {
             driver.Url = nestedPage;
@@ -254,7 +253,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToFindElementsByCssSelector()
         {
             driver.Url = nestedPage;

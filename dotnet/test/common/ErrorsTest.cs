@@ -12,7 +12,6 @@ namespace OpenQA.Selenium
         /// handler (e.g. Internet Explorer).
         /// </summary>
         [Test]
-        [Category("JavaScript")]
         public void ShouldNotGenerateErrorsWhenOpeningANewPage()
         {
             driver.Url = errorsPage;

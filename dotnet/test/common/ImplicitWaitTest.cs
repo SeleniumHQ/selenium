@@ -15,7 +15,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         public void ShouldImplicitlyWaitForASingleElement()
         {
             driver.Url = dynamicPage;
@@ -28,7 +27,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         public void ShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled()
         {
             driver.Url = dynamicPage;
@@ -37,7 +35,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [NeedsFreshDriver]
         public void ShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits()
         {
@@ -48,7 +45,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [NeedsFreshDriver]
         public void ShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany()
         {
@@ -64,7 +60,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [NeedsFreshDriver]
         public void ShouldStillFailToFindElementsWhenImplicitWaitsAreEnabled()
         {
@@ -76,7 +71,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [NeedsFreshDriver]
         public void ShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits()
         {

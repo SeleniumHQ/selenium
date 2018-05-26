@@ -11,7 +11,6 @@ namespace OpenQA.Selenium
     public class AlertsTest : DriverTestFixture
     {
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToOverrideTheWindowAlertMethod()
         {
@@ -23,7 +22,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowUsersToAcceptAnAlertManually()
         {
@@ -56,7 +54,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         public void ShouldAllowUsersToAcceptAnAlertWithNoTextManually()
         {
             driver.Url = alertsPage;
@@ -71,7 +68,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.IE, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         [IgnoreBrowser(Browser.Chrome)]
 		[IgnoreBrowser(Browser.Safari)]
@@ -96,7 +92,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowUsersToDismissAnAlertManually()
         {
@@ -112,7 +107,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowAUserToAcceptAPrompt()
         {
@@ -128,7 +122,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowAUserToDismissAPrompt()
         {
@@ -144,7 +137,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowAUserToSetTheValueOfAPrompt()
         {
@@ -161,7 +153,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not throw when setting the text of an alert")]
         [IgnoreBrowser(Browser.Remote)]
         public void SettingTheValueOfAnAlertThrows()
@@ -186,7 +177,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowTheUserToGetTheTextOfAnAlert()
         {
@@ -231,7 +221,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertInAFrame()
@@ -249,7 +238,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertInANestedFrame()
         {
@@ -273,7 +261,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Remote)]
         public void SwitchingToMissingAlertThrows()
         {
@@ -283,7 +270,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Chrome, "Issue 2764")]
         [IgnoreBrowser(Browser.Remote)]
         public void SwitchingToMissingAlertInAClosedWindowThrows()
@@ -317,7 +303,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
+        
         [IgnoreBrowser(Browser.Remote)]
         public void PromptShouldUseDefaultValueIfNoKeysSent()
         {
@@ -333,7 +319,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Remote)]
         public void PromptShouldHaveNullValueIfDismissed()
         {
@@ -348,7 +333,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Edge, "Hangs browser")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
@@ -374,7 +358,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         public void ShouldHandleAlertOnPageLoad()
         {
             driver.Url = alertsPage;
@@ -391,7 +374,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
+        
         public void ShouldHandleAlertOnPageLoadUsingGet()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnLoad.html");
@@ -405,7 +388,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Firefox, "Firefox waits too long, may be hangs")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Safari)]
@@ -447,7 +429,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
 		[IgnoreBrowser(Browser.Chrome)]
 		[IgnoreBrowser(Browser.Safari)]
@@ -502,7 +483,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnWindowClose()
@@ -532,7 +512,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Opera)]
@@ -628,7 +607,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
@@ -646,7 +624,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
@@ -662,7 +639,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]

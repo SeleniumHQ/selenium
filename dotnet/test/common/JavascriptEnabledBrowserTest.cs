@@ -9,7 +9,6 @@ namespace OpenQA.Selenium
     public class JavascriptEnabledBrowserTest : DriverTestFixture
     {
         [Test]
-        [Category("Javascript")]
         public void DocumentShouldReflectLatestTitle()
         {
             driver.Url = javascriptPage;
@@ -20,7 +19,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void DocumentShouldReflectLatestDom()
         {
             driver.Url = javascriptPage;
@@ -35,7 +33,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad()
         {
             driver.Url = formsPage;
@@ -46,7 +43,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
         {
             driver.Url = formsPage;
@@ -58,7 +54,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldFireOnChangeEventWhenSettingAnElementsValue()
         {
             driver.Url = javascriptPage;
@@ -69,7 +64,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire()
         {
             driver.Url = javascriptPage;
@@ -81,7 +75,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToClickOnSubmitButtons()
         {
             driver.Url = javascriptPage;
@@ -93,7 +86,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void Issue80ClickShouldGenerateClickEvent()
         {
             driver.Url = javascriptPage;
@@ -106,7 +98,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToSwitchToFocusedElement()
         {
             driver.Url = javascriptPage;
@@ -118,7 +109,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void IfNoElementHasFocusTheActiveElementIsTheBody()
         {
             driver.Url = simpleTestPage;
@@ -129,7 +119,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.Firefox, "Window demands focus to work.")]
         public void ChangeEventIsFiredAppropriatelyWhenFocusIsLost()
         {
@@ -160,7 +149,6 @@ namespace OpenQA.Selenium
          * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.
          */
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToClickIfEvenSomethingHorribleHappens()
         {
             driver.Url = javascriptPage;
@@ -174,7 +162,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToGetTheLocationOfAnElement()
         {
             driver.Url = javascriptPage;
@@ -199,7 +186,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldBeAbleToClickALinkThatClosesAWindow()

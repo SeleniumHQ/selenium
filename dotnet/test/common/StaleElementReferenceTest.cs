@@ -16,7 +16,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement()
         {
             driver.Url = simpleTestPage;
@@ -26,7 +25,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldNotCrashWhenQueryingTheAttributeOfAStaleElement()
         {
             driver.Url = xhtmlTestPage;

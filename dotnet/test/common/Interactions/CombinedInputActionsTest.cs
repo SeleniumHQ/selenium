@@ -334,7 +334,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void CanClickOnSuckerFishStyleMenu()
         {
@@ -365,7 +364,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
         public void CanClickOnSuckerFishMenuItem()
         {
             driver.Url = javascriptPage;

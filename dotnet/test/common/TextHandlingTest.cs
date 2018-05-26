@@ -278,7 +278,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldOnlyIncludeVisibleText()
         {
             driver.Url = javascriptPage;
@@ -330,7 +329,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "Fails on IE")]
         public void TextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue()
         {

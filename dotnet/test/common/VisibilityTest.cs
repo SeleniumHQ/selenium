@@ -10,7 +10,6 @@ namespace OpenQA.Selenium
     public class VisibilityTest : DriverTestFixture
     {
         [Test]
-        [Category("Javascript")]
         public void ShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot()
         {
             driver.Url = javascriptPage;
@@ -22,7 +21,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void VisibilityShouldTakeIntoAccountParentVisibility()
         {
             driver.Url = javascriptPage;
@@ -35,7 +33,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldCountElementsAsVisibleIfStylePropertyHasBeenSet()
         {
             driver.Url = javascriptPage;
@@ -46,7 +43,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldModifyTheVisibilityOfAnElementDynamically()
         {
             driver.Url = javascriptPage;
@@ -61,7 +57,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void HiddenInputElementsAreNeverVisible()
         {
             driver.Url = javascriptPage;
@@ -72,7 +67,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed()
         {
             driver.Url = javascriptPage;
@@ -81,7 +75,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldNotBeAbleToTypeAnElementThatIsNotDisplayed()
         {
             driver.Url = javascriptPage;
@@ -92,7 +85,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ZeroSizedDivIsShownIfDescendantHasSize()
         {
             driver.Url = javascriptPage;
@@ -270,7 +262,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldBeAbleToSelectOptionsFromAnInvisibleSelect()
         {
@@ -291,7 +282,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void CorrectlyDetectMapElementsAreShown()
         {
             driver.Url = mapVisibilityPage;
@@ -306,7 +296,6 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [Category("Javascript")]
         public void ShouldNotBeAbleToSelectAnElementThatIsNotDisplayed()
         {
             driver.Url = javascriptPage;

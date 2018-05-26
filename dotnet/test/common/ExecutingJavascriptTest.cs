@@ -9,7 +9,6 @@ namespace OpenQA.Selenium
     public class ExecutingJavascriptTest : DriverTestFixture
     {
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAString()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -24,7 +23,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnALong()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -39,7 +37,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -54,7 +51,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -70,7 +66,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringArray()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -90,7 +85,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -112,7 +106,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -139,7 +132,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -194,7 +186,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void PassingAndReturningALongShouldReturnAWholeNumber()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -210,7 +201,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void PassingAndReturningADoubleShouldReturnADecimal()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -226,7 +216,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldThrowAnExceptionWhenTheJavascriptIsBad()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -254,7 +243,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToCallFunctionsDefinedOnThePage()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -268,7 +256,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassAStringAsAnArgument()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -281,7 +268,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassABooleanAsAnArgument()
         {
 
@@ -300,7 +286,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassANumberAsAnArgument()
         {
             string functionTemplate = "return arguments[0] == {0} ? {0} : 0;";
@@ -328,7 +313,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldBeAbleToPassAWebElementAsArgument()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -342,7 +327,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void PassingArrayAsOnlyArgumentShouldFlattenArray()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -357,7 +341,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassAnArrayAsAdditionalArgument()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -372,7 +355,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassACollectionAsArgument()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -400,7 +382,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassInMoreThanOneArgument()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -415,7 +396,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -446,7 +426,6 @@ namespace OpenQA.Selenium
         //}
 
         [Test]
-        [Category("Javascript")]
         public void JavascriptStringHandlingShouldWorkAsExpected()
         {
             driver.Url = javascriptPage;
@@ -462,7 +441,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToExecuteABigChunkOfJavascriptCode()
         {
             driver.Url = javascriptPage;
@@ -477,7 +455,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToExecuteScriptAndReturnElementsList()
         {
             driver.Url = formsPage;
@@ -491,7 +468,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToCreateAPersistentValue()
         {
             driver.Url = formsPage;
@@ -636,7 +612,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldBeAbleToPassMoreThanOneStringAsArguments()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -649,7 +625,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassMoreThanOneBooleanAsArguments()
         {
 
@@ -674,7 +649,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassMoreThanOneNumberAsArguments()
         {
             string function = "return arguments[0]+arguments[1];";
@@ -699,7 +673,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassADoubleAsAnArgument()
         {
             string function = "return arguments[0];";
@@ -729,7 +702,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassMoreThanOneDoubleAsArguments()
         {
             String function = "return arguments[0]+arguments[1];";
@@ -754,7 +726,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassMoreThanOneWebElementAsArguments()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -769,7 +740,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassInMixedArguments()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -790,7 +760,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToPassInAndRetrieveDates()
         {
             string function = "displayMessage(arguments[0]);";

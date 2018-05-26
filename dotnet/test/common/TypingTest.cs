@@ -8,7 +8,6 @@ namespace OpenQA.Selenium
     public class TypingTest : DriverTestFixture
     {
         [Test]
-        [Category("Javascript")]
         public void ShouldFireKeyPressEvents()
         {
             driver.Url = javascriptPage;
@@ -22,7 +21,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldFireKeyDownEvents()
         {
             driver.Url = javascriptPage;
@@ -36,7 +34,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldFireKeyUpEvents()
         {
             driver.Url = javascriptPage;
@@ -111,7 +108,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ArrowKeysShouldNotBePrintable()
         {
             driver.Url = javascriptPage;
@@ -134,7 +130,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void WillSimulateAKeyUpWhenEnteringTextIntoInputElements()
         {
             driver.Url = javascriptPage;
@@ -147,7 +142,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void WillSimulateAKeyDownWhenEnteringTextIntoInputElements()
         {
             driver.Url = javascriptPage;
@@ -162,7 +156,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void WillSimulateAKeyPressWhenEnteringTextIntoInputElements()
         {
             driver.Url = javascriptPage;
@@ -177,7 +170,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void WillSimulateAKeyUpWhenEnteringTextIntoTextAreas()
         {
             driver.Url = javascriptPage;
@@ -190,7 +182,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void WillSimulateAKeyDownWhenEnteringTextIntoTextAreas()
         {
             driver.Url = javascriptPage;
@@ -205,7 +196,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void WillSimulateAKeyPressWhenEnteringTextIntoTextAreas()
         {
             driver.Url = javascriptPage;
@@ -220,7 +210,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldFireFocusKeyEventsInTheRightOrder()
         {
             driver.Url = javascriptPage;
@@ -233,7 +222,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldReportKeyCodeOfArrowKeys()
         {
             driver.Url = javascriptPage;
@@ -258,7 +246,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldReportKeyCodeOfArrowKeysUpDownEvents()
         {
             driver.Url = javascriptPage;
@@ -291,7 +278,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void NumericNonShiftKeys()
         {
             driver.Url = javascriptPage;
@@ -305,7 +291,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void NumericShiftKeys()
         {
             driver.Url = javascriptPage;
@@ -322,7 +307,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void LowerCaseAlphaKeys()
         {
             driver.Url = javascriptPage;
@@ -336,7 +320,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void UppercaseAlphaKeys()
         {
             driver.Url = javascriptPage;
@@ -353,7 +336,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void AllPrintableKeys()
         {
             driver.Url = javascriptPage;
@@ -384,7 +366,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void HomeAndEndAndPageUpAndPageDownKeys()
         {
             // FIXME: macs don't have HOME keys, would PGUP work?
@@ -404,7 +385,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void DeleteAndBackspaceKeys()
         {
             driver.Url = javascriptPage;
@@ -422,7 +402,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void SpecialSpaceKeys()
         {
             driver.Url = javascriptPage;
@@ -434,7 +413,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void NumberpadKeys()
         {
             driver.Url = javascriptPage;
@@ -449,7 +427,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void FunctionKeys()
         {
             driver.Url = javascriptPage;
@@ -462,7 +439,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShiftSelectionDeletes()
         {
             driver.Url = javascriptPage;
@@ -479,7 +455,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ChordControlHomeShiftEndDelete()
         {
             // FIXME: macs don't have HOME keys, would PGUP work?
@@ -504,7 +479,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ChordReveseShiftHomeSelectionDeletes()
         {
             // FIXME: macs don't have HOME keys, would PGUP work?
@@ -541,7 +515,6 @@ namespace OpenQA.Selenium
         // and linux, but not on the MAC.
 
         [Test]
-        [Category("Javascript")]
         public void ChordControlCutAndPaste()
         {
             // FIXME: macs don't have HOME keys, would PGUP work?
@@ -587,7 +560,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldTypeIntoInputElementsThatHaveNoTypeAttribute()
         {
             driver.Url = formsPage;
@@ -599,7 +571,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldNotTypeIntoElementsThatPreventKeyDownEvents()
         {
             driver.Url = javascriptPage;
@@ -611,7 +582,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void GenerateKeyPressEventEvenWhenElementPreventsDefault()
         {
             driver.Url = javascriptPage;
@@ -687,7 +657,6 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
@@ -711,7 +680,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver prepends text in contentEditable")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()

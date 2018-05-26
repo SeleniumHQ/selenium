@@ -233,7 +233,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void ShouldAllowUsersToHoverOverElements()
@@ -289,7 +288,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MovingMouseByRelativeOffset()
         {
@@ -308,7 +306,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MovingMouseToRelativeElementOffset()
         {
@@ -336,7 +333,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MoveRelativeToBody()

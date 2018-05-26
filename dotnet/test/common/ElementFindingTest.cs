@@ -1009,7 +1009,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToClickOnLinksWithNoHrefAttribute()
         {
             driver.Url = javascriptPage;
@@ -1022,7 +1021,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void RemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException()
         {
             driver.Url = javascriptPage;

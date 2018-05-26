@@ -8,7 +8,6 @@ namespace OpenQA.Selenium
     public class PositionAndSizeTest : DriverTestFixture
     {
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToDetermineTheLocationOfAnElement()
         {
             driver.Url = xhtmlTestPage;
@@ -121,7 +120,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldCorrectlyIdentifyThatAnElementHasWidthAndHeight()
         {
             driver.Url = xhtmlTestPage;
@@ -133,7 +131,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Chrome, "WebKit bug 28804")]
         [IgnoreBrowser(Browser.IE, "Position and size are always integer in IE")]
@@ -158,7 +155,6 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToDetermineTheSizeOfAnElement()
         {
             driver.Url = xhtmlTestPage;

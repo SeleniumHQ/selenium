@@ -228,7 +228,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void CanCallGetWindowHandlesAfterClosingAWindow()
         {
             bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
@@ -441,7 +440,6 @@ namespace OpenQA.Selenium
             Assert.IsFalse(handles.Contains(handle2), "Invalid handle still in handle list");
             Assert.IsTrue(handles.Contains(handle1), "Valid handle not in handle list");
         }
-
 
         private void SleepBecauseWindowsTakeTimeToOpen()
         {
