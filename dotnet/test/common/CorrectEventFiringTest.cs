@@ -48,7 +48,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldFireClickEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -59,7 +59,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldFireMouseDownEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -70,7 +70,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldFireMouseUpEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -81,7 +81,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldFireMouseOverEventWhenClicking()
         {
             driver.Url = javascriptPage;
@@ -92,7 +92,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         [IgnoreBrowser(Browser.Firefox, "Firefox does not report mouse move event when clicking")]
         public void ShouldFireMouseMoveEventWhenClicking()
         {
@@ -111,7 +111,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldNotThrowIfEventHandlerThrows()
         {
             driver.Url = javascriptPage;
@@ -119,7 +119,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldFireEventsInTheRightOrder()
         {
             driver.Url = javascriptPage;
@@ -141,7 +141,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldIssueMouseDownEvents()
         {
             driver.Url = javascriptPage;
@@ -152,7 +152,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldIssueClickEvents()
         {
             driver.Url = javascriptPage;
@@ -163,7 +163,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldIssueMouseUpEvents()
         {
             driver.Url = javascriptPage;
@@ -174,7 +174,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void MouseEventsShouldBubbleUpToContainingElements()
         {
             driver.Url = javascriptPage;
@@ -185,7 +185,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldEmitOnChangeEventsWhenSelectingElements()
         {
             driver.Url = javascriptPage;
@@ -204,7 +204,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldEmitOnClickEventsWhenSelectingElements()
         {
             driver.Url = javascriptPage;
@@ -221,7 +221,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         [IgnoreBrowser(Browser.IE, "IE does not fire change event when clicking on checkbox")]
         public void ShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox()
         {
@@ -233,7 +233,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldEmitClickEventWhenClickingOnATextInputElement()
         {
             driver.Url = javascriptPage;
@@ -245,7 +245,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldFireTwoClickEventsWhenClickingOnALabel()
         {
             driver.Url = javascriptPage;
@@ -258,7 +258,7 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        [Category("Javascript")]
+        
         public void ClearingAnElementShouldCauseTheOnChangeHandlerToFire()
         {
             driver.Url = javascriptPage;
@@ -271,7 +271,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFire()
         {
             driver.Url = javascriptPage;
@@ -322,7 +322,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void SendingKeysToAnElementShouldCauseTheFocusEventToFire()
         {
             driver.Url = javascriptPage;
@@ -332,7 +332,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void SendingKeysToAFocusedElementShouldNotBlurThatElement()
         {
             driver.Url = javascriptPage;
@@ -393,7 +393,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void SubmittingFormFromFormElementShouldFireOnSubmitForThatForm()
         {
             driver.Url = javascriptPage;
@@ -403,7 +403,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void SubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm()
         {
             driver.Url = javascriptPage;
@@ -413,7 +413,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void SubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput()
         {
             driver.Url = javascriptPage;
@@ -424,7 +424,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void UploadingFileShouldFireOnChangeEvent()
         {
             driver.Url = formsPage;
@@ -447,7 +447,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        
         public void ShouldReportTheXAndYCoordinatesWhenClicking()
         {
             driver.Url = clickEventPage;

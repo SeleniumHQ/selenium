@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Environment
 
             if (!string.IsNullOrEmpty(this.onBeforeUnload))
             {
-                builder.AppendFormat(" onbeforeunload=\"{0}\"", this.onBeforeUnload);
+                builder.AppendFormat(" onbeforeunload='{0}'", this.onBeforeUnload);
             }
 
             builder.Append(">");

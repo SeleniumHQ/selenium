@@ -111,6 +111,11 @@ namespace OpenQA.Selenium.Environment
                 responseString = responseString.Substring(0, responseString.IndexOf('\0'));
             }
 
+            if (responseString.Contains("localhost"))
+            {
+                responseString = responseString.Replace("localhost", this.hostName);
+            }
+
             return responseString;
         }
     }
