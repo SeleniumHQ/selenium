@@ -43,6 +43,11 @@
 
 namespace webdriver {
 
+struct WaitThreadContext {
+  HWND window_handle;
+  LPSTR deferred_response;
+};
+
 LRESULT IECommandExecutor::OnCreate(UINT uMsg,
                                     WPARAM wParam,
                                     LPARAM lParam,
@@ -174,6 +179,10 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
                                   BOOL& bHandled) {
   LOG(TRACE) << "Entering IECommandExecutor::OnWait";
 
+  LPCSTR str = reinterpret_cast<LPCSTR>(lParam);
+  std::string deferred_response(str);
+  delete[] str;
+
   BrowserHandle browser;
   int status_code = this->GetCurrentBrowser(&browser);
   if (status_code == WD_SUCCESS && !browser->is_closing()) {
@@ -186,27 +195,14 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
     } else {
       this->is_waiting_ = !(browser->Wait(this->page_load_strategy_));
       if (this->is_waiting_) {
-        // If we are still waiting, we need to wait a bit then post a message to
-        // ourselves to run the wait again. However, we can't wait using Sleep()
-        // on this thread. This call happens in a message loop, and we would be 
-        // unable to process the COM events in the browser if we put this thread
-        // to sleep.
-        unsigned int thread_id = 0;
-        HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
-                                                        0,
-                                                        &IECommandExecutor::WaitThreadProc,
-                                                        (void *)this->m_hWnd,
-                                                        0,
-                                                        &thread_id));
-        if (thread_handle != NULL) {
-          ::CloseHandle(thread_handle);
-        } else {
-          LOGERR(DEBUG) << "Unable to create waiter thread";
-        }
+        this->CreateWaitThread(deferred_response);
+      } else {
+        this->serialized_response_ = deferred_response;
       }
     }
   } else {
     this->is_waiting_ = false;
+    this->serialized_response_ = deferred_response;
   }
   return 0;
 }
@@ -514,9 +510,22 @@ LRESULT IECommandExecutor::OnScheduleRemoveManagedElement(UINT uMsg,
 
 unsigned int WINAPI IECommandExecutor::WaitThreadProc(LPVOID lpParameter) {
   LOG(TRACE) << "Entering IECommandExecutor::WaitThreadProc";
-  HWND window_handle = reinterpret_cast<HWND>(lpParameter);
+  WaitThreadContext* thread_context = reinterpret_cast<WaitThreadContext*>(lpParameter);
+  HWND window_handle = thread_context->window_handle;
+  std::string deferred_response(thread_context->deferred_response);
+  delete thread_context->deferred_response;
+  delete thread_context;
+
+  LPSTR message_payload = new CHAR[deferred_response.size() + 1];
+  strcpy_s(message_payload,
+           deferred_response.size() + 1,
+           deferred_response.c_str());
+
   ::Sleep(WAIT_TIME_IN_MILLISECONDS);
-  ::PostMessage(window_handle, WD_WAIT, NULL, NULL);
+  ::PostMessage(window_handle,
+                WD_WAIT,
+                NULL,
+                reinterpret_cast<LPARAM>(message_payload));
   return 0;
 }
 
@@ -665,7 +674,10 @@ void IECommandExecutor::DispatchCommand() {
         if (this->page_load_timeout_ >= 0) {
           this->wait_timeout_ = clock() + (static_cast<int>(this->page_load_timeout_) / 1000 * CLOCKS_PER_SEC);
         }
-        ::PostMessage(this->m_hWnd, WD_WAIT, NULL, NULL);
+        std::string deferred_response = response.Serialize();
+        LOG(DEBUG) << "Command handler requested wait. This will cause a minimal wait of at least 50 milliseconds.";
+        this->CreateWaitThread(deferred_response);
+        return;
       } else if (browser->script_executor_handle() != NULL) {
         // Case 2: There is a pending asynchronous JavaScript execution in
         // progress, so the executor must wait for the script to complete
@@ -674,12 +686,14 @@ void IECommandExecutor::DispatchCommand() {
         if (this->async_script_timeout_ >= 0) {
           this->wait_timeout_ = clock() + (static_cast<int>(this->async_script_timeout_) / 1000 * CLOCKS_PER_SEC);
         }
+        LOG(DEBUG) << "Awaiting completion of in-progress asynchronous JavaScript execution.";
         ::PostMessage(this->m_hWnd, WD_SCRIPT_WAIT, NULL, NULL);
         return;
       } else if (browser->is_closing()) {
         // Case 3: The browser window is closing, so the executor must
         // wait for the browser window to be closed and removed from the
         // list of managed browser windows.
+        LOG(DEBUG) << "Browser is closing; awaiting close.";
         this->is_waiting_ = true;
         return;
       }
@@ -691,6 +705,34 @@ void IECommandExecutor::DispatchCommand() {
   }
 
   this->serialized_response_ = response.Serialize();
+}
+
+void IECommandExecutor::CreateWaitThread(const std::string& deferred_response) {
+  // If we are still waiting, we need to wait a bit then post a message to
+  // ourselves to run the wait again. However, we can't wait using Sleep()
+  // on this thread. This call happens in a message loop, and we would be
+  // unable to process the COM events in the browser if we put this thread
+  // to sleep.
+  WaitThreadContext* thread_context = new WaitThreadContext;
+  thread_context->window_handle = this->m_hWnd;
+  thread_context->deferred_response = new CHAR[deferred_response.size() + 1];
+  strcpy_s(thread_context->deferred_response,
+           deferred_response.size() + 1,
+           deferred_response.c_str());
+
+  unsigned int thread_id = 0;
+  HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
+                                                                 0,
+                                                                 &IECommandExecutor::WaitThreadProc,
+                                                                 reinterpret_cast<void*>(thread_context),
+                                                                 0,
+                                                                 &thread_id));
+  if (thread_handle != NULL) {
+    ::CloseHandle(thread_handle);
+  }
+  else {
+    LOGERR(DEBUG) << "Unable to create waiter thread";
+  }
 }
 
 bool IECommandExecutor::IsAlertActive(BrowserHandle browser, HWND* alert_handle) {
