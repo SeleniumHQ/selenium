@@ -1,11 +1,18 @@
 {
   "DriverServiceLocation":  "",
   "ActiveDriverConfig": "Chrome",
-  "ActiveWebsiteConfig": "Default",
+  "ActiveWebsiteConfig": "HostsFileRedirect",
   "WebsiteConfigs": {
     "Default": {
       "Protocol": "http",
       "HostName": "localhost",
+      "Port": "2310",
+      "SecurePort": "2410",
+      "Folder": "common"
+    },
+    "HostsFileRedirect": {
+      "Protocol": "http",
+      "HostName": "www.seleniumhq-test.test",
       "Port": "2310",
       "SecurePort": "2410",
       "Folder": "common"
@@ -27,15 +34,15 @@
     },
 
     "IE": {
-      "DriverTypeName": "OpenQA.Selenium.IE.InternetExplorerDriver",
-      "AssemblyName": "WebDriver",
+      "DriverTypeName": "OpenQA.Selenium.IE.WindowFocusInternetExplorerDriver",
+      "AssemblyName": "WebDriver.IE.Tests",
       "BrowserValue": "IE",
       "RemoteCapabilities": "internet explorer"
     },
 
     "Edge": {
-      "DriverTypeName": "OpenQA.Selenium.Edge.EdgeDriver",
-      "AssemblyName": "WebDriver",
+      "DriverTypeName": "OpenQA.Selenium.Edge.DefaultEdgeDriver",
+      "AssemblyName": "WebDriver.Edge.Tests",
       "BrowserValue": "Edge",
       "RemoteCapabilities": "MicrosoftEdge"
     },
