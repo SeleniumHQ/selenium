@@ -61,7 +61,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void testElementCanGetLinkByLinkTestIgnoringTrailingWhitespace()
+        public void ElementCanGetLinkByLinkTestIgnoringTrailingWhitespace()
         {
             driver.Url = simpleTestPage;
             IWebElement elem = driver.FindElement(By.Id("links"));

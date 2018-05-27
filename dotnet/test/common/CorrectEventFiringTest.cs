@@ -92,6 +92,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Test hangs browser, reason unknown")]
         
         [IgnoreBrowser(Browser.Firefox, "Firefox does not report mouse move event when clicking")]
         public void ShouldFireMouseMoveEventWhenClicking()
@@ -283,6 +284,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Test crashes browser, causing cascading failures.")]
         [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/906")]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow()

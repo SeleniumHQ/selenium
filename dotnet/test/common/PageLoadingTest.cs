@@ -432,6 +432,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Test hangs browser.")]
         [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Safari, "Not implemented for browser")]

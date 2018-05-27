@@ -23,6 +23,7 @@ namespace OpenQA.Selenium.Edge
             get
             {
                 EdgeDriverService service = EdgeDriverService.CreateDefaultService();
+                service.UseSpecCompliantProtocol = false;
                 return service;
             }
         }

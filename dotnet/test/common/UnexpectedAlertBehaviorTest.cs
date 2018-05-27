@@ -28,13 +28,16 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Legacy behavior, not spec compliant")]
+        [IgnoreBrowser(Browser.Edge, "Legacy behavior, not spec compliant")]
         public void CanAcceptUnhandledAlert()
         {
+            
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.AcceptAndNotify, "This is a default value");
         }
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Legacy behavior, not spec compliant")]
+        [IgnoreBrowser(Browser.Edge, "Legacy behavior, not spec compliant")]
         public void CanSilentlyAcceptUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Accept, "This is a default value");
@@ -42,6 +45,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Unstable Chrome behavior")]
+        [IgnoreBrowser(Browser.Edge, "Legacy behavior, not spec compliant")]
         public void CanDismissUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.DismissAndNotify, "null");
@@ -49,6 +53,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Legacy behavior, not spec compliant")]
+        [IgnoreBrowser(Browser.Edge, "Legacy behavior, not spec compliant")]
         public void CanSilentlyDismissUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Dismiss, "null");
@@ -56,6 +61,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome uses IGNORE mode by default")]
+        [IgnoreBrowser(Browser.Edge, "Legacy behavior, not spec compliant")]
         public void CanDismissUnhandledAlertsByDefault()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Default, "null");
@@ -63,6 +69,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Unstable Chrome behavior")]
+        [IgnoreBrowser(Browser.Edge, "Legacy behavior, not spec compliant")]
         public void CanIgnoreUnhandledAlert()
         {
             Assert.That(() => ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Ignore, "Text ignored"), Throws.InstanceOf<WebDriverException>().With.InnerException.InstanceOf<UnhandledAlertException>());
