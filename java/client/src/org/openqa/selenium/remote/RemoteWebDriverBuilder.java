@@ -29,6 +29,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -55,8 +56,32 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
+/**
+ * Create a new Selenium session using the W3C WebDriver protocol. This class will not generate any
+ * data expected by the original JSON Wire Protocol, so will fail to create sessions as expected if
+ * used against a server that only implements that protocol.
+ * <p>
+ * Expected usage is something like:
+ * <pre>
+ *   WebDriver driver = RemoteWebDriver.builder()
+ *     .addAlternative(new FirefoxOptions())
+ *     .addAlternative(new ChromeOptions())
+ *     .addMetadata("cloud:key", "hunter2")
+ *     .setCapabilitiy("proxy", new Proxy())
+ *     .build();
+ * </pre>
+ * In this example, we ask for a session where the browser will be either Firefox or Chrome (we
+ * don't care which), but where either browser will use the given {@link org.openqa.selenium.Proxy}.
+ * In addition, we've added some metadata to the session, setting the "{@code cloud.key}" to be the
+ * secret passphrase of our account with the cloud "Selenium as a Service" provider.
+ * <p>
+ * If no call to {@link #withDriverService(DriverService)} or {@link #url(URL)} is made, the builder
+ * will use {@link ServiceLoader} to find all instances of {@link DriverService.Builder} and will
+ * call {@link DriverService.Builder#score(Capabilities)} for each alternative until a new session
+ * can be created.
+ */
 @Beta
-class RemoteWebDriverBuilder {
+public class RemoteWebDriverBuilder {
 
   private final static Set<String> ILLEGAL_METADATA_KEYS = ImmutableSet.of(
       "alwaysMatch",
@@ -69,20 +94,40 @@ class RemoteWebDriverBuilder {
   private URL remoteHost;
   private DriverService service;
 
-  public RemoteWebDriverBuilder oneOf(Capabilities... oneOfTheseOptions) {
+  RemoteWebDriverBuilder() {
+    // Access through RemoteWebDriver.builder
+  }
+
+  /**
+   * Clears the current set of alternative browsers and instead sets the list of possible choices to
+   * the arguments given to this method.
+   */
+  public RemoteWebDriverBuilder oneOf(Capabilities maybeThis, Capabilities... orOneOfThese) {
     options.clear();
-    for (int i = 0; i < oneOfTheseOptions.length; i++) {
-      addAlternative(oneOfTheseOptions[i]);
+    addAlternative(maybeThis);
+    for (Capabilities anOrOneOfThese : orOneOfThese) {
+      addAlternative(anOrOneOfThese);
     }
     return this;
   }
 
+  /**
+   * Add to the list of possible configurations that might be asked for. It is possible to ask for
+   * more than one type of browser per session. For example, perhaps you have an extension that is
+   * available for two different kinds of browser, and you'd like to test it).
+   */
   public RemoteWebDriverBuilder addAlternative(Capabilities options) {
     Map<String, Object> serialized = validate(Objects.requireNonNull(options));
     this.options.add(serialized);
     return this;
   }
 
+  /**
+   * Adds metadata to the outgoing new session request, which can be used by intermediary of end
+   * nodes for any purpose they choose (commonly, this is used to request additional features from
+   * cloud providers, such as video recordings or to set the timezone or screen size). Neither
+   * parameter can be {@code null}.
+   */
   public RemoteWebDriverBuilder addMetadata(String key, Object value) {
     if (ILLEGAL_METADATA_KEYS.contains(key)) {
       throw new IllegalArgumentException(key + " is a reserved key");
@@ -91,6 +136,12 @@ class RemoteWebDriverBuilder {
     return this;
   }
 
+  /**
+   * Sets a capability for every single alternative when the session is created. These capabilities
+   * are only set once the session is created, so this will be set on capabiltiies added via
+   * {@link #addAlternative(Capabilities)} or {@link #oneOf(Capabilities, Capabilities...)} even
+   * after this method call.
+   */
   public RemoteWebDriverBuilder setCapability(String capabilityName, String value) {
     if (!OK_KEYS.test(capabilityName)) {
       throw new IllegalArgumentException("Capability is not valid");
@@ -103,6 +154,9 @@ class RemoteWebDriverBuilder {
     return this;
   }
 
+  /**
+   * @see #url(URL)
+   */
   public RemoteWebDriverBuilder url(String url) {
     try {
       return url(new URL(url));
@@ -111,13 +165,32 @@ class RemoteWebDriverBuilder {
     }
   }
 
+  /**
+   * Set the URL of the remote server. If this URL is not set, then it assumed that a local running
+   * remote webdriver session is needed. It is an error to call this method and also
+   * {@link #withDriverService(DriverService)}.
+   */
   public RemoteWebDriverBuilder url(URL url) {
     this.remoteHost = Objects.requireNonNull(url);
     validateDriverServiceAndUrlConstraint();
     return this;
   }
 
-  public RemoteWebDriver build() {
+  /**
+   * Use the given {@link DriverService} to set up the webdriver instance. It is an error to set
+   * both this and also call {@link #url(URL)}.
+   */
+  public RemoteWebDriverBuilder withDriverService(DriverService service) {
+    this.service = Objects.requireNonNull(service);
+    validateDriverServiceAndUrlConstraint();
+    return this;
+  }
+
+  /**
+   * Actually create a new WebDriver session. The returned webdriver is not guaranteed to be a
+   * {@link RemoteWebDriver}.
+   */
+  public WebDriver build() {
     if (options.isEmpty()) {
       throw new SessionNotCreatedException("Refusing to create session without any capabilities");
     }
@@ -169,12 +242,6 @@ class RemoteWebDriverBuilder {
   @VisibleForTesting
   Plan getPlan() {
     return new Plan();
-  }
-
-  public RemoteWebDriverBuilder withDriverService(DriverService service) {
-    this.service = Objects.requireNonNull(service);
-    validateDriverServiceAndUrlConstraint();
-    return this;
   }
 
   private void validateDriverServiceAndUrlConstraint() {

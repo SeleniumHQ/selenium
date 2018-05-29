@@ -144,7 +144,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   @Beta
-  static RemoteWebDriverBuilder builder() {
+  public static RemoteWebDriverBuilder builder() {
     return new RemoteWebDriverBuilder();
   }
 
