@@ -83,6 +83,7 @@ public class JsonTest {
 
     Json json = new Json();
     String converted = json.toJson(original);
+    System.out.println("converted = " + converted);
     Object remade = json.toType(converted, MAP_TYPE);
 
     assertEquals(original, remade);
@@ -111,6 +112,7 @@ public class JsonTest {
 
     Json json = new Json();
     String raw = json.toJson(expected);
+    System.out.println("raw = " + raw);
     List<Capabilities> seen = json.toType(raw, new TypeToken<List<Capabilities>>(){}.getType());
 
     assertEquals(expected, seen);
@@ -149,7 +151,7 @@ public class JsonTest {
 
   @Test
   public void testCanConstructASimpleString() {
-    String text = new Json().toType("cheese", String.class);
+    String text = new Json().toType("\"cheese\"", String.class);
 
     assertThat(text, is("cheese"));
   }
@@ -428,7 +430,7 @@ public class JsonTest {
 
   @Test
   public void testShouldCallFromJsonMethodIfPresent() {
-    JsonAware res = new Json().toType("converted", JsonAware.class);
+    JsonAware res = new Json().toType("\"converted\"", JsonAware.class);
     assertEquals("\"converted\"", res.convertedValue);
   }
 
@@ -499,7 +501,7 @@ public class JsonTest {
 
   @Test
   public void canConvertAnEnumWithALowerCaseValue() {
-    Proxy.ProxyType type = new Json().toType("pac", Proxy.ProxyType.class);
+    Proxy.ProxyType type = new Json().toType("\"pac\"", Proxy.ProxyType.class);
     assertEquals(Proxy.ProxyType.PAC, type);
   }
 

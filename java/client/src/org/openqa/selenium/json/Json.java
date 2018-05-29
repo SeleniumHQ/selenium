@@ -18,8 +18,6 @@
 package org.openqa.selenium.json;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -32,12 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Json {
-  static final Gson GSON = new GsonBuilder()
-      .setLenient()
-      .serializeNulls()
-      .disableHtmlEscaping()
-      .create();
-
   public static final Type LIST_OF_MAPS_TYPE = new TypeToken<List<Map<String, Object>>>() {}.getType();
   public static final Type MAP_TYPE = new TypeToken<Map<String, Object>>() {}.getType();
   public static final Type OBJECT_TYPE = new TypeToken<Object>() {}.getType();

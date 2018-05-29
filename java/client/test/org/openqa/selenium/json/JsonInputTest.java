@@ -17,13 +17,15 @@
 
 package org.openqa.selenium.json;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.StringReader;
@@ -106,11 +108,10 @@ public class JsonInputTest {
     input.endArray();
   }
 
-  @Test
-  @Ignore
-  public void callingHasNextWhenNotInAnArrayOrMapReturnsFalse() {
+  @Test(expected = JsonException.class)
+  public void callingHasNextWhenNotInAnArrayOrMapIsAnError() {
     JsonInput input = newInput("cheese");
-    assertFalse(input.hasNext());
+    input.hasNext();
   }
 
   @Test
@@ -159,6 +160,30 @@ public class JsonInputTest {
     assertEquals(42L, input.nextNumber());
     assertFalse(input.hasNext());
     assertEquals(JsonType.END_MAP, input.peek());
+    input.endObject();
+  }
+
+  @Test
+  public void nestedMapIsFine() {
+    JsonInput input = newInput(ImmutableMap.of(
+        "map", ImmutableMap.of("child", ImmutableList.of("hello", "world"))));
+
+    input.beginObject();
+    assertTrue(input.hasNext());
+    assertEquals("map", input.nextName());
+    input.beginObject();
+    assertTrue(input.hasNext());
+    assertEquals("child", input.nextName());
+    input.beginArray();
+    assertTrue(input.hasNext());
+    assertEquals("hello", input.nextString());
+    assertTrue(input.hasNext());
+    assertEquals("world", input.nextString());
+    assertFalse(input.hasNext());
+    input.endArray();
+    assertFalse(input.hasNext());
+    input.endObject();
+    assertFalse(input.hasNext());
     input.endObject();
   }
 

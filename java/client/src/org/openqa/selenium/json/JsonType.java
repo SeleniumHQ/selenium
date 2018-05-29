@@ -26,6 +26,7 @@ public enum JsonType {
   END_MAP,
   START_COLLECTION,
   END_COLLECTION,
-  STRING
+  STRING,
+  END
   ;
 }

@@ -27,9 +27,9 @@ import java.util.function.Function;
 class NumberCoercer<T extends Number> extends TypeCoercer<T> {
 
   private final Class<T> stereotype;
-  private final Function<String, T> mapper;
+  private final Function<Number, T> mapper;
 
-  NumberCoercer(Class<T> stereotype, Function<String, T> mapper) {
+  NumberCoercer(Class<T> stereotype, Function<Number, T> mapper) {
     this.stereotype = Objects.requireNonNull(stereotype);
     this.mapper = Objects.requireNonNull(mapper);
   }
@@ -42,14 +42,7 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
   @Override
   public BiFunction<JsonInput, PropertySetting, T> apply(Type ignored) {
     return (jsonInput, setting) -> {
-      JsonType type = jsonInput.peek();
-
-      if (type != JsonType.NUMBER) {
-        throw new JsonException(
-            "Cannot coerce something that is not a number to a number: " + type);
-      }
-
-      String number = jsonInput.nextString();
+      Number number = jsonInput.nextNumber();
       return mapper.apply(number);
     };
   }
