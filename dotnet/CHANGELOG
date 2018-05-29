@@ -1,3 +1,23 @@
+v3.12.1
+=======
+ * Updated .NET escaping of CSS selectors for the find-by-ID and find-by-name
+   cases. This is especially important for drivers that adhere to the W3C
+   WebDriver Specification.
+ * The .NET bindings no longer swallow exceptions for navigation to malformed
+   URLs.
+ * Added inadvertently omitted FirefoxDriver constructor for .NET.
+   To maintain consistency with other drivers, we are adding a constructor
+   that takes a FirefoxDriverService and a FirefoxOptions. All other drivers
+   have a "service and options" constructor, making Firefox the outlier.
+ * Updated use of command-line args for protocol selection for Edge in .NET.
+   The UseSpecCompliantProtocol property of the EdgeDriverService object now
+   is a nullable boolean instead of just a boolean. If the property is
+   assigned a value (true or false), it will add the appropriate command-line
+   argument ("--w3c" or "--jwp", respectively) to the executable command
+   line. Users using versions of MicrosoftWebDriver.exe that do not support
+   those command-line arguments should leave the property unset (as a null
+   value).
+
 v3.12.0
 =======
  * Updated unhandled JavaScript errors to throw WebDriverException in .NET.
