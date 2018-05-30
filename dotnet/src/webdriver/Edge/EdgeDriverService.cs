@@ -99,12 +99,12 @@ namespace OpenQA.Selenium.Edge
         {
             get
             {
-                if (this.useSpecCompliantProtocol.HasValue && this.useSpecCompliantProtocol.Value)
+                if (this.useSpecCompliantProtocol.HasValue && !this.useSpecCompliantProtocol.Value)
                 {
-                    return false;
+                    return base.HasShutdown;
                 }
 
-                return base.HasShutdown;
+                return false;
             }
         }
 
@@ -113,18 +113,18 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         protected override TimeSpan TerminationTimeout
         {
-            // Use a very small timeout for terminating the Firefox driver,
+            // Use a very small timeout for terminating the Edge driver,
             // because the executable does not have a clean shutdown command,
             // which means we have to kill the process. Using a short timeout
             // gets us to the termination point much faster.
             get
             {
-                if (this.useSpecCompliantProtocol.HasValue && this.useSpecCompliantProtocol.Value)
+                if (this.useSpecCompliantProtocol.HasValue && !this.useSpecCompliantProtocol.Value)
                 {
-                    return TimeSpan.FromMilliseconds(100);
+                    return base.TerminationTimeout;
                 }
 
-                return base.TerminationTimeout;
+                return TimeSpan.FromMilliseconds(100);
             }
         }
 
