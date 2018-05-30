@@ -1,7 +1,7 @@
 {
   "DriverServiceLocation":  "",
-  "ActiveDriverConfig": "Edge",
-  "ActiveWebsiteConfig": "HostsFileRedirect",
+  "ActiveDriverConfig": "Chrome",
+  "ActiveWebsiteConfig": "Default",
   "WebsiteConfigs": {
     "Default": {
       "Protocol": "http",
