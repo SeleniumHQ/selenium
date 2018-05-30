@@ -47,15 +47,12 @@ def test_converts_proxy_type_value_to_lowercase_for_w3c(mocker):
 
 
 def test_works_as_context_manager(mocker):
-    execute = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.execute')
+    mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.execute')
     quit_ = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.quit')
 
-    with WebDriver():
-        pass
+    with WebDriver() as driver:
+        assert isinstance(driver, WebDriver)
 
-    expected_params = {'capabilities': {'alwaysMatch': {}, 'firstMatch': [{}]},
-                       'desiredCapabilities': {}}
-    execute.assert_called_with(Command.NEW_SESSION, expected_params)
     assert quit_.call_count == 1
 
 
