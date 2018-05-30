@@ -71,6 +71,19 @@ class Condition {
   description() {
     return this.description_;
   }
+
+  /**
+   * Allows for lenient instanceof checks
+   * @param {!(IThenable<T>|
+   *           Condition<T>|
+   *           function(!WebDriver): T)} condition - the condition instance
+   * @returns {*|boolean}
+   */
+  static [Symbol.hasInstance](condition) {
+    return condition
+      && typeof condition.description === 'string'
+      && typeof condition.fn === 'function';
+  }
 }
 
 
@@ -89,6 +102,19 @@ class WebElementCondition extends Condition {
    */
   constructor(message, fn) {
     super(message, fn);
+  }
+
+  /**
+   * Allows for lenient instanceof checks
+   * @param {!(IThenable<T>|
+   *           Condition<T>|
+   *           function(!WebDriver): T)} condition - the condition instance
+   * @returns {*|boolean}
+   */
+  static [Symbol.hasInstance](condition) {
+    return condition
+      && typeof condition.description === 'string'
+      && typeof condition.fn === 'function';
   }
 }
 
