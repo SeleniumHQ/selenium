@@ -70,7 +70,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeyUp()
@@ -99,7 +98,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithShiftPressed()
@@ -213,7 +211,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        //[IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")]
         public void SelectionSelectByWord()
         {
@@ -238,7 +235,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        //[IgnoreBrowser(Browser.IE)]
         public void SelectionSelectAll()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("single_text_input.html");
@@ -264,7 +260,6 @@ namespace OpenQA.Selenium.Interactions
         //------------------------------------------------------------------
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithLeftShiftPressed()

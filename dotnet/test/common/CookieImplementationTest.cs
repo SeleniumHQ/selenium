@@ -180,7 +180,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome does not retrieve cookies when in frame.")]
         [IgnoreBrowser(Browser.Safari)]
         public void GetCookiesInAFrame()
         {
@@ -257,7 +257,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        //[Ignore("Cannot run without creating subdomains in test environment")]
         public void ShouldNotGetCookiesRelatedToCurrentDomainWithoutLeadingPeriod()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -623,7 +622,6 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         public void CanSetCookiesOnADifferentPathOfTheSameHost()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -758,12 +756,9 @@ namespace OpenQA.Selenium
             Assert.IsFalse(cookies.Contains(cookie), "Invalid cookie was returned");
         }
 
-        // TODO(JimEvans): Disabling this test for now. If your network is using
-        // something like OpenDNS or Google DNS which you may be automatically
-        // redirected to a search page, which will be a valid page and will allow a
-        // cookie to be created. Need to investigate further.
-        // [Test]
-        // [ExpectedException(typeof(InvalidOperationException))]
+        [Test]
+        [IgnoreBrowser(Browser.Edge, "Driver throws generic WebDriverException")]
+        [IgnoreBrowser(Browser.Firefox, "Driver throws generic WebDriverException")]
         public void ShouldThrowExceptionWhenAddingCookieToNonExistingDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -772,10 +767,10 @@ namespace OpenQA.Selenium
             }
 
             driver.Url = macbethPage;
-            driver.Url = "doesnot.noireallyreallyreallydontexist.com";
+            driver.Url = "http://nonexistent-origin.seleniumhq-test.test";
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("question", "dunno");
-            options.Cookies.AddCookie(cookie);
+            Assert.That(() => options.Cookies.AddCookie(cookie), Throws.InstanceOf<InvalidCookieDomainException>().Or.InstanceOf<InvalidOperationException>());
         }
 
         [Test]

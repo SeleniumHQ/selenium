@@ -26,7 +26,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void NoneStrategyShouldNotWaitForPageToLoad()
         {
@@ -46,7 +45,6 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void NoneStrategyShouldNotWaitForPageToRefresh()
         {
@@ -68,7 +66,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support eager page load strategy")]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void EagerStrategyShouldNotWaitForResources()
         {
@@ -90,7 +88,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support eager page load strategy")]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void EagerStrategyShouldNotWaitForResourcesOnRefresh()
         {
@@ -117,7 +115,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support eager page load strategy")]
         public void EagerStrategyShouldWaitForDocumentToBeLoaded()
         {
             InitLocalDriver(PageLoadStrategy.Eager);
@@ -154,7 +152,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldBeAbleToGetAFragmentOnTheCurrentPage()
         {
             if (TestUtilities.IsMarionette(driver))
@@ -357,7 +354,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Edge, "Not implemented for browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
@@ -378,7 +374,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Edge, "Not implemented for browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
@@ -404,7 +399,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldTimeoutIfAPageTakesTooLongToRefresh()
@@ -433,7 +427,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Edge, "Test hangs browser.")]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.Chrome, "Chrome driver does, in fact, stop loading page after a timeout.")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Safari, "Not implemented for browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]

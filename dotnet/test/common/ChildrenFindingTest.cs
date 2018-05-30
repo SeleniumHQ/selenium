@@ -102,7 +102,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")]
         public void FindElementByIdWhenIdContainsNonAlphanumericCharacters()
         {
             driver.Url = nestedPage;
@@ -131,7 +130,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")]
         public void FindElementsByIdWithNonAlphanumericCharacters()
         {
             driver.Url = nestedPage;

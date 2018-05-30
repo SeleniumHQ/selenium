@@ -60,7 +60,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldNotBeAbleToSubmitAFormThatDoesNotExist()
         {
@@ -300,31 +299,31 @@ namespace OpenQA.Selenium
             CheckSubmitButton("external_implicit_submit");
         }
 
-        //[Test]
+        [Test]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void CanSubmitFormWithSubmitButtonIdEqualToSubmit()
         {
-            // TODO: Cherry-pick dynamic page generation code from branch
-            //String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
-            //driver.get(appServer.create(new Page().withBody(
-            //    String.format("<form action='%s'>", blank),
-            //    "  <input type='submit' id='submit' value='Submit'>",
-            //    "</form>")));
+            string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithTitle("Submitted Successfully!"));
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithBody(string.Format("<form action='{0}'>", blank),
+                "  <input type='submit' id='submit' value='Submit'>",
+                "</form>"));
 
             driver.FindElement(By.Id("submit")).Submit();
             WaitFor(TitleToBe("Submitted Successfully!"), "Title was not expected value");
         }
 
-        //[Test]
+        [Test]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void CanSubmitFormWithSubmitButtonNameEqualToSubmit()
         {
-            // TODO: Cherry-pick dynamic page generation code from branch
-            //String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
-            //driver.get(appServer.create(new Page().withBody(
-            //    String.format("<form action='%s'>", blank),
-            //    "  <input type='submit' name='submit' value='Submit'>",
-            //    "</form>")));
+            string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithTitle("Submitted Successfully!"));
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithBody(string.Format("<form action='{0}'>", blank),
+                "  <input type='submit' name='submit' value='Submit'>",
+                "</form>"));
 
             driver.FindElement(By.Name("submit")).Submit();
             WaitFor(TitleToBe("Submitted Successfully!"), "Title was not expected value");

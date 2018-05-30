@@ -5,7 +5,6 @@ using NUnit.Framework;
 namespace OpenQA.Selenium
 {
     [TestFixture]
-    //[IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
     public class WindowTest : DriverTestFixture
     {
         private Size originalWindowSize;
@@ -201,7 +200,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Edge, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "Chrome window size does not report zero when minimized.")]
         [IgnoreBrowser(Browser.Firefox, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToMinimizeTheCurrentWindow()
@@ -242,6 +241,8 @@ namespace OpenQA.Selenium
             IWindow window = driver.Manage().Window;
             Size currentSize = window.Size;
             window.Minimize();
+            WaitFor(WindowHeightToBeLessThan(currentSize.Height), "Window height was not less than " + currentSize.Height.ToString());
+            WaitFor(WindowWidthToBeLessThan(currentSize.Width), "Window width was not less than " + currentSize.Width.ToString());
         }
 
         private void ChangeSizeTo(Size targetSize)
@@ -277,6 +278,16 @@ namespace OpenQA.Selenium
         private Func<bool> WindowWidthToBeGreaterThan(int width)
         {
             return () => { return driver.Manage().Window.Size.Width > width; };
+        }
+
+        private Func<bool> WindowHeightToBeLessThan(int height)
+        {
+            return () => { return driver.Manage().Window.Size.Height < height; };
+        }
+
+        private Func<bool> WindowWidthToBeLessThan(int width)
+        {
+            return () => { return driver.Manage().Window.Size.Width < width; };
         }
     }
 }

@@ -259,24 +259,6 @@ namespace OpenQA.Selenium.Interactions
             Assert.AreEqual(img1.Location, img2.Location);
         }
 
-        //[Test]
-        public void MemoryTest()
-        {
-            driver.Url = dragAndDropPage;
-            IWebElement img1 = driver.FindElement(By.Id("test1"));
-            IWebElement img2 = driver.FindElement(By.Id("test2"));
-            System.Threading.Thread.Sleep(1000);
-            for (int i = 0; i < 500; i++)
-            {
-                string foo = img1.GetAttribute("id");
-                //img1 = driver.FindElement(By.Id("test1"));
-                //Actions a = new Actions(driver);
-                //a.MoveToElement(img1).Perform();
-            }
-
-            driver.Url = simpleTestPage;
-        }
-
         private Point drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)
         {
             Point expectedLocation = new Point(initialLocation.X, initialLocation.Y);

@@ -108,7 +108,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Opera)]
         public void ElementHiddenByOverflowXIsNotVisible()
         {
@@ -128,7 +127,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Opera)]
         public void ElementHiddenByOverflowYIsNotVisible()
         {

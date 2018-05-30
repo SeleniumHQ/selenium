@@ -395,7 +395,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")]
         [IgnoreBrowser(Browser.Safari, "getText does not normalize spaces")]
         public void CanHandleTextTransformProperty()
         {

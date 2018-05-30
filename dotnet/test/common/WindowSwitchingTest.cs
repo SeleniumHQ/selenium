@@ -53,7 +53,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle()
         {
             driver.Url = (xhtmlTestPage);
@@ -86,7 +85,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed()
         {
             driver.Url = (xhtmlTestPage);
@@ -132,7 +130,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed()
         {
             driver.Url = (xhtmlTestPage);
@@ -416,7 +413,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore("Ignored for all browsers")]
+        [IgnoreBrowser(Browser.Edge, "Does not support finding window by name")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void CloseShouldCloseCurrentHandleOnly()
         {

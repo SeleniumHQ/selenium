@@ -287,7 +287,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
         public void ShouldCaptureScreenshotAtIFramePage()
         {
@@ -353,7 +352,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Firefox)]
         public void ShouldCaptureScreenshotAtIFramePageAfterSwitching()

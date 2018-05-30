@@ -226,9 +226,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome driver does not return JavaScript stack trace")]
         [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IE driver does not return JavaScript stack trace")]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad()
         {
@@ -531,7 +531,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Browser does not return Date object.")]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToReturnADateObject()
@@ -543,7 +543,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Driver returns object that allows getting text.")]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Safari)]
@@ -569,8 +569,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.IE, "Issue 540")]
         public void ShouldHandleRecursiveStructures()
         {
             driver.Url = simpleTestPage;

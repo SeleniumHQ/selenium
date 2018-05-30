@@ -69,7 +69,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
 		[IgnoreBrowser(Browser.Safari)]
         public void ShouldGetTextOfAlertOpenedInSetTimeout()
         {
@@ -280,7 +280,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Issue 2764")]
         [IgnoreBrowser(Browser.Remote)]
         public void SwitchingToMissingAlertInAClosedWindowThrows()
         {
@@ -423,7 +422,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox waits too long, may be hangs")]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Test with onLoad alert hangs Chrome.")]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldNotHandleAlertInAnotherWindow()
         {
@@ -469,8 +468,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
-		[IgnoreBrowser(Browser.Chrome)]
-		[IgnoreBrowser(Browser.Safari)]
+		[IgnoreBrowser(Browser.Chrome, "Chrome does not trigger alerts on unload.")]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldHandleAlertOnPageUnload()
         {
             string pageWithOnBeforeUnload = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -494,7 +493,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome does not implicitly handle onBeforeUnload alert")]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldImplicitlyHandleAlertOnPageBeforeUnload()
         {
@@ -512,7 +511,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Test as written does not trigger alert; also onbeforeunload alert on close will hang browser")]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Test as written does not trigger alert")]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnWindowClose()
         {
@@ -546,7 +545,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome does not supply text in UnhandledAlertException")]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Opera)]
 		[IgnoreBrowser(Browser.Safari)]
@@ -635,7 +634,8 @@ namespace OpenQA.Selenium
             driver = null;
         }
 
-        [Test]
+        // Disabling test for all browsers. Authentication API is not supported by any driver yet.
+        // [Test]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
@@ -652,7 +652,8 @@ namespace OpenQA.Selenium
             Assert.IsTrue(driver.FindElement(By.TagName("h1")).Text.Contains("authorized"));
         }
 
-        [Test]
+        // Disabling test for all browsers. Authentication API is not supported by any driver yet.
+        // [Test]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
@@ -667,7 +668,8 @@ namespace OpenQA.Selenium
             alert.Dismiss();
         }
 
-        [Test]
+        // Disabling test for all browsers. Authentication API is not supported by any driver yet.
+        // [Test]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]

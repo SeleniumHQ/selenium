@@ -216,7 +216,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFrame()
         {
@@ -226,7 +225,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame()
         {
@@ -237,7 +235,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void SwitchingToParentFrameFromDefaultContextIsNoOp()
         {
@@ -247,7 +244,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFromAnIframe()
         {
@@ -450,7 +446,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome driver throws NoSuchElementException, spec is unclear")]
         [IgnoreBrowser(Browser.IE, "IE driver throws NoSuchElementException, spec is unclear")]
         public void ShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs()
         {

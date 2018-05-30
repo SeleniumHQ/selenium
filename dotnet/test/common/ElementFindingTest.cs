@@ -28,8 +28,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToFindASingleElementByIdWithNonAlphanumericCharacters()
         {
             driver.Url = nestedPage;
@@ -56,8 +54,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToFindMultipleElementsByIdWithNonAlphanumericCharacters()
         {
             driver.Url = nestedPage;
@@ -320,7 +316,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         public void FindingASingleElementByEmptyClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
@@ -328,7 +323,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByEmptyClassNameShouldThrow()
         {
@@ -337,7 +331,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingASingleElementByCompoundClassNameShouldThrow()
         {
@@ -346,7 +339,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByCompoundClassNameShouldThrow()
         {
@@ -355,7 +347,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingASingleElementByInvalidClassNameShouldThrow()
         {
@@ -366,7 +357,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
         [IgnoreBrowser(Browser.Firefox, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByInvalidClassNameShouldThrow()
         {
@@ -438,7 +428,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "IE driver does not support XML namespaces in XPath")]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void ShouldBeAbleToFindElementByXPathWithNamespace()
@@ -449,8 +439,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.IE, "Driver does not support finding elements on XML documents.")]
+        [IgnoreBrowser(Browser.Chrome, "Driver does not support finding elements on XML documents.")]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void ShouldBeAbleToFindElementByXPathInXmlDocument()
         {
@@ -636,7 +626,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         public void FindingASingleElementByEmptyCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
@@ -644,7 +633,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByEmptyCssSelectorShouldThrow()
         {
@@ -653,7 +641,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws InvalidElementStateException")]
         public void FindingASingleElementByInvalidCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
@@ -661,7 +648,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws InvalidElementStateException")]
         [IgnoreBrowser(Browser.Opera, "Throws InvalidElementStateException")]
         public void FindingMultipleElementsByInvalidCssSelectorShouldThrow()
         {
