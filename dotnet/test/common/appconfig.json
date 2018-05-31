@@ -1,5 +1,5 @@
 {
-  "DriverServiceLocation":  "",
+  "DriverServiceLocation": "",
   "ActiveDriverConfig": "Chrome",
   "ActiveWebsiteConfig": "Default",
   "WebsiteConfigs": {
@@ -76,8 +76,8 @@
     },
 
     "Safari": {
-      "DriverTypeName": "OpenQA.Selenium.Safari.SafariDriver",
-      "AssemblyName": "WebDriver",
+      "DriverTypeName": "OpenQA.Selenium.Safari.DefaultSafariDriver",
+      "AssemblyName": "WebDriver.Safari.Tests",
       "BrowserValue": "Safari",
       "RemoteCapabilities": "safari"
     },
