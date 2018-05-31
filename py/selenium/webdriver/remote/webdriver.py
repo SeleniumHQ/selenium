@@ -162,6 +162,12 @@ class WebDriver(object):
         return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
             type(self), self.session_id)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.quit()
+
     @contextmanager
     def file_detector_context(self, file_detector_class, *args, **kwargs):
         """
