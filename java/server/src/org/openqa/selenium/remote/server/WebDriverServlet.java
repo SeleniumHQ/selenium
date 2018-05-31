@@ -37,6 +37,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -75,10 +76,10 @@ public class WebDriverServlet extends HttpServlet {
     configureLogging();
     log("Initialising WebDriverServlet");
 
-    String value = getServletContext().getInitParameter(SESSION_TIMEOUT_PARAMETER);
-    long inactiveSessionTimeout = value != null ?
-                                  SECONDS.toMillis(Long.parseLong(value)) :
-                                  Long.MAX_VALUE;
+    long inactiveSessionTimeout = Optional.ofNullable(getServletContext().getInitParameter(SESSION_TIMEOUT_PARAMETER))
+        .map(value -> SECONDS.toMillis(Long.parseLong(value)))
+        .filter(value -> value > 0)
+        .orElse(Long.MAX_VALUE);
 
     allSessions = (ActiveSessions) getServletContext().getAttribute(ACTIVE_SESSIONS_KEY);
     if (allSessions == null) {
