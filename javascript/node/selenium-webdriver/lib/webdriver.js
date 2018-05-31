@@ -77,10 +77,11 @@ class Condition {
    * @param {!(IThenable<T>|
    *           Condition<T>|
    *           function(!WebDriver): T)} condition - the condition instance
-   * @returns {*|boolean}
+   * @return {boolean}
    */
   static [Symbol.hasInstance](condition) {
-    return condition
+    return !!condition
+      && typeof condition === 'object'
       && typeof condition.description === 'function'
       && typeof condition.fn === 'function';
   }
@@ -102,19 +103,6 @@ class WebElementCondition extends Condition {
    */
   constructor(message, fn) {
     super(message, fn);
-  }
-
-  /**
-   * Allows for lenient instanceof checks
-   * @param {!(IThenable<T>|
-   *           Condition<T>|
-   *           function(!WebDriver): T)} condition - the condition instance
-   * @returns {*|boolean}
-   */
-  static [Symbol.hasInstance](condition) {
-    return condition
-      && typeof condition.description === 'function'
-      && typeof condition.fn === 'function';
   }
 }
 
