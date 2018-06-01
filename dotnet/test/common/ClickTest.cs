@@ -134,7 +134,6 @@ namespace OpenQA.Selenium
         [Test]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]
-        [IgnoreBrowser(Browser.Edge, "Hangs browser")]
         public void ShouldOnlyFollowHrefOnce()
         {
             driver.Url = clicksPage;

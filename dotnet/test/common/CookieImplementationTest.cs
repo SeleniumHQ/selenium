@@ -757,7 +757,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Driver throws generic WebDriverException")]
         [IgnoreBrowser(Browser.Firefox, "Driver throws generic WebDriverException")]
         public void ShouldThrowExceptionWhenAddingCookieToNonExistingDomain()
         {

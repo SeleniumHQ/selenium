@@ -413,7 +413,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Does not support finding window by name")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void CloseShouldCloseCurrentHandleOnly()
         {
