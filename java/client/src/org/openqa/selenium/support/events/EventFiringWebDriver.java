@@ -417,7 +417,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public String getText() {
-      return element.getText();
+      dispatcher.beforeGetText(element, driver);
+      String text = element.getText();
+      dispatcher.afterGetText(element, driver, text);
+      return text;
     }
 
     public boolean isDisplayed() {

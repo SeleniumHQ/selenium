@@ -119,12 +119,20 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
   public void onException(Throwable throwable, WebDriver driver) {
     // Do nothing
   }
-  
+
   public <X> void beforeGetScreenshotAs(OutputType<X> target) {
     // Do nothing
   }
 
   public <X> void afterGetScreenshotAs(OutputType<X> target, X screenshot) {
+    // Do nothing
+  }
+
+  public void beforeGetText(WebElement element, WebDriver driver) {
+    // Do nothing
+  }
+
+  public void afterGetText(WebElement element, WebDriver driver, String text) {
     // Do nothing
   }
 
