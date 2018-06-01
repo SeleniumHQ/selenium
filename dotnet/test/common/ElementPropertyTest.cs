@@ -10,7 +10,6 @@ namespace OpenQA.Selenium
     public class ElementPropertyTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not support get element property command")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Remote)]
@@ -24,7 +23,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not support get element property command")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Remote)]
