@@ -248,11 +248,6 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldReturnHiddenTextForTextContentAttribute()
         {
-            if (TestUtilities.IsInternetExplorer(driver) && !TestUtilities.IsIE10OrHigher(driver))
-            {
-                Assert.Ignore("IE8 or earlier does not handle textContent attribute; IE9 loads page in quirks mode, so no textContent attribute");
-            }
-
             driver.Url = simpleTestPage;
 
             IWebElement element = driver.FindElement(By.Id("hiddenline"));

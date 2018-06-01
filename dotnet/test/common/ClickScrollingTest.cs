@@ -52,7 +52,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_double_overflow_auto.html");
@@ -242,8 +241,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
-        [IgnoreBrowser(Browser.Firefox)]
-        public void testShouldBeAbleToClickElementInATallFrame()
+        public void ShouldBeAbleToClickElementInATallFrame()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_tall_frame.html");
             driver.SwitchTo().Frame("tall_frame");

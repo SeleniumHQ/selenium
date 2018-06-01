@@ -181,7 +181,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Edge, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.Firefox, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToFullScreenTheCurrentWindow()
         {
@@ -201,7 +200,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Edge, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "Chrome window size does not report zero when minimized.")]
-        [IgnoreBrowser(Browser.Firefox, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToMinimizeTheCurrentWindow()
         {
