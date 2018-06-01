@@ -111,7 +111,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Prepends text")]
-        [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox, "Doesn't write anything")]
         [IgnoreBrowser(Browser.Safari, "Prepends text")]
         public void AppendsTextToEndOfContentEditableWithMultipleTextNodes()
