@@ -21,6 +21,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+#if !(NET35 || NET40)
+using System.Threading.Tasks;
+#endif
 
 namespace OpenQA.Selenium.Support.UI
 {
@@ -201,6 +204,85 @@ namespace OpenQA.Selenium.Support.UI
                 Thread.Sleep(this.sleepInterval);
             }
         }
+
+#if !(NET35 || NET40)
+        /// <summary>
+        /// Repeatedly applies this instance's input value to the given function until one of the following
+        /// occurs:
+        /// <para>
+        /// <list type="bullet">
+        /// <item>the function returns neither null nor false</item>
+        /// <item>the function throws an exception that is not in the list of ignored exception types</item>
+        /// <item>the timeout expires</item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TResult">The delegate's expected return type.</typeparam>
+        /// <param name="condition">A delegate taking an object of type T as its parameter, and returning a TResult.</param>
+        /// <returns>The delegate's return value.</returns>
+        public async Task<TResult> UntilAsync<TResult>(Func<T, TResult> condition)
+        {
+            if (condition == null)
+            {
+                throw new ArgumentNullException("condition", "condition cannot be null");
+            }
+
+            var resultType = typeof(TResult);
+            if ((resultType.IsValueType && resultType != typeof(bool)) || !typeof(object).IsAssignableFrom(resultType))
+            {
+                throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + resultType.ToString(), "condition");
+            }
+
+            Exception lastException = null;
+            var endTime = this.clock.LaterBy(this.timeout);
+            while (true)
+            {
+                try
+                {
+                    var result = condition(this.input);
+                    if (resultType == typeof(bool))
+                    {
+                        var boolResult = result as bool?;
+                        if (boolResult.HasValue && boolResult.Value)
+                        {
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (!this.IsIgnoredException(ex))
+                    {
+                        throw;
+                    }
+
+                    lastException = ex;
+                }
+
+                // Check the timeout after evaluating the function to ensure conditions
+                // with a zero timeout can succeed.
+                if (!this.clock.IsNowBefore(endTime))
+                {
+                    string timeoutMessage = string.Format(CultureInfo.InvariantCulture, "Timed out after {0} seconds", this.timeout.TotalSeconds);
+                    if (!string.IsNullOrEmpty(this.message))
+                    {
+                        timeoutMessage += ": " + this.message;
+                    }
+
+                    this.ThrowTimeoutException(timeoutMessage, lastException);
+                }
+
+                await Task.Delay(this.sleepInterval);
+            }
+        }
+#endif
 
         /// <summary>
         /// Throws a <see cref="WebDriverTimeoutException"/> with the given message.
