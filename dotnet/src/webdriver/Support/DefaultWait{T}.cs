@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Support.UI
 {
@@ -142,25 +141,6 @@ namespace OpenQA.Selenium.Support.UI
         /// <returns>The delegate's return value.</returns>
         public TResult Until<TResult>(Func<T, TResult> condition)
         {
-			return UntilAsync<TResult>(condition).Result;
-        }
-
-        /// <summary>
-        /// Repeatedly applies this instance's input value to the given function until one of the following
-        /// occurs:
-        /// <para>
-        /// <list type="bullet">
-        /// <item>the function returns neither null nor false</item>
-        /// <item>the function throws an exception that is not in the list of ignored exception types</item>
-        /// <item>the timeout expires</item>
-        /// </list>
-        /// </para>
-        /// </summary>
-        /// <typeparam name="TResult">The delegate's expected return type.</typeparam>
-        /// <param name="condition">A delegate taking an object of type T as its parameter, and returning a TResult.</param>
-        /// <returns>The delegate's return value.</returns>
-        public async Task<TResult> UntilAsync<TResult>(Func<T, TResult> condition)
-        {
             if (condition == null)
             {
                 throw new ArgumentNullException("condition", "condition cannot be null");
@@ -218,7 +198,7 @@ namespace OpenQA.Selenium.Support.UI
                     this.ThrowTimeoutException(timeoutMessage, lastException);
                 }
 
-                await Task.Delay(this.sleepInterval);
+                Thread.Sleep(this.sleepInterval);
             }
         }
 
