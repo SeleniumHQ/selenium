@@ -126,3 +126,9 @@ class DesiredCapabilities(object):
         "version": "",
         "platform": "ANY",
     }
+
+    WPEWEBKIT = {
+        "browserName": "MiniBrowser",
+        "version": "",
+        "platform": "ANY",
+    }
