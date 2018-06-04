@@ -24,7 +24,7 @@ namespace OpenQA.Selenium
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/906")]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
         public void ShouldFireFocusEventInNonTopmostWindow()
         {
             IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
@@ -284,7 +284,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Edge, "Test crashes browser, causing cascading failures.")]
         [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/906")]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
         public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow()
         {
             IWebElement element = null;
@@ -519,7 +519,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.Safari)]
         public void NativelyClickOverlappingElements()
         {
             if (TestUtilities.IsOldIE(driver))

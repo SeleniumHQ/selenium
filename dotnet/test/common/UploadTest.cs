@@ -65,8 +65,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Hangs forever in sendKeys")]
         [IgnoreBrowser(Browser.Edge, "Frame switching causes browser hang")]
+        [IgnoreBrowser(Browser.Safari, "Safari driver hangs attempting to send keys to hidden file input")]
         public void UploadingWithHiddenFileInput()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("upload_invisible.html");

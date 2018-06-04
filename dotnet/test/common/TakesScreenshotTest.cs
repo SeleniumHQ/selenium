@@ -398,7 +398,7 @@ namespace OpenQA.Selenium
             actualColors.Remove("#000000");
             actualColors.Remove("#ffffff");
 
-            Assert.That(expectedColors, Is.EquivalentTo(actualColors));
+            Assert.That(actualColors, Is.EquivalentTo(expectedColors));
         }
 
         private HashSet<string> GenerateExpectedColors(int initialColor, int stepColor, int numberOfSamplesX, int numberOfSamplesY)

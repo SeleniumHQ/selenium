@@ -21,11 +21,15 @@ namespace OpenQA.Selenium
             try
             {
                 originalTimeout = driver.Manage().Timeouts().AsynchronousJavaScript;
-                driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(1);
             }
             catch (NotImplementedException)
             {
+                // For driver implementations that do not support getting timeouts,
+                // just set a default 30-second timeout.
+                originalTimeout = TimeSpan.FromSeconds(30);
             }
+
+            driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(1);
         }
 
         [TearDown]
@@ -273,7 +277,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IE, "Handling async alerts isn't done by the ExecuteAsyncScript command.")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
-        [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
 		public void ThrowsIfScriptTriggersAlert()
         {
@@ -298,7 +302,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IE, "Handling async alerts isn't done by the ExecuteAsyncScript command.")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
-        [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
         public void ThrowsIfAlertHappensDuringScript()
         {
@@ -322,7 +326,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IE, "Handling async alerts isn't done by the ExecuteAsyncScript command.")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
-        [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
         public void ThrowsIfScriptTriggersAlertWhichTimesOut()
         {
@@ -347,7 +351,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IE, "Handling async alerts isn't done by the ExecuteAsyncScript command.")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
-        [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
         public void ThrowsIfAlertHappensDuringScriptWhichTimesOut()
         {
@@ -371,7 +375,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.IE, "Handling async alerts isn't done by the ExecuteAsyncScript command.")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
-        [IgnoreBrowser(Browser.Safari, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Firefox, "Unexpected alert from JavaScript not handled properly. Spec difference.")]
         public void IncludesAlertTextInUnhandledAlertException()
         {

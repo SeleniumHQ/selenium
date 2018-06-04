@@ -8,7 +8,6 @@ using OpenQA.Selenium.Environment;
 namespace OpenQA.Selenium.Interactions
 {
     [TestFixture]
-    [IgnoreBrowser(Browser.Safari, "Not implemented (issue 4136)")]
     public class BasicMouseInterfaceTest : DriverTestFixture
     {
         [SetUp]
@@ -122,7 +121,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowMoveAndClick()
         {
             driver.Url = javascriptPage;
@@ -145,11 +143,11 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Edge)]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Chrome, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
+        [IgnoreBrowser(Browser.Edge, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
+        [IgnoreBrowser(Browser.Firefox, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
+        [IgnoreBrowser(Browser.IE, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
+        [IgnoreBrowser(Browser.Safari, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
         public void MousePositionIsNotPreservedInActionsChain()
         {
             driver.Url = javascriptPage;
@@ -234,7 +232,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void ShouldAllowUsersToHoverOverElements()
         {
             driver.Url = javascriptPage;
@@ -263,7 +260,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void HoverPersists()
         {
             driver.Url = javascriptPage;
@@ -288,7 +284,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MovingMouseByRelativeOffset()
         {
             driver.Url = mouseTrackerPage;
@@ -306,7 +301,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MovingMouseToRelativeElementOffset()
         {
             driver.Url = mouseTrackerPage;
@@ -334,7 +328,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
-        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MoveRelativeToBody()
         {
             driver.Url = mouseTrackerPage;
@@ -347,7 +340,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MoveMouseByOffsetOverAndOutOfAnElement()
         {
             driver.Url = mouseOverPage;
@@ -370,7 +362,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void CanMouseOverAndOutOfAnElement()
         {
             driver.Url = mouseOverPage;

@@ -329,7 +329,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void LinkWithLeadingSpaces()
         {
             driver.Url = simpleTestPage;
@@ -340,7 +339,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void LinkWithTrailingSpace()
         {
             driver.Url = simpleTestPage;

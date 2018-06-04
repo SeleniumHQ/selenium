@@ -84,7 +84,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "Driver does not implement waiting for element visible for interaction")]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting()
         {
@@ -109,7 +109,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfWindowSwitchTo()
         {
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);

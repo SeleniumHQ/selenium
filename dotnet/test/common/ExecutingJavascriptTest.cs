@@ -229,7 +229,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not return JavaScript stack trace")]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.IE, "IE driver does not return JavaScript stack trace")]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Safari, "Safari driver does not return JavaScript stack trace")]
         public void ShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad()
         {
             driver.Url = xhtmlTestPage;
@@ -238,8 +238,8 @@ namespace OpenQA.Selenium
                         + "functionA();";
             Exception ex = Assert.Catch(() => ExecuteScript(js));
             Assert.That(ex, Is.InstanceOf<WebDriverException>());
-            Assert.That(ex.Message.Contains("errormessage"));
-            Assert.That(ex.StackTrace.Contains("functionB"));
+            Assert.That(ex.Message.Contains("errormessage"), "Exception message does not contain 'errormessage'");
+            Assert.That(ex.StackTrace.Contains("functionB"), "Exception message does not contain 'functionB'");
         }
 
         [Test]
@@ -444,7 +444,7 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToExecuteABigChunkOfJavascriptCode()
         {
             driver.Url = javascriptPage;
-            string path = System.IO.Path.Combine(Environment.EnvironmentManager.Instance.CurrentDirectory, "..\\..");
+            string path = System.IO.Path.Combine(Environment.EnvironmentManager.Instance.CurrentDirectory, ".." + System.IO.Path.DirectorySeparatorChar + "..");
             string[] fileList = System.IO.Directory.GetFiles(path, "jquery-1.2.6.min.js", System.IO.SearchOption.AllDirectories);
             if (fileList.Length > 0)
             {

@@ -179,6 +179,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Driver does not allow uploading same file multiple times.")]
         public void ShouldBeAbleToUploadTheSameFileTwice()
         {
             string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
@@ -252,7 +253,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera, "Untested")]
-        [IgnoreBrowser(Browser.Safari, "Untested")]
+        [IgnoreBrowser(Browser.Safari, "Driver does not handle alerts triggered by user JavaScript code; hangs browser.")]
         [IgnoreBrowser(Browser.Firefox, "Dismissing alert causes entire window to close.")]
         public void HandleFormWithJavascriptAction()
         {

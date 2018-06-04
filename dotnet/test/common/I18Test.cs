@@ -47,7 +47,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "Driver does not properly handle surrogate pairs for SendKeys")]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver only supports characters in the BMP")]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void ShouldBeAbleToEnterSupplementaryCharacters()
         {
             if (TestUtilities.IsOldIE(driver))

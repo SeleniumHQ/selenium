@@ -21,7 +21,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropRelative()
         {
             driver.Url = dragAndDropPage;
@@ -37,7 +36,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropToElement()
         {
             driver.Url = dragAndDropPage;
@@ -49,7 +47,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropToElementInIframe()
         {
             driver.Url = iframePage;
@@ -76,7 +73,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropElementWithOffsetInIframeAtBottom()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("iframeAtBottom.html");
@@ -93,7 +89,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropElementWithOffsetInScrolledDiv()
         {
             if (TestUtilities.IsFirefox(driver) && TestUtilities.IsNativeEventsEnabled(driver))
@@ -112,7 +107,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void ElementInDiv()
         {
             driver.Url = dragAndDropPage;
@@ -125,7 +119,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Dragging too far in IE causes the element not to move, instead of moving to 0,0.")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragTooFar()
         {
             driver.Url = dragAndDropPage;
@@ -151,7 +144,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "Problem with drag off viewport. See issue #1771")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void ShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort()
         {
             driver.Url = dragAndDropPage;
@@ -187,7 +179,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropOnJQueryItems()
         {
             driver.Url = droppableItems;
@@ -225,7 +216,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Opera, "Untested")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void CanDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow()
         {
             driver.Url = dragDropOverflowPage;
@@ -248,7 +238,6 @@ namespace OpenQA.Selenium.Interactions
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropRelativeAndToElement()
         {
             driver.Url = dragAndDropPage;

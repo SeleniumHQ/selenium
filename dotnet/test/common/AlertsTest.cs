@@ -11,7 +11,6 @@ namespace OpenQA.Selenium
     public class AlertsTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldBeAbleToOverrideTheWindowAlertMethod()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -22,7 +21,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowUsersToAcceptAnAlertManually()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -70,7 +68,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         [IgnoreBrowser(Browser.Chrome, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
-		[IgnoreBrowser(Browser.Safari)]
         public void ShouldGetTextOfAlertOpenedInSetTimeout()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -97,7 +94,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowUsersToDismissAnAlertManually()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -112,7 +108,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowAUserToAcceptAPrompt()
         {
             driver.Url = CreatePromptPage(null);
@@ -127,7 +122,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowAUserToDismissAPrompt()
         {
             driver.Url = CreatePromptPage(null);
@@ -142,7 +136,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowAUserToSetTheValueOfAPrompt()
         {
             driver.Url = CreatePromptPage(null);
@@ -159,7 +152,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not throw when setting the text of an alert")]
-        [IgnoreBrowser(Browser.Remote)]
         public void SettingTheValueOfAnAlertThrows()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -182,7 +174,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowTheUserToGetTheTextOfAnAlert()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -197,7 +188,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void ShouldAllowTheUserToGetTheTextOfAPrompt()
         {
             driver.Url = CreatePromptPage(null);
@@ -212,7 +202,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void AlertShouldNotAllowAdditionalCommandsIfDimissed()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -226,8 +215,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertInAFrame()
         {
             string iframe = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -248,7 +235,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertInANestedFrame()
         {
             string iframe = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -271,7 +257,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void SwitchingToMissingAlertThrows()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -280,7 +265,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void SwitchingToMissingAlertInAClosedWindowThrows()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage());
@@ -316,7 +300,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void PromptShouldUseDefaultValueIfNoKeysSent()
         {
             driver.Url = CreatePromptPage("This is a default value");
@@ -331,7 +314,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote)]
         public void PromptShouldHaveNullValueIfDismissed()
         {
             driver.Url = CreatePromptPage("This is a default value");
@@ -347,7 +329,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Edge, "Hangs browser")]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.Safari)]
         public void HandlesTwoAlertsFromOneInteraction()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -405,7 +386,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        
+
         public void ShouldHandleAlertOnPageLoadUsingGet()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -423,7 +404,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox waits too long, may be hangs")]
         [IgnoreBrowser(Browser.Chrome, "Test with onLoad alert hangs Chrome.")]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Safari, "Safari driver does not allow commands in any window when an alert is active")]
         public void ShouldNotHandleAlertInAnotherWindow()
         {
             string pageWithOnLoad = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -468,8 +449,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
-		[IgnoreBrowser(Browser.Chrome, "Chrome does not trigger alerts on unload.")]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Chrome, "Chrome does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnPageUnload()
         {
             string pageWithOnBeforeUnload = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -494,7 +474,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not implicitly handle onBeforeUnload alert")]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Safari, "Safari driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
         public void ShouldImplicitlyHandleAlertOnPageBeforeUnload()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage().WithTitle("Success"));
@@ -548,7 +528,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Chrome does not supply text in UnhandledAlertException")]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Opera)]
-		[IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Safari, "Safari driver does not do unhandled alerts")]
         public void IncludesAlertTextInUnhandledAlertException()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -578,8 +558,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Untested")]
         [IgnoreBrowser(Browser.Firefox, "Dismissing alert causes entire window to close.")]
+        [IgnoreBrowser(Browser.Safari, "Safari driver cannot handle alert thrown via JavaScript")]
         public void ShouldHandleAlertOnFormSubmit()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -602,7 +582,7 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Safari, "onBeforeUnload dialogs hang Safari")]
         public void ShouldHandleAlertOnPageBeforeUnload()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
@@ -622,8 +602,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
+        [IgnoreBrowser(Browser.Safari, "onBeforeUnload dialogs hang Safari")]
         public void ShouldHandleAlertOnPageBeforeUnloadAlertAtQuit()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
@@ -734,51 +714,51 @@ namespace OpenQA.Selenium
         private Func<IWebElement> ElementToBePresent(By locator)
         {
             return () =>
+            {
+                IWebElement foundElement = null;
+                try
                 {
-                    IWebElement foundElement = null;
-                    try
-                    {
-                        foundElement = driver.FindElement(By.Id("open-page-with-onunload-alert"));
-                    }
-                    catch (NoSuchElementException)
-                    {
-                    }
+                    foundElement = driver.FindElement(By.Id("open-page-with-onunload-alert"));
+                }
+                catch (NoSuchElementException)
+                {
+                }
 
-                    return foundElement;
-                };
+                return foundElement;
+            };
         }
 
         private Func<bool> ElementTextToEqual(IWebElement element, string text)
         {
             return () =>
-                {
-                    return element.Text == text;
-                };
+            {
+                return element.Text == text;
+            };
         }
 
         private Func<bool> WindowWithName(string name)
         {
             return () =>
+            {
+                try
                 {
-                    try
-                    {
-                        driver.SwitchTo().Window(name);
-                        return true;
-                    }
-                    catch(NoSuchWindowException)
-                    {
-                    }
+                    driver.SwitchTo().Window(name);
+                    return true;
+                }
+                catch (NoSuchWindowException)
+                {
+                }
 
-                    return false;
-                };
+                return false;
+            };
         }
 
         private Func<bool> WindowHandleCountToBe(int count)
         {
             return () =>
-                {
-                    return driver.WindowHandles.Count == count;
-                };
+            {
+                return driver.WindowHandles.Count == count;
+            };
         }
 
     }

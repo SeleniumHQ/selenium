@@ -144,7 +144,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void CanHandleTransparentSelect()
         {
             driver.Url = selectPage;

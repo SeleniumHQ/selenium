@@ -181,7 +181,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not retrieve cookies when in frame.")]
-        [IgnoreBrowser(Browser.Safari)]
         public void GetCookiesInAFrame()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("animals");
@@ -469,7 +468,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
-        [IgnoreBrowser(Browser.Safari, "Untested browser")]
         public void CanHandleSecureCookie()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
@@ -485,7 +483,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
-        [IgnoreBrowser(Browser.Safari, "Untested browser")]
         public void ShouldRetainCookieSecure()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
@@ -502,7 +499,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Untested browser")]
         public void CanHandleHttpOnlyCookie()
         {
             StringBuilder url = new StringBuilder(EnvironmentManager.Instance.UrlBuilder.WhereIs("cookie"));
@@ -520,7 +516,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldRetainHttpOnlyFlag()
         {
             StringBuilder url = new StringBuilder(EnvironmentManager.Instance.UrlBuilder.WhereElseIs("cookie"));

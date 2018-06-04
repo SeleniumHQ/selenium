@@ -13,7 +13,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Chrome does not support get element property command")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Safari, "Safari does not support get element property command")]
         public void ShouldReturnNullWhenGettingTheValueOfAPropertyThatIsNotListed()
         {
             driver.Url = simpleTestPage;
@@ -26,7 +26,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Chrome does not support get element property command")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Safari, "Safari does not support get element property command")]
         public void CanRetrieveTheCurrentValueOfAProperty()
         {
             driver.Url = formsPage;

@@ -22,7 +22,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowBasicKeyboardInput()
         {
             driver.Url = javascriptPage;
@@ -44,7 +43,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeyDownOnly()
         {
             driver.Url = javascriptPage;
@@ -71,7 +69,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeyUp()
         {
             driver.Url = javascriptPage;
@@ -99,7 +96,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithShiftPressed()
         {
             driver.Url = javascriptPage;
@@ -124,7 +120,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeysToActiveElement()
         {
             driver.Url = bodyTypingPage;
@@ -140,7 +135,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowBasicKeyboardInputOnActiveElement()
         {
             driver.Url = javascriptPage;
@@ -165,7 +159,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void CanGenerateKeyboardShortcuts()
         { 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("keyboard_shortcut.html");
@@ -261,7 +254,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithLeftShiftPressed()
         {
             driver.Url = javascriptPage;
@@ -304,7 +296,7 @@ namespace OpenQA.Selenium.Interactions
             return () =>
             {
                 string hexValue = string.Format("#{0:x2}{1:x2}{2:x2}", currentColor.R, currentColor.G, currentColor.B);
-                string rgbValue = string.Format("rgb({0}, {1}, {2}", currentColor.R, currentColor.G, currentColor.B);
+                string rgbValue = string.Format("rgb({0}, {1}, {2})", currentColor.R, currentColor.G, currentColor.B);
                 string rgbaValue = string.Format("rgba({0}, {1}, {2}, 1)", currentColor.R, currentColor.G, currentColor.B);
                 string actual = element.GetCssValue("background-color");
                 return actual != hexValue && actual != rgbValue && actual != rgbaValue;
@@ -314,7 +306,7 @@ namespace OpenQA.Selenium.Interactions
         private void AssertBackgroundColor(IWebElement el, Color expected)
         {
             string hexValue = string.Format("#{0:x2}{1:x2}{2:x2}", expected.R, expected.G, expected.B);
-            string rgbValue = string.Format("rgb({0}, {1}, {2}", expected.R, expected.G, expected.B);
+            string rgbValue = string.Format("rgb({0}, {1}, {2})", expected.R, expected.G, expected.B);
             string rgbaValue = string.Format("rgba({0}, {1}, {2}, 1)", expected.R, expected.G, expected.B);
             string actual = el.GetCssValue("background-color");
             Assert.That(actual, Is.EqualTo(hexValue).Or.EqualTo(rgbValue).Or.EqualTo(rgbaValue));

@@ -34,7 +34,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void PlainClickingOnMultiSelectionList()
         {
             driver.Url = formSelectionPage;
@@ -57,7 +56,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShiftClickingOnMultiSelectionList()
         {
             driver.Url = formSelectionPage;
@@ -82,7 +80,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Safari, "Control + click in macOS results in context menu, not multiselect.")]
         public void ControlClickingOnMultiSelectionList()
         {
             driver.Url = formSelectionPage;
@@ -105,7 +103,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ControlClickingOnCustomMultiSelectionList()
         {
             driver.Url = selectableItemsPage;
@@ -132,7 +129,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void CanMoveMouseToAnElementInAnIframeAndClick()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/click_in_iframe.html");
@@ -164,7 +160,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void CanClickOnLinksWithAnOffset()
         {
             driver.Url = clicksPage;
@@ -221,7 +216,6 @@ namespace OpenQA.Selenium.Interactions
          * up at the wrong coordinates.
          */
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void MouseMovementWorksWhenNavigatingToAnotherPage()
         {
             NavigateToClicksPageAndClickLink();
@@ -236,7 +230,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void ChordControlCutAndPaste()
         {
             // FIXME: macs don't have CONRTROL key
@@ -287,7 +280,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
-        [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.Opera)]
         public void CombiningShiftAndClickResultsInANewWindow()
         {
@@ -319,7 +311,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.Opera)]
         public void HoldingDownShiftKeyWhileClicking()
         {
@@ -334,7 +325,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void CanClickOnSuckerFishStyleMenu()
         {
             driver.Url = javascriptPage;
@@ -344,10 +334,6 @@ namespace OpenQA.Selenium.Interactions
             new Actions(driver).MoveToElement(driver.FindElement(By.Id("dynamo"))).Build().Perform();
 
             IWebElement element = driver.FindElement(By.Id("menu1"));
-            if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
-            {
-                Assert.Ignore("Skipping test: Simulating hover needs native events");
-            }
 
             IWebElement target = driver.FindElement(By.Id("item1"));
             Assert.AreEqual(string.Empty, target.Text);

@@ -50,9 +50,9 @@ namespace OpenQA.Selenium
             driver.Url = (simpleTestPage);
             string text = driver.FindElement(By.Id("multiline")).Text;
 
-            Assert.IsTrue(text.StartsWith("A div containing" + NewLine));
-            Assert.IsTrue(text.Contains("More than one line of text" + NewLine));
-            Assert.IsTrue(text.EndsWith("and block level elements"));
+            Assert.That(text, Does.StartWith("A div containing" + NewLine));
+            Assert.That(text, Does.Contain("More than one line of text" + NewLine));
+            Assert.That(text, Does.EndWith("and block level elements"));
         }
 
         [Test]
@@ -70,8 +70,8 @@ namespace OpenQA.Selenium
             driver.Url = (simpleTestPage);
             string text = driver.FindElement(By.Id("multiline")).Text;
 
-            Assert.IsTrue(text.StartsWith("A div containing"));
-            Assert.IsTrue(text.EndsWith("block level elements"));
+            Assert.That(text, Does.StartWith("A div containing"));
+            Assert.That(text, Does.EndWith("block level elements"));
         }
 
         [Test]
@@ -263,7 +263,7 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("macbeth.html");
             string source = driver.PageSource.Trim().ToLower();
 
-            Assert.IsTrue(source.EndsWith("</html>"));
+            Assert.That(source, Does.EndWith("</html>"));
         }
 
         [Test]
@@ -274,7 +274,7 @@ namespace OpenQA.Selenium
             IWebElement label = driver.FindElement(By.Id("label1"));
             string labelText = label.Text;
 
-            Assert.IsTrue(new Regex("foo[\\n\\r]+bar").IsMatch(labelText));
+            Assert.That(new Regex("foo[\\n\\r]+bar").IsMatch(labelText), "Label text '" + labelText + "' did not match regular expression 'foo[\\n\\r]+bar'");
         }
 
         [Test]
@@ -297,8 +297,8 @@ namespace OpenQA.Selenium
             IWebElement tr = driver.FindElement(By.Id("hidden_text"));
             String text = tr.Text;
 
-            Assert.IsTrue(text.Contains("some text"));
-            Assert.IsFalse(text.Contains("some more text"));
+            Assert.That(text, Does.Contain("some text"));
+            Assert.That(text, Does.Not.Contain("some more text"));
         }
 
         [Test]

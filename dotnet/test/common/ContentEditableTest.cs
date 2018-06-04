@@ -38,7 +38,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        [IgnoreBrowser(Browser.Safari, "Non-printable characters do not navigate within element")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;
@@ -64,7 +64,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
         [IgnoreBrowser(Browser.Firefox, "Not yet implemented = https://github.com/mozilla/geckodriver/issues/667")]
         public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
         {
@@ -94,7 +94,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Prepends text")]
         [IgnoreBrowser(Browser.IE, "Prepends text")]
-        [IgnoreBrowser(Browser.Safari, "Prepends text")]
+        [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
         [IgnoreBrowser(Browser.Firefox, "Not yet implemented = https://github.com/mozilla/geckodriver/issues/667")]
         public void ShouldAppendToTinyMCE()
         {
@@ -112,7 +112,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Prepends text")]
         [IgnoreBrowser(Browser.Firefox, "Doesn't write anything")]
-        [IgnoreBrowser(Browser.Safari, "Prepends text")]
+        [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
         public void AppendsTextToEndOfContentEditableWithMultipleTextNodes()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("content-editable.html");

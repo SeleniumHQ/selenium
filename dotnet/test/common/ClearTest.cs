@@ -119,7 +119,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver sees range input as not editable")]
         [IgnoreBrowser(Browser.Edge, "Driver sees range input as not editable")]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToClearRangeInput()
         {
             ShouldBeAbleToClearInput(By.Name("range_input"), "42", "50");
@@ -140,7 +139,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Driver sees color input as not editable")]
         [IgnoreBrowser(Browser.Edge, "Driver sees color input as not editable")]
         [IgnoreBrowser(Browser.IE, "Driver does not support clearing color elements")]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToClearColorInput()
         {
             ShouldBeAbleToClearInput(By.Name("color_input"), "#00ffff", "#000000");
