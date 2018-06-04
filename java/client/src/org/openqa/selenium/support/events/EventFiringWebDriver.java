@@ -458,7 +458,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     @Override
     public String getText() {
-      return element.getText();
+      dispatcher.beforeGetText(element, driver);
+      String text = element.getText();
+      dispatcher.afterGetText(element, driver, text);
+      return text;
     }
 
     @Override

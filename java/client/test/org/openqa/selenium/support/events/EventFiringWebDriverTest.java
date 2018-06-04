@@ -460,24 +460,50 @@ public class EventFiringWebDriverTest {
   }
 
   private static class ChildDriver extends StubDriver {}
-  
+
   @Test
   public void getScreenshotAs() {
     final String DATA = "data";
     WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(TakesScreenshot.class));
     WebDriverEventListener listener = mock(WebDriverEventListener.class);
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
-    
+
     Mockito.doReturn(DATA).when((TakesScreenshot)mockedDriver).getScreenshotAs(OutputType.BASE64);
-    
+
     String screenshot = ((TakesScreenshot)testedDriver).getScreenshotAs(OutputType.BASE64);
     assertTrue(screenshot.equals(DATA));
-    
+
     InOrder order = Mockito.inOrder(mockedDriver, listener);
     order.verify(listener).beforeGetScreenshotAs(OutputType.BASE64);
     order.verify((TakesScreenshot)mockedDriver).getScreenshotAs(OutputType.BASE64);
     order.verify(listener).afterGetScreenshotAs(OutputType.BASE64, screenshot);
     verifyNoMoreInteractions(mockedDriver, listener);
+  }
+
+  @Test
+  public void shouldFireEventsAroundGetText() {
+    final String SAMPLE = "Sample text";
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebElement mockedElement = mock(WebElement.class);
+
+    when(mockedDriver.findElement(By.name("foo"))).thenReturn(mockedElement);
+    when(mockedElement.getText()).thenReturn(SAMPLE);
+
+    WebDriverEventListener listener = mock(WebDriverEventListener.class);
+
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
+
+    String text = testedDriver.findElement(By.name("foo")).getText();
+    assertTrue(text.equals(SAMPLE));
+
+    InOrder order = Mockito.inOrder(mockedDriver, mockedElement, listener);
+    order.verify(listener).beforeFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
+    order.verify(mockedDriver).findElement(By.name("foo"));
+    order.verify(listener).afterFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
+    order.verify(listener).beforeGetText(any(WebElement.class), any(WebDriver.class));
+    order.verify(mockedElement).getText();
+    order.verify(listener).afterGetText(any(WebElement.class), any(WebDriver.class), eq(text));
+    verifyNoMoreInteractions(mockedDriver, mockedElement, listener);
   }
 
   @Test
