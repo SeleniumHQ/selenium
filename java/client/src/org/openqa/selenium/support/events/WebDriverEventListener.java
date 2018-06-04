@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.support.events;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public interface WebDriverEventListener {
 
