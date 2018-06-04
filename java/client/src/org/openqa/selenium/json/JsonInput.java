@@ -75,8 +75,14 @@ public class JsonInput implements Closeable {
         case BEGIN_ARRAY:
           return JsonType.START_COLLECTION;
 
+        case END_ARRAY:
+          return JsonType.END_COLLECTION;
+
         case BEGIN_OBJECT:
           return JsonType.START_MAP;
+
+        case END_OBJECT:
+          return JsonType.END_MAP;
 
         case BOOLEAN:
           return JsonType.BOOLEAN;
@@ -169,6 +175,13 @@ public class JsonInput implements Closeable {
     } catch (Exception e) {
       throw new JsonException(e);
     }
+  }
+
+  public Object nextNull() {
+    return execute(() -> {
+      jsonReader.nextNull();
+      return null;
+    });
   }
 
   private interface VoidCallable extends Callable<Void> {
