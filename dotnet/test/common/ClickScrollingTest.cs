@@ -27,7 +27,7 @@ namespace OpenQA.Selenium
 
             //Focusing on to click, but not actually following,
             //the link will scroll it in to view, which is a few pixels further than 0 
-            Assert.Greater(yOffset, 300, "Did not scroll");
+            Assert.That(yOffset, Is.GreaterThan(300), "Did not scroll");
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace OpenQA.Selenium
                 driver.SwitchTo().Frame("frame");
                 IWebElement element = driver.FindElement(By.Name("checkbox"));
                 element.Click();
-                Assert.IsTrue(element.Selected);
+                Assert.That(element.Selected, "Element is not selected");
             }
             finally
             {
@@ -149,7 +149,7 @@ namespace OpenQA.Selenium
                 driver.SwitchTo().Frame("scrolling_frame");
                 IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
                 element.Click();
-                Assert.IsTrue(element.Selected);
+                Assert.That(element.Selected, "Element is not selected");
             }
             finally
             {
@@ -166,7 +166,7 @@ namespace OpenQA.Selenium
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_non_scrolling_frame.html");
                 driver.SwitchTo().Frame("scrolling_frame");
                 IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
-                Assert.Throws<WebDriverException>(() => element.Click());
+                Assert.That(() => element.Click(), Throws.InstanceOf<WebDriverException>());
             }
             finally
             {
@@ -184,7 +184,7 @@ namespace OpenQA.Selenium
                 driver.SwitchTo().Frame("scrolling_frame");
                 IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
                 element.Click();
-                Assert.IsTrue(element.Selected);
+                Assert.That(element.Selected, "Element is not selected");
             }
             finally
             {
@@ -203,7 +203,7 @@ namespace OpenQA.Selenium
                 driver.SwitchTo().Frame("nested_scrolling_frame");
                 IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
                 element.Click();
-                Assert.IsTrue(element.Selected);
+                Assert.That(element.Selected, "Element is not selected");
             }
             finally
             {
@@ -222,7 +222,7 @@ namespace OpenQA.Selenium
                 driver.SwitchTo().Frame("nested_scrolling_frame");
                 IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
                 element.Click();
-                Assert.IsTrue(element.Selected);
+                Assert.That(element.Selected, "Element is not selected");
             }
             finally
             {
@@ -246,7 +246,7 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame("tall_frame");
             IWebElement element = driver.FindElement(By.Name("checkbox"));
             element.Click();
-            Assert.IsTrue(element.Selected);
+            Assert.That(element.Selected, "Element is not selected");
         }
 
         private long GetScrollTop()

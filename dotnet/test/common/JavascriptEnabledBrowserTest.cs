@@ -158,7 +158,7 @@ namespace OpenQA.Selenium
             // If we get this far then the test has passed, but let's do something basic to prove the point
             String text = driver.FindElement(By.Id("error")).Text;
 
-            Assert.IsNotNull(text);
+            Assert.That(text, Is.Not.Null);
         }
 
         [Test]
@@ -181,8 +181,8 @@ namespace OpenQA.Selenium
 
             Point point = ((ILocatable)element).LocationOnScreenOnceScrolledIntoView;
 
-            Assert.Greater(point.X, 1);
-            Assert.GreaterOrEqual(point.Y, 0);
+            Assert.That(point.X, Is.GreaterThan(1));
+            Assert.That(point.Y, Is.GreaterThanOrEqualTo(0));
         }
 
         [Test]

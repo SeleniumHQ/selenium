@@ -56,7 +56,7 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("otherframe")).Click();
             driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
 
-            Assert.IsTrue(driver.PageSource.Contains("Hello WebDriver"), "Target did not reload");
+            Assert.That(driver.PageSource, Does.Contain("Hello WebDriver"));
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace OpenQA.Selenium
             toClick.Click();
             driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
 
-            Assert.IsTrue(driver.PageSource.Contains("Hello WebDriver"), "Target did not reload");
+            Assert.That(driver.PageSource, Does.Contain("Hello WebDriver"));
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace OpenQA.Selenium
             toClick.Click();
             driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
 
-            Assert.IsTrue(driver.PageSource.Contains("Hello WebDriver"), "Target did not reload");
+            Assert.That(driver.PageSource, Does.Contain("Hello WebDriver"));
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace OpenQA.Selenium
             // has moved to this element, not that the parent element was the related target.
             if (this.IsNativeEventsEnabled)
             {
-                Assert.IsTrue(log.StartsWith("parent matches?"), "Should have moved to this element.");
+                Assert.That(log, Does.StartWith("parent matches?"));
             }
             else
             {
@@ -158,7 +158,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("label-for-checkbox-with-label")).Click();
 
-            Assert.IsTrue(driver.FindElement(By.Id("checkbox-with-label")).Selected, "Should be selected");
+            Assert.That(driver.FindElement(By.Id("checkbox-with-label")).Selected, "Checkbox should be selected");
         }
 
         [Test]

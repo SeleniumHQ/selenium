@@ -39,7 +39,7 @@ namespace OpenQA.Selenium
             TimeSpan duration = end - start;
             // The slow loading resource on that page takes 6 seconds to return,
             // but with 'none' page loading strategy 'get' operation should not wait.
-            Assert.IsTrue(duration.TotalMilliseconds < 1000, "Took too long to load page: " + duration.TotalMilliseconds);
+            Assert.That(duration.TotalMilliseconds, Is.LessThan(1000), "Took too long to load page: " + duration.TotalMilliseconds);
         }
 
 
@@ -60,7 +60,7 @@ namespace OpenQA.Selenium
             TimeSpan duration = end - start;
             // The slow loading resource on that page takes 6 seconds to return,
             // but with 'none' page loading strategy 'refresh' operation should not wait.
-            Assert.IsTrue(duration.TotalMilliseconds < 1000, "Took too long to load page: " + duration.TotalMilliseconds);
+            Assert.That(duration.TotalMilliseconds, Is.LessThan(1000), "Took too long to load page: " + duration.TotalMilliseconds);
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace OpenQA.Selenium
             // The slow loading resource on that page takes 6 seconds to return. If we
             // waited for it, our load time should be over 6 seconds.
             TimeSpan duration = end - start;
-            Assert.IsTrue(duration.TotalMilliseconds < 5 * 1000, "Took too long to load page: " + duration.TotalMilliseconds);
+            Assert.That(duration.TotalMilliseconds, Is.LessThan(5 * 1000), "Took too long to load page: " + duration.TotalMilliseconds);
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace OpenQA.Selenium
             // The slow loading resource on that page takes 6 seconds to return. If we
             // waited for it, our load time should be over 6 seconds.
             TimeSpan duration = end - start;
-            Assert.IsTrue(duration.TotalMilliseconds < 5 * 1000, "Took too long to load page: " + duration.TotalMilliseconds);
+            Assert.That(duration.TotalMilliseconds, Is.LessThan(5 * 1000), "Took too long to load page: " + duration.TotalMilliseconds);
         }
 
         [Test]
@@ -233,7 +233,7 @@ namespace OpenQA.Selenium
             driver.Navigate().Back();
             // We may have returned to the browser's home page
             string currentTitle = driver.Title;
-            Assert.IsTrue(currentTitle == originalTitle || currentTitle == "We Leave From Here", "title is " + currentTitle);
+            Assert.That(currentTitle, Is.EqualTo(originalTitle).Or.EqualTo("We Leave From Here"));
             if (driver.Title == originalTitle)
             {
                 driver.Navigate().Back();
@@ -480,7 +480,7 @@ namespace OpenQA.Selenium
         private void AssertPageLoadTimeoutIsEnforced(TestDelegate delegateToTest, long webDriverPageLoadTimeoutInSeconds, long pageLoadTimeBufferInSeconds)
         {
             DateTime start = DateTime.Now;
-            WebDriverTimeoutException ex = Assert.Throws<WebDriverTimeoutException>(delegateToTest, "I should have timed out after " + webDriverPageLoadTimeoutInSeconds + " seconds");
+            Assert.That(delegateToTest, Throws.InstanceOf<WebDriverTimeoutException>(), "I should have timed out after " + webDriverPageLoadTimeoutInSeconds + " seconds");
             DateTime end = DateTime.Now;
             TimeSpan duration = end - start;
             Assert.That(duration.TotalSeconds, Is.GreaterThan(webDriverPageLoadTimeoutInSeconds));

@@ -36,7 +36,7 @@ namespace OpenQA.Selenium.Interactions
             PerformDragAndDropWithMouse();
             IWebElement dragReporter = driver.FindElement(By.Id("dragging_reports"));
             // This is failing under HtmlUnit. A bug was filed.
-            Assert.IsTrue(Regex.IsMatch(dragReporter.Text, "Nothing happened\\. (?:DragOut *)+DropIn RightItem 3"));
+            Assert.That(dragReporter.Text, Does.Match("Nothing happened\\. (?:DragOut *)+DropIn RightItem 3"));
         }
 
         [Test]
@@ -422,7 +422,7 @@ namespace OpenQA.Selenium.Interactions
             moveToSpecificItem.Perform();
             moveToOtherList.Perform();
 
-            Assert.IsTrue(Regex.IsMatch(dragReporter.Text, "Nothing happened\\. (?:DragOut *)+"));
+            Assert.That(dragReporter.Text, Does.Match("Nothing happened\\. (?:DragOut *)+"));
             drop.Perform();
         }
 

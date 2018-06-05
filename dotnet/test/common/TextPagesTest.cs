@@ -27,7 +27,7 @@ namespace OpenQA.Selenium
             driver.Url = textPage;
 
             Cookie cookie = new Cookie("hello", "goodbye");
-            Assert.Throws<WebDriverException>(() => driver.Manage().Cookies.AddCookie(cookie));
+            Assert.That(() => driver.Manage().Cookies.AddCookie(cookie), Throws.InstanceOf<WebDriverException>());
         }
 
         //------------------------------------------------------------------
@@ -37,7 +37,7 @@ namespace OpenQA.Selenium
         public void FindingAnElementOnAPlainTextPageWillNeverWork()
         {
             driver.Url = textPage;
-            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("foo")));
+            Assert.That(() => driver.FindElement(By.Id("foo")), Throws.InstanceOf<NoSuchElementException>());
         }
     }
 }

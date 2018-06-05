@@ -41,7 +41,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("form2"));
-            Assert.Throws<NoSuchElementException>(() => element.FindElement(By.XPath("select/x")));
+            Assert.That(() => element.FindElement(By.XPath("select/x")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Id("test_id_div"));
-            Assert.Throws<NoSuchElementException>(() => element.FindElement(By.Id("test_id_out")));
+            Assert.That(() => element.FindElement(By.Id("test_id_out")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -324,7 +324,7 @@ namespace OpenQA.Selenium
             IWebElement elem = driver.FindElement(By.Id("links"));
 
             ReadOnlyCollection<IWebElement> elements = elem.FindElements(By.PartialLinkText("link"));
-            Assert.IsNotNull(elements);
+            Assert.That(elements, Is.Not.Null);
             Assert.AreEqual(6, elements.Count);
         }
 

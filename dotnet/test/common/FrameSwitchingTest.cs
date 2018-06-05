@@ -18,7 +18,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
             IWebElement element = driver.FindElement(By.TagName("frameset"));
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace OpenQA.Selenium
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
             IWebElement element = driver.FindElement(By.Id("iframe_page_heading"));
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
             driver.SwitchTo().Frame("sixth.iframe1");
-            Assert.IsTrue(driver.FindElement(By.TagName("body")).Text.Contains("Page number 3"));
+            Assert.That(driver.FindElement(By.TagName("body")).Text, Does.Contain("Page number 3"));
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
             IWebElement frame = driver.FindElement(By.TagName("frameset"));
-            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame(frame));
+            Assert.That(() => driver.SwitchTo().Frame(frame), Throws.InstanceOf<NoSuchFrameException>());
         }
 
         [Test]
@@ -197,7 +197,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
             driver.SwitchTo().Frame("fourth");
-            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame("second"));
+            Assert.That(() => driver.SwitchTo().Frame("second"), Throws.InstanceOf<NoSuchFrameException>());
 
         }
 
@@ -205,14 +205,14 @@ namespace OpenQA.Selenium
         public void ShouldThrowAnExceptionWhenAFrameCannotBeFound()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame("Nothing here"));
+            Assert.That(() => driver.SwitchTo().Frame("Nothing here"), Throws.InstanceOf<NoSuchFrameException>());
         }
 
         [Test]
         public void ShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame(27));
+            Assert.That(() => driver.SwitchTo().Frame(27), Throws.InstanceOf<NoSuchFrameException>());
         }
 
         [Test]
@@ -361,7 +361,7 @@ namespace OpenQA.Selenium
 
             IWebElement element = driver.FindElement(By.XPath("//*[@id = 'changeme']"));
 
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
         }
 
         [Test]
@@ -473,10 +473,10 @@ namespace OpenQA.Selenium
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
 
             driver.Url = framesetPage;
-            Assert.IsTrue((bool)executor.ExecuteScript("return window == window.top"));
+            Assert.That((bool)executor.ExecuteScript("return window == window.top"), Is.True);
 
             driver.SwitchTo().Frame("third");
-            Assert.IsTrue((bool)executor.ExecuteScript("return window != window.top"));
+            Assert.That((bool)executor.ExecuteScript("return window != window.top"), Is.True);
         }
 
         [Test]
@@ -561,7 +561,7 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame("iframe1");
             IWebElement element = driver.FindElement(By.Name("id-name1"));
 
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
         }
 
         private string GetTextOfGreetingElement()

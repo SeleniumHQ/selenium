@@ -41,7 +41,7 @@ namespace OpenQA.Selenium
                 body = driver.FindElement(By.CssSelector("body"));
                 return LoremIpsumText == body.Text;
             }, "Page source is: " + driver.PageSource);
-            Assert.IsTrue(LoremIpsumText == body.Text, "Page source is: " + driver.PageSource);
+            Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + driver.PageSource);
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace OpenQA.Selenium
                 body = driver.FindElement(By.XPath("//body"));
                 return LoremIpsumText == body.Text;
             }, "Page source is: " + driver.PageSource);
-            Assert.IsTrue(LoremIpsumText == body.Text, "Page source is: " + driver.PageSource);
+            Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + driver.PageSource);
 
         }
 
@@ -110,7 +110,7 @@ namespace OpenQA.Selenium
                 body = driver.FindElement(By.XPath("//body"));
                 return LoremIpsumText == body.Text;
             }, "Page source is: " + driver.PageSource);
-            Assert.IsTrue(LoremIpsumText == body.Text, "Page source is: " + driver.PageSource);
+            Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + driver.PageSource);
             driver.Url = "about:blank";
         }
 

@@ -20,8 +20,8 @@ namespace OpenQA.Selenium
         {
             driver.Url = readOnlyPage;
             IWebElement element = driver.FindElement(By.Id("textInputnotenabled"));
-            Assert.IsFalse(element.Enabled);
-            Assert.Throws<InvalidElementStateException>(() => element.Clear());
+            Assert.That(element.Enabled, Is.False);
+            Assert.That(() => element.Clear(), Throws.InstanceOf<InvalidElementStateException>());
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = readOnlyPage;
             IWebElement element = driver.FindElement(By.Id("readOnlyTextInput"));
-            Assert.Throws<InvalidElementStateException>(() => element.Clear());
+            Assert.That(() => element.Clear(), Throws.InstanceOf<InvalidElementStateException>());
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = readOnlyPage;
             IWebElement element = driver.FindElement(By.Id("textAreaNotenabled"));
-            Assert.Throws<InvalidElementStateException>(() => element.Clear());
+            Assert.That(() => element.Clear(), Throws.InstanceOf<InvalidElementStateException>());
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = readOnlyPage;
             IWebElement element = driver.FindElement(By.Id("textAreaReadOnly"));
-            Assert.Throws<InvalidElementStateException>(() => element.Clear());
+            Assert.That(() => element.Clear(), Throws.InstanceOf<InvalidElementStateException>());
         }
 
         [Test]

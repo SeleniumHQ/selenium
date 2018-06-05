@@ -130,8 +130,8 @@ namespace OpenQA.Selenium.Interactions
             Actions actionProvider = new Actions(driver);
             actionProvider.DragAndDropToOffset(img, int.MinValue, int.MinValue).Perform();
             Point newLocation = img.Location;
-            Assert.LessOrEqual(newLocation.X, 0);
-            Assert.LessOrEqual(newLocation.Y, 0);
+            Assert.That(newLocation.X, Is.LessThanOrEqualTo(0));
+            Assert.That(newLocation.Y, Is.LessThanOrEqualTo(0));
 
             // TODO(jimevans): re-enable this test once moveto does not exceed the
             // coordinates accepted by the browsers (Firefox in particular). At the
@@ -208,10 +208,10 @@ namespace OpenQA.Selenium.Interactions
             // Assert that only one mouse click took place and the mouse was moved
             // during it.
             string reporterText = reporter.Text;
-            Assert.IsTrue(Regex.IsMatch(reporterText, "start( move)* down( move)+ up"));
+            Assert.That(reporterText, Does.Match("start( move)* down( move)+ up"));
             Assert.AreEqual(1, Regex.Matches(reporterText, "down").Count, "Reporter text:" + reporterText);
             Assert.AreEqual(1, Regex.Matches(reporterText, "up").Count, "Reporter text:" + reporterText);
-            Assert.IsTrue(reporterText.Contains("move"), "Reporter text:" + reporterText);
+            Assert.That(reporterText, Does.Contain("move"));
         }
 
         [Test]

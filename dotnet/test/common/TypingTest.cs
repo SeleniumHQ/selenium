@@ -17,7 +17,7 @@ namespace OpenQA.Selenium
 
             IWebElement result = driver.FindElement(By.Id("result"));
             string text = result.Text;
-            Assert.IsTrue(text.Contains("press:"), "Text should contain 'press:'. Actual text: {0}", text);
+            Assert.That(text, Does.Contain("press:"));
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace OpenQA.Selenium
 
             IWebElement result = driver.FindElement(By.Id("result"));
             string text = result.Text;
-            Assert.IsTrue(text.Contains("down:"), "Text should contain 'down:'. Actual text: {0}", text);
+            Assert.That(text, Does.Contain("down:"));
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace OpenQA.Selenium
 
             IWebElement result = driver.FindElement(By.Id("result"));
             string text = result.Text;
-            Assert.IsTrue(text.Contains("up:"), "Text should contain 'up:'. Actual text: {0}", text);
+            Assert.That(text, Does.Contain("up:"));
         }
 
         [Test]
@@ -255,23 +255,23 @@ namespace OpenQA.Selenium
 
             element.SendKeys(Keys.ArrowDown);
             string text = result.Text.Trim();
-            Assert.IsTrue(text.Contains("down: 40"), "Text should contain 'down: 40'. Actual text: {}", text);
-            Assert.IsTrue(text.Contains("up: 40"), "Text should contain 'up: 40'. Actual text: {}", text);
+            Assert.That(text, Does.Contain("down: 40"));
+            Assert.That(text, Does.Contain("up: 40"));
 
             element.SendKeys(Keys.ArrowUp);
             text = result.Text.Trim();
-            Assert.IsTrue(text.Trim().Contains("down: 38"), "Text should contain 'down: 38'. Actual text: {}", text);
-            Assert.IsTrue(text.Trim().Contains("up: 38"), "Text should contain 'up: 38'. Actual text: {}", text);
+            Assert.That(text, Does.Contain("down: 38"));
+            Assert.That(text, Does.Contain("up: 38"));
 
             element.SendKeys(Keys.ArrowLeft);
             text = result.Text.Trim();
-            Assert.IsTrue(text.Trim().Contains("down: 37"), "Text should contain 'down: 37'. Actual text: {}", text);
-            Assert.IsTrue(text.Trim().Contains("up: 37"), "Text should contain 'up: 37'. Actual text: {}", text);
+            Assert.That(text, Does.Contain("down: 37"));
+            Assert.That(text, Does.Contain("up: 37"));
 
             element.SendKeys(Keys.ArrowRight);
             text = result.Text.Trim();
-            Assert.IsTrue(text.Trim().Contains("down: 39"), "Text should contain 'down: 39'. Actual text: {}", text);
-            Assert.IsTrue(text.Trim().Contains("up: 39"), "Text should contain 'up: 39'. Actual text: {}", text);
+            Assert.That(text, Does.Contain("down: 39"));
+            Assert.That(text, Does.Contain("up: 39"));
 
             // And leave no rubbish/printable keys in the "keyReporter"
             Assert.AreEqual(string.Empty, element.GetAttribute("value"));
@@ -303,7 +303,7 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(numericShiftsEtc, element.GetAttribute("value"));
             string text = result.Text.Trim();
-            Assert.IsTrue(text.Contains(" up: 16"), "Text should contain ' up: 16'. Actual text: {0}", text);
+            Assert.That(text, Does.Contain(" up: 16"));
         }
 
         [Test]
@@ -332,7 +332,7 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(upperAlphas, element.GetAttribute("value"));
             string text = result.Text.Trim();
-            Assert.IsTrue(text.Contains(" up: 16"), "Text should contain ' up: 16'. Actual text: {0}", text);
+            Assert.That(text, Does.Contain(" up: 16"));
         }
 
         [Test]
@@ -350,7 +350,7 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(allPrintable, element.GetAttribute("value"));
             string text = result.Text.Trim();
-            Assert.IsTrue(text.Contains(" up: 16"), "Text should contain ' up: 16'. Actual text: {0}", text);
+            Assert.That(text, Does.Contain(" up: 16"));
         }
 
         [Test]
@@ -475,7 +475,7 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(string.Empty, element.GetAttribute("value"));
             string text = result.Text.Trim();
-            Assert.IsTrue(text.Contains(" up: 16"), "Text should contain ' up: 16'. Actual text: {0}", text);
+            Assert.That(text, Does.Contain(" up: 16"));
         }
 
         [Test]
@@ -505,7 +505,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual("done", element.GetAttribute("value"));
             // Note: trailing SHIFT up here
             string text = result.Text.Trim();
-            Assert.IsTrue(text.Contains(" up: 16"), "Text should contain ' up: 16'. Actual text: {0}", text);
+            Assert.That(text, Does.Contain(" up: 16"), "Text should contain ' up: 16'. Actual text: {0}", text);
 
             element.SendKeys("" + Keys.Delete);
             Assert.AreEqual(string.Empty, element.GetAttribute("value"));
@@ -535,7 +535,7 @@ namespace OpenQA.Selenium
             //Chords
             element.SendKeys("" + Keys.Home + Keys.Shift + Keys.End);
             string text = result.Text.Trim();
-            Assert.IsTrue(text.Contains(" up: 16"), "Text should contain ' up: 16'. Actual text: {0}", text);
+            Assert.That(text, Does.Contain(" up: 16"));
 
             element.SendKeys(Keys.Control + "x");
             Assert.AreEqual(string.Empty, element.GetAttribute("value"));

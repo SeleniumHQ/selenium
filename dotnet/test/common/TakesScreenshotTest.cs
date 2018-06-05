@@ -30,8 +30,8 @@ namespace OpenQA.Selenium
             string filename = Path.Combine(Path.GetTempPath(), "snapshot" + new Random().Next().ToString() + ".png");
             Screenshot screenImage = screenshotCapableDriver.GetScreenshot();
             screenImage.SaveAsFile(filename, ScreenshotImageFormat.Png);
-            Assert.IsTrue(File.Exists(filename));
-            Assert.IsTrue(new FileInfo(filename).Length > 0);
+            Assert.That(File.Exists(filename), Is.True);
+            Assert.That(new FileInfo(filename).Length, Is.GreaterThan(0));
             File.Delete(filename);
         }
 
@@ -47,7 +47,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             Screenshot screenImage = screenshotCapableDriver.GetScreenshot();
             string base64 = screenImage.AsBase64EncodedString;
-            Assert.IsTrue(base64.Length > 0);
+            Assert.That(base64.Length, Is.GreaterThan(0));
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             Screenshot screenImage = screenshotCapableDriver.GetScreenshot();
             byte[] bytes = screenImage.AsByteArray;
-            Assert.IsTrue(bytes.Length > 0);
+            Assert.That(bytes.Length, Is.GreaterThan(0));
         }
 
         [Test]
@@ -104,8 +104,8 @@ namespace OpenQA.Selenium
 
             Screenshot screenImage = screenshotCapableElement.GetScreenshot();
             byte[] imageData = screenImage.AsByteArray;
-            Assert.IsNotNull(imageData);
-            Assert.IsTrue(imageData.Length > 0);
+            Assert.That(imageData, Is.Not.Null);
+            Assert.That(imageData.Length, Is.GreaterThan(0));
 
             Color pixelColor = GetPixelColor(screenImage, 1, 1);
             string pixelColorString = FormatColorToHex(pixelColor.ToArgb());
@@ -430,8 +430,8 @@ namespace OpenQA.Selenium
                 Bitmap bitmap = new Bitmap(image);
                 int height = bitmap.Height;
                 int width = bitmap.Width;
-                Assert.IsTrue(width > 0);
-                Assert.IsTrue(height > 0);
+                Assert.That(width, Is.GreaterThan(0));
+                Assert.That(height, Is.GreaterThan(0));
 
                 for (int i = 0; i < width; i = i + stepX)
                 {
@@ -447,7 +447,7 @@ namespace OpenQA.Selenium
                 Assert.Fail("Unable to get actual colors from screenshot: " + e.Message);
             }
 
-            Assert.IsTrue(colors.Count > 0);
+            Assert.That(colors.Count, Is.GreaterThan(0));
 #endif
 
             return colors;

@@ -33,7 +33,7 @@ namespace OpenQA.Selenium
             }
 
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
-            Assert.IsTrue(logTypes.Contains(LogType.Browser), "Browser logs should be enabled by default");
+            Assert.That(logTypes, Contains.Item(LogType.Browser));
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace OpenQA.Selenium
             // Do one action to have *something* in the client logs.
             driver.Url = formsPage;
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
-            Assert.IsTrue(logTypes.Contains(LogType.Client), "Client logs should be enabled by default");
+            Assert.That(logTypes, Contains.Item(LogType.Client));
             bool foundExecutingStatement = false;
             bool foundExecutedStatement = false;
             foreach (LogEntry logEntry in driver.Manage().Logs.GetLog(LogType.Client))
@@ -58,8 +58,8 @@ namespace OpenQA.Selenium
                 foundExecutedStatement |= logEntry.ToString().Contains("Executed: ");
             }
 
-            Assert.IsTrue(foundExecutingStatement);
-            Assert.IsTrue(foundExecutedStatement);
+            Assert.That(foundExecutingStatement, Is.True);
+            Assert.That(foundExecutedStatement, Is.True);
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace OpenQA.Selenium
             }
 
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
-            Assert.IsTrue(logTypes.Contains(LogType.Driver), "Remote driver logs should be enabled by default");
+            Assert.That(logTypes, Contains.Item(LogType.Driver), "Remote driver logs should be enabled by default");
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace OpenQA.Selenium
             }
 
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
-            Assert.IsFalse(logTypes.Contains(LogType.Profiler), "Profiler logs should not be enabled by default");
+            Assert.That(logTypes, Has.No.Member(LogType.Profiler), "Profiler logs should not be enabled by default");
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace OpenQA.Selenium
             DesiredCapabilities caps = new DesiredCapabilities();
             CreateWebDriverWithProfiling();
             ReadOnlyCollection<string> logTypes = localDriver.Manage().Logs.AvailableLogTypes;
-            Assert.IsTrue(logTypes.Contains(LogType.Profiler), "Profiler log should be enabled");
+            Assert.That(logTypes, Contains.Item(LogType.Profiler), "Profiler log should be enabled");
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace OpenQA.Selenium
             //assumeTrue(Boolean.getBoolean("selenium.browser.remote"));
 
             ReadOnlyCollection<string> logTypes = localDriver.Manage().Logs.AvailableLogTypes;
-            Assert.IsTrue(logTypes.Contains(LogType.Server), "Server logs should be enabled by default");
+            Assert.That(logTypes, Contains.Item(LogType.Server), "Server logs should be enabled by default");
         }
 
         private void CreateWebDriverWithProfiling()

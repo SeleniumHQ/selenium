@@ -14,10 +14,10 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
 
-            Assert.IsTrue(driver.FindElement(By.Id("displayed")).Displayed);
-            Assert.IsFalse(driver.FindElement(By.Id("none")).Displayed);
-            Assert.IsFalse(driver.FindElement(By.Id("suppressedParagraph")).Displayed);
-            Assert.IsFalse(driver.FindElement(By.Id("hidden")).Displayed);
+            Assert.That(driver.FindElement(By.Id("displayed")).Displayed, Is.True, "Element with ID 'displayed' should be displayed");
+            Assert.That(driver.FindElement(By.Id("none")).Displayed, Is.False, "Element with ID 'none' should not be displayed");
+            Assert.That(driver.FindElement(By.Id("suppressedParagraph")).Displayed, Is.False, "Element with ID 'suppressedParagraph' should not be displayed");
+            Assert.That(driver.FindElement(By.Id("hidden")).Displayed, Is.False, "Element with ID 'hidden' should not be displayed");
         }
 
         [Test]
@@ -28,8 +28,8 @@ namespace OpenQA.Selenium
             IWebElement childDiv = driver.FindElement(By.Id("hiddenchild"));
             IWebElement hiddenLink = driver.FindElement(By.Id("hiddenlink"));
 
-            Assert.IsFalse(childDiv.Displayed);
-            Assert.IsFalse(hiddenLink.Displayed);
+            Assert.That(childDiv.Displayed, Is.False, "Child div should not be displayed");
+            Assert.That(hiddenLink.Displayed, Is.False, "Hidden link should not be displayed");
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace OpenQA.Selenium
 
             IWebElement shown = driver.FindElement(By.Id("visibleSubElement"));
 
-            Assert.IsTrue(shown.Displayed);
+            Assert.That(shown.Displayed, Is.True);
         }
 
         [Test]
@@ -49,11 +49,11 @@ namespace OpenQA.Selenium
 
             IWebElement element = driver.FindElement(By.Id("hideMe"));
 
-            Assert.IsTrue(element.Displayed);
+            Assert.That(element.Displayed, Is.True);
 
             element.Click();
 
-            Assert.IsFalse(element.Displayed);
+            Assert.That(element.Displayed, Is.False);
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace OpenQA.Selenium
 
             IWebElement shown = driver.FindElement(By.Name("hidden"));
 
-            Assert.IsFalse(shown.Displayed);
+            Assert.That(shown.Displayed, Is.False);
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("unclickable"));
             Assert.That(() => element.SendKeys("You don't see me"), Throws.InstanceOf<ElementNotInteractableException>());
 
-            Assert.AreNotEqual(element.GetAttribute("value"), "You don't see me");
+            Assert.That(element.GetAttribute("value"), Is.Not.EqualTo("You don't see me"));
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace OpenQA.Selenium
 
             Assert.AreEqual(0, size.Width, "Should have 0 width");
             Assert.AreEqual(0, size.Height, "Should have 0 height");
-            Assert.IsTrue(element.Displayed);
+            Assert.That(element.Displayed, Is.True);
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace OpenQA.Selenium
             driver.Url = url;
 
             IWebElement element = driver.FindElement(By.Id("suggest"));
-            Assert.IsTrue(element.Displayed);
+            Assert.That(element.Displayed, Is.True);
         }
 
         [Test]
@@ -120,9 +120,9 @@ namespace OpenQA.Selenium
             {
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
                 IWebElement right = driver.FindElement(By.Id("right"));
-                Assert.IsFalse(right.Displayed, "Failed for " + page);
+                Assert.That(right.Displayed, Is.False, "Failed for " + page);
                 IWebElement bottomRight = driver.FindElement(By.Id("bottom-right"));
-                Assert.IsFalse(bottomRight.Displayed, "Failed for " + page);
+                Assert.That(bottomRight.Displayed, Is.False, "Failed for " + page);
             }
         }
 
@@ -139,9 +139,9 @@ namespace OpenQA.Selenium
             {
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
                 IWebElement bottom = driver.FindElement(By.Id("bottom"));
-                Assert.IsFalse(bottom.Displayed, "Failed for " + page);
+                Assert.That(bottom.Displayed, Is.False, "Failed for " + page);
                 IWebElement bottomRight = driver.FindElement(By.Id("bottom-right"));
-                Assert.IsFalse(bottomRight.Displayed, "Failed for " + page);
+                Assert.That(bottomRight.Displayed, Is.False, "Failed for " + page);
             }
         }
 
@@ -160,7 +160,7 @@ namespace OpenQA.Selenium
             {
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
                 IWebElement right = driver.FindElement(By.Id("right"));
-                Assert.IsTrue(right.Displayed, "Failed for " + page);
+                Assert.That(right.Displayed, Is.True, "Failed for " + page);
             }
         }
 
@@ -179,7 +179,7 @@ namespace OpenQA.Selenium
             {
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
                 IWebElement bottom = driver.FindElement(By.Id("bottom"));
-                Assert.IsTrue(bottom.Displayed, "Failed for " + page);
+                Assert.That(bottom.Displayed, Is.True, "Failed for " + page);
             }
         }
 
@@ -196,7 +196,7 @@ namespace OpenQA.Selenium
             {
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
                 IWebElement bottomRight = driver.FindElement(By.Id("bottom-right"));
-                Assert.IsTrue(bottomRight.Displayed, "Failed for " + page);
+                Assert.That(bottomRight.Displayed, Is.True, "Failed for " + page);
             }
         }
 
@@ -215,7 +215,7 @@ namespace OpenQA.Selenium
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("overflow-body.html");
 
                 IWebElement element = driver.FindElement(By.Name("resultsFrame"));
-                Assert.IsTrue(element.Displayed);
+                Assert.That(element.Displayed, Is.True);
             }
             finally
             {
@@ -230,7 +230,7 @@ namespace OpenQA.Selenium
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");
             driver.Url = url;
             IWebElement element = driver.FindElement(By.Id("singleHidden"));
-            Assert.IsFalse(element.Displayed);
+            Assert.That(element.Displayed, Is.False);
         }
 
         [Test]
@@ -241,7 +241,7 @@ namespace OpenQA.Selenium
             driver.Url = url;
 
             IWebElement element = driver.FindElement(By.Id("child"));
-            Assert.IsFalse(element.Displayed);
+            Assert.That(element.Displayed, Is.False);
         }
 
         [Test]
@@ -271,12 +271,12 @@ namespace OpenQA.Selenium
             IWebElement apples = options[0];
             IWebElement oranges = options[1];
 
-            Assert.IsTrue(apples.Selected, "Apples should be selected");
-            Assert.IsFalse(oranges.Selected, "Oranges shoudl be selected");
+            Assert.That(apples.Selected, Is.True, "Apples should be selected");
+            Assert.That(oranges.Selected, Is.False, "Oranges shoudl be selected");
 
             oranges.Click();
-            Assert.IsFalse(apples.Selected, "Apples should not be selected");
-            Assert.IsTrue(oranges.Selected, "Oranges should be selected");
+            Assert.That(apples.Selected, Is.False, "Apples should not be selected");
+            Assert.That(oranges.Selected, Is.True, "Oranges should be selected");
         }
 
         [Test]
@@ -287,7 +287,7 @@ namespace OpenQA.Selenium
             IWebElement area = driver.FindElement(By.Id("mtgt_unnamed_0"));
 
             bool isShown = area.Displayed;
-            Assert.IsTrue(isShown, "The element and the enclosing map should be considered shown.");
+            Assert.That(isShown, Is.True, "The element and the enclosing map should be considered shown.");
         }
 
         //------------------------------------------------------------------
@@ -306,7 +306,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = clickJackerPage;
             IWebElement element = driver.FindElement(By.Id("clickJacker"));
-            Assert.IsFalse(element.Displayed);
+            Assert.That(element.Displayed, Is.False);
         }
     }
 }

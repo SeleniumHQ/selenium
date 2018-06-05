@@ -42,7 +42,7 @@ namespace OpenQA.Selenium
                 if (firstEntries.Count > 0)
                 {
                     ReadOnlyCollection<LogEntry> secondEntries = driver.Manage().Logs.GetLog(logType);
-                    Assert.IsFalse(HasOverlappingLogEntries(firstEntries, secondEntries), string.Format("There should be no overlapping log entries in consecutive get log calls for {0} logs", logType));
+                    Assert.That(HasOverlappingLogEntries(firstEntries, secondEntries), Is.False, string.Format("There should be no overlapping log entries in consecutive get log calls for {0} logs", logType));
                 }
             }
         }
@@ -69,7 +69,7 @@ namespace OpenQA.Selenium
                 {
                     if (firstLogType != secondLogType)
                     {
-                        Assert.IsFalse(HasOverlappingLogEntries(logTypeToEntriesDictionary[firstLogType], logTypeToEntriesDictionary[secondLogType]), string.Format("Two different log types ({0}, {1}) should not contain the same log entries", firstLogType, secondLogType));
+                        Assert.That(HasOverlappingLogEntries(logTypeToEntriesDictionary[firstLogType], logTypeToEntriesDictionary[secondLogType]), Is.False, string.Format("Two different log types ({0}, {1}) should not contain the same log entries", firstLogType, secondLogType));
                     }
                 }
             }

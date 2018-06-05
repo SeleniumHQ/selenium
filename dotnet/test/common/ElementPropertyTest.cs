@@ -19,7 +19,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement head = driver.FindElement(By.XPath("/html"));
             string attribute = head.GetProperty("cheese");
-            Assert.IsNull(attribute);
+            Assert.That(attribute, Is.Null);
         }
 
         [Test]

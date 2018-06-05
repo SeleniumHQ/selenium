@@ -16,41 +16,41 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute()
         {
-            Assert.Throws<ArgumentException>(() => new ReturnedCookie("hi;hi", "value", null, null, DateTime.Now, false, false));
+            Assert.That(() => new ReturnedCookie("hi;hi", "value", null, null, DateTime.Now, false, false), Throws.InstanceOf<ArgumentException>());
         }
 
         [Test]
         public void ShouldThrowAnExceptionWhenTheNameIsNull()
         {
-            Assert.Throws<ArgumentException>(() => new ReturnedCookie(null, "value", null, null, DateTime.Now, false, false));
+            Assert.That(() => new ReturnedCookie(null, "value", null, null, DateTime.Now, false, false), Throws.InstanceOf<ArgumentException>());
         }
 
         [Test]
         public void CookiesShouldAllowSecureToBeSet()
         {
             Cookie cookie = new ReturnedCookie("name", "value", "", "/", DateTime.Now, true, false);
-            Assert.IsTrue(cookie.Secure);
+            Assert.That(cookie.Secure, Is.True);
         }
 
         [Test]
         public void SecureDefaultsToFalse()
         {
             Cookie cookie = new Cookie("name", "value");
-            Assert.IsFalse(cookie.Secure);
+            Assert.That(cookie.Secure, Is.False);
         }
 
         [Test]
         public void CookiesShouldAllowHttpOnlyToBeSet()
         {
             Cookie cookie = new ReturnedCookie("name", "value", "", "/", DateTime.Now, false, true);
-            Assert.IsTrue(cookie.IsHttpOnly);
+            Assert.That(cookie.IsHttpOnly, Is.True);
         }
 
         [Test]
         public void HttpOnlyDefaultsToFalse()
         {
             Cookie cookie = new Cookie("name", "value");
-            Assert.IsFalse(cookie.IsHttpOnly);
+            Assert.That(cookie.IsHttpOnly, Is.False);
         }
 
         //------------------------------------------------------------------
@@ -59,7 +59,7 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldThrowAnExceptionWhenTheValueIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new ReturnedCookie("name", null, null, null, DateTime.Now, false, false));
+            Assert.That(() => new ReturnedCookie("name", null, null, null, DateTime.Now, false, false), Throws.InstanceOf<ArgumentNullException>());
         }
 
         [Test]

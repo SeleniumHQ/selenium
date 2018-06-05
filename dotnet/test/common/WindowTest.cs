@@ -27,8 +27,8 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToGetTheSizeOfTheCurrentWindow()
         {
             Size size = driver.Manage().Window.Size;
-            Assert.Greater(size.Width, 0);
-            Assert.Greater(size.Height, 0);
+            Assert.That(size.Width, Is.GreaterThan(0));
+            Assert.That(size.Height, Is.GreaterThan(0));
         }
 
         [Test]
@@ -104,8 +104,8 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToGetThePositionOfTheCurrentWindow()
         {
             Point position = driver.Manage().Window.Position;
-            Assert.Greater(position.X, 0);
-            Assert.Greater(position.Y, 0);
+            Assert.That(position.X, Is.GreaterThan(0));
+            Assert.That(position.Y, Is.GreaterThan(0));
         }
 
         [Test]
@@ -119,8 +119,8 @@ namespace OpenQA.Selenium
             Maximize();
 
             IWindow window = driver.Manage().Window;
-            Assert.Greater(window.Size.Height, targetSize.Height);
-            Assert.Greater(window.Size.Width, targetSize.Width);
+            Assert.That(window.Size.Height, Is.GreaterThan(targetSize.Height));
+            Assert.That(window.Size.Width, Is.GreaterThan(targetSize.Width));
         }
 
         [Test]
@@ -193,8 +193,8 @@ namespace OpenQA.Selenium
             IWindow window = driver.Manage().Window;
             Size windowSize = window.Size;
             Point windowPosition = window.Position;
-            Assert.Greater(windowSize.Height, targetSize.Height);
-            Assert.Greater(windowSize.Width, targetSize.Width);
+            Assert.That(windowSize.Height, Is.GreaterThan(targetSize.Height));
+            Assert.That(windowSize.Width, Is.GreaterThan(targetSize.Width));
         }
 
         [Test]
@@ -212,10 +212,10 @@ namespace OpenQA.Selenium
             IWindow window = driver.Manage().Window;
             Size windowSize = window.Size;
             Point windowPosition = window.Position;
-            Assert.Less(windowSize.Height, targetSize.Height);
-            Assert.Less(windowSize.Width, targetSize.Width);
-            Assert.Less(windowPosition.X, 0);
-            Assert.Less(windowPosition.Y, 0);
+            Assert.That(windowSize.Height, Is.LessThan(targetSize.Height));
+            Assert.That(windowSize.Width, Is.LessThan(targetSize.Width));
+            Assert.That(windowPosition.X, Is.LessThan(0));
+            Assert.That(windowPosition.Y, Is.LessThan(0));
         }
 
         private void FullScreen()

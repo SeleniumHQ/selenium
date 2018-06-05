@@ -27,9 +27,9 @@ namespace OpenQA.Selenium
             driver.Url = (simpleTestPage);
             string text = driver.FindElement(By.Id("multiline")).Text;
 
-            Assert.IsTrue(text.Contains("A div containing"));
-            Assert.IsTrue(text.Contains("More than one line of text"));
-            Assert.IsTrue(text.Contains("and block level elements"));
+            Assert.That(text, Does.Contain("A div containing"));
+            Assert.That(text, Does.Contain("More than one line of text"));
+            Assert.That(text, Does.Contain("and block level elements"));
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace OpenQA.Selenium
             string text = labelForUsername.Text;
 
             Assert.AreEqual(labelForUsername.FindElements(By.TagName("script")).Count, 1);
-            Assert.IsFalse(text.Contains("document.getElementById"));
+            Assert.That(text, Does.Not.Contain("document.getElementById"));
             Assert.AreEqual(text, "Username:");
         }
 

@@ -64,7 +64,7 @@ namespace OpenQA.Selenium
         public void ShouldNotBeAbleToSubmitAFormThatDoesNotExist()
         {
             driver.Url = formsPage;
-            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Name("SearchableText")).Submit());
+            Assert.That(() => driver.FindElement(By.Name("SearchableText")).Submit(), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace OpenQA.Selenium
 
             WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
             Assert.AreEqual("We Arrive Here", driver.Title);
-            Assert.IsTrue(driver.Url.EndsWith("?x=name"));
+            Assert.That(driver.Url, Does.EndWith("?x=name"));
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace OpenQA.Selenium
 
             WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
             Assert.AreEqual("We Arrive Here", driver.Title);
-            Assert.IsTrue(driver.Url.EndsWith("?x=name"));
+            Assert.That(driver.Url, Does.EndWith("?x=name"));
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace OpenQA.Selenium
             string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
             driver.Url = formsPage;
             IWebElement uploadElement = driver.FindElement(By.Id("upload"));
-            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
+            Assert.That(uploadElement.GetAttribute("value"), Is.Null.Or.EqualTo(string.Empty));
 
             string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, testFileName);
             System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
@@ -193,7 +193,7 @@ namespace OpenQA.Selenium
             {
                 driver.Url = formsPage;
                 IWebElement uploadElement = driver.FindElement(By.Id("upload"));
-                Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
+                Assert.That(uploadElement.GetAttribute("value"), Is.Null.Or.EqualTo(string.Empty));
 
                 uploadElement.SendKeys(inputFile.FullName);
                 uploadElement.Submit();
@@ -340,12 +340,12 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("working"));
             element.SendKeys("Some text");
             String value = element.GetAttribute("value");
-            Assert.IsTrue(value.Length > 0);
+            Assert.That(value.Length, Is.GreaterThan(0));
 
             element.Clear();
             value = element.GetAttribute("value");
 
-            Assert.AreEqual(value.Length, 0);
+            Assert.That(value.Length, Is.EqualTo(0));
         }
 
         [Test]
@@ -355,12 +355,12 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("withText"));
             element.SendKeys("Some text");
             String value = element.GetAttribute("value");
-            Assert.IsTrue(value.Length > 0);
+            Assert.That(value.Length, Is.GreaterThan(0));
 
             element.Clear();
             value = element.GetAttribute("value");
 
-            Assert.AreEqual(value.Length, 0);
+            Assert.That(value.Length, Is.EqualTo(0));
         }
 
         private void CheckSubmitButton(string buttonId)

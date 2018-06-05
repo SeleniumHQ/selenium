@@ -46,7 +46,7 @@ namespace OpenQA.Selenium.Html5
             string key = "a", value = "b";
             storage.SetItem(key, value);
             storage.Clear();
-            Assert.IsNull(storage.GetItem(key));
+            Assert.That(storage.GetItem(key), Is.Null);
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.Html5
             string key = "a", value = "b";
             storage.SetItem(key, value);
             storage.RemoveItem(key);
-            Assert.IsNull(storage.GetItem(key));
+            Assert.That(storage.GetItem(key), Is.Null);
         }
 
         [Test]
@@ -77,9 +77,9 @@ namespace OpenQA.Selenium.Html5
             storage.SetItem(key1, value);
             storage.SetItem(key2, value);
             storage.SetItem(key3, value);
-            Assert.IsNotNull(storage.GetItem(key1));
-            Assert.IsNotNull(storage.GetItem(key2));
-            Assert.IsNotNull(storage.GetItem(key3));
+            Assert.That(storage.GetItem(key1), Is.Not.Null);
+            Assert.That(storage.GetItem(key2), Is.Not.Null);
+            Assert.That(storage.GetItem(key3), Is.Not.Null);
         }
 
         [Test]

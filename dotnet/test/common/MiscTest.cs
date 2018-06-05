@@ -45,12 +45,12 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             pageSource = driver.PageSource.ToLower();
 
-            Assert.IsTrue(pageSource.StartsWith("<html"));
-            Assert.IsTrue(pageSource.EndsWith("</html>"));
-            Assert.IsTrue(pageSource.Contains("an inline element"));
-            Assert.IsTrue(pageSource.Contains("<p id="));
-            Assert.IsTrue(pageSource.Contains("lotsofspaces"));
-            Assert.IsTrue(pageSource.Contains("with document.write and with document.write again"));
+            Assert.That(pageSource, Does.StartWith("<html"));
+            Assert.That(pageSource, Does.EndWith("</html>"));
+            Assert.That(pageSource, Does.Contain("an inline element"));
+            Assert.That(pageSource, Does.Contain("<p id="));
+            Assert.That(pageSource, Does.Contain("lotsofspaces"));
+            Assert.That(pageSource, Does.Contain("with document.write and with document.write again"));
         }
 
         [Test]

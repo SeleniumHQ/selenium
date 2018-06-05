@@ -47,7 +47,7 @@ namespace OpenQA.Selenium
             ReadOnlyCollection<IWebElement> textElements = svg.FindElements(By.CssSelector("text"));
 
             IWebElement appleElement = FindAppleElement(textElements);
-            Assert.IsNotNull(appleElement);
+            Assert.That(appleElement, Is.Not.Null);
 
             appleElement.Click();
             IWebElement resultElement = driver.FindElement(By.Id("result"));

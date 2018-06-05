@@ -31,7 +31,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = dynamicPage;
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(500);
-            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("box0")));
+            Assert.That(() => driver.FindElement(By.Id("box0")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace OpenQA.Selenium
             driver.Url = dynamicPage;
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(3000);
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);
-            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("box0")));
+            Assert.That(() => driver.FindElement(By.Id("box0")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace OpenQA.Selenium
             add.Click();
 
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("redbox"));
-            Assert.GreaterOrEqual(elements.Count, 1);
+            Assert.That(elements, Has.Count.GreaterThanOrEqualTo(1));
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace OpenQA.Selenium
             IWebElement revealed = driver.FindElement(By.Id("revealed"));
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(5000);
 
-            Assert.IsFalse(revealed.Displayed, "revealed should not be visible");
+            Assert.That(revealed.Displayed, Is.False, "revealed should not be visible");
             reveal.Click();
 
             try
@@ -129,7 +129,7 @@ namespace OpenQA.Selenium
 
             driver.Close();
             driver.SwitchTo().Window(originalHandle);
-            Assert.IsTrue(time.TotalMilliseconds >= 1000);
+            Assert.That(time.TotalMilliseconds, Is.GreaterThanOrEqualTo(1000));
         }
     }
 }

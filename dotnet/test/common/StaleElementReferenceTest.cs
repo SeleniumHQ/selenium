@@ -12,7 +12,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement elem = driver.FindElement(By.Id("links"));
             driver.Url = xhtmlTestPage;
-            Assert.Throws<StaleElementReferenceException>(() => elem.Click());
+            Assert.That(() => elem.Click(), Throws.InstanceOf<StaleElementReferenceException>());
         }
 
         [Test]
@@ -21,7 +21,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement elem = driver.FindElement(By.Id("links"));
             driver.Url = xhtmlTestPage;
-            Assert.Throws<StaleElementReferenceException>(() => { Size elementSize = elem.Size; });
+            Assert.That(() => { Size elementSize = elem.Size; }, Throws.InstanceOf<StaleElementReferenceException>());
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace OpenQA.Selenium
             driver.Url = xhtmlTestPage;
             IWebElement heading = driver.FindElement(By.XPath("//h1"));
             driver.Url = simpleTestPage;
-            Assert.Throws<StaleElementReferenceException>(() => { string className = heading.GetAttribute("class"); });
+            Assert.That(() => { string className = heading.GetAttribute("class"); }, Throws.InstanceOf<StaleElementReferenceException>());
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
 
             IWebElement toBeDeleted = driver.FindElement(By.Id("deleted"));
-            Assert.IsTrue(toBeDeleted.Displayed);
+            Assert.That(toBeDeleted.Displayed, Is.True);
 
             driver.FindElement(By.Id("delete")).Click();
 
@@ -55,7 +55,7 @@ namespace OpenQA.Selenium
                     return true;
                 }
             }, "Element did not become stale.");
-            Assert.IsTrue(wasStale, "Element should be stale at this point");
+            Assert.That(wasStale, Is.True, "Element should be stale at this point");
         }
     }
 }

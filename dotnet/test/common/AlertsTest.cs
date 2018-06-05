@@ -211,7 +211,7 @@ namespace OpenQA.Selenium
             IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Dismiss();
             string text;
-            Assert.Throws<NoAlertPresentException>(() => text = alert.Text);
+            Assert.That(() => text = alert.Text, Throws.InstanceOf<NoAlertPresentException>());
         }
 
         [Test]
@@ -261,7 +261,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = CreateAlertPage("cheese");
 
-            Assert.Throws<NoAlertPresentException>(() => AlertToBePresent());
+            Assert.That(() => AlertToBePresent(), Throws.InstanceOf<NoAlertPresentException>());
         }
 
         [Test]
@@ -590,7 +590,7 @@ namespace OpenQA.Selenium
             element.Click();
             IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Dismiss();
-            Assert.IsTrue(driver.Url.Contains("pageWithOnBeforeUnloadMessage.html"));
+            Assert.That(driver.Url, Does.Contain("pageWithOnBeforeUnloadMessage.html"));
 
             // Can't move forward or even quit the driver
             // until the alert is accepted.
@@ -598,7 +598,7 @@ namespace OpenQA.Selenium
             alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.Accept();
             WaitFor(() => { return driver.Url.Contains(alertsPage); }, "Browser URL does not contain " + alertsPage);
-            Assert.IsTrue(driver.Url.Contains(alertsPage));
+            Assert.That(driver.Url, Does.Contain(alertsPage));
         }
 
         [Test]
@@ -629,7 +629,7 @@ namespace OpenQA.Selenium
             IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             alert.SetAuthenticationCredentials("test", "test");
             alert.Accept();
-            Assert.IsTrue(driver.FindElement(By.TagName("h1")).Text.Contains("authorized"));
+            Assert.That(driver.FindElement(By.TagName("h1")).Text, Does.Contain("authorized"));
         }
 
         // Disabling test for all browsers. Authentication API is not supported by any driver yet.

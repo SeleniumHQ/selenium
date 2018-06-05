@@ -18,8 +18,8 @@ namespace OpenQA.Selenium
 
             object result = ExecuteScript("return document.title;");
 
-            Assert.IsTrue(result is String);
-            Assert.AreEqual("XHTML Test Page", result);
+            Assert.That(result, Is.InstanceOf<string>());
+            Assert.That(result, Is.EqualTo("XHTML Test Page"));
         }
 
         [Test]
@@ -32,8 +32,8 @@ namespace OpenQA.Selenium
 
             object result = ExecuteScript("return document.title.length;");
 
-            Assert.IsTrue(result is long, result.GetType().Name);
-            Assert.AreEqual((long)"XHTML Test Page".Length, (long)result);
+            Assert.That(result, Is.InstanceOf<long>());
+            Assert.That((long)result, Is.EqualTo((long)"XHTML Test Page".Length));
         }
 
         [Test]
@@ -46,8 +46,8 @@ namespace OpenQA.Selenium
 
             object result = ExecuteScript("return document.getElementById('id1');");
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result is IWebElement);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.InstanceOf<IWebElement>());
         }
 
         [Test]
@@ -60,9 +60,9 @@ namespace OpenQA.Selenium
 
             object result = ExecuteScript("return true;");
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result is bool);
-            Assert.IsTrue((bool)result);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.InstanceOf<bool>());
+            Assert.That((bool)result, Is.True);
         }
 
         [Test]
@@ -79,9 +79,9 @@ namespace OpenQA.Selenium
             expectedResult.Add("one");
             expectedResult.Add("two");
             object result = ExecuteScript("return ['zero', 'one', 'two'];");
-            Assert.IsTrue(result is ReadOnlyCollection<object>, "result was: " + result + " (" + result.GetType().Name + ")");
+            Assert.That(result, Is.InstanceOf<ReadOnlyCollection<object>>());
             ReadOnlyCollection<object> list = (ReadOnlyCollection<object>)result;
-            Assert.IsTrue(CompareLists(expectedResult.AsReadOnly(), list));
+            Assert.That(list, Is.EqualTo(expectedResult.AsReadOnly()));
         }
 
         [Test]
@@ -100,9 +100,9 @@ namespace OpenQA.Selenium
             subList.Add(false);
             expectedResult.Add(subList.AsReadOnly());
             object result = ExecuteScript("return ['zero', [true, false]];");
-            Assert.IsTrue(result is ReadOnlyCollection<object>, "result was: " + result + " (" + result.GetType().Name + ")");
+            Assert.That(result, Is.InstanceOf<ReadOnlyCollection<object>>());
             ReadOnlyCollection<object> list = (ReadOnlyCollection<object>)result;
-            Assert.IsTrue(CompareLists(expectedResult.AsReadOnly(), list));
+            Assert.That(result, Is.EqualTo(expectedResult.AsReadOnly()));
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
 
             object result = ExecuteScript("return {abc: '123', tired: false};");
-            Assert.IsTrue(result is Dictionary<string, object>, "result was: " + result.GetType().ToString());
+            Assert.That(result, Is.InstanceOf<Dictionary<string, object>>());
             Dictionary<string, object> map = (Dictionary<string, object>)result;
 
             Dictionary<string, object> expected = new Dictionary<string, object>();
@@ -126,8 +126,8 @@ namespace OpenQA.Selenium
             Assert.AreEqual(expected.Count, map.Count, "Expected:<" + expected.Count + ">, but was:<" + map.Count + ">");
             foreach (string expectedKey in expected.Keys)
             {
-                Assert.IsTrue(map.ContainsKey(expectedKey));
-                Assert.AreEqual(expected[expectedKey], map[expectedKey]);
+                Assert.That(map, Does.ContainKey(expectedKey));
+                Assert.That(map[expectedKey], Is.EqualTo(expected[expectedKey]));
             }
         }
 
@@ -153,22 +153,22 @@ namespace OpenQA.Selenium
             object result = ExecuteScript(
                 "return {foo:'bar', baz: ['a', 'b', 'c'], " +
                     "person: {first: 'John',last: 'Doe'}};");
-            Assert.IsTrue(result is Dictionary<string, object>, "result was: " + result.GetType().ToString());
+            Assert.That(result, Is.InstanceOf<Dictionary<string, object>>());
 
             Dictionary<string, object> map = (Dictionary<string, object>)result;
-            Assert.AreEqual(3, map.Count, "Expected:<" + expectedResult.Count + ">, but was:<" + map.Count + ">");
+            Assert.That(map, Has.Count.EqualTo(3));
             foreach (string expectedKey in expectedResult.Keys)
             {
-                Assert.IsTrue(map.ContainsKey(expectedKey));
+                Assert.That(map, Does.ContainKey(expectedKey));
             }
 
-            Assert.AreEqual("bar", map["foo"]);
-            Assert.IsTrue(CompareLists((ReadOnlyCollection<object>)expectedResult["baz"], (ReadOnlyCollection<object>)map["baz"]));
+            Assert.That(map["foo"], Is.EqualTo("bar"));
+            Assert.That((ReadOnlyCollection<object>)map["baz"], Is.EqualTo((ReadOnlyCollection<object>)expectedResult["baz"]));
 
             Dictionary<string, object> person = (Dictionary<string, object>) map["person"];
-            Assert.AreEqual(2, person.Count);
-            Assert.AreEqual("John", person["first"]);
-            Assert.AreEqual("Doe", person["last"]);
+            Assert.That(person, Has.Count.EqualTo(2));
+            Assert.That(person["first"], Is.EqualTo("John"));
+            Assert.That(person["last"], Is.EqualTo("Doe"));
         }
 
         [Test]
@@ -179,7 +179,7 @@ namespace OpenQA.Selenium
 
             object result = ExecuteScript("return window.location;");
 
-            Assert.IsTrue(result is Dictionary<string, object>, "result was: " + result + " (" + result.GetType().ToString() + ")");
+            Assert.That(result, Is.InstanceOf<Dictionary<string, object>>());
             Dictionary<string, object> map = (Dictionary<string, object>)result;
             Assert.AreEqual("http:", map["protocol"]);
             Assert.AreEqual(javascriptPage, map["href"]);
@@ -196,8 +196,8 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
             long expectedResult = 1L;
             object result = ExecuteScript("return arguments[0];", expectedResult);
-            Assert.IsTrue(result is int || result is long, "Expected result to be an Integer or Long but was a " + result.GetType().Name);
-            Assert.AreEqual((long)expectedResult, result);
+            Assert.That(result, Is.InstanceOf<int>().Or.InstanceOf<long>());
+            Assert.That(result, Is.EqualTo((long)expectedResult));
         }
 
         [Test]
@@ -211,8 +211,8 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
             double expectedResult = 1.2;
             object result = ExecuteScript("return arguments[0];", expectedResult);
-            Assert.IsTrue(result is float || result is double, "Expected result to be a Double or Float but was a " + result.GetType().Name);
-            Assert.AreEqual((double)expectedResult, result);
+            Assert.That(result, Is.InstanceOf<float>().Or.InstanceOf<double>());
+            Assert.That(result, Is.EqualTo((double)expectedResult));
         }
 
         [Test]
@@ -279,10 +279,10 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
 
             bool result = (bool)ExecuteScript(function, true);
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
 
             result = (bool)ExecuteScript(function, false);
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         [Test]
@@ -378,7 +378,7 @@ namespace OpenQA.Selenium
                 return;
 
             driver.Url = javascriptPage;
-            Assert.Throws<ArgumentException>(() => ExecuteScript("return arguments[0];", driver));
+            Assert.That(() => ExecuteScript("return arguments[0];", driver), Throws.InstanceOf<ArgumentException>());
         }
 
         [Test]
@@ -422,7 +422,7 @@ namespace OpenQA.Selenium
         //    ReadOnlyCollection<IWebElement> items = (ReadOnlyCollection<IWebElement>)((IJavaScriptExecutor)driver)
         //        .ExecuteScript("return document.getElementsByName('snack');");
 
-        //    Assert.IsFalse(items.Count == 0);
+        //    Assert.That(items.Count, Is.Not.EqualTo(0));
         //}
 
         [Test]
@@ -434,7 +434,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual("", value);
 
             value = (string)ExecuteScript("return undefined;");
-            Assert.IsNull(value);
+            Assert.That(value, Is.Null);
 
             value = (string)ExecuteScript("return ' '");
             Assert.AreEqual(" ", value);
@@ -449,7 +449,7 @@ namespace OpenQA.Selenium
             if (fileList.Length > 0)
             {
                 string jquery = System.IO.File.ReadAllText(fileList[0]);
-                Assert.IsTrue(jquery.Length > 50000);
+                Assert.That(jquery.Length, Is.GreaterThan(50000));
                 ExecuteScript(jquery, null);
             }
         }
@@ -464,7 +464,7 @@ namespace OpenQA.Selenium
 
             ReadOnlyCollection<IWebElement> resultsList = (ReadOnlyCollection<IWebElement>)resultObject;
 
-            Assert.Greater(resultsList.Count, 0);
+            Assert.That(resultsList.Count, Is.GreaterThan(0));
         }
 
         [Test]
@@ -527,7 +527,7 @@ namespace OpenQA.Selenium
 
             Dictionary<string, object> args = new Dictionary<string, object>();
             args["key"] = new object[] { "a", new object[] { "zero", 1, true, 3.14159, false, el }, "c" };
-            Assert.Throws<StaleElementReferenceException>(() => executor.ExecuteScript("return undefined;", args));
+            Assert.That(() => executor.ExecuteScript("return undefined;", args), Throws.InstanceOf<StaleElementReferenceException>());
         }
 
         [Test]
@@ -553,8 +553,8 @@ namespace OpenQA.Selenium
 
             object value = ExecuteScript("return document");
 
-            Assert.IsTrue(value is IWebElement);
-            Assert.IsTrue(((IWebElement)value).Text.Contains("A single line of text"));
+            Assert.That(value, Is.InstanceOf<IWebElement>());
+            Assert.That(((IWebElement)value).Text, Does.Contain("A single line of text"));
         }
 
         [Test]
@@ -565,7 +565,7 @@ namespace OpenQA.Selenium
 
             object value = ExecuteScript("return window.performance.timing");
 
-            Assert.IsTrue(value is Dictionary<string, object>);
+            Assert.That(value, Is.InstanceOf<Dictionary<string, object>>());
         }
 
         [Test]
@@ -771,40 +771,6 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("result"));
             string text = element.Text;
             Assert.AreEqual("2014-05-20T20:00:00+08:00", text);
-        }
-
-        private bool CompareLists(ReadOnlyCollection<object> first, ReadOnlyCollection<object> second)
-        {
-            if (first.Count != second.Count)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < first.Count; ++i)
-            {
-                if (first[i] is ReadOnlyCollection<object>)
-                {
-                    if (!(second[i] is ReadOnlyCollection<object>))
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        if (!CompareLists((ReadOnlyCollection<object>)first[i], (ReadOnlyCollection<object>)second[i]))
-                        {
-                            return false;
-                        }
-                    }
-                }
-                else
-                {
-                    if (!first[i].Equals(second[i]))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
         }
 
         private object ExecuteScript(String script, params Object[] args)

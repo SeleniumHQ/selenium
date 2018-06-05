@@ -178,7 +178,7 @@ namespace OpenQA.Selenium
             List<string> seenHandles = new List<string>();
             foreach (string handle in allWindowHandles)
             {
-                Assert.IsFalse(seenHandles.Contains(handle));
+                Assert.That(seenHandles, Has.No.Member(handle));
                 driver.SwitchTo().Window(handle);
                 seenHandles.Add(handle);
             }
@@ -269,7 +269,7 @@ namespace OpenQA.Selenium
 
             String currentHandle = driver.CurrentWindowHandle;
 
-            Assert.IsNotNull(currentHandle);
+            Assert.That(currentHandle, Is.Not.Null);
         }
 
         [Test]
@@ -433,8 +433,8 @@ namespace OpenQA.Selenium
 
             ReadOnlyCollection<string> handles = driver.WindowHandles;
 
-            Assert.IsFalse(handles.Contains(handle2), "Invalid handle still in handle list");
-            Assert.IsTrue(handles.Contains(handle1), "Valid handle not in handle list");
+            Assert.That(handles, Has.No.Member(handle2), "Invalid handle still in handle list");
+            Assert.That(handles, Contains.Item(handle1), "Valid handle not in handle list");
         }
 
         private void SleepBecauseWindowsTakeTimeToOpen()

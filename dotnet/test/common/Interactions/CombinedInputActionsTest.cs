@@ -207,7 +207,7 @@ namespace OpenQA.Selenium.Interactions
             int x = int.Parse(driver.FindElement(By.Id("pageX")).Text);
             int y = int.Parse(driver.FindElement(By.Id("pageY")).Text);
 
-            Assert.IsTrue(FuzzyPositionMatching(location.X + 20, location.Y + 10, string.Format("{0},{1}", x, y)));
+            Assert.That(FuzzyPositionMatching(location.X + 20, location.Y + 10, string.Format("{0},{1}", x, y)), Is.True);
         }
 
         /**
@@ -364,7 +364,7 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement target = driver.FindElement(By.Id("item1"));
 
-            Assert.IsTrue(target.Displayed);
+            Assert.That(target.Displayed, "Target element was not displayed");
             target.Click();
 
             IWebElement result = driver.FindElement(By.Id("result"));
