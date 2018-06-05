@@ -108,10 +108,6 @@ namespace OpenQA.Selenium.Remote
                 string elementId = where.AuxiliaryLocator.ToString();
                 parameters.Add("element", elementId);
             }
-            else
-            {
-                parameters.Add("element", string.Empty);
-            }
 
             parameters.Add("xoffset", offsetX);
             parameters.Add("yoffset", offsetY);
