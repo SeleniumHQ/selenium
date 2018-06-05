@@ -37,7 +37,7 @@ module Selenium
         def send_command(command_params)
           execute :send_command, {}, command_params
         end
-        
+
         def network_conditions=(conditions)
           execute :set_network_conditions, {}, {network_conditions: conditions}
         end

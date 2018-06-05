@@ -28,7 +28,7 @@ module Selenium
 
         def download_path=(path)
           params = {
-            'cmd' =>'Page.setDownloadBehavior',
+            'cmd' => 'Page.setDownloadBehavior',
             'params' => {
               'behavior' => 'allow',
               'downloadPath' => path
