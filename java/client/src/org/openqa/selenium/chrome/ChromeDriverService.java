@@ -35,7 +35,7 @@ import java.io.IOException;
 public class ChromeDriverService extends DriverService {
 
   /**
-   * System property that defines the location of the ChromeDriver executable that will be used by
+   * System property that defines the location of the chromedriver executable that will be used by
    * the {@link #createDefaultService() default service}.
    */
   public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
@@ -47,14 +47,14 @@ public class ChromeDriverService extends DriverService {
   public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
-   * Boolean system property that defines whether the ChromeDriver executable should be started
+   * Boolean system property that defines whether the chromedriver executable should be started
    * with verbose logging.
    */
   public static final String CHROME_DRIVER_VERBOSE_LOG_PROPERTY =
       "webdriver.chrome.verboseLogging";
 
   /**
-   * Boolean system property that defines whether the ChromeDriver executable should be started
+   * Boolean system property that defines whether the chromedriver executable should be started
    * in silent mode.
    */
   public static final String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY =
@@ -68,7 +68,7 @@ public class ChromeDriverService extends DriverService {
 
   /**
    *
-   * @param executable The ChromeDriver executable.
+   * @param executable The chromedriver executable.
    * @param port Which port to start the ChromeDriver on.
    * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
@@ -81,7 +81,7 @@ public class ChromeDriverService extends DriverService {
 
   /**
    * Configures and returns a new {@link ChromeDriverService} using the default configuration. In
-   * this configuration, the service will use the ChromeDriver executable identified by the
+   * this configuration, the service will use the chromedriver executable identified by the
    * {@link #CHROME_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
    * be configured to use a free port on the current system.
    *
