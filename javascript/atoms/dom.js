@@ -1257,7 +1257,7 @@ bot.dom.getParentNodeInComposedDom = function(node) {
   var /**@type {Node}*/ parent = node.parentNode;
 
   // Shadow DOM v1
-  if (parent.shadowRoot && node.assignedSlot !== undefined) {
+  if (parent && parent.shadowRoot && node.assignedSlot !== undefined) {
     // Can be null on purpose, meaning it has no parent as
     // it hasn't yet been slotted
     return node.assignedSlot ? node.assignedSlot.parentNode : null;
