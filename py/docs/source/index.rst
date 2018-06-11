@@ -16,7 +16,7 @@ The `selenium` package is used to automate web browser interaction from Python.
 +-----------+--------------------------------------------------------------------------------------+
 | **Dev**:  | https://github.com/SeleniumHQ/Selenium                                               |
 +-----------+--------------------------------------------------------------------------------------+
-| **PyPI**: | https://pypi.python.org/pypi/selenium                                                |
+| **PyPI**: | https://pypi.org/project/selenium/                                                   |
 +-----------+--------------------------------------------------------------------------------------+
 | **IRC**:  | **#selenium** channel on freenode                                                    |
 +-----------+--------------------------------------------------------------------------------------+
@@ -35,7 +35,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-3.12.0.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-3.12.0.tar.gz), unarchive it, and run::
 
     python setup.py install
 
