@@ -20,6 +20,7 @@ package org.openqa.selenium.json;
 import com.google.common.primitives.Primitives;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -42,7 +43,23 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
   @Override
   public BiFunction<JsonInput, PropertySetting, T> apply(Type ignored) {
     return (jsonInput, setting) -> {
-      Number number = jsonInput.nextNumber();
+      Number number;
+      switch (jsonInput.peek()) {
+        case NUMBER:
+          number = jsonInput.nextNumber();
+          break;
+
+        case STRING:
+          try {
+            number = new BigDecimal(jsonInput.nextString());
+          } catch (NumberFormatException e) {
+            throw new JsonException(e);
+          }
+          break;
+
+        default:
+          throw new JsonException("Unable to coerce to a number: " + jsonInput.peek());
+      }
       return mapper.apply(number);
     };
   }
