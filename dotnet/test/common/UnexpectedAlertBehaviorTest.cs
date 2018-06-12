@@ -13,7 +13,7 @@ namespace OpenQA.Selenium
         [SetUp]
         public void RestartOriginalDriver()
         {
-            driver = EnvironmentManager.Instance.GetCurrentDriver();
+            EnvironmentManager.Instance.CloseCurrentDriver();
         }
 
         [TearDown]
@@ -24,6 +24,8 @@ namespace OpenQA.Selenium
                 localDriver.Quit();
                 localDriver = null;
             }
+
+            EnvironmentManager.Instance.CreateFreshDriver();
         }
 
         [Test]
@@ -32,7 +34,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanAcceptUnhandledAlert()
         {
-            
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.AcceptAndNotify, "This is a default value");
         }
 
