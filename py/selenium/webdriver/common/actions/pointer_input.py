@@ -53,6 +53,6 @@ class PointerInput(InputDevice):
 
     def encode(self):
         return {"type": self.type,
-                "parameters": {"pointerType": self.name},
+                "parameters": {"pointerType": self.type},
                 "id": self.name,
                 "actions": [acts for acts in self.actions]}
