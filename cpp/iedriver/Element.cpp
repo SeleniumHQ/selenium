@@ -280,6 +280,14 @@ bool Element::IsObscured(LocationInfo* click_location,
     y = top + (height / 2);
   }
 
+  CComPtr<IHTMLElement> element_hit;
+  hr = doc->elementFromPoint(x, y, &element_hit);
+  if (SUCCEEDED(hr) && element_.IsEqualObject(element_hit)) {
+    // Short circuit the use of elementsFromPoint if we don't
+    // have to use it.
+    return false;
+  }
+
   CComPtr<IHTMLDocument8> elements_doc;
   hr = doc.QueryInterface<IHTMLDocument8>(&elements_doc);
   if (FAILED(hr)) {
@@ -311,7 +319,7 @@ bool Element::IsObscured(LocationInfo* click_location,
 
       bool is_list_element_displayed;
       Element element_wrapper(element_in_list,
-                                   this->containing_window_handle_);
+                              this->containing_window_handle_);
       status_code = element_wrapper.IsDisplayed(false,
                                                 &is_list_element_displayed);
       if (is_list_element_displayed) {
