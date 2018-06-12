@@ -16,6 +16,8 @@
 
 #include "SendInputActionSimulator.h"
 
+#include <UIAutomation.h>
+
 #include "errorcodes.h"
 #include "logging.h"
 
@@ -85,12 +87,10 @@ int SendInputActionSimulator::SimulateActions(BrowserHandle browser_wrapper,
     INPUT sleep_input = inputs[sleep_input_index];
     size_t number_of_inputs = sleep_input_index - next_input_index;
     if (number_of_inputs > 0) {
-      this->SetFocusToBrowser(browser_wrapper);
-      HookProcessor::ResetEventCount();
-      int sent_inputs = ::SendInput(static_cast<int>(number_of_inputs),
-                                    &inputs[next_input_index],
-                                    sizeof(INPUT));
-      this->WaitForInputEventProcessing(sent_inputs);
+      this->SendInputToBrowser(browser_wrapper,
+                               inputs,
+                               static_cast<int>(next_input_index),
+                               static_cast<int>(number_of_inputs));
     }
     LOG(DEBUG) << "Processing pause event";
     ::Sleep(inputs[sleep_input_index].hi.uMsg);
@@ -99,12 +99,10 @@ int SendInputActionSimulator::SimulateActions(BrowserHandle browser_wrapper,
   // Now send any inputs after the last sleep, if any.
   size_t last_inputs = inputs.size() - next_input_index;
   if (last_inputs > 0) {
-    this->SetFocusToBrowser(browser_wrapper);
-    HookProcessor::ResetEventCount();
-    int sent_inputs = ::SendInput(static_cast<int>(last_inputs),
-                                  &inputs[next_input_index],
-                                  sizeof(INPUT));
-    this->WaitForInputEventProcessing(sent_inputs);
+    this->SendInputToBrowser(browser_wrapper,
+                             inputs,
+                             static_cast<int>(next_input_index),
+                             static_cast<int>(last_inputs));
   }
 
   // We're done here, so uninstall the hooks, and reset the buffer size.
@@ -112,6 +110,22 @@ int SendInputActionSimulator::SimulateActions(BrowserHandle browser_wrapper,
   mouse_hook.Dispose();
 
   return WD_SUCCESS;
+}
+
+void SendInputActionSimulator::SendInputToBrowser(BrowserHandle browser_wrapper,
+                                                  std::vector<INPUT> inputs,
+                                                  int start_index,
+                                                  int input_count) {
+  if (input_count > 0) {
+    this->SetFocusToBrowser(browser_wrapper);
+    HookProcessor::ResetEventCount();
+    int sent_inputs = 0;
+    for (int i = start_index; i < start_index + input_count; ++i) {
+      ::SendInput(1, &inputs[i], sizeof(INPUT));
+      sent_inputs += 1;
+    }
+    this->WaitForInputEventProcessing(sent_inputs);
+  }
 }
 
 void SendInputActionSimulator::GetNormalizedCoordinates(HWND window_handle,
@@ -151,20 +165,58 @@ bool SendInputActionSimulator::WaitForInputEventProcessing(int input_count) {
     inputs_processed = processed_event_count >= input_count;
   }
   LOG(DEBUG) << "Requested waiting for " << input_count
-             << " events, processed " << processed_event_count << " events";
+             << " events, processed " << processed_event_count << " events,"
+             << " timed out after " << total_timeout_in_milliseconds
+             << " milliseconds";
   return inputs_processed;
 }
 
 bool SendInputActionSimulator::SetFocusToBrowser(BrowserHandle browser_wrapper) {
   LOG(TRACE) << "Entering InputManager::SetFocusToBrowser";
-  UINT_PTR lock_timeout = 0;
-  DWORD process_id = 0;
-  DWORD thread_id = ::GetWindowThreadProcessId(browser_wrapper->GetContentWindowHandle(),
-                                               &process_id);
-  DWORD current_thread_id = ::GetCurrentThreadId();
-  DWORD current_process_id = ::GetCurrentProcessId();
-  HWND current_foreground_window = ::GetForegroundWindow();
-  if (current_foreground_window != browser_wrapper->GetTopLevelWindowHandle()) {
+
+  HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
+  HWND foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
+  if (foreground_window != top_level_window_handle) {
+    CComPtr<IUIAutomation> ui_automation;
+    HRESULT hr = ::CoCreateInstance(CLSID_CUIAutomation,
+      NULL,
+      CLSCTX_INPROC_SERVER,
+      IID_IUIAutomation,
+      reinterpret_cast<void**>(&ui_automation));
+    if (SUCCEEDED(hr)) {
+      LOG(TRACE) << "Using UI Automation to set window focus";
+      CComPtr<IUIAutomationElement> parent_window;
+      hr = ui_automation->ElementFromHandle(top_level_window_handle,
+        &parent_window);
+      if (SUCCEEDED(hr)) {
+        CComPtr<IUIAutomationWindowPattern> window_pattern;
+        hr = parent_window->GetCurrentPatternAs(UIA_WindowPatternId,
+                                                IID_PPV_ARGS(&window_pattern));
+        if (SUCCEEDED(hr)) {
+          BOOL is_topmost;
+          hr = window_pattern->get_CurrentIsTopmost(&is_topmost);
+          WindowVisualState visual_state;
+          hr = window_pattern->get_CurrentWindowVisualState(&visual_state);
+          if (visual_state == WindowVisualState::WindowVisualState_Maximized ||
+            visual_state == WindowVisualState::WindowVisualState_Normal) {
+            parent_window->SetFocus();
+            window_pattern->SetWindowVisualState(visual_state);
+          }
+        }
+      }
+    }
+  }
+
+  foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
+  if (foreground_window != top_level_window_handle) {
+    LOG(TRACE) << "Window still not in foreground; "
+               << "attempting to use SetForegroundWindow API";
+    UINT_PTR lock_timeout = 0;
+    DWORD process_id = 0;
+    DWORD thread_id = ::GetWindowThreadProcessId(browser_wrapper->GetContentWindowHandle(),
+                                                 &process_id);
+    DWORD current_thread_id = ::GetCurrentThreadId();
+    DWORD current_process_id = ::GetCurrentProcessId();
     if (current_thread_id != thread_id) {
       ::AttachThreadInput(current_thread_id, thread_id, TRUE);
       ::SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT,
@@ -177,7 +229,7 @@ bool SendInputActionSimulator::SetFocusToBrowser(BrowserHandle browser_wrapper) 
                              SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
       ::AllowSetForegroundWindow(current_process_id);
     }
-    ::SetForegroundWindow(browser_wrapper->GetTopLevelWindowHandle());
+    ::SetForegroundWindow(top_level_window_handle);
     if (current_thread_id != thread_id) {
       ::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT,
                              0,
@@ -186,7 +238,8 @@ bool SendInputActionSimulator::SetFocusToBrowser(BrowserHandle browser_wrapper) 
       ::AttachThreadInput(current_thread_id, thread_id, FALSE);
     }
   }
-  return ::GetForegroundWindow() == browser_wrapper->GetTopLevelWindowHandle();
+  foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
+  return foreground_window == top_level_window_handle;
 }
 
 } // namespace webdriver
@@ -196,12 +249,16 @@ extern "C" {
 #endif
 
 LRESULT CALLBACK KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  webdriver::HookProcessor::IncrementEventCount(1);
+  if (nCode == HC_ACTION) {
+    webdriver::HookProcessor::IncrementEventCount(1);
+  }
   return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  webdriver::HookProcessor::IncrementEventCount(1);
+  if (nCode == HC_ACTION) {
+    webdriver::HookProcessor::IncrementEventCount(1);
+  }
   return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
