@@ -117,7 +117,10 @@ void SendInputActionSimulator::SendInputToBrowser(BrowserHandle browser_wrapper,
                                                   int start_index,
                                                   int input_count) {
   if (input_count > 0) {
-    this->SetFocusToBrowser(browser_wrapper);
+    bool focus_set = this->SetFocusToBrowser(browser_wrapper);
+    if (!focus_set) {
+      LOG(WARN) << "Focus not set to browser window";
+    }
     HookProcessor::ResetEventCount();
     int sent_inputs = 0;
     for (int i = start_index; i < start_index + input_count; ++i) {
@@ -177,17 +180,19 @@ bool SendInputActionSimulator::SetFocusToBrowser(BrowserHandle browser_wrapper) 
   HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
   HWND foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
   if (foreground_window != top_level_window_handle) {
+    LOG(TRACE) << "Top-level IE window is " << top_level_window_handle
+               << " foreground window is " << foreground_window;
     CComPtr<IUIAutomation> ui_automation;
     HRESULT hr = ::CoCreateInstance(CLSID_CUIAutomation,
-      NULL,
-      CLSCTX_INPROC_SERVER,
-      IID_IUIAutomation,
-      reinterpret_cast<void**>(&ui_automation));
+                                    NULL,
+                                    CLSCTX_INPROC_SERVER,
+                                    IID_IUIAutomation,
+                                    reinterpret_cast<void**>(&ui_automation));
     if (SUCCEEDED(hr)) {
       LOG(TRACE) << "Using UI Automation to set window focus";
       CComPtr<IUIAutomationElement> parent_window;
       hr = ui_automation->ElementFromHandle(top_level_window_handle,
-        &parent_window);
+                                            &parent_window);
       if (SUCCEEDED(hr)) {
         CComPtr<IUIAutomationWindowPattern> window_pattern;
         hr = parent_window->GetCurrentPatternAs(UIA_WindowPatternId,
@@ -198,7 +203,7 @@ bool SendInputActionSimulator::SetFocusToBrowser(BrowserHandle browser_wrapper) 
           WindowVisualState visual_state;
           hr = window_pattern->get_CurrentWindowVisualState(&visual_state);
           if (visual_state == WindowVisualState::WindowVisualState_Maximized ||
-            visual_state == WindowVisualState::WindowVisualState_Normal) {
+              visual_state == WindowVisualState::WindowVisualState_Normal) {
             parent_window->SetFocus();
             window_pattern->SetWindowVisualState(visual_state);
           }
@@ -209,6 +214,8 @@ bool SendInputActionSimulator::SetFocusToBrowser(BrowserHandle browser_wrapper) 
 
   foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
   if (foreground_window != top_level_window_handle) {
+    LOG(TRACE) << "Top-level IE window is " << top_level_window_handle
+               << " foreground window is " << foreground_window;
     LOG(TRACE) << "Window still not in foreground; "
                << "attempting to use SetForegroundWindow API";
     UINT_PTR lock_timeout = 0;
