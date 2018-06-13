@@ -22,7 +22,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.remote.SessionId;
 
@@ -39,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -282,35 +282,24 @@ public class JsonOutput implements Closeable {
       return;
     }
 
+    if (toConvert instanceof Class) {
+      write(((Class<?>) toConvert).getName());
+      return;
+    }
+
     // Raw object via reflection? Nope, not needed
     beginObject();
     for (SimplePropertyDescriptor pd :
         SimplePropertyDescriptor.getPropertyDescriptors(toConvert.getClass())) {
 
-      if ("class".equals(pd.getName())) {
-        name("class").write(toConvert.getClass().getName());
-        continue;
-      }
-
       // Only include methods not on java.lang.Object to stop things being super-noisy
-      Method readMethod = pd.getReadMethod();
-      if (readMethod == null || Object.class.equals(readMethod.getDeclaringClass())) {
+      Function<Object, Object> readMethod = pd.getReadMethod();
+      if (readMethod == null) {
         continue;
       }
 
-      if (readMethod.getParameterTypes().length > 0) {
-        continue;
-      }
-
-      readMethod.setAccessible(true);
-
-      try {
-        Object result = readMethod.invoke(toConvert);
-        name(pd.getName());
-        write(result, maxDepth - 1);
-      } catch (ReflectiveOperationException e) {
-        throw new WebDriverException(e);
-      }
+      name(pd.getName());
+      write(pd.getReadMethod().apply(toConvert), maxDepth - 1);
     }
     endObject();
   }

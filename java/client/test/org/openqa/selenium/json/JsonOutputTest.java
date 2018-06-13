@@ -47,6 +47,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LogEntries;
@@ -600,6 +601,17 @@ public class JsonOutputTest {
     assertEquals(
         ImmutableMap.of("cheese", "brie", "vegetable", "peas"),
         new Json().toType(builder.toString(), MAP_TYPE));
+  }
+
+  @Test
+  public void whenConvertingObjectsContainingClassesDoNotBeNoisy() {
+    String json = convert(ImmutableMap.of("thing", SimpleBean.class));
+
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    System.out.println("converted = " + converted);
+
+    assertEquals(1, converted.size());
+    assertEquals(SimpleBean.class.getName(), converted.getAsJsonPrimitive("thing").getAsString());
   }
 
   private String convert(Object toConvert) {

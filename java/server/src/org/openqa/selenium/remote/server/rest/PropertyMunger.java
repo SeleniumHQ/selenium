@@ -23,12 +23,12 @@ import java.lang.reflect.Method;
 
 class PropertyMunger {
 
-  public static Object get(String name, Object on) throws Exception {
+  public static Object get(String name, Object on) {
     SimplePropertyDescriptor[] properties =
         SimplePropertyDescriptor.getPropertyDescriptors(on.getClass());
     for (SimplePropertyDescriptor property : properties) {
-      if (property.getName().equals(name)) {
-        Object result = property.getReadMethod().invoke(on);
+      if (property.getName().equals(name) && property.getReadMethod() != null) {
+        Object result = property.getReadMethod().apply(on);
         return String.valueOf(result);
       }
     }
