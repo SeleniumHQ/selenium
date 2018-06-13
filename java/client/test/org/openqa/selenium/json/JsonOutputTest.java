@@ -609,7 +609,6 @@ public class JsonOutputTest {
     String json = convert(ImmutableMap.of("thing", SimpleBean.class));
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
-    System.out.println("converted = " + converted);
 
     assertEquals(1, converted.size());
     assertEquals(SimpleBean.class.getName(), converted.getAsJsonPrimitive("thing").getAsString());
@@ -629,7 +628,6 @@ public class JsonOutputTest {
       out.write(toEncode);
     }
 
-    System.out.println(json.toString());
     assertEquals(-1, json.indexOf("\n"));
   }
 
