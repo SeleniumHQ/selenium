@@ -25,12 +25,21 @@ import org.openqa.selenium.remote.service.DriverService;
 
 /**
  * {@link DriverCommandExecutor} that understands ChromeDriver specific commands.
+ *
+ * @see <a href="https://chromium.googlesource.com/chromium/src/+/master/chrome/test/chromedriver/client/command_executor.py">List of ChromeWebdriver commands</a>
  */
 class ChromeDriverCommandExecutor extends DriverCommandExecutor {
 
   private static final ImmutableMap<String, CommandInfo> CHROME_COMMAND_NAME_TO_URL = ImmutableMap.of(
       ChromeDriverCommand.LAUNCH_APP,
-      new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST));
+      new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST),
+      ChromeDriverCommand.GET_NETWORK_CONDITIONS,
+      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.GET),
+      ChromeDriverCommand.SET_NETWORK_CONDITIONS,
+      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.POST),
+      ChromeDriverCommand.DELETE_NETWORK_CONDITIONS,
+      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.DELETE)
+  );
 
   public ChromeDriverCommandExecutor(DriverService service) {
     super(service, CHROME_COMMAND_NAME_TO_URL);
