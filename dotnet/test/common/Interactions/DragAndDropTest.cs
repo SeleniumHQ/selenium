@@ -89,6 +89,8 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
         public void DragAndDropElementWithOffsetInScrolledDiv()
         {
             if (TestUtilities.IsFirefox(driver) && TestUtilities.IsNativeEventsEnabled(driver))
@@ -144,6 +146,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "Problem with drag off viewport. See issue #1771")]
+        [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
         public void ShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort()
         {
             driver.Url = dragAndDropPage;
@@ -216,6 +219,8 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Opera, "Untested")]
+        [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
         public void CanDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow()
         {
             driver.Url = dragDropOverflowPage;
