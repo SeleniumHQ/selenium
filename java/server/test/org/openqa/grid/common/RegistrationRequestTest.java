@@ -376,6 +376,6 @@ public class RegistrationRequestTest {
   }
 
   private GridNodeConfiguration parseCliOptions(String... args) {
-    return new GridNodeCliOptions().parse(args).toConfiguration();
+    return new GridNodeCliOptions.Parser().parse(args).toConfiguration();
   }
 }

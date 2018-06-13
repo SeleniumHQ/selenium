@@ -207,7 +207,7 @@ public class GridNodeConfigurationTest {
   public void testWithCapabilitiesArgs() {
     final String[] args = new String[] { "-capabilities",
                                        "browserName=chrome,platform=linux,maxInstances=10,boolean=false" };
-    GridNodeConfiguration gnc = new GridNodeCliOptions().parse(args).toConfiguration();
+    GridNodeConfiguration gnc = new GridNodeCliOptions.Parser().parse(args).toConfiguration();
     assertTrue(gnc.capabilities.size() == 1);
     assertEquals("chrome", gnc.capabilities.get(0).getBrowserName());
     assertEquals(10L, gnc.capabilities.get(0).getCapability("maxInstances"));
@@ -372,6 +372,6 @@ public class GridNodeConfigurationTest {
   }
 
   private GridNodeConfiguration parseCliOptions(String... args) {
-    return new GridNodeCliOptions().parse(args).toConfiguration();
+    return new GridNodeCliOptions.Parser().parse(args).toConfiguration();
   }
 }

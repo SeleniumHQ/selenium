@@ -33,6 +33,28 @@ import java.util.Map;
 
 public class GridHubCliOptions extends CommonGridCliOptions {
 
+  public static class Parser {
+
+    public GridHubCliOptions parse(String[] args) {
+      GridHubCliOptions result = new GridHubCliOptions();
+      JCommander.newBuilder().addObject(result).build().parse(args);
+
+      if (result.configFile != null) {
+        // Second round
+        String configFile = result.configFile;
+        result = new GridHubCliOptions();
+        JCommander.newBuilder().addObject(result)
+            .defaultProvider(defaults(fromConfigFile(configFile))).build().parse(args);
+      }
+
+      return result;
+    }
+  }
+
+  /**
+   * @deprecated Use GridHubCliOptions.Parser instead
+   */
+  @Deprecated
   public GridHubCliOptions parse(String[] args) {
     JCommander.newBuilder().addObject(this).build().parse(args);
 
@@ -44,7 +66,7 @@ public class GridHubCliOptions extends CommonGridCliOptions {
     return this;
   }
 
-  private IDefaultProvider defaults(String json) {
+  private static IDefaultProvider defaults(String json) {
     Map<String, Object> map = (Map<String, Object>) new Json().toType(json, Map.class);
     map.remove("custom");
     return optionName -> {

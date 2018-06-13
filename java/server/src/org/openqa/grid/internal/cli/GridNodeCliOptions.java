@@ -28,11 +28,34 @@ import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.json.Json;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class GridNodeCliOptions extends CommonGridCliOptions {
 
+  public static class Parser {
+
+    public GridNodeCliOptions parse(String[] args) {
+      GridNodeCliOptions result = new GridNodeCliOptions();
+      JCommander.newBuilder().addObject(result).build().parse(args);
+
+      if (result.configFile != null) {
+        // Second round
+        String configFile = result.configFile;
+        result = new GridNodeCliOptions();
+        JCommander.newBuilder().addObject(result)
+            .defaultProvider(defaults(fromConfigFile(configFile))).build().parse(args);
+      }
+
+      return result;
+    }
+  }
+
+  /**
+   * @deprecated Use GridNodeCliOptions.Parser instead
+   */
+  @Deprecated
   public GridNodeCliOptions parse(String[] args) {
     JCommander.newBuilder().addObject(this).build().parse(args);
 
@@ -44,7 +67,7 @@ public class GridNodeCliOptions extends CommonGridCliOptions {
     return this;
   }
 
-  private IDefaultProvider defaults(String json) {
+  private static IDefaultProvider defaults(String json) {
     Map<String, Object> map = new Json().toType(json, Map.class);
     map.remove("custom");
     map.remove("capabilities");

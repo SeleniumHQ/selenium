@@ -72,7 +72,6 @@ public class GridLauncherV3 {
       StringBuilder sb = new StringBuilder();
       new JCommander(getOptions()).usage(sb);
       out.print(sb);
-
     }
   }
 
@@ -276,7 +275,7 @@ public class GridLauncherV3 {
 
         })
         .put(GridRole.HUB.toString(), (args) -> new GridItemLauncher() {
-          GridHubCliOptions options = new GridHubCliOptions().parse(args);
+          GridHubCliOptions options = new GridHubCliOptions.Parser().parse(args);
 
           @Override
           public CommonCliOptions getOptions() {
@@ -294,7 +293,7 @@ public class GridLauncherV3 {
           }
         })
         .put(GridRole.NODE.toString(), (args) -> new GridItemLauncher() {
-          GridNodeCliOptions options = new GridNodeCliOptions().parse(args);
+          GridNodeCliOptions options = new GridNodeCliOptions.Parser().parse(args);
 
           @Override
           public CommonCliOptions getOptions() {

@@ -119,7 +119,7 @@ abstract class CommonGridCliOptions extends CommonCliOptions {
     }
   }
 
-  String fromConfigFile(String file) {
+  static String fromConfigFile(String file) {
     try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
       return br.lines().collect(Collectors.joining("\n"));
     } catch (IOException e) {

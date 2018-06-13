@@ -42,7 +42,7 @@ public class GridTestHelper {
                      "-host","localhost",
                      "-hub",hub.toString(),
                      "-port",String.valueOf(PortProber.findFreePort())};
-    GridNodeConfiguration config = new GridNodeCliOptions().parse(args).toConfiguration();
+    GridNodeConfiguration config = new GridNodeCliOptions.Parser().parse(args).toConfiguration();
     RegistrationRequest req = RegistrationRequest.build(config);
     SelfRegisteringRemote remote = new SelfRegisteringRemote(req);
     remote.deleteAllBrowsers();
