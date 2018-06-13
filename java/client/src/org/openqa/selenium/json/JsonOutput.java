@@ -53,6 +53,8 @@ public class JsonOutput implements Closeable {
   private final Consumer<String> appender;
   private Deque<Node> stack;
   private String indent = "";
+  private String lineSeparator = "\n";
+  private String indentBy = "  ";
 
   JsonOutput(Appendable appendable) {
     this.appendable = Objects.requireNonNull(appendable);
@@ -141,9 +143,15 @@ public class JsonOutput implements Closeable {
         .build();
   }
 
+  public JsonOutput setPrettyPrint(boolean enablePrettyPrinting) {
+    this.lineSeparator = enablePrettyPrinting ? "\n" : "";
+    this.indentBy = enablePrettyPrinting ? "  " : "";
+    return this;
+  }
+
   public JsonOutput beginObject() {
-    stack.getFirst().write("{\n");
-    indent += "  ";
+    stack.getFirst().write("{" + lineSeparator);
+    indent += indentBy;
     stack.addFirst(new JsonObject());
     return this;
   }
@@ -162,18 +170,18 @@ public class JsonOutput implements Closeable {
       throw new JsonException("Attempt to close a json object, but not writing a json object");
     }
     stack.removeFirst();
-    indent = indent.substring(0, indent.length() - 2);
+    indent = indent.substring(0, indent.length() - indentBy.length());
 
     if (topOfStack.isEmpty) {
       appender.accept(indent + "}");
     } else {
-      appender.accept("\n" + indent + "}");
+      appender.accept(lineSeparator + indent + "}");
     }
     return this;
   }
 
   public JsonOutput beginArray() {
-    append("[\n");
+    append("[" + lineSeparator);
     indent += "  ";
     stack.addFirst(new JsonCollection());
     return this;
@@ -185,12 +193,12 @@ public class JsonOutput implements Closeable {
       throw new JsonException("Attempt to close a json array, but not writing a json array");
     }
     stack.removeFirst();
-    indent = indent.substring(0, indent.length() - 2);
+    indent = indent.substring(0, indent.length() - indentBy.length());
 
     if (topOfStack.isEmpty) {
       appender.accept(indent + "]");
     } else {
-      appender.accept("\n" + indent + "]");
+      appender.accept(lineSeparator + indent + "]");
     }
     return this;
   }
@@ -311,7 +319,7 @@ public class JsonOutput implements Closeable {
       if (isEmpty) {
         isEmpty = false;
       } else {
-        appender.accept(",\n");
+        appender.accept("," + lineSeparator);
       }
 
       appender.accept(indent);

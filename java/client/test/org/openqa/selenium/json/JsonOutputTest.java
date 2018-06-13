@@ -62,6 +62,7 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.awt.*;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -612,6 +613,24 @@ public class JsonOutputTest {
 
     assertEquals(1, converted.size());
     assertEquals(SimpleBean.class.getName(), converted.getAsJsonPrimitive("thing").getAsString());
+  }
+
+  @Test
+  public void canDisablePrettyPrintingToGetSingleLineOutput() {
+    Map<String, Object> toEncode = ImmutableMap.of(
+        "ary", ImmutableList.of("one", "two"),
+        "map", ImmutableMap.of("cheese", "cheddar"),
+        "string", "This has a \nnewline in it");
+
+    StringBuilder json = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(json)) {
+      out.setPrettyPrint(false);
+
+      out.write(toEncode);
+    }
+
+    System.out.println(json.toString());
+    assertEquals(-1, json.indexOf("\n"));
   }
 
   private String convert(Object toConvert) {
