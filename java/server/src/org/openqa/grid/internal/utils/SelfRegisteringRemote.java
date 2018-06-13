@@ -175,7 +175,7 @@ public class SelfRegisteringRemote {
       registrationRequest.getConfiguration().fixUpHost();
     }
     fixUpId();
-    LOG.fine("Using the json request : " + registrationRequest.toJson());
+    LOG.fine("Using the json request : " + new Json().toJson(registrationRequest));
 
     Boolean register = registrationRequest.getConfiguration().register;
     if (register == null) {
@@ -271,8 +271,9 @@ public class SelfRegisteringRemote {
         }
 
         try {
-          LOG.info("Updating the node configuration from the hub");
+          LOG.fine("Updating the node configuration from the hub");
           GridHubConfiguration hubConfiguration = getHubConfiguration();
+          LOG.fine("Hub configuration: " + new Json().toJson(hubConfiguration));
           // the node can not set these values. They must come from the hub
           if (hubConfiguration.timeout != null && hubConfiguration.timeout >= 0) {
             registrationRequest.getConfiguration().timeout = hubConfiguration.timeout;
@@ -280,6 +281,7 @@ public class SelfRegisteringRemote {
           if (hubConfiguration.browserTimeout != null && hubConfiguration.browserTimeout >= 0) {
             registrationRequest.getConfiguration().browserTimeout = hubConfiguration.browserTimeout;
           }
+          LOG.fine("Updated node configuration: " + new Json().toJson(registrationRequest.getConfiguration()));
         } catch (Exception e) {
           LOG.warning(
               "error getting the parameters from the hub. The node may end up with wrong timeouts." + e
@@ -290,8 +292,6 @@ public class SelfRegisteringRemote {
       } catch (Exception e) {
         throw new GridException("Error sending the registration request: " + e.getMessage());
       }
-    } else {
-      LOG.fine("The node is already present on the hub. Skipping registration.");
     }
 
   }
