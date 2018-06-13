@@ -9,6 +9,39 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.12.0.4
+=========
+ * Updates to JavaScript automation atoms.
+ * Use elementFromPoint for IE driver in determining obscured elements. This
+   is in direct violation of the algorithm specified in the W3C WebDriver
+   Specification, but it fixes a class of IE-specific bugs that present
+   themselves when using elementsFromPoint. This is used to shortcut the use
+   of elementsFromPoint if it is not necessary.
+ * Added additional logging to IE driver for setting window focus.
+ * Updated IE driver to use SendInput for a single input at a time. The IE
+   driver uses the Windows `SendInput` API when a session is initiated with
+   the `requireWindowFocus` capability. This is a low-level user input
+   simulation API, and very closely mimics the use of a physical mouse and
+   keyboard. One of the guarantees of the API is that when one sends an array
+   of `INPUT` structures, then no input messages can be inserted into the
+   middle of the input stream. However, it appears that there are cases where
+   sending multiple input structures that IE does not process all of them.
+   This leads to truncated or missing keys when using the Selenium sendKeys
+   method. This change makes the driver use SendInput, but only passing a
+   single INPUT structure at a time. This is dangerous, in that it allows
+   other inputs to potentially be slipped into the input stream. This change
+   makes the driver prefer one form of instability (potentially unwanted
+   input events) over another (input events not processed by the browser).
+
+   Additionally, this change introduces an additional method for forcing the
+   IE window into focus before sending input. This additional method uses the
+   Windows UI Automation accessibility API to do this. The potential down
+   side to using this (apparently) more reliable mechanism is that it may
+   introduce a slight performance penalty, as the UI Automation API is
+   notoriously slow. In practice, this performance penalty is observed to be
+   on the order of milliseconds, so the trade-off here is deemed worth the
+   risk, and there is no way to disable this new check.
+
 v3.12.0.3
 =========
  * Refactored IE waiting for page load on click. This commit restores some
