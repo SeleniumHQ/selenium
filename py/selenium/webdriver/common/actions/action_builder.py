@@ -62,8 +62,8 @@ class ActionBuilder(object):
         self._add_input(new_input)
         return new_input
 
-    def add_pointer_input(self, type_, name):
-        new_input = PointerInput(type_, name)
+    def add_pointer_input(self, kind, name):
+        new_input = PointerInput(kind, name)
         self._add_input(new_input)
         return new_input
 

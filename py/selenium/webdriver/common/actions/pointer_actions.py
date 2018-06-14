@@ -27,7 +27,7 @@ class PointerActions(Interaction):
 
     def __init__(self, source=None):
         if source is None:
-            source = PointerInput(interaction.POINTER, "mouse")
+            source = PointerInput(interaction.POINTER_MOUSE, "mouse")
         self.source = source
         super(PointerActions, self).__init__(source)
 
