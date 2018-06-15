@@ -30,7 +30,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Manages the life and death of a chromedriver server.
+ * Manages the life and death of a ChromeDriver server.
  */
 public class ChromeDriverService extends DriverService {
 
@@ -47,14 +47,14 @@ public class ChromeDriverService extends DriverService {
   public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
-   * Boolean system property that defines whether the ChromeDriver executable should be started
+   * Boolean system property that defines whether the chromedriver executable should be started
    * with verbose logging.
    */
   public static final String CHROME_DRIVER_VERBOSE_LOG_PROPERTY =
       "webdriver.chrome.verboseLogging";
 
   /**
-   * Boolean system property that defines whether the ChromeDriver executable should be started
+   * Boolean system property that defines whether the chromedriver executable should be started
    * in silent mode.
    */
   public static final String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY =
@@ -69,7 +69,7 @@ public class ChromeDriverService extends DriverService {
   /**
    *
    * @param executable The chromedriver executable.
-   * @param port Which port to start the chromedriver on.
+   * @param port Which port to start the ChromeDriver on.
    * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
@@ -120,7 +120,7 @@ public class ChromeDriverService extends DriverService {
     /**
      * Configures the driver server verbosity.
      *
-     * @param verbose true for verbose output, false otherwise.
+     * @param verbose True for verbose output, false otherwise.
      * @return A self reference.
     */
     public Builder withVerbose(boolean verbose) {
@@ -131,7 +131,7 @@ public class ChromeDriverService extends DriverService {
     /**
      * Configures the driver server for silent output.
      *
-     * @param silent true for silent output, false otherwise.
+     * @param silent True for silent output, false otherwise.
      * @return A self reference.
     */
     public Builder withSilent(boolean silent) {
@@ -143,7 +143,7 @@ public class ChromeDriverService extends DriverService {
      * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
      * to the driver server.
      *
-     * @param whitelistedIps comma-separated list of remote IPv4 addresses
+     * @param whitelistedIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
      */
     public Builder withWhitelistedIps(String whitelistedIps) {
