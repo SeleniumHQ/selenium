@@ -1248,3 +1248,13 @@ class WebDriver(object):
             driver.get_log('server')
         """
         return self.execute(Command.GET_LOG, {'type': log_type})['value']
+
+    @property
+    def status(self):
+        """
+        Returns the status of the remote server.
+
+        :Usage:
+            driver.status
+        """
+        return self.execute(RemoteCommand.STATUS)['value']
