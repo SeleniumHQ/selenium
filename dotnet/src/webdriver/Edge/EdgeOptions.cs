@@ -72,13 +72,76 @@ namespace OpenQA.Selenium.Edge
     public class EdgeOptions : DriverOptions
     {
         private const string BrowserNameValue = "MicrosoftEdge";
+        private const string UseInPrivateBrowsingCapability = "ms:inPrivate";
+        private const string ExtensionPathsCapability = "ms:extensionPaths";
+        private const string StartPageCapability = "ms:startPage";
 
         private EdgePageLoadStrategy pageLoadStrategy = EdgePageLoadStrategy.Default;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+        private bool useInPrivateBrowsing;
+        private string startPage;
+        private List<string> extensionPaths = new List<string>();
 
         public EdgeOptions() : base()
         {
             this.BrowserName = BrowserNameValue;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the browser should be launched using
+        /// InPrivate browsing.
+        /// </summary>
+        public bool UseInPrivateBrowsing
+        {
+            get { return this.useInPrivateBrowsing; }
+            set { this.useInPrivateBrowsing = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the URL of the page with which the browser will be navigated to on launch.
+        /// </summary>
+        public string StartPage
+        {
+            get { return this.startPage; }
+            set { this.startPage = value; }
+        }
+
+
+        /// <summary>
+        /// Adds a path to an extension that is to be used with the Edge driver.
+        /// </summary>
+        /// <param name="extensionPath">The full path and file name of the extension.</param>
+        public void AddExtensionPath(string extensionPath)
+        {
+            if (string.IsNullOrEmpty(extensionPath))
+            {
+                throw new ArgumentException("extensionPath must not be null or empty", "extensionPath");
+            }
+
+            this.AddExtensionPaths(extensionPath);
+        }
+
+        /// <summary>
+        /// Adds a list of paths to an extensions that are to be used with the Edge driver.
+        /// </summary>
+        /// <param name="extensionPathsToAdd">An array of full paths with file names of extensions to add.</param>
+        public void AddExtensionPaths(params string[] extensionPathsToAdd)
+        {
+            this.AddExtensionPaths(new List<string>(extensionPathsToAdd));
+        }
+
+        /// <summary>
+        /// Adds a list of paths to an extensions that are to be used with the Edge driver.
+        /// </summary>
+        /// <param name="extensionPathsToAdd">An <see cref="IEnumerable{T}"/> of full paths with file names of extensions to add.</param>
+        public void AddExtensionPaths(IEnumerable<string> extensionPathsToAdd)
+        {
+            if (extensionPathsToAdd == null)
+            {
+                throw new ArgumentNullException("extensionPathsToAdd", "extensionPathsToAdd must not be null");
+            }
+
+            this.extensionPaths.AddRange(extensionPathsToAdd);
         }
 
         /// <summary>
@@ -112,6 +175,21 @@ namespace OpenQA.Selenium.Edge
         public override ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
+
+            if (this.useInPrivateBrowsing)
+            {
+                capabilities.SetCapability(UseInPrivateBrowsingCapability, true);
+            }
+
+            if (!string.IsNullOrEmpty(this.startPage))
+            {
+                capabilities.SetCapability(StartPageCapability, this.startPage);
+            }
+
+            if (this.extensionPaths.Count > 0)
+            {
+                capabilities.SetCapability(ExtensionPathsCapability, this.extensionPaths);
+            }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {
