@@ -17,9 +17,11 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+import org.openqa.selenium.json.JsonInput;
 
 import java.util.Map;
 
@@ -110,7 +112,28 @@ public class GridHubConfiguration extends GridConfiguration {
    * @param filePath hub config json file to load configuration from
    */
   public static GridHubConfiguration loadFromJSON(String filePath) {
-    return StandaloneConfiguration.loadFromJson(filePath, GridHubConfiguration.class);
+    return loadFromJSON(StandaloneConfiguration.loadJsonFromResourceOrFile(filePath));
+  }
+
+  public static GridHubConfiguration loadFromJSON(JsonInput jsonInput) {
+    try {
+      GridHubConfiguration config = StandaloneConfiguration.loadFromJson(
+          jsonInput,
+          GridHubConfiguration.class);
+
+      GridHubConfiguration result = new GridHubConfiguration();
+      result.merge(config);
+      // copy non-mergeable fields
+      if (config.host != null) {
+        result.host = config.host;
+      }
+      if (config.port != null) {
+        result.port = config.port;
+      }
+      return result;
+    } catch (Throwable e) {
+      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(), e);
+    }
   }
 
   /**

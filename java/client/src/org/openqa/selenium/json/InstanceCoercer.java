@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,6 +72,8 @@ class InstanceCoercer extends TypeCoercer<Object> {
 
         jsonInput.beginObject();
 
+        List<TypeAndWriter> usedWriters = new ArrayList<>();
+
         while (jsonInput.hasNext()) {
           String key = jsonInput.nextName();
 
@@ -79,12 +82,23 @@ class InstanceCoercer extends TypeCoercer<Object> {
             jsonInput.skipValue();
             continue;
           }
+          usedWriters.add(writer);
 
           Object value = coercer.coerce(jsonInput, writer.type, setter);
           writer.writer.accept(instance, value);
         }
 
         jsonInput.endObject();
+
+        // all unset fields should be set to null
+        allWriters.values().stream()
+            .filter(w -> ! usedWriters.contains(w))
+            .forEach(w -> {
+              try {
+                w.writer.accept(instance, null);
+              } catch (IllegalArgumentException ignore) {
+              }
+            });
 
         return instance;
       } catch (ReflectiveOperationException e) {
@@ -145,6 +159,18 @@ class InstanceCoercer extends TypeCoercer<Object> {
   }
 
   private Constructor<?> getConstructor(Type type) {
+    Class target = getClss(type);
+
+    try {
+      @SuppressWarnings("unchecked") Constructor<?> constructor = target.getConstructor();
+      constructor.setAccessible(true);
+      return constructor;
+    } catch (ReflectiveOperationException e) {
+      throw new JsonException(e);
+    }
+  }
+
+  private Class getClss(Type type) {
     Class target = null;
 
     if (type instanceof Class) {
@@ -159,14 +185,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
     if (target == null) {
       throw new JsonException("Cannot determine base class");
     }
-
-    try {
-      @SuppressWarnings("unchecked") Constructor<?> constructor = target.getConstructor();
-      constructor.setAccessible(true);
-      return constructor;
-    } catch (ReflectiveOperationException e) {
-      throw new JsonException(e);
-    }
+    return target;
   }
 
   private class TypeAndWriter {

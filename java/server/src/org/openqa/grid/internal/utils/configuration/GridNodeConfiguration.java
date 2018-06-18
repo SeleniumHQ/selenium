@@ -403,9 +403,21 @@ public class GridNodeConfiguration extends GridConfiguration {
                 " the file to work with Selenium 3.See https://github.com" +
                 "/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes-by-json" +
                 " for more details.");
-        }
+      }
 
-      return config;
+      GridNodeConfiguration result = new GridNodeConfiguration();
+      result.merge(config);
+      if (config.hub == null && (config.hubHost != null || config.hubPort != null)) {
+        result.hub = String.format("http://%s:%s", config.getHubHost(), config.getHubPort());
+      }
+      // copy non-mergeable fields
+      if (config.host != null) {
+        result.host = config.host;
+      }
+      if (config.port != null) {
+        result.port = config.port;
+      }
+      return result;
     } catch (Throwable e) {
       throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
                                            e);

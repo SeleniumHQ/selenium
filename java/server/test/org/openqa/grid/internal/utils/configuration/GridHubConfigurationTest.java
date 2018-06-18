@@ -102,7 +102,7 @@ public class GridHubConfigurationTest {
 
     try (Reader reader = new StringReader("{ \"host\": \"dummyhost\", \"port\": 1234 }");
         JsonInput jsonInput = new Json().newInput(reader)) {
-          ghc = GridHubConfiguration.loadFromJson(jsonInput, GridHubConfiguration.class);
+          ghc = GridHubConfiguration.loadFromJSON(jsonInput);
     }
 
     assertEquals("hub", ghc.role);
