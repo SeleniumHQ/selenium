@@ -159,3 +159,17 @@ export_file(
   src = '//javascript/atoms/fragments:is-displayed',
   out = 'isDisplayed.js',
 )
+
+java_library(name = 'http-netty',
+  srcs = [
+    'http/NettyHttpRequest.java',
+    'http/NettyHttpResponse.java',
+  ],
+  deps = [
+    ':remote-lib',
+    '//third_party/java/netty:netty-all',
+  ],
+  visibility = [
+    '//java/server/src/org/openqa/selenium/grid:lib',
+  ])
+

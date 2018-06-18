@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.remote.server.scheduler;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
 
@@ -91,12 +94,15 @@ public class Distributor {
   }
 
   @VisibleForTesting
-  Stream<Host> getHosts() {
+  public Stream<Host> getHosts() {
     ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
     readLock.lock();
     try {
       return hosts.stream()
-          .sorted(weightingAlgorithm);
+          .sorted(weightingAlgorithm)
+          // Make a copy of the list so we don't work on the live version
+          .collect(toImmutableList())
+          .stream();
     } finally {
       readLock.unlock();
     }

@@ -1,0 +1,23 @@
+# BUILD FILE SYNTAX: SKYLARK
+
+java_binary(
+    name = "grid",
+    main_class = "org.openqa.selenium.grid.Main",
+    deps = [
+        ":lib",
+    ],
+)
+
+java_library(
+    name = "lib",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:http-netty",
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/grid/hub:hub",
+        "//java/server/src/org/openqa/selenium/remote/server:webdriver-servlet",
+        "//java/server/src/org/openqa/selenium/remote/server/scheduler:scheduler",
+        "//third_party/java/guava:guava",
+        "//third_party/java/netty:netty-all",
+    ],
+)

@@ -25,6 +25,7 @@
     <orderEntry type="library" name="objenesis" level="project" />
     <orderEntry type="library" name="commons-httpclient" level="project" />
     <orderEntry type="library" name="auto-service" level="project" />
+    <orderEntry type="library" name="netty" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />

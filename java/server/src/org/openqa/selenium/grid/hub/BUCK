@@ -1,14 +1,15 @@
+# BUILD FILE SYNTAX: SKYLARK
+
 java_library(
-    name = "scheduler",
+    name = "hub",
     srcs = glob(["*.java"]),
     deps = [
-        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote:remote",
         "//java/server/src/org/openqa/selenium/remote/server:webdriver-servlet",
+        "//java/server/src/org/openqa/selenium/remote/server/scheduler:scheduler",
         "//third_party/java/guava:guava",
     ],
     visibility = [
-        "//java/server/src/org/openqa/selenium/grid/...",
-        "//java/server/test/org/openqa/selenium/remote/server/scheduler:scheduler",
+        "//java/server/src/org/openqa/selenium/grid:",
     ],
 )

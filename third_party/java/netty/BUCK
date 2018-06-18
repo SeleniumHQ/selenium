@@ -9,7 +9,9 @@ prebuilt_jar(
     '//third_party/java/slf4j:slf4j-jdk14',
   ],
   visibility = [
-    '//third_party/java/littleshoot:littleproxy'
+    '//java/client/src/org/openqa/selenium/remote:http-netty',
+    '//java/server/src/org/openqa/selenium/grid:lib',
+    '//third_party/java/littleshoot:littleproxy',
   ],
 )
 
