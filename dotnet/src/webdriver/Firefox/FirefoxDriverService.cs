@@ -210,7 +210,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Returns the Firefox driver filename for the currently running platform
         /// </summary>
-        /// <returns>The file name of the Chrome driver service executable.</returns>
+        /// <returns>The file name of the Firefox driver service executable.</returns>
         private static string FirefoxDriverServiceFileName()
         {
             string fileName = DefaultFirefoxDriverServiceFileName;
