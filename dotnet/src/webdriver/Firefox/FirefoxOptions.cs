@@ -240,7 +240,7 @@ namespace OpenQA.Selenium.Firefox
 
         /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the Chrome driver.
+        /// for the Firefox driver.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
@@ -255,8 +255,8 @@ namespace OpenQA.Selenium.Firefox
         /// geckodriver.exe.</remarks>
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
-            // Add the capability to the chromeOptions object by default. This is to handle
-            // the 80% case where the chromedriver team adds a new option in chromedriver.exe
+            // Add the capability to the FirefoxOptions object by default. This is to handle
+            // the 80% case where the geckodriver team adds a new option in geckodriver.exe
             // and the bindings have not yet had a type safe option added.
             this.AddAdditionalCapability(capabilityName, capabilityValue, false);
         }
