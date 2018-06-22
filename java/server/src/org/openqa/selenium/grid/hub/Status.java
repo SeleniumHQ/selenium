@@ -15,11 +15,14 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.CommandHandler;
 import org.openqa.selenium.remote.server.scheduler.Distributor;
+import org.openqa.selenium.remote.server.scheduler.Host;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Status implements CommandHandler {
 
@@ -33,10 +36,18 @@ public class Status implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+    int capacity = distributor.getHosts()
+        .map(Host::getRemainingCapacity)
+        .reduce(0, (a, b) -> a + b);
+
     ImmutableMap.Builder<String, Object> value = ImmutableMap.<String, Object>builder()
-        // W3
-        .put("ready", true)
-        .put("message", "Ready for anything. Including cheese");
+        .put("ready", capacity > 0);
+
+    if (capacity > 0) {
+      value.put("message", "Ready for anything. Spare capacity: " + capacity);
+    } else {
+      value.put("message", "No spare capacity");
+    }
 
     // Now add data about the available hosts.
     value.put("role", "hub");

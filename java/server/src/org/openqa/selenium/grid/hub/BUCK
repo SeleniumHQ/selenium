@@ -5,6 +5,7 @@ java_library(
     srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/grid/protocol:protocol",
         "//java/server/src/org/openqa/selenium/remote/server:webdriver-servlet",
         "//java/server/src/org/openqa/selenium/remote/server/scheduler:scheduler",
         "//third_party/java/guava:guava",

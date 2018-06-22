@@ -1,6 +1,7 @@
 package org.openqa.selenium.remote.http;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 import java.io.InputStream;
@@ -19,12 +20,7 @@ public class NettyHttpRequest extends HttpRequest {
   public InputStream consumeContentStream() {
     ByteBuf buf = nettyRequest.content();
 
-    return new InputStream() {
-      @Override
-      public int read() {
-        return buf.readInt();
-      }
-    };
+    return new ByteBufInputStream(buf);
   }
 
   @Override

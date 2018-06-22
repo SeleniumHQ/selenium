@@ -1,0 +1,13 @@
+# BUILD FILE SYNTAX: SKYLARK
+
+java_library(
+    name = "protocol",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid/...",
+        "//java/server/test/org/openqa/selenium/grid/...",
+    ],
+)
