@@ -120,7 +120,7 @@ class WebDriver(RemoteWebDriver):
         Execute Chrome Devtools Protocol command and get returned result
 
         The command and command args should follow chrome devtools protocol domains/commands, refer to link
-        https://chromium.googlesource.com/chromium/src/+/master/third_party/blink/renderer/devtools/protocol.json
+        https://chromedevtools.github.io/devtools-protocol/
 
         :Args:
          - cmd: A str, command name
@@ -136,7 +136,7 @@ class WebDriver(RemoteWebDriver):
             {'base64Encoded': False, 'body': 'response body string'}
 
         """
-        return self.execute("ExecuteCDP", {'cmd': cmd, 'params': cmd_args})['value']
+        return self.execute("executeCdpCommand", {'cmd': cmd, 'params': cmd_args})['value']
 
     def quit(self):
         """
