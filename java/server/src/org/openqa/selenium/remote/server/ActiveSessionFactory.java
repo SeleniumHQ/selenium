@@ -90,7 +90,7 @@ public class ActiveSessionFactory implements SessionFactory {
         .put(browserName(IE), "org.openqa.selenium.ie.InternetExplorerDriverService")
         .put(containsKey("se:ieOptions"), "org.openqa.selenium.ie.InternetExplorerDriverService")
         .put(browserName(OPERA), "org.openqa.selenium.opera.OperaDriverService")
-        .put(browserName(OPERA_BLINK), "org.openqa.selenium.ie.OperaDriverService")
+        .put(browserName(OPERA_BLINK), "org.openqa.selenium.opera.OperaDriverService")
         .put(browserName(PHANTOMJS), "org.openqa.selenium.phantomjs.PhantomJSDriverService")
         .put(browserName(SAFARI), "org.openqa.selenium.safari.SafariDriverService")
         .put(containsKey(Pattern.compile("^safari\\..*")), "org.openqa.selenium.safari.SafariDriverService")
