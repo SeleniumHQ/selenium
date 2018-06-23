@@ -328,6 +328,18 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Removes the WebDriver extension for Firefox to the profile, for use with non-legacy
+        /// FirefoxDriver instances that use geckodriver.
+        /// </summary>
+        internal void RemoveWebDriverExtension()
+        {
+            if (this.extensions.ContainsKey("webdriver"))
+            {
+                this.extensions.Remove("webdriver");
+            }
+        }
+
+        /// <summary>
         /// Internal implementation to set proxy preferences for this profile.
         /// </summary>
         /// <param name="proxy">The <see cref="Proxy"/> object defining the proxy

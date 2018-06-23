@@ -354,6 +354,9 @@ namespace OpenQA.Selenium.Firefox
 
             if (this.profile != null)
             {
+                // Using Marionette/Geckodriver, so the legacy WebDriver extension
+                // is not required.
+                this.profile.RemoveWebDriverExtension();
                 firefoxOptions[FirefoxProfileCapability] = this.profile.ToBase64String();
             }
 
