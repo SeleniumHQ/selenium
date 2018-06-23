@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.12.0.5
+=========
+ * Updating to indicate elements with 'pointer-events' style of 'none' as
+   obscured, triggering "element click intercepted" error response. This is
+   in keeping with the W3C WebDriver Specification that demands this behavior.
+
 v3.12.0.4
 =========
  * Updates to JavaScript automation atoms.

@@ -246,10 +246,35 @@ bool Element::IsObscured(LocationInfo* click_location,
     return false;
   }
 
-  bool is_obscured = false;
 
   CComPtr<IHTMLDocument2> doc;
   this->GetContainingDocument(false, &doc);
+
+  // If an element has a style value where pointer-events is set to 'none',
+  // the element is "obscured" by definition.
+  CComPtr<IHTMLWindow2> window;
+  hr = doc->get_parentWindow(&window);
+  if (SUCCEEDED(hr) && window) {
+    CComPtr<IHTMLWindow7> window7;
+    hr = window->QueryInterface<IHTMLWindow7>(&window7);
+    if (SUCCEEDED(hr) && window7) {
+      CComPtr<IHTMLDOMNode> node;
+      hr = this->element_->QueryInterface<IHTMLDOMNode>(&node);
+      if (SUCCEEDED(hr) && node) {
+        CComPtr<IHTMLCSSStyleDeclaration> computed_style;
+        hr = window7->getComputedStyle(node, L"", &computed_style);
+        if (SUCCEEDED(hr) && computed_style) {
+          CComBSTR pointer_events_value = L"";
+          hr = computed_style->get_pointerEvents(&pointer_events_value);
+          if (SUCCEEDED(hr) && pointer_events_value == L"none") {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  bool is_obscured = false;
 
   std::vector<LocationInfo> frame_locations;
   LocationInfo element_location = {};
@@ -588,7 +613,7 @@ int Element::GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
 bool Element::IsHiddenByOverflow() {
   LOG(TRACE) << "Entering Element::IsHiddenByOverflow";
 
-  bool isOverflow = false;
+  bool is_overflow = false;
 
   std::wstring script_source(L"(function() { return (");
   script_source += atoms::asString(atoms::IS_IN_PARENT_OVERFLOW);
@@ -602,12 +627,12 @@ bool Element::IsHiddenByOverflow() {
   if (status_code == WD_SUCCESS) {
     std::wstring raw_overflow_state(script_wrapper.result().bstrVal);
     std::string overflow_state = StringUtilities::ToString(raw_overflow_state);
-    isOverflow = (overflow_state == "scroll");
+    is_overflow = (overflow_state == "scroll");
   } else {
     LOG(WARN) << "Unable to determine is element hidden by overflow";
   }
 
-  return isOverflow;
+  return is_overflow;
 }
 
 bool Element::IsLocationVisibleInFrames(const LocationInfo location,
