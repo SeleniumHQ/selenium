@@ -23,6 +23,7 @@ import org.openqa.grid.common.GridRole;
 import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -104,12 +105,17 @@ public class DisplayHelpServlet extends HttpServlet {
       if (in == null) {
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
       } else {
-        final String json = new Json().toJson(servletConfig);
-        final String jsonUtf8 = new String(json.getBytes(), "UTF-8");
+        StringBuilder jsonBuilder = new StringBuilder();
+        try (JsonOutput out = new Json().newOutput(jsonBuilder)) {
+          out.setPrettyPrint(false).write(servletConfig);
+        }
+
+        final String json = jsonBuilder.toString();
+
         final String htmlTemplate =
           new BufferedReader(new InputStreamReader(in, "UTF-8")).lines().collect(Collectors.joining("\n"));
         final String updatedTemplate =
-          htmlTemplate.replace(HELPER_SERVLET_TEMPLATE_CONFIG_JSON_VAR, jsonUtf8);
+          htmlTemplate.replace(HELPER_SERVLET_TEMPLATE_CONFIG_JSON_VAR, json);
 
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
