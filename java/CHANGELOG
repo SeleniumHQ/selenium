@@ -1,3 +1,21 @@
+v3.13.0
+=======
+
+* Introduced our own JSON parser and outputter, allowing GSON to be
+  removed from our dependencies.
+* Exposing a `RemoteWebDriverBuilder` which can be used to construct
+  instances of selenium when talking to servers that speak the w3c
+  protocol.
+* Fixed loading of Grid hub and node config files.
+* Fixed `noProxy` handling in Grid.
+* Added bindings for custom ChromeDriver commands
+  (GET_NETWORK_CONDITIONS, SET_NETWORK_CONDITIONS and
+  DELETE_NETWORK_CONDITIONS) that allows client code to utilize
+  built-in throttling functionality. (#3479)
+* Minimised data being encoded as JSON when serialising Java objects.
+* EventFiringWebDriver now fires events before and after `getText` and
+  implements `HasCapabilities`.
+
 v3.12.0
 =======
 
