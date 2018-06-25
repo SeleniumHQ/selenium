@@ -19,7 +19,6 @@ package org.openqa.selenium.json;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -388,7 +387,7 @@ public class JsonInput implements Closeable {
           result += digit * multiplier;
           multiplier /= 16;
         }
-        builder.append(result);
+        builder.append((char) result);
         break;
 
       case '/':

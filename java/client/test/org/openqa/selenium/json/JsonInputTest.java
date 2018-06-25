@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -29,6 +30,7 @@ import com.google.gson.Gson;
 import org.junit.Test;
 
 import java.io.StringReader;
+import java.util.Map;
 
 public class JsonInputTest {
 
@@ -185,6 +187,17 @@ public class JsonInputTest {
     input.endObject();
     assertFalse(input.hasNext());
     input.endObject();
+  }
+
+  @Test
+  public void shouldDecodeUnicodeEscapesProperly() {
+    String raw = "{\"text\": \"\\u003Chtml\"}";
+
+    try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer())) {
+      Map<String, Object> map = in.read(MAP_TYPE);
+
+      assertEquals("<html", map.get("text"));
+    }
   }
 
   private JsonInput newInput(Object toParse) {
