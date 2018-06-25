@@ -114,7 +114,7 @@ public class JsonOutput implements Closeable {
         .put(Enum.class::isAssignableFrom, (obj, depth) -> append(asString(obj)))
         .put(File.class::isAssignableFrom, (obj, depth) -> append(((File) obj).getAbsolutePath()))
         .put(URL.class::isAssignableFrom, (obj, depth) -> append(asString(((URL) obj).toExternalForm())))
-        .put(Level.class::isAssignableFrom, (obj, depth) -> append(LogLevelMapping.getName((Level) obj)))
+        .put(Level.class::isAssignableFrom, (obj, depth) -> append(asString(LogLevelMapping.getName((Level) obj))))
         .put(
             SessionId.class::isAssignableFrom,
             (obj, depth) -> {

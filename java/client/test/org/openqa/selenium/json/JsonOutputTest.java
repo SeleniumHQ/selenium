@@ -637,6 +637,13 @@ public class JsonOutputTest {
     assertEquals(-1, json.indexOf("\n"));
   }
 
+  @Test
+  public void shouldEncodeLogLevelsAsStrings() {
+    String converted = convert(Level.INFO);
+
+    assertEquals("\"INFO\"", converted);
+  }
+
   private String convert(Object toConvert) {
     try (Writer writer = new StringWriter();
          JsonOutput jsonOutput = new Json().newOutput(writer)) {
