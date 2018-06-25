@@ -15,7 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 from .input_device import InputDevice
+from .interaction import POINTER, POINTER_KINDS
 
+from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.remote.webelement import WebElement
 
 
@@ -23,9 +25,12 @@ class PointerInput(InputDevice):
 
     DEFAULT_MOVE_DURATION = 250
 
-    def __init__(self, type_, name):
+    def __init__(self, kind, name):
         super(PointerInput, self).__init__()
-        self.type = type_
+        if (kind not in POINTER_KINDS):
+            raise InvalidArgumentException("Invalid PointerInput kind '%s'" % kind)
+        self.type = POINTER
+        self.kind = kind
         self.name = name
 
     def create_pointer_move(self, duration=DEFAULT_MOVE_DURATION, x=None, y=None, origin=None):
@@ -53,6 +58,6 @@ class PointerInput(InputDevice):
 
     def encode(self):
         return {"type": self.type,
-                "parameters": {"pointerType": self.name},
+                "parameters": {"pointerType": self.kind},
                 "id": self.name,
                 "actions": [acts for acts in self.actions]}
