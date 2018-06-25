@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '3.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Selenium 3.13 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for selenium.webdriver.firefox.webdriver</h1><div class="highlight"><pre>
+<span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c"># distributed with this work for additional information</span>
+<span class="c"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c"># with the License.  You may obtain a copy of the License at</span>
+<span class="c">#</span>
+<span class="c">#   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c">#</span>
+<span class="c"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c"># software distributed under the License is distributed on an</span>
+<span class="c"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c"># KIND, either express or implied.  See the License for the</span>
+<span class="c"># specific language governing permissions and limitations</span>
+<span class="c"># under the License.</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">http.client</span> <span class="kn">as</span> <span class="nn">http_client</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">httplib</span> <span class="kn">as</span> <span class="nn">http_client</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>  <span class="c"># Python 3.x</span>
+    <span class="nb">basestring</span> <span class="o">=</span> <span class="nb">str</span>
+
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
+
+<span class="kn">from</span> <span class="nn">.extension_connection</span> <span class="kn">import</span> <span class="n">ExtensionConnection</span>
+<span class="kn">from</span> <span class="nn">.firefox_binary</span> <span class="kn">import</span> <span class="n">FirefoxBinary</span>
+<span class="kn">from</span> <span class="nn">.firefox_profile</span> <span class="kn">import</span> <span class="n">FirefoxProfile</span>
+<span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="kn">import</span> <span class="n">FirefoxRemoteConnection</span>
+<span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">.webelement</span> <span class="kn">import</span> <span class="n">FirefoxWebElement</span>
+
+
+<div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
+
+    <span class="c"># There is no native event support on Mac</span>
+    <span class="n">NATIVE_EVENTS_ALLOWED</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">!=</span> <span class="s">&quot;darwin&quot;</span>
+
+    <span class="n">CONTEXT_CHROME</span> <span class="o">=</span> <span class="s">&quot;chrome&quot;</span>
+    <span class="n">CONTEXT_CONTENT</span> <span class="o">=</span> <span class="s">&quot;content&quot;</span>
+
+    <span class="n">_web_element_cls</span> <span class="o">=</span> <span class="n">FirefoxWebElement</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">firefox_binary</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">executable_path</span><span class="o">=</span><span class="s">&quot;geckodriver&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">log_path</span><span class="o">=</span><span class="s">&quot;geckodriver.log&quot;</span><span class="p">,</span> <span class="n">firefox_options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">service_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Starts a new local session of Firefox.</span>
+
+<span class="sd">        Based on the combination and specificity of the various keyword</span>
+<span class="sd">        arguments, a capabilities dictionary will be constructed that</span>
+<span class="sd">        is passed to the remote end.</span>
+
+<span class="sd">        The keyword arguments given to this constructor are helpers to</span>
+<span class="sd">        more easily allow Firefox WebDriver sessions to be customised</span>
+<span class="sd">        with different options.  They are mapped on to a capabilities</span>
+<span class="sd">        dictionary that is passed on to the remote end.</span>
+
+<span class="sd">        As some of the options, such as `firefox_profile` and</span>
+<span class="sd">        `options.profile` are mutually exclusive, precedence is</span>
+<span class="sd">        given from how specific the setting is.  `capabilities` is the</span>
+<span class="sd">        least specific keyword argument, followed by `options`,</span>
+<span class="sd">        followed by `firefox_binary` and `firefox_profile`.</span>
+
+<span class="sd">        In practice this means that if `firefox_profile` and</span>
+<span class="sd">        `options.profile` are both set, the selected profile</span>
+<span class="sd">        instance will always come from the most specific variable.</span>
+<span class="sd">        In this case that would be `firefox_profile`.  This will result in</span>
+<span class="sd">        `options.profile` to be ignored because it is considered</span>
+<span class="sd">        a less specific setting than the top-level `firefox_profile`</span>
+<span class="sd">        keyword argument.  Similarily, if you had specified a</span>
+<span class="sd">        `capabilities[&quot;moz:firefoxOptions&quot;][&quot;profile&quot;]` Base64 string,</span>
+<span class="sd">        this would rank below `options.profile`.</span>
+
+<span class="sd">        :param firefox_profile: Instance of ``FirefoxProfile`` object</span>
+<span class="sd">            or a string.  If undefined, a fresh profile will be created</span>
+<span class="sd">            in a temporary location on the system.</span>
+<span class="sd">        :param firefox_binary: Instance of ``FirefoxBinary`` or full</span>
+<span class="sd">            path to the Firefox binary.  If undefined, the system default</span>
+<span class="sd">            Firefox installation will  be used.</span>
+<span class="sd">        :param timeout: Time to wait for Firefox to launch when using</span>
+<span class="sd">            the extension connection.</span>
+<span class="sd">        :param capabilities: Dictionary of desired capabilities.</span>
+<span class="sd">        :param proxy: The proxy settings to us when communicating with</span>
+<span class="sd">            Firefox via the extension connection.</span>
+<span class="sd">        :param executable_path: Full path to override which geckodriver</span>
+<span class="sd">            binary to use for Firefox 47.0.1 and greater, which</span>
+<span class="sd">            defaults to picking up the binary from the system path.</span>
+<span class="sd">        :param options: Instance of ``options.Options``.</span>
+<span class="sd">        :param log_path: Where to log information from the driver.</span>
+<span class="sd">        :param desired_capabilities: alias of capabilities. In future</span>
+<span class="sd">            versions of this library, this will replace &#39;capabilities&#39;.</span>
+<span class="sd">            This will make the signature consistent with RemoteWebDriver.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">firefox_options</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;use options instead of firefox_options&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="n">firefox_options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c"># If desired capabilities is set, alias it to capabilities.</span>
+        <span class="c"># If both are set ignore desired capabilities.</span>
+        <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">desired_capabilities</span><span class="p">:</span>
+            <span class="n">capabilities</span> <span class="o">=</span> <span class="n">desired_capabilities</span>
+
+        <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">capabilities</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">FIREFOX</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+
+        <span class="n">capabilities</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;binary&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">capabilities</span><span class="p">[</span><span class="s">&quot;binary&quot;</span><span class="p">]</span>
+
+        <span class="c"># options overrides capabilities</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">binary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">binary</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">profile</span>
+
+        <span class="c"># firefox_binary and firefox_profile</span>
+        <span class="c"># override options</span>
+        <span class="k">if</span> <span class="n">firefox_binary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">firefox_binary</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+                <span class="n">firefox_binary</span> <span class="o">=</span> <span class="n">FirefoxBinary</span><span class="p">(</span><span class="n">firefox_binary</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
+        <span class="k">if</span> <span class="n">firefox_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">firefox_profile</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+                <span class="n">firefox_profile</span> <span class="o">=</span> <span class="n">FirefoxProfile</span><span class="p">(</span><span class="n">firefox_profile</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_profile</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_profile</span>
+
+        <span class="c"># W3C remote</span>
+        <span class="c"># TODO(ato): Perform conformance negotiation</span>
+
+        <span class="k">if</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;marionette&quot;</span><span class="p">):</span>
+            <span class="n">capabilities</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;marionette&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span>
+                <span class="n">executable_path</span><span class="p">,</span>
+                <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span>
+                <span class="n">log_path</span><span class="o">=</span><span class="n">log_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+            <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
+
+            <span class="n">executor</span> <span class="o">=</span> <span class="n">FirefoxRemoteConnection</span><span class="p">(</span>
+                <span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">)</span>
+            <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span>
+                <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">,</span>
+                <span class="n">keep_alive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="c"># Selenium remote</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">FirefoxBinary</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">FirefoxProfile</span><span class="p">()</span>
+
+            <span class="c"># disable native events if globally disabled</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">native_events_enabled</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">NATIVE_EVENTS_ALLOWED</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">native_events_enabled</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">proxy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">proxy</span><span class="o">.</span><span class="n">add_to_capabilities</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
+
+            <span class="n">executor</span> <span class="o">=</span> <span class="n">ExtensionConnection</span><span class="p">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+            <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span>
+                <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">,</span>
+                <span class="n">keep_alive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="bp">False</span>
+
+<div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Quits the driver and close every associated window.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">http_client</span><span class="o">.</span><span class="n">BadStatusLine</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">):</span>
+            <span class="c"># Happens if Firefox shutsdown before we&#39;ve read the response from</span>
+            <span class="c"># the socket.</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">tempfolder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">tempfolder</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="WebDriver.firefox_profile"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.firefox_profile">[docs]</a>    <span class="k">def</span> <span class="nf">firefox_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span>
+
+    <span class="c"># Extension commands:</span>
+</div>
+<div class="viewcode-block" id="WebDriver.set_context"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.set_context">[docs]</a>    <span class="k">def</span> <span class="nf">set_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;SET_CONTEXT&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;context&quot;</span><span class="p">:</span> <span class="n">context</span><span class="p">})</span>
+</div>
+    <span class="nd">@contextmanager</span>
+<div class="viewcode-block" id="WebDriver.context"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.context">[docs]</a>    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the context that Selenium commands are running in using</span>
+<span class="sd">        a `with` statement. The state of the context on the server is</span>
+<span class="sd">        saved before entering the block, and restored upon exiting it.</span>
+
+<span class="sd">        :param context: Context, may be one of the class properties</span>
+<span class="sd">            `CONTEXT_CHROME` or `CONTEXT_CONTENT`.</span>
+
+<span class="sd">        Usage example::</span>
+
+<span class="sd">            with selenium.context(selenium.CONTEXT_CHROME):</span>
+<span class="sd">                # chrome scope</span>
+<span class="sd">                ... do stuff ...</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">initial_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&#39;GET_CONTEXT&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">initial_context</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="WebDriver.install_addon"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.install_addon">[docs]</a>    <span class="k">def</span> <span class="nf">install_addon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">temporary</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Installs Firefox addon.</span>
+
+<span class="sd">        Returns identifier of installed addon. This identifier can later</span>
+<span class="sd">        be used to uninstall addon.</span>
+
+<span class="sd">        :param path: Absolute path to the addon that will be installed.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.install_addon(&#39;/path/to/firebug.xpi&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">temporary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">payload</span><span class="p">[</span><span class="s">&quot;temporary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temporary</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;INSTALL_ADDON&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)[</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="WebDriver.uninstall_addon"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.uninstall_addon">[docs]</a>    <span class="k">def</span> <span class="nf">uninstall_addon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uninstalls Firefox addon using its identifier.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.uninstall_addon(&#39;addon@foo.com&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;UNINSTALL_ADDON&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="n">identifier</span><span class="p">})</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

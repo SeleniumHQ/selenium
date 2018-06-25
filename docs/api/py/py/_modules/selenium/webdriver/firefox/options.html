@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>selenium.webdriver.firefox.options &mdash; Selenium 3.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '3.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Selenium 3.13 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for selenium.webdriver.firefox.options</h1><div class="highlight"><pre>
+<span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c"># distributed with this work for additional information</span>
+<span class="c"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c"># with the License.  You may obtain a copy of the License at</span>
+<span class="c">#</span>
+<span class="c">#   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c">#</span>
+<span class="c"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c"># software distributed under the License is distributed on an</span>
+<span class="c"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c"># KIND, either express or implied.  See the License for the</span>
+<span class="c"># specific language governing permissions and limitations</span>
+<span class="c"># under the License.</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidArgumentException</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.proxy</span> <span class="kn">import</span> <span class="n">Proxy</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.firefox_binary</span> <span class="kn">import</span> <span class="n">FirefoxBinary</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.firefox_profile</span> <span class="kn">import</span> <span class="n">FirefoxProfile</span>
+
+
+<div class="viewcode-block" id="Log"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Log">[docs]</a><span class="k">class</span> <span class="nc">Log</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="Log.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Log.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;log&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;level&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+</div></div>
+<div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">KEY</span> <span class="o">=</span> <span class="s">&quot;moz:firefoxOptions&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_binary</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proxy</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">binary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the FirefoxBinary instance&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary</span>
+
+    <span class="nd">@binary.setter</span>
+<div class="viewcode-block" id="Options.binary"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.binary">[docs]</a>    <span class="k">def</span> <span class="nf">binary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_binary</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets location of the browser binary, either by string or</span>
+<span class="sd">        ``FirefoxBinary`` instance.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_binary</span><span class="p">,</span> <span class="n">FirefoxBinary</span><span class="p">):</span>
+            <span class="n">new_binary</span> <span class="o">=</span> <span class="n">FirefoxBinary</span><span class="p">(</span><span class="n">new_binary</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_binary</span> <span class="o">=</span> <span class="n">new_binary</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the location of the binary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">_start_cmd</span>
+
+    <span class="nd">@binary_location.setter</span>  <span class="c"># noqa</span>
+<div class="viewcode-block" id="Options.binary_location"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.binary_location">[docs]</a>    <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the location of the browser binary by string &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Options.preferences"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.preferences">[docs]</a>    <span class="k">def</span> <span class="nf">preferences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a dict of preferences.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span>
+</div>
+<div class="viewcode-block" id="Options.set_preference"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.set_preference">[docs]</a>    <span class="k">def</span> <span class="nf">set_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets a preference.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; returns Proxy if set otherwise None.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proxy</span>
+
+    <span class="nd">@proxy.setter</span>
+<div class="viewcode-block" id="Options.proxy"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.proxy">[docs]</a>    <span class="k">def</span> <span class="nf">proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Proxy</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidArgumentException</span><span class="p">(</span><span class="s">&quot;Only Proxy objects can be passed in.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proxy</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the Firefox profile to use.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span>
+
+    <span class="nd">@profile.setter</span>
+<div class="viewcode-block" id="Options.profile"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.profile">[docs]</a>    <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_profile</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets location of the browser profile to use, either by string</span>
+<span class="sd">        or ``FirefoxProfile``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_profile</span><span class="p">,</span> <span class="n">FirefoxProfile</span><span class="p">):</span>
+            <span class="n">new_profile</span> <span class="o">=</span> <span class="n">FirefoxProfile</span><span class="p">(</span><span class="n">new_profile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="o">=</span> <span class="n">new_profile</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Options.arguments"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.arguments">[docs]</a>    <span class="k">def</span> <span class="nf">arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a list of browser process arguments.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
+</div>
+<div class="viewcode-block" id="Options.add_argument"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.add_argument">[docs]</a>    <span class="k">def</span> <span class="nf">add_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argument</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add argument to be used for the browser process.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">argument</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">argument</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether or not the headless argument is set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">&#39;-headless&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
+
+    <span class="nd">@headless.setter</span>
+<div class="viewcode-block" id="Options.headless"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.headless">[docs]</a>    <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the headless argument</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          value: boolean value indicating to set the headless option</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;-headless&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s">&#39;-headless&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&#39;-headless&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Options.set_headless"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.set_headless">[docs]</a>    <span class="k">def</span> <span class="nf">set_headless</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headless</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Deprecated, options.headless = True &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;use setter for headless property instead of set_headless&#39;</span><span class="p">,</span>
+                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headless</span> <span class="o">=</span> <span class="n">headless</span>
+</div>
+<div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Marshals the Firefox options to a `moz:firefoxOptions`</span>
+<span class="sd">        object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># This intentionally looks at the internal properties</span>
+        <span class="c"># so if a binary or profile has _not_ been set,</span>
+        <span class="c"># it will defer to geckodriver to find the system Firefox</span>
+        <span class="c"># and generate a fresh profile.</span>
+        <span class="n">caps</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">FIREFOX</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s">&quot;binary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary</span><span class="o">.</span><span class="n">_start_cmd</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s">&quot;prefs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proxy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proxy</span><span class="o">.</span><span class="n">add_to_capabilities</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s">&quot;profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="o">.</span><span class="n">encoded</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">opts</span><span class="p">[</span><span class="s">&quot;args&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
+
+        <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">caps</span><span class="p">[</span><span class="n">Options</span><span class="o">.</span><span class="n">KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">opts</span>
+
+        <span class="k">return</span> <span class="n">caps</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>
