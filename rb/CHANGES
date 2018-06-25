@@ -1,3 +1,14 @@
+3.13.0 (2018-06-25)
+===================
+
+Ruby:
+  * Address warnings for redefined methods and uninitialized ivars
+
+Chrome:
+  * Chrome options capabilities updated to use goog:chromeOptions
+  * Added ability to direct headless chrome to save files (thanks @pelly)
+  * Change #download_files_to to #download_path
+
 3.12.0 (2018-05-08)
 ===================
 
