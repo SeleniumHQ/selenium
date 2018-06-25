@@ -337,7 +337,13 @@ public class JsonOutputTest {
     }
 
     String json = convert(new JsonAware(raw));
-    assertEquals("\"gnu/linux\"", json);
+
+    // The JSON spec says that we should encode the forward stroke ("solidus"). Decode the string
+    assertTrue(json.startsWith("\""));
+    assertTrue(json.endsWith("\""));
+    json = new JsonParser().parse(json).getAsString();
+
+    assertEquals("gnu/linux", json);
   }
 
   private void verifyStackTraceInJson(String json, StackTraceElement[] stackTrace) {

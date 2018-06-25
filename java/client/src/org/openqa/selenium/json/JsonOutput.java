@@ -48,6 +48,38 @@ public class JsonOutput implements Closeable {
   private static final Logger LOG = Logger.getLogger(JsonOutput.class.getName());
   private static final int MAX_DEPTH = 5;
 
+  // https://www.json.org has some helpful comments on characters to escape
+  // See also https://tools.ietf.org/html/rfc8259#section-7 and
+  // https://github.com/google/gson/issues/341 so we escape those as well.
+  // It's legal to escape any character, so to be nice to HTML parsers,
+  // we'll also escape "<" and "&"
+  private static final Map<Integer, String> ESCAPES;
+  static {
+    ImmutableMap.Builder<Integer, String> builder = ImmutableMap.builder();
+
+    for (int i = 0; i <= 0x1f; i++) {
+      // We want nice looking escapes for these, which are called out
+      // by json.org
+      if (!(i == '\b' || i == '\f' || i == '\n' || i == '\r' || i == '\t')) {
+        builder.put(i, String.format("\\u%04x", i));
+      }
+    }
+
+    builder.put((int) '"', "\\\"");
+    builder.put((int) '\\', "\\\\");
+    builder.put((int) '/', "\\u002f");
+    builder.put((int) '\b', "\\b");
+    builder.put((int) '\f', "\\f");
+    builder.put((int) '\n', "\\n");
+    builder.put((int) '\r', "\\r");
+    builder.put((int) '\t', "\\t");
+
+    builder.put((int) '\u2028', "\\u2028");
+    builder.put((int) '<', String.format("\\u%04x", (int) '<'));
+    builder.put((int) '&', String.format("\\u%04x", (int) '&'));
+    ESCAPES = builder.build();
+  }
+
   private final Map<Predicate<Class<?>>, SafeBiConsumer<Object, Integer>> converters;
   private final Appendable appendable;
   private final Consumer<String> appender;
@@ -238,24 +270,11 @@ public class JsonOutput implements Closeable {
   }
 
   private String asString(Object obj) {
-    // https://www.json.org has some helpful comments on characters to escape
     StringBuilder toReturn = new StringBuilder("\"");
 
     String.valueOf(obj)
         .chars()
-        .mapToObj(
-            i -> {
-              switch (i) {
-                case '"': return "\\\"";
-                case '\\': return "\\\\";
-                case '\b': return "\\b";
-                case '\f': return "\\f";
-                case '\n': return "\\n";
-                case '\r': return "\\r";
-                case '\t': return "\\t";
-                default: return "" + (char) i;
-              }
-            })
+        .mapToObj(i -> ESCAPES.getOrDefault(i, "" + (char) i))
         .forEach(toReturn::append);
 
     toReturn.append('"');
