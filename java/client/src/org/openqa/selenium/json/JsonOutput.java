@@ -378,16 +378,4 @@ public class JsonOutput implements Closeable {
       }
     }
   }
-
-  public static void main(String[] args) {
-    StringBuilder builder = new StringBuilder();
-    JsonOutput jsonOutput = new Json().newOutput(builder);
-
-    jsonOutput.beginObject()
-        .name("cheeses").beginArray().write("brie").write("gouda").endArray()
-        .name("nested").beginObject().name("key").write("value").endObject()
-        .endObject();
-
-    System.out.println(builder.toString());
-  }
 }
