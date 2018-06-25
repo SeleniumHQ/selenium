@@ -1,3 +1,10 @@
+Selenium 3.13.0
+
+* Add executing Chrome devtools command (#5989)
+* fix incorrect w3c action encoding in python client (#6014)
+* Implement context manager for WebDriver
+* Stop sending "windowHandle" param in maximize_window command for w3c
+
 Selenium 3.12.0
 
 * Add desired_capabilities keyword to IE and Firefox drivers for driver consitency
