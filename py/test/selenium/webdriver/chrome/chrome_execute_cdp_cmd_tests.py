@@ -15,14 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver import Chrome
 
 
-class ChromeRemoteConnection(RemoteConnection):
-
-    def __init__(self, remote_server_addr, keep_alive=True):
-        RemoteConnection.__init__(self, remote_server_addr, keep_alive)
-        self._commands["launchApp"] = ('POST', '/session/$sessionId/chromium/launch_app')
-        self._commands["setNetworkConditions"] = ('POST', '/session/$sessionId/chromium/network_conditions')
-        self._commands["getNetworkConditions"] = ('GET', '/session/$sessionId/chromium/network_conditions')
-        self._commands['executeCdpCommand'] = ('POST', '/session/$sessionId/goog/cdp/execute')
+def test_execute_cdp_cmd():
+    driver = Chrome()
+    version_info = driver.execute_cdp_cmd('Browser.getVersion', {})
+    assert isinstance(version_info, dict)
+    assert 'userAgent' in version_info
