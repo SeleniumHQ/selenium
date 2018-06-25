@@ -1,3 +1,49 @@
+v3.13.0
+=======
+ * (on behalf of Jake Durand) Replaced Chrome with Firefox in .NET
+   documentation comments.
+ * (on behalf of Michael Keeley) Modified to allow extension of
+   RemoteWebElement for caching properties. This approach is not one with
+   which the Selenium development team is entirely comfortable, and downstream
+   projects are strongly encouraged to prefer composition over inheritance.
+ * Reinstated ICommandExecutor descending from IDisposable. Now that the
+   Appium project has implemented the methods required by an implementation
+   of IDisposable, this change can be made upstream in the Selenium project.
+   As this change has been rolled back once before to accommodate downstream
+   projects, it will be incumbent upon them to update their libraries now, as
+   it will not be rolled back again. In the case of Appium, this is merely
+   awaiting a binary release; other downstream projects will be responsible
+   for managing their own code changes and release schedule.
+ * Removed legacy WebDriver extension when using Geckodriver. When a
+   FirefoxProfile object is created in the .NET bindings, the legacy WebDriver
+   extension is included in that profile by default. This includes the case
+   where the user is using Geckodriver. When using Geckodriver, the legacy
+   extension is doing nothing more than taking up space. This commit adds an
+   internal method to detect when a FirefoxProfile object is being used with
+   geckodriver, and removes the extension from the list of extensions in the
+   profile before the profile is serialized to disk, and subsequently to a
+   base64-encoded string for transmission over the wire to geckodriver. Fixes
+   issue #6043.
+ * Updated EdgeOptions to include type-safe properties for Edge-specific
+   capabilities.
+ * Added property to force use of legacy protocol for Safari. Starting with
+   Safari Technology Preview 58, and continuing with the driver released with
+   Safari 12, the driver executable uses the W3C Specification dialect of the
+   prototcol by default. It includes a command-line switch, however, to force
+   the use of the legacy open-source project dialect of the protocol. This
+   commit adds a property to the SafariDriverService object allowing users to
+   set that command-line switch. Note that if this property (false by default)
+   is set to true for a version of the driver that does not support the switch,
+   it will cause errors. If set to false, the .NET bindings do not modify the
+   safaridriver command line at all.
+ * Fixed mouse movement in .NET. The previous commit to the mouse movement for
+   .NET changed the optional element ID from `null` to the empty string. This
+   is incorrect. If no element is specified in the move (for non-spec-compliant
+   driver), omit the ID altogether.
+ * Fixed null pointer exception for .NET on Safari with mouse movements.
+ * (on behalf of Clay Martin) Fixed quit command for default state of Edge
+   driver.
+
 v3.12.1
 =======
  * Updated .NET escaping of CSS selectors for the find-by-ID and find-by-name
