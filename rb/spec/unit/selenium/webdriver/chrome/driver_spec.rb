@@ -54,7 +54,6 @@ module Selenium
         it 'does not set the chrome.detach capability by default' do
           Driver.new(http_client: http)
 
-          expect(caps['goog:chromeOptions']).to eq({})
           expect(caps['chrome.detach']).to be nil
         end
 
@@ -109,6 +108,17 @@ module Selenium
           end
 
           Driver.new(http_client: http, desired_capabilities: custom_caps, args: %w[baz])
+        end
+
+        it 'does not merge empty options' do
+          custom_caps = Remote::Capabilities.new('goog:chromeOptions' => {args: %w[foo bar]})
+
+          expect(http).to receive(:call) do |_, _, payload|
+            expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(%w[foo bar])
+            resp
+          end
+
+          Driver.new(http_client: http, desired_capabilities: custom_caps)
         end
 
         it 'handshakes protocol' do
