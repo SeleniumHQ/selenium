@@ -2,12 +2,12 @@
 ===================
 
 Ruby:
-  * Address warnings for redefined methods and uninitialized ivars
+  * Address warnings for redefined methods and uninitialized instance variables
 
 Chrome:
-  * Chrome options capabilities updated to use goog:chromeOptions
-  * Added ability to direct headless chrome to save files (thanks @pelly)
-  * Change #download_files_to to #download_path
+  * Chrome options capabilities updated to use goog:chromeOptions.
+    Note that Selenium now requires ChromeDriver v2.31 at minimum.
+  * Added ability to tell headless Chrome to save files using Driver#download_path= (thanks @pelly)
 
 3.12.0 (2018-05-08)
 ===================
