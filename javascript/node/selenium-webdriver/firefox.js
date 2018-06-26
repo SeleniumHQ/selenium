@@ -315,7 +315,7 @@ class Options extends Capabilities {
     }
     checkArg(width);
     checkArg(height);
-    return this.addArguments(`--width=${width}`,`--height=${height}`);
+    return this.addArguments(`--width=${width}`, `--height=${height}`);
   }
 
   /**
