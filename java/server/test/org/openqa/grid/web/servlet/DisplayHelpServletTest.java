@@ -17,10 +17,13 @@
 
 package org.openqa.grid.web.servlet;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +38,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-@RunWith(JUnit4.class)
 public class DisplayHelpServletTest extends BaseServletTest {
 
   @Before
@@ -59,11 +61,12 @@ public class DisplayHelpServletTest extends BaseServletTest {
 
     FakeHttpServletResponse response = sendCommand("GET", "/");
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-    assertNotNull(response.getBody());
 
-    assertTrue(response.getBody().contains("Whoops! The URL specified routes to this help page."));
-    assertTrue(response.getBody().contains("\"type\": \"Standalone\""));
-    assertTrue(response.getBody().contains("\"consoleLink\": \"/wd/hub\""));
+    String body = response.getBody();
+    assertNotNull(body);
+    assertThat(body, containsString("Whoops! The URL specified routes to this help page."));
+    assertThat(body, containsString("\"type\": \"Standalone\""));
+    assertThat(body, containsString("\"consoleLink\": \"\\u002fwd\\u002fhub\""));
   }
 
   @Test
