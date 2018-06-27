@@ -249,22 +249,7 @@ public class XpiDriverService extends DriverService {
 
     @Override
     public int score(Capabilities capabilites) {
-      int score = 0;
-
-      if (BrowserType.FIREFOX.equals(capabilites.getBrowserName())) {
-        score++;
-      }
-
-      if (capabilites.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
-        score++;
-      }
-
-      // This is the legacy firefox driver that they've asked for. Bind very strongly.
-      if (capabilites.getCapability(FirefoxDriver.MARIONETTE) == Boolean.FALSE) {
-        score += 5;
-      }
-
-      return score;
+      return capabilites.getCapability(FirefoxDriver.MARIONETTE) == Boolean.FALSE ? 5 : 0;
     }
 
     public Builder withBinary(FirefoxBinary binary) {

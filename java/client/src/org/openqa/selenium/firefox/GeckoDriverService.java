@@ -132,6 +132,10 @@ public class GeckoDriverService extends DriverService {
     public int score(Capabilities capabilites) {
       int score = 0;
 
+      if (capabilites.getCapability(FirefoxDriver.MARIONETTE) == Boolean.FALSE) {
+        return 0;  // We're not meant for this one.
+      }
+
       if (BrowserType.FIREFOX.equals(capabilites.getBrowserName())) {
         score++;
       }
@@ -141,9 +145,6 @@ public class GeckoDriverService extends DriverService {
       }
 
       // This is the legacy firefox driver that they've asked for.
-      if (capabilites.getCapability(FirefoxDriver.MARIONETTE) == Boolean.FALSE) {
-        score--;
-      }
 
       return score;
     }
