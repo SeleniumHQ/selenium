@@ -51,6 +51,12 @@ module Selenium
           expect(caps[:proxy]).to eq(proxy)
         end
 
+        it 'does not set goog:chromeOptions by default' do
+          Driver.new(http_client: http)
+
+          expect(caps['goog:chromeOptions']).to be nil
+        end
+
         it 'does not set the chrome.detach capability by default' do
           Driver.new(http_client: http)
 
@@ -86,44 +92,55 @@ module Selenium
           expect(caps['goog:chromeOptions'][:extensions]).to eq(profile_data[:extensions])
         end
 
-        it 'takes desired capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps[:chrome_options] = {'foo' => 'bar'}
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities][:chrome_options]).to include('foo' => 'bar')
-            resp
-          end
-
-          Driver.new(http_client: http, desired_capabilities: custom_caps)
-        end
-
-        it 'lets direct arguments take presedence over capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps['goog:chromeOptions'] = {'args' => %w[foo bar]}
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(['baz'])
-            resp
-          end
-
-          Driver.new(http_client: http, desired_capabilities: custom_caps, args: %w[baz])
-        end
-
-        it 'does not merge empty options' do
-          custom_caps = Remote::Capabilities.new('goog:chromeOptions' => {args: %w[foo bar]})
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(%w[foo bar])
-            resp
-          end
-
-          Driver.new(http_client: http, desired_capabilities: custom_caps)
-        end
-
         it 'handshakes protocol' do
           expect(Remote::Bridge).to receive(:handshake)
           Driver.new(http_client: http)
+        end
+
+        context 'with custom desired capabilities' do
+          subject(:build_new_driver) do
+            Driver.new(http_client: http, desired_capabilities: custom_caps, args: driver_args)
+          end
+
+          let(:custom_caps) { Remote::Capabilities.new(cap_opts) }
+          let(:cap_opts) { {chrome_options: {'foo' => 'bar'}} }
+          let(:driver_args) { [] }
+
+          it 'takes desired capabilities' do
+            expect(http).to receive(:call) do |_, _, payload|
+              expect(payload[:desiredCapabilities][:chrome_options]).to include('foo' => 'bar')
+              resp
+            end
+
+            build_new_driver
+          end
+
+          context 'with direct arguments' do
+            let(:cap_opts) { {'goog:chromeOptions' => {args: %w[foo bar]}} }
+            let(:driver_args) { %w[baz] }
+
+            it 'lets direct arguments take precedence over capabilities' do
+              expect(http).to receive(:call) do |_, _, payload|
+                expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(driver_args)
+                resp
+              end
+
+              build_new_driver
+            end
+          end
+
+          context 'with empty driver options' do
+            let(:cap_opts) { {'goog:chromeOptions' => {args: %w[foo bar]}} }
+
+            it 'does not merge empty options' do
+              expect(http).to receive(:call) do |_, _, payload|
+                expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(%w[foo bar])
+                resp
+              end
+
+              build_new_driver
+            end
+          end
         end
       end
     end # Chrome
