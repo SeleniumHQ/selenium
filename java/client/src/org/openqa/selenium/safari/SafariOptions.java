@@ -54,12 +54,16 @@ public class SafariOptions extends MutableCapabilities {
 
   private interface Option {
     String TECHNOLOGY_PREVIEW = "technologyPreview";
+    String AUTOMATIC_INSPECTION  = "automaticInspection";
+    String AUTOMATIC_PROFILING = "automaticProfiling";
   }
 
   private Map<String, Object> options = new TreeMap<>();
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
+    setAutomaticInspection(false);
+    setAutomaticProfiling(false);
     setCapability(CapabilityType.BROWSER_NAME, "safari");
   }
 
@@ -110,6 +114,30 @@ public class SafariOptions extends MutableCapabilities {
   // Setters
   
   /**
+   * Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
+   * the automatic inspection. Defaults to disabling the automatic inspection.
+   *
+   * @param automaticInspection If true, the SafariDriver will enable the Automation Inspection,
+   *                            otherwise will disable.
+   */
+  public SafariOptions setAutomaticInspection(boolean automaticInspection) {
+    options.put(Option.AUTOMATIC_INSPECTION, automaticInspection);
+    return this;
+  }
+
+  /**
+   * Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable
+   * the automatic profiling. Defaults to disabling the automatic profiling.
+   *
+   * @param automaticProfiling If true, the SafariDriver will enable the Automation Profiling,
+   *                            otherwise will disable.
+   */
+  public SafariOptions setAutomaticProfiling(boolean automaticProfiling) {
+    options.put(Option.AUTOMATIC_PROFILING, automaticProfiling);
+    return this;
+  }
+
+  /**
    * Instruct the SafariDriver to use the Safari Technology Preview if true, otherwise use the
    * release version of Safari. Defaults to using the release version of Safari.
    *
@@ -145,6 +173,14 @@ public class SafariOptions extends MutableCapabilities {
   }
 
   // Getters
+
+  public boolean getAutomaticInspection() {
+    return (boolean) options.getOrDefault(Option.AUTOMATIC_INSPECTION, false);
+  }
+
+  public boolean getAutomaticProfiling() {
+    return (boolean) options.getOrDefault(Option.AUTOMATIC_PROFILING, false);
+  }
 
   public boolean getUseTechnologyPreview() {
     return (boolean) options.getOrDefault(Option.TECHNOLOGY_PREVIEW, false);

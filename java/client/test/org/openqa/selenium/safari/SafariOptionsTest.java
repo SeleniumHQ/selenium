@@ -44,4 +44,16 @@ public class SafariOptionsTest {
     assertTrue(options.getUseTechnologyPreview());
   }
 
+  @Test
+  public void canSetAutomaticInspection() {
+    SafariOptions options = new SafariOptions().setAutomaticInspection(true);
+    assertTrue(options.getAutomaticInspection());
+  }
+
+  @Test
+  public void canSetAutomaticProfiling() {
+    SafariOptions options = new SafariOptions().setAutomaticProfiling(true);
+    assertTrue(options.getAutomaticProfiling());
+  }
+
 }
