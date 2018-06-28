@@ -624,15 +624,18 @@ class Driver extends webdriver.WebDriver {
    *
    * @param {string} path Path on the local filesystem to the web extension to
    *     install.
+   * @param {boolean} temporary Flag indicating whether the extension should be 
+   *     installed temporarily - gets removed on restart
    * @return {!Promise<string>} A promise that will resolve to an ID for the
    *     newly installed addon.
    * @see #uninstallAddon
    */
-  async installAddon(path) {
+  async installAddon(path, temporary=false) {
     let buf = await io.read(path);
     return this.execute(
         new command.Command(ExtensionCommand.INSTALL_ADDON)
-            .setParameter('addon', buf.toString('base64')));
+            .setParameter('addon', buf.toString('base64'))
+            .setParameter('temporary', temporary));
   }
 
   /**
