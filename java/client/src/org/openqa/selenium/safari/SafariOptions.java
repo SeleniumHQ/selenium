@@ -34,7 +34,7 @@ import java.util.TreeMap;
  * <p>Example usage:
  * <pre><code>
  * SafariOptions options = new SafariOptions()
- * options.setUseCleanSession(true);
+ * options.setUseTechnologyPreview(true);
  *
  * // For use with SafariDriver:
  * SafariDriver driver = new SafariDriver(options);
@@ -53,7 +53,6 @@ public class SafariOptions extends MutableCapabilities {
   public static final String CAPABILITY = "safari.options";
 
   private interface Option {
-    String CLEAN_SESSION = "cleanSession";
     String TECHNOLOGY_PREVIEW = "technologyPreview";
   }
 
@@ -109,24 +108,7 @@ public class SafariOptions extends MutableCapabilities {
   }
 
   // Setters
-
-  /**
-   * Instruct the SafariDriver to delete all existing session data when starting a new session.
-   * This includes browser history, cache, cookies, HTML5 local storage, and HTML5 databases.
-   *
-   * <p><strong>Warning:</strong> Since Safari uses a single profile for the
-   * current user, enabling this capability will permanently erase any existing
-   * session data.
-   *
-   * @param useCleanSession If true, the SafariDriver will erase all existing session data.
-   * @deprecated SafariDriver always runs a clean session
-   */
-  @Deprecated
-  public SafariOptions useCleanSession(boolean useCleanSession) {
-    options.put(Option.CLEAN_SESSION, useCleanSession);
-    return this;
-  }
-
+  
   /**
    * Instruct the SafariDriver to use the Safari Technology Preview if true, otherwise use the
    * release version of Safari. Defaults to using the release version of Safari.
