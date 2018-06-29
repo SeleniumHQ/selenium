@@ -62,27 +62,3 @@ class MockResponse:
 
     def getheader(self, *args, **kwargs):
         pass
-
-
-def test_remote_connection_adds_connection_headers_from_get_remote_connection_headers(mocker):
-    test_headers = {'FOO': 'bar', 'Content-Type': 'json'}
-    expected_request_headers = {'Foo': 'bar', 'Content-type': 'json'}
-
-    # Stub out the get_remote_connection_headers method to return something testable
-    mocker.patch(
-        'selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers'
-    ).return_value = test_headers
-
-    # Stub out response
-    try:
-        mock_open = mocker.patch('urllib.request.OpenerDirector.open')
-    except ImportError:
-        mock_open = mocker.patch('urllib2.OpenerDirector.open')
-
-    def assert_header_added(request, timeout):
-        assert request.headers == expected_request_headers
-        return MockResponse()
-
-    mock_open.side_effect = assert_header_added
-
-    RemoteConnection('http://remote', resolve_ip=False).execute('status', {})
