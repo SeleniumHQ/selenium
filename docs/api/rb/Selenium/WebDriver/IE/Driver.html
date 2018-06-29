@@ -91,7 +91,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd><span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></dd>
+      <dd><span class='object_link'><a href="../DriverExtensions/HasWebStorage.html" title="Selenium::WebDriver::DriverExtensions::HasWebStorage (module)">DriverExtensions::HasWebStorage</a></span>, <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></dd>
   </dl>
   
   
@@ -236,6 +236,17 @@ dialects of JSON wire protocol.</p>
   
   
   
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html" title="Selenium::WebDriver::DriverExtensions::HasWebStorage (module)">DriverExtensions::HasWebStorage</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasWebStorage.html#local_storage-instance_method" title="Selenium::WebDriver::DriverExtensions::HasWebStorage#local_storage (method)">#local_storage</a></span>, <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html#session_storage-instance_method" title="Selenium::WebDriver::DriverExtensions::HasWebStorage#session_storage (method)">#session_storage</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="../Driver.html#[]-instance_method" title="Selenium::WebDriver::Driver#[] (method)">#[]</a></span>, <span class='object_link'><a href="../Driver.html#action-instance_method" title="Selenium::WebDriver::Driver#action (method)">#action</a></span>, <span class='object_link'><a href="../Driver.html#capabilities-instance_method" title="Selenium::WebDriver::Driver#capabilities (method)">#capabilities</a></span>, <span class='object_link'><a href="../Driver.html#close-instance_method" title="Selenium::WebDriver::Driver#close (method)">#close</a></span>, <span class='object_link'><a href="../Driver.html#current_url-instance_method" title="Selenium::WebDriver::Driver#current_url (method)">#current_url</a></span>, <span class='object_link'><a href="../Driver.html#execute_async_script-instance_method" title="Selenium::WebDriver::Driver#execute_async_script (method)">#execute_async_script</a></span>, <span class='object_link'><a href="../Driver.html#execute_script-instance_method" title="Selenium::WebDriver::Driver#execute_script (method)">#execute_script</a></span>, <span class='object_link'><a href="../Driver.html#for-class_method" title="Selenium::WebDriver::Driver.for (method)">for</a></span>, <span class='object_link'><a href="../Driver.html#get-instance_method" title="Selenium::WebDriver::Driver#get (method)">#get</a></span>, <span class='object_link'><a href="../Driver.html#inspect-instance_method" title="Selenium::WebDriver::Driver#inspect (method)">#inspect</a></span>, <span class='object_link'><a href="../Driver.html#keyboard-instance_method" title="Selenium::WebDriver::Driver#keyboard (method)">#keyboard</a></span>, <span class='object_link'><a href="../Driver.html#manage-instance_method" title="Selenium::WebDriver::Driver#manage (method)">#manage</a></span>, <span class='object_link'><a href="../Driver.html#mouse-instance_method" title="Selenium::WebDriver::Driver#mouse (method)">#mouse</a></span>, <span class='object_link'><a href="../Driver.html#navigate-instance_method" title="Selenium::WebDriver::Driver#navigate (method)">#navigate</a></span>, <span class='object_link'><a href="../Driver.html#page_source-instance_method" title="Selenium::WebDriver::Driver#page_source (method)">#page_source</a></span>, <span class='object_link'><a href="../Driver.html#ref-instance_method" title="Selenium::WebDriver::Driver#ref (method)">#ref</a></span>, <span class='object_link'><a href="../Driver.html#switch_to-instance_method" title="Selenium::WebDriver::Driver#switch_to (method)">#switch_to</a></span>, <span class='object_link'><a href="../Driver.html#title-instance_method" title="Selenium::WebDriver::Driver#title (method)">#title</a></span>, <span class='object_link'><a href="../Driver.html#window_handle-instance_method" title="Selenium::WebDriver::Driver#window_handle (method)">#window_handle</a></span>, <span class='object_link'><a href="../Driver.html#window_handles-instance_method" title="Selenium::WebDriver::Driver#window_handles (method)">#window_handles</a></span></p>
 
@@ -282,7 +293,6 @@ dialects of JSON wire protocol.</p>
       <pre class="lines">
 
 
-31
 32
 33
 34
@@ -298,10 +308,11 @@ dialects of JSON wire protocol.</p>
 44
 45
 46
-47</pre>
+47
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_create_capabilities'>create_capabilities</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
@@ -360,12 +371,12 @@ dialects of JSON wire protocol.</p>
       <pre class="lines">
 
 
-49
 50
-51</pre>
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='symbol'>:internet_explorer</span>
@@ -403,14 +414,14 @@ dialects of JSON wire protocol.</p>
       <pre class="lines">
 
 
-53
 54
 55
 56
-57</pre>
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
@@ -427,9 +438,9 @@ dialects of JSON wire protocol.</p>
 </div>
 
       <div id="footer">
-  Generated on Mon Feb  5 16:12:21 2018 by
+  Generated on Fri Jun 29 10:27:05 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.3.3).
+  0.9.12 (ruby-2.4.0).
 </div>
 
     </div>

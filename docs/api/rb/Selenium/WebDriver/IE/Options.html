@@ -547,7 +547,7 @@
       <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/options.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='ivar'>@args</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@args</span> <span class='op'>=</span> <span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:native_events</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='kw'>true</span>
 <span class='kw'>end</span></pre>
@@ -852,7 +852,7 @@
     <span class='id identifier rubyid_capability_value'>capability_value</span> <span class='op'>=</span> <span class='ivar'>@options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='id identifier rubyid_capability_alias'>capability_alias</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='id identifier rubyid_capability_name'>capability_name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_capability_value'>capability_value</span> <span class='kw'>unless</span> <span class='id identifier rubyid_capability_value'>capability_value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='kw'>end</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.browserCommandLineSwitches</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@args</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@args</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.browserCommandLineSwitches</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@args</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@args</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='ivar'>@options</span><span class='rparen'>)</span>
 
   <span class='lbrace'>{</span><span class='const'><span class='object_link'><a href="#KEY-constant" title="Selenium::WebDriver::IE::Options::KEY (constant)">KEY</a></span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_opts'>opts</span><span class='rbrace'>}</span>
@@ -867,9 +867,9 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Feb  5 16:12:21 2018 by
+  Generated on Fri Jun 29 10:27:05 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.3.3).
+  0.9.12 (ruby-2.4.0).
 </div>
 
     </div>

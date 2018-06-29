@@ -603,7 +603,7 @@ value</p>
       <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/options.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='ivar'>@args</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@args</span> <span class='op'>=</span> <span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:binary</span><span class='rparen'>)</span>
   <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:profile</span><span class='rparen'>)</span>
   <span class='ivar'>@log_level</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:log_level</span><span class='rparen'>)</span>
@@ -1182,7 +1182,7 @@ value</p>
   <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='ivar'>@options</span>
 
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:profile</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@profile</span><span class='period'>.</span><span class='id identifier rubyid_encoded'>encoded</span> <span class='kw'>if</span> <span class='ivar'>@profile</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:args</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@args</span> <span class='kw'>if</span> <span class='ivar'>@args</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:args</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@args</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span> <span class='kw'>if</span> <span class='ivar'>@args</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:binary</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@binary</span> <span class='kw'>if</span> <span class='ivar'>@binary</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:prefs</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@prefs</span> <span class='kw'>unless</span> <span class='ivar'>@prefs</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:log</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>level:</span> <span class='ivar'>@log_level</span><span class='rbrace'>}</span> <span class='kw'>if</span> <span class='ivar'>@log_level</span>
@@ -1253,9 +1253,9 @@ value</p>
 </div>
 
       <div id="footer">
-  Generated on Mon Feb  5 16:12:24 2018 by
+  Generated on Fri Jun 29 10:27:08 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.3.3).
+  0.9.12 (ruby-2.4.0).
 </div>
 
     </div>

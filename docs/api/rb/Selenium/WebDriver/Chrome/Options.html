@@ -100,6 +100,16 @@
 </div>
 
 
+  <h2>Constant Summary</h2>
+  <dl class="constants">
+    
+      <dt id="KEY-constant" class="">KEY =
+        
+      </dt>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>goog:chromeOptions</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+    
+  </dl>
+
 
 
 
@@ -489,6 +499,30 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#headless!-instance_method" title="#headless! (instance method)">#<strong>headless!</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Run Chrome in headless mode.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(**opts)  &#x21d2; Options </a>
     
 
@@ -661,21 +695,21 @@ value</p>
       <pre class="lines">
 
 
-41
-42
 43
 44
 45
 46
 47
 48
-49</pre>
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='ivar'>@args</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@args</span> <span class='op'>=</span> <span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:binary</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='period'>.</span><span class='id identifier rubyid_path'><span class='object_link'><a href="../Chrome.html#path-class_method" title="Selenium::WebDriver::Chrome.path (method)">path</a></span></span>
   <span class='ivar'>@prefs</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:prefs</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='ivar'>@extensions</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:extensions</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -1060,12 +1094,12 @@ value</p>
       <pre class="lines">
 
 
-91
-92
-93</pre>
+93
+94
+95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 91</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 93</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_argument'>add_argument</span><span class='lparen'>(</span><span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='ivar'>@args</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_arg'>arg</span>
@@ -1174,14 +1208,14 @@ value</p>
       <pre class="lines">
 
 
-141
-142
-143
-144
-145</pre>
+158
+159
+160
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 141</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 158</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_emulation'>add_emulation</span><span class='lparen'>(</span><span class='label'>device_name:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device_metrics:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>user_agent:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@emulation</span><span class='lbracket'>[</span><span class='symbol'>:deviceName</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_device_name'>device_name</span> <span class='kw'>if</span> <span class='id identifier rubyid_device_name'>device_name</span>
@@ -1248,12 +1282,12 @@ value</p>
       <pre class="lines">
 
 
-77
-78
-79</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_encoded_extension'>add_encoded_extension</span><span class='lparen'>(</span><span class='id identifier rubyid_encoded'>encoded</span><span class='rparen'>)</span>
   <span class='ivar'>@encoded_extensions</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_encoded'>encoded</span>
@@ -1331,14 +1365,14 @@ value</p>
       <pre class="lines">
 
 
-61
-62
 63
 64
-65</pre>
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_extension'>add_extension</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>could not find extension at </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_file?'>file?</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
@@ -1425,12 +1459,12 @@ value</p>
       <pre class="lines">
 
 
-106
-107
-108</pre>
+108
+109
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 106</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 108</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_option'>add_option</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -1515,12 +1549,12 @@ value</p>
       <pre class="lines">
 
 
-121
-122
-123</pre>
+123
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 123</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_preference'>add_preference</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_prefs'>prefs</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -1558,23 +1592,24 @@ value</p>
       <pre class="lines">
 
 
-151
-152
-153
-154
-155
-156
-157
-158
-159
-160
-161
-162
-163
-164</pre>
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 151</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 168</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_extensions'>extensions</span> <span class='op'>=</span> <span class='ivar'>@extensions</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_crx_path'>crx_path</span><span class='op'>|</span>
@@ -1584,11 +1619,72 @@ value</p>
 
   <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='ivar'>@options</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:binary</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@binary</span> <span class='kw'>if</span> <span class='ivar'>@binary</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:args</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@args</span> <span class='kw'>if</span> <span class='ivar'>@args</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:args</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@args</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span> <span class='kw'>if</span> <span class='ivar'>@args</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:extensions</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_extensions'>extensions</span> <span class='kw'>if</span> <span class='id identifier rubyid_extensions'>extensions</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:mobileEmulation</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@emulation</span> <span class='kw'>unless</span> <span class='ivar'>@emulation</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:prefs</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@prefs</span> <span class='kw'>unless</span> <span class='ivar'>@prefs</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-  <span class='id identifier rubyid_opts'>opts</span>
+
+  <span class='lbrace'>{</span><span class='const'><span class='object_link'><a href="#KEY-constant" title="Selenium::WebDriver::Chrome::Options::KEY (constant)">KEY</a></span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_opts'>opts</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="headless!-instance_method">
+  
+    #<strong>headless!</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Run Chrome in headless mode.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>Enable headless mode</p>
+</div></p>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::Chrome::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Chrome::Options#initialize (method)">new</a></span></span>
+<span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_headless!'>headless!</span></code></pre>
+    
+  </div>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+135
+136
+137
+138
+139
+140</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/options.rb', line 135</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_headless!'>headless!</span>
+  <span class='id identifier rubyid_add_argument'>add_argument</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>--headless</span><span class='tstring_end'>&#39;</span></span>
+
+  <span class='comment'># https://bugs.chromium.org/p/chromium/issues/detail?id=737678#c1
+</span>  <span class='id identifier rubyid_add_argument'>add_argument</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>--disable-gpu</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_windows?'><span class='object_link'><a href="../Platform.html#windows%3F-class_method" title="Selenium::WebDriver::Platform.windows? (method)">windows?</a></span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1600,9 +1696,9 @@ value</p>
 </div>
 
       <div id="footer">
-  Generated on Mon Feb  5 16:12:24 2018 by
+  Generated on Fri Jun 29 10:27:07 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.3.3).
+  0.9.12 (ruby-2.4.0).
 </div>
 
     </div>

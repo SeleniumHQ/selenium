@@ -91,7 +91,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd><span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></dd>
+      <dd><span class='object_link'><a href="../DriverExtensions/HasDebugger.html" title="Selenium::WebDriver::DriverExtensions::HasDebugger (module)">DriverExtensions::HasDebugger</a></span>, <span class='object_link'><a href="../DriverExtensions/HasPermissions.html" title="Selenium::WebDriver::DriverExtensions::HasPermissions (module)">DriverExtensions::HasPermissions</a></span>, <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></dd>
   </dl>
   
   
@@ -213,6 +213,28 @@
   
   
   
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasPermissions.html" title="Selenium::WebDriver::DriverExtensions::HasPermissions (module)">DriverExtensions::HasPermissions</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasPermissions.html#permissions-instance_method" title="Selenium::WebDriver::DriverExtensions::HasPermissions#permissions (method)">#permissions</a></span>, <span class='object_link'><a href="../DriverExtensions/HasPermissions.html#permissions=-instance_method" title="Selenium::WebDriver::DriverExtensions::HasPermissions#permissions= (method)">#permissions=</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasDebugger.html" title="Selenium::WebDriver::DriverExtensions::HasDebugger (module)">DriverExtensions::HasDebugger</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasDebugger.html#attach_debugger-instance_method" title="Selenium::WebDriver::DriverExtensions::HasDebugger#attach_debugger (method)">#attach_debugger</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="../Driver.html#[]-instance_method" title="Selenium::WebDriver::Driver#[] (method)">#[]</a></span>, <span class='object_link'><a href="../Driver.html#action-instance_method" title="Selenium::WebDriver::Driver#action (method)">#action</a></span>, <span class='object_link'><a href="../Driver.html#browser-instance_method" title="Selenium::WebDriver::Driver#browser (method)">#browser</a></span>, <span class='object_link'><a href="../Driver.html#capabilities-instance_method" title="Selenium::WebDriver::Driver#capabilities (method)">#capabilities</a></span>, <span class='object_link'><a href="../Driver.html#close-instance_method" title="Selenium::WebDriver::Driver#close (method)">#close</a></span>, <span class='object_link'><a href="../Driver.html#current_url-instance_method" title="Selenium::WebDriver::Driver#current_url (method)">#current_url</a></span>, <span class='object_link'><a href="../Driver.html#execute_async_script-instance_method" title="Selenium::WebDriver::Driver#execute_async_script (method)">#execute_async_script</a></span>, <span class='object_link'><a href="../Driver.html#execute_script-instance_method" title="Selenium::WebDriver::Driver#execute_script (method)">#execute_script</a></span>, <span class='object_link'><a href="../Driver.html#for-class_method" title="Selenium::WebDriver::Driver.for (method)">for</a></span>, <span class='object_link'><a href="../Driver.html#get-instance_method" title="Selenium::WebDriver::Driver#get (method)">#get</a></span>, <span class='object_link'><a href="../Driver.html#inspect-instance_method" title="Selenium::WebDriver::Driver#inspect (method)">#inspect</a></span>, <span class='object_link'><a href="../Driver.html#keyboard-instance_method" title="Selenium::WebDriver::Driver#keyboard (method)">#keyboard</a></span>, <span class='object_link'><a href="../Driver.html#manage-instance_method" title="Selenium::WebDriver::Driver#manage (method)">#manage</a></span>, <span class='object_link'><a href="../Driver.html#mouse-instance_method" title="Selenium::WebDriver::Driver#mouse (method)">#mouse</a></span>, <span class='object_link'><a href="../Driver.html#navigate-instance_method" title="Selenium::WebDriver::Driver#navigate (method)">#navigate</a></span>, <span class='object_link'><a href="../Driver.html#page_source-instance_method" title="Selenium::WebDriver::Driver#page_source (method)">#page_source</a></span>, <span class='object_link'><a href="../Driver.html#ref-instance_method" title="Selenium::WebDriver::Driver#ref (method)">#ref</a></span>, <span class='object_link'><a href="../Driver.html#switch_to-instance_method" title="Selenium::WebDriver::Driver#switch_to (method)">#switch_to</a></span>, <span class='object_link'><a href="../Driver.html#title-instance_method" title="Selenium::WebDriver::Driver#title (method)">#title</a></span>, <span class='object_link'><a href="../Driver.html#window_handle-instance_method" title="Selenium::WebDriver::Driver#window_handle (method)">#window_handle</a></span>, <span class='object_link'><a href="../Driver.html#window_handles-instance_method" title="Selenium::WebDriver::Driver#window_handles (method)">#window_handles</a></span></p>
 
@@ -259,8 +281,6 @@
       <pre class="lines">
 
 
-30
-31
 32
 33
 34
@@ -275,10 +295,14 @@
 43
 44
 45
-46</pre>
+46
+47
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/driver.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/driver.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Remote/Capabilities.html" title="Selenium::WebDriver::Remote::Capabilities (class)">Capabilities</a></span></span><span class='period'>.</span><span class='id identifier rubyid_safari'><span class='object_link'><a href="../Remote/Capabilities.html#safari-class_method" title="Selenium::WebDriver::Remote::Capabilities.safari (method)">safari</a></span></span>
@@ -295,6 +319,8 @@
 
   <span class='id identifier rubyid_listener'>listener</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:listener</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span></span><span class='period'>.</span><span class='id identifier rubyid_handshake'><span class='object_link'><a href="../Remote/Bridge.html#handshake-class_method" title="Selenium::WebDriver::Remote::Bridge.handshake (method)">handshake</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_extend'>extend</span> <span class='const'><span class='object_link'><a href="Bridge.html" title="Selenium::WebDriver::Safari::Bridge (module)">Bridge</a></span></span>
+
   <span class='kw'>super</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='comma'>,</span> <span class='label'>listener:</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -337,14 +363,14 @@
       <pre class="lines">
 
 
-48
-49
-50
-51
-52</pre>
+52
+53
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/driver.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/driver.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
@@ -361,9 +387,9 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Feb  5 16:12:23 2018 by
+  Generated on Fri Jun 29 10:27:07 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.3.3).
+  0.9.12 (ruby-2.4.0).
 </div>
 
     </div>

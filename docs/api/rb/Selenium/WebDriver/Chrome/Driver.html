@@ -91,7 +91,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd><span class='object_link'><a href="../DriverExtensions/HasNetworkConditions.html" title="Selenium::WebDriver::DriverExtensions::HasNetworkConditions (module)">DriverExtensions::HasNetworkConditions</a></span>, <span class='object_link'><a href="../DriverExtensions/HasTouchScreen.html" title="Selenium::WebDriver::DriverExtensions::HasTouchScreen (module)">DriverExtensions::HasTouchScreen</a></span>, <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html" title="Selenium::WebDriver::DriverExtensions::HasWebStorage (module)">DriverExtensions::HasWebStorage</a></span>, <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></dd>
+      <dd><span class='object_link'><a href="../DriverExtensions/DownloadsFiles.html" title="Selenium::WebDriver::DriverExtensions::DownloadsFiles (module)">DriverExtensions::DownloadsFiles</a></span>, <span class='object_link'><a href="../DriverExtensions/HasNetworkConditions.html" title="Selenium::WebDriver::DriverExtensions::HasNetworkConditions (module)">DriverExtensions::HasNetworkConditions</a></span>, <span class='object_link'><a href="../DriverExtensions/HasTouchScreen.html" title="Selenium::WebDriver::DriverExtensions::HasTouchScreen (module)">DriverExtensions::HasTouchScreen</a></span>, <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html" title="Selenium::WebDriver::DriverExtensions::HasWebStorage (module)">DriverExtensions::HasWebStorage</a></span>, <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></dd>
   </dl>
   
   
@@ -224,6 +224,17 @@
   
   
   
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/DownloadsFiles.html" title="Selenium::WebDriver::DriverExtensions::DownloadsFiles (module)">DriverExtensions::DownloadsFiles</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/DownloadsFiles.html#download_path=-instance_method" title="Selenium::WebDriver::DriverExtensions::DownloadsFiles#download_path= (method)">#download_path=</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html#save_screenshot-instance_method" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot#save_screenshot (method)">#save_screenshot</a></span>, <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html#screenshot_as-instance_method" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot#screenshot_as (method)">#screenshot_as</a></span></p>
 
@@ -314,7 +325,6 @@
       <pre class="lines">
 
 
-33
 34
 35
 36
@@ -332,10 +342,11 @@
 48
 49
 50
-51</pre>
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_create_capabilities'>create_capabilities</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
@@ -396,12 +407,12 @@
       <pre class="lines">
 
 
-53
 54
-55</pre>
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='symbol'>:chrome</span>
@@ -439,14 +450,14 @@
       <pre class="lines">
 
 
-57
 58
 59
 60
-61</pre>
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
@@ -463,9 +474,9 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Feb  5 16:12:23 2018 by
+  Generated on Fri Jun 29 10:27:07 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.3.3).
+  0.9.12 (ruby-2.4.0).
 </div>
 
     </div>
