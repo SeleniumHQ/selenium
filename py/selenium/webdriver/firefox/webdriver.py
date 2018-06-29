@@ -17,17 +17,11 @@
 import warnings
 
 try:
-    import http.client as http_client
-except ImportError:
-    import httplib as http_client
-
-try:
     basestring
 except NameError:  # Python 3.x
     basestring = str
 
 import shutil
-import socket
 import sys
 from contextlib import contextmanager
 
@@ -200,9 +194,8 @@ class WebDriver(RemoteWebDriver):
         """Quits the driver and close every associated window."""
         try:
             RemoteWebDriver.quit(self)
-        except (http_client.BadStatusLine, socket.error):
-            # Happens if Firefox shutsdown before we've read the response from
-            # the socket.
+        except Exception:
+            # We don't care about the message because something probably has gone wrong
             pass
 
         if self.w3c:
