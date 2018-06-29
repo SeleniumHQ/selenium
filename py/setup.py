@@ -68,6 +68,7 @@ setup_args = {
                  'selenium.webdriver.remote',
                  'selenium.webdriver.support', ],
     'include_package_data': True,
+    'install_requires': ['urllib3'],
     'zip_safe': False
 }
 
