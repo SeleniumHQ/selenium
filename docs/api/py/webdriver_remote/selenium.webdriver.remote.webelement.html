@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.webelement &mdash; Selenium 3.9 documentation</title>
+    <title>selenium.webdriver.remote.webelement &mdash; Selenium 3.13 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.9',
+        VERSION:     '3.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.9 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.13 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.9 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.13 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -72,12 +72,13 @@ instance will fail.</p>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webelement.WebElement.find_element">
 <tt class="descname">find_element</tt><big>(</big><em>by='id'</em>, <em>value=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#8216;Private&#8217; method used by the find_element_by_* methods.</p>
+<dd><p>Find an element given a By strategy and locator. Prefer the find_element_by_* methods when
+possible.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">Use the corresponding find_element_by_* instead of this.</td>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">element = element.find_element(By.ID, &#8216;foo&#8217;)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">WebElement</td>
 </tr>
@@ -343,12 +344,13 @@ instance will fail.</p>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webelement.WebElement.find_elements">
 <tt class="descname">find_elements</tt><big>(</big><em>by='id'</em>, <em>value=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#8216;Private&#8217; method used by the find_elements_by_* methods.</p>
+<dd><p>Find elements given a By strategy and locator. Prefer the find_elements_by_* methods when
+possible.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">Use the corresponding find_elements_by_* instead of this.</td>
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">element = element.find_elements(By.CLASS_NAME, &#8216;foo&#8217;)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list of WebElement</td>
 </tr>
@@ -845,7 +847,7 @@ file inputs, this could be a local file path.</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.9 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.13 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

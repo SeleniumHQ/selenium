@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.9 documentation</title>
+    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.13 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.9',
+        VERSION:     '3.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.9 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.13 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.9 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -507,10 +507,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">command_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">command</span><span class="p">]</span>
         <span class="k">assert</span> <span class="n">command_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;Unrecognised command </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">command</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;w3c&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s">&#39;sessionId&#39;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">params</span><span class="p">[</span><span class="s">&#39;sessionId&#39;</span><span class="p">]</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dump_json</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 </div>
@@ -613,7 +611,7 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="n">body</span><span class="o">.</span><span class="n">strip</span><span class="p">()}</span>
                 <span class="k">return</span> <span class="n">data</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Finished Request&quot;</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">u&quot;Finished Request {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
             <span class="n">resp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 </pre></div>
 
@@ -648,7 +646,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.9 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

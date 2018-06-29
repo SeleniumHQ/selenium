@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium 3.9 documentation</title>
+    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium 3.13 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.9',
+        VERSION:     '3.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.9 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.13 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.9 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.13 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -73,6 +73,34 @@ capabilities only, such as &#8220;proxy&#8221; or &#8220;loggingPref&#8221;.</li
 <dt id="selenium.webdriver.chrome.webdriver.WebDriver.create_options">
 <tt class="descname">create_options</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/webdriver.html#WebDriver.create_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.webdriver.WebDriver.create_options" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.webdriver.WebDriver.execute_cdp_cmd">
+<tt class="descname">execute_cdp_cmd</tt><big>(</big><em>cmd</em>, <em>cmd_args</em><big>)</big><a class="headerlink" href="#selenium.webdriver.chrome.webdriver.WebDriver.execute_cdp_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute Chrome Devtools Protocol command and get returned result</p>
+<p>The command and command args should follow chrome devtools protocol domains/commands, refer to link
+<a class="reference external" href="https://chromedevtools.github.io/devtools-protocol/">https://chromedevtools.github.io/devtools-protocol/</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>cmd: A str, command name</li>
+<li>cmd_args: A dict, command args. empty dict {} if there is no command args</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first">driver.execute_cdp_cmd(&#8216;Network.getResponseBody&#8217;, {&#8216;requestId&#8217;: requestId})</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A dict, empty dict {} if there is no result to return.
+For example to getResponseBody:</p>
+<p class="last">{&#8216;base64Encoded&#8217;: False, &#8216;body&#8217;: &#8216;response body string&#8217;}</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.chrome.webdriver.WebDriver.get_network_conditions">
@@ -173,7 +201,7 @@ upload_throughput=500 * 1024)  # maximal throughput</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.9 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.13 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

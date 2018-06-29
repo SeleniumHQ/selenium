@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.9 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.13 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.9',
+        VERSION:     '3.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.9 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.13 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.9 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.13 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -48,7 +48,7 @@
 <span id="selenium-webdriver-firefox-webdriver"></span><h1>selenium.webdriver.firefox.webdriver<a class="headerlink" href="#module-selenium.webdriver.firefox.webdriver" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="selenium.webdriver.firefox.webdriver.WebDriver">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.firefox.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>firefox_profile=None</em>, <em>firefox_binary=None</em>, <em>timeout=30</em>, <em>capabilities=None</em>, <em>proxy=None</em>, <em>executable_path='geckodriver'</em>, <em>options=None</em>, <em>log_path='geckodriver.log'</em>, <em>firefox_options=None</em>, <em>service_args=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.firefox.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>firefox_profile=None</em>, <em>firefox_binary=None</em>, <em>timeout=30</em>, <em>capabilities=None</em>, <em>proxy=None</em>, <em>executable_path='geckodriver'</em>, <em>options=None</em>, <em>log_path='geckodriver.log'</em>, <em>firefox_options=None</em>, <em>service_args=None</em>, <em>desired_capabilities=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starts a new local session of Firefox.</p>
 <p>Based on the combination and specificity of the various keyword
 arguments, a capabilities dictionary will be constructed that
@@ -92,6 +92,9 @@ binary to use for Firefox 47.0.1 and greater, which
 defaults to picking up the binary from the system path.</li>
 <li><strong>options</strong> &#8211; Instance of <tt class="docutils literal"><span class="pre">options.Options</span></tt>.</li>
 <li><strong>log_path</strong> &#8211; Where to log information from the driver.</li>
+<li><strong>desired_capabilities</strong> &#8211; alias of capabilities. In future
+versions of this library, this will replace &#8216;capabilities&#8217;.
+This will make the signature consistent with RemoteWebDriver.</li>
 </ul>
 </td>
 </tr>
@@ -224,7 +227,7 @@ be used to uninstall addon.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.9 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.13 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
