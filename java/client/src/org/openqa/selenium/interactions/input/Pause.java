@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.interactions.input;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class Pause extends Interaction implements Encodable {
   private final Duration duration;
 
   /**
-   * @param duration If 0, this means "wait until all other actions in the tick have been
+   * @param duration If 0, this means "wait until all other input in the tick have been
    *   evaluated". Must be greater than 0.
    */
   // TODO(simons): Reduce visibility?

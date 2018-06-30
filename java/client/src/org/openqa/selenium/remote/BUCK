@@ -14,6 +14,7 @@ java_library(
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:core',
+    '//java/client/src/org/openqa/selenium/logging:api',
     '//third_party/java/guava:guava',
   ],
   visibility = [

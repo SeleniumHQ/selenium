@@ -15,11 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions.internal;
+package org.openqa.selenium.interactions.internal.base;
 
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.interactions.input.Keyboard;
+import org.openqa.selenium.interactions.input.Mouse;
+import org.openqa.selenium.interactions.internal.Locatable;
 
 /**
  * Used both by KeyDownAction and KeyUpAction

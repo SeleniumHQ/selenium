@@ -15,29 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
-
-import org.openqa.selenium.interactions.internal.Coordinates;
+package org.openqa.selenium.interactions.input;
 
 /**
- * Interface representing basic mouse operations.
+ * Models an <a href="https://www.w3.org/TR/webdriver/#dfn-input-source">input source</a> as defined
+ * and used by the W3C WebDriver spec.
  */
-public interface Mouse {
-  void click(Coordinates where);
-
-  void doubleClick(Coordinates where);
-
-  void mouseDown(Coordinates where);
-
-  void mouseUp(Coordinates where);
-
-  void mouseMove(Coordinates where);
-
-  /* Offset from the current location of the mouse pointer. */
-  void mouseMove(Coordinates where, long xOffset, long yOffset);
-
-  // Right-clicks an element.
-  void contextClick(Coordinates where);
-
-  // TODO: Scroll wheel support
+public interface InputSource {
+  SourceType getInputType();
 }

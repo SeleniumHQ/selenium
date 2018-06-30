@@ -15,29 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.interactions.input;
 
 /**
- * Used as the basis of {@link Sequence}s for the W3C WebDriver spec
- * <a href="https://www.w3.org/TR/webdriver/#actions">Action commands</a>.
+ * Interface implemented by each driver that allows access to touch screen capabilities.
  */
-public abstract class Interaction {
+public interface HasTouchScreen {
 
-  private final InputSource source;
-
-  protected Interaction(InputSource source) {
-    // Avoiding a guava dependency.
-    if (source == null) {
-      throw new NullPointerException("Input source must not be null");
-    }
-    this.source = source;
-  }
-
-  protected boolean isValidFor(SourceType sourceType) {
-    return source.getInputType() == sourceType;
-  }
-
-  public InputSource getSource() {
-    return source;
-  }
+  TouchScreen getTouch();
 }

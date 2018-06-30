@@ -15,18 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions.internal;
+package org.openqa.selenium.interactions.exceptions;
+
+import org.openqa.selenium.WebDriverException;
 
 /**
- * This class represents an abstraction of devices that can execute an action within a display area.
+ * Indicates that the target provided to the input move() method is invalid - outside of
+ * the size of the window.
  */
-public abstract class DisplayAction extends BaseAction {
-
-  protected DisplayAction(Locatable locationProvider) {
-    super(locationProvider);
+public class MoveTargetOutOfBoundsException extends WebDriverException {
+  public MoveTargetOutOfBoundsException(String message) {
+    super(message);
   }
 
-  protected Coordinates getActionLocation() {
-    return (where == null) ? null : where.getCoordinates();
+  public MoveTargetOutOfBoundsException(Throwable cause) {
+    super(cause);
+  }
+
+  public MoveTargetOutOfBoundsException(String message, Throwable cause) {
+    super(message, cause);
   }
 }

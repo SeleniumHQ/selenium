@@ -18,8 +18,8 @@
 package org.openqa.selenium.remote.server.handler.interactions.touch;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.interactions.HasTouchScreen;
-import org.openqa.selenium.interactions.TouchScreen;
+import org.openqa.selenium.interactions.input.HasTouchScreen;
+import org.openqa.selenium.interactions.input.TouchScreen;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;

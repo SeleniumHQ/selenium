@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.SessionLogs;
+import org.openqa.selenium.logging.session.SessionLogs;
 import org.openqa.selenium.remote.SessionId;
 
 import java.io.IOException;

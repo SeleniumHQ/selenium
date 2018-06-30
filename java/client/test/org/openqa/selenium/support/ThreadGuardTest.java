@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.input.HasTouchScreen;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

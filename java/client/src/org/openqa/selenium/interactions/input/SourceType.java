@@ -15,18 +15,23 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
-
-import org.openqa.selenium.WebDriverException;
+package org.openqa.selenium.interactions.input;
 
 /**
- * Indicates that the coordinates provided to an interactions operation are invalid. This, most
- * likely, means that a move operation was provided with invalid coordinates or that an action that
- * depends on mouse position (like click) was not preceeded by a move operation.
+ * One of the allowing types for an {@link InputSource}.
  */
-public class InvalidCoordinatesException extends WebDriverException {
+public enum SourceType {
+  KEY("key"),
+  NONE(null),
+  POINTER("pointer");
 
-  public InvalidCoordinatesException(String message) {
-    super(message);
+  private final String type;
+
+  SourceType(String type) {
+    this.type = type;
+  }
+
+  public String getType() {
+    return type;
   }
 }

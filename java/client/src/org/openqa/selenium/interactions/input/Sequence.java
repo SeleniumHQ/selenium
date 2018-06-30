@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.interactions.input;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -84,7 +84,7 @@ public class Sequence implements Encodable {
     return encode();
   }
 
-  int size() {
+  public int size() {
     return actions.size();
   }
 }

@@ -15,54 +15,75 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions.internal;
+package org.openqa.selenium.interactions.internal.base;
 
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Interaction;
+import org.openqa.selenium.interactions.input.Interaction;
 import org.openqa.selenium.interactions.IsInteraction;
-import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.interactions.input.Mouse;
 import org.openqa.selenium.interactions.PointerInput;
-import org.openqa.selenium.interactions.PointerInput.MouseButton;
 import org.openqa.selenium.interactions.PointerInput.Origin;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.interactions.internal.Locatable;
 
 import java.time.Duration;
 import java.util.Optional;
 
 /**
- * Represents a general action related to keyboard input.
+ * Base class for all mouse-related actions.
  */
-public abstract class KeysRelatedAction extends BaseAction implements IsInteraction {
-  protected final Keyboard keyboard;
+public abstract class MouseAction extends BaseAction implements IsInteraction {
+
+  public enum Button {
+    LEFT(0),
+    MIDDLE(1),
+    RIGHT(2);
+
+    private final int button;
+
+    Button(int button) {
+      this.button = button;
+    }
+
+    public int asArg() {
+      return button;
+    }
+  }
+
   protected final Mouse mouse;
 
-  protected KeysRelatedAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider) {
+  protected MouseAction(Mouse mouse, Locatable locationProvider) {
     super(locationProvider);
-    this.keyboard = keyboard;
     this.mouse = mouse;
   }
 
-  protected void focusOnElement() {
-    if (where != null) {
-      mouse.click(where.getCoordinates());
+  protected Coordinates getActionLocation() {
+    if (where == null) {
+      return null;
+    }
+
+    return where.getCoordinates();
+  }
+
+  protected void moveToLocation() {
+    // Only call mouseMove if an actual location was provided. If not,
+    // the action will happen in the last known location of the mouse
+    // cursor.
+    if (getActionLocation() != null) {
+      mouse.mouseMove(getActionLocation());
     }
   }
 
-  protected void optionallyClickElement(
+  protected void moveToLocation(
       PointerInput mouse,
       ImmutableList.Builder<Interaction> interactions) {
     Optional<WebElement> target = getTargetElement();
-    if (target.isPresent()) {
-      interactions.add(mouse.createPointerMove(
-          Duration.ofMillis(500),
-          target.map(Origin::fromElement).orElse(Origin.pointer()),
-          0,
-          0));
-
-      interactions.add(mouse.createPointerDown(MouseButton.LEFT.asArg()));
-      interactions.add(mouse.createPointerUp(MouseButton.LEFT.asArg()));
-    }
+    interactions.add(mouse.createPointerMove(
+        Duration.ofMillis(500),
+        target.map(Origin::fromElement).orElse(Origin.pointer()),
+        0,
+        0));
   }
 }

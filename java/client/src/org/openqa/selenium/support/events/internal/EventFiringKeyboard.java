@@ -18,8 +18,8 @@
 package org.openqa.selenium.support.events.internal;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.input.HasInputDevices;
+import org.openqa.selenium.interactions.input.Keyboard;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 /**

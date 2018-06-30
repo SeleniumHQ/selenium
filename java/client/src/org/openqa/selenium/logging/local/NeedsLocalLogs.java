@@ -15,14 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.logging.local;
 
-
-/**
- * Interface implemented by each driver that allows access to the raw input devices.
- */
-public interface HasInputDevices {
-  Keyboard getKeyboard();
-
-  Mouse getMouse();
+public interface NeedsLocalLogs {
+  void setLocalLogs(LocalLogs logs);
 }

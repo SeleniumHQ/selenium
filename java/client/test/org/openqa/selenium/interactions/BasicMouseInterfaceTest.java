@@ -41,6 +41,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.exceptions.InvalidCoordinatesException;
+import org.openqa.selenium.interactions.input.Action;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.support.ui.ExpectedCondition;

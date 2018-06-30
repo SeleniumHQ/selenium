@@ -1,25 +1,35 @@
 # BUILD FILE SYNTAX: SKYLARK
 API_SRCS = [
   'Logs.java',
+  'LoggingHandler.java',
+  'LogCombiner.java',
   'LogEntries.java',
   'LogEntry.java',
   'LogLevelMapping.java',
   'LoggingPreferences.java',
+  'LogType.java',
+  'local/CompositeLocalLogs.java',
+  'local/HandlerBasedLocalLogs.java',
+  'local/LocalLogs.java',
+  'local/NeedsLocalLogs.java',
+  'local/StoringLocalLogs.java',
 ]
 
 java_library(name = 'api',
   srcs = API_SRCS,
   deps = [
     '//java/client/src/org/openqa/selenium:beta',
+    '//third_party/java/guava:guava',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:core',
     '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:api',
   ],
 )
 
 java_library(name = 'logging',
-  srcs = glob(['*.java', 'profiler/*.java'], exclude = API_SRCS),
+  srcs = glob(['*.java', 'profiler/*.java', 'session/*.java'], exclude = API_SRCS),
   deps = [
     ':api',
     '//java/client/src/org/openqa/selenium:beta',
@@ -28,6 +38,7 @@ java_library(name = 'logging',
     '//third_party/java/guava:guava',
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium:selenium'
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:api',
   ],
 )

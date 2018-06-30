@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.interactions.touch;
 
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.internal.TouchAction;
+import org.openqa.selenium.interactions.input.Action;
+import org.openqa.selenium.interactions.input.TouchScreen;
+import org.openqa.selenium.interactions.internal.base.TouchAction;
 import org.openqa.selenium.interactions.internal.Locatable;
 
 /**

@@ -71,10 +71,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.interactions.Interaction;
+import org.openqa.selenium.interactions.input.Interaction;
 import org.openqa.selenium.interactions.KeyInput;
 import org.openqa.selenium.interactions.PointerInput;
-import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.interactions.input.Sequence;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 

@@ -30,7 +30,17 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
-import org.openqa.selenium.interactions.internal.MouseAction.Button;
+import org.openqa.selenium.interactions.exceptions.MoveTargetOutOfBoundsException;
+import org.openqa.selenium.interactions.input.Action;
+import org.openqa.selenium.interactions.input.HasInputDevices;
+import org.openqa.selenium.interactions.input.InputSource;
+import org.openqa.selenium.interactions.input.Interaction;
+import org.openqa.selenium.interactions.input.Interactive;
+import org.openqa.selenium.interactions.input.Keyboard;
+import org.openqa.selenium.interactions.input.Mouse;
+import org.openqa.selenium.interactions.input.Pause;
+import org.openqa.selenium.interactions.input.Sequence;
+import org.openqa.selenium.interactions.internal.base.MouseAction.Button;
 import org.openqa.selenium.interactions.internal.Locatable;
 
 import java.time.Duration;

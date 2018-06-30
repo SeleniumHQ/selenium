@@ -20,6 +20,10 @@ package org.openqa.selenium.interactions;
 import com.google.common.base.Preconditions;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.input.Encodable;
+import org.openqa.selenium.interactions.input.InputSource;
+import org.openqa.selenium.interactions.input.Interaction;
+import org.openqa.selenium.interactions.input.SourceType;
 import org.openqa.selenium.internal.WrapsElement;
 
 import java.time.Duration;

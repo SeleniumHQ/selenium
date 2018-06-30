@@ -13,14 +13,23 @@
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
-// under the License.
+// under the License.input
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.interactions.internal.base;
+
+import org.openqa.selenium.interactions.input.TouchScreen;
+import org.openqa.selenium.interactions.internal.Locatable;
 
 /**
- * Models an <a href="https://www.w3.org/TR/webdriver/#dfn-input-source">input source</a> as defined
- * and used by the W3C WebDriver spec.
+ * Base class for all touch screen-related actions
  */
-public interface InputSource {
-  SourceType getInputType();
+public class TouchAction extends DisplayAction {
+
+  protected final TouchScreen touchScreen;
+
+  public TouchAction(TouchScreen touchScreen, Locatable locationProvider) {
+    super(locationProvider);
+    this.touchScreen = touchScreen;
+  }
+
 }

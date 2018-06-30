@@ -55,8 +55,8 @@ import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.interactions.InvalidCoordinatesException;
-import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
+import org.openqa.selenium.interactions.exceptions.InvalidCoordinatesException;
+import org.openqa.selenium.interactions.exceptions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.json.Json;
 
 import java.util.HashMap;

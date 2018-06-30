@@ -15,24 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
-
-import org.openqa.selenium.WebDriverException;
+package org.openqa.selenium.interactions.input;
 
 /**
- * Indicates that the target provided to the actions move() method is invalid - outside of
- * the size of the window.
+ * Used as the basis of {@link Sequence}s for the W3C WebDriver spec
+ * <a href="https://www.w3.org/TR/webdriver/#actions">Action commands</a>.
  */
-public class MoveTargetOutOfBoundsException extends WebDriverException {
-  public MoveTargetOutOfBoundsException(String message) {
-    super(message);
+public abstract class Interaction {
+
+  private final InputSource source;
+
+  protected Interaction(InputSource source) {
+    // Avoiding a guava dependency.
+    if (source == null) {
+      throw new NullPointerException("Input source must not be null");
+    }
+    this.source = source;
   }
 
-  public MoveTargetOutOfBoundsException(Throwable cause) {
-    super(cause);
+  protected boolean isValidFor(SourceType sourceType) {
+    return source.getInputType() == sourceType;
   }
 
-  public MoveTargetOutOfBoundsException(String message, Throwable cause) {
-    super(message, cause);
+  public InputSource getSource() {
+    return source;
   }
 }

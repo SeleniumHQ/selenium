@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.logging;
+package org.openqa.selenium.logging.session;
 
 import org.openqa.selenium.InvalidArgumentException;
 

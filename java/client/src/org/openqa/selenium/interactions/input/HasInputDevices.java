@@ -15,12 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.interactions.input;
+
 
 /**
- * Interface implemented by each driver that allows access to touch screen capabilities.
+ * Interface implemented by each driver that allows access to the raw input devices.
  */
-public interface HasTouchScreen {
+public interface HasInputDevices {
+  Keyboard getKeyboard();
 
-  TouchScreen getTouch();
+  Mouse getMouse();
 }

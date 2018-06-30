@@ -18,8 +18,8 @@
 package org.openqa.selenium.remote.server.handler.interactions.touch;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.HasTouchScreen;
-import org.openqa.selenium.interactions.TouchScreen;
+import org.openqa.selenium.interactions.input.HasTouchScreen;
+import org.openqa.selenium.interactions.input.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.remote.server.JsonParametersAware;

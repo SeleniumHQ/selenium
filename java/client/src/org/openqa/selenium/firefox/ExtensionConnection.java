@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.logging.NeedsLocalLogs;
+import org.openqa.selenium.logging.local.NeedsLocalLogs;
 import org.openqa.selenium.remote.CommandExecutor;
 
 import java.io.IOException;

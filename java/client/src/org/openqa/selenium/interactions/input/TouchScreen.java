@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.interactions.input;
 
 import org.openqa.selenium.interactions.internal.Coordinates;
 

@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.interactions.input.Encodable;
+import org.openqa.selenium.interactions.input.InputSource;
+import org.openqa.selenium.interactions.input.Interaction;
+import org.openqa.selenium.interactions.input.SourceType;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

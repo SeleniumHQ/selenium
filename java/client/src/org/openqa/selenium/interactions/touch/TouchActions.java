@@ -20,10 +20,10 @@ package org.openqa.selenium.interactions.touch;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.HasTouchScreen;
-import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.interactions.TouchScreen;
+import org.openqa.selenium.interactions.input.HasInputDevices;
+import org.openqa.selenium.interactions.input.HasTouchScreen;
+import org.openqa.selenium.interactions.input.Keyboard;
+import org.openqa.selenium.interactions.input.TouchScreen;
 import org.openqa.selenium.interactions.internal.Locatable;
 
 /**

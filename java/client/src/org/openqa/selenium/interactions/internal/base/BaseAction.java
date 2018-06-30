@@ -15,16 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions.internal;
+package org.openqa.selenium.interactions.internal.base;
 
 import com.google.common.base.Preconditions;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.Locatable;
 
 import java.util.Optional;
 
 /**
- * Base class for all actions.
+ * Base class for all input.
  */
 public abstract class BaseAction {
   protected final Locatable where;

@@ -15,20 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions.internal;
+package org.openqa.selenium.interactions.input;
 
-import org.openqa.selenium.interactions.TouchScreen;
+import java.util.Collection;
 
 /**
- * Base class for all touch screen-related actions
+ * Indicates that a class can be used with the W3C WebDriver
+ * <a href="https://www.w3.org/TR/webdriver/#actions">Actions commands</a>.
  */
-public class TouchAction extends DisplayAction {
-
-  protected final TouchScreen touchScreen;
-
-  public TouchAction(TouchScreen touchScreen, Locatable locationProvider) {
-    super(locationProvider);
-    this.touchScreen = touchScreen;
-  }
-
+public interface Interactive {
+  void perform(Collection<Sequence> actions);
+  void resetInputState();
 }

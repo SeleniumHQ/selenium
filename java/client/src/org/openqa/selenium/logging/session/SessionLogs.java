@@ -15,9 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.logging;
+package org.openqa.selenium.logging.session;
 
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogLevelMapping;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -19,7 +19,7 @@ package org.openqa.selenium.remote.server.handler;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.logging.SessionLogs;
+import org.openqa.selenium.logging.session.SessionLogs;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.log.LoggingManager;

@@ -27,7 +27,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
-import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.input.HasTouchScreen;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.mobile.NetworkConnection;

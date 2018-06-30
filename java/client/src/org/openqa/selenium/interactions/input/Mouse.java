@@ -15,8 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.logging;
+package org.openqa.selenium.interactions.input;
 
-public interface NeedsLocalLogs {
-  void setLocalLogs(LocalLogs logs);
+import org.openqa.selenium.interactions.internal.Coordinates;
+
+/**
+ * Interface representing basic mouse operations.
+ */
+public interface Mouse {
+  void click(Coordinates where);
+
+  void doubleClick(Coordinates where);
+
+  void mouseDown(Coordinates where);
+
+  void mouseUp(Coordinates where);
+
+  void mouseMove(Coordinates where);
+
+  /* Offset from the current location of the mouse pointer. */
+  void mouseMove(Coordinates where, long xOffset, long yOffset);
+
+  // Right-clicks an element.
+  void contextClick(Coordinates where);
+
+  // TODO: Scroll wheel support
 }

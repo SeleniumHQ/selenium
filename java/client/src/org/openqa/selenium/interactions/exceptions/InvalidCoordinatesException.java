@@ -15,15 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.interactions.exceptions;
 
-import java.util.Map;
+import org.openqa.selenium.WebDriverException;
 
 /**
- * This interface allows a custom {@link Interaction} to be JSON encoded for the W3C wire format. It
- * should not normally be exposed or used by user-facing APIs. Instead, these should traffic in the
- * {@link Interaction} interface.
+ * Indicates that the coordinates provided to an interactions operation are invalid. This, most
+ * likely, means that a move operation was provided with invalid coordinates or that an action that
+ * depends on mouse position (like click) was not preceeded by a move operation.
  */
-public interface Encodable {
-  Map<String, Object> encode();
+public class InvalidCoordinatesException extends WebDriverException {
+
+  public InvalidCoordinatesException(String message) {
+    super(message);
+  }
 }

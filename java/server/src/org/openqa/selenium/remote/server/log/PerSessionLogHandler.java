@@ -24,7 +24,7 @@ import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.logging.SessionLogs;
+import org.openqa.selenium.logging.session.SessionLogs;
 import org.openqa.selenium.remote.SessionId;
 
 import java.io.IOException;

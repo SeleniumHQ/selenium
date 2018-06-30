@@ -33,6 +33,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.interactions.PointerInput.Kind;
 import org.openqa.selenium.interactions.PointerInput.Origin;
+import org.openqa.selenium.interactions.input.Interaction;
+import org.openqa.selenium.interactions.input.Sequence;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.RemoteWebElement;
 

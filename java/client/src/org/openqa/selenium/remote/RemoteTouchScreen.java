@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.interactions.TouchScreen;
+import org.openqa.selenium.interactions.input.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 import java.util.HashMap;

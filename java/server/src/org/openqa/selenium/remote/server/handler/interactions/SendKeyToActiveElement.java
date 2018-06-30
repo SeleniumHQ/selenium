@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.remote.server.handler.interactions;
 
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.input.HasInputDevices;
+import org.openqa.selenium.interactions.input.Keyboard;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;

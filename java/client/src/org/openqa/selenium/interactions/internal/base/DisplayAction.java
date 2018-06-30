@@ -15,23 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.interactions.internal.base;
+
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.interactions.internal.Locatable;
 
 /**
- * One of the allowing types for an {@link InputSource}.
+ * This class represents an abstraction of devices that can execute an action within a display area.
  */
-public enum SourceType {
-  KEY("key"),
-  NONE(null),
-  POINTER("pointer");
+public abstract class DisplayAction extends BaseAction {
 
-  private final String type;
-
-  SourceType(String type) {
-    this.type = type;
+  protected DisplayAction(Locatable locationProvider) {
+    super(locationProvider);
   }
 
-  public String getType() {
-    return type;
+  protected Coordinates getActionLocation() {
+    return (where == null) ? null : where.getCoordinates();
   }
 }

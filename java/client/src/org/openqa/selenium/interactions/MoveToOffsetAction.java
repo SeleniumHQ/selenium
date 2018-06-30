@@ -21,7 +21,10 @@ import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
-import org.openqa.selenium.interactions.internal.MouseAction;
+import org.openqa.selenium.interactions.input.Action;
+import org.openqa.selenium.interactions.input.Interaction;
+import org.openqa.selenium.interactions.input.Mouse;
+import org.openqa.selenium.interactions.internal.base.MouseAction;
 import org.openqa.selenium.interactions.internal.Locatable;
 
 import java.time.Duration;

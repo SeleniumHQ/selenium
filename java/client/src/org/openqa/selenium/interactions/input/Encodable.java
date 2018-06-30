@@ -15,15 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.interactions.input;
 
-import java.util.Collection;
+import java.util.Map;
 
 /**
- * Indicates that a class can be used with the W3C WebDriver
- * <a href="https://www.w3.org/TR/webdriver/#actions">Actions commands</a>.
+ * This interface allows a custom {@link Interaction} to be JSON encoded for the W3C wire format. It
+ * should not normally be exposed or used by user-facing APIs. Instead, these should traffic in the
+ * {@link Interaction} interface.
  */
-public interface Interactive {
-  void perform(Collection<Sequence> actions);
-  void resetInputState();
+public interface Encodable {
+  Map<String, Object> encode();
 }

@@ -19,8 +19,8 @@ package org.openqa.selenium.remote.server.handler.interactions;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.interactions.input.HasInputDevices;
+import org.openqa.selenium.interactions.input.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.remote.server.JsonParametersAware;

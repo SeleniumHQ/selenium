@@ -17,11 +17,11 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.HasTouchScreen;
-import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.interactions.TouchScreen;
+import org.openqa.selenium.interactions.input.HasInputDevices;
+import org.openqa.selenium.interactions.input.HasTouchScreen;
+import org.openqa.selenium.interactions.input.Keyboard;
+import org.openqa.selenium.interactions.input.Mouse;
+import org.openqa.selenium.interactions.input.TouchScreen;
 import org.openqa.selenium.logging.Logs;
 
 import java.util.List;

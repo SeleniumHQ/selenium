@@ -15,9 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.logging;
+package org.openqa.selenium.logging.local;
 
 import com.google.common.collect.ImmutableSet;
+
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingHandler;
 
 import java.util.Collection;
 import java.util.Collections;

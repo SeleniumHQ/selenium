@@ -18,6 +18,7 @@
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.interactions.input.Interaction;
 
 import java.util.List;
 

@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.logging.LocalLogs;
+import org.openqa.selenium.logging.local.LocalLogs;
 import org.openqa.selenium.logging.LogCombiner;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;

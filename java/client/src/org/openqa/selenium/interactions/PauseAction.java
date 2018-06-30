@@ -19,6 +19,10 @@ package org.openqa.selenium.interactions;
 
 import com.google.common.collect.ImmutableList;
 
+import org.openqa.selenium.interactions.input.Action;
+import org.openqa.selenium.interactions.input.Interaction;
+import org.openqa.selenium.interactions.input.Pause;
+
 import java.time.Duration;
 import java.util.List;
 
