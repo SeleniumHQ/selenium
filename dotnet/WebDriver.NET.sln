@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.IE.Tests", "test\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Firefox.Tests", "test\firefox\WebDriver.Firefox.Tests.csproj", "{F912F647-04A0-4081-91B4-985EE0E9097C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.PhantomJS.Tests", "test\phantomjs\WebDriver.PhantomJS.Tests.csproj", "{C4FB6E2F-100D-470C-9D39-9B7FA6A0631B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Remote.Tests", "test\remote\WebDriver.Remote.Tests.csproj", "{B9C6B276-445A-400F-BE74-1E068F50A54D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Safari.Tests", "test\safari\WebDriver.Safari.Tests.csproj", "{BB08F673-1553-4A56-882A-A2A115AC06C2}"
@@ -73,10 +71,6 @@ Global
 		{F912F647-04A0-4081-91B4-985EE0E9097C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F912F647-04A0-4081-91B4-985EE0E9097C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F912F647-04A0-4081-91B4-985EE0E9097C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C4FB6E2F-100D-470C-9D39-9B7FA6A0631B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4FB6E2F-100D-470C-9D39-9B7FA6A0631B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4FB6E2F-100D-470C-9D39-9B7FA6A0631B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4FB6E2F-100D-470C-9D39-9B7FA6A0631B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B9C6B276-445A-400F-BE74-1E068F50A54D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B9C6B276-445A-400F-BE74-1E068F50A54D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9C6B276-445A-400F-BE74-1E068F50A54D}.Release|Any CPU.ActiveCfg = Release|Any CPU
