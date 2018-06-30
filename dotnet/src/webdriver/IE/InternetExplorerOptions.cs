@@ -221,17 +221,6 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets or sets the value for describing how unexpected alerts are to be handled in the IE driver.
-        /// Defaults to <see cref="InternetExplorerUnexpectedAlertBehavior.Default"/>.
-        /// </summary>
-        [Obsolete("This property is being replaced by the UnhandledPromptBehavior property, and will be removed in a future version of the .NET bindings. Please use that instead.")]
-        public InternetExplorerUnexpectedAlertBehavior UnexpectedAlertBehavior
-        {
-            get { return this.GetUnexpectedAlertBehavior(); }
-            set { this.SetUnhandledPromptBehavior(value); }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether to enable persistently sending WM_MOUSEMOVE messages
         /// to the IE window during a mouse hover.
         /// </summary>
@@ -316,17 +305,6 @@ namespace OpenQA.Selenium.IE
         {
             get { return this.ensureCleanSession; }
             set { this.ensureCleanSession = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to enable full-page screenshots for
-        /// the IE driver. Defaults to <see langword="true"/>.
-        /// </summary>
-        [Obsolete("The driver no longer supports this capability. It will be removed in a future release.")]
-        public bool EnableFullPageScreenshot
-        {
-            get { return this.enableFullPageScreenshot; }
-            set { this.enableFullPageScreenshot = value; }
         }
 
         /// <summary>
@@ -494,45 +472,6 @@ namespace OpenQA.Selenium.IE
             }
 
             return internetExplorerOptionsDictionary;
-        }
-
-        private void SetUnhandledPromptBehavior(InternetExplorerUnexpectedAlertBehavior unexpectedAlertBehavior)
-        {
-            switch (unexpectedAlertBehavior)
-            {
-                case InternetExplorerUnexpectedAlertBehavior.Accept:
-                    this.UnhandledPromptBehavior = UnhandledPromptBehavior.AcceptAndNotify;
-                    break;
-
-                case InternetExplorerUnexpectedAlertBehavior.Dismiss:
-                    this.UnhandledPromptBehavior = UnhandledPromptBehavior.DismissAndNotify;
-                    break;
-
-                case InternetExplorerUnexpectedAlertBehavior.Ignore:
-                    this.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
-                    break;
-
-                default:
-                    this.UnhandledPromptBehavior = UnhandledPromptBehavior.Default;
-                    break;
-            }
-        }
-
-        private InternetExplorerUnexpectedAlertBehavior GetUnexpectedAlertBehavior()
-        {
-            switch (this.UnhandledPromptBehavior)
-            {
-                case UnhandledPromptBehavior.AcceptAndNotify:
-                    return InternetExplorerUnexpectedAlertBehavior.Accept;
-
-                case UnhandledPromptBehavior.DismissAndNotify:
-                    return InternetExplorerUnexpectedAlertBehavior.Dismiss;
-
-                case UnhandledPromptBehavior.Ignore:
-                    return InternetExplorerUnexpectedAlertBehavior.Ignore;
-            }
-
-            return InternetExplorerUnexpectedAlertBehavior.Default;
         }
     }
 }

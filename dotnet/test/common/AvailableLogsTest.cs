@@ -116,9 +116,9 @@ namespace OpenQA.Selenium
         {
             if (TestUtilities.IsFirefox(driver))
             {
-                DesiredCapabilities caps = DesiredCapabilities.Firefox();
-                caps.SetCapability(CapabilityType.EnableProfiling, true);
-                localDriver = new FirefoxDriver(caps);
+                FirefoxOptions options = new FirefoxOptions();
+                options.AddAdditionalCapability(CapabilityType.EnableProfiling, true, true);
+                localDriver = new FirefoxDriver(options);
             }
             else if (TestUtilities.IsChrome(driver))
             {

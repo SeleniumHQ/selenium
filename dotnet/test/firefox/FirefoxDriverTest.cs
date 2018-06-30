@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using System.Threading;
@@ -69,7 +69,9 @@ namespace OpenQA.Selenium.Firefox
             FirefoxProfile profile = new FirefoxProfileManager().GetProfile("default");
             if (profile != null)
             {
-                IWebDriver firefox = new FirefoxDriver(profile);
+                FirefoxOptions options = new FirefoxOptions();
+                options.Profile = profile;
+                IWebDriver firefox = new FirefoxDriver(options);
                 firefox.Quit();
             }
             else
@@ -82,7 +84,9 @@ namespace OpenQA.Selenium.Firefox
         public void ShouldRemoveProfileAfterExit()
         {
             FirefoxProfile profile = new FirefoxProfile();
-            IWebDriver firefox = new FirefoxDriver(profile);
+            FirefoxOptions options = new FirefoxOptions();
+            options.Profile = profile;
+            IWebDriver firefox = new FirefoxDriver(options);
             string profileLocation = profile.ProfileDirectory;
 
             firefox.Quit();
@@ -207,7 +211,9 @@ namespace OpenQA.Selenium.Firefox
             IWebDriver secondDriver = null;
             try
             {
-                secondDriver = new FirefoxDriver(profile);
+                FirefoxOptions options = new FirefoxOptions();
+                options.Profile = profile;
+                secondDriver = new FirefoxDriver(options);
                 secondDriver.Url = url;
                 string gotTitle = secondDriver.Title;
                 Assert.AreNotEqual("Hello IWebDriver", gotTitle);
@@ -232,7 +238,10 @@ namespace OpenQA.Selenium.Firefox
             profile.SetPreference("browser.startup.page", "1");
             profile.SetPreference("browser.startup.homepage", javascriptPage);
 
-            IWebDriver driver2 = new FirefoxDriver(profile);
+            FirefoxOptions options = new FirefoxOptions();
+            options.Profile = profile;
+
+            IWebDriver driver2 = new FirefoxDriver(options);
 
             try
             {

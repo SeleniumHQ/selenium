@@ -1,4 +1,4 @@
-﻿// <copyright file="ILock.cs" company="WebDriver Committers">
+// <copyright file="ILock.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -26,14 +26,6 @@ namespace OpenQA.Selenium.Firefox.Internal
     /// </summary>
     internal interface ILock : IDisposable
     {
-        /// <summary>
-        /// Locks the mutex port.
-        /// </summary>
-        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for
-        /// the mutex port to become available.</param>
-        [Obsolete("Timeouts should be expressed as a TimeSpan. Use the LockObject overload taking a TimeSpan parameter instead")]
-        void LockObject(long timeoutInMilliseconds);
-
         /// <summary>
         /// Locks the mutex port.
         /// </summary>
