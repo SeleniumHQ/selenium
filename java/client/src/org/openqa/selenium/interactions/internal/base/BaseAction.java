@@ -25,7 +25,7 @@ import org.openqa.selenium.interactions.internal.Locatable;
 import java.util.Optional;
 
 /**
- * Base class for all input.
+ * Base class for all actions.
  */
 public abstract class BaseAction {
   protected final Locatable where;
