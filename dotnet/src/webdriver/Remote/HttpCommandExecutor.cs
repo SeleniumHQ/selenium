@@ -91,9 +91,6 @@ namespace OpenQA.Selenium.Remote
 
         }
 
-        [Obsolete("Replaced by the SendingRemoteHttpRequest event. This event is a no-op, and event handlers for it will no longer be called.")]
-        public event EventHandler<BeforeRemoteHttpRequestEventArgs> BeforeRemoteHttpRequest;
-
         public event EventHandler<SendingRemoteHttpRequestEventArgs> SendingRemoteHttpRequest;
 
         /// <summary>
