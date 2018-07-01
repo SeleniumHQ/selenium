@@ -358,11 +358,24 @@ module Selenium
             execute :element_click, id: element
           end
 
-          # TODO: - Implement file verification
           def send_keys_to_element(element, keys)
+            if @file_detector
+              local_file = @file_detector.call(keys)
+              keys = [upload(local_file)] if local_file
+            end
+
             # Keep .split(//) for backward compatibility for now
             text = keys.join('')
             execute :element_send_keys, {id: element}, {value: text.split(//), text: text}
+          end
+
+          def upload(local_file)
+            unless File.file?(local_file)
+              WebDriver.logger.debug("File detector only works with files. #{local_file.inspect} isn`t a file!")
+              raise Error::WebDriverError, "You are trying to work with something that isn't a file."
+            end
+
+            execute :upload_file, {}, {file: Zipper.zip_file(local_file)}
           end
 
           def clear_element(element)

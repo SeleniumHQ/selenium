@@ -372,7 +372,8 @@ module Selenium
 
           def upload(local_file)
             unless File.file?(local_file)
-              raise Error::WebDriverError, "you may only upload files: #{local_file.inspect}"
+              WebDriver.logger.debug("File detector only works with files. #{local_file.inspect} isn`t a file!")
+              raise Error::WebDriverError, "You are trying to work with something that isn't a file."
             end
 
             execute :upload_file, {}, {file: Zipper.zip_file(local_file)}
