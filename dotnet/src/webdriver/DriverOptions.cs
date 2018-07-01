@@ -16,6 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using Newtonsoft.Json;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
@@ -195,12 +197,66 @@ namespace OpenQA.Selenium
         public abstract void AddAdditionalCapability(string capabilityName, object capabilityValue);
 
         /// <summary>
-        /// Returns DesiredCapabilities for the specific browser driver with these
-        /// options included ascapabilities. This does not copy the options. Further
+        /// Returns the <see cref="ICapabilities"/> for the specific browser driver with these
+        /// options included as capabilities. This does not copy the options. Further
         /// changes will be reflected in the returned capabilities.
         /// </summary>
-        /// <returns>The DesiredCapabilities for browser driver with these options.</returns>
+        /// <returns>The <see cref="ICapabilities"/> for browser driver with these options.</returns>
         public abstract ICapabilities ToCapabilities();
+
+        /// <summary>
+        /// Compares this <see cref="DriverOptions"/> object with another to see if there
+        /// are merge conflicts between them.
+        /// </summary>
+        /// <param name="other">The <see cref="DriverOptions"/> object to compare with.</param>
+        /// <returns>A <see cref="DriverOptionsMergeResult"/> object containing the status of the attempted merge.</returns>
+        public virtual DriverOptionsMergeResult GetMergeResult(DriverOptions other)
+        {
+            DriverOptionsMergeResult result = new DriverOptionsMergeResult();
+            if (this.browserName != null && other.BrowserName != null)
+            {
+                result.IsMergeConflict = true;
+                result.MergeConflictOptionName = "BrowserName";
+                return result;
+            }
+
+            if (this.browserVersion != null && other.BrowserVersion != null)
+            {
+                result.IsMergeConflict = true;
+                result.MergeConflictOptionName = "BrowserVersion";
+                return result;
+            }
+
+            if (this.platformName != null && other.PlatformName != null)
+            {
+                result.IsMergeConflict = true;
+                result.MergeConflictOptionName = "PlatformName";
+                return result;
+            }
+
+            if (this.proxy != null && other.Proxy != null)
+            {
+                result.IsMergeConflict = true;
+                result.MergeConflictOptionName = "Proxy";
+                return result;
+            }
+
+            if (this.unhandledPromptBehavior != UnhandledPromptBehavior.Default && other.UnhandledPromptBehavior != UnhandledPromptBehavior.Default)
+            {
+                result.IsMergeConflict = true;
+                result.MergeConflictOptionName = "UnhandledPromptBehavior";
+                return result;
+            }
+
+            if (this.pageLoadStrategy != PageLoadStrategy.Default && other.PageLoadStrategy != PageLoadStrategy.Default)
+            {
+                result.IsMergeConflict = true;
+                result.MergeConflictOptionName = "PageLoadStrategy";
+                return result;
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// Sets the logging preferences for this driver.
@@ -214,6 +270,25 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Returns a string representation of this <see cref="DriverOptions"/>.
+        /// </summary>
+        /// <returns>A string representation of this <see cref="DriverOptions"/>.</returns>
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this.ToDictionary(), Formatting.Indented);
+        }
+
+        /// <summary>
+        /// Returns the current options as a <see cref="Dictionary{TKey, TValue}"/>.
+        /// </summary>
+        /// <returns>The current options as a <see cref="Dictionary{TKey, TValue}"/>.</returns>
+        internal Dictionary<string, object> ToDictionary()
+        {
+            IHasCapabilitiesDictionary desired = this.ToCapabilities() as IHasCapabilitiesDictionary;
+            return desired.CapabilitiesDictionary;
+        }
+
+        /// <summary>
         /// Adds a known capability to the list of known capabilities and associates it
         /// with the type-safe property name of the options class to be used instead.
         /// </summary>
@@ -224,11 +299,21 @@ namespace OpenQA.Selenium
             this.knownCapabilityNames[capabilityName] = typeSafeOptionName;
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the specified capability name is a known capability name which has a type-safe option.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to check.</param>
+        /// <returns><see langword="true"/> if the capability name is known; otherwise <see langword="false"/>.</returns>
         protected bool IsKnownCapabilityName(string capabilityName)
         {
             return this.knownCapabilityNames.ContainsKey(capabilityName);
         }
 
+        /// <summary>
+        /// Gets the name of the type-safe option for a given capability name.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to check.</param>
+        /// <returns>The name of the type-safe option for the given capability name.</returns>
         protected string GetTypeSafeOptionName(string capabilityName)
         {
             if (this.IsKnownCapabilityName(capabilityName))
@@ -259,6 +344,11 @@ namespace OpenQA.Selenium
             return loggingPreferenceCapability;
         }
 
+        /// <summary>
+        /// Generates the current options as a capabilities object for further processing.
+        /// </summary>
+        /// <param name="isSpecificationCompliant">A value indicating whether to generate capabilities compliant with the W3C WebDriver Specification.</param>
+        /// <returns>A <see cref="DesiredCapabilities"/> object representing the current options for further processing.</returns>
         protected DesiredCapabilities GenerateDesiredCapabilities(bool isSpecificationCompliant)
         {
             DesiredCapabilities capabilities = new DesiredCapabilities();

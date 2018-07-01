@@ -45,32 +45,6 @@ namespace OpenQA.Selenium.IE
     }
 
     /// <summary>
-    /// Specifies the behavior of handling unexpected alerts in the IE driver.
-    /// </summary>
-    public enum InternetExplorerUnexpectedAlertBehavior
-    {
-        /// <summary>
-        /// Indicates the behavior is not set.
-        /// </summary>
-        Default,
-
-        /// <summary>
-        /// Ignore unexpected alerts, such that the user must handle them.
-        /// </summary>
-        Ignore,
-
-        /// <summary>
-        /// Accept unexpected alerts.
-        /// </summary>
-        Accept,
-
-        /// <summary>
-        /// Dismiss unexpected alerts.
-        /// </summary>
-        Dismiss
-    }
-
-    /// <summary>
     /// Class to manage options specific to <see cref="InternetExplorerDriver"/>
     /// </summary>
     /// <example>
@@ -386,7 +360,7 @@ namespace OpenQA.Selenium.IE
                 capabilities.SetCapability(pair.Key, pair.Value);
             }
 
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
 
         private Dictionary<string, object> BuildInternetExplorerOptionsDictionary()

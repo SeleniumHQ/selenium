@@ -92,7 +92,7 @@ namespace OpenQA.Selenium.Safari
                 capabilities.SetCapability(pair.Key, pair.Value);
             }
 
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
     }
 }

@@ -7,6 +7,7 @@ using OpenQA.Selenium.Chrome;
 namespace OpenQA.Selenium
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.Firefox, "Firefox driver (when using Marionette/Geckodriver) does not support logs API")]
     [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
     [IgnoreBrowser(Browser.Edge, "Edge driver does not support logs API")]
 	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
@@ -87,7 +88,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Safari does not support profiler logs")]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not support profiler logs")]
         public void ShouldBeAbleToEnableProfilerLog()
         {
@@ -96,7 +96,6 @@ namespace OpenQA.Selenium
                 Assert.Ignore("Marionette does not support logs API.");
             }
 
-            DesiredCapabilities caps = new DesiredCapabilities();
             CreateWebDriverWithProfiling();
             ReadOnlyCollection<string> logTypes = localDriver.Manage().Logs.AvailableLogTypes;
             Assert.That(logTypes, Contains.Item(LogType.Profiler), "Profiler log should be enabled");

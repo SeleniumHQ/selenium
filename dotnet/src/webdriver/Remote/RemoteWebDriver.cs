@@ -1063,21 +1063,36 @@ namespace OpenQA.Selenium.Remote
         protected void StartSession(ICapabilities desiredCapabilities)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("desiredCapabilities", this.GetLegacyCapabilitiesDictionary(desiredCapabilities));
 
-            Dictionary<string, object> firstMatchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
+            // If the object passed into the RemoteWebDriver constructor is a
+            // RemoteSessionSettings object, it is expected that all intermediate
+            // and end nodes are compliant with the W3C WebDriver Specification,
+            // and therefore will already contain all of the appropriate values
+            // for establishing a session.
+            RemoteSessionSettings remoteSettings = desiredCapabilities as RemoteSessionSettings;
+            if (remoteSettings == null)
+            {
+                parameters.Add("desiredCapabilities", this.GetLegacyCapabilitiesDictionary(desiredCapabilities));
 
-            List<object> firstMatchCapabilitiesList = new List<object>();
-            firstMatchCapabilitiesList.Add(firstMatchCapabilities);
+                Dictionary<string, object> firstMatchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
 
-            Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
-            specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
-            parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
+                List<object> firstMatchCapabilitiesList = new List<object>();
+                firstMatchCapabilitiesList.Add(firstMatchCapabilities);
+
+                Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
+                specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
+
+                parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
+            }
+            else
+            {
+                parameters.Add("capabilities", remoteSettings.ToDictionary());
+            }
 
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
             Dictionary<string, object> rawCapabilities = (Dictionary<string, object>)response.Value;
-            DesiredCapabilities returnedCapabilities = new DesiredCapabilities(rawCapabilities);
+            ReturnedCapabilities returnedCapabilities = new ReturnedCapabilities(rawCapabilities);
             this.capabilities = returnedCapabilities;
             this.sessionId = new SessionId(response.SessionId);
         }
@@ -1092,7 +1107,7 @@ namespace OpenQA.Selenium.Remote
         protected virtual Dictionary<string, object> GetLegacyCapabilitiesDictionary(ICapabilities legacyCapabilities)
         {
             Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
-            DesiredCapabilities capabilitiesObject = legacyCapabilities as DesiredCapabilities;
+            IHasCapabilitiesDictionary capabilitiesObject = legacyCapabilities as IHasCapabilitiesDictionary;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
                 capabilitiesDictionary.Add(entry.Key, entry.Value);
@@ -1111,7 +1126,7 @@ namespace OpenQA.Selenium.Remote
         protected virtual Dictionary<string, object> GetCapabilitiesDictionary(ICapabilities capabilitiesToConvert)
         {
             Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
-            DesiredCapabilities capabilitiesObject = capabilitiesToConvert as DesiredCapabilities;
+            IHasCapabilitiesDictionary capabilitiesObject = capabilitiesToConvert as IHasCapabilitiesDictionary;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
                 if (CapabilityType.IsSpecCompliantCapabilityName(entry.Key))

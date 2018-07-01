@@ -1,4 +1,4 @@
-// <copyright file="DesiredCapabilities.cs" company="WebDriver Committers">
+// <copyright file="ReadOnlyDesiredCapabilities.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -27,84 +27,24 @@ namespace OpenQA.Selenium.Remote
     /// Class to Create the capabilities of the browser you require for <see cref="IWebDriver"/>.
     /// If you wish to use default values use the static methods
     /// </summary>
-    [Obsolete("Use of DesiredCapabilities has been deprecated in favor of browser-specific Options classes")]
-    public class DesiredCapabilities : ICapabilities, IHasCapabilitiesDictionary
+    public class ReadOnlyDesiredCapabilities : ICapabilities, IHasCapabilitiesDictionary
     {
         private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
+        /// Prevents a default instance of the <see cref="ReadOnlyDesiredCapabilities"/> class.
         /// </summary>
-        /// <param name="browser">Name of the browser e.g. firefox, internet explorer, safari</param>
-        /// <param name="version">Version of the browser</param>
-        /// <param name="platform">The platform it works on</param>
-        [Obsolete("Use of DesiredCapabilities has been deprecated in favor of browser-specific Options classes")]
-        public DesiredCapabilities(string browser, string version, Platform platform)
-        {
-            this.SetCapability(CapabilityType.BrowserName, browser);
-            this.SetCapability(CapabilityType.Version, version);
-            this.SetCapability(CapabilityType.Platform, platform);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
-        /// </summary>
-        [Obsolete("Use of DesiredCapabilities has been deprecated in favor of browser-specific Options classes")]
-        public DesiredCapabilities()
+        private ReadOnlyDesiredCapabilities()
         {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
-        /// </summary>
-        /// <param name="rawMap">Dictionary of items for the remote driver</param>
-        /// <example>
-        /// <code>
-        /// DesiredCapabilities capabilities = new DesiredCapabilities(new Dictionary<![CDATA[<string,object>]]>(){["browserName","firefox"],["version",string.Empty],["javaScript",true]});
-        /// </code>
-        /// </example>
-        [Obsolete("Use of DesiredCapabilities has been deprecated in favor of browser-specific Options classes")]
-        public DesiredCapabilities(Dictionary<string, object> rawMap)
+        internal ReadOnlyDesiredCapabilities(DesiredCapabilities desiredCapabilities)
         {
-            if (rawMap != null)
+            Dictionary<string, object> internalDictionary = desiredCapabilities.CapabilitiesDictionary;
+            foreach(KeyValuePair<string, object> keyValuePair in internalDictionary)
             {
-                foreach (string key in rawMap.Keys)
-                {
-                    if (key == CapabilityType.Platform)
-                    {
-                        object raw = rawMap[CapabilityType.Platform];
-                        string rawAsString = raw as string;
-                        Platform rawAsPlatform = raw as Platform;
-                        if (rawAsString != null)
-                        {
-                            this.SetCapability(CapabilityType.Platform, Platform.FromString(rawAsString));
-                        }
-                        else if (rawAsPlatform != null)
-                        {
-                            this.SetCapability(CapabilityType.Platform, rawAsPlatform);
-                        }
-                    }
-                    else
-                    {
-                        this.SetCapability(key, rawMap[key]);
-                    }
-                }
+                this.capabilities[keyValuePair.Key] = keyValuePair.Value;
             }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
-        /// </summary>
-        /// <param name="browser">Name of the browser e.g. firefox, internet explorer, safari</param>
-        /// <param name="version">Version of the browser</param>
-        /// <param name="platform">The platform it works on</param>
-        /// <param name="isSpecCompliant">Sets a value indicating whether the capabilities are
-        /// compliant with the W3C WebDriver specification.</param>
-        internal DesiredCapabilities(string browser, string version, Platform platform, bool isSpecCompliant)
-        {
-            this.SetCapability(CapabilityType.BrowserName, browser);
-            this.SetCapability(CapabilityType.Version, version);
-            this.SetCapability(CapabilityType.Platform, platform);
         }
 
         /// <summary>
@@ -133,11 +73,6 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 return this.GetCapability(CapabilityType.Platform) as Platform ?? new Platform(PlatformType.Any);
-            }
-
-            set
-            {
-                this.SetCapability(CapabilityType.Platform, value);
             }
         }
 
@@ -174,11 +109,6 @@ namespace OpenQA.Selenium.Remote
                 }
 
                 return acceptSSLCerts;
-            }
-
-            set
-            {
-                this.SetCapability(CapabilityType.AcceptInsecureCertificates, value);
             }
         }
 
@@ -217,11 +147,6 @@ namespace OpenQA.Selenium.Remote
 
                 return this.capabilities[capabilityName];
             }
-
-            set
-            {
-                this.capabilities[capabilityName] = value;
-            }
         }
 
         /// <summary>
@@ -257,34 +182,14 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Sets a capability of the browser.
+        /// Converts the <see cref="ICapabilities"/> object to a <see cref="Dictionary{TKey, TValue}"/>.
         /// </summary>
-        /// <param name="capability">The capability to get.</param>
-        /// <param name="capabilityValue">The value for the capability.</param>
-        public void SetCapability(string capability, object capabilityValue)
+        /// <returns>The <see cref="Dictionary{TKey, TValue}"/> containing the capabilities.</returns>
+        public Dictionary<string, object> ToDictionary()
         {
-            // Handle the special case of Platform objects. These should
-            // be stored in the underlying dictionary as their protocol
-            // string representation.
-            Platform platformCapabilityValue = capabilityValue as Platform;
-            if (platformCapabilityValue != null)
-            {
-                this.capabilities[capability] = platformCapabilityValue.ProtocolPlatformType;
-            }
-            else
-            {
-                this.capabilities[capability] = capabilityValue;
-            }
-        }
-
-        /// <summary>
-        /// Returns a read-only version of this capabilities object.
-        /// </summary>
-        /// <returns>A read-only version of this capabilities object.</returns>
-        internal ReadOnlyDesiredCapabilities AsReadOnly()
-        {
-            ReadOnlyDesiredCapabilities readOnlyCapabilities = new ReadOnlyDesiredCapabilities(this);
-            return readOnlyCapabilities;
+            // CONSIDER: Instead of returning the raw internal member,
+            // we might want to copy/clone it instead.
+            return this.capabilities;
         }
 
         /// <summary>

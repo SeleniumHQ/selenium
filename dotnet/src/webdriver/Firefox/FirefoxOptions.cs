@@ -345,7 +345,7 @@ namespace OpenQA.Selenium.Firefox
                 capabilities.SetCapability(pair.Key, pair.Value);
             }
 
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
 
         private Dictionary<string, object> GenerateFirefoxOptionsDictionary()
