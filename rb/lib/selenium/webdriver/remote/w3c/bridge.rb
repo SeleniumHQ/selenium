@@ -358,8 +358,12 @@ module Selenium
             execute :element_click, id: element
           end
 
-          # TODO: - Implement file verification
+
           def send_keys_to_element(element, keys)
+            if @file_detector
+              local_file = @file_detector.call(keys)
+              keys = [upload(local_file)] if local_file
+            end
             # Keep .split(//) for backward compatibility for now
             text = keys.join('')
             execute :element_send_keys, {id: element}, {value: text.split(//), text: text}

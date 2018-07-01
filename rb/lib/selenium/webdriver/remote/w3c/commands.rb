@@ -138,7 +138,13 @@ module Selenium
             #
 
             take_screenshot: [:get, 'session/:session_id/screenshot'.freeze],
-            take_element_screenshot: [:get, 'session/:session_id/element/:id/screenshot'.freeze]
+            take_element_screenshot: [:get, 'session/:session_id/element/:id/screenshot'.freeze],
+
+            #
+            # file upload
+            #
+
+            upload_file: [:post, 'session/:session_id/file'.freeze]
           }.freeze
 
         end # Bridge
