@@ -369,6 +369,14 @@ module Selenium
             execute :element_send_keys, {id: element}, {value: text.split(//), text: text}
           end
 
+          def upload(local_file)
+            unless File.file?(local_file)
+              raise Error::WebDriverError, "you may only upload files: #{local_file.inspect}"
+            end
+
+            execute :upload_file, {}, {file: Zipper.zip_file(local_file)}
+          end
+
           def clear_element(element)
             execute :element_clear, id: element
           end
