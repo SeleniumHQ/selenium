@@ -18,7 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.time.Duration;
 
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.
@@ -48,19 +49,24 @@ public class GeckoDriverService extends DriverService {
    */
   public static final String GECKO_DRIVER_EXE_PROPERTY = "webdriver.gecko.driver";
 
+  private final Duration timeout;
+
   /**
    *
    * @param executable The GeckoDriver executable.
    * @param port Which port to start the GeckoDriver on.
    * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
+   * @param timeout The timeout for connecting to the browser.
    * @throws IOException If an I/O error occurs.
    */
   public GeckoDriverService(
       File executable, int port,
       ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+      ImmutableMap<String, String> environment,
+      Duration timeout) throws IOException {
     super(executable, port, args, environment);
+    this.timeout = timeout;
   }
 
   /**
@@ -98,7 +104,7 @@ public class GeckoDriverService extends DriverService {
 
   @Override
   protected void waitUntilAvailable() throws MalformedURLException {
-    PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
+    PortProber.waitForPortUp(getUrl().getPort(), (int) timeout.toMillis(), MILLISECONDS);
   }
 
   @Override
@@ -186,7 +192,8 @@ public class GeckoDriverService extends DriverService {
                                                      ImmutableList<String> args,
                                                      ImmutableMap<String, String> environment) {
       try {
-        GeckoDriverService service = new GeckoDriverService(exe, port, args, environment);
+        Duration timeout = (firefoxBinary == null) ? Duration.ofSeconds(45) : Duration.ofMillis(firefoxBinary.getTimeout());
+        GeckoDriverService service = new GeckoDriverService(exe, port, args, environment, timeout);
         String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
         if (firefoxLogFile != null) { // System property has higher precedence
           if ("/dev/stdout".equals(firefoxLogFile)) {
