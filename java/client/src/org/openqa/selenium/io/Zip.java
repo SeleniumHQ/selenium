@@ -110,7 +110,12 @@ public class Zip {
   }
 
   public static void unzipFile(File output, InputStream zipStream, String name) throws IOException {
+    String canonicalDestinationDirPath = output.getCanonicalPath();
     File toWrite = new File(output, name);
+    String canonicalDestinationFile = toWrite.getCanonicalPath();
+    if (!canonicalDestinationFile.startsWith(canonicalDestinationDirPath + File.separator)) {
+      throw new IOException("Entry is outside of the target dir: " + name);
+    }
 
     if (!FileHandler.createDir(toWrite.getParentFile()))
       throw new IOException("Cannot create parent directory for: " + name);
