@@ -59,6 +59,7 @@ remote.ui.Banner.prototype.createDom = function() {
   var div = this.getDomHelper().createDom(goog.dom.TagName.DIV, 'banner');
   goog.style.setStyle(div, 'position', 'absolute');
   goog.style.setStyle(div, 'top', '0');
+  goog.style.setStyle(div, 'white-space', 'pre');
 
   goog.events.listen(div, goog.events.EventType.CLICK,
       goog.bind(this.setVisible, this, false));
