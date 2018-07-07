@@ -96,27 +96,11 @@ limitations under the License.
     assertEquals(1, onDelete.getCallCount());
   }
 
-  function testCorrectlySetsScreenshotButtonStateBasedOnSessionSupport() {
-    var session = new webdriver.Session('fluffy bunny', {});
-    viewSession(session);
-    assertFalse('Should be disabled', view.screenshotButton_.isEnabled());
-
-    session.getCapabilities().set('takesScreenshot', false);
-    view.update(session);
-    assertFalse('Should be disabled', view.screenshotButton_.isEnabled());
-
-    session.getCapabilities().set('takesScreenshot', true);
-    view.update(session);
-    assertTrue('Should be enabled', view.screenshotButton_.isEnabled());
-  }
-
   function testFiresScreenshotEventWhenButtonClicked() {
     var onScreenshot = goog.testing.recordFunction();
     goog.events.listen(view, remote.ui.Event.Type.SCREENSHOT, onScreenshot);
 
-    var session = new webdriver.Session('fluffy bunny', {
-      'takesScreenshot': true
-    });
+    var session = new webdriver.Session('fluffy bunny', {});
     viewSession(session);
     bot.action.click(view.screenshotButton_.getElement());
     assertEquals(1, onScreenshot.getCallCount());
