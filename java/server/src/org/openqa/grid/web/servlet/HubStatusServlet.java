@@ -20,13 +20,16 @@ package org.openqa.grid.web.servlet;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.Lists;
 
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.TestSlot;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,6 +40,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collector;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.reducing;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -66,7 +73,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
   private final Json json = new Json();
 
   public HubStatusServlet() {
-    super(null);
+    this(null);
   }
 
   public HubStatusServlet(GridRegistry registry) {
@@ -76,7 +83,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    process(request, response, new HashMap());
+    process(request, response, new HashMap<>());
   }
 
   @Override
@@ -124,16 +131,19 @@ public class HubStatusServlet extends RegistryBasedServlet {
         GridRegistry registry = getRegistry();
         Map<String, Object> config = registry.getHub().getConfiguration().toJson();
         for (Map.Entry<String, Object> entry : config.entrySet()) {
-          if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains(entry.getKey())) {
+          if (IsKeyPresentIn(keysToReturn, entry.getKey())) {
             res.put(entry.getKey(), entry.getValue());
           }
         }
-        if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("newSessionRequestCount")) {
+        if (IsKeyPresentIn(keysToReturn, "newSessionRequestCount")) {
           res.put("newSessionRequestCount", registry.getNewSessionRequestCount());
         }
 
-        if (keysToReturn == null || keysToReturn.isEmpty() || keysToReturn.contains("slotCounts")) {
+        if (IsKeyPresentIn(keysToReturn, "slotCounts")) {
           res.put("slotCounts", getSlotCounts());
+        }
+        if (keysToReturn != null && keysToReturn.contains("nodes")) {
+          res.put("nodes", getNodesInfo());
         }
     } catch (Exception e) {
       res.remove("success");
@@ -167,4 +177,57 @@ public class HubStatusServlet extends RegistryBasedServlet {
       throw new IOException(e);
     }
   }
+
+  private static boolean IsKeyPresentIn(List<String> keys, String key) {
+    return keys == null || keys.isEmpty() || keys.contains(key);
+  }
+
+  private List<Map<String, Object>> getNodesInfo() {
+    List<RemoteProxy> proxies = getRegistry().getAllProxies().getSorted();
+    return proxies.stream().map(this::getNodeInfo).collect(toList());
+  }
+
+  private Map<String, Object> getNodeInfo(RemoteProxy remoteProxy) {
+    return ImmutableSortedMap.of(
+        "Id", remoteProxy.getId(),
+        "browsers", getInfoFromAllSlotsInNode(remoteProxy.getTestSlots())
+    );
+  }
+
+  private List<Map<String, Object>> getInfoFromAllSlotsInNode(List<TestSlot> slots) {
+    List<Map<String, Object>> browsers = Lists.newArrayList();
+    Map<String, List<TestSlot>>
+        slotsInfo = slots.stream().collect(groupingBy(HubStatusServlet::getBrowser));
+    for (Map.Entry<String, List<TestSlot>> each : slotsInfo.entrySet()) {
+      String key = each.getKey();
+      Map<String, Object> value = getSlotInfoPerBrowserFlavor(each.getValue());
+      browsers.add(ImmutableSortedMap.of("browser", key, "slots", value));
+    }
+    return browsers;
+  }
+
+  private Map<String, Object> getSlotInfoPerBrowserFlavor(List<TestSlot> slots) {
+    Map<String, Integer> byStatus = slots.stream().collect(groupingBy(this::status, counting()));
+    int busy = byStatus.computeIfAbsent("busy", status -> 0);
+    int free = byStatus.computeIfAbsent("free", status -> 0);
+    int total = busy + free;
+
+    return ImmutableSortedMap.of("total", total, "busy", busy);
+  }
+
+  private String status(TestSlot slot) {
+    if (slot.getSession() == null) {
+      return "free";
+    }
+    return "busy";
+  }
+
+  private static String getBrowser(TestSlot slot) {
+    return slot.getCapabilities().get(CapabilityType.BROWSER_NAME).toString();
+  }
+
+  private static <T> Collector<T, ?, Integer> counting() {
+    return reducing(0, e -> 1, Integer::sum);
+  }
+
 }
