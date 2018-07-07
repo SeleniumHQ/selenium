@@ -79,7 +79,6 @@ import javax.imageio.ImageIO;
 // TODO(user): test screenshots at guaranteed minimized browsers
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
-@Ignore(value = IE, reason = "strange colors appeared")
 public class TakesScreenshotTest extends JUnit4TestBase {
 
   private TakesScreenshot screenshooter;
@@ -146,7 +145,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME)
   @Ignore(value = FIREFOX)
-  @Ignore(value = IE)
   @NotYetImplemented(value = SAFARI)
   public void testShouldCaptureScreenshotOfAnElement() throws Exception {
     driver.get(appServer.whereIs("screen/screen.html"));
@@ -169,6 +167,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
+  @Ignore(value = IE, reason = "takes only visible viewport")
   public void testShouldCaptureScreenshotOfPageWithLongX() {
     driver.get(appServer.whereIs("screen/screen_x_long.html"));
 
@@ -189,6 +188,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
+  @Ignore(value = IE, reason = "takes only visible viewport")
   public void testShouldCaptureScreenshotOfPageWithLongY() {
     driver.get(appServer.whereIs("screen/screen_y_long.html"));
 
@@ -274,7 +274,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = IE, reason = "v9 shows strange border which broke color comparison")
   public void testShouldCaptureScreenshotAtFramePage() {
     // Fails on Sauce for whatever reason; probably display or window manager.
     assumeFalse(SauceDriver.shouldUseSauce()
@@ -337,7 +336,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = IE, reason = "v9 shows strange border which broke color comparison")
   @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() {
     // Fails on Sauce for whatever reason; probably display or window manager.
@@ -371,7 +369,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = IE, reason = "v9 shows strange border which broke color comparison")
   @Ignore(CHROME)
   @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() {
