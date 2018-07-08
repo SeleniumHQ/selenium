@@ -3,15 +3,8 @@ load("//:selenium-version.bzl", "SE_VERSION")
 
 java_library(name = 'selenium',
   exported_deps = [
-    ':beta',
     ':core',
-    ':exceptions',
-    ':platform',
-    ':primitives',
-    '//java/client/src/org/openqa/selenium/interactions:interactions',
     '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/logging:api',
-    '//java/client/src/org/openqa/selenium/logging:logging',
     '//java/client/src/org/openqa/selenium/net:net',
     '//java/client/src/org/openqa/selenium/os:os',
   ],
@@ -25,143 +18,30 @@ export_file(
   visibility = ['PUBLIC'],
 )
 
-java_library(name = 'core',
+java_library(
+  name = 'core',
   maven_coords = 'org.seleniumhq.selenium:selenium-api:' + SE_VERSION,
   maven_pom_template = ':template-pom',
-  srcs = [
-    'AbstractCapabilities.java',
-    'Alert.java',
-    'By.java',
-    'Capabilities.java',
-    'Cookie.java',
-    'ContextAware.java',
-    'HasCapabilities.java',
-    'JavascriptExecutor.java',
-    'DeviceRotation.java',
-    'Keys.java',
-    'ImmutableCapabilities.java',
-    'MutableCapabilities.java',
-    'OutputType.java',
-    'PageLoadStrategy.java',
-    'Proxy.java',
-    'Rotatable.java',
-    'ScreenOrientation.java',
-    'SearchContext.java',
-    'TakesScreenshot.java',
-    'UnexpectedAlertBehaviour.java',
-    'WebDriver.java',
-    'WebElement.java',
-    'internal/ElementScrollBehavior.java',
-    'internal/HasIdentity.java',
-    'internal/Locatable.java',
-    'internal/WrapsDriver.java',
-    'internal/WrapsElement.java',
-  ] + glob([
-     'html5/*.java',
-     'internal/FindsBy*.java',
-     'mobile/*.java',
+  srcs = glob([
+    '*.java',
+    'html5/*.java',
+    'internal/*.java',
+    'interactions/**/*.java',
+    'logging/**/*.java',
+    'mobile/*.java',
   ]),
-  exported_deps = [
-    # This list of dependencies MUST NOT include anything other than code
-    # from the selenium project. That means no guava and no gson.
-    ':beta',
-    ':exceptions',
-    ':platform',
-    ':primitives',
-    '//java/client/src/org/openqa/selenium/interactions:core',
-    '//java/client/src/org/openqa/selenium/interactions:exceptions',
-    '//java/client/src/org/openqa/selenium/logging:api',
+  manifest_file = ':manifest',
+  deps = [
+    # Nothing from third party
   ],
   visibility = [
     'PUBLIC',
-  ],
+  ]
 )
 
 genrule(name = 'manifest',
   out = 'manifest.mf',
   cmd = 'python -c "print(\'\\n\\nName: Build-Info\\nSelenium-Version: {}\\n\\n\')" >> $OUT'.format(SE_VERSION),
-)
-
-java_library(name = 'beta',
-  srcs = [ 'Beta.java' ],
-  visibility = [
-    '//java/client/src/org/openqa/selenium/interactions:interactions',
-    '//java/client/src/org/openqa/selenium/logging:api',
-    '//java/client/src/org/openqa/selenium/logging:logging',
-    '//java/client/src/org/openqa/selenium/os:os',
-  ],
-)
-
-java_library(name = 'exceptions',
-  srcs = [
-    'ElementClickInterceptedException.java',
-    'ElementNotInteractableException.java',
-    'ElementNotSelectableException.java',
-    'ElementNotVisibleException.java',
-    'ImeActivationFailedException.java',
-    'ImeNotAvailableException.java',
-    'InvalidArgumentException.java',
-    'InvalidCookieDomainException.java',
-    'InvalidElementStateException.java',
-    'InvalidSelectorException.java',
-    'JavascriptException.java',
-    'NoAlertPresentException.java',
-    'NoSuchCookieException.java',
-    'NoSuchElementException.java',
-    'NoSuchFrameException.java',
-    'NoSuchSessionException.java',
-    'NoSuchWindowException.java',
-    'NotFoundException.java',
-    'SessionNotCreatedException.java',
-    'ScriptTimeoutException.java',
-    'StaleElementReferenceException.java',
-    'TimeoutException.java',
-    'UnableToSetCookieException.java',
-    'UnhandledAlertException.java',
-    'UnsupportedCommandException.java',
-    'WebDriverException.java',
-    'internal/BuildInfo.java',
-  ],
-  manifest_file = ':manifest',
-  deps = [
-    ':beta',
-  ],
-  visibility = [
-    '//java/client/src/org/openqa/selenium/interactions:exceptions',
-    '//java/client/src/org/openqa/selenium/interactions:interactions',
-    '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/logging:logging',
-    '//java/client/src/org/openqa/selenium/net:net',
-    '//java/client/src/org/openqa/selenium/os:os',
-    '//java/client/test/org/openqa/selenium/testing:helpers',
-  ],
-)
-
-java_library(
-  name = 'platform',
-  srcs = [
-    'Architecture.java',
-    'Platform.java',
-  ],
-  deps = [
-    ':exceptions',
-  ],
-  visibility = [
-    '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/net:net',
-    '//java/client/src/org/openqa/selenium/os:os',
-  ],
-)
-
-java_library(name = 'primitives',
-  srcs = [
-    'Dimension.java',
-    'Point.java',
-    'Rectangle.java',
-  ],
-  visibility = [
-    '//java/client/src/org/openqa/selenium/interactions:core',
-  ],
 )
 
 java_library(

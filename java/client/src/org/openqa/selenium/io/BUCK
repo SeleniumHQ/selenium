@@ -3,8 +3,7 @@ java_library(
   name = 'io',
   srcs = glob(['*.java']),
   deps = [
-    '//java/client/src/org/openqa/selenium:exceptions',
-    '//java/client/src/org/openqa/selenium:platform',
+    '//java/client/src/org/openqa/selenium:core',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:selenium',
