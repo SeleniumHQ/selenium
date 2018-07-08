@@ -17,11 +17,9 @@
 
 package org.openqa.selenium.logging.profiler;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.json.Json;
 
-import java.util.Map;
+import java.util.TreeMap;
 
 public class HttpProfilerLogEntry extends ProfilerLogEntry {
 
@@ -30,10 +28,10 @@ public class HttpProfilerLogEntry extends ProfilerLogEntry {
   }
 
   private static String constructMessage(EventType eventType, String commandName, boolean isStart) {
-    Map<String, ?> map = ImmutableMap.of(
-      "event", eventType.toString(),
-      "command", commandName,
-      "startorend", isStart ? "start" : "end");
+    TreeMap<Object, Object> map = new TreeMap<>();
+    map.put("event", eventType.toString());
+    map.put("command", commandName);
+    map.put("startorend", isStart ? "start" : "end");
     return new Json().toJson(map);
   }
 
