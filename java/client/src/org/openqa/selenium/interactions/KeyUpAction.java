@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.interactions;
 
-import com.google.common.collect.ImmutableList;
-
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.interactions.internal.SingleKeyAction;
 import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.interactions.internal.SingleKeyAction;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -48,12 +48,11 @@ public class KeyUpAction extends SingleKeyAction implements Action {
 
   @Override
   public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
-    ImmutableList.Builder<Interaction> toReturn = ImmutableList.builder();
+    List<Interaction> toReturn = new ArrayList<>(optionallyClickElement(mouse));
 
-    optionallyClickElement(mouse, toReturn);
     toReturn.add(keyboard.createKeyUp(key.getCodePoint()));
 
-    return toReturn.build();
+    return Collections.unmodifiableList(toReturn);
   }
 
 }

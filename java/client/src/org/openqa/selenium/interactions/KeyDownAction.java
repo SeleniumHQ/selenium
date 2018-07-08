@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.interactions;
 
-import com.google.common.collect.ImmutableList;
-
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
 import org.openqa.selenium.interactions.internal.Locatable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,11 +49,11 @@ public class KeyDownAction extends SingleKeyAction implements Action {
 
   @Override
   public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
-    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+    ArrayList<Interaction> interactions = new ArrayList<>();
 
-    optionallyClickElement(mouse, interactions);
+    interactions.addAll(optionallyClickElement(mouse));
     interactions.add(keyboard.createKeyDown(key.getCodePoint()));
 
-    return interactions.build();
+    return Collections.unmodifiableList(interactions);
   }
 }

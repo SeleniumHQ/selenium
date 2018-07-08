@@ -21,23 +21,21 @@ import static org.openqa.selenium.interactions.PointerInput.Kind.MOUSE;
 import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
 import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
-
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
-import org.openqa.selenium.interactions.internal.MouseAction.Button;
 import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.interactions.internal.MouseAction.Button;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
 import java.util.logging.Logger;
@@ -65,7 +63,7 @@ public class Actions {
   protected CompositeAction action = new CompositeAction();
 
   public Actions(WebDriver driver) {
-    this.driver = Preconditions.checkNotNull(driver);
+    this.driver = Objects.requireNonNull(driver);
 
     if (driver instanceof HasInputDevices) {
       HasInputDevices deviceOwner = (HasInputDevices) driver;
@@ -241,9 +239,10 @@ public class Actions {
 
   private Actions addKeyAction(CharSequence key, IntConsumer consumer) {
     // Verify that we only have a single character to type.
-    Preconditions.checkState(
-        key.codePoints().count() == 1,
-        "Only one code point is allowed at a time: %s", key);
+    if (key.codePoints().count() != 1) {
+      throw new IllegalStateException(String.format(
+        "Only one code point is allowed at a time: %s", key));
+    }
 
     key.codePoints().forEach(consumer);
 
@@ -523,7 +522,7 @@ public class Actions {
   }
 
   public Actions pause(Duration duration) {
-    Preconditions.checkNotNull(duration, "Duration of pause not set");
+    Objects.requireNonNull(duration, "Duration of pause not set");
     if (isBuildingActions()) {
       action.addAction(new PauseAction(duration.toMillis()));
     }
@@ -550,7 +549,8 @@ public class Actions {
     }
 
     // And now pad the remaining sequences with a pause.
-    Set<InputSource> unseen = Sets.difference(sequences.keySet(), seenSources);
+    Set<InputSource> unseen = new HashSet<>(sequences.keySet());
+    unseen.removeAll(seenSources);
     for (InputSource source : unseen) {
       getSequence(source).addAction(new Pause(source, Duration.ZERO));
     }
@@ -559,7 +559,9 @@ public class Actions {
   }
 
   public Actions tick(Action action) {
-    Preconditions.checkState(action instanceof IsInteraction);
+    if (!(action instanceof IsInteraction)) {
+      throw new IllegalStateException("Expected action to implement IsInteraction");
+    }
 
     for (Interaction interaction :
         ((IsInteraction) action).asInteractions(defaultMouse, defaultKeyboard)) {
@@ -581,7 +583,7 @@ public class Actions {
    * @return the composite action
    */
   public Action build() {
-    Action toReturn = new BuiltAction(driver, ImmutableMap.copyOf(sequences), action);
+    Action toReturn = new BuiltAction(driver, new LinkedHashMap<>(sequences), action);
     action = new CompositeAction();
     sequences.clear();
     return toReturn;

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.interactions.internal;
 
-import com.google.common.collect.ImmutableList;
-
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Interaction;
 import org.openqa.selenium.interactions.IsInteraction;
@@ -27,6 +25,9 @@ import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.PointerInput.Origin;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -74,14 +75,17 @@ public abstract class MouseAction extends BaseAction implements IsInteraction {
     }
   }
 
-  protected void moveToLocation(
-      PointerInput mouse,
-      ImmutableList.Builder<Interaction> interactions) {
+  protected List<Interaction> moveToLocation(PointerInput mouse) {
+    List<Interaction> interactions = new ArrayList<>();
+
     Optional<WebElement> target = getTargetElement();
+
     interactions.add(mouse.createPointerMove(
         Duration.ofMillis(500),
         target.map(Origin::fromElement).orElse(Origin.pointer()),
         0,
         0));
+
+    return Collections.unmodifiableList(interactions);
   }
 }
