@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.logging.profiler;
 
-import org.openqa.selenium.json.Json;
-
-import java.util.TreeMap;
-
 public class HttpProfilerLogEntry extends ProfilerLogEntry {
 
   public HttpProfilerLogEntry(String commandName, boolean isStart) {
@@ -28,11 +24,12 @@ public class HttpProfilerLogEntry extends ProfilerLogEntry {
   }
 
   private static String constructMessage(EventType eventType, String commandName, boolean isStart) {
-    TreeMap<Object, Object> map = new TreeMap<>();
-    map.put("event", eventType.toString());
-    map.put("command", commandName);
-    map.put("startorend", isStart ? "start" : "end");
-    return new Json().toJson(map);
+    // We're going to make the assumption that command name is a simple string which doesn't need
+    // escaping.
+    return String.format(
+        "{\"event\": \"%s\", \"command\": \"%s\", \"startorend\": \"%s\"}",
+        eventType.toString(),
+        commandName,
+        isStart ? "start" : "end");
   }
-
 }
