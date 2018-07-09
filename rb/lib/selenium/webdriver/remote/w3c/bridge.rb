@@ -371,7 +371,7 @@ module Selenium
 
           def upload(local_file)
             unless File.file?(local_file)
-              Webdriver.logger.debug("File detector only works with files. #{local_file.inspect} isn`t a file!")
+              WebDriver.logger.debug("File detector only works with files. #{local_file.inspect} isn`t a file!")
               raise Error::WebDriverError, "You are trying to work with something that isn't a file."
             end
 
