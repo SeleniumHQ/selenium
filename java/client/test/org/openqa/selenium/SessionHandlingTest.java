@@ -71,6 +71,13 @@ public class SessionHandlingTest extends JUnit4TestBase {
     assertThat(t, instanceOf(NoSuchSessionException.class));
   }
 
+  @NoDriverAfterTest
+  @Test
+  public void shouldContinueAfterSleep() {
+    sleepTight(10000);
+    driver.getWindowHandle(); // should not throw
+  }
+
   private void sleepTight(long duration) {
     try {
       Thread.sleep(duration);
