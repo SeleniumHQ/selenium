@@ -17,6 +17,9 @@
 
 package org.openqa.grid.web.servlet;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.base.Splitter;
@@ -42,9 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collector;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.reducing;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -128,42 +128,41 @@ public class HubStatusServlet extends RegistryBasedServlet {
     res.put(SUCCESS, true);
 
     try {
-        String configuration = request.getParameter(CONFIGURATION);
+      String configuration = request.getParameter(CONFIGURATION);
 
-        if (Strings.isNullOrEmpty(configuration)) {
-            configuration = "";
-          if (requestJSON.containsKey(CONFIGURATION)) {
-            //noinspection unchecked
-            configuration = requestJSON.get(CONFIGURATION).toString();
-          }
+      if (Strings.isNullOrEmpty(configuration)) {
+        configuration = "";
+        if (requestJSON.containsKey(CONFIGURATION)) {
+          //noinspection unchecked
+          configuration = requestJSON.get(CONFIGURATION).toString();
         }
+      }
 
-        List<String> keysToReturn = Splitter.on(",").omitEmptyStrings().splitToList(configuration);
+      List<String> keysToReturn = Splitter.on(",").omitEmptyStrings().splitToList(configuration);
 
-        GridRegistry registry = getRegistry();
-        Map<String, Object> config = registry.getHub().getConfiguration().toJson();
-        for (Map.Entry<String, Object> entry : config.entrySet()) {
-          if (isKeyPresentIn(keysToReturn, entry.getKey())) {
-            res.put(entry.getKey(), entry.getValue());
-          }
+      GridRegistry registry = getRegistry();
+      Map<String, Object> config = registry.getHub().getConfiguration().toJson();
+      for (Map.Entry<String, Object> entry : config.entrySet()) {
+        if (isKeyPresentIn(keysToReturn, entry.getKey())) {
+          res.put(entry.getKey(), entry.getValue());
         }
-        if (isKeyPresentIn(keysToReturn, NEW_SESSION_REQUEST_COUNT)) {
-          res.put(NEW_SESSION_REQUEST_COUNT, registry.getNewSessionRequestCount());
-        }
+      }
+      if (isKeyPresentIn(keysToReturn, NEW_SESSION_REQUEST_COUNT)) {
+        res.put(NEW_SESSION_REQUEST_COUNT, registry.getNewSessionRequestCount());
+      }
 
-        if (isKeyPresentIn(keysToReturn, SLOT_COUNTS)) {
-          res.put(SLOT_COUNTS, getSlotCounts());
-        }
-        if (keysToReturn != null && keysToReturn.contains(NODES)) {
-          res.put(NODES, getNodesInfo());
-        }
+      if (isKeyPresentIn(keysToReturn, SLOT_COUNTS)) {
+        res.put(SLOT_COUNTS, getSlotCounts());
+      }
+      if (keysToReturn != null && keysToReturn.contains(NODES)) {
+        res.put(NODES, getNodesInfo());
+      }
     } catch (Exception e) {
       res.remove(SUCCESS);
       res.put(SUCCESS, false);
       res.put("msg", e.getMessage());
     }
     return res;
-
   }
 
   private Map<String, Object> getSlotCounts() {
@@ -208,8 +207,9 @@ public class HubStatusServlet extends RegistryBasedServlet {
 
   private List<Map<String, Object>> getInfoFromAllSlotsInNode(List<TestSlot> slots) {
     List<Map<String, Object>> browsers = Lists.newArrayList();
-    Map<String, List<TestSlot>>
-        slotsInfo = slots.stream().collect(groupingBy(HubStatusServlet::getBrowser));
+    Map<String, List<TestSlot>> slotsInfo = slots.stream()
+        .collect(groupingBy(HubStatusServlet::getBrowser));
+
     for (Map.Entry<String, List<TestSlot>> each : slotsInfo.entrySet()) {
       String key = each.getKey();
       Map<String, Object> value = getSlotInfoPerBrowserFlavor(each.getValue());
