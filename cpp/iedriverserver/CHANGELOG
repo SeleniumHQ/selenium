@@ -9,6 +9,22 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.13.0.1
+=========
+ * Updated to automatically dismiss onBeforeUnload event dialogs. This is a
+   change from previous behavior, where such dialogs were handled via the
+   standard alert handling commands. The W3C WebDriver Specification demands
+   that onBeforeUnload dialogs be dismissed automatically, with no input
+   allowed for the user. This may be a breaking change for some users who are
+   currently relying on the alert-handling commands to handle these alerts;
+   however, not implementing this behavior makes the driver not compliant with
+   the specificiation. Users in that state will have no choice but to modify
+   their code to accomodate the new, spec-compliant behavior.
+ * Updated the reset action to be spec-compliant. This means that when the
+   "Release Actions" command is sent, that pressed keystrokes and mouse
+   buttons are reset to the "up" position in the correct order.
+ * Corrected "invalid session id" response to be spec-compliant
+
 v3.13.0.0
 =========
  * Release to synchronize with release of Selenium project.
