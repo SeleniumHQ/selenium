@@ -44,6 +44,10 @@
 #define MODIFIER_KEY_CTRL 2
 #define MODIFIER_KEY_ALT 4
 
+// "Key" values for mouse buttons
+#define WD_MOUSE_LBUTTON  0xE05EU
+#define WD_MOUSE_RBUTTON  0xE05FU
+
 namespace webdriver {
 
 InputManager::InputManager() {
@@ -255,62 +259,41 @@ InputState InputManager::CloneCurrentInputState(void) {
 
 void InputManager::Reset(BrowserHandle browser_wrapper) {
   LOG(TRACE) << "Entering InputManager::Reset";
-  Json::Value reset_sequence(Json::arrayValue);
 
-  Json::Value mouse_input_source;
-  mouse_input_source["type"] = "pointer";
-  mouse_input_source["id"] = "default mouse";
-  Json::Value mouse_parameters;
-  mouse_parameters["pointerType"] = "mouse";
-  mouse_input_source["parameters"] = mouse_parameters;
-  mouse_input_source["actions"] = Json::Value(Json::arrayValue);
-
-  if (this->current_input_state_.is_left_button_pressed ||
-      this->current_input_state_.is_right_button_pressed) {
-    if (this->current_input_state_.is_left_button_pressed) {
-      LOG(DEBUG) << "Releasing left mouse button";
-      Json::Value left_button_up;
-      left_button_up["type"] = "pointerUp";
-      left_button_up["button"] = WD_CLIENT_LEFT_MOUSE_BUTTON;
-      mouse_input_source["actions"].append(left_button_up);
-    }
-
-    if (this->current_input_state_.is_right_button_pressed) {
-      LOG(DEBUG) << "Releasing right mouse button";
-      Json::Value right_button_up;
-      right_button_up["type"] = "pointerUp";
-      right_button_up["button"] = WD_CLIENT_RIGHT_MOUSE_BUTTON;
-      mouse_input_source["actions"].append(right_button_up);
+  LOG(DEBUG) << "Releasing " << this->pressed_keys_.size() << " keys";
+  std::vector<wchar_t> local_pressed_keys(this->pressed_keys_);
+  
+  HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
+  InputState current_input_state = this->CloneCurrentInputState();
+  this->inputs_.clear();
+  std::vector<wchar_t>::const_reverse_iterator it = local_pressed_keys.rbegin();
+  for (; it != local_pressed_keys.rend(); ++it) {
+    std::wstring key_value = L"";
+    key_value.append(1, *it);
+    std::wstring key_description = this->GetKeyDescription(*it);
+    LOG(DEBUG) << "Key: " << LOGWSTRING(key_description);
+    if (*it == WD_MOUSE_LBUTTON) {
+      this->AddMouseInput(browser_window_handle, MOUSEEVENTF_LEFTUP, 0, 0);
+    } else if (*it == WD_MOUSE_RBUTTON) {
+      this->AddMouseInput(browser_window_handle, MOUSEEVENTF_RIGHTUP, 0, 0);
+    } else {
+      this->AddKeyboardInput(browser_window_handle,
+                             key_value,
+                             true,
+                             &current_input_state);
     }
   }
 
-  Json::Value keyboard_input_source;
-  keyboard_input_source["type"] = "key";
-  keyboard_input_source["id"] = "default keyboard";
-  keyboard_input_source["actions"] = Json::Value(Json::arrayValue);
-
-  if (this->pressed_keys_.size() > 0) {
-    for (size_t i = 0; i < mouse_input_source["actions"].size(); ++i) {
-      Json::Value pause_action;
-      pause_action["type"] = "pause";
-      pause_action["duration"] = 0;
-      keyboard_input_source["actions"].append(pause_action);
-    }
-
-    LOG(DEBUG) << "Releasing " << this->pressed_keys_.size() << " keys";
-    std::vector<wchar_t>::const_reverse_iterator it = this->pressed_keys_.rbegin();
-    for (; it != this->pressed_keys_.rend(); ++it) {
-      std::wstring key_value = L"";
-      key_value.append(1, *it);
-      std::wstring key_description= this->GetKeyDescription(*it);
-      LOG(DEBUG) << "Key: " << LOGWSTRING(key_description);
-      Json::Value keyup;
-      keyup["type"] = "keyUp";
-      keyup["value"] = StringUtilities::ToString(key_value);
-      keyboard_input_source["actions"].append(keyup);
-    }
-    this->pressed_keys_.clear();
+  // If there are inputs in the array, then we've queued up input actions
+  // to be played back. So play them back.
+  if (this->inputs_.size() > 0) {
+    LOG(DEBUG) << "Processing a total of " << this->inputs_.size() << " input events";
+    this->action_simulator_->SimulateActions(browser_wrapper,
+                                             this->inputs_,
+                                             &this->current_input_state_);
   }
+
+  ::Sleep(50);
 
   if (this->current_input_state_.mouse_x > 0 ||
       this->current_input_state_.mouse_y > 0) {
@@ -319,17 +302,9 @@ void InputManager::Reset(BrowserHandle browser_wrapper) {
     this->current_input_state_.mouse_y = 0;
   }
 
-  if (mouse_input_source["actions"].size() > 0) {
-    reset_sequence.append(mouse_input_source);
-  }
-
-  if (keyboard_input_source["actions"].size() > 0) {
-    reset_sequence.append(keyboard_input_source);
-  }
-
-  if (reset_sequence.size() > 0) {
-    std::string error_info = "";
-    this->PerformInputSequence(browser_wrapper, reset_sequence, &error_info);
+  if (this->pressed_keys_.size() > 0) {
+    LOG(WARN) << "Pressed keys should have been empty, but had " << this->pressed_keys_.size() << " values.";
+    this->pressed_keys_.clear();
   }
 }
 
@@ -657,6 +632,18 @@ void InputManager::AddMouseInput(HWND window_handle, long input_action, int x, i
   mouse_input.mi.dwExtraInfo = 0;
   mouse_input.mi.mouseData = 0;
   mouse_input.mi.time = 0;
+  if (input_action == MOUSEEVENTF_LEFTDOWN) {
+    this->UpdatePressedKeys(WD_MOUSE_LBUTTON, true);
+  }
+  if (input_action == MOUSEEVENTF_RIGHTDOWN) {
+    this->UpdatePressedKeys(WD_MOUSE_RBUTTON, true);
+  }
+  if (input_action == MOUSEEVENTF_LEFTUP) {
+    this->UpdatePressedKeys(WD_MOUSE_LBUTTON, false);
+  }
+  if (input_action == MOUSEEVENTF_RIGHTUP) {
+    this->UpdatePressedKeys(WD_MOUSE_RBUTTON, false);
+  }
   this->inputs_.push_back(mouse_input);
 }
 
@@ -1364,6 +1351,8 @@ void InputManager::SetupKeyDescriptions() {
   this->key_descriptions_[WD_KEY_R_DOWN] = L"ArrowDown";
   this->key_descriptions_[WD_KEY_R_INSERT] = L"Insert";
   this->key_descriptions_[WD_KEY_R_DELETE] = L"Delete";
+  this->key_descriptions_[WD_MOUSE_LBUTTON] = L"Left Mouse Button";
+  this->key_descriptions_[WD_MOUSE_RBUTTON] = L"Right Mouse Button";
 }
 
 } // namespace webdriver
