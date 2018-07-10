@@ -298,7 +298,7 @@ public abstract class BaseAugmenterTest {
     }
   }
 
-  private interface MagicNumberHolder {
+  public interface MagicNumberHolder {
     public int getMagicNumber();
     public void setMagicNumber(int number);
   }
