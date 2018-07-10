@@ -19,6 +19,8 @@ package org.openqa.grid.web.servlet;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
 
@@ -35,7 +37,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,14 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class HubStatusServlet extends RegistryBasedServlet {
 
+  private static final String SUCCESS = "success";
+  private static final String CONFIGURATION = "configuration";
+  private static final String FREE = "free";
+  private static final String BUSY = "busy";
+  private static final String NEW_SESSION_REQUEST_COUNT = "newSessionRequestCount";
+  private static final String SLOT_COUNTS = "slotCounts";
+  private static final String NODES = "nodes";
+  private static final String TOTAL = "total";
   private final Json json = new Json();
 
   public HubStatusServlet() {
@@ -116,38 +125,41 @@ public class HubStatusServlet extends RegistryBasedServlet {
       HttpServletRequest request,
       Map<String, Object> requestJSON) {
     Map<String, Object> res = new TreeMap<>();
-    res.put("success", true);
+    res.put(SUCCESS, true);
 
     try {
-        List<String> keysToReturn = null;
+        String configuration = request.getParameter(CONFIGURATION);
 
-        if (request.getParameter("configuration") != null && !"".equals(request.getParameter("configuration"))) {
-          keysToReturn = Arrays.asList(request.getParameter("configuration").split(","));
-        } else if (requestJSON != null && requestJSON.containsKey("configuration")) {
-          //noinspection unchecked
-          keysToReturn = (List<String>) requestJSON.get("configuration");
+        if (Strings.isNullOrEmpty(configuration)) {
+            configuration = "";
+          if (requestJSON.containsKey(CONFIGURATION)) {
+            //noinspection unchecked
+            configuration = requestJSON.get(CONFIGURATION).toString();
+          }
         }
+
+        List<String> keysToReturn = Splitter.on(",").omitEmptyStrings().splitToList(configuration);
 
         GridRegistry registry = getRegistry();
         Map<String, Object> config = registry.getHub().getConfiguration().toJson();
         for (Map.Entry<String, Object> entry : config.entrySet()) {
-          if (IsKeyPresentIn(keysToReturn, entry.getKey())) {
+          if (isKeyPresentIn(keysToReturn, entry.getKey())) {
             res.put(entry.getKey(), entry.getValue());
           }
         }
-        if (IsKeyPresentIn(keysToReturn, "newSessionRequestCount")) {
-          res.put("newSessionRequestCount", registry.getNewSessionRequestCount());
+        if (isKeyPresentIn(keysToReturn, NEW_SESSION_REQUEST_COUNT)) {
+          res.put(NEW_SESSION_REQUEST_COUNT, registry.getNewSessionRequestCount());
         }
 
-        if (IsKeyPresentIn(keysToReturn, "slotCounts")) {
-          res.put("slotCounts", getSlotCounts());
+        if (isKeyPresentIn(keysToReturn, SLOT_COUNTS)) {
+          res.put(SLOT_COUNTS, getSlotCounts());
         }
-        if (keysToReturn != null && keysToReturn.contains("nodes")) {
-          res.put("nodes", getNodesInfo());
+        if (keysToReturn != null && keysToReturn.contains(NODES)) {
+          res.put(NODES, getNodesInfo());
         }
     } catch (Exception e) {
-      res.remove("success");
-      res.put("success", false);
+      res.remove(SUCCESS);
+      res.put(SUCCESS, false);
       res.put("msg", e.getMessage());
     }
     return res;
@@ -164,8 +176,8 @@ public class HubStatusServlet extends RegistryBasedServlet {
     }
 
     return ImmutableSortedMap.of(
-        "free", totalSlots - usedSlots,
-        "total", totalSlots);
+        FREE, totalSlots - usedSlots,
+        TOTAL, totalSlots);
   }
 
   private Map<String, Object> getRequestJSON(HttpServletRequest request) throws IOException {
@@ -178,7 +190,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
     }
   }
 
-  private static boolean IsKeyPresentIn(List<String> keys, String key) {
+  private static boolean isKeyPresentIn(List<String> keys, String key) {
     return keys == null || keys.isEmpty() || keys.contains(key);
   }
 
@@ -189,7 +201,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
 
   private Map<String, Object> getNodeInfo(RemoteProxy remoteProxy) {
     return ImmutableSortedMap.of(
-        "Id", remoteProxy.getId(),
+        "id", remoteProxy.getId(),
         "browsers", getInfoFromAllSlotsInNode(remoteProxy.getTestSlots())
     );
   }
@@ -208,18 +220,18 @@ public class HubStatusServlet extends RegistryBasedServlet {
 
   private Map<String, Object> getSlotInfoPerBrowserFlavor(List<TestSlot> slots) {
     Map<String, Integer> byStatus = slots.stream().collect(groupingBy(this::status, counting()));
-    int busy = byStatus.computeIfAbsent("busy", status -> 0);
-    int free = byStatus.computeIfAbsent("free", status -> 0);
+    int busy = byStatus.computeIfAbsent(BUSY, status -> 0);
+    int free = byStatus.computeIfAbsent(FREE, status -> 0);
     int total = busy + free;
 
-    return ImmutableSortedMap.of("total", total, "busy", busy);
+    return ImmutableSortedMap.of(TOTAL, total, BUSY, busy);
   }
 
   private String status(TestSlot slot) {
     if (slot.getSession() == null) {
-      return "free";
+      return FREE;
     }
-    return "busy";
+    return BUSY;
   }
 
   private static String getBrowser(TestSlot slot) {

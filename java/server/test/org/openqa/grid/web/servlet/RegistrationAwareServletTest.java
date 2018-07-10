@@ -17,16 +17,22 @@
 
 package org.openqa.grid.web.servlet;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+public class RegistrationAwareServletTest extends BaseServletTest {
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-  DisplayHelpServletTest.class,
-  ResourceServletTest.class,
-  ConsoleServletTest.class,
-  RegistrationServletTest.class,
-  HubStatusServletTest.class
-})
-public class GridServletTests {
+  /**
+   * Gives the servlet some time to add the proxy -- which happens on a separate thread.
+   */
+  protected void waitForServletToAddProxy() throws Exception {
+    int tries = 0;
+    int size = 0;
+    while (tries < 10) {
+      size = ((RegistryBasedServlet) servlet).getRegistry().getAllProxies().size();
+      if (size > 0) {
+        break;
+      }
+      Thread.sleep(1000);
+      tries += 1;
+    }
+  }
+
 }
