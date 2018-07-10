@@ -237,12 +237,9 @@ public class NewSessionPayload implements Closeable {
       json.name("desiredCapabilities");
       json.write(ossFirst);
 
-      // And write the first capability for gecko13
+      // Now for the w3c capabilities
       json.name("capabilities");
       json.beginObject();
-
-      json.name("desiredCapabilities");
-      json.write(first);
 
       // Then write everything into the w3c payload. Because of the way we do this, it's easiest
       // to just populate the "firstMatch" section. The spec says it's fine to omit the
