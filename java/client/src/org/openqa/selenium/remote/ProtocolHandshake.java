@@ -118,7 +118,6 @@ public class ProtocolHandshake {
 
     return Stream.of(
         new JsonWireProtocolResponse().getResponseFunction(),
-        new Gecko013ProtocolResponse().getResponseFunction(),
         new W3CHandshakeResponse().getResponseFunction())
         .map(func -> func.apply(initialResponse))
         .filter(Optional::isPresent)

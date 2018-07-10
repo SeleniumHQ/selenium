@@ -200,7 +200,7 @@ public class W3CRemoteDriverTest {
   }
 
   static class FakeDriverService extends DriverService {
-    public FakeDriverService() throws IOException {
+    FakeDriverService() throws IOException {
       super(new File("."), 0, null, null);
     }
   }
