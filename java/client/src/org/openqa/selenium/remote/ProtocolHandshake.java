@@ -108,7 +108,7 @@ public class ProtocolHandshake {
       blob = new Json().toType(response.getContentString(), Map.class);
     } catch (JsonException e) {
       throw new WebDriverException(
-          "Unable to parse remote response: " + response.getContentString());
+          "Unable to parse remote response: " + response.getContentString(), e);
     }
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
