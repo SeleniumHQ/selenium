@@ -191,7 +191,7 @@ public class RemoteWebDriverBuilder {
    * {@link RemoteWebDriver}.
    */
   public WebDriver build() {
-    if (options.isEmpty()) {
+    if (options.isEmpty() && additionalCapabilities.isEmpty()) {
       throw new SessionNotCreatedException("Refusing to create session without any capabilities");
     }
 
@@ -315,7 +315,7 @@ public class RemoteWebDriverBuilder {
       // Try and minimise payload by finding keys that have the same value in every option. This isn't
       // terribly efficient, but we expect the number of entries to be very low in almost every case,
       // so this should be fine.
-      Map<String, Object> always = new HashMap<>(options.get(0));
+      Map<String, Object> always = new HashMap<>(options.isEmpty() ? new HashMap<>() : options.get(0));
       for (Map<String, Object> option : options) {
         for (Map.Entry<String, Object> entry : option.entrySet()) {
           if (!always.containsKey(entry.getKey())) {
@@ -329,28 +329,35 @@ public class RemoteWebDriverBuilder {
       }
       always.putAll(additionalCapabilities);
 
-      out.name("alwaysMatch");
-      out.beginObject();
-      always.forEach((key, value) -> {
-        out.name(key);
-        out.write(value);
-      });
-      out.endObject();
-
-      out.name("firstMatch");
-      out.beginArray();
-      options.forEach(option -> {
+      // Only write alwaysMatch if there are actually things to write
+      if (!always.isEmpty()) {
+        out.name("alwaysMatch");
         out.beginObject();
-        option.entrySet().stream()
-            .filter(entry -> !always.containsKey(entry.getKey()))
-            .filter(entry -> !additionalCapabilities.containsKey(entry.getKey()))
-            .forEach(entry -> {
-              out.name(entry.getKey());
-              out.write(entry.getValue());
-            });
+        always.forEach((key, value) -> {
+          out.name(key);
+          out.write(value);
+        });
         out.endObject();
-      });
-      out.endArray();
+      }
+
+      // Only write firstMatch if there are also things to write
+      if (!options.isEmpty()) {
+        out.name("firstMatch");
+        out.beginArray();
+        options.forEach(option -> {
+          out.beginObject();
+          option.entrySet().stream()
+              .filter(entry -> !always.containsKey(entry.getKey()))
+              .filter(entry -> !additionalCapabilities.containsKey(entry.getKey()))
+              .forEach(entry -> {
+                out.name(entry.getKey());
+                out.write(entry.getValue());
+              });
+          out.endObject();
+        });
+        out.endArray();
+      }
+
       out.endObject();  // Close the "capabilities" entry
 
       metadata.forEach((key, value) -> {
