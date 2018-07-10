@@ -70,6 +70,17 @@ public class W3CRemoteDriverTest {
   }
 
   @Test
+  public void settingAGlobalCapabilityCountsAsAnOption() {
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+        .setCapability("browserName", "cheese");
+
+    List<Capabilities> capabilities = listCapabilities(builder);
+
+    assertEquals(1, capabilities.size());
+    assertEquals("cheese", capabilities.get(0).getBrowserName());
+  }
+
+  @Test
   public void simpleCaseShouldBeADropIn() {
     List<Capabilities> caps =
         listCapabilities(RemoteWebDriver.builder().addAlternative(new FirefoxOptions()));
