@@ -91,7 +91,7 @@ public enum Platform {
     }
   },
 
-  SNOW_LEOPARD("snow leopard", "os x 10.6") {
+  SNOW_LEOPARD("snow leopard", "os x 10.6", "macos 10.6") {
     @Override
     public Platform family() {
       return MAC;
@@ -102,7 +102,7 @@ public enum Platform {
     }
   },
 
-  MOUNTAIN_LION("mountain lion", "os x 10.8") {
+  MOUNTAIN_LION("mountain lion", "os x 10.8", "macos 10.8") {
     @Override
     public Platform family() {
       return MAC;
@@ -113,7 +113,7 @@ public enum Platform {
     }
   },
 
-  MAVERICKS("mavericks", "os x 10.9") {
+  MAVERICKS("mavericks", "os x 10.9", "macos 10.9") {
     @Override
     public Platform family() {
       return MAC;
@@ -124,7 +124,7 @@ public enum Platform {
     }
   },
 
-  YOSEMITE("yosemite", "os x 10.10") {
+  YOSEMITE("yosemite", "os x 10.10", "macos 10.10") {
     @Override
     public Platform family() {
       return MAC;
@@ -135,7 +135,7 @@ public enum Platform {
     }
   },
 
-  EL_CAPITAN("el capitan", "os x 10.11") {
+  EL_CAPITAN("el capitan", "os x 10.11", "macos 10.11") {
     @Override
     public Platform family() {
       return MAC;
@@ -146,7 +146,7 @@ public enum Platform {
     }
   },
 
-  SIERRA("sierra", "macos 10.12") {
+  SIERRA("sierra", "os x 10.12", "macos 10.12") {
     @Override
     public Platform family() {
       return MAC;
@@ -154,6 +154,17 @@ public enum Platform {
     @Override
     public String toString() {
       return "macOS 10.12";
+    }
+  },
+
+  HIGH_SIERRA("high sierra", "os x 10.13", "macos 10.13") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "macOS 10.13";
     }
   },
 
