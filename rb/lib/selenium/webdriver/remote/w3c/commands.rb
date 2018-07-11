@@ -141,10 +141,10 @@ module Selenium
             take_element_screenshot: [:get, 'session/:session_id/element/:id/screenshot'.freeze],
 
             #
-            # file upload
+            # server extensions
             #
 
-            upload_file: [:post, 'session/:session_id/file'.freeze]
+            upload_file: [:post, 'session/:session_id/se/file'.freeze]
           }.freeze
 
         end # Bridge
