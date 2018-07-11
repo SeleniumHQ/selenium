@@ -18,7 +18,7 @@
 package org.openqa.selenium.firefox;
 
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 
@@ -34,7 +34,6 @@ import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -42,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -62,13 +62,14 @@ public class XpiDriverService extends DriverService {
   private XpiDriverService(
       File executable,
       int port,
+      Duration timeout,
       ImmutableList<String> args,
       ImmutableMap<String, String> environment,
       FirefoxBinary binary,
       FirefoxProfile profile,
       File logFile)
       throws IOException {
-    super(executable, port, args, environment);
+    super(executable, port, timeout, args, environment);
 
     Preconditions.checkState(port > 0, "Port must be set");
 
@@ -128,7 +129,7 @@ public class XpiDriverService extends DriverService {
       // XpiDriverService. This has to wait for Firefox to start, not just a service, and some users
       // may be running tests on really slow machines.
       URL status = new URL(getUrl(port).toString() + "/status");
-      new UrlChecker().waitUntilAvailable(45, SECONDS, status);
+      new UrlChecker().waitUntilAvailable(getTimeout().toMillis(), MILLISECONDS, status);
     } catch (UrlChecker.TimeoutException e) {
       throw new WebDriverException("Timed out waiting 45 seconds for Firefox to start.", e);
     }
@@ -276,15 +277,22 @@ public class XpiDriverService extends DriverService {
     }
 
     @Override
+    protected Duration getDefaultTimeout() {
+      return Duration.ofSeconds(45);
+    }
+
+    @Override
     protected XpiDriverService createDriverService(
         File exe,
         int port,
+        Duration timeout,
         ImmutableList<String> args,
         ImmutableMap<String, String> environment) {
       try {
         return new XpiDriverService(
             exe,
             port,
+            timeout,
             args,
             environment,
             binary == null ? new FirefoxBinary() : binary,

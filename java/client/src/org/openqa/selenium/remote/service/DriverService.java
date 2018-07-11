@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.service;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Preconditions;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -52,6 +54,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * used to stop the server.
  */
 public class DriverService {
+  protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
 
   /**
    * The base URL for the managed server.
@@ -70,6 +73,7 @@ public class DriverService {
   private CommandLine process = null;
 
   private final String executable;
+  private final Duration timeout;
   private final ImmutableList<String> args;
   private final ImmutableMap<String, String> environment;
   private OutputStream outputStream = System.err;
@@ -78,6 +82,7 @@ public class DriverService {
   *
   * @param executable The driver executable.
   * @param port Which port to start the driver server on.
+  * @param timeout Timeout waiting for driver server to start.
   * @param args The arguments to the launched server.
   * @param environment The environment for the launched server.
   * @throws IOException If an I/O error occurs.
@@ -85,9 +90,11 @@ public class DriverService {
  protected DriverService(
      File executable,
      int port,
+     Duration timeout,
      ImmutableList<String> args,
      ImmutableMap<String, String> environment) throws IOException {
    this.executable = executable.getCanonicalPath();
+   this.timeout = timeout;
    this.args = args;
    this.environment = environment;
 
@@ -182,10 +189,14 @@ public class DriverService {
     }
   }
 
+  protected Duration getTimeout() {
+    return timeout;
+  }
+
   protected void waitUntilAvailable() throws MalformedURLException {
     try {
       URL status = new URL(url.toString() + "/status");
-      new UrlChecker().waitUntilAvailable(20, SECONDS, status);
+      new UrlChecker().waitUntilAvailable(getTimeout().toMillis(), MILLISECONDS, status);
     } catch (UrlChecker.TimeoutException e) {
       if (process != null && !process.isRunning()) {
         process.checkForError();
@@ -249,6 +260,7 @@ public class DriverService {
     private File exe = null;
     private ImmutableMap<String, String> environment = ImmutableMap.of();
     private File logFile;
+    private Duration timeout;
 
     /**
      * Provides a measure of how strongly this {@link DriverService} supports the given
@@ -332,6 +344,20 @@ public class DriverService {
     }
 
     /**
+     * Configures the timeout waiting for driver server to start.
+     *
+     * @return A self reference.
+     */
+    public B withTimeout(Duration timeout) {
+      this.timeout = timeout;
+      return (B) this;
+    }
+
+    protected Duration getDefaultTimeout() {
+      return DEFAULT_TIMEOUT;
+    }
+
+    /**
      * Creates a new service to manage the driver server. Before creating a new service, the
      * builder will find a port for the server to listen to.
      *
@@ -346,16 +372,20 @@ public class DriverService {
         exe = findDefaultExecutable();
       }
 
+      if (timeout == null) {
+        timeout = getDefaultTimeout();
+      }
+
       ImmutableList<String> args = createArgs();
 
-      return createDriverService(exe, port, args, environment);
+      return createDriverService(exe, port, timeout, args, environment);
     }
 
     protected abstract File findDefaultExecutable();
 
     protected abstract ImmutableList<String> createArgs();
 
-    protected abstract DS createDriverService(File exe, int port, ImmutableList<String> args,
+    protected abstract DS createDriverService(File exe, int port, Duration timeout, ImmutableList<String> args,
         ImmutableMap<String, String> environment);
   }
 }
