@@ -18,13 +18,11 @@
 package org.openqa.selenium.firefox;
 
 import static java.util.Arrays.stream;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.WindowsUtils.getPathsInProgramFiles;
-import org.openqa.selenium.remote.service.DriverService;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -35,6 +33,7 @@ import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ExecutableFinder;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -97,7 +96,6 @@ public class FirefoxBinary {
   private final Executable executable;
   private CommandLine process;
   private OutputStream stream;
-  private long timeout = SECONDS.toMillis(45);
 
   public FirefoxBinary() {
     Executable systemBinary = locateFirefoxBinaryFromSystemProperty();
@@ -317,14 +315,6 @@ public class FirefoxBinary {
       return null;
     }
     return process.getStdOut();
-  }
-
-  public long getTimeout() {
-    return timeout;
-  }
-
-  public void setTimeout(long timeout) {
-    this.timeout = timeout;
   }
 
   @Override
