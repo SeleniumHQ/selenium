@@ -47,6 +47,7 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -201,7 +202,7 @@ public class W3CRemoteDriverTest {
 
   static class FakeDriverService extends DriverService {
     FakeDriverService() throws IOException {
-      super(new File("."), 0, null, null);
+      super(new File("."), 0, Duration.ofSeconds(20), null, null);
     }
   }
 
