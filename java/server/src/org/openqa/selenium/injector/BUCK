@@ -7,6 +7,7 @@ java_library(
         "//third_party/java/guava:guava",
     ],
     visibility = [
-        "//java/server/test/org/openqa/selenium/injector:"
+        "//java/server/src/org/openqa/selenium/...",
+        "//java/server/test/org/openqa/selenium/injector:",
     ],
 )
