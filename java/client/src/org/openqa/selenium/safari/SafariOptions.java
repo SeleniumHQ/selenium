@@ -56,6 +56,7 @@ public class SafariOptions extends MutableCapabilities {
 
   private interface Option {
     String TECHNOLOGY_PREVIEW = "technologyPreview";
+    String TECH_PREVIEW = "se:safari:techPreview";
   }
 
   private Map<String, Object> options = new TreeMap<>();
@@ -120,13 +121,15 @@ public class SafariOptions extends MutableCapabilities {
    */
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     options.put(Option.TECHNOLOGY_PREVIEW, useTechnologyPreview);
-    setCapability(BROWSER_NAME, useTechnologyPreview ? "Safari Technology Preview" : "safari");
+    // Use an object here, rather than a boolean to avoid a stack overflow
+    super.setCapability(Option.TECH_PREVIEW, Boolean.valueOf(useTechnologyPreview));
+    super.setCapability(BROWSER_NAME, useTechnologyPreview ? "Safari Technology Preview" : "safari");
     return this;
   }
 
   @Override
   public void setCapability(String key, Object value) {
-    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
+    if (Option.TECHNOLOGY_PREVIEW.equals(key) || Option.TECH_PREVIEW.equals(key)) {
       setUseTechnologyPreview(Boolean.valueOf(value.toString()));
     } else {
       super.setCapability(key, value);
@@ -135,7 +138,7 @@ public class SafariOptions extends MutableCapabilities {
 
   @Override
   public void setCapability(String key, boolean value) {
-    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
+    if (Option.TECHNOLOGY_PREVIEW.equals(key) || Option.TECH_PREVIEW.equals(key)) {
       setUseTechnologyPreview(value);
     } else {
       super.setCapability(key, value);
@@ -150,7 +153,7 @@ public class SafariOptions extends MutableCapabilities {
   // Getters
 
   public boolean getUseTechnologyPreview() {
-    return (boolean) options.getOrDefault(Option.TECHNOLOGY_PREVIEW, false);
+    return is(Option.TECH_PREVIEW)|| options.get(Option.TECHNOLOGY_PREVIEW) == Boolean.TRUE;
   }
 
   // (De)serialization of the options
@@ -163,9 +166,9 @@ public class SafariOptions extends MutableCapabilities {
   private static SafariOptions fromJsonMap(Map<?, ?> options)  {
     SafariOptions safariOptions = new SafariOptions();
 
-    Boolean useTechnologyPreview = (Boolean) options.get(Option.TECHNOLOGY_PREVIEW);
-    if (useTechnologyPreview != null) {
-      safariOptions.setUseTechnologyPreview(useTechnologyPreview);
+    Object useTechnologyPreview = options.get(Option.TECHNOLOGY_PREVIEW);
+    if (useTechnologyPreview instanceof Boolean) {
+      safariOptions.setUseTechnologyPreview((Boolean) useTechnologyPreview);
     }
 
     return safariOptions;

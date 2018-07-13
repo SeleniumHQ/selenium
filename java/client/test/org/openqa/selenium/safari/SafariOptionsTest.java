@@ -18,10 +18,16 @@
 package org.openqa.selenium.safari;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SafariOptionsTest {
 
@@ -38,8 +44,31 @@ public class SafariOptionsTest {
 
   @Test
   public void canConstructFromCapabilities() {
-    SafariOptions options = new SafariOptions(
-        new ImmutableCapabilities("technologyPreview", true));
+    Map<String, Object> embeddedOptions = new HashMap<>();
+    embeddedOptions.put("technologyPreview", true);
+
+    SafariOptions options = new SafariOptions();
+    assertFalse(options.getUseTechnologyPreview());
+
+    options = new SafariOptions(new ImmutableCapabilities(SafariOptions.CAPABILITY, embeddedOptions));
+    assertTrue(options.getUseTechnologyPreview());
+
+    embeddedOptions.put("technologyPreview", false);
+    options = new SafariOptions(new ImmutableCapabilities(SafariOptions.CAPABILITY, embeddedOptions));
+    assertFalse(options.getUseTechnologyPreview());
+
+    options = new SafariOptions(new ImmutableCapabilities("se:safari:techPreview", true));
+    assertTrue(options.getUseTechnologyPreview());
+
+    options = new SafariOptions(new ImmutableCapabilities("se:safari:techPreview", false));
+    assertFalse(options.getUseTechnologyPreview());
+  }
+
+  @Test
+  public void newerStyleCapabilityWinsOverOlderStyle() {
+    SafariOptions options = new SafariOptions(new ImmutableCapabilities(
+        SafariOptions.CAPABILITY, ImmutableMap.of("technologyPreview", false),
+        "se:safari:techPreview", true));
 
     assertTrue(options.getUseTechnologyPreview());
   }
@@ -56,4 +85,3 @@ public class SafariOptionsTest {
     assertEquals("safari", options.getBrowserName());
   }
 }
-
