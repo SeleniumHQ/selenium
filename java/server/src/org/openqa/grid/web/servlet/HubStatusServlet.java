@@ -128,17 +128,15 @@ public class HubStatusServlet extends RegistryBasedServlet {
     res.put(SUCCESS, true);
 
     try {
+      List<String> keysToReturn = null;
+
       String configuration = request.getParameter(CONFIGURATION);
-
-      if (Strings.isNullOrEmpty(configuration)) {
-        configuration = "";
-        if (requestJSON.containsKey(CONFIGURATION)) {
+      if (!Strings.isNullOrEmpty(configuration)) {
+        keysToReturn = Splitter.on(",").omitEmptyStrings().splitToList(configuration);
+      } else if (requestJSON.get(CONFIGURATION) instanceof List) {
           //noinspection unchecked
-          configuration = requestJSON.get(CONFIGURATION).toString();
-        }
+          keysToReturn = (List<String>) requestJSON.get(CONFIGURATION);
       }
-
-      List<String> keysToReturn = Splitter.on(",").omitEmptyStrings().splitToList(configuration);
 
       GridRegistry registry = getRegistry();
       Map<String, Object> config = registry.getHub().getConfiguration().toJson();
