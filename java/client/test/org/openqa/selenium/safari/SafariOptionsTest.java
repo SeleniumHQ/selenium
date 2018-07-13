@@ -44,4 +44,16 @@ public class SafariOptionsTest {
     assertTrue(options.getUseTechnologyPreview());
   }
 
+  @Test
+  public void settingTechnologyPreviewModeAlsoChangesBrowserName() {
+    SafariOptions options = new SafariOptions();
+    assertEquals("safari", options.getBrowserName());
+
+    options.setUseTechnologyPreview(true);
+    assertEquals("Safari Technology Preview", options.getBrowserName());
+
+    options.setUseTechnologyPreview(false);
+    assertEquals("safari", options.getBrowserName());
+  }
 }
+

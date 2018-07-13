@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.safari;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import com.google.common.collect.ImmutableSortedMap;
 
 import org.openqa.selenium.Capabilities;
@@ -60,7 +62,7 @@ public class SafariOptions extends MutableCapabilities {
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
-    setCapability(CapabilityType.BROWSER_NAME, "safari");
+    setCapability(BROWSER_NAME, "safari");
   }
 
   public SafariOptions(Capabilities source) {
@@ -118,6 +120,7 @@ public class SafariOptions extends MutableCapabilities {
    */
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     options.put(Option.TECHNOLOGY_PREVIEW, useTechnologyPreview);
+    setCapability(BROWSER_NAME, useTechnologyPreview ? "Safari Technology Preview" : "safari");
     return this;
   }
 
