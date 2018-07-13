@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.support.ui;
 
+import static java.time.Instant.EPOCH;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -60,6 +62,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -70,6 +73,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +91,7 @@ public class ExpectedConditionsTest {
   @Mock
   private WebElement mockNestedElement;
   @Mock
-  private Clock mockClock;
+  private java.time.Clock mockClock;
   @Mock
   private Sleeper mockSleeper;
   @Mock
@@ -102,6 +106,14 @@ public class ExpectedConditionsTest {
     wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
       .withTimeout(Duration.ofSeconds(1))
       .pollingEvery(Duration.ofMillis(250));
+
+    // Set up a time series that extends past the end of our wait's timeout
+    when(mockClock.instant()).thenReturn(
+        EPOCH,
+        EPOCH.plusMillis(250),
+        EPOCH.plusMillis(500),
+        EPOCH.plusMillis(1000),
+        EPOCH.plusMillis(2000));
   }
 
   @Test
@@ -174,8 +186,6 @@ public class ExpectedConditionsTest {
 
   @Test
   public void waitingForVisibilityOfElement_elementBecomesVisible() throws InterruptedException {
-    when(mockClock.laterBy(1000L)).thenReturn(3000L);
-    when(mockClock.isNowBefore(3000L)).thenReturn(true);
     when(mockElement.isDisplayed()).thenReturn(false, false, true);
 
     assertSame(mockElement, wait.until(visibilityOf(mockElement)));
@@ -185,8 +195,8 @@ public class ExpectedConditionsTest {
   @Test
   public void waitingForVisibilityOfElement_elementNeverBecomesVisible()
     throws InterruptedException {
-    when(mockClock.laterBy(1000L)).thenReturn(3000L);
-    when(mockClock.isNowBefore(3000L)).thenReturn(true, false);
+    Mockito.reset(mockClock);
+    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(500), EPOCH.plusMillis(3000));
     when(mockElement.isDisplayed()).thenReturn(false, false);
 
     try {
@@ -207,20 +217,17 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfElementInverse_elementDisappears() throws InterruptedException {
-    when(mockClock.laterBy(1000L)).thenReturn(3000L);
-    when(mockClock.isNowBefore(3000L)).thenReturn(true);
-    when(mockElement.isDisplayed()).thenReturn(true, true, false);
+  public void booleanExpectationsCanBeNegated() {
+    ExpectedCondition<Boolean> expectation = not(obj -> false);
 
-    assertTrue(wait.until(not(visibilityOf(mockElement))));
-    verify(mockSleeper, times(2)).sleep(Duration.ofMillis(250));
+    assertTrue(expectation.apply(mockDriver));
   }
 
   @Test
   public void waitingForVisibilityOfElementInverse_elementStaysVisible()
     throws InterruptedException {
-    when(mockClock.laterBy(1000L)).thenReturn(3000L);
-    when(mockClock.isNowBefore(3000L)).thenReturn(true, false);
+    Mockito.reset(mockClock);
+    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(500), EPOCH.plusMillis(3000));
     when(mockElement.isDisplayed()).thenReturn(true, true);
 
     try {
@@ -234,10 +241,9 @@ public class ExpectedConditionsTest {
 
   @Test
   public void invertingAConditionThatReturnsFalse() {
-    when(mockCondition.apply(mockDriver)).thenReturn(new Boolean(false));
+    ExpectedCondition<Boolean> expectation = not(obj -> false);
 
-    assertTrue(wait.until(not(mockCondition)));
-    verifyZeroInteractions(mockSleeper);
+    assertTrue(expectation.apply(mockDriver));
   }
 
   @Test
@@ -250,47 +256,23 @@ public class ExpectedConditionsTest {
 
   @Test
   public void invertingAConditionThatAlwaysReturnsTrueTimesout() throws InterruptedException {
-    when(mockClock.laterBy(1000L)).thenReturn(3000L);
-    when(mockClock.isNowBefore(3000L)).thenReturn(true, false);
-    when(mockCondition.apply(mockDriver)).thenReturn(new Boolean(true));
+    ExpectedCondition<Boolean> expectation = not(obj -> true);
 
-    try {
-      wait.until(not(mockCondition));
-      fail();
-    } catch (TimeoutException expected) {
-      // Do nothing.
-    }
-    verify(mockSleeper, times(1)).sleep(Duration.ofMillis(250));
+    assertFalse(expectation.apply(mockDriver));
   }
 
   @Test
-  public void doubleNegatives_conditionThatReturnsFalseTimesOut() throws InterruptedException {
-    when(mockClock.laterBy(1000L)).thenReturn(3000L);
-    when(mockClock.isNowBefore(3000L)).thenReturn(true, false);
-    when(mockCondition.apply(mockDriver)).thenReturn(false);
+  public void doubleNegatives_conditionThatReturnsFalseTimesOut() {
+    ExpectedCondition<Boolean> expectation = not(not(obj -> false));
 
-    try {
-      wait.until(not(not(mockCondition)));
-      fail();
-    } catch (TimeoutException expected) {
-      // Do nothing.
-    }
-    verify(mockSleeper, times(1)).sleep(Duration.ofMillis(250));
+    assertFalse(expectation.apply(mockDriver));
   }
 
   @Test
-  public void doubleNegatives_conditionThatReturnsNullTimesOut() throws InterruptedException {
-    when(mockClock.laterBy(1000L)).thenReturn(3000L);
-    when(mockClock.isNowBefore(3000L)).thenReturn(true, false);
-    when(mockCondition.apply(mockDriver)).thenReturn(null);
+  public void doubleNegatives_conditionThatReturnsNull() {
+    ExpectedCondition<Boolean> expectation = not(not(obj -> null));
 
-    try {
-      wait.until(not(not(mockCondition)));
-      fail();
-    } catch (TimeoutException expected) {
-      // Do nothing.
-    }
-    verify(mockSleeper, times(1)).sleep(Duration.ofMillis(250));
+    assertFalse(expectation.apply(mockDriver));
   }
 
   @Test
@@ -883,6 +865,7 @@ public class ExpectedConditionsTest {
 
   @Test(expected = TimeoutException.class)
   public void waitingElementSelectionStateToBeThrowsTimeoutExceptionWhenStateDontMatch() {
+    when(mockClock.instant()).thenReturn(Instant.now(), Instant.now().plusMillis(2000));
     when(mockElement.isSelected()).thenReturn(true);
 
     wait.until(elementSelectionStateToBe(mockElement, false));

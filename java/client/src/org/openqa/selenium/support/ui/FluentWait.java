@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.common.base.Throwables;
@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,7 +80,7 @@ public class FluentWait<T> implements Wait<T> {
   private static final java.time.Duration DEFAULT_WAIT_DURATION = java.time.Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
   private final T input;
-  private final Clock clock;
+  private final java.time.Clock clock;
   private final Sleeper sleeper;
 
   private java.time.Duration timeout = DEFAULT_WAIT_DURATION;
@@ -100,10 +101,20 @@ public class FluentWait<T> implements Wait<T> {
    * @param clock The clock to use when measuring the timeout.
    * @param sleeper Used to put the thread to sleep between evaluation loops.
    */
+  @Deprecated
   public FluentWait(T input, Clock clock, Sleeper sleeper) {
-    this.input = checkNotNull(input);
-    this.clock = checkNotNull(clock);
-    this.sleeper = checkNotNull(sleeper);
+    this(input, clock.asJreClock(), sleeper);
+  }
+
+  /**
+   * @param input The input value to pass to the evaluated conditions.
+   * @param clock The clock to use when measuring the timeout.
+   * @param sleeper Used to put the thread to sleep between evaluation loops.
+   */
+  public FluentWait(T input, java.time.Clock clock, Sleeper sleeper) {
+    this.input = requireNonNull(input);
+    this.clock = requireNonNull(clock);
+    this.sleeper = requireNonNull(sleeper);
   }
 
   /**
@@ -241,7 +252,8 @@ public class FluentWait<T> implements Wait<T> {
    */
   @Override
   public <V> V until(Function<? super T, V> isTrue) {
-    long end = clock.laterBy(timeout.toMillis());
+    Instant end = clock.instant().plus(timeout);
+
     Throwable lastException;
     while (true) {
       try {
@@ -260,7 +272,7 @@ public class FluentWait<T> implements Wait<T> {
 
       // Check the timeout after evaluating the function to ensure conditions
       // with a zero timeout can succeed.
-      if (!clock.isNowBefore(end)) {
+      if (end.isBefore(clock.instant())) {
         String message = messageSupplier != null ?
             messageSupplier.get() : null;
 

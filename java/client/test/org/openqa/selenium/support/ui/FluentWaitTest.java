@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
+import static java.time.Instant.EPOCH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -50,7 +51,7 @@ public class FluentWaitTest {
   @Mock
   private ExpectedCondition<Object> mockCondition;
   @Mock
-  private Clock mockClock;
+  private java.time.Clock mockClock;
   @Mock
   private Sleeper mockSleeper;
 
@@ -61,8 +62,7 @@ public class FluentWaitTest {
 
   @Test
   public void shouldWaitUntilReturnValueOfConditionIsNotNull() throws InterruptedException {
-    when(mockClock.laterBy(0L)).thenReturn(2L);
-    when(mockClock.isNowBefore(2L)).thenReturn(true);
+    when(mockClock.instant()).thenReturn(EPOCH);
     when(mockCondition.apply(mockDriver)).thenReturn(null, ARBITRARY_VALUE);
 
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
@@ -76,8 +76,7 @@ public class FluentWaitTest {
 
   @Test
   public void shouldWaitUntilABooleanResultIsTrue() throws InterruptedException {
-    when(mockClock.laterBy(0L)).thenReturn(2L);
-    when(mockClock.isNowBefore(2L)).thenReturn(true);
+    when(mockClock.instant()).thenReturn(EPOCH);
     when(mockCondition.apply(mockDriver)).thenReturn(false, false, true);
 
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
@@ -92,8 +91,7 @@ public class FluentWaitTest {
 
   @Test
   public void checksTimeoutAfterConditionSoZeroTimeoutWaitsCanSucceed() {
-    when(mockClock.laterBy(0L)).thenReturn(2L);
-    when(mockClock.isNowBefore(2L)).thenReturn(false);
+    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(250));
     when(mockCondition.apply(mockDriver)).thenReturn(null);
 
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
@@ -108,8 +106,7 @@ public class FluentWaitTest {
 
   @Test
   public void canIgnoreMultipleExceptions() throws InterruptedException {
-    when(mockClock.laterBy(0L)).thenReturn(2L);
-    when(mockClock.isNowBefore(2L)).thenReturn(true);
+    when(mockClock.instant()).thenReturn(EPOCH);
     when(mockCondition.apply(mockDriver))
       .thenThrow(new NoSuchElementException(""))
       .thenThrow(new NoSuchFrameException(""))
@@ -129,7 +126,7 @@ public class FluentWaitTest {
   public void propagatesUnIgnoredExceptions() {
     final NoSuchWindowException exception = new NoSuchWindowException("");
 
-    when(mockClock.laterBy(0L)).thenReturn(2L);
+    when(mockClock.instant()).thenReturn(EPOCH);
     when(mockCondition.apply(mockDriver)).thenThrow(exception);
 
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
@@ -149,11 +146,10 @@ public class FluentWaitTest {
   public void timeoutMessageIncludesLastIgnoredException() {
     final NoSuchWindowException exception = new NoSuchWindowException("");
 
-    when(mockClock.laterBy(0L)).thenReturn(2L);
+    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(500), EPOCH.plusMillis(1500), EPOCH.plusMillis(2500));
     when(mockCondition.apply(mockDriver))
       .thenThrow(exception)
       .thenReturn(null);
-    when(mockClock.isNowBefore(2L)).thenReturn(false);
 
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
       .withTimeout(Duration.ofMillis(0))
@@ -173,9 +169,8 @@ public class FluentWaitTest {
         "Expected condition failed: Expected custom timeout message "
         + "(tried for 0 second(s) with 500 milliseconds interval)");
 
-    when(mockClock.laterBy(0L)).thenReturn(2L);
+    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(1000));
     when(mockCondition.apply(mockDriver)).thenReturn(null);
-    when(mockClock.isNowBefore(2L)).thenReturn(false);
 
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
       .withTimeout(Duration.ofMillis(0))
@@ -197,9 +192,8 @@ public class FluentWaitTest {
         "Expected condition failed: external state "
         + "(tried for 0 second(s) with 500 milliseconds interval)");
 
-    when(mockClock.laterBy(0L)).thenReturn(2L);
+    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(1000));
     when(mockCondition.apply(mockDriver)).thenReturn(null);
-    when(mockClock.isNowBefore(2L)).thenReturn(false);
 
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
       .withTimeout(Duration.ofMillis(0))
@@ -247,9 +241,8 @@ public class FluentWaitTest {
   public void canIgnoreThrowables() {
     final AssertionError exception = new AssertionError();
 
-    when(mockClock.laterBy(0L)).thenReturn(2L);
+    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(1000));
     when(mockCondition.apply(mockDriver)).thenThrow(exception);
-    when(mockClock.isNowBefore(2L)).thenReturn(false);
 
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
       .withTimeout(Duration.ofMillis(0))
@@ -268,9 +261,8 @@ public class FluentWaitTest {
   public void callsDeprecatedHandlerForRuntimeExceptions() {
     final TimeoutException exception = new TimeoutException();
 
-    when(mockClock.laterBy(0L)).thenReturn(2L);
+    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(2500));
     when(mockCondition.apply(mockDriver)).thenThrow(exception);
-    when(mockClock.isNowBefore(2L)).thenReturn(false);
 
     final TestException sentinelException = new TestException();
     FluentWait<WebDriver> wait = new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper) {

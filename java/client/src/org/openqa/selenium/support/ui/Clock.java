@@ -17,9 +17,15 @@
 
 package org.openqa.selenium.support.ui;
 
+import java.time.Instant;
+import java.time.ZoneId;
+
 /**
- * A simple encapsulation to allowing timing
+ * A simple encapsulation to allowing timing.
+ *
+ * @deprecated Use {@link java.time.Clock}.
  */
+@Deprecated
 public interface Clock {
 
   /**
@@ -44,5 +50,28 @@ public interface Clock {
    * @return Whether the given timestamp represents a point in time before the current time.
    */
   boolean isNowBefore(long endInMillis);
+
+  default java.time.Clock asJreClock() {
+    class JreClock extends java.time.Clock {
+
+      @Override
+      public ZoneId getZone() {
+        return ZoneId.systemDefault();
+      }
+
+      @Override
+      public java.time.Clock withZone(ZoneId zone) {
+        throw new UnsupportedOperationException(
+            "Please use a complete instance of java.time.Clock");
+      }
+
+      @Override
+      public Instant instant() {
+        return Instant.ofEpochMilli(now());
+      }
+    }
+
+    return new JreClock();
+  }
 
 }
