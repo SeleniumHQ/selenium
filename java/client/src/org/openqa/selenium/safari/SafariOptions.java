@@ -51,10 +51,13 @@ public class SafariOptions extends MutableCapabilities {
 
   /**
    * Key used to store SafariOptions in a {@link Capabilities} object.
+   * @deprecated No replacement. Use the methods on this class
    */
+  @Deprecated
   public static final String CAPABILITY = "safari.options";
 
   private interface Option {
+    @Deprecated
     String TECHNOLOGY_PREVIEW = "technologyPreview";
     String TECH_PREVIEW = "se:safari:techPreview";
   }
