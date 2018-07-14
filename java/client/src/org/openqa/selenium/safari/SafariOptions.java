@@ -60,9 +60,11 @@ public class SafariOptions extends MutableCapabilities {
     @Deprecated
     String TECHNOLOGY_PREVIEW = "technologyPreview";
 
-    String AUTOMATIC_INSPECTION  = "automaticInspection";
-    String AUTOMATIC_PROFILING = "automaticProfiling";
+    // Defined by Apple
+    String AUTOMATIC_INSPECTION  = "safari:automaticInspection";
+    String AUTOMATIC_PROFILING = "safari:automaticProfiling";
 
+    // Defined by us
     String TECH_PREVIEW = "se:safari:techPreview";
   }
 
@@ -70,8 +72,6 @@ public class SafariOptions extends MutableCapabilities {
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
-    setAutomaticInspection(false);
-    setAutomaticProfiling(false);
     setCapability(BROWSER_NAME, "safari");
   }
 
@@ -129,7 +129,7 @@ public class SafariOptions extends MutableCapabilities {
    *                            otherwise will disable.
    */
   public SafariOptions setAutomaticInspection(boolean automaticInspection) {
-    options.put(Option.AUTOMATIC_INSPECTION, automaticInspection);
+    setCapability(Option.AUTOMATIC_INSPECTION, automaticInspection);
     return this;
   }
 
@@ -141,7 +141,7 @@ public class SafariOptions extends MutableCapabilities {
    *                            otherwise will disable.
    */
   public SafariOptions setAutomaticProfiling(boolean automaticProfiling) {
-    options.put(Option.AUTOMATIC_PROFILING, automaticProfiling);
+    setCapability(Option.AUTOMATIC_PROFILING, automaticProfiling);
     return this;
   }
 
@@ -186,11 +186,11 @@ public class SafariOptions extends MutableCapabilities {
   // Getters
 
   public boolean getAutomaticInspection() {
-    return (boolean) options.getOrDefault(Option.AUTOMATIC_INSPECTION, false);
+    return Boolean.TRUE.equals(getCapability(Option.AUTOMATIC_INSPECTION));
   }
 
   public boolean getAutomaticProfiling() {
-    return (boolean) options.getOrDefault(Option.AUTOMATIC_PROFILING, false);
+    return Boolean.TRUE.equals(is(Option.AUTOMATIC_PROFILING));
   }
 
   public boolean getUseTechnologyPreview() {
