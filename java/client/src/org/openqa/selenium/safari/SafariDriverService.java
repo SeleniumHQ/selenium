@@ -86,9 +86,15 @@ public class SafariDriverService extends DriverService {
 
       if (BrowserType.SAFARI.equals(capabilites.getBrowserName())) {
         score++;
+      } else if ("Safari Technology Preview".equals(capabilites.getBrowserName())) {
+        score++;
       }
 
       if (capabilites.getCapability(SafariOptions.CAPABILITY) != null) {
+        score++;
+      }
+
+      if (capabilites.getCapability("se:safari:techPreview") != null) {
         score++;
       }
 

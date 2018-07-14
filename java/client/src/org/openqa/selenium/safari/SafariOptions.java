@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.safari;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import com.google.common.collect.ImmutableSortedMap;
 
 import org.openqa.selenium.Capabilities;
@@ -49,13 +51,19 @@ public class SafariOptions extends MutableCapabilities {
 
   /**
    * Key used to store SafariOptions in a {@link Capabilities} object.
+   * @deprecated No replacement. Use the methods on this class
    */
+  @Deprecated
   public static final String CAPABILITY = "safari.options";
 
   private interface Option {
+    @Deprecated
     String TECHNOLOGY_PREVIEW = "technologyPreview";
+
     String AUTOMATIC_INSPECTION  = "automaticInspection";
     String AUTOMATIC_PROFILING = "automaticProfiling";
+
+    String TECH_PREVIEW = "se:safari:techPreview";
   }
 
   private Map<String, Object> options = new TreeMap<>();
@@ -64,7 +72,7 @@ public class SafariOptions extends MutableCapabilities {
     setUseTechnologyPreview(false);
     setAutomaticInspection(false);
     setAutomaticProfiling(false);
-    setCapability(CapabilityType.BROWSER_NAME, "safari");
+    setCapability(BROWSER_NAME, "safari");
   }
 
   public SafariOptions(Capabilities source) {
@@ -146,12 +154,15 @@ public class SafariOptions extends MutableCapabilities {
    */
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     options.put(Option.TECHNOLOGY_PREVIEW, useTechnologyPreview);
+    // Use an object here, rather than a boolean to avoid a stack overflow
+    super.setCapability(Option.TECH_PREVIEW, Boolean.valueOf(useTechnologyPreview));
+    super.setCapability(BROWSER_NAME, useTechnologyPreview ? "Safari Technology Preview" : "safari");
     return this;
   }
 
   @Override
   public void setCapability(String key, Object value) {
-    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
+    if (Option.TECHNOLOGY_PREVIEW.equals(key) || Option.TECH_PREVIEW.equals(key)) {
       setUseTechnologyPreview(Boolean.valueOf(value.toString()));
     } else {
       super.setCapability(key, value);
@@ -160,7 +171,7 @@ public class SafariOptions extends MutableCapabilities {
 
   @Override
   public void setCapability(String key, boolean value) {
-    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
+    if (Option.TECHNOLOGY_PREVIEW.equals(key) || Option.TECH_PREVIEW.equals(key)) {
       setUseTechnologyPreview(value);
     } else {
       super.setCapability(key, value);
@@ -183,7 +194,7 @@ public class SafariOptions extends MutableCapabilities {
   }
 
   public boolean getUseTechnologyPreview() {
-    return (boolean) options.getOrDefault(Option.TECHNOLOGY_PREVIEW, false);
+    return is(Option.TECH_PREVIEW)|| options.get(Option.TECHNOLOGY_PREVIEW) == Boolean.TRUE;
   }
 
   // (De)serialization of the options
@@ -196,9 +207,9 @@ public class SafariOptions extends MutableCapabilities {
   private static SafariOptions fromJsonMap(Map<?, ?> options)  {
     SafariOptions safariOptions = new SafariOptions();
 
-    Boolean useTechnologyPreview = (Boolean) options.get(Option.TECHNOLOGY_PREVIEW);
-    if (useTechnologyPreview != null) {
-      safariOptions.setUseTechnologyPreview(useTechnologyPreview);
+    Object useTechnologyPreview = options.get(Option.TECHNOLOGY_PREVIEW);
+    if (useTechnologyPreview instanceof Boolean) {
+      safariOptions.setUseTechnologyPreview((Boolean) useTechnologyPreview);
     }
 
     return safariOptions;

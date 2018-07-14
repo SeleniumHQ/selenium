@@ -573,7 +573,7 @@ namespace OpenQA.Selenium.Chrome
                 capabilities.SetCapability(pair.Key, pair.Value);
             }
 
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
 
         private Dictionary<string, object> BuildChromeOptionsDictionary()

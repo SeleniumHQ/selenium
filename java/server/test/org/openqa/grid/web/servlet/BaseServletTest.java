@@ -23,6 +23,7 @@ import org.openqa.testing.FakeHttpServletResponse;
 import org.openqa.testing.UrlInfo;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -41,15 +42,30 @@ public class BaseServletTest {
 
   protected FakeHttpServletResponse sendCommand(String method, String commandPath)
     throws IOException, ServletException {
-    return sendCommand(method, commandPath, (Map<String, Object>) null);
+    return sendCommand(method, commandPath, null);
   }
 
   protected FakeHttpServletResponse sendCommand(
       String method,
       String commandPath,
       Map<String, Object> parameters) throws IOException, ServletException {
+    return sendCommand(this.servlet,method, commandPath, parameters);
+  }
+
+  protected static FakeHttpServletResponse sendCommand(
+      HttpServlet servlet,
+      String method,
+      String commandPath,
+      Map<String, Object> parameters) throws IOException, ServletException {
     FakeHttpServletRequest request = new FakeHttpServletRequest(method, createUrl(commandPath));
-    if (parameters != null) {
+    if ("get".equalsIgnoreCase(method) && parameters != null) {
+      Map<String, String> params = new HashMap<>();
+      for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
+        params.put(parameter.getKey(), parameter.getValue().toString());
+      }
+      request.setParameters(params);
+    }
+    if ("post".equalsIgnoreCase(method) && parameters != null) {
       request.setBody(new Json().toJson(parameters));
     }
     FakeHttpServletResponse response = new FakeHttpServletResponse();

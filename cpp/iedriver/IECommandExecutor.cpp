@@ -194,6 +194,10 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
       browser->set_wait_required(false);
     } else {
       this->is_waiting_ = !(browser->Wait(this->page_load_strategy_));
+      HWND alert_handle = NULL;
+      if (this->IsAlertActive(browser, &alert_handle)) {
+        LOG(WARN) << "Found alert";
+      }
       if (this->is_waiting_) {
         this->CreateWaitThread(deferred_response);
       } else {
@@ -239,6 +243,38 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
     LOGHR(DEBUG, hr) << "Marshalling of interface pointer b/w threads is failed.";
   }
 
+  return 0;
+}
+
+LRESULT IECommandExecutor::OnBrowserCloseWait(UINT uMsg,
+                                              WPARAM wParam,
+                                              LPARAM lParam,
+                                              BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnBrowserCloseWait";
+
+  LPCSTR str = reinterpret_cast<LPCSTR>(lParam);
+  std::string browser_id(str);
+  delete[] str;
+  BrowserMap::iterator found_iterator = this->managed_browsers_.find(browser_id);
+  if (found_iterator != this->managed_browsers_.end()) {
+    // If there's still an alert window active, repost this message to
+    // ourselves, since the alert will be handled either automatically or
+    // manually by the user.
+    HWND alert_handle;
+    if (this->IsAlertActive(found_iterator->second, &alert_handle)) {
+      Alert dialog(found_iterator->second, alert_handle);
+      if (!dialog.is_standard_alert()) {
+        dialog.Accept();
+      }
+    } else {
+      LPSTR message_payload = new CHAR[browser_id.size() + 1];
+      strcpy_s(message_payload, browser_id.size() + 1, browser_id.c_str());
+      ::PostMessage(this->m_hWnd,
+                    WD_BROWSER_CLOSE_WAIT,
+                    NULL,
+                    reinterpret_cast<LPARAM>(message_payload));
+    }
+  }
   return 0;
 }
 
@@ -694,6 +730,16 @@ void IECommandExecutor::DispatchCommand() {
         // wait for the browser window to be closed and removed from the
         // list of managed browser windows.
         LOG(DEBUG) << "Browser is closing; awaiting close.";
+        LPSTR message_payload = new CHAR[browser->browser_id().size() + 1];
+        strcpy_s(message_payload,
+                 browser->browser_id().size() + 1,
+                 browser->browser_id().c_str());
+
+        ::Sleep(WAIT_TIME_IN_MILLISECONDS);
+        ::PostMessage(this->m_hWnd,
+                      WD_BROWSER_CLOSE_WAIT,
+                      NULL,
+                      reinterpret_cast<LPARAM>(message_payload));
         this->is_waiting_ = true;
         return;
       }

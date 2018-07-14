@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.IE;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -33,7 +34,7 @@ namespace OpenQA.Selenium.Remote
         public void ShouldBeAbleToCreateRemoteWebDriverWithNoSlashAtEndOfUri()
         {
             Environment.EnvironmentManager.Instance.CloseCurrentDriver();
-            RemoteWebDriver noSlashDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:6000/wd/hub"), DesiredCapabilities.InternetExplorer());
+            RemoteWebDriver noSlashDriver = new RemoteWebDriver(new Uri("http://127.0.0.1:6000/wd/hub"), new InternetExplorerOptions());
             noSlashDriver.Url = javascriptPage;
             noSlashDriver.Quit();
         }

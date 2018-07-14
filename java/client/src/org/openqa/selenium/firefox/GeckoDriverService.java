@@ -57,7 +57,8 @@ public class GeckoDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public GeckoDriverService(
-      File executable, int port,
+      File executable,
+      int port,
       ImmutableList<String> args,
       ImmutableMap<String, String> environment) throws IOException {
     super(executable, port, args, environment);

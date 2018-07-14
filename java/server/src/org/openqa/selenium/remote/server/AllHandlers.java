@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.remote.server;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -36,15 +35,11 @@ import org.openqa.selenium.remote.server.commandhandler.NoSessionHandler;
 import org.openqa.selenium.remote.server.commandhandler.Status;
 import org.openqa.selenium.remote.server.commandhandler.UploadFile;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -52,17 +47,22 @@ import javax.servlet.http.HttpServletRequest;
 class AllHandlers {
 
   private final Json json;
-  private final NewSessionPipeline pipeline;
   private final ActiveSessions allSessions;
+  private final Injector parentInjector;
 
   private final Map<HttpMethod, ImmutableList<Function<String, CommandHandler>>> additionalHandlers;
 
   public AllHandlers(NewSessionPipeline pipeline, ActiveSessions allSessions) {
-    this.pipeline = pipeline;
     this.allSessions = Objects.requireNonNull(allSessions);
     this.json = new Json();
 
-    additionalHandlers = ImmutableMap.of(
+    this.parentInjector = Injector.builder()
+        .register(json)
+        .register(allSessions)
+        .register(pipeline)
+        .build();
+
+    this.additionalHandlers = ImmutableMap.of(
         HttpMethod.DELETE, ImmutableList.of(),
         HttpMethod.GET, ImmutableList.of(
             handler("/session/{sessionId}/log/types", GetLogTypes.class),
@@ -120,54 +120,21 @@ class AllHandlers {
         return null;
       }
 
-      ImmutableSet.Builder<Object> args = ImmutableSet.builder();
-      args.add(pipeline);
-      args.add(allSessions);
-      args.add(json);
+      Injector.Builder child = Injector.builder().parent(parentInjector);
       if (match.getParameters().containsKey("sessionId")) {
         SessionId id = new SessionId(match.getParameters().get("sessionId"));
-        args.add(id);
+        child.register(id);
         ActiveSession session = allSessions.get(id);
         if (session != null) {
-          args.add(session);
-          args.add(session.getFileSystem());
+          child.register(session);
+          child.register(session.getFileSystem());
         }
       }
       match.getParameters().entrySet().stream()
           .filter(e -> !"sessionId".equals(e.getKey()))
-          .forEach(e -> args.add(e.getValue()));
+          .forEach(e -> child.register(e.getValue()));
 
-      return create(handler, args.build());
+      return child.build().newInstance(handler);
     };
-  }
-
-  @VisibleForTesting
-  <T extends CommandHandler> T create(Class<T> toCreate, Set<Object> args) {
-    Constructor<?> constructor = Stream.of(toCreate.getDeclaredConstructors())
-        .peek(c -> c.setAccessible(true))
-        .sorted((l, r) -> r.getParameterCount() - l.getParameterCount())
-        .filter(c ->
-                    Stream.of(c.getParameters())
-                        .map(p -> args.stream()
-                            .anyMatch(arg -> p.getType().isAssignableFrom(arg.getClass())))
-                        .reduce(Boolean::logicalAnd)
-                        .orElse(true))
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("Cannot find constructor to populate"));
-
-    List<Object> parameters = Stream.of(constructor.getParameters())
-        .map(p -> args.stream()
-            .filter(arg -> p.getType().isAssignableFrom(arg.getClass()))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException(
-                "Cannot find match for " + p + " in " + toCreate)))
-        .collect(Collectors.toList());
-
-    try {
-      Object[] objects = parameters.toArray();
-      return (T) constructor.newInstance(objects);
-    } catch (ReflectiveOperationException e) {
-      throw new IllegalArgumentException("Cannot invoke constructor", e);
-    }
   }
 }

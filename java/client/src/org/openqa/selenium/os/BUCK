@@ -3,9 +3,7 @@ java_library(
   name = 'os',
   srcs = glob(['*.java']),
   deps = [
-    '//java/client/src/org/openqa/selenium:beta',
-    '//java/client/src/org/openqa/selenium:exceptions',
-    '//java/client/src/org/openqa/selenium:platform',
+    '//java/client/src/org/openqa/selenium:core',
     '//java/client/src/org/openqa/selenium/io:io',
     '//third_party/java/commons:commons-exec',
     '//third_party/java/guava:guava',

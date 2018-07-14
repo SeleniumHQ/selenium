@@ -44,6 +44,9 @@ maven/*/target
 maven/.idea
 maven/*.iml
 maven/*/*.iml
+maven-metadata-.xml
+maven-metadata-.xml.sha1
+resolver-status.properties
 java/client/build/
 java/client/log.txt
 java/client/iedriver.log

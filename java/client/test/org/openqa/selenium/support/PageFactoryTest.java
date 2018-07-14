@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -119,9 +118,9 @@ public class PageFactoryTest {
     NonWebElementsPage page = new NonWebElementsPage();
     // Assign not-null values
 
-    PageFactory.initElements((loader, field) -> new Integer(5), page);
+    PageFactory.initElements((loader, field) -> 5, page);
 
-    assertThat(page.num, equalTo(new Integer(5)));
+    assertThat(page.num, equalTo(5));
   }
 
   @Test
@@ -178,7 +177,7 @@ public class PageFactoryTest {
   @Test(expected = TimeoutException.class)
   public void shouldNotThrowANoSuchElementExceptionWhenUsedWithAFluentWait() {
     driver = mock(WebDriver.class);
-    when(driver.findElement(Mockito.<By>any())).thenThrow(new NoSuchElementException("because"));
+    when(driver.findElement(Mockito.any())).thenThrow(new NoSuchElementException("because"));
 
     TickingClock clock = new TickingClock();
     Wait<WebDriver> wait = new WebDriverWait(driver, clock, clock, 1, 1001);

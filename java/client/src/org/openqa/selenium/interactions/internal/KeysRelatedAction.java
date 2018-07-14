@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.interactions.internal;
 
-import com.google.common.collect.ImmutableList;
-
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Interaction;
 import org.openqa.selenium.interactions.IsInteraction;
@@ -29,6 +27,10 @@ import org.openqa.selenium.interactions.PointerInput.MouseButton;
 import org.openqa.selenium.interactions.PointerInput.Origin;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -50,11 +52,12 @@ public abstract class KeysRelatedAction extends BaseAction implements IsInteract
     }
   }
 
-  protected void optionallyClickElement(
-      PointerInput mouse,
-      ImmutableList.Builder<Interaction> interactions) {
+  protected Collection<Interaction> optionallyClickElement(PointerInput mouse) {
+    List<Interaction> interactions = new ArrayList<>();
+
     Optional<WebElement> target = getTargetElement();
     if (target.isPresent()) {
+
       interactions.add(mouse.createPointerMove(
           Duration.ofMillis(500),
           target.map(Origin::fromElement).orElse(Origin.pointer()),
@@ -64,5 +67,7 @@ public abstract class KeysRelatedAction extends BaseAction implements IsInteract
       interactions.add(mouse.createPointerDown(MouseButton.LEFT.asArg()));
       interactions.add(mouse.createPointerUp(MouseButton.LEFT.asArg()));
     }
+
+    return Collections.unmodifiableList(interactions);
   }
 }

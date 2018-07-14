@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.interactions;
 
-import com.google.common.collect.ImmutableList;
-
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.interactions.internal.Locatable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,12 +46,12 @@ public class ContextClickAction extends MouseAction implements Action {
 
   @Override
   public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
-    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+    List<Interaction> interactions = new ArrayList<>();
 
-    moveToLocation(mouse, interactions);
+    interactions.addAll(moveToLocation(mouse));
     interactions.add(mouse.createPointerDown(Button.RIGHT.asArg()));
     interactions.add(mouse.createPointerUp(Button.RIGHT.asArg()));
 
-    return interactions.build();
+    return Collections.unmodifiableList(interactions);
   }
 }

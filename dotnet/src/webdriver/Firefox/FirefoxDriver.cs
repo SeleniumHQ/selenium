@@ -107,55 +107,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given profile.
-        /// </summary>
-        /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
-        /// to be used in starting Firefox.</param>
-        [Obsolete("FirefoxDriver should not be constructed with a FirefoxProfile object. Use FirefoxOptions instead. This constructor will be removed in a future release.")]
-        public FirefoxDriver(FirefoxProfile profile)
-            : this(new FirefoxOptions(profile, null, null))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given set of capabilities.
-        /// </summary>
-        /// <param name="capabilities">The <see cref="ICapabilities"/> object containing the desired
-        /// capabilities of this FirefoxDriver.</param>
-        [Obsolete("FirefoxDriver should not be constructed with a raw ICapabilities or DesiredCapabilities object. Use FirefoxOptions instead. This constructor will be removed in a future release.")]
-        public FirefoxDriver(ICapabilities capabilities)
-            : this(CreateOptionsFromCapabilities(capabilities))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given profile and binary environment.
-        /// </summary>
-        /// <param name="binary">A <see cref="FirefoxBinary"/> object representing the operating system
-        /// environmental settings used when running Firefox.</param>
-        /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
-        /// to be used in starting Firefox.</param>
-        [Obsolete("FirefoxDriver should not be constructed with a FirefoxBinary object. Use FirefoxOptions instead. This constructor will be removed in a future release.")]
-        public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile)
-            : this(new FirefoxOptions(profile, binary, null))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given profile, binary environment, and timeout value.
-        /// </summary>
-        /// <param name="binary">A <see cref="FirefoxBinary"/> object representing the operating system
-        /// environmental settings used when running Firefox.</param>
-        /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
-        /// to be used in starting Firefox.</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        [Obsolete("FirefoxDriver should not be constructed  with a FirefoxBinary object. Use FirefoxOptions instead. This constructor will be removed in a future release.")]
-        public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
-            : this((FirefoxDriverService)null, new FirefoxOptions(profile, binary, null), commandTimeout)
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified options. Uses the Mozilla-provided Marionette driver implementation.
         /// </summary>
         /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>

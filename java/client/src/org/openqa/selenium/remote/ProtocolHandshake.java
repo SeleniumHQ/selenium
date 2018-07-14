@@ -108,7 +108,7 @@ public class ProtocolHandshake {
       blob = new Json().toType(response.getContentString(), Map.class);
     } catch (JsonException e) {
       throw new WebDriverException(
-          "Unable to parse remote response: " + response.getContentString());
+          "Unable to parse remote response: " + response.getContentString(), e);
     }
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
@@ -118,7 +118,6 @@ public class ProtocolHandshake {
 
     return Stream.of(
         new JsonWireProtocolResponse().getResponseFunction(),
-        new Gecko013ProtocolResponse().getResponseFunction(),
         new W3CHandshakeResponse().getResponseFunction())
         .map(func -> func.apply(initialResponse))
         .filter(Optional::isPresent)

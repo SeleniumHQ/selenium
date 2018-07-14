@@ -1,4 +1,4 @@
-﻿// <copyright file="SocketLock.cs" company="WebDriver Committers">
+// <copyright file="SocketLock.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -97,17 +97,6 @@ namespace OpenQA.Selenium.Firefox.Internal
             while (DateTime.Now < maxWait);
 
             throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} milliseconds", this.lockPort, timeout.TotalMilliseconds));
-        }
-
-        /// <summary>
-        /// Locks the mutex port.
-        /// </summary>
-        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for
-        /// the mutex port to become available.</param>
-        [Obsolete("Timeouts should be expressed as a TimeSpan. Use the LockObject overload taking a TimeSpan parameter instead")]
-        public void LockObject(long timeoutInMilliseconds)
-        {
-            this.LockObject(TimeSpan.FromMilliseconds(timeoutInMilliseconds));
         }
 
         /// <summary>

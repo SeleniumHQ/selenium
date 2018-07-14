@@ -242,12 +242,6 @@ namespace OpenQA.Selenium.Interactions
                 Assert.Ignore("Skipping test: Simulating hover needs native events");
             }
 
-            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
-            if (inputDevicesDriver == null)
-            {
-                return;
-            }
-
             IWebElement item = driver.FindElement(By.Id("item1"));
             Assert.AreEqual("", item.Text);
 

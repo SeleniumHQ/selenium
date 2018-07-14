@@ -196,7 +196,7 @@ namespace OpenQA.Selenium.Edge
                 capabilities.SetCapability(pair.Key, pair.Value);
             }
 
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
     }
 }

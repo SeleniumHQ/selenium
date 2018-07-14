@@ -185,7 +185,7 @@ remote.ui.Client.prototype.execute_ = function(command) {
  */
 remote.ui.Client.prototype.logError_ = function(msg, e) {
   goog.log.error(this.log_, msg + '\n' + e);
-  this.banner_.setMessage(msg);
+  this.banner_.setMessage(msg + '\n\n' + e);
   this.banner_.setVisible(true);
 };
 

@@ -1,4 +1,4 @@
-// <copyright file="BeforeRemoteHttpRequestEventArgs.cs" company="WebDriver Committers">
+// <copyright file="IHasCapabilitiesDictionary.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,24 +16,18 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Net;
+using System.Collections.Generic;
 
-namespace OpenQA.Selenium.Remote
+namespace OpenQA.Selenium.Internal
 {
-    [Obsolete("Replaced by the SendingRemoteHttpRequestEventArgs class")]
-    public class BeforeRemoteHttpRequestEventArgs : EventArgs
+    /// <summary>
+    /// Defines the interface through which the user can access the driver used to find an element.
+    /// </summary>
+    internal interface IHasCapabilitiesDictionary
     {
-        private HttpWebRequest request;
-
-        public BeforeRemoteHttpRequestEventArgs(HttpWebRequest request)
-        {
-            this.request = request;
-        }
-
-        public HttpWebRequest Request
-        {
-            get { return this.request; }
-        }
+        /// <summary>
+        /// Gets the underlying Dictionary for a given set of capabilities.
+        /// </summary>
+        Dictionary<string, object> CapabilitiesDictionary { get; }
     }
 }

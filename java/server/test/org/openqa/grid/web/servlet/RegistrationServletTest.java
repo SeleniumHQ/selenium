@@ -44,7 +44,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-public class RegistrationServletTest extends BaseServletTest {
+public class RegistrationServletTest extends RegistrationAwareServletTest {
 
   private Map<String, Object> requestWithoutConfig;
   private Map<String, Object> grid2Request;
@@ -85,21 +85,7 @@ public class RegistrationServletTest extends BaseServletTest {
     servlet.init();
   }
 
-  /**
-   * Gives the servlet some time to add the proxy -- which happens on a separate thread.
-   */
-  private void waitForServletToAddProxy() throws Exception {
-    int tries = 0;
-    int size;
-    while (tries < 10) {
-      size = ((RegistrationServlet) servlet).getRegistry().getAllProxies().size();
-      if (size > 0) {
-        break;
-      }
-      Thread.sleep(1000);
-      tries += 1;
-    }
-  }
+
 
   /**
    * Tests that the registration request servlet throws an error for a request without a proxy

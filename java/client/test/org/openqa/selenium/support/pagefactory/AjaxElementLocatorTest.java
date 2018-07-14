@@ -33,10 +33,10 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
-import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.FakeClock;
 
 import java.lang.reflect.Field;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 

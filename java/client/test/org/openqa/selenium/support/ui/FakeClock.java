@@ -17,22 +17,58 @@
 
 package org.openqa.selenium.support.ui;
 
-public class FakeClock implements Clock {
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.Objects;
+
+/**
+ * @deprecated Either extend {@link java.time.Clock} or use
+ *   {@link java.time.Clock#fixed(Instant, ZoneId)} for a fixed clock.
+ */
+@Deprecated
+public class FakeClock extends java.time.Clock implements Clock {
+  private final ZoneId zoneId;
   private long now = 500000;
+
+  public FakeClock() {
+    this(ZoneId.systemDefault());
+  }
+
+  private FakeClock(ZoneId zoneId) {
+    this.zoneId = Objects.requireNonNull(zoneId);
+  }
 
   public void timePasses(int millisInASecond) {
     now = now + millisInASecond;
   }
 
+  @Deprecated
   public long laterBy(long durationInMillis) {
     return now + durationInMillis;
   }
 
+  @Deprecated
   public boolean isNowBefore(long endInMillis) {
     return now < endInMillis;
   }
 
+  @Deprecated
   public long now() {
     return now;
+  }
+
+  @Override
+  public ZoneId getZone() {
+    return zoneId;
+  }
+
+  @Override
+  public java.time.Clock withZone(ZoneId zone) {
+    return new FakeClock(zone);
+  }
+
+  @Override
+  public Instant instant() {
+    return Instant.ofEpochMilli(now);
   }
 }

@@ -147,7 +147,7 @@ public class SlowLoadableComponentTest {
     private final static int MILLIS_IN_A_SECOND = 1000;
 
     public BasicSlowLoader(FakeClock clock, int timeOutInSeconds) {
-      super(clock, timeOutInSeconds);
+      super((java.time.Clock) clock, timeOutInSeconds);
       this.clock = clock;
     }
 
@@ -168,7 +168,7 @@ public class SlowLoadableComponentTest {
   private static class HasError extends SlowLoadableComponent<HasError> {
 
     public HasError() {
-      super(new FakeClock(), 1000);
+      super((java.time.Clock) new FakeClock(), 1000);
     }
 
     @Override

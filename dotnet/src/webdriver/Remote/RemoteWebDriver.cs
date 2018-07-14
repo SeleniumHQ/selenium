@@ -261,6 +261,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets an <see cref="IKeyboard"/> object for sending keystrokes to the browser.
         /// </summary>
+        [Obsolete("This property was never intended to be used in user code. Use the Actions or ActionBuilder class to send direct keyboard input.")]
         public IKeyboard Keyboard
         {
             get { return this.keyboard; }
@@ -269,6 +270,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets an <see cref="IMouse"/> object for sending mouse commands to the browser.
         /// </summary>
+        [Obsolete("This property was never intended to be used in user code. Use the Actions or ActionBuilder class to send direct mouse input.")]
         public IMouse Mouse
         {
             get { return this.mouse; }
@@ -1061,21 +1063,36 @@ namespace OpenQA.Selenium.Remote
         protected void StartSession(ICapabilities desiredCapabilities)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("desiredCapabilities", this.GetLegacyCapabilitiesDictionary(desiredCapabilities));
 
-            Dictionary<string, object> firstMatchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
+            // If the object passed into the RemoteWebDriver constructor is a
+            // RemoteSessionSettings object, it is expected that all intermediate
+            // and end nodes are compliant with the W3C WebDriver Specification,
+            // and therefore will already contain all of the appropriate values
+            // for establishing a session.
+            RemoteSessionSettings remoteSettings = desiredCapabilities as RemoteSessionSettings;
+            if (remoteSettings == null)
+            {
+                parameters.Add("desiredCapabilities", this.GetLegacyCapabilitiesDictionary(desiredCapabilities));
 
-            List<object> firstMatchCapabilitiesList = new List<object>();
-            firstMatchCapabilitiesList.Add(firstMatchCapabilities);
+                Dictionary<string, object> firstMatchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
 
-            Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
-            specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
-            parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
+                List<object> firstMatchCapabilitiesList = new List<object>();
+                firstMatchCapabilitiesList.Add(firstMatchCapabilities);
+
+                Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
+                specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
+
+                parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
+            }
+            else
+            {
+                parameters.Add("capabilities", remoteSettings.ToDictionary());
+            }
 
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
             Dictionary<string, object> rawCapabilities = (Dictionary<string, object>)response.Value;
-            DesiredCapabilities returnedCapabilities = new DesiredCapabilities(rawCapabilities);
+            ReturnedCapabilities returnedCapabilities = new ReturnedCapabilities(rawCapabilities);
             this.capabilities = returnedCapabilities;
             this.sessionId = new SessionId(response.SessionId);
         }
@@ -1090,7 +1107,7 @@ namespace OpenQA.Selenium.Remote
         protected virtual Dictionary<string, object> GetLegacyCapabilitiesDictionary(ICapabilities legacyCapabilities)
         {
             Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
-            DesiredCapabilities capabilitiesObject = legacyCapabilities as DesiredCapabilities;
+            IHasCapabilitiesDictionary capabilitiesObject = legacyCapabilities as IHasCapabilitiesDictionary;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
                 capabilitiesDictionary.Add(entry.Key, entry.Value);
@@ -1109,7 +1126,7 @@ namespace OpenQA.Selenium.Remote
         protected virtual Dictionary<string, object> GetCapabilitiesDictionary(ICapabilities capabilitiesToConvert)
         {
             Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
-            DesiredCapabilities capabilitiesObject = capabilitiesToConvert as DesiredCapabilities;
+            IHasCapabilitiesDictionary capabilitiesObject = capabilitiesToConvert as IHasCapabilitiesDictionary;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
                 if (CapabilityType.IsSpecCompliantCapabilityName(entry.Key))
@@ -1193,28 +1210,6 @@ namespace OpenQA.Selenium.Remote
             parameters.Add("value", value);
             Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
             return this.GetElementsFromResponse(commandResponse);
-        }
-
-        /// <summary>
-        /// Creates a <see cref="RemoteWebElement"/> with the specified ID.
-        /// </summary>
-        /// <param name="elementId">The ID of this element.</param>
-        /// <returns>A <see cref="RemoteWebElement"/> with the specified ID.</returns>
-        [Obsolete("This method is no longer called to create RemoteWebElement instances. Implement a subclass of RemoteWebElementFactory and set the ElementFactory property to create instances of custom RemoteWebElement subclasses.")]
-        protected virtual RemoteWebElement CreateElement(string elementId)
-        {
-            RemoteWebElement toReturn = new RemoteWebElement(this, elementId);
-            return toReturn;
-        }
-
-        /// <summary>
-        /// Creates a <see cref="RemoteWebElement"/> with the specified ID and element attributes.
-        /// </summary>
-        /// <param name="elementId">The ID of this element.</param>
-        /// <param name="elementDictionary">The attributes for this element.</param>
-        /// <returns>A <see cref="RemoteWebElement"/> with the specified ID.</returns>
-        protected virtual RemoteWebElement CreateElement(string id, Dictionary<string, object> elementDictionary) {
-            return CreateElement(id);
         }
 
         /// <summary>
@@ -1448,17 +1443,9 @@ namespace OpenQA.Selenium.Remote
 
             if (resultAsDictionary != null)
             {
-                if (resultAsDictionary.ContainsKey(RemoteWebElement.ElementReferencePropertyName))
+                if (this.elementFactory.ContainsElementReference(resultAsDictionary))
                 {
-                    string id = (string)resultAsDictionary[RemoteWebElement.ElementReferencePropertyName];
-                    RemoteWebElement element = this.CreateElement(id);
-                    returnValue = element;
-                }
-                else if (resultAsDictionary.ContainsKey(RemoteWebElement.LegacyElementReferencePropertyName))
-                {
-                    string id = (string)resultAsDictionary[RemoteWebElement.LegacyElementReferencePropertyName];
-                    RemoteWebElement element = this.CreateElement(id);
-                    returnValue = element;
+                    returnValue = this.elementFactory.CreateElement(resultAsDictionary);
                 }
                 else
                 {

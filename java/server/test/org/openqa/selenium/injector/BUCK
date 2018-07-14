@@ -1,0 +1,12 @@
+# BUILD FILE SYNTAX: SKYLARK
+
+java_test(
+    name = "small-tests",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json:json",
+        "//java/server/src/org/openqa/selenium/injector:injector",
+        "//third_party/java/junit:junit",
+    ],
+)

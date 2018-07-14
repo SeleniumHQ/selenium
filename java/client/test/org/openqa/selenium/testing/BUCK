@@ -27,7 +27,7 @@ java_library(name = 'helpers',
     'JreSystemProperty.java',
   ],
   deps = [
-    '//java/client/src/org/openqa/selenium:exceptions',
+    '//java/client/src/org/openqa/selenium:core',
     '//third_party/java/guava:guava',
   ],
   visibility = [
