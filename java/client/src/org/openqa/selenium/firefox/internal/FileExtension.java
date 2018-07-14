@@ -165,7 +165,7 @@ public class FileExtension implements Extension {
           throw new UnsupportedOperationException("getPrefix");
         }
 
-        public Iterator<?> getPrefixes(String uri) {
+        public Iterator<String> getPrefixes(String uri) {
           throw new UnsupportedOperationException("getPrefixes");
         }
       });
