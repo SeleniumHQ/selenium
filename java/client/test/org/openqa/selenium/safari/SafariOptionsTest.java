@@ -74,6 +74,18 @@ public class SafariOptionsTest {
   }
 
   @Test
+  public void canSetAutomaticInspection() {
+    SafariOptions options = new SafariOptions().setAutomaticInspection(true);
+    assertTrue(options.getAutomaticInspection());
+  }
+
+  @Test
+  public void canSetAutomaticProfiling() {
+    SafariOptions options = new SafariOptions().setAutomaticProfiling(true);
+    assertTrue(options.getAutomaticProfiling());
+  }
+
+  @Test
   public void settingTechnologyPreviewModeAlsoChangesBrowserName() {
     SafariOptions options = new SafariOptions();
     assertEquals("safari", options.getBrowserName());
