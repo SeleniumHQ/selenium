@@ -49,7 +49,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
         /// <param name="timeout">The timeout within which the server must respond.</param>
         public HttpCommandExecutor(Uri addressOfRemoteServer, TimeSpan timeout)
-            : this(addressOfRemoteServer, timeout, true)
+            : this(addressOfRemoteServer, timeout, false)
         {
         }
 

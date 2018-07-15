@@ -35,7 +35,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="driverService">The <see cref="DriverService"/> that drives the browser.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public DriverServiceCommandExecutor(DriverService driverService, TimeSpan commandTimeout)
-            : this(driverService, commandTimeout, true)
+            : this(driverService, commandTimeout, false)
         {
         }
 
