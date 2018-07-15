@@ -4,6 +4,7 @@
   target_level = 8
   jar_spool_mode = direct_to_jar
   compile_against_abis = true
+  extra_arguments = --add-modules=ALL-MODULE-PATH
 
 [project]
   ignore = \
@@ -32,6 +33,7 @@
 
 [tools]
   closure_compiler = //third_party/closure:compiler
+  javac = /Library/Java/JavaVirtualMachines/jdk-10.0.1.jdk/Contents/Home/bin/javac
 
 [alias]
   chrome   = //java/client/src/org/openqa/selenium/chrome:chrome

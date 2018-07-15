@@ -1,5 +1,6 @@
 # BUILD FILE SYNTAX: SKYLARK
 load("//:selenium-version.bzl", "SE_VERSION")
+load("//java:java-rules.bzl", "java_module")
 
 java_library(name = 'selenium',
   exported_deps = [
@@ -18,10 +19,12 @@ export_file(
   visibility = ['PUBLIC'],
 )
 
-java_library(
+java_module(
   name = 'core',
   maven_coords = 'org.seleniumhq.selenium:selenium-api:' + SE_VERSION,
   maven_pom_template = ':template-pom',
+  manifest_file = ':manifest',
+  module_info = 'module-info.java',
   srcs = glob([
     '*.java',
     'html5/*.java',
@@ -30,13 +33,12 @@ java_library(
     'logging/**/*.java',
     'mobile/*.java',
   ]),
-  manifest_file = ':manifest',
   deps = [
     # Nothing from third party
   ],
   visibility = [
     'PUBLIC',
-  ]
+  ],
 )
 
 genrule(name = 'manifest',
