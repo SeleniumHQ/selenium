@@ -53,6 +53,7 @@ void DismissAlertCommandHandler::ExecuteInternal(
 
     // Add sleep to give IE time to close dialog and start Navigation if it's necessary
     ::Sleep(100);
+    browser_wrapper->set_wait_required(true);
 
     response->SetSuccessResponse(Json::Value::null);
   }
