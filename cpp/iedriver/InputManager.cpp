@@ -839,6 +839,10 @@ void InputManager::AddKeyboardInput(HWND window_handle,
     return;
   }
 
+  if (key_up && !this->IsKeyPressed(character)) {
+    return;
+  }
+
   this->UpdatePressedKeys(character, !key_up);
 
   KeyInfo key_info = this->GetKeyInfo(window_handle, character);
