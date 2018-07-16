@@ -31,7 +31,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.ServletRequestWrappingHttpRequest;
 import org.openqa.selenium.remote.server.ServletResponseWrappingHttpResponse;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -56,23 +55,20 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) {
     process(
         new ServletRequestWrappingHttpRequest(request),
         new ServletResponseWrappingHttpResponse(response));
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) {
     process(
         new ServletRequestWrappingHttpRequest(request),
         new ServletResponseWrappingHttpResponse(response));
   }
 
-  protected void process(HttpRequest request, HttpResponse response)
-      throws IOException {
+  protected void process(HttpRequest request, HttpResponse response) {
     response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
     response.setStatus(200);
     try {
@@ -83,7 +79,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     }
   }
 
-  private Map<String, Object> getResponse(HttpRequest request) throws IOException {
+  private Map<String, Object> getResponse(HttpRequest request) {
     Map<String, Object> requestJson = null;
     if (!request.getContentString().isEmpty()) {
       requestJson = json.toType(request.getContentString(), MAP_TYPE);

@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +53,7 @@ public class HubW3CStatusServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+      throws IOException {
     List<RemoteProxy> allProxies = registry.getAllProxies().getSorted();
     List<RemoteProxy> busyProxies = allProxies.parallelStream()
         .filter(proxy -> proxy.getMaxNumberOfConcurrentTestSessions() - proxy.getTotalUsed() <= 0)
