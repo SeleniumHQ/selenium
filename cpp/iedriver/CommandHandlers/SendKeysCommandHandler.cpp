@@ -27,6 +27,7 @@
 #include "../IECommandExecutor.h"
 #include "../InputManager.h"
 #include "../StringUtilities.h"
+#include "../VariantUtilities.h"
 #include "../WindowUtilities.h"
 
 #define MAXIMUM_DIALOG_FIND_RETRIES 50
@@ -83,8 +84,6 @@ void SendKeysCommandHandler::ExecuteInternal(
       response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }
-    HWND window_handle = browser_wrapper->GetContentWindowHandle();
-    HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
 
     ElementHandle initial_element;
     status_code = this->GetElement(executor, element_id, &initial_element);
@@ -110,8 +109,6 @@ void SendKeysCommandHandler::ExecuteInternal(
         }
       }
 
-      CComPtr<IHTMLElement> element(element_wrapper->element());
-
       // Scroll the target element into view before executing the action
       // sequence.
       LocationInfo location = {};
@@ -120,124 +117,12 @@ void SendKeysCommandHandler::ExecuteInternal(
                                                        &location,
                                                        &frame_locations);
 
-      CComPtr<IHTMLInputFileElement> file;
-      element->QueryInterface<IHTMLInputFileElement>(&file);
-      CComPtr<IHTMLInputElement> input;
-      element->QueryInterface<IHTMLInputElement>(&input);
-      CComBSTR element_type;
-      if (input) {
-        input->get_type(&element_type);
-        HRESULT hr = element_type.ToLower();
-        if (FAILED(hr)) {
-          LOGHR(WARN, hr) << "Failed converting type attribute of <input> element to lowercase using ToLower() method of BSTR";
-        }
-      }
-      bool is_file_element = (file != NULL) ||
-                             (input != NULL && element_type == L"file");
-      if (is_file_element) {
-        // Key sequence should be a path and file name. Check
-        // to see that the file exists before invoking the file
-        // selection dialog. Note that we also error if the file
-        // path passed in is valid, but is a directory instead of
-        // a file.
-        DWORD file_attributes = ::GetFileAttributes(keys.c_str());
-        if (file_attributes == INVALID_FILE_ATTRIBUTES ||
-            (file_attributes & FILE_ATTRIBUTE_DIRECTORY)) {
-          response->SetErrorResponse(EUNHANDLEDERROR, "Attempting to upload file '" + StringUtilities::ToString(keys) + "' which does not exist.");
-          return;
-        }
-
-        DWORD ie_process_id;
-        ::GetWindowThreadProcessId(window_handle, &ie_process_id);
-
-        FileNameData key_data;
-        key_data.main = top_level_window_handle;
-        key_data.hwnd = window_handle;
-        key_data.text = keys.c_str();
-        key_data.ieProcId = ie_process_id;
-        key_data.dialogTimeout = executor.file_upload_dialog_timeout();
-        key_data.useLegacyDialogHandling = executor.use_legacy_file_upload_dialog_handling();
-
-        unsigned int thread_id;
-        HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
-                                                        0,
-                                                        &SendKeysCommandHandler::SetFileValue,
-                                                        reinterpret_cast<void*>(&key_data),
-                                                        0,
-                                                        &thread_id));
-
-        LOG(DEBUG) << "Clicking upload button and starting to handle file selection dialog";
-        element->click();
-        // We're now blocked until the dialog closes.
-        ::CloseHandle(thread_handle);
-        response->SetSuccessResponse(Json::Value::null);
+      if (this->IsFileUploadElement(element_wrapper)) {
+        this->UploadFile(browser_wrapper, element_wrapper, executor, keys, response);
         return;
       }
 
-      bool shift_pressed = executor.input_manager()->is_shift_pressed();
-      bool control_pressed = executor.input_manager()->is_control_pressed();
-      bool alt_pressed = executor.input_manager()->is_alt_pressed();
-
-      keys.push_back(static_cast<wchar_t>(WD_KEY_NULL));
-      Json::Value key_array(Json::arrayValue);
-      for (size_t i = 0; i < keys.size(); ++i) {
-        std::wstring character = L"";
-        character.push_back(keys[i]);
-        std::string single_key = StringUtilities::ToString(character);
-
-        if (keys[i] == WD_KEY_SHIFT) {
-          Json::Value shift_key_value;
-          shift_key_value["value"] = single_key;
-          if (shift_pressed) {
-            shift_key_value["type"] = "keyUp";
-          } else {
-            shift_key_value["type"] = "keyDown";
-            shift_pressed = true;
-          }
-          key_array.append(shift_key_value);
-          continue;
-        } else if (keys[i] == WD_KEY_CONTROL) {
-          Json::Value control_key_value;
-          control_key_value["value"] = single_key;
-          if (control_pressed) {
-            control_key_value["type"] = "keyUp";
-          } else {
-            control_key_value["type"] = "keyDown";
-            control_pressed = true;
-          }
-          key_array.append(control_key_value);
-          continue;
-        } else if (keys[i] == WD_KEY_ALT) {
-          Json::Value alt_key_value;
-          alt_key_value["value"] = single_key;
-          if (alt_pressed) {
-            alt_key_value["type"] = "keyUp";
-          } else {
-            alt_key_value["type"] = "keyDown";
-            alt_pressed = true;
-          }
-          key_array.append(alt_key_value);
-          continue;
-        }
-
-        Json::Value key_down_value;
-        key_down_value["type"] = "keyDown";
-        key_down_value["value"] = single_key;
-        key_array.append(key_down_value);
-
-        Json::Value key_up_value;
-        key_up_value["type"] = "keyUp";
-        key_up_value["value"] = single_key;
-        key_array.append(key_up_value);
-      }
-
-      Json::Value value;
-      value["type"] = "key";
-      value["id"] = "send keys keyboard";
-      value["actions"] = key_array;
-
-      Json::Value actions(Json::arrayValue);
-      actions.append(value);
+      Json::Value actions = this->CreateActionSequencePayload(executor, &keys);
 
       bool displayed;
       status_code = element_wrapper->IsDisplayed(true, &displayed);
@@ -259,10 +144,10 @@ void SendKeysCommandHandler::ExecuteInternal(
         return;
       }
 
-      if (!this->VerifyPageHasFocus(top_level_window_handle, window_handle)) {
+      if (!this->VerifyPageHasFocus(browser_wrapper)) {
         LOG(WARN) << "HTML rendering pane does not have the focus. Keystrokes may go to an unexpected UI element.";
       }
-      if (!this->WaitUntilElementFocused(element)) {
+      if (!this->WaitUntilElementFocused(element_wrapper->element())) {
         LOG(WARN) << "Specified element is not the active element. Keystrokes may go to an unexpected DOM element.";
       }
 
@@ -275,6 +160,212 @@ void SendKeysCommandHandler::ExecuteInternal(
       return;
     }
   }
+}
+
+Json::Value SendKeysCommandHandler::CreateActionSequencePayload(const IECommandExecutor& executor,
+                                                                std::wstring* keys) {
+  bool shift_pressed = executor.input_manager()->is_shift_pressed();
+  bool control_pressed = executor.input_manager()->is_control_pressed();
+  bool alt_pressed = executor.input_manager()->is_alt_pressed();
+
+  keys->push_back(static_cast<wchar_t>(WD_KEY_NULL));
+  Json::Value key_array(Json::arrayValue);
+  for (size_t i = 0; i < keys->size(); ++i) {
+    std::wstring character = L"";
+    character.push_back(keys->at(i));
+    std::string single_key = StringUtilities::ToString(character);
+
+    if (keys->at(i) == WD_KEY_SHIFT) {
+      Json::Value shift_key_value;
+      shift_key_value["value"] = single_key;
+      if (shift_pressed) {
+        shift_key_value["type"] = "keyUp";
+      } else {
+        shift_key_value["type"] = "keyDown";
+        shift_pressed = true;
+      }
+      key_array.append(shift_key_value);
+      continue;
+    } else if (keys->at(i) == WD_KEY_CONTROL) {
+      Json::Value control_key_value;
+      control_key_value["value"] = single_key;
+      if (control_pressed) {
+        control_key_value["type"] = "keyUp";
+      } else {
+        control_key_value["type"] = "keyDown";
+        control_pressed = true;
+      }
+      key_array.append(control_key_value);
+      continue;
+    } else if (keys->at(i) == WD_KEY_ALT) {
+      Json::Value alt_key_value;
+      alt_key_value["value"] = single_key;
+      if (alt_pressed) {
+        alt_key_value["type"] = "keyUp";
+      } else {
+        alt_key_value["type"] = "keyDown";
+        alt_pressed = true;
+      }
+      key_array.append(alt_key_value);
+      continue;
+    }
+
+    Json::Value key_down_value;
+    key_down_value["type"] = "keyDown";
+    key_down_value["value"] = single_key;
+    key_array.append(key_down_value);
+
+    Json::Value key_up_value;
+    key_up_value["type"] = "keyUp";
+    key_up_value["value"] = single_key;
+    key_array.append(key_up_value);
+  }
+
+  Json::Value value;
+  value["type"] = "key";
+  value["id"] = "send keys keyboard";
+  value["actions"] = key_array;
+
+  Json::Value actions(Json::arrayValue);
+  actions.append(value);
+  return actions;
+}
+
+bool SendKeysCommandHandler::HasMultipleAttribute(ElementHandle element_wrapper) {
+  bool allows_multiple = false;
+  CComVariant multiple_value;
+  int status_code = element_wrapper->GetAttributeValue("multiple",
+                                                       &multiple_value);
+  if (status_code == WD_SUCCESS &&
+      VariantUtilities::VariantIsString(multiple_value)) {
+    std::wstring value(multiple_value.bstrVal);
+    if (value == L"true") {
+      allows_multiple = true;
+    }
+  }
+  return allows_multiple;
+}
+
+void SendKeysCommandHandler::UploadFile(BrowserHandle browser_wrapper,
+                                        ElementHandle element_wrapper,
+                                        const IECommandExecutor& executor,
+                                        const std::wstring& keys,
+                                        Response* response) {
+  bool allows_multiple = this->HasMultipleAttribute(element_wrapper);
+
+  std::vector<std::wstring> file_list;
+  StringUtilities::Split(keys, L"\n", &file_list);
+
+  if (file_list.size() == 0) {
+    response->SetErrorResponse(EINVALIDARGUMENT,
+                               "Upload file cannot be an empty string.");
+    return;
+  }
+
+  if (!allows_multiple && file_list.size() > 1) {
+    response->SetErrorResponse(EINVALIDARGUMENT,
+                               "Attempting to upload multiple files to file upload element without multiple attribute.");
+    return;
+  }
+
+  std::wstring file_directory = L"";
+  std::wstring file_dialog_keys = L"";
+  std::vector<std::wstring>::const_iterator iterator = file_list.begin();
+  for (; iterator < file_list.end(); ++iterator) {
+    std::wstring file_name = *iterator;
+    // Key sequence should be a path and file name. Check
+    // to see that the file exists before invoking the file
+    // selection dialog. Note that we also error if the file
+    // path passed in is valid, but is a directory instead of
+    // a file.
+    bool path_exists = ::PathFileExists(file_name.c_str()) == TRUE;
+    if (!path_exists) {
+      response->SetErrorResponse(EINVALIDARGUMENT,
+                                 "Attempting to upload file '" + StringUtilities::ToString(file_name) + "' which does not exist.");
+      return;
+    }
+    bool path_is_directory = ::PathIsDirectory(file_name.c_str()) == TRUE;
+    if (path_is_directory) {
+      response->SetErrorResponse(EINVALIDARGUMENT,
+                                 "Attempting to upload file '" + StringUtilities::ToString(file_name) + "' which is a directory.");
+      return;
+    }
+
+    if (allows_multiple) {
+      std::vector<wchar_t> file_name_buffer;
+      StringUtilities::ToBuffer(file_name, &file_name_buffer);
+      ::PathRemoveFileSpec(&file_name_buffer[0]);
+      std::wstring current_file_directory = &file_name_buffer[0];
+      if (file_directory.size() == 0) {
+        file_directory = current_file_directory;
+      }
+
+      if (file_directory != current_file_directory) {
+        response->SetErrorResponse(EINVALIDARGUMENT,
+                                   "Attempting to upload multiple files, but all files must be in the same directory.");
+        return;
+      }
+    }
+
+    if (allows_multiple && file_dialog_keys.size() > 0) {
+      file_dialog_keys.append(L" ");
+    }
+    if (allows_multiple && file_name.at(0) != L'\"') {
+      file_dialog_keys.append(L"\"");
+    }
+    file_dialog_keys.append(file_name);
+    if (allows_multiple && file_name.at(file_name.size() - 1) != L'\"') {
+      file_dialog_keys.append(L"\"");
+    }
+  }
+
+  HWND window_handle = browser_wrapper->GetContentWindowHandle();
+  HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
+
+  DWORD ie_process_id;
+  ::GetWindowThreadProcessId(window_handle, &ie_process_id);
+
+  FileNameData key_data;
+  key_data.main = top_level_window_handle;
+  key_data.hwnd = window_handle;
+  key_data.text = file_dialog_keys.c_str();
+  key_data.ieProcId = ie_process_id;
+  key_data.dialogTimeout = executor.file_upload_dialog_timeout();
+  key_data.useLegacyDialogHandling = executor.use_legacy_file_upload_dialog_handling();
+
+  unsigned int thread_id;
+  HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
+                                                                 0,
+                                                                 &SendKeysCommandHandler::SetFileValue,
+                                                                 reinterpret_cast<void*>(&key_data),
+                                                                 0,
+                                                                 &thread_id));
+
+  LOG(DEBUG) << "Clicking upload button and starting to handle file selection dialog";
+  element_wrapper->element()->click();
+  // We're now blocked until the dialog closes.
+  ::CloseHandle(thread_handle);
+  response->SetSuccessResponse(Json::Value::null);
+}
+
+bool SendKeysCommandHandler::IsFileUploadElement(ElementHandle element_wrapper) {
+  CComPtr<IHTMLElement> element(element_wrapper->element());
+
+  CComPtr<IHTMLInputFileElement> file;
+  element->QueryInterface<IHTMLInputFileElement>(&file);
+  CComPtr<IHTMLInputElement> input;
+  element->QueryInterface<IHTMLInputElement>(&input);
+  CComBSTR element_type;
+  if (input) {
+    input->get_type(&element_type);
+    HRESULT hr = element_type.ToLower();
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Failed converting type attribute of <input> element to lowercase using ToLower() method of BSTR";
+    }
+  }
+  bool is_file_element = (file != NULL) ||
+                         (input != NULL && element_type == L"file");
+  return is_file_element;
 }
 
 bool SendKeysCommandHandler::GetFileSelectionDialogCandidates(std::vector<HWND> parent_window_handles, IUIAutomation* ui_automation, IUIAutomationElementArray** dialog_candidates) {
@@ -816,9 +907,8 @@ bool SendKeysCommandHandler::LegacySendKeysToFileUploadAlert(
   return false;
 }
 
-bool SendKeysCommandHandler::VerifyPageHasFocus(
-    HWND top_level_window_handle, 
-    HWND browser_pane_window_handle) {
+bool SendKeysCommandHandler::VerifyPageHasFocus(BrowserHandle browser_wrapper) {
+  HWND browser_pane_window_handle = browser_wrapper->GetContentWindowHandle();
   DWORD proc;
   DWORD thread_id = ::GetWindowThreadProcessId(browser_pane_window_handle, &proc);
   GUITHREADINFO info;
