@@ -222,6 +222,18 @@ def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(driver, pages)
     assert 'click me' == driver.find_element_by_id('alertInFrame').text
 
 
+def testExpectedConditionInvisiblityOfElement(driver, pages):
+    pages.load("javascriptPage.html")
+    target = driver.find_element_by_id('clickToHide')
+    driver.execute_script("delayedShowHide(0, true)")
+    with pytest.raises(TimeoutException):
+        WebDriverWait(driver, 0.7).until(EC.invisibility_of_element(target))
+    driver.execute_script("delayedShowHide(200, false)")
+    element = WebDriverWait(driver, 0.7).until(EC.invisibility_of_element(target))
+    assert element.is_displayed() is False
+    assert target == element
+
+
 def testExpectedConditionInvisiblityOfElementLocated(driver, pages):
     pages.load("javascriptPage.html")
     driver.execute_script("delayedShowHide(0, true)")
