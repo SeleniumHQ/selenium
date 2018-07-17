@@ -60,6 +60,7 @@ class JsonTypeCoercer {
   JsonTypeCoercer(Iterable<TypeCoercer<?>> coercers) {
     this.additionalCoercers = ImmutableSet.copyOf(coercers);
 
+    //noinspection unchecked
     this.coercers =
         // Note: we call out when ordering matters.
         ImmutableSet.<TypeCoercer>builder()
