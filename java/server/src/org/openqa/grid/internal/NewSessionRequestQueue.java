@@ -17,6 +17,8 @@
 
 package org.openqa.grid.internal;
 
+import com.google.common.collect.Ordering;
+
 import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.internal.listeners.Prioritizer;
@@ -24,7 +26,10 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -40,15 +45,20 @@ public class NewSessionRequestQueue {
 
   private static final Logger log = Logger.getLogger(NewSessionRequestQueue.class.getName());
 
+  private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
   private final List<RequestHandler> newSessionRequests = new ArrayList<>();
-
 
   /**
    * Adds a request handler to this queue.
    * @param request the RequestHandler to add
    */
-  public synchronized void add(RequestHandler request) {
-    newSessionRequests.add(request);
+  public void add(RequestHandler request) {
+    lock.writeLock().lock();
+    try {
+      newSessionRequests.add(request);
+    } finally {
+      lock.writeLock().unlock();
+    }
   }
 
   /**
@@ -58,30 +68,42 @@ public class NewSessionRequestQueue {
    * @param prioritizer     The prioritizer to use
    */
 
-  public synchronized void processQueue(
+  public void processQueue(
       Predicate<RequestHandler> handlerConsumer,
       Prioritizer prioritizer) {
 
-    List<RequestHandler> copy = new ArrayList<>(newSessionRequests);
-    if (prioritizer != null) {
-      copy.sort((a,b) -> prioritizer.compareTo(
-          a.getRequest().getDesiredCapabilities(), b.getRequest().getDesiredCapabilities()));
-    }
+    Comparator<RequestHandler> comparator =
+        prioritizer == null ?
+        Ordering.allEqual()::compare :
+        (a, b) -> prioritizer.compareTo(
+            a.getRequest().getDesiredCapabilities(), b.getRequest().getDesiredCapabilities());
 
-    copy.stream()
-        .filter(handlerConsumer)
-        .forEach(requestHandler -> {
-          if (!removeNewSessionRequest(requestHandler)) {
-            log.severe("Bug removing request " + requestHandler);
-          }
-        });
+    lock.writeLock().lock();
+    try {
+
+      newSessionRequests.stream()
+          .sorted(comparator)
+          .filter(handlerConsumer)
+          .forEach(requestHandler -> {
+            if (!removeNewSessionRequest(requestHandler)) {
+              log.severe("Bug removing request " + requestHandler);
+            }
+          });
+    } finally {
+      lock.writeLock().unlock();
+    }
   }
 
   /**
    * clear the entire list of requests
    */
-  public synchronized void clearNewSessionRequests() {
-    newSessionRequests.clear();
+  public void clearNewSessionRequests() {
+    lock.writeLock().lock();
+    try {
+      newSessionRequests.clear();
+    } finally {
+      lock.writeLock().unlock();
+    }
   }
 
   /**
@@ -89,8 +111,13 @@ public class NewSessionRequestQueue {
    * @param request The request to remove
    * @return A boolean result from doing a newSessionRequest.remove(request).
    */
-  public synchronized boolean removeNewSessionRequest(RequestHandler request) {
-    return newSessionRequests.remove(request);
+  public boolean removeNewSessionRequest(RequestHandler request) {
+    lock.writeLock().lock();
+    try {
+      return newSessionRequests.remove(request);
+    } finally {
+      lock.writeLock().unlock();
+    }
   }
 
   /**
@@ -98,21 +125,36 @@ public class NewSessionRequestQueue {
    *
    * @return An Iterable of unmodifiable maps.
    */
-  public synchronized Iterable<DesiredCapabilities> getDesiredCapabilities() {
-    return newSessionRequests.stream()
-        .map(req -> new DesiredCapabilities(req.getRequest().getDesiredCapabilities()))
-        .collect(Collectors.toList());
+  public Iterable<DesiredCapabilities> getDesiredCapabilities() {
+    lock.readLock().lock();
+    try {
+      return newSessionRequests.stream()
+          .map(req -> new DesiredCapabilities(req.getRequest().getDesiredCapabilities()))
+          .collect(Collectors.toList());
+    } finally {
+      lock.readLock().unlock();
+    }
   }
 
   /**
    * Returns the number of unprocessed items in this request queue.
    * @return the size of the queue
    */
-  public synchronized int getNewSessionRequestCount() {
-    return newSessionRequests.size();
+  public int getNewSessionRequestCount() {
+    lock.readLock().lock();
+    try {
+      return newSessionRequests.size();
+    } finally {
+      lock.readLock().unlock();
+    }
   }
 
-  public synchronized void stop() {
-    newSessionRequests.forEach(RequestHandler::stop);
+  public void stop() {
+    lock.writeLock().lock();
+    try {
+      newSessionRequests.forEach(RequestHandler::stop);
+    } finally {
+      lock.writeLock().unlock();
+    }
   }
 }
