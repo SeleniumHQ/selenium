@@ -39,6 +39,7 @@ public class TouchActions extends Actions {
          ((HasTouchScreen) driver).getTouch());
   }
 
+  @Deprecated
   public TouchActions(Keyboard keyboard, TouchScreen touchScreen) {
     super(keyboard);
     this.touchScreen = touchScreen;
