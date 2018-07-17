@@ -199,7 +199,7 @@ class ActionChains(object):
         """
         if self._driver.w3c:
             self.w3c_actions.pointer_action.click_and_hold(source) \
-                                           .move_to_location(xoffset, yoffset) \
+                                           .move_by(xoffset, yoffset) \
                                            .release()
             for _ in range(3):
                 self.w3c_actions.key_action.pause()
