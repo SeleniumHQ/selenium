@@ -27,7 +27,6 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
-import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.NodeW3CStatusServlet;
@@ -350,7 +349,7 @@ public class SelfRegisteringRemote {
     HttpResponse response = client.execute(request);
     try (Reader reader = new StringReader(response.getContentString());
         JsonInput jsonInput = new Json().newInput(reader)) {
-      return StandaloneConfiguration.loadFromJson(jsonInput, GridHubConfiguration.class);
+      return GridHubConfiguration.loadFromJSON(jsonInput);
     }
   }
 
