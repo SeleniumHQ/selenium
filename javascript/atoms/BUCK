@@ -222,7 +222,8 @@ closure_library(name = 'xpath',
 browsers = {
   'firefox': 'ff',
   'chrome': 'chrome',
-  'ie': 'ie'}
+  'ie': 'ie',
+  'safari': 'safari'}
 for browser in browsers.keys():
   java_test(
     name = 'atoms-%s' % browser,
