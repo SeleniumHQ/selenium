@@ -46,6 +46,11 @@ namespace OpenQA.Selenium.Safari
     public class SafariOptions : DriverOptions
     {
         private const string BrowserNameValue = "safari";
+        private const string EnableAutomaticInspectionSafariOption = "safari:automaticInspection";
+        private const string EnableAutomticProfilingSafariOption = "safari:automaticProfiling";
+
+        private bool enableAutomaticInspection = false;
+        private bool enableAutomaticProfiling = false;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
         /// <summary>
@@ -54,6 +59,28 @@ namespace OpenQA.Selenium.Safari
         public SafariOptions() : base()
         {
             this.BrowserName = BrowserNameValue;
+            this.AddKnownCapabilityName(SafariOptions.EnableAutomaticInspectionSafariOption, "EnableAutomaticInspection property");
+            this.AddKnownCapabilityName(SafariOptions.EnableAutomticProfilingSafariOption, "EnableAutomaticProfiling property");
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to have the driver preload the
+        /// Web Inspector and JavaScript debugger in the background.
+        /// </summary>
+        public bool EnableAutomaticInspection
+        {
+            get { return this.enableAutomaticInspection; }
+            set { this.enableAutomaticInspection = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to have the driver preload the
+        /// Web Inspector and start a timeline recording in the background.
+        /// </summary>
+        public bool EnableAutomaticProfiling
+        {
+            get { return this.enableAutomaticProfiling; }
+            set { this.enableAutomaticProfiling = value; }
         }
 
         /// <summary>
@@ -86,7 +113,17 @@ namespace OpenQA.Selenium.Safari
         /// <returns>The ICapabilities for Safari with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
+            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(true);
+            if (this.enableAutomaticInspection)
+            {
+                capabilities.SetCapability(EnableAutomaticInspectionSafariOption, true);
+            }
+
+            if (this.enableAutomaticProfiling)
+            {
+                capabilities.SetCapability(EnableAutomticProfilingSafariOption, true);
+            }
+
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {
                 capabilities.SetCapability(pair.Key, pair.Value);
