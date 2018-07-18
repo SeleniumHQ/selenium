@@ -9,6 +9,32 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.13.0.2
+=========
+ * Modified to prevent keyup actions if key is not already down for IE.
+   This change now checks that a specified key is down before sending any
+   input events when a keyUp action is specified. This prevents spurious
+   events detected by the browser, events which cannot happen with an actual
+   user.
+ * Refactored IE sendKeys command handler to handle multiple file uploads.
+   Until now, the IE driver has not handled the "multiple" attribute for
+   <input type="file"> elements. This construct is now supported, and it is
+   possible to specify multiple files for upload if the multiple attribute is
+   set on the <input> element. To do so, use a string containing full path
+   and file name to each file to be uploaded, separated by new line
+   characters (e.g.: "C:\path\to\file\one.txt\nC:\path\to\file\two.txt"). One
+   caveat to this approach is that when specifying multiple files, all files
+   must be located in the same directory. This is not a limitation imposed by
+   the driver; it is a limitation imposed by IE itself. It is a known
+   limitation, and cannot be fixed in the driver until and unless the browser
+   allows it.
+ * Added wait for navigation to IE accept and dismiss alert commands. When
+   accepting or dismissing an alert, particularly when it is raised during
+   the onload event, it is possible for the driver to not recognize that
+   navigation is still pending once the alert is handled. This change is an
+   attempt at better allowing the driver to recognize this situation and act
+   accordingly.
+
 v3.13.0.1
 =========
  * Updated to automatically dismiss onBeforeUnload event dialogs. This is a
