@@ -92,6 +92,7 @@ namespace OpenQA.Selenium
         //------------------------------------------------------------------
         [Test]
         [IgnoreBrowser(Browser.Edge, "Frame switching causes browser hang")]
+        [IgnoreBrowser(Browser.Safari, "Attempting to upload with transparent element hangs Safari browser.")]
         public void ShouldAllowFileUploadingUsingTransparentUploadElement()
         {
             if (TestUtilities.IsMarionette(driver))
