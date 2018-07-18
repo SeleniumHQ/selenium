@@ -162,7 +162,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
     Class target = getClss(type);
 
     try {
-      @SuppressWarnings("unchecked") Constructor<?> constructor = target.getConstructor();
+      @SuppressWarnings("unchecked") Constructor<?> constructor = target.getDeclaredConstructor();
       constructor.setAccessible(true);
       return constructor;
     } catch (ReflectiveOperationException e) {
