@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.IE
@@ -172,7 +173,7 @@ namespace OpenQA.Selenium.IE
         {
             // Flatten the dictionary, if required to support old versions of the IE driver.
             Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
-            DesiredCapabilities capabilitiesObject = legacyCapabilities as DesiredCapabilities;
+            IHasCapabilitiesDictionary capabilitiesObject = legacyCapabilities as IHasCapabilitiesDictionary;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
                 if (entry.Key == InternetExplorerOptions.Capability)
