@@ -6,7 +6,7 @@ namespace OpenQA.Selenium.Safari
     public class SafariTechnologyPreviewDriver : SafariDriver
     {
         public SafariTechnologyPreviewDriver()
-            : this(DefaultService, new SafariOptions())
+            : this(DefaultService, DefaultOptions)
         {
         }
 
@@ -18,6 +18,11 @@ namespace OpenQA.Selenium.Safari
         public static SafariDriverService DefaultService
         {
             get { return SafariDriverService.CreateDefaultService("/Applications/Safari Technology Preview.app/Contents/MacOS"); }
+        }
+
+        public static SafariOptions DefaultOptions
+        {
+            get { return new SafariOptions() { IsTechnologyPreview = true }; }
         }
     }
 }
