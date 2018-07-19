@@ -17,6 +17,8 @@
 
 package org.openqa.grid.internal.utils;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.ImmutableCapabilities;
@@ -111,7 +113,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   class FirefoxSpecificValidator implements Validator {
     @Override
     public Boolean apply(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
-      if (! "firefox".equals(requestedCapabilities.get(CapabilityType.BROWSER_NAME))) {
+      if (! "firefox".equals(requestedCapabilities.get(BROWSER_NAME))) {
         return true;
       }
       if (requestedCapabilities.get("marionette") != null
@@ -128,17 +130,17 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   class SafariSpecificValidator implements Validator {
     @Override
     public Boolean apply(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
-      if (! "safari".equals(requestedCapabilities.get(CapabilityType.BROWSER_NAME))) {
+      if (!"safari".equals(requestedCapabilities.get(BROWSER_NAME)) &&
+          !"Safari Technology Preview".equals(requestedCapabilities.get(BROWSER_NAME))) {
         return true;
       }
+
+      SafariOptions providedOptions = new SafariOptions(new ImmutableCapabilities(providedCapabilities));
       SafariOptions requestedOptions = new SafariOptions(new ImmutableCapabilities(requestedCapabilities));
-      if (requestedOptions.getUseTechnologyPreview()) {
-        return providedCapabilities.get("technologyPreview") != null
-               && Boolean.valueOf(providedCapabilities.get("technologyPreview").toString());
-      } else {
-        return providedCapabilities.get("technologyPreview") == null
-               || !Boolean.valueOf(providedCapabilities.get("technologyPreview").toString());
-      }
+
+      return requestedOptions.getAutomaticInspection() == providedOptions.getAutomaticInspection() &&
+             requestedOptions.getAutomaticProfiling() == providedOptions.getAutomaticProfiling() &&
+             requestedOptions.getUseTechnologyPreview() == providedOptions.getUseTechnologyPreview();
     }
   }
 
@@ -146,12 +148,11 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
   {
     validators.addAll(Arrays.asList(
         new PlatformValidator(),
-        new AliasedPropertyValidator(CapabilityType.BROWSER_NAME, "browser"),
+        new AliasedPropertyValidator(BROWSER_NAME, "browser"),
         new AliasedPropertyValidator(CapabilityType.BROWSER_VERSION, CapabilityType.VERSION),
         new SimplePropertyValidator(CapabilityType.APPLICATION_NAME),
         new FirefoxSpecificValidator(),
-        new SafariSpecificValidator()
-    ));
+        new SafariSpecificValidator()));
   }
 
   public void addToConsider(String capabilityName) {
