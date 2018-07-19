@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,18 +58,18 @@ public class SafariOptionsTest {
     options = new SafariOptions(new ImmutableCapabilities(SafariOptions.CAPABILITY, embeddedOptions));
     assertFalse(options.getUseTechnologyPreview());
 
-    options = new SafariOptions(new ImmutableCapabilities("se:safari:techPreview", true));
+    options = new SafariOptions(new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "Safari Technology Preview"));
     assertTrue(options.getUseTechnologyPreview());
 
-    options = new SafariOptions(new ImmutableCapabilities("se:safari:techPreview", false));
+    options = new SafariOptions(new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "safari"));
     assertFalse(options.getUseTechnologyPreview());
   }
 
   @Test
   public void newerStyleCapabilityWinsOverOlderStyle() {
     SafariOptions options = new SafariOptions(new ImmutableCapabilities(
-        SafariOptions.CAPABILITY, ImmutableMap.of("technologyPreview", false),
-        "se:safari:techPreview", true));
+        CapabilityType.BROWSER_NAME, "Safari Technology Preview",
+        SafariOptions.CAPABILITY, ImmutableMap.of("technologyPreview", false)));
 
     assertTrue(options.getUseTechnologyPreview());
   }
