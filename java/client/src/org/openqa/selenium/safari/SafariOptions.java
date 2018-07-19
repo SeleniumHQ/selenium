@@ -49,6 +49,8 @@ import java.util.TreeMap;
  */
 public class SafariOptions extends MutableCapabilities {
 
+  private static final String SAFARI_TECH_PREVIEW = "Safari Technology Preview";
+
   /**
    * Key used to store SafariOptions in a {@link Capabilities} object.
    * @deprecated No replacement. Use the methods on this class
@@ -63,9 +65,6 @@ public class SafariOptions extends MutableCapabilities {
     // Defined by Apple
     String AUTOMATIC_INSPECTION  = "safari:automaticInspection";
     String AUTOMATIC_PROFILING = "safari:automaticProfiling";
-
-    // Defined by us
-    String TECH_PREVIEW = "se:safari:techPreview";
   }
 
   private Map<String, Object> options = new TreeMap<>();
@@ -155,14 +154,13 @@ public class SafariOptions extends MutableCapabilities {
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     options.put(Option.TECHNOLOGY_PREVIEW, useTechnologyPreview);
     // Use an object here, rather than a boolean to avoid a stack overflow
-    super.setCapability(Option.TECH_PREVIEW, Boolean.valueOf(useTechnologyPreview));
-    super.setCapability(BROWSER_NAME, useTechnologyPreview ? "Safari Technology Preview" : "safari");
+    super.setCapability(BROWSER_NAME, useTechnologyPreview ? SAFARI_TECH_PREVIEW : "safari");
     return this;
   }
 
   @Override
   public void setCapability(String key, Object value) {
-    if (Option.TECHNOLOGY_PREVIEW.equals(key) || Option.TECH_PREVIEW.equals(key)) {
+    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
       setUseTechnologyPreview(Boolean.valueOf(value.toString()));
     } else {
       super.setCapability(key, value);
@@ -171,7 +169,7 @@ public class SafariOptions extends MutableCapabilities {
 
   @Override
   public void setCapability(String key, boolean value) {
-    if (Option.TECHNOLOGY_PREVIEW.equals(key) || Option.TECH_PREVIEW.equals(key)) {
+    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
       setUseTechnologyPreview(value);
     } else {
       super.setCapability(key, value);
@@ -194,7 +192,8 @@ public class SafariOptions extends MutableCapabilities {
   }
 
   public boolean getUseTechnologyPreview() {
-    return is(Option.TECH_PREVIEW)|| options.get(Option.TECHNOLOGY_PREVIEW) == Boolean.TRUE;
+    return SAFARI_TECH_PREVIEW.equals(getBrowserName()) ||
+           options.get(Option.TECHNOLOGY_PREVIEW) == Boolean.TRUE;
   }
 
   // (De)serialization of the options
