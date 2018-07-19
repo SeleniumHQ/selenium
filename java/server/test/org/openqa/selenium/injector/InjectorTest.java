@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.injector;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -137,4 +138,21 @@ public class InjectorTest {
     }
   }
 
+  @Test
+  public void shouldUseSubClassesForConstructorArgs() {
+    Injector injector = Injector.builder().register("cheese").build();
+
+    SuperTypeConstructor instance = injector.newInstance(SuperTypeConstructor.class);
+
+    assertEquals("cheese", instance.thing);
+  }
+
+  public static class SuperTypeConstructor {
+
+    private final Object thing;
+
+    public SuperTypeConstructor(Object thing) {
+      this.thing = thing;
+    }
+  }
 }
