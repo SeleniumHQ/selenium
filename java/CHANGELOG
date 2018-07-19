@@ -1,3 +1,23 @@
+v3.14.0
+=======
+
+* The browser name of the Safari Tech Preview is not "safari" but
+  "Safari Technology Preview". Who knew?
+* Deprecated our own `Clock` interface for `java.time.Clock`
+* Completely removed the GSON dependency. We now use reflection to try
+  and find the class.
+* Tiny clean up to try and make Grid a little more performant.
+* Added new capabilities for safari driver: automaticInspection and
+  automaticProfiling (#6095) This commit is from the "Fix a Bug,
+  Become a Committer" workshop held at SeConf India.
+* Removed support for geckodriver 0.13. It is time.
+* Adding High Sierra to the platform set. Fixes #5969
+* Enriching Hub Status to include Node info (#6127)
+* Fixing potential Zip Slip Vulnerability, see
+  https://snyk.io/research/zip-slip-vulnerability
+* Allow temporary installation of FF extension (#1) (#5751)
+* Fix windowSize option in Firefox in Javascript (#6075)
+
 v3.13.0
 =======
 
