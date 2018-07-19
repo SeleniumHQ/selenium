@@ -20,7 +20,6 @@ package org.openqa.selenium.json;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonElement;
 
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.remote.SessionId;
@@ -47,6 +46,20 @@ import java.util.stream.Stream;
 public class JsonOutput implements Closeable {
   private static final Logger LOG = Logger.getLogger(JsonOutput.class.getName());
   private static final int MAX_DEPTH = 5;
+
+  private static final Predicate<Class<?>> GSON_ELEMENT;
+  static {
+    Predicate<Class<?>> gsonElement;
+    try {
+      Class<?> elementClass = Class.forName("com.google.gson.JsonElement");
+
+      gsonElement = elementClass::isAssignableFrom;
+    } catch (ReflectiveOperationException e) {
+      gsonElement = clazz -> false;
+    }
+
+    GSON_ELEMENT = gsonElement;
+  }
 
   // https://www.json.org has some helpful comments on characters to escape
   // See also https://tools.ietf.org/html/rfc8259#section-7 and
@@ -124,7 +137,7 @@ public class JsonOutput implements Closeable {
               endObject();
             })
         .put(
-            JsonElement.class::isAssignableFrom,
+            GSON_ELEMENT,
             (obj, depth) -> {
               LOG.log(
                   Level.WARNING,
