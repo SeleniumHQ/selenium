@@ -92,6 +92,7 @@ public class InternetExplorerOptions extends MutableCapabilities {
       .add(REQUIRE_WINDOW_FOCUS)
       .add(UPLOAD_DIALOG_TIMEOUT)
       .add(VALIDATE_COOKIE_DOCUMENT_TYPE)
+      .add(NATIVE_EVENTS)
       .build();
 
   private Map<String, Object> ieOptions = new HashMap<>();
@@ -207,8 +208,13 @@ public class InternetExplorerOptions extends MutableCapabilities {
     return amend(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
   }
 
+  @Deprecated
   public InternetExplorerOptions enableNativeEvents() {
     return amend(NATIVE_EVENTS, true);
+  }
+
+  public InternetExplorerOptions disableNativeEvents() {
+    return  amend(NATIVE_EVENTS, false);
   }
 
   public InternetExplorerOptions ignoreZoomSettings() {
