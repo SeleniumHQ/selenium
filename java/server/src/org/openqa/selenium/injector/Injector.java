@@ -109,7 +109,7 @@ public class Injector {
 
   private Object findArg(Class<?> parameterType) {
     Optional<Object> possibleMatch = injectables.stream()
-        .filter(obj -> obj.getClass().isAssignableFrom(parameterType))
+        .filter(obj -> parameterType.isAssignableFrom(obj.getClass()))
         .findFirst();
 
     // Only cache items from this injector.
