@@ -361,6 +361,23 @@ function createServiceFromCapabilities(capabilities) {
 
 
 /**
+ * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
+ * an [IEDriverServer](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver)
+ * server in a child process.
+ */
+class ServiceBuilder extends remote.DriverService.Builder {
+  /**
+   * @param {string=} opt_exe Path to the server executable to use. If omitted,
+   *     the builder will attempt to locate the IEDriverServer on the system PATH.
+   */
+  constructor(opt_exe) {
+    super(opt_exe || IEDRIVER_EXE);
+    this.setLoopback(true);  // Required.
+  }
+}
+
+
+/**
  * A WebDriver client for Microsoft's Internet Explorer.
  */
 class Driver extends webdriver.WebDriver {
@@ -368,12 +385,21 @@ class Driver extends webdriver.WebDriver {
    * Creates a new session for Microsoft's Internet Explorer.
    *
    * @param {(Capabilities|Options)=} options The configuration options.
+   * @param {(remote.DriverService)=} opt_service The `DriverService` to use
+   *   to start the IEDriverServer in a child process, optionally.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(options) {
+  static createSession(options, opt_service) {
     options = options || new Options();
 
-    let service = createServiceFromCapabilities(options);
+    let service;
+
+    if (opt_service instanceof remote.DriverService) {
+      service = opt_service;
+    } else {
+      service = createServiceFromCapabilities(options);
+    }
+
     let client = service.start().then(url => new http.HttpClient(url));
     let executor = new http.Executor(client);
 
@@ -396,5 +422,6 @@ class Driver extends webdriver.WebDriver {
 exports.Driver = Driver;
 exports.Options = Options;
 exports.Level = Level;
+exports.ServiceBuilder = ServiceBuilder;
 exports.locateSynchronously = locateSynchronously;
 
