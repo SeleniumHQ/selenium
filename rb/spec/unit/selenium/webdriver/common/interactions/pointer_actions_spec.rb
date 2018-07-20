@@ -26,7 +26,7 @@ module Selenium
       let(:builder) { W3CActionBuilder.new(bridge, mouse, keyboard) }
       let(:element) { Element.new(bridge, 'element') }
       let(:element2) { Element.new(bridge, 'element2') }
-      let(:duration) { PointerActions::DEFAULT_MOVE_DURATION }
+      let(:duration) { builder.default_move_duration }
       let(:dimension) { 100 }
 
       it 'should get a pointer by device name' do
