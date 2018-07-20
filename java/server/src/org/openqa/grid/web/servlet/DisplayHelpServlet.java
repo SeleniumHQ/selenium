@@ -96,7 +96,7 @@ public class DisplayHelpServlet extends HttpServlet {
       if (in == null) {
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
       } else {
-        response.setStatus(200);
+        response.setStatus(HttpServletResponse.SC_OK);
         ByteStreams.copy(in, response.getOutputStream());
       }
     } else {
@@ -116,10 +116,14 @@ public class DisplayHelpServlet extends HttpServlet {
           new BufferedReader(new InputStreamReader(in, "UTF-8")).lines().collect(Collectors.joining("\n"));
         final String updatedTemplate =
           htmlTemplate.replace(HELPER_SERVLET_TEMPLATE_CONFIG_JSON_VAR, json);
+        if (resource.equals("/")) {
+          response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+          response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
 
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
-        response.setStatus(200);
         response.getOutputStream().print(updatedTemplate);
       }
     }

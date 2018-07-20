@@ -23,11 +23,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
@@ -77,11 +74,16 @@ public class DisplayHelpServletTest extends BaseServletTest {
     assertTrue(response.getBody().contains("#help-heading #logo"));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testNoSuchAsset() throws IOException, ServletException {
-    // will result in a call to sendError ..
-    // FakeHttpServlet will then turn that into an UnsupportedOperationException
-    sendCommand("GET", "/assets/foo.bar");
+    FakeHttpServletResponse response = sendCommand("GET", "/assets/foo.bar");
+    assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
+  }
+
+  @Test
+  public void testAccessRoot() throws IOException, ServletException {
+    FakeHttpServletResponse response = sendCommand("GET", "/");
+    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
   }
 
 }

@@ -85,7 +85,7 @@ public class FakeHttpServletResponse extends HeaderContainer
   }
 
   public void sendError(int i) {
-    throw new UnsupportedOperationException();
+    setStatus(i);
   }
 
   public void sendRedirect(String s) {
