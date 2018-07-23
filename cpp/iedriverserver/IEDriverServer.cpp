@@ -207,13 +207,26 @@ int _tmain(int argc, _TCHAR* argv[]) {
   if (extraction_path_arg.size() != 0) {
     extraction_path = extraction_path_arg;
   }
-  
-  unsigned int error_code = ::GetTempFileName(extraction_path.c_str(),
-                                              TEMP_FILE_PREFIX,
-                                              0,
-                                              &temp_file_name_buffer[0]);
 
-  std::wstring temp_file_name(&temp_file_name_buffer[0]);
+  if (extraction_path.size() > 0 &&
+      extraction_path[extraction_path.size() - 1] != L'\\') {
+    extraction_path.append(L"\\");
+  }
+
+  std::wstring initial_file = extraction_path + TEMP_FILE_PREFIX + L".tmp";
+  std::wstring temp_file_name = initial_file;
+  WIN32_FIND_DATA find_file_data;
+  HANDLE file_handle = ::FindFirstFile(initial_file.c_str(), &find_file_data);
+  if (file_handle != INVALID_HANDLE_VALUE) {
+    ::CloseHandle(file_handle);
+    unsigned int error_code = ::GetTempFileName(extraction_path.c_str(),
+                                                TEMP_FILE_PREFIX,
+                                                0,
+                                                &temp_file_name_buffer[0]);
+
+    temp_file_name = &temp_file_name_buffer[0];
+  }
+
   if (!ExtractResource(IDR_DRIVER_LIBRARY, temp_file_name)) {
     std::wcout << L"Failed to extract the library to temp directory: "
                << temp_file_name;
