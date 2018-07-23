@@ -352,6 +352,7 @@
     <ClInclude Include="messages.h" />
     <ClInclude Include="ProxyManager.h" />
     <ClInclude Include="RegistryUtilities.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Script.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringUtilities.h" />
@@ -367,6 +368,9 @@
     <ProjectReference Include="..\webdriver-server\webdriver-server.vcxproj">
       <Project>{d1b7e5b4-2caf-4c55-89e0-2634038c8472}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="IEDriver.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
