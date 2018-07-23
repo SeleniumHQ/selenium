@@ -9,6 +9,15 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.13.0.3
+=========
+ * Fixed crashing bug in obscured element detection.
+ * Modified to extract IE internal library to IEDriver.tmp first.
+   If the file IEDriver.tmp exists in the destination directory, then use
+   the result of the `GetTempFileName` API, which results in a file named
+   "IEDxxxxx.tmp" where "xxxxx" is a random number.
+ * Added version resources to internal IE driver library.
+
 v3.13.0.2
 =========
  * Modified to prevent keyup actions if key is not already down for IE.

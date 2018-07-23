@@ -262,7 +262,7 @@ bool Element::IsObscured(LocationInfo* click_location,
       hr = this->element_->QueryInterface<IHTMLDOMNode>(&node);
       if (SUCCEEDED(hr) && node) {
         CComPtr<IHTMLCSSStyleDeclaration> computed_style;
-        hr = window7->getComputedStyle(node, L"", &computed_style);
+        hr = window7->getComputedStyle(node, NULL, &computed_style);
         if (SUCCEEDED(hr) && computed_style) {
           CComBSTR pointer_events_value = L"";
           hr = computed_style->get_pointerEvents(&pointer_events_value);
