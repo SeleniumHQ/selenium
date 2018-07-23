@@ -180,7 +180,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   public List<WebElement> findElements(By by) {
     dispatcher.beforeFindBy(by, null, driver);
     List<WebElement> temp = driver.findElements(by);
-    dispatcher.afterFindBy(by, null, driver);
+    dispatcher.afterFindBy(by, temp, driver);
     List<WebElement> result = new ArrayList<>(temp.size());
     for (WebElement element : temp) {
       result.add(createWebElement(element));
@@ -192,7 +192,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   public WebElement findElement(By by) {
     dispatcher.beforeFindBy(by, null, driver);
     WebElement temp = driver.findElement(by);
-    dispatcher.afterFindBy(by, null, driver);
+    dispatcher.afterFindBy(by, temp, driver);
     return createWebElement(temp);
   }
 
