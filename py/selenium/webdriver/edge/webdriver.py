@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import warnings
 
 from selenium.webdriver.common import utils
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -25,12 +26,16 @@ from .service import Service
 class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path='MicrosoftWebDriver.exe',
-                 capabilities=None, port=0, verbose=False, log_path=None):
+                 capabilities=None, port=0, verbose=False, service_log_path=None, log_path=None):
+        if log_path:
+            warnings.warn('use service_log_path instead of log_path', DeprecationWarning)
+            service_log_path = log_path
+
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
 
-        self.edge_service = Service(executable_path, port=self.port, verbose=verbose, log_path=log_path)
+        self.edge_service = Service(executable_path, port=self.port, verbose=verbose, log_path=service_log_path)
         self.edge_service.start()
 
         if capabilities is None:
