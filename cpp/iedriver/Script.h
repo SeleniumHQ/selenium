@@ -22,6 +22,9 @@
 
 #include "CustomTypes.h"
 
+#define ANONYMOUS_FUNCTION_START L"(function() { "
+#define ANONYMOUS_FUNCTION_END L" })();"
+
 // Forward declaration of classes.
 namespace Json {
   class Value;

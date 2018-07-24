@@ -16,6 +16,7 @@
 
 #include "SetWindowRectCommandHandler.h"
 #include "errorcodes.h"
+#include "json.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
 
@@ -37,24 +38,70 @@ void SetWindowRectCommandHandler::ExecuteInternal(
   int y = -1;
 
   std::string argument_error_message = "";
-  if (!GetNumericParameter(command_parameters, "width", &width, &argument_error_message)) {
-    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, argument_error_message);
-    return;
+  Json::Value width_parameter;
+  bool is_width_defined = this->IsParameterDefined(command_parameters,
+                                                   "width",
+                                                   &width_parameter);
+
+  if (is_width_defined) {
+    if (!this->GetNumericParameter("width",
+                                   true,
+                                   width_parameter,
+                                   &width,
+                                   &argument_error_message)) {
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                 argument_error_message);
+      return;
+    }
   }
 
-  if (!GetNumericParameter(command_parameters, "height", &height, &argument_error_message)) {
-    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, argument_error_message);
-    return;
+  Json::Value height_parameter;
+  bool is_height_defined = this->IsParameterDefined(command_parameters,
+                                                    "height",
+                                                    &height_parameter);
+  if (is_height_defined) {
+    if (!this->GetNumericParameter("height",
+                                   true,
+                                   height_parameter,
+                                   &height,
+                                   &argument_error_message)) {
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                 argument_error_message);
+      return;
+    }
   }
 
-  if (!GetNumericParameter(command_parameters, "x", &x, &argument_error_message)) {
-    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, argument_error_message);
-    return;
+  Json::Value x_parameter;
+  bool is_x_defined = this->IsParameterDefined(command_parameters,
+                                               "x",
+                                               &x_parameter);
+  if (is_x_defined) {
+    if (!this->GetNumericParameter("x",
+                                   false,
+                                   x_parameter,
+                                   &x,
+                                   &argument_error_message)) {
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                 argument_error_message);
+      return;
+    }
   }
 
-  if (!GetNumericParameter(command_parameters, "y", &y, &argument_error_message)) {
-    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, argument_error_message);
-    return;
+  Json::Value y_parameter;
+  bool is_y_defined = this->IsParameterDefined(command_parameters,
+                                               "y",
+                                               &y_parameter);
+
+  if (is_y_defined) {
+    if (!GetNumericParameter("y",
+                             false,
+                             y_parameter,
+                             &y,
+                             &argument_error_message)) {
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                 argument_error_message);
+      return;
+    }
   }
 
   int status_code = WD_SUCCESS;
@@ -62,7 +109,8 @@ void SetWindowRectCommandHandler::ExecuteInternal(
   BrowserHandle browser_wrapper;
   status_code = executor.GetCurrentBrowser(&browser_wrapper);
   if (status_code != WD_SUCCESS) {
-    response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Error retrieving current window");
+    response->SetErrorResponse(ERROR_NO_SUCH_WINDOW,
+                               "Error retrieving current window");
     return;
   }
 
@@ -73,16 +121,22 @@ void SetWindowRectCommandHandler::ExecuteInternal(
   HWND window_handle = browser_wrapper->GetTopLevelWindowHandle();
   RECT current_window_rect;
   ::GetWindowRect(window_handle, &current_window_rect);
-  if (x < 0 || y < 0) {
+  if (!is_x_defined || !is_y_defined) {
     x = current_window_rect.left;
     y = current_window_rect.top;
   }
-  if (height < 0 || width < 0) {
+  if (!is_height_defined || !is_width_defined) {
     height = current_window_rect.bottom - current_window_rect.top;
     width = current_window_rect.right - current_window_rect.left;
   }
 
-  BOOL set_window_pos_result = ::SetWindowPos(window_handle, NULL, x, y, width, height, 0);
+  BOOL set_window_pos_result = ::SetWindowPos(window_handle,
+                                              NULL,
+                                              x,
+                                              y,
+                                              width,
+                                              height,
+                                              0);
   if (!set_window_pos_result) {
     response->SetErrorResponse(ERROR_UNKNOWN_ERROR,
                               "Unexpected error setting window size (SetWindowPos API failed)");
@@ -101,28 +155,49 @@ void SetWindowRectCommandHandler::ExecuteInternal(
 }
 
 bool SetWindowRectCommandHandler::GetNumericParameter(
-    const ParametersMap& command_parameters,
     const std::string& argument_name,
+    const bool is_positive_required,
+    const Json::Value& parameter_value,
     int* argument_value,
     std::string* error_message) {
-  ParametersMap::const_iterator parameter_iterator = command_parameters.find(argument_name);
-  if (parameter_iterator != command_parameters.end()) {
-    if (parameter_iterator->second.isNull()) {
-      return true;
-    }
-    if (!parameter_iterator->second.isNumeric()) {
-      *error_message = argument_name + " must be a numeric parameter.";
-      return false;
-    }
-    int value = parameter_iterator->second.asInt();
-    if (value < 0) {
-      *error_message = argument_name + " must be a numeric parameter greater than zero.";
-      return false;
-    }
-
-    *argument_value = value;
-    return true;
+  int max_value = MAXINT;
+  std::string max_value_description = "2^31 - 1";
+  int min_value = MININT;
+  std::string min_value_description = "-2^31";
+  if (is_positive_required) {
+    min_value = 0;
+    min_value_description = "zero";
   }
+  if (!parameter_value.isNumeric()) {
+    *error_message = argument_name + " must be a numeric parameter.";
+    return false;
+  }
+  int value = parameter_value.asInt();
+  if (value < min_value) {
+    *error_message = argument_name + " must be a numeric parameter greater than " + min_value_description;
+    return false;
+  }
+  if (value > max_value) {
+    *error_message = argument_name + " must be a numeric parameter less than " + max_value_description;
+    return false;
+  }
+
+  *argument_value = value;
+  return true;
+}
+
+bool SetWindowRectCommandHandler::IsParameterDefined(
+    const ParametersMap& command_parameters,
+    const std::string& parameter_name,
+    Json::Value* parameter_value) {
+  ParametersMap::const_iterator parameter_iterator = command_parameters.find(parameter_name);
+  if (parameter_iterator == command_parameters.end()) {
+    return false;
+  }
+  if (parameter_iterator->second.isNull()) {
+    return false;
+  }
+  *parameter_value = parameter_iterator->second;
   return true;
 }
 
