@@ -55,7 +55,7 @@ public class DefaultProxyHtmlRenderer implements HtmlRenderer {
 
     builder.append("<p class='proxyid'>id : ");
     builder.append(proxy.getId());
-    builder.append(", OS : " + platform + "</p>");
+    builder.append(", OS : ").append(platform).append("</p>");
 
     builder.append(nodeTabs());
 
@@ -129,7 +129,7 @@ public class DefaultProxyHtmlRenderer implements HtmlRenderer {
       String version = cap.getVersion();
       builder.append("<p>");
       if (version != null) {
-        builder.append("v:" + version);
+        builder.append("v:").append(version);
       }
       for (TestSlot s : lines.getLine(cap)) {
         builder.append(getSingleSlotHtml(s, icon));
@@ -188,11 +188,10 @@ public class DefaultProxyHtmlRenderer implements HtmlRenderer {
    * @return Either the platform name, "Unknown", "mixed OS", or "not specified".
    */
   public static String getPlatform(RemoteProxy proxy) {
-    Platform res = null;
     if (proxy.getTestSlots().size() == 0) {
       return "Unknown";
     }
-    res = getPlatform(proxy.getTestSlots().get(0));
+    Platform res = getPlatform(proxy.getTestSlots().get(0));
 
     for (TestSlot slot : proxy.getTestSlots()) {
       Platform tmp = getPlatform(slot);

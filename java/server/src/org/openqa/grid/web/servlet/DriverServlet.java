@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -60,19 +59,19 @@ public class DriverServlet extends RegistryBasedServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
@@ -97,8 +96,10 @@ public class DriverServlet extends RegistryBasedServlet {
         Map<String, Object> resp = new TreeMap<>();
 
         // https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#error-handling
-        final ExternalSessionKey serverSession = req.getServerSession();
-        resp.put("sessionId", serverSession != null ? serverSession.getKey() : null);
+        if (req != null) {
+          final ExternalSessionKey serverSession = req.getServerSession();
+          resp.put("sessionId", serverSession != null ? serverSession.getKey() : null);
+        }
         resp.put("status", ErrorCodes.UNHANDLED_ERROR);
         Map<String, Object> value = new TreeMap<>();
         value.put("message", e.getMessage());

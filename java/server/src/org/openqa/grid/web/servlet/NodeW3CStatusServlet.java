@@ -30,7 +30,6 @@ import org.openqa.selenium.json.Json;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +39,7 @@ public class NodeW3CStatusServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+      throws IOException {
 
     ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
 

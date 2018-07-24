@@ -122,7 +122,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
     Object servlets = json.get("servlets");
     // V3 beta versions send a V2 RegistrationRequest which specifies servlets as a List<String>
     // When this is the case, we don't need to remove it for parsing.
-    if (servlets != null && servlets instanceof String) {
+    if (servlets instanceof String) {
       json.remove("servlets");
     }
 
@@ -135,7 +135,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
         GridNodeConfiguration.loadFromJSON(JSON.toJson(json));
 
     // add the servlets that were saved off
-    if (servlets != null && servlets instanceof String &&
+    if (servlets instanceof String &&
         (pendingConfiguration.servlets == null || pendingConfiguration.servlets.isEmpty())) {
       pendingConfiguration.servlets = Lists.newArrayList(servlets.toString().split(","));
     }
