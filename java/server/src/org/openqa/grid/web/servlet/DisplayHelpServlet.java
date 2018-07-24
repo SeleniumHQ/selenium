@@ -143,6 +143,9 @@ public class DisplayHelpServlet extends HttpServlet {
 
   private String getHelperType() {
     GridRole role = GridRole.get(getInitParameter(HELPER_TYPE_PARAMETER, "standalone"));
+    if (role == null) {
+      role = GridRole.NOT_GRID;
+    }
     String type = "Standalone";
     switch (role) {
       case HUB: {

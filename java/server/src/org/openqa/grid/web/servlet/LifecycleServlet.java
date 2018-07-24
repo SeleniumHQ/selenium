@@ -21,7 +21,6 @@ import org.openqa.grid.common.exception.GridException;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +32,7 @@ public class LifecycleServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     process(request, response);
   }
 
@@ -44,15 +43,13 @@ public class LifecycleServlet extends HttpServlet {
     response.setStatus(200);
     String action = request.getParameter("action");
     if ("shutdown".equals(action)) {
-      Runnable initiateShutDown = new Runnable() {
-        public void run() {
-          try {
-            Thread.sleep(500);
-          } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-          }
-          System.exit(0);
+      Runnable initiateShutDown = () -> {
+        try {
+          Thread.sleep(500);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
         }
+        System.exit(0);
       };
       Thread isd = new Thread(initiateShutDown);
       isd.setName("initiateShutDown");
