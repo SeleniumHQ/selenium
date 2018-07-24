@@ -192,7 +192,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   public WebElement findElement(By by) {
     dispatcher.beforeFindBy(by, null, driver);
     WebElement temp = driver.findElement(by);
-    dispatcher.afterFindBy(by, null, driver);
+    dispatcher.afterFindBy(by, temp, driver);
     return createWebElement(temp);
   }
 
