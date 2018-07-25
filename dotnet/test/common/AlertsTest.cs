@@ -7,7 +7,6 @@ using OpenQA.Selenium.Remote;
 namespace OpenQA.Selenium
 {
     [TestFixture]
-    [IgnoreBrowser(Browser.Edge)]
     public class AlertsTest : DriverTestFixture
     {
         [Test]
@@ -21,6 +20,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Issue getting alert text in Edge driver")]
         public void ShouldAllowUsersToAcceptAnAlertManually()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -52,6 +52,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Issue getting alert text in Edge driver")]
         public void ShouldAllowUsersToAcceptAnAlertWithNoTextManually()
         {
             driver.Url = CreateAlertPage("");
@@ -68,6 +69,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         [IgnoreBrowser(Browser.Chrome, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
+        [IgnoreBrowser(Browser.Edge, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         public void ShouldGetTextOfAlertOpenedInSetTimeout()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -94,6 +96,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Issue getting alert text in Edge driver")]
         public void ShouldAllowUsersToDismissAnAlertManually()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -108,6 +111,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Driver does not properly handle prompt() dialogs.")]
         public void ShouldAllowAUserToAcceptAPrompt()
         {
             driver.Url = CreatePromptPage(null);
@@ -122,6 +126,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Driver does not properly handle prompt() dialogs.")]
         public void ShouldAllowAUserToDismissAPrompt()
         {
             driver.Url = CreatePromptPage(null);
@@ -136,6 +141,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Driver does not properly handle prompt() dialogs.")]
         public void ShouldAllowAUserToSetTheValueOfAPrompt()
         {
             driver.Url = CreatePromptPage(null);
@@ -152,6 +158,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not throw when setting the text of an alert")]
+        [IgnoreBrowser(Browser.Edge, "Setting value of alert hangs Edge.")]
         public void SettingTheValueOfAnAlertThrows()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -174,6 +181,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Driver does not properly get text of alert.")]
         public void ShouldAllowTheUserToGetTheTextOfAnAlert()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -188,6 +196,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Driver does not properly handle prompt() dialogs.")]
         public void ShouldAllowTheUserToGetTheTextOfAPrompt()
         {
             driver.Url = CreatePromptPage(null);
@@ -300,6 +309,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Driver does not properly handle prompt() dialogs.")]
         public void PromptShouldUseDefaultValueIfNoKeysSent()
         {
             driver.Url = CreatePromptPage("This is a default value");
@@ -327,8 +337,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Hangs browser")]
         [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.Edge, "Driver does not properly handle prompt() dialogs.")]
         public void HandlesTwoAlertsFromOneInteraction()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -372,8 +382,6 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
                 .WithBody(string.Format("<a id='open-page-with-onload-alert' href='{0}'>open new page</a>", pageWithOnLoad)));
 
-            driver.Url = alertsPage;
-
             driver.FindElement(By.Id("open-page-with-onload-alert")).Click();
 
             IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
@@ -387,6 +395,7 @@ namespace OpenQA.Selenium
 
         [Test]
 
+        [IgnoreBrowser(Browser.Edge, "Alert during onload hangs browser when page loaded via direct navigation.")]
         public void ShouldHandleAlertOnPageLoadUsingGet()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -475,6 +484,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not implicitly handle onBeforeUnload alert")]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
+        [IgnoreBrowser(Browser.Edge, "Edge driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
         public void ShouldImplicitlyHandleAlertOnPageBeforeUnload()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage().WithTitle("Success"));
@@ -583,6 +593,7 @@ namespace OpenQA.Selenium
         //------------------------------------------------------------------
         [Test]
         [IgnoreBrowser(Browser.Safari, "onBeforeUnload dialogs hang Safari")]
+        [IgnoreBrowser(Browser.Edge, "onBeforeUnload dialogs hang Edge")]
         public void ShouldHandleAlertOnPageBeforeUnload()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
