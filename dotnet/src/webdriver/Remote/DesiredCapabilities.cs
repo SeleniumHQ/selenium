@@ -229,6 +229,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="capability">The capability to get.</param>
         /// <returns>Returns <see langword="true"/> if the browser has the capability; otherwise, <see langword="false"/>.</returns>
+        [Obsolete("Use of DesiredCapabilities has been deprecated in favor of browser-specific Options classes")]
         public bool HasCapability(string capability)
         {
             return this.capabilities.ContainsKey(capability);
@@ -240,6 +241,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="capability">The capability to get.</param>
         /// <returns>An object associated with the capability, or <see langword="null"/>
         /// if the capability is not set on the browser.</returns>
+        [Obsolete("Use of DesiredCapabilities has been deprecated in favor of browser-specific Options classes")]
         public object GetCapability(string capability)
         {
             object capabilityValue = null;
@@ -261,6 +263,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="capability">The capability to get.</param>
         /// <param name="capabilityValue">The value for the capability.</param>
+        [Obsolete("Use of DesiredCapabilities has been deprecated in favor of browser-specific Options classes")]
         public void SetCapability(string capability, object capabilityValue)
         {
             // Handle the special case of Platform objects. These should
@@ -275,16 +278,6 @@ namespace OpenQA.Selenium.Remote
             {
                 this.capabilities[capability] = capabilityValue;
             }
-        }
-
-        /// <summary>
-        /// Returns a read-only version of this capabilities object.
-        /// </summary>
-        /// <returns>A read-only version of this capabilities object.</returns>
-        internal ReadOnlyDesiredCapabilities AsReadOnly()
-        {
-            ReadOnlyDesiredCapabilities readOnlyCapabilities = new ReadOnlyDesiredCapabilities(this);
-            return readOnlyCapabilities;
         }
 
         /// <summary>
@@ -343,6 +336,16 @@ namespace OpenQA.Selenium.Remote
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Returns a read-only version of this capabilities object.
+        /// </summary>
+        /// <returns>A read-only version of this capabilities object.</returns>
+        internal ReadOnlyDesiredCapabilities AsReadOnly()
+        {
+            ReadOnlyDesiredCapabilities readOnlyCapabilities = new ReadOnlyDesiredCapabilities(this);
+            return readOnlyCapabilities;
         }
     }
 }
