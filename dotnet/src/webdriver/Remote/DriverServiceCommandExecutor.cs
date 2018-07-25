@@ -23,7 +23,7 @@ namespace OpenQA.Selenium.Remote
     /// <summary>
     /// Provides a mechanism to execute commands on the browser
     /// </summary>
-    internal class DriverServiceCommandExecutor : ICommandExecutor
+    public class DriverServiceCommandExecutor : ICommandExecutor
     {
         private DriverService service;
         private HttpCommandExecutor internalExecutor;
@@ -58,6 +58,15 @@ namespace OpenQA.Selenium.Remote
         public CommandInfoRepository CommandInfoRepository
         {
             get { return this.internalExecutor.CommandInfoRepository; }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="HttpCommandExecutor"/> that sends commands to the remote
+        /// end WebDriver implementation.
+        /// </summary>
+        public HttpCommandExecutor HttpExecutor
+        {
+            get { return this.internalExecutor; }
         }
 
         /// <summary>
