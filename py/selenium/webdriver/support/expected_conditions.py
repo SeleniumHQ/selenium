@@ -265,8 +265,8 @@ class invisibility_of_element_located(object):
     def __call__(self, driver):
         try:
             target = self.target
-            if not isinstance(self.locator, WebElement):
-                target = _find_element(driver, self.locator)
+            if not isinstance(target, WebElement):
+                target = _find_element(driver, target)
             return _element_if_visible(target, False)
         except (NoSuchElementException, StaleElementReferenceException):
             # In the case of NoSuchElement, returns true because the element is
