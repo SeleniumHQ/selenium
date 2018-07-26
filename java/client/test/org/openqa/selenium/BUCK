@@ -3,6 +3,9 @@ java_test(name = 'small-tests',
   srcs = [
     'SmallTests.java',
   ],
+  labels = [
+    'small',
+  ],
   deps = [
     ':tests',
     '//java/client/test/com/thoughtworks/selenium/webdriven:small-tests',

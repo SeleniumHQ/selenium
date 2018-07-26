@@ -3,6 +3,9 @@ java_test(name = 'small-tests',
   srcs = [
     'SmallTests.java',
   ],
+  labels = [
+    'small',
+  ],
   deps = [
     ':tests',
     '//third_party/java/junit:junit',
