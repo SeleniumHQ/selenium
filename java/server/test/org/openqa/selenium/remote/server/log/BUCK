@@ -1,6 +1,9 @@
 # BUILD FILE SYNTAX: SKYLARK
 java_test(name = 'test',
   srcs = glob(['*.java']),
+  labels = [
+    'small',
+  ],
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',

@@ -3,6 +3,9 @@
 java_test(
     name = "node",
     srcs = glob(["*.java"]),
+    labels = [
+        "small",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/chrome:chrome",

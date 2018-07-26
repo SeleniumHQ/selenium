@@ -7,6 +7,9 @@ java_test(name = 'small-tests',
     '-Dselenium.browser=htmlunit',
     '-Dselenium.browser.remote=true',
   ],
+  labels = [
+    'small',
+  ],
   deps = [
     ':tests',
     '//third_party/java/junit:junit',

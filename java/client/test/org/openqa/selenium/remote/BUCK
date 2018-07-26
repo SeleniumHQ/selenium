@@ -8,6 +8,9 @@ java_test(name = 'common-tests',
     'http/JsonHttpResponseCodecTest.java',
     'http/W3CHttpResponseCodecTest.java',
   ],
+  labels = [
+    'small',
+  ],
   deps = [
    '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
@@ -37,6 +40,9 @@ java_test(name = 'client-tests',
     'internal/HttpClientTestBase.java',
     'internal/OkHttpClientTest.java',
     'internal/WebElementToJsonConverterTest.java',
+  ],
+  labels = [
+    'small',
   ],
   provided_deps = [
     '//third_party/java/servlet:javax.servlet-api',
