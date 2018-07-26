@@ -360,8 +360,11 @@ module Selenium
 
           def send_keys_to_element(element, keys)
             if @file_detector
-              local_file = @file_detector.call(keys)
-              keys = [upload(local_file)] if local_file
+              local_files = keys.first.split("\n").map { |key| @file_detector.call(key) }.compact
+              if local_files.any?
+                keys = local_files.map { |local_file| upload(local_file) }
+                keys = Array(keys.join("\n"))
+              end
             end
 
             # Keep .split(//) for backward compatibility for now
