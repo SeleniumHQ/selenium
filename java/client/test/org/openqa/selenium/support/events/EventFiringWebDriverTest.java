@@ -156,7 +156,7 @@ public class EventFiringWebDriverTest {
     InOrder order = Mockito.inOrder(mockedDriver, mockedElement, listener);
     order.verify(listener).beforeFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
     order.verify(mockedDriver).findElement(By.name("foo"));
-    order.verify(listener).afterFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
+    order.verify(listener).afterFindBy(eq(By.name("foo")), eq(mockedElement), any(WebDriver.class));
     order.verify(listener).beforeClickOn(any(WebElement.class), any(WebDriver.class));
     order.verify(mockedElement).click();
     order.verify(listener).afterClickOn(any(WebElement.class), any(WebDriver.class));
@@ -209,7 +209,7 @@ public class EventFiringWebDriverTest {
 
     verify(mockedDriver, times(2)).findElement(By.name("foo"));
     verify(listener, times(2)).beforeFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
-    verify(listener, times(2)).afterFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
+    verify(listener, times(2)).afterFindBy(eq(By.name("foo")), eq(mockedElement), any(WebDriver.class));
     verifyNoMoreInteractions(mockedDriver, mockedElement, listener);
   }
 
@@ -234,7 +234,7 @@ public class EventFiringWebDriverTest {
     InOrder order = Mockito.inOrder(mockedElement, mockedDriver, listener);
     verify(listener).beforeFindBy(eq(By.id("foo")), eq(null), any(WebDriver.class));
     order.verify(mockedDriver).findElement(By.id("foo"));
-    verify(listener).afterFindBy(eq(By.id("foo")), eq(null), any(WebDriver.class));
+    verify(listener).afterFindBy(eq(By.id("foo")), eq(mockedElement), any(WebDriver.class));
     verify(listener).beforeFindBy(eq(By.linkText("bar")), any(WebElement.class), any(WebDriver.class));
     order.verify(mockedElement).findElement(By.linkText("bar"));
     verify(listener).afterFindBy(eq(By.linkText("bar")), any(WebElement.class), any(WebDriver.class));
@@ -499,7 +499,7 @@ public class EventFiringWebDriverTest {
     InOrder order = Mockito.inOrder(mockedDriver, mockedElement, listener);
     order.verify(listener).beforeFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
     order.verify(mockedDriver).findElement(By.name("foo"));
-    order.verify(listener).afterFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
+    order.verify(listener).afterFindBy(eq(By.name("foo")), eq(mockedElement), any(WebDriver.class));
     order.verify(listener).beforeGetText(any(WebElement.class), any(WebDriver.class));
     order.verify(mockedElement).getText();
     order.verify(listener).afterGetText(any(WebElement.class), any(WebDriver.class), eq(text));
