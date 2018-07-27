@@ -96,6 +96,7 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Edge, "Test conflicts with spec")]
         public void ShouldAllowSendingKeysWithShiftPressed()
         {
             driver.Url = javascriptPage;
@@ -254,6 +255,7 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Edge, "Test conflicts with spec")]
         public void ShouldAllowSendingKeysWithLeftShiftPressed()
         {
             driver.Url = javascriptPage;
