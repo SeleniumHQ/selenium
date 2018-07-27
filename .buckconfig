@@ -18,6 +18,8 @@
 
 [cache]
   mode = dir
+  # This is large enough to contain everything built in //java/...
+  dir_max_size = 1GB
 
 [parser]
   polyglot_parsing_enabled = true
