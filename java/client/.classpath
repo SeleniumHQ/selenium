@@ -39,7 +39,7 @@
 	<classpathentry kind="lib" path="/third-party/java/gson/gson-2.8.4.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.13.1.jar" sourcepath="/third-party/java/testng/testng-6.13.1-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar" sourcepath="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/bytebuddy/byte-buddy-1.8.3.jar" sourcepath="/third-party/java/bytebuddy/byte-buddy-1.8.3-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/bytebuddy/byte-buddy-1.8.15.jar" sourcepath="/third-party/java/bytebuddy/byte-buddy-1.8.15-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/javaparser/javaparser-core-3.5.7.jar" sourcepath="/third-party/java/javaparser/javaparser-core-3.5.7-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/okhttp3/okhttp-3.10.0.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/okio/okio-1.14.1.jar"/>
