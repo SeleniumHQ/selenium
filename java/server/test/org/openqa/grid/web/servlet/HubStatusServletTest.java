@@ -27,12 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.DefaultGridRegistry;
 import org.openqa.grid.internal.GridRegistry;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
-import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
-import org.openqa.grid.web.Hub;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.testing.FakeHttpServletResponse;
@@ -45,13 +40,9 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 
 @RunWith(JUnit4.class)
 public class HubStatusServletTest extends RegistrationAwareServletTest {
-
-  private static final GridRegistry registry = DefaultGridRegistry
-      .newInstance(new Hub(new GridHubConfiguration()));
 
   @Before
   public void setUp() throws Exception {
@@ -90,24 +81,6 @@ public class HubStatusServletTest extends RegistrationAwareServletTest {
     assertEquals("Exactly 1 node info should be present", 1, nodes.size());
     Map<?, ?> node = (Map<?, ?>) nodes.get(0);
     assertEquals("Two keys should be present per node", 2, node.keySet().size());
-  }
-
-  private void wireInNode() throws Exception {
-    final GridNodeConfiguration config = new GridNodeConfiguration();
-    config.id = "http://dummynode:3456";
-    final RegistrationRequest request = RegistrationRequest.build(config);
-    request.getConfiguration().proxy = null;
-    HttpServlet servlet = new RegistrationServlet() {
-      @Override
-      public ServletContext getServletContext() {
-        final ContextHandler.Context servletContext = new ContextHandler().getServletContext();
-        servletContext.setAttribute(GridRegistry.KEY, registry);
-        return servletContext;
-      }
-    };
-    servlet.init();
-    sendCommand(servlet, "POST", "/", request.toJson());
-    waitForServletToAddProxy();
   }
 
   private Map<String, Object> invokeCommand(String method, Map<String, Object> params)

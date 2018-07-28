@@ -25,10 +25,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.openqa.grid.internal.DefaultGridRegistry;
 import org.openqa.grid.internal.GridRegistry;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
-import org.openqa.grid.web.Hub;
+import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
@@ -40,15 +38,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 @RunWith(JUnit4.class)
-public class ConsoleServletTest extends BaseServletTest {
+public class ConsoleServletTest extends RegistrationAwareServletTest {
   @Before
   public void setUp() throws ServletException {
     servlet = new ConsoleServlet() {
       @Override
       public ServletContext getServletContext() {
         final ContextHandler.Context servletContext = new ContextHandler().getServletContext();
-        servletContext.setAttribute(GridRegistry.KEY, DefaultGridRegistry
-            .newInstance(new Hub(new GridHubConfiguration())));
+        servletContext.setAttribute(GridRegistry.KEY, registry);
         return servletContext;
       }
     };
@@ -57,9 +54,19 @@ public class ConsoleServletTest extends BaseServletTest {
 
   @Test
   public void testGetConsoleResponse() throws IOException, ServletException {
+    runTest("<title>Grid Console</title>");
+  }
+
+  @Test
+  public void ensureQuiesceAttributePresentInConsole() throws Exception {
+    wireInNode(DefaultRemoteProxy.class.getCanonicalName());
+    runTest("Quiesced :No");
+  }
+
+  private void runTest(String expected) throws IOException, ServletException {
     FakeHttpServletResponse response = sendCommand("GET", "/");
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     assertNotNull(response.getBody());
-    assertTrue(response.getBody().contains("<title>Grid Console</title>"));
+    assertTrue(response.getBody().contains(expected));
   }
 }

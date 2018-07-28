@@ -25,5 +25,5 @@ import org.openqa.grid.internal.RemoteProxy;
  * RemoteProxy will be shown on the hub console.
  */
 public interface HtmlRenderer {
-  public String renderSummary();
+  String renderSummary();
 }

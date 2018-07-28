@@ -55,7 +55,9 @@ public class DefaultProxyHtmlRenderer implements HtmlRenderer {
 
     builder.append("<p class='proxyid'>id : ");
     builder.append(proxy.getId());
-    builder.append(", OS : ").append(platform).append("</p>");
+    builder.append(", OS : ").append(platform);
+    builder.append(", Quiesced :").append((proxy.isNodeQuiesced() ? "Yes" : "No"));
+    builder.append("</p>");
 
     builder.append(nodeTabs());
 

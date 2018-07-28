@@ -190,6 +190,19 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    */
   boolean isBusy();
 
+  /**
+   * @return - <code>true</code> if the current node has been marked for maintenance. A node that
+   * has been marked for maintenance will no longer honour any more new test session requests
+   */
+  default boolean isNodeQuiesced() {
+    return false;
+  }
+
+  /**
+   * Causes a node to no longer accept any more new sessions and thus enables a node to be
+   * brought down for maintenance.
+   */
+  default void quiesceNode() {}
 
   /**
    * Return how much resources are currently used on the proxy. Default implementation is runningTests / maxTests

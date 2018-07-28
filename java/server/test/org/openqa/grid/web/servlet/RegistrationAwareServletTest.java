@@ -17,7 +17,21 @@
 
 package org.openqa.grid.web.servlet;
 
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.DefaultGridRegistry;
+import org.openqa.grid.internal.GridRegistry;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.web.Hub;
+import org.seleniumhq.jetty9.server.handler.ContextHandler;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
+
 public class RegistrationAwareServletTest extends BaseServletTest {
+
+  protected final GridRegistry registry = DefaultGridRegistry
+      .newInstance(new Hub(new GridHubConfiguration()));
 
   /**
    * Gives the servlet some time to add the proxy -- which happens on a separate thread.
@@ -33,6 +47,28 @@ public class RegistrationAwareServletTest extends BaseServletTest {
       Thread.sleep(1000);
       tries += 1;
     }
+  }
+
+  protected void wireInNode() throws Exception {
+    wireInNode(null);
+  }
+
+  protected void wireInNode(String proxy) throws Exception {
+    final GridNodeConfiguration config = new GridNodeConfiguration();
+    config.id = "http://dummynode:3456";
+    final RegistrationRequest request = RegistrationRequest.build(config);
+    request.getConfiguration().proxy = proxy;
+    HttpServlet servlet = new RegistrationServlet() {
+      @Override
+      public ServletContext getServletContext() {
+        final ContextHandler.Context servletContext = new ContextHandler().getServletContext();
+        servletContext.setAttribute(GridRegistry.KEY, registry);
+        return servletContext;
+      }
+    };
+    servlet.init();
+    sendCommand(servlet, "POST", "/", request.toJson());
+    waitForServletToAddProxy();
   }
 
 }

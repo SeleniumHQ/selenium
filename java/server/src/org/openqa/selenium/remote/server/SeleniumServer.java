@@ -149,6 +149,7 @@ public class SeleniumServer implements GridNodeServer {
     handler.setContextPath("/");
     handler.addServlet(WebDriverServlet.class, "/wd/hub/*");
     handler.addServlet(WebDriverServlet.class, "/webdriver/*");
+    handler.addServlet(LifecycleServlet.class, "/lifecycle-manager/*");
     handler.setInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER, "/wd/hub");
 
     handler.setInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER, configuration.role);

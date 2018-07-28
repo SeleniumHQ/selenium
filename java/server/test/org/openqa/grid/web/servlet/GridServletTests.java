@@ -26,7 +26,8 @@ import org.junit.runners.Suite;
   ResourceServletTest.class,
   ConsoleServletTest.class,
   RegistrationServletTest.class,
-  HubStatusServletTest.class
+  HubStatusServletTest.class,
+  LifecycleServletTest.class
 })
 public class GridServletTests {
 }

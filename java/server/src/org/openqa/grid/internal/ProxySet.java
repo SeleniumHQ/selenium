@@ -127,9 +127,17 @@ public class ProxySet implements Iterable<RemoteProxy> {
     List<RemoteProxy> sorted = getSorted();
     log.fine("Available nodes: " + sorted);
     return sorted.stream()
+        .filter(remoteProxy -> !remoteProxy.isNodeQuiesced())
         .map(proxy -> proxy.getNewSession(desiredCapabilities))
         .filter(Objects::nonNull)
         .findFirst().orElse(null);
+  }
+
+  /**
+   * @return - <code>true</code> if there's at-least one proxy which is active and not quiesced.
+   */
+  public boolean hasAtleastOneActiveNode() {
+    return proxies.stream().anyMatch(p -> !p.isNodeQuiesced());
   }
 
   public Iterator<RemoteProxy> iterator() {

@@ -73,6 +73,8 @@ public class BaseRemoteProxy implements RemoteProxy {
   private volatile boolean stop = false;
   private CleanUpThread cleanUpThread;
 
+  private boolean underMaintenance = false;
+
   public List<TestSlot> getTestSlots() {
     return testSlots;
   }
@@ -476,5 +478,15 @@ public class BaseRemoteProxy implements RemoteProxy {
       last = Math.max(last, slot.getLastSessionStart());
     }
     return last;
+  }
+
+  @Override
+  public void quiesceNode() {
+    this.underMaintenance = true;
+  }
+
+  @Override
+  public boolean isNodeQuiesced() {
+    return underMaintenance;
   }
 }

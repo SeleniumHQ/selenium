@@ -84,6 +84,7 @@ java_library(
     'TeeReader.java',
     'UrlTemplate.java',
     'WebDriverServlet.java',
+    'LifecycleServlet.java',
   ] + glob(['commandhandler/*.java']),
   provided_deps = [
     '//third_party/java/servlet:javax.servlet-api',

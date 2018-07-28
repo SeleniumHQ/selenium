@@ -247,6 +247,9 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   }
 
   private boolean takeRequestHandler(RequestHandler handler) {
+    if (!proxies.hasAtleastOneActiveNode()) {
+      return false;
+    }
     final TestSession session = proxies.getNewSession(handler.getRequest().getDesiredCapabilities());
     final boolean sessionCreated = session != null;
     if (sessionCreated) {

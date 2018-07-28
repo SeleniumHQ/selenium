@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
+import org.openqa.selenium.BaseServletTest;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -43,9 +44,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.testing.FakeHttpServletRequest;
 import org.openqa.testing.FakeHttpServletResponse;
-import org.openqa.testing.UrlInfo;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
 
 import java.io.IOException;
@@ -55,13 +54,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 @RunWith(JUnit4.class)
-public class WebDriverServletTest {
-
-  private static final String BASE_URL = "http://localhost:4444";
-  private static final String CONTEXT_PATH = "/wd/hub";
+public class WebDriverServletTest extends BaseServletTest {
 
   private ActiveSessions testSessions;
-  private WebDriverServlet driverServlet;
   private WebDriver driver;
 
   @Before
@@ -98,7 +93,7 @@ public class WebDriverServletTest {
     context.setInitParameter("webdriver.server.browser.timeout", "2");
 
     // Override log methods for testing.
-    driverServlet = new WebDriverServlet() {
+    servlet = new WebDriverServlet() {
       @Override
       public void log(String msg) {
       }
@@ -117,7 +112,7 @@ public class WebDriverServletTest {
         return context.getInitParameter(name);
       }
     };
-    driverServlet.init();
+    ((WebDriverServlet)servlet).init();
   }
 
   @Test
@@ -230,28 +225,4 @@ public class WebDriverServletTest {
     assertFalse(sessionId.isEmpty());
     return new SessionId(sessionId);
   }
-
-  private FakeHttpServletResponse sendCommand(String method, String commandPath,
-      JsonObject parameters) throws IOException, ServletException {
-    FakeHttpServletRequest request = new FakeHttpServletRequest(method, createUrl(commandPath));
-    if (parameters != null) {
-      request.setBody(parameters.toString());
-    }
-
-    FakeHttpServletResponse response = new FakeHttpServletResponse();
-
-    driverServlet.service(request, response);
-    return response;
-  }
-
-  private static UrlInfo createUrl(String path) {
-    return new UrlInfo(BASE_URL, CONTEXT_PATH, path);
-  }
-
-//  @Test
-//  public void timeouts() throws IOException, ServletException {
-//    assertEquals(2000, driverServlet.getIndividualCommandTimeoutMs());
-//    assertEquals(18000, driverServlet.getInactiveSessionTimeout());
-//  }
-
 }

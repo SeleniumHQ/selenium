@@ -15,9 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.web.servlet;
+package org.openqa.selenium;
 
-import org.openqa.selenium.json.Json;
+import com.google.gson.JsonObject;
+
 import org.openqa.testing.FakeHttpServletRequest;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.openqa.testing.UrlInfo;
@@ -36,7 +37,7 @@ public class BaseServletTest {
 
   protected HttpServlet servlet;
 
-  protected static UrlInfo createUrl(String path) {
+  private static UrlInfo createUrl(String path) {
     return new UrlInfo(BASE_URL, CONTEXT_PATH, path);
   }
 
@@ -48,7 +49,7 @@ public class BaseServletTest {
   protected FakeHttpServletResponse sendCommand(
       String method,
       String commandPath,
-      Map<String, Object> parameters) throws IOException, ServletException {
+      JsonObject parameters) throws IOException, ServletException {
     return sendCommand(this.servlet,method, commandPath, parameters);
   }
 
@@ -56,24 +57,21 @@ public class BaseServletTest {
       HttpServlet servlet,
       String method,
       String commandPath,
-      Map<String, Object> parameters) throws IOException, ServletException {
+      JsonObject parameters) throws IOException, ServletException {
     FakeHttpServletRequest request = new FakeHttpServletRequest(method, createUrl(commandPath));
     if ("get".equalsIgnoreCase(method) && parameters != null) {
       Map<String, String> params = new HashMap<>();
-      for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
-        String value = null;
-        if (parameter.getValue() != null) {
-          value = parameter.getValue().toString();
-        }
-        params.put(parameter.getKey(), value);
+      for (String key : parameters.keySet()) {
+        params.put(key, parameters.get(key).getAsString());
       }
       request.setParameters(params);
     }
     if ("post".equalsIgnoreCase(method) && parameters != null) {
-      request.setBody(new Json().toJson(parameters));
+      request.setBody(parameters.toString());
     }
     FakeHttpServletResponse response = new FakeHttpServletResponse();
     servlet.service(request, response);
     return response;
   }
+
 }

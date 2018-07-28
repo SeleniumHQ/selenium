@@ -50,7 +50,8 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     org.openqa.selenium.remote.server.commandhandler.UploadFileTest.class,
     UrlTemplateTest.class,
     UtilsTest.class,
-    WebDriverServletTest.class
+    WebDriverServletTest.class,
+    LifecycleServletTest.class
 })
 public class RemoteServerTests {
 }
