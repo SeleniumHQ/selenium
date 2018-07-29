@@ -213,6 +213,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   void PopulateElementFinderMethods(void);
 
   void CreateWaitThread(const std::string& deferred_response);
+  void CreateWaitThread(const std::string& deferred_response,
+                        const bool is_deferred_command_execution);
   bool IsAlertActive(BrowserHandle browser, HWND* alert_handle);
   bool HandleUnexpectedAlert(BrowserHandle browser,
                              HWND alert_handle,
