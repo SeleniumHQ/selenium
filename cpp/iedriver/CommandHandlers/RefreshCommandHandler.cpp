@@ -38,6 +38,7 @@ namespace webdriver {
       return;
     }
     status_code = browser_wrapper->Refresh();
+    browser_wrapper->SetFocusedFrameByElement(NULL);
     response->SetSuccessResponse(Json::Value::null);
   }
 
