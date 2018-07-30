@@ -1,0 +1,12 @@
+# BUILD FILE SYNTAX: SKYLARK
+
+java_library(
+    name = "web",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+    ],
+    visibility = [
+        "//java/server/...",
+    ]
+)

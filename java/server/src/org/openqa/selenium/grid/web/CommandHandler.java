@@ -15,11 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.grid.web;
 
-/**
- * @deprecated Use {@link org.openqa.selenium.grid.web.CommandHandler} instead.
- */
-@Deprecated
-public interface CommandHandler extends org.openqa.selenium.grid.web.CommandHandler {
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+
+import java.io.IOException;
+
+@FunctionalInterface
+public interface CommandHandler {
+  void execute(HttpRequest req, HttpResponse resp) throws IOException;
 }

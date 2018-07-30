@@ -29,7 +29,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.server.CommandHandler;
+import org.openqa.selenium.grid.web.CommandHandler;
 
 import java.util.HashMap;
 import java.util.Map;

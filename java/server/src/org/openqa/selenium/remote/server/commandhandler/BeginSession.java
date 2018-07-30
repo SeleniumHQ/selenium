@@ -33,7 +33,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.ActiveSession;
 import org.openqa.selenium.remote.server.ActiveSessions;
-import org.openqa.selenium.remote.server.CommandHandler;
+import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 

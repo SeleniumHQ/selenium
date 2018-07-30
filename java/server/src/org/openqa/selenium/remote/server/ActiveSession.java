@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
