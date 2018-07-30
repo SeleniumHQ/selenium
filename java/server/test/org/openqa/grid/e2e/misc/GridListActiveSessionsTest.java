@@ -21,12 +21,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.openqa.grid.e2e.node.SmokeTest;
+import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.BufferedReader;
@@ -88,7 +87,7 @@ public class GridListActiveSessionsTest {
     Hub hub = null;
     List<RemoteWebDriver> drivers = new ArrayList<>();
     try {
-      hub = SmokeTest.prepareTestGrid(DesiredCapabilities.chrome(), nodesCount);
+      hub = GridTestHelper.prepareTestGrid(new ChromeOptions(), nodesCount);
       drivers = createSession(howMany, hub);
       Map<String, Object> sessions = getSessions(hub);
       assertions.accept(sessions);

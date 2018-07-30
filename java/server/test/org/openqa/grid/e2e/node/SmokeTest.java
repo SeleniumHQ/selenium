@@ -22,17 +22,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.e2e.utils.GridTestHelper;
-import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.server.SeleniumServer;
 
 public class SmokeTest {
 
@@ -40,7 +34,7 @@ public class SmokeTest {
 
   @Before
   public void prepare() throws Exception {
-    hub = prepareTestGrid();
+    hub = GridTestHelper.prepareTestGrid(DesiredCapabilities.htmlUnit(), 1);
   }
 
   @Test
@@ -63,30 +57,4 @@ public class SmokeTest {
     hub.stop();
   }
 
-  public static Hub prepareTestGrid() throws Exception {
-    return prepareTestGrid(DesiredCapabilities.htmlUnit(),1);
-  }
-
-  public static Hub prepareTestGrid(DesiredCapabilities caps, int nodesCount) throws Exception {
-    Hub hub = GridTestHelper.getHub();
-    for (int i = 1; i <= nodesCount; i++) {
-
-      SelfRegisteringRemote remote =
-          GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-      remote.addBrowser(caps, 1);
-
-      DesiredCapabilities capabilities = new DesiredCapabilities(caps);
-      caps.setCapability(RegistrationRequest.SELENIUM_PROTOCOL, SeleniumProtocol.WebDriver);
-
-      remote.addBrowser(capabilities, 1);
-
-      remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
-      remote.startRemoteServer();
-
-      remote.getConfiguration().timeout = -1;
-      remote.sendRegistrationRequest();
-      RegistryTestHelper.waitForNode(hub.getRegistry(), i);
-    }
-    return hub;
-  }
 }

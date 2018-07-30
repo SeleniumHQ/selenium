@@ -17,6 +17,10 @@
 
 package org.openqa.grid.e2e.utils;
 
+import static org.junit.Assert.fail;
+
+import com.google.common.base.Throwables;
+
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
@@ -25,9 +29,11 @@ import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.URL;
 
@@ -67,12 +73,13 @@ public class GridTestHelper {
     return DesiredCapabilities.htmlUnit();
   }
 
-  public static Hub getHub() throws Exception {
+  public static Hub getHub() {
     return getHub(new GridHubConfiguration(), true);
   }
 
-  public static Hub getHub(GridHubConfiguration config, boolean dynamicallyAllocatePortOnLocalHost)
-      throws Exception {
+  public static Hub getHub(
+      GridHubConfiguration config,
+      boolean dynamicallyAllocatePortOnLocalHost) {
     if (dynamicallyAllocatePortOnLocalHost) {
       config.host = "localhost";
       config.port = PortProber.findFreePort();
@@ -80,9 +87,43 @@ public class GridTestHelper {
     return getHub(config);
   }
 
-  public static Hub getHub(GridHubConfiguration config) throws Exception {
+  public static Hub getHub(GridHubConfiguration config) {
     Hub hub = new Hub(config);
-    hub.start();
+    try {
+      hub.start();
+    } catch (Exception e) {
+      fail("Expected hub to start: " + Throwables.getStackTraceAsString(e));
+    }
+    return hub;
+  }
+
+  public static Hub prepareTestGrid(Capabilities caps, int nodeCount) {
+    Hub hub = GridTestHelper.getHub();
+
+    for (int i = 0; i < nodeCount; i++) {
+      SelfRegisteringRemote remote = GridTestHelper.getRemoteWithoutCapabilities(
+          hub.getUrl(),
+          GridRole.NODE);
+      remote.addBrowser(new DesiredCapabilities(caps), 1);
+
+      DesiredCapabilities capabilities = new DesiredCapabilities(caps);
+      capabilities.setCapability(RegistrationRequest.SELENIUM_PROTOCOL, SeleniumProtocol.WebDriver);
+
+      remote.addBrowser(capabilities, 1);
+
+      remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
+
+      try {
+        remote.startRemoteServer();
+      } catch (Exception e) {
+        fail("Unable to start node: " + Throwables.getStackTraceAsString(e));
+      }
+
+      remote.getConfiguration().timeout = -1;
+      remote.sendRegistrationRequest();
+    }
+
+    RegistryTestHelper.waitForNode(hub.getRegistry(), nodeCount);
     return hub;
   }
 
