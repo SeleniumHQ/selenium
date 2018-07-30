@@ -1,6 +1,8 @@
 v3.14.0
 =======
 
+* Move or deprecate internal classes in java client
+* Introduce basic JPMS support. This is experimental.
 * The browser name of the Safari Tech Preview is not "safari" but
   "Safari Technology Preview". Who knew?
 * Deprecated our own `Clock` interface for `java.time.Clock`
@@ -17,6 +19,9 @@ v3.14.0
   https://snyk.io/research/zip-slip-vulnerability
 * Allow temporary installation of FF extension (#1) (#5751)
 * Fix windowSize option in Firefox in Javascript (#6075)
+* Make ConnectionType searilize as integer (#6176)
+* Pass found elements to the EventListener's afterFind method (#6191)
+* Add native events under se:ieOptions. (#6183)
 
 v3.13.0
 =======
