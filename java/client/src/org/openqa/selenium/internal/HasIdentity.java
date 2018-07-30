@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.internal;
 
+/**
+ * @deprecated Scheduled for deletion with no replacement.
+ */
+@Deprecated
 public interface HasIdentity {
   String getId();
 }

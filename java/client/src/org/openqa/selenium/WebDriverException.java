@@ -17,8 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.BuildInfo;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetAddress;

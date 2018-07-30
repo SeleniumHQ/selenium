@@ -15,18 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.ie;
 
-import org.openqa.selenium.WebElement;
+public enum ElementScrollBehavior {
 
-import java.util.List;
+  TOP (0),
+  BOTTOM (1),
+  ;
 
-/**
- * @deprecated An implementation detail of {@link org.openqa.selenium.By}. Will be removed in 4.0
- */
-@Deprecated
-public interface FindsByName {
-  WebElement findElementByName(String using);
+  private int value;
 
-  List<WebElement> findElementsByName(String using);
+  private ElementScrollBehavior(int value) {
+    this.value = value;
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(value);
+  }
+
+  public static ElementScrollBehavior fromString(String text) {
+    for (ElementScrollBehavior b : ElementScrollBehavior.values()) {
+      if (text.equalsIgnoreCase(b.toString())) {
+        return b;
+      }
+    }
+    return null;
+  }
+
+  public int getValue() {
+    return value;
+  }
 }

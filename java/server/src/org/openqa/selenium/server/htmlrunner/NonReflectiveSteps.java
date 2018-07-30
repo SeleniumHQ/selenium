@@ -30,7 +30,7 @@ import com.thoughtworks.selenium.webdriven.commands.SeleniumSelect;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 
 import java.util.function.Supplier;
 import java.util.logging.Logger;

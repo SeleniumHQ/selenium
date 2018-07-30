@@ -18,7 +18,7 @@
 package org.openqa.selenium.remote.http;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.internal.OkHttpClient;
 

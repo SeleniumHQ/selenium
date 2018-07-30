@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.internal;
 
+/**
+ * @deprecated Use {@link org.openqa.selenium.ie.ElementScrollBehavior} instead.
+ */
+@Deprecated
 public enum ElementScrollBehavior {
 
   TOP (0),
@@ -35,7 +39,8 @@ public enum ElementScrollBehavior {
   }
 
   public static ElementScrollBehavior fromString(String text) {
-    for (ElementScrollBehavior b : ElementScrollBehavior.values()) {
+    for (ElementScrollBehavior b : ElementScrollBehavior
+        .values()) {
       if (text.equalsIgnoreCase(b.toString())) {
         return b;
       }

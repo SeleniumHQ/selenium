@@ -18,7 +18,7 @@
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.WrapsElement;
 
 import java.time.Duration;
 import java.util.HashMap;

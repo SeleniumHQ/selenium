@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.json.Json;
 
 import java.io.IOException;

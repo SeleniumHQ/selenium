@@ -24,7 +24,7 @@ import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.json.Json;
 
 import java.io.IOException;

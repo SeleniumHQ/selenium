@@ -29,7 +29,7 @@ import com.google.common.collect.Multimap;
 
 import org.junit.Test;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.PortProber;

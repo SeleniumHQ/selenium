@@ -20,7 +20,7 @@ package org.openqa.selenium.server.htmlrunner;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.BuildInfo;
 
 import java.io.IOException;
 import java.io.Reader;
