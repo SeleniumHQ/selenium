@@ -17,6 +17,8 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import org.openqa.grid.internal.utils.configuration.json.GridJsonConfiguration;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +63,10 @@ public class GridConfiguration extends StandaloneConfiguration {
    */
   GridConfiguration() {
     // defeats instantiation outside of this package
+  }
+
+  public GridConfiguration(GridJsonConfiguration jsonConfig) {
+    super(jsonConfig);
   }
 
   /**

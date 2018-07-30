@@ -17,10 +17,13 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+import org.openqa.grid.internal.utils.configuration.json.HubJsonConfiguration;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Map;
@@ -28,40 +31,11 @@ import java.util.Map;
 public class GridHubConfiguration extends GridConfiguration {
   public static final String DEFAULT_HUB_CONFIG_FILE = "org/openqa/grid/common/defaults/DefaultHub.json";
 
-  /*
-   * IMPORTANT - Keep these constant values in sync with the ones specified in
-   * 'defaults/DefaultHub.json'  -- if for no other reasons documentation & consistency.
-   */
+  private static HubJsonConfiguration DEFAULT_CONFIG_FROM_JSON
+      = HubJsonConfiguration.loadFromResourceOrFile(DEFAULT_HUB_CONFIG_FILE);
 
-  /**
-   * Default hub role
-   */
-  static final String DEFAULT_ROLE = "hub";
-
-  /**
-   * Default hub port
-   */
-  static final Integer DEFAULT_PORT = 4444;
-
-  /**
-   * Default hub cleanup cycle
-   */
-  static final Integer DEFAULT_CLEANUP_CYCLE = 5000;
-
-  /**
-   * Default hub new session wait timeout
-   */
-  static final Integer DEFAULT_NEW_SESSION_WAIT_TIMEOUT = -1;
-
-  /**
-   * Default hub throw on capability not present toggle
-   */
-  static final Boolean DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE = true;
-
-  /**
-   * Default hub GridRegistry implementation to use
-   */
-  static final String DEFAULT_HUB_REGISTRY_CLASS = "org.openqa.grid.internal.DefaultGridRegistry";
+  @VisibleForTesting
+  static final String ROLE = "hub";
 
   /*
    * config parameters which do not serialize or de-serialize
@@ -79,12 +53,12 @@ public class GridHubConfiguration extends GridConfiguration {
   /**
    * Capability matcher to use. Defaults to {@link DefaultCapabilityMatcher}
    */
-  public CapabilityMatcher capabilityMatcher = new DefaultCapabilityMatcher();
+  public CapabilityMatcher capabilityMatcher;
 
   /**
    * Timeout for new session requests. Defaults to unlimited.
    */
-  public Integer newSessionWaitTimeout = DEFAULT_NEW_SESSION_WAIT_TIMEOUT;
+  public Integer newSessionWaitTimeout;
 
   /**
    * Prioritizer for new honoring session requests based on some priority. Defaults to {@code null}.
@@ -94,18 +68,26 @@ public class GridHubConfiguration extends GridConfiguration {
   /**
    * Whether to throw an Exception when there are no capabilities available that match the request. Defaults to {@code true}.
    */
-  public Boolean throwOnCapabilityNotPresent = DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE;
+  public Boolean throwOnCapabilityNotPresent;
 
-  public String registry = DEFAULT_HUB_REGISTRY_CLASS;
+  public String registry;
 
   /**
    * Creates a new configuration using the default values.
    */
   public GridHubConfiguration() {
-    // overrides values set by base classes
-    role = DEFAULT_ROLE;
-    port = DEFAULT_PORT;
-    cleanUpCycle = DEFAULT_CLEANUP_CYCLE;
+    this(DEFAULT_CONFIG_FROM_JSON);
+  }
+
+  public GridHubConfiguration(HubJsonConfiguration jsonConfig) {
+    super(jsonConfig);
+    role = ROLE;
+    cleanUpCycle = jsonConfig.getCleanUpCycle();
+    newSessionWaitTimeout = jsonConfig.getNewSessionWaitTimeout();
+    throwOnCapabilityNotPresent = jsonConfig.getThrowOnCapabilityNotPresent();
+    registry = jsonConfig.getRegistry();
+    capabilityMatcher = jsonConfig.getCapabilityMatcher();
+    prioritizer = jsonConfig.getPrioritizer();
   }
 
   /**
@@ -117,18 +99,15 @@ public class GridHubConfiguration extends GridConfiguration {
 
   public static GridHubConfiguration loadFromJSON(JsonInput jsonInput) {
     try {
-      GridHubConfiguration config = StandaloneConfiguration.loadFromJson(
-          jsonInput,
-          GridHubConfiguration.class);
-
-      GridHubConfiguration result = new GridHubConfiguration();
-      result.merge(config);
+      GridHubConfiguration fromJson = new GridHubConfiguration(HubJsonConfiguration.loadFromJson(jsonInput));
+      GridHubConfiguration result = new GridHubConfiguration(); // defaults
+      result.merge(fromJson);
       // copy non-mergeable fields
-      if (config.host != null) {
-        result.host = config.host;
+      if (fromJson.host != null) {
+        result.host = fromJson.host;
       }
-      if (config.port != null) {
-        result.port = config.port;
+      if (fromJson.port != null) {
+        result.port = fromJson.port;
       }
       return result;
     } catch (Throwable e) {
@@ -139,7 +118,10 @@ public class GridHubConfiguration extends GridConfiguration {
   /**
    * Merge this configuration with the specified {@link GridNodeConfiguration}
    * @param other
+   *
+   * @deprecated There is no use case to merge a node configuration to a hub configuration
    */
+  @Deprecated
   public void merge(GridNodeConfiguration other) {
     super.merge(other);
   }

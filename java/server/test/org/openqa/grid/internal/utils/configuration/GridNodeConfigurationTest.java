@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.cli.GridNodeCliOptions;
+import org.openqa.grid.internal.utils.configuration.json.NodeJsonConfiguration;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -43,13 +44,30 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 public class GridNodeConfigurationTest {
 
+  static final Integer DEFAULT_TIMEOUT = StandaloneConfigurationTest.DEFAULT_TIMEOUT;
+  static final Integer DEFAULT_BROWSER_TIMEOUT = StandaloneConfigurationTest.DEFAULT_BROWSER_TIMEOUT;
+  static final Integer DEFAULT_PORT = -1;
+  static final Boolean DEFAULT_DEBUG_TOGGLE = StandaloneConfigurationTest.DEFAULT_DEBUG_TOGGLE;
+
+  static final Integer DEFAULT_POLLING_INTERVAL = 5000;
+  static final Integer DEFAULT_MAX_SESSION = 5;
+  static final Integer DEFAULT_REGISTER_CYCLE = 5000;
+  static final Boolean DEFAULT_REGISTER_TOGGLE = true;
+  static final String DEFAULT_HUB = "http://localhost:4444";
+  static final Integer DEFAULT_NODE_STATUS_CHECK_TIMEOUT = 5000;
+  static final Integer DEFAULT_UNREGISTER_DELAY = 60000;
+  static final Integer DEFAULT_DOWN_POLLING_LIMIT = 2;
+  static final String DEFAULT_PROXY = "org.openqa.grid.selenium.proxy.DefaultRemoteProxy";
+
   @Test
   public void testLoadFromJson() throws IOException {
     final String configJson = "{"
+                              + "\"role\": \"node\","
                               + "\"capabilities\":"
                               + " ["
                               + "   {"
@@ -59,6 +77,7 @@ public class GridNodeConfigurationTest {
                               + "   }"
                               + " ],"
                               + "\"host\": \"dummyhost\","
+                              + "\"hub\": \"http://dummyhost:1234\","
                               + "\"maxSession\": 5,"
                               + "\"port\": 1234"
                               + "}";
@@ -94,23 +113,23 @@ public class GridNodeConfigurationTest {
   @Test
   public void testDefaults() {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    assertEquals(GridNodeConfiguration.DEFAULT_ROLE, gnc.role);
-    assertEquals(GridNodeConfiguration.DEFAULT_PORT, gnc.port);
-    assertEquals(GridNodeConfiguration.DEFAULT_NODE_STATUS_CHECK_TIMEOUT, gnc.nodeStatusCheckTimeout);
-    assertEquals(GridNodeConfiguration.DEFAULT_POLLING_INTERVAL, gnc.nodePolling);
-    assertEquals(GridNodeConfiguration.DEFAULT_PROXY, gnc.proxy);
-    assertEquals(GridNodeConfiguration.DEFAULT_REGISTER_TOGGLE, gnc.register);
-    assertEquals(GridNodeConfiguration.DEFAULT_REGISTER_CYCLE, gnc.registerCycle);
-    assertEquals(GridNodeConfiguration.DEFAULT_HUB, gnc.hub);
-    assertEquals(GridNodeConfiguration.DEFAULT_MAX_SESSION, gnc.maxSession);
+    assertEquals(GridNodeConfiguration.ROLE, gnc.role);
+    assertEquals(DEFAULT_PORT, gnc.port);
+    assertEquals(DEFAULT_NODE_STATUS_CHECK_TIMEOUT, gnc.nodeStatusCheckTimeout);
+    assertEquals(DEFAULT_POLLING_INTERVAL, gnc.nodePolling);
+    assertEquals(DEFAULT_PROXY, gnc.proxy);
+    assertEquals(DEFAULT_REGISTER_TOGGLE, gnc.register);
+    assertEquals(DEFAULT_REGISTER_CYCLE, gnc.registerCycle);
+    assertEquals(DEFAULT_HUB, gnc.hub);
+    assertEquals(DEFAULT_MAX_SESSION, gnc.maxSession);
     assertFalse(gnc.capabilities.isEmpty());
     assertEquals(4, gnc.capabilities.size());
     assertNull(gnc.id);
-    assertEquals(GridNodeConfiguration.DEFAULT_DOWN_POLLING_LIMIT, gnc.downPollingLimit);
+    assertEquals(DEFAULT_DOWN_POLLING_LIMIT, gnc.downPollingLimit);
     assertNull(gnc.hubHost);
     assertNull(gnc.hubPort);
     assertNull(gnc.nodeConfigFile);
-    assertEquals(GridNodeConfiguration.DEFAULT_UNREGISTER_DELAY, gnc.unregisterIfStillDownAfter);
+    assertEquals(DEFAULT_UNREGISTER_DELAY, gnc.unregisterIfStillDownAfter);
 
     assertNull(gnc.cleanUpCycle);
     assertNull(gnc.host);
@@ -121,9 +140,9 @@ public class GridNodeConfigurationTest {
     assertNotNull(gnc.withoutServlets);
     assertTrue(gnc.withoutServlets.isEmpty());
 
-    assertEquals(GridNodeConfiguration.DEFAULT_TIMEOUT, gnc.timeout);
-    assertEquals(GridNodeConfiguration.DEFAULT_BROWSER_TIMEOUT, gnc.browserTimeout);
-    assertFalse(gnc.debug);
+    assertEquals(DEFAULT_TIMEOUT, gnc.timeout);
+    assertEquals(DEFAULT_BROWSER_TIMEOUT, gnc.browserTimeout);
+    assertEquals(DEFAULT_DEBUG_TOGGLE, gnc.debug);
     assertNull(gnc.jettyMaxThreads);
     assertNull(gnc.log);
 
@@ -352,7 +371,7 @@ public class GridNodeConfigurationTest {
 
   @Test
   public void canLoadConfigFile() throws IOException {
-    String json = "{\"capabilities\":[], \"hub\": \"http://dummyhost:1234\"}";
+    String json = "{\"role\": \"node\", \"capabilities\":[], \"hub\": \"http://dummyhost:1234\"}";
     Path nodeConfig = Files.createTempFile("node", ".json");
     Files.write(nodeConfig, json.getBytes());
     GridNodeConfiguration gnc = parseCliOptions("-nodeConfig", nodeConfig.toString());
@@ -362,7 +381,7 @@ public class GridNodeConfigurationTest {
 
   @Test
   public void hubOptionHasPrecedenceOverNodeConfig() throws IOException {
-    String json = "{\"capabilities\":[], \"hub\": \"http://dummyhost:1234\"}";
+    String json = "{\"role\": \"node\", \"capabilities\":[], \"hub\": \"http://dummyhost:1234\"}";
     Path nodeConfig = Files.createTempFile("node", ".json");
     Files.write(nodeConfig, json.getBytes());
     GridNodeConfiguration gnc = parseCliOptions(
@@ -374,4 +393,38 @@ public class GridNodeConfigurationTest {
   private GridNodeConfiguration parseCliOptions(String... args) {
     return new GridNodeCliOptions.Parser().parse(args).toConfiguration();
   }
+
+  @Test
+  public void canLoadFromFile() throws IOException {
+    String json = "{\"role\":\"node\","
+                  + "\"capabilities\":[{\"browserName\":\"firefox\", \"marionette\":true, \"maxInstances\":5}],"
+                  + "\"hub\":\"http://dummyhost:1234\", \"port\":7777, \"debug\":true, \"maxSession\":10,"
+                  + "\"register\":true, \"registerCycle\":10000, \"nodeStatusCheckTimeout\":9000,"
+                  + "\"nodePolling\":8000, \"unregisterIfStillDownAfter\":7000, \"downPollingLimit\":5,"
+                  + "\"proxy\":\"org.openqa.grid.selenium.proxy.DefaultRemoteProxy\", \"enablePlatformVerification\": true,"
+                  + "\"servlets\":[], \"withoutServlets\":[], \"custom\":{}}";
+    Path nodeConfig = Files.createTempFile("node", ".json");
+    Files.write(nodeConfig, json.getBytes());
+
+    GridNodeConfiguration gnc = new GridNodeConfiguration(
+        NodeJsonConfiguration.loadFromResourceOrFile(nodeConfig.toString()));
+
+    assertEquals(7777, gnc.port.intValue());
+    assertEquals("http://dummyhost:1234", gnc.hub);
+    assertEquals("dummyhost", gnc.getHubHost());
+    assertEquals(1234, gnc.getHubPort().intValue());
+    assertEquals(10, gnc.maxSession.intValue());
+    assertEquals(true, gnc.register);
+    assertEquals(10000, gnc.registerCycle.intValue());
+    assertEquals(9000, gnc.nodeStatusCheckTimeout.intValue());
+    assertEquals(8000, gnc.nodePolling.intValue());
+    assertEquals(7000, gnc.unregisterIfStillDownAfter.intValue());
+    assertEquals(5, gnc.downPollingLimit.intValue());
+    assertEquals("org.openqa.grid.selenium.proxy.DefaultRemoteProxy", gnc.proxy);
+    assertEquals(true, gnc.enablePlatformVerification);
+    assertEquals(Collections.EMPTY_LIST, gnc.servlets);
+    assertEquals(Collections.EMPTY_LIST, gnc.withoutServlets);
+    assertEquals(Collections.EMPTY_MAP, gnc.custom);
+  }
+
 }

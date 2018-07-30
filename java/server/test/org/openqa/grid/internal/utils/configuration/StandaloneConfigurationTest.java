@@ -27,7 +27,11 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.openqa.grid.internal.cli.StandaloneCliOptions;
+import org.openqa.grid.internal.utils.configuration.json.StandaloneJsonConfiguration;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,14 +40,19 @@ import java.util.Map;
 
 public class StandaloneConfigurationTest {
 
+  static final Integer DEFAULT_TIMEOUT = 1800;
+  static final Integer DEFAULT_BROWSER_TIMEOUT = 0;
+  static final Integer DEFAULT_PORT = 4444;
+  static final Boolean DEFAULT_DEBUG_TOGGLE = false;
+
   @Test
   public void testDefaults() {
     StandaloneConfiguration sc = new StandaloneConfiguration();
-    assertEquals(StandaloneConfiguration.DEFAULT_ROLE, sc.role);
-    assertEquals(StandaloneConfiguration.DEFAULT_BROWSER_TIMEOUT, sc.browserTimeout);
-    assertEquals(StandaloneConfiguration.DEFAULT_DEBUG_TOGGLE, sc.debug);
-    assertEquals(StandaloneConfiguration.DEFAULT_TIMEOUT, sc.timeout);
-    assertEquals(StandaloneConfiguration.DEFAULT_PORT, sc.port);
+    assertEquals(StandaloneConfiguration.ROLE, sc.role);
+    assertEquals(DEFAULT_BROWSER_TIMEOUT, sc.browserTimeout);
+    assertEquals(DEFAULT_DEBUG_TOGGLE, sc.debug);
+    assertEquals(DEFAULT_TIMEOUT, sc.timeout);
+    assertEquals(DEFAULT_PORT, sc.port);
     assertEquals(null, sc.host);
     assertNull(sc.jettyMaxThreads);
     assertNull(sc.log);
@@ -169,4 +178,20 @@ public class StandaloneConfigurationTest {
     assertNotEquals(other.log, sc.log);
     assertNotEquals(other.role, sc.role);
   }
+
+  @Test
+  public void testLoadFromFile() throws IOException {
+    String json = "{\"role\":\"standalone\", \"port\":1234, \"debug\":true, \"timeout\":1800, \"browserTimeout\":2400, \"jettyMaxThreads\":10}";
+    Path nodeConfig = Files.createTempFile("standalone", ".json");
+    Files.write(nodeConfig, json.getBytes());
+
+    StandaloneConfiguration sc = new StandaloneConfiguration(StandaloneJsonConfiguration.loadFromResourceOrFile(json));
+
+    assertEquals(1234, sc.port.intValue());
+    assertEquals(true, sc.debug);
+    assertEquals(1800, sc.timeout.intValue());
+    assertEquals(2400, sc.browserTimeout.intValue());
+    assertEquals(10, sc.jettyMaxThreads.intValue());
+  }
+
 }

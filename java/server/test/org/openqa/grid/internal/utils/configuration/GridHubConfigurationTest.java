@@ -26,32 +26,44 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openqa.grid.internal.cli.GridHubCliOptions;
+import org.openqa.grid.internal.utils.configuration.json.HubJsonConfiguration;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
 
 public class GridHubConfigurationTest {
+
+  static final Integer DEFAULT_TIMEOUT = StandaloneConfigurationTest.DEFAULT_TIMEOUT;
+  static final Integer DEFAULT_BROWSER_TIMEOUT = StandaloneConfigurationTest.DEFAULT_BROWSER_TIMEOUT;
+  static final Integer DEFAULT_PORT = StandaloneConfigurationTest.DEFAULT_PORT;
+  static final Boolean DEFAULT_DEBUG_TOGGLE = StandaloneConfigurationTest.DEFAULT_DEBUG_TOGGLE;
+
+  static final Integer DEFAULT_CLEANUP_CYCLE = 5000;
+  static final Integer DEFAULT_NEW_SESSION_WAIT_TIMEOUT = -1;
+  static final Boolean DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE = true;
+  static final String DEFAULT_HUB_REGISTRY_CLASS = "org.openqa.grid.internal.DefaultGridRegistry";
+  static final String DEFAULT_CAPABILITY_MATCHER_CLASS = "org.openqa.grid.internal.utils.DefaultCapabilityMatcher";
 
   @Test
   public void testDefaults() {
     GridHubConfiguration ghc = new GridHubConfiguration();
     // these values come from the GridHubConfiguration class
-    assertEquals(GridHubConfiguration.DEFAULT_PORT, ghc.port);
-    assertEquals(GridHubConfiguration.DEFAULT_ROLE, ghc.role);
-    assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
-                    ghc.capabilityMatcher.getClass().getCanonicalName());
-    assertEquals(GridHubConfiguration.DEFAULT_NEW_SESSION_WAIT_TIMEOUT,
-                 ghc.newSessionWaitTimeout);
-    assertEquals(GridHubConfiguration.DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE,
-                 ghc.throwOnCapabilityNotPresent);
+    assertEquals(DEFAULT_PORT, ghc.port);
+    assertEquals(GridHubConfiguration.ROLE, ghc.role);
+    assertEquals(DEFAULT_CAPABILITY_MATCHER_CLASS, ghc.capabilityMatcher.getClass().getCanonicalName());
+    assertEquals(DEFAULT_NEW_SESSION_WAIT_TIMEOUT, ghc.newSessionWaitTimeout);
+    assertEquals(DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE, ghc.throwOnCapabilityNotPresent);
     assertNull(ghc.hubConfig);
     assertNull(ghc.prioritizer);
 
     // these values come from the GridConfiguration base class
-    assertEquals(GridHubConfiguration.DEFAULT_CLEANUP_CYCLE, ghc.cleanUpCycle);
+    assertEquals(DEFAULT_CLEANUP_CYCLE, ghc.cleanUpCycle);
     assertNull(ghc.host);
     assertNull(ghc.maxSession);
     assertNotNull(ghc.custom);
@@ -62,9 +74,9 @@ public class GridHubConfigurationTest {
     assertTrue(ghc.withoutServlets.isEmpty());
 
     // these values come from the StandaloneConfiguration base class
-    assertEquals(GridHubConfiguration.DEFAULT_TIMEOUT, ghc.timeout);
-    assertEquals(GridHubConfiguration.DEFAULT_BROWSER_TIMEOUT, ghc.browserTimeout);
-    assertFalse(ghc.debug);
+    assertEquals(DEFAULT_TIMEOUT, ghc.timeout);
+    assertEquals(DEFAULT_BROWSER_TIMEOUT, ghc.browserTimeout);
+    assertEquals(DEFAULT_DEBUG_TOGGLE, ghc.debug);
     assertNull(ghc.jettyMaxThreads);
     assertNull(ghc.log);
   }
@@ -100,7 +112,7 @@ public class GridHubConfigurationTest {
   public void testLoadFromJson() throws IOException {
     GridHubConfiguration ghc;
 
-    try (Reader reader = new StringReader("{ \"host\": \"dummyhost\", \"port\": 1234 }");
+    try (Reader reader = new StringReader("{\"role\":\"hub\", \"host\":\"dummyhost\", \"port\":1234}");
         JsonInput jsonInput = new Json().newInput(reader)) {
           ghc = GridHubConfiguration.loadFromJSON(jsonInput);
     }
@@ -192,4 +204,33 @@ public class GridHubConfigurationTest {
     assertEquals("org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer",
                  ghc.prioritizer.getClass().getCanonicalName());
   }
+
+  @Test
+  public void testLoadFromFile() throws IOException {
+    String json = "{\"role\":\"hub\", \"port\":1234, \"debug\":true, \"timeout\":1800, \"browserTimeout\":2400,"
+                  + "\"cleanUpCycle\":10000, \"newSessionWaitTimeout\":1000, \"throwOnCapabilityNotPresent\":true,"
+                  + "\"registry\":\"org.openqa.grid.internal.DefaultGridRegistry\","
+                  + "\"capabilityMatcher\":\"org.openqa.grid.internal.utils.DefaultCapabilityMatcher\","
+                  + "\"prioritizer\":\"org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer\","
+                  + "\"servlets\":[], \"withoutServlets\":[], \"custom\":{}}";
+    Path nodeConfig = Files.createTempFile("hub", ".json");
+    Files.write(nodeConfig, json.getBytes());
+
+    GridHubConfiguration ghc = new GridHubConfiguration(HubJsonConfiguration.loadFromResourceOrFile(json));
+
+    assertEquals(1234, ghc.port.intValue());
+    assertEquals(true, ghc.debug);
+    assertEquals(1800, ghc.timeout.intValue());
+    assertEquals(2400, ghc.browserTimeout.intValue());
+    assertEquals(10000, ghc.cleanUpCycle.intValue());
+    assertEquals(1000, ghc.newSessionWaitTimeout.intValue());
+    assertEquals(true, ghc.throwOnCapabilityNotPresent);
+    assertEquals(DEFAULT_HUB_REGISTRY_CLASS, ghc.registry);
+    assertEquals(DEFAULT_CAPABILITY_MATCHER_CLASS, ghc.capabilityMatcher.getClass().getName());
+    assertEquals("org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer", ghc.prioritizer.getClass().getName());
+    assertEquals(Collections.EMPTY_LIST, ghc.servlets);
+    assertEquals(Collections.EMPTY_LIST, ghc.withoutServlets);
+    assertEquals(Collections.EMPTY_MAP, ghc.custom);
+  }
+
 }

@@ -17,11 +17,12 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
-import static org.openqa.selenium.json.Json.MAP_TYPE;
+import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.utils.configuration.json.NodeJsonConfiguration;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.JsonInput;
@@ -30,8 +31,6 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,89 +41,11 @@ public class GridNodeConfiguration extends GridConfiguration {
   public static final String DEFAULT_NODE_CONFIG_FILE = "org/openqa/grid/common/defaults/DefaultNodeWebDriver.json";
   public static final String CONFIG_UUID_CAPABILITY = "server:CONFIG_UUID";
 
-  /*
-   * IMPORTANT - Keep these constant values in sync with the ones specified in
-   * 'defaults/DefaultNodeWebDriver.json'  -- if for no other reasons documentation & consistency.
-   */
+  private static NodeJsonConfiguration DEFAULT_CONFIG_FROM_JSON
+      = NodeJsonConfiguration.loadFromResourceOrFile(DEFAULT_NODE_CONFIG_FILE);
 
-  /**
-   * Default node role
-   */
-  static final String DEFAULT_ROLE = "node";
-
-  /**
-   * Default node port, -1 means random free port
-   */
-  static final Integer DEFAULT_PORT = -1;
-
-  /**
-   * Default node polling
-   */
-  static final Integer DEFAULT_POLLING_INTERVAL = 5000;
-
-  /**
-   * Default max sessions
-   */
-  static final Integer DEFAULT_MAX_SESSION = 5;
-
-  /**
-   * Default register cycle
-   */
-  static final Integer DEFAULT_REGISTER_CYCLE = 5000;
-
-  /**
-   * Default toggle state for registration
-   */
-  static final Boolean DEFAULT_REGISTER_TOGGLE = true;
-
-  /**
-   * Default hub
-   */
-  static final String DEFAULT_HUB = "http://localhost:4444";
-
-  /**
-   * Default node status check timeout
-   */
-  static final Integer DEFAULT_NODE_STATUS_CHECK_TIMEOUT = 5000;
-
-  /**
-   * Default node unregister delay (unregisterIfStillDownAfter)
-   */
-  static final Integer DEFAULT_UNREGISTER_DELAY = 60000;
-
-  /**
-   * Default node down polling limit
-   */
-  static final Integer DEFAULT_DOWN_POLLING_LIMIT = 2;
-
-  /**
-   * Default proxy class name
-   */
-  static final String DEFAULT_PROXY = "org.openqa.grid.selenium.proxy.DefaultRemoteProxy";
-
-  /**
-   * Default DesiredCapabilites
-   */
-  // TODO: Is this really necessary?
-  static final class DefaultDesiredCapabilitiesBuilder {
-    static List<MutableCapabilities> getCapabilities() {
-      try (JsonInput jsonInput = loadJsonFromResourceOrFile(DEFAULT_NODE_CONFIG_FILE)) {
-        List<MutableCapabilities> caps = new ArrayList<>();
-
-        Map<String, Object> defaults = jsonInput.read(MAP_TYPE);
-        if (defaults == null || !(defaults.get("capabilities") instanceof Collection)) {
-          return caps;
-        }
-
-        for (Object el : (Collection<?>) defaults.get("capabilities")) {
-          @SuppressWarnings("unchecked")
-          Map<String, Object> map = (Map<String, Object>) el;
-          caps.add(new MutableCapabilities(map));
-        }
-        return caps;
-      }
-    }
-  }
+  @VisibleForTesting
+  static final String ROLE = "node";
 
   private static class HostPort {
     final String host;
@@ -185,61 +106,85 @@ public class GridNodeConfiguration extends GridConfiguration {
    * {@link #DEFAULT_NODE_CONFIG_FILE} or an empty list if the {@link #DEFAULT_NODE_CONFIG_FILE}
    * can not be loaded.
    */
-  public List<MutableCapabilities> capabilities = DefaultDesiredCapabilitiesBuilder.getCapabilities();
+  public List<MutableCapabilities> capabilities;
 
   /**
    * The down polling limit for the node. Defaults to {@code null}.
    */
-  public Integer downPollingLimit = DEFAULT_DOWN_POLLING_LIMIT;
+  public Integer downPollingLimit;
 
   /**
    * The hub url. Defaults to {@code http://localhost:4444}.
    */
-  public String hub = DEFAULT_HUB;
+  public String hub;
 
   /**
    * How often to pull the node. Defaults to 5000 ms
    */
-  public Integer nodePolling = DEFAULT_POLLING_INTERVAL;
+  public Integer nodePolling;
 
   /**
    * When to time out a node status check. Defaults is after 5000 ms.
    */
-  public Integer nodeStatusCheckTimeout = DEFAULT_NODE_STATUS_CHECK_TIMEOUT;
+  public Integer nodeStatusCheckTimeout;
 
   /**
    * The proxy class name to use. Defaults to org.openqa.grid.selenium.proxy.DefaultRemoteProxy.
    */
-  public String proxy = DEFAULT_PROXY;
+  public String proxy;
 
   /**
    * Whether to register this node with the hub. Defaults to {@code true}
    */
-  public Boolean register = DEFAULT_REGISTER_TOGGLE;
+  public Boolean register;
 
   /**
    * How often to re-register this node with the hub. Defaults to every 5000 ms.
    */
-  public Integer registerCycle = DEFAULT_REGISTER_CYCLE;
+  public Integer registerCycle;
 
   /**
    * How long to wait before marking this node down. Defaults is 60000 ms.
    */
-  public Integer unregisterIfStillDownAfter = DEFAULT_UNREGISTER_DELAY;
+  public Integer unregisterIfStillDownAfter;
 
   /**
    * Whether or not to drop capabilities that does not belong to the current platform family
    */
-  public boolean enablePlatformVerification = true;
+  public boolean enablePlatformVerification;
 
   /**
    * Creates a new configuration using the default values.
    */
   public GridNodeConfiguration() {
-    // overrides values set by base classes
-    role = DEFAULT_ROLE;
-    port = DEFAULT_PORT;
-    maxSession = DEFAULT_MAX_SESSION;
+    this(DEFAULT_CONFIG_FROM_JSON);
+  }
+
+  public GridNodeConfiguration(NodeJsonConfiguration jsonConfig) {
+    super(jsonConfig);
+    role = ROLE;
+    capabilities = jsonConfig.getCapabilities();
+    maxSession = jsonConfig.getMaxSession();
+    register = jsonConfig.getRegister();
+    registerCycle = jsonConfig.getRegisterCycle();
+    nodeStatusCheckTimeout = jsonConfig.getNodeStatusCheckTimeout();
+    nodePolling = jsonConfig.getNodePolling();
+    unregisterIfStillDownAfter = jsonConfig.getUnregisterIfStillDownAfter();
+    downPollingLimit = jsonConfig.getDownPollingLimit();
+    proxy = jsonConfig.getProxy();
+    enablePlatformVerification = jsonConfig.isEnablePlatformVerification();
+    if (jsonConfig.getHub() != null) {
+      hub = jsonConfig.getHub();
+
+    } else {
+      if (jsonConfig.getHubHost() == null) {
+        throw new RuntimeException("You must specify either a hubHost or hub parameter in a node JSON config.");
+      }
+      if (jsonConfig.getHubPort() == null) {
+        throw new RuntimeException("You must specify either a hubPort or hub parameter in a node JSON config.");
+      }
+      hub = hubHostPort.toString();
+    }
   }
 
   public String getHubHost() {
@@ -392,35 +337,29 @@ public class GridNodeConfiguration extends GridConfiguration {
 
   public static GridNodeConfiguration loadFromJSON(JsonInput jsonInput) {
     try {
-      GridNodeConfiguration config = StandaloneConfiguration.loadFromJson(
-          jsonInput,
-          GridNodeConfiguration.class);
-
-      if (config.configuration != null) {
-        // caught below
-        throw new GridConfigurationException(
-            "Deprecated -nodeConfig file encountered.Please update" +
-                " the file to work with Selenium 3.See https://github.com" +
-                "/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes-by-json" +
-                " for more details.");
-      }
-
-      GridNodeConfiguration result = new GridNodeConfiguration();
-      result.merge(config);
-      if (config.hub == null && (config.hubHost != null || config.hubPort != null)) {
-        result.hub = String.format("http://%s:%s", config.getHubHost(), config.getHubPort());
-      }
+      GridNodeConfiguration fromJson = new GridNodeConfiguration(NodeJsonConfiguration.loadFromJson(jsonInput));
+      GridNodeConfiguration result = new GridNodeConfiguration(); // defaults
+      result.merge(fromJson);
       // copy non-mergeable fields
-      if (config.host != null) {
-        result.host = config.host;
+      result.hub = String.format("http://%s:%s", fromJson.getHubHostPort(), fromJson.getHubPort());
+      if (fromJson.hub != null) {
+        result.hub = fromJson.hub;
       }
-      if (config.port != null) {
-        result.port = config.port;
+      if (fromJson.hubHost != null) {
+        result.hubHost = fromJson.hubHost;
+      }
+      if (fromJson.hubPort != null) {
+        result.hubPort = fromJson.hubPort;
+      }
+      if (fromJson.host != null) {
+        result.host = fromJson.host;
+      }
+      if (fromJson.port != null) {
+        result.port = fromJson.port;
       }
       return result;
     } catch (Throwable e) {
-      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
-                                           e);
+      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(), e);
     }
   }
 
