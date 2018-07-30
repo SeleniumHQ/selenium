@@ -26,6 +26,7 @@ import com.google.common.base.Splitter;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
+import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.commandhandler.ExceptionHandler;
