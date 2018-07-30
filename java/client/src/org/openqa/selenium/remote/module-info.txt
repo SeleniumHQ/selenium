@@ -20,4 +20,7 @@ module org.openqa.selenium.remote {
     exports org.openqa.selenium.remote.service;
     exports org.openqa.selenium.remote.session;
 
+    uses org.openqa.selenium.remote.service.CapabilitiesFilter;
+    uses org.openqa.selenium.remote.service.CapabilityTransform;
+    uses org.openqa.selenium.remote.service.DriverService$Builder;
 }
