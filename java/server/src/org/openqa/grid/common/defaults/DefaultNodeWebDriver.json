@@ -40,5 +40,7 @@
   "debug": false,
   "servlets" : [],
   "withoutServlets": [],
-  "custom": {}
+  "custom": {},
+  "browserTimeout": 0,
+  "timeout": 1800
 }

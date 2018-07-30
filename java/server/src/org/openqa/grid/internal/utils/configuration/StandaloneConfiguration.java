@@ -25,6 +25,8 @@ import com.google.common.collect.ImmutableSet;
 
 import org.openqa.grid.common.GridConfiguredJson;
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.utils.configuration.json.CommonJsonConfiguration;
+import org.openqa.grid.internal.utils.configuration.json.StandaloneJsonConfiguration;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeCoercer;
@@ -48,41 +50,11 @@ import java.util.stream.Stream;
 public class StandaloneConfiguration {
   public static final String DEFAULT_STANDALONE_CONFIG_FILE = "org/openqa/grid/common/defaults/DefaultStandalone.json";
 
-  /*
-   * IMPORTANT - Keep these constant values in sync with the ones specified in
-   * 'defaults/DefaultStandalone.json'  -- if for no other reasons documentation & consistency.
-   */
+  private static StandaloneJsonConfiguration DEFAULT_CONFIG_FROM_JSON
+      = StandaloneJsonConfiguration.loadFromResourceOrFile(DEFAULT_STANDALONE_CONFIG_FILE);
 
-  /**
-   * Default client timeout
-   */
   @VisibleForTesting
-  static final Integer DEFAULT_TIMEOUT = 1800;
-
-  /**
-   * Default browser timeout
-   */
-  @VisibleForTesting
-  static final Integer DEFAULT_BROWSER_TIMEOUT = 0;
-
-  /**
-   * Default standalone role
-   */
-  @VisibleForTesting
-  static final String DEFAULT_ROLE = "standalone";
-
-  /**
-   * Default standalone port
-   */
-  @VisibleForTesting
-  static final Integer DEFAULT_PORT = 4444;
-
-  /**
-   * Default state of LogeLevel.FINE log output toggle
-   */
-  @VisibleForTesting
-  static final Boolean DEFAULT_DEBUG_TOGGLE = false;
-
+  static final String ROLE = "standalone";
 
   /*
    * config parameters which do not serialize to json
@@ -103,12 +75,12 @@ public class StandaloneConfiguration {
   /**
    * Browser timeout. Default 0 (indefinite wait).
    */
-  public Integer browserTimeout = DEFAULT_BROWSER_TIMEOUT;
+  public Integer browserTimeout;
 
   /**
    * Enable {@code LogLevel.FINE} log messages. Default {@code false}.
    */
-  public Boolean debug = DEFAULT_DEBUG_TOGGLE;
+  public Boolean debug;
 
   /**
    *   Max threads for Jetty. Defaults to {@code null}.
@@ -129,23 +101,34 @@ public class StandaloneConfiguration {
   /**
    * Port to bind to. Default determined by configuration type.
    */
-  public Integer port = DEFAULT_PORT;
+  public Integer port;
 
   /**
    * Server role. Default determined by configuration type.
    */
-  public String role = DEFAULT_ROLE;
+  public String role;
 
   /**
    * Client timeout. Default 1800 sec.
    */
-  public Integer timeout = DEFAULT_TIMEOUT;
+  public Integer timeout;
 
   /**
    * Creates a new configuration using the default values.
    */
   public StandaloneConfiguration() {
-    // nothing to do.
+    this(DEFAULT_CONFIG_FROM_JSON);
+  }
+
+  public StandaloneConfiguration(CommonJsonConfiguration jsonConfig) {
+    this.role = ROLE;
+    this.debug = jsonConfig.getDebug();
+    this.log = jsonConfig.getLog();
+    this.host = jsonConfig.getHost();
+    this.port = jsonConfig.getPort();
+    this.timeout = jsonConfig.getTimeout();
+    this.browserTimeout = jsonConfig.getBrowserTimeout();
+    this.jettyMaxThreads = jsonConfig.getJettyMaxThreads();
   }
 
   public static<T extends StandaloneConfiguration> T loadFromJson(String resource, Class<T> type) {
