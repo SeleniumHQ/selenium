@@ -21,3 +21,25 @@ java_binary(
     "//java/server/src/org/openqa/grid/selenium:selenium-server-sources",
   ],
 )
+
+java_library(
+  name = "module-maker-lib",
+  srcs = [
+    "ModuleMaker.java",
+  ],
+  deps = [
+    "//third_party/java/bytebuddy:byte-buddy",
+    "//third_party/java/javaparser:javaparser-core",
+  ],
+)
+
+java_binary(
+  name = "module-maker",
+  main_class = "org.openqa.selenium.tools.ModuleMaker",
+  deps = [
+    ":module-maker-lib",
+  ],
+  visibility = [
+    "PUBLIC",
+  ],
+)

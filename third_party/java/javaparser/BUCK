@@ -4,7 +4,7 @@ prebuilt_jar(
   binary_jar = 'javaparser-core-3.6.14.jar',
   source_jar = 'javaparser-core-3.6.14-sources.jar',
   visibility = [
-    '//java/client/src/org/openqa/selenium/tools:package-lib',
+    '//java/client/src/org/openqa/selenium/tools:',
   ],
 )
 
