@@ -32,7 +32,7 @@ module Selenium
           ERRORS.fetch(code)
         when String
           klass_name = code.split(' ').map(&:capitalize).join.sub(/Error$/, '')
-          const_get("#{klass_name}Error")
+          const_get("#{klass_name}Error", false)
         end
       rescue KeyError, NameError
         WebDriverError
@@ -264,6 +264,7 @@ module Selenium
 
       # Aliases for OSS dialect.
       ScriptTimeoutError  = ScriptTimeOutError
+      TimeoutError        = TimeOutError
       NoAlertOpenError    = NoAlertPresentError
 
       # Aliases for backwards compatibility.
