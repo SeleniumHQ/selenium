@@ -40,24 +40,7 @@ public class SmokeTest {
 
   @Before
   public void prepare() throws Exception {
-
-    hub = GridTestHelper.getHub();
-
-    SelfRegisteringRemote remote =
-        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
-
-    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,SeleniumProtocol.WebDriver);
-
-    remote.addBrowser(capabilities, 1);
-
-    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
-    remote.startRemoteServer();
-
-    remote.getConfiguration().timeout = -1;
-    remote.sendRegistrationRequest();
-    RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
+    hub = prepareTestGrid();
   }
 
   @Test
@@ -78,5 +61,32 @@ public class SmokeTest {
   @After
   public void stop() {
     hub.stop();
+  }
+
+  public static Hub prepareTestGrid() throws Exception {
+    return prepareTestGrid(DesiredCapabilities.htmlUnit(),1);
+  }
+
+  public static Hub prepareTestGrid(DesiredCapabilities caps, int nodesCount) throws Exception {
+    Hub hub = GridTestHelper.getHub();
+    for (int i = 1; i <= nodesCount; i++) {
+
+      SelfRegisteringRemote remote =
+          GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
+      remote.addBrowser(caps, 1);
+
+      DesiredCapabilities capabilities = new DesiredCapabilities(caps);
+      caps.setCapability(RegistrationRequest.SELENIUM_PROTOCOL, SeleniumProtocol.WebDriver);
+
+      remote.addBrowser(capabilities, 1);
+
+      remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
+      remote.startRemoteServer();
+
+      remote.getConfiguration().timeout = -1;
+      remote.sendRegistrationRequest();
+      RegistryTestHelper.waitForNode(hub.getRegistry(), i);
+    }
+    return hub;
   }
 }
