@@ -28,7 +28,7 @@ import com.thoughtworks.selenium.webdriven.commands.*;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 
 import java.util.HashMap;
 import java.util.Map;

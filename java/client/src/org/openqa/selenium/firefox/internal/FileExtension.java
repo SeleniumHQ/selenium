@@ -47,6 +47,10 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+/**
+ * @deprecated Internal class. Visibility will be reduced and won't be exported from module.
+ */
+@Deprecated
 public class FileExtension implements Extension {
   private static final String EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#";
 

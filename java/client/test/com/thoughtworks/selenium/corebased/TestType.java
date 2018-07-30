@@ -22,7 +22,7 @@ import com.google.common.io.Files;
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.junit.Test;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;

@@ -21,8 +21,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.internal.HasIdentity;
-import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebElement;
 
@@ -51,7 +50,7 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
       arg = ((WrapsElement) arg).getWrappedElement();
     }
 
-    if (arg instanceof HasIdentity) {
+    if (arg instanceof RemoteWebElement) {
       return ImmutableMap.of(
         Dialect.OSS.getEncodedElementKey(), ((RemoteWebElement) arg).getId(),
         Dialect.W3C.getEncodedElementKey(), ((RemoteWebElement) arg).getId());

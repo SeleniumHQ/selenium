@@ -19,7 +19,7 @@ package org.openqa.selenium.remote.server.handler;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.rest.RestishHandler;

@@ -24,7 +24,7 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.ByteArrayInputStream;

@@ -18,7 +18,6 @@
 package org.openqa.selenium;
 
 import java.util.List;
-import org.openqa.selenium.internal.WrapsElement;
 
 /**
  * A WebElement that wraps another WebElement, for purposes of testing that JSON converters

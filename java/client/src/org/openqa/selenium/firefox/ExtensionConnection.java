@@ -25,7 +25,9 @@ import java.net.URI;
 
 /**
  * Represents a connection with the FirefoxDriver browser extension.
+ * @deprecated Unused: no replacement.
  */
+@Deprecated
 public interface ExtensionConnection extends CommandExecutor, NeedsLocalLogs {
 
   /**

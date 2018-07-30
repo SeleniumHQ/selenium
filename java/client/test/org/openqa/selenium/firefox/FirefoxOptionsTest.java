@@ -47,7 +47,6 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.testing.JreSystemProperty;
 import org.openqa.selenium.testing.TestUtilities;
 

@@ -15,18 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.internal;
-
-import org.openqa.selenium.WebElement;
-
-import java.util.List;
+package org.openqa.selenium;
 
 /**
- * @deprecated An implementation detail of {@link org.openqa.selenium.By}. Will be removed in 4.0
+ * This interface indicates that the implementing class knows about the driver that contains it and
+ * can export it.
  */
-@Deprecated
-public interface FindsByName {
-  WebElement findElementByName(String using);
-
-  List<WebElement> findElementsByName(String using);
+public interface WrapsDriver {
+  /**
+   * @return The driver that contains this element.
+   */
+  WebDriver getWrappedDriver();
 }

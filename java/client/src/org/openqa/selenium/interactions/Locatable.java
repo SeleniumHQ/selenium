@@ -15,18 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
 
-import java.util.List;
-
-/**
- * @deprecated An implementation detail of {@link org.openqa.selenium.By}. Will be removed in 4.0
- */
-@Deprecated
-public interface FindsByName {
-  WebElement findElementByName(String using);
-
-  List<WebElement> findElementsByName(String using);
+public interface Locatable {
+  Coordinates getCoordinates();
 }

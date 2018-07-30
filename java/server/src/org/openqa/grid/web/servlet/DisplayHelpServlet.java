@@ -21,7 +21,7 @@ import com.google.common.io.ByteStreams;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.web.servlet.console.ConsoleServlet;
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 
