@@ -5,6 +5,7 @@ prebuilt_jar(
   source_jar = 'byte-buddy-1.8.15-sources.jar',
   visibility = [
     '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/src/org/openqa/selenium/tools:',
     '//third_party/java/mockito:mockito-core',
   ],
 )
