@@ -28,8 +28,8 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.server.ServletRequestWrappingHttpRequest;
-import org.openqa.selenium.remote.server.ServletResponseWrappingHttpResponse;
+import org.openqa.selenium.grid.web.ServletRequestWrappingHttpRequest;
+import org.openqa.selenium.grid.web.ServletResponseWrappingHttpResponse;
 
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
