@@ -143,7 +143,7 @@ public class ModuleMaker {
 
     @Override
     public void visit(ModuleUsesStmt n, Void arg) {
-      throw new UnsupportedOperationException(n.toString());
+      byteBuddyVisitor.visitUse(n.getTypeAsString().replace('.', '/'));
     }
 
     @Override
