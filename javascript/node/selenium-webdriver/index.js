@@ -223,6 +223,9 @@ class Builder {
 
     /** @private {ie.Options} */
     this.ieOptions_ = null;
+  
+    /** @private {ie.ServiceBuilder} */
+    this.ieService_ = null;
 
     /** @private {safari.Options} */
     this.safariOptions_ = null;
