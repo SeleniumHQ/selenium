@@ -256,7 +256,23 @@ int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager
     } else {
       LOG(INFO) << "Unknown type of dispatch is found in result, assuming IHTMLElement";
       CComPtr<IHTMLElement> node;
-      variant_value.pdispVal->QueryInterface<IHTMLElement>(&node);
+      HRESULT hr = variant_value.pdispVal->QueryInterface<IHTMLElement>(&node);
+      if (FAILED(hr)) {
+        CComPtr<IHTMLWindow2> window_node;
+        hr = variant_value.pdispVal->QueryInterface<IHTMLWindow2>(&window_node);
+        if (SUCCEEDED(hr) && window_node) {
+          // TODO: We need to track window objects and return a custom JSON
+          // object according to the spec, but that will require a fair
+          // amount of refactoring.
+          LOG(DEBUG) << "Returning window object from JavaScript is not supported";
+        }
+
+        // We've already done our best to check if the object is an array or
+        // an object. We now know it doesn't implement IHTMLElement. We have
+        // no choice but to throw up our hands here.
+        LOG(WARN) << "Dispatch value is not recognized as a JavaScript object, array, or element reference";
+        return EUNEXPECTEDJSERROR;
+      }
       ElementHandle element_wrapper;
       bool element_added = element_manager->AddManagedElement(node, &element_wrapper);
       Json::Value element_value(Json::objectValue);
