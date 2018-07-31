@@ -1,15 +1,17 @@
+# BUILD FILE SYNTAX: SKYLARK
+
 prebuilt_jar(
   name = 'websocket-api',
-  maven_coords = 'org.eclipse.jetty.websocket:websocket-api:jar:9.4.7.v20170914',
-  binary_jar = 'websocket-api-9.4.7.v20170914.jar',
-  source_jar = 'websocket-api-9.4.7.v20170914-sources.jar',
+  maven_coords = 'org.eclipse.jetty.websocket:websocket-api:jar:9.4.8.v20180619',
+  binary_jar = 'websocket-api-9.4.8.v20180619.jar',
+  source_jar = 'websocket-api-9.4.8.v20180619-sources.jar',
 )
 
 prebuilt_jar(
   name = 'websocket-client',
-  maven_coords = 'org.eclipse.jetty.websocket:websocket-client:jar:9.4.7.v20170914',
-  binary_jar = 'websocket-client-9.4.7.v20170914.jar',
-  source_jar = 'websocket-client-9.4.7.v20170914-sources.jar',
+  maven_coords = 'org.eclipse.jetty.websocket:websocket-client:jar:9.4.8.v20180619',
+  binary_jar = 'websocket-client-9.4.8.v20180619.jar',
+  source_jar = 'websocket-client-9.4.8.v20180619-sources.jar',
   deps = [
     ':websocket-common',
     '//third_party/java/jetty:jetty-client',
@@ -18,15 +20,15 @@ prebuilt_jar(
     '//third_party/java/jetty:jetty-xml'
   ],
   visibility = [
-    '//third_party/java/htmlunit:htmlunit'
+    '//third_party/java/htmlunit:htmlunit',
   ],
 )
 
 prebuilt_jar(
   name = 'websocket-common',
-  maven_coords = 'org.eclipse.jetty.websocket:websocket-common:jar:9.4.7.v20170914',
-  binary_jar = 'websocket-common-9.4.7.v20170914.jar',
-  source_jar = 'websocket-common-9.4.7.v20170914-sources.jar',
+  maven_coords = 'org.eclipse.jetty.websocket:websocket-common:jar:9.4.8.v20180619',
+  binary_jar = 'websocket-common-9.4.8.v20180619.jar',
+  source_jar = 'websocket-common-9.4.8.v20180619-sources.jar',
   deps = [
     ':websocket-api',
     '//third_party/java/jetty:jetty-io',
