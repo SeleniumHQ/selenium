@@ -515,6 +515,8 @@ int Script::SetAsyncScriptElementArgument(HWND async_executor_handle,
   info->element_id = element_id;
   ElementHandle element_wrapper;
   int return_code = command_executor.GetManagedElement(element_id, &element_wrapper);
+  if (return_code != WD_SUCCESS)
+    return return_code;
   HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLElement,
                                                        element_wrapper->element(),
                                                        &info->element_stream);
