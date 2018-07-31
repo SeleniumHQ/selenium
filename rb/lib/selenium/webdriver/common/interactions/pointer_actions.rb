@@ -18,8 +18,15 @@
 module Selenium
   module WebDriver
     module PointerActions
-      @default_move_duration = 0.25 # 250 milliseconds
-      attr_accessor :default_move_duration
+      attr_writer :default_move_duration
+
+      #
+      # The overridable duration for movement used by methods in this module
+      #
+
+      def default_move_duration
+        @default_move_duration ||= 0.25 # 250 milliseconds
+      end
 
       #
       # Presses (without releasing) at the current location of the PointerInput device. This is equivalent to:
