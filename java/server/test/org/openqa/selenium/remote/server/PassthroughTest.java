@@ -19,6 +19,8 @@ package org.openqa.selenium.remote.server;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import com.google.common.io.ByteStreams;
 
@@ -32,6 +34,7 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,31 +60,31 @@ public class PassthroughTest {
   }
 
   @Test
-  public void shouldForwardRequestsToEndPoint() {
-//    SessionCodec handler = new Passthrough(server.url);
-//    FakeHttpServletRequest req = new FakeHttpServletRequest("GET", new UrlInfo(server.url.toString(), "", "/ok"));
-//    req.addHeader("X-Cheese", "Cake");
-//    FakeHttpServletResponse resp = new FakeHttpServletResponse();
-//    handler.handle(req, resp);
-//
-//    // HTTP headers are case insensitive. This is how the HttpUrlConnection likes to encode things
-//    assertEquals("Cake", server.lastRequest.getHeader("x-cheese"));
+  public void shouldForwardRequestsToEndPoint() throws IOException {
+    SessionCodec handler = new Passthrough(server.url);
+    HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
+    req.addHeader("X-Cheese", "Cake");
+    HttpResponse resp = new HttpResponse();
+    handler.handle(req, resp);
+
+    // HTTP headers are case insensitive. This is how the HttpUrlConnection likes to encode things
+    assertEquals("Cake", server.lastRequest.getHeader("x-cheese"));
   }
 
   @Test
-  public void shouldStripKeepAliveHeader() {
-//    SessionCodec handler = new Passthrough(server.url);
-//    FakeHttpServletRequest req = new FakeHttpServletRequest("GET", new UrlInfo(server.url.toString(), "", "/ok"));
-//    req.addHeader("Keep-Alive", "timeout=600");
-//    req.addHeader("Connection", "Keep-Alive, Upgrade");
-//    FakeHttpServletResponse resp = new FakeHttpServletResponse();
-//    handler.handle(req, resp);
-//
-//    assertNull(server.lastRequest.getHeader("keep-alive"));
-//    // Not, we must set the connection to `close` in order to have the JVM avoid attempting to keep
-//    // the url connection open.
-//    // http://docs.oracle.com/javase/6/docs/technotes/guides/net/http-keepalive.html
-//    assertEquals("close", server.lastRequest.getHeader("connection"));
+  public void shouldStripKeepAliveHeader() throws IOException {
+    SessionCodec handler = new Passthrough(server.url);
+    HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
+    req.addHeader("Keep-Alive", "timeout=600");
+    req.addHeader("Connection", "Keep-Alive, Upgrade");
+    HttpResponse resp = new HttpResponse();
+    handler.handle(req, resp);
+
+    assertNull(server.lastRequest.getHeader("keep-alive"));
+    // Not, we must set the connection to `close` in order to have the JVM avoid attempting to keep
+    // the url connection open.
+    // http://docs.oracle.com/javase/6/docs/technotes/guides/net/http-keepalive.html
+    assertEquals("close", server.lastRequest.getHeader("connection"));
   }
 
   private static class Server {
