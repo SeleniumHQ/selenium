@@ -514,7 +514,13 @@ int Script::SetAsyncScriptElementArgument(HWND async_executor_handle,
   ElementInfo* info = new ElementInfo;
   info->element_id = element_id;
   ElementHandle element_wrapper;
-  int return_code = command_executor.GetManagedElement(element_id, &element_wrapper);
+  int return_code = command_executor.GetManagedElement(element_id,
+                                                       &element_wrapper);
+  if (return_code != WD_SUCCESS) {
+    LOG(WARN) << "Element requested with id " << element_id
+              << " does not exist.";
+    return return_code;
+  }
   HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLElement,
                                                        element_wrapper->element(),
                                                        &info->element_stream);
