@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 /**
  * An incredibly bad implementation of URL Templates, but enough for our needs.
  */
-class UrlTemplate {
+public class UrlTemplate {
 
   private final static Pattern GROUP_NAME = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>");
   private final List<Matches> template;

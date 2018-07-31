@@ -83,7 +83,6 @@ java_library(
     'SessionCodec.java',
     'SessionFactory.java',
     'TeeReader.java',
-    'UrlTemplate.java',
     'WebDriverServlet.java',
   ] + glob(['commandhandler/*.java']),
   provided_deps = [
