@@ -48,7 +48,6 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     TeeReaderTest.class,
     UploadFileTest.class,
     org.openqa.selenium.remote.server.commandhandler.UploadFileTest.class,
-    UrlTemplateTest.class,
     UtilsTest.class,
     WebDriverServletTest.class
 })
