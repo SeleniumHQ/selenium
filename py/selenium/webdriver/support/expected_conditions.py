@@ -68,7 +68,7 @@ class url_contains(object):
     """ An expectation for checking that the current url contains a
     case-sensitive substring.
     url is the fragment of url expected,
-    returns True when the title matches, False otherwise
+    returns True when the url matches, False otherwise
     """
     def __init__(self, url):
         self.url = url
@@ -80,7 +80,7 @@ class url_contains(object):
 class url_matches(object):
     """An expectation for checking the current url.
     pattern is the expected pattern, which must be an exact match
-    returns True if the title matches, false otherwise."""
+    returns True if the url matches, false otherwise."""
     def __init__(self, pattern):
         self.pattern = pattern
 
@@ -94,7 +94,7 @@ class url_matches(object):
 class url_to_be(object):
     """An expectation for checking the current url.
     url is the expected url, which must be an exact match
-    returns True if the title matches, false otherwise."""
+    returns True if the url matches, false otherwise."""
     def __init__(self, url):
         self.url = url
 
