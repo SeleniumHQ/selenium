@@ -42,7 +42,7 @@ module Selenium
         end
       end
 
-      context 'when uploading multiple files', only: {browser: %i[chrome ie]} do
+      context 'when uploading multiple files', only: {browser: :chrome} do
         it 'uses the file detector' do
           driver.navigate.to url_for('upload_multiple.html')
 
