@@ -9,6 +9,23 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Modified to prevent attempt to return IDispatch that is not IHTMLElement.
+   When returning values from JavaScript, if a variant value is an IDispatch,
+   but does not implement IHTMLElement, and also is not recognized as a
+   JavaScript array or object, avoid returning it from the script. This is
+   also to prevent returning things like a window or document reference, as
+   those items contain recursive references that cannot be properly
+   serialized to JSON.
+ * (on behalf of Mike Bellew) Fixed null pointer exception when managed
+   element is not found. The command executor has a chance to return an error
+   code of ENOSUCHELEMENT when executing scripts. This leaves the element
+   wrapper object equal to null, which in turn ends up throwing an exception
+   on the next like of code when it tries to use the element. This would
+   cause a crash in IEDriver and it shuts down
+
 v3.13.0.5
 =========
  * Modified to silently dismiss onbeforeupdate dialogs. The W3C WebDriver
