@@ -1,3 +1,10 @@
+Selenium 3.14.0
+* Fix doc of URL-related ExpectedCondition (#6236)
+* Added ExpectedCondition invisibility_of_element
+* Swap out httplib for urllib3
+* Be consistent with webdriver init kwarg service_log_path (#5725)
+
+
 Selenium 3.13.0
 
 * Add executing Chrome devtools command (#5989)
