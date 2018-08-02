@@ -466,6 +466,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Edge, "Driver checks for overlapping elements")]
         public void ClickPartiallyOverlappingElements()
         {
             if (TestUtilities.IsOldIE(driver))
@@ -496,6 +497,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Edge, "Driver checks for overlapping elements")]
         public void NativelyClickOverlappingElements()
         {
             if (TestUtilities.IsOldIE(driver))
