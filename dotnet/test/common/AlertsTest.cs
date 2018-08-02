@@ -459,6 +459,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not trigger alerts on unload.")]
+        [IgnoreBrowser(Browser.Edge, "Edge does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnPageUnload()
         {
             string pageWithOnBeforeUnload = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -503,6 +504,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Test as written does not trigger alert; also onbeforeunload alert on close will hang browser")]
         [IgnoreBrowser(Browser.Chrome, "Test as written does not trigger alert")]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
+        [IgnoreBrowser(Browser.Edge, "Edge does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnWindowClose()
         {
             string pageWithOnBeforeUnload = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
