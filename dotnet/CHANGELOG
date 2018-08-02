@@ -1,3 +1,67 @@
+v3.14.0
+=======
+ * Refactored .NET capability handling. This version introduces a large and
+   intrusive refactor of the .NET bindings' capability handling. It introduces
+   a new class, `RemoteSessionSettings`, for use with creating remote sessions
+   via `RemoteWebDriver`. Additionally, the `DesiredCapabilities` class is now
+   marked as deprecated and will generate a compile warning on its use.
+
+   Almost without exeception, users should not be using DesiredCapabilities in
+   .NET. The browser-specific options classes provide functionality for adding
+   any additional capabilities that would need to be sent to a remote end. One
+   possible exception is when using RemoteWebDriver to connect to a remote
+   server implementation, where the ToCapabilites method has been called,
+   but the user wants to add additional capabilities, even though they could
+   and should have been added before calling the method. In a future release,
+   calling ToCapabilities will result in a read-only capabilities object, but
+   recognizing that many users already have existing code that does this,
+   moving immediately to make the returned object read-only is premature. For
+   the moment, then, the SetCapabilty method is now marked as deprecated on
+   DesiredCapabilities. In the next version of the .NET bindings, the return
+   from ToCapabilities will be changed to return a read-only object.
+
+   The RemoteSessionSettings class is designed for use cases where the user
+   wants to create a remote session using RemoteWebDriver where all of the
+   nodes in the session creation support the W3C WebDriver Specification
+   dialect of the wire protocol. This class is designed to be used in
+   conjunction with the browser-specific driver options classes for matching
+   capabilities on the remote end.
+
+   For single-browser cases, it is still possible (though unnecessary) to
+   use a browser-specific driver options class (`ChromeOptions`,
+   `FirefoxOptions`, etc.) by calling the `ToCapabilities()` method, but as
+   previously mentioned, in the future, the capabilities returned will be
+   read-only, and will not be able to be added to. Users who feel the need
+   to modify the options class after converting to capabilities are encouraged
+   to add the additional capabilites to the options class before the conversion
+   by appropriate use of the `AddAdditionalCapability` method.
+ * Exposed additional extension points to better control HTTP communications
+   between the language bindings and the remote end implemention. For the
+   .NET implementation of HttpCommandExecutor, we now expose a Proxy property
+   for proxying requests between the .NET code and the remote end WebDriver
+   implementation. Note carefully that this is entirely separate from the
+   proxy used by the browser for monitoring communications between the browser
+   and the server hosting the page being automated.
+
+   Additionally, this change exposes the IsKeepAliveEnabled property to make
+   it easier to set whether or not the "keep alive" header is sent when
+   communicating between the language bindings and the remote end WebDriver
+   implementation.
+
+   Finally, for local use, the DriverServiceCommandExecutor now exposes a
+   property to allow the user to set tho newly-exposed properties by allowing
+   access to the internal HttpCommandExecutor of the driver service.
+ * Added a workaround for Safari Tech Preview to send the proper browser name
+   to the driver.
+ * Added type-safe properties for Safari capabilities in .NET SafariOptions.
+ * Marked .NET hardware manipulation interfaces deprecated.  The `Mouse`
+   `Keyboard`, and `TouchScreen` properties were never intended for direct
+   use in users' code. These interfaces, and the properties that reference
+   them, are now being marked as deprecated. The correct way to simulate
+   advanced user input is to use the `Actions` or `ActionBuilder` classes.
+ * Removed long-deprecated local PhantomJS support from .NET, as well as
+   other deprecated code.
+
 v3.13.1
 =======
  * Updated to fully remove use of internal CreateElement method in favor of
