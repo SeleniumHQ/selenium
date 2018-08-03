@@ -164,11 +164,14 @@ extends <a href="../../../../org/openqa/selenium/WebDriverException.html" title=
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonException.html#JsonException-com.google.gson.JsonParseException-">JsonException</a></span>(com.google.gson.JsonParseException&nbsp;jpe)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonException.html#JsonException-java.lang.String-">JsonException</a></span>(java.lang.String&nbsp;message)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonException.html#JsonException-java.lang.String-com.google.gson.JsonParseException-">JsonException</a></span>(java.lang.String&nbsp;message,
-             com.google.gson.JsonParseException&nbsp;jpe)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonException.html#JsonException-java.lang.String-java.lang.Throwable-">JsonException</a></span>(java.lang.String&nbsp;message,
+             java.lang.Throwable&nbsp;cause)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonException.html#JsonException-java.lang.Throwable-">JsonException</a></span>(java.lang.Throwable&nbsp;cause)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -214,23 +217,32 @@ extends <a href="../../../../org/openqa/selenium/WebDriverException.html" title=
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="JsonException-java.lang.String-com.google.gson.JsonParseException-">
+<a name="JsonException-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>JsonException</h4>
-<pre>public&nbsp;JsonException(java.lang.String&nbsp;message,
-                     com.google.gson.JsonParseException&nbsp;jpe)</pre>
+<pre>public&nbsp;JsonException(java.lang.String&nbsp;message)</pre>
 </li>
 </ul>
-<a name="JsonException-com.google.gson.JsonParseException-">
+<a name="JsonException-java.lang.Throwable-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>JsonException</h4>
+<pre>public&nbsp;JsonException(java.lang.Throwable&nbsp;cause)</pre>
+</li>
+</ul>
+<a name="JsonException-java.lang.String-java.lang.Throwable-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>JsonException</h4>
-<pre>public&nbsp;JsonException(com.google.gson.JsonParseException&nbsp;jpe)</pre>
+<pre>public&nbsp;JsonException(java.lang.String&nbsp;message,
+                     java.lang.Throwable&nbsp;cause)</pre>
 </li>
 </ul>
 </li>

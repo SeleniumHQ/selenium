@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -116,7 +116,8 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public static class <span class="typeNameLabel">ChromeDriverService.Builder</span>
+<pre>@AutoService(value=<a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder.class</a>)
+public static class <span class="typeNameLabel">ChromeDriverService.Builder</span>
 extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a>,<a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a>&gt;</pre>
 <div class="block">Builder used to configure new <a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a> instances.</div>
 </li>
@@ -170,18 +171,25 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#findDefaultExecutable--">findDefaultExecutable</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#score-org.openqa.selenium.Capabilities-">score</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilites)</code>
+<div class="block">Provides a measure of how strongly this <a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> supports the given
+ <code>capabilities</code>.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withSilent-boolean-">withSilent</a></span>(boolean&nbsp;silent)</code>
 <div class="block">Configures the driver server for silent output.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withVerbose-boolean-">withVerbose</a></span>(boolean&nbsp;verbose)</code>
 <div class="block">Configures the driver server verbosity.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withWhitelistedIps-java.lang.String-">withWhitelistedIps</a></span>(java.lang.String&nbsp;whitelistedIps)</code>
 <div class="block">Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
@@ -234,6 +242,26 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="score-org.openqa.selenium.Capabilities-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>score</h4>
+<pre>public&nbsp;int&nbsp;score(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilites)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#score-org.openqa.selenium.Capabilities-">DriverService.Builder</a></code></span></div>
+<div class="block">Provides a measure of how strongly this <a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> supports the given
+ <code>capabilities</code>. A score of 0 or less indicates that this <a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> does not
+ support instances of <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> that require <code>capabilities</code>.
+ Typically, the score is generated by summing the number of capabilities that the driver
+ service directly supports that are unique to the driver service (that is, things like
+ "<code>proxy</code>" don't tend to count to the score).</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#score-org.openqa.selenium.Capabilities-">score</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a>,<a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a>&gt;</code></dd>
+</dl>
+</li>
+</ul>
 <a name="withVerbose-boolean-">
 <!--   -->
 </a>
@@ -244,7 +272,7 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <div class="block">Configures the driver server verbosity.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>verbose</code> - true for verbose output, false otherwise.</dd>
+<dd><code>verbose</code> - True for verbose output, false otherwise.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -260,7 +288,7 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <div class="block">Configures the driver server for silent output.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>silent</code> - true for silent output, false otherwise.</dd>
+<dd><code>silent</code> - True for silent output, false otherwise.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -277,7 +305,7 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
  to the driver server.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>whitelistedIps</code> - comma-separated list of remote IPv4 addresses</dd>
+<dd><code>whitelistedIps</code> - Comma-separated list of remote IPv4 addresses.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>

@@ -653,8 +653,6 @@
       <pre class="lines">
 
 
-171
-172
 173
 174
 175
@@ -664,10 +662,12 @@
 179
 180
 181
-182</pre>
+182
+183
+184</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 171</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 173</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENOENT</span><span class='comma'>,</span> <span class='id identifier rubyid_jar'>jar</span> <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_exist?'>exist?</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='rparen'>)</span>
@@ -719,12 +719,12 @@
       <pre class="lines">
 
 
-151
-152
-153</pre>
+153
+154
+155</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 151</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 153</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_background'>background</span>
   <span class='ivar'>@background</span>
@@ -762,12 +762,12 @@
       <pre class="lines">
 
 
-157
-158
-159</pre>
+159
+160
+161</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 157</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 159</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span>
   <span class='ivar'>@log</span>
@@ -805,12 +805,12 @@
       <pre class="lines">
 
 
-139
-140
-141</pre>
+141
+142
+143</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 139</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 141</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_port'>port</span>
   <span class='ivar'>@port</span>
@@ -848,12 +848,12 @@
       <pre class="lines">
 
 
-145
-146
-147</pre>
+147
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 145</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 147</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeout'>timeout</span>
   <span class='ivar'>@timeout</span>
@@ -1037,7 +1037,9 @@
 116
 117
 118
-119</pre>
+119
+120
+121</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 112</span>
@@ -1045,9 +1047,11 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_latest'>latest</span>
   <span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>rexml/document</span><span class='tstring_end'>&#39;</span></span>
   <span class='id identifier rubyid_net_http'>net_http</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>selenium-release.storage.googleapis.com</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_http'>http</span><span class='op'>|</span>
-    <span class='const'>REXML</span><span class='op'>::</span><span class='const'>Document</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_http'>http</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_body'>body</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='period'>.</span><span class='id identifier rubyid_get_elements'>get_elements</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>//Contents/Key</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span>
+    <span class='id identifier rubyid_versions'>versions</span> <span class='op'>=</span> <span class='const'>REXML</span><span class='op'>::</span><span class='const'>Document</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_http'>http</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_body'>body</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='period'>.</span><span class='id identifier rubyid_get_elements'>get_elements</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>//Contents/Key</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span>
       <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_text'>text</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>selenium-server-standalone-(\d+\.\d+\.\d+)\.jar</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='int'>1</span><span class='rbracket'>]</span>
-    <span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_max'>max</span>
+    <span class='kw'>end</span>
+
+    <span class='id identifier rubyid_versions'>versions</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_version'>version</span><span class='op'>|</span> <span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_version'>version</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_max'>max</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1070,8 +1074,6 @@
       <pre class="lines">
 
 
-121
-122
 123
 124
 125
@@ -1081,10 +1083,12 @@
 129
 130
 131
-132</pre>
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 123</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_net_http'>net_http</span>
   <span class='id identifier rubyid_http_proxy'>http_proxy</span> <span class='op'>=</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>http_proxy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HTTP_PROXY</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
@@ -1124,16 +1128,16 @@
       <pre class="lines">
 
 
-207
-208
 209
 210
 211
 212
-213</pre>
+213
+214
+215</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 207</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 209</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_arg'>arg</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
@@ -1162,15 +1166,15 @@
       <pre class="lines">
 
 
-184
-185
 186
 187
 188
-189</pre>
+189
+190
+191</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 184</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 186</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='id identifier rubyid_process'>process</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
@@ -1198,8 +1202,6 @@
       <pre class="lines">
 
 
-191
-192
 193
 194
 195
@@ -1208,10 +1210,12 @@
 198
 199
 200
-201</pre>
+201
+202
+203</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 191</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 193</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='kw'>begin</span>
@@ -1244,12 +1248,12 @@
       <pre class="lines">
 
 
-203
-204
-205</pre>
+205
+206
+207</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 203</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 205</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_webdriver_url'>webdriver_url</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>/wd/hub</span><span class='tstring_end'>&quot;</span></span>
@@ -1264,9 +1268,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Jun 29 10:27:05 2018 by
+  Generated on Fri Aug  3 17:23:21 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.4.0).
+  0.9.12 (ruby-2.2.8).
 </div>
 
     </div>

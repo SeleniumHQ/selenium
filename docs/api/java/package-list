@@ -7,8 +7,10 @@ org.openqa.selenium.chrome
 org.openqa.selenium.edge
 org.openqa.selenium.firefox
 org.openqa.selenium.firefox.internal
+org.openqa.selenium.grid.web
 org.openqa.selenium.html5
 org.openqa.selenium.ie
+org.openqa.selenium.injector
 org.openqa.selenium.interactions
 org.openqa.selenium.interactions.internal
 org.openqa.selenium.interactions.touch

@@ -165,10 +165,30 @@ extends <a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultE
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator-org.openqa.selenium.support.ui.Clock-org.openqa.selenium.SearchContext-java.lang.reflect.Field-int-">AjaxElementLocator</a></span>(<a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
                   <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
                   java.lang.reflect.Field&nbsp;field,
-                  int&nbsp;timeOutInSeconds)</code>&nbsp;</td>
+                  int&nbsp;timeOutInSeconds)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator-java.time.Clock-org.openqa.selenium.SearchContext-int-org.openqa.selenium.support.pagefactory.AbstractAnnotations-"><code>AjaxElementLocator(Clock, SearchContext, int, AbstractAnnotations)</code></a>.</span></div>
+</div>
+</td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator-java.time.Clock-org.openqa.selenium.SearchContext-java.lang.reflect.Field-int-">AjaxElementLocator</a></span>(java.time.Clock&nbsp;clock,
+                  <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
+                  java.lang.reflect.Field&nbsp;field,
+                  int&nbsp;timeOutInSeconds)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator-org.openqa.selenium.support.ui.Clock-org.openqa.selenium.SearchContext-int-org.openqa.selenium.support.pagefactory.AbstractAnnotations-">AjaxElementLocator</a></span>(<a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+                  <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+                  int&nbsp;timeOutInSeconds,
+                  <a href="../../../../../org/openqa/selenium/support/pagefactory/AbstractAnnotations.html" title="class in org.openqa.selenium.support.pagefactory">AbstractAnnotations</a>&nbsp;annotations)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator-java.time.Clock-org.openqa.selenium.SearchContext-int-org.openqa.selenium.support.pagefactory.AbstractAnnotations-"><code>AjaxElementLocator(Clock, SearchContext, int, AbstractAnnotations)</code></a>.</span></div>
+</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator-java.time.Clock-org.openqa.selenium.SearchContext-int-org.openqa.selenium.support.pagefactory.AbstractAnnotations-">AjaxElementLocator</a></span>(java.time.Clock&nbsp;clock,
                   <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
                   int&nbsp;timeOutInSeconds,
                   <a href="../../../../../org/openqa/selenium/support/pagefactory/AbstractAnnotations.html" title="class in org.openqa.selenium.support.pagefactory">AbstractAnnotations</a>&nbsp;annotations)</code>&nbsp;</td>
@@ -296,7 +316,21 @@ extends <a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultE
 <ul class="blockList">
 <li class="blockList">
 <h4>AjaxElementLocator</h4>
-<pre>public&nbsp;AjaxElementLocator(<a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+<pre>@Deprecated
+public&nbsp;AjaxElementLocator(<a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+                                      <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+                                      int&nbsp;timeOutInSeconds,
+                                      <a href="../../../../../org/openqa/selenium/support/pagefactory/AbstractAnnotations.html" title="class in org.openqa.selenium.support.pagefactory">AbstractAnnotations</a>&nbsp;annotations)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator-java.time.Clock-org.openqa.selenium.SearchContext-int-org.openqa.selenium.support.pagefactory.AbstractAnnotations-"><code>AjaxElementLocator(Clock, SearchContext, int, AbstractAnnotations)</code></a>.</span></div>
+</li>
+</ul>
+<a name="AjaxElementLocator-java.time.Clock-org.openqa.selenium.SearchContext-int-org.openqa.selenium.support.pagefactory.AbstractAnnotations-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>AjaxElementLocator</h4>
+<pre>public&nbsp;AjaxElementLocator(java.time.Clock&nbsp;clock,
                           <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
                           int&nbsp;timeOutInSeconds,
                           <a href="../../../../../org/openqa/selenium/support/pagefactory/AbstractAnnotations.html" title="class in org.openqa.selenium.support.pagefactory">AbstractAnnotations</a>&nbsp;annotations)</pre>
@@ -323,10 +357,24 @@ extends <a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultE
 <a name="AjaxElementLocator-org.openqa.selenium.support.ui.Clock-org.openqa.selenium.SearchContext-java.lang.reflect.Field-int-">
 <!--   -->
 </a>
+<ul class="blockList">
+<li class="blockList">
+<h4>AjaxElementLocator</h4>
+<pre>@Deprecated
+public&nbsp;AjaxElementLocator(<a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+                                      <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
+                                      java.lang.reflect.Field&nbsp;field,
+                                      int&nbsp;timeOutInSeconds)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator-java.time.Clock-org.openqa.selenium.SearchContext-int-org.openqa.selenium.support.pagefactory.AbstractAnnotations-"><code>AjaxElementLocator(Clock, SearchContext, int, AbstractAnnotations)</code></a>.</span></div>
+</li>
+</ul>
+<a name="AjaxElementLocator-java.time.Clock-org.openqa.selenium.SearchContext-java.lang.reflect.Field-int-">
+<!--   -->
+</a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>AjaxElementLocator</h4>
-<pre>public&nbsp;AjaxElementLocator(<a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+<pre>public&nbsp;AjaxElementLocator(java.time.Clock&nbsp;clock,
                           <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
                           java.lang.reflect.Field&nbsp;field,
                           int&nbsp;timeOutInSeconds)</pre>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,7 +116,8 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public static class <span class="typeNameLabel">XpiDriverService.Builder</span>
+<pre>@AutoService(value=<a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder.class</a>)
+public static class <span class="typeNameLabel">XpiDriverService.Builder</span>
 extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="../../../../org/openqa/selenium/firefox/XpiDriverService.html" title="class in org.openqa.selenium.firefox">XpiDriverService</a>,<a href="../../../../org/openqa/selenium/firefox/XpiDriverService.Builder.html" title="class in org.openqa.selenium.firefox">XpiDriverService.Builder</a>&gt;</pre>
 </li>
 </ul>
@@ -124,6 +125,23 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor.summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/XpiDriverService.Builder.html#Builder--">Builder</a></span>()</code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -152,10 +170,17 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/XpiDriverService.Builder.html#findDefaultExecutable--">findDefaultExecutable</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/XpiDriverService.Builder.html#score-org.openqa.selenium.Capabilities-">score</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilites)</code>
+<div class="block">Provides a measure of how strongly this <a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> supports the given
+ <code>capabilities</code>.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/XpiDriverService.Builder.html" title="class in org.openqa.selenium.firefox">XpiDriverService.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/XpiDriverService.Builder.html#withBinary-org.openqa.selenium.firefox.FirefoxBinary-">withBinary</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/XpiDriverService.Builder.html" title="class in org.openqa.selenium.firefox">XpiDriverService.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/XpiDriverService.Builder.html#withProfile-org.openqa.selenium.firefox.FirefoxProfile-">withProfile</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code>&nbsp;</td>
 </tr>
@@ -182,12 +207,49 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor.detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="Builder--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>Builder</h4>
+<pre>public&nbsp;Builder()</pre>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="score-org.openqa.selenium.Capabilities-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>score</h4>
+<pre>public&nbsp;int&nbsp;score(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilites)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#score-org.openqa.selenium.Capabilities-">DriverService.Builder</a></code></span></div>
+<div class="block">Provides a measure of how strongly this <a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> supports the given
+ <code>capabilities</code>. A score of 0 or less indicates that this <a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> does not
+ support instances of <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> that require <code>capabilities</code>.
+ Typically, the score is generated by summing the number of capabilities that the driver
+ service directly supports that are unique to the driver service (that is, things like
+ "<code>proxy</code>" don't tend to count to the score).</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#score-org.openqa.selenium.Capabilities-">score</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="../../../../org/openqa/selenium/firefox/XpiDriverService.html" title="class in org.openqa.selenium.firefox">XpiDriverService</a>,<a href="../../../../org/openqa/selenium/firefox/XpiDriverService.Builder.html" title="class in org.openqa.selenium.firefox">XpiDriverService.Builder</a>&gt;</code></dd>
+</dl>
+</li>
+</ul>
 <a name="withBinary-org.openqa.selenium.firefox.FirefoxBinary-">
 <!--   -->
 </a>
@@ -302,13 +364,13 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

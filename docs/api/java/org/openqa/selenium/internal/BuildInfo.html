@@ -17,12 +17,6 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -75,13 +69,13 @@ var activeTableTab = "activeTableTab";
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.org.openqa.selenium.BuildInfo">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -98,7 +92,12 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/openqa/selenium/BuildInfo.html" title="class in org.openqa.selenium">org.openqa.selenium.BuildInfo</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.internal.BuildInfo</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -106,11 +105,13 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/BuildInfo.html" title="class in org.openqa.selenium"><code>BuildInfo</code></a> instead.</span></div>
+</div>
 <br>
-<pre>public class <span class="typeNameLabel">BuildInfo</span>
-extends java.lang.Object</pre>
-<div class="block">Reads information about how the current application was built from the Build-Info section of the
- manifest in the jar file, which contains this class.</div>
+<pre>@Deprecated
+public class <span class="typeNameLabel">BuildInfo</span>
+extends <a href="../../../../org/openqa/selenium/BuildInfo.html" title="class in org.openqa.selenium">BuildInfo</a></pre>
 </li>
 </ul>
 </div>
@@ -129,7 +130,9 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/BuildInfo.html#BuildInfo--">BuildInfo</a></span>()</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/BuildInfo.html#BuildInfo--">BuildInfo</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -140,29 +143,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Method and Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/BuildInfo.html#getBuildRevision--">getBuildRevision</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/BuildInfo.html#getBuildTime--">getBuildTime</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/BuildInfo.html#getReleaseLabel--">getReleaseLabel</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/BuildInfo.html#toString--">toString</a></span>()</code>&nbsp;</td>
-</tr>
-</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.BuildInfo">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../../../../org/openqa/selenium/BuildInfo.html" title="class in org.openqa.selenium">BuildInfo</a></h3>
+<code><a href="../../../../org/openqa/selenium/BuildInfo.html#getBuildRevision--">getBuildRevision</a>, <a href="../../../../org/openqa/selenium/BuildInfo.html#getBuildTime--">getBuildTime</a>, <a href="../../../../org/openqa/selenium/BuildInfo.html#getReleaseLabel--">getReleaseLabel</a>, <a href="../../../../org/openqa/selenium/BuildInfo.html#toString--">toString</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -191,66 +178,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>BuildInfo</h4>
 <pre>public&nbsp;BuildInfo()</pre>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ============ METHOD DETAIL ========== -->
-<ul class="blockList">
-<li class="blockList"><a name="method.detail">
-<!--   -->
-</a>
-<h3>Method Detail</h3>
-<a name="getReleaseLabel--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getReleaseLabel</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getReleaseLabel()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The embedded release label or "unknown".</dd>
-</dl>
-</li>
-</ul>
-<a name="getBuildRevision--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getBuildRevision</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getBuildRevision()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The embedded build revision or "unknown".</dd>
-</dl>
-</li>
-</ul>
-<a name="getBuildTime--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getBuildTime</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getBuildTime()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The embedded build time or "unknown".</dd>
-</dl>
-</li>
-</ul>
-<a name="toString--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>toString</h4>
-<pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
-</dl>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -308,13 +236,13 @@ extends java.lang.Object</pre>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#methods.inherited.from.class.org.openqa.selenium.BuildInfo">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">

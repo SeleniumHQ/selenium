@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../org/openqa/selenium/BuildInfo.html" title="class in org.openqa.selenium"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../org/openqa/selenium/By.ByClassName.html" title="class in org.openqa.selenium"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -216,8 +216,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/By.html#cssSelector-java.lang.String-">cssSelector</a></span>(java.lang.String&nbsp;selector)</code>
-<div class="block">Find elements via the driver's underlying W3 Selector engine.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/By.html#cssSelector-java.lang.String-">cssSelector</a></span>(java.lang.String&nbsp;cssSelector)</code>
+<div class="block">Find elements via the driver's underlying W3C Selector engine.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -254,11 +254,11 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/By.html#partialLinkText-java.lang.String-">partialLinkText</a></span>(java.lang.String&nbsp;linkText)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/By.html#partialLinkText-java.lang.String-">partialLinkText</a></span>(java.lang.String&nbsp;partialLinkText)</code>&nbsp;</td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/By.html#tagName-java.lang.String-">tagName</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/By.html#tagName-java.lang.String-">tagName</a></span>(java.lang.String&nbsp;tagName)</code>&nbsp;</td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
@@ -333,7 +333,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>linkText</code> - The exact text to match against.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A By which locates A elements by the exact text they display.</dd>
+<dd>A By which locates A elements by the exact text it displays.</dd>
 </dl>
 </li>
 </ul>
@@ -343,12 +343,12 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>partialLinkText</h4>
-<pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;partialLinkText(java.lang.String&nbsp;linkText)</pre>
+<pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;partialLinkText(java.lang.String&nbsp;partialLinkText)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>linkText</code> - The text to match against.</dd>
+<dd><code>partialLinkText</code> - The partial text to match against</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>A By which locates A elements that contain the given text.</dd>
+<dd>a By which locates elements that contain the given link text.</dd>
 </dl>
 </li>
 </ul>
@@ -373,10 +373,10 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>tagName</h4>
-<pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;tagName(java.lang.String&nbsp;name)</pre>
+<pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;tagName(java.lang.String&nbsp;tagName)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>name</code> - The element's tag name.</dd>
+<dd><code>tagName</code> - The element's tag name.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A By which locates elements by their tag name.</dd>
 </dl>
@@ -421,13 +421,13 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>cssSelector</h4>
-<pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;cssSelector(java.lang.String&nbsp;selector)</pre>
-<div class="block">Find elements via the driver's underlying W3 Selector engine. If the browser does not
+<pre>public static&nbsp;<a href="../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;cssSelector(java.lang.String&nbsp;cssSelector)</pre>
+<div class="block">Find elements via the driver's underlying W3C Selector engine. If the browser does not
  implement the Selector API, a best effort is made to emulate the API. In this case, we strive
  for at least CSS2 support, but offer no guarantees.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>selector</code> - CSS expression.</dd>
+<dd><code>cssSelector</code> - CSS expression.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A By which locates elements by CSS.</dd>
 </dl>
@@ -531,7 +531,7 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../org/openqa/selenium/BuildInfo.html" title="class in org.openqa.selenium"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../org/openqa/selenium/By.ByClassName.html" title="class in org.openqa.selenium"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">

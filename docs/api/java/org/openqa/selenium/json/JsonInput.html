@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -133,38 +133,70 @@ implements java.io.Closeable</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#beginArray--">beginArray</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#addCoercers-java.lang.Iterable-">addCoercers</a></span>(java.lang.Iterable&lt;<a href="../../../../org/openqa/selenium/json/TypeCoercer.html" title="class in org.openqa.selenium.json">TypeCoercer</a>&lt;?&gt;&gt;&nbsp;coercers)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#beginObject--">beginObject</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#addCoercers-org.openqa.selenium.json.TypeCoercer...-">addCoercers</a></span>(<a href="../../../../org/openqa/selenium/json/TypeCoercer.html" title="class in org.openqa.selenium.json">TypeCoercer</a>&lt;?&gt;...&nbsp;coercers)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#close--">close</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#beginArray--">beginArray</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#endArray--">endArray</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#beginObject--">beginObject</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#endObject--">endObject</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#close--">close</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#endArray--">endArray</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#endObject--">endObject</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#hasNext--">hasNext</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#nextBoolean--">nextBoolean</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#nextName--">nextName</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>java.lang.Object</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#nextNull--">nextNull</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>java.lang.Number</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#nextNumber--">nextNumber</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#nextString--">nextString</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/json/JsonType.html" title="enum in org.openqa.selenium.json">JsonType</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#peek--">peek</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i14" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#propertySetting-org.openqa.selenium.json.PropertySetting-">propertySetting</a></span>(<a href="../../../../org/openqa/selenium/json/PropertySetting.html" title="enum in org.openqa.selenium.json">PropertySetting</a>&nbsp;setter)</code>&nbsp;</td>
+</tr>
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#read-java.lang.reflect.Type-">read</a></span>(java.lang.reflect.Type&nbsp;type)</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonInput.html#skipValue--">skipValue</a></span>()</code>&nbsp;</td>
 </tr>
@@ -190,6 +222,33 @@ implements java.io.Closeable</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="propertySetting-org.openqa.selenium.json.PropertySetting-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>propertySetting</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;propertySetting(<a href="../../../../org/openqa/selenium/json/PropertySetting.html" title="enum in org.openqa.selenium.json">PropertySetting</a>&nbsp;setter)</pre>
+</li>
+</ul>
+<a name="addCoercers-org.openqa.selenium.json.TypeCoercer...-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addCoercers</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;addCoercers(<a href="../../../../org/openqa/selenium/json/TypeCoercer.html" title="class in org.openqa.selenium.json">TypeCoercer</a>&lt;?&gt;...&nbsp;coercers)</pre>
+</li>
+</ul>
+<a name="addCoercers-java.lang.Iterable-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addCoercers</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;addCoercers(java.lang.Iterable&lt;<a href="../../../../org/openqa/selenium/json/TypeCoercer.html" title="class in org.openqa.selenium.json">TypeCoercer</a>&lt;?&gt;&gt;&nbsp;coercers)</pre>
+</li>
+</ul>
 <a name="close--">
 <!--   -->
 </a>
@@ -205,22 +264,67 @@ implements java.io.Closeable</pre>
 </dl>
 </li>
 </ul>
-<a name="beginObject--">
+<a name="peek--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>beginObject</h4>
-<pre>public&nbsp;void&nbsp;beginObject()</pre>
+<h4>peek</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonType.html" title="enum in org.openqa.selenium.json">JsonType</a>&nbsp;peek()</pre>
 </li>
 </ul>
-<a name="endObject--">
+<a name="nextBoolean--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>endObject</h4>
-<pre>public&nbsp;void&nbsp;endObject()</pre>
+<h4>nextBoolean</h4>
+<pre>public&nbsp;boolean&nbsp;nextBoolean()</pre>
+</li>
+</ul>
+<a name="nextName--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextName</h4>
+<pre>public&nbsp;java.lang.String&nbsp;nextName()</pre>
+</li>
+</ul>
+<a name="nextNull--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextNull</h4>
+<pre>public&nbsp;java.lang.Object&nbsp;nextNull()</pre>
+</li>
+</ul>
+<a name="nextNumber--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextNumber</h4>
+<pre>public&nbsp;java.lang.Number&nbsp;nextNumber()</pre>
+</li>
+</ul>
+<a name="nextString--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextString</h4>
+<pre>public&nbsp;java.lang.String&nbsp;nextString()</pre>
+</li>
+</ul>
+<a name="hasNext--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hasNext</h4>
+<pre>public&nbsp;boolean&nbsp;hasNext()</pre>
 </li>
 </ul>
 <a name="beginArray--">
@@ -241,40 +345,40 @@ implements java.io.Closeable</pre>
 <pre>public&nbsp;void&nbsp;endArray()</pre>
 </li>
 </ul>
-<a name="hasNext--">
+<a name="beginObject--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>hasNext</h4>
-<pre>public&nbsp;boolean&nbsp;hasNext()</pre>
+<h4>beginObject</h4>
+<pre>public&nbsp;void&nbsp;beginObject()</pre>
 </li>
 </ul>
-<a name="nextName--">
+<a name="endObject--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>nextName</h4>
-<pre>public&nbsp;java.lang.String&nbsp;nextName()</pre>
-</li>
-</ul>
-<a name="read-java.lang.reflect.Type-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>read</h4>
-<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;read(java.lang.reflect.Type&nbsp;type)</pre>
+<h4>endObject</h4>
+<pre>public&nbsp;void&nbsp;endObject()</pre>
 </li>
 </ul>
 <a name="skipValue--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>skipValue</h4>
 <pre>public&nbsp;void&nbsp;skipValue()</pre>
+</li>
+</ul>
+<a name="read-java.lang.reflect.Type-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>read</h4>
+<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;read(java.lang.reflect.Type&nbsp;type)</pre>
 </li>
 </ul>
 </li>

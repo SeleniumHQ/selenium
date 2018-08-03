@@ -17,12 +17,6 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -75,13 +69,13 @@ var activeTableTab = "activeTableTab";
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li>Method</li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -98,18 +92,16 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <dl>
-<dt>All Known Subinterfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></dd>
-</dl>
-<dl>
-<dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</a>, <a href="../../../../org/openqa/selenium/remote/server/RemoteSession.html" title="class in org.openqa.selenium.remote.server">RemoteSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</a>, <a href="../../../../org/openqa/selenium/remote/server/ServicedSession.html" title="class in org.openqa.selenium.remote.server">ServicedSession</a>, <a href="../../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSelenium.html" title="class in com.thoughtworks.selenium.webdriven">WebDriverBackedSelenium</a>, <a href="../../../../com/thoughtworks/selenium/webdriven/WebDriverCommandProcessor.html" title="class in com.thoughtworks.selenium.webdriven">WebDriverCommandProcessor</a></dd>
+<dt>All Superinterfaces:</dt>
+<dd><a href="../../../../org/openqa/selenium/WrapsDriver.html" title="interface in org.openqa.selenium">WrapsDriver</a></dd>
 </dl>
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/WrapsDriver.html" title="interface in org.openqa.selenium"><code>WrapsDriver</code></a> instead.</span></div>
+</div>
 <br>
-<pre>public interface <span class="typeNameLabel">WrapsDriver</span></pre>
-<div class="block">This interface indicates that the implementing class knows about the driver that contains it and
- can export it.</div>
+<pre>public interface <span class="typeNameLabel">WrapsDriver</span>
+extends <a href="../../../../org/openqa/selenium/WrapsDriver.html" title="interface in org.openqa.selenium">WrapsDriver</a></pre>
 </li>
 </ul>
 </div>
@@ -122,43 +114,12 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Method and Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/internal/WrapsDriver.html#getWrappedDriver--">getWrappedDriver</a></span>()</code>&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="details">
 <ul class="blockList">
-<li class="blockList">
-<!-- ============ METHOD DETAIL ========== -->
-<ul class="blockList">
-<li class="blockList"><a name="method.detail">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.WrapsDriver">
 <!--   -->
 </a>
-<h3>Method Detail</h3>
-<a name="getWrappedDriver--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getWrappedDriver</h4>
-<pre><a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;getWrappedDriver()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The driver that contains this element.</dd>
-</dl>
-</li>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.<a href="../../../../org/openqa/selenium/WrapsDriver.html" title="interface in org.openqa.selenium">WrapsDriver</a></h3>
+<code><a href="../../../../org/openqa/selenium/WrapsDriver.html#getWrappedDriver--">getWrappedDriver</a></code></li>
 </ul>
 </li>
 </ul>
@@ -215,13 +176,13 @@ var activeTableTab = "activeTableTab";
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li>Method</li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">

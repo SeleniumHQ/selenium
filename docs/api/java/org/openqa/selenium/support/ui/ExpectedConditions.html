@@ -306,7 +306,7 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#numberOfElementsToBeMoreThan-org.openqa.selenium.By-java.lang.Integer-">numberOfElementsToBeMoreThan</a></span>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
                             java.lang.Integer&nbsp;number)</code>
-<div class="block">An expectation for checking number of WebElements with given locator</div>
+<div class="block">An expectation for checking number of WebElements with given locator being more than defined number</div>
 </td>
 </tr>
 <tr id="i28" class="altColor">
@@ -1166,13 +1166,13 @@ public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/Expect
 <h4>numberOfElementsToBeMoreThan</h4>
 <pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;&nbsp;numberOfElementsToBeMoreThan(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
                                                                                          java.lang.Integer&nbsp;number)</pre>
-<div class="block">An expectation for checking number of WebElements with given locator</div>
+<div class="block">An expectation for checking number of WebElements with given locator being more than defined number</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>locator</code> - used to find the element</dd>
-<dd><code>number</code> - used to define exact number of elements</dd>
+<dd><code>number</code> - used to define minimum number of elements</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>Boolean true when size of elements list is equal to defined</dd>
+<dd>Boolean true when size of elements list is more than defined</dd>
 </dl>
 </li>
 </ul>

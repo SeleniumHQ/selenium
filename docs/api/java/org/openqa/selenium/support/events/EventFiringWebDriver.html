@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -107,13 +107,13 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../../org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a>, <a href="../../../../../org/openqa/selenium/interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a>, <a href="../../../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a>, <a href="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
+<dd><a href="../../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../../org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a>, <a href="../../../../../org/openqa/selenium/interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a>, <a href="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../../../../../org/openqa/selenium/WrapsDriver.html" title="interface in org.openqa.selenium">WrapsDriver</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">EventFiringWebDriver</span>
 extends java.lang.Object
-implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a>, <a href="../../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../../org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a>, <a href="../../../../../org/openqa/selenium/interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></pre>
+implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../../org/openqa/selenium/WrapsDriver.html" title="interface in org.openqa.selenium">WrapsDriver</a>, <a href="../../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../../org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a>, <a href="../../../../../org/openqa/selenium/interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a>, <a href="../../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></pre>
 <div class="block">A wrapper around an arbitrary <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance which supports registering of a
  <a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverEventListener</code></a>, e&#46;g&#46; for logging purposes.</div>
 </li>
@@ -206,96 +206,100 @@ implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="in
 </td>
 </tr>
 <tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getCapabilities--">getCapabilities</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getCurrentUrl--">getCurrentUrl</a></span>()</code>
 <div class="block">Get a string representing the current URL that the browser is looking at.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getKeyboard--">getKeyboard</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getMouse--">getMouse</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getPageSource--">getPageSource</a></span>()</code>
 <div class="block">Get the source of the last loaded page.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>&lt;X&gt;&nbsp;X</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getScreenshotAs-org.openqa.selenium.OutputType-">getScreenshotAs</a></span>(<a href="../../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</code>
 <div class="block">Capture the screenshot and store it in the specified location.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getTitle--">getTitle</a></span>()</code>
 <div class="block">The title of the current page.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/TouchScreen.html" title="interface in org.openqa.selenium.interactions">TouchScreen</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getTouch--">getTouch</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getWindowHandle--">getWindowHandle</a></span>()</code>
 <div class="block">Return an opaque handle to this window that uniquely identifies it within this driver instance.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getWindowHandles--">getWindowHandles</a></span>()</code>
 <div class="block">Return a set of window handles which can be used to iterate over all open windows of this
  WebDriver instance by passing them to <a href="../../../../../org/openqa/selenium/WebDriver.html#switchTo--"><code>WebDriver.switchTo()</code></a>.<a href="../../../../../org/openqa/selenium/WebDriver.Options.html#window--"><code>WebDriver.Options.window()</code></a></div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#getWrappedDriver--">getWrappedDriver</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#manage--">manage</a></span>()</code>
 <div class="block">Gets the Option interface</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#navigate--">navigate</a></span>()</code>
 <div class="block">An abstraction allowing the driver to access the browser's history and to navigate to a given
  URL.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#perform-java.util.Collection-">perform</a></span>(java.util.Collection&lt;<a href="../../../../../org/openqa/selenium/interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a>&gt;&nbsp;actions)</code>&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#quit--">quit</a></span>()</code>
 <div class="block">Quits this driver, closing every associated window.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#register-org.openqa.selenium.support.events.WebDriverEventListener-">register</a></span>(<a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a>&nbsp;eventListener)</code>&nbsp;</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#resetInputState--">resetInputState</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#switchTo--">switchTo</a></span>()</code>
 <div class="block">Send future commands to a different frame or window.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/EventFiringWebDriver.html#unregister-org.openqa.selenium.support.events.WebDriverEventListener-">unregister</a></span>(<a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a>&nbsp;eventListener)</code>&nbsp;</td>
 </tr>
@@ -377,7 +381,7 @@ implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="in
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;getWrappedDriver()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/internal/WrapsDriver.html#getWrappedDriver--">getWrappedDriver</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a></code></dd>
+<dd><code><a href="../../../../../org/openqa/selenium/WrapsDriver.html#getWrappedDriver--">getWrappedDriver</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/WrapsDriver.html" title="interface in org.openqa.selenium">WrapsDriver</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The driver that contains this element.</dd>
 </dl>
@@ -877,13 +881,28 @@ implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="in
 <a name="resetInputState--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>resetInputState</h4>
 <pre>public&nbsp;void&nbsp;resetInputState()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../../org/openqa/selenium/interactions/Interactive.html#resetInputState--">resetInputState</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="getCapabilities--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getCapabilities</h4>
+<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;getCapabilities()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/HasCapabilities.html#getCapabilities--">getCapabilities</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The capabilities of the current driver.</dd>
 </dl>
 </li>
 </ul>

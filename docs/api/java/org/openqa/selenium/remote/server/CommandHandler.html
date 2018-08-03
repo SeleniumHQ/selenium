@@ -17,12 +17,6 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -75,13 +69,13 @@ var activeTableTab = "activeTableTab";
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li>Method</li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -98,16 +92,17 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <dl>
-<dt>All Known Subinterfaces:</dt>
-<dd><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></dd>
-</dl>
-<dl>
-<dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../../org/openqa/selenium/remote/server/commandhandler/BeginSession.html" title="class in org.openqa.selenium.remote.server.commandhandler">BeginSession</a>, <a href="../../../../../org/openqa/selenium/remote/server/commandhandler/ExceptionHandler.html" title="class in org.openqa.selenium.remote.server.commandhandler">ExceptionHandler</a>, <a href="../../../../../org/openqa/selenium/remote/server/commandhandler/GetAllSessions.html" title="class in org.openqa.selenium.remote.server.commandhandler">GetAllSessions</a>, <a href="../../../../../org/openqa/selenium/remote/server/commandhandler/GetLogsOfType.html" title="class in org.openqa.selenium.remote.server.commandhandler">GetLogsOfType</a>, <a href="../../../../../org/openqa/selenium/remote/server/commandhandler/GetLogTypes.html" title="class in org.openqa.selenium.remote.server.commandhandler">GetLogTypes</a>, <a href="../../../../../org/openqa/selenium/remote/server/commandhandler/NoHandler.html" title="class in org.openqa.selenium.remote.server.commandhandler">NoHandler</a>, <a href="../../../../../org/openqa/selenium/remote/server/commandhandler/NoSessionHandler.html" title="class in org.openqa.selenium.remote.server.commandhandler">NoSessionHandler</a>, <a href="../../../../../org/openqa/selenium/remote/server/RemoteSession.html" title="class in org.openqa.selenium.remote.server">RemoteSession</a>, <a href="../../../../../org/openqa/selenium/remote/server/ServicedSession.html" title="class in org.openqa.selenium.remote.server">ServicedSession</a>, <a href="../../../../../org/openqa/selenium/remote/server/commandhandler/Status.html" title="class in org.openqa.selenium.remote.server.commandhandler">Status</a>, <a href="../../../../../org/openqa/selenium/remote/server/commandhandler/UploadFile.html" title="class in org.openqa.selenium.remote.server.commandhandler">UploadFile</a></dd>
+<dt>All Superinterfaces:</dt>
+<dd><a href="../../../../../org/openqa/selenium/grid/web/CommandHandler.html" title="interface in org.openqa.selenium.grid.web">CommandHandler</a></dd>
 </dl>
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../../org/openqa/selenium/grid/web/CommandHandler.html" title="interface in org.openqa.selenium.grid.web"><code>CommandHandler</code></a> instead.</span></div>
+</div>
 <br>
-<pre>public interface <span class="typeNameLabel">CommandHandler</span></pre>
+<pre>@Deprecated
+public interface <span class="typeNameLabel">CommandHandler</span>
+extends <a href="../../../../../org/openqa/selenium/grid/web/CommandHandler.html" title="interface in org.openqa.selenium.grid.web">CommandHandler</a></pre>
 </li>
 </ul>
 </div>
@@ -120,46 +115,12 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Method and Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/CommandHandler.html#execute-org.openqa.selenium.remote.http.HttpRequest-org.openqa.selenium.remote.http.HttpResponse-">execute</a></span>(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req,
-       <a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;resp)</code>&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="details">
 <ul class="blockList">
-<li class="blockList">
-<!-- ============ METHOD DETAIL ========== -->
-<ul class="blockList">
-<li class="blockList"><a name="method.detail">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.grid.web.CommandHandler">
 <!--   -->
 </a>
-<h3>Method Detail</h3>
-<a name="execute-org.openqa.selenium.remote.http.HttpRequest-org.openqa.selenium.remote.http.HttpResponse-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>execute</h4>
-<pre>void&nbsp;execute(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req,
-             <a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;resp)
-      throws java.io.IOException</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
-</li>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.grid.web.<a href="../../../../../org/openqa/selenium/grid/web/CommandHandler.html" title="interface in org.openqa.selenium.grid.web">CommandHandler</a></h3>
+<code><a href="../../../../../org/openqa/selenium/grid/web/CommandHandler.html#execute-org.openqa.selenium.remote.http.HttpRequest-org.openqa.selenium.remote.http.HttpResponse-">execute</a></code></li>
 </ul>
 </li>
 </ul>
@@ -216,13 +177,13 @@ var activeTableTab = "activeTableTab";
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li>Method</li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">

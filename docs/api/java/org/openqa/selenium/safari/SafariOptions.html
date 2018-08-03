@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":42};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -123,7 +123,7 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
  <p>Example usage:
  <pre><code>
  SafariOptions options = new SafariOptions()
- options.setUseCleanSession(true);
+ options.setUseTechnologyPreview(true);
 
  // For use with SafariDriver:
  SafariDriver driver = new SafariDriver(options);
@@ -158,7 +158,9 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#CAPABILITY">CAPABILITY</a></span></code>
-<div class="block">Key used to store SafariOptions in a <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> object.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">No replacement. Use the methods on this class</span></div>
+</div>
 </td>
 </tr>
 </table>
@@ -191,7 +193,7 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -217,63 +219,77 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 </td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getAutomaticInspection--">getAutomaticInspection</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getAutomaticProfiling--">getAutomaticProfiling</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getCapability-java.lang.String-">getCapability</a></span>(java.lang.String&nbsp;capabilityName)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getPlatform--">getPlatform</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getUseTechnologyPreview--">getUseTechnologyPreview</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#merge-org.openqa.selenium.Capabilities-">merge</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</code>
-<div class="block">Merges the extra capabilities provided into this DesiredCapabilities instance.</div>
+<div class="block">Merge the extra capabilities provided into this DesiredCapabilities instance.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setAutomaticInspection-boolean-">setAutomaticInspection</a></span>(boolean&nbsp;automaticInspection)</code>
+<div class="block">Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
+ the automatic inspection.</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setAutomaticProfiling-boolean-">setAutomaticProfiling</a></span>(boolean&nbsp;automaticProfiling)</code>
+<div class="block">Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable
+ the automatic profiling.</div>
+</td>
+</tr>
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setCapability-java.lang.String-boolean-">setCapability</a></span>(java.lang.String&nbsp;key,
              boolean&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setCapability-java.lang.String-java.lang.Object-">setCapability</a></span>(java.lang.String&nbsp;key,
              java.lang.Object&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setProxy-org.openqa.selenium.Proxy-">setProxy</a></span>(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</code>&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setUseTechnologyPreview-boolean-">setUseTechnologyPreview</a></span>(boolean&nbsp;useTechnologyPreview)</code>
 <div class="block">Instruct the SafariDriver to use the Safari Technology Preview if true, otherwise use the
  release version of Safari.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.Object&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#toJson--">toJson</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#toString--">toString</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#useCleanSession-boolean-">useCleanSession</a></span>(boolean&nbsp;useCleanSession)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">SafariDriver always runs a clean session</span></div>
-</div>
-</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -317,7 +333,9 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <ul class="blockListLast">
 <li class="blockList">
 <h4>CAPABILITY</h4>
-<pre>public static final&nbsp;java.lang.String CAPABILITY</pre>
+<pre>@Deprecated
+public static final&nbsp;java.lang.String CAPABILITY</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">No replacement. Use the methods on this class</span></div>
 <div class="block">Key used to store SafariOptions in a <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> object.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -367,7 +385,7 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <h4>merge</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;merge(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-">MutableCapabilities</a></code></span></div>
-<div class="block">Merges the extra capabilities provided into this DesiredCapabilities instance. If capabilities
+<div class="block">Merge the extra capabilities provided into this DesiredCapabilities instance. If capabilities
  with the same name exist in this instance, they will be overridden by the values from the
  extraCapabilities object.</div>
 <dl>
@@ -378,7 +396,7 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>extraCapabilities</code> - Additional capabilities to be added.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>DesiredCapabilities after the merge</dd>
+<dd>The DesiredCapabilities instance after the merge.</dd>
 </dl>
 </li>
 </ul>
@@ -402,24 +420,35 @@ extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title
 </dl>
 </li>
 </ul>
-<a name="useCleanSession-boolean-">
+<a name="setAutomaticInspection-boolean-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>useCleanSession</h4>
-<pre>@Deprecated
-public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;useCleanSession(boolean&nbsp;useCleanSession)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">SafariDriver always runs a clean session</span></div>
-<div class="block">Instruct the SafariDriver to delete all existing session data when starting a new session.
- This includes browser history, cache, cookies, HTML5 local storage, and HTML5 databases.
-
- <p><strong>Warning:</strong> Since Safari uses a single profile for the
- current user, enabling this capability will permanently erase any existing
- session data.</div>
+<h4>setAutomaticInspection</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;setAutomaticInspection(boolean&nbsp;automaticInspection)</pre>
+<div class="block">Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
+ the automatic inspection. Defaults to disabling the automatic inspection.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>useCleanSession</code> - If true, the SafariDriver will erase all existing session data.</dd>
+<dd><code>automaticInspection</code> - If true, the SafariDriver will enable the Automation Inspection,
+                            otherwise will disable.</dd>
+</dl>
+</li>
+</ul>
+<a name="setAutomaticProfiling-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAutomaticProfiling</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;setAutomaticProfiling(boolean&nbsp;automaticProfiling)</pre>
+<div class="block">Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable
+ the automatic profiling. Defaults to disabling the automatic profiling.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>automaticProfiling</code> - If true, the SafariDriver will enable the Automation Profiling,
+                            otherwise will disable.</dd>
 </dl>
 </li>
 </ul>
@@ -476,6 +505,24 @@ public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" 
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;setProxy(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</pre>
 </li>
 </ul>
+<a name="getAutomaticInspection--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAutomaticInspection</h4>
+<pre>public&nbsp;boolean&nbsp;getAutomaticInspection()</pre>
+</li>
+</ul>
+<a name="getAutomaticProfiling--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAutomaticProfiling</h4>
+<pre>public&nbsp;boolean&nbsp;getAutomaticProfiling()</pre>
+</li>
+</ul>
 <a name="getUseTechnologyPreview--">
 <!--   -->
 </a>
@@ -506,7 +553,7 @@ public&nbsp;<a href="../../../../org/openqa/selenium/safari/SafariOptions.html" 
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../org/openqa/selenium/Capabilities.html#asMap--">asMap</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The capabilities as a Map</dd>
+<dd>The capabilities as a Map.</dd>
 </dl>
 </li>
 </ul>

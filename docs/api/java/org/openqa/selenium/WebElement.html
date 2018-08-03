@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li>Next&nbsp;Class</li>
+<li><a href="../../../org/openqa/selenium/WrapsDriver.html" title="interface in org.openqa.selenium"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?org/openqa/selenium/WebElement.html" target="_top">Frames</a></li>
@@ -397,7 +397,9 @@ extends <a href="../../../org/openqa/selenium/SearchContext.html" title="interfa
 <h4>isSelected</h4>
 <pre>boolean&nbsp;isSelected()</pre>
 <div class="block">Determine whether or not this element is selected or not. This operation only applies to input
- elements such as checkboxes, options in a select and radio buttons.</div>
+ elements such as checkboxes, options in a select and radio buttons.
+ For more information on which elements this method supports,
+ refer to the <a href="https://w3c.github.io/webdriver/webdriver-spec.html#is-element-selected">specification</a>.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>True if the element is currently selected or checked, false otherwise.</dd>
@@ -426,11 +428,13 @@ extends <a href="../../../org/openqa/selenium/SearchContext.html" title="interfa
 <li class="blockList">
 <h4>getText</h4>
 <pre>java.lang.String&nbsp;getText()</pre>
-<div class="block">Get the visible (i.e. not hidden by CSS) innerText of this element, including sub-elements,
- without any leading or trailing whitespace.</div>
+<div class="block">Get the visible (i.e. not hidden by CSS) text of this element, including sub-elements.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The innerText of this element.</dd>
+<dd>The visible text of this element.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="https://w3c.github.io/webdriver/#get-element-text">"Get Element Text" section
+ in W3C WebDriver Specification</a></dd>
 </dl>
 </li>
 </ul>
@@ -601,7 +605,7 @@ extends <a href="../../../org/openqa/selenium/SearchContext.html" title="interfa
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li>Next&nbsp;Class</li>
+<li><a href="../../../org/openqa/selenium/WrapsDriver.html" title="interface in org.openqa.selenium"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?org/openqa/selenium/WebElement.html" target="_top">Frames</a></li>

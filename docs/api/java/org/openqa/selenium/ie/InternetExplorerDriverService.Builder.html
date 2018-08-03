@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":42,"i5":10,"i6":10,"i7":10,"i8":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -116,7 +116,8 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public static class <span class="typeNameLabel">InternetExplorerDriverService.Builder</span>
+<pre>@AutoService(value=<a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder.class</a>)
+public static class <span class="typeNameLabel">InternetExplorerDriverService.Builder</span>
 extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>,<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a>&gt;</pre>
 <div class="block">Builder used to configure new <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> instances.</div>
 </li>
@@ -149,7 +150,7 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -170,30 +171,39 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#findDefaultExecutable--">findDefaultExecutable</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withEngineImplementation-org.openqa.selenium.ie.InternetExplorerDriverEngine-">withEngineImplementation</a></span>(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverEngine.html" title="enum in org.openqa.selenium.ie">InternetExplorerDriverEngine</a>&nbsp;engineImplementation)</code>
-<div class="block">Configures the driver engine implementation for the driver server.</div>
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#score-org.openqa.selenium.Capabilities-">score</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilites)</code>
+<div class="block">Provides a measure of how strongly this <a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> supports the given
+ <code>capabilities</code>.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withEngineImplementation-org.openqa.selenium.ie.InternetExplorerDriverEngine-">withEngineImplementation</a></span>(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverEngine.html" title="enum in org.openqa.selenium.ie">InternetExplorerDriverEngine</a>&nbsp;engineImplementation)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">There are no more multiple IE driver engines</span></div>
+</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withExtractPath-java.io.File-">withExtractPath</a></span>(java.io.File&nbsp;extractPath)</code>
 <div class="block">Configures path to which the driver server library will be extracted.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withHost-java.lang.String-">withHost</a></span>(java.lang.String&nbsp;host)</code>
 <div class="block">Configures the host to which the driver server bound.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withLogLevel-org.openqa.selenium.ie.InternetExplorerDriverLogLevel-">withLogLevel</a></span>(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverLogLevel.html" title="enum in org.openqa.selenium.ie">InternetExplorerDriverLogLevel</a>&nbsp;logLevel)</code>
 <div class="block">Configures the logging level for the driver server.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html#withSilent-java.lang.Boolean-">withSilent</a></span>(java.lang.Boolean&nbsp;silent)</code>
 <div class="block">Configures silence in stdout of the driver server by unlogged messages.</div>
@@ -245,6 +255,26 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="score-org.openqa.selenium.Capabilities-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>score</h4>
+<pre>public&nbsp;int&nbsp;score(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilites)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#score-org.openqa.selenium.Capabilities-">DriverService.Builder</a></code></span></div>
+<div class="block">Provides a measure of how strongly this <a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> supports the given
+ <code>capabilities</code>. A score of 0 or less indicates that this <a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> does not
+ support instances of <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> that require <code>capabilities</code>.
+ Typically, the score is generated by summing the number of capabilities that the driver
+ service directly supports that are unique to the driver service (that is, things like
+ "<code>proxy</code>" don't tend to count to the score).</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html#score-org.openqa.selenium.Capabilities-">score</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>,<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a>&gt;</code></dd>
+</dl>
+</li>
+</ul>
 <a name="withLogLevel-org.openqa.selenium.ie.InternetExplorerDriverLogLevel-">
 <!--   -->
 </a>
@@ -267,7 +297,9 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <ul class="blockList">
 <li class="blockList">
 <h4>withEngineImplementation</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a>&nbsp;withEngineImplementation(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverEngine.html" title="enum in org.openqa.selenium.ie">InternetExplorerDriverEngine</a>&nbsp;engineImplementation)</pre>
+<pre>@Deprecated
+public&nbsp;<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.Builder.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService.Builder</a>&nbsp;withEngineImplementation(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverEngine.html" title="enum in org.openqa.selenium.ie">InternetExplorerDriverEngine</a>&nbsp;engineImplementation)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">There are no more multiple IE driver engines</span></div>
 <div class="block">Configures the driver engine implementation for the driver server.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

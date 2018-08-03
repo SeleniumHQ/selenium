@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":42,"i1":42,"i2":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -110,8 +110,12 @@ var activeTableTab = "activeTableTab";
 <dd><a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a></dd>
 </dl>
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <code>Clock.systemDefaultZone()</code>.</span></div>
+</div>
 <br>
-<pre>public class <span class="typeNameLabel">SystemClock</span>
+<pre>@Deprecated
+public class <span class="typeNameLabel">SystemClock</span>
 extends java.lang.Object
 implements <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a></pre>
 </li>
@@ -132,7 +136,9 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" ti
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/SystemClock.html#SystemClock--">SystemClock</a></span>()</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/SystemClock.html#SystemClock--">SystemClock</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -144,7 +150,7 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" ti
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -152,18 +158,22 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" ti
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/SystemClock.html#isNowBefore-long-">isNowBefore</a></span>(long&nbsp;endInMillis)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Tests if a point in time occurs before the <a href="../../../../../org/openqa/selenium/support/ui/Clock.html#now--"><code>current time</code></a>.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/SystemClock.html#laterBy-long-">laterBy</a></span>(long&nbsp;durationInMillis)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Computes a point of time in the future.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/SystemClock.html#now--">now</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/SystemClock.html#now--">now</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -172,6 +182,13 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" ti
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
 <code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.support.ui.Clock">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.support.ui.<a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a></h3>
+<code><a href="../../../../../org/openqa/selenium/support/ui/Clock.html#asJreClock--">asJreClock</a></code></li>
 </ul>
 </li>
 </ul>
@@ -194,6 +211,7 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" ti
 <li class="blockList">
 <h4>SystemClock</h4>
 <pre>public&nbsp;SystemClock()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -211,6 +229,7 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" ti
 <li class="blockList">
 <h4>laterBy</h4>
 <pre>public&nbsp;long&nbsp;laterBy(long&nbsp;durationInMillis)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/Clock.html#laterBy-long-">Clock</a></code></span></div>
 <div class="block">Computes a point of time in the future.</div>
 <dl>
@@ -230,6 +249,7 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" ti
 <li class="blockList">
 <h4>isNowBefore</h4>
 <pre>public&nbsp;boolean&nbsp;isNowBefore(long&nbsp;endInMillis)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/Clock.html#isNowBefore-long-">Clock</a></code></span></div>
 <div class="block">Tests if a point in time occurs before the <a href="../../../../../org/openqa/selenium/support/ui/Clock.html#now--"><code>current time</code></a>.</div>
 <dl>
@@ -249,6 +269,7 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" ti
 <li class="blockList">
 <h4>now</h4>
 <pre>public&nbsp;long&nbsp;now()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../../org/openqa/selenium/support/ui/Clock.html#now--">now</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a></code></dd>

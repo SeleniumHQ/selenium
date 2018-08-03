@@ -47,8 +47,8 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li>Next&nbsp;Class</li>
+<li><a href="../../../../org/openqa/selenium/json/PropertySetting.html" title="enum in org.openqa.selenium.json"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/json/StaticInitializerCoercer.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/json/SimplePropertyDescriptor.html" target="_top">Frames</a></li>
@@ -127,12 +127,9 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/SimplePropertyDescriptor.html#SimplePropertyDescriptor--">SimplePropertyDescriptor</a></span>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/SimplePropertyDescriptor.html#SimplePropertyDescriptor-java.lang.String-java.lang.reflect.Method-java.lang.reflect.Method-">SimplePropertyDescriptor</a></span>(java.lang.String&nbsp;name,
-                        java.lang.reflect.Method&nbsp;readMethod,
-                        java.lang.reflect.Method&nbsp;writeMethod)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/SimplePropertyDescriptor.html#SimplePropertyDescriptor-java.lang.String-java.util.function.Function-java.lang.reflect.Method-">SimplePropertyDescriptor</a></span>(java.lang.String&nbsp;name,
+                        java.util.function.Function&lt;java.lang.Object,java.lang.Object&gt;&nbsp;read,
+                        java.lang.reflect.Method&nbsp;write)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -158,7 +155,7 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/SimplePropertyDescriptor.html#getPropertyDescriptors-java.lang.Class-">getPropertyDescriptors</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>java.lang.reflect.Method</code></td>
+<td class="colFirst"><code>java.util.function.Function&lt;java.lang.Object,java.lang.Object&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/SimplePropertyDescriptor.html#getReadMethod--">getReadMethod</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -187,24 +184,15 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="SimplePropertyDescriptor--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SimplePropertyDescriptor</h4>
-<pre>public&nbsp;SimplePropertyDescriptor()</pre>
-</li>
-</ul>
-<a name="SimplePropertyDescriptor-java.lang.String-java.lang.reflect.Method-java.lang.reflect.Method-">
+<a name="SimplePropertyDescriptor-java.lang.String-java.util.function.Function-java.lang.reflect.Method-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>SimplePropertyDescriptor</h4>
 <pre>public&nbsp;SimplePropertyDescriptor(java.lang.String&nbsp;name,
-                                java.lang.reflect.Method&nbsp;readMethod,
-                                java.lang.reflect.Method&nbsp;writeMethod)</pre>
+                                java.util.function.Function&lt;java.lang.Object,java.lang.Object&gt;&nbsp;read,
+                                java.lang.reflect.Method&nbsp;write)</pre>
 </li>
 </ul>
 </li>
@@ -230,7 +218,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getReadMethod</h4>
-<pre>public&nbsp;java.lang.reflect.Method&nbsp;getReadMethod()</pre>
+<pre>public&nbsp;java.util.function.Function&lt;java.lang.Object,java.lang.Object&gt;&nbsp;getReadMethod()</pre>
 </li>
 </ul>
 <a name="getWriteMethod--">
@@ -278,8 +266,8 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li>Next&nbsp;Class</li>
+<li><a href="../../../../org/openqa/selenium/json/PropertySetting.html" title="enum in org.openqa.selenium.json"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/json/StaticInitializerCoercer.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/json/SimplePropertyDescriptor.html" target="_top">Frames</a></li>

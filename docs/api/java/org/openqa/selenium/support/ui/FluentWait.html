@@ -200,6 +200,13 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#FluentWait-T-org.openqa.selenium.support.ui.Clock-org.openqa.selenium.support.ui.Sleeper-">FluentWait</a></span>(<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&nbsp;input,
           <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+          <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#FluentWait-T-java.time.Clock-org.openqa.selenium.support.ui.Sleeper-">FluentWait</a></span>(<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&nbsp;input,
+          java.time.Clock&nbsp;clock,
           <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper)</code>&nbsp;</td>
 </tr>
 </table>
@@ -368,11 +375,32 @@ public static final&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/
 </a><a name="FluentWait-T-org.openqa.selenium.support.ui.Clock-org.openqa.selenium.support.ui.Sleeper-">
 <!--   -->
 </a>
+<ul class="blockList">
+<li class="blockList">
+<h4>FluentWait</h4>
+<pre>@Deprecated
+public&nbsp;FluentWait(<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&nbsp;input,
+                              <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+                              <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>input</code> - The input value to pass to the evaluated conditions.</dd>
+<dd><code>clock</code> - The clock to use when measuring the timeout.</dd>
+<dd><code>sleeper</code> - Used to put the thread to sleep between evaluation loops.</dd>
+</dl>
+</li>
+</ul>
+<a name="FluentWait-java.lang.Object-java.time.Clock-org.openqa.selenium.support.ui.Sleeper-">
+<!--   -->
+</a><a name="FluentWait-T-java.time.Clock-org.openqa.selenium.support.ui.Sleeper-">
+<!--   -->
+</a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>FluentWait</h4>
 <pre>public&nbsp;FluentWait(<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&nbsp;input,
-                  <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+                  java.time.Clock&nbsp;clock,
                   <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

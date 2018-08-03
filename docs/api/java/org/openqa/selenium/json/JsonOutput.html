@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/json/SimplePropertyDescriptor.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/json/JsonType.html" title="enum in org.openqa.selenium.json"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/json/JsonOutput.html" target="_top">Frames</a></li>
@@ -158,13 +158,16 @@ implements java.io.Closeable</pre>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonOutput.html#write-org.openqa.selenium.json.JsonInput-java.lang.reflect.Type-">write</a></span>(<a href="../../../../org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input,
-     java.lang.reflect.Type&nbsp;type)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonOutput.html#setPrettyPrint-boolean-">setPrettyPrint</a></span>(boolean&nbsp;enablePrettyPrinting)</code>&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonOutput.html#write-java.lang.Object-java.lang.reflect.Type-">write</a></span>(java.lang.Object&nbsp;input,
-     java.lang.reflect.Type&nbsp;type)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonOutput.html#write-java.lang.Object-">write</a></span>(java.lang.Object&nbsp;value)</code>&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/JsonOutput.html#write-java.lang.Object-int-">write</a></span>(java.lang.Object&nbsp;input,
+     int&nbsp;depthRemaining)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -188,42 +191,13 @@ implements java.io.Closeable</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="close--">
+<a name="setPrettyPrint-boolean-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>close</h4>
-<pre>public&nbsp;void&nbsp;close()
-           throws java.io.IOException</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.io.Closeable</code></dd>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.lang.AutoCloseable</code></dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
-</li>
-</ul>
-<a name="write-org.openqa.selenium.json.JsonInput-java.lang.reflect.Type-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>write</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a>&nbsp;write(<a href="../../../../org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>&nbsp;input,
-                        java.lang.reflect.Type&nbsp;type)</pre>
-</li>
-</ul>
-<a name="write-java.lang.Object-java.lang.reflect.Type-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>write</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a>&nbsp;write(java.lang.Object&nbsp;input,
-                        java.lang.reflect.Type&nbsp;type)</pre>
+<h4>setPrettyPrint</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a>&nbsp;setPrettyPrint(boolean&nbsp;enablePrettyPrinting)</pre>
 </li>
 </ul>
 <a name="beginObject--">
@@ -235,15 +209,6 @@ implements java.io.Closeable</pre>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a>&nbsp;beginObject()</pre>
 </li>
 </ul>
-<a name="endObject--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>endObject</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a>&nbsp;endObject()</pre>
-</li>
-</ul>
 <a name="name-java.lang.String-">
 <!--   -->
 </a>
@@ -251,6 +216,15 @@ implements java.io.Closeable</pre>
 <li class="blockList">
 <h4>name</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a>&nbsp;name(java.lang.String&nbsp;name)</pre>
+</li>
+</ul>
+<a name="endObject--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>endObject</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a>&nbsp;endObject()</pre>
 </li>
 </ul>
 <a name="beginArray--">
@@ -265,10 +239,44 @@ implements java.io.Closeable</pre>
 <a name="endArray--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>endArray</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a>&nbsp;endArray()</pre>
+</li>
+</ul>
+<a name="write-java.lang.Object-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>write</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a>&nbsp;write(java.lang.Object&nbsp;value)</pre>
+</li>
+</ul>
+<a name="write-java.lang.Object-int-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>write</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/json/JsonOutput.html" title="class in org.openqa.selenium.json">JsonOutput</a>&nbsp;write(java.lang.Object&nbsp;input,
+                        int&nbsp;depthRemaining)</pre>
+</li>
+</ul>
+<a name="close--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>close</h4>
+<pre>public&nbsp;void&nbsp;close()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.io.Closeable</code></dd>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.lang.AutoCloseable</code></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -299,7 +307,7 @@ implements java.io.Closeable</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/json/JsonInput.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/json/SimplePropertyDescriptor.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/json/JsonType.html" title="enum in org.openqa.selenium.json"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/json/JsonOutput.html" target="_top">Frames</a></li>

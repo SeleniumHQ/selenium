@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":42,"i1":42,"i2":42,"i3":42,"i4":42,"i5":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -101,7 +101,12 @@ var activeTableTab = "activeTableTab";
 <li><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">org.openqa.selenium.remote.http.HttpRequest</a></li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html" title="class in org.openqa.selenium.grid.web">org.openqa.selenium.grid.web.ServletRequestWrappingHttpRequest</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.remote.server.ServletRequestWrappingHttpRequest</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -111,11 +116,13 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html" title="class in org.openqa.selenium.grid.web"><code>ServletRequestWrappingHttpRequest</code></a></span></div>
+</div>
 <br>
-<pre>public class <span class="typeNameLabel">ServletRequestWrappingHttpRequest</span>
-extends <a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></pre>
-<div class="block">Read-only adapter of <code>HttpServletRequest</code> to a <a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http"><code>HttpRequest</code></a>. This class is not
- thread-safe, and you can only expect to read the content once.</div>
+<pre>@Deprecated
+public class <span class="typeNameLabel">ServletRequestWrappingHttpRequest</span>
+extends <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html" title="class in org.openqa.selenium.grid.web">ServletRequestWrappingHttpRequest</a></pre>
 </li>
 </ul>
 </div>
@@ -134,7 +141,9 @@ extends <a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#ServletRequestWrappingHttpRequest-javax.servlet.http.HttpServletRequest-">ServletRequestWrappingHttpRequest</a></span>(javax.servlet.http.HttpServletRequest&nbsp;req)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#ServletRequestWrappingHttpRequest-javax.servlet.http.HttpServletRequest-">ServletRequestWrappingHttpRequest</a></span>(javax.servlet.http.HttpServletRequest&nbsp;req)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -146,101 +155,46 @@ extends <a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#addHeader-java.lang.String-java.lang.String-">addHeader</a></span>(java.lang.String&nbsp;name,
-         java.lang.String&nbsp;value)</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#addQueryParameter-java.lang.String-java.lang.String-">addQueryParameter</a></span>(java.lang.String&nbsp;name,
-                 java.lang.String&nbsp;value)</code>
-<div class="block">Set a query parameter, adding to existing values if present.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>java.io.InputStream</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#consumeContentStream--">consumeContentStream</a></span>()</code>
-<div class="block">Get the underlying content stream, bypassing the caching mechanisms that allow it to be read
- again.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#getAttribute-java.lang.String-">getAttribute</a></span>(java.lang.String&nbsp;key)</code>
 <div class="block">Retrieves a user-defined attribute of this message.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>byte[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#getContent--">getContent</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.nio.charset.Charset</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#getContentEncoding--">getContentEncoding</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#getContentString--">getContentString</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#getHeader-java.lang.String-">getHeader</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#getHeaderNames--">getHeaderNames</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#getHeaders-java.lang.String-">getHeaders</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#getQueryParameter-java.lang.String-">getQueryParameter</a></span>(java.lang.String&nbsp;name)</code>
-<div class="block">Get a query parameter.</div>
-</td>
-</tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#getQueryParameterNames--">getQueryParameterNames</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#getQueryParameters-java.lang.String-">getQueryParameters</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
-</tr>
-<tr id="i13" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#removeAttribute-java.lang.String-">removeAttribute</a></span>(java.lang.String&nbsp;key)</code>&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#removeHeader-java.lang.String-">removeHeader</a></span>(java.lang.String&nbsp;name)</code>&nbsp;</td>
-</tr>
-<tr id="i15" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#setAttribute-java.lang.String-java.lang.Object-">setAttribute</a></span>(java.lang.String&nbsp;key,
             java.lang.Object&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#setContent-byte:A-">setContent</a></span>(byte[]&nbsp;data)</code>&nbsp;</td>
-</tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#setContent-java.io.InputStream-">setContent</a></span>(java.io.InputStream&nbsp;toStreamFrom)</code>&nbsp;</td>
-</tr>
-<tr id="i18" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/ServletRequestWrappingHttpRequest.html#setHeader-java.lang.String-java.lang.String-">setHeader</a></span>(java.lang.String&nbsp;name,
-         java.lang.String&nbsp;value)</code>&nbsp;</td>
-</tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.grid.web.ServletRequestWrappingHttpRequest">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.grid.web.<a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html" title="class in org.openqa.selenium.grid.web">ServletRequestWrappingHttpRequest</a></h3>
+<code><a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#addHeader-java.lang.String-java.lang.String-">addHeader</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#addQueryParameter-java.lang.String-java.lang.String-">addQueryParameter</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#consumeContentStream--">consumeContentStream</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#getHeader-java.lang.String-">getHeader</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#getHeaderNames--">getHeaderNames</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#getHeaders-java.lang.String-">getHeaders</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#getQueryParameter-java.lang.String-">getQueryParameter</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#getQueryParameterNames--">getQueryParameterNames</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#getQueryParameters-java.lang.String-">getQueryParameters</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#removeHeader-java.lang.String-">removeHeader</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#setContent-byte:A-">setContent</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#setContent-java.io.InputStream-">setContent</a>, <a href="../../../../../org/openqa/selenium/grid/web/ServletRequestWrappingHttpRequest.html#setHeader-java.lang.String-java.lang.String-">setHeader</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.remote.http.HttpRequest">
 <!--   -->
@@ -276,6 +230,7 @@ extends <a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html
 <li class="blockList">
 <h4>ServletRequestWrappingHttpRequest</h4>
 <pre>public&nbsp;ServletRequestWrappingHttpRequest(javax.servlet.http.HttpServletRequest&nbsp;req)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -286,149 +241,6 @@ extends <a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getHeaderNames--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getHeaderNames</h4>
-<pre>public&nbsp;java.lang.Iterable&lt;java.lang.String&gt;&nbsp;getHeaderNames()</pre>
-</li>
-</ul>
-<a name="getHeaders-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getHeaders</h4>
-<pre>public&nbsp;java.lang.Iterable&lt;java.lang.String&gt;&nbsp;getHeaders(java.lang.String&nbsp;name)</pre>
-</li>
-</ul>
-<a name="getHeader-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getHeader</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getHeader(java.lang.String&nbsp;name)</pre>
-</li>
-</ul>
-<a name="removeHeader-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>removeHeader</h4>
-<pre>public&nbsp;void&nbsp;removeHeader(java.lang.String&nbsp;name)</pre>
-</li>
-</ul>
-<a name="setHeader-java.lang.String-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setHeader</h4>
-<pre>public&nbsp;void&nbsp;setHeader(java.lang.String&nbsp;name,
-                      java.lang.String&nbsp;value)</pre>
-</li>
-</ul>
-<a name="addHeader-java.lang.String-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>addHeader</h4>
-<pre>public&nbsp;void&nbsp;addHeader(java.lang.String&nbsp;name,
-                      java.lang.String&nbsp;value)</pre>
-</li>
-</ul>
-<a name="getQueryParameter-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getQueryParameter</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getQueryParameter(java.lang.String&nbsp;name)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getQueryParameter-java.lang.String-">HttpRequest</a></code></span></div>
-<div class="block">Get a query parameter. The implementation will take care of decoding the from percent encoding.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getQueryParameter-java.lang.String-">getQueryParameter</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="addQueryParameter-java.lang.String-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>addQueryParameter</h4>
-<pre>public&nbsp;void&nbsp;addQueryParameter(java.lang.String&nbsp;name,
-                              java.lang.String&nbsp;value)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#addQueryParameter-java.lang.String-java.lang.String-">HttpRequest</a></code></span></div>
-<div class="block">Set a query parameter, adding to existing values if present. The implementation will ensure
- that the name and value are properly encoded.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#addQueryParameter-java.lang.String-java.lang.String-">addQueryParameter</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="getQueryParameterNames--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getQueryParameterNames</h4>
-<pre>public&nbsp;java.lang.Iterable&lt;java.lang.String&gt;&nbsp;getQueryParameterNames()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getQueryParameterNames--">getQueryParameterNames</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="getQueryParameters-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getQueryParameters</h4>
-<pre>public&nbsp;java.lang.Iterable&lt;java.lang.String&gt;&nbsp;getQueryParameters(java.lang.String&nbsp;name)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html#getQueryParameters-java.lang.String-">getQueryParameters</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="setContent-byte:A-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setContent</h4>
-<pre>public&nbsp;void&nbsp;setContent(byte[]&nbsp;data)</pre>
-</li>
-</ul>
-<a name="setContent-java.io.InputStream-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setContent</h4>
-<pre>public&nbsp;void&nbsp;setContent(java.io.InputStream&nbsp;toStreamFrom)</pre>
-</li>
-</ul>
-<a name="consumeContentStream--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>consumeContentStream</h4>
-<pre>public&nbsp;java.io.InputStream&nbsp;consumeContentStream()</pre>
-<div class="block">Get the underlying content stream, bypassing the caching mechanisms that allow it to be read
- again.</div>
-</li>
-</ul>
 <a name="getAttribute-java.lang.String-">
 <!--   -->
 </a>

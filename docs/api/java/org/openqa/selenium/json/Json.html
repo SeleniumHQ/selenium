@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev&nbsp;Class</li>
+<li><a href="../../../../org/openqa/selenium/json/EnumCoercer.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../org/openqa/selenium/json/JsonException.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -184,18 +184,15 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/Json.html#toJson-java.lang.Object-">toJson</a></span>(java.lang.Object&nbsp;toConvert)</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>com.google.gson.JsonElement</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/Json.html#toJsonElement-java.lang.Object-">toJsonElement</a></span>(java.lang.Object&nbsp;toConvert)</code>&nbsp;</td>
+<td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/Json.html#toType-java.lang.String-java.lang.reflect.Type-">toType</a></span>(java.lang.String&nbsp;source,
+      java.lang.reflect.Type&nbsp;typeOfT)</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/Json.html#toType-java.lang.Object-java.lang.Class-">toType</a></span>(java.lang.Object&nbsp;source,
-      java.lang.Class&lt;T&gt;&nbsp;typeOfT)</code>&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>&lt;T&gt;&nbsp;T</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/Json.html#toType-java.lang.Object-java.lang.reflect.Type-">toType</a></span>(java.lang.Object&nbsp;source,
-      java.lang.reflect.Type&nbsp;typeOfT)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/json/Json.html#toType-java.lang.String-java.lang.reflect.Type-org.openqa.selenium.json.PropertySetting-">toType</a></span>(java.lang.String&nbsp;source,
+      java.lang.reflect.Type&nbsp;typeOfT,
+      <a href="../../../../org/openqa/selenium/json/PropertySetting.html" title="enum in org.openqa.selenium.json">PropertySetting</a>&nbsp;setter)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -280,33 +277,25 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;java.lang.String&nbsp;toJson(java.lang.Object&nbsp;toConvert)</pre>
 </li>
 </ul>
-<a name="toJsonElement-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toJsonElement</h4>
-<pre>public&nbsp;com.google.gson.JsonElement&nbsp;toJsonElement(java.lang.Object&nbsp;toConvert)</pre>
-</li>
-</ul>
-<a name="toType-java.lang.Object-java.lang.Class-">
+<a name="toType-java.lang.String-java.lang.reflect.Type-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>toType</h4>
-<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;toType(java.lang.Object&nbsp;source,
-                    java.lang.Class&lt;T&gt;&nbsp;typeOfT)</pre>
-</li>
-</ul>
-<a name="toType-java.lang.Object-java.lang.reflect.Type-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toType</h4>
-<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;toType(java.lang.Object&nbsp;source,
+<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;toType(java.lang.String&nbsp;source,
                     java.lang.reflect.Type&nbsp;typeOfT)</pre>
+</li>
+</ul>
+<a name="toType-java.lang.String-java.lang.reflect.Type-org.openqa.selenium.json.PropertySetting-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toType</h4>
+<pre>public&nbsp;&lt;T&gt;&nbsp;T&nbsp;toType(java.lang.String&nbsp;source,
+                    java.lang.reflect.Type&nbsp;typeOfT,
+                    <a href="../../../../org/openqa/selenium/json/PropertySetting.html" title="enum in org.openqa.selenium.json">PropertySetting</a>&nbsp;setter)</pre>
 </li>
 </ul>
 <a name="newInput-java.io.Reader-">
@@ -364,7 +353,7 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li>Prev&nbsp;Class</li>
+<li><a href="../../../../org/openqa/selenium/json/EnumCoercer.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../org/openqa/selenium/json/JsonException.html" title="class in org.openqa.selenium.json"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">

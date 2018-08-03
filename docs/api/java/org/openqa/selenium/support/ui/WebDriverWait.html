@@ -156,16 +156,25 @@ extends <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" 
              <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
              <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper,
              long&nbsp;timeOutInSeconds,
-             long&nbsp;sleepTimeOut)</code>&nbsp;</td>
+             long&nbsp;sleepTimeOut)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+</td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#WebDriverWait-org.openqa.selenium.WebDriver-java.time.Clock-org.openqa.selenium.support.ui.Sleeper-long-long-">WebDriverWait</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+             java.time.Clock&nbsp;clock,
+             <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper,
+             long&nbsp;timeOutInSeconds,
+             long&nbsp;sleepTimeOut)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#WebDriverWait-org.openqa.selenium.WebDriver-long-">WebDriverWait</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
              long&nbsp;timeOutInSeconds)</code>
 <div class="block">Wait will ignore instances of NotFoundException that are encountered (thrown) by default in
  the 'until' condition, and immediately propagate all others.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/WebDriverWait.html#WebDriverWait-org.openqa.selenium.WebDriver-long-long-">WebDriverWait</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
              long&nbsp;timeOutInSeconds,
              long&nbsp;sleepInMillis)</code>
@@ -269,11 +278,34 @@ extends <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" 
 <a name="WebDriverWait-org.openqa.selenium.WebDriver-org.openqa.selenium.support.ui.Clock-org.openqa.selenium.support.ui.Sleeper-long-long-">
 <!--   -->
 </a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WebDriverWait</h4>
+<pre>@Deprecated
+public&nbsp;WebDriverWait(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+                                 <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+                                 <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper,
+                                 long&nbsp;timeOutInSeconds,
+                                 long&nbsp;sleepTimeOut)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>driver</code> - The WebDriver instance to pass to the expected conditions</dd>
+<dd><code>clock</code> - The clock to use when measuring the timeout</dd>
+<dd><code>sleeper</code> - Object used to make the current thread go to sleep.</dd>
+<dd><code>timeOutInSeconds</code> - The timeout in seconds when an expectation is</dd>
+<dd><code>sleepTimeOut</code> - The timeout used whilst sleeping. Defaults to 500ms called.</dd>
+</dl>
+</li>
+</ul>
+<a name="WebDriverWait-org.openqa.selenium.WebDriver-java.time.Clock-org.openqa.selenium.support.ui.Sleeper-long-long-">
+<!--   -->
+</a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>WebDriverWait</h4>
 <pre>public&nbsp;WebDriverWait(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
-                     <a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+                     java.time.Clock&nbsp;clock,
                      <a href="../../../../../org/openqa/selenium/support/ui/Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper,
                      long&nbsp;timeOutInSeconds,
                      long&nbsp;sleepTimeOut)</pre>
