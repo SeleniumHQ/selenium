@@ -191,6 +191,8 @@ def testNumericNonShiftKeys(driver, pages):
 
 @pytest.mark.xfail_marionette(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_remote(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 def testNumericShiftKeys(driver, pages):
     pages.load("javascriptPage.html")
     result = driver.find_element(by=By.ID, value="result")
@@ -211,6 +213,8 @@ def testLowerCaseAlphaKeys(driver, pages):
 
 @pytest.mark.xfail_marionette(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_remote(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 def testUppercaseAlphaKeys(driver, pages):
     pages.load("javascriptPage.html")
     result = driver.find_element(by=By.ID, value="result")
@@ -222,6 +226,8 @@ def testUppercaseAlphaKeys(driver, pages):
 
 
 @pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 def testAllPrintableKeys(driver, pages):
     pages.load("javascriptPage.html")
@@ -274,6 +280,8 @@ def testDeleteAndBackspaceKeys(driver, pages):
 
 @pytest.mark.xfail_marionette(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_remote(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 def testSpecialSpaceKeys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
@@ -282,6 +290,8 @@ def testSpecialSpaceKeys(driver, pages):
 
 
 @pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 def testNumberpadAndFunctionKeys(driver, pages):
     pages.load("javascriptPage.html")
