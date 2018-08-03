@@ -110,7 +110,6 @@ def driver(request):
             options = get_options(driver_class, request.config)
         if driver_class == 'Remote':
             capabilities = DesiredCapabilities.FIREFOX.copy()
-            capabilities['marionette'] = False
             kwargs.update({'desired_capabilities': capabilities})
             options = get_options('Firefox', request.config)
         if driver_class == 'WebKitGTK':
