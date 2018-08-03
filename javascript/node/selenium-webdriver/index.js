@@ -223,6 +223,9 @@ class Builder {
 
     /** @private {ie.Options} */
     this.ieOptions_ = null;
+  
+    /** @private {ie.ServiceBuilder} */
+    this.ieService_ = null;
 
     /** @private {safari.Options} */
     this.safariOptions_ = null;
@@ -491,6 +494,18 @@ class Builder {
   }
 
   /**
+   * Sets the {@link ie.ServiceBuilder} to use to manage the geckodriver
+   * child process when creating IE sessions locally.
+   *
+   * @param {ie.ServiceBuilder} service the service to use.
+   * @return {!Builder} a self reference.
+   */
+  setIeService(service) {
+    this.ieService_ = service;
+    return this;
+  }
+
+  /**
    * Set {@linkplain edge.Options options} specific to Microsoft's Edge browser
    * for drivers created by this builder. Any proxy settings defined on the
    * given options will take precedence over those set through
@@ -656,7 +671,11 @@ class Builder {
       }
 
       case Browser.INTERNET_EXPLORER:
-        return createDriver(ie.Driver, capabilities);
+        let service = null;
+        if (this.ieService_) {
+          service = this.ieService_.build();
+        }
+        return createDriver(ie.Driver, capabilities, service);
 
       case Browser.EDGE: {
         let service = null;
