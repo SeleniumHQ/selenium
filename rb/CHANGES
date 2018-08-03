@@ -1,3 +1,19 @@
+3.14.0 (2018-08-03)
+===================
+
+Ruby:
+  * Allow to customize default duration of movement of pointer actions using
+    Driver#action#default_move_duration= (thanks @prakharrr)
+  * Fixed an accidentally removed Selenium::WebDriver::Error::TimeoutError (thanks @twalpole)
+
+Server:
+  * Fixed an issue when Server.latest couldn't parse the version
+
+Remote:
+  * Added support for uploading multiple files by passing them as a string
+    separated by \n to Element#send_keys. Please, note that not all the drivers
+    have multiple file upload implemented (tested to work in ChromeDriver).
+
 3.13.1 (2018-07-20)
 ===================
 
