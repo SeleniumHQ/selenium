@@ -1,4 +1,4 @@
-dist: xenial
+dist: trusty
 sudo: required
 env:
   global:
@@ -100,29 +100,29 @@ matrix:
       <<: *python
     - env: TOXENV=flake8
       <<: *python
-      python: 3.7
+      python: 3.6
     - env: TOXENV=docs
       <<: *python
-      python: 3.7
-    - env: TOXENV=py37-unit
+      python: 3.6
+    - env: TOXENV=py36-unit
       <<: *python
-      python: 3.7
-    - env: CHROME=1 TOXENV=py37-chrome
+      python: 3.6
+    - env: CHROME=1 TOXENV=py36-chrome
       <<: *python
       <<: *chrome
-      python: 3.7
-    - env: TOXENV=py37-firefox
+      python: 3.6
+    - env: TOXENV=py36-firefox
       <<: *python
       <<: *firefox-esr
-      python: 3.7
-    - env: TOXENV=py37-remote
+      python: 3.6
+    - env: TOXENV=py36-remote
       <<: *python
       <<: *firefox-esr
-      python: 3.7
-    - env: MARIONETTE=1 TOXENV=py37-marionette
+      python: 3.6
+    - env: MARIONETTE=1 TOXENV=py36-marionette
       <<: *python
       <<: *firefox-nightly
-      python: 3.7
+      python: 3.6
     - env: TASK=//rb:unit-test
       <<: *ruby
     - env: CHROME=1 TASK=//rb:chrome-test
