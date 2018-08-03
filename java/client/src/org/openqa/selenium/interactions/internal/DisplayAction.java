@@ -22,7 +22,7 @@ package org.openqa.selenium.interactions.internal;
  */
 public abstract class DisplayAction extends BaseAction {
 
-  protected DisplayAction(Locatable locationProvider) {
+  protected DisplayAction(org.openqa.selenium.interactions.Locatable locationProvider) {
     super(locationProvider);
   }
 

@@ -26,7 +26,7 @@ public class TouchAction extends DisplayAction {
 
   protected final TouchScreen touchScreen;
 
-  public TouchAction(TouchScreen touchScreen, Locatable locationProvider) {
+  public TouchAction(TouchScreen touchScreen, org.openqa.selenium.interactions.Locatable locationProvider) {
     super(locationProvider);
     this.touchScreen = touchScreen;
   }

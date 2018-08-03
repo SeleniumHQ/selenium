@@ -17,29 +17,15 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.openqa.selenium.interactions.Locatable;
+import org.openqa.selenium.testing.*;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
-
-import org.junit.Test;
-import org.openqa.selenium.interactions.internal.Locatable;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.TestUtilities;
+import static org.openqa.selenium.testing.Driver.*;
 
 @Ignore(value = HTMLUNIT,
           reason = "Getting coordinates requires rendering, others: not tested")

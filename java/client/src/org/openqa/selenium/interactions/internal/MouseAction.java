@@ -53,7 +53,7 @@ public abstract class MouseAction extends BaseAction implements IsInteraction {
 
   protected final Mouse mouse;
 
-  protected MouseAction(Mouse mouse, Locatable locationProvider) {
+  protected MouseAction(Mouse mouse, org.openqa.selenium.interactions.Locatable locationProvider) {
     super(locationProvider);
     this.mouse = mouse;
   }

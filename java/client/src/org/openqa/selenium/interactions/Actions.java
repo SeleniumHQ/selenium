@@ -17,28 +17,21 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.openqa.selenium.interactions.PointerInput.Kind.MOUSE;
-import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
-import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
-
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
-import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.interactions.internal.MouseAction.Button;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.IntConsumer;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.interactions.PointerInput.Kind.MOUSE;
+import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
+import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
 /**
  * The user-facing API for emulating complex user gestures. Use this class rather than using the
@@ -49,7 +42,7 @@ import java.util.logging.Logger;
  */
 public class Actions {
 
-  private final static Logger LOG = Logger.getLogger(Actions.class.getName());
+  private static final Logger LOG = Logger.getLogger(Actions.class.getName());
   private final WebDriver driver;
 
   // W3C

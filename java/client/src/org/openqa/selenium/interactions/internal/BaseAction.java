@@ -25,14 +25,14 @@ import java.util.Optional;
  * Base class for all actions.
  */
 public abstract class BaseAction {
-  protected final Locatable where;
+  protected final org.openqa.selenium.interactions.Locatable where;
 
   /**
    * Common c'tor - a locatable element is provided.
    *
    * @param actionLocation provider of coordinates for the action.
    */
-  protected BaseAction(Locatable actionLocation) {
+  protected BaseAction(org.openqa.selenium.interactions.Locatable actionLocation) {
     this.where = actionLocation;
   }
 

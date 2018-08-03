@@ -19,7 +19,6 @@ package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
-import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.interactions.internal.MouseAction;
 
 import java.time.Duration;
@@ -39,7 +38,7 @@ public class MoveToOffsetAction extends MouseAction implements Action {
   private final int xOffset;
   private final int yOffset;
 
-  public MoveToOffsetAction(Mouse mouse, Locatable locationProvider, int x, int y) {
+  public MoveToOffsetAction(Mouse mouse, org.openqa.selenium.interactions.Locatable locationProvider, int x, int y) {
     super(mouse, locationProvider);
     xOffset = x;
     yOffset = y;
