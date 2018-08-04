@@ -80,6 +80,8 @@ class ServiceBuilder extends remote.DriverService.Builder {
 
 const OPTIONS_CAPABILITY_KEY = 'safari.options';
 const TECHNOLOGY_PREVIEW_OPTIONS_KEY = 'technologyPreview';
+const AUTOMATIC_INSPECTION_OPTIONS_KEY = 'automaticInspection';
+const AUTOMATIC_PROFILING_OPTIONS_KEY = 'automaticProfiling';
 
 /**
  * Configuration options specific to the {@link Driver SafariDriver}.
@@ -110,6 +112,30 @@ class Options extends Capabilities {
     this.options_[TECHNOLOGY_PREVIEW_OPTIONS_KEY] = !!useTechnologyPreview;
     return this;
   }
+
+  /**
+   * Instruct the SafariDriver to use the Safari Automatic Inspection if true.
+   * Otherwise, use the release version of Safari. Defaults to using the release version of Safari.
+   *
+   * @param {boolean} useAutomaticInspection
+   * @return {!Options} A self reference.
+   */
+  setAutomaticInspection(useAutomaticInspection) {
+    this.options_[AUTOMATIC_INSPECTION_OPTIONS_KEY] = !!useAutomaticInspection;
+    return this;
+   }
+
+  /**
+   * Instruct the SafariDriver to use the Safari Automatic Profiling if true.
+   * Otherwise, use the release version of Safari. Defaults to using the release version of Safari.
+   *
+   * @param {boolean} useAutomaticProfiling
+   * @return {!Options} A self reference.
+   */
+   setAutomaticProfiling(useAutomaticProfiling) {
+     this.options_[AUTOMATIC_PROFILING_OPTIONS_KEY] = !!useAutomaticProfiling;
+     return this;
+   }
 }
 
 /**
@@ -129,6 +155,39 @@ function useTechnologyPreview(o) {
   return false;
 }
 
+/**
+ * @param  {(Capabilities|Object<string, *>)=} o The options object
+ * @return {boolean}
+ */
+function useAutomaticProfiling(o) {
+  if (o instanceof Capabilities) {
+    let options = o.get(OPTIONS_CAPABILITY_KEY);
+    return !!(options && options[AUTOMATIC_PROFILING_OPTIONS_KEY]);
+  }
+
+  if (o && typeof o === 'object') {
+    return !!o[AUTOMATIC_PROFILING_OPTIONS_KEY];
+  }
+
+  return false;
+}
+
+/**
+ * @param  {(Capabilities|Object<string, *>)=} o The options object
+ * @return {boolean}
+ */
+function useAutomaticInspection(o) {
+  if (o instanceof Capabilities) {
+    let options = o.get(OPTIONS_CAPABILITY_KEY);
+    return !!(options && options[AUTOMATIC_INSPECTION_OPTIONS_KEY]);
+  }
+
+  if (o && typeof o === 'object') {
+    return !!o[AUTOMATIC_INSPECTION_OPTIONS_KEY];
+  }
+
+  return false;
+}
 
 const SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE =
     '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver';
