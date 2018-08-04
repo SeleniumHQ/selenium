@@ -125,13 +125,15 @@ module Python
   class Prep < Tasks
     def handle(fun, dir, args)
 	    task Tasks.new.task_name(dir, args[:name]) do
-	      remote_py_home = "py/selenium/webdriver/remote/"
-	      firefox_py_home = "py/selenium/webdriver/firefox/"
+	      py_home = "py/"
+	      remote_py_home = py_home + "selenium/webdriver/remote/"
+	      firefox_py_home = py_home + "selenium/webdriver/firefox/"
 	      firefox_build_dir = 'build/javascript/firefox-driver/'
 	      x86 = firefox_py_home + "x86/"
 	      amd64 = firefox_py_home + "amd64/"
 
 	      if (windows?) then
+		      py_home = amd64.gsub(/\//,"\\")
 		      remote_py_home = remote_py_home.gsub(/\//, "\\")
 		      firefox_build_dir = firefox_build_dir.gsub(/\//, "\\")
 		      firefox_py_home = firefox_py_home .gsub(/\//, "\\")
@@ -149,6 +151,7 @@ module Python
 
 	      cp Rake::Task['//javascript/firefox-driver:webdriver'].out, firefox_py_home, :verbose => true
 	      cp Rake::Task['//javascript/firefox-driver:webdriver_prefs'].out, firefox_py_home+"webdriver_prefs.json", :verbose => true
+	      cp "LICENSE", py_home + "LICENSE", :verbose => true
       end
     end
   end
