@@ -57,10 +57,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.EnumSet;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
 public class JettyAppServer implements AppServer {
@@ -286,15 +283,7 @@ public class JettyAppServer implements AppServer {
       throw new RuntimeException(e);
     }
   }
-
-  public void addFilter(
-      ServletContextHandler context,
-      Class<? extends Filter> filter,
-      String path,
-      DispatcherType dispatches) {
-    context.addFilter(filter, path, EnumSet.of(dispatches));
-  }
-
+  
   protected ServletContextHandler addResourceHandler(String contextPath, Path resourceBase) {
     ServletContextHandler context = new ServletContextHandler();
 
