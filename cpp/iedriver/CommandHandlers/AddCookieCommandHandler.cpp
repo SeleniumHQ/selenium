@@ -50,6 +50,21 @@ void AddCookieCommandHandler::ExecuteInternal(
     return;
   }
 
+  size_t last_path_slash_index = cookie.path().find_last_of("/");
+  if (last_path_slash_index != std::string::npos) {
+    std::string last_path_segment = cookie.path().substr(last_path_slash_index);
+    if (last_path_segment.size() > 1 &&
+      last_path_segment.find(".") != std::string::npos) {
+      // This algorithm is far from perfect. If the "path" property of the
+      // cookie includes the document name, the cookie won't be properly set,
+      // as IE's cookie handling expects a directory for path, not a file
+      // or document name. Strip the last segment of the path property (if
+      // if the path segment doesn't already end in a slash, and contains
+      // a period).
+      cookie.set_path(cookie.path().substr(0, last_path_slash_index));
+    }
+  }
+
   status_code = browser_wrapper->cookie_manager()->SetCookie(
       browser_wrapper->GetCurrentUrl(),
       cookie);
