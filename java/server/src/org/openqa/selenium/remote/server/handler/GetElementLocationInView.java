@@ -18,7 +18,7 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Point;
-import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.remote.server.Session;
 
 public class GetElementLocationInView extends WebElementHandler<Point> {

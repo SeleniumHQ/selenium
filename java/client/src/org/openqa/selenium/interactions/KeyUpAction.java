@@ -18,7 +18,6 @@
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
 
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import java.util.List;
  */
 @Deprecated
 public class KeyUpAction extends SingleKeyAction implements Action {
-  public KeyUpAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
+  public KeyUpAction(Keyboard keyboard, Mouse mouse, org.openqa.selenium.interactions.Locatable locationProvider, Keys key) {
     super(keyboard, mouse, locationProvider, key);
   }
 

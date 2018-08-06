@@ -20,14 +20,13 @@ package org.openqa.selenium.interactions.touch;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.TouchAction;
-import org.openqa.selenium.interactions.internal.Locatable;
 
 /**
  * Creates a double tap gesture on a touch screen.
  */
 public class DoubleTapAction extends TouchAction implements Action {
 
-  public DoubleTapAction(TouchScreen touchScreen, Locatable locationProvider) {
+  public DoubleTapAction(TouchScreen touchScreen, org.openqa.selenium.interactions.Locatable locationProvider) {
     super(touchScreen, locationProvider);
   }
 

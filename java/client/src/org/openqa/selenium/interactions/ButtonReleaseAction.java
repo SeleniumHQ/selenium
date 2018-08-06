@@ -18,7 +18,7 @@
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.interactions.Locatable;
 
 import java.util.ArrayList;
 import java.util.Collections;

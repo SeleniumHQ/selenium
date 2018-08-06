@@ -40,7 +40,7 @@ import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.logging.Logs;

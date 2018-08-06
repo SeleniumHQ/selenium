@@ -35,7 +35,7 @@ public abstract class SingleKeyAction extends KeysRelatedAction {
     this(keyboard, mouse, null, key);
   }
 
-  protected SingleKeyAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
+  protected SingleKeyAction(Keyboard keyboard, Mouse mouse, org.openqa.selenium.interactions.Locatable locationProvider, Keys key) {
     super(keyboard, mouse, locationProvider);
     this.key = key;
     boolean isModifier = false;

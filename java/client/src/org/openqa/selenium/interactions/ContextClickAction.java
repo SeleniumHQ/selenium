@@ -19,7 +19,6 @@ package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.interactions.internal.Locatable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +30,7 @@ import java.util.List;
  * @deprecated Use {@link Actions#contextClick(WebElement)}
  */
 public class ContextClickAction extends MouseAction implements Action {
-  public ContextClickAction(Mouse mouse, Locatable where) {
+  public ContextClickAction(Mouse mouse, org.openqa.selenium.interactions.Locatable where) {
     super(mouse, where);
   }
 

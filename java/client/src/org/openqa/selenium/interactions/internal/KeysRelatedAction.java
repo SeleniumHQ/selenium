@@ -40,7 +40,7 @@ public abstract class KeysRelatedAction extends BaseAction implements IsInteract
   protected final Keyboard keyboard;
   protected final Mouse mouse;
 
-  protected KeysRelatedAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider) {
+  protected KeysRelatedAction(Keyboard keyboard, Mouse mouse, org.openqa.selenium.interactions.Locatable locationProvider) {
     super(locationProvider);
     this.keyboard = keyboard;
     this.mouse = mouse;

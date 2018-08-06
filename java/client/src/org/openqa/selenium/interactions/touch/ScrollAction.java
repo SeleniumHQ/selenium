@@ -20,7 +20,6 @@ package org.openqa.selenium.interactions.touch;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.TouchAction;
-import org.openqa.selenium.interactions.internal.Locatable;
 
 /**
  * Creates a scroll gesture.
@@ -30,7 +29,7 @@ public class ScrollAction extends TouchAction implements Action {
   private final int xOffset;
   private final int yOffset;
 
-  public ScrollAction(TouchScreen touchScreen, Locatable locationProvider, int x, int y) {
+  public ScrollAction(TouchScreen touchScreen, org.openqa.selenium.interactions.Locatable locationProvider, int x, int y) {
     super(touchScreen, locationProvider);
     xOffset = x;
     yOffset = y;

@@ -18,7 +18,6 @@
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.interactions.internal.MouseAction;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ import java.util.List;
  */
 @Deprecated
 public class ClickAction extends MouseAction implements Action {
-  public ClickAction(Mouse mouse, Locatable locationProvider) {
+  public ClickAction(Mouse mouse, org.openqa.selenium.interactions.Locatable locationProvider) {
     super(mouse, locationProvider);
   }
 
