@@ -361,6 +361,10 @@ bool Element::IsObscured(LocationInfo* click_location,
           CComBSTR outer_html_bstr;
           hr = element_in_list->get_outerHTML(&outer_html_bstr);
           std::wstring outer_html = outer_html_bstr;
+          size_t bracket_pos = outer_html.find(L'>');
+          if (bracket_pos != std::wstring::npos) {
+            outer_html = outer_html.substr(0, bracket_pos + 1);
+          }
           *obscuring_element_description = StringUtilities::ToString(outer_html);
           break;
         }
