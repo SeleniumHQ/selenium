@@ -1,6 +1,6 @@
 # BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'environment',
-  srcs = glob(['*.java', 'webserver/*.java'], exclude = ['**/*Test.java']),
+  srcs = glob(['*.java', 'webserver/*.java'], exclude = ['**/*Test.java', '**/*TestBase.java']),
   provided_deps = [
     '//third_party/java/servlet:javax.servlet-api',
   ],
@@ -31,7 +31,9 @@ java_binary(name = 'webserver',
 
 java_test(name = "webserver-test",
   srcs = [
-    "webserver/AppServerTest.java",
+    "webserver/AppServerTestBase.java",
+    "webserver/JettyAppServerTest.java",
+    "webserver/JreAppServerTest.java",
   ],
   vm_args = [
     '-Dselenium.browser=ff',

@@ -43,7 +43,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 @RunWith(JUnit4.class)
-public class AppServerTest {
+public abstract class AppServerTestBase {
   private static final String APPCACHE_MIME_TYPE = "text/cache-manifest";
   private AppServer server;
   private static WebDriver driver;
@@ -55,9 +55,11 @@ public class AppServerTest {
 
   @Before
   public void startServer() {
-    server = new JettyAppServer();
+    server = createAppServer();
     server.start();
   }
+
+  protected abstract AppServer createAppServer();
 
   @After
   public void stopServer() {
