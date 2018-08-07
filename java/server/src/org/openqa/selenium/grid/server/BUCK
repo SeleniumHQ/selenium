@@ -9,7 +9,9 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium/remote:remote",
         "//java/server/src/org/openqa/selenium/injector:injector",
+        "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/web:web",
+        "//third_party/java/beust:jcommander",
         "//third_party/java/guava:guava",
         "//third_party/java/jetty:jetty",
     ],
