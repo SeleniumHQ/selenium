@@ -14,6 +14,6 @@ java_library(
         "//third_party/java/jetty:jetty",
     ],
     visibility = [
-        "//java/server/test/org/openqa/selenium/grid/...",
-    ],
+        "//java/server/...",
+    ]
 )
