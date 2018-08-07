@@ -30,11 +30,14 @@ import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.seleniumhq.jetty9.security.ConstraintMapping;
+import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
+import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.net.URL;
@@ -82,10 +85,29 @@ public class BaseServer implements Server<BaseServer> {
           out.setContent(value.getBytes(UTF_8));
         });
 
-    this.servletContextHandler = new ServletContextHandler();
-    addServlet(new CommandHandlerServlet(injector, handlers), "/*");
+    this.servletContextHandler = new ServletContextHandler(ServletContextHandler.SECURITY);
+    ConstraintSecurityHandler securityHandler = (ConstraintSecurityHandler) servletContextHandler.getSecurityHandler();
+
+    Constraint disableTrace = new Constraint();
+    disableTrace.setName("Disable TRACE");
+    disableTrace.setAuthenticate(true);
+    ConstraintMapping disableTraceMapping = new ConstraintMapping();
+    disableTraceMapping.setConstraint(disableTrace);
+    disableTraceMapping.setMethod("TRACE");
+    disableTraceMapping.setPathSpec("/");
+    securityHandler.addConstraintMapping(disableTraceMapping);
+
+    Constraint enableOther = new Constraint();
+    enableOther.setName("Enable everything but TRACE");
+    ConstraintMapping enableOtherMapping = new ConstraintMapping();
+    enableOtherMapping.setConstraint(enableOther);
+    enableOtherMapping.setMethodOmissions(new String[] {"TRACE"});
+    enableOtherMapping.setPathSpec("/");
+    securityHandler.addConstraintMapping(enableOtherMapping);
 
     server.setHandler(servletContextHandler);
+
+    addServlet(new CommandHandlerServlet(injector, handlers), "/*");
   }
 
   @Override
