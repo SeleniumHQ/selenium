@@ -35,6 +35,7 @@ import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
+import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -54,13 +55,10 @@ public class BaseServer implements Server<BaseServer> {
   private final Injector injector;
   private URL url;
 
-  public BaseServer() {
-    this(0);
-  }
-
-  public BaseServer(int port) {
-    this.port = port;
-    this.server = new org.seleniumhq.jetty9.server.Server();
+  public BaseServer(BaseServerOptions options) {
+    this.port = options.getPort();
+    this.server = new org.seleniumhq.jetty9.server.Server(
+        new QueuedThreadPool(options.getMaxServerThreads()));
 
     // Insertion order may matter
     this.handlers = new LinkedHashMap<>();

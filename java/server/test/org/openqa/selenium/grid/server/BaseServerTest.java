@@ -21,9 +21,11 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
 
 import org.junit.Test;
+import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -35,7 +37,7 @@ public class BaseServerTest {
 
   @Test
   public void baseServerStartsAndDoesNothing() throws IOException {
-    Server server = new BaseServer().start();
+    Server server = new BaseServer(new BaseServerOptions(new MapConfig(ImmutableMap.of()))).start();
 
     URL url = server.getUrl();
 
