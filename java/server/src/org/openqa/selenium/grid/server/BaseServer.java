@@ -25,9 +25,11 @@ import static org.openqa.selenium.grid.server.Server.get;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.seleniumhq.jetty9.security.ConstraintMapping;
@@ -40,6 +42,8 @@ import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -52,14 +56,26 @@ import javax.servlet.Servlet;
 public class BaseServer implements Server<BaseServer> {
 
   private final org.seleniumhq.jetty9.server.Server server;
-  private final int port;
   private final Map<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>> handlers;
   private final ServletContextHandler servletContextHandler;
   private final Injector injector;
-  private URL url;
+  private final URL url;
 
   public BaseServer(BaseServerOptions options) {
-    this.port = options.getPort();
+    int port = options.getPort() == 0 ? PortProber.findFreePort() : options.getPort();
+
+    String host;
+    try {
+      host = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
+    } catch (WebDriverException ignored) {
+      host = "localhost";
+    }
+    try {
+      this.url = new URL("http", host, port, "");
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException(e);
+    }
+
     this.server = new org.seleniumhq.jetty9.server.Server(
         new QueuedThreadPool(options.getMaxServerThreads()));
 
@@ -107,6 +123,11 @@ public class BaseServer implements Server<BaseServer> {
 
     server.setHandler(servletContextHandler);
 
+    HttpConfiguration httpConfig = new HttpConfiguration();
+    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+    http.setPort(getUrl().getPort());
+    server.addConnector(http);
+
     addServlet(new CommandHandlerServlet(injector, handlers), "/*");
   }
 
@@ -136,19 +157,10 @@ public class BaseServer implements Server<BaseServer> {
 
   @Override
   public BaseServer start() {
-    int portToUse = port < 1 ? PortProber.findFreePort() : port;
-
-    HttpConfiguration httpConfig = new HttpConfiguration();
-    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-    http.setPort(portToUse);
-    server.addConnector(http);
-
     try {
       server.start();
 
-      url = server.getURI().toURL();
-
-      PortProber.waitForPortUp(portToUse, 10, SECONDS);
+      PortProber.waitForPortUp(getUrl().getPort(), 10, SECONDS);
 
       return this;
     } catch (RuntimeException e) {
@@ -172,9 +184,6 @@ public class BaseServer implements Server<BaseServer> {
 
   @Override
   public URL getUrl() {
-    if (!server.isRunning()) {
-      throw new RuntimeException("Server is not running");
-    }
     return url;
   }
 }
