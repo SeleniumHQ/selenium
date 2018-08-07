@@ -33,8 +33,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 class HttpMessage {
 
@@ -69,21 +71,29 @@ class HttpMessage {
   }
 
   public Iterable<String> getHeaders(String name) {
-    return headers.get(name);
-  }
-
-  public String getHeader(String name) {
     return headers.entries().stream()
         .filter(e -> Objects.nonNull(e.getKey()))
         .filter(e -> e.getKey().equalsIgnoreCase(name.toLowerCase()))
         .map(Map.Entry::getValue)
-        .findFirst()
-        .orElse(null);
+        .collect(Collectors.toList());
+  }
+
+  public String getHeader(String name) {
+    Iterable<String> initialHeaders = getHeaders(name);
+    if (initialHeaders == null) {
+      return null;
+    }
+
+    Iterator<String> headers = initialHeaders.iterator();
+    if (headers.hasNext()) {
+      return headers.next();
+    }
+    return null;
   }
 
   public void setHeader(String name, String value) {
     removeHeader(name);
-    headers.put(name, value);
+    addHeader(name, value);
   }
 
   public void addHeader(String name, String value) {
