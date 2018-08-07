@@ -25,11 +25,11 @@ import com.google.common.net.MediaType;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.selenium.grid.server.ServletRequestWrappingHttpRequest;
+import org.openqa.selenium.grid.server.ServletResponseWrappingHttpResponse;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.grid.server.ServletRequestWrappingHttpRequest;
-import org.openqa.selenium.grid.server.ServletResponseWrappingHttpResponse;
 
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
