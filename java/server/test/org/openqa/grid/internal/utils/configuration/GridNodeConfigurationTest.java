@@ -51,6 +51,7 @@ public class GridNodeConfigurationTest {
 
   static final Integer DEFAULT_TIMEOUT = StandaloneConfigurationTest.DEFAULT_TIMEOUT;
   static final Integer DEFAULT_BROWSER_TIMEOUT = StandaloneConfigurationTest.DEFAULT_BROWSER_TIMEOUT;
+  static final String DEFAULT_HOST = StandaloneConfigurationTest.DEFAULT_HOST;
   static final Integer DEFAULT_PORT = -1;
   static final Boolean DEFAULT_DEBUG_TOGGLE = StandaloneConfigurationTest.DEFAULT_DEBUG_TOGGLE;
 
@@ -63,6 +64,60 @@ public class GridNodeConfigurationTest {
   static final Integer DEFAULT_UNREGISTER_DELAY = 60000;
   static final Integer DEFAULT_DOWN_POLLING_LIMIT = 2;
   static final String DEFAULT_PROXY = "org.openqa.grid.selenium.proxy.DefaultRemoteProxy";
+
+  @Test
+  public void testDefaults() {
+    checkDefaults(new GridNodeConfiguration());
+  }
+
+  @Test
+  public void testConstructorEqualsDefaultConfig() {
+    checkDefaults(new GridNodeConfiguration(
+        NodeJsonConfiguration.loadFromResourceOrFile(GridNodeConfiguration.DEFAULT_NODE_CONFIG_FILE)));
+  }
+
+  @Test
+  public void testDefaultsFromCli() {
+    checkDefaults(new GridNodeCliOptions.Parser().parse(new String[]{}).toConfiguration());
+  }
+
+  private void checkDefaults(GridNodeConfiguration gnc) {
+    assertEquals(GridNodeConfiguration.ROLE, gnc.role);
+    assertEquals(DEFAULT_HOST, gnc.host);
+    assertEquals(DEFAULT_PORT, gnc.port);
+    assertEquals(DEFAULT_NODE_STATUS_CHECK_TIMEOUT, gnc.nodeStatusCheckTimeout);
+    assertEquals(DEFAULT_POLLING_INTERVAL, gnc.nodePolling);
+    assertEquals(DEFAULT_PROXY, gnc.proxy);
+    assertEquals(DEFAULT_REGISTER_TOGGLE, gnc.register);
+    assertEquals(DEFAULT_REGISTER_CYCLE, gnc.registerCycle);
+    assertEquals(DEFAULT_HUB, gnc.hub);
+    assertEquals(DEFAULT_MAX_SESSION, gnc.maxSession);
+    assertFalse(gnc.capabilities.isEmpty());
+    assertEquals(4, gnc.capabilities.size());
+    assertNull(gnc.id);
+    assertEquals(DEFAULT_DOWN_POLLING_LIMIT, gnc.downPollingLimit);
+    assertNull(gnc.hubHost);
+    assertNull(gnc.hubPort);
+    assertNull(gnc.nodeConfigFile);
+    assertEquals(DEFAULT_UNREGISTER_DELAY, gnc.unregisterIfStillDownAfter);
+
+    assertNull(gnc.cleanUpCycle);
+    assertNotNull(gnc.custom);
+    assertTrue(gnc.custom.isEmpty());
+    assertNotNull(gnc.servlets);
+    assertTrue(gnc.servlets.isEmpty());
+    assertNotNull(gnc.withoutServlets);
+    assertTrue(gnc.withoutServlets.isEmpty());
+
+    assertEquals(DEFAULT_TIMEOUT, gnc.timeout);
+    assertEquals(DEFAULT_BROWSER_TIMEOUT, gnc.browserTimeout);
+    assertEquals(DEFAULT_DEBUG_TOGGLE, gnc.debug);
+    assertNull(gnc.jettyMaxThreads);
+    assertNull(gnc.log);
+
+    //not a @Parameter
+    assertNull(gnc.remoteHost);
+  }
 
   @Test
   public void testLoadFromJson() throws IOException {
@@ -108,83 +163,6 @@ public class GridNodeConfigurationTest {
                             + " }"
                             + "}";
     GridNodeConfiguration.loadFromJSON(configJson);
-  }
-
-  @Test
-  public void testDefaults() {
-    GridNodeConfiguration gnc = new GridNodeConfiguration();
-    assertEquals(GridNodeConfiguration.ROLE, gnc.role);
-    assertEquals(DEFAULT_PORT, gnc.port);
-    assertEquals(DEFAULT_NODE_STATUS_CHECK_TIMEOUT, gnc.nodeStatusCheckTimeout);
-    assertEquals(DEFAULT_POLLING_INTERVAL, gnc.nodePolling);
-    assertEquals(DEFAULT_PROXY, gnc.proxy);
-    assertEquals(DEFAULT_REGISTER_TOGGLE, gnc.register);
-    assertEquals(DEFAULT_REGISTER_CYCLE, gnc.registerCycle);
-    assertEquals(DEFAULT_HUB, gnc.hub);
-    assertEquals(DEFAULT_MAX_SESSION, gnc.maxSession);
-    assertFalse(gnc.capabilities.isEmpty());
-    assertEquals(4, gnc.capabilities.size());
-    assertNull(gnc.id);
-    assertEquals(DEFAULT_DOWN_POLLING_LIMIT, gnc.downPollingLimit);
-    assertNull(gnc.hubHost);
-    assertNull(gnc.hubPort);
-    assertNull(gnc.nodeConfigFile);
-    assertEquals(DEFAULT_UNREGISTER_DELAY, gnc.unregisterIfStillDownAfter);
-
-    assertNull(gnc.cleanUpCycle);
-    assertNull(gnc.host);
-    assertNotNull(gnc.custom);
-    assertTrue(gnc.custom.isEmpty());
-    assertNotNull(gnc.servlets);
-    assertTrue(gnc.servlets.isEmpty());
-    assertNotNull(gnc.withoutServlets);
-    assertTrue(gnc.withoutServlets.isEmpty());
-
-    assertEquals(DEFAULT_TIMEOUT, gnc.timeout);
-    assertEquals(DEFAULT_BROWSER_TIMEOUT, gnc.browserTimeout);
-    assertEquals(DEFAULT_DEBUG_TOGGLE, gnc.debug);
-    assertNull(gnc.jettyMaxThreads);
-    assertNull(gnc.log);
-
-    //not a @Parameter
-    assertNull(gnc.remoteHost);
-  }
-
-  @Test
-  public void testConstructorEqualsDefaultConfig() {
-    GridNodeConfiguration actual = new GridNodeConfiguration();
-    GridNodeConfiguration expected =
-      GridNodeConfiguration.loadFromJSON(GridNodeConfiguration.DEFAULT_NODE_CONFIG_FILE);
-
-    assertEquals(expected.role, actual.role);
-    assertEquals(expected.port, actual.port);
-    assertEquals(expected.capabilities.size(), actual.capabilities.size());
-
-    assertEquals(expected.nodeStatusCheckTimeout, actual.nodeStatusCheckTimeout);
-    assertEquals(expected.nodePolling, actual.nodePolling);
-    assertEquals(expected.proxy, actual.proxy);
-    assertEquals(expected.register, actual.register);
-    assertEquals(expected.registerCycle, actual.registerCycle);
-    assertEquals(expected.hub, actual.hub);
-
-    assertEquals(expected.id, actual.id);
-    assertEquals(expected.downPollingLimit, actual.downPollingLimit);
-    assertEquals(expected.hubPort, actual.hubPort);
-    assertEquals(expected.hubHost, actual.hubHost);
-    assertEquals(expected.nodeConfigFile, actual.nodeConfigFile);
-    assertEquals(expected.unregisterIfStillDownAfter, actual.unregisterIfStillDownAfter);
-
-    assertEquals(expected.cleanUpCycle, actual.cleanUpCycle);
-    assertEquals(expected.host, actual.host);
-    assertEquals(expected.maxSession, actual.maxSession);
-    assertEquals(expected.custom.size(), actual.custom.size());
-    assertEquals(expected.servlets.size(), actual.servlets.size());
-    assertEquals(expected.withoutServlets.size(), actual.withoutServlets.size());
-    assertEquals(expected.timeout, actual.timeout);
-    assertEquals(expected.browserTimeout, actual.browserTimeout);
-    assertEquals(expected.debug, actual.debug);
-    assertEquals(expected.jettyMaxThreads, actual.jettyMaxThreads);
-    assertEquals(expected.log, actual.log);
   }
 
   @Test

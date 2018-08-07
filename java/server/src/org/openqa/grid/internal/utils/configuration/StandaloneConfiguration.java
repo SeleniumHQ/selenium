@@ -124,7 +124,7 @@ public class StandaloneConfiguration {
     this.role = ROLE;
     this.debug = jsonConfig.getDebug();
     this.log = jsonConfig.getLog();
-    this.host = jsonConfig.getHost();
+    this.host = jsonConfig.getHost() != null ? jsonConfig.getHost() : "0.0.0.0";
     this.port = jsonConfig.getPort();
     this.timeout = jsonConfig.getTimeout();
     this.browserTimeout = jsonConfig.getBrowserTimeout();

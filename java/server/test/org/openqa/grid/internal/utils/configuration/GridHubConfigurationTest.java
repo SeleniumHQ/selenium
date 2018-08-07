@@ -41,6 +41,7 @@ public class GridHubConfigurationTest {
 
   static final Integer DEFAULT_TIMEOUT = StandaloneConfigurationTest.DEFAULT_TIMEOUT;
   static final Integer DEFAULT_BROWSER_TIMEOUT = StandaloneConfigurationTest.DEFAULT_BROWSER_TIMEOUT;
+  static final String DEFAULT_HOST = StandaloneConfigurationTest.DEFAULT_HOST;
   static final Integer DEFAULT_PORT = StandaloneConfigurationTest.DEFAULT_PORT;
   static final Boolean DEFAULT_DEBUG_TOGGLE = StandaloneConfigurationTest.DEFAULT_DEBUG_TOGGLE;
 
@@ -52,7 +53,21 @@ public class GridHubConfigurationTest {
 
   @Test
   public void testDefaults() {
-    GridHubConfiguration ghc = new GridHubConfiguration();
+    checkDefaults(new GridHubConfiguration());
+  }
+
+  @Test
+  public void testDefaultsFromConfig() {
+    checkDefaults(new GridHubConfiguration(
+        HubJsonConfiguration.loadFromResourceOrFile(GridHubConfiguration.DEFAULT_HUB_CONFIG_FILE)));
+  }
+
+  @Test
+  public void testDefaultsFromCli() {
+    checkDefaults(new GridHubCliOptions.Parser().parse(new String[]{}).toConfiguration());
+  }
+
+  private void checkDefaults(GridHubConfiguration ghc) {
     // these values come from the GridHubConfiguration class
     assertEquals(DEFAULT_PORT, ghc.port);
     assertEquals(GridHubConfiguration.ROLE, ghc.role);
@@ -64,7 +79,7 @@ public class GridHubConfigurationTest {
 
     // these values come from the GridConfiguration base class
     assertEquals(DEFAULT_CLEANUP_CYCLE, ghc.cleanUpCycle);
-    assertNull(ghc.host);
+    assertEquals(DEFAULT_HOST, ghc.host);
     assertNull(ghc.maxSession);
     assertNotNull(ghc.custom);
     assertTrue(ghc.custom.isEmpty());
@@ -79,33 +94,6 @@ public class GridHubConfigurationTest {
     assertEquals(DEFAULT_DEBUG_TOGGLE, ghc.debug);
     assertNull(ghc.jettyMaxThreads);
     assertNull(ghc.log);
-  }
-
-  @Test
-  public void testConstructorEqualsDefaultConfig() {
-    GridHubConfiguration actual = new GridHubConfiguration();
-    GridHubConfiguration expected =
-      GridHubConfiguration.loadFromJSON(GridHubConfiguration.DEFAULT_HUB_CONFIG_FILE);
-
-    assertEquals(expected.role, actual.role);
-    assertEquals(expected.port, actual.port);
-    assertEquals(expected.capabilityMatcher.getClass().getCanonicalName(),
-                 actual.capabilityMatcher.getClass().getCanonicalName());
-    assertEquals(expected.newSessionWaitTimeout, actual.newSessionWaitTimeout);
-    assertEquals(expected.throwOnCapabilityNotPresent, actual.throwOnCapabilityNotPresent);
-    assertEquals(expected.hubConfig, actual.hubConfig);
-    assertEquals(expected.prioritizer, actual.prioritizer);
-    assertEquals(expected.cleanUpCycle, actual.cleanUpCycle);
-    assertEquals(expected.host, actual.host);
-    assertEquals(expected.maxSession, actual.maxSession);
-    assertEquals(expected.custom.size(), actual.custom.size());
-    assertEquals(expected.servlets.size(), actual.servlets.size());
-    assertEquals(expected.withoutServlets.size(), actual.withoutServlets.size());
-    assertEquals(expected.timeout, actual.timeout);
-    assertEquals(expected.browserTimeout, actual.browserTimeout);
-    assertEquals(expected.debug, actual.debug);
-    assertEquals(expected.jettyMaxThreads, actual.jettyMaxThreads);
-    assertEquals(expected.log, actual.log);
   }
 
   @Test

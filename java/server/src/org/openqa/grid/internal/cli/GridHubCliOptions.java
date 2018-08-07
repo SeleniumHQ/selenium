@@ -29,7 +29,9 @@ import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.selenium.json.Json;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GridHubCliOptions extends CommonGridCliOptions {
 
@@ -67,11 +69,24 @@ public class GridHubCliOptions extends CommonGridCliOptions {
   }
 
   private static IDefaultProvider defaults(String json) {
-    Map<String, Object> map = (Map<String, Object>) new Json().toType(json, Map.class);
+    Map<String, Object> map = new Json().toType(json, Map.class);
     map.remove("custom");
     return optionName -> {
       String option = optionName.replaceAll("-", "");
-      return map.containsKey(option) && map.get(option) != null ? map.get(option).toString() : null;
+      if (map.containsKey(option) && map.get(option) != null) {
+        if (map.get(option) instanceof List) {
+          List<?> l = (List<?>) map.get(option);
+          if (l.isEmpty()) {
+            return null;
+          } else {
+            return l.stream().map(Object::toString).collect(Collectors.joining(","));
+          }
+        } else {
+          return map.get(option).toString();
+        }
+      } else {
+        return null;
+      }
     };
   }
 
