@@ -17,44 +17,38 @@
 package org.openqa.selenium.net;
 
 import static java.lang.System.currentTimeMillis;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
-import static org.openqa.selenium.net.PortProber.findFreePort;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.seleniumhq.jetty9.server.Request;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.handler.AbstractHandler;
+import org.openqa.selenium.environment.webserver.JreAppServer;
 
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 public class UrlCheckerTest {
 
   private final UrlChecker urlChecker = new UrlChecker();
-  int port = findFreePort();
-  Server server = buildServer();
+  private JreAppServer server;
+  private URL url;
 
-  private Server buildServer() {
-    Server server = new Server(port);
-    server.setHandler(new AbstractHandler() {
-      @Override
-      public void handle(String s, Request request, HttpServletRequest httpServletRequest,
-                         HttpServletResponse httpServletResponse)
-        throws IOException {
-        httpServletResponse.setStatus(200);
-        httpServletResponse.getWriter().println("<h1>Working</h1>");
-        request.setHandled(true);
-      }
+  @Before
+  public void buildServer() throws MalformedURLException {
+    JreAppServer server = new JreAppServer();
+    server.addHandler(GET, "/", (req, resp) -> {
+      resp.setStatus(200);
+      resp.setContent("<h1>Working</h1>".getBytes(UTF_8));
     });
-    return server;
+    this.server = server;
+
+    this.url = new URL(server.whereIs("/"));
   }
 
   ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -70,7 +64,7 @@ public class UrlCheckerTest {
     });
 
     long start = currentTimeMillis();
-    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL("http://localhost:" + port + "/"));
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
     long elapsed = currentTimeMillis() - start;
     assertThat(elapsed, lessThan(UrlChecker.CONNECT_TIMEOUT_MS + 100L)); // threshold
   }
@@ -79,7 +73,7 @@ public class UrlCheckerTest {
   public void testWaitUntilUnavailableIsTimely() throws Exception {
     long delay = 200L;
     server.start();
-    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL("http://localhost:" + port + "/"));
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
 
     executorService.submit(() -> {
       Thread.sleep(delay);
@@ -88,16 +82,14 @@ public class UrlCheckerTest {
     });
 
     long start = currentTimeMillis();
-    urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, new URL("http://localhost:" + port + "/"));
+    urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, url);
     long elapsed = currentTimeMillis() - start;
     assertThat(elapsed, lessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 200L)); // threshold
-    System.out.println(elapsed);
   }
 
   @After
-  public void cleanup() throws Exception {
+  public void cleanup() {
     server.stop();
-    server.join();
     executorService.shutdown();
   }
 }
