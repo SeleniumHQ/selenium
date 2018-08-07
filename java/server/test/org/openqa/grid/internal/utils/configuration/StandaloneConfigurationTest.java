@@ -42,36 +42,35 @@ public class StandaloneConfigurationTest {
 
   static final Integer DEFAULT_TIMEOUT = 1800;
   static final Integer DEFAULT_BROWSER_TIMEOUT = 0;
+  static final String DEFAULT_HOST = "0.0.0.0";
   static final Integer DEFAULT_PORT = 4444;
   static final Boolean DEFAULT_DEBUG_TOGGLE = false;
 
   @Test
   public void testDefaults() {
-    StandaloneConfiguration sc = new StandaloneConfiguration();
+    checkDefaults(new StandaloneConfiguration());
+  }
+
+  @Test
+  public void testConstructorEqualsDefaultConfig() {
+    checkDefaults(new StandaloneConfiguration(
+        StandaloneJsonConfiguration.loadFromResourceOrFile(StandaloneConfiguration.DEFAULT_STANDALONE_CONFIG_FILE)));
+  }
+
+  @Test
+  public void testDefaultsFromCli() {
+    checkDefaults(new StandaloneCliOptions().parse(new String[]{}).toConfiguration());
+  }
+
+  private void checkDefaults(StandaloneConfiguration sc) {
     assertEquals(StandaloneConfiguration.ROLE, sc.role);
     assertEquals(DEFAULT_BROWSER_TIMEOUT, sc.browserTimeout);
     assertEquals(DEFAULT_DEBUG_TOGGLE, sc.debug);
     assertEquals(DEFAULT_TIMEOUT, sc.timeout);
     assertEquals(DEFAULT_PORT, sc.port);
-    assertEquals(null, sc.host);
+    assertEquals(DEFAULT_HOST, sc.host);
     assertNull(sc.jettyMaxThreads);
     assertNull(sc.log);
-  }
-
-  @Test
-  public void testConstructorEqualsDefaultConfig() {
-    StandaloneConfiguration actual = new StandaloneConfiguration();
-    StandaloneConfiguration expected =
-      StandaloneConfiguration.loadFromJson(StandaloneConfiguration.DEFAULT_STANDALONE_CONFIG_FILE, StandaloneConfiguration.class);
-
-    assertEquals(expected.role, actual.role);
-    assertEquals(expected.browserTimeout, actual.browserTimeout);
-    assertEquals(expected.debug, actual.debug);
-    assertEquals(expected.timeout, actual.timeout);
-    assertEquals(expected.jettyMaxThreads, actual.jettyMaxThreads);
-    assertEquals(expected.log, actual.log);
-    assertEquals(expected.port, actual.port);
-    assertEquals(null, actual.host);
   }
 
   @Test
