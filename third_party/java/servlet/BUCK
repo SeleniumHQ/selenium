@@ -11,6 +11,7 @@ prebuilt_jar(
     '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
     '//java/server/src/org/openqa/grid/selenium:classes',
     '//java/server/src/org/openqa/grid:grid',
+    '//java/server/src/org/openqa/selenium/grid/server:server',
     '//java/server/src/org/openqa/selenium/grid/web:web',
     '//java/server/src/org/openqa/selenium/remote/server:server',
     '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',

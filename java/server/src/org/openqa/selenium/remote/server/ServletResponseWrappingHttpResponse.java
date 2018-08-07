@@ -20,11 +20,11 @@ package org.openqa.selenium.remote.server;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @deprecated Use {@link org.openqa.selenium.grid.web.ServletResponseWrappingHttpResponse}.
+ * @deprecated Use {@link org.openqa.selenium.grid.server.ServletResponseWrappingHttpResponse}.
  */
 @Deprecated
 public class ServletResponseWrappingHttpResponse
-    extends org.openqa.selenium.grid.web.ServletResponseWrappingHttpResponse {
+    extends org.openqa.selenium.grid.server.ServletResponseWrappingHttpResponse {
 
   public ServletResponseWrappingHttpResponse(HttpServletResponse resp) {
     super(resp);
