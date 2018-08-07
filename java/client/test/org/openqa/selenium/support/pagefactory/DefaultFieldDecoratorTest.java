@@ -35,12 +35,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
@@ -200,7 +199,8 @@ public class DefaultFieldDecoratorTest {
     // Place holder
   }
 
-  private interface AllElement extends WebElement, WrapsElement, Locatable {
+  private interface AllElement extends WebElement, WrapsElement,
+                                       org.openqa.selenium.interactions.Locatable {
     // Place holder
   }
 }

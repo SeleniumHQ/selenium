@@ -19,6 +19,7 @@ package org.openqa.selenium.interactions.internal;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.Mouse;
 
 /**
