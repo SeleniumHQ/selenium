@@ -36,11 +36,11 @@ import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.logging.Logs;
@@ -386,7 +386,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
 
-  private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver, Locatable {
+  private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver,
+                                                 org.openqa.selenium.interactions.Locatable {
 
     private final WebElement element;
     private final WebElement underlyingElement;

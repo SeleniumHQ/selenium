@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.interactions.internal.Coordinates;
-
 /**
  * Interface representing basic mouse operations.
  */

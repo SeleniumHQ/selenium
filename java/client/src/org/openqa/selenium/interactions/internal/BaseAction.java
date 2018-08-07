@@ -18,6 +18,7 @@
 package org.openqa.selenium.interactions.internal;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Locatable;
 
 import java.util.Optional;
 
