@@ -20,6 +20,7 @@ package org.openqa.grid.internal.utils.configuration;
 import static java.util.Optional.ofNullable;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
@@ -34,6 +35,7 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -166,7 +168,7 @@ public class GridNodeConfiguration extends GridConfiguration {
   public GridNodeConfiguration(NodeJsonConfiguration jsonConfig) {
     super(jsonConfig);
     role = ROLE;
-    capabilities = jsonConfig.getCapabilities();
+    ofNullable(jsonConfig.getCapabilities()).ifPresent(v -> capabilities = new ArrayList<>(v));
     maxSession = jsonConfig.getMaxSession();
     register = jsonConfig.getRegister();
     registerCycle = jsonConfig.getRegisterCycle();
@@ -352,7 +354,9 @@ public class GridNodeConfiguration extends GridConfiguration {
       GridNodeConfiguration result = new GridNodeConfiguration(); // defaults
       result.merge(fromJson);
       // copy non-mergeable fields
-      result.hub = String.format("http://%s:%s", fromJson.getHubHostPort(), fromJson.getHubPort());
+      if (fromJson.getHubHostPort() != null) {
+        result.hub = String.format("http://%s:%s", fromJson.getHubHostPort(), fromJson.getHubPort());
+      }
       if (fromJson.hub != null) {
         result.hub = fromJson.hub;
       }

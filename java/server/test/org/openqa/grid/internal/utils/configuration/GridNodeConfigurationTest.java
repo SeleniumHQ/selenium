@@ -24,7 +24,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import com.google.common.collect.ImmutableMap;
 
