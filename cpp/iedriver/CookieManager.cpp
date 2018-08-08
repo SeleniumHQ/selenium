@@ -524,9 +524,18 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
         }
         INTERNETCOOKIE2* current_cookie = cookie_pointer + cookie_index;
         std::wstring cookie_name = current_cookie->pwszName;
-        std::wstring cookie_value = current_cookie->pwszValue;
-        std::wstring cookie_domain = current_cookie->pwszDomain;
-        std::wstring cookie_path = current_cookie->pwszPath;
+        std::wstring cookie_value = L"";
+        if (current_cookie->pwszValue) {
+          cookie_value = current_cookie->pwszValue;
+        }
+        std::wstring cookie_domain = L"";
+        if (current_cookie->pwszDomain) {
+          cookie_domain = current_cookie->pwszDomain;
+        }
+        std::wstring cookie_path = L"";
+        if (current_cookie->pwszPath) {
+          cookie_path = current_cookie->pwszPath;
+        }
         DWORD flags = current_cookie->dwFlags;
         FILETIME expires = current_cookie->ftExpires;
         all_cookies.append(cookie_name).append(L"\n");
