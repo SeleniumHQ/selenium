@@ -19,8 +19,6 @@ package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.Parameter;
 
-import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
-
 public abstract class CommonCliOptions {
 
   @Parameter(
@@ -136,27 +134,44 @@ public abstract class CommonCliOptions {
   // initially defaults to false from boolean primitive type
   private Boolean captureLogsOnQuit = false;
 
-  void fillCommonConfiguration(StandaloneConfiguration configuration) {
-    if (debug != null) {
-      configuration.debug = debug;
-    }
-    if (log != null) {
-      configuration.log = log;
-    }
-    if (host == null) {
-      host = "0.0.0.0"; //default to all IPv4 interfaces
-    }
-    configuration.host = host;
-    if (port != null) {
-      configuration.port = port;
-    }
-    if (timeout != null) {
-      configuration.timeout = timeout;
-    }
-    if (browserTimeout != null) {
-      configuration.browserTimeout = browserTimeout;
-    }
+  public Boolean getVersion() {
+    return version;
   }
 
-  abstract public StandaloneConfiguration toConfiguration();
+  public Boolean getHelp() {
+    return help;
+  }
+
+  public Boolean getDebug() {
+    return debug;
+  }
+
+  public String getLog() {
+    return log;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public String getHost() {
+    return host;
+  }
+
+  public Integer getPort() {
+    return port;
+  }
+
+  public Integer getTimeout() {
+    return timeout;
+  }
+
+  public Integer getBrowserTimeout() {
+    return browserTimeout;
+  }
+
+  public Integer getJettyMaxThreads() {
+    return jettyMaxThreads;
+  }
+
 }

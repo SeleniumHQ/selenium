@@ -174,9 +174,9 @@ public class RegistrationRequestTest {
     assertEquals(DesiredCapabilities.operaBlink().getBrowserName(),
                  actualConfig.capabilities.get(0).getBrowserName());
 
-    // make sure this merge protected value was preserved, then remove it for the final assert
+    // make sure this merge protected value was preserved, then reset it for the final assert
     assertEquals("dummyhost", actualConfig.host);
-    actualConfig.host = null;
+    actualConfig.host = "0.0.0.0";
     // make sure this merge protected value was preserved, then reset it for the final assert
     assertEquals(1234, actualConfig.port.intValue());
     actualConfig.port = -1;
@@ -376,6 +376,7 @@ public class RegistrationRequestTest {
   }
 
   private GridNodeConfiguration parseCliOptions(String... args) {
-    return new GridNodeCliOptions.Parser().parse(args).toConfiguration();
+    GridNodeCliOptions opts = new GridNodeCliOptions(args);
+    return new GridNodeConfiguration(opts);
   }
 }

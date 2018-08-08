@@ -58,13 +58,14 @@ public class GridHubConfigurationTest {
 
   @Test
   public void testDefaultsFromConfig() {
-    checkDefaults(new GridHubConfiguration(
-        HubJsonConfiguration.loadFromResourceOrFile(GridHubConfiguration.DEFAULT_HUB_CONFIG_FILE)));
+    HubJsonConfiguration jsonConfig = HubJsonConfiguration.loadFromResourceOrFile(GridHubConfiguration.DEFAULT_HUB_CONFIG_FILE);
+    checkDefaults(new GridHubConfiguration(jsonConfig));
   }
 
   @Test
   public void testDefaultsFromCli() {
-    checkDefaults(new GridHubCliOptions.Parser().parse(new String[]{}).toConfiguration());
+    GridHubCliOptions cliConfig = new GridHubCliOptions(new String[]{});
+    checkDefaults(new GridHubConfiguration(cliConfig));
   }
 
   private void checkDefaults(GridHubConfiguration ghc) {
@@ -173,7 +174,7 @@ public class GridHubConfigurationTest {
     ghc = new GridHubConfiguration();
     String[] args = ("-servlet com.foo.bar.ServletA -servlet com.foo.bar.ServletB"
                      + " -custom foo=bar,bar=baz").split(" ");
-    ghc = new GridHubCliOptions.Parser().parse(args).toConfiguration();
+    ghc = new GridHubConfiguration(new GridHubCliOptions(args));
 
     assertTrue(ghc.toString().contains("-servlets com.foo.bar.ServletA"
                                        + " -servlets com.foo.bar.ServletB"));
@@ -186,7 +187,7 @@ public class GridHubConfigurationTest {
   public void testJcommanderConverterCapabilityMatcher() {
     String[] hubArgs = {"-capabilityMatcher", "org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                         "-prioritizer", "org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer"};
-    GridHubConfiguration ghc = new GridHubCliOptions.Parser().parse(hubArgs).toConfiguration();
+    GridHubConfiguration ghc = new GridHubConfiguration(new GridHubCliOptions(hubArgs));
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                  ghc.capabilityMatcher.getClass().getCanonicalName());
     assertEquals("org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer",

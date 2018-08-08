@@ -17,66 +17,18 @@
 
 package org.openqa.grid.internal.cli;
 
-import static org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.DEFAULT_NODE_CONFIG_FILE;
-
-import com.beust.jcommander.IDefaultProvider;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.json.Json;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class GridNodeCliOptions extends CommonGridCliOptions {
 
-  public static class Parser {
-
-    public GridNodeCliOptions parse(String[] args) {
-      GridNodeCliOptions result = new GridNodeCliOptions();
-      JCommander.newBuilder().addObject(result).build().parse(args);
-
-      if (result.configFile != null) {
-        // Second round
-        String configFile = result.configFile;
-        result = new GridNodeCliOptions();
-        JCommander.newBuilder().addObject(result)
-            .defaultProvider(defaults(fromConfigFile(configFile))).build().parse(args);
-      }
-
-      return result;
-    }
-  }
-
-  /**
-   * @deprecated Use GridNodeCliOptions.Parser instead
-   */
-  @Deprecated
-  public GridNodeCliOptions parse(String[] args) {
+  public GridNodeCliOptions(String[] args) {
     JCommander.newBuilder().addObject(this).build().parse(args);
-
-    if (configFile != null) {
-      //re-parse the args using any -nodeConfig specified to init
-      JCommander.newBuilder().addObject(this)
-          .defaultProvider(defaults(fromConfigFile(configFile))).build().parse(args);
-    }
-    return this;
-  }
-
-  private static IDefaultProvider defaults(String json) {
-    Map<String, Object> map = new Json().toType(json, Map.class);
-    map.remove("custom");
-    map.remove("capabilities");
-    map.remove("servlets");
-    map.remove("withoutServlets");
-    return optionName -> {
-      String option = optionName.replaceAll("-", "");
-      return map.containsKey(option) ? map.get(option).toString() : null;
-    };
   }
 
   /**
@@ -224,64 +176,64 @@ public class GridNodeCliOptions extends CommonGridCliOptions {
   )
   private Boolean enablePlatformVerification;
 
-  public GridNodeConfiguration toConfiguration() {
-    GridNodeConfiguration configuration = GridNodeConfiguration.loadFromJSON(
-        configFile == null ? DEFAULT_NODE_CONFIG_FILE : configFile);
-    fillCommonConfiguration(configuration);
-    fillCommonGridConfiguration(configuration);
-    if (hub != null) {
-      configuration.hub = hub;
-      // -hub has precedence
-      if (hubHost != null) {
-        throw new GridConfigurationException("You can't specify both -hubHost and -hub options at the same time");
-      }
-      if (hubPort != null) {
-        throw new GridConfigurationException("You can't specify both -hubPort and -hub options at the same time");
-      }
-      configuration.hubHost = null;
-      configuration.hubPort = null;
-    } else if (hubHost != null && hubPort != null) {
-      configuration.hub = null;
-      configuration.hubHost = hubHost;
-      configuration.hubPort = hubPort;
-    }
-    if (configFile != null) {
-      configuration.nodeConfigFile = configFile;
-    }
-    if (remoteHost != null) {
-      configuration.remoteHost = remoteHost;
-    }
-    if (id != null) {
-      configuration.id = id;
-    }
-    if (capabilities != null) {
-      configuration.capabilities = capabilities;
-    }
-    if (downPollingLimit != null) {
-      configuration.downPollingLimit = downPollingLimit;
-    }
-    if (nodePolling != null) {
-      configuration.nodePolling = nodePolling;
-    }
-    if (nodeStatusCheckTimeout != null) {
-      configuration.nodeStatusCheckTimeout = nodeStatusCheckTimeout;
-    }
-    if (proxy != null) {
-      configuration.proxy = proxy;
-    }
-    if (register != null) {
-      configuration.register = register;
-    }
-    if (registerCycle != null) {
-      configuration.registerCycle = registerCycle;
-    }
-    if (unregisterIfStillDownAfter != null) {
-      configuration.unregisterIfStillDownAfter = unregisterIfStillDownAfter;
-    }
-    if (enablePlatformVerification != null) {
-      configuration.enablePlatformVerification = enablePlatformVerification;
-    }
-    return configuration;
+  public String getConfigFile() {
+    return configFile;
+  }
+
+  public String getRemoteHost() {
+    return remoteHost;
+  }
+
+  public String getHubHost() {
+    return hubHost;
+  }
+
+  public Integer getHubPort() {
+    return hubPort;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public List<MutableCapabilities> getCapabilities() {
+    return capabilities;
+  }
+
+  public Integer getDownPollingLimit() {
+    return downPollingLimit;
+  }
+
+  public String getHub() {
+    return hub;
+  }
+
+  public Integer getNodePolling() {
+    return nodePolling;
+  }
+
+  public Integer getNodeStatusCheckTimeout() {
+    return nodeStatusCheckTimeout;
+  }
+
+  public String getProxy() {
+    return proxy;
+  }
+
+  public Boolean getRegister() {
+    return register;
+  }
+
+  public Integer getRegisterCycle() {
+    return registerCycle;
+  }
+
+  public Integer getUnregisterIfStillDownAfter() {
+    return unregisterIfStillDownAfter;
+  }
+
+  public Boolean getEnablePlatformVerification() {
+    return enablePlatformVerification;
   }
 
 }

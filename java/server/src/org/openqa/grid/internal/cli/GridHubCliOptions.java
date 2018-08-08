@@ -17,77 +17,17 @@
 
 package org.openqa.grid.internal.cli;
 
-import static org.openqa.grid.internal.utils.configuration.GridHubConfiguration.DEFAULT_HUB_CONFIG_FILE;
-
-import com.beust.jcommander.IDefaultProvider;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
-import org.openqa.selenium.json.Json;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class GridHubCliOptions extends CommonGridCliOptions {
 
-  public static class Parser {
-
-    public GridHubCliOptions parse(String[] args) {
-      GridHubCliOptions result = new GridHubCliOptions();
-      JCommander.newBuilder().addObject(result).build().parse(args);
-
-      if (result.configFile != null) {
-        // Second round
-        String configFile = result.configFile;
-        result = new GridHubCliOptions();
-        JCommander.newBuilder().addObject(result)
-            .defaultProvider(defaults(fromConfigFile(configFile))).build().parse(args);
-      }
-
-      return result;
-    }
-  }
-
-  /**
-   * @deprecated Use GridHubCliOptions.Parser instead
-   */
-  @Deprecated
-  public GridHubCliOptions parse(String[] args) {
+  public GridHubCliOptions(String[] args) {
     JCommander.newBuilder().addObject(this).build().parse(args);
-
-    if (configFile != null) {
-      //re-parse the args using any -nodeConfig specified to init
-      JCommander.newBuilder().addObject(this)
-          .defaultProvider(defaults(fromConfigFile(configFile))).build().parse(args);
-    }
-    return this;
-  }
-
-  private static IDefaultProvider defaults(String json) {
-    Map<String, Object> map = new Json().toType(json, Map.class);
-    map.remove("custom");
-    return optionName -> {
-      String option = optionName.replaceAll("-", "");
-      if (map.containsKey(option) && map.get(option) != null) {
-        if (map.get(option) instanceof List) {
-          List<?> l = (List<?>) map.get(option);
-          if (l.isEmpty()) {
-            return null;
-          } else {
-            return l.stream().map(Object::toString).collect(Collectors.joining(","));
-          }
-        } else {
-          return map.get(option).toString();
-        }
-      } else {
-        return null;
-      }
-    };
   }
 
   /**
@@ -145,31 +85,28 @@ public class GridHubCliOptions extends CommonGridCliOptions {
   )
   private String registry;
 
-  public GridHubConfiguration toConfiguration() {
-    GridHubConfiguration configuration = GridHubConfiguration.loadFromJSON(
-        configFile == null ? DEFAULT_HUB_CONFIG_FILE : configFile);
+  public String getConfigFile() {
+    return configFile;
+  }
 
-    fillCommonConfiguration(configuration);
-    fillCommonGridConfiguration(configuration);
-    if (configFile != null) {
-      configuration.hubConfig = configFile;
-    }
-    if (capabilityMatcher != null) {
-      configuration.capabilityMatcher = capabilityMatcher;
-    }
-    if (newSessionWaitTimeout != null) {
-      configuration.newSessionWaitTimeout = newSessionWaitTimeout;
-    }
-    if (prioritizer != null) {
-      configuration.prioritizer = prioritizer;
-    }
-    if (throwOnCapabilityNotPresent != null) {
-      configuration.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
-    }
-    if (registry != null) {
-      configuration.registry = registry;
-    }
-    return configuration;
+  public CapabilityMatcher getCapabilityMatcher() {
+    return capabilityMatcher;
+  }
+
+  public Integer getNewSessionWaitTimeout() {
+    return newSessionWaitTimeout;
+  }
+
+  public Prioritizer getPrioritizer() {
+    return prioritizer;
+  }
+
+  public Boolean getThrowOnCapabilityNotPresent() {
+    return throwOnCapabilityNotPresent;
+  }
+
+  public String getRegistry() {
+    return registry;
   }
 
 }
