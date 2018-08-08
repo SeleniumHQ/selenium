@@ -28,7 +28,7 @@ public class StandaloneJsonConfiguration extends CommonJsonConfiguration {
   public static StandaloneJsonConfiguration loadFromJson(JsonInput source) {
     StandaloneJsonConfiguration config = fromJson(source, StandaloneJsonConfiguration.class);
 
-    if (! Objects.equals(config.getRole(), "standalone")) {
+    if (config.getRole() != null && !config.getRole().equals("standalone")) {
       throw new RuntimeException("Unable to load standalone configuration from " + source +
                                  " because it contains configuration for '" + config.getRole() + "' role");
     }
@@ -39,7 +39,7 @@ public class StandaloneJsonConfiguration extends CommonJsonConfiguration {
   public static StandaloneJsonConfiguration loadFromResourceOrFile(String source) {
     StandaloneJsonConfiguration config = fromResourceOrFile(source, StandaloneJsonConfiguration.class);
 
-    if (! Objects.equals(config.getRole(), "standalone")) {
+    if (config.getRole() != null && !config.getRole().equals("standalone")) {
       throw new RuntimeException("Unable to load standalone configuration from " + source +
                                  " because it contains configuration for '" + config.getRole() + "' role");
     }
