@@ -17,6 +17,7 @@
 
 package org.openqa.grid.internal.utils.configuration.json;
 
+import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.json.JsonInput;
 
@@ -30,6 +31,12 @@ public class NodeJsonConfiguration extends GridJsonConfiguration {
   public static NodeJsonConfiguration loadFromJson(JsonInput source) {
     NodeJsonConfiguration config = fromJson(source, NodeJsonConfiguration.class);
 
+    if (config.configuration != null) {
+      throw new GridConfigurationException(
+          "Deprecated -nodeConfig file encountered. Please update the file to work with Selenium 3. "
+          + "See https://github.com/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes-by-json for more details.");
+    }
+
     if (config.getRole() != null && !config.getRole().equals("node")) {
       throw new RuntimeException("Unable to load node configuration from " + source +
                                  " because it contains configuration for '" + config.getRole() + "' role");
@@ -40,6 +47,12 @@ public class NodeJsonConfiguration extends GridJsonConfiguration {
 
   public static NodeJsonConfiguration loadFromResourceOrFile(String source) {
     NodeJsonConfiguration config = fromResourceOrFile(source, NodeJsonConfiguration.class);
+
+    if (config.configuration != null) {
+      throw new GridConfigurationException(
+          "Deprecated -nodeConfig file encountered. Please update the file to work with Selenium 3. "
+          + "See https://github.com/SeleniumHQ/selenium/wiki/Grid2#configuring-the-nodes-by-json for more details.");
+    }
 
     if (config.getRole() != null && !config.getRole().equals("node")) {
       throw new RuntimeException("Unable to load node configuration from " + source +
@@ -63,6 +76,9 @@ public class NodeJsonConfiguration extends GridJsonConfiguration {
   private Integer registerCycle;
   private Integer unregisterIfStillDownAfter;
   private boolean enablePlatformVerification = true;
+
+  // used to read a Selenium 2.x nodeConfig.json file and throw a friendly exception
+  private Object configuration;
 
   /**
    * The host name or IP of the hub. Defaults to {@code null}.

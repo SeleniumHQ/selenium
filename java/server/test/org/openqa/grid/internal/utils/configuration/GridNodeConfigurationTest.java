@@ -161,7 +161,7 @@ public class GridNodeConfigurationTest {
                             + "\"port\": 1234"
                             + " }"
                             + "}";
-    GridNodeConfiguration.loadFromJSON(configJson);
+    GridNodeConfiguration cfg = GridNodeConfiguration.loadFromJSON(configJson);
   }
 
   @Test
