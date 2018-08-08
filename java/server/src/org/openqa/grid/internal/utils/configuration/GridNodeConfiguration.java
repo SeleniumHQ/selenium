@@ -177,16 +177,12 @@ public class GridNodeConfiguration extends GridConfiguration {
     proxy = jsonConfig.getProxy();
     enablePlatformVerification = jsonConfig.isEnablePlatformVerification();
     if (jsonConfig.getHub() != null) {
+      // -hub has precedence
       hub = jsonConfig.getHub();
 
     } else {
-      if (jsonConfig.getHubHost() == null) {
-        throw new RuntimeException("You must specify either a hubHost or hub parameter in a node JSON config.");
-      }
-      if (jsonConfig.getHubPort() == null) {
-        throw new RuntimeException("You must specify either a hubPort or hub parameter in a node JSON config.");
-      }
-      hub = hubHostPort.toString();
+      hubHost = jsonConfig.getHubHost();
+      hubPort = jsonConfig.getHubPort();
     }
   }
 
@@ -206,19 +202,10 @@ public class GridNodeConfiguration extends GridConfiguration {
     ofNullable(cliConfig.getEnablePlatformVerification()).ifPresent(v -> enablePlatformVerification = v);
     if (cliConfig.getHub() != null) {
       hub = cliConfig.getHub();
-      // -hub has precedence
-      if (cliConfig.getHubHost() != null) {
-        throw new GridConfigurationException("You can't specify both -hubHost and -hub options at the same time");
-      }
-      if (cliConfig.getHubPort() != null) {
-        throw new GridConfigurationException("You can't specify both -hubPort and -hub options at the same time");
-      }
-      hubHost = null;
-      hubPort = null;
-    } else if (cliConfig.getHubHost() != null && cliConfig.getHubPort() != null) {
+    } else if (cliConfig.getHubHost() != null || cliConfig.getHubPort() != null) {
       hub = null;
-      hubHost = cliConfig.getHubHost();
-      hubPort = cliConfig.getHubPort();
+      ofNullable(cliConfig.getHubHost()).ifPresent(v -> hubHost = v);
+      ofNullable(cliConfig.getHubPort()).ifPresent(v -> hubPort = v);
     }
   }
 
@@ -241,20 +228,8 @@ public class GridNodeConfiguration extends GridConfiguration {
           throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
         }
       } else if (hubHost != null || hubPort != null) {
-        if (hubHost == null) {
-          throw new RuntimeException("You must specify either a -hubHost or -hub parameter.");
-        }
-        if (hubPort == null) {
-          throw new RuntimeException("You must specify either a -hubPort or -hub parameter.");
-        }
-        hubHostPort = new HostPort(hubHost, hubPort);
-      } else {
-        try {
-          URL u = new URL(hub);
-          hubHostPort = new HostPort(u.getHost(), u.getPort());
-        } catch (MalformedURLException mURLe) {
-          throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
-        }
+        hubHostPort = new HostPort(ofNullable(hubHost).orElse(DEFAULT_CONFIG_FROM_JSON.getHubHost()),
+                                   ofNullable(hubPort).orElse(DEFAULT_CONFIG_FROM_JSON.getHubPort()));
       }
     }
     return hubHostPort;
