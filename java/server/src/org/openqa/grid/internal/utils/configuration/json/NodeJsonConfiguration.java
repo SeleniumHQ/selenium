@@ -30,7 +30,7 @@ public class NodeJsonConfiguration extends GridJsonConfiguration {
   public static NodeJsonConfiguration loadFromJson(JsonInput source) {
     NodeJsonConfiguration config = fromJson(source, NodeJsonConfiguration.class);
 
-    if (! Objects.equals(config.getRole(), "node")) {
+    if (config.getRole() != null && !config.getRole().equals("node")) {
       throw new RuntimeException("Unable to load node configuration from " + source +
                                  " because it contains configuration for '" + config.getRole() + "' role");
     }
@@ -41,7 +41,7 @@ public class NodeJsonConfiguration extends GridJsonConfiguration {
   public static NodeJsonConfiguration loadFromResourceOrFile(String source) {
     NodeJsonConfiguration config = fromResourceOrFile(source, NodeJsonConfiguration.class);
 
-    if (! Objects.equals(config.getRole(), "node")) {
+    if (config.getRole() != null && !config.getRole().equals("node")) {
       throw new RuntimeException("Unable to load node configuration from " + source +
                                  " because it contains configuration for '" + config.getRole() + "' role");
     }

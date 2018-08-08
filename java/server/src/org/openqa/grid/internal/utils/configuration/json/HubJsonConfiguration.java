@@ -31,7 +31,7 @@ public class HubJsonConfiguration extends GridJsonConfiguration {
   public static HubJsonConfiguration loadFromJson(JsonInput source) {
     HubJsonConfiguration config = fromJson(source, HubJsonConfiguration.class);
 
-    if (! Objects.equals(config.getRole(), "hub")) {
+    if (config.getRole() != null && !config.getRole().equals("hub")) {
       throw new RuntimeException("Unable to load hub configuration from " + source +
                                  " because it contains configuration for '" + config.getRole() + "' role");
     }
@@ -42,7 +42,7 @@ public class HubJsonConfiguration extends GridJsonConfiguration {
   public static HubJsonConfiguration loadFromResourceOrFile(String source) {
     HubJsonConfiguration config = fromResourceOrFile(source, HubJsonConfiguration.class);
 
-    if (! Objects.equals(config.getRole(), "hub")) {
+    if (config.getRole() != null && !config.getRole().equals("hub")) {
       throw new RuntimeException("Unable to load hub configuration from " + source +
                                  " because it contains configuration for '" + config.getRole() + "' role");
     }
