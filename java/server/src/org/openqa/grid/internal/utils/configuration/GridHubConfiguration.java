@@ -97,7 +97,6 @@ public class GridHubConfiguration extends GridConfiguration {
     this(ofNullable(cliConfig.getConfigFile()).map(HubJsonConfiguration::loadFromResourceOrFile)
              .orElse(DEFAULT_CONFIG_FROM_JSON));
     super.merge(cliConfig);
-    ofNullable(cliConfig.getCleanUpCycle()).ifPresent(v -> cleanUpCycle = v);
     ofNullable(cliConfig.getNewSessionWaitTimeout()).ifPresent(v -> newSessionWaitTimeout = v);
     ofNullable(cliConfig.getThrowOnCapabilityNotPresent()).ifPresent(v -> throwOnCapabilityNotPresent = v);
     ofNullable(cliConfig.getRegistry()).ifPresent(v -> registry = v);

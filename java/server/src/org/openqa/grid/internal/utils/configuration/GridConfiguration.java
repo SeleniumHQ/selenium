@@ -75,6 +75,7 @@ public class GridConfiguration extends StandaloneConfiguration {
 
   void merge(CommonGridCliOptions cliConfig) {
     super.merge(cliConfig);
+    ofNullable(cliConfig.getCleanUpCycle()).ifPresent(v -> cleanUpCycle = v);
     ofNullable(cliConfig.getServlets()).ifPresent(v -> servlets = v);
     ofNullable(cliConfig.getWithoutServlets()).ifPresent(v -> withoutServlets = v);
     ofNullable(cliConfig.getCustom()).ifPresent(v -> custom = v);
