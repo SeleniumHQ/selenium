@@ -17,11 +17,14 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import static java.util.Optional.ofNullable;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.cli.GridNodeCliOptions;
 import org.openqa.grid.internal.utils.configuration.json.NodeJsonConfiguration;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -184,6 +187,38 @@ public class GridNodeConfiguration extends GridConfiguration {
         throw new RuntimeException("You must specify either a hubPort or hub parameter in a node JSON config.");
       }
       hub = hubHostPort.toString();
+    }
+  }
+
+  public GridNodeConfiguration(GridNodeCliOptions cliConfig) {
+    this(ofNullable(cliConfig.getConfigFile()).map(NodeJsonConfiguration::loadFromResourceOrFile)
+             .orElse(DEFAULT_CONFIG_FROM_JSON));
+    super.merge(cliConfig);
+    ofNullable(cliConfig.getCapabilities()).ifPresent(v -> capabilities = v);
+    ofNullable(cliConfig.getMaxSession()).ifPresent(v -> maxSession = v);
+    ofNullable(cliConfig.getRegister()).ifPresent(v -> register = v);
+    ofNullable(cliConfig.getRegisterCycle()).ifPresent(v -> registerCycle = v);
+    ofNullable(cliConfig.getNodeStatusCheckTimeout()).ifPresent(v -> nodeStatusCheckTimeout = v);
+    ofNullable(cliConfig.getNodePolling()).ifPresent(v -> nodePolling = v);
+    ofNullable(cliConfig.getUnregisterIfStillDownAfter()).ifPresent(v -> unregisterIfStillDownAfter = v);
+    ofNullable(cliConfig.getDownPollingLimit()).ifPresent(v -> downPollingLimit = v);
+    ofNullable(cliConfig.getProxy()).ifPresent(v -> proxy = v);
+    ofNullable(cliConfig.getEnablePlatformVerification()).ifPresent(v -> enablePlatformVerification = v);
+    if (cliConfig.getHub() != null) {
+      hub = cliConfig.getHub();
+      // -hub has precedence
+      if (cliConfig.getHubHost() != null) {
+        throw new GridConfigurationException("You can't specify both -hubHost and -hub options at the same time");
+      }
+      if (cliConfig.getHubPort() != null) {
+        throw new GridConfigurationException("You can't specify both -hubPort and -hub options at the same time");
+      }
+      hubHost = null;
+      hubPort = null;
+    } else if (cliConfig.getHubHost() != null && cliConfig.getHubPort() != null) {
+      hub = null;
+      hubHost = cliConfig.getHubHost();
+      hubPort = cliConfig.getHubPort();
     }
   }
 

@@ -19,19 +19,10 @@ package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.Parameter;
 
-import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.utils.configuration.GridConfiguration;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-abstract class CommonGridCliOptions extends CommonCliOptions {
+public abstract class CommonGridCliOptions extends CommonCliOptions {
 
   /*
    * config parameters which serialize and deserialize to/from json
@@ -85,45 +76,24 @@ abstract class CommonGridCliOptions extends CommonCliOptions {
   )
   private List<String> withoutServlets;
 
-  void fillCommonGridConfiguration(GridConfiguration configuration) {
-    if (cleanUpCycle != null) {
-      configuration.cleanUpCycle = cleanUpCycle;
-    }
-    if (custom != null) {
-      configuration.custom = custom;
-    }
-    if (maxSession != null) {
-      configuration.maxSession = maxSession;
-    }
-    if (servlets != null) {
-      configuration.servlets = servlets;
-    }
-    if (withoutServlets != null) {
-      configuration.withoutServlets = withoutServlets;
-    }
+  public Integer getCleanUpCycle() {
+    return cleanUpCycle;
   }
 
-  String builtIn(String resource) {
-    InputStream in =
-        Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-    try(BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
-      return br.lines().collect(Collectors.joining("\n"));
-    } catch (IOException e) {
-      throw new GridConfigurationException("Cannot read resource " + resource + ", " + e.getMessage(), e);
-    } finally {
-      try {
-        in.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+  public Map<String, String> getCustom() {
+    return custom;
   }
 
-  static String fromConfigFile(String file) {
-    try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
-      return br.lines().collect(Collectors.joining("\n"));
-    } catch (IOException e) {
-      throw new GridConfigurationException("Cannot read file " + file + ", " + e.getMessage(), e);
-    }
+  public Integer getMaxSession() {
+    return maxSession;
   }
+
+  public List<String> getServlets() {
+    return servlets;
+  }
+
+  public List<String> getWithoutServlets() {
+    return withoutServlets;
+  }
+
 }

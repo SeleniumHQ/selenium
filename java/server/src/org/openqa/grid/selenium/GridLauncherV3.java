@@ -111,7 +111,7 @@ public class GridLauncherV3 {
       return Optional.empty();
     }
 
-    configureLogging(launcher.getOptions().toConfiguration());
+    configureLogging(launcher.getOptions().getLog(), launcher.getOptions().getDebug());
 
     log.info(String.format(
         "Selenium build info: version: '%s', revision: '%s'",
@@ -211,20 +211,14 @@ public class GridLauncherV3 {
     printWrappedLine(output, prefix, msg.substring(spaceIndex + 1), false);
   }
 
-  private static void configureLogging(StandaloneConfiguration configuration) {
-    Level logLevel =
-        configuration.debug
-        ? Level.FINE
-        : LoggingOptions.getDefaultLogLevel();
+  private static void configureLogging(String log, boolean debug) {
+    Level logLevel = debug ? Level.FINE : LoggingOptions.getDefaultLogLevel();
     if (logLevel == null) {
       logLevel = Level.INFO;
     }
     Logger.getLogger("").setLevel(logLevel);
 
-    String logFilename =
-        configuration.log != null
-        ? configuration.log
-        : LoggingOptions.getDefaultLogOutFile();
+    String logFilename = log != null ? log : LoggingOptions.getDefaultLogOutFile();
     if (logFilename != null) {
       for (Handler handler : Logger.getLogger("").getHandlers()) {
         if (handler instanceof ConsoleHandler) {
@@ -253,7 +247,7 @@ public class GridLauncherV3 {
     ImmutableMap.Builder<String, Function<String[], GridItemLauncher>> launchers =
       ImmutableMap.<String, Function<String[], GridItemLauncher>>builder()
         .put(GridRole.NOT_GRID.toString(), (args) -> new GridItemLauncher() {
-          StandaloneCliOptions options = new StandaloneCliOptions().parse(args);
+          StandaloneCliOptions options = new StandaloneCliOptions(args);
 
           @Override
           public CommonCliOptions getOptions() {
@@ -262,7 +256,7 @@ public class GridLauncherV3 {
 
           @Override
           public Stoppable launch() {
-            StandaloneConfiguration configuration = options.toConfiguration();
+            StandaloneConfiguration configuration = new StandaloneConfiguration(options);
             log.info(String.format(
                 "Launching a standalone Selenium Server on port %s", configuration.port));
             SeleniumServer server = new SeleniumServer(configuration);
@@ -275,7 +269,7 @@ public class GridLauncherV3 {
 
         })
         .put(GridRole.HUB.toString(), (args) -> new GridItemLauncher() {
-          GridHubCliOptions options = new GridHubCliOptions.Parser().parse(args);
+          GridHubCliOptions options = new GridHubCliOptions(args);
 
           @Override
           public CommonCliOptions getOptions() {
@@ -284,7 +278,7 @@ public class GridLauncherV3 {
 
           @Override
           public Stoppable launch() throws Exception {
-            GridHubConfiguration configuration = options.toConfiguration();
+            GridHubConfiguration configuration = new GridHubConfiguration(options);
             log.info(String.format(
                 "Launching Selenium Grid hub on port %s", configuration.port));
             Hub hub = new Hub(configuration);
@@ -293,7 +287,7 @@ public class GridLauncherV3 {
           }
         })
         .put(GridRole.NODE.toString(), (args) -> new GridItemLauncher() {
-          GridNodeCliOptions options = new GridNodeCliOptions.Parser().parse(args);
+          GridNodeCliOptions options = new GridNodeCliOptions(args);
 
           @Override
           public CommonCliOptions getOptions() {
@@ -302,7 +296,7 @@ public class GridLauncherV3 {
 
           @Override
           public Stoppable launch() throws Exception {
-            GridNodeConfiguration configuration = options.toConfiguration();
+            GridNodeConfiguration configuration = new GridNodeConfiguration(options);
             if (configuration.port == null || configuration.port == -1) {
               configuration.port = PortProber.findFreePort();
             }

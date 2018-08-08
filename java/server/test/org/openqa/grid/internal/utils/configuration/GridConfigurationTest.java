@@ -37,6 +37,7 @@ public class GridConfigurationTest {
 
   static final Integer DEFAULT_TIMEOUT = StandaloneConfigurationTest.DEFAULT_TIMEOUT;
   static final Integer DEFAULT_BROWSER_TIMEOUT = StandaloneConfigurationTest.DEFAULT_BROWSER_TIMEOUT;
+  static final String DEFAULT_HOST = StandaloneConfigurationTest.DEFAULT_HOST;
   static final Integer DEFAULT_PORT = StandaloneConfigurationTest.DEFAULT_PORT;
   static final Boolean DEFAULT_DEBUG_TOGGLE = StandaloneConfigurationTest.DEFAULT_DEBUG_TOGGLE;
 
@@ -48,7 +49,7 @@ public class GridConfigurationTest {
     assertNull(gc.maxSession);
     assertNotNull(gc.custom);
     assertTrue(gc.custom.isEmpty());
-    assertNull(gc.host);
+    assertEquals(DEFAULT_HOST, gc.host);
     assertNotNull(gc.servlets);
     assertTrue(gc.servlets.isEmpty());
     assertNotNull(gc.withoutServlets);

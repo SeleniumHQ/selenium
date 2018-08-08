@@ -19,12 +19,15 @@ package org.openqa.grid.internal.utils.configuration;
 
 import static com.google.common.collect.ImmutableSortedMap.toImmutableSortedMap;
 import static com.google.common.collect.Ordering.natural;
+import static java.util.Optional.ofNullable;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.grid.common.GridConfiguredJson;
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.cli.CommonCliOptions;
+import org.openqa.grid.internal.cli.StandaloneCliOptions;
 import org.openqa.grid.internal.utils.configuration.json.CommonJsonConfiguration;
 import org.openqa.grid.internal.utils.configuration.json.StandaloneJsonConfiguration;
 import org.openqa.selenium.json.Json;
@@ -124,11 +127,27 @@ public class StandaloneConfiguration {
     this.role = ROLE;
     this.debug = jsonConfig.getDebug();
     this.log = jsonConfig.getLog();
-    this.host = jsonConfig.getHost() != null ? jsonConfig.getHost() : "0.0.0.0";
+    host = ofNullable(jsonConfig.getHost()).orElse("0.0.0.0");
     this.port = jsonConfig.getPort();
     this.timeout = jsonConfig.getTimeout();
     this.browserTimeout = jsonConfig.getBrowserTimeout();
     this.jettyMaxThreads = jsonConfig.getJettyMaxThreads();
+  }
+
+  public StandaloneConfiguration(StandaloneCliOptions cliConfig) {
+    this(ofNullable(cliConfig.getConfigFile()).map(StandaloneJsonConfiguration::loadFromResourceOrFile)
+             .orElse(DEFAULT_CONFIG_FROM_JSON));
+    merge(cliConfig);
+  }
+
+  void merge(CommonCliOptions cliConfig) {
+    ofNullable(cliConfig.getDebug()).ifPresent(v -> debug = v);
+    ofNullable(cliConfig.getLog()).ifPresent(v -> log = v);
+    ofNullable(cliConfig.getHost()).ifPresent(v -> host = v);
+    ofNullable(cliConfig.getPort()).ifPresent(v -> port = v);
+    ofNullable(cliConfig.getTimeout()).ifPresent(v -> timeout = v);
+    ofNullable(cliConfig.getBrowserTimeout()).ifPresent(v -> browserTimeout = v);
+    ofNullable(cliConfig.getJettyMaxThreads()).ifPresent(v -> jettyMaxThreads = v);
   }
 
   public static<T extends StandaloneConfiguration> T loadFromJson(String resource, Class<T> type) {
