@@ -123,7 +123,7 @@ public class RegistrationRequestTest {
     assertEquals(true, req.getConfiguration().register);
 
     config = parseCliOptions(
-        "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost", "-register","false");
+        "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234", "-host","localhost", "-register","false");
     RegistrationRequest req2 = RegistrationRequest.build(config);
     assertEquals(false, req2.getConfiguration().register);
   }

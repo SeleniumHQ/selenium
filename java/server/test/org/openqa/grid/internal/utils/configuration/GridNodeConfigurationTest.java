@@ -236,27 +236,6 @@ public class GridNodeConfigurationTest {
   }
 
   @Test
-  public void testHubHostAndHubCannotBeUsedAtTheSameTime() {
-    Throwable t = catchThrowable(() -> parseCliOptions(
-        "-hub", "http://smarthost:4321/wd/hub", "-hubHost", "dummyhost"));
-    assertTrue(t instanceof GridConfigurationException);
-  }
-
-  @Test
-  public void testHubPortAndHubCannotBeUsedAtTheSameTime() {
-    Throwable t = catchThrowable(() -> parseCliOptions(
-        "-hub", "http://smarthost:4321/wd/hub", "-hubPort", "1234"));
-    assertTrue(t instanceof GridConfigurationException);
-  }
-
-  @Test
-  public void testHubHostAndPortAndHubCannotBeUsedAtTheSameTime() {
-    Throwable t = catchThrowable(() -> parseCliOptions(
-        "-hub", "http://smarthost:4321/wd/hub", "-hubHost", "dummyhost", "-hubPort", "1234"));
-    assertTrue(t instanceof GridConfigurationException);
-  }
-
-  @Test
   public void testGetHubPort() {
     GridNodeConfiguration gnc = parseCliOptions("-hubHost", "dummyhost", "-hubPort", "1234");
     assertEquals(1234, gnc.getHubPort().intValue());
