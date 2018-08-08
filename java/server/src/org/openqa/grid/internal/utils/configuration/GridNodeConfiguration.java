@@ -200,6 +200,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     ofNullable(cliConfig.getDownPollingLimit()).ifPresent(v -> downPollingLimit = v);
     ofNullable(cliConfig.getProxy()).ifPresent(v -> proxy = v);
     ofNullable(cliConfig.getEnablePlatformVerification()).ifPresent(v -> enablePlatformVerification = v);
+    ofNullable(cliConfig.getId()).ifPresent(v -> id = v);
     if (cliConfig.getHub() != null) {
       hub = cliConfig.getHub();
     } else if (cliConfig.getHubHost() != null || cliConfig.getHubPort() != null) {
