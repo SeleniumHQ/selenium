@@ -1,8 +1,8 @@
 prebuilt_jar(
   name = 'htmlunit-driver',
-  maven_coords = 'org.seleniumhq.selenium:htmlunit-driver:jar:2.30.0',
-  binary_jar = 'htmlunit-driver-2.30.0.jar',
-  source_jar = 'htmlunit-driver-2.30.0-sources.jar',
+  maven_coords = 'org.seleniumhq.selenium:htmlunit-driver:jar:2.32.1',
+  binary_jar = 'htmlunit-driver-2.32.1.jar',
+  source_jar = 'htmlunit-driver-2.32.1-sources.jar',
   deps = [
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/support:support',

@@ -32,7 +32,6 @@
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="testng" level="project" />
     <orderEntry type="library" name="xml-apis" level="project" />
-    <orderEntry type="library" name="sac" level="project" />
     <orderEntry type="library" name="jetty" level="project" />
     <orderEntry type="library" scope="TEST" name="littleproxy" level="project" />
     <orderEntry type="library" scope="TEST" name="slf4j" level="project" />
