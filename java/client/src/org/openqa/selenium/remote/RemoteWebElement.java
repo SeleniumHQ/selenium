@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
                                          FindsByTagName, FindsByClassName, FindsByCssSelector,
@@ -88,8 +89,13 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void sendKeys(CharSequence... keysToSend) {
-    if (keysToSend == null) {
+    if (keysToSend == null || keysToSend.length == 0) {
       throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
+    }
+    for (CharSequence cs : keysToSend) {
+      if (cs == null) {
+        throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
+      }
     }
     File localFile = fileDetector.getLocalFile(keysToSend);
     if (localFile != null) {

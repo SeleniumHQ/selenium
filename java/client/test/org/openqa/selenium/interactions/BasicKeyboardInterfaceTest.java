@@ -167,7 +167,39 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testThrowsIllegalArgumentExceptionWithNullKeys() {
+  public void testThrowsIllegalArgumentExceptionWithNoParameters() {
+    driver.get(pages.javascriptPage);
+    Throwable t = catchThrowable(
+        () -> driver.findElement(By.id("keyReporter")).sendKeys());
+    assertThat(t, instanceOf(IllegalArgumentException.class));
+  }
+
+  @Test
+  public void testThrowsIllegalArgumentExceptionWithNullParameter() {
+    driver.get(pages.javascriptPage);
+    Throwable t = catchThrowable(
+        () -> driver.findElement(By.id("keyReporter")).sendKeys(null));
+    assertThat(t, instanceOf(IllegalArgumentException.class));
+  }
+
+  @Test
+  public void testThrowsIllegalArgumentExceptionWithNullInParameters() {
+    driver.get(pages.javascriptPage);
+    Throwable t = catchThrowable(
+        () -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
+    assertThat(t, instanceOf(IllegalArgumentException.class));
+  }
+
+  @Test
+  public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNull() {
+    driver.get(pages.javascriptPage);
+    Throwable t = catchThrowable(
+        () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[] {"x", null, "y"}));
+    assertThat(t, instanceOf(IllegalArgumentException.class));
+  }
+
+  @Test
+  public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNullOnly() {
     driver.get(pages.javascriptPage);
     Throwable t = catchThrowable(
         () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[] {null}));
