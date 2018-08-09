@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.interactions.internal;
 
 /**
   * @deprecated Use {@link org.openqa.selenium.interactions.Locatable} instead
