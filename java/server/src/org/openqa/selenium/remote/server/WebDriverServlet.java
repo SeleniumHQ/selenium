@@ -17,18 +17,16 @@
 
 package org.openqa.selenium.remote.server;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.common.base.Splitter;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.server.ServletRequestWrappingHttpRequest;
 import org.openqa.selenium.grid.server.ServletResponseWrappingHttpResponse;
+import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.commandhandler.ExceptionHandler;
@@ -40,7 +38,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,6 +47,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -60,43 +59,28 @@ import javax.servlet.http.HttpServletResponse;
 
 public class WebDriverServlet extends HttpServlet {
 
-  public static final String SESSION_TIMEOUT_PARAMETER = "webdriver.server.session.timeout";
-  public static final String BROWSER_TIMEOUT_PARAMETER = "webdriver.server.browser.timeout";
   private static final Logger LOG = Logger.getLogger(WebDriverServlet.class.getName());
   public static final String ACTIVE_SESSIONS_KEY = WebDriverServlet.class.getName() + ".sessions";
   public static final String NEW_SESSION_PIPELINE_KEY = WebDriverServlet.class.getName() + ".pipeline";
 
   private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
 
+  private final Logger logger;
   private final StaticResourceHandler staticResourceHandler = new StaticResourceHandler();
   private final ExecutorService executor = Executors.newCachedThreadPool();
   private final ScheduledExecutorService scheduled = Executors.newSingleThreadScheduledExecutor();
-  private ActiveSessions allSessions;
+  private final ActiveSessions allSessions;
   private AllHandlers handlers;
 
-  @Override
-  public void init() {
-    configureLogging();
-    log("Initialising WebDriverServlet");
+  public WebDriverServlet(
+      ActiveSessions allSessions,
+      NewSessionPipeline pipeline) {
+    logger = configureLogging();
+    logger.info("Initialising WebDriverServlet");
 
-    long inactiveSessionTimeout = Optional.ofNullable(getServletContext().getInitParameter(SESSION_TIMEOUT_PARAMETER))
-        .map(value -> SECONDS.toMillis(Long.parseLong(value)))
-        .filter(value -> value > 0)
-        .orElse(Long.MAX_VALUE);
+    this.allSessions = Objects.requireNonNull(allSessions);
 
-    allSessions = (ActiveSessions) getServletContext().getAttribute(ACTIVE_SESSIONS_KEY);
-    if (allSessions == null) {
-      allSessions = new ActiveSessions(inactiveSessionTimeout, MILLISECONDS);
-      getServletContext().setAttribute(ACTIVE_SESSIONS_KEY, allSessions);
-    }
-    scheduled.scheduleWithFixedDelay(() -> allSessions.cleanUp(), 5, 5, TimeUnit.SECONDS);
-
-    NewSessionPipeline pipeline =
-        (NewSessionPipeline) getServletContext().getAttribute(NEW_SESSION_PIPELINE_KEY);
-    if (pipeline == null) {
-      pipeline = DefaultPipeline.createDefaultPipeline().create();
-      getServletContext().setAttribute(NEW_SESSION_PIPELINE_KEY, pipeline);
-    }
+    scheduled.scheduleWithFixedDelay(allSessions::cleanUp, 5, 5, TimeUnit.SECONDS);
 
     handlers = new AllHandlers(pipeline, allSessions);
   }
@@ -267,7 +251,7 @@ public class WebDriverServlet extends HttpServlet {
           new ServletRequestWrappingHttpRequest(req),
           new ServletResponseWrappingHttpResponse(resp));
     } catch (InterruptedException e) {
-      log("Unexpectedly interrupted: " + e.getMessage(), e);
+      logger.log(Level.WARNING, "Unexpectedly interrupted: " + e.getMessage(), e);
       invalidateSession = true;
 
       Thread.currentThread().interrupt();

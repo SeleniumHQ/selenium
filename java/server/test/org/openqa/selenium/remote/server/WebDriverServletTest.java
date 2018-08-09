@@ -23,8 +23,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.openqa.selenium.remote.server.WebDriverServlet.ACTIVE_SESSIONS_KEY;
-import static org.openqa.selenium.remote.server.WebDriverServlet.NEW_SESSION_PIPELINE_KEY;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -46,11 +44,9 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.testing.FakeHttpServletRequest;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.openqa.testing.UrlInfo;
-import org.seleniumhq.jetty9.server.handler.ContextHandler;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
@@ -91,33 +87,8 @@ public class WebDriverServletTest {
         .add(factory)
         .create();
 
-    ContextHandler.Context context = new ContextHandler().getServletContext();
-    context.setAttribute(ACTIVE_SESSIONS_KEY, testSessions);
-    context.setAttribute(NEW_SESSION_PIPELINE_KEY, pipeline);
-    context.setInitParameter("webdriver.server.session.timeout", "18");
-    context.setInitParameter("webdriver.server.browser.timeout", "2");
-
     // Override log methods for testing.
-    driverServlet = new WebDriverServlet() {
-      @Override
-      public void log(String msg) {
-      }
-
-      @Override
-      public void log(String message, Throwable t) {
-      }
-
-      @Override
-      public ServletContext getServletContext() {
-        return context;
-      }
-
-      @Override
-      public String getInitParameter(String name) {
-        return context.getInitParameter(name);
-      }
-    };
-    driverServlet.init();
+    driverServlet = new WebDriverServlet(testSessions, pipeline);
   }
 
   @Test
