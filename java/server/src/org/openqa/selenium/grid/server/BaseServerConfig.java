@@ -23,7 +23,7 @@ import org.openqa.selenium.grid.config.Config;
 
 import java.util.Optional;
 
-public class CommonConfig implements Config {
+public class BaseServerConfig implements Config {
 
   @Parameter(description = "Port to listen on", names = {"-p", "--port"})
   private int port = 0;
