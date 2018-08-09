@@ -27,5 +27,4 @@ public interface GridNodeServer extends Stoppable {
   boolean boot() throws Exception;
   int getRealPort();
   void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets);
-  void setConfiguration(StandaloneConfiguration configuration);
 }

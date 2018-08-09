@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
-import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
@@ -47,9 +46,6 @@ public class SelfRegisteringRemoteTest {
     public int getRealPort() {
       return 1234;
     }
-
-    @Override
-    public void setConfiguration(StandaloneConfiguration configuration) { }
 
     @Override
     public void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets) {

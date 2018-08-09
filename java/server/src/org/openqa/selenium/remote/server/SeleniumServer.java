@@ -62,8 +62,8 @@ public class SeleniumServer implements GridNodeServer {
 
   private final static Logger LOG = Logger.getLogger(SeleniumServer.class.getName());
 
+  private final StandaloneConfiguration configuration;
   private Server server;
-  private StandaloneConfiguration configuration;
   private Map<String, Class<? extends Servlet>> extraServlets;
 
   /**
@@ -112,10 +112,6 @@ public class SeleniumServer implements GridNodeServer {
         handler.addServlet(extraServlets.get(path), path);
       }
     }
-  }
-
-  public void setConfiguration(StandaloneConfiguration configuration) {
-    this.configuration = configuration;
   }
 
   public void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets) {
