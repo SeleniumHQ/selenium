@@ -33,7 +33,9 @@ public class UserDefinedCapabilityMatcherTests {
   public void defaultsToDefaultMatcher() {
     GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     String[] args = new String[]{"-role", "webdriver","-id", "abc","-host","localhost"};
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration(new GridNodeCliOptions(args));
+    GridNodeCliOptions options = new GridNodeCliOptions();
+    options.parse(args);
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration(options);
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
@@ -49,7 +51,9 @@ public class UserDefinedCapabilityMatcherTests {
     hubConfig.capabilityMatcher = new MyCapabilityMatcher();
     Hub hub = new Hub(hubConfig);
     String[] args = new String[]{"-role", "webdriver","-id", "abc","-host","localhost"};
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration(new GridNodeCliOptions(args));
+    GridNodeCliOptions options = new GridNodeCliOptions();
+    options.parse(args);
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration(options);
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, hub.getRegistry());

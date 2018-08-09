@@ -22,13 +22,10 @@ import com.beust.jcommander.Parameter;
 
 public class StandaloneCliOptions extends CommonCliOptions {
 
-  public StandaloneCliOptions(String[] args) {
-    JCommander.newBuilder().addObject(this).build().parse(args);
-  }
-
-  public StandaloneCliOptions parse(String[] args) {
-    JCommander.newBuilder().addObject(this).build().parse(args);
-    return this;
+  public JCommander parse(String... args) {
+    JCommander commander = JCommander.newBuilder().addObject(this).build();
+    commander.parse(args);
+    return commander;
   }
 
   /**

@@ -64,7 +64,7 @@ public class GridHubConfigurationTest {
 
   @Test
   public void testDefaultsFromCli() {
-    GridHubCliOptions cliConfig = new GridHubCliOptions(new String[]{});
+    GridHubCliOptions cliConfig = new GridHubCliOptions();
     checkDefaults(new GridHubConfiguration(cliConfig));
   }
 
@@ -174,7 +174,9 @@ public class GridHubConfigurationTest {
     ghc = new GridHubConfiguration();
     String[] args = ("-servlet com.foo.bar.ServletA -servlet com.foo.bar.ServletB"
                      + " -custom foo=bar,bar=baz").split(" ");
-    ghc = new GridHubConfiguration(new GridHubCliOptions(args));
+    GridHubCliOptions options = new GridHubCliOptions();
+    options.parse(args);
+    ghc = new GridHubConfiguration(options);
 
     assertTrue(ghc.toString().contains("-servlets com.foo.bar.ServletA"
                                        + " -servlets com.foo.bar.ServletB"));
@@ -187,7 +189,9 @@ public class GridHubConfigurationTest {
   public void testJcommanderConverterCapabilityMatcher() {
     String[] hubArgs = {"-capabilityMatcher", "org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                         "-prioritizer", "org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer"};
-    GridHubConfiguration ghc = new GridHubConfiguration(new GridHubCliOptions(hubArgs));
+    GridHubCliOptions options = new GridHubCliOptions();
+    options.parse(hubArgs);
+    GridHubConfiguration ghc = new GridHubConfiguration(options);
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                  ghc.capabilityMatcher.getClass().getCanonicalName());
     assertEquals("org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer",

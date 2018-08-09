@@ -75,7 +75,9 @@ public class DefaultRemoteProxyTest {
     registry.getHub().getConfiguration().timeout = 1;
     registry.getHub().getConfiguration().cleanUpCycle = cleanupCycle;
     String[] args = new String[]{"-role", "webdriver"};
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration(new GridNodeCliOptions(args));
+    GridNodeCliOptions options = new GridNodeCliOptions();
+    options.parse(args);
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration(options);
     nodeConfiguration.port = new Random().nextInt(100);
     nodeConfiguration.timeout = 1;
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
