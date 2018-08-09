@@ -59,7 +59,7 @@ public class StandaloneConfigurationTest {
 
   @Test
   public void testDefaultsFromCli() {
-    checkDefaults(new StandaloneConfiguration(new StandaloneCliOptions(new String[]{})));
+    checkDefaults(new StandaloneConfiguration(new StandaloneCliOptions()));
   }
 
   private void checkDefaults(StandaloneConfiguration sc) {
@@ -76,7 +76,9 @@ public class StandaloneConfigurationTest {
   @Test
   public void commandLineParsing() {
     String[] args = "-timeout 32123 -browserTimeout 456".split(" ");
-    StandaloneConfiguration sc = new StandaloneConfiguration(new StandaloneCliOptions(args));
+    StandaloneCliOptions options = new StandaloneCliOptions();
+    options.parse(args);
+    StandaloneConfiguration sc = new StandaloneConfiguration(options);
     assertEquals(32123, sc.timeout.intValue());
     assertEquals(456, sc.browserTimeout.intValue());
   }

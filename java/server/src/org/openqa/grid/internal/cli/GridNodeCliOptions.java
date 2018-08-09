@@ -27,8 +27,10 @@ import java.util.List;
 
 public class GridNodeCliOptions extends CommonGridCliOptions {
 
-  public GridNodeCliOptions(String[] args) {
-    JCommander.newBuilder().addObject(this).build().parse(args);
+  public JCommander parse(String... args) {
+    JCommander commander = JCommander.newBuilder().addObject(this).build();
+    commander.parse(args);
+    return commander;
   }
 
   /**

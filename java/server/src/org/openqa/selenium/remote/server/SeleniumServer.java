@@ -292,8 +292,9 @@ public class SeleniumServer implements GridNodeServer {
     }
   }
 
-  public static void main(String[] argv) {
-    StandaloneCliOptions options = new StandaloneCliOptions(argv);
+  public static void main(String[] args) {
+    StandaloneCliOptions options = new StandaloneCliOptions();
+    options.parse(args);
 
     if (options.help) {
       StringBuilder message = new StringBuilder();
@@ -310,7 +311,9 @@ public class SeleniumServer implements GridNodeServer {
     if (msg != null) {
       System.out.println(msg);
     }
-    JCommander jCommander = new JCommander(new StandaloneCliOptions(new String[]{}));
-    jCommander.usage();
+
+    StandaloneCliOptions options = new StandaloneCliOptions();
+    JCommander commander = options.parse();
+    commander.usage();
   }
 }
