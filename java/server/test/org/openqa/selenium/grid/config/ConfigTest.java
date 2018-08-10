@@ -47,7 +47,7 @@ public class ConfigTest {
   public void shouldReadSystemProperties() {
     Config config = new CompoundConfig(
         new MapConfig(ImmutableMap.of()),
-        new ConcatenatingConfig("", ',', System.getProperties()));
+        new ConcatenatingConfig("", '.', System.getProperties()));
 
     assertEquals(System.getProperty("user.home"), config.get("user", "home").get());
   }
