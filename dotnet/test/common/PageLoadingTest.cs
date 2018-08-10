@@ -290,6 +290,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not support using insecure SSL certs")]
         [IgnoreBrowser(Browser.Safari, "Browser does not support using insecure SSL certs")]
+        [IgnoreBrowser(Browser.Edge, "Browser does not support using insecure SSL certs")]
         public void ShouldBeAbleToAccessPagesWithAnInsecureSslCertificate()
         {
             String url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("simpleTest.html");
@@ -351,7 +352,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
-        [IgnoreBrowser(Browser.Edge, "Not implemented for browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldTimeoutIfAPageTakesTooLongToLoad()
         {
