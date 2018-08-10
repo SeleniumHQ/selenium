@@ -26,9 +26,14 @@ import java.util.Optional;
 
 public class ConcatenatingConfig implements Config {
 
-  private final Map<String, Object> values;
+  private final String prefix;
+  private final char separator;
+  private final Map<String, String> values;
 
-  public ConcatenatingConfig(Map<?, ?> values) {
+  public ConcatenatingConfig(String prefix, char separator, Map<?, ?> values) {
+    this.prefix = prefix == null ? "" : prefix + separator;
+    this.separator = separator;
+
     this.values = Objects.requireNonNull(values).entrySet().stream()
         .peek(entry -> Objects.requireNonNull(entry.getKey(), "Key has not been set"))
         .peek(entry -> Objects.requireNonNull(entry.getValue(), "Value has not been set"))
@@ -40,6 +45,11 @@ public class ConcatenatingConfig implements Config {
 
   @Override
   public Optional<String> get(String section, String option) {
-    return Optional.ofNullable(values.get(section + "." + option)).map(String::valueOf);
+    String key = prefix + section + separator + option;
+
+    return values.entrySet().stream()
+        .filter(entry -> key.equalsIgnoreCase(entry.getKey()))
+        .map(Map.Entry::getValue)
+        .findFirst();
   }
 }
