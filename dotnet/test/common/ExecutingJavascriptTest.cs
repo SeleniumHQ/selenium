@@ -547,6 +547,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Edge)]
         public void ShouldReturnDocumentElementIfDocumentIsReturned()
         {
             driver.Url = simpleTestPage;
