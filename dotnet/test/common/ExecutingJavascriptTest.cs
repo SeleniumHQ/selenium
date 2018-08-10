@@ -544,9 +544,10 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver returns object that allows getting text.")]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Firefox, "Driver does not return the documentElement object.")]
+        [IgnoreBrowser(Browser.IE, "Driver does not return the documentElement object.")]
+        [IgnoreBrowser(Browser.Safari, "Driver does not return the documentElement object.")]
+        [IgnoreBrowser(Browser.Edge, "Driver does not return the documentElement object.")]
         public void ShouldReturnDocumentElementIfDocumentIsReturned()
         {
             driver.Url = simpleTestPage;
