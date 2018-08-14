@@ -58,6 +58,10 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public static readonly string Capability = "goog:chromeOptions";
 
+        // TODO: Remove this if block when chromedriver bug 2371 is fixed
+        // (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2371)
+        internal static readonly string ForceAlwaysMatchCapabilityName = "se:forceAlwaysMatch";
+
         private const string BrowserNameValue = "chrome";
 
         private const string ArgumentsChromeOption = "args";
@@ -111,6 +115,7 @@ namespace OpenQA.Selenium.Chrome
             this.AddKnownCapabilityName(ChromeOptions.PerformanceLoggingPreferencesChromeOption, "PerformanceLoggingPreferences property");
             this.AddKnownCapabilityName(ChromeOptions.WindowTypesChromeOption, "AddWindowTypes method");
             this.AddKnownCapabilityName(ChromeOptions.UseSpecCompliantProtocolOption, "UseSpecCompliantProtocol property");
+            this.AddKnownCapabilityName(ChromeOptions.ForceAlwaysMatchCapabilityName, "");
         }
 
         /// <summary>
@@ -531,6 +536,14 @@ namespace OpenQA.Selenium.Chrome
             {
                 string typeSafeOptionName = this.GetTypeSafeOptionName(capabilityName);
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
+
+                // TODO: Remove this if block when chromedriver bug 2371 is fixed
+                // (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2371)
+                if (capabilityName == ForceAlwaysMatchCapabilityName)
+                {
+                    message = string.Format(CultureInfo.InvariantCulture, "The {0} capability is internal to the driver, and not intended to be set from users' code. Do not attempt to set this capability.", capabilityName);
+                }
+
                 throw new ArgumentException(message, "capabilityName");
             }
 
@@ -571,6 +584,13 @@ namespace OpenQA.Selenium.Chrome
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {
                 capabilities.SetCapability(pair.Key, pair.Value);
+            }
+
+            // TODO: Remove this if block when chromedriver bug 2371 is fixed
+            // (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2371)
+            if (this.useSpecCompliantProtocol)
+            {
+                capabilities.SetCapability(ForceAlwaysMatchCapabilityName, true);
             }
 
             // Should return capabilities.AsReadOnly(), and will in a future release.
