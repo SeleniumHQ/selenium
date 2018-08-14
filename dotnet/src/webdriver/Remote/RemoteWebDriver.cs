@@ -1074,13 +1074,35 @@ namespace OpenQA.Selenium.Remote
             {
                 parameters.Add("desiredCapabilities", this.GetLegacyCapabilitiesDictionary(desiredCapabilities));
 
-                Dictionary<string, object> firstMatchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
+                Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
 
-                List<object> firstMatchCapabilitiesList = new List<object>();
-                firstMatchCapabilitiesList.Add(firstMatchCapabilities);
+                // TODO: Remove this when chromedriver bug 2371 is fixed.
+                // (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2371)
+                // Chromedriver does not recognize the W3C capability when put in the
+                // "firstMatch" property of the new session command payload, but it does
+                // recognize it in the "alwaysMatch" property. Temporarily, and only if
+                // we are using a set of capabilities for Chrome where the W3C capability
+                // is specified, use them in alwaysMatch instead of firstMatch. This
+                // piece of code is intended to only be temporary.
+                bool forceAlwaysMatch = false;
+                if (matchCapabilities.ContainsKey(Chrome.ChromeOptions.ForceAlwaysMatchCapabilityName))
+                {
+                    forceAlwaysMatch = true;
+                    matchCapabilities.Remove(Chrome.ChromeOptions.ForceAlwaysMatchCapabilityName);
+                }
 
                 Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
-                specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
+                if (forceAlwaysMatch)
+                {
+                    specCompliantCapabilitiesDictionary["alwaysMatch"] = matchCapabilities;
+                }
+                else
+                {
+                    List<object> firstMatchCapabilitiesList = new List<object>();
+                    firstMatchCapabilitiesList.Add(matchCapabilities);
+
+                    specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
+                }
 
                 parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
             }
