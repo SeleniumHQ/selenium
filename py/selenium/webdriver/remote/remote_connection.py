@@ -137,7 +137,7 @@ class RemoteConnection(object):
 
         self._url = remote_server_addr
         if keep_alive:
-            self._conn = urllib3.PoolManager()
+            self._conn = urllib3.PoolManager(timeout=self._timeout)
 
         self._commands = {
             Command.STATUS: ('GET', '/status'),
@@ -398,7 +398,7 @@ class RemoteConnection(object):
 
             statuscode = resp.status
         else:
-            http = urllib3.PoolManager()
+            http = urllib3.PoolManager(timeout=self._timeout)
             resp = http.request(method, url, body=body, headers=headers)
 
             statuscode = resp.status
