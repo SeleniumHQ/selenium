@@ -159,6 +159,18 @@ public class OkHttpClient implements HttpClient {
         });
       }
 
+      client.addNetworkInterceptor(chain -> {
+        Request request = chain.request();
+        Response response = chain.proceed(request);
+        if (response.code() == 408) {
+          return response.newBuilder()
+              .code(404).message("Not Found")
+              .build();
+        } else {
+          return response;
+        }
+      });
+
       return new OkHttpClient(client.build(), url);
     }
 
