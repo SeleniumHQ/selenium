@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.Servlet;
 
@@ -71,6 +70,9 @@ public class GridConfiguration extends StandaloneConfiguration {
 
   public GridConfiguration(GridJsonConfiguration jsonConfig) {
     super(jsonConfig);
+    ofNullable(jsonConfig.getCustom()).ifPresent(v -> custom = new HashMap<>(v));
+    ofNullable(jsonConfig.getServlets()).ifPresent(v -> servlets = new ArrayList<>(v));
+    ofNullable(jsonConfig.getWithoutServlets()).ifPresent(v -> withoutServlets = new ArrayList<>(v));
   }
 
   void merge(CommonGridCliOptions cliConfig) {

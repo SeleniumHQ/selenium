@@ -20,7 +20,6 @@ package org.openqa.grid.internal.utils.configuration;
 import static java.util.Optional.ofNullable;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
