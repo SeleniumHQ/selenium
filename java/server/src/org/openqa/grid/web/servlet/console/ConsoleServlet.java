@@ -28,10 +28,15 @@ import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -215,20 +220,25 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append(prettyHtmlPrint(config));
 
     if (verbose) {
-
       GridHubConfiguration tmp = new GridHubConfiguration();
 
-      builder.append("<b>Config details :</b><br/>");
-      builder.append("<b>hub launched with :</b>");
-      builder.append(config.toString());
-
-      builder.append("<br/><b>the final configuration comes from :</b><br/>");
+      builder.append("<br/><b>The final configuration comes from:</b><br/>");
       builder.append("<b>the default :</b><br/>");
       builder.append(prettyHtmlPrint(tmp));
 
-      builder.append("<br/><b>updated with params :</b></br>");
-      tmp.merge(config);
-      builder.append(prettyHtmlPrint(tmp));
+      if (config.getCliConfig() != null) {
+        builder.append("<b>updated with command line options:</b><br/>");
+        builder.append(String.join(" ", config.getCliConfig().getRawArgs()));
+
+        if (config.getCliConfig().getConfigFile() != null) {
+          builder.append("<br/><b>and configuration loaded from ").append(config.getCliConfig().getConfigFile()).append(":</b><br/>");
+          try {
+            builder.append(String.join("<br/>", Files.readAllLines(new File(config.getCliConfig().getConfigFile()).toPath())));
+          } catch (IOException e) {
+            builder.append("<b>").append(e.getMessage()).append("</b>");
+          }
+        }
+      }
     }
     builder.append("</div>");
     return builder.toString();
