@@ -29,7 +29,6 @@
     "extensions.autoDisableScopes": 10,
     "extensions.blocklist.enabled": false,
     "extensions.checkCompatibility.nightly": false,
-    "extensions.logging.enabled": true,
     "extensions.update.enabled": false,
     "extensions.update.notifyUser": false,
     "javascript.enabled": true,
