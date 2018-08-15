@@ -26,7 +26,10 @@ import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 
 public class GridHubCliOptions extends CommonGridCliOptions {
 
+  private String[] rawArgs;
+
   public JCommander parse(String... args) {
+    rawArgs = args;
     JCommander commander = JCommander.newBuilder().addObject(this).build();
     commander.parse(args);
     return commander;
@@ -111,4 +114,7 @@ public class GridHubCliOptions extends CommonGridCliOptions {
     return registry;
   }
 
+  public String[] getRawArgs() {
+    return rawArgs;
+  }
 }
