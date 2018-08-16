@@ -392,9 +392,10 @@ class RemoteConnection(object):
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
         resp = None
+        if body and method != 'POST' and method != 'PUT':
+            body = None
+
         if self.keep_alive:
-            if body and method != 'POST' and method != 'PUT':
-                body = None
             resp = self._conn.request(method, url, body=body, headers=headers)
 
             statuscode = resp.status
