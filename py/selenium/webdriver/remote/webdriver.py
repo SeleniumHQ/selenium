@@ -30,7 +30,8 @@ from .switch_to import SwitchTo
 from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import (InvalidArgumentException,
-                                        WebDriverException)
+                                        WebDriverException,
+                                        NoSuchCookieException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
@@ -841,11 +842,17 @@ class WebDriver(object):
         :Usage:
             driver.get_cookie('my_cookie')
         """
-        cookies = self.get_cookies()
-        for cookie in cookies:
-            if cookie['name'] == name:
-                return cookie
-        return None
+        if self.w3c:
+            try:
+                return self.execute(Command.GET_COOKIE, {'name': name})['value']
+            except NoSuchCookieException:
+                return None
+        else:
+            cookies = self.get_cookies()
+            for cookie in cookies:
+                if cookie['name'] == name:
+                    return cookie
+            return None
 
     def delete_cookie(self, name):
         """

@@ -212,6 +212,7 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/element/$id/equals/$other'),
             Command.GET_ALL_COOKIES: ('GET', '/session/$sessionId/cookie'),
             Command.ADD_COOKIE: ('POST', '/session/$sessionId/cookie'),
+            Command.GET_COOKIE: ('GET', '/session/$sessionId/cookie/$name'),
             Command.DELETE_ALL_COOKIES:
                 ('DELETE', '/session/$sessionId/cookie'),
             Command.DELETE_COOKIE:
