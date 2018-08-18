@@ -41,7 +41,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.server.ActiveSession;
+import org.openqa.selenium.grid.session.ActiveSession;
 
 import java.io.File;
 import java.io.IOException;

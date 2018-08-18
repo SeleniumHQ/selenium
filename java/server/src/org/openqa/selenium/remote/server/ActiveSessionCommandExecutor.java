@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;

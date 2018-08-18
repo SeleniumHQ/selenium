@@ -22,6 +22,8 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.NewSessionPayload;
 

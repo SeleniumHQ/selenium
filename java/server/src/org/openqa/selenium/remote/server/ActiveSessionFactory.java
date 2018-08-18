@@ -35,6 +35,8 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
 

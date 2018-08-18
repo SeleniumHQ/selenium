@@ -23,6 +23,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;

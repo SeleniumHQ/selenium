@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.remote.SessionId;
 
 public class ActiveSessionsTest {

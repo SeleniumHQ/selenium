@@ -64,7 +64,6 @@ java_library(name = 'server',
 java_library(
   name = 'webdriver-servlet',
   srcs = [
-    'ActiveSession.java',
     'ActiveSessionCommandExecutor.java',
     'ActiveSessionFactory.java',
     'ActiveSessionListener.java',
@@ -79,19 +78,21 @@ java_library(
     'RemoteSession.java',
     'ServicedSession.java',
     'SessionCodec.java',
-    'SessionFactory.java',
     'TeeReader.java',
     'WebDriverServlet.java',
   ] + glob(['commandhandler/*.java']),
   provided_deps = [
     '//third_party/java/servlet:javax.servlet-api',
   ],
+  exported_deps = [
+    '//java/server/src/org/openqa/selenium/grid/session:session',
+    '//java/server/src/org/openqa/selenium/grid/web:web',
+  ],
   deps = [
     ':server',
     ':sessions',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/server/src/org/openqa/selenium/grid/server:server',
-    '//java/server/src/org/openqa/selenium/grid/web:web',
     '//java/server/src/org/openqa/selenium/injector:injector',
     '//java/server/src/org/openqa/selenium/remote/server/log:log',
     '//java/server/src/org/openqa/selenium/remote/server/jmx:jmx',

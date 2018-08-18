@@ -27,7 +27,7 @@ import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.ActiveSession;
+import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
