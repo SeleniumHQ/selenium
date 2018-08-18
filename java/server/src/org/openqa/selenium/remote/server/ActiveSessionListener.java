@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.server;
 
+import org.openqa.selenium.grid.session.ActiveSession;
+
 public abstract class ActiveSessionListener {
   public void onAccess(ActiveSession session) {
   }

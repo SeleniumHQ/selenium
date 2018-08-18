@@ -26,6 +26,7 @@ import com.google.common.net.MediaType;
 
 import org.openqa.selenium.grid.server.ServletRequestWrappingHttpRequest;
 import org.openqa.selenium.grid.server.ServletResponseWrappingHttpResponse;
+import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.SessionId;

@@ -15,17 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.grid.session;
 
-
-import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.SessionId;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.Map;
 
-public interface SessionFactory {
-  boolean isSupporting(Capabilities capabilities);
+public interface ActiveSession extends CommandHandler, WrapsDriver {
 
-  Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities capabilities);
+  SessionId getId();
+
+  Dialect getUpstreamDialect();
+
+  Dialect getDownstreamDialect();
+
+  /**
+   * Describe the current webdriver session's capabilities.
+   */
+  Map<String, Object> getCapabilities();
+
+  TemporaryFilesystem getFileSystem();
+
+  void stop();
 }

@@ -22,6 +22,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.UrlTemplate;
 import org.openqa.selenium.injector.Injector;
