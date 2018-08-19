@@ -69,7 +69,6 @@ java_library(
     'ActiveSessionListener.java',
     'ActiveSessions.java',
     'AllHandlers.java',
-    'CommandHandler.java',
     'DefaultPipeline.java',
     'InMemorySession.java',
     'NewSessionPipeline.java',
