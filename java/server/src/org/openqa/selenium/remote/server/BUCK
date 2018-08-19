@@ -64,7 +64,6 @@ java_library(name = 'server',
 java_library(
   name = 'webdriver-servlet',
   srcs = [
-    'ActiveSessionCommandExecutor.java',
     'ActiveSessionFactory.java',
     'ActiveSessionListener.java',
     'ActiveSessions.java',
@@ -72,12 +71,6 @@ java_library(
     'DefaultPipeline.java',
     'InMemorySession.java',
     'NewSessionPipeline.java',
-    'Passthrough.java',
-    'ProtocolConverter.java',
-    'RemoteSession.java',
-    'ServicedSession.java',
-    'SessionCodec.java',
-    'TeeReader.java',
     'WebDriverServlet.java',
   ] + glob(['commandhandler/*.java']),
   provided_deps = [
@@ -85,6 +78,7 @@ java_library(
   ],
   exported_deps = [
     '//java/server/src/org/openqa/selenium/grid/session:session',
+    '//java/server/src/org/openqa/selenium/grid/session/remote:remote',
     '//java/server/src/org/openqa/selenium/grid/web:web',
   ],
   deps = [
