@@ -54,7 +54,7 @@ public class NewSessionPipeline {
     return new Builder();
   }
 
-  public ActiveSession createNewSession(NewSessionPayload payload) throws IOException {
+  public ActiveSession createNewSession(NewSessionPayload payload) {
     return payload.stream()
         .map(caps -> {
           for (Function<Capabilities, Capabilities> mutator : mutators) {

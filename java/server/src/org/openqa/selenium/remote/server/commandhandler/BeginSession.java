@@ -24,6 +24,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -31,9 +33,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.remote.server.ActiveSessions;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
