@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.grid.session.remote;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.session.ActiveSession;
@@ -29,7 +29,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.IOException;
 import java.util.Objects;
 
-public class ActiveSessionCommandExecutor implements CommandExecutor {
+class ActiveSessionCommandExecutor implements CommandExecutor {
 
   private final ActiveSession session;
   private boolean active;

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.grid.session.remote;
 
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -23,17 +23,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.ErrorCodes.UNHANDLED_ERROR;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
@@ -51,12 +47,12 @@ import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ProtocolConverterTest {
 
-  private final static TypeToken<Map<String, Object>> MAP_TYPE = new TypeToken<Map<String, Object>>() {};
-  private final static Gson gson = new GsonBuilder().serializeNulls().create();
+  private final Json json = new Json();
 
   @Test
   public void shouldRoundTripASimpleCommand() throws IOException {
@@ -75,11 +71,11 @@ public class ProtocolConverterTest {
         response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
         response.setHeader("Cache-Control", "none");
 
-        JsonObject obj = new JsonObject();
-        obj.addProperty("sessionId", sessionId.toString());
-        obj.addProperty("status", 0);
-        obj.add("value", JsonNull.INSTANCE);
-        String payload = gson.toJson(obj);
+        Map<String, Object> obj = new HashMap<>();
+        obj.put("sessionId", sessionId.toString());
+        obj.put("status", 0);
+        obj.put("value", null);
+        String payload = json.toJson(obj);
         response.setContent(payload.getBytes(UTF_8));
 
         return response;
@@ -99,7 +95,7 @@ public class ProtocolConverterTest {
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
 
-    Map<String, Object> parsed = new Gson().fromJson(resp.getContentString(), MAP_TYPE.getType());
+    Map<String, Object> parsed = json.toType(resp.getContentString(), MAP_TYPE);
     assertNull(parsed.toString(), parsed.get("sessionId"));
     assertTrue(parsed.toString(), parsed.containsKey("value"));
     assertNull(parsed.toString(), parsed.get("value"));
@@ -120,7 +116,7 @@ public class ProtocolConverterTest {
       @Override
       protected HttpResponse makeRequest(HttpRequest request) {
         assertEquals(String.format("/session/%s/execute/sync", sessionId), request.getUri());
-        Map<String, Object> params = gson.fromJson(request.getContentString(), MAP_TYPE.getType());
+        Map<String, Object> params = json.toType(request.getContentString(), MAP_TYPE);
 
         assertEquals(
             ImmutableList.of(
@@ -132,11 +128,11 @@ public class ProtocolConverterTest {
         response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
         response.setHeader("Cache-Control", "none");
 
-        JsonObject obj = new JsonObject();
-        obj.addProperty("sessionId", sessionId.toString());
-        obj.addProperty("status", 0);
-        obj.addProperty("value", true);
-        String payload = gson.toJson(obj);
+        Map<String, Object> obj = ImmutableMap.of(
+            "sessionId", sessionId.toString(),
+            "status", 0,
+            "value", true);
+        String payload = json.toJson(obj);
         response.setContent(payload.getBytes(UTF_8));
 
         return response;
@@ -156,7 +152,7 @@ public class ProtocolConverterTest {
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
 
-    Map<String, Object> parsed = new Gson().fromJson(resp.getContentString(), MAP_TYPE.getType());
+    Map<String, Object> parsed = json.toType(resp.getContentString(), MAP_TYPE);
     assertNull(parsed.get("sessionId"));
     assertTrue(parsed.containsKey("value"));
     assertEquals(true, parsed.get("value"));
@@ -205,7 +201,7 @@ public class ProtocolConverterTest {
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HTTP_INTERNAL_ERROR, resp.getStatus());
 
-    Map<String, Object> parsed = new Gson().fromJson(resp.getContentString(), MAP_TYPE.getType());
+    Map<String, Object> parsed = json.toType(resp.getContentString(), MAP_TYPE);
     assertNull(parsed.get("sessionId"));
     assertTrue(parsed.containsKey("value"));
     @SuppressWarnings("unchecked") Map<String, Object> value =

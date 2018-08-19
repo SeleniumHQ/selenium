@@ -15,15 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.grid.session.remote;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.gson.stream.JsonReader;
-
 import org.junit.Test;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -32,7 +31,7 @@ import java.io.StringWriter;
 public class TeeReaderTest {
 
   @Test
-  public void shouldDuplicateStreams() throws IOException {
+  public void shouldDuplicateStreams() {
     String expected = "{\"key\": \"value\"}";
     Reader source = new StringReader(expected);
 
@@ -40,7 +39,7 @@ public class TeeReaderTest {
 
     Reader tee = new TeeReader(source, writer);
 
-    try (JsonReader reader = new JsonReader(tee)) {
+    try (JsonInput reader = new Json().newInput(tee)) {
 
       reader.beginObject();
       assertEquals("key", reader.nextName());
