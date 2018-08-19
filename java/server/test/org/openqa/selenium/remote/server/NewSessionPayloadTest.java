@@ -241,7 +241,7 @@ public class NewSessionPayloadTest {
     }
   }
 
-  private List<Capabilities> create(Map<String, ?> source) throws IOException {
+  private List<Capabilities> create(Map<String, ?> source) {
     List<Capabilities> presumablyFromMemory;
     List<Capabilities> fromDisk;
 

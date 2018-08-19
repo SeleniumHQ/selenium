@@ -123,8 +123,7 @@ public class SyntheticNewSessionPayloadTest {
   }
 
   @Test
-  public void shouldExpandAllW3CMatchesToFirstMatchesAndRemoveAlwaysMatchIfSynthesizingAPayload()
-      throws IOException {
+  public void shouldExpandAllW3CMatchesToFirstMatchesAndRemoveAlwaysMatchIfSynthesizingAPayload() {
     Map<String, Object> payload = ImmutableMap.of(
       // OSS capabilities request a chrome webdriver
       "desiredCapabilities", ImmutableMap.of("browserName", "chrome"),

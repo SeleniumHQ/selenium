@@ -57,6 +57,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.Collection;
@@ -87,24 +88,24 @@ public class NewSessionPayload implements Closeable {
   private final FileBackedOutputStream backingStore;
   private final ImmutableSet<Dialect> dialects;
 
-  public static NewSessionPayload create(Capabilities caps) throws IOException {
+  public static NewSessionPayload create(Capabilities caps) {
     // We need to convert the capabilities into a new session payload. At this point we're dealing
     // with references, so I'm Just Sure This Will Be Fine.
     return create(ImmutableMap.of("desiredCapabilities", caps.asMap()));
   }
 
-  public static NewSessionPayload create(Map<String, ?> source) throws IOException {
+  public static NewSessionPayload create(Map<String, ?> source) {
     Objects.requireNonNull(source, "Payload must be set");
 
     String json = new Json().toJson(source);
     return new NewSessionPayload(new StringReader(json));
   }
 
-  public static NewSessionPayload create(Reader source) throws IOException {
+  public static NewSessionPayload create(Reader source) {
     return new NewSessionPayload(source);
   }
 
-  private NewSessionPayload(Reader source) throws IOException {
+  private NewSessionPayload(Reader source) {
     // Dedicate up to 10% of all RAM or 20% of available RAM (whichever is smaller) to storing this
     // payload.
     int threshold = (int) Math.min(
@@ -116,6 +117,8 @@ public class NewSessionPayload implements Closeable {
     backingStore = new FileBackedOutputStream(threshold);
     try (Writer writer = new OutputStreamWriter(backingStore, UTF_8)) {
       CharStreams.copy(source, writer);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
 
     ImmutableSet.Builder<CapabilitiesFilter> adapters = ImmutableSet.builder();
@@ -138,15 +141,20 @@ public class NewSessionPayload implements Closeable {
     this.transforms = transforms.build();
 
     ImmutableSet.Builder<Dialect> dialects = ImmutableSet.builder();
-    if (getOss() != null) {
-      dialects.add(Dialect.OSS);
-    }
-    if (getAlwaysMatch() != null || getFirstMatches() != null) {
-      dialects.add(Dialect.W3C);
-    }
-    this.dialects = dialects.build();
+    try {
+      if (getOss() != null) {
+        dialects.add(Dialect.OSS);
+      }
+      if (getAlwaysMatch() != null || getFirstMatches() != null) {
+        dialects.add(Dialect.W3C);
+      }
 
-    validate();
+      this.dialects = dialects.build();
+
+      validate();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   private void validate() throws IOException {
@@ -291,19 +299,23 @@ public class NewSessionPayload implements Closeable {
    * equivalent W3C capabilities isn't particularly easy, so it's hoped that this approach gives us
    * the most compatible implementation.
    */
-  public Stream<Capabilities> stream() throws IOException {
-    // OSS first
-    Stream<Map<String, Object>> oss = Stream.of(getOss());
+  public Stream<Capabilities> stream() {
+    try {
+      // OSS first
+      Stream<Map<String, Object>> oss = Stream.of(getOss());
 
-    // And now W3C
-    Stream<Map<String, Object>> w3c = getW3C();
+      // And now W3C
+      Stream<Map<String, Object>> w3c = getW3C();
 
-    return Stream.concat(oss, w3c)
-        .filter(Objects::nonNull)
-        .map(this::applyTransforms)
-        .filter(Objects::nonNull)
-        .distinct()
-        .map(ImmutableCapabilities::new);
+      return Stream.concat(oss, w3c)
+          .filter(Objects::nonNull)
+          .map(this::applyTransforms)
+          .filter(Objects::nonNull)
+          .distinct()
+          .map(ImmutableCapabilities::new);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   public ImmutableSet<Dialect> getDownstreamDialects() {
@@ -311,8 +323,12 @@ public class NewSessionPayload implements Closeable {
   }
 
   @Override
-  public void close() throws IOException {
-    backingStore.reset();
+  public void close() {
+    try {
+      backingStore.reset();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   private Map<String, Object> getOss() throws IOException {
