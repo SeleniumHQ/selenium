@@ -308,9 +308,7 @@ std::string Server::ReadRequestBody(struct mg_connection* conn,
       break;
     }
   }
-  if (content_length == 0) {
-    request_body = "{}";
-  } else {
+  if (content_length != 0) {
     std::vector<char> buffer(content_length + 1);
     int bytes_read = 0;
     while (bytes_read < content_length) {
