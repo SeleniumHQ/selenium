@@ -58,8 +58,8 @@ module Selenium
                          package: '/path/to/pkg',
                          verbose: true}
 
-          args = ["–host=#{driver_opts[:host]}",
-                  "–package=#{driver_opts[:package]}",
+          args = ["--host=#{driver_opts[:host]}",
+                  "--package=#{driver_opts[:package]}",
                   "-verbose"]
 
           driver = Driver.new(http_client: http, driver_opts: driver_opts)
