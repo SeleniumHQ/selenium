@@ -478,6 +478,8 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
 
   if (executor.unexpected_alert_behavior().size() > 0) {
     capabilities[UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
+  } else {
+    capabilities[UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY] = DISMISS_AND_NOTIFY_UNEXPECTED_ALERTS;
   }
 
   Json::Value timeouts;

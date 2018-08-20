@@ -669,7 +669,9 @@ void IECommandExecutor::DispatchCommand() {
 
   if (!this->command_handlers_->IsValidCommand(this->current_command_.command_type())) {
     LOG(WARN) << "Unable to find command handler for " << this->current_command_.command_type();
-    response.SetErrorResponse(501, "Command not implemented");
+    response.SetErrorResponse(ERROR_UNKNOWN_COMMAND, "Command not implemented");
+  } else if (!this->current_command_.is_valid_parameters()) {
+    response.SetErrorResponse(ERROR_INVALID_ARGUMENT, "parameters property of command is not a valid JSON object");
   } else {
     BrowserHandle browser;
     int status_code = WD_SUCCESS;
