@@ -54,7 +54,7 @@ class PointerInput(InputDevice):
         self.add_action({"type": "pointerCancel"})
 
     def create_pause(self, pause_duration):
-        self.add_action({"type": "pause", "duration": pause_duration * 1000})
+        self.add_action({"type": "pause", "duration": int(pause_duration * 1000)})
 
     def encode(self):
         return {"type": self.type,
