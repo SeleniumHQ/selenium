@@ -211,6 +211,28 @@ def testSendingKeysToActiveElementWithModifier(driver, pages):
     assert "ABC" == e.get_attribute('value')
 
 
+def testSendingKeysToElement(driver, pages):
+    pages.load("formPage.html")
+    e = driver.find_element_by_id("working")
+
+    ActionChains(driver).send_keys_to_element(e, 'abc').perform()
+
+    assert "abc" == e.get_attribute('value')
+
+
+def testCanSendKeysBetweenClicks(driver, pages):
+    """
+    For W3C, ensures that the correct number of pauses are given to the other
+    input device.
+    """
+    pages.load('javascriptPage.html')
+    keyup = driver.find_element_by_id("keyUp")
+    keydown = driver.find_element_by_id("keyDown")
+    ActionChains(driver).click(keyup).send_keys('foobar').click(keydown).perform()
+
+    assert 'foobar' == keyup.get_attribute('value')
+
+
 def test_can_reset_interactions(driver, pages):
     ActionChains(driver).reset_actions()
 
