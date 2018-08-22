@@ -22,6 +22,9 @@ module org.openqa.selenium.opera {
 
     exports org.openqa.selenium.opera;
 
+    provides org.openqa.selenium.WebDriverInfo with
+            org.openqa.selenium.opera.OperaDriverInfo;
+
     provides org.openqa.selenium.remote.service.DriverService$Builder with
         org.openqa.selenium.opera.OperaDriverService$Builder;
 

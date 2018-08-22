@@ -64,17 +64,20 @@ public class ChromeDriverService extends DriverService {
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to ChromeDriver.
    */
-  public final static String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY = "webdriver.chrome.whitelistedIps";
+  public final static String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
+      "webdriver.chrome.whitelistedIps";
 
   /**
-   *
-   * @param executable The chromedriver executable.
-   * @param port Which port to start the ChromeDriver on.
-   * @param args The arguments to the launched server.
+   * @param executable  The chromedriver executable.
+   * @param port        Which port to start the ChromeDriver on.
+   * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  public ChromeDriverService(File executable, int port, ImmutableList<String> args,
+  public ChromeDriverService(
+      File executable,
+      int port,
+      ImmutableList<String> args,
       ImmutableMap<String, String> environment) throws IOException {
     super(executable, port, args, environment);
   }
@@ -122,7 +125,7 @@ public class ChromeDriverService extends DriverService {
      *
      * @param verbose True for verbose output, false otherwise.
      * @return A self reference.
-    */
+     */
     public Builder withVerbose(boolean verbose) {
       this.verbose = verbose;
       return this;
@@ -133,7 +136,7 @@ public class ChromeDriverService extends DriverService {
      *
      * @param silent True for silent output, false otherwise.
      * @return A self reference.
-    */
+     */
     public Builder withSilent(boolean silent) {
       this.silent = silent;
       return this;
@@ -153,7 +156,8 @@ public class ChromeDriverService extends DriverService {
 
     @Override
     protected File findDefaultExecutable() {
-      return findExecutable("chromedriver", CHROME_DRIVER_EXE_PROPERTY,
+      return findExecutable(
+          "chromedriver", CHROME_DRIVER_EXE_PROPERTY,
           "https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver",
           "http://chromedriver.storage.googleapis.com/index.html");
     }
@@ -186,9 +190,11 @@ public class ChromeDriverService extends DriverService {
     }
 
     @Override
-    protected ChromeDriverService createDriverService(File exe, int port,
-                                                      ImmutableList<String> args,
-                                                      ImmutableMap<String, String> environment) {
+    protected ChromeDriverService createDriverService(
+        File exe,
+        int port,
+        ImmutableList<String> args,
+        ImmutableMap<String, String> environment) {
       try {
         return new ChromeDriverService(exe, port, args, environment);
       } catch (IOException e) {
