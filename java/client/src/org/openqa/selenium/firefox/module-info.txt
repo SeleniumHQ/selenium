@@ -30,4 +30,8 @@ module org.openqa.selenium.firefox {
         org.openqa.selenium.firefox.GeckoDriverService$Builder,
         org.openqa.selenium.firefox.XpiDriverService$Builder;
 
+    provides org.openqa.selenium.WebDriverInfo with
+        org.openqa.selenium.firefox.GeckoDriverInfo,
+        org.openqa.selenium.firefox.XpiDriverInfo;
+
 }
