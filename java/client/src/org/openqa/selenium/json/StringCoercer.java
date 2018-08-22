@@ -31,8 +31,14 @@ public class StringCoercer extends TypeCoercer<String> {
   public BiFunction<JsonInput, PropertySetting, String> apply(Type type) {
     return (jsonInput, setting) -> {
       switch (jsonInput.peek()) {
+        case BOOLEAN:
+          return String.valueOf(jsonInput.nextBoolean());
+
         case NAME:
           return jsonInput.nextName();
+
+        case NUMBER:
+          return String.valueOf(jsonInput.nextNumber());
 
         case STRING:
           return jsonInput.nextString();

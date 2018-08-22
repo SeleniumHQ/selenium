@@ -505,6 +505,24 @@ public class JsonTest {
     assertEquals(Proxy.ProxyType.PAC, type);
   }
 
+  @Test
+  public void canCoerceSimpleValuesToStrings() {
+    Map<String, Object> value = ImmutableMap.of(
+        "boolean", true,
+        "integer", 42,
+        "float", 3.14);
+
+    Json json = new Json();
+    String raw = json.toJson(value);
+    Map<String, String> roundTripped = json.toType(
+        raw,
+        new TypeToken<Map<String, String>>(){}.getType());
+
+    assertEquals("true", roundTripped.get("boolean"));
+    assertEquals("42", roundTripped.get("integer"));
+    assertEquals("3.14", roundTripped.get("float"));
+  }
+
   public static class SimpleBean {
 
     private String value;
