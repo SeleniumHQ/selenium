@@ -49,7 +49,7 @@ import java.util.TreeMap;
  */
 public class SafariOptions extends MutableCapabilities {
 
-  private static final String SAFARI_TECH_PREVIEW = "Safari Technology Preview";
+  static final String SAFARI_TECH_PREVIEW = "Safari Technology Preview";
 
   /**
    * Key used to store SafariOptions in a {@link Capabilities} object.

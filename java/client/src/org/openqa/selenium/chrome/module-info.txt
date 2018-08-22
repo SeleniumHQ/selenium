@@ -25,4 +25,7 @@ module org.openqa.selenium.chrome {
     provides org.openqa.selenium.remote.service.DriverService$Builder with
         org.openqa.selenium.chrome.ChromeDriverService$Builder;
 
+    provides org.openqa.selenium.WebDriverInfo with
+        org.openqa.selenium.chrome.ChromeDriverInfo;
+
 }

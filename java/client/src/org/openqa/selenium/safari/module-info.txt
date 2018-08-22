@@ -22,6 +22,10 @@ module org.openqa.selenium.safari {
 
     exports org.openqa.selenium.safari;
 
+    provides org.openqa.selenium.WebDriverInfo with
+        org.openqa.selenium.safari.SafariDriverInfo,
+        org.openqa.selenium.safari.SafariTechPreviewDriverInfo;
+
     provides org.openqa.selenium.remote.service.DriverService$Builder with
         org.openqa.selenium.safari.SafariDriverService$Builder;
 

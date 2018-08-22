@@ -22,6 +22,9 @@ module org.openqa.selenium.ie {
 
     exports org.openqa.selenium.ie;
 
+    provides org.openqa.selenium.WebDriverInfo with
+        org.openqa.selenium.ie.InternetExplorerDriverInfo;
+
     provides org.openqa.selenium.remote.service.DriverService$Builder with
         org.openqa.selenium.ie.InternetExplorerDriverService$Builder;
 
