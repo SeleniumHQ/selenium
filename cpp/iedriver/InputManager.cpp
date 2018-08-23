@@ -194,15 +194,21 @@ int InputManager::GetTicks(const Json::Value& sequences, Json::Value* ticks) {
       }
       Json::UInt action_index = static_cast<Json::UInt>(j);
       Json::Value action = actions[action_index];
-      if (device_type == "key" &&
-          action.isMember("type") &&
+      if (action.isMember("type") &&
           action["type"].isString() &&
           action["type"].asString() == "pause") {
-        // HACK! Ignore the duration of pause events in keyboard action
-        // sequences. This is deliberately in violation of the W3C spec.
-        // This allows us to better synchronize mixed keyboard and mouse
-        // action sequences.
-        action["duration"] = 0;
+        if (!action.isMember("duration") ||
+            action["duration"].type() != Json::ValueType::intValue ||
+            action["duration"].asInt() < 0) {
+          return EINVALIDARGUMENT;
+        }
+        if (device_type == "key") {
+          // HACK! Ignore the duration of pause events in keyboard action
+          // sequences. This is deliberately in violation of the W3C spec.
+          // This allows us to better synchronize mixed keyboard and mouse
+          // action sequences.
+          action["duration"] = 0;
+        }
       }
       (*ticks)[action_index].append(action);
     }
