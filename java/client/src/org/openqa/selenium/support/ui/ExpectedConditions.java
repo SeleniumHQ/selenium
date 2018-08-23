@@ -311,7 +311,7 @@ public class ExpectedConditions {
   /**
    * @return the given element if it is visible and has non-zero size, otherwise null.
    */
-  private static WebElement elementIfVisible(WebElement element) {
+  protected static WebElement elementIfVisible(WebElement element) {
     return element.isDisplayed() ? element : null;
   }
 
@@ -890,7 +890,7 @@ public class ExpectedConditions {
    * @param by     locator
    * @return WebElement found
    */
-  private static WebElement findElement(By by, WebDriver driver) {
+  protected static WebElement findElement(By by, WebDriver driver) {
     try {
       return driver.findElements(by).stream().findFirst().orElseThrow(
           () -> new NoSuchElementException("Cannot locate an element using " + by));
@@ -909,7 +909,7 @@ public class ExpectedConditions {
    * @return List of WebElements found
    * @see #findElement(By, WebDriver)
    */
-  private static List<WebElement> findElements(By by, WebDriver driver) {
+  protected static List<WebElement> findElements(By by, WebDriver driver) {
     try {
       return driver.findElements(by);
     } catch (WebDriverException e) {
@@ -1192,7 +1192,7 @@ public class ExpectedConditions {
     return driver -> getAttributeOrCssValue(element, attribute).isPresent();
   }
 
-  private static Optional<String> getAttributeOrCssValue(WebElement element, String name) {
+  protected static Optional<String> getAttributeOrCssValue(WebElement element, String name) {
     String value = element.getAttribute(name);
     if (value == null || value.isEmpty()) {
       value = element.getCssValue(name);
@@ -1400,7 +1400,7 @@ public class ExpectedConditions {
     };
   }
 
-  private static boolean isInvisible(final WebElement element) {
+  protected static boolean isInvisible(final WebElement element) {
     try {
       return !element.isDisplayed();
     } catch (StaleElementReferenceException ignored) {
