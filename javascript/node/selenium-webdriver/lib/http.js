@@ -554,7 +554,7 @@ function parseHttpResponse(command, httpResponse) {
   // 404 represents an unknown command; anything else > 399 is a generic unknown
   // error.
   if (httpResponse.status == 404) {
-    throw new error.UnsupportedOperationError(value);
+    throw new error.UnsupportedOperationError(command.getName() + ': ' + value);
   } else if (httpResponse.status >= 400) {
     throw new error.WebDriverError(value);
   }
