@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.3
+=========
+ * Updating to properly validate duration property of pause actions.
+
 v3.14.0.2
 =========
  * Robustness change for invalid command payloads to comply with W3C Spec.
