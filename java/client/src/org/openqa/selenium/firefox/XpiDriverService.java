@@ -34,7 +34,6 @@ import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -249,7 +248,21 @@ public class XpiDriverService extends DriverService {
 
     @Override
     public int score(Capabilities capabilites) {
-      return capabilites.getCapability(FirefoxDriver.MARIONETTE) == Boolean.FALSE ? 5 : 0;
+      if (!capabilites.is(FirefoxDriver.MARIONETTE)) {
+        return 0;
+      }
+
+      int score = 1;
+
+      if (capabilites.getCapability(FirefoxDriver.BINARY) != null) {
+        score++;
+      }
+
+      if (capabilites.getCapability(FirefoxDriver.PROFILE) != null) {
+        score++;
+      }
+
+      return score;
     }
 
     public Builder withBinary(FirefoxBinary binary) {
