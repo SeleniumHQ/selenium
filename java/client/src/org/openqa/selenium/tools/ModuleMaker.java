@@ -49,8 +49,11 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.util.EnumSet;
+import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 public class ModuleMaker {
 
@@ -94,10 +97,30 @@ public class ModuleMaker {
     classWriter.visitEnd();
 
     try (OutputStream os = Files.newOutputStream(out);
-    JarOutputStream jos = new JarOutputStream(os)) {
+         JarOutputStream jos = new JarOutputStream(os)) {
+      jos.setLevel(ZipOutputStream.STORED);
+
+      ZipEntry dir = new ZipEntry("META-INF/");
+      dir.setTime(DOS_EPOCH);
+      dir.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
+      dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      jos.putNextEntry(dir);
+
+      dir = new ZipEntry("META-INF/versions/");
+      dir.setTime(DOS_EPOCH);
+      dir.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
+      dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      jos.putNextEntry(dir);
+
+      dir = new ZipEntry("META-INF/versions/9");
+      dir.setTime(DOS_EPOCH);
+      dir.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
+      dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      jos.putNextEntry(dir);
+
       byte[] bytes = classWriter.toByteArray();
 
-      ZipEntry entry = new ZipEntry("module-info.class");
+      JarEntry entry = new JarEntry("META-INF/versions/9/module-info.class");
       entry.setTime(DOS_EPOCH);
       entry.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
       entry.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
@@ -138,7 +161,10 @@ public class ModuleMaker {
     public void visit(ModuleProvidesStmt n, Void arg) {
       byteBuddyVisitor.visitProvide(
           n.getTypeAsString().replace('.', '/'),
-          n.getWithTypes().stream().map(type -> type.asString().replace('.', '/')).toArray(String[]::new));
+          n.getWithTypes().stream()
+              .map(type -> type.asString()
+                  .replace('.', '/'))
+              .toArray(String[]::new));
     }
 
     @Override
