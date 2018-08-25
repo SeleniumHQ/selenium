@@ -16,6 +16,9 @@
 [build]
   metadata_storage = sqlite
 
+[buildfile]
+  includes = //java/rules.bzl
+
 [cache]
   mode = dir
   # This is large enough to contain everything built in //java/...

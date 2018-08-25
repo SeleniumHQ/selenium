@@ -1,12 +1,14 @@
 #!/usr/bin/env python2
 
+import argparse
+import datetime
 import hashlib
 import os
 import os.path
 import requests
 import stat
 import sys
-from subprocess import call
+import subprocess
 
 buck_version = open(".buckversion").readline().rstrip()
 buck_hash = open(".buckhash").readline().rstrip()
@@ -58,8 +60,25 @@ else:
 st = os.stat(buck_pex)
 os.chmod(buck_pex, st.st_mode | stat.S_IEXEC)
 
-sys.argv.pop(0)
-args = ["python", buck_pex]
-args.extend(sys.argv)
-sys.exit(call(args))
+# Figure out the git revision and current timestamp
+parser = argparse.ArgumentParser()
+parser.prog = "buckw"
+parser.add_argument("--stamp-build", default="stable", choices=["stable", "detect"])
+parsed, remainder = parser.parse_known_args(sys.argv)
+
+remainder.pop(0)
+cmd = remainder.pop(0)
+
+args = ["python", buck_pex, cmd]
+
+if "stable" == parsed.stamp_build and cmd != "kill":
+    args.extend(["--config", "selenium.rev=unknown", "--config", "selenium.timestamp=unknown"])
+elif "detect" == parsed.stamp_build and cmd != "kill":
+    timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
+    rev = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).strip()
+    args.extend(["--config", "selenium.rev=%s" % rev, "--config", "selenium.timestamp=%s" % timestamp])
+
+args.extend(remainder)
+
+sys.exit(subprocess.call(args))
 

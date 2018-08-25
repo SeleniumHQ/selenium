@@ -97,7 +97,7 @@ java_binary(
 genrule(
   name = 'client-combined-sources',
   out = 'client-combined-' + SE_VERSION + '-sources.jar',
-  cmd = 'mkdir temp && $(exe //java/client/src/org/openqa/selenium/tools:package) $OUT $(@query_paths "inputs(kind(java_library, deps(//java/client/src/org/openqa/selenium:client-combined)))")',
+  cmd = 'mkdir temp && $(exe //java/client/src/org/openqa/selenium/tools:package) $OUT $(@query_paths "inputs(kind(java_library, deps(//java/client/src/org/openqa/selenium:client-combined) - deps(//java/client/src/org/openqa/selenium/tools:package, 1)))")',
 )
 
 # So we hide it in another zip file, which will be merged. Zip file merging isn't recursive.
