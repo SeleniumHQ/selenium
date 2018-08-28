@@ -41,6 +41,7 @@ class Options(object):
         self._preferences = {}
         self._profile = None
         self._proxy = None
+        self._caps = DesiredCapabilities.FIREFOX.copy()
         self._arguments = []
         self.log = Log()
 
@@ -68,6 +69,22 @@ class Options(object):
     def binary_location(self, value):
         """ Sets the location of the browser binary by string """
         self.binary = value
+
+    @property
+    def accept_insecure_certs(self):
+        return self._caps.get('acceptInsecureCerts')
+
+    @accept_insecure_certs.setter
+    def accept_insecure_certs(self, value):
+        self._caps['acceptInsecureCerts'] = value
+
+    @property
+    def capabilities(self):
+        return self._caps
+
+    def set_capability(self, name, value):
+        """Sets a capability."""
+        self._caps[name] = value
 
     @property
     def preferences(self):
@@ -150,7 +167,7 @@ class Options(object):
         # so if a binary or profile has _not_ been set,
         # it will defer to geckodriver to find the system Firefox
         # and generate a fresh profile.
-        caps = DesiredCapabilities.FIREFOX.copy()
+        caps = self._caps
         opts = {}
 
         if self._binary is not None:
