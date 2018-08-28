@@ -66,6 +66,7 @@ namespace OpenQA.Selenium.Chrome
         private const string SetNetworkConditionsCommand = "setNetworkConditions";
         private const string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
         private const string SendChromeCommand = "sendChromeCommand";
+        private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ChromeDriver"/> class.
@@ -151,6 +152,7 @@ namespace OpenQA.Selenium.Chrome
             this.AddCustomChromeCommand(SetNetworkConditionsCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(DeleteNetworkConditionsCommand, CommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(SendChromeCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
+            this.AddCustomChromeCommand(SendChromeCommandWithResult, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result");
         }
 
         /// <summary>
@@ -209,6 +211,20 @@ namespace OpenQA.Selenium.Chrome
             parameters["cmd"] = commandName;
             parameters["params"] = commandParameters;
             this.Execute(SendChromeCommand, parameters);
+        }
+
+        public object ExecuteChromeCommandWithResult(string commandName, Dictionary<string, object> commandParameters)
+        {
+            if (commandName == null)
+            {
+                throw new ArgumentNullException("commandName", "commandName must not be null");
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["cmd"] = commandName;
+            parameters["params"] = commandParameters;
+            Response response = this.Execute(SendChromeCommandWithResult, parameters);
+            return response.Value;
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(ChromeOptions options)
