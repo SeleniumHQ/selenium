@@ -17,10 +17,6 @@ if [[ ! -z $MARIONETTE ]]; then
   chmod +x geckodriver && sudo mv geckodriver /usr/local/bin
 fi
 
-if [[ ! -z $PHANTOMJS ]]; then
-  phantomjs -v
-fi
-
 if [[ ! -z $TOXENV ]]; then
   pip install setuptools==28.8.0 tox==2.4.1
 fi
