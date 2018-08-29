@@ -22,3 +22,6 @@ if [[ ! -z $TOXENV ]]; then
 fi
 
 echo -e "[ui]\n  superconsole = disabled\n" >> .buckconfig.local
+
+# buckw uses requests to download buck executable
+pip install requests
