@@ -109,6 +109,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(FIREFOX)
+  @Ignore(value = MARIONETTE, travis = true)
   public void testControlClickingOnMultiSelectionList() {
     assumeFalse("FIXME: macs don't have CONTROL key", getEffectivePlatform().is(Platform.MAC));
     driver.get(pages.formSelectionPage);
@@ -134,6 +135,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
+  @Ignore(value = MARIONETTE, travis = true)
   public void testControlClickingOnCustomMultiSelectionList() {
     assumeFalse("FIXME: macs don't have CONTROL key", getEffectivePlatform().is(Platform.MAC));
     driver.get(pages.selectableItemsPage);
