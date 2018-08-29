@@ -150,6 +150,7 @@ public class FileExtension implements Extension {
 
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setNamespaceAware(true);
+      factory.setExpandEntityReferences(false);
       DocumentBuilder builder = factory.newDocumentBuilder();
       Document doc = builder.parse(installRdf);
 
