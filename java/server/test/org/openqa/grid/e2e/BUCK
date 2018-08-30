@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 SUITES = glob(['**/*Tests.java'])
 
 java_test(name = 'e2e',

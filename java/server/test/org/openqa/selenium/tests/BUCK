@@ -1,5 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
-
 zip_file(
   name = 'tests',
   out = 'tests-sources.jar',
