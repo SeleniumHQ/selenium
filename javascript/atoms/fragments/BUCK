@@ -1,4 +1,4 @@
-include_defs('//javascript/JAVASCRIPT_DEFS')
+load("//javascript:rules.bzl", "closure_fragment")
 
 closure_fragment(name = 'clear',
   function = 'bot.action.clear',
