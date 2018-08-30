@@ -1,4 +1,4 @@
-﻿genrule(
+genrule(
   name = 'nuget',
   srcs = ['NuGet.exe'],
   out = 'NuGet.exe',
