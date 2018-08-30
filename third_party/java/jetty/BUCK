@@ -59,21 +59,18 @@ REPACK = [
   'jetty-util',
   'jetty-xml',
 ]
-for i in REPACK:
-  out = '%s-repacked' % i
-  name = '%s-do-repack' % i
 
-  genrule(
-    name = name,
-    out = '%s.jar' % out,
-    cmd = '$(exe //third_party/java/pantsbuild:jarjar-links) process $(location :jarjar-rules) $(location :%s) $OUT' % i
-  )
+[genrule(
+  name = '%s-do-repack' % i,
+  out = '%s-repacked.jar' % i,
+  cmd = '$(exe //third_party/java/pantsbuild:jarjar-links) process $(location :jarjar-rules) $(location :%s) $OUT' % i
+) for i in REPACK]
 
-  prebuilt_jar(
-    name = out,
-    maven_coords = 'org.seleniumhq.selenium:%s:%s' % (out, JETTY_VERSION),
-    binary_jar = ':%s' % name,
-  )
+[prebuilt_jar(
+  name = '%s-repacked' % i,
+  maven_coords = 'org.seleniumhq.selenium:%s:%s' % ('%s-repacked' % i, JETTY_VERSION),
+  binary_jar = ':%s-do-repack' % i,
+) for i in REPACK]
 
 export_file(
   name = 'jarjar-rules',
