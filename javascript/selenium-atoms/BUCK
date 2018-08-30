@@ -163,7 +163,7 @@ browsers = {
   vm_args = [
     '-Dselenium.browser=%s' % browsers[browser],
     '-Djs.test.timeout=120',
-    '-Djs.test.dir=%s' % get_base_path(),
+    '-Djs.test.dir=%s' % package_name(),
   ],
   test_classes = [
    'org.openqa.selenium.javascript.ClosureTestSuite',
