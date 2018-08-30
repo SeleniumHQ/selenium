@@ -4,6 +4,9 @@ java_test(name = 'lift',
     'find/*.java',
     'match/*.java',
   ]),
+  labels = [
+    'small',
+  ],
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/lift:lift',
