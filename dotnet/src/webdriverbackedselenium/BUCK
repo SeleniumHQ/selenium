@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 load("//dotnet:selenium-dotnet-version.bzl", "SE_VERSION", "ASSEMBLY_VERSION")
 
 genrule(
