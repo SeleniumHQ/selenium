@@ -84,7 +84,7 @@ class Passthrough implements SessionCodec {
       }
     }
     // None of this "keep alive" nonsense.
-    connection.setRequestProperty("Connection", "close");
+    connection.setRequestProperty("Connection", "keep-alive");
 
     if (POST == req.getMethod()) {
       // We always transform to UTF-8 on the way up.
