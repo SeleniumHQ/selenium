@@ -66,13 +66,12 @@ java_library(name = 'emulation-api',
   ],
 )
 
-for name in ['findElement', 'findOption', 'fireEvent', 'fireEventAt', 'getAttribute', 'getText',
-             'linkLocator', 'isElementPresent', 'isSomethingSelected', 'isTextPresent',
-             'isVisible', 'setCursorPosition', 'type',]:
-  export_file(name = name,
-    out = '%s.js' % name,
-    src = '//javascript/selenium-atoms:%s' % name,
-  )
+[export_file(name = name,
+  out = '%s.js' % name,
+  src = '//javascript/selenium-atoms:%s' % name,
+) for name in ['findElement', 'findOption', 'fireEvent', 'fireEventAt', 'getAttribute', 'getText',
+  'linkLocator', 'isElementPresent', 'isSomethingSelected', 'isTextPresent',
+  'isVisible', 'setCursorPosition', 'type',]]
 
 export_file(name = 'sizzle',
   out = 'sizzle.js',
