@@ -1,8 +1,10 @@
-# BUILD FILE SYNTAX: SKYLARK
 SUITES = glob(['*Tests.java'])
 
 java_test(name = 'common',
   srcs = SUITES,
+  labels = [
+    'small',
+  ],
   deps = [
     ':tests',
     '//third_party/java/junit:junit',
