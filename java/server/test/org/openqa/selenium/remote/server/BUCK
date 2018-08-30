@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 java_test(name = 'small-tests',
   srcs = [
     'RemoteServerTests.java',

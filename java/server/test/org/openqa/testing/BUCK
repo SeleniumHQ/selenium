@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'test-base',
   srcs = glob([
     '*.java',
