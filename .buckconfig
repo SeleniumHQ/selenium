@@ -27,7 +27,6 @@
 [parser]
   polyglot_parsing_enabled = true
   default_build_file_syntax = SKYLARK
-  python_interpreter = /usr/bin/false
 
 [resources]
   resource_aware_scheduling_enabled = true
