@@ -683,21 +683,15 @@ void IECommandExecutor::DispatchCommand() {
         HWND alert_handle = NULL;
         bool alert_is_active = this->IsAlertActive(browser, &alert_handle);
         if (alert_is_active) {
-          std::string command_type = this->current_command_.command_type();
-          if (command_type == webdriver::CommandType::GetAlertText ||
-              command_type == webdriver::CommandType::SendKeysToAlert ||
-              command_type == webdriver::CommandType::AcceptAlert ||
-              command_type == webdriver::CommandType::DismissAlert ||
-              command_type == webdriver::CommandType::SetAlertCredentials ||
-              command_type == webdriver::CommandType::GetCurrentWindowHandle ||
-              command_type == webdriver::CommandType::GetWindowHandles ||
-              command_type == webdriver::CommandType::SwitchToWindow) {
+          if (this->IsCommandValidWithAlertPresent()) {
             LOG(DEBUG) << "Alert is detected, and the sent command is valid";
           } else {
             LOG(DEBUG) << "Unexpected alert is detected, and the sent command "
                        << "is invalid when an alert is present";
-            std::string alert_text;
+            std::string command_type = this->current_command_.command_type();
             bool is_quit_command = command_type == webdriver::CommandType::Quit;
+
+            std::string alert_text;
             bool is_notify_unexpected_alert = this->HandleUnexpectedAlert(browser,
                                                                           alert_handle,
                                                                           is_quit_command,
@@ -787,6 +781,25 @@ void IECommandExecutor::DispatchCommand() {
   this->serialized_response_ = response.Serialize();
   LOG(DEBUG) << "Setting serialized response to " << this->serialized_response_;
   LOG(DEBUG) << "Is waiting flag: " << this->is_waiting_ ? "true" : "false";
+}
+
+bool IECommandExecutor::IsCommandValidWithAlertPresent() {
+  std::string command_type = this->current_command_.command_type();
+  if (command_type == webdriver::CommandType::GetAlertText ||
+      command_type == webdriver::CommandType::SendKeysToAlert ||
+      command_type == webdriver::CommandType::AcceptAlert ||
+      command_type == webdriver::CommandType::DismissAlert ||
+      command_type == webdriver::CommandType::SetAlertCredentials ||
+      command_type == webdriver::CommandType::GetTimeouts ||
+      command_type == webdriver::CommandType::SetTimeouts ||
+      command_type == webdriver::CommandType::Screenshot ||
+      command_type == webdriver::CommandType::ElementScreenshot ||
+      command_type == webdriver::CommandType::GetCurrentWindowHandle ||
+      command_type == webdriver::CommandType::GetWindowHandles ||
+      command_type == webdriver::CommandType::SwitchToWindow) {
+    return true;
+  }
+  return false;
 }
 
 void IECommandExecutor::CreateWaitThread(const std::string& deferred_response) {
