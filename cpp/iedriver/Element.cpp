@@ -1472,16 +1472,16 @@ bool Element::GetTextBoundaries(LocationInfo* text_info) {
   }
 
   long top = 0;
-  hr = range_metrics->get_boundingTop(&top);
+  hr = range_metrics->get_offsetTop(&top);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Call to get_boundingTop on range metrics failed.";
+    LOGHR(WARN, hr) << "Call to get_offsetTop on range metrics failed.";
     return false;
   }
 
   long left = 0;
-  hr = range_metrics->get_boundingLeft(&left);
+  hr = range_metrics->get_offsetLeft(&left);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Call to get_boundingLeft on range metrics failed.";
+    LOGHR(WARN, hr) << "Call to get_offsetLeft on range metrics failed.";
     return false;
   }
 
