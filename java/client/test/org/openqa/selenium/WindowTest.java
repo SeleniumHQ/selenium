@@ -142,7 +142,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
 
-    changeSizeTo(new Dimension(450, 273));
+    changeSizeTo(new Dimension(640, 273));
     maximize();
   }
 
@@ -156,7 +156,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeNotLinuxAtSauce();
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(450, 274));
+    changeSizeTo(new Dimension(640, 274));
 
     driver.switchTo().frame("fourth");
     maximize();
@@ -172,7 +172,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeNotLinuxAtSauce();
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(450, 275));
+    changeSizeTo(new Dimension(640, 275));
 
     driver.switchTo().frame("iframe1-name");
     maximize();
