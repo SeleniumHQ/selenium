@@ -24,8 +24,6 @@
 #include "../InputManager.h"
 #include "../ProxyManager.h"
 
-#define MAX_SAFE_INTEGER 9007199254740991L
-
 namespace webdriver {
 
 NewSessionCommandHandler::NewSessionCommandHandler(void) {
