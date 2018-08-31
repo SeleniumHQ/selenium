@@ -24,6 +24,8 @@
 #include "../InputManager.h"
 #include "../ProxyManager.h"
 
+#define MAX_SAFE_INTEGER 9007199254740991L
+
 namespace webdriver {
 
 NewSessionCommandHandler::NewSessionCommandHandler(void) {
@@ -771,11 +773,19 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                              "must be an integer";
             return false;
           }
-          if (!timeout_value.isUInt64()) {
+          if (!timeout_value.isInt64()) {
             *error_message = "Invalid capabilities in " +
                              capability_set_name + ": " +
                              "timeout " + timeout_name +
-                             "must be an integer between 0 and 2^64 - 1";
+                             "must be an integer between 0 and 2^53 - 1";
+            return false;
+          }
+          long long timeout = timeout_value.asInt64();
+          if (timeout < 0 || timeout > MAX_SAFE_INTEGER) {
+            *error_message = "Invalid capabilities in " +
+                             capability_set_name + ": " +
+                             "timeout " + timeout_name +
+                             "must be an integer between 0 and 2^53 - 1";
             return false;
           }
         }
