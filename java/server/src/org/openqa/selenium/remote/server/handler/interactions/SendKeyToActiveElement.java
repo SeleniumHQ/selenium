@@ -26,11 +26,10 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SendKeyToActiveElement extends WebDriverHandler<Void> implements JsonParametersAware {
 
-  private final List<CharSequence> keys = new CopyOnWriteArrayList<>();
+  private final List<String> keys = new ArrayList<>();
 
   public SendKeyToActiveElement(Session session) {
     super(session);
@@ -41,11 +40,7 @@ public class SendKeyToActiveElement extends WebDriverHandler<Void> implements Js
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     // TODO: merge this code with the code in the SendKeys handler.
     List<String> rawKeys = (List<String>) allParameters.get("value");
-    List<String> temp = new ArrayList<>();
-    for (String key : rawKeys) {
-      temp.add(key);
-    }
-    keys.addAll(temp);
+    keys.addAll(rawKeys);
   }
 
   @Override

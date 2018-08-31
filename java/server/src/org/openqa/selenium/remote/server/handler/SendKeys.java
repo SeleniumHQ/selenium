@@ -20,13 +20,13 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SendKeys extends WebElementHandler<Void> implements JsonParametersAware {
 
-  private final List<CharSequence> keys = new CopyOnWriteArrayList<>();
+  private final List<String> keys = new ArrayList<>();
 
   public SendKeys(Session session) {
     super(session);
