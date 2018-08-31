@@ -133,7 +133,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Chrome, "WebKit bug 28804")]
-        [IgnoreBrowser(Browser.IE, "Position and size are always integer in IE")]
         public void ShouldHandleNonIntegerPositionAndSize()
         {
             driver.Url = rectanglesPage;
