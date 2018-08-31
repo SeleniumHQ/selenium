@@ -249,6 +249,21 @@ namespace OpenQA.Selenium
             Assert.That(element.Selected, "Element is not selected");
         }
 
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        public void ShouldBeAbleToClickInlineTextElementWithChildElementAfterScrolling()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithBody(
+                    "<div style='height: 2000px;'>Force scroll needed</div><label id='wrapper'>wraps a checkbox <input id='check' type='checkbox' checked='checked'/></label>"));
+            IWebElement label = driver.FindElement(By.Id("wrapper"));
+            label.Click();
+            IWebElement checkbox = driver.FindElement(By.Id("check"));
+            Assert.IsFalse(checkbox.Selected, "Checkbox should not be selected after click");
+        }
+
         private long GetScrollTop()
         {
             return (long)((IJavaScriptExecutor)driver).ExecuteScript("return document.body.scrollTop;");
