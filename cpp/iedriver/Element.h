@@ -61,6 +61,7 @@ class Element {
 
   int IsDisplayed(bool ignore_opacity, bool* result);
   bool IsEnabled(void);
+  bool IsXmlDocument(IHTMLDocument2* doc);
   bool IsSelected(void);
   bool IsInteractable(void);
   bool IsEditable(void);
