@@ -19,8 +19,6 @@
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
 
-#define MAX_SAFE_INTEGER 9007199254740991L
-
 namespace webdriver {
 
 SetTimeoutsCommandHandler::SetTimeoutsCommandHandler(void) {
