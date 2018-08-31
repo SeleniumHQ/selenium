@@ -66,7 +66,7 @@ matrix:
       <<: *python
       <<: *firefox-nightly
   include:
-    - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests"
+    - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests //java/client/test/org/openqa/selenium/testing/drivers/..."
       <<: *java
     - env: BUCK="test //java/client/test/org/openqa/selenium/atoms:test"
       <<: *java
