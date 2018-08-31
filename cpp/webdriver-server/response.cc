@@ -137,18 +137,17 @@ int Response::GetHttpResponseCode(void) {
              this->error_ == ERROR_STALE_ELEMENT_REFERENCE ||
              this->error_ == ERROR_UNKNOWN_COMMAND) {
     response_code = 404;
-  } else if (this->error_ == ERROR_SCRIPT_TIMEOUT ||
-             this->error_ == ERROR_WEBDRIVER_TIMEOUT) {
-    response_code = 408;
   } else if (this->error_ == ERROR_UNKNOWN_METHOD) {
     response_code = 405;
   } else if (this->error_ == ERROR_JAVASCRIPT_ERROR ||
              this->error_ == ERROR_MOVE_TARGET_OUT_OF_BOUNDS ||
+             this->error_ == ERROR_SCRIPT_TIMEOUT ||
              this->error_ == ERROR_SESSION_NOT_CREATED ||
              this->error_ == ERROR_UNABLE_TO_SET_COOKIE ||
              this->error_ == ERROR_UNABLE_TO_CAPTURE_SCREEN ||
              this->error_ == ERROR_UNEXPECTED_ALERT_OPEN ||
-             this->error_ == ERROR_UNKNOWN_ERROR) {
+             this->error_ == ERROR_UNKNOWN_ERROR ||
+             this->error_ == ERROR_WEBDRIVER_TIMEOUT) {
     response_code = 500;
   } else {
     response_code = 200;
