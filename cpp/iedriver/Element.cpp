@@ -148,6 +148,11 @@ bool Element::IsEnabled() {
 
   CComPtr<IHTMLDocument2> doc;
   this->GetContainingDocument(false, &doc);
+
+  if (this->IsXmlDocument(doc)) {
+    return false;
+  }
+
   Script script_wrapper(doc, script_source, 1);
   script_wrapper.AddArgument(this->element_);
   int status_code = script_wrapper.Execute();
@@ -159,6 +164,47 @@ bool Element::IsEnabled() {
   }
 
   return result;
+}
+
+bool Element::IsXmlDocument(IHTMLDocument2* doc) {
+  LOG(TRACE) << "Entering Element::IsXmlDocument";
+  // If the document has an xmlVersion property, it can be either an XML
+  // document or an XHTML document. Otherwise, it's an HTML document.
+  CComPtr<IHTMLDocument7> xml_version_document;
+  HRESULT hr = doc->QueryInterface<IHTMLDocument7>(&xml_version_document);
+  if (SUCCEEDED(hr) && xml_version_document) {
+    CComBSTR xml_version = "";
+    hr = xml_version_document->get_xmlVersion(&xml_version);
+    if (SUCCEEDED(hr) && xml_version && xml_version != L"") {
+      // The document is either XML or XHTML, so to differentiate between
+      // the two cases, check for a doctype of "html". If we can't find
+      // a doctype property, or the doctype is anything other than "html",
+      // the document is an XML document.
+      CComPtr<IHTMLDocument5> doc_type_document;
+      hr = doc->QueryInterface<IHTMLDocument5>(&doc_type_document);
+      if (SUCCEEDED(hr) && doc_type_document) {
+        CComPtr<IHTMLDOMNode> doc_type_dom_node;
+        hr = doc_type_document->get_doctype(&doc_type_dom_node);
+        if (SUCCEEDED(hr) && doc_type_dom_node) {
+          CComPtr<IDOMDocumentType> doc_type;
+          hr = doc_type_dom_node->QueryInterface<IDOMDocumentType>(&doc_type);
+          if (SUCCEEDED(hr) && doc_type) {
+            CComBSTR type_name_bstr = L"";
+            hr = doc_type->get_name(&type_name_bstr);
+            type_name_bstr.ToLower();
+            std::wstring type_name(type_name_bstr);
+            LOG(INFO) << LOGWSTRING(type_name);
+            if (SUCCEEDED(hr) && type_name != L"html") {
+              return true;
+            }
+          }
+        } else {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 bool Element::IsInteractable() {
@@ -517,6 +563,13 @@ int Element::GetCssPropertyValue(const std::string& property_name,
   LOG(TRACE) << "Entering Element::GetCssPropertyValue";
 
   int status_code = WD_SUCCESS;
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  if (this->IsXmlDocument(doc)) {
+    *property_value = "";
+    return status_code;
+  }
+
   // The atom is just the definition of an anonymous
   // function: "function() {...}"; Wrap it in another function so we can
   // invoke it with our arguments without polluting the current namespace.
@@ -524,8 +577,6 @@ int Element::GetCssPropertyValue(const std::string& property_name,
   script_source += atoms::asString(atoms::GET_EFFECTIVE_STYLE);
   script_source += L")})();";
 
-  CComPtr<IHTMLDocument2> doc;
-  this->GetContainingDocument(false, &doc);
   Script script_wrapper(doc, script_source, 2);
   script_wrapper.AddArgument(this->element_);
   script_wrapper.AddArgument(property_name);
