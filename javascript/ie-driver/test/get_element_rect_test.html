@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>get_element_rect_test.html</title>
+  <style type="text/css">
+    div.positioned {
+      position: absolute;
+      margin: 0;
+      border: 0;
+      padding: 0;
+    }
+
+    #r1 {
+      background-color: blue;
+      left: 10px;
+      top: 10px;
+      width: 100px;
+      height: 50px;
+    }
+
+    #r2 {
+      background-color: red;
+      left: 10.9px;
+      top: 10.1px;
+      width: 48.666666667px;
+      height: 49.333333333px;
+    }
+
+    #r3 {
+      background-color: yellow;
+      left: 60px;
+      top: 10px;
+      width: 50px;
+      height: 25px;
+    }
+  </style>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.style');
+    goog.require('bot.locators');
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.ie');
+  </script>
+</head>
+<body>
+  <script>
+    function testElementRect() {
+      var element = bot.locators.findElement({ id: 'input' });
+      var rect = webdriver.ie.getElementRect(element);
+      var expected = element.getBoundingClientRect();
+      assertEquals(expected.left, rect.x);
+      assertEquals(expected.top, rect.y);
+      assertEquals(expected.right - expected.left, rect.width);
+      assertEquals(expected.bottom - expected.top, rect.height);
+    }
+
+    function testNonIntegerElementRect() {
+      var element = bot.locators.findElement({ id: 'r2' });
+      var rect = webdriver.ie.getElementRect(element);
+      var expected = element.getBoundingClientRect();
+      assertEquals(expected.left, rect.x);
+      assertEquals(expected.top, rect.y);
+      assertEquals(expected.right - expected.left, rect.width);
+      assertEquals(expected.bottom - expected.top, rect.height);
+    }
+  </script>
+  <div id="r1" class="positioned">r1</div>
+  <div id="r2" class="positioned">r2</div>
+  <div id="r3" class="positioned">r3</div>
+  <div id="spacer" style="height: 70px"></div>
+  <input id="input" />
+</body>
+</html>

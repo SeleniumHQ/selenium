@@ -77,8 +77,8 @@ void GetElementRectCommandHandler::ExecuteInternal(
         response_value["width"] = rect_object["width"];
         response_value["height"] = rect_object["height"];
 
-        int x = rect_object.get("x", 0).asInt();
-        int y = rect_object.get("y", 0).asInt();
+        double x = rect_object.get("x", 0).asDouble();
+        double y = rect_object.get("y", 0).asDouble();
 
         int browser_version = executor.browser_factory()->browser_version();
         bool browser_appears_before_ie8 = browser_version < 8 || DocumentHost::GetDocumentMode(doc) <= 7;
@@ -95,8 +95,19 @@ void GetElementRectCommandHandler::ExecuteInternal(
           }
         }
 
-        response_value["x"] = x;
-        response_value["y"] = y;
+        double x_int_part;
+        if (std::modf(x, &x_int_part) == 0.0) {
+          response_value["x"] = static_cast<long long>(x);
+        } else {
+          response_value["x"] = x;
+        }
+
+        double y_int_part;
+        if (std::modf(y, &y_int_part) == 0.0) {
+          response_value["y"] = static_cast<long long>(y);
+        } else {
+          response_value["y"] = y;
+        }
         response->SetSuccessResponse(response_value);
         return;
       } else {
