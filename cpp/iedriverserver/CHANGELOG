@@ -9,17 +9,48 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.4
+=========
+ * Updated to return 500 for timeouts instead of 408. Some HTTP clients
+   would retry when receiving a 408 status code. Switching to 500 resolves
+   that issue.
+ * Updated driver for the case of clicking element with children. The
+   case where one attempts to click on an element that must be scrolled into
+   view, and where the element has child elements, but the first node is a
+   text node was broken for IE. In this case, to guarantee the proper element
+   is clicked (and that an embedded child does not receive the click), the
+   driver would attempt to click on the text node. However, the coordinate
+   calculation when the element had to be scrolled into view was flawed. This
+   commit changes from using the boundingLeft and boundingTop properties of
+   IHTMLTextRangeMetrics to using offsetLeft and offsetTop in an attempt to
+   correct the calculation of the location of the text to be clicked on.
+ * Updated driver to return non-integer values for element rect.
+ * Made driver spec compliant for setting largest timeout value.
+ * Updated to properly find XML documents for element enabled and CSS values
+ * Refactored opening and closing of new browser windows. This simplifies,
+   streamlines, and makes more robust the driver code responsible for finding
+   new browser windows when opened by users' code, like clicking a link that
+   opens the target in a new browser window. It also simplifies the code that
+   executes when a browser window is closed. There is a chance this change
+   introduces a slight performance delay in the process of opening a new
+   browser window, but in the interest of making the driver more robust, it
+   is preferable to live with the delay and figure out a way to reduce or
+   eliminate it later.
+
 v3.14.0.3
 =========
- * Updating to properly validate duration property of pause actions.
+ * Updated to properly validate duration property of pause actions.
 
 v3.14.0.2
 =========
  * Robustness change for invalid command payloads to comply with W3C Spec.
+ * Updated to truncate obscured element click error message to a reasonable
+   length.
+ * Handle null pointers for cookie values. Fixes issue #6261.
 
 v3.14.0.1
 =========
- * Updating to properly set the "path" property on cookies when a document
+ * Updated to properly set the "path" property on cookies when a document
    is specified in the property.
 
 v3.14.0.0
