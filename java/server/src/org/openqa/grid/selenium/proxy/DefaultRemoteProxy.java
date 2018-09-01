@@ -115,7 +115,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   private volatile boolean down = false;
   private volatile boolean poll = true;
 
-  private List<RemoteException> errors = Collections.synchronizedList(new ArrayList<>());
+  private final List<RemoteException> errors = Collections.synchronizedList(new ArrayList<>());
   private Thread pollingThread = null;
 
   @ManagedAttribute
@@ -177,7 +177,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   public void addNewEvent(RemoteException event) {
     synchronized (errors) {
       errors.add(event);
-      onEvent(errors, event);
+      onEvent(new ArrayList<>(errors), event);
     }
   }
 
