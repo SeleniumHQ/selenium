@@ -18,23 +18,18 @@
 package org.openqa.selenium;
 
 import static com.google.common.base.StandardSystemProperty.LINE_SEPARATOR;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
 
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.testing.InProject;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -71,7 +66,7 @@ public class BuckBuild {
     builder.add("build", "--config", "color.ui=never", target);
 
     ImmutableList<String> command = builder.build();
-    CommandLine commandLine = new CommandLine(command.toArray(new String[command.size()]));
+    CommandLine commandLine = new CommandLine(command.toArray(new String[0]));
     commandLine.copyOutputTo(System.err);
     commandLine.execute();
 
@@ -124,68 +119,10 @@ public class BuckBuild {
   }
 
   private void findBuck(Path projectRoot, ImmutableList.Builder<String> builder) throws IOException {
-    Path noBuckCheck = projectRoot.resolve(".nobuckcheck");
+    Path buckw = projectRoot.resolve(Platform.getCurrent().is(WINDOWS) ? "buckw.bat" : "buckw");
 
-    // If there's a .nobuckcheck in the root of the file, and we can execute "buck", then assume
-    // that the developer knows what they're doing. Ha! Ahaha! Ahahahaha!
-    if (Files.exists(noBuckCheck)) {
-      String buckCommand = new ExecutableFinder().find("buck");
-      if (buckCommand != null) {
-        builder.add(buckCommand);
-        return;
-      }
-    }
+    assertTrue("Unable to find buckw: " + buckw, Files.exists(buckw));
 
-    downloadBuckPexIfNecessary(builder);
-  }
-
-  private void downloadBuckPexIfNecessary(ImmutableList.Builder<String> builder)
-    throws IOException {
-    Path projectRoot = InProject.locate("Rakefile").getParent();
-    String buckVersion = new String(Files.readAllBytes(projectRoot.resolve(".buckversion"))).trim();
-
-    Path pex = projectRoot.resolve("buck-out/crazy-fun/" + buckVersion + "/buck.pex");
-
-    String expectedHash = new String(Files.readAllBytes(projectRoot.resolve(".buckhash"))).trim();
-    HashCode md5 = Files.exists(pex) ?
-                   Hashing.md5().hashBytes(Files.readAllBytes(pex)) :
-                   HashCode.fromString("aa");  // So we have a non-null value
-
-    if (!Files.exists(pex) || !expectedHash.equals(md5.toString())) {
-      log.warning("Downloading PEX");
-
-      if (!Files.exists(pex.getParent())) {
-        Files.createDirectories(pex.getParent());
-      }
-
-      URL url = new URL(String.format(
-          "https://github.com/SeleniumHQ/buck/releases/download/buck-release-%s/buck.pex",
-          buckVersion));
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      connection.setInstanceFollowRedirects(true);
-      Files.copy(connection.getInputStream(), pex, REPLACE_EXISTING);
-      // Do our best to make this executable
-      pex.toFile().setExecutable(true);
-    }
-
-    md5 = Hashing.md5().hashBytes(Files.readAllBytes(pex));
-    if (!expectedHash.equals(md5.toString())) {
-      throw new WebDriverException("Unable to confirm that download is valid");
-    }
-
-    if (Platform.getCurrent().is(WINDOWS)) {
-      String python = new ExecutableFinder().find("python2");
-      if (python == null) {
-        python = new ExecutableFinder().find("python");
-      }
-      Preconditions.checkNotNull(python, "Unable to find python executable");
-      builder.add(python);
-    }
-
-    builder.add(pex.toAbsolutePath().toString());
-  }
-
-  public static void main(String[] args) throws IOException {
-    new BuckBuild().of("se3-server").go();
+    builder.add(buckw.toAbsolutePath().toString());
   }
 }
