@@ -71,11 +71,11 @@ cmd = remainder.pop(0)
 
 args = ["python", buck_pex, cmd]
 
-skipped_commands = ["audit", "kill"]
+stamped_commands = ["build", "publish", "test"]
 
-if "stable" == parsed.stamp_build and cmd not in skipped_commands:
+if "stable" == parsed.stamp_build and cmd in stamped_commands:
     args.extend(["--config", "selenium.rev=unknown", "--config", "selenium.timestamp=unknown"])
-elif "detect" == parsed.stamp_build and cmd not in skipped_commands:
+elif "detect" == parsed.stamp_build and cmd in stamped_commands:
     timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
     rev = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).strip()
     args.extend(["--config", "selenium.rev=%s" % rev, "--config", "selenium.timestamp=%s" % timestamp])
