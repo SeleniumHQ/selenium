@@ -542,8 +542,7 @@ class WebElement(object):
         if self._w3c:
             return self._execute(Command.GET_ELEMENT_RECT)['value']
         else:
-            _rect = dict(list(self.size.items()) + list(self.location.items()))
-            return _rect
+            return dict(list(self.size.items()) + list(self.location.items()))
 
     @property
     def screenshot_as_base64(self):
