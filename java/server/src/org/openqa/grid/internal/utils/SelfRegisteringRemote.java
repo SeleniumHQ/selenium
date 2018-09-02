@@ -255,22 +255,9 @@ public class SelfRegisteringRemote {
         + registrationRequest.getConfiguration().getHubPort() + "/grid/register";
 
       try {
-        URL registration = new URL(tmp);
-        LOG.info("Registering the node to the hub: " + registration);
-
-        HttpRequest request = new HttpRequest(POST, registration.toExternalForm());
-        updateConfigWithRealPort();
-        String json = new Json().toJson(registrationRequest);
-        request.setContent(json.getBytes(UTF_8));
-
-        HttpClient client = httpClientFactory.createClient(registration);
-        HttpResponse response = client.execute(request);
-        if (response.getStatus() != 200) {
-          throw new GridException(String.format("The hub responded with %s", response.getStatus()));
-        }
 
         try {
-          LOG.fine("Updating the node configuration from the hub");
+          LOG.fine("Updating the node configuration from the hub before sending registration request");
           GridHubConfiguration hubConfiguration = getHubConfiguration();
           LOG.fine("Hub configuration: " + new Json().toJson(hubConfiguration));
           // the node can not set these values. They must come from the hub
@@ -285,6 +272,20 @@ public class SelfRegisteringRemote {
           LOG.warning(
               "error getting the parameters from the hub. The node may end up with wrong timeouts." + e
                   .getMessage());
+        }
+
+        URL registration = new URL(tmp);
+        LOG.info("Registering the node to the hub: " + registration);
+
+        HttpRequest request = new HttpRequest(POST, registration.toExternalForm());
+        updateConfigWithRealPort();
+        String json = new Json().toJson(registrationRequest);
+        request.setContent(json.getBytes(UTF_8));
+
+        HttpClient client = httpClientFactory.createClient(registration);
+        HttpResponse response = client.execute(request);
+        if (response.getStatus() != 200) {
+          throw new GridException(String.format("The hub responded with %s", response.getStatus()));
         }
 
         LOG.info("The node is registered to the hub and ready to use");
