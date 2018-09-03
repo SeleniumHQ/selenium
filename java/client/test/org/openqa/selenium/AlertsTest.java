@@ -33,7 +33,6 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
-import org.assertj.core.api.Assumptions;
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
