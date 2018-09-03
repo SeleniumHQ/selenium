@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.logging;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -40,7 +37,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -63,8 +59,9 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   @Test
   public void testDisabledProfilingDoesNotLog() {
     driver.get(pages.simpleTestPage);
-    assertEquals("Profiler should not log when disabled",
-        getProfilerEntries(driver).getAll().size(), 0);
+    assertThat(getProfilerEntries(driver).getAll())
+        .describedAs("Profiler should not log when disabled")
+        .hasSize(0);
   }
 
   @Test
@@ -77,8 +74,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
         "\"command\": \"newSession\",\"startorend\": \"end\"",
         "\"command\": \"getLog\",\"startorend\": \"start\"",
         "\"command\": \"getLog\",\"startorend\": \"end\""};
-    assertTrue("Profiler entries should contain: " + Arrays.toString(expected),
-         containsExpectedEntries(entries, expected));
+    assertThat(containsExpectedEntries(entries, expected)).isTrue();
   }
 
   /**
@@ -108,8 +104,9 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
     startLoggingDriver();
     loggingDriver.get(pages.formPage);
     loggingDriver.findElement(By.id("submitButton")).click();
-    assertThat(getProfilerEntriesOfType(getProfilerEntries(loggingDriver),
-        EventType.YIELD_TO_PAGE_LOAD).size(), greaterThan(0));
+    assertThat(
+        getProfilerEntriesOfType(getProfilerEntries(loggingDriver), EventType.YIELD_TO_PAGE_LOAD).size())
+        .isGreaterThan(0);
   }
 
   private void startLoggingDriver() {

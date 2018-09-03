@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.OutputType.BASE64;
 import static org.openqa.selenium.testing.Driver.GRID;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -48,12 +47,10 @@ public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
 
     driver.get(pages.simpleTestPage);
 
-    try {
-      driver.findElement(By.id("doesnayexist"));
-      fail();
-    } catch (NoSuchElementException e) {
-      assertTrue(((ScreenshotException) e.getCause()).getBase64EncodedScreenshot().length() > 0);
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> driver.findElement(By.id("doesnayexist")))
+        .satisfies(e -> assertThat(
+            ((ScreenshotException) e.getCause()).getBase64EncodedScreenshot().length()).isGreaterThan(0));
   }
 
   @Test
@@ -74,7 +71,7 @@ public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
     WebDriver toUse = new Augmenter().augment(driver);
     String screenshot = ((TakesScreenshot) toUse).getScreenshotAs(BASE64);
 
-    assertTrue(screenshot.length() > 0);
+    assertThat(screenshot.length()).isGreaterThan(0);
   }
 
   @Test
@@ -90,16 +87,15 @@ public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
 
     noScreenshotDriver.get(pages.simpleTestPage);
 
-    try {
-        noScreenshotDriver.findElement(By.id("doesnayexist"));
-      fail();
-    } catch (NoSuchElementException e) {
-      Throwable t = e;
-      while (t != null) {
-    	  assertFalse(t instanceof ScreenshotException);
-    	  t = t.getCause();
-      }
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> noScreenshotDriver.findElement(By.id("doesnayexist")))
+        .satisfies(e -> {
+          Throwable t = e;
+          while (t != null) {
+            assertThat(t).isNotInstanceOf(ScreenshotException.class);
+            t = t.getCause();
+          }
+        });
   }
 
 }

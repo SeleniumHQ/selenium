@@ -16,25 +16,17 @@
 // under the License.
 package org.openqa.selenium.support;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.withSettings;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.HasTouchScreen;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * @author Kristian Rosenvold
- */
-@RunWith(JUnit4.class)
 public class ThreadGuardTest {
 
   @Test
@@ -48,14 +40,14 @@ public class ThreadGuardTest {
     });
     foo.start();
     foo.join();
-    assertEquals(0, successes.get());
+    assertThat(successes.get()).isEqualTo(0);
   }
 
   @Test
   public void testProtectSuccess() {
     WebDriver actual = mock(WebDriver.class);
     final WebDriver protect = ThreadGuard.protect(actual);
-    assertNull(protect.findElement(By.id("foo")));
+    assertThat(protect.findElement(By.id("foo"))).isNull();
   }
 
   @Test
@@ -64,6 +56,6 @@ public class ThreadGuardTest {
                             withSettings().extraInterfaces(HasTouchScreen.class));
     final WebDriver webdriver = ThreadGuard.protect(actual);
     HasTouchScreen hasTouchScreen = (HasTouchScreen) webdriver;
-    assertNotNull(hasTouchScreen);
+    assertThat(hasTouchScreen).isNotNull();
   }
 }

@@ -17,15 +17,12 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -81,8 +78,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     Action releaseShift = getBuilder(driver).keyUp(keysEventInput, Keys.SHIFT).build();
     releaseShift.perform();
 
-    assertTrue("Key down event not isolated, got: " + logText,
-               logText.endsWith("keydown"));
+    assertThat(logText).describedAs("Key down event should be isolated").endsWith("keydown");
   }
 
   @Test
@@ -99,15 +95,14 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     WebElement keyLoggingElement = driver.findElement(By.id("result"));
 
     String eventsText = keyLoggingElement.getText();
-    assertTrue("Key down should be isolated for this test to be meaningful. " +
-        "Got events: " + eventsText, eventsText.endsWith("keydown"));
+    assertThat(eventsText).describedAs("Key down should be isolated for this test to be meaningful").endsWith("keydown");
 
     Action releaseShift = getBuilder(driver).keyUp(keysEventInput, Keys.SHIFT).build();
 
     releaseShift.perform();
 
     eventsText = keyLoggingElement.getText();
-    assertTrue("Key up event not isolated. Got events: " + eventsText, eventsText.endsWith("keyup"));
+    assertThat(eventsText).describedAs("Key up should be isolated for this test to be meaningful").endsWith("keyup");
   }
 
   @Test
@@ -133,10 +128,9 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     releaseShift.perform();
 
     String expectedEvents = " keydown keydown keypress keyup keydown keypress keyup keyup";
-    assertThatFormEventsFiredAreExactly("Shift key not held",
-        existingResult + expectedEvents);
+    assertThatFormEventsFiredAreExactly("Shift key not held", existingResult + expectedEvents);
 
-    assertThat(keysEventInput.getAttribute("value"), is("AB"));
+    assertThat(keysEventInput.getAttribute("value")).isEqualTo("AB");
   }
 
   @Test
@@ -169,41 +163,36 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Test
   public void testThrowsIllegalArgumentExceptionWithNoParameters() {
     driver.get(pages.javascriptPage);
-    Throwable t = catchThrowable(
-        () -> driver.findElement(By.id("keyReporter")).sendKeys());
-    assertThat(t, instanceOf(IllegalArgumentException.class));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys());
   }
 
   @Test
   public void testThrowsIllegalArgumentExceptionWithNullParameter() {
     driver.get(pages.javascriptPage);
-    Throwable t = catchThrowable(
-        () -> driver.findElement(By.id("keyReporter")).sendKeys(null));
-    assertThat(t, instanceOf(IllegalArgumentException.class));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys(null));
   }
 
   @Test
   public void testThrowsIllegalArgumentExceptionWithNullInParameters() {
     driver.get(pages.javascriptPage);
-    Throwable t = catchThrowable(
-        () -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
-    assertThat(t, instanceOf(IllegalArgumentException.class));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
   }
 
   @Test
   public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNull() {
     driver.get(pages.javascriptPage);
-    Throwable t = catchThrowable(
-        () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[] {"x", null, "y"}));
-    assertThat(t, instanceOf(IllegalArgumentException.class));
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
+        () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[]{"x", null, "y"}));
   }
 
   @Test
   public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNullOnly() {
     driver.get(pages.javascriptPage);
-    Throwable t = catchThrowable(
-        () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[] {null}));
-    assertThat(t, instanceOf(IllegalArgumentException.class));
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
+        () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[]{null}));
   }
 
   @Test
@@ -247,7 +236,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         .sendKeys(Keys.DELETE)
         .perform();
 
-    assertThat(input.getAttribute("value"), is("abc d"));
+    assertThat(input.getAttribute("value")).isEqualTo("abc d");
   }
 
   @Test
@@ -263,8 +252,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     WebElement input = driver.findElement(By.id("textInput"));
 
     getBuilder(driver).click(input).sendKeys("abc def").perform();
-    wait.until(
-      ExpectedConditions.attributeToBe(input, "value", "abc def"));
+    wait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
 
     getBuilder(driver).click(input)
         .keyDown(Keys.SHIFT)
@@ -275,8 +263,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         .sendKeys(Keys.DELETE)
         .perform();
 
-    wait.until(
-      ExpectedConditions.attributeToBe(input, "value", "abc "));
+    wait.until(ExpectedConditions.attributeToBe(input, "value", "abc "));
   }
 
   @Test
@@ -301,16 +288,16 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         .sendKeys(Keys.DELETE)
         .perform();
 
-    assertThat(input.getAttribute("value"), is(""));
+    assertThat(input.getAttribute("value")).isEqualTo("");
   }
 
   private void assertBackgroundColor(WebElement el, Colors expected) {
     Color actual = Color.fromString(el.getCssValue("background-color"));
-    assertThat(actual, is(expected.getColorValue()));
+    assertThat(actual).isEqualTo(expected.getColorValue());
   }
 
   private void assertThatFormEventsFiredAreExactly(String message, String expected) {
-    assertThat(message, getFormEvents(), is(expected.trim()));
+    assertThat(getFormEvents()).describedAs(message).isEqualTo(expected.trim());
   }
 
   private String getFormEvents() {
@@ -322,6 +309,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   private void assertThatBodyEventsFiredAreExactly(String expected) {
-    assertThat(driver.findElement(By.id("body_result")).getText().trim(), is(expected.trim()));
+    assertThat(driver.findElement(By.id("body_result")).getText().trim()).isEqualTo(expected.trim());
   }
 }

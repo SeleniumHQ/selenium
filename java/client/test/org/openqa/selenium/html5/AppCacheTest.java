@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.html5;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.html5.AppCacheStatus.UNCACHED;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +42,7 @@ public class AppCacheTest extends JUnit4TestBase {
     while (status == AppCacheStatus.DOWNLOADING) {
       status = ((ApplicationCache) driver).getStatus();
     }
-    assertEquals(AppCacheStatus.UNCACHED, status);
+    assertThat(status).isEqualTo(UNCACHED);
   }
 
   @Test

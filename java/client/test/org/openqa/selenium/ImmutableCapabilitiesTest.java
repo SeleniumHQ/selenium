@@ -17,65 +17,63 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
 public class ImmutableCapabilitiesTest {
 
   @Test
   public void canCreateEmptyCapabilities() {
-    Capabilities empty = new ImmutableCapabilities();
-    assertEquals(empty.asMap(), ImmutableMap.of());
+    Capabilities caps = new ImmutableCapabilities();
+    assertThat(caps.asMap()).isEqualTo(ImmutableMap.of());
   }
 
   @Test
   public void canCreateSinglePairCapabilities() {
-    Capabilities empty = new ImmutableCapabilities("c1", "v1");
-    assertEquals(empty.asMap(), ImmutableMap.of("c1", "v1"));
+    Capabilities caps = new ImmutableCapabilities("c1", "v1");
+    assertThat(caps.asMap()).isEqualTo(ImmutableMap.of("c1", "v1"));
   }
 
   @Test
   public void canCreateTwoPairCapabilities() {
-    Capabilities empty = new ImmutableCapabilities("c1", "v1", "c2", 2);
-    assertEquals(empty.asMap(), ImmutableMap.of("c1", "v1", "c2", 2));
+    Capabilities caps = new ImmutableCapabilities("c1", "v1", "c2", 2);
+    assertThat(caps.asMap()).isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2));
   }
 
   @Test
   public void canCreateThreePairCapabilities() {
-    Capabilities empty = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true);
-    assertEquals(empty.asMap(), ImmutableMap.of("c1", "v1", "c2", 2, "c3", true));
+    Capabilities caps = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true);
+    assertThat(caps.asMap()).isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2, "c3", true));
   }
 
   @Test
   public void canCreateFourPairCapabilities() {
-    Capabilities empty = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true, "c4", "v4");
-    assertEquals(empty.asMap(), ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4"));
+    Capabilities caps = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true, "c4", "v4");
+    assertThat(caps.asMap())
+        .isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4"));
   }
 
   @Test
   public void canCreateFivePairCapabilities() {
-    Capabilities empty = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5");
-    assertEquals(empty.asMap(), ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5"));
+    Capabilities caps = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5");
+    assertThat(caps.asMap())
+        .isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5"));
   }
 
   @Test
   public void canCompareCapabilities() {
     MutableCapabilities caps1 = new MutableCapabilities();
     MutableCapabilities caps2 = new MutableCapabilities();
-    assertEquals(new ImmutableCapabilities(caps1), new ImmutableCapabilities(caps2));
+    assertThat(new ImmutableCapabilities(caps2)).isEqualTo(new ImmutableCapabilities(caps1));
 
     caps1.setCapability("xxx", "yyy");
-    assertNotEquals(new ImmutableCapabilities(caps1), new ImmutableCapabilities(caps2));
+    assertThat(new ImmutableCapabilities(caps1)).isNotEqualTo(new ImmutableCapabilities(caps2));
 
     caps2.setCapability("xxx", "yyy");
-    assertEquals(new ImmutableCapabilities(caps1), new ImmutableCapabilities(caps2));
+    assertThat(new ImmutableCapabilities(caps2)).isEqualTo(new ImmutableCapabilities(caps1));
   }
 
 }

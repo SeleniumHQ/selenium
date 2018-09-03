@@ -17,18 +17,18 @@
 
 package org.openqa.selenium.json;
 
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static java.util.logging.Level.ALL;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.OFF;
+import static java.util.logging.Level.WARNING;
+import static org.assertj.core.api.Assertions.byLessThan;
+import static org.openqa.selenium.Proxy.ProxyType.PAC;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.CLIENT;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.SERVER;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -43,7 +43,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
@@ -59,21 +58,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class JsonTest {
 
   @Test
   public void canReadBooleans() {
-    assertTrue(new Json().toType("true", Boolean.class));
-    assertFalse(new Json().toType("false", Boolean.class));
+    assertThat((Boolean) new Json().toType("true", Boolean.class)).isTrue();
+    assertThat((Boolean) new Json().toType("false", Boolean.class)).isFalse();
   }
 
   @Test
   public void canReadANumber() {
-    assertEquals(Long.valueOf(42), new Json().toType("42", Number.class));
-    assertEquals(Integer.valueOf(42), new Json().toType("42", Integer.class));
-    assertEquals(Double.valueOf(42), new Json().toType("42", Double.class));
+    assertThat((Number) new Json().toType("42", Number.class)).isEqualTo(Long.valueOf(42));
+    assertThat((Integer) new Json().toType("42", Integer.class)).isEqualTo(Integer.valueOf(42));
+    assertThat((Double) new Json().toType("42", Double.class)).isEqualTo(Double.valueOf(42));
   }
 
   @Test
@@ -86,7 +84,7 @@ public class JsonTest {
     System.out.println("converted = " + converted);
     Object remade = json.toType(converted, MAP_TYPE);
 
-    assertEquals(original, remade);
+    assertThat(remade).isEqualTo(original);
   }
 
   @Test
@@ -95,11 +93,11 @@ public class JsonTest {
         "moz:firefoxOptions", ImmutableMap.of(
             "prefs", ImmutableMap.of("foo.bar", 1)));
     String json = new Json().toJson(caps);
-    assertFalse(json, json.contains("1.0"));
+    assertThat(json).doesNotContain("1.0");
 
     try (JsonInput input = new Json().newInput(new StringReader(json))) {
       json = new Json().toJson(input.read(Json.MAP_TYPE));
-      assertFalse(json, json.contains("1.0"));
+      assertThat(json).doesNotContain("1.0");
     }
   }
 
@@ -115,8 +113,8 @@ public class JsonTest {
     System.out.println("raw = " + raw);
     List<Capabilities> seen = json.toType(raw, new TypeToken<List<Capabilities>>(){}.getType());
 
-    assertEquals(expected, seen);
-    assertTrue(seen.get(0) instanceof MutableCapabilities);
+    assertThat(seen).isEqualTo(expected);
+    assertThat(seen.get(0)).isInstanceOf(MutableCapabilities.class);
   }
 
   @Test
@@ -127,7 +125,7 @@ public class JsonTest {
     String raw = json.toJson(map);
     BeanWithSetter seen = json.toType(raw, BeanWithSetter.class);
 
-    assertEquals("fishy", seen.theName);
+    assertThat(seen.theName).isEqualTo("fishy");
   }
 
   public static class BeanWithSetter {
@@ -146,14 +144,14 @@ public class JsonTest {
     String raw = json.toJson(map);
     BeanWithSetter seen = json.toType(raw, BeanWithSetter.class, PropertySetting.BY_FIELD);
 
-    assertEquals("fishy", seen.theName);
+    assertThat(seen.theName).isEqualTo("fishy");
   }
 
   @Test
   public void testCanConstructASimpleString() {
     String text = new Json().toType("\"cheese\"", String.class);
 
-    assertThat(text, is("cheese"));
+    assertThat(text).isEqualTo("cheese");
   }
 
   @SuppressWarnings("unchecked")
@@ -164,9 +162,10 @@ public class JsonTest {
     toConvert.addProperty("foodstuff", "cheese");
 
     Map<String, String> map = new Json().toType(toConvert.toString(), Map.class);
-    assertThat(map.size(), is(2));
-    assertThat(map, hasEntry("cheese", "brie"));
-    assertThat(map, hasEntry("foodstuff", "cheese"));
+    assertThat(map)
+        .hasSize(2)
+        .containsEntry("cheese", "brie")
+        .containsEntry("foodstuff", "cheese");
   }
 
   @Test
@@ -175,9 +174,9 @@ public class JsonTest {
     toConvert.add("foo", JsonNull.INSTANCE);
 
     Map<?,?> converted = new Json().toType(toConvert.toString(), Map.class);
-    assertEquals(1, converted.size());
-    assertTrue(converted.containsKey("foo"));
-    assertNull(converted.get("foo"));
+    assertThat(converted.size()).isEqualTo(1);
+    assertThat(converted.containsKey("foo")).isTrue();
+    assertThat(converted.get("foo")).isNull();
   }
 
   @Test
@@ -186,7 +185,7 @@ public class JsonTest {
     toConvert.addProperty("value", "time");
 
     SimpleBean bean = new Json().toType(toConvert.toString(), SimpleBean.class);
-    assertThat(bean.getValue(), is("time"));
+    assertThat(bean.getValue()).isEqualTo("time");
   }
 
   @Test
@@ -197,7 +196,7 @@ public class JsonTest {
 
     SimpleBean bean = new Json().toType(toConvert.toString(), SimpleBean.class);
 
-    assertThat(bean.getValue(), is("time"));
+    assertThat(bean.getValue()).isEqualTo("time");
   }
 
   @Test
@@ -207,7 +206,7 @@ public class JsonTest {
 
     Map<?,?> map = new Json().toType(toConvert.toString(), Map.class);
 
-    assertEquals(3L, map.get("magicNumber"));
+    assertThat(map.get("magicNumber")).isEqualTo(3L);
   }
 
   @Test
@@ -220,8 +219,8 @@ public class JsonTest {
 
     ContainingBean bean = new Json().toType(toConvert.toString(), ContainingBean.class);
 
-    assertThat(bean.getName(), is("frank"));
-    assertThat(bean.getBean().getValue(), is("lots"));
+    assertThat(bean.getName()).isEqualTo("frank");
+    assertThat(bean.getBean().getValue()).isEqualTo("lots");
   }
 
   @Test
@@ -233,7 +232,7 @@ public class JsonTest {
 
     Capabilities readCapabilities = new Json().toType(text, DesiredCapabilities.class);
 
-    assertEquals(capabilities, readCapabilities);
+    assertThat(readCapabilities).isEqualTo(capabilities);
   }
 
   @Test
@@ -242,8 +241,8 @@ public class JsonTest {
     toModel.addProperty("thing", "hairy");
     toModel.addProperty("hairy", "true");
 
-    Map<?,?> modelled = (Map<?,?>) new Json().toType(toModel.toString(), Object.class);
-    assertEquals(2, modelled.size());
+    Map<?,?> modelled = new Json().toType(toModel.toString(), Object.class);
+    assertThat(modelled).hasSize(2);
   }
 
   @Test
@@ -252,31 +251,23 @@ public class JsonTest {
         "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
     Response converted = new Json().toType(json, Response.class);
 
-    Map<?,?> value = (Map<?,?>) converted.getValue();
-    assertEquals("three", value.get("id"));
+    Map<String, Object> value = (Map<String, Object>) converted.getValue();
+    assertThat(value).containsEntry("id", "three");
   }
 
   @Test
   public void testShouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
-    String json =
-        "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
-
-    try {
-      new Json().toType(json, Response.class);
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail("This should have worked");
-    }
+    String json = "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
+    new Json().toType(json, Response.class);
   }
 
   @Test
   public void testShouldBeAbleToSetAnObjectToABoolean() {
-    String json =
-        "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
+    String json = "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
 
     Response response = new Json().toType(json, Response.class);
 
-    assertThat(response.getValue(), is(true));
+    assertThat(response.getValue()).isEqualTo(true);
   }
 
   @Test
@@ -291,9 +282,9 @@ public class JsonTest {
     String json = new Json().toJson(response);
     Response converted = new Json().toType(json, Response.class);
 
-    assertEquals("bar", response.getSessionId());
-    assertEquals(2, ((List<?>) converted.getValue()).size());
-    assertEquals(1512, response.getStatus().intValue());
+    assertThat(response.getSessionId()).isEqualTo("bar");
+    assertThat(((List<?>) converted.getValue())).hasSize(2);
+    assertThat(response.getStatus().intValue()).isEqualTo(1512);
   }
 
   @Test
@@ -305,22 +296,17 @@ public class JsonTest {
     List<?> list = new Json().toType(rawJson, List.class);
 
     Object first = list.get(0);
-    assertTrue(first instanceof Map);
+    assertThat(first instanceof Map).isTrue();
 
-    Map<?,?> map = (Map<?,?>) first;
-    assertMapEntry(map, "name", "foo");
-    assertMapEntry(map, "value", "bar");
-    assertMapEntry(map, "domain", "localhost");
-    assertMapEntry(map, "path", "/rooted");
-    assertMapEntry(map, "secure", true);
-    assertMapEntry(map, "httpOnly", true);
-    assertMapEntry(map, "expiry", TimeUnit.MILLISECONDS.toSeconds(date.getTime()));
-  }
-
-  private void assertMapEntry(Map<?,?> map, String key, Object expected) {
-    assertTrue("Missing key: " + key, map.containsKey(key));
-    assertEquals("Wrong value for key: " + key + ": " + map.get(key).getClass().getName(),
-                 expected, map.get(key));
+    Map<String, Object> map = (Map<String, Object>) first;
+    assertThat(map)
+        .containsEntry("name", "foo")
+        .containsEntry("value", "bar")
+        .containsEntry("domain", "localhost")
+        .containsEntry("path", "/rooted")
+        .containsEntry("secure", true)
+        .containsEntry("httpOnly", true)
+        .containsEntry("expiry", TimeUnit.MILLISECONDS.toSeconds(date.getTime()));
   }
 
   @Test
@@ -331,7 +317,7 @@ public class JsonTest {
     Map<?,?> reconstructed = new Json().toType(converted, Map.class);
     List<?> trace = (List<?>) reconstructed.get("stackTrace");
 
-    assertTrue(trace.get(0) instanceof Map);
+    assertThat(trace.get(0)).isInstanceOf(Map.class);
   }
 
   @Test
@@ -339,7 +325,7 @@ public class JsonTest {
     String json = new Json().toJson(new SessionId("id"));
     SessionId sessionId = new Json().toType(json, SessionId.class);
 
-    assertEquals("id", sessionId.toString());
+    assertThat(sessionId.toString()).isEqualTo("id");
   }
 
   @Test
@@ -352,11 +338,11 @@ public class JsonTest {
     String raw = new Json().toJson(original);
     Command converted = new Json().toType(raw, Command.class);
 
-    assertEquals(sessionId.toString(), converted.getSessionId().toString());
-    assertEquals(original.getName(), converted.getName());
+    assertThat(converted.getSessionId().toString()).isEqualTo(sessionId.toString());
+    assertThat(converted.getName()).isEqualTo(original.getName());
 
-    assertEquals(1, converted.getParameters().keySet().size());
-    assertEquals("cheese", converted.getParameters().get("food"));
+    assertThat(converted.getParameters().keySet()).hasSize(1);
+    assertThat(converted.getParameters().get("food")).isEqualTo("cheese");
   }
 
   @Test
@@ -366,7 +352,7 @@ public class JsonTest {
     String raw = new Json().toJson(caps);
     Capabilities converted = new Json().toType(raw, Capabilities.class);
 
-    assertEquals("fishy", converted.getCapability("furrfu"));
+    assertThat(converted.getCapability("furrfu")).isEqualTo("fishy");
   }
 
   @Test
@@ -384,11 +370,11 @@ public class JsonTest {
 
     LoggingPreferences lp =
         (LoggingPreferences) converted.getCapability(CapabilityType.LOGGING_PREFS);
-    assertNotNull(lp);
-    assertEquals(Level.WARNING, lp.getLevel(LogType.BROWSER));
-    assertEquals(Level.FINE, lp.getLevel(LogType.CLIENT));
-    assertEquals(Level.ALL, lp.getLevel(LogType.DRIVER));
-    assertEquals(Level.OFF, lp.getLevel(LogType.SERVER));
+    assertThat(lp).isNotNull();
+    assertThat(lp.getLevel(BROWSER)).isEqualTo(WARNING);
+    assertThat(lp.getLevel(CLIENT)).isEqualTo(FINE);
+    assertThat(lp.getLevel(DRIVER)).isEqualTo(ALL);
+    assertThat(lp.getLevel(SERVER)).isEqualTo(OFF);
   }
 
   @Test
@@ -403,12 +389,12 @@ public class JsonTest {
     String jsonStr = outer.toString();
 
     Object convertedOuter = new Json().toType(jsonStr, Map.class);
-    assertThat(convertedOuter, instanceOf(Map.class));
+    assertThat(convertedOuter).isInstanceOf(Map.class);
 
     Object convertedInner = ((Map<?,?>) convertedOuter).get("inner");
-    assertNotNull(convertedInner);
-    assertThat(convertedInner, instanceOf(String.class));
-    assertThat(convertedInner.toString(), equalTo(inner.toString()));
+    assertThat(convertedInner).isNotNull();
+    assertThat(convertedInner).isInstanceOf(String.class);
+    assertThat(convertedInner.toString()).isEqualTo(inner.toString());
   }
 
   @Test
@@ -425,13 +411,13 @@ public class JsonTest {
 
     Command converted = new Json().toType(stringified, Command.class);
 
-    assertEquals(expectedId, converted.getSessionId());
+    assertThat(converted.getSessionId()).isEqualTo(expectedId);
   }
 
   @Test
   public void testShouldCallFromJsonMethodIfPresent() {
     JsonAware res = new Json().toType("\"converted\"", JsonAware.class);
-    assertEquals("\"converted\"", res.convertedValue);
+    assertThat(res.convertedValue).isEqualTo("\"converted\"");
   }
 
   // Test for issue 8187
@@ -443,9 +429,9 @@ public class JsonTest {
 
     @SuppressWarnings("unchecked")
     Map<String, Number> value = (Map<String, Number>) response.getValue();
-    assertEquals(96, value.get("width").intValue());
-    assertEquals(46, value.get("height").intValue());
-    assertEquals(46.19140625, value.get("height").doubleValue(), 0.00001);
+    assertThat(value.get("width").intValue()).isEqualTo(96);
+    assertThat(value.get("height").intValue()).isEqualTo(46);
+    assertThat(value.get("height").doubleValue()).isCloseTo(46.19140625, byLessThan(0.00001));
   }
 
   @Test
@@ -454,10 +440,10 @@ public class JsonTest {
         "{\"status\":0,\"value\":\"cheese\"}",
         Response.class);
 
-    assertEquals(0, response.getStatus().intValue());
-    assertEquals(new ErrorCodes().toState(0), response.getState());
+    assertThat(response.getStatus().intValue()).isEqualTo(0);
+    assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(0));
     String value = (String) response.getValue();
-    assertEquals("cheese", value);
+    assertThat(value).isEqualTo("cheese");
   }
 
   @Test
@@ -466,10 +452,10 @@ public class JsonTest {
         "{\"status\":\"success\",\"value\":\"cheese\"}",
         Response.class);
 
-    assertEquals(0, response.getStatus().intValue());
-    assertEquals(new ErrorCodes().toState(0), response.getState());
+    assertThat(response.getStatus().intValue()).isEqualTo(0);
+    assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(0));
     String value = (String) response.getValue();
-    assertEquals("cheese", value);
+    assertThat(value).isEqualTo("cheese");
   }
 
   @Test
@@ -477,8 +463,8 @@ public class JsonTest {
     Response response = new Json().toType(
         "{\"state\":\"invalid selector\",\"message\":\"invalid xpath selector\"}",
         Response.class);
-    assertEquals(32, response.getStatus().intValue());
-    assertEquals(new ErrorCodes().toState(32), response.getState());
+    assertThat(response.getStatus().intValue()).isEqualTo(32);
+    assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(32));
   }
 
   @Test
@@ -487,22 +473,22 @@ public class JsonTest {
         .toType(
             "{\"state\":\"success\",\"value\":\"cheese\"}",
             Response.class);
-    assertEquals("success", response.getState());
-    assertEquals(0, response.getStatus().intValue());
+    assertThat(response.getState()).isEqualTo("success");
+    assertThat(response.getStatus().intValue()).isEqualTo(0);
     String value = (String) response.getValue();
-    assertEquals("cheese", value);
+    assertThat(value).isEqualTo("cheese");
   }
 
   @Test
   public void testNoStatusShouldBeNullInResponseObject() {
     Response response = new Json().toType("{\"value\":\"cheese\"}", Response.class);
-    assertNull(response.getStatus());
+    assertThat(response.getStatus()).isNull();
   }
 
   @Test
   public void canConvertAnEnumWithALowerCaseValue() {
     Proxy.ProxyType type = new Json().toType("\"pac\"", Proxy.ProxyType.class);
-    assertEquals(Proxy.ProxyType.PAC, type);
+    assertThat(type).isEqualTo(PAC);
   }
 
   @Test
@@ -518,9 +504,9 @@ public class JsonTest {
         raw,
         new TypeToken<Map<String, String>>(){}.getType());
 
-    assertEquals("true", roundTripped.get("boolean"));
-    assertEquals("42", roundTripped.get("integer"));
-    assertEquals("3.14", roundTripped.get("float"));
+    assertThat(roundTripped.get("boolean")).isEqualTo("true");
+    assertThat(roundTripped.get("integer")).isEqualTo("42");
+    assertThat(roundTripped.get("float")).isEqualTo("3.14");
   }
 
   public static class SimpleBean {

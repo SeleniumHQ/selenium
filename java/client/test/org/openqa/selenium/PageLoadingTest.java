@@ -17,15 +17,9 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
@@ -42,9 +36,9 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
+import static org.openqa.selenium.testing.drivers.SauceDriver.shouldUseSauce;
 
 import org.junit.After;
 import org.junit.Test;
@@ -57,7 +51,6 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Set;
@@ -91,7 +84,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     long duration = end - start;
     // The slow loading resource on that page takes 6 seconds to return,
     // but with 'none' page loading strategy 'get' operation should not wait.
-    assertTrue("Took too long to load page: " + duration, duration < 1000);
+    assertThat(duration).as("Page loading duration").isLessThan(1000);
   }
 
   @Test
@@ -114,7 +107,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     long duration = end - start;
     // The slow loading resource on that page takes 6 seconds to return,
     // but with 'none' page loading strategy 'refresh' operation should not wait.
-    assertTrue("Took too long to load page: " + duration, duration < 1000);
+    assertThat(duration).as("Page loading duration").isLessThan(1000);
   }
 
   @Test
@@ -137,7 +130,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     // The slow loading resource on that page takes 6 seconds to return. If we
     // waited for it, our load time should be over 6 seconds.
     long duration = end - start;
-    assertTrue("Took too long to load page: " + duration, duration < 5 * 1000);
+    assertThat(duration).as("Page loading duration").isLessThan(5 * 1000);
   }
 
   @Test
@@ -163,7 +156,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     // The slow loading resource on that page takes 6 seconds to return. If we
     // waited for it, our load time should be over 6 seconds.
     long duration = end - start;
-    assertTrue("Took too long to refresh page: " + duration, duration < 5 * 1000);
+    assertThat(duration).as("Page loading duration").isLessThan(5 * 1000);
   }
 
   @Test
@@ -182,13 +175,13 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   public void testNormalStrategyShouldWaitForDocumentToBeLoaded() {
     driver.get(pages.simpleTestPage);
-    assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
   }
 
   @Test
   public void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
     driver.get(pages.redirectPage);
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
   @Test
@@ -223,9 +216,9 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = SAFARI)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformed() {
-    assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
-    Throwable t = catchThrowable(() -> driver.get("www.test.com"));
-    assertThat(t, instanceOf(WebDriverException.class));
+    assumeFalse("Fails in Sauce Cloud", shouldUseSauce());
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> driver.get("www.test.com"));
   }
 
   @Test
@@ -233,9 +226,9 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NotYetImplemented(value = SAFARI)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
-    assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
-    Throwable t = catchThrowable(() -> driver.get("http://localhost:3001bla"));
-    assertThat(t, instanceOf(WebDriverException.class));
+    assumeFalse("Fails in Sauce Cloud", shouldUseSauce());
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> driver.get("http://localhost:3001bla"));
   }
 
   @Test
@@ -251,7 +244,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   public void testShouldReturnURLOnNotExistedPage() {
     String url = appServer.whereIs("not_existed_page.html");
     driver.get(url);
-    assertEquals(url, driver.getCurrentUrl());
+    assertThat(driver.getCurrentUrl()).isEqualTo(url);
   }
 
   @SwitchToTopAfterTest
@@ -261,11 +254,11 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     driver.switchTo().frame(0);
     WebElement pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
-    assertThat(pageNumber.getText().trim(), equalTo("1"));
+    assertThat(pageNumber.getText().trim()).isEqualTo("1");
 
     driver.switchTo().defaultContent().switchTo().frame(1);
     pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
-    assertThat(pageNumber.getText().trim(), equalTo("2"));
+    assertThat(pageNumber.getText().trim()).isEqualTo("2");
   }
 
   @NeedsFreshDriver
@@ -291,7 +284,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     driver.navigate().back();
     wait.until(titleIs(originalTitle));
     driver.navigate().back(); // Nothing to go back to, must stay.
-    assertThat(driver.getTitle(), equalTo(originalTitle));
+    assertThat(driver.getTitle()).isEqualTo(originalTitle);
   }
 
   @Test
@@ -346,7 +339,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     driver.navigate().refresh();
 
-    assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+    assertThat(driver.getTitle()).isEqualTo("XHTML Test Page");
   }
 
   /**
@@ -428,11 +421,11 @@ public class PageLoadingTest extends JUnit4TestBase {
     } catch (RuntimeException e) {
       long end = System.currentTimeMillis();
 
-      assertThat(e, is(instanceOf(TimeoutException.class)));
+      assertThat(e).isInstanceOf(TimeoutException.class);
 
       int duration = (int) (end - start);
-      assertThat(duration, greaterThan(2000));
-      assertThat(duration, lessThan(5000));
+      assertThat(duration).isGreaterThan(2000);
+      assertThat(duration).isLessThan(5000);
     } finally {
       driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
@@ -460,11 +453,11 @@ public class PageLoadingTest extends JUnit4TestBase {
     } catch (RuntimeException e) {
       long end = System.currentTimeMillis();
 
-      assertThat(e, is(instanceOf(TimeoutException.class)));
+      assertThat(e).isInstanceOf(TimeoutException.class);
 
       int duration = (int) (end - start);
-      assertThat(duration, greaterThan(2000));
-      assertThat(duration, lessThan(4000));
+      assertThat(duration).isGreaterThan(2000);
+      assertThat(duration).isLessThan(4000);
     } finally {
       driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
@@ -525,11 +518,11 @@ public class PageLoadingTest extends JUnit4TestBase {
     } catch (RuntimeException e) {
       long end = System.currentTimeMillis();
 
-      assertThat(e, is(instanceOf(TimeoutException.class)));
+      assertThat(e).isInstanceOf(TimeoutException.class);
 
       long duration = end - start;
-      assertThat(duration, greaterThan(webDriverPageLoadTimeout * 1000));
-      assertThat(duration, lessThan((webDriverPageLoadTimeout + pageLoadTimeBuffer) * 1000));
+      assertThat(duration).isGreaterThan(webDriverPageLoadTimeout * 1000);
+      assertThat(duration).isLessThan((webDriverPageLoadTimeout + pageLoadTimeBuffer) * 1000);
     }
   }
 }

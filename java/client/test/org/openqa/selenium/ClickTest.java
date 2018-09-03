@@ -17,8 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
@@ -76,7 +75,7 @@ public class ClickTest extends JUnit4TestBase {
     Boolean samePage = (Boolean) ((JavascriptExecutor) driver)
         .executeScript("return document.latch");
 
-    assertEquals("Latch was reset", Boolean.TRUE, samePage);
+    assertThat(samePage).as("Latch was reset").isTrue();
   }
 
   @SwitchToTopAfterTest
@@ -131,7 +130,7 @@ public class ClickTest extends JUnit4TestBase {
     driver.findElement(By.name("btn")).click();
 
     String log = driver.findElement(By.id("log")).getText();
-    assertEquals("click", log);
+    assertThat(log).isEqualTo("click");
   }
 
   @Test
@@ -144,7 +143,7 @@ public class ClickTest extends JUnit4TestBase {
 
     String log = driver.findElement(By.id("result")).getText();
 
-    assertEquals("parent matches? true", log);
+    assertThat(log).isEqualTo("parent matches? true");
   }
 
   @Test
@@ -183,9 +182,7 @@ public class ClickTest extends JUnit4TestBase {
 
     driver.findElement(By.id("label-for-checkbox-with-label")).click();
 
-    assertTrue(
-        "Should be selected",
-        driver.findElement(By.id("checkbox-with-label")).isSelected());
+    assertThat(driver.findElement(By.id("checkbox-with-label")).isSelected()).isTrue();
   }
 
   @Test

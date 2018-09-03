@@ -17,16 +17,14 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -40,7 +38,6 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-@RunWith(JUnit4.class)
 public class DefaultElementLocatorTest {
 
   protected ElementLocator newLocator(WebDriver driver, Field field) {
@@ -59,7 +56,7 @@ public class DefaultElementLocatorTest {
     ElementLocator locator = newLocator(driver, f);
     WebElement returnedElement = locator.findElement();
 
-    assertEquals(element, returnedElement);
+    assertThat(returnedElement).isEqualTo(element);
   }
 
   @Test
@@ -76,7 +73,7 @@ public class DefaultElementLocatorTest {
     ElementLocator locator = newLocator(driver, f);
     List<WebElement> returnedList = locator.findElements();
 
-    assertEquals(list, returnedList);
+    assertThat(returnedList).isEqualTo(list);
   }
 
   @Test
@@ -185,15 +182,11 @@ public class DefaultElementLocatorTest {
 
     ElementLocator locator = newLocator(driver, f);
 
-    try {
-      locator.findElement();
-      fail("Should have allowed the exception to bubble up");
-    } catch (NoSuchElementException e) {
-      // This is expected
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(locator::findElement);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void shouldWorkWithCustomAnnotations() {
     final WebDriver driver = mock(WebDriver.class);
 
@@ -209,7 +202,8 @@ public class DefaultElementLocatorTest {
       }
     };
 
-    new DefaultElementLocator(driver, npeAnnotations);
+    assertThatExceptionOfType(NullPointerException.class)
+        .isThrownBy(() -> new DefaultElementLocator(driver, npeAnnotations));
   }
 
   private static class Page {

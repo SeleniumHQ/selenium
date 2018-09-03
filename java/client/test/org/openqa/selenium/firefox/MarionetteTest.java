@@ -17,13 +17,15 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static java.util.Optional.ofNullable;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 
 import org.junit.After;
@@ -34,8 +36,6 @@ import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import java.util.Optional;
 
 @Ignore(FIREFOX)
 public class MarionetteTest extends JUnit4TestBase {
@@ -107,8 +107,7 @@ public class MarionetteTest extends JUnit4TestBase {
     localDriver = new FirefoxDriver(caps);
 
     verifyItIsMarionette(localDriver);
-    assertEquals(
-        localDriver.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY), "none");
+    assertThat(localDriver.getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
   }
 
   @Test
@@ -188,8 +187,7 @@ public class MarionetteTest extends JUnit4TestBase {
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
     verify(binary, never()).startFirefoxProcess(any());
-    assertEquals(
-        localDriver.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY), "none");
+    assertThat(localDriver.getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
   }
 
   @Test
@@ -214,8 +212,7 @@ public class MarionetteTest extends JUnit4TestBase {
         new FirefoxOptions().setPageLoadStrategy(PageLoadStrategy.NONE));
 
     verifyItIsMarionette(localDriver);
-    assertEquals(localDriver.getCapabilities()
-                     .getCapability(CapabilityType.PAGE_LOAD_STRATEGY), "none");
+    assertThat(localDriver.getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
   }
 
   @Test
@@ -223,8 +220,7 @@ public class MarionetteTest extends JUnit4TestBase {
     localDriver = new FirefoxDriver(new FirefoxOptions().setAcceptInsecureCerts(true));
 
     verifyItIsMarionette(localDriver);
-    assertEquals(localDriver.getCapabilities()
-                     .getCapability(CapabilityType.ACCEPT_INSECURE_CERTS), true);
+    assertThat(localDriver.getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
   @Test
@@ -232,12 +228,11 @@ public class MarionetteTest extends JUnit4TestBase {
     localDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(true));
 
     verifyItIsMarionette(localDriver);
-    assertEquals(localDriver.getCapabilities().getCapability("moz:headless"), true);
+    assertThat(localDriver.getCapabilities().getCapability("moz:headless")).isEqualTo(true);
   }
 
   private void verifyItIsMarionette(FirefoxDriver driver) {
-    assertNotNull(
-        Optional.ofNullable(driver.getCapabilities().getCapability("moz:processID"))
-            .orElse(driver.getCapabilities().getCapability("processId")));
+    assertThat(ofNullable(driver.getCapabilities().getCapability("moz:processID"))
+                   .orElse(driver.getCapabilities().getCapability("processId"))).isNotNull();
   }
 }

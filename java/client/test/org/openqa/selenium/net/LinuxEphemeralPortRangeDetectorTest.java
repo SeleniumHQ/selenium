@@ -17,20 +17,16 @@
 
 package org.openqa.selenium.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.Platform.LINUX;
 
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Platform;
 
 import java.io.StringReader;
 
-@RunWith(JUnit4.class)
 public class LinuxEphemeralPortRangeDetectorTest {
 
   @BeforeClass
@@ -43,14 +39,14 @@ public class LinuxEphemeralPortRangeDetectorTest {
     String range ="1234 65533";
     EphemeralPortRangeDetector ephemeralEphemeralPortDetector =
         new LinuxEphemeralPortRangeDetector(new StringReader(range));
-    assertEquals( 1234, ephemeralEphemeralPortDetector.getLowestEphemeralPort());
-    assertEquals( 65533, ephemeralEphemeralPortDetector.getHighestEphemeralPort());
+    assertThat(ephemeralEphemeralPortDetector.getLowestEphemeralPort()).isEqualTo(1234);
+    assertThat(ephemeralEphemeralPortDetector.getHighestEphemeralPort()).isEqualTo(65533);
   }
 
   @Test
   public void currentValues() {
     LinuxEphemeralPortRangeDetector detector = LinuxEphemeralPortRangeDetector.getInstance();
-    assertTrue( detector.getLowestEphemeralPort() > 1024);
-    assertTrue( detector.getHighestEphemeralPort() < 65536);
+    assertThat( detector.getLowestEphemeralPort()).isGreaterThan(1024);
+    assertThat( detector.getHighestEphemeralPort()).isLessThan(65536);
   }
 }

@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.support.ui;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.common.collect.ImmutableList;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -42,12 +44,11 @@ public class SelectLargeTest extends JUnit4TestBase {
     selection.selectByIndex(2);
 
     List<WebElement> picked = selection.getAllSelectedOptions();
-    assertEquals(2, picked.size());
-    assertEquals("multi_2", picked.get(0).getAttribute("id"));
-    assertEquals("multi_3", picked.get(1).getAttribute("id"));
+    assertThat(picked).extracting(element -> element.getAttribute("id"))
+        .isEqualTo(ImmutableList.of("multi_2", "multi_3"));
 
     selection.deselectAll();
-    assertEquals(0, selection.getAllSelectedOptions().size());
+    assertThat(selection.getAllSelectedOptions()).isEmpty();
   }
 
   @Test
@@ -59,22 +60,22 @@ public class SelectLargeTest extends JUnit4TestBase {
 
     String one = selection.getOptions().get(0).getText();
     selection.selectByVisibleText(one);
-    assertEquals(one, selection.getFirstSelectedOption().getText());
+    assertThat(selection.getFirstSelectedOption().getText()).isEqualTo(one);
 
     String two = selection.getOptions().get(1).getText();
     selection.selectByVisibleText(two);
-    assertEquals(two, selection.getFirstSelectedOption().getText());
+    assertThat(selection.getFirstSelectedOption().getText()).isEqualTo(two);
 
     String four = selection.getOptions().get(2).getText();
     System.out.println("four = " + four);
     selection.selectByVisibleText(four.trim());
-    assertEquals(four, selection.getFirstSelectedOption().getText());
+    assertThat(selection.getFirstSelectedOption().getText()).isEqualTo(four);
 
     String longOptionText = selection.getOptions().get(3).getText();
 
     System.out.println("longOptionText = " + longOptionText);
 
     selection.selectByVisibleText(longOptionText.trim());
-    assertEquals(longOptionText, selection.getFirstSelectedOption().getText());
+    assertThat(selection.getFirstSelectedOption().getText()).isEqualTo(longOptionText);
   }
 }

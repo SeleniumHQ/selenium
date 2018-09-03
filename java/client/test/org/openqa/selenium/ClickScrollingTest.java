@@ -17,12 +17,8 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -33,7 +29,6 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
@@ -65,7 +60,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
     // Focusing on to click, but not actually following,
     // the link will scroll it in to view, which is a few pixels further than 0
-    assertThat("Did not scroll", yOffset, is(greaterThan(300L)));
+    assertThat(yOffset).describedAs("Did not scroll").isGreaterThan(300L);
   }
 
   @Test
@@ -84,7 +79,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     WebElement link = driver.findElement(By.id("line8"));
     // This used to throw a MoveTargetOutOfBoundsException - we don't expect it to
     link.click();
-    assertEquals("line8", driver.findElement(By.id("clicked")).getText());
+    assertThat(driver.findElement(By.id("clicked")).getText()).isEqualTo("line8");
   }
 
   @Test
@@ -122,7 +117,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     item.click();
     long yOffset =
         (Long)((JavascriptExecutor)driver).executeScript("return arguments[0].scrollTop;", list);
-    assertEquals("Should not have scrolled", 0, yOffset);
+    assertThat(yOffset).describedAs("Should not have scrolled").isEqualTo(0);
   }
 
   @Test
@@ -133,7 +128,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.findElement(By.id("button1")).click();
     long scrollTop = getScrollTop();
     driver.findElement(By.id("button2")).click();
-    assertEquals(scrollTop, getScrollTop());
+    assertThat(getScrollTop()).isEqualTo(scrollTop);
   }
 
   @Test
@@ -149,7 +144,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   public void testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView() {
     driver.get(appServer.whereIs("scroll5.html"));
     driver.findElement(By.id("inner")).click();
-    assertEquals("clicked", driver.findElement(By.id("clicked")).getText());
+    assertThat(driver.findElement(By.id("clicked")).getText()).isEqualTo("clicked");
   }
 
   @SwitchToTopAfterTest
@@ -161,7 +156,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.switchTo().frame("frame");
     WebElement element = driver.findElement(By.name("checkbox"));
     element.click();
-    assertTrue(element.isSelected());
+    assertThat(element.isSelected()).isTrue();
   }
 
   @SwitchToTopAfterTest
@@ -172,7 +167,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.switchTo().frame("scrolling_frame");
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
     element.click();
-    assertTrue(element.isSelected());
+    assertThat(element.isSelected()).isTrue();
   }
 
   @SwitchToTopAfterTest
@@ -182,8 +177,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("scrolling_tests/page_with_non_scrolling_frame.html"));
     driver.switchTo().frame("scrolling_frame");
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
-    Throwable t = catchThrowable(element::click);
-    assertThat(t, instanceOf(MoveTargetOutOfBoundsException.class));
+    assertThatExceptionOfType(MoveTargetOutOfBoundsException.class).isThrownBy(element::click);
   }
 
   @SwitchToTopAfterTest
@@ -194,7 +188,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.switchTo().frame("scrolling_frame");
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
     element.click();
-    assertTrue(element.isSelected());
+    assertThat(element.isSelected()).isTrue();
   }
 
   @SwitchToTopAfterTest
@@ -206,7 +200,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.switchTo().frame("nested_scrolling_frame");
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
     element.click();
-    onlyPassIfNotOnMac(651, () -> assertTrue(element.isSelected()));
+    onlyPassIfNotOnMac(651, () -> assertThat(element.isSelected()).isTrue());
   }
 
   @SwitchToTopAfterTest
@@ -219,7 +213,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
     element.click();
 
-    onlyPassIfNotOnMac(651, () -> assertTrue(element.isSelected()));
+    onlyPassIfNotOnMac(651, () -> assertThat(element.isSelected()).isTrue());
   }
 
   private void onlyPassIfNotOnMac(int mozIssue, Runnable toCheck) {
@@ -241,7 +235,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("scroll3.html"));
     long scrollTop = getScrollTop();
     driver.findElement(By.id("button1")).getSize();
-    assertEquals(scrollTop, getScrollTop());
+    assertThat(getScrollTop()).isEqualTo(scrollTop);
   }
 
   private long getScrollTop() {
@@ -258,6 +252,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.switchTo().frame("tall_frame");
     WebElement element = driver.findElement(By.name("checkbox"));
     element.click();
-    assertTrue(element.isSelected());
+    assertThat(element.isSelected()).isTrue();
   }
 }

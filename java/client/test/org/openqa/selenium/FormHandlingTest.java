@@ -17,20 +17,14 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.isIe6;
 import static org.openqa.selenium.testing.TestUtilities.isIe7;
 
@@ -51,7 +45,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     driver.get(pages.formPage);
     driver.findElement(By.id("submitButton")).click();
     wait.until(titleIs("We Arrive Here"));
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
   @Test
@@ -65,7 +59,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     driver.get(pages.formPage);
     driver.findElement(By.id("imageButton")).click();
     wait.until(titleIs("We Arrive Here"));
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
   @Test
@@ -96,8 +90,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.name("SearchableText"));
-    Throwable t = catchThrowable(element::submit);
-    assertThat(t, instanceOf(NoSuchElementException.class));
+    assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(element::submit);
   }
 
   @Test
@@ -106,7 +99,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     WebElement textarea = driver.findElement(By.id("keyUpArea"));
     String cheesy = "brie and cheddar";
     textarea.sendKeys(cheesy);
-    assertThat(textarea.getAttribute("value"), equalTo(cheesy));
+    assertThat(textarea.getAttribute("value")).isEqualTo(cheesy);
   }
 
   @Test
@@ -116,7 +109,7 @@ public class FormHandlingTest extends JUnit4TestBase {
                                                  .id("keyUpArea"));
     String cheesey = "BrIe And CheDdar";
     textarea.sendKeys(cheesey);
-    assertThat(textarea.getAttribute("value"), equalTo(cheesey));
+    assertThat(textarea.getAttribute("value")).isEqualTo(cheesey);
   }
 
   @Test
@@ -127,7 +120,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     WebElement input = nestedForm.findElement(By.name("x"));
     input.sendKeys("\n");
     wait.until(titleIs("We Arrive Here"));
-    assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
+    assertThat(driver.getCurrentUrl()).endsWith("?x=name");
   }
 
   @Test
@@ -137,7 +130,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     WebElement input = nestedForm.findElement(By.name("x"));
     input.sendKeys(Keys.ENTER);
     wait.until(titleIs("We Arrive Here"));
-    assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
+    assertThat(driver.getCurrentUrl()).endsWith("?x=name");
   }
 
   @Test
@@ -145,21 +138,21 @@ public class FormHandlingTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
     String originalValue = element.getAttribute("value");
-    assertThat(originalValue, equalTo("change"));
+    assertThat(originalValue).isEqualTo("change");
 
     element.clear();
     element.sendKeys("some text");
 
     element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
     String newFormValue = element.getAttribute("value");
-    assertThat(newFormValue, equalTo("some text"));
+    assertThat(newFormValue).isEqualTo("some text");
   }
 
   @Test
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
-    assertThat(uploadElement.getAttribute("value"), equalTo(""));
+    assertThat(uploadElement.getAttribute("value")).isEqualTo("");
 
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -167,7 +160,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     uploadElement.sendKeys(file.getAbsolutePath());
 
     String uploadPath = uploadElement.getAttribute("value");
-    assertTrue(uploadPath.endsWith(file.getName()));
+    assertThat(uploadPath.endsWith(file.getName())).isTrue();
   }
 
   @Test
@@ -179,7 +172,7 @@ public class FormHandlingTest extends JUnit4TestBase {
 
     driver.get(pages.xhtmlFormPage);
     WebElement uploadElement = driver.findElement(By.id("file"));
-    assertThat(uploadElement.getAttribute("value"), equalTo(""));
+    assertThat(uploadElement.getAttribute("value")).isEqualTo("");
 
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -187,7 +180,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     uploadElement.sendKeys(file.getAbsolutePath());
 
     String uploadPath = uploadElement.getAttribute("value");
-    assertTrue(uploadPath.endsWith(file.getName()));
+    assertThat(uploadPath.endsWith(file.getName())).isTrue();
   }
 
   @Test
@@ -198,14 +191,14 @@ public class FormHandlingTest extends JUnit4TestBase {
 
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
-    assertThat(uploadElement.getAttribute("value"), equalTo(""));
+    assertThat(uploadElement.getAttribute("value")).isEqualTo("");
 
     uploadElement.sendKeys(file.getAbsolutePath());
     uploadElement.submit();
 
     driver.get(pages.formPage);
     uploadElement = driver.findElement(By.id("upload"));
-    assertThat(uploadElement.getAttribute("value"), equalTo(""));
+    assertThat(uploadElement.getAttribute("value")).isEqualTo("");
 
     uploadElement.sendKeys(file.getAbsolutePath());
     uploadElement.submit();
@@ -219,11 +212,11 @@ public class FormHandlingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("working"));
     element.sendKeys("some");
     String value = element.getAttribute("value");
-    assertThat(value, is("some"));
+    assertThat(value).isEqualTo("some");
 
     element.sendKeys(" text");
     value = element.getAttribute("value");
-    assertThat(value, is("some text"));
+    assertThat(value).isEqualTo("some text");
   }
 
   @Test
@@ -234,7 +227,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     element.sendKeys(". Some text");
     String value = element.getAttribute("value");
 
-    assertThat(value, is("Example text. Some text"));
+    assertThat(value).isEqualTo("Example text. Some text");
   }
 
   @Test
@@ -246,18 +239,19 @@ public class FormHandlingTest extends JUnit4TestBase {
     element.sendKeys(". Some text");
     String value = element.getAttribute("value");
 
-    assertThat(value, is("Example text. Some text"));
+    assertThat(value).isEqualTo("Example text. Some text");
   }
 
   @Test
   public void testEmptyTextBoxesShouldReturnAnEmptyStringNotNull() {
     driver.get(pages.formPage);
     WebElement emptyTextBox = driver.findElement(By.id("working"));
-    assertEquals(emptyTextBox.getAttribute("value"), "");
+    assertThat(emptyTextBox.getAttribute("value")).isEqualTo("");
   }
 
   @Test
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
+  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1487705")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
@@ -267,7 +261,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     String text = alert.getText();
     alert.accept();
 
-    assertEquals("Tasty cheese", text);
+    assertThat(text).isEqualTo("Tasty cheese");
   }
 
   @Test
@@ -333,6 +327,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
     wait.until(titleIs("Submitted Successfully!"));
 
-    assertThat(driver.getCurrentUrl(), containsString("name="+name));
+    assertThat(driver.getCurrentUrl()).contains("name="+name);
   }
 }

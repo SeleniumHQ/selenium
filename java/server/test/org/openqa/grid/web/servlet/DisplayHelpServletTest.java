@@ -17,11 +17,7 @@
 
 package org.openqa.grid.web.servlet;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,37 +49,38 @@ public class DisplayHelpServletTest extends BaseServletTest {
 
   @Test
   public void testGetHelpPageForStandalone() throws IOException, ServletException {
-    assertEquals(servlet.getInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER), "standalone");
-    assertEquals(servlet.getInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER), "/wd/hub");
+    assertThat("standalone")
+        .isEqualTo(servlet.getInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER));
+    assertThat("/wd/hub")
+        .isEqualTo(servlet.getInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER));
 
     FakeHttpServletResponse response = sendCommand("GET", "/");
-    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
 
     String body = response.getBody();
-    assertNotNull(body);
-    assertThat(body, containsString("Whoops! The URL specified routes to this help page."));
-    assertThat(body, containsString("\"type\": \"Standalone\""));
-    assertThat(body, containsString("\"consoleLink\": \"\\u002fwd\\u002fhub\""));
+    assertThat(body).isNotNull().contains(
+        "Whoops! The URL specified routes to this help page.",
+        "\"type\": \"Standalone\"",
+        "\"consoleLink\": \"\\u002fwd\\u002fhub\"");
   }
 
   @Test
   public void testGetHelpPageAsset() throws IOException, ServletException {
     FakeHttpServletResponse response = sendCommand("GET", "/assets/displayhelpservlet.css");
-    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-    assertNotNull(response.getBody());
-    assertTrue(response.getBody().contains("#help-heading #logo"));
+    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
+    assertThat(response.getBody()).isNotNull().contains("#help-heading #logo");
   }
 
   @Test
   public void testNoSuchAsset() throws IOException, ServletException {
     FakeHttpServletResponse response = sendCommand("GET", "/assets/foo.bar");
-    assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
+    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NOT_FOUND);
   }
 
   @Test
   public void testAccessRoot() throws IOException, ServletException {
     FakeHttpServletResponse response = sendCommand("GET", "/");
-    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
   }
 
 }

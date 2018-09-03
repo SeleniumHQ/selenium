@@ -17,15 +17,11 @@
 
 package org.openqa.selenium.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +32,6 @@ import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-@RunWith(JUnit4.class)
 public class ZipTest {
   private File inputDir;
   private File outputDir;
@@ -70,8 +65,8 @@ public class ZipTest {
     File unzipped = new File(outputDir, "foo.txt");
     File notThere = new File(outputDir, "nay.txt");
 
-    assertTrue(unzipped.exists());
-    assertFalse(notThere.exists());
+    assertThat(unzipped).exists();
+    assertThat(notThere).doesNotExist();
   }
 
   @Test
@@ -87,8 +82,8 @@ public class ZipTest {
     File unzipped1 = new File(outputDir, "foo.txt");
     File unzipped2 = new File(outputDir, "bar/bar.txt");
 
-    assertTrue(unzipped1.exists());
-    assertTrue(unzipped2.exists());
+    assertThat(unzipped1).exists();
+    assertThat(unzipped2).exists();
   }
 
   @Test
@@ -96,7 +91,7 @@ public class ZipTest {
     File testZip = File.createTempFile("testUnzip", "zip");
     writeTestZip(testZip, 25);
     File out = Zip.unzipToTempDir(new FileInputStream(testZip), "unzip", "stream");
-    assertEquals(25, out.list().length);
+    assertThat(out.list()).hasSize(25);
   }
 
   private File writeTestZip(File file, int files) throws IOException {
@@ -126,7 +121,7 @@ public class ZipTest {
   private void writeTestFile(File file) throws IOException {
     File parent = file.getParentFile();
     if (!parent.exists()) {
-      assertTrue(parent.mkdirs());
+      assertThat(parent.mkdirs()).isTrue();
     }
     byte[] byteArray = new byte[16384];
     new Random().nextBytes(byteArray);

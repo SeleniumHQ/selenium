@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -26,8 +26,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -40,7 +38,6 @@ import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(JUnit4.class)
 public class AjaxElementLocatorTest {
 
   private FakeClock clock = new FakeClock();
@@ -63,7 +60,7 @@ public class AjaxElementLocatorTest {
     ElementLocator locator = newLocator(driver, f);
     WebElement returnedElement = locator.findElement();
 
-    assertEquals(element, returnedElement);
+    assertThat(returnedElement).isEqualTo(element);
   }
 
   @Test
@@ -82,7 +79,7 @@ public class AjaxElementLocatorTest {
     ElementLocator locator = newLocator(driver, f);
     List<WebElement> returnedList = locator.findElements();
 
-    assertEquals(element, returnedList.get(0));
+    assertThat(returnedList.get(0)).isEqualTo(element);
   }
 
   @Test
@@ -95,12 +92,8 @@ public class AjaxElementLocatorTest {
 
     ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 2);
 
-    try {
-      locator.findElement();
-      fail("Should not have located the element");
-    } catch (NoSuchElementException e) {
-      // This is expected
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(locator::findElement);
 
     // Look ups:
     // 1. In "isLoaded"
@@ -121,12 +114,8 @@ public class AjaxElementLocatorTest {
 
     ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 0);
 
-    try {
-      locator.findElement();
-      fail("Should not have located the element");
-    } catch (NoSuchElementException e) {
-      // This is expected
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(locator::findElement);
 
     verify(driver, atLeast(2)).findElement(by);
   }

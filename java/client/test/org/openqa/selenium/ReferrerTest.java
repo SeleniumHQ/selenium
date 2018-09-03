@@ -18,7 +18,7 @@
 package org.openqa.selenium;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -124,12 +124,10 @@ public class ReferrerTest extends JUnit4TestBase {
 
     performNavigation(driver, page1Url);
 
-    assertEquals(
-        ImmutableList.of(
-            new HttpRequest(page1Url, null),
-            new HttpRequest(page2Url, page1Url),
-            new HttpRequest(page3Url, page2Url)),
-        testServer1.getRequests());
+    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+        new HttpRequest(page1Url, null),
+        new HttpRequest(page2Url, page1Url),
+        new HttpRequest(page3Url, page2Url)));
   }
 
   /**
@@ -148,17 +146,13 @@ public class ReferrerTest extends JUnit4TestBase {
 
     performNavigation(driver, page1Url);
 
-    assertEquals(
-        ImmutableList.of(
-            new HttpRequest(page1Url, null),
-            new HttpRequest(page3Url, page2Url)),
-        testServer1.getRequests());
+    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+        new HttpRequest(page1Url, null),
+        new HttpRequest(page3Url, page2Url)));
 
-    assertEquals(
-        ImmutableList.of(new HttpRequest(
-            page2Url,
-            page1Url)),
-        testServer2.getRequests());
+    assertThat(testServer2.getRequests()).isEqualTo(ImmutableList.of(new HttpRequest(
+        page2Url,
+        page1Url)));
   }
 
   /**
@@ -181,12 +175,10 @@ public class ReferrerTest extends JUnit4TestBase {
 
     performNavigation(driver, page1Url);
 
-    assertEquals(
-        ImmutableList.of(
-            new HttpRequest(page1Url, null),
-            new HttpRequest(page2Url, page1Url),
-            new HttpRequest(page3Url, page2Url)),
-        testServer1.getRequests());
+    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+        new HttpRequest(page1Url, null),
+        new HttpRequest(page2Url, page1Url),
+        new HttpRequest(page3Url, page2Url)));
   }
 
   /**
@@ -210,17 +202,13 @@ public class ReferrerTest extends JUnit4TestBase {
 
     performNavigation(driver, page1Url);
 
-    assertEquals(
-        ImmutableList.of(
-            new HttpRequest(page1Url, null),
-            new HttpRequest(page3Url, page2Url)),
-        testServer1.getRequests());
+    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+        new HttpRequest(page1Url, null),
+        new HttpRequest(page3Url, page2Url)));
 
-    assertEquals(
-        ImmutableList.of(new HttpRequest(
-            page2Url,
-            page1Url)),
-        testServer2.getRequests());
+    assertThat(testServer2.getRequests()).isEqualTo(ImmutableList.of(new HttpRequest(
+        page2Url,
+        page1Url)));
   }
 
   /**
@@ -249,16 +237,12 @@ public class ReferrerTest extends JUnit4TestBase {
 
     performNavigation(driver, page1Url);
 
-    assertEquals(
-        ImmutableList.of(
-            new HttpRequest(page1Url, null),
-            new HttpRequest(page3Url, page2Url)),
-        testServer1.getRequests());
+    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+        new HttpRequest(page1Url, null),
+        new HttpRequest(page3Url, page2Url)));
 
-    assertEquals(
-        ImmutableList.of(
-            new HttpRequest(page2Url, page1Url)),
-        testServer2.getRequests());
+    assertThat(testServer2.getRequests()).isEqualTo(ImmutableList.of(
+        new HttpRequest(page2Url, page1Url)));
   }
 
   /**
@@ -286,16 +270,12 @@ public class ReferrerTest extends JUnit4TestBase {
     WebDriver driver = customDriverFactory.createDriver(proxyServer.getPacUrl());
     performNavigation(driver, page1Url);
 
-    assertEquals(
-        ImmutableList.of(
-            new HttpRequest(page1Url, null),
-            new HttpRequest(page3Url, page2Url)),
-        testServer1.getRequests());
+    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+        new HttpRequest(page1Url, null),
+        new HttpRequest(page3Url, page2Url)));
 
-    assertEquals(
-        ImmutableList.of(
-            new HttpRequest(page2Url, page1Url)),
-        proxyServer.getRequests());
+    assertThat(proxyServer.getRequests()).isEqualTo(ImmutableList.of(
+        new HttpRequest(page2Url, page1Url)));
   }
 
   /**
@@ -328,17 +308,13 @@ public class ReferrerTest extends JUnit4TestBase {
     WebDriver driver = customDriverFactory.createDriver(proxyServer.getPacUrl());
     performNavigation(driver, page1Url);
 
-    assertEquals(
-        ImmutableList.of(
-            new HttpRequest(page1Url, null),
-            new HttpRequest(page3Url, page2Url)),
-        testServer1.getRequests());
+    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+        new HttpRequest(page1Url, null),
+        new HttpRequest(page3Url, page2Url)));
 
-    assertEquals(
-        ImmutableList.of(new HttpRequest(
-            page2Url,
-            page1Url)),
-        proxyServer.getRequests());
+    assertThat(proxyServer.getRequests()).isEqualTo(ImmutableList.of(new HttpRequest(
+        page2Url,
+        page1Url)));
   }
 
   private void performNavigation(WebDriver driver, String firstUrl) {

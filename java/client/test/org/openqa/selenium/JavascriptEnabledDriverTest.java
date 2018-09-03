@@ -17,12 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
@@ -31,7 +26,6 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -45,10 +39,10 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   public void testDocumentShouldReflectLatestTitle() {
     driver.get(pages.javascriptPage);
 
-    assertThat(driver.getTitle(), equalTo("Testing Javascript"));
+    assertThat(driver.getTitle()).isEqualTo("Testing Javascript");
     driver.findElement(By.linkText("Change the page title!")).click();
     waitForTitleChange("Changed");
-    assertThat(driver.getTitle(), equalTo("Changed"));
+    assertThat(driver.getTitle()).isEqualTo("Changed");
   }
 
   @Test
@@ -56,7 +50,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   public void testDocumentShouldReflectLatestDom() {
     driver.get(pages.javascriptPage);
     String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
-    assertThat(currentText, equalTo("What's for dinner?"));
+    assertThat(currentText).isEqualTo("What's for dinner?");
 
     WebElement webElement = driver.findElement(By.linkText("Update a div"));
     webElement.click();
@@ -64,7 +58,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     WebElement dynamo = driver.findElement(By.xpath("//div[@id='dynamo']"));
 
     wait.until(elementTextToEqual(dynamo, "Fish and chips!"));
-    assertThat(dynamo.getText(), equalTo("Fish and chips!"));
+    assertThat(dynamo.getText()).isEqualTo("Fish and chips!");
   }
 
   @Test
@@ -74,7 +68,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     driver.findElement(By.id("changeme")).click();
 
     waitForTitleChange("Page3");
-    assertThat(driver.getTitle(), equalTo("Page3"));
+    assertThat(driver.getTitle()).isEqualTo("Page3");
   }
 
   @Test
@@ -84,7 +78,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     driver.findElement(By.id("changeme")).click();
 
     waitForTitleChange("Page3");
-    assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("3"));
+    assertThat(driver.findElement(By.id("pageNumber")).getText()).isEqualTo("3");
   }
 
   @Test
@@ -94,7 +88,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     driver.findElement(By.id("change")).sendKeys("foo");
     String result = driver.findElement(By.id("result")).getText();
 
-    assertThat(result, equalTo("change"));
+    assertThat(result).isEqualTo("change");
   }
 
   @Test
@@ -105,7 +99,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     waitForTitleChange("We Arrive Here");
 
-    assertThat(driver.getTitle(), is("We Arrive Here"));
+    assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
   private void waitForTitleChange(String newTitle) {
@@ -120,20 +114,20 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     waitForTitleChange("We Arrive Here");
 
-    assertThat(driver.getTitle(), is("We Arrive Here"));
+    assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
   @Test
   public void testIssue80ClickShouldGenerateClickEvent() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("clickField"));
-    assertEquals("Hello", element.getAttribute("value"));
+    assertThat(element.getAttribute("value")).isEqualTo("Hello");
 
     element.click();
 
     String elementValue = wait.until(elementValueToEqual(element, "Clicked"));
 
-    assertEquals("Clicked", elementValue);
+    assertThat(elementValue).isEqualTo("Clicked");
   }
 
   @Test
@@ -143,7 +137,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     driver.findElement(By.id("switchFocus")).click();
 
     WebElement element = driver.switchTo().activeElement();
-    assertThat(element.getAttribute("id"), is("theworks"));
+    assertThat(element.getAttribute("id")).isEqualTo("theworks");
   }
 
   @Test
@@ -152,7 +146,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     WebElement element = driver.switchTo().activeElement();
 
-    assertThat(element.getAttribute("name"), is("body"));
+    assertThat(element.getAttribute("name")).isEqualTo("body");
   }
 
   @Test
@@ -163,18 +157,16 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     WebElement input = driver.findElement(By.id("changeable"));
     input.sendKeys("test");
     moveFocus();
-    assertThat(driver.findElement(By.id("result")).getText().trim(),
-               Matchers.either(is("focus change blur")).or(is("focus blur change")));
+    assertThat(driver.findElement(By.id("result")).getText().trim())
+        .isIn("focus change blur", "focus blur change");
 
     input.sendKeys(Keys.BACK_SPACE, "t");
     moveFocus();
 
     // I weep.
-    assertThat(driver.findElement(By.id("result")).getText().trim(),
-               Matchers.either(is("focus change blur focus blur"))
-                   .or(is("focus blur change focus blur"))
-                   .or(is("focus blur change focus blur change"))
-                   .or(is("focus change blur focus change blur"))); // What Chrome does
+    assertThat(driver.findElement(By.id("result")).getText().trim())
+        .isIn("focus change blur focus blur", "focus blur change focus blur",
+              "focus blur change focus blur change", "focus change blur focus change blur");
   }
 
   /**
@@ -188,8 +180,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     // If we get this far then the test has passed, but let's do something basic to prove the point
     String text = driver.findElement(By.id("error")).getText();
-
-    assertNotNull(text);
+    assertThat(text).isNotNull();
   }
 
   @Test
@@ -206,11 +197,9 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     Point point = ((Locatable) element).getCoordinates().inViewPort();
 
-    assertTrue(String.format("Non-positive X coordinates: %d", point.getX()),
-               point.getX() > 1);
+    assertThat(point.getX()).as("X coordinate").isGreaterThan(1);
     // Element's Y coordinates can be 0, as the element is scrolled right to the top of the window.
-    assertTrue(String.format("Negative Y coordinates: %d", point.getY()),
-               point.getY() >= 0);
+    assertThat(point.getY()).as("Y coordinate").isGreaterThanOrEqualTo(0);
   }
 
 

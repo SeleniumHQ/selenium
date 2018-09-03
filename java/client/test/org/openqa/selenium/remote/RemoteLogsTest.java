@@ -17,19 +17,16 @@
 
 package org.openqa.selenium.remote;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.WebDriverException;
@@ -37,7 +34,6 @@ import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,7 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
-@RunWith(JUnit4.class)
 public class RemoteLogsTest {
   @Mock
   private ExecuteMethod executeMethod;
@@ -75,9 +70,9 @@ public class RemoteLogsTest {
 
     LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
     List<LogEntry> allLogEntries = logEntries.getAll();
-    assertEquals(2, allLogEntries.size());
-    assertEquals("hello", allLogEntries.get(0).getMessage());
-    assertEquals("world", allLogEntries.get(1).getMessage());
+    assertThat(allLogEntries).hasSize(2);
+    assertThat(allLogEntries.get(0).getMessage()).isEqualTo("hello");
+    assertThat(allLogEntries.get(1).getMessage()).isEqualTo("world");
   }
 
   @Test
@@ -94,8 +89,8 @@ public class RemoteLogsTest {
 
     LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
     List<LogEntry> allLogEntries = logEntries.getAll();
-    assertEquals(1, allLogEntries.size());
-    assertEquals("hello", allLogEntries.get(0).getMessage());
+    assertThat(allLogEntries).hasSize(1);
+    assertThat(allLogEntries.get(0).getMessage()).isEqualTo("hello");
   }
 
   @Test
@@ -105,8 +100,8 @@ public class RemoteLogsTest {
     when(localLogs.get(LogType.CLIENT)).thenReturn(new LogEntries(entries));
 
     LogEntries logEntries = remoteLogs.get(LogType.CLIENT);
-    assertEquals(1, logEntries.getAll().size());
-    assertEquals("hello", logEntries.getAll().get(0).getMessage());
+    assertThat(logEntries.getAll()).hasSize(1);
+    assertThat(logEntries.getAll().get(0).getMessage()).isEqualTo("hello");
 
     // Client logs should not retrieve remote logs.
     verifyNoMoreInteractions(executeMethod);
@@ -121,8 +116,8 @@ public class RemoteLogsTest {
             ImmutableMap.of("level", Level.INFO.getName(), "timestamp", 0L, "message", "world")));
 
     LogEntries logEntries = remoteLogs.get(LogType.SERVER);
-    assertEquals(1, logEntries.getAll().size());
-    assertEquals("world", logEntries.getAll().get(0).getMessage());
+    assertThat(logEntries.getAll()).hasSize(1);
+    assertThat(logEntries.getAll().get(0).getMessage()).isEqualTo("world");
 
     // Server logs should not retrieve local logs.
     verifyNoMoreInteractions(localLogs);
@@ -138,8 +133,8 @@ public class RemoteLogsTest {
                         .put("message", "Command not found: POST /session/11037/log")
                         .put("stacktrace", "").build());
 
-    Throwable ex = TestUtilities.catchThrowable(() -> remoteLogs.get(LogType.BROWSER));
-    assertThat(ex, CoreMatchers.instanceOf(WebDriverException.class));
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> remoteLogs.get(LogType.BROWSER));
 
     verifyNoMoreInteractions(localLogs);
   }
@@ -166,6 +161,6 @@ public class RemoteLogsTest {
 
     Set<String> availableLogTypes = remoteLogs.getAvailableLogTypes();
 
-    assertEquals(expected, availableLogTypes);
+    assertThat(availableLogTypes).isEqualTo(expected);
   }
 }

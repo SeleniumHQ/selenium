@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -41,9 +41,9 @@ public class SvgDocumentTest extends JUnit4TestBase {
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));
 
-    assertEquals("blue", rect.getAttribute("fill"));
+    assertThat(rect.getAttribute("fill")).isEqualTo("blue");
     rect.click();
-    assertEquals("green", rect.getAttribute("fill"));
+    assertThat(rect.getAttribute("fill")).isEqualTo("green");
   }
 
   @Test
@@ -54,9 +54,9 @@ public class SvgDocumentTest extends JUnit4TestBase {
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));
 
-    assertEquals("blue", rect.getAttribute("fill"));
+    assertThat(rect.getAttribute("fill")).isEqualTo("blue");
     ((JavascriptExecutor) driver).executeScript("document.getElementById('rect').setAttribute('fill', 'yellow');");
-    assertEquals("yellow", rect.getAttribute("fill"));
+    assertThat(rect.getAttribute("fill")).isEqualTo("yellow");
   }
 
 }

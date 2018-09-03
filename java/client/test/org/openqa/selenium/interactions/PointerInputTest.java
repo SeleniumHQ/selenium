@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
 import com.google.gson.Gson;
@@ -27,8 +25,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.interactions.PointerInput.Kind;
@@ -39,7 +35,6 @@ import org.openqa.selenium.remote.RemoteWebElement;
 /**
  * Unit test for PointerInputs.
  */
-@RunWith(JUnit4.class)
 public class PointerInputTest {
 
   @Test
@@ -56,9 +51,9 @@ public class PointerInputTest {
     String rawJson = new Json().toJson(sequence);
     ActionSequenceJson json = new Gson().fromJson(rawJson, ActionSequenceJson.class);
 
-    assertEquals(json.actions.size(), 1);
+    assertThat(json.actions).hasSize(1);
     ActionJson firstAction = json.actions.get(0);
-    assertThat(firstAction.origin, hasEntry(W3C.getEncodedElementKey(), "12345"));
+    assertThat(firstAction.origin).containsEntry(W3C.getEncodedElementKey(), "12345");
   }
 
   private static class ActionSequenceJson {

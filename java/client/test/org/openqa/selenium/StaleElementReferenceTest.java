@@ -17,11 +17,9 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -33,8 +31,7 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
     driver.get(pages.xhtmlTestPage);
-    Throwable t = catchThrowable(elem::click);
-    assertThat(t, instanceOf(StaleElementReferenceException.class));
+    assertThatExceptionOfType(StaleElementReferenceException.class).isThrownBy(elem::click);
   }
 
   @Test
@@ -42,8 +39,7 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
     driver.get(pages.xhtmlTestPage);
-    Throwable t = catchThrowable(elem::getSize);
-    assertThat(t, instanceOf(StaleElementReferenceException.class));
+    assertThatExceptionOfType(StaleElementReferenceException.class).isThrownBy(elem::getSize);
   }
 
   @Test
@@ -51,8 +47,8 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
     WebElement heading = driver.findElement(By.xpath("//h1"));
     driver.get(pages.simpleTestPage);
-    Throwable t = catchThrowable(() -> heading.getAttribute("class"));
-    assertThat(t, instanceOf(StaleElementReferenceException.class));
+    assertThatExceptionOfType(StaleElementReferenceException.class)
+        .isThrownBy(() -> heading.getAttribute("class"));
   }
 
   @Test
@@ -60,11 +56,11 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
 
     WebElement toBeDeleted = driver.findElement(By.id("deleted"));
-    assertTrue(toBeDeleted.isDisplayed());
+    assertThat(toBeDeleted.isDisplayed()).isTrue();
 
     driver.findElement(By.id("delete")).click();
 
     boolean wasStale = wait.until(stalenessOf(toBeDeleted));
-    assertTrue("Element should be stale at this point", wasStale);
+    assertThat(wasStale).isTrue();
   }
 }

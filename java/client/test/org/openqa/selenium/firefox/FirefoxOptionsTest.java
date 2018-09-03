@@ -17,26 +17,22 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeNotNull;
-import static org.junit.Assume.assumeThat;
+import static org.openqa.selenium.PageLoadStrategy.EAGER;
+import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.DEBUG;
+import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.ERROR;
+import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.WARN;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -69,9 +65,9 @@ public class FirefoxOptionsTest {
         PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER,
         ACCEPT_INSECURE_CERTS, true));
 
-    assertTrue(options.isLegacy());
-    assertEquals(options.getCapability(PAGE_LOAD_STRATEGY), PageLoadStrategy.EAGER);
-    assertEquals(options.getCapability(ACCEPT_INSECURE_CERTS), true);
+    assertThat(options.isLegacy()).isTrue();
+    assertThat(options.getCapability(PAGE_LOAD_STRATEGY)).isEqualTo(EAGER);
+    assertThat(options.getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
   @Test
@@ -82,8 +78,8 @@ public class FirefoxOptionsTest {
 
     FirefoxOptions options2 = new FirefoxOptions(caps);
 
-    assertTrue(options2.isLegacy());
-    assertEquals(options2.getCapability(PAGE_LOAD_STRATEGY), PageLoadStrategy.EAGER);
+    assertThat(options2.isLegacy()).isTrue();
+    assertThat(options2.getCapability(PAGE_LOAD_STRATEGY)).isEqualTo(EAGER);
   }
 
   @Test
@@ -94,46 +90,42 @@ public class FirefoxOptionsTest {
 
     FirefoxOptions options = new FirefoxOptions(caps);
 
-    assertSame(options.getProfile(), profile);
+    assertThat(options.getProfile()).isSameAs(profile);
   }
 
   @Test
   public void binaryPathNeedNotExist() {
-    try {
-      new FirefoxOptions().setBinary("does/not/exist");
-    } catch (Exception e) {
-      fail("Did not expect to see any exceptions thrown: " + e);
-    }
+    new FirefoxOptions().setBinary("does/not/exist");
   }
 
   @Test
   public void shouldKeepRelativePathToBinaryAsIs() {
     FirefoxOptions options = new FirefoxOptions().setBinary("some/path");
-    assertEquals("some/path", options.getCapability(FirefoxDriver.BINARY));
+    assertThat(options.getCapability(BINARY)).isEqualTo("some/path");
   }
 
   @Test
   public void shouldConvertPathToBinaryToUseForwardSlashes() {
     FirefoxOptions options = new FirefoxOptions().setBinary("some\\path");
-    assertEquals("some/path", options.getCapability(FirefoxDriver.BINARY));
+    assertThat(options.getCapability(BINARY)).isEqualTo("some/path");
   }
 
   @Test
   public void shouldKeepWindowsDriveLetterInPathToBinary() {
     FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
-    assertEquals("F:/some/path", options.getCapability(FirefoxDriver.BINARY));
+    assertThat(options.getCapability(BINARY)).isEqualTo("F:/some/path");
   }
 
   @Test
   public void canUseForwardSlashesInWindowsPaths() {
     FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
-    assertEquals("F:/some/path", options.getCapability(FirefoxDriver.BINARY));
+    assertThat(options.getCapability(BINARY)).isEqualTo("F:/some/path");
   }
 
   @Test
   public void shouldKeepWindowsNetworkFileSystemRootInPathToBinary() {
     FirefoxOptions options = new FirefoxOptions().setBinary("\\\\server\\share\\some\\path");
-    assertEquals("//server/share/some/path", options.getCapability(FirefoxDriver.BINARY));
+    assertThat(options.getCapability(BINARY)).isEqualTo("//server/share/some/path");
   }
 
   @Test
@@ -142,22 +134,22 @@ public class FirefoxOptionsTest {
     fakeExecutable.deleteOnExit();
     FirefoxBinary binary = new FirefoxBinary(fakeExecutable);
     FirefoxOptions options = new FirefoxOptions().setBinary(binary);
-    assertEquals(binary, options.getCapability(FirefoxDriver.BINARY));
-    assertEquals(binary, options.getBinary());
+    assertThat(options.getCapability(BINARY)).isEqualTo(binary);
+    assertThat(options.getBinary()).isEqualTo(binary);
   }
 
   @Test
   public void stringBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, ?> json = new FirefoxOptions().setBinary("/i/like/cheese").asMap();
 
-    assertEquals("/i/like/cheese", ((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary"));
+    assertThat(((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary")).isEqualTo("/i/like/cheese");
   }
 
   @Test
   public void pathBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, ?> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).asMap();
 
-    assertEquals("/i/like/cheese", ((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary"));
+    assertThat(((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary")).isEqualTo("/i/like/cheese");
   }
 
   @Test
@@ -177,7 +169,7 @@ public class FirefoxOptionsTest {
       FirefoxBinary firefoxBinary =
           options.getBinaryOrNull().orElseThrow(() -> new AssertionError("No binary"));
 
-      assertEquals(binary.toString(), firefoxBinary.getPath());
+      assertThat(firefoxBinary.getPath()).isEqualTo(binary.toString());
     } finally {
       property.set(resetValue);
     }
@@ -192,15 +184,15 @@ public class FirefoxOptionsTest {
       // No value should default to using Marionette
       property.set(null);
       FirefoxOptions options = new FirefoxOptions();
-      assertFalse(options.isLegacy());
+      assertThat(options.isLegacy()).isFalse();
 
       property.set("false");
       options = new FirefoxOptions();
-      assertTrue(options.isLegacy());
+      assertThat(options.isLegacy()).isTrue();
 
       property.set("true");
       options = new FirefoxOptions();
-      assertFalse(options.isLegacy());
+      assertThat(options.isLegacy()).isFalse();
     } finally {
       property.set(resetValue);
     }
@@ -216,7 +208,7 @@ public class FirefoxOptionsTest {
 
       property.set("false");
       FirefoxOptions options = new FirefoxOptions().merge(caps);
-      assertFalse(options.isLegacy());
+      assertThat(options.isLegacy()).isFalse();
     } finally {
       property.set(resetValue);
     }
@@ -225,7 +217,7 @@ public class FirefoxOptionsTest {
   @Test
   public void shouldPickUpProfileFromSystemProperty() {
     FirefoxProfile defaultProfile = new ProfilesIni().getProfile("default");
-    assumeNotNull(defaultProfile);
+    assumeThat(defaultProfile).isNotNull();
 
     JreSystemProperty property = new JreSystemProperty(BROWSER_PROFILE);
     String resetValue = property.get();
@@ -234,7 +226,7 @@ public class FirefoxOptionsTest {
       FirefoxOptions options = new FirefoxOptions();
       FirefoxProfile profile = options.getProfile();
 
-      assertNotNull(profile);
+      assertThat(profile).isNotNull();
     } finally {
       property.set(resetValue);
     }
@@ -244,7 +236,7 @@ public class FirefoxOptionsTest {
   public void shouldThrowAnExceptionIfSystemPropertyProfileDoesNotExist() {
     String unlikelyProfileName = "this-profile-does-not-exist-also-cheese";
     FirefoxProfile foundProfile = new ProfilesIni().getProfile(unlikelyProfileName);
-    assumeThat(foundProfile, is(nullValue()));
+    assumeThat(foundProfile).isNull();
 
     JreSystemProperty property = new JreSystemProperty(BROWSER_PROFILE);
     String resetValue = property.get();
@@ -260,23 +252,19 @@ public class FirefoxOptionsTest {
   public void callingToStringWhenTheBinaryDoesNotExistShouldNotCauseAnException() {
     FirefoxOptions options =
         new FirefoxOptions().setBinary("there's nothing better in life than cake or peas.");
-    try {
-      options.toString();
-      // The binary does not exist on this machine, but could do elsewhere. Be chill.
-    } catch (Exception e) {
-      fail(Throwables.getStackTraceAsString(e));
-    }
+    options.toString();
+    // The binary does not exist on this machine, but could do elsewhere. Be chill.
   }
 
   @Test
   public void logLevelStringRepresentationIsLowercase() {
-    assertEquals(FirefoxDriverLogLevel.DEBUG.toString(), "debug");
+    assertThat(DEBUG.toString()).isEqualTo("debug");
   }
 
   @Test
   public void canBuildLogLevelFromStringRepresentation() {
-    assertEquals(FirefoxDriverLogLevel.fromString("warn"), FirefoxDriverLogLevel.WARN);
-    assertEquals(FirefoxDriverLogLevel.fromString("ERROR"), FirefoxDriverLogLevel.ERROR);
+    assertThat(FirefoxDriverLogLevel.fromString("warn")).isEqualTo(WARN);
+    assertThat(FirefoxDriverLogLevel.fromString("ERROR")).isEqualTo(ERROR);
   }
 
   @Test
@@ -284,8 +272,8 @@ public class FirefoxOptionsTest {
     FirefoxOptions options = new FirefoxOptions(
         new MutableCapabilities(new FirefoxOptions().addArguments("-a", "-b")));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertNotNull(options2);
-    assertEquals(((Map<String, Object>) options2).get("args"), Arrays.asList("-a", "-b"));
+    assertThat(options2).isNotNull().isInstanceOf(Map.class);
+    assertThat(((Map<String, Object>) options2).get("args")).isEqualTo(Arrays.asList("-a", "-b"));
   }
 
   @Test
@@ -296,12 +284,12 @@ public class FirefoxOptionsTest {
                                     .addPreference("int.pref", 42)
                                     .addPreference("boolean.pref", true)));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertNotNull(options2);
+    assertThat(options2).isNotNull().isInstanceOf(Map.class);
     Object prefs = ((Map<String, Object>) options2).get("prefs");
-    assertNotNull(prefs);
-    assertEquals(((Map<String, Object>) prefs).get("string.pref"), "some value");
-    assertEquals(((Map<String, Object>) prefs).get("int.pref"), 42);
-    assertEquals(((Map<String, Object>) prefs).get("boolean.pref"), true);
+    assertThat(prefs).isNotNull().isInstanceOf(Map.class);
+    assertThat(((Map<String, Object>) prefs).get("string.pref")).isEqualTo("some value");
+    assertThat(((Map<String, Object>) prefs).get("int.pref")).isEqualTo(42);
+    assertThat(((Map<String, Object>) prefs).get("boolean.pref")).isEqualTo(true);
   }
 
   @Test
@@ -309,9 +297,9 @@ public class FirefoxOptionsTest {
     FirefoxOptions options = new FirefoxOptions(
         new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary())));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertNotNull(options2);
-    assertEquals(((Map<String, Object>) options2).get("binary"),
-                 new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
+    assertThat(options2).isNotNull().isInstanceOf(Map.class);
+    assertThat(((Map<String, Object>) options2).get("binary"))
+        .isEqualTo(new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
   }
 
   @Test
@@ -324,7 +312,7 @@ public class FirefoxOptionsTest {
     // create a new set of options. This is the round trip, ladies and gentlemen.
     FirefoxOptions seen = new FirefoxOptions(new ImmutableCapabilities(expected.asMap()));
 
-    assertEquals(expected, seen);
+    assertThat(seen).isEqualTo(expected);
   }
 
 }

@@ -20,10 +20,10 @@
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="snakeyaml" level="project" />
-    <orderEntry type="library" scope="TEST" name="hamcrest" level="project" />
     <orderEntry type="library" name="mockito-core" level="project" />
     <orderEntry type="library" name="objenesis" level="project" />
     <orderEntry type="library" name="commons-httpclient" level="project" />
+    <orderEntry type="library" scope="TEST" name="assertj" level="project" />
     <orderEntry type="library" name="auto-service" level="project" />
   </component>
   <component name="sonarModuleSettings">

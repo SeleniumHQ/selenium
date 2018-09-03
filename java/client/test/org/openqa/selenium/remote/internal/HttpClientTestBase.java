@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.remote.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -64,7 +62,7 @@ abstract public class HttpClientTestBase {
     HttpResponse response = getResponseWithHeaders(headers);
 
     String value = response.getHeader("Cake");
-    assertEquals("Delicious", value);
+    assertThat(value).isEqualTo("Delicious");
   }
 
   /**
@@ -83,19 +81,19 @@ abstract public class HttpClientTestBase {
 
     ImmutableList<String> values = ImmutableList.copyOf(response.getHeaders("Cheese"));
 
-    assertTrue(values.toString(), values.contains("Cheddar"));
-    assertTrue(values.toString(), values.contains("Brie, Gouda"));
+    assertThat(values).contains("Cheddar");
+    assertThat(values).contains("Brie, Gouda");
   }
 
   @Test
   public void shouldAddUrlParameters() {
     HttpRequest request = new HttpRequest(GET, "/query");
     String value = request.getQueryParameter("cheese");
-    assertNull(value);
+    assertThat(value).isNull();
 
     request.addQueryParameter("cheese", "brie");
     value = request.getQueryParameter("cheese");
-    assertEquals("brie", value);
+    assertThat(value).isEqualTo("brie");
   }
 
   @Test
@@ -106,7 +104,7 @@ abstract public class HttpClientTestBase {
     HttpResponse response = getQueryParameterResponse(request);
     Map<String, Object> values = new Json().toType(response.getContentString(), MAP_TYPE);
 
-    assertEquals(ImmutableList.of("cheddar"), values.get("cheese"));
+    assertThat(values).containsEntry("cheese", ImmutableList.of("cheddar"));
   }
 
   @Test
@@ -117,7 +115,7 @@ abstract public class HttpClientTestBase {
     HttpResponse response = getQueryParameterResponse(request);
     Map<String, Object> values = new Json().toType(response.getContentString(), MAP_TYPE);
 
-    assertEquals(ImmutableList.of("tasty cheese"), values.get("cheese type"));
+    assertThat(values).containsEntry("cheese type", ImmutableList.of("tasty cheese"));
   }
 
   @Test
@@ -130,8 +128,8 @@ abstract public class HttpClientTestBase {
     HttpResponse response = getQueryParameterResponse(request);
     Map<String, Object> values = new Json().toType(response.getContentString(), MAP_TYPE);
 
-    assertEquals(ImmutableList.of("cheddar", "gouda"), values.get("cheese"));
-    assertEquals(ImmutableList.of("peas"), values.get("vegetable"));
+    assertThat(values).containsEntry("cheese", ImmutableList.of("cheddar", "gouda"));
+    assertThat(values).containsEntry("vegetable", ImmutableList.of("peas"));
   }
 
   @Test
@@ -164,7 +162,7 @@ abstract public class HttpClientTestBase {
 
       HttpResponse response = client.execute(request);
 
-      assertEquals("Hello, World!", response.getContentString());
+      assertThat(response.getContentString()).isEqualTo("Hello, World!");
     } finally {
       server.stop();
     }
@@ -189,13 +187,10 @@ abstract public class HttpClientTestBase {
     Platform platform = Platform.getCurrent();
     Platform family = platform.family() == null ? platform : platform.family();
 
-    assertEquals(
-        response.getContentString(),
-        String.format(
-            "selenium/%s (java %s)",
-            label,
-            family.toString().toLowerCase()),
-        response.getContentString());
+    assertThat(response.getContentString()).isEqualTo(String.format(
+        "selenium/%s (java %s)",
+        label,
+        family.toString().toLowerCase()));
   }
 
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers)
