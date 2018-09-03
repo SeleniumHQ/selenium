@@ -317,7 +317,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     WebElement tr = driver.findElement(By.id("hidden_text"));
     String text = tr.getText();
 
-    assertThat(text).contains("some text", "some more text");
+    assertThat(text).contains("some text").doesNotContain("some more text");
   }
 
   @Test
