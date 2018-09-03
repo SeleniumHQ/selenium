@@ -532,7 +532,7 @@ public class AlertsTest extends JUnit4TestBase {
 
     assertThatExceptionOfType(UnhandledAlertException.class)
         .isThrownBy(driver::getTitle)
-        .withMessage("cheese")
+        .withMessageContaining("cheese")
         .satisfies(ex -> assertThat(ex.getAlertText()).isEqualTo("cheese"));
   }
 
