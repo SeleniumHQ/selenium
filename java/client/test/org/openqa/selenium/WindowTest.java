@@ -17,10 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.Platform.LINUX;
@@ -44,8 +41,8 @@ public class WindowTest extends JUnit4TestBase {
         TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     Dimension size = driver.manage().window().getSize();
 
-    assertThat(size.width, is(greaterThan(0)));
-    assertThat(size.height, is(greaterThan(0)));
+    assertThat(size.width).isGreaterThan(0);
+    assertThat(size.height).isGreaterThan(0);
   }
 
   @Test
@@ -100,8 +97,8 @@ public class WindowTest extends JUnit4TestBase {
     // If the Chrome under test is launched by default as maximized, the window
     // coordinates may have small negative values (note that elements in the
     // viewport are, of course, still clickable).
-    assertThat(position.x, is(greaterThanOrEqualTo(-10)));
-    assertThat(position.y, is(greaterThanOrEqualTo(-10)));
+    assertThat(position.x).isGreaterThanOrEqualTo(-10);
+    assertThat(position.y).isGreaterThanOrEqualTo(-10);
   }
 
   @Test

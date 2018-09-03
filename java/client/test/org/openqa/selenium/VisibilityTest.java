@@ -17,13 +17,8 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
@@ -31,7 +26,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -47,10 +41,10 @@ public class VisibilityTest extends JUnit4TestBase {
   public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
     driver.get(pages.javascriptPage);
 
-    assertTrue(driver.findElement(By.id("displayed")).isDisplayed());
-    assertFalse(driver.findElement(By.id("none")).isDisplayed());
-    assertFalse(driver.findElement(By.id("suppressedParagraph")).isDisplayed());
-    assertFalse(driver.findElement(By.id("hidden")).isDisplayed());
+    assertThat(driver.findElement(By.id("displayed")).isDisplayed()).isTrue();
+    assertThat(driver.findElement(By.id("none")).isDisplayed()).isFalse();
+    assertThat(driver.findElement(By.id("suppressedParagraph")).isDisplayed()).isFalse();
+    assertThat(driver.findElement(By.id("hidden")).isDisplayed()).isFalse();
   }
 
   @Test
@@ -60,8 +54,8 @@ public class VisibilityTest extends JUnit4TestBase {
     WebElement childDiv = driver.findElement(By.id("hiddenchild"));
     WebElement hiddenLink = driver.findElement(By.id("hiddenlink"));
 
-    assertFalse(childDiv.isDisplayed());
-    assertFalse(hiddenLink.isDisplayed());
+    assertThat(childDiv.isDisplayed()).isFalse();
+    assertThat(hiddenLink.isDisplayed()).isFalse();
   }
 
   @Test
@@ -70,7 +64,7 @@ public class VisibilityTest extends JUnit4TestBase {
 
     WebElement shown = driver.findElement(By.id("visibleSubElement"));
 
-    assertTrue(shown.isDisplayed());
+    assertThat(shown.isDisplayed()).isTrue();
   }
 
   @Test
@@ -79,13 +73,13 @@ public class VisibilityTest extends JUnit4TestBase {
 
     WebElement element = driver.findElement(By.id("hideMe"));
 
-    assertTrue(element.isDisplayed());
+    assertThat(element.isDisplayed()).isTrue();
 
     element.click();
 
     wait.until(not(visibilityOf(element)));
 
-    assertFalse(element.isDisplayed());
+    assertThat(element.isDisplayed()).isFalse();
   }
 
   @Test
@@ -94,7 +88,7 @@ public class VisibilityTest extends JUnit4TestBase {
 
     WebElement shown = driver.findElement(By.name("hidden"));
 
-    assertFalse(shown.isDisplayed());
+    assertThat(shown.isDisplayed()).isFalse();
   }
 
   @Test
@@ -102,8 +96,7 @@ public class VisibilityTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 
-    Throwable t = catchThrowable(element::click);
-    assertThat(t, instanceOf(ElementNotInteractableException.class));
+    assertThatExceptionOfType(ElementNotInteractableException.class).isThrownBy(element::click);
   }
 
   @Test
@@ -111,9 +104,9 @@ public class VisibilityTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 
-    Throwable t = catchThrowable(() -> element.sendKeys("You don't see me"));
-    assertThat(t, instanceOf(ElementNotInteractableException.class));
-    assertThat(element.getAttribute("value"), is(not("You don't see me")));
+    assertThatExceptionOfType(ElementNotInteractableException.class)
+        .isThrownBy(() -> element.sendKeys("You don't see me"));
+    assertThat(element.getAttribute("value")).isNotEqualTo("You don't see me");
   }
 
   @Test
@@ -124,9 +117,9 @@ public class VisibilityTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("zero"));
     Dimension size = element.getSize();
 
-    assertEquals("Should have 0 width", 0, size.width);
-    assertEquals("Should have 0 height", 0, size.height);
-    assertTrue(element.isDisplayed());
+    assertThat(size.width).isEqualTo(0);
+    assertThat(size.height).isEqualTo(0);
+    assertThat(element.isDisplayed()).isTrue();
   }
 
   @Test
@@ -135,7 +128,7 @@ public class VisibilityTest extends JUnit4TestBase {
     driver.get(url);
 
     WebElement element = driver.findElement(By.id("suggest"));
-    assertTrue(element.isDisplayed());
+    assertThat(element.isDisplayed()).isTrue();
   }
 
   @Test
@@ -151,9 +144,9 @@ public class VisibilityTest extends JUnit4TestBase {
     for (String page: pages) {
       driver.get(appServer.whereIs(page));
       WebElement right = driver.findElement(By.id("right"));
-      assertFalse(page, right.isDisplayed());
+      assertThat(right.isDisplayed()).as("On page %s", page).isFalse();
       WebElement bottomRight = driver.findElement(By.id("bottom-right"));
-      assertFalse(page, bottomRight.isDisplayed());
+      assertThat(bottomRight.isDisplayed()).as("On page %s", page).isFalse();
     }
   }
 
@@ -169,9 +162,9 @@ public class VisibilityTest extends JUnit4TestBase {
     for (String page: pages) {
       driver.get(appServer.whereIs(page));
       WebElement bottom = driver.findElement(By.id("bottom"));
-      assertFalse(page, bottom.isDisplayed());
+      assertThat(bottom.isDisplayed()).as("On page %s", page).isFalse();
       WebElement bottomRight = driver.findElement(By.id("bottom-right"));
-      assertFalse(page, bottomRight.isDisplayed());
+      assertThat(bottomRight.isDisplayed()).as("On page %s", page).isFalse();
     }
   }
 
@@ -189,7 +182,7 @@ public class VisibilityTest extends JUnit4TestBase {
     for (String page: pages) {
       driver.get(appServer.whereIs(page));
       WebElement right = driver.findElement(By.id("right"));
-      assertTrue(page, right.isDisplayed());
+      assertThat(right.isDisplayed()).as("On page %s", page).isTrue();
     }
   }
 
@@ -207,7 +200,7 @@ public class VisibilityTest extends JUnit4TestBase {
     for (String page: pages) {
       driver.get(appServer.whereIs(page));
       WebElement bottom = driver.findElement(By.id("bottom"));
-      assertTrue(page, bottom.isDisplayed());
+      assertThat(bottom.isDisplayed()).as("On page %s", page).isTrue();
     }
   }
 
@@ -222,7 +215,7 @@ public class VisibilityTest extends JUnit4TestBase {
     for (String page: pages) {
       driver.get(appServer.whereIs(page));
       WebElement bottomRight = driver.findElement(By.id("bottom-right"));
-      assertTrue(page, bottomRight.isDisplayed());
+      assertThat(bottomRight.isDisplayed()).as("On page %s", page).isTrue();
     }
   }
 
@@ -242,7 +235,7 @@ public class VisibilityTest extends JUnit4TestBase {
       driver.get(url);
 
       WebElement element = driver.findElement(By.name("resultsFrame"));
-      assertTrue(element.isDisplayed());
+      assertThat(element.isDisplayed()).isTrue();
     } finally {
       window.setSize(originalSize);
     }
@@ -254,7 +247,7 @@ public class VisibilityTest extends JUnit4TestBase {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
     WebElement element = driver.findElement(By.id("singleHidden"));
-    assertFalse(element.isDisplayed());
+    assertThat(element.isDisplayed()).isFalse();
   }
 
   @Test
@@ -264,7 +257,7 @@ public class VisibilityTest extends JUnit4TestBase {
     driver.get(url);
 
     WebElement element = driver.findElement(By.id("child"));
-    assertFalse(element.isDisplayed());
+    assertThat(element.isDisplayed()).isFalse();
   }
 
   /**
@@ -278,10 +271,10 @@ public class VisibilityTest extends JUnit4TestBase {
     driver.get(pages.clickJacker);
 
     WebElement element = driver.findElement(By.id("clickJacker"));
-    assertEquals("Precondition failed: clickJacker should be transparent",
-                 "0", element.getCssValue("opacity"));
+    assertThat(element.getCssValue("opacity"))
+        .describedAs("Precondition failed: clickJacker should be transparent").isEqualTo("0");
     element.click();
-    assertEquals("1", element.getCssValue("opacity"));
+    assertThat(element.getCssValue("opacity")).isEqualTo("1");
   }
 
   @Test
@@ -295,12 +288,12 @@ public class VisibilityTest extends JUnit4TestBase {
     WebElement apples = options.get(0);
     WebElement oranges = options.get(1);
 
-    assertTrue("Apples should be selected", apples.isSelected());
-    assertFalse("Oranges should be selected", oranges.isSelected());
+    assertThat(apples.isSelected()).as("Apples").isTrue();
+    assertThat(oranges.isSelected()).as("Oranges").isFalse();
 
     oranges.click();
-    assertFalse("Apples should not be selected", apples.isSelected());
-    assertTrue("Oranges should be selected", oranges.isSelected());
+    assertThat(apples.isSelected()).as("Apples").isFalse();
+    assertThat(oranges.isSelected()).as("Oranges").isTrue();
   }
 
   @Test
@@ -310,8 +303,7 @@ public class VisibilityTest extends JUnit4TestBase {
 
     final WebElement area = driver.findElement(By.id("mtgt_unnamed_0"));
 
-    boolean isShown = area.isDisplayed();
-    assertTrue("The element and the enclosing map should be considered shown.", isShown);
+    assertThat(area.isDisplayed()).as("The element and the enclosing map").isTrue();
   }
 
 }

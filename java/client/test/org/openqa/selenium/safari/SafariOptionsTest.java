@@ -17,11 +17,8 @@
 
 package org.openqa.selenium.safari;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -40,7 +37,7 @@ public class SafariOptionsTest {
     // create a new set of options. This is the round trip, ladies and gentlemen.
     SafariOptions seen = new SafariOptions(new ImmutableCapabilities(expected.asMap()));
 
-    assertEquals(expected, seen);
+    assertThat(seen).isEqualTo(expected);
   }
 
   @Test
@@ -49,20 +46,20 @@ public class SafariOptionsTest {
     embeddedOptions.put("technologyPreview", true);
 
     SafariOptions options = new SafariOptions();
-    assertFalse(options.getUseTechnologyPreview());
+    assertThat(options.getUseTechnologyPreview()).isFalse();
 
     options = new SafariOptions(new ImmutableCapabilities(SafariOptions.CAPABILITY, embeddedOptions));
-    assertTrue(options.getUseTechnologyPreview());
+    assertThat(options.getUseTechnologyPreview()).isTrue();
 
     embeddedOptions.put("technologyPreview", false);
     options = new SafariOptions(new ImmutableCapabilities(SafariOptions.CAPABILITY, embeddedOptions));
-    assertFalse(options.getUseTechnologyPreview());
+    assertThat(options.getUseTechnologyPreview()).isFalse();
 
     options = new SafariOptions(new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "Safari Technology Preview"));
-    assertTrue(options.getUseTechnologyPreview());
+    assertThat(options.getUseTechnologyPreview()).isTrue();
 
     options = new SafariOptions(new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "safari"));
-    assertFalse(options.getUseTechnologyPreview());
+    assertThat(options.getUseTechnologyPreview()).isFalse();
   }
 
   @Test
@@ -71,30 +68,30 @@ public class SafariOptionsTest {
         CapabilityType.BROWSER_NAME, "Safari Technology Preview",
         SafariOptions.CAPABILITY, ImmutableMap.of("technologyPreview", false)));
 
-    assertTrue(options.getUseTechnologyPreview());
+    assertThat(options.getUseTechnologyPreview()).isTrue();
   }
 
   @Test
   public void canSetAutomaticInspection() {
     SafariOptions options = new SafariOptions().setAutomaticInspection(true);
-    assertTrue(options.getAutomaticInspection());
+    assertThat(options.getAutomaticInspection()).isTrue();
   }
 
   @Test
   public void canSetAutomaticProfiling() {
     SafariOptions options = new SafariOptions().setAutomaticProfiling(true);
-    assertTrue(options.getAutomaticProfiling());
+    assertThat(options.getAutomaticProfiling()).isTrue();
   }
 
   @Test
   public void settingTechnologyPreviewModeAlsoChangesBrowserName() {
     SafariOptions options = new SafariOptions();
-    assertEquals("safari", options.getBrowserName());
+    assertThat(options.getBrowserName()).isEqualTo("safari");
 
     options.setUseTechnologyPreview(true);
-    assertEquals("Safari Technology Preview", options.getBrowserName());
+    assertThat(options.getBrowserName()).isEqualTo("Safari Technology Preview");
 
     options.setUseTechnologyPreview(false);
-    assertEquals("safari", options.getBrowserName());
+    assertThat(options.getBrowserName()).isEqualTo("safari");
   }
 }

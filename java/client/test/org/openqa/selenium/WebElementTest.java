@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -31,14 +31,14 @@ public class WebElementTest extends JUnit4TestBase {
   public void testElementImplementsWrapsDriver() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("containsSomeDiv"));
-    assertTrue(parent instanceof WrapsDriver);
+    assertThat(parent).isInstanceOf(WrapsDriver.class);
   }
 
   @Test
   public void testElementReturnsOriginDriver() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("containsSomeDiv"));
-    assertTrue(((WrapsDriver) parent).getWrappedDriver() == driver);
+    assertThat(((WrapsDriver) parent).getWrappedDriver()).isSameAs(driver);
   }
 
 }

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -30,52 +30,53 @@ public class HowTest {
 
   @Test
   public void testBuildByClassName(){
-    assertEquals(By.className(VALUE).toString(), How.CLASS_NAME.buildBy(VALUE).toString());
+    assertThat(How.CLASS_NAME.buildBy(VALUE).toString()).isEqualTo(By.className(VALUE).toString());
   }
 
   @Test
   public void testBuildByCss(){
-    assertEquals(By.cssSelector(VALUE).toString(), How.CSS.buildBy(VALUE).toString());
+    assertThat(How.CSS.buildBy(VALUE).toString()).isEqualTo(By.cssSelector(VALUE).toString());
   }
 
   @Test
   public void testBuildById(){
-    assertEquals(By.id(VALUE).toString(), How.ID.buildBy(VALUE).toString());
+    assertThat(How.ID.buildBy(VALUE).toString()).isEqualTo(By.id(VALUE).toString());
   }
 
   @Test
   public void testBuildByIdOrName(){
-    assertEquals(new ByIdOrName(VALUE).toString(), How.ID_OR_NAME.buildBy(VALUE).toString());
+    assertThat(How.ID_OR_NAME.buildBy(VALUE).toString())
+        .isEqualTo(new ByIdOrName(VALUE).toString());
   }
 
   @Test
   public void testBuildByLinkText(){
-    assertEquals(By.linkText(VALUE).toString(), How.LINK_TEXT.buildBy(VALUE).toString());
+    assertThat(How.LINK_TEXT.buildBy(VALUE).toString()).isEqualTo(By.linkText(VALUE).toString());
   }
 
   @Test
   public void testBuildByName(){
-    assertEquals(By.name(VALUE).toString(), How.NAME.buildBy(VALUE).toString());
+    assertThat(How.NAME.buildBy(VALUE).toString()).isEqualTo(By.name(VALUE).toString());
   }
 
   @Test
   public void testBuildByPartialLinkText(){
-    assertEquals(By.partialLinkText(VALUE).toString(),
-                 How.PARTIAL_LINK_TEXT.buildBy(VALUE).toString());
+    assertThat(How.PARTIAL_LINK_TEXT.buildBy(VALUE).toString())
+        .isEqualTo(By.partialLinkText(VALUE).toString());
   }
 
   @Test
   public void testBuildByTagName(){
-    assertEquals(By.tagName(VALUE).toString(), How.TAG_NAME.buildBy(VALUE).toString());
+    assertThat(How.TAG_NAME.buildBy(VALUE).toString()).isEqualTo(By.tagName(VALUE).toString());
   }
 
   @Test
   public void testBuildByXpath(){
-    assertEquals(By.xpath(VALUE).toString(), How.XPATH.buildBy(VALUE).toString());
+    assertThat(How.XPATH.buildBy(VALUE).toString()).isEqualTo(By.xpath(VALUE).toString());
   }
 
   @Test
   public void testBuildUnset(){
-    assertEquals(By.id(VALUE).toString(), How.UNSET.buildBy(VALUE).toString());
+    assertThat(How.UNSET.buildBy(VALUE).toString()).isEqualTo(By.id(VALUE).toString());
   }
 }

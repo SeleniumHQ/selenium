@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.logging;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -68,9 +67,9 @@ public class GetLogsTest extends JUnit4TestBase {
       LogEntries firstEntries = driver.manage().logs().get(logType);
       assumeTrue(firstEntries.getAll().size() > 0);
       LogEntries secondEntries = driver.manage().logs().get(logType);
-      assertFalse(String.format("There should be no overlapping log entries in " +
-          "consecutive get log calls for %s logs", logType),
-          LogEntriesChecks.hasOverlappingLogEntries(firstEntries, secondEntries));
+      assertThat(hasOverlappingLogEntries(firstEntries, secondEntries))
+          .describedAs("There should be no overlapping log entries in consecutive get log calls for %s logs", logType)
+          .isFalse();
     }
   }
 
@@ -86,13 +85,32 @@ public class GetLogsTest extends JUnit4TestBase {
     for (String firstLogType : logTypeToEntriesMap.keySet()) {
       for (String secondLogType : logTypeToEntriesMap.keySet()) {
         if (!firstLogType.equals(secondLogType)) {
-          assertFalse(String.format("Two different log types (%s, %s) should not " +
-              "contain the same log entries", firstLogType, secondLogType),
-              LogEntriesChecks.hasOverlappingLogEntries(logTypeToEntriesMap.get(firstLogType),
-                  logTypeToEntriesMap.get(secondLogType)));
+          assertThat(hasOverlappingLogEntries(logTypeToEntriesMap.get(firstLogType), logTypeToEntriesMap.get(secondLogType)))
+              .describedAs("Two different log types (%s, %s) should not  contain the same log entries", firstLogType, secondLogType)
+              .isFalse();
         }
       }
     }
+  }
+
+  /**
+   * Checks if there are overlapping entries in the given logs.
+   *
+   * @param firstLog The first log.
+   * @param secondLog The second log.
+   * @return true if an overlapping entry is discovered, otherwise false.
+   */
+  private static boolean hasOverlappingLogEntries(LogEntries firstLog, LogEntries secondLog) {
+    for (LogEntry firstEntry : firstLog) {
+      for (LogEntry secondEntry : secondLog) {
+        if (firstEntry.getLevel().getName().equals(secondEntry.getLevel().getName()) &&
+            firstEntry.getMessage().equals(secondEntry.getMessage()) &&
+            firstEntry.getTimestamp() == secondEntry.getTimestamp()) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   @Test
@@ -103,9 +121,9 @@ public class GetLogsTest extends JUnit4TestBase {
     for (String logType : logTypes) {
       createWebDriverWithLogging(logType, Level.OFF);
       LogEntries entries = localDriver.manage().logs().get(logType);
-      assertEquals(String.format("There should be no log entries for " +
-          "log type %s when logging is turned off.", logType),
-          0, entries.getAll().size());
+      assertThat(entries.getAll())
+          .describedAs("There should be no log entries for log type %s when logging is turned off.", logType)
+          .hasSize(0);
       quitDriver();
     }
   }

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.atoms;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -30,12 +30,9 @@ import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 
-@RunWith(JUnit4.class)
 public class CompiledAtomsNotLeakingTest {
 
   private static final String FRAGMENT_TASK =
@@ -58,16 +55,16 @@ public class CompiledAtomsNotLeakingTest {
     ContextFactory.getGlobal().call(context -> {
       global = context.initStandardObjects();
       global.defineProperty("_", 1234, ScriptableObject.EMPTY);
-      assertEquals(1234, eval(context, "_"));
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
       // We're using the //javascript/webdriver/atoms:execute_script atom,
       // which assumes it is used in the context of a browser window, so make
       // sure the "window" free variable is defined and refers to the global
       // context.
-      assertEquals(global, eval(context, "this.window=this;"));
-      assertEquals(global, eval(context, "this"));
-      assertEquals(global, eval(context, "window"));
-      assertEquals(true, eval(context, "this === window"));
+      assertThat(eval(context, "this.window=this;")).isEqualTo(global);
+      assertThat(eval(context, "this")).isEqualTo(global);
+      assertThat(eval(context, "window")).isEqualTo(global);
+      assertThat(eval(context, "this === window")).isEqualTo(true);
 
       return null;
     });
@@ -78,22 +75,22 @@ public class CompiledAtomsNotLeakingTest {
   public void fragmentWillNotLeakVariablesToEnclosingScopes() {
     ContextFactory.getGlobal().call(context -> {
       eval(context, "(" + fragment + ")()", FRAGMENT_PATH);
-      assertEquals(1234, eval(context, "_"));
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
       eval(context, "(" + fragment + ").call(this)", FRAGMENT_PATH);
-      assertEquals(1234, eval(context, "_"));
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
       eval(context, "(" + fragment + ").apply(this,[])", FRAGMENT_PATH);
-      assertEquals(1234, eval(context, "_"));
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
       eval(context, "(" + fragment + ").call(null)", FRAGMENT_PATH);
-      assertEquals(1234, eval(context, "_"));
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
       eval(context, "(" + fragment + ").apply(null,[])", FRAGMENT_PATH);
-      assertEquals(1234, eval(context, "_"));
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
       eval(context, "(" + fragment + ").call({})", FRAGMENT_PATH);
-      assertEquals(1234, eval(context, "_"));
+      assertThat(eval(context, "_")).isEqualTo(1234);
       return null;
     });
   }
@@ -112,17 +109,17 @@ public class CompiledAtomsNotLeakingTest {
       try {
         JsonObject result = new JsonParser().parse(jsonResult).getAsJsonObject();
 
-        assertEquals(jsonResult, 0, result.get("status").getAsLong());
+        assertThat(result.get("status").getAsLong()).as(jsonResult).isEqualTo(0);
 
         result = result.get("value").getAsJsonObject();
-        assertEquals(jsonResult, 0, result.get("status").getAsLong());
-        assertEquals(jsonResult, 3, result.get("value").getAsLong());
+        assertThat(result.get("status").getAsLong()).as(jsonResult).isEqualTo(0);
+        assertThat(result.get("value").getAsLong()).as(jsonResult).isEqualTo(3);
 
       } catch (JsonSyntaxException e) {
         throw new RuntimeException("JSON result was: " + jsonResult, e);
       }
 
-      assertEquals(1234, eval(context, "_"));
+      assertThat(eval(context, "_")).isEqualTo(1234);
       return null;
     });
   }

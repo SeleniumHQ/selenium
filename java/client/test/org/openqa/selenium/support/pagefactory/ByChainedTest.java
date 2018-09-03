@@ -17,15 +17,12 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
@@ -38,7 +35,6 @@ import org.openqa.selenium.internal.FindsByXPath;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(JUnit4.class)
 public class ByChainedTest {
 
   @Test
@@ -46,12 +42,8 @@ public class ByChainedTest {
     final AllDriver driver = mock(AllDriver.class);
 
     ByChained by = new ByChained();
-    try {
-      by.findElement(driver);
-      fail("Expected NoSuchElementException!");
-    } catch (NoSuchElementException e) {
-      // Expected
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -59,8 +51,7 @@ public class ByChainedTest {
     final AllDriver driver = mock(AllDriver.class);
 
     ByChained by = new ByChained();
-    assertThat(by.findElements(driver),
-        equalTo((List<WebElement>) new ArrayList<WebElement>()));
+    assertThat(by.findElements(driver)).isEqualTo(new ArrayList<WebElement>());
   }
 
   @Test
@@ -75,7 +66,7 @@ public class ByChainedTest {
     when(driver.findElementsByName("cheese")).thenReturn(elems12);
 
     ByChained by = new ByChained(By.name("cheese"));
-    assertThat(by.findElement(driver), equalTo(elem1));
+    assertThat(by.findElement(driver)).isEqualTo(elem1);
   }
 
   @Test
@@ -90,7 +81,7 @@ public class ByChainedTest {
     when(driver.findElementsByName("cheese")).thenReturn(elems12);
 
     ByChained by = new ByChained(By.name("cheese"));
-    assertThat(by.findElements(driver), equalTo(elems12));
+    assertThat(by.findElements(driver)).isEqualTo(elems12);
   }
 
   @Test
@@ -101,12 +92,8 @@ public class ByChainedTest {
     when(driver.findElementsByName("cheese")).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"));
-    try {
-      by.findElement(driver);
-      fail("Expected NoSuchElementException!");
-    } catch (NoSuchElementException e) {
-      // Expected
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -117,7 +104,7 @@ public class ByChainedTest {
     when(driver.findElementsByName("cheese")).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"));
-    assertThat(by.findElements(driver), equalTo(elems));
+    assertThat(by.findElements(driver)).isEqualTo(elems);
   }
 
   @Test
@@ -145,7 +132,7 @@ public class ByChainedTest {
     when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElement(driver), equalTo(elem3));
+    assertThat(by.findElement(driver)).isEqualTo(elem3);
   }
 
   @Test
@@ -173,12 +160,8 @@ public class ByChainedTest {
     when(driver.findElementsByName("cheese")).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
-    try {
-      by.findElement(driver);
-      fail("Expected NoSuchElementException!");
-    } catch (NoSuchElementException e) {
-      // Expected
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -206,7 +189,7 @@ public class ByChainedTest {
     when(driver.findElementsByName("cheese")).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElements(driver), equalTo(elems));
+    assertThat(by.findElements(driver)).isEqualTo(elems);
   }
 
   @Test
@@ -236,7 +219,7 @@ public class ByChainedTest {
     when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElement(driver), equalTo(elem5));
+    assertThat(by.findElement(driver)).isEqualTo(elem5);
   }
 
   @Test
@@ -266,13 +249,13 @@ public class ByChainedTest {
     when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElements(driver), equalTo(elems5));
+    assertThat(by.findElements(driver)).isEqualTo(elems5);
   }
 
   @Test
   public void testEquals() {
-    assertThat(new ByChained(By.id("cheese"), By.name("photo")),
-        equalTo(new ByChained(By.id("cheese"), By.name("photo"))));
+    assertThat(new ByChained(By.id("cheese"), By.name("photo")))
+        .isEqualTo(new ByChained(By.id("cheese"), By.name("photo")));
   }
 
   private interface AllDriver extends

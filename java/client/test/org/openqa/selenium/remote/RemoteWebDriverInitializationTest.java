@@ -17,11 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -29,28 +26,22 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.IOException;
 
-@RunWith(JUnit4.class)
 public class RemoteWebDriverInitializationTest {
   private boolean quitCalled = false;
 
   @Test
   public void testQuitsIfStartSessionFails() {
-    Throwable ex = TestUtilities.catchThrowable(
-        () -> new BadStartSessionRemoteWebDriver(mock(CommandExecutor.class),
-                                                 new ImmutableCapabilities()));
+    assertThatExceptionOfType(RuntimeException.class)
+        .isThrownBy(() -> new BadStartSessionRemoteWebDriver(mock(CommandExecutor.class), new ImmutableCapabilities()))
+        .withMessageContaining("Stub session that should fail");
 
-    assertNotNull(ex);
-    assertThat(ex.getMessage(), containsString("Stub session that should fail"));
-    assertTrue(quitCalled);
+    assertThat(quitCalled).isTrue();
   }
 
   @Test
@@ -60,7 +51,7 @@ public class RemoteWebDriverInitializationTest {
     CommandExecutor executor = mock(CommandExecutor.class);
     when(executor.execute(any())).thenReturn(resp);
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
-    assertThat(driver.getCapabilities().getCapability("platform"), equalTo(Platform.UNIX));
+    assertThat(driver.getCapabilities().getCapability("platform")).isEqualTo(Platform.UNIX);
   }
 
   private class BadStartSessionRemoteWebDriver extends RemoteWebDriver {

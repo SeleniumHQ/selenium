@@ -20,8 +20,7 @@ package org.openqa.selenium.remote.http;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.ErrorCodes.METHOD_NOT_ALLOWED;
 
 import com.google.common.collect.ImmutableMap;
@@ -49,9 +48,9 @@ public class W3CHttpResponseCodecTest {
 
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
-    assertEquals(ErrorCodes.SUCCESS, decoded.getStatus().intValue());
-    assertEquals("success", decoded.getState());
-    assertEquals("cheese", decoded.getValue());
+    assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.SUCCESS);
+    assertThat(decoded.getState()).isEqualTo("success");
+    assertThat(decoded.getValue()).isEqualTo("cheese");
   }
 
   @Test
@@ -65,11 +64,11 @@ public class W3CHttpResponseCodecTest {
 
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
-    assertEquals("unsupported operation", decoded.getState());
-    assertEquals(METHOD_NOT_ALLOWED, decoded.getStatus().intValue());
+    assertThat(decoded.getState()).isEqualTo("unsupported operation");
+    assertThat(decoded.getStatus().intValue()).isEqualTo(METHOD_NOT_ALLOWED);
 
-    assertTrue(decoded.getValue() instanceof UnsupportedCommandException);
-    assertTrue(((WebDriverException) decoded.getValue()).getMessage().contains("I like peas"));
+    assertThat(decoded.getValue()).isInstanceOf(UnsupportedCommandException.class);
+    assertThat(((WebDriverException) decoded.getValue()).getMessage()).contains("I like peas");
   }
 
   @Test
@@ -85,11 +84,11 @@ public class W3CHttpResponseCodecTest {
 
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
-    assertEquals("unsupported operation", decoded.getState());
-    assertEquals(METHOD_NOT_ALLOWED, decoded.getStatus().intValue());
+    assertThat(decoded.getState()).isEqualTo("unsupported operation");
+    assertThat(decoded.getStatus().intValue()).isEqualTo(METHOD_NOT_ALLOWED);
 
-    assertTrue(decoded.getValue() instanceof UnsupportedCommandException);
-    assertTrue(((WebDriverException) decoded.getValue()).getMessage().contains("I like peas"));
+    assertThat(decoded.getValue()).isInstanceOf(UnsupportedCommandException.class);
+    assertThat(((WebDriverException) decoded.getValue()).getMessage()).contains("I like peas");
   }
 
   @Test
@@ -105,7 +104,7 @@ public class W3CHttpResponseCodecTest {
     Response decoded = new W3CHttpResponseCodec().decode(response);
 
     UnhandledAlertException ex = (UnhandledAlertException) decoded.getValue();
-    assertEquals("cheese", ex.getAlertText());
+    assertThat(ex.getAlertText()).isEqualTo("cheese");
   }
 
   private HttpResponse createValidResponse(int statusCode, Map<String, ?> data) {

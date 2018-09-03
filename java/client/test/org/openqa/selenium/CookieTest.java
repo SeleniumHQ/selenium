@@ -17,16 +17,10 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,7 +29,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 
-@RunWith(JUnit4.class)
 public class CookieTest {
 
   @Test
@@ -46,39 +39,39 @@ public class CookieTest {
   @Test
   public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
     Cookie cookie = new Cookie("hi;hi", "value", null, null, null, false);
-    Throwable t = catchThrowable(cookie::validate);
-    assertThat(t, instanceOf(IllegalArgumentException.class));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(cookie::validate);
   }
 
   @Test
   public void testShouldThrowAnExceptionTheNameIsNull() {
     Cookie cookie = new Cookie(null, "value", null, null, null, false);
-    Throwable t = catchThrowable(cookie::validate);
-    assertThat(t, instanceOf(IllegalArgumentException.class));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(cookie::validate);
   }
 
   @Test
   public void testCookiesShouldAllowSecureToBeSet() {
     Cookie cookie = new Cookie("name", "value", "", "/", new Date(), true);
-    assertTrue(cookie.isSecure());
+    assertThat(cookie.isSecure()).isTrue();
   }
 
   @Test
   public void testSecureDefaultsToFalse() {
     Cookie cookie = new Cookie("name", "value");
-    assertFalse(cookie.isSecure());
+    assertThat(cookie.isSecure()).isFalse();
   }
 
   @Test
   public void testCookiesShouldAllowHttpOnlyToBeSet() {
     Cookie cookie = new Cookie("name", "value", "", "/", new Date(), false, true);
-    assertTrue(cookie.isHttpOnly());
+    assertThat(cookie.isHttpOnly()).isTrue();
   }
 
   @Test
   public void testHttpOnlyDefaultsToFalse() {
     Cookie cookie = new Cookie("name", "value");
-    assertFalse(cookie.isHttpOnly());
+    assertThat(cookie.isHttpOnly()).isFalse();
   }
 
   @Test
@@ -93,6 +86,6 @@ public class CookieTest {
     ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(serializedCookie);
     ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
     Cookie deserializedCookie = (Cookie) objectInputStream.readObject();
-    assertThat(cookieToSerialize, equalTo(deserializedCookie));
+    assertThat(cookieToSerialize).isEqualTo(deserializedCookie);
   }
 }

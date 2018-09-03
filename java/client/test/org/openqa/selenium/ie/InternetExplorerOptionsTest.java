@@ -17,21 +17,17 @@
 
 package org.openqa.selenium.ie;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.json.Json;
 
 import java.util.Map;
 
-@RunWith(JUnit4.class)
 public class InternetExplorerOptionsTest {
 
   @Test
@@ -39,7 +35,7 @@ public class InternetExplorerOptionsTest {
     InternetExplorerOptions options = new InternetExplorerOptions();
     options.setCapability("cheese", "cake");
 
-    assertEquals(options.toString(), "cake", options.asMap().get("cheese"));
+    assertThat(options.asMap()).containsEntry("cheese", "cake");
   }
 
   @Test
@@ -48,13 +44,13 @@ public class InternetExplorerOptionsTest {
     InternetExplorerOptions options = new InternetExplorerOptions()
         .withInitialBrowserUrl(expected);
 
-    Map<String, ?> map = options.asMap();
+    Map<String, Object> map = options.asMap();
 
-    assertEquals(options.toString(), expected, map.get(INITIAL_BROWSER_URL));
-    assertEquals(
-        options.toString(),
-        expected,
-        ((Map<?, ?>) map.get("se:ieOptions")).get(INITIAL_BROWSER_URL));
+    assertThat(map).containsEntry(INITIAL_BROWSER_URL, expected);
+    assertThat(map).containsKey("se:ieOptions");
+    assertThat(map.get("se:ieOptions")).isInstanceOf(Map.class);
+    Map<String, Object> ieOptions = (Map<String, Object>) map.get("se:ieOptions");
+    assertThat(ieOptions).containsEntry(INITIAL_BROWSER_URL, expected);
   }
 
   @Test
@@ -66,7 +62,7 @@ public class InternetExplorerOptionsTest {
     InternetExplorerOptions options = new InternetExplorerOptions();
     options.setCapability("se:ieOptions", toMirror);
 
-    assertTrue(options.is(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS));
+    assertThat(options.is(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS)).isTrue();
   }
 
   @Test
@@ -76,14 +72,10 @@ public class InternetExplorerOptionsTest {
 
     InternetExplorerOptions options = new InternetExplorerOptions(caps);
 
-    assertTrue(options.is(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS));
+    assertThat(options.is(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS)).isTrue();
 
-    Map<?, ?> remoteOptions = (Map<?, ?>) options.getCapability("se:ieOptions");
-
-    assertEquals(
-        options.toString(),
-        true,
-        remoteOptions.get(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS));
+    Map<String, Object> remoteOptions = (Map<String, Object>) options.getCapability("se:ieOptions");
+    assertThat(remoteOptions).containsEntry(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
   }
 
   @Test
@@ -96,10 +88,10 @@ public class InternetExplorerOptionsTest {
     System.out.println("json = " + json);
     Capabilities capabilities = new Json().toType(json, Capabilities.class);
 
-    assertEquals(options, capabilities);
+    assertThat(capabilities).isEqualTo(options);
 
     InternetExplorerOptions freshOptions = new InternetExplorerOptions(capabilities);
 
-    assertEquals(options, freshOptions);
+    assertThat(freshOptions).isEqualTo(options);
   }
 }

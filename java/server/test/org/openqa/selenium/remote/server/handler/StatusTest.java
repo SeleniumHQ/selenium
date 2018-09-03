@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
@@ -32,13 +29,14 @@ public class StatusTest {
   public void testStatusHandler() {
     Status status = new Status();
     Object value = status.handle().getValue();
-    assertThat(value, instanceOf(Map.class));
+    assertThat(value).isInstanceOf(Map.class);
 
     Map<String, Object> valueMap = (Map<String, Object>) value;
-    assertThat(valueMap.get("ready"), is(true));
-    assertThat(valueMap.get("message"), is("Server is running"));
-    assertTrue(valueMap.containsKey("build"));
-    assertTrue(valueMap.containsKey("os"));
-    assertTrue(valueMap.containsKey("java"));
+    assertThat(valueMap)
+        .containsEntry("ready", true)
+        .containsEntry("message", "Server is running")
+        .containsKey("build")
+        .containsKey("os")
+        .containsKey("java");
   }
 }

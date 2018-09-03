@@ -8,7 +8,7 @@ java_test(name = 'small-tests',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/gson:gson',
     '//third_party/java/guava:guava',
-    '//third_party/java/hamcrest:hamcrest-library',
+    '//third_party/java/assertj:assertj',
     '//third_party/java/junit:junit',
   ],
 )

@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -76,8 +73,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     showButton.click();
 
     WebElement resultElement = driver.findElement(By.id("result"));
-    assertEquals("Should have picked the third option only.", "cheddar",
-                 resultElement.getText());
+    assertThat(resultElement.getText())
+        .describedAs("Should have picked the third option only").isEqualTo("cheddar");
   }
 
   @Test
@@ -102,8 +99,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     showButton.click();
 
     WebElement resultElement = driver.findElement(By.id("result"));
-    assertEquals("Should have picked the last three options.", "roquefort parmigiano cheddar",
-        resultElement.getText());
+    assertThat(resultElement.getText())
+        .describedAs("Should have picked the last three options")
+        .isEqualTo("roquefort parmigiano cheddar");
   }
 
   @Test
@@ -129,8 +127,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     showButton.click();
 
     WebElement resultElement = driver.findElement(By.id("result"));
-    assertEquals("Should have picked the first and the third options.", "roquefort cheddar",
-                 resultElement.getText());
+    assertThat(resultElement.getText())
+        .describedAs("Should have picked the first and the third options")
+        .isEqualTo("roquefort cheddar");
   }
 
   @Test
@@ -142,7 +141,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     WebElement reportingElement = driver.findElement(By.id("infodiv"));
 
-    assertEquals("no info", reportingElement.getText());
+    assertThat(reportingElement.getText()).isEqualTo("no info");
 
     List<WebElement> listItems = driver.findElements(By.tagName("li"));
 
@@ -156,12 +155,12 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     selectThreeItems.perform();
 
-    assertEquals("#item2 #item4 #item6", reportingElement.getText());
+    assertThat(reportingElement.getText()).isEqualTo("#item2 #item4 #item6");
 
     // Now click on another element, make sure that's the only one selected.
     actions = new Actions(driver);
     actions.click(listItems.get(6)).build().perform();
-    assertEquals("#item7", reportingElement.getText());
+    assertThat(reportingElement.getText()).isEqualTo("#item7");
   }
 
   private void navigateToClicksPageAndClickLink() {
@@ -243,7 +242,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
       y = Integer.parseInt(driver.findElement(By.id("pageY")).getText());
     }
 
-    assertTrue(fuzzyPositionMatching(location.getX() + 20, location.getY() + 10, x, y));
+    assertThat(fuzzyPositionMatching(location.getX() + 20, location.getY() + 10, x, y)).isTrue();
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {
@@ -328,9 +327,10 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .keyUp(Keys.SHIFT)
         .perform();
 
-    assertEquals("Should have opened a new window.",
-        nWindows + 1, driver.getWindowHandles().size());
-    assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
+    assertThat(driver.getWindowHandles())
+        .describedAs("Should have opened a new window").hasSize(nWindows + 1);
+    assertThat(driver.getTitle())
+        .describedAs("Should not have navigated away").isEqualTo(originalTitle);
   }
 
   @Test
@@ -342,9 +342,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     new Actions(driver).keyDown(Keys.SHIFT).click(toClick).keyUp(Keys.SHIFT).perform();
 
-    WebElement shiftInfo =
-        wait.until(presenceOfElementLocated(By.id("shiftKey")));
-    assertThat(shiftInfo.getText(), equalTo("true"));
+    WebElement shiftInfo = wait.until(presenceOfElementLocated(By.id("shiftKey")));
+    assertThat(shiftInfo.getText()).isEqualTo("true");
   }
 
   @Test
@@ -359,7 +358,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("menu1"));
 
     final WebElement item = driver.findElement(By.id("item1"));
-    assertEquals("", item.getText());
+    assertThat(item.getText()).isEqualTo("");
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
     new Actions(driver).moveToElement(element).build().perform();
@@ -383,11 +382,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     WebElement target = driver.findElement(By.id("item1"));
 
-    assertTrue(target.isDisplayed());
+    assertThat(target.isDisplayed()).isTrue();
     target.click();
 
     String text = driver.findElement(By.id("result")).getText();
-    assertTrue(text.contains("item 1"));
+    assertThat(text).contains("item 1");
   }
 
 }

@@ -17,11 +17,17 @@
 
 package org.openqa.selenium.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.json.JsonType.BOOLEAN;
+import static org.openqa.selenium.json.JsonType.END_COLLECTION;
+import static org.openqa.selenium.json.JsonType.END_MAP;
+import static org.openqa.selenium.json.JsonType.NAME;
+import static org.openqa.selenium.json.JsonType.NULL;
+import static org.openqa.selenium.json.JsonType.NUMBER;
+import static org.openqa.selenium.json.JsonType.START_COLLECTION;
+import static org.openqa.selenium.json.JsonType.START_MAP;
+import static org.openqa.selenium.json.JsonType.STRING;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -37,56 +43,56 @@ public class JsonInputTest {
   @Test
   public void shouldParseBooleanValues() {
     JsonInput input = newInput(true);
-    assertEquals(JsonType.BOOLEAN, input.peek());
-    assertTrue(input.nextBoolean());
+    assertThat(input.peek()).isEqualTo(BOOLEAN);
+    assertThat(input.nextBoolean()).isTrue();
 
     input = newInput(false);
-    assertEquals(JsonType.BOOLEAN, input.peek());
-    assertFalse(input.nextBoolean());
+    assertThat(input.peek()).isEqualTo(BOOLEAN);
+    assertThat(input.nextBoolean()).isFalse();
   }
 
   @Test
   public void shouldParseNonDecimalNumbersAsLongs() {
     JsonInput input = newInput(42);
-    assertEquals(JsonType.NUMBER, input.peek());
-    assertEquals(42L, input.nextNumber());
+    assertThat(input.peek()).isEqualTo(NUMBER);
+    assertThat(input.nextNumber()).isEqualTo(42L);
   }
 
   @Test
   public void shouldParseDecimalNumbersAsDoubles() {
     JsonInput input = newInput(42.0);
-    assertEquals(JsonType.NUMBER, input.peek());
-    assertEquals(42.0d, (Double) input.nextNumber(), 0);
+    assertThat(input.peek()).isEqualTo(NUMBER);
+    assertThat((Double) input.nextNumber()).isEqualTo(42.0d);
   }
 
   @Test
   public void shouldHandleNullValues() {
     JsonInput input = newInput(null);
-    assertEquals(JsonType.NULL, input.peek());
-    assertNull(input.nextNull());
+    assertThat(input.peek()).isEqualTo(NULL);
+    assertThat(input.nextNull()).isNull();
   }
 
   @Test
   public void shouldBeAbleToReadAString() {
     JsonInput input = newInput("cheese");
-    assertEquals(JsonType.STRING, input.peek());
-    assertEquals("cheese", input.nextString());
+    assertThat(input.peek()).isEqualTo(STRING);
+    assertThat(input.nextString()).isEqualTo("cheese");
   }
 
   @Test
   public void shouldBeAbleToReadTheEmptyString() {
     JsonInput input = newInput("");
-    assertEquals(JsonType.STRING, input.peek());
-    assertEquals("", input.nextString());
+    assertThat(input.peek()).isEqualTo(STRING);
+    assertThat(input.nextString()).isEqualTo("");
   }
 
   @Test
   public void anEmptyArrayHasNoContents() {
     JsonInput input = newInput(ImmutableList.of());
-    assertEquals(JsonType.START_COLLECTION, input.peek());
+    assertThat(input.peek()).isEqualTo(START_COLLECTION);
     input.beginArray();
-    assertFalse(input.hasNext());
-    assertEquals(JsonType.END_COLLECTION, input.peek());
+    assertThat(input.hasNext()).isFalse();
+    assertThat(input.peek()).isEqualTo(END_COLLECTION);
     input.endArray();
   }
 
@@ -94,7 +100,7 @@ public class JsonInputTest {
   public void anArrayWithASingleElementHasNextButOnlyOneValue() {
     JsonInput input = newInput(ImmutableList.of("peas"));
     input.beginArray();
-    assertEquals("peas", input.nextString());
+    assertThat(input.nextString()).isEqualTo("peas");
     input.endArray();
   }
 
@@ -102,11 +108,11 @@ public class JsonInputTest {
   public void anArrayWithMultipleElementsReturnsTrueFromHasNextMoreThanOnce() {
     JsonInput input = newInput(ImmutableList.of("brie", "cheddar"));
     input.beginArray();
-    assertTrue(input.hasNext());
-    assertEquals("brie", input.nextString());
-    assertTrue(input.hasNext());
-    assertEquals("cheddar", input.nextString());
-    assertFalse(input.hasNext());
+    assertThat(input.hasNext()).isTrue();
+    assertThat(input.nextString()).isEqualTo("brie");
+    assertThat(input.hasNext()).isTrue();
+    assertThat(input.nextString()).isEqualTo("cheddar");
+    assertThat(input.hasNext()).isFalse();
     input.endArray();
   }
 
@@ -119,10 +125,10 @@ public class JsonInputTest {
   @Test
   public void anEmptyMapHasNoContents() {
     JsonInput input = newInput(ImmutableMap.of());
-    assertEquals(JsonType.START_MAP, input.peek());
+    assertThat(input.peek()).isEqualTo(START_MAP);
     input.beginObject();
-    assertFalse(input.hasNext());
-    assertEquals(JsonType.END_MAP, input.peek());
+    assertThat(input.hasNext()).isFalse();
+    assertThat(input.peek()).isEqualTo(END_MAP);
     input.endObject();
   }
 
@@ -130,12 +136,12 @@ public class JsonInputTest {
   public void canReadAMapWithASingleEntry() {
     JsonInput input = newInput(ImmutableMap.of("cheese", "feta"));
     input.beginObject();
-    assertTrue(input.hasNext());
-    assertEquals(JsonType.NAME, input.peek());
-    assertEquals("cheese", input.nextName());
-    assertEquals(JsonType.STRING, input.peek());
-    assertEquals("feta", input.nextString());
-    assertFalse(input.hasNext());
+    assertThat(input.hasNext()).isTrue();
+    assertThat(input.peek()).isEqualTo(NAME);
+    assertThat(input.nextName()).isEqualTo("cheese");
+    assertThat(input.peek()).isEqualTo(STRING);
+    assertThat(input.nextString()).isEqualTo("feta");
+    assertThat(input.hasNext()).isFalse();
     input.endObject();
   }
 
@@ -146,22 +152,22 @@ public class JsonInputTest {
         "vegetable", "peas",
         "random", 42));
 
-    assertEquals(JsonType.START_MAP, input.peek());
+    assertThat(input.peek()).isEqualTo(START_MAP);
     input.beginObject();
-    assertTrue(input.hasNext());
-    assertEquals(JsonType.NAME, input.peek());
-    assertEquals("cheese", input.nextName());
-    assertEquals("stilton", input.nextString());
-    assertTrue(input.hasNext());
-    assertEquals(JsonType.NAME, input.peek());
-    assertEquals("vegetable", input.nextName());
-    assertEquals("peas", input.nextString());
-    assertTrue(input.hasNext());
-    assertEquals(JsonType.NAME, input.peek());
-    assertEquals("random", input.nextName());
-    assertEquals(42L, input.nextNumber());
-    assertFalse(input.hasNext());
-    assertEquals(JsonType.END_MAP, input.peek());
+    assertThat(input.hasNext()).isTrue();
+    assertThat(input.peek()).isEqualTo(NAME);
+    assertThat(input.nextName()).isEqualTo("cheese");
+    assertThat(input.nextString()).isEqualTo("stilton");
+    assertThat(input.hasNext()).isTrue();
+    assertThat(input.peek()).isEqualTo(NAME);
+    assertThat(input.nextName()).isEqualTo("vegetable");
+    assertThat(input.nextString()).isEqualTo("peas");
+    assertThat(input.hasNext()).isTrue();
+    assertThat(input.peek()).isEqualTo(NAME);
+    assertThat(input.nextName()).isEqualTo("random");
+    assertThat(input.nextNumber()).isEqualTo(42L);
+    assertThat(input.hasNext()).isFalse();
+    assertThat(input.peek()).isEqualTo(END_MAP);
     input.endObject();
   }
 
@@ -171,21 +177,21 @@ public class JsonInputTest {
         "map", ImmutableMap.of("child", ImmutableList.of("hello", "world"))));
 
     input.beginObject();
-    assertTrue(input.hasNext());
-    assertEquals("map", input.nextName());
+    assertThat(input.hasNext()).isTrue();
+    assertThat(input.nextName()).isEqualTo("map");
     input.beginObject();
-    assertTrue(input.hasNext());
-    assertEquals("child", input.nextName());
+    assertThat(input.hasNext()).isTrue();
+    assertThat(input.nextName()).isEqualTo("child");
     input.beginArray();
-    assertTrue(input.hasNext());
-    assertEquals("hello", input.nextString());
-    assertTrue(input.hasNext());
-    assertEquals("world", input.nextString());
-    assertFalse(input.hasNext());
+    assertThat(input.hasNext()).isTrue();
+    assertThat(input.nextString()).isEqualTo("hello");
+    assertThat(input.hasNext()).isTrue();
+    assertThat(input.nextString()).isEqualTo("world");
+    assertThat(input.hasNext()).isFalse();
     input.endArray();
-    assertFalse(input.hasNext());
+    assertThat(input.hasNext()).isFalse();
     input.endObject();
-    assertFalse(input.hasNext());
+    assertThat(input.hasNext()).isFalse();
     input.endObject();
   }
 
@@ -196,7 +202,7 @@ public class JsonInputTest {
     try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer())) {
       Map<String, Object> map = in.read(MAP_TYPE);
 
-      assertEquals("<html", map.get("text"));
+      assertThat(map.get("text")).isEqualTo("<html");
     }
   }
 
