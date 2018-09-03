@@ -17,9 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
@@ -84,7 +82,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     registerDriverTeardown(driver);
 
     driver.get(appServer.whereElseIs("simpleTest.html"));
-    assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
+    assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isTrue();
   }
 
   @Test
@@ -99,10 +97,10 @@ public class ProxySettingTest extends JUnit4TestBase {
     registerDriverTeardown(driver);
 
     driver.get(appServer.whereIs("simpleTest.html"));
-    assertFalse("Proxy should not have been called", proxyServer.hasBeenCalled("simpleTest.html"));
+    assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isFalse();
 
     driver.get(appServer.whereElseIs("simpleTest.html"));
-    assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
+    assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isTrue();
   }
 
   @Test
@@ -125,8 +123,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     registerDriverTeardown(driver);
 
     driver.get(appServer.whereElseIs("mouseOver.html"));
-    assertEquals("Should follow proxy to another server",
-        "Hello, world!", driver.findElement(By.tagName("h3")).getText());
+    assertThat(driver.findElement(By.tagName("h3")).getText()).isEqualTo("Hello, world!");
   }
 
   @Test
@@ -154,12 +151,10 @@ public class ProxySettingTest extends JUnit4TestBase {
     registerDriverTeardown(driver);
 
     driver.get("http://" + getHostAndPort(helloServer));
-    assertEquals("Should follow proxy to another server",
-        "Goodbye, world!", driver.findElement(By.tagName("h3")).getText());
+    assertThat(driver.findElement(By.tagName("h3")).getText()).isEqualTo("Goodbye, world!");
 
     driver.get(appServer.whereElseIs("simpleTest.html"));
-    assertEquals("Proxy should have permitted direct access to host",
-        "Heading", driver.findElement(By.tagName("h1")).getText());
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Heading");
   }
 
   private void registerDriverTeardown(final WebDriver driver) {

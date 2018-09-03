@@ -17,19 +17,16 @@
 
 package org.openqa.selenium.remote.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-@RunWith(JUnit4.class)
 public class CircularOutputStreamTest {
   @Test
   public void testShouldReturnTheEntireWrittenContentIfSmallerThanTheBufferSize() throws Exception {
@@ -41,7 +38,7 @@ public class CircularOutputStreamTest {
 
       String seen = os.toString();
 
-      assertEquals(expected, seen);
+      assertThat(seen).isEqualTo(expected);
     }
   }
 
@@ -56,7 +53,7 @@ public class CircularOutputStreamTest {
 
       String seen = os.toString();
 
-      assertEquals(expected, seen);
+      assertThat(seen).isEqualTo(expected);
     }
   }
 
@@ -70,7 +67,7 @@ public class CircularOutputStreamTest {
 
       String seen = os.toString();
 
-      assertEquals(expected, seen);
+      assertThat(seen).isEqualTo(expected);
     }
   }
 
@@ -84,7 +81,7 @@ public class CircularOutputStreamTest {
 
       String seen = os.toString();
 
-      assertEquals(expected, seen);
+      assertThat(seen).isEqualTo(expected);
     }
   }
 
@@ -106,7 +103,7 @@ public class CircularOutputStreamTest {
     String seen = os.toString();
     cops.close();
 
-    assertEquals(expected, seen);
+    assertThat(seen).isEqualTo(expected);
   }
 
   @Test
@@ -116,15 +113,15 @@ public class CircularOutputStreamTest {
 
       pw.write("12345");
       pw.flush();
-      assertEquals("12345", os.toString());
+      assertThat(os.toString()).isEqualTo("12345");
 
       pw.write("6");
       pw.flush();
-      assertEquals("23456", os.toString());
+      assertThat(os.toString()).isEqualTo("23456");
 
       pw.write("789");
       pw.flush();
-      assertEquals("56789", os.toString());
+      assertThat(os.toString()).isEqualTo("56789");
     }
   }
 
@@ -149,8 +146,8 @@ public class CircularOutputStreamTest {
         b++;
       }
     }
-    assertEquals(bytesToWrite, a);
-    assertEquals(bytesToWrite, b);
+    assertThat(a).isEqualTo(bytesToWrite);
+    assertThat(b).isEqualTo(bytesToWrite);
   }
 
   private static class WriteChar implements Runnable {

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.atoms;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
@@ -50,10 +50,10 @@ public class InputAtomsTest {
         global = context.initStandardObjects();
 
         // Check assumptions abut the global context, which the atoms assumes is a DOM window.
-        assertEquals(global, eval(context, "this.window=this;"));
-        assertEquals(global, eval(context, "this"));
-        assertEquals(global, eval(context, "window"));
-        assertEquals(true, eval(context, "this === window"));
+        assertThat((Object) eval(context, "this.window=this;")).isEqualTo(global);
+        assertThat((Object) eval(context, "this")).isEqualTo(global);
+        assertThat((Object) eval(context, "window")).isEqualTo(global);
+        assertThat((Object) eval(context, "this === window")).isEqualTo(true);
 
         eval(context, source, JavaScriptLoader.taskToBuildOutput(RESOURCE_TASK));
 
@@ -69,10 +69,7 @@ public class InputAtomsTest {
       }
 
       private void assertFunction(Context context, String property) {
-        assertEquals(
-            "Expected " + property + " to be a function",
-            "function",
-            eval(context, "typeof " + property));
+        assertThat((Object) eval(context, "typeof " + property)).describedAs(property).isEqualTo("function");
       }
 
       @SuppressWarnings({"unchecked"})

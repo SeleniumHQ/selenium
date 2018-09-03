@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.ie;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
@@ -56,8 +56,8 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
     try {
       firstDriver.get(pages.xhtmlTestPage);
       secondDriver.get(pages.formPage);
-      assertEquals("XHTML Test Page", firstDriver.getTitle());
-      assertEquals("We Leave From Here", secondDriver.getTitle());
+      assertThat(firstDriver.getTitle()).isEqualTo("XHTML Test Page");
+      assertThat(secondDriver.getTitle()).isEqualTo("We Leave From Here");
     } finally {
       firstDriver.quit();
       secondDriver.quit();
@@ -84,7 +84,7 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
       WebElement element = driver.findElement(By.id("menu1"));
 
       final WebElement item = driver.findElement(By.id("item1"));
-      assertEquals("", item.getText());
+      assertThat(item.getText()).isEqualTo("");
 
       ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
       new Actions(driver).moveToElement(element).build().perform();
@@ -99,7 +99,7 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
 
       wait.until(elementTextToEqual(item, ""));
 
-      assertEquals("", item.getText());
+      assertThat(item.getText()).isEqualTo("");
 
     } finally {
       driver.quit();

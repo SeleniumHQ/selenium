@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.mobile;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,8 +48,9 @@ public class NetworkConnectionTest extends JUnit4TestBase {
           networkConnectionDriver
               .setNetworkConnection(NetworkConnection.ConnectionType.AIRPLANE_MODE);
     }
-    Assert.assertEquals("airplane mode should have been toggled", !current.isAirplaneMode(),
-                        modified.isAirplaneMode());
+    assertThat(modified.isAirplaneMode())
+        .describedAs("airplane mode should have been toggled")
+        .isNotEqualTo(current.isAirplaneMode());
   }
 
 }

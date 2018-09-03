@@ -17,12 +17,10 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -58,8 +56,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     driver.close();
     sleepTight(3000);
-    Throwable t = catchThrowable(driver::getCurrentUrl);
-    assertThat(t, instanceOf(NoSuchSessionException.class));
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
   }
 
   @NoDriverAfterTest
@@ -67,8 +64,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     driver.quit();
     sleepTight(3000);
-    Throwable t = catchThrowable(driver::getCurrentUrl);
-    assertThat(t, instanceOf(NoSuchSessionException.class));
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
   }
 
   @NoDriverAfterTest

@@ -17,12 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
@@ -30,8 +26,6 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -42,7 +36,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-@RunWith(JUnit4.class)
 public class AugmenterTest extends BaseAugmenterTest {
 
   @Override
@@ -105,20 +98,15 @@ public class AugmenterTest extends BaseAugmenterTest {
     augmenter.addDriverAugmentation(CapabilityType.SUPPORTS_JAVASCRIPT, augmentation);
 
     WebDriver returned = augmenter.augment(driver);
-    assertNotSame(driver, returned);
-    assertEquals("StubTitle", returned.getTitle());
+    assertThat(returned).isNotSameAs(driver);
+    assertThat(returned.getTitle()).isEqualTo("StubTitle");
 
     returned.quit();   // Should not fail because it's intercepted.
 
     // Verify original is unmodified.
-    boolean threw = false;
-    try {
-      driver.quit();
-    } catch (AssertionError expected) {
-      assertTrue(expected.getMessage().startsWith("Unexpected method invocation"));
-      threw = true;
-    }
-    assertTrue("Did not throw", threw);
+    assertThatExceptionOfType(AssertionError.class)
+        .isThrownBy(driver::quit)
+        .withMessageStartingWith("Unexpected method invocation");
   }
 
   @Test
@@ -129,7 +117,7 @@ public class AugmenterTest extends BaseAugmenterTest {
 
     WebDriver augmentedDriver = getAugmenter().augment(driver);
 
-    assertThat(augmentedDriver, sameInstance(driver));
+    assertThat(augmentedDriver).isSameAs(driver);
   }
 
   @Test
@@ -140,7 +128,7 @@ public class AugmenterTest extends BaseAugmenterTest {
 
     WebDriver augmentedDriver = getAugmenter().augment(driver);
 
-    assertThat(augmentedDriver, not(sameInstance(driver)));
+    assertThat(augmentedDriver).isNotSameAs(driver);
   }
 
   public static class RemoteWebDriverSubclass extends RemoteWebDriver {
@@ -157,6 +145,6 @@ public class AugmenterTest extends BaseAugmenterTest {
 
     WebDriver augmentedDriver = getAugmenter().augment(driver);
 
-    assertThat(augmentedDriver, sameInstance(driver));
+    assertThat(augmentedDriver).isSameAs(driver);
   }
 }

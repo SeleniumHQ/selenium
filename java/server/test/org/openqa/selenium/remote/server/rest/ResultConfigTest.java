@@ -17,17 +17,14 @@
 
 package org.openqa.selenium.remote.server.rest;
 
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
@@ -39,29 +36,20 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
-@RunWith(JUnit4.class)
 public class ResultConfigTest {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
   private static final SessionId dummySessionId = new SessionId("Test");
 
   @Test
   public void testShouldNotAllowNullToBeUsedAsTheUrl() {
-    try {
-      new ResultConfig(null, StubHandler.class, null, logger);
-      fail("Should have failed");
-    } catch (IllegalArgumentException e) {
-      exceptionWasExpected();
-    }
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new ResultConfig(null, StubHandler.class, null, logger));
   }
 
   @Test
   public void testShouldNotAllowNullToBeUsedForTheHandler() {
-    try {
-      new ResultConfig("/cheese", null, null, logger);
-      fail("Should have failed");
-    } catch (IllegalArgumentException e) {
-      exceptionWasExpected();
-    }
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new ResultConfig("/cheese", null, null, logger));
   }
 
   @Test
@@ -72,7 +60,7 @@ public class ResultConfigTest {
     NamedParameterHandler handler = new NamedParameterHandler();
     config.populate(handler, command);
 
-    assertThat(handler.getBar(), is("fishy"));
+    assertThat(handler.getBar()).isEqualTo("fishy");
   }
 
   @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
@@ -112,9 +100,6 @@ public class ResultConfigTest {
     );
     Throwable toClient = config.getRootExceptionCause(undeclared);
     assertEquals(noElement, toClient);
-  }
-
-  private void exceptionWasExpected() {
   }
 
   public static class NamedParameterHandler implements RestishHandler<Void> {

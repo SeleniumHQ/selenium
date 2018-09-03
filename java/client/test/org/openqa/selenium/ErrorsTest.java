@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.Driver.IE;
 
 import org.junit.Test;
@@ -39,6 +39,6 @@ public class ErrorsTest extends JUnit4TestBase {
     driver.get(pages.errorsPage);
     Object result = ((JavascriptExecutor) driver).
         executeScript("return window.ERRORS.join('\\n');");
-    assertEquals("Should have no errors", "", result);
+    assertThat(result).isEqualTo("");
   }
 }

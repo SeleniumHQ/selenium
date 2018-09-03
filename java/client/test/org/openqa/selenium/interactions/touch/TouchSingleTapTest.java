@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.interactions.touch;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
 import org.junit.Test;
@@ -57,6 +57,6 @@ public class TouchSingleTapTest extends TouchTestBase {
     Boolean samePage = (Boolean) ((JavascriptExecutor) driver)
         .executeScript("return document.latch");
 
-    assertTrue(samePage);
+    assertThat(samePage).isTrue();
   }
 }

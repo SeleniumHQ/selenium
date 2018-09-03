@@ -17,13 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.testing.Driver.CHROME;
@@ -52,43 +46,43 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("username"));
     Point location = element.getLocation();
 
-    assertThat(location.getX() > 0, is(true));
-    assertThat(location.getY() > 0, is(true));
+    assertThat(location.getX()).isGreaterThan(0);
+    assertThat(location.getY()).isGreaterThan(0);
   }
 
   @Test
   public void testShouldGetCoordinatesOfAnElement() {
     driver.get(appServer.whereIs("coordinates_tests/simple_page.html"));
-    assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
-    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
+    assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 10));
   }
 
   @Test
   public void testShouldGetCoordinatesOfAnEmptyElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_empty_element.html"));
-    assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
-    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
+    assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 10));
   }
 
   @Test
   public void testShouldGetCoordinatesOfATransparentElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_transparent_element.html"));
-    assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
-    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
+    assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 10));
   }
 
   @Test
   public void testShouldGetCoordinatesOfAHiddenElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_hidden_element.html"));
-    assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
-    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
+    assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 10));
   }
 
   @Test
   public void testShouldGetCoordinatesOfAnInvisibleElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_invisible_element.html"));
-    assertThat(getLocationInViewPort(By.id("box")), is(new Point(0, 0)));
-    assertThat(getLocationOnPage(By.id("box")), is(new Point(0, 0)));
+    assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(0, 0));
+    assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(0, 0));
   }
 
   @Test
@@ -100,10 +94,10 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("coordinates_tests/page_with_element_out_of_view.html"));
     int windowHeight = driver.manage().window().getSize().getHeight();
     Point location = getLocationInViewPort(By.id("box"));
-    assertThat(location.getX(), is(10));
-    assertThat(location.getY(), greaterThanOrEqualTo(0));
-    assertThat(location.getY(), lessThanOrEqualTo(windowHeight - 100));
-    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 5010)));
+    assertThat(location.getX()).isEqualTo(10);
+    assertThat(location.getY()).isGreaterThanOrEqualTo(0);
+    assertThat(location.getY()).isLessThanOrEqualTo(windowHeight - 100);
+    assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 5010));
   }
 
   @SwitchToTopAfterTest
@@ -113,8 +107,8 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
     driver.switchTo().frame("ifr");
     WebElement box = driver.findElement(By.id("box"));
-    assertThat(box.getLocation(), is(new Point(10, 10)));
-    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
+    assertThat(box.getLocation()).isEqualTo(new Point(10, 10));
+    assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 10));
   }
 
   @SwitchToTopAfterTest
@@ -124,8 +118,8 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   public void testShouldGetCoordinatesInViewPortOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
     driver.switchTo().frame("ifr");
-    assertThat(getLocationInViewPort(By.id("box")), is(new Point(25, 25)));
-    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(25, 25));
+    assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 10));
   }
 
   @SwitchToTopAfterTest
@@ -136,8 +130,8 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("coordinates_tests/element_in_nested_frame.html"));
     driver.switchTo().frame("ifr");
     driver.switchTo().frame("ifr");
-    assertThat(getLocationInViewPort(By.id("box")), is(new Point(40, 40)));
-    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(40, 40));
+    assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 10));
   }
 
   @Test
@@ -145,12 +139,12 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   public void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
     assumeFalse("Ignoring fixed-position elements in IE6", TestUtilities.isIe6(driver));
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));
-    assertThat(getLocationInViewPort(By.id("fixed")).getY(), is(0));
-    assertThat(getLocationOnPage(By.id("fixed")).getY(), is(0));
+    assertThat(getLocationInViewPort(By.id("fixed")).getY()).isEqualTo(0);
+    assertThat(getLocationOnPage(By.id("fixed")).getY()).isEqualTo(0);
 
     driver.findElement(By.id("bottom")).click();
-    assertThat(getLocationInViewPort(By.id("fixed")).getY(), is(0));
-    assertThat(getLocationOnPage(By.id("fixed")).getY(), greaterThan(0));
+    assertThat(getLocationInViewPort(By.id("fixed")).getY()).isEqualTo(0);
+    assertThat(getLocationOnPage(By.id("fixed")).getY()).isGreaterThan(0);
   }
 
   @Test
@@ -159,8 +153,8 @@ public class PositionAndSizeTest extends JUnit4TestBase {
 
     WebElement shrinko = driver.findElement(By.id("linkId"));
     Dimension size = shrinko.getSize();
-    assertTrue("Width expected to be greater than 0", size.width > 0);
-    assertTrue("Height expected to be greater than 0", size.height > 0);
+    assertThat(size.width).isGreaterThan(0);
+    assertThat(size.height).isGreaterThan(0);
   }
 
   // TODO: This test's value seems dubious at best. The CSS spec does not define how browsers
@@ -176,15 +170,15 @@ public class PositionAndSizeTest extends JUnit4TestBase {
 
     WebElement r2 = driver.findElement(By.id("r2"));
     String left = r2.getCssValue("left");
-    assertTrue("left (\"" + left + "\") should start with \"10.9\".", left.startsWith("10.9"));
+    assertThat(left).startsWith("10.9");
     String top = r2.getCssValue("top");
-    assertTrue("top (\"" + top + "\") should start with \"10.1\".", top.startsWith("10.1"));
-    assertEquals(new Point(11, 10), r2.getLocation());
+    assertThat(top).startsWith("10.1");
+    assertThat(r2.getLocation()).isEqualTo(new Point(11, 10));
     String width = r2.getCssValue("width");
-    assertTrue("width (\"" + left + "\") should start with \"48.6\".", width.startsWith("48.6"));
+    assertThat(width).startsWith("48.6");
     String height = r2.getCssValue("height");
-    assertTrue("height (\"" + left + "\") should start with \"49.3\".", height.startsWith("49.3"));
-    assertEquals(r2.getSize(), new Dimension(49, 49));
+    assertThat(height).startsWith("49.3");
+    assertThat(r2.getSize()).isEqualTo(new Dimension(49, 49));
   }
 
   private Point getLocationInViewPort(By locator) {

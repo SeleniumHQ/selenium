@@ -18,10 +18,8 @@
 package org.openqa.selenium.remote;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
@@ -54,16 +52,16 @@ public class JsonWireProtocolResponseTest {
     Optional<ProtocolHandshake.Result> optionalResult =
         new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
-    assertTrue(optionalResult.isPresent());
+    assertThat(optionalResult.isPresent()).isTrue();
     ProtocolHandshake.Result result = optionalResult.get();
 
-    assertEquals(Dialect.OSS, result.getDialect());
+    assertThat(result.getDialect()).isEqualTo(Dialect.OSS);
     Response response = result.createResponse();
 
-    assertEquals("success", response.getState());
-    assertEquals(0, (int) response.getStatus());
+    assertThat(response.getState()).isEqualTo("success");
+    assertThat((int) response.getStatus()).isEqualTo(0);
 
-    assertEquals(caps.asMap(), response.getValue());
+    assertThat(response.getValue()).isEqualTo(caps.asMap());
   }
 
   @Test
@@ -82,7 +80,7 @@ public class JsonWireProtocolResponseTest {
     Optional<ProtocolHandshake.Result> optionalResult =
         new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
-    assertFalse(optionalResult.isPresent());
+    assertThat(optionalResult.isPresent()).isFalse();
   }
 
   @Test
@@ -100,7 +98,7 @@ public class JsonWireProtocolResponseTest {
     Optional<ProtocolHandshake.Result> optionalResult =
         new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
-    assertFalse(optionalResult.isPresent());
+    assertThat(optionalResult.isPresent()).isFalse();
   }
 
   @Test
@@ -116,13 +114,8 @@ public class JsonWireProtocolResponseTest {
         500,
         payload);
 
-
-    try {
-      new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
-      fail();
-    } catch (SessionNotCreatedException e) {
-      assertTrue(e.getMessage().contains("me no likey"));
-    }
-
+    assertThatExceptionOfType(SessionNotCreatedException.class)
+        .isThrownBy(() -> new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse))
+        .withMessageContaining("me no likey");
   }
 }

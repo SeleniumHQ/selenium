@@ -18,19 +18,13 @@
 package org.openqa.selenium.remote.internal;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.remote.Dialect;
@@ -41,18 +35,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(JUnit4.class)
 public class WebElementToJsonConverterTest {
 
   private static final WebElementToJsonConverter CONVERTER = new WebElementToJsonConverter();
 
   @Test
   public void returnsPrimitivesAsIs() {
-    assertNull(CONVERTER.apply(null));
-    assertEquals("abc", CONVERTER.apply("abc"));
-    assertEquals(Boolean.TRUE, CONVERTER.apply(Boolean.TRUE));
-    assertEquals(Integer.valueOf(123), CONVERTER.apply(123));
-    assertEquals(Math.PI, CONVERTER.apply(Math.PI));
+    assertThat(CONVERTER.apply(null)).isNull();
+    assertThat(CONVERTER.apply("abc")).isEqualTo("abc");
+    assertThat(CONVERTER.apply(Boolean.TRUE)).isEqualTo(Boolean.TRUE);
+    assertThat(CONVERTER.apply(123)).isEqualTo(123);
+    assertThat(CONVERTER.apply(Math.PI)).isEqualTo(Math.PI);
   }
 
   @Test
@@ -90,7 +83,7 @@ public class WebElementToJsonConverterTest {
   @Test
   public void convertsSimpleCollections() {
     Object converted = CONVERTER.apply(asList(null, "abc", true, 123, Math.PI));
-    assertThat(converted, instanceOf(Collection.class));
+    assertThat(converted).isInstanceOf(Collection.class);
 
     List<?> list = new ArrayList<>((Collection<?>) converted);
     assertContentsInOrder(list, null, "abc", true, 123, Math.PI);
@@ -102,13 +95,13 @@ public class WebElementToJsonConverterTest {
     List<Object> outerList = asList("apples", "oranges", innerList);
 
     Object converted = CONVERTER.apply(outerList);
-    assertThat(converted, instanceOf(Collection.class));
+    assertThat(converted).isInstanceOf(Collection.class);
 
     List<?> list = ImmutableList.copyOf((Collection<?>) converted);
-    assertEquals(3, list.size());
-    assertEquals("apples", list.get(0));
-    assertEquals("oranges", list.get(1));
-    assertThat(list.get(2), instanceOf(Collection.class));
+    assertThat(list).hasSize(3);
+    assertThat(list.get(0)).isEqualTo("apples");
+    assertThat(list.get(1)).isEqualTo("oranges");
+    assertThat(list.get(2)).isInstanceOf(Collection.class);
 
     list = ImmutableList.copyOf((Collection<?>) list.get(2));
     assertContentsInOrder(list, 123, "abc");
@@ -116,23 +109,15 @@ public class WebElementToJsonConverterTest {
 
   @Test
   public void requiresMapsToHaveStringKeys() {
-    try {
-      CONVERTER.apply(ImmutableMap.of(new Object(), "bunny"));
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> CONVERTER.apply(ImmutableMap.of(new Object(), "bunny")));
   }
 
   @Test
   public void requiresNestedMapsToHaveStringKeys() {
-    try {
-      CONVERTER.apply(ImmutableMap.of(
-          "one", ImmutableMap.of(
-          "two", ImmutableMap.of(
-          Integer.valueOf(3), "not good"))));
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> CONVERTER.apply(
+            ImmutableMap.of("one", ImmutableMap.of("two", ImmutableMap.of(3, "not good")))));
   }
 
   @Test
@@ -141,14 +126,14 @@ public class WebElementToJsonConverterTest {
         "one", 1,
         "fruit", "apples",
         "honest", true));
-    assertThat(converted, instanceOf(Map.class));
+    assertThat(converted).isInstanceOf(Map.class);
 
     @SuppressWarnings("unchecked")
     Map<String, Object> map = (Map<String, Object>) converted;
-    assertEquals(3, map.size());
-    assertEquals(1, map.get("one"));
-    assertEquals("apples", map.get("fruit"));
-    assertEquals(true, map.get("honest"));
+    assertThat(map).hasSize(3);
+    assertThat(map.get("one")).isEqualTo(1);
+    assertThat(map.get("fruit")).isEqualTo("apples");
+    assertThat(map.get("honest")).isEqualTo(true);
   }
 
   @SuppressWarnings("unchecked")
@@ -159,18 +144,18 @@ public class WebElementToJsonConverterTest {
         "fruit", "apples",
         "honest", true,
         "nested", ImmutableMap.of("bugs", "bunny")));
-    assertThat(converted, instanceOf(Map.class));
+    assertThat(converted).isInstanceOf(Map.class);
 
     Map<String, Object> map = (Map<String, Object>) converted;
-    assertEquals(4, map.size());
-    assertEquals(1, map.get("one"));
-    assertEquals("apples", map.get("fruit"));
-    assertEquals(true, map.get("honest"));
-    assertThat(map.get("nested"), instanceOf(Map.class));
+    assertThat(map).hasSize(4);
+    assertThat(map.get("one")).isEqualTo(1);
+    assertThat(map.get("fruit")).isEqualTo("apples");
+    assertThat(map.get("honest")).isEqualTo(true);
+    assertThat(map.get("nested")).isInstanceOf(Map.class);
 
     map = (Map<String, Object>) map.get("nested");
-    assertEquals(1, map.size());
-    assertEquals("bunny", map.get("bugs"));
+    assertThat(map.size()).isEqualTo(1);
+    assertThat(map.get("bugs")).isEqualTo("bunny");
   }
 
   @SuppressWarnings("unchecked")
@@ -183,10 +168,10 @@ public class WebElementToJsonConverterTest {
     element2.setId("anotherId");
 
     Object value = CONVERTER.apply(asList(element, element2));
-    assertThat(value, instanceOf(Collection.class));
+    assertThat(value).isInstanceOf(Collection.class);
 
     List<Object> list = new ArrayList<>((Collection<Object>) value);
-    assertEquals(2, list.size());
+    assertThat(list).hasSize(2);
     assertIsWebElementObject(list.get(0), "abc123");
     assertIsWebElementObject(list.get(1), "anotherId");
   }
@@ -198,10 +183,10 @@ public class WebElementToJsonConverterTest {
     element.setId("abc123");
 
     Object value = CONVERTER.apply(ImmutableMap.of("one", element));
-    assertThat(value, instanceOf(Map.class));
+    assertThat(value).isInstanceOf(Map.class);
 
     Map<String, Object> map = (Map<String, Object>) value;
-    assertEquals(1, map.size());
+    assertThat(map.size()).isEqualTo(1);
     assertIsWebElementObject(map.get("one"), "abc123");
   }
 
@@ -211,7 +196,7 @@ public class WebElementToJsonConverterTest {
         "abc123", true, 123, Math.PI
     });
 
-    assertThat(value, instanceOf(Collection.class));
+    assertThat(value).isInstanceOf(Collection.class);
     assertContentsInOrder(new ArrayList<>((Collection<?>) value),
         "abc123", true, 123, Math.PI);
   }
@@ -230,11 +215,8 @@ public class WebElementToJsonConverterTest {
 
   @Test
   public void rejectsUnrecognizedTypes() {
-    try {
-      CONVERTER.apply(new Object());
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> CONVERTER.apply(new Object()));
   }
 
   private static WrappedWebElement wrapElement(WebElement element) {
@@ -242,19 +224,19 @@ public class WebElementToJsonConverterTest {
   }
 
   private static void assertIsWebElementObject(Object value, String expectedKey) {
-    assertThat(value, instanceOf(Map.class));
+    assertThat(value).isInstanceOf(Map.class);
 
     Map<?, ?>  map = (Map<?, ?>) value;
-    assertEquals(2, map.size());
-    assertTrue(map.containsKey(Dialect.OSS.getEncodedElementKey()));
-    assertEquals(expectedKey, map.get(Dialect.OSS.getEncodedElementKey()));
-    assertTrue(map.containsKey(Dialect.W3C.getEncodedElementKey()));
-    assertEquals(expectedKey, map.get(Dialect.W3C.getEncodedElementKey()));
+    assertThat(map).hasSize(2);
+    assertThat(map.containsKey(Dialect.OSS.getEncodedElementKey())).isTrue();
+    assertThat(map.get(Dialect.OSS.getEncodedElementKey())).isEqualTo(expectedKey);
+    assertThat(map.containsKey(Dialect.W3C.getEncodedElementKey())).isTrue();
+    assertThat(map.get(Dialect.W3C.getEncodedElementKey())).isEqualTo(expectedKey);
   }
 
   private static void assertContentsInOrder(List<?> list, Object... expectedContents) {
     List<Object> expected = asList(expectedContents);
-    assertEquals(expected, list);
+    assertThat(list).isEqualTo(expected);
   }
 
 }

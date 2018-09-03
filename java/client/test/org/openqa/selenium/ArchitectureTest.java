@@ -17,152 +17,148 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.Architecture.ANY;
+import static org.openqa.selenium.Architecture.ARM;
+import static org.openqa.selenium.Architecture.X64;
+import static org.openqa.selenium.Architecture.X86;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
 public class ArchitectureTest {
 
   @Test
   public void anyMatchesX86() {
-    assertTrue(Architecture.ANY.is(Architecture.X86));
+    assertThat(ANY.is(X86)).isTrue();
   }
 
   @Test
   public void anyMatchesX64() {
-    assertTrue(Architecture.ANY.is(Architecture.X64));
+    assertThat(ANY.is(X64)).isTrue();
   }
 
   @Test
   public void anyMatchesARM() {
-    assertTrue(Architecture.ANY.is(Architecture.ARM));
+    assertThat(ANY.is(ARM)).isTrue();
   }
 
   @Test
   public void anyMatchesANY() {
-    assertTrue(Architecture.ANY.is(Architecture.ANY));
+    assertThat(ANY.is(ANY)).isTrue();
   }
 
   @Test
   public void currentArchitecture() {
     Architecture current = Architecture.getCurrent();
-    assertNotNull(current);
-    assertFalse(current.is(Architecture.ANY));
+    assertThat(current).isNotNull();
+    assertThat(current.is(ANY)).isFalse();
   }
 
   @Test
   public void determineArchI386() {
-    assertTrue(Architecture.extractFromSysProperty("i386").is(Architecture.X86));
+    assertThat(Architecture.extractFromSysProperty("i386").is(X86)).isTrue();
   }
 
   @Test
   public void determineArchIA32() {
-    assertTrue(Architecture.extractFromSysProperty("ia32").is(Architecture.X86));
+    assertThat(Architecture.extractFromSysProperty("ia32").is(X86)).isTrue();
   }
 
   @Test
   public void determineArchI686() {
-    assertTrue(Architecture.extractFromSysProperty("i686").is(Architecture.X86));
+    assertThat(Architecture.extractFromSysProperty("i686").is(X86)).isTrue();
   }
 
   @Test
   public void determineArchI486() {
-    assertTrue(Architecture.extractFromSysProperty("i486").is(Architecture.X86));
+    assertThat(Architecture.extractFromSysProperty("i486").is(X86)).isTrue();
   }
 
   @Test
   public void determineArchI86() {
-    assertTrue(Architecture.extractFromSysProperty("i86").is(Architecture.X86));
+    assertThat(Architecture.extractFromSysProperty("i86").is(X86)).isTrue();
   }
 
   @Test
   public void determineArchPentium() {
-    assertTrue(Architecture.extractFromSysProperty("pentium").is(Architecture.X86));
+    assertThat(Architecture.extractFromSysProperty("pentium").is(X86)).isTrue();
   }
 
   @Test
   public void determineArchPentiumPro() {
-    assertTrue(Architecture.extractFromSysProperty("pentium_pro").is(Architecture.X86));
+    assertThat(Architecture.extractFromSysProperty("pentium_pro").is(X86)).isTrue();
   }
 
   @Test
   public void determineArchPentiumProMmx() {
-    assertTrue(Architecture.extractFromSysProperty("pentium_pro+mmx").is(Architecture.X86));
+    assertThat(Architecture.extractFromSysProperty("pentium_pro+mmx").is(X86))
+        .isTrue();
   }
 
   @Test
   public void determineArchPentiumMmx() {
-    assertTrue(Architecture.extractFromSysProperty("pentium+mmx").is(Architecture.X86));
+    assertThat(Architecture.extractFromSysProperty("pentium+mmx").is(X86)).isTrue();
   }
 
   @Test
   public void determineArchAMD64() {
-    assertTrue(Architecture.extractFromSysProperty("amd64").is(Architecture.X64));
+    assertThat(Architecture.extractFromSysProperty("amd64").is(X64)).isTrue();
   }
 
   @Test
   public void determineArchIA64() {
-    assertTrue(Architecture.extractFromSysProperty("ia64").is(Architecture.X64));
+    assertThat(Architecture.extractFromSysProperty("ia64").is(X64)).isTrue();
   }
 
   @Test
   public void determineArchARM() {
-    assertTrue(Architecture.extractFromSysProperty("arm").is(Architecture.ARM));
+    assertThat(Architecture.extractFromSysProperty("arm").is(ARM)).isTrue();
   }
 
   @Test
   public void determineArchEmpty() {
-    Throwable t = catchThrowable(() -> Architecture.extractFromSysProperty(""));
-    assertThat(t, instanceOf(UnsupportedOperationException.class));
-    assertThat(t.getMessage(), containsString("Unknown architecture"));
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> Architecture.extractFromSysProperty(""))
+        .withMessageContaining("Unknown architecture");
   }
 
   @Test
   public void determineArchBogus() {
-    Throwable t = catchThrowable(() -> Architecture.extractFromSysProperty("hoobaflooba"));
-    assertThat(t, instanceOf(UnsupportedOperationException.class));
-    assertThat(t.getMessage(), containsString("Unknown architecture"));
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> Architecture.extractFromSysProperty("hoobaflooba"))
+        .withMessageContaining("Unknown architecture");
   }
 
   @Test
   public void determineArchMixedCasing() {
-    assertTrue(Architecture.extractFromSysProperty("AmD64").is(Architecture.X64));
+    assertThat(Architecture.extractFromSysProperty("AmD64").is(X64)).isTrue();
   }
 
   @Test
   public void dataModelIs32Or64BitOnCurrentArchitecture() {
     int model = Architecture.getCurrent().getDataModel();
-    assertTrue(model == 32 || model == 64);
+    assertThat(model == 32 || model == 64).isTrue();
   }
 
   @Test
   public void x86DataModelIs32Bit() {
-    assertEquals(32, Architecture.X86.getDataModel());
+    assertThat(X86.getDataModel()).isEqualTo(32);
   }
 
   @Test
   public void x64DataModelIs64Bit() {
-    assertEquals(64, Architecture.X64.getDataModel());
+    assertThat(X64.getDataModel()).isEqualTo(64);
   }
 
   @Test
   public void armDataModelIs64Bit() {
-    assertEquals(64, Architecture.ARM.getDataModel());
+    assertThat(ARM.getDataModel()).isEqualTo(64);
   }
 
   @Test
   public void anyDataModelIs64Bit() {
-    assertEquals(64, Architecture.ANY.getDataModel());
+    assertThat(ANY.getDataModel()).isEqualTo(64);
   }
 
 }

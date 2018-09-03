@@ -18,8 +18,7 @@ package org.openqa.selenium.net;
 
 import static java.lang.System.currentTimeMillis;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.junit.After;
@@ -66,7 +65,7 @@ public class UrlCheckerTest {
     long start = currentTimeMillis();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed, lessThan(UrlChecker.CONNECT_TIMEOUT_MS + 100L)); // threshold
+    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + 100L); // threshold
   }
 
   @Test
@@ -84,7 +83,7 @@ public class UrlCheckerTest {
     long start = currentTimeMillis();
     urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, url);
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed, lessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 200L)); // threshold
+    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 200L); // threshold
   }
 
   @After

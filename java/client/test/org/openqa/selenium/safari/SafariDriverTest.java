@@ -18,7 +18,7 @@
 package org.openqa.selenium.safari;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 
 import org.junit.After;
@@ -61,7 +61,7 @@ public class SafariDriverTest extends JUnit4TestBase {
     service.start();
     driver2 = new SafariDriver(service);
     driver2.get(pages.xhtmlTestPage);
-    assertEquals("XHTML Test Page", driver2.getTitle());
+    assertThat(driver2.getTitle()).isEqualTo("XHTML Test Page");
   }
 
   @Test
@@ -72,7 +72,7 @@ public class SafariDriverTest extends JUnit4TestBase {
     options.setUseTechnologyPreview(true);
     driver2 = new SafariDriver(options);
     driver2.get(pages.xhtmlTestPage);
-    assertEquals("XHTML Test Page", driver2.getTitle());
+    assertThat(driver2.getTitle()).isEqualTo("XHTML Test Page");
   }
 
 }

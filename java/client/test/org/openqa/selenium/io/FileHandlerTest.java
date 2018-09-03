@@ -17,12 +17,9 @@
 
 package org.openqa.selenium.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,21 +27,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Random;
 
-@RunWith(JUnit4.class)
 public class FileHandlerTest {
 
   @Test
   public void testFileCopy() throws IOException {
     File newFile = File.createTempFile("testFileCopy", "dst");
     File tmpFile = writeTestFile(File.createTempFile("FileUtilTest", "src"));
-    assertTrue(newFile.length() == 0);
-    assertTrue(tmpFile.length() > 0);
+    assertThat(newFile.length()).isEqualTo(0);
+    assertThat(tmpFile.length()).isGreaterThan(0);
 
     try {
       // Copy it.
       FileHandler.copy(tmpFile, newFile);
 
-      assertEquals(tmpFile.length(), newFile.length());
+      assertThat(newFile.length()).isEqualTo(tmpFile.length());
     } finally {
       tmpFile.delete();
       newFile.delete();

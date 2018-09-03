@@ -17,20 +17,15 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.Reader;
 import java.io.StringReader;
 
-@RunWith(JUnit4.class)
 public class PreferencesTest {
 
   private static final String emptyDefaults = "{\"mutable\": {}, \"frozen\": {}}";
@@ -43,28 +38,27 @@ public class PreferencesTest {
 
   @Test
   public void stringifyVsStringFormat() {
-    assertEquals("\"stringifyMe\"", String.format("\"%s\"", "stringifyMe"));
+    assertThat(String.format("\"%s\"", "stringifyMe")).isEqualTo("\"stringifyMe\"");
   }
 
   @Test
   public void stringFormatOfStringify() {
-    assertEquals("\"\"stringifyMe\"\"", String.format("\"%s\"", "\"stringifyMe\""));
+    assertThat(String.format("\"%s\"", "\"stringifyMe\"")).isEqualTo("\"\"stringifyMe\"\"");
   }
 
   @Test
   public void detectStringification() {
     Preferences a = new Preferences(defaults);
 
-    assertFalse("Empty String", canSet(a, "\"\""));
-    assertFalse("Valid stringified string", canSet(a, ("\"Julian\"")));
-    assertTrue("Only start is stringified", canSet(a, ("\"StartOnly")));
-    assertTrue("Only end is stringified", canSet(a, ("EndOnly\"")));
-    assertFalse("Using String.format(\"%%s\")",
-        canSet(a, (String.format("\"%s\"", "FormatMe"))));
+    assertThat(canSet(a, "\"\"")).as("Empty String").isFalse();
+    assertThat(canSet(a, ("\"Julian\""))).as("Valid stringified string").isFalse();
+    assertThat(canSet(a, ("\"StartOnly"))).as("Only start is stringified").isTrue();
+    assertThat(canSet(a, ("EndOnly\""))).as("Only end is stringified").isTrue();
+    assertThat(canSet(a, (String.format("\"%s\"", "FormatMe"))))
+        .as("Using String.format(\"%%s\")").isFalse();
 
-    assertFalse("Stringified string containing extra double-quotes",
-        canSet(a, ("\"Julian\" \"TestEngineer\" Harty.\"")));
-
+    assertThat(canSet(a, ("\"Julian\" \"TestEngineer\" Harty.\"")))
+        .as("\"Stringified string containing extra double-quotes\"").isFalse();
   }
 
   @Test
@@ -72,7 +66,7 @@ public class PreferencesTest {
     StringReader lines = new StringReader("user_pref(\"extensions.update.notifyUser\", false);");
     Preferences prefs = new Preferences(defaults, lines);
 
-    assertEquals(false, prefs.getPreference("extensions.update.notifyUser"));
+    assertThat(prefs.getPreference("extensions.update.notifyUser")).isEqualTo(false);
   }
 
   @Test
@@ -80,7 +74,7 @@ public class PreferencesTest {
     StringReader lines = new StringReader("user_pref(\"dom.max_script_run_time\", 34);");
     Preferences prefs = new Preferences(defaults, lines);
 
-    assertEquals(34, prefs.getPreference("dom.max_script_run_time"));
+    assertThat(prefs.getPreference("dom.max_script_run_time")).isEqualTo(34);
   }
 
   @Test
@@ -94,8 +88,8 @@ public class PreferencesTest {
             "user_pref(\"print.print_command\", \"" + prefWithQuotes + "\");");
     Preferences prefs = new Preferences(defaults, lines);
 
-    assertEquals(prefWithComma, prefs.getPreference("general.useragent.override"));
-    assertEquals(prefWithQuotes, prefs.getPreference("print.print_command"));
+    assertThat(prefs.getPreference("general.useragent.override")).isEqualTo(prefWithComma);
+    assertThat(prefs.getPreference("print.print_command")).isEqualTo(prefWithQuotes);
   }
 
   @Test
@@ -105,8 +99,8 @@ public class PreferencesTest {
             "user_pref(\"dom.max_script_run_time\", 32);");
     Preferences prefs = new Preferences(defaults, lines);
 
-    assertEquals(false, prefs.getPreference("extensions.update.notifyUser"));
-    assertEquals(32, prefs.getPreference("dom.max_script_run_time"));
+    assertThat(prefs.getPreference("extensions.update.notifyUser")).isEqualTo(false);
+    assertThat(prefs.getPreference("dom.max_script_run_time")).isEqualTo(32);
   }
 
   @Test
@@ -114,14 +108,9 @@ public class PreferencesTest {
     StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
 
-    try {
-      preferences.setPreference("frozen.pref", false);
-      fail();
-    } catch (IllegalArgumentException expected) {
-      assertEquals(
-          "Preference frozen.pref may not be overridden: frozen value=true, requested value=false",
-          expected.getMessage());
-    }
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> preferences.setPreference("frozen.pref", false))
+        .withMessage("Preference frozen.pref may not be overridden: frozen value=true, requested value=false");
   }
 
   @Test
@@ -131,19 +120,16 @@ public class PreferencesTest {
 
     preferences.setPreference("frozen.pref", true);
 
-    assertEquals(preferences.getPreference("frozen.pref"), true);
+    assertThat(preferences.getPreference("frozen.pref")).isEqualTo(true);
   }
 
   @Test
   public void canOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
     Preferences preferences = new Preferences(defaults);
 
-    try {
-      preferences.setPreference("dom.max_script_run_time", 29);
-      fail();
-    } catch (IllegalArgumentException expected) {
-      assertEquals("dom.max_script_run_time must be == 0 || >= 30", expected.getMessage());
-    }
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> preferences.setPreference("dom.max_script_run_time", 29))
+        .withMessage("dom.max_script_run_time must be == 0 || >= 30");
 
     preferences.setPreference("dom.max_script_run_time", 31);
     preferences.setPreference("dom.max_script_run_time", 0);

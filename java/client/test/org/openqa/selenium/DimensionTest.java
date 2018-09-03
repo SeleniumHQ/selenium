@@ -17,23 +17,19 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * Test WebDriver's Dimensions class.
  */
-@RunWith(JUnit4.class)
 public class DimensionTest {
   @Test
   public void testSimpleAssignment() {
     Dimension d1 = new Dimension(100, 200);
-    assertEquals(200, d1.getHeight());
-    assertEquals(100, d1.getWidth());
+    assertThat(d1.getHeight()).isEqualTo(200);
+    assertThat(d1.getWidth()).isEqualTo(100);
   }
 
   @Test
@@ -41,14 +37,14 @@ public class DimensionTest {
     Dimension d1 = new Dimension(100, 200);
     Dimension d2 = new Dimension(200, 200);
 
-    assertNotSame(d1, d2);
+    assertThat(d1).isNotSameAs(d2);
     // Doesn't have to be different, but known to be different for this case.
-    assertNotSame(d1.hashCode(), d2.hashCode());
+    assertThat(d1.hashCode()).isNotEqualTo(d2.hashCode());
 
     Dimension d1copy = new Dimension(100, 200);
 
-    assertEquals(d1, d1copy);
-    assertEquals(d1.hashCode(), d1copy.hashCode());
+    assertThat(d1copy).isEqualTo(d1);
+    assertThat(d1copy.hashCode()).isEqualTo(d1.hashCode());
   }
 
 }

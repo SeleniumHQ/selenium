@@ -17,8 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
@@ -38,7 +37,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
     WebElement body = driver.findElement(By.tagName("body"));
     WebElement xbody = driver.findElements(By.xpath("//body")).get(0);
 
-    assertEquals(body, xbody);
+    assertThat(xbody).isEqualTo(body);
   }
 
   @Test
@@ -47,7 +46,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
 
     List<WebElement> ps = driver.findElements(By.tagName("p"));
 
-    assertFalse(ps.get(0).equals(ps.get(1)));
+    assertThat(ps.get(0).equals(ps.get(1))).isFalse();
   }
 
   @Test
@@ -56,7 +55,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
     WebElement body = driver.findElement(By.tagName("body"));
     WebElement xbody = driver.findElement(By.xpath("//body"));
 
-    assertEquals(body.hashCode(), xbody.hashCode());
+    assertThat(xbody.hashCode()).isEqualTo(body.hashCode());
   }
 
   @Test
@@ -65,7 +64,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
     List<WebElement> body = driver.findElements(By.tagName("body"));
     List<WebElement> xbody = driver.findElements(By.xpath("//body"));
 
-    assertEquals(body.get(0).hashCode(), xbody.get(0).hashCode());
+    assertThat(xbody.get(0).hashCode()).isEqualTo(body.get(0).hashCode());
   }
 
   @SwitchToTopAfterTest
@@ -93,7 +92,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
     String firstId = getId(unwrapIfNecessary(first));
     String secondId = getId(unwrapIfNecessary(second));
 
-    assertEquals(firstId, secondId);
+    assertThat(secondId).isEqualTo(firstId);
   }
 
   private String getId(WebElement element) {

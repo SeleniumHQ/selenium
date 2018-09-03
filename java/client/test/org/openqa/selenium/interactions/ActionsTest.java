@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
+import static org.openqa.selenium.Keys.CONTROL;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -45,7 +44,6 @@ import java.util.Map;
 /**
  * Tests the builder for advanced user interaction, the Actions class.
  */
-@RunWith(JUnit4.class)
 public class ActionsTest {
 
   @Mock private Mouse mockMouse;
@@ -156,8 +154,7 @@ public class ActionsTest {
   @Test
   public void testCtrlClick() {
     WebDriver driver = mock(WebDriver.class, withSettings().extraInterfaces(Interactive.class));
-    ArgumentCaptor<Collection<Sequence>> sequenceCaptor =
-        ArgumentCaptor.forClass((Class) Collection.class);
+    ArgumentCaptor<Collection<Sequence>> sequenceCaptor = ArgumentCaptor.forClass(Collection.class);
     Mockito.doNothing().when((Interactive) driver).perform(sequenceCaptor.capture());
 
     new Actions(driver)
@@ -168,7 +165,7 @@ public class ActionsTest {
 
     Collection<Sequence> sequence = sequenceCaptor.getValue();
 
-    assertEquals(2, sequence.size());
+    assertThat(sequence).hasSize(2);
 
     // get mouse and keyboard sequences
     Map<String, Object>[] sequencesJson = sequence.stream().map(Sequence::toJson).toArray(HashMap[]::new);
@@ -182,49 +179,39 @@ public class ActionsTest {
       keyboardSequence = sequencesJson[1];
     }
 
-    assertEquals("pointer", mouseSequence.get("type"));
-    List<Map<?,?>> mouseActions = (List<Map<?,?>>) mouseSequence.get("actions");
-    assertEquals(4, mouseActions.size());
+    assertThat(mouseSequence).containsEntry("type", "pointer");
+    assertThat(mouseSequence.get("actions")).isInstanceOf(List.class);
+    List<Map<String, Object>> mouseActions = (List<Map<String, Object>>) mouseSequence.get("actions");
+    assertThat(mouseActions).hasSize(4);
 
-    assertEquals("key", keyboardSequence.get("type"));
-    List<Map<?, ?>> keyboardActions = (List<Map<?, ?>>) keyboardSequence.get("actions");
-    assertEquals(4, keyboardActions.size());
+    assertThat(keyboardSequence).containsEntry("type", "key");
+    assertThat(keyboardSequence.get("actions")).isInstanceOf(List.class);
+    List<Map<String, Object>> keyboardActions = (List<Map<String, Object>>) keyboardSequence.get("actions");
+    assertThat(keyboardActions).hasSize(4);
 
-    // Mouse pauses as key goes down
-    Map<?, ?> pauseAction = mouseActions.get(0);
-    assertEquals("pause", pauseAction.get("type"));
-    assertEquals(0L, pauseAction.get("duration"));
+    assertThat(mouseActions.get(0)).as("Mouse pauses as key goes down")
+        .containsEntry("type", "pause").containsEntry("duration", 0L);
 
-    Map<?, ?> keyDownAction = keyboardActions.get(0);
-    assertEquals("keyDown", keyDownAction.get("type"));
-    assertEquals(Keys.CONTROL.toString(), keyDownAction.get("value"));
+    assertThat(keyboardActions.get(0)).as("Key goes down")
+        .containsEntry("type", "keyDown").containsEntry("value", CONTROL.toString());
 
-    // Mouse goes down, so keyboard pauses
-    Map<?, ?> pointerDownAction = mouseActions.get(1);
-    assertEquals("pointerDown", pointerDownAction.get("type"));
-    assertEquals(0, pointerDownAction.get("button"));
+    assertThat(mouseActions.get(1)).as("Mouse goes down")
+        .containsEntry("type", "pointerDown").containsEntry("button", 0);
 
-    pauseAction = keyboardActions.get(1);
-    assertEquals("pause", pauseAction.get("type"));
-    assertEquals(0L, pauseAction.get("duration"));
+    assertThat(keyboardActions.get(1)).as("Mouse goes down, so keyboard pauses")
+        .containsEntry("type", "pause").containsEntry("duration", 0L);
 
-    // Mouse goes up, so keyboard pauses
-    Map<?, ?> pointerUpAction = mouseActions.get(2);
-    assertEquals("pointerUp", pointerUpAction.get("type"));
-    assertEquals(0, pointerUpAction.get("button"));
+    assertThat(mouseActions.get(2)).as("Mouse goes up")
+        .containsEntry("type", "pointerUp").containsEntry("button", 0);
 
-    pauseAction = keyboardActions.get(2);
-    assertEquals("pause", pauseAction.get("type"));
-    assertEquals(0L, pauseAction.get("duration"));
+    assertThat(keyboardActions.get(2)).as("Mouse goes up, so keyboard pauses")
+        .containsEntry("type", "pause").containsEntry("duration", 0L);
 
-    // Mouse pauses as keyboard releases key
-    pauseAction = mouseActions.get(3);
-    assertEquals("pause", pauseAction.get("type"));
-    assertEquals(0L, pauseAction.get("duration"));
+    assertThat(mouseActions.get(3)).as("Mouse pauses as keyboard releases key")
+        .containsEntry("type", "pause").containsEntry("duration", 0L);
 
-    Map<?, ?> keyUpAction = keyboardActions.get(3);
-    assertEquals("keyUp", keyUpAction.get("type"));
-    assertEquals(Keys.CONTROL.toString(), keyUpAction.get("value"));
+    assertThat(keyboardActions.get(3)).as("Keyboard releases key")
+        .containsEntry("type", "keyUp").containsEntry("value", CONTROL.toString());
   }
 
 

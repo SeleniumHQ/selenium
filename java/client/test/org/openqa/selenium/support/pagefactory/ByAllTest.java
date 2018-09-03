@@ -17,22 +17,17 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -41,7 +36,6 @@ import org.openqa.selenium.WebElement;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(JUnit4.class)
 public class ByAllTest {
 
   private WebDriver driver;
@@ -54,14 +48,14 @@ public class ByAllTest {
   @Test
   public void findElementZeroBy() {
     ByAll by = new ByAll();
-    Throwable t = catchThrowable(() -> by.findElement(driver));
-    assertThat(t, instanceOf(NoSuchElementException.class));
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
   public void findElementsZeroBy() {
     ByAll by = new ByAll();
-    assertTrue(by.findElements(driver).isEmpty());
+    assertThat(by.findElements(driver).isEmpty()).isTrue();
   }
 
   @Test
@@ -75,7 +69,7 @@ public class ByAllTest {
     when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
 
     ByAll by = new ByAll(By.name("cheese"));
-    assertThat(by.findElement(driver), equalTo(elem1));
+    assertThat(by.findElement(driver)).isEqualTo(elem1);
   }
 
   @Test
@@ -89,7 +83,7 @@ public class ByAllTest {
     when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
 
     ByAll by = new ByAll(By.name("cheese"));
-    assertThat(by.findElements(driver), equalTo(elems12));
+    assertThat(by.findElements(driver)).isEqualTo(elems12);
   }
 
   @Test
@@ -99,8 +93,8 @@ public class ByAllTest {
     when(driver.findElements(By.name("cheese"))).thenReturn(elems);
 
     ByAll by = new ByAll(By.name("cheese"));
-    Throwable t = catchThrowable(() -> by.findElement(driver));
-    assertThat(t, instanceOf(NoSuchElementException.class));
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -108,7 +102,7 @@ public class ByAllTest {
     when(driver.findElements(By.name("cheese"))).thenReturn(new ArrayList<>());
 
     ByAll by = new ByAll(By.name("cheese"));
-    assertTrue(by.findElements(driver).isEmpty());
+    assertThat(by.findElements(driver)).isEmpty();
   }
 
   @Test
@@ -128,7 +122,7 @@ public class ByAllTest {
     when(driver.findElements(By.name("photo"))).thenReturn(elems34);
 
     ByAll by = new ByAll(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElement(driver), equalTo(elem1));
+    assertThat(by.findElement(driver)).isEqualTo(elem1);
 
     verify(driver, times(1)).findElements(any(By.class));
     verifyNoMoreInteractions(driver);
@@ -151,7 +145,7 @@ public class ByAllTest {
     when(driver.findElements(By.name("photo"))).thenReturn(elems34);
 
     ByAll by = new ByAll(By.name("photo"), By.name("cheese"));
-    assertThat(by.findElement(driver), equalTo(elem3));
+    assertThat(by.findElement(driver)).isEqualTo(elem3);
 
     verify(driver, times(1)).findElements(any(By.class));
     verifyNoMoreInteractions(driver);
@@ -177,7 +171,7 @@ public class ByAllTest {
     when(driver.findElements(By.name("photo"))).thenReturn(elems34);
 
     ByAll by = new ByAll(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElements(driver), equalTo(elems1234));
+    assertThat(by.findElements(driver)).isEqualTo(elems1234);
 
     verify(driver, times(2)).findElements(any(By.class));
     verifyNoMoreInteractions(driver);
@@ -203,7 +197,7 @@ public class ByAllTest {
     when(driver.findElements(By.name("photo"))).thenReturn(elems34);
 
     ByAll by = new ByAll(By.name("photo"), By.name("cheese"));
-    assertThat(by.findElements(driver), equalTo(elems3412));
+    assertThat(by.findElements(driver)).isEqualTo(elems3412);
 
     verify(driver, times(2)).findElements(any(By.class));
     verifyNoMoreInteractions(driver);
@@ -211,7 +205,7 @@ public class ByAllTest {
 
   @Test
   public void testEquals() {
-    assertThat(new ByAll(By.id("cheese"), By.name("photo")),
-        equalTo(new ByAll(By.id("cheese"), By.name("photo"))));
+    assertThat(new ByAll(By.id("cheese"), By.name("photo")))
+        .isEqualTo(new ByAll(By.id("cheese"), By.name("photo")));
   }
 }

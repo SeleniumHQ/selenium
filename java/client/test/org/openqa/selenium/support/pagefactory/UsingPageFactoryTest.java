@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,7 +47,7 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
     String tagName = (String) ((JavascriptExecutor) driver).executeScript(
         "return arguments[0].tagName", page.formElement);
 
-    assertEquals("form", tagName.toLowerCase());
+    assertThat(tagName).isEqualToIgnoringCase("form");
   }
 
   @Test
@@ -59,9 +57,9 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
     Page page = new Page();
     PageFactory.initElements(driver, page);
 
-    assertThat(page.divs.size(), equalTo(13));
+    assertThat(page.divs).hasSize(13);
     for (WebElement link : page.divs) {
-      assertThat(link.getTagName(), equalTo("div"));
+      assertThat(link.getTagName()).isEqualTo("div");
     }
   }
 
@@ -79,7 +77,7 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
     Object seen = new WebElementToJsonConverter().apply(page.element);
     Object expected = new WebElementToJsonConverter().apply(element);
 
-    assertEquals(expected, seen);
+    assertThat(seen).isEqualTo(expected);
   }
 
 

@@ -17,9 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.CHROME;
@@ -37,7 +35,6 @@ import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class I18nTest extends JUnit4TestBase {
@@ -72,7 +69,7 @@ public class I18nTest extends JUnit4TestBase {
 
     input.sendKeys(shalom);
 
-    assertEquals(shalom, input.getAttribute("value"));
+    assertThat(input.getAttribute("value")).isEqualTo(shalom);
   }
 
   @Test
@@ -82,7 +79,7 @@ public class I18nTest extends JUnit4TestBase {
 
     input.sendKeys(tmunot);
 
-    assertEquals(tmunot, input.getAttribute("value"));
+    assertThat(input.getAttribute("value")).isEqualTo(tmunot);
   }
 
   @Test
@@ -104,7 +101,7 @@ public class I18nTest extends JUnit4TestBase {
     WebElement el = driver.findElement(By.name("i18n"));
     el.sendKeys(input);
 
-    assertEquals(input, el.getAttribute("value"));
+    assertThat(el.getAttribute("value")).isEqualTo(input);
   }
 
   @NeedsFreshDriver
@@ -117,7 +114,7 @@ public class I18nTest extends JUnit4TestBase {
 
     String text = driver.findElement(By.tagName("body")).getText();
 
-    assertEquals(shalom, text);
+    assertThat(text).isEqualTo(shalom);
   }
 
   @NeedsFreshDriver
@@ -153,8 +150,8 @@ public class I18nTest extends JUnit4TestBase {
       Thread.sleep(500);
       totalWaits++;
     }
-    assertTrue("IME Engine should be activated.", ime.isActivated());
-    assertEquals(desiredEngine, ime.getActiveEngine());
+    assertThat(ime.isActivated()).isTrue();
+    assertThat(ime.getActiveEngine()).isEqualTo(desiredEngine);
 
     // Send the Romaji for "Tokyo". The space at the end instructs the IME to convert the word.
     input.sendKeys("toukyou ");
@@ -163,12 +160,13 @@ public class I18nTest extends JUnit4TestBase {
     String elementValue = input.getAttribute("value");
 
     ime.deactivate();
-    assertFalse("IME engine should be off.", ime.isActivated());
+    assertThat(ime.isActivated()).isFalse();
 
     // IME is not present. Don't fail because of that. But it should have the Romaji value
     // instead.
-    assertTrue("The elemnt's value should either remain in Romaji or be converted properly."
-        + " It was:" + elementValue, elementValue.equals(tokyo));
+    assertThat(elementValue)
+        .describedAs("The elemnt's value should either remain in Romaji or be converted properly.")
+        .isEqualTo(tokyo);
   }
 
   @Test
@@ -195,9 +193,9 @@ public class I18nTest extends JUnit4TestBase {
 
     // IME is not present. Don't fail because of that. But it should have the Romaji value
     // instead.
-    String[] possibleValues = {tokyo, "\uE040" + "toukyou ", "toukyou "};
-    assertTrue("The element's value should either remain in Romaji or be converted properly."
-        + " It was: -" + elementValue + "-", Arrays.asList(possibleValues).contains(elementValue));
+    assertThat(elementValue)
+        .describedAs("The element's value should either remain in Romaji or be converted properly.")
+        .isIn(tokyo, "\uE040" + "toukyou ", "toukyou ");
   }
 
 }

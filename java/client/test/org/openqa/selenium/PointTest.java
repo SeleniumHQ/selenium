@@ -17,24 +17,20 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * Tests WebDriver's Point class.
  */
-@RunWith(JUnit4.class)
 public class PointTest {
 
   @Test
   public void testSimpleAssignment() {
     Point p1 = new Point(30, 50);
-    assertEquals(30, p1.getX());
-    assertEquals(50, p1.getY());
+    assertThat(p1.getX()).isEqualTo(30);
+    assertThat(p1.getY()).isEqualTo(50);
   }
 
   @Test
@@ -42,20 +38,20 @@ public class PointTest {
     Point p1 = new Point(30, 60);
     Point p2 = new Point(40, 60);
 
-    assertNotSame(p1, p2);
+    assertThat(p1).isNotEqualTo(p2);
     // Doesn't have to be different, but known to be different for this case.
-    assertNotSame(p1.hashCode(), p2.hashCode());
+    assertThat(p1.hashCode()).isNotEqualTo(p2.hashCode());
 
     Point p1copy = new Point(30, 60);
 
-    assertEquals(p1, p1copy);
-    assertEquals(p1.hashCode(), p1copy.hashCode());
+    assertThat(p1copy).isEqualTo(p1);
+    assertThat(p1copy.hashCode()).isEqualTo(p1.hashCode());
   }
 
   @Test
   public void testMoveBy() {
     Point p1 = new Point(31, 42);
 
-    assertEquals(new Point(35, 47), p1.moveBy(4, 5));
+    assertThat(p1.moveBy(4, 5)).isEqualTo(new Point(35, 47));
   }
 }

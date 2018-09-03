@@ -17,38 +17,41 @@
 
 package org.openqa.selenium.logging;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static java.util.logging.Level.ALL;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.OFF;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.WARNING;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.logging.LogLevelMapping.toLevel;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.util.logging.Level;
 
-@RunWith(JUnit4.class)
 public class LoggingTest {
 
   @Test
   public void testLogLevelConversions() {
-    assertEquals(Level.ALL, LogLevelMapping.toLevel("ALL"));
-    assertEquals(Level.FINE, LogLevelMapping.toLevel("DEBUG"));
-    assertEquals(Level.INFO, LogLevelMapping.toLevel("INFO"));
-    assertEquals(Level.WARNING, LogLevelMapping.toLevel("WARNING"));
-    assertEquals(Level.SEVERE, LogLevelMapping.toLevel("SEVERE"));
-    assertEquals(Level.OFF, LogLevelMapping.toLevel("OFF"));
+    assertThat(toLevel("ALL")).isEqualTo(ALL);
+    assertThat(toLevel("DEBUG")).isEqualTo(FINE);
+    assertThat(toLevel("INFO")).isEqualTo(INFO);
+    assertThat(toLevel("WARNING")).isEqualTo(WARNING);
+    assertThat(toLevel("SEVERE")).isEqualTo(SEVERE);
+    assertThat(toLevel("OFF")).isEqualTo(OFF);
   }
 
   @Test
   public void canCompareLoggingPreferences() {
     LoggingPreferences prefs1 = new LoggingPreferences();
     LoggingPreferences prefs2 = new LoggingPreferences();
-    assertEquals(prefs1, prefs2);
+    assertThat(prefs2).isEqualTo(prefs1);
 
     prefs1.enable(LogType.BROWSER, Level.ALL);
-    assertNotEquals(prefs1, prefs2);
+    assertThat(prefs1).isNotEqualTo(prefs2);
 
     prefs2.enable(LogType.BROWSER, Level.ALL);
-    assertEquals(prefs1, prefs2);
+    assertThat(prefs2).isEqualTo(prefs1);
   }
 }

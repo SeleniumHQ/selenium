@@ -17,14 +17,12 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +43,7 @@ public class TextPagesTest extends JUnit4TestBase {
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
     String source = driver.getPageSource();
-    assertThat(source, containsString("Test"));
+    assertThat(source).contains("Test");
   }
 
   @Test
@@ -57,7 +55,7 @@ public class TextPagesTest extends JUnit4TestBase {
     driver.get(textPage);
 
     Cookie cookie = new Cookie.Builder("hello", "goodbye").build();
-    Throwable t = catchThrowable(() -> driver.manage().addCookie(cookie));
-    assertThat(t, instanceOf(WebDriverException.class));
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> driver.manage().addCookie(cookie));
   }
 }

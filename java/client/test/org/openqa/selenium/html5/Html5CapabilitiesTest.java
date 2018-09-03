@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.html5;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CACHE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
@@ -60,15 +59,13 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
   @Test
   public void enableWebStorageCapability() {
     configureCapability(SUPPORTS_WEB_STORAGE, true);
-    assertTrue("Required capability web storage should be enabled",
-         hasWebStorage(localDriver));
+    assertThat(hasWebStorage(localDriver)).isTrue();
   }
 
   @Test
   public void disableWebStorageCapability() {
     configureCapability(SUPPORTS_WEB_STORAGE, false);
-    assertFalse("Required capability web storage should be disabled",
-        hasWebStorage(localDriver));
+    assertThat(hasWebStorage(localDriver)).isFalse();
   }
 
   private boolean hasWebStorage(WebDriver driver) {
@@ -116,10 +113,8 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
     Capabilities desiredCaps = new ImmutableCapabilities(capability, isEnabled);
     localDriver = new WebDriverBuilder().get(desiredCaps);
     Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
-    assertTrue(String.format("The %s capability should be included in capabilities " +
-        "for the session", capability), caps.getCapability(capability) != null);
-    assertTrue(String.format("Capability %s should be set to %b", capability, isEnabled),
-        caps.is(capability) == isEnabled);
+    assertThat(caps.getCapability(capability)).isNotNull();
+    assertThat(caps.is(capability)).isEqualTo(isEnabled);
   }
 
   @After

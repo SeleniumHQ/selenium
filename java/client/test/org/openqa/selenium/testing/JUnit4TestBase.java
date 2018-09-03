@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.testing;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.base.Throwables;
 
@@ -75,7 +72,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     String hostName = environment.getAppServer().getHostName();
     String alternateHostName = environment.getAppServer().getAlternateHostName();
 
-    assertThat(hostName, is(not(equalTo(alternateHostName))));
+    assertThat(hostName).isNotEqualTo(alternateHostName);
   }
 
   @Rule

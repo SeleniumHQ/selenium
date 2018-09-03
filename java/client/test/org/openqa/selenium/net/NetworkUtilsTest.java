@@ -16,95 +16,82 @@
 // under the License.
 package org.openqa.selenium.net;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
 public class NetworkUtilsTest {
   @Test
   public void testGetPrivateLocalAddress() {
     NetworkUtils networkUtils =
         new NetworkUtils(StubNetworkInterfaceProvider.getUbuntu1010SingleNICAndWlan());
-    String s = networkUtils.obtainLoopbackIp4Address();
-    assertEquals("127.0.0.3", s);
-    assertEquals("chunky.local", networkUtils.getNonLoopbackAddressOfThisMachine());
+    assertThat(networkUtils.obtainLoopbackIp4Address()).isEqualTo("127.0.0.3");
+    assertThat(networkUtils.getNonLoopbackAddressOfThisMachine()).isEqualTo("chunky.local");
   }
 
   @Test
   public void testPrivateLocalAddress() {
     NetworkUtils networkUtils =
         new NetworkUtils(StubNetworkInterfaceProvider.getWindowsXpWithIp4Only());
-    String s = networkUtils.obtainLoopbackIp4Address();
-    assertEquals("localXhost", s);
-    assertEquals("myip4.mydomain.com", networkUtils.getNonLoopbackAddressOfThisMachine());
+    assertThat(networkUtils.obtainLoopbackIp4Address()).isEqualTo("localXhost");
+    assertThat(networkUtils.getNonLoopbackAddressOfThisMachine()).isEqualTo("myip4.mydomain.com");
   }
 
   @Test
   public void testRHELBox() {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getRHEL5Box());
-    String s = networkUtils.obtainLoopbackIp4Address();
-    assertEquals("localhost.localdomain", s);
-    assertEquals("woz-woz23", networkUtils.getNonLoopbackAddressOfThisMachine());
+    assertThat(networkUtils.obtainLoopbackIp4Address()).isEqualTo("localhost.localdomain");
+    assertThat(networkUtils.getNonLoopbackAddressOfThisMachine()).isEqualTo("woz-woz23");
   }
 
   @Test
   public void testSolarisBox() {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getSolarisBox());
-    String s = networkUtils.obtainLoopbackIp4Address();
-    assertEquals("localhost", s);
-    assertEquals("woz-woz01-adm", networkUtils.getNonLoopbackAddressOfThisMachine());
+    assertThat(networkUtils.obtainLoopbackIp4Address()).isEqualTo("localhost");
+    assertThat(networkUtils.getNonLoopbackAddressOfThisMachine()).isEqualTo("woz-woz01-adm");
   }
 
   @Test
   public void testUbuntu9X() {
     NetworkUtils networkUtils =
         new NetworkUtils(StubNetworkInterfaceProvider.getUbuntu09XSingleNIC());
-    String s = networkUtils.obtainLoopbackIp4Address();
-    assertEquals("127.0.0.1", s);
-    assertEquals("157.120.171.97", networkUtils.getNonLoopbackAddressOfThisMachine());
+    assertThat(networkUtils.obtainLoopbackIp4Address()).isEqualTo("127.0.0.1");
+    assertThat(networkUtils.getNonLoopbackAddressOfThisMachine()).isEqualTo("157.120.171.97");
   }
 
   @Test
   public void testOsXSnowLeopard() {
     NetworkUtils networkUtils =
         new NetworkUtils(StubNetworkInterfaceProvider.getOsXWiredAndWireless());
-    String s = networkUtils.obtainLoopbackIp4Address();
-    assertEquals("127.0.0.1", s);
-    assertEquals("192.168.4.1", networkUtils.getNonLoopbackAddressOfThisMachine());
+    assertThat(networkUtils.obtainLoopbackIp4Address()).isEqualTo("127.0.0.1");
+    assertThat(networkUtils.getNonLoopbackAddressOfThisMachine()).isEqualTo("192.168.4.1");
   }
 
   @Test
   public void testFreeBsd() {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getFreeBsd());
-    String s = networkUtils.obtainLoopbackIp4Address();
-    assertEquals("localhost.apache.org", s);
-    assertEquals("192.168.0.4", networkUtils.getNonLoopbackAddressOfThisMachine());
+    assertThat(networkUtils.obtainLoopbackIp4Address()).isEqualTo("localhost.apache.org");
+    assertThat(networkUtils.getNonLoopbackAddressOfThisMachine()).isEqualTo("192.168.0.4");
   }
 
   @Test
   public void testVistaBox() {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getVistaBox());
-    String s = networkUtils.obtainLoopbackIp4Address();
-    assertEquals("127.0.0.1", s);
-    assertEquals("woz134", networkUtils.getNonLoopbackAddressOfThisMachine());
+    assertThat(networkUtils.obtainLoopbackIp4Address()).isEqualTo("127.0.0.1");
+    assertThat(networkUtils.getNonLoopbackAddressOfThisMachine()).isEqualTo("woz134");
   }
 
   @Test
   public void testWindows7Box() {
     NetworkUtils networkUtils = new NetworkUtils(StubNetworkInterfaceProvider.getWindows7Box());
-    String s = networkUtils.obtainLoopbackIp4Address();
-    assertEquals("127.0.0.1", s);
-    assertEquals("192.168.1.102", networkUtils.getNonLoopbackAddressOfThisMachine());
+    assertThat(networkUtils.obtainLoopbackIp4Address()).isEqualTo("127.0.0.1");
+    assertThat(networkUtils.getNonLoopbackAddressOfThisMachine()).isEqualTo("192.168.1.102");
   }
 
   @Test
   public void testOpenSuseBoxIssue1181() {
     NetworkUtils networkUtils =
         new NetworkUtils(StubNetworkInterfaceProvider.getOpenSuseBoxFromIssue1181());
-    String s = networkUtils.obtainLoopbackIp4Address();
-    assertEquals("localhost.localdomain", s);
+    assertThat(networkUtils.obtainLoopbackIp4Address()).isEqualTo("localhost.localdomain");
   }
 }

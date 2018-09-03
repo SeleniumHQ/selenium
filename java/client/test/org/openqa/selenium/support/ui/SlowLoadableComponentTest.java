@@ -17,23 +17,16 @@
 
 package org.openqa.selenium.support.ui;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
 public class SlowLoadableComponentTest {
 
   @Test
   public void testShouldDoNothingIfComponentIsAlreadyLoaded() {
-    try {
-      new DetonatingSlowLoader().get();
-    } catch (RuntimeException e) {
-      fail("Did not expect load to be called");
-    }
+    new DetonatingSlowLoader().get();
   }
 
   @Test
@@ -41,40 +34,24 @@ public class SlowLoadableComponentTest {
     int numberOfTimesThroughLoop = 1;
     SlowLoading slowLoading = new SlowLoading(new SystemClock(), 1, numberOfTimesThroughLoop).get();
 
-    assertEquals(numberOfTimesThroughLoop, slowLoading.getLoopCount());
+    assertThat(slowLoading.getLoopCount()).isEqualTo(numberOfTimesThroughLoop);
   }
 
   @Test
   public void testTheLoadMethodShouldOnlyBeCalledOnceIfTheComponentTakesALongTimeToLoad() {
-    try {
-      new OnlyOneLoad(new SystemClock(), 5, 5).get();
-    } catch (RuntimeException e) {
-      fail("Did not expect load to be called more than once");
-    }
+    new OnlyOneLoad(new SystemClock(), 5, 5).get();
   }
 
   @Test
   public void testShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoadBeforeTimeout() {
     FakeClock clock = new FakeClock();
-    try {
-      new BasicSlowLoader(clock, 2).get();
-    } catch (Error e) {
-      // We expect to time out
-      return;
-    }
-    fail();
+    assertThatExceptionOfType(Error.class).isThrownBy(() -> new BasicSlowLoader(clock, 2).get());
   }
 
   @Test
   public void testShouldCancelLoadingIfAnErrorIsDetected() {
     HasError error = new HasError();
-
-    try {
-      error.get();
-      fail();
-    } catch (CustomError e) {
-      // This is expected
-    }
+    assertThatExceptionOfType(CustomError.class).isThrownBy(error::get);
   }
 
 
@@ -178,7 +155,7 @@ public class SlowLoadableComponentTest {
 
     @Override
     protected void isLoaded() throws Error {
-      fail();
+      throw new AssertionError();
     }
 
     @Override
