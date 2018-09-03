@@ -479,7 +479,8 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
     WebElement element = driver.findElement(By.id("under"));
-    assertThatExceptionOfType(ElementClickInterceptedException.class)
+    // TODO: change to ElementClickInterceptedException
+    assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(element::click);
   }
 
