@@ -108,28 +108,28 @@ public class ConfigureTimeoutTest {
   public void shouldThrowExceptionWhenIncorrectTimeoutTypeSpecifiedForJsonSpec() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> runOSSAssertion("unknown", 100))
-        .withMessage("Unknown wait type: unknown");
+        .withMessageStartingWith("Unknown wait type: unknown");
   }
 
   @Test
   public void shouldThrowExceptionWhenIncorrectTimeoutTypeSpecifiedForW3CSpec() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> runW3CAssertion(ImmutableMap.of("unknown", 100)))
-        .withMessage("Unknown wait type");
+        .withMessageStartingWith("Unknown wait type");
   }
 
   @Test
   public void shouldThrowExceptionWhenInvalidTimeoutValueSpecifiedForJsonSpec() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> runOSSAssertion("implicit", "timeout"))
-        .withMessage("Illegal (non-numeric) timeout value passed: timeout");
+        .withMessageStartingWith("Illegal (non-numeric) timeout value passed: timeout");
   }
 
   @Test
   public void shouldThrowExceptionWhenInvalidTimeoutValueSpecifiedForW3CSpec() throws Exception {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> runW3CAssertion(ImmutableMap.of("implicit", "timeout")))
-        .withMessage("Illegal (non-numeric) timeout value passed: timeout");
+        .withMessageStartingWith("Illegal (non-numeric) timeout value passed: timeout");
   }
 
   private void runW3CAssertion(Map<String, Object> args) throws Exception {
