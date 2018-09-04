@@ -36,12 +36,12 @@ public class RemoteLocationContext implements LocationContext {
   @Override
   public Location location() {
     @SuppressWarnings("unchecked")
-    Map<String, Double> result = (Map<String, Double>) executeMethod.execute(
+    Map<String, Object> result = (Map<String, Object>) executeMethod.execute(
         DriverCommand.GET_LOCATION, null);
     if (result == null) {
       return null;
     }
-    return new Location(result.get("latitude"), result.get("longitude"), result.get("altitude"));
+    return new Location(Double.valueOf(result.get("latitude").toString()), Double.valueOf(result.get("longitude").toString()), Double.valueOf(result.get("altitude").toString()));
   }
 
   @Override
