@@ -133,7 +133,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     WebElement revealed = driver.findElement(By.id("revealed"));
     driver.manage().timeouts().implicitlyWait(5000, MILLISECONDS);
 
-    assertThat(revealed.isDisplayed()).isTrue();
+    assertThat(revealed.isDisplayed()).isFalse();
     reveal.click();
     revealed.sendKeys("hello world");
   }
