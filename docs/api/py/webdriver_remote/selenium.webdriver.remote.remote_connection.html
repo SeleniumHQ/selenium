@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.13 documentation</title>
+    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.14 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.13',
+        VERSION:     '3.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.13 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.14 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.13 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.14 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -46,37 +46,6 @@
             
   <div class="section" id="module-selenium.webdriver.remote.remote_connection">
 <span id="selenium-webdriver-remote-remote-connection"></span><h1>selenium.webdriver.remote.remote_connection<a class="headerlink" href="#module-selenium.webdriver.remote.remote_connection" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="selenium.webdriver.remote.remote_connection.HttpErrorHandler">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.remote_connection.</tt><tt class="descname">HttpErrorHandler</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#HttpErrorHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.HttpErrorHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>A custom HTTP error handler.</p>
-<p>Used to return Response objects instead of raising an HTTPError exception.</p>
-<dl class="method">
-<dt id="selenium.webdriver.remote.remote_connection.HttpErrorHandler.http_error_default">
-<tt class="descname">http_error_default</tt><big>(</big><em>req</em>, <em>fp</em>, <em>code</em>, <em>msg</em>, <em>headers</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#HttpErrorHandler.http_error_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.HttpErrorHandler.http_error_default" title="Permalink to this definition">¶</a></dt>
-<dd><p>Default HTTP error handler.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>req - The original Request object.</li>
-<li>fp - The response body file object.</li>
-<li>code - The HTTP status code returned by the server.</li>
-<li>msg - The HTTP status message returned by the server.</li>
-<li>headers - The response headers.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">A new Response object.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="class">
 <dt id="selenium.webdriver.remote.remote_connection.RemoteConnection">
 <em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.remote_connection.</tt><tt class="descname">RemoteConnection</tt><big>(</big><em>remote_server_addr</em>, <em>keep_alive=False</em>, <em>resolve_ip=True</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#RemoteConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.RemoteConnection" title="Permalink to this definition">¶</a></dt>
@@ -160,70 +129,6 @@ its JSON payload.</li>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="selenium.webdriver.remote.remote_connection.Request">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.remote_connection.</tt><tt class="descname">Request</tt><big>(</big><em>url</em>, <em>data=None</em>, <em>method=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#Request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.Request" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extends the url_request.Request to support all HTTP request types.</p>
-<p>Initialise a new HTTP request.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>url - String for the URL to send the request to.</li>
-<li>data - Data to send with the request.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="selenium.webdriver.remote.remote_connection.Request.get_method">
-<tt class="descname">get_method</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#Request.get_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.Request.get_method" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the HTTP method used by this request.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="selenium.webdriver.remote.remote_connection.Response">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.remote_connection.</tt><tt class="descname">Response</tt><big>(</big><em>fp</em>, <em>code</em>, <em>headers</em>, <em>url</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#Response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.Response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents an HTTP response.</p>
-<p>Initialise a new Response.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>fp - The response body file object.</li>
-<li>code - The HTTP status code returned by the server.</li>
-<li>headers - A dictionary of headers returned by the server.</li>
-<li>url - URL of the retrieved resource represented by this Response.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="selenium.webdriver.remote.remote_connection.Response.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#Response.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.Response.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close the response body file object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.remote.remote_connection.Response.geturl">
-<tt class="descname">geturl</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#Response.geturl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.Response.geturl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the URL for the resource returned in this response.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.remote.remote_connection.Response.info">
-<tt class="descname">info</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#Response.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.Response.info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the response headers.</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 
@@ -263,7 +168,7 @@ its JSON payload.</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.13 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.14 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

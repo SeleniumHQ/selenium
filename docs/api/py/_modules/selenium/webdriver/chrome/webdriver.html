@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium 3.13 documentation</title>
+    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium 3.14 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.13',
+        VERSION:     '3.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.13 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.14 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.14 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -164,6 +164,29 @@
             <span class="s">&#39;network_conditions&#39;</span><span class="p">:</span> <span class="n">network_conditions</span>
         <span class="p">})</span>
 </div>
+<div class="viewcode-block" id="WebDriver.execute_cdp_cmd"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.execute_cdp_cmd">[docs]</a>    <span class="k">def</span> <span class="nf">execute_cdp_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">cmd_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute Chrome Devtools Protocol command and get returned result</span>
+
+<span class="sd">        The command and command args should follow chrome devtools protocol domains/commands, refer to link</span>
+<span class="sd">        https://chromedevtools.github.io/devtools-protocol/</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - cmd: A str, command name</span>
+<span class="sd">         - cmd_args: A dict, command args. empty dict {} if there is no command args</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.execute_cdp_cmd(&#39;Network.getResponseBody&#39;, {&#39;requestId&#39;: requestId})</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">            A dict, empty dict {} if there is no result to return.</span>
+<span class="sd">            For example to getResponseBody:</span>
+
+<span class="sd">            {&#39;base64Encoded&#39;: False, &#39;body&#39;: &#39;response body string&#39;}</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;executeCdpCommand&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;cmd&#39;</span><span class="p">:</span> <span class="n">cmd</span><span class="p">,</span> <span class="s">&#39;params&#39;</span><span class="p">:</span> <span class="n">cmd_args</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
 <div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Closes the browser and shuts down the ChromeDriver executable</span>
@@ -212,7 +235,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.14 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

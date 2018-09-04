@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.chrome.options &mdash; Selenium 3.13 documentation</title>
+    <title>selenium.webdriver.chrome.options &mdash; Selenium 3.14 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.13',
+        VERSION:     '3.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.13 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.14 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.14 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -66,6 +66,8 @@
 
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
 
@@ -201,24 +203,33 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_experimental_options</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Options.headless"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.headless">[docs]</a>    <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns whether or not the headless argument is set</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s">&#39;--headless&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
-</div>
-<div class="viewcode-block" id="Options.set_headless"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.set_headless">[docs]</a>    <span class="k">def</span> <span class="nf">set_headless</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headless</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+
+    <span class="nd">@headless.setter</span>
+<div class="viewcode-block" id="Options.headless"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.headless">[docs]</a>    <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the headless argument</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">          headless: boolean value indicating to set the headless option</span>
+<span class="sd">          value: boolean value indicating to set the headless option</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;--headless&#39;</span><span class="p">,</span> <span class="s">&#39;--disable-gpu&#39;</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">headless</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;--headless&#39;</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;windows&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;--disable-gpu&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">)</span> <span class="o">-</span> <span class="n">args</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Options.set_headless"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.set_headless">[docs]</a>    <span class="k">def</span> <span class="nf">set_headless</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headless</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Deprecated, options.headless = True &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;use setter for headless property instead of set_headless&#39;</span><span class="p">,</span>
+                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headless</span> <span class="o">=</span> <span class="n">headless</span>
 </div>
 <div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -226,7 +237,7 @@
 
 <span class="sd">            returns a dictionary with everything</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">chrome</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">CHROME</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">caps</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">CHROME</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="n">chrome_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experimental_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">chrome_options</span><span class="p">[</span><span class="s">&quot;extensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span>
@@ -236,9 +247,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugger_address</span><span class="p">:</span>
             <span class="n">chrome_options</span><span class="p">[</span><span class="s">&quot;debuggerAddress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugger_address</span>
 
-        <span class="n">chrome</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">chrome_options</span>
+        <span class="n">caps</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">chrome_options</span>
 
-        <span class="k">return</span> <span class="n">chrome</span></div></div>
+        <span class="k">return</span> <span class="n">caps</span></div></div>
 </pre></div>
 
           </div>
@@ -272,7 +283,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.14 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

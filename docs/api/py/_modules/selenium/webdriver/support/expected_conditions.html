@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.support.expected_conditions &mdash; Selenium 3.13 documentation</title>
+    <title>selenium.webdriver.support.expected_conditions &mdash; Selenium 3.14 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.13',
+        VERSION:     '3.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.13 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.14 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.14 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -69,6 +69,7 @@
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">StaleElementReferenceException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoAlertPresentException</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebElement</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd"> * Canned &quot;Expected Conditions&quot; which are generally useful within webdriver</span>
@@ -116,7 +117,7 @@
     <span class="sd">&quot;&quot;&quot; An expectation for checking that the current url contains a</span>
 <span class="sd">    case-sensitive substring.</span>
 <span class="sd">    url is the fragment of url expected,</span>
-<span class="sd">    returns True when the title matches, False otherwise</span>
+<span class="sd">    returns True when the url matches, False otherwise</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
@@ -128,7 +129,7 @@
 <div class="viewcode-block" id="url_matches"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.url_matches">[docs]</a><span class="k">class</span> <span class="nc">url_matches</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An expectation for checking the current url.</span>
 <span class="sd">    pattern is the expected pattern, which must be an exact match</span>
-<span class="sd">    returns True if the title matches, false otherwise.&quot;&quot;&quot;</span>
+<span class="sd">    returns True if the url matches, false otherwise.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span>
 
@@ -142,7 +143,7 @@
 <div class="viewcode-block" id="url_to_be"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.url_to_be">[docs]</a><span class="k">class</span> <span class="nc">url_to_be</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An expectation for checking the current url.</span>
 <span class="sd">    url is the expected url, which must be an exact match</span>
-<span class="sd">    returns True if the title matches, false otherwise.&quot;&quot;&quot;</span>
+<span class="sd">    returns True if the url matches, false otherwise.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
 
@@ -308,11 +309,14 @@
 <span class="sd">    locator used to find the element</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">locator</span> <span class="o">=</span> <span class="n">locator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">locator</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">_find_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">locator</span><span class="p">),</span> <span class="bp">False</span><span class="p">)</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">):</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">_find_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
             <span class="c"># In the case of NoSuchElement, returns true because the element is</span>
             <span class="c"># not present in DOM. The try block checks if the element is present</span>
@@ -320,6 +324,16 @@
             <span class="c"># In the case of StaleElementReference, returns true because stale</span>
             <span class="c"># element reference implies that element is no longer visible.</span>
             <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="invisibility_of_element"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.invisibility_of_element">[docs]</a><span class="k">class</span> <span class="nc">invisibility_of_element</span><span class="p">(</span><span class="n">invisibility_of_element_located</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; An Expectation for checking that an element is either invisible or not</span>
+<span class="sd">    present on the DOM.</span>
+
+<span class="sd">    element is either a locator (text) or an WebElement</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">element</span>
 
 </div>
 <div class="viewcode-block" id="element_to_be_clickable"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.element_to_be_clickable">[docs]</a><span class="k">class</span> <span class="nc">element_to_be_clickable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -488,7 +502,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.14 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

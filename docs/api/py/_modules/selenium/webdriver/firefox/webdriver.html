@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.13 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.14 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.13',
+        VERSION:     '3.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.13 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.14 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.14 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -66,17 +66,11 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">http.client</span> <span class="kn">as</span> <span class="nn">http_client</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">httplib</span> <span class="kn">as</span> <span class="nn">http_client</span>
-
-<span class="k">try</span><span class="p">:</span>
     <span class="nb">basestring</span>
 <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>  <span class="c"># Python 3.x</span>
     <span class="nb">basestring</span> <span class="o">=</span> <span class="nb">str</span>
 
 <span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 
@@ -105,7 +99,8 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">firefox_binary</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">executable_path</span><span class="o">=</span><span class="s">&quot;geckodriver&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">log_path</span><span class="o">=</span><span class="s">&quot;geckodriver.log&quot;</span><span class="p">,</span> <span class="n">firefox_options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">service_log_path</span><span class="o">=</span><span class="s">&quot;geckodriver.log&quot;</span><span class="p">,</span> <span class="n">firefox_options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">service_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Starts a new local session of Firefox.</span>
 
 <span class="sd">        Based on the combination and specificity of the various keyword</span>
@@ -148,15 +143,26 @@
 <span class="sd">            binary to use for Firefox 47.0.1 and greater, which</span>
 <span class="sd">            defaults to picking up the binary from the system path.</span>
 <span class="sd">        :param options: Instance of ``options.Options``.</span>
-<span class="sd">        :param log_path: Where to log information from the driver.</span>
+<span class="sd">        :param service_log_path: Where to log information from the driver.</span>
+<span class="sd">        :param desired_capabilities: alias of capabilities. In future</span>
+<span class="sd">            versions of this library, this will replace &#39;capabilities&#39;.</span>
+<span class="sd">            This will make the signature consistent with RemoteWebDriver.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">log_path</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;use service_log_path instead of log_path&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="n">service_log_path</span> <span class="o">=</span> <span class="n">log_path</span>
         <span class="k">if</span> <span class="n">firefox_options</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;use options instead of firefox_options&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
             <span class="n">options</span> <span class="o">=</span> <span class="n">firefox_options</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c"># If desired capabilities is set, alias it to capabilities.</span>
+        <span class="c"># If both are set ignore desired capabilities.</span>
+        <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">desired_capabilities</span><span class="p">:</span>
+            <span class="n">capabilities</span> <span class="o">=</span> <span class="n">desired_capabilities</span>
 
         <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">capabilities</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">FIREFOX</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -193,7 +199,10 @@
 
         <span class="k">if</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;marionette&quot;</span><span class="p">):</span>
             <span class="n">capabilities</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;marionette&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">log_path</span><span class="o">=</span><span class="n">log_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span>
+                <span class="n">executable_path</span><span class="p">,</span>
+                <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span>
+                <span class="n">log_path</span><span class="o">=</span><span class="n">service_log_path</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
             <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
@@ -234,9 +243,8 @@
         <span class="sd">&quot;&quot;&quot;Quits the driver and close every associated window.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="n">http_client</span><span class="o">.</span><span class="n">BadStatusLine</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">):</span>
-            <span class="c"># Happens if Firefox shutsdown before we&#39;ve read the response from</span>
-            <span class="c"># the socket.</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="c"># We don&#39;t care about the message because something probably has gone wrong</span>
             <span class="k">pass</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
@@ -341,7 +349,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.13 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.14 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
