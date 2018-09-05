@@ -84,9 +84,10 @@ class WebElement(object):
         if self._w3c:
             form = self.find_element(By.XPATH, "./ancestor-or-self::form")
             self._parent.execute_script(
-                "var e = arguments[0].ownerDocument.createEvent('Event');"
+                "var win = arguments[0].ownerDocument;"
+                "var e = win.createEvent('Event');"
                 "e.initEvent('submit', true, true);"
-                "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
+                "if (win.dispatchEvent(e)) { arguments[0].submit() }", form)
         else:
             self._execute(Command.SUBMIT_ELEMENT)
 
