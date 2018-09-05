@@ -27,7 +27,7 @@ _browsers:
       firefox: latest
   firefox-esr: &firefox-esr
     addons:
-      firefox: latest-esr
+      firefox: "52.9.0esr"
   firefox-nightly: &firefox-nightly
     addons:
       firefox: latest-nightly
