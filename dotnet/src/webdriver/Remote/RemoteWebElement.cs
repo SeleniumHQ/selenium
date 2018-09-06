@@ -355,9 +355,10 @@ namespace OpenQA.Selenium.Remote
                 {
                 IWebElement form = this.FindElement(By.XPath("./ancestor-or-self::form"));
                 this.driver.ExecuteScript(
-                    "var e = arguments[0].ownerDocument.createEvent('Event');" +
+                    "var win = arguments[0].ownerDocument;" +
+                    "var e = win.createEvent('Event');" +
                     "e.initEvent('submit', true, true);" +
-                    "if (arguments[0].dispatchEvent(e)) { arguments[0].submit(); }", form);
+                    "if (win.dispatchEvent(e)) { arguments[0].submit(); }", form);
                 }
             }
             else
