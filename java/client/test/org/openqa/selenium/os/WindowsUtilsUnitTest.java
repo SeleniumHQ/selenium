@@ -30,7 +30,7 @@ public class WindowsUtilsUnitTest {
     Assume.assumeTrue(WindowsUtils.thisIsWindows());
 
     String osVersion = System.getProperty("os.version");
-    assertThat(osVersion.matches("^(\\d)+\\.(\\d)+$"));
+    assertThat(osVersion).matches("^(\\d)+\\.(\\d)+$");
 
     Properties p = WindowsUtils.loadEnvironment();
     assertThat(p).isNotEmpty();
