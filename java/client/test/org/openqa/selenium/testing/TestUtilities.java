@@ -200,13 +200,4 @@ public class TestUtilities {
   public static boolean isOnTravis() {
     return Boolean.valueOf(System.getenv("TRAVIS"));
   }
-
-  public static Throwable catchThrowable(Runnable f) {
-    try {
-      f.run();
-    } catch (Throwable throwable) {
-      return throwable;
-    }
-    return null;
-  }
 }
