@@ -19,6 +19,8 @@ package org.openqa.grid.e2e.misc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Function;
@@ -228,6 +230,40 @@ public class GridViaCommandLineTest {
 
     waitForTextOnHubConsole(hubPort, "htmlunit");
     checkPresenceOfElementOnHubConsole(hubPort, By.cssSelector("img[src$='htmlunit.png']"));
+  }
+
+  /*
+    throwOnCapabilityNotPresent is a flag used in the ProxySet. It is configured in the hub,
+    and then passed to the registry, finally to the ProxySet.
+    This test checks that the flag value makes it all the way to the ProxySet. Default is "true".
+   */
+  @Test
+  public void testThrowOnCapabilityNotPresentFlagIsUsed() throws Exception {
+    Integer hubPort = PortProber.findFreePort();
+    String[] hubArgs = {"-role", "hub", "-host", "localhost", "-port", hubPort.toString(),
+                        "-throwOnCapabilityNotPresent", "true"};
+
+    server = new GridLauncherV3(hubArgs).launch();
+    Hub hub = (Hub) server.orElse(null);
+    assertNotNull("Hub didn't start with given parameters." ,hub);
+
+    assertTrue("throwOnCapabilityNotPresent was false in the Hub and it was passed as true",
+                hub.getConfiguration().throwOnCapabilityNotPresent);
+    assertTrue("throwOnCapabilityNotPresent was false in the ProxySet and it was passed as true",
+                hub.getRegistry().getAllProxies().isThrowOnCapabilityNotPresent());
+
+    // Stopping the hub and starting it with a new throwOnCapabilityNotPresent value
+    hub.stop();
+    hubArgs = new String[]{"-role", "hub", "-host", "localhost", "-port", hubPort.toString(),
+                           "-throwOnCapabilityNotPresent", "false"};
+    server = new GridLauncherV3(hubArgs).launch();
+    hub = (Hub) server.orElse(null);
+    assertNotNull("Hub didn't start with given parameters." ,hub);
+
+    assertFalse("throwOnCapabilityNotPresent was true in the Hub and it was passed as false",
+                hub.getConfiguration().throwOnCapabilityNotPresent);
+    assertFalse("throwOnCapabilityNotPresent was true in the ProxySet and it was passed as false",
+                hub.getRegistry().getAllProxies().isThrowOnCapabilityNotPresent());
   }
 
   @Test
