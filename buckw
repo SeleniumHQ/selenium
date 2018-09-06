@@ -80,7 +80,7 @@ elif "detect" == parsed.stamp_build and cmd in stamped_commands:
     try:
         rev = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).strip()
         args.extend(["--config", "selenium.rev=%s" % rev, "--config", "selenium.timestamp=%s" % timestamp])
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError:
         print("WARNING: UNABLE TO DETERMINE SELENIUM REVISION. BUILD NOT STAMPED PROPERLY")
         args.extend(["--config", "selenium.rev=unknown", "--config", "selenium.timestamp=%s" % timestamp])
 
