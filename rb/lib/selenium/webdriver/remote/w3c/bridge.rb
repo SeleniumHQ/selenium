@@ -388,9 +388,10 @@ module Selenium
 
           def submit_element(element)
             form = find_element_by('xpath', "./ancestor-or-self::form", element)
-            execute_script("var e = arguments[0].ownerDocument.createEvent('Event');" \
+            execute_script("var win = arguments[0].ownerDocument;" \
+                              "var e = win.createEvent('Event');" \
                               "e.initEvent('submit', true, true);" \
-                              'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
+                              'if (win.dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
           end
 
           def drag_element(element, right_by, down_by)
