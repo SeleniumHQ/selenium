@@ -18,6 +18,7 @@
 package org.openqa.selenium.interactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -75,14 +76,16 @@ public class ActionsTest {
   }
 
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void throwsIllegalArgumentExceptionIfKeysNull() {
-    new Actions(driver).sendKeys().perform();
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new Actions(driver).sendKeys().perform());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void throwsIllegalArgumentExceptionOverridenIfKeysNull() {
-    new Actions(driver).sendKeys(dummyLocatableElement).perform();
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new Actions(driver).sendKeys(dummyLocatableElement).perform());
   }
 
   @Test

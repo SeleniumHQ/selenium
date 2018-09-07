@@ -17,6 +17,7 @@
 
 package org.openqa.grid.common;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -137,13 +138,14 @@ public class RegistrationRequestTest {
     assertEquals("http://example.com:5555", req.getConfiguration().getRemoteHost());
   }
 
-  @Test(expected = GridConfigurationException.class)
+  @Test
   public void validateWithException() {
     GridNodeConfiguration config = parseCliOptions(
         "-role", "node", "-hubHost", "localhost", "-hub", "localhost:4444");
     RegistrationRequest req = new RegistrationRequest(config);
 
-    req.validate();
+    assertThatExceptionOfType(GridConfigurationException.class)
+        .isThrownBy(req::validate);
   }
 
   /**

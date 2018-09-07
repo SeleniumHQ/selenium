@@ -17,13 +17,12 @@
 
 package org.openqa.grid.web.servlet;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.testing.FakeHttpServletResponse;
 
 import java.io.IOException;
@@ -31,7 +30,6 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-@RunWith(JUnit4.class)
 public class ResourceServletTest extends BaseServletTest {
 
   @Before
@@ -48,8 +46,9 @@ public class ResourceServletTest extends BaseServletTest {
     assertNotNull(response.getBody());
   }
 
-  @Test(expected = Error.class)
-  public void testGetResouceFailed() throws IOException, ServletException {
-    FakeHttpServletResponse response = sendCommand("GET", "/foo/bar");
+  @Test
+  public void testGetResouceFailed() {
+    assertThatExceptionOfType(Error.class)
+        .isThrownBy(() -> sendCommand("GET", "/foo/bar"));
   }
 }
