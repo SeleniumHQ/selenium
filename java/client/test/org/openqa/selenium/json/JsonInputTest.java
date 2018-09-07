@@ -18,6 +18,7 @@
 package org.openqa.selenium.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.JsonType.BOOLEAN;
 import static org.openqa.selenium.json.JsonType.END_COLLECTION;
@@ -116,10 +117,11 @@ public class JsonInputTest {
     input.endArray();
   }
 
-  @Test(expected = JsonException.class)
+  @Test
   public void callingHasNextWhenNotInAnArrayOrMapIsAnError() {
     JsonInput input = newInput("cheese");
-    input.hasNext();
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(input::hasNext);
   }
 
   @Test

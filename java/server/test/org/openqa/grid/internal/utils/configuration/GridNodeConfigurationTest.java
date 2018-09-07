@@ -17,6 +17,7 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -151,7 +152,7 @@ public class GridNodeConfigurationTest {
     assertEquals(5L, gnc.capabilities.get(0).getCapability("maxInstances"));
   }
 
-  @Test(expected = GridConfigurationException.class)
+  @Test
   public void testLoadFromOldJson() {
     final String configJson = "{"
                             + "\"configuration\":"
@@ -161,7 +162,9 @@ public class GridNodeConfigurationTest {
                             + "\"port\": 1234"
                             + " }"
                             + "}";
-    GridNodeConfiguration cfg = GridNodeConfiguration.loadFromJSON(configJson);
+
+    assertThatExceptionOfType(GridConfigurationException.class)
+        .isThrownBy(() -> GridNodeConfiguration.loadFromJSON(configJson));
   }
 
   @Test
@@ -266,18 +269,18 @@ public class GridNodeConfigurationTest {
     assertEquals("http://hostNode:32657", gnc.getRemoteHost());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testGetHubHost_forNullConfig() {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
     gnc.hub = null;
-    gnc.getHubHost();
+    assertThatExceptionOfType(RuntimeException.class).isThrownBy(gnc::getHubHost);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testGetHubPort_forNullConfig() {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
     gnc.hub = null;
-    gnc.getHubPort();
+    assertThatExceptionOfType(RuntimeException.class).isThrownBy(gnc::getHubPort);
   }
 
   @Test

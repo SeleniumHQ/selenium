@@ -36,12 +36,13 @@ import java.util.List;
 
 public class SelectTest{
 
-  @Test(expected = UnexpectedTagNameException.class)
+  @Test
   public void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
     final WebElement element = mock(WebElement.class);
     when(element.getTagName()).thenReturn("a");
 
-    new Select(element);
+    assertThatExceptionOfType(UnexpectedTagNameException.class)
+        .isThrownBy(() -> new Select(element));
   }
 
   private Select selectElementWithMultipleEqualTo(final String multipleAttribute) {
@@ -185,10 +186,11 @@ public class SelectTest{
     verify(secondOption, never()).click();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void shouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
     Select select = selectElementWithMultipleEqualTo(null);
-    select.deselectAll();
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(select::deselectAll);
   }
 
   @Test

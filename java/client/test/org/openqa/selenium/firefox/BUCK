@@ -22,6 +22,7 @@ java_test(name = 'marionette',
   vm_args = [
     '-Dselenium.browser=ff',
     '-Dwebdriver.firefox.marionette=true',
+    '-Dwebdriver.firefox.bin=c:\\Program Files\\Nightly\\firefox.exe',
   ],
   deps = [
     ':tests',

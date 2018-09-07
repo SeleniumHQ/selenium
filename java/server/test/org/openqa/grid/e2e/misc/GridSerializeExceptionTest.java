@@ -17,6 +17,8 @@
 
 package org.openqa.grid.e2e.misc;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,9 +47,10 @@ public class GridSerializeExceptionTest {
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
   }
 
-  @Test(expected = WebDriverException.class)
+  @Test
   public void testwebdriver() {
-    GridTestHelper.getRemoteWebDriver(GridTestHelper.getDefaultBrowserCapability(), hub);
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> GridTestHelper.getRemoteWebDriver(GridTestHelper.getDefaultBrowserCapability(), hub));
   }
 
   @After
