@@ -20,7 +20,6 @@ java_library(name = 'tests',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/test/org/openqa/selenium/testing:test-base',
     '//third_party/java/assertj:assertj',
-    '//third_party/java/gson:gson',
     '//third_party/java/junit:junit',
   ],
 )
