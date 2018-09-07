@@ -17,6 +17,8 @@
 
 package org.openqa.grid.web.servlet.console;
 
+import com.google.common.base.Strings;
+
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -69,7 +71,7 @@ class MiniCapability {
 
   private String consoleIconName(DesiredCapabilities cap) {
     String browserString = cap.getBrowserName();
-    if (browserString == null || "".equals(browserString)) {
+    if (Strings.isNullOrEmpty(browserString)) {
       return "missingBrowserName";
     }
 
@@ -92,8 +94,12 @@ class MiniCapability {
         ret = BrowserType.FIREFOX;
       }
 
-    } else if (browserString.startsWith("*safari")) {
-      ret = BrowserType.SAFARI;
+    } else if (browserString.toLowerCase().contains("safari")) {
+      if (browserString.toLowerCase().contains("technology")) {
+        ret = "safari_technology_preview";
+      } else {
+        ret = BrowserType.SAFARI;
+      }
     } else if (browserString.startsWith("*googlechrome")) {
       ret = BrowserType.CHROME;
     } else if (browserString.startsWith("opera")) {
