@@ -126,7 +126,7 @@ rule /\/\/.*:run/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
       hash = JSON.parse(output)
       type = hash[short]['buck.type']
       if type =~ /.*_test/
-        Buck.buck_cmd('test', ['--no-results-cache', short])
+        Buck.buck_cmd('test', [short])
       else
         Buck.buck_cmd('run', ['--verbose', '5', short])
       end
