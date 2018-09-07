@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
 import static org.openqa.selenium.PageLoadStrategy.EAGER;
@@ -232,7 +233,7 @@ public class FirefoxOptionsTest {
     }
   }
 
-  @Test(expected = WebDriverException.class)
+  @Test
   public void shouldThrowAnExceptionIfSystemPropertyProfileDoesNotExist() {
     String unlikelyProfileName = "this-profile-does-not-exist-also-cheese";
     FirefoxProfile foundProfile = new ProfilesIni().getProfile(unlikelyProfileName);
@@ -242,7 +243,8 @@ public class FirefoxOptionsTest {
     String resetValue = property.get();
     try {
       property.set(unlikelyProfileName);
-      new FirefoxOptions();
+      assertThatExceptionOfType(WebDriverException.class)
+          .isThrownBy(FirefoxOptions::new);
     } finally {
       property.set(resetValue);
     }

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.injector;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -39,11 +40,12 @@ public class InjectorTest {
     assertTrue(list instanceof ArrayList);
   }
 
-  @Test(expected = UnableToInstaniateInstanceException.class)
+  @Test
   public void unmetConstructorParametersAreAnError() {
     Injector injector = Injector.builder().build();
 
-    injector.newInstance(NeedsJson.class);
+    assertThatExceptionOfType(UnableToInstaniateInstanceException.class)
+        .isThrownBy(() -> injector.newInstance(NeedsJson.class));
   }
 
   @Test
@@ -100,9 +102,10 @@ public class InjectorTest {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void itIsNotAllowedToInsertTwoInstancesOfTheSameClass() {
-    Injector.builder().register("hello").register("world");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Injector.builder().register("hello").register("world"));
   }
 
   @Test

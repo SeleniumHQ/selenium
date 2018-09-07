@@ -120,7 +120,7 @@ public class AjaxElementLocatorTest {
     verify(driver, atLeast(2)).findElement(by);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void shouldWorkWithCustomAnnotations() {
     final WebDriver driver = mock(WebDriver.class);
 
@@ -136,7 +136,8 @@ public class AjaxElementLocatorTest {
       }
     };
 
-    new AjaxElementLocator(driver, 5, npeAnnotations);
+    assertThatExceptionOfType(NullPointerException.class)
+        .isThrownBy(() ->new AjaxElementLocator(driver, 5, npeAnnotations));
   }
 
   private class MonkeyedAjaxElementLocator extends AjaxElementLocator {

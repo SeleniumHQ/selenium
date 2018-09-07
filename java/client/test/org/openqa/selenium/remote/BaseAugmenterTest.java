@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
-
-import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -113,7 +113,7 @@ public abstract class BaseAugmenterTest {
     assertThat(returned.getTitle()).isEqualTo("Title");
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void proxyShouldNotAppearInStackTraces() {
     // This will force the class to be enhanced
     final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
@@ -125,7 +125,8 @@ public abstract class BaseAugmenterTest {
     augmenter.addDriverAugmentation("magic.numbers", new AddsMagicNumberHolder());
     WebDriver returned = augmenter.augment(driver);
 
-    returned.findElement(By.id("ignored"));
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> returned.findElement(By.id("ignored")));
   }
 
 
@@ -170,7 +171,7 @@ public abstract class BaseAugmenterTest {
 
     assertThat(returned).isInstanceOf(MyInterface.class);
 
-    executor.expect(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", "1234"), null);
+    executor.expect(DriverCommand.CLICK_ELEMENT, singletonMap("id", "1234"), null);
     returned.click();
   }
 

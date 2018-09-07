@@ -88,10 +88,11 @@ public class W3CRemoteDriverTest {
             .addAlternative(new ImmutableCapabilities("unknownOption", "cake")));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void shouldRejectOldJsonWireProtocolNames() {
-    RemoteWebDriver.builder()
-        .addAlternative(new ImmutableCapabilities("platform", Platform.getCurrent()));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> RemoteWebDriver.builder()
+            .addAlternative(new ImmutableCapabilities("platform", Platform.getCurrent())));
   }
 
   @Test

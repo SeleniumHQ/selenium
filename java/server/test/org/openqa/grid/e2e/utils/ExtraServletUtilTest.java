@@ -17,6 +17,7 @@
 
 package org.openqa.grid.e2e.utils;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -42,9 +43,10 @@ public class ExtraServletUtilTest {
     assertNull(servlet);
   }
 
-  @Test(expected = ClassCastException.class)
+  @Test
   public void doesntExtendServlet() {
     String s = this.getClass().getCanonicalName();
-    Class<? extends Servlet> servlet = ExtraServletUtil.createServlet(s);
+    assertThatExceptionOfType(ClassCastException.class)
+        .isThrownBy(() -> ExtraServletUtil.createServlet(s));
   }
 }

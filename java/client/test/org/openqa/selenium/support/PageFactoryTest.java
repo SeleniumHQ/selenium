@@ -162,7 +162,7 @@ public class PageFactoryTest {
         .isThrownBy(() -> PageFactory.initElements((WebDriver) null, page));
   }
 
-  @Test(expected = TimeoutException.class)
+  @Test
   public void shouldNotThrowANoSuchElementExceptionWhenUsedWithAFluentWait() {
     driver = mock(WebDriver.class);
     when(driver.findElement(Mockito.any())).thenThrow(new NoSuchElementException("because"));
@@ -174,7 +174,8 @@ public class PageFactoryTest {
     PageFactory.initElements(driver, page);
     WebElement element = page.q;
 
-    wait.until(ExpectedConditions.visibilityOf(element));
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(ExpectedConditions.visibilityOf(element)));
   }
 
   public static class PublicPage {

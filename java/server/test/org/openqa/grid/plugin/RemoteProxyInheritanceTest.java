@@ -17,6 +17,7 @@
 
 package org.openqa.grid.plugin;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -75,7 +76,7 @@ public class RemoteProxyInheritanceTest {
     assertEquals("B", myRemoteProxy.getConfig().custom.get("Custom2"));
   }
 
-  @Test(expected = InvalidParameterException.class)
+  @Test
   public void notExisting() {
     Map<String, Object> app1 = new HashMap<>();
     GridNodeConfiguration config = new GridNodeConfiguration();
@@ -85,10 +86,11 @@ public class RemoteProxyInheritanceTest {
 
     RegistrationRequest req = new RegistrationRequest(config);
 
-    BaseRemoteProxy.getNewInstance(req, registry);
+    assertThatExceptionOfType(InvalidParameterException.class)
+        .isThrownBy(() -> BaseRemoteProxy.getNewInstance(req, registry));
   }
 
-  @Test(expected = InvalidParameterException.class)
+  @Test
   public void notExtendingProxyExisting() {
     Map<String, Object> app1 = new HashMap<>();
     GridNodeConfiguration config = new GridNodeConfiguration();
@@ -98,11 +100,12 @@ public class RemoteProxyInheritanceTest {
 
     RegistrationRequest req = new RegistrationRequest(config);
 
-    BaseRemoteProxy.getNewInstance(req, registry);
+    assertThatExceptionOfType(InvalidParameterException.class)
+        .isThrownBy(() -> BaseRemoteProxy.getNewInstance(req, registry));
   }
 
   // when some mandatory param are missing -> InvalidParameterException
-  @Test(expected = InvalidParameterException.class)
+  @Test
   public void badConfig() {
     Map<String, Object> app1 = new HashMap<>();
     GridNodeConfiguration config = new GridNodeConfiguration();
@@ -113,7 +116,8 @@ public class RemoteProxyInheritanceTest {
     RegistrationRequest req = new RegistrationRequest(config);
 
     // requires Custom1 & Custom1 set in config to work.
-    BaseRemoteProxy.getNewInstance(req, registry);
+    assertThatExceptionOfType(InvalidParameterException.class)
+        .isThrownBy(() -> BaseRemoteProxy.getNewInstance(req, registry));
   }
 
   @After
