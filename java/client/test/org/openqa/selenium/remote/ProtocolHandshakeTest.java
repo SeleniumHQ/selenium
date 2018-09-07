@@ -19,27 +19,29 @@ package org.openqa.selenium.remote;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.EMPTY_MAP;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,7 +50,7 @@ public class ProtocolHandshakeTest {
 
   @Test
   public void requestShouldIncludeJsonWireProtocolCapabilities() throws IOException {
-    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new ImmutableCapabilities());
+    Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -61,12 +63,12 @@ public class ProtocolHandshakeTest {
 
     Map<String, Object> json = getRequestPayloadAsMap(client);
 
-    assertThat(json.get("desiredCapabilities")).isEqualTo(Collections.EMPTY_MAP);
+    assertThat(json.get("desiredCapabilities")).isEqualTo(EMPTY_MAP);
   }
 
   @Test
   public void requestShouldIncludeSpecCompliantW3CCapabilities() throws IOException {
-    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new ImmutableCapabilities());
+    Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -86,7 +88,7 @@ public class ProtocolHandshakeTest {
 
   @Test
   public void shouldParseW3CNewSessionResponse() throws IOException {
-    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new ImmutableCapabilities());
+    Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -101,7 +103,7 @@ public class ProtocolHandshakeTest {
 
   @Test
   public void shouldParseWireProtocolNewSessionResponse() throws IOException {
-    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new ImmutableCapabilities());
+    Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -121,7 +123,7 @@ public class ProtocolHandshakeTest {
         "option", "I like sausages",
         "browserName", "amazing cake browser");
 
-    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", caps);
+    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -155,10 +157,10 @@ public class ProtocolHandshakeTest {
   @Test
   public void firstMatchSeparatesCapsForDifferentBrowsers() throws IOException {
     Capabilities caps = new ImmutableCapabilities(
-        "moz:firefoxOptions", ImmutableMap.of(),
+        "moz:firefoxOptions", EMPTY_MAP,
         "browserName", "chrome");
 
-    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", caps);
+    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -174,18 +176,18 @@ public class ProtocolHandshakeTest {
     List<Map<String, Object>> capabilities = mergeW3C(handshakeRequest);
 
     assertThat(capabilities).contains(
-        ImmutableMap.of("moz:firefoxOptions", Collections.EMPTY_MAP),
-        ImmutableMap.of("browserName", "chrome"));
+        singletonMap("moz:firefoxOptions", EMPTY_MAP),
+        singletonMap("browserName", "chrome"));
   }
 
   @Test
   public void doesNotCreateFirstMatchForNonW3CCaps() throws IOException {
     Capabilities caps = new ImmutableCapabilities(
-        "cheese", Collections.EMPTY_MAP,
-        "moz:firefoxOptions", Collections.EMPTY_MAP,
+        "cheese", EMPTY_MAP,
+        "moz:firefoxOptions", EMPTY_MAP,
         "browserName", "firefox");
 
-    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", caps);
+    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -215,7 +217,7 @@ public class ProtocolHandshakeTest {
     Proxy proxy = new Proxy();
     proxy.setProxyType(AUTODETECT);
     Capabilities caps = new ImmutableCapabilities(CapabilityType.PROXY, proxy);
-    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", caps);
+    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -245,7 +247,7 @@ public class ProtocolHandshakeTest {
         "platformName", "ANY",
         "browserName", "cake");
 
-    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", caps);
+    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -272,17 +274,15 @@ public class ProtocolHandshakeTest {
       return null;
     }
 
-    Map<String, Object> alwaysMatch = (Map<String, Object>) capabilities.get("alwaysMatch");
-    Map<String, Object> always = alwaysMatch == null ? ImmutableMap.of() : alwaysMatch;
+    Map<String, Object> always = Optional.ofNullable(
+        (Map <String, Object>) capabilities.get("alwaysMatch")).orElse(EMPTY_MAP);
 
-    Collection<Map<String, Object>> firsts =
-        (Collection<Map<String, Object>>) capabilities.get("firstMatch");
-    if (firsts == null) {
-      firsts = ImmutableList.of(ImmutableMap.of());
-    }
+    Collection<Map<String, Object>> firsts = Optional.ofNullable(
+        (Collection<Map<String, Object>>) capabilities.get("firstMatch")).orElse(singletonList(EMPTY_MAP));
+
     List<Map<String, Object>> allCaps = firsts.stream()
         .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build())
-        .collect(Collectors.toList());
+        .collect(toList());
 
     assertThat(allCaps).isNotEmpty();
 
@@ -290,8 +290,7 @@ public class ProtocolHandshakeTest {
   }
 
   private Map<String, Object> getRequestPayloadAsMap(RecordingHttpClient client) {
-    return new Gson().fromJson(
-        client.getRequestPayload(), new TypeToken<Map<String, Object>>(){}.getType());
+    return new Json().toType(client.getRequestPayload(), Map.class);
   }
 
   class RecordingHttpClient implements HttpClient {

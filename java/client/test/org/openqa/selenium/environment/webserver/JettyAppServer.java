@@ -20,14 +20,15 @@ package org.openqa.selenium.environment.webserver;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.InProject.locate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonObject;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -198,9 +199,7 @@ public class JettyAppServer implements AppServer {
   @Override
   public String create(Page page) {
     try {
-      JsonObject converted = new JsonObject();
-      converted.addProperty("content", page.toString());
-      byte[] data = converted.toString().getBytes(UTF_8);
+      byte[] data = new Json().toJson(singletonMap("content", page.toString())).getBytes(UTF_8);
 
       HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
