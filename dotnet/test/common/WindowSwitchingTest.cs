@@ -163,7 +163,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToIterateOverAllOpenWindows()
         {
             driver.Url = xhtmlTestPage;
