@@ -81,6 +81,7 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
   // We potentially use two of those response methods.
   // This will not allow us to handle windows created by the JavaScript
   // showModalDialog function().
+  ::PostMessage(this->executor_handle(), WD_BEFORE_NEW_WINDOW, NULL, NULL);
   IWebBrowser2* browser;
   LPSTREAM message_payload;
   LRESULT create_result = ::SendMessage(this->executor_handle(),
@@ -88,12 +89,14 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
                                         NULL,
                                         reinterpret_cast<LPARAM>(&message_payload));
   if (create_result != 0) {
+
     // The new, blank IWebBrowser2 object was not created,
     // so we can't really do anything appropriate here.
     // Note this is "response method 2" of the aforementioned
     // documentation.
     LOG(WARN) << "A valid IWebBrowser2 object could not be created.";
     *pbCancel = VARIANT_TRUE;
+    ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, NULL, NULL);
     return;
   }
 
@@ -102,7 +105,12 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
   HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload,
                                                 IID_IWebBrowser2,
                                                 reinterpret_cast<void**>(&browser));
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Failed to marshal IWebBrowser2 interface from stream.";
+  }
+
   *ppDisp = browser;
+  ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, 1000, NULL);
 }
 
 void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
@@ -217,24 +225,36 @@ std::string Browser::GetBrowserUrl() {
 HWND Browser::GetContentWindowHandle() {
   LOG(TRACE) << "Entering Browser::GetContentWindowHandle";
 
-  // If, for some reason, the window handle is no longer valid,
-  // set the member variable to NULL so that we can reacquire
-  // the valid window handle. Note that this can happen when
-  // browsing from one type of content to another, like from
-  // HTML to a transformed XML page that renders content.
-  if (!::IsWindow(this->window_handle())) {
-    LOG(INFO) << "Flushing window handle as it is no longer valid";
-    this->set_window_handle(NULL);
-  }
+  HWND current_content_window_handle = this->window_handle();
+  // If this window is closing, the only reason to care about
+  // a valid window handle is to check for alerts whose parent
+  // is this window handle, so return the stored window handle.
+  if (!this->is_closing()) {
+    // If, for some reason, the window handle is no longer valid, set the
+    // member variable to NULL so that we can reacquire the valid window
+    // handle. Note that this can happen when browsing from one type of
+    // content to another, like from HTML to a transformed XML page that
+    // renders content. If the member variable is NULL upon entering this
+    // method, that is okay, as it typically means only that this object
+    // is newly constructed, and has not yet had its handle set.
+    bool window_handle_is_valid = ::IsWindow(current_content_window_handle);
+    if (!window_handle_is_valid) {
+      LOG(INFO) << "Flushing window handle as it is no longer valid";
+      this->set_window_handle(NULL);
+    }
 
-  if (this->window_handle() == NULL) {
-    LOG(INFO) << "Restore window handle from tab";
-    // GetBrowserWindowHandle gets the TabWindowClass window in IE 7 and 8,
-    // and the top-level window frame in IE 6. The window we need is the
-    // InternetExplorer_Server window.
-    HWND tab_window_handle = this->GetBrowserWindowHandle();
-    HWND content_window_handle = this->FindContentWindowHandle(tab_window_handle);
-    this->set_window_handle(content_window_handle);
+    if (this->window_handle() == NULL) {
+      LOG(INFO) << "Restore window handle from tab";
+      // GetBrowserWindowHandle gets the TabWindowClass window in IE 7 and 8,
+      // and the top-level window frame in IE 6. The window we need is the
+      // InternetExplorer_Server window.
+      HWND tab_window_handle = this->GetBrowserWindowHandle();
+      if (tab_window_handle == NULL) {
+        LOG(WARN) << "No tab window found";
+      }
+      HWND content_window_handle = this->FindContentWindowHandle(tab_window_handle);
+      this->set_window_handle(content_window_handle);
+    }
   }
 
   return this->window_handle();
@@ -430,7 +450,10 @@ HWND Browser::GetTopLevelWindowHandle() {
   LOG(TRACE) << "Entering Browser::GetTopLevelWindowHandle";
 
   HWND top_level_window_handle = NULL;
-  this->browser_->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&top_level_window_handle));
+  HRESULT hr = this->browser_->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&top_level_window_handle));
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Getting HWND property of IWebBrowser2 object failed";
+  }
 
   return top_level_window_handle;
 }
@@ -676,6 +699,8 @@ HWND Browser::GetBrowserWindowHandle() {
   CComPtr<IServiceProvider> service_provider;
   HRESULT hr = this->browser_->QueryInterface(IID_IServiceProvider,
                                               reinterpret_cast<void**>(&service_provider));
+  HWND hwnd_tmp = NULL;
+  this->browser_->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&hwnd_tmp));
   if (SUCCEEDED(hr)) {
     CComPtr<IOleWindow> window;
     hr = service_provider->QueryService(SID_SShellBrowser,
@@ -715,8 +740,16 @@ HWND Browser::GetActiveDialogWindowHandle() {
 
   HWND active_dialog_handle = NULL;
 
-  DWORD process_id;
-  ::GetWindowThreadProcessId(this->GetContentWindowHandle(), &process_id);
+  HWND content_window_handle = this->GetContentWindowHandle();
+  if (content_window_handle == NULL) {
+    return active_dialog_handle;
+  }
+
+  DWORD process_id = 0;
+  ::GetWindowThreadProcessId(content_window_handle, &process_id);
+  if (process_id == 0) {
+    return active_dialog_handle;
+  }
 
   ProcessWindowInfo process_win_info;
   process_win_info.dwProcessId = process_id;
