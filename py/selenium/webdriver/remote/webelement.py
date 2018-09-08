@@ -546,7 +546,6 @@ class WebElement(object):
             rect.update(self.location)
             return rect
 
-
     @property
     def screenshot_as_base64(self):
         """
