@@ -154,7 +154,6 @@ def testClickingOnFormElements(driver, pages):
     selectThreeOptions = ActionChains(driver) \
         .click(options[1]) \
         .key_down(Keys.SHIFT) \
-        .click(options[2]) \
         .click(options[3]) \
         .key_up(Keys.SHIFT)
     selectThreeOptions.perform()
