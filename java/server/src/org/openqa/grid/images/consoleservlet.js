@@ -37,19 +37,20 @@
 
     // On Click, toggle Config Container's Visibility, Update Link Text
     $("#config-view-toggle").click(function(event) {
-      if($("#hub-config").is(':visible')) {
-        $("#hub-config").hide();
-        $(this).text('View Config');
+      var configDetails = $("#hub-config-content");
+      if(configDetails.is(':visible')) {
+        configDetails.hide();
+        $(this).text('View Config'); // Update toggle link text
       } else {
-          $("#hub-config").show();
-          $(this).text('Hide Config');
+          configDetails.show();
+          $(this).text('Hide Config'); // Update toggle link text
       }
       event.preventDefault(); // Prevent click from going to the top of the page
     });
 
     // Register click event for View Verbose config link
     $("#verbose-config-view-toggle").click(function(event) {
-      $('#verbose-config-details').toggle(); // Toggle visibility
+      $("#verbose-config-content").toggle(); // Toggle visibility
       $(this).hide(); // Hide link after being clicked
       event.preventDefault(); // Prevent click from going to the top of the page
     });

@@ -155,8 +155,6 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append(getRequestQueue());
 
     builder.append(getConfigInfo());
-    builder.append("<a id='config-view-toggle' href='#'>View Config</a>");
-
 
     builder.append("</div>");
     builder.append("</body>");
@@ -207,15 +205,19 @@ public class ConsoleServlet extends RegistryBasedServlet {
    * @return html representation of the hub config
    */
   private String getConfigInfo() {
-
     StringBuilder builder = new StringBuilder();
 
+    builder.append("<div id='hub-config-container'>");
     GridHubConfiguration config = getRegistry().getHub().getConfiguration();
-    builder.append("<div  id='hub-config'>");
+    builder.append("<div id='hub-config-content'>");
     builder.append("<b>Config for the hub :</b><br/>");
     builder.append(prettyHtmlPrint(config));
     builder.append(getVerboseConfig()); // Display verbose configuration details
-    builder.append("</div>"); // End of Config
+    builder.append("</div>"); // End of Config Content
+
+    // Display View/Hide Link at the bottom beneath the details
+    builder.append("<a id='config-view-toggle' href='#'>View Config</a>");
+    builder.append("</div>"); // End of Config Container
     return builder.toString();
   }
 
@@ -230,7 +232,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append("<div id='verbose-config-container'>");
     builder.append("<a id='verbose-config-view-toggle' href='#'>View Verbose</a>");
 
-    builder.append("<div id='verbose-config-details'>"); // Body containing all the details
+    builder.append("<div id='verbose-config-content'>");
     GridHubConfiguration tmp = new GridHubConfiguration();
 
     builder.append("<br/><b>The final configuration comes from:</b><br/>");
@@ -250,7 +252,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
         }
       }
     }
-    builder.append("</div>"); // End of Verbose Details
+    builder.append("</div>"); // End of Verbose Content
     builder.append("</div>"); // End of Verbose Container
     return builder.toString();
   }
