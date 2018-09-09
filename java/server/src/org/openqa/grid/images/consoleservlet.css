@@ -206,8 +206,22 @@ ul a {
   overflow: hidden;
 }
 
-#hub-config {
+#hub-config-container {
   min-width:55%;
+  padding-bottom: 10px;
+}
+
+#hub-config-content {
+  display: none;
+}
+
+#verbose-config-container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#verbose-config-content {
+  display: none;
 }
 
 a#helplink {

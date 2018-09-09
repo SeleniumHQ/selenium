@@ -154,13 +154,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
     builder.append(getRequestQueue());
 
-
-    if (request.getParameter("config") != null) {
-      builder.append(getConfigInfo(request.getParameter("configDebug") != null));
-    } else {
-      builder.append("<a href='?config=true&configDebug=true'>view config</a>");
-    }
-
+    builder.append(getConfigInfo());
 
     builder.append("</div>");
     builder.append("</body>");
@@ -210,37 +204,56 @@ public class ConsoleServlet extends RegistryBasedServlet {
    *
    * @return html representation of the hub config
    */
-  private String getConfigInfo(boolean verbose) {
-
+  private String getConfigInfo() {
     StringBuilder builder = new StringBuilder();
 
+    builder.append("<div id='hub-config-container'>");
     GridHubConfiguration config = getRegistry().getHub().getConfiguration();
-    builder.append("<div  id='hub-config'>");
+    builder.append("<div id='hub-config-content'>");
     builder.append("<b>Config for the hub :</b><br/>");
     builder.append(prettyHtmlPrint(config));
+    builder.append(getVerboseConfig()); // Display verbose configuration details
+    builder.append("</div>"); // End of Config Content
 
-    if (verbose) {
-      GridHubConfiguration tmp = new GridHubConfiguration();
+    // Display View/Hide Link at the bottom beneath the details
+    builder.append("<a id='config-view-toggle' href='#'>View Config</a>");
+    builder.append("</div>"); // End of Config Container
+    return builder.toString();
+  }
 
-      builder.append("<br/><b>The final configuration comes from:</b><br/>");
-      builder.append("<b>the default :</b><br/>");
-      builder.append(prettyHtmlPrint(tmp));
+  /**
+   * Displays more detailed configuration
+   * @return html representation of the verbose hub config
+   */
+  private String getVerboseConfig() {
+    StringBuilder builder = new StringBuilder();
+    GridHubConfiguration config = getRegistry().getHub().getConfiguration();
 
-      if (config.getCliConfig() != null) {
-        builder.append("<b>updated with command line options:</b><br/>");
-        builder.append(String.join(" ", config.getCliConfig().getRawArgs()));
+    builder.append("<div id='verbose-config-container'>");
+    builder.append("<a id='verbose-config-view-toggle' href='#'>View Verbose</a>");
 
-        if (config.getCliConfig().getConfigFile() != null) {
-          builder.append("<br/><b>and configuration loaded from ").append(config.getCliConfig().getConfigFile()).append(":</b><br/>");
-          try {
-            builder.append(String.join("<br/>", Files.readAllLines(new File(config.getCliConfig().getConfigFile()).toPath())));
-          } catch (IOException e) {
-            builder.append("<b>").append(e.getMessage()).append("</b>");
-          }
+    builder.append("<div id='verbose-config-content'>");
+    GridHubConfiguration tmp = new GridHubConfiguration();
+
+    builder.append("<br/><b>The final configuration comes from:</b><br/>");
+    builder.append("<b>the default :</b><br/>");
+    builder.append(prettyHtmlPrint(tmp));
+
+    if (config.getCliConfig() != null) {
+      builder.append("<b>updated with command line options:</b><br/>");
+      builder.append(String.join(" ", config.getCliConfig().getRawArgs()));
+
+      if (config.getCliConfig().getConfigFile() != null) {
+        builder.append("<br/><b>and configuration loaded from ").append(config.getCliConfig().getConfigFile()).append(":</b><br/>");
+        try {
+          builder.append(String.join("<br/>", Files.readAllLines(new File(config.getCliConfig().getConfigFile()).toPath())));
+        } catch (IOException e) {
+          builder.append("<b>").append(e.getMessage()).append("</b>");
         }
       }
     }
-    builder.append("</div>");
+    builder.append("</div>"); // End of Verbose Content
+    builder.append("</div>"); // End of Verbose Container
     return builder.toString();
   }
 
