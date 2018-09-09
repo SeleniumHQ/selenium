@@ -49,8 +49,6 @@ import java.util.Map;
 
 public class GridNodeConfigurationTest {
 
-  static final Integer DEFAULT_TIMEOUT = StandaloneConfigurationTest.DEFAULT_TIMEOUT;
-  static final Integer DEFAULT_BROWSER_TIMEOUT = StandaloneConfigurationTest.DEFAULT_BROWSER_TIMEOUT;
   static final String DEFAULT_HOST = StandaloneConfigurationTest.DEFAULT_HOST;
   static final Integer DEFAULT_PORT = -1;
   static final Boolean DEFAULT_DEBUG_TOGGLE = StandaloneConfigurationTest.DEFAULT_DEBUG_TOGGLE;
@@ -109,8 +107,11 @@ public class GridNodeConfigurationTest {
     assertNotNull(gnc.withoutServlets);
     assertTrue(gnc.withoutServlets.isEmpty());
 
-    assertEquals(DEFAULT_TIMEOUT, gnc.timeout);
-    assertEquals(DEFAULT_BROWSER_TIMEOUT, gnc.browserTimeout);
+    // A node has no default timeout/browserTimeout, they are fetched from the hub
+    // If a node conf specifies timeout/browserTimeout, they have precedence over the hub values
+    assertNull(gnc.timeout);
+    assertNull(gnc.browserTimeout);
+
     assertEquals(DEFAULT_DEBUG_TOGGLE, gnc.debug);
     assertNull(gnc.jettyMaxThreads);
     assertNull(gnc.log);
@@ -134,6 +135,8 @@ public class GridNodeConfigurationTest {
                               + "\"host\": \"dummyhost\","
                               + "\"hub\": \"http://dummyhost:1234\","
                               + "\"maxSession\": 5,"
+                              + "\"browserTimeout\": 30,"
+                              + "\"timeout\": 60,"
                               + "\"port\": 1234"
                               + "}";
 
@@ -145,6 +148,8 @@ public class GridNodeConfigurationTest {
 
     assertEquals("node", gnc.role);
     assertEquals(1234, gnc.port.intValue());
+    assertEquals(30, gnc.browserTimeout.intValue());
+    assertEquals(60, gnc.timeout.intValue());
     assertEquals(5, gnc.maxSession.intValue());
     assertEquals("dummyhost", gnc.host);
     assertEquals(1, gnc.capabilities.size());
@@ -189,12 +194,10 @@ public class GridNodeConfigurationTest {
         + "\"maxSession\":5,"
         + "\"servlets\":[],"
         + "\"withoutServlets\":[],"
-        + "\"browserTimeout\":0,"
         + "\"debug\":false,"
         + "\"host\":\"0.0.0.0\","
         + "\"port\":-1,"
-        + "\"role\":\"node\","
-        + "\"timeout\":1800}",
+        + "\"role\":\"node\"}",
         MAP_TYPE);
 
     Map<String, Object> seen = json.toType(json.toJson(gnc.toJson()), MAP_TYPE);
@@ -210,7 +213,7 @@ public class GridNodeConfigurationTest {
     GridNodeCliOptions options = new GridNodeCliOptions();
     options.parse(args);
     GridNodeConfiguration gnc = new GridNodeConfiguration(options);
-    assertTrue(gnc.capabilities.size() == 1);
+    assertEquals(1, gnc.capabilities.size());
     assertEquals("chrome", gnc.capabilities.get(0).getBrowserName());
     assertEquals(10L, gnc.capabilities.get(0).getCapability("maxInstances"));
     assertEquals(false, gnc.capabilities.get(0).getCapability("boolean"));
@@ -221,11 +224,18 @@ public class GridNodeConfigurationTest {
   public void testWithCapabilitiesArgsWithExtraSpacing() {
     GridNodeConfiguration gnc = parseCliOptions(
         "-capabilities", "browserName= chrome, platform =linux, maxInstances=10, boolean = false ");
-    assertTrue(gnc.capabilities.size() == 1);
+    assertEquals(1, gnc.capabilities.size());
     assertEquals("chrome", gnc.capabilities.get(0).getBrowserName());
     assertEquals(10L, gnc.capabilities.get(0).getCapability("maxInstances"));
     assertEquals(false, gnc.capabilities.get(0).getCapability("boolean"));
     assertEquals(Platform.LINUX, gnc.capabilities.get(0).getPlatform());
+  }
+
+  @Test
+  public void testTimeoutAndBrowserTimeout() {
+    GridNodeConfiguration gnc = parseCliOptions("-timeout", "350", "-browserTimeout", "600");
+    assertEquals(350, gnc.timeout.intValue());
+    assertEquals(600, gnc.browserTimeout.intValue());
   }
 
   @Test
