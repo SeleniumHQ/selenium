@@ -208,6 +208,16 @@ ul a {
 
 #hub-config {
   min-width:55%;
+  display: none;
+}
+
+#verbose-config-container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#verbose-config-details {
+  display: none;
 }
 
 a#helplink {

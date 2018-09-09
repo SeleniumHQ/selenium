@@ -154,12 +154,8 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
     builder.append(getRequestQueue());
 
-
-    if (request.getParameter("config") != null) {
-      builder.append(getConfigInfo(request.getParameter("configDebug") != null));
-    } else {
-      builder.append("<a href='?config=true&configDebug=true'>view config</a>");
-    }
+    builder.append(getConfigInfo());
+    builder.append("<a id='config-view-toggle' href='#'>View Config</a>");
 
 
     builder.append("</div>");
@@ -210,7 +206,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
    *
    * @return html representation of the hub config
    */
-  private String getConfigInfo(boolean verbose) {
+  private String getConfigInfo() {
 
     StringBuilder builder = new StringBuilder();
 
@@ -219,28 +215,33 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append("<b>Config for the hub :</b><br/>");
     builder.append(prettyHtmlPrint(config));
 
-    if (verbose) {
-      GridHubConfiguration tmp = new GridHubConfiguration();
+    // Verbose Configuration
+    builder.append("<div id='verbose-config-container'>");
+    builder.append("<a id='verbose-config-view-toggle' href='#'>View Verbose</a>");
 
-      builder.append("<br/><b>The final configuration comes from:</b><br/>");
-      builder.append("<b>the default :</b><br/>");
-      builder.append(prettyHtmlPrint(tmp));
+    builder.append("<div id='verbose-config-details'>");
+    GridHubConfiguration tmp = new GridHubConfiguration();
 
-      if (config.getCliConfig() != null) {
-        builder.append("<b>updated with command line options:</b><br/>");
-        builder.append(String.join(" ", config.getCliConfig().getRawArgs()));
+    builder.append("<br/><b>The final configuration comes from:</b><br/>");
+    builder.append("<b>the default :</b><br/>");
+    builder.append(prettyHtmlPrint(tmp));
 
-        if (config.getCliConfig().getConfigFile() != null) {
-          builder.append("<br/><b>and configuration loaded from ").append(config.getCliConfig().getConfigFile()).append(":</b><br/>");
-          try {
-            builder.append(String.join("<br/>", Files.readAllLines(new File(config.getCliConfig().getConfigFile()).toPath())));
-          } catch (IOException e) {
-            builder.append("<b>").append(e.getMessage()).append("</b>");
-          }
+    if (config.getCliConfig() != null) {
+      builder.append("<b>updated with command line options:</b><br/>");
+      builder.append(String.join(" ", config.getCliConfig().getRawArgs()));
+
+      if (config.getCliConfig().getConfigFile() != null) {
+        builder.append("<br/><b>and configuration loaded from ").append(config.getCliConfig().getConfigFile()).append(":</b><br/>");
+        try {
+          builder.append(String.join("<br/>", Files.readAllLines(new File(config.getCliConfig().getConfigFile()).toPath())));
+        } catch (IOException e) {
+          builder.append("<b>").append(e.getMessage()).append("</b>");
         }
       }
     }
-    builder.append("</div>");
+    builder.append("</div>"); // End of Verbose Details
+    builder.append("</div>"); // End of Verbose Container
+    builder.append("</div>"); // End of Config
     return builder.toString();
   }
 

@@ -34,6 +34,26 @@
       show(currentProxy, type);
       event.preventDefault(); // Prevent the click from going to the top of the page
     });
+
+    // On Click, toggle Config Container's Visibility, Update Link Text
+    $("#config-view-toggle").click(function(event) {
+      if($("#hub-config").is(':visible')) {
+        $("#hub-config").hide();
+        $(this).text('View Config');
+      } else {
+          $("#hub-config").show();
+          $(this).text('Hide Config');
+      }
+      event.preventDefault(); // Prevent click from going to the top of the page
+    });
+
+    // Register click event for View Verbose config link
+    $("#verbose-config-view-toggle").click(function(event) {
+      $('#verbose-config-details').toggle(); // Toggle visibility
+      $(this).hide(); // Hide link after being clicked
+      event.preventDefault(); // Prevent click from going to the top of the page
+    });
+
     showDefaults();
   });
 }());
