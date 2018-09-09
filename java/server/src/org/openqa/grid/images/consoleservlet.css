@@ -208,6 +208,7 @@ ul a {
 
 #hub-config-container {
   min-width:55%;
+  padding-bottom: 10px;
 }
 
 #hub-config-content {
