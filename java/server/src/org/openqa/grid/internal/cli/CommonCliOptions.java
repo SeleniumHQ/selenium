@@ -88,7 +88,7 @@ public abstract class CommonCliOptions {
    */
   @Parameter(
       names = {"-timeout", "-sessionTimeout"},
-      description = "<Integer> in seconds : Specifies the timeout before the server automatically kills a session that hasn't had any activity in the last X seconds. The test slot will then be released for another test to use. This is typically used to take care of client crashes. For grid hub/node roles, cleanUpCycle must also be set."
+      description = "<Integer> in seconds : Specifies the timeout before the server automatically kills a session that hasn't had any activity in the last X seconds. The test slot will then be released for another test to use. This is typically used to take care of client crashes. For grid hub/node roles, cleanUpCycle must also be set. If a node does not specify it, the hub value will be used."
   )
   private Integer timeout;
 
@@ -97,7 +97,7 @@ public abstract class CommonCliOptions {
    */
   @Parameter(
       names = "-browserTimeout",
-      description = "<Integer> in seconds : number of seconds a browser session is allowed to hang while a WebDriver command is running (example: driver.get(url)). If the timeout is reached while a WebDriver command is still processing, the session will quit. Minimum value is 60. An unspecified, zero, or negative value means wait indefinitely."
+      description = "<Integer> in seconds : number of seconds a browser session is allowed to hang while a WebDriver command is running (example: driver.get(url)). If the timeout is reached while a WebDriver command is still processing, the session will quit. Minimum value is 60. An unspecified, zero, or negative value means wait indefinitely. If a node does not specify it, the hub value will be used."
   )
   private Integer browserTimeout;
 
