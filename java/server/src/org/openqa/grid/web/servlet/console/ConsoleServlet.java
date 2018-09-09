@@ -214,12 +214,23 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append("<div  id='hub-config'>");
     builder.append("<b>Config for the hub :</b><br/>");
     builder.append(prettyHtmlPrint(config));
+    builder.append(getVerboseConfig()); // Display verbose configuration details
+    builder.append("</div>"); // End of Config
+    return builder.toString();
+  }
 
-    // Verbose Configuration
+  /**
+   * Displays more detailed configuration
+   * @return html representation of the verbose hub config
+   */
+  private String getVerboseConfig() {
+    StringBuilder builder = new StringBuilder();
+    GridHubConfiguration config = getRegistry().getHub().getConfiguration();
+
     builder.append("<div id='verbose-config-container'>");
     builder.append("<a id='verbose-config-view-toggle' href='#'>View Verbose</a>");
 
-    builder.append("<div id='verbose-config-details'>");
+    builder.append("<div id='verbose-config-details'>"); // Body containing all the details
     GridHubConfiguration tmp = new GridHubConfiguration();
 
     builder.append("<br/><b>The final configuration comes from:</b><br/>");
@@ -241,7 +252,6 @@ public class ConsoleServlet extends RegistryBasedServlet {
     }
     builder.append("</div>"); // End of Verbose Details
     builder.append("</div>"); // End of Verbose Container
-    builder.append("</div>"); // End of Config
     return builder.toString();
   }
 
