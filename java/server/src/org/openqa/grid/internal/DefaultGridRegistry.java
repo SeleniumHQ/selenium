@@ -27,6 +27,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -305,6 +306,14 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
         LOG.warning(String.format("Proxy '%s' is already queued for registration.", proxy));
         return;
       }
+
+      // Updating browserTimeout and timeout values in case a node sends null values
+      proxy.getConfig().timeout = Optional
+          .ofNullable(proxy.getConfig().timeout)
+          .orElse(getHub().getConfiguration().timeout);
+      proxy.getConfig().browserTimeout = Optional
+          .ofNullable(proxy.getConfig().browserTimeout)
+          .orElse(getHub().getConfiguration().browserTimeout);
 
       registeringProxies.add(proxy);
       fireMatcherStateChanged();

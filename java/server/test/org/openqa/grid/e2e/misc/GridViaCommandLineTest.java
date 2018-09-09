@@ -238,7 +238,7 @@ public class GridViaCommandLineTest {
     This test checks that the flag value makes it all the way to the ProxySet. Default is "true".
    */
   @Test
-  public void testThrowOnCapabilityNotPresentFlagIsUsed() throws Exception {
+  public void testThrowOnCapabilityNotPresentFlagIsUsed() {
     Integer hubPort = PortProber.findFreePort();
     String[] hubArgs = {"-role", "hub", "-host", "localhost", "-port", hubPort.toString(),
                         "-throwOnCapabilityNotPresent", "true"};

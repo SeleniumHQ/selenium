@@ -53,14 +53,13 @@ public class NodeRecoveryTest {
     GridHubConfiguration config = new GridHubConfiguration();
     config.host = "localhost";
     config.port = PortProber.findFreePort();
-    config.timeout = ORIGINAL_TIMEOUT;
     hub = new Hub(config);
 
     hub.start();
 
     node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
+    node.getConfiguration().timeout = ORIGINAL_TIMEOUT;
     // register a selenium 1 with a timeout of 3 sec
-
     node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
@@ -83,8 +82,8 @@ public class NodeRecoveryTest {
     // kill the node
     node.stopRemoteServer();
 
-    // changing the hub's timeout, so the node takes it when it starts again
-    hub.getConfiguration().timeout = NEW_TIMEOUT;
+    // changing the node timeout, it should be kept after restarting and registering again
+    node.getConfiguration().timeout = NEW_TIMEOUT;
 
     // restart it
     node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
