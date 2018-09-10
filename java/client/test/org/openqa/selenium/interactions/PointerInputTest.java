@@ -20,17 +20,18 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import com.google.gson.Gson;
-import java.time.Duration;
-import java.util.List;
-import java.util.Map;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.interactions.PointerInput.Kind;
 import org.openqa.selenium.interactions.PointerInput.Origin;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.PropertySetting;
 import org.openqa.selenium.remote.RemoteWebElement;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Unit test for PointerInputs.
@@ -49,7 +50,10 @@ public class PointerInputTest {
     Sequence sequence = new Sequence(move.getSource(), 0).addAction(move);
 
     String rawJson = new Json().toJson(sequence);
-    ActionSequenceJson json = new Gson().fromJson(rawJson, ActionSequenceJson.class);
+    ActionSequenceJson json = new Json().toType(
+        rawJson,
+        ActionSequenceJson.class,
+        PropertySetting.BY_FIELD);
 
     assertThat(json.actions).hasSize(1);
     ActionJson firstAction = json.actions.get(0);
