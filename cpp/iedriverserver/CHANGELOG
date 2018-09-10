@@ -9,6 +9,16 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.5
+=========
+ * Updated to manually initialize cookie manager on new window open. When
+   a new window is requested by the browser, the driver creates one, but
+   does not set the window handle of the window to a proper value. This
+   is normally not an issue, but in the edge case where the user wants to
+   manipulate cookies in the new window, the cookie manager does not have
+   a window handle set to facilitate the transfer of cookie information
+   from the driver code to the browser. This change rectifies that problem.
+
 v3.14.0.4
 =========
  * Updated to return 500 for timeouts instead of 408. Some HTTP clients
