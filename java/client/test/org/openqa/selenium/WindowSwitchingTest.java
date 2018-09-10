@@ -200,7 +200,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     driver.switchTo().window("result");
 
-    // TODO Remove sleep when https://code.google.com/p/chromedriver/issues/detail?id=1044 is fixed.
+    // TODO Remove sleep when https://bugs.chromium.org/p/chromedriver/issues/detail?id=1044 is fixed.
     if (TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
       Thread.sleep(1000);
     }
@@ -232,7 +232,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window("result");
     int allWindowHandles = driver.getWindowHandles().size();
 
-    // TODO Remove sleep when https://code.google.com/p/chromedriver/issues/detail?id=1044 is fixed.
+    // TODO Remove sleep when https://bugs.chromium.org/p/chromedriver/issues/detail?id=1044 is fixed.
     if (TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
       Thread.sleep(1000);
     }

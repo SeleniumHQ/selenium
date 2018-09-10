@@ -270,7 +270,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     assumeFalse(
         "chromedriver does not disable popup blocker on Android: "
-        + "https://code.google.com/p/chromedriver/issues/detail?id=1021",
+        + "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1021",
         isChrome(driver) && getEffectivePlatform(driver).is(ANDROID));
     Set<String> currentWindowHandles = driver.getWindowHandles();
     ((JavascriptExecutor) driver).executeScript(
@@ -343,11 +343,10 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   /**
-   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=208"> Issue 208</a>
+   * See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/208
    *
-   *      This test often causes the subsequent test to fail, in Firefox, on Linux, so we need a new
-   *      driver after it.
-   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=2282">Issue 2282</a>
+   * This test often causes the subsequent test to fail, in Firefox, on Linux, so we need a new
+   * driver after it. See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2282
    */
   @NoDriverAfterTest
   @Test
@@ -406,7 +405,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NotYetImplemented(value = SAFARI)
   @Ignore(value = FIREFOX, travis = true)
   @Ignore(HTMLUNIT)
-  @Ignore(value = CHROME, issue = "https://code.google.com/p/chromedriver/issues/detail?id=1125")
+  @Ignore(value = CHROME, issue = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1125")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);

@@ -261,8 +261,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   /**
-   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
-   *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
+   * See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1610
    */
   @Test
   @Ignore(IE)

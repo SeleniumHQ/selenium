@@ -212,7 +212,7 @@ public class ClickTest extends JUnit4TestBase {
   @Ignore(value = MARIONETTE, travis = true) // TODO: why???
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     assumeFalse(
-        "Fails on Android phones: https://code.google.com/p/chromedriver/issues/detail?id=1022",
+        "Fails on Android phones: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1022",
         isChrome(driver) && getEffectivePlatform(driver).is(ANDROID));
     driver.findElement(By.id("embeddedBlock")).click();
     wait.until(titleIs("XHTML Test Page"));
@@ -225,7 +225,7 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  // See http://code.google.com/p/selenium/issues/attachmentText?id=2700
+  // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2700
   @Test
   public void testShouldBeAbleToClickOnAnElementInTheViewport() {
     String url = appServer.whereIs("click_out_of_bounds.html");

@@ -517,7 +517,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   public void testGetShouldSwitchToDefaultContext() {
-    // Fails on Chrome 44 (and higher?) https://code.google.com/p/chromedriver/issues/detail?id=1106
+    // Fails on Chrome 44 (and higher?) https://bugs.chromium.org/p/chromedriver/issues/detail?id=1106
     assumeFalse(
         "chrome".equals(((HasCapabilities) driver).getCapabilities().getBrowserName())
         && "44".compareTo(((HasCapabilities) driver).getCapabilities().getVersion()) <= 0);

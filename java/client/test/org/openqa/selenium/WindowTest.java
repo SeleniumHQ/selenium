@@ -37,7 +37,7 @@ public class WindowTest extends JUnit4TestBase {
   public void testGetsTheSizeOfTheCurrentWindow() {
     assumeFalse(
         "window().getSize() is not implemented for Chrome for Android. "
-        + "https://code.google.com/p/chromedriver/issues/detail?id=1005",
+        + "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1005",
         TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     Dimension size = driver.manage().window().getSize();
 
@@ -50,7 +50,7 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
+    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
         SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     // resize relative to the initial size, since we don't know what it is
@@ -63,7 +63,7 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
+    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
         SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     driver.get(pages.framesetPage);
@@ -78,7 +78,7 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
+    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
         SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     driver.get(pages.iframePage);
@@ -109,7 +109,7 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
+    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
         SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     WebDriver.Window window = driver.manage().window();
