@@ -147,8 +147,6 @@ public enum Keys implements CharSequence {
    * Note: When the low-level webdriver key handlers see Keys.NULL, active modifier keys
    * (CTRL/ALT/SHIFT/etc) release via a keyup event.
    *
-   * Issue: http://code.google.com/p/webdriver/issues/detail?id=79
-   *
    * @param value characters to send
    * @return String representation of the char sequence
    */

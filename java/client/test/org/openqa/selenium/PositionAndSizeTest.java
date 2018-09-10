@@ -89,7 +89,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     assumeFalse(
         "window().getSize() is not implemented for Chrome for Android. "
-        + "https://code.google.com/p/chromedriver/issues/detail?id=1005",
+        + "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1005",
         TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     driver.get(appServer.whereIs("coordinates_tests/page_with_element_out_of_view.html"));
     int windowHeight = driver.manage().window().getSize().getHeight();

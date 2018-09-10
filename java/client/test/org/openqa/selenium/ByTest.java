@@ -152,7 +152,7 @@ public class ByTest {
     assertThat(new ByPartialLinkText("a").toString()).isEqualTo("By.partialLinkText: a");
   }
 
-  // See http://code.google.com/p/selenium/issues/detail?id=2917
+  // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2917
   @Test
   public void testHashCodeDoesNotFallIntoEndlessRecursion() {
     By locator = new By() {
