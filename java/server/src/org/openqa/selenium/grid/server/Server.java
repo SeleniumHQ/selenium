@@ -21,6 +21,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import org.openqa.selenium.grid.component.HasLifecycle;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.UrlTemplate;
 import org.openqa.selenium.injector.Injector;
@@ -32,7 +33,7 @@ import java.util.function.Predicate;
 
 import javax.servlet.Servlet;
 
-public interface Server<T extends Server> {
+public interface Server<T extends Server> extends HasLifecycle<T> {
 
   /**
    * Until we can migrate to {@link CommandHandler}s for everything, we leave this escape hatch.
@@ -55,10 +56,6 @@ public interface Server<T extends Server> {
       BiFunction<Injector, HttpRequest, CommandHandler> handler);
 
   URL getUrl();
-
-  T start();
-
-  T stop();
 
   static Predicate<HttpRequest> delete(String template) {
     UrlTemplate urlTemplate = new UrlTemplate(template);

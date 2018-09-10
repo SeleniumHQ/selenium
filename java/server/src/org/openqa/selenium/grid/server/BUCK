@@ -4,6 +4,9 @@ java_library(
     provided_deps = [
         "//third_party/java/servlet:javax.servlet-api",
     ],
+    exported_deps = [
+        "//java/server/src/org/openqa/selenium/grid/component:component",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote:remote",
         "//java/server/src/org/openqa/selenium/injector:injector",
