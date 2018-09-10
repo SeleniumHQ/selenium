@@ -15,44 +15,38 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.session.remote;
+package org.openqa.selenium.grid.web;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+
 import java.io.Reader;
-import java.io.Writer;
+import java.io.StringReader;
+import java.io.StringWriter;
 
-class TeeReader extends Reader {
 
-  private final Reader source;
-  private final Writer[] sinks;
+public class TeeReaderTest {
 
-  public TeeReader(Reader source, Writer... sinks) {
-    this.source = source;
-    this.sinks = sinks;
-  }
+  @Test
+  public void shouldDuplicateStreams() {
+    String expected = "{\"key\": \"value\"}";
+    Reader source = new StringReader(expected);
 
-  @Override
-  public int read(char[] cbuf, int off, int len) throws IOException {
-    int read = source.read(cbuf, off, len);
+    StringWriter writer = new StringWriter();
 
-    if (read != -1) {
-      for (Writer sink : sinks) {
-        sink.write(cbuf, off, read);
-      }
+    Reader tee = new TeeReader(source, writer);
+
+    try (JsonInput reader = new Json().newInput(tee)) {
+
+      reader.beginObject();
+      assertEquals("key", reader.nextName());
+      reader.skipValue();
+      reader.endObject();
+
+      assertEquals(expected, writer.toString());
     }
-    return read;
-  }
-
-  @Override
-  public void close() throws IOException {
-    source.close();
-    for (Writer sink : sinks) {
-      sink.close();
-    }
-  }
-
-  @Override
-  public boolean markSupported() {
-    return false;
   }
 }
