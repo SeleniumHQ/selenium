@@ -35,10 +35,6 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   public void testGetsTheSizeOfTheCurrentWindow() {
-    assumeFalse(
-        "window().getSize() is not implemented for Chrome for Android. "
-        + "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1005",
-        TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     Dimension size = driver.manage().window().getSize();
 
     assertThat(size.width).isGreaterThan(0);

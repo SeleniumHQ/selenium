@@ -517,11 +517,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   public void testGetShouldSwitchToDefaultContext() {
-    // Fails on Chrome 44 (and higher?) https://bugs.chromium.org/p/chromedriver/issues/detail?id=1106
-    assumeFalse(
-        "chrome".equals(((HasCapabilities) driver).getCapabilities().getBrowserName())
-        && "44".compareTo(((HasCapabilities) driver).getCapabilities().getVersion()) <= 0);
-
     driver.get(pages.iframePage);
     driver.switchTo().frame(driver.findElement(By.id("iframe1")));
     driver.findElement(By.id("cheese")); // Found on formPage.html but not on iframes.html.
