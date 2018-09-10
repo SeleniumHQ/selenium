@@ -4,7 +4,7 @@ import java.util.Optional;
 
 /**
  * Describes, in general terms, a webdriver instance. This allows services to query the system at
- * run time and offer instances of particular {@link WebDriver} subclasses should they be availble.
+ * run time and offer instances of particular {@link WebDriver} subclasses should they be available.
  */
 @Beta
 public interface WebDriverInfo {
