@@ -55,7 +55,6 @@ DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
   this->browser_id_ = StringUtilities::ToString(cast_guid_string);
 
   ::RpcStringFree(&guid_string);
-
   this->window_handle_ = hwnd;
   this->executor_handle_ = executor_handle;
   this->script_executor_handle_ = NULL;
@@ -63,7 +62,9 @@ DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
   this->wait_required_ = false;
   this->focused_frame_window_ = NULL;
   this->cookie_manager_ = new CookieManager();
-  this->cookie_manager_->Initialize(this->window_handle_);
+  if (this->window_handle_ != NULL) {
+    this->cookie_manager_->Initialize(this->window_handle_);
+  }
 }
 
 DocumentHost::~DocumentHost(void) {

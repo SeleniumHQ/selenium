@@ -31,6 +31,7 @@
 #include "BrowserFactory.h"
 #include "CommandExecutor.h"
 #include "CommandHandlerRepository.h"
+#include "CookieManager.h"
 #include "Element.h"
 #include "ElementFinder.h"
 #include "ElementRepository.h"
@@ -254,7 +255,7 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
   LOG(TRACE) << "Entering IECommandExecutor::OnAfterNewWindow";
   if (wParam > 0) {
     LOG(DEBUG) << "Creating thread and reposting message.";
-    this->CreateDelayPostMessageThread(wParam,
+    this->CreateDelayPostMessageThread(static_cast<DWORD>(wParam),
                                        this->m_hWnd,
                                        WD_AFTER_NEW_WINDOW);
   } else {
@@ -283,11 +284,15 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
   // interface has been marshaled back across the thread boundary to the
   // NewWindow3 event handler will the navigation begin, which ensures that
   // even the initial navigation will get captured by the proxy, if one is
-  // set.
+  // set. Likewise, the cookie manager needs to have its window handle
+  // properly set to a non-NULL value so that windows messages are routed
+  // to the correct window.
   // N.B. DocumentHost::GetBrowserWindowHandle returns the tab window handle
   // for IE 7 and above, and the top-level window for IE6. This is the window
   // required for setting the proxy settings.
-  this->proxy_manager_->SetProxySettings(new_window_wrapper->GetBrowserWindowHandle());
+  HWND new_window_handle = new_window_wrapper->GetBrowserWindowHandle();
+  this->proxy_manager_->SetProxySettings(new_window_handle);
+  new_window_wrapper->cookie_manager()->Initialize(new_window_handle);
   this->AddManagedBrowser(new_window_wrapper);
   LOG(DEBUG) << "Attempting to marshal interface pointer to requesting thread.";
   LPSTREAM* stream = reinterpret_cast<LPSTREAM*>(lParam);
