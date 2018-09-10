@@ -370,21 +370,6 @@ public class ExpectedConditions {
    *
    * @param locator used to find the element
    * @param text    to be present in the element found by the locator
-   * @return the WebElement once it is located and visible
-   * @deprecated Use {@link #textToBePresentInElementLocated(By, String)} instead
-   */
-  @Deprecated
-  public static ExpectedCondition<Boolean> textToBePresentInElement(final By locator,
-                                                                    final String text) {
-    return textToBePresentInElementLocated(locator, text);
-  }
-
-  /**
-   * An expectation for checking if the given text is present in the element that matches the given
-   * locator.
-   *
-   * @param locator used to find the element
-   * @param text    to be present in the element found by the locator
    * @return true once the first element located by locator contains the given text
    */
   public static ExpectedCondition<Boolean> textToBePresentInElementLocated(final By locator,
@@ -829,14 +814,6 @@ public class ExpectedConditions {
         return "alert to be present";
       }
     };
-  }
-
-  /**
-   * @deprecated please use {@link #numberOfWindowsToBe(int)} instead
-   */
-  @Deprecated
-  public static ExpectedCondition<Boolean> numberOfwindowsToBe(final int expectedNumberOfWindows) {
-    return numberOfWindowsToBe(expectedNumberOfWindows);
   }
 
   public static ExpectedCondition<Boolean> numberOfWindowsToBe(final int expectedNumberOfWindows) {
