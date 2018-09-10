@@ -70,7 +70,7 @@ public class CompiledAtomsNotLeakingTest {
     });
   }
 
-  /** http://code.google.com/p/selenium/issues/detail?id=1333 */
+  /** https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1333 */
   @Test
   public void fragmentWillNotLeakVariablesToEnclosingScopes() {
     ContextFactory.getGlobal().call(context -> {

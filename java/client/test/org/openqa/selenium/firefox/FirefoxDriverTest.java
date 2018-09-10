@@ -470,7 +470,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
-  // See http://code.google.com/p/selenium/issues/detail?id=1774
+  // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1774
   @Test
   public void canStartFirefoxDriverWithSubclassOfFirefoxProfile() {
     new FirefoxDriver(new FirefoxOptions().setProfile(new CustomFirefoxProfile())).quit();
