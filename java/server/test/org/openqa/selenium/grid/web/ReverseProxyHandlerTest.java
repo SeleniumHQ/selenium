@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.session.remote;
+package org.openqa.selenium.grid.web;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class PassthroughTest {
+public class ReverseProxyHandlerTest {
 
   private Server server;
 
@@ -60,11 +60,11 @@ public class PassthroughTest {
 
   @Test
   public void shouldForwardRequestsToEndPoint() throws IOException {
-    SessionCodec handler = new Passthrough(server.url);
+    CommandHandler handler = new ReverseProxyHandler(server.url);
     HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
     req.addHeader("X-Cheese", "Cake");
     HttpResponse resp = new HttpResponse();
-    handler.handle(req, resp);
+    handler.execute(req, resp);
 
     // HTTP headers are case insensitive. This is how the HttpUrlConnection likes to encode things
     assertEquals("Cake", server.lastRequest.getHeader("x-cheese"));
