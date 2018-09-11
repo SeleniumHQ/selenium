@@ -146,6 +146,25 @@ public class JsonTest {
   }
 
   @Test
+  public void settingFinalFieldsShouldWork() {
+    Map<String, String> map = ImmutableMap.of("theName", "fishy");
+
+    Json json = new Json();
+    String raw = json.toJson(map);
+    BeanWithFinalField seen = json.toType(raw, BeanWithFinalField.class, PropertySetting.BY_FIELD);
+
+    assertThat(seen.theName).isEqualTo("fishy");
+  }
+
+  public static class BeanWithFinalField {
+    private final String theName;
+
+    public BeanWithFinalField() {
+      this.theName = "magic";
+    }
+  }
+
+  @Test
   public void canConstructASimpleString() {
     String text = new Json().toType("\"cheese\"", String.class);
 
