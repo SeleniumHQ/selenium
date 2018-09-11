@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.json;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.logging.Level.ALL;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.OFF;
 import static java.util.logging.Level.WARNING;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.openqa.selenium.Proxy.ProxyType.PAC;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -81,7 +81,6 @@ public class JsonTest {
 
     Json json = new Json();
     String converted = json.toJson(original);
-    System.out.println("converted = " + converted);
     Object remade = json.toType(converted, MAP_TYPE);
 
     assertThat(remade).isEqualTo(original);
@@ -110,7 +109,6 @@ public class JsonTest {
 
     Json json = new Json();
     String raw = json.toJson(expected);
-    System.out.println("raw = " + raw);
     List<Capabilities> seen = json.toType(raw, new TypeToken<List<Capabilities>>(){}.getType());
 
     assertThat(seen).isEqualTo(expected);
@@ -415,8 +413,14 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldCallFromJsonMethodIfPresent() {
+  public void shouldCallFromJsonMethodIfPresent() {
     JsonAware res = new Json().toType("\"converted\"", JsonAware.class);
+    assertThat(res.convertedValue).isEqualTo("\"converted\"");
+  }
+
+  @Test
+  public void fromJsonMethodNeedNotBePublic() {
+    JsonAware res = new Json().toType("\"converted\"", PrivatelyAware.class);
     assertThat(res.convertedValue).isEqualTo("\"converted\"");
   }
 
@@ -552,6 +556,18 @@ public class JsonTest {
     }
 
     public static JsonAware fromJson(String json) {
+      return new JsonAware(json);
+    }
+  }
+
+  public static class PrivatelyAware {
+    private String convertedValue;
+
+    public PrivatelyAware(String convertedValue) {
+      this.convertedValue = convertedValue;
+    }
+
+    private static JsonAware fromJson(String json) {
       return new JsonAware(json);
     }
   }
