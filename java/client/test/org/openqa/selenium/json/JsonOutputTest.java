@@ -305,6 +305,19 @@ public class JsonOutputTest {
   }
 
   @Test
+  public void toJsonDoesNotNeedToBePublic() {
+    class PrivatelyMappable {
+      private String toJson() {
+        return "cheese";
+      }
+    }
+
+    String json = convert(new PrivatelyMappable());
+
+    assertThat(json).isEqualTo("\"cheese\"");
+  }
+
+  @Test
   public void testConvertsToJsonMethodResultToPrimitiveIfItIsNotJson() {
     // We want this parsed as a string primitive, but JsonParser will reject it
     // as malformed because of the slash.
