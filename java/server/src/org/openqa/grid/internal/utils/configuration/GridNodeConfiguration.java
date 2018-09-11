@@ -169,7 +169,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     super(jsonConfig);
     role = ROLE;
     capabilities = ofNullable(jsonConfig.getCapabilities())
-        .orElse(DEFAULT_CONFIG_FROM_JSON.getCapabilities());
+        .orElse(new ArrayList<>(DEFAULT_CONFIG_FROM_JSON.getCapabilities()));
     maxSession = ofNullable(jsonConfig.getMaxSession())
         .orElse(DEFAULT_CONFIG_FROM_JSON.getMaxSession());
     register = ofNullable(jsonConfig.getRegister())
