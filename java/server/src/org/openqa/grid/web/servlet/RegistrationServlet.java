@@ -97,7 +97,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
       considerV2Json(registrationRequest.getConfiguration(), json);
     } else {
       // Se3 compatible request.
-      registrationRequest = RegistrationRequest.fromJson(requestJsonString);
+      registrationRequest = RegistrationRequest.fromJson(json);
     }
 
     final RemoteProxy proxy = BaseRemoteProxy.getNewInstance(registrationRequest, getRegistry());

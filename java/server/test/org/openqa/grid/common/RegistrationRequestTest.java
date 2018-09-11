@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import org.junit.Assume;
 import org.junit.Test;
@@ -70,7 +71,7 @@ public class RegistrationRequestTest {
 
     String json = new Json().toJson(req.toJson());
 
-    RegistrationRequest req2 = RegistrationRequest.fromJson(json);
+    RegistrationRequest req2 = RegistrationRequest.fromJson(new Json().toType(json, MAP_TYPE));
 
     assertEquals(req.getName(), req2.getName());
     assertEquals(req.getDescription(), req2.getDescription());

@@ -415,13 +415,22 @@ public class JsonTest {
   @Test
   public void shouldCallFromJsonMethodIfPresent() {
     JsonAware res = new Json().toType("\"converted\"", JsonAware.class);
-    assertThat(res.convertedValue).isEqualTo("\"converted\"");
+    assertThat(res.convertedValue).isEqualTo("converted");
   }
 
   @Test
   public void fromJsonMethodNeedNotBePublic() {
     JsonAware res = new Json().toType("\"converted\"", PrivatelyAware.class);
-    assertThat(res.convertedValue).isEqualTo("\"converted\"");
+    assertThat(res.convertedValue).isEqualTo("converted");
+  }
+
+  @Test
+  public void fromJsonMethodNeedNotOnlyAcceptAString() {
+    Json json = new Json();
+    String raw = json.toJson(ImmutableMap.of("cheese", "truffled brie"));
+    MapTakingFromJsonMethod res = json.toType(raw, MapTakingFromJsonMethod.class);
+
+    assertThat(res.cheese).isEqualTo("truffled brie");
   }
 
   // Test for issue 8187
@@ -569,6 +578,17 @@ public class JsonTest {
 
     private static JsonAware fromJson(String json) {
       return new JsonAware(json);
+    }
+  }
+
+  public static class MapTakingFromJsonMethod {
+
+    private String cheese;
+
+    private static MapTakingFromJsonMethod fromJson(Map<String, Object> args) {
+      MapTakingFromJsonMethod toReturn = new MapTakingFromJsonMethod();
+      toReturn.cheese = String.valueOf(args.get("cheese"));
+      return toReturn;
     }
   }
 }
