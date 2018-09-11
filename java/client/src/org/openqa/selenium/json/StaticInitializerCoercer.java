@@ -61,7 +61,7 @@ public class StaticInitializerCoercer extends TypeCoercer<Object> {
 
   private Method getStaticMethod(String name, Class<?> aClass) {
     try {
-      Method method = aClass.getMethod(name, String.class);
+      Method method = aClass.getDeclaredMethod(name, String.class);
       if (!Modifier.isStatic(method.getModifiers())) {
         return null;
       }
