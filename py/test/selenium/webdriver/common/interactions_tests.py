@@ -143,10 +143,7 @@ def testCannotMoveToANullLocator(driver, pages):
         move.perform()
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
 @pytest.mark.xfail_firefox
-@pytest.mark.xfail_remote
 def testClickingOnFormElements(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("formSelectionPage.html")
