@@ -72,6 +72,8 @@ public class SessionStorageTest extends JUnit4TestBase {
 
   @Test
   public void testClearSessionStorage() {
+    driver.get(pages.html5Page);
+
     SessionStorage session = ((WebStorage) driver).getSessionStorage();
     session.setItem("FOO1", "BAR1");
     session.setItem("FOO2", "BAR2");
