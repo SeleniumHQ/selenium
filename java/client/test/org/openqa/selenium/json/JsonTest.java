@@ -146,7 +146,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testCanConstructASimpleString() {
+  public void canConstructASimpleString() {
     String text = new Json().toType("\"cheese\"", String.class);
 
     assertThat(text).isEqualTo("cheese");
@@ -154,7 +154,7 @@ public class JsonTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testCanPopulateAMap() {
+  public void canPopulateAMap() {
     JsonObject toConvert = new JsonObject();
     toConvert.addProperty("cheese", "brie");
     toConvert.addProperty("foodstuff", "cheese");
@@ -167,7 +167,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testCanPopulateAMapThatContainsNull() {
+  public void canPopulateAMapThatContainsNull() {
     JsonObject toConvert = new JsonObject();
     toConvert.add("foo", JsonNull.INSTANCE);
 
@@ -178,7 +178,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testCanPopulateASimpleBean() {
+  public void canPopulateASimpleBean() {
     JsonObject toConvert = new JsonObject();
     toConvert.addProperty("value", "time");
 
@@ -187,7 +187,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testWillSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
+  public void willSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
     JsonObject toConvert = new JsonObject();
     toConvert.addProperty("value", "time");
     toConvert.addProperty("frob", "telephone");
@@ -198,7 +198,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldSetPrimitiveValuesToo() {
+  public void shouldSetPrimitiveValuesToo() {
     JsonObject toConvert = new JsonObject();
     toConvert.addProperty("magicNumber", 3);
 
@@ -208,7 +208,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldPopulateFieldsOnNestedBeans() {
+  public void shouldPopulateFieldsOnNestedBeans() {
     JsonObject toConvert = new JsonObject();
     toConvert.addProperty("name", "frank");
     JsonObject child = new JsonObject();
@@ -222,7 +222,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldProperlyFillInACapabilitiesObject() {
+  public void shouldProperlyFillInACapabilitiesObject() {
     DesiredCapabilities capabilities =
         new DesiredCapabilities("browser", CapabilityType.VERSION, Platform.ANY);
     capabilities.setJavascriptEnabled(true);
@@ -234,7 +234,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldUseAMapToRepresentComplexObjects() {
+  public void shouldUseAMapToRepresentComplexObjects() {
     JsonObject toModel = new JsonObject();
     toModel.addProperty("thing", "hairy");
     toModel.addProperty("hairy", "true");
@@ -244,7 +244,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldConvertAResponseWithAnElementInIt() {
+  public void shouldConvertAResponseWithAnElementInIt() {
     String json =
         "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
     Response converted = new Json().toType(json, Response.class);
@@ -254,13 +254,13 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
+  public void shouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
     String json = "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
     new Json().toType(json, Response.class);
   }
 
   @Test
-  public void testShouldBeAbleToSetAnObjectToABoolean() {
+  public void shouldBeAbleToSetAnObjectToABoolean() {
     String json = "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
 
     Response response = new Json().toType(json, Response.class);
@@ -269,7 +269,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testCanHandleValueBeingAnArray() {
+  public void canHandleValueBeingAnArray() {
     String[] value = {"Cheese", "Peas"};
 
     Response response = new Response();
@@ -286,7 +286,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldConvertObjectsInArraysToMaps() {
+  public void shouldConvertObjectsInArraysToMaps() {
     Date date = new Date();
     Cookie cookie = new Cookie("foo", "bar", "localhost", "/rooted", date, true, true);
 
@@ -308,7 +308,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldConvertAnArrayBackIntoAnArray() {
+  public void shouldConvertAnArrayBackIntoAnArray() {
     Exception e = new Exception();
     String converted = new Json().toJson(e);
 
@@ -319,7 +319,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldBeAbleToReconsituteASessionId() {
+  public void sShouldBeAbleToReconsituteASessionId() {
     String json = new Json().toJson(new SessionId("id"));
     SessionId sessionId = new Json().toType(json, SessionId.class);
 
@@ -327,7 +327,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertACommand() {
+  public void shouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("session id");
     Command original = new Command(
         sessionId,
@@ -344,7 +344,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldConvertCapabilitiesToAMapAndIncludeCustomValues() {
+  public void shouldConvertCapabilitiesToAMapAndIncludeCustomValues() {
     Capabilities caps = new ImmutableCapabilities("furrfu", "fishy");
 
     String raw = new Json().toJson(caps);
@@ -354,7 +354,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldParseCapabilitiesWithLoggingPreferences() {
+  public void shouldParseCapabilitiesWithLoggingPreferences() {
     JsonObject prefs = new JsonObject();
     prefs.addProperty("browser", "WARNING");
     prefs.addProperty("client", "DEBUG");
@@ -376,7 +376,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldNotParseQuotedJsonObjectsAsActualJsonObjects() {
+  public void shouldNotParseQuotedJsonObjectsAsActualJsonObjects() {
     JsonObject inner = new JsonObject();
     inner.addProperty("color", "green");
     inner.addProperty("number", 123);
@@ -426,7 +426,7 @@ public class JsonTest {
 
   // Test for issue 8187
   @Test
-  public void testDecodingResponseWithNumbersInValueObject() {
+  public void decodingResponseWithNumbersInValueObject() {
     Response response = new Json().toType(
         "{\"status\":0,\"value\":{\"width\":96,\"height\":46.19140625}}",
         Response.class);
@@ -439,7 +439,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldRecognizeNumericStatus() {
+  public void shouldRecognizeNumericStatus() {
     Response response = new Json().toType(
         "{\"status\":0,\"value\":\"cheese\"}",
         Response.class);
@@ -451,7 +451,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldRecognizeStringStatus() {
+  public void shouldRecognizeStringStatus() {
     Response response = new Json().toType(
         "{\"status\":\"success\",\"value\":\"cheese\"}",
         Response.class);
@@ -463,7 +463,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldConvertInvalidSelectorError() {
+  public void shouldConvertInvalidSelectorError() {
     Response response = new Json().toType(
         "{\"state\":\"invalid selector\",\"message\":\"invalid xpath selector\"}",
         Response.class);
@@ -472,7 +472,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldRecognizeStringState() {
+  public void shouldRecognizeStringState() {
     Response response = new Json()
         .toType(
             "{\"state\":\"success\",\"value\":\"cheese\"}",
@@ -484,7 +484,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testNoStatusShouldBeNullInResponseObject() {
+  public void noStatusShouldBeNullInResponseObject() {
     Response response = new Json().toType("{\"value\":\"cheese\"}", Response.class);
     assertThat(response.getStatus()).isNull();
   }
