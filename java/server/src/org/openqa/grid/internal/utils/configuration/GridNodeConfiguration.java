@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -167,23 +168,35 @@ public class GridNodeConfiguration extends GridConfiguration {
   public GridNodeConfiguration(NodeJsonConfiguration jsonConfig) {
     super(jsonConfig);
     role = ROLE;
-    ofNullable(jsonConfig.getCapabilities()).ifPresent(v -> capabilities = new ArrayList<>(v));
-    maxSession = jsonConfig.getMaxSession();
-    register = jsonConfig.getRegister();
-    registerCycle = jsonConfig.getRegisterCycle();
-    nodeStatusCheckTimeout = jsonConfig.getNodeStatusCheckTimeout();
-    nodePolling = jsonConfig.getNodePolling();
-    unregisterIfStillDownAfter = jsonConfig.getUnregisterIfStillDownAfter();
-    downPollingLimit = jsonConfig.getDownPollingLimit();
-    proxy = jsonConfig.getProxy();
+    capabilities = ofNullable(jsonConfig.getCapabilities())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getCapabilities());
+    maxSession = ofNullable(jsonConfig.getMaxSession())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getMaxSession());
+    register = ofNullable(jsonConfig.getRegister())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getRegister());
+    registerCycle = ofNullable(jsonConfig.getRegisterCycle())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getRegisterCycle());
+    nodeStatusCheckTimeout = ofNullable(jsonConfig.getNodeStatusCheckTimeout())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getNodeStatusCheckTimeout());
+    nodePolling = ofNullable(jsonConfig.getNodePolling())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getNodePolling());
+    unregisterIfStillDownAfter = ofNullable(jsonConfig.getUnregisterIfStillDownAfter())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getUnregisterIfStillDownAfter());
+    downPollingLimit = ofNullable(jsonConfig.getDownPollingLimit())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getDownPollingLimit());
+    proxy = ofNullable(jsonConfig.getProxy())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getProxy());
     enablePlatformVerification = jsonConfig.isEnablePlatformVerification();
     if (jsonConfig.getHub() != null) {
       // -hub has precedence
       hub = jsonConfig.getHub();
 
+    } else if (jsonConfig.getHubHost() != null && jsonConfig.getHubPort() != null) {
+      hubHost = ofNullable(jsonConfig.getHubHost()).orElse(DEFAULT_CONFIG_FROM_JSON.getHubHost());
+      hubPort = ofNullable(jsonConfig.getHubPort()).orElse(DEFAULT_CONFIG_FROM_JSON.getHubPort());
+
     } else {
-      hubHost = jsonConfig.getHubHost();
-      hubPort = jsonConfig.getHubPort();
+      hub = DEFAULT_CONFIG_FROM_JSON.getHub();
     }
   }
 

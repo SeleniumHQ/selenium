@@ -87,12 +87,18 @@ public class GridHubConfiguration extends GridConfiguration {
   public GridHubConfiguration(HubJsonConfiguration jsonConfig) {
     super(jsonConfig);
     role = ROLE;
-    cleanUpCycle = jsonConfig.getCleanUpCycle();
-    newSessionWaitTimeout = jsonConfig.getNewSessionWaitTimeout();
-    throwOnCapabilityNotPresent = jsonConfig.getThrowOnCapabilityNotPresent();
-    registry = jsonConfig.getRegistry();
-    capabilityMatcher = jsonConfig.getCapabilityMatcher();
-    prioritizer = jsonConfig.getPrioritizer();
+    cleanUpCycle = ofNullable(jsonConfig.getCleanUpCycle())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getCleanUpCycle());
+    newSessionWaitTimeout = ofNullable(jsonConfig.getNewSessionWaitTimeout())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getNewSessionWaitTimeout());
+    throwOnCapabilityNotPresent = ofNullable(jsonConfig.getThrowOnCapabilityNotPresent())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getThrowOnCapabilityNotPresent());
+    registry = ofNullable(jsonConfig.getRegistry())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getRegistry());
+    capabilityMatcher = ofNullable(jsonConfig.getCapabilityMatcher())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getCapabilityMatcher());
+    prioritizer = ofNullable(jsonConfig.getPrioritizer())
+        .orElse(DEFAULT_CONFIG_FROM_JSON.getPrioritizer());
   }
 
   public GridHubConfiguration(GridHubCliOptions cliConfig) {
