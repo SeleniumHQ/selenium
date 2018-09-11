@@ -118,11 +118,10 @@ public class RegistrationRequest {
   /**
    * Create an object from a registration request formatted as a json string.
    */
-  public static RegistrationRequest fromJson(String jsonString) throws JsonException {
+  public static RegistrationRequest fromJson(Map<String, Object> raw) throws JsonException {
     // If we could, we'd just get Json to coerce this for us, but that would lead to endless
     // recursion as the first thing it would do would be to call this very method. *sigh*
     Json json = new Json();
-    Map<String, Object> raw = json.toType(jsonString, MAP_TYPE);
     RegistrationRequest request = new RegistrationRequest();
 
     if (raw.get("name") instanceof String) {
