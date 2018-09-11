@@ -296,11 +296,17 @@ public class JsonOutput implements Closeable {
   }
 
   private Method getMethod(Class<?> clazz, String methodName) {
+    if (Object.class.equals(clazz)) {
+      return null;
+    }
+
     try {
-      Method method = clazz.getMethod(methodName);
+      Method method = clazz.getDeclaredMethod(methodName);
       method.setAccessible(true);
       return method;
-    } catch (NoSuchMethodException | SecurityException e) {
+    } catch (NoSuchMethodException e) {
+      return getMethod(clazz.getSuperclass(), methodName);
+    } catch (SecurityException e) {
       return null;
     }
   }
