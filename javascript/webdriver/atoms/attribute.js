@@ -46,6 +46,9 @@ var PROPERTY_ALIASES = {
  * @const {!Array<string>}
  */
 var BOOLEAN_PROPERTIES = [
+  'allowfullscreen',
+  'allowpaymentrequest',
+  'allowusermedia',
   'async',
   'autofocus',
   'autoplay',
@@ -54,11 +57,11 @@ var BOOLEAN_PROPERTIES = [
   'complete',
   'controls',
   'declare',
+  'default',
   'defaultchecked',
   'defaultselected',
   'defer',
   'disabled',
-  'draggable',
   'ended',
   'formnovalidate',
   'hidden',
@@ -70,12 +73,14 @@ var BOOLEAN_PROPERTIES = [
   'multiple',
   'muted',
   'nohref',
+  'nomodule',
   'noresize',
   'noshade',
   'novalidate',
   'nowrap',
   'open',
   'paused',
+  'playsinline',
   'pubdate',
   'readonly',
   'required',
@@ -84,8 +89,8 @@ var BOOLEAN_PROPERTIES = [
   'seamless',
   'seeking',
   'selected',
-  'spellcheck',
   'truespeed',
+  'typemustmatch',
   'willvalidate'
 ];
 
