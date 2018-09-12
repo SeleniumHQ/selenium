@@ -539,7 +539,12 @@ class WebElement(object):
     @property
     def rect(self):
         """A dictionary with the size and location of the element."""
-        return self._execute(Command.GET_ELEMENT_RECT)['value']
+        if self._w3c:
+            return self._execute(Command.GET_ELEMENT_RECT)['value']
+        else:
+            rect = self.size.copy()
+            rect.update(self.location)
+            return rect
 
     @property
     def screenshot_as_base64(self):
