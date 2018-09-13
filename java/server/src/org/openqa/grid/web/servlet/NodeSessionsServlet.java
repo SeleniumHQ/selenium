@@ -102,7 +102,9 @@ public class NodeSessionsServlet extends RegistryBasedServlet {
     try {
       URL url = proxy.getRemoteHost();
       HttpRequest req = new HttpRequest(HttpMethod.GET, "/wd/hub/sessions");
-      HttpResponse rsp = proxy.getHttpClient(url).execute(req);
+      Integer nodeStatusCheckTimeout = proxy.getConfig().nodeStatusCheckTimeout;
+      HttpResponse rsp = proxy.getHttpClient(url, nodeStatusCheckTimeout, nodeStatusCheckTimeout)
+          .execute(req);
 
       try (InputStream in = new ByteArrayInputStream(rsp.getContent());
            Reader reader = new InputStreamReader(in, rsp.getContentEncoding());

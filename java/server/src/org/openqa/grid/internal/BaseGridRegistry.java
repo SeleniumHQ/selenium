@@ -21,17 +21,18 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URL;
+import java.time.Duration;
 
 public abstract class BaseGridRegistry implements GridRegistry {
-  protected HttpClient.Factory httpClientFactory;
+  protected final HttpClient.Factory httpClientFactory;
 
   // The following needs to be volatile because we expose a public setters
   protected volatile Hub hub;
 
   public BaseGridRegistry(Hub hub) {
+    this.httpClientFactory = HttpClient.Factory.createDefault();
     this.hub = hub;
   }
-
   /**
    * @see GridRegistry#getHub()
    */
@@ -52,17 +53,12 @@ public abstract class BaseGridRegistry implements GridRegistry {
    */
   @Override
   public HttpClient getHttpClient(URL url) {
-    if (httpClientFactory == null) {
-      httpClientFactory = HttpClient.Factory.createDefault();
-    }
     return httpClientFactory.createClient(url);
   }
 
   @Override
   public HttpClient getHttpClient(URL url, int connectionTimeout, int readTimeout) {
-    if (httpClientFactory == null) {
-      httpClientFactory = HttpClient.Factory.createConfigured(connectionTimeout, readTimeout);
-    }
-    return httpClientFactory.createClient(url);
+    return httpClientFactory.createClient(url, Duration.ofSeconds(connectionTimeout),
+                                          Duration.ofSeconds(readTimeout));
   }
 }

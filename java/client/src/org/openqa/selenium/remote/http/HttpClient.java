@@ -61,19 +61,6 @@ public interface HttpClient {
       }
     }
 
-    static Factory createConfigured(int connectionTimeout, int readTimeout) {
-      String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
-      switch (defaultFactory) {
-        case "apache":
-          return new ApacheHttpClient.Factory(connectionTimeout, readTimeout);
-
-        case "okhttp":
-        default:
-          return new OkHttpClient.Factory(Duration.ofSeconds(connectionTimeout),
-                                          Duration.ofSeconds(readTimeout));
-      }
-    }
-
     /**
      * Creates a HTTP client that will send requests to the given URL.
      *
@@ -81,6 +68,16 @@ public interface HttpClient {
      * @return HttpClient
      */
     HttpClient createClient(URL url);
+
+    /**
+     * Creates a HTTP client that will send requests to the given URL.
+     *
+     * @param url URL
+     * @param connectionTimeout int
+     * @param readTimeout int
+     * @return HttpClient
+     */
+    HttpClient createClient(URL url, Duration connectionTimeout, Duration readTimeout);
 
     /**
      * Closes idle clients.

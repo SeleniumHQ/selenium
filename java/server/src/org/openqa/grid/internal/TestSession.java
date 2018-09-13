@@ -201,7 +201,8 @@ public class TestSession {
 
 
   private HttpClient getClient(URL url) {
-    return slot.getProxy().getHttpClient(url);
+    Integer browserTimeout = slot.getProxy().getConfig().browserTimeout;
+    return slot.getProxy().getHttpClient(url, browserTimeout, browserTimeout);
   }
 
   /*
