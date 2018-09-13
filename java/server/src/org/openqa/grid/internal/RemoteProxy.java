@@ -158,8 +158,18 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
 
   /**
    * @return an {@link HttpClient} for a particular {@link URL}.
+   * @deprecated use {@link RemoteProxy#getHttpClient(URL, int, int)}
    */
   HttpClient getHttpClient(URL url);
+
+  /**
+   *
+   * @param url URL
+   * @param connectionTimeout int
+   * @param readTimeout int
+   * @return an {@link HttpClient} for a particular {@link URL}.
+   */
+  HttpClient getHttpClient(URL url, int connectionTimeout, int readTimeout);
 
     /**
    * Renders the status of the node as JSON.  Useful for APIs.
