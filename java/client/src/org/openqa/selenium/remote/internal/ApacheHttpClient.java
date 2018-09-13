@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.http.protocol.HttpCoreContext.HTTP_TARGET_HOST;
 
 import org.apache.http.Header;
@@ -261,6 +262,12 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
 
     public Factory(HttpClientFactory clientFactory) {
       this.clientFactory = checkNotNull(clientFactory, "null HttpClientFactory");
+    }
+
+    public Factory(int connectionTimeout, int socketTimeout) {
+      int connectionTimeoutToMillis = (int) SECONDS.toMillis(connectionTimeout);
+      int socketTimeoutToMillis = (int) SECONDS.toMillis(socketTimeout);
+      this.clientFactory = new HttpClientFactory(connectionTimeoutToMillis, socketTimeoutToMillis);
     }
 
     @Override

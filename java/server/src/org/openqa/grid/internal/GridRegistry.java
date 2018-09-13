@@ -155,8 +155,18 @@ public interface GridRegistry {
 
   /**
     * @return the {@link HttpClient.Factory} to use.
+    * @deprecated use {@link GridRegistry#getHttpClient(URL,int,int)}
    */
   HttpClient getHttpClient(URL url);
+
+  /**
+   *
+   * @param url URL
+   * @param connectionTimeout int
+   * @param readTimeout int
+   * @return the {@link HttpClient.Factory} to use.
+   */
+  HttpClient getHttpClient(URL url, int connectionTimeout, int readTimeout);
 
   /**
    * Remove a new session request from the registry

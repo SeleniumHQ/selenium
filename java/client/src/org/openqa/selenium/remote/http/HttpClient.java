@@ -24,6 +24,7 @@ import org.openqa.selenium.remote.internal.OkHttpClient;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 
 /**
  * Defines a simple client for making HTTP requests.
@@ -57,6 +58,19 @@ public interface HttpClient {
         case "okhttp":
         default:
           return new OkHttpClient.Factory();
+      }
+    }
+
+    static Factory createConfigured(int connectionTimeout, int readTimeout) {
+      String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
+      switch (defaultFactory) {
+        case "apache":
+          return new ApacheHttpClient.Factory(connectionTimeout, readTimeout);
+
+        case "okhttp":
+        default:
+          return new OkHttpClient.Factory(Duration.ofSeconds(connectionTimeout),
+                                          Duration.ofSeconds(readTimeout));
       }
     }
 
