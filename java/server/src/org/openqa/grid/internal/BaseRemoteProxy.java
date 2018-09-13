@@ -42,6 +42,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -428,7 +429,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   }
 
   public HttpClient getHttpClient(URL url) {
-    return getRegistry().getHttpClient(url);
+    return getRegistry().getHttpClient(url, config.browserTimeout, config.browserTimeout);
   }
 
   public Map<String, Object> getProxyStatus() {

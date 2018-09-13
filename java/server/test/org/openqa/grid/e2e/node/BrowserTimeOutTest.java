@@ -39,7 +39,6 @@ import java.util.Collections;
 /**
  * checks that the session is stopped and browser released when browser timeout happens.
  */
-@Ignore("Broken on CI, needs investigation")
 public class BrowserTimeOutTest {
 
   private Hub hub;
