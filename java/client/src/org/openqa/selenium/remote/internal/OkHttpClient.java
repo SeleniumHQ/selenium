@@ -116,8 +116,8 @@ public class OkHttpClient implements HttpClient {
   public static class Factory implements HttpClient.Factory {
 
     private final ConnectionPool pool = new ConnectionPool();
-    private final long connectionTimeout;
-    private final long readTimeout;
+    private final Duration connectionTimeout;
+    private final Duration readTimeout;
 
     public Factory() {
       this(Duration.ofMinutes(2), Duration.ofHours(3));
@@ -127,18 +127,23 @@ public class OkHttpClient implements HttpClient {
       Objects.requireNonNull(connectionTimeout, "Connection timeout cannot be null");
       Objects.requireNonNull(readTimeout, "Read timeout cannot be null");
 
-      this.connectionTimeout = connectionTimeout.toMillis();
-      this.readTimeout = readTimeout.toMillis();
+      this.connectionTimeout = connectionTimeout;
+      this.readTimeout = readTimeout;
     }
 
     @Override
     public HttpClient createClient(URL url) {
+      return createClient(url, this.connectionTimeout, this.readTimeout);
+    }
+
+    @Override
+    public HttpClient createClient(URL url, Duration connectionTimeout, Duration readTimeout) {
       okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
           .connectionPool(pool)
           .followRedirects(true)
           .followSslRedirects(true)
-          .readTimeout(readTimeout, MILLISECONDS)
-          .connectTimeout(connectionTimeout, MILLISECONDS);
+          .readTimeout(readTimeout.toMillis(), MILLISECONDS)
+          .connectTimeout(connectionTimeout.toMillis(), MILLISECONDS);
 
       String info = url.getUserInfo();
       if (!Strings.isNullOrEmpty(info)) {

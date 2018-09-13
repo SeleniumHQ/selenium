@@ -87,7 +87,7 @@ public class CommandListenerTest {
     }
 
     @Override
-    public HttpClient getHttpClient(URL url) {
+    public HttpClient getHttpClient(URL url, int connectionTimeout, int readTimeout) {
       // Create mocks for network traffic
       HttpClient client = mock(HttpClient.class);
       HttpResponse response = mock(HttpResponse.class);
