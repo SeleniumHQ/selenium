@@ -190,10 +190,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Chrome, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.Firefox, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.IE, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.Edge, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.Safari, ".NET language bindings do not properly parse JavaScript stack trace")]
         public void ShouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript()
         {
             driver.Url = ajaxyPage;
