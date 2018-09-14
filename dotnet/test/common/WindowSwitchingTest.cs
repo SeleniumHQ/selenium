@@ -190,12 +190,6 @@ namespace OpenQA.Selenium
         {
             bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
             bool isIE6 = TestUtilities.IsIE6(driver);
-            bool isMarionette = TestUtilities.IsMarionette(driver);
-
-            if (isMarionette)
-            {
-                Assert.Ignore("Hangs Firefox under Marionette");
-            }
 
             driver.Url = xhtmlTestPage;
 
@@ -228,12 +222,6 @@ namespace OpenQA.Selenium
         {
             bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
             bool isIE6 = TestUtilities.IsIE6(driver);
-            bool isMarionette = TestUtilities.IsMarionette(driver);
-
-            if (isMarionette)
-            {
-                Assert.Ignore("Clicking on element that closes window can hang Marionette.");
-            }
 
             driver.Url = xhtmlTestPage;
 

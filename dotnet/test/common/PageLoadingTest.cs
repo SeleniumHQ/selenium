@@ -324,10 +324,7 @@ namespace OpenQA.Selenium
             driver.FindElement(By.XPath("//body"));
         }
 
-        // Note: If this test ever fixed/enabled on Firefox, check if it also needs [NeedsFreshDriver] OR
-        // if [NeedsFreshDriver] can be removed from some other tests in this class.
         [Test]
-        [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.Safari)]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void PageLoadTimeoutCanBeChanged()
@@ -337,7 +334,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.Safari)]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void CanHandleSequentialPageLoadTimeouts()
