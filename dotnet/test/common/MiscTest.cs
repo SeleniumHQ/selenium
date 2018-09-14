@@ -56,7 +56,8 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "returns XML content formatted for display as HTML document")]
         [IgnoreBrowser(Browser.Safari, "returns XML content formatted for display as HTML document")]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "returns XML content formatted for display as HTML document")]
+        [IgnoreBrowser(Browser.Edge, "returns XML content formatted for display as HTML document")]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldBeAbleToGetTheSourceOfAnXmlDocument()
         {

@@ -65,9 +65,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         [IgnoreBrowser(Browser.Chrome, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         [IgnoreBrowser(Browser.Edge, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
+        [IgnoreBrowser(Browser.IE, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
+        [IgnoreBrowser(Browser.Firefox, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
+        [IgnoreBrowser(Browser.Safari, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         public void ShouldGetTextOfAlertOpenedInSetTimeout()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -399,7 +401,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "Firefox waits too long, may be hangs")]
         [IgnoreBrowser(Browser.Chrome, "Test with onLoad alert hangs Chrome.")]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not allow commands in any window when an alert is active")]
         public void ShouldNotHandleAlertInAnotherWindow()
@@ -470,10 +471,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not implicitly handle onBeforeUnload alert")]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
+        //[IgnoreBrowser(Browser.Edge, "Edge driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
         public void ShouldImplicitlyHandleAlertOnPageBeforeUnload()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage().WithTitle("Success"));
@@ -557,7 +557,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "Dismissing alert causes entire window to close.")]
         [IgnoreBrowser(Browser.Safari, "Safari driver cannot handle alert thrown via JavaScript")]
         public void ShouldHandleAlertOnFormSubmit()
         {
@@ -582,7 +581,6 @@ namespace OpenQA.Selenium
         //------------------------------------------------------------------
         [Test]
         [IgnoreBrowser(Browser.Safari, "onBeforeUnload dialogs hang Safari")]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
         public void ShouldHandleAlertOnPageBeforeUnload()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");

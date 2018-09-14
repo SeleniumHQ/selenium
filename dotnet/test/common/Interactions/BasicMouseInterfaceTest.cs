@@ -179,11 +179,11 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Edge)]
+        [IgnoreBrowser(Browser.Chrome, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Edge, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Safari, "Moving outside of view port throws exception in spec-compliant driver")]
         public void MovingMouseBackAndForthPastViewPort()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("veryLargeCanvas.html");

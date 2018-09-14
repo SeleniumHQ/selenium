@@ -339,8 +339,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.IE, "Element is properly seen as obscured.")]
+        [IgnoreBrowser(Browser.Chrome, "Element is properly seen as obscured.")]
+        [IgnoreBrowser(Browser.Edge, "Element is properly seen as obscured.")]
+        [IgnoreBrowser(Browser.Firefox, "Element is properly seen as obscured.")]
+        [IgnoreBrowser(Browser.Safari, "Element is properly seen as obscured.")]
         public void ShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/wrapped_overlapping_elements.html");
