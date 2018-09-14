@@ -190,11 +190,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldBeAbleToClickALinkThatClosesAWindow()
         {
-            //if (TestUtilities.IsMarionette(driver))
-            //{
-            //    Assert.Ignore("Marionette hangs the browser in this case");
-            //}
-
             driver.Url = javascriptPage;
 
             String handle = driver.CurrentWindowHandle;
