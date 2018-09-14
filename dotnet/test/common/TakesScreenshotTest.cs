@@ -90,7 +90,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome driver does not yet implement element screenshots.")]
         public void ShouldTakeScreenshotsOfAnElement()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen.html");
@@ -292,7 +291,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
+        [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         public void ShouldCaptureScreenshotAtIFramePage()
         {
             ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
@@ -323,7 +322,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
         public void ShouldCaptureScreenshotAtFramePageAfterSwitching()
         {
             ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
@@ -357,8 +356,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
+        [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
         public void ShouldCaptureScreenshotAtIFramePageAfterSwitching()
         {
             ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
