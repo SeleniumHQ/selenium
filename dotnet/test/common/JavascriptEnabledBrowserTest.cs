@@ -190,10 +190,10 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldBeAbleToClickALinkThatClosesAWindow()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette hangs the browser in this case");
-            }
+            //if (TestUtilities.IsMarionette(driver))
+            //{
+            //    Assert.Ignore("Marionette hangs the browser in this case");
+            //}
 
             driver.Url = javascriptPage;
 
@@ -201,7 +201,18 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("new_window")).Click();
             WaitFor(() => { driver.SwitchTo().Window("close_me"); return true; }, "Could not find window with name 'close_me'");
 
-            driver.FindElement(By.Id("close")).Click();
+            IWebElement closeElement = WaitFor<IWebElement>(() =>
+            {
+                try
+                {
+                    return driver.FindElement(By.Id("close"));
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+            }, "No element to close window found");
+            closeElement.Click();
 
 	        driver.SwitchTo().Window(handle);
         }
