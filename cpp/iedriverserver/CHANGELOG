@@ -9,6 +9,16 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.6
+=========
+ * Updated to make JSON serialization of JavaScript objects more compliant.
+   When returning values from user-specified JavaScript, the presence of a
+   toJSON() property indicates that function is what should be used to
+   serialize the object. Additionally, for objects that are not recognized
+   as JavaScript objects via the properties of the IDispatch, and do not
+   have a toJSON property, the driver will now make a last-ditch attempt
+   to serialize the value for return by calling JSON.stringify().
+
 v3.14.0.5
 =========
  * Updated to manually initialize cookie manager on new window open. When
