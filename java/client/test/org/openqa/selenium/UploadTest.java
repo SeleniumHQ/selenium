@@ -26,7 +26,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.io.Files;
@@ -82,7 +81,6 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testCleanFileInput() {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
@@ -92,7 +90,6 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   @Ignore(CHROME)
   @Ignore(HTMLUNIT)
   public void testClickFileInput() {
