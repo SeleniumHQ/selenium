@@ -552,9 +552,40 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
 int Script::ConvertResultToJsonValue(IElementManager* element_manager,
                                      Json::Value* value) {
   LOG(TRACE) << "Entering Script::ConvertResultToJsonValue";
-  return VariantUtilities::VariantAsJsonValue(element_manager,
-                                              this->result_,
-                                              value);
+  int status_code = VariantUtilities::VariantAsJsonValue(element_manager,
+                                                         this->result_,
+                                                         value);
+  if (status_code != WD_SUCCESS) {
+    LOG(DEBUG) << "Script result could not be directly converted; "
+               << "attempting to use JSON.stringify()";
+    std::wstring json_stringify_script = ANONYMOUS_FUNCTION_START;
+    json_stringify_script.append(L"return function(){ return JSON.stringify(arguments[0]); };");
+    json_stringify_script.append(ANONYMOUS_FUNCTION_END);
+    Script stringify_script_wrapper(this->script_engine_host_,
+                                    json_stringify_script,
+                                    1);
+    stringify_script_wrapper.AddArgument(this->result_);
+    status_code = stringify_script_wrapper.Execute();
+    if (status_code == WD_SUCCESS) {
+      CComVariant result = stringify_script_wrapper.result();
+      if (result.vt == VT_BSTR) {
+        std::wstring wide_json = result.bstrVal;
+        std::string json = StringUtilities::ToString(wide_json);
+        Json::Value interim_value;
+        std::string parse_errors;
+        std::stringstream json_stream;
+        json_stream.str(json);
+        bool successful_parse = Json::parseFromStream(Json::CharReaderBuilder(),
+                                                      json_stream,
+                                                      &interim_value,
+                                                      &parse_errors);
+        if (successful_parse) {
+          *value = interim_value;
+        }
+      }
+    }
+  }
+  return status_code;
 }
 
 bool Script::CreateAnonymousFunction(VARIANT* result) {
