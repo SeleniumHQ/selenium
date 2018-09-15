@@ -136,7 +136,6 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(IE)
   @Ignore(FIREFOX)
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);

@@ -469,7 +469,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   @Ignore(HTMLUNIT)
   public void testClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
