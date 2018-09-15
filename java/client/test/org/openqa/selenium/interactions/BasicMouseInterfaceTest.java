@@ -172,7 +172,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/661")
   @NotYetImplemented(SAFARI)
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);

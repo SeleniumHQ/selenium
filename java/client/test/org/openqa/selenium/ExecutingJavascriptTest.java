@@ -485,7 +485,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
 
