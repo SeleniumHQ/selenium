@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -154,7 +153,6 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testCanHandleTransparentSelect() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.cssSelector("#transparent option"));

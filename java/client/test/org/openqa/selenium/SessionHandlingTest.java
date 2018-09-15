@@ -42,6 +42,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = FIREFOX)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
+  @NotYetImplemented(SAFARI)
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     driver.close();
     sleepTight(3000);
@@ -51,7 +52,6 @@ public class SessionHandlingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX)
-  @NotYetImplemented(value = SAFARI, reason = "throws NoSuchWindowException")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     driver.close();

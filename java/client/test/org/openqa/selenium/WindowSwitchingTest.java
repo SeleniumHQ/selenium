@@ -110,6 +110,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest(failedOnly = true)
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();

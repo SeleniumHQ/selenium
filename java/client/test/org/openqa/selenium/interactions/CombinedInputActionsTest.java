@@ -178,7 +178,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(SAFARI)
   public void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
 
@@ -219,6 +218,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
 
@@ -335,6 +335,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(SAFARI)
   public void testHoldingDownShiftKeyWhileClicking() {
     driver.get(pages.clickEventPage);
 

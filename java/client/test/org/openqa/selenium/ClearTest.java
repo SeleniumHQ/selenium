@@ -41,6 +41,7 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testTextInputShouldNotClearWhenDisabled() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textInputnotenabled"));
@@ -155,7 +156,6 @@ public class ClearTest extends JUnit4TestBase {
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearColorInput() {
     shouldBeAbleToClearInput(By.name("color_input"), "#00ffff");
   }

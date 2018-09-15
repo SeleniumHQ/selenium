@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -240,6 +239,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
 
@@ -250,7 +250,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(SAFARI)
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
     driver.switchTo().parentFrame();
@@ -398,6 +397,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 
@@ -419,6 +419,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
     int iframe = 0;
@@ -437,6 +438,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
     WebElement iframe = driver.findElement(By.id("iframe1"));
@@ -460,6 +462,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(SAFARI)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 
@@ -488,7 +491,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   @Ignore(value = CHROME, reason = "Unstable")
   public void testShouldNotSwitchMagicallyToTheTopWindow() {
     String baseUrl = appServer.whereIs("frame_switching_tests/");
