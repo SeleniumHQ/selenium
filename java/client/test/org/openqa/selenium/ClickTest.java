@@ -130,7 +130,6 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   @NotYetImplemented(SAFARI)
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
@@ -270,7 +269,6 @@ public class ClickTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/901")
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big_in_frame.html");
