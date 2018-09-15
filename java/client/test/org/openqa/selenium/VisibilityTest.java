@@ -24,10 +24,8 @@ import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
@@ -109,7 +107,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);
 
@@ -131,7 +128,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   @NotYetImplemented(HTMLUNIT)
   public void testElementHiddenByOverflowXIsNotVisible() {
     String[] pages = new String[]{
@@ -166,7 +162,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testElementScrollableByOverflowXIsVisible() {
     String[] pages = new String[]{
         "overflow/x_scroll_y_hidden.html",
@@ -184,7 +179,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testElementScrollableByOverflowYIsVisible() {
     String[] pages = new String[]{
         "overflow/x_hidden_y_scroll.html",
@@ -239,7 +233,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void shouldShowElementNotVisibleWithHiddenAttribute() {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
@@ -248,7 +241,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute() {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
@@ -261,7 +253,6 @@ public class VisibilityTest extends JUnit4TestBase {
    * See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1610
    */
   @Test
-  @Ignore(IE)
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
 

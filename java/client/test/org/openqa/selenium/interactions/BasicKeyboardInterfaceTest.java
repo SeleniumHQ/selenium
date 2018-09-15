@@ -62,7 +62,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   @NotYetImplemented(SAFARI)
   public void testSendingKeyDownOnly() {
     driver.get(appServer.whereIs("key_logger.html"));
@@ -83,7 +82,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   @NotYetImplemented(SAFARI)
   public void testSendingKeyUp() {
     driver.get(appServer.whereIs("key_logger.html"));
@@ -107,7 +105,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @NotYetImplemented(SAFARI)
   public void testSendingKeysWithShiftPressed() {
@@ -268,7 +265,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testSelectionSelectAll() {
     assumeFalse(
         "MacOS has alternative keyboard",

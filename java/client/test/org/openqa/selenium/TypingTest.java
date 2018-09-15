@@ -245,7 +245,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.opera &&
                 getEffectivePlatform().is(Platform.WINDOWS));

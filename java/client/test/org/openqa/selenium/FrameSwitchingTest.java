@@ -229,7 +229,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testShouldBeAbleToSwitchToParentFrame() {
     driver.get(pages.framesetPage);
 
@@ -238,7 +237,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
@@ -249,7 +247,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
     driver.switchTo().parentFrame();
@@ -257,7 +254,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testShouldBeAbleToSwitchToParentFromAnIframe() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
@@ -377,7 +373,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrl() {
     driver.get(pages.framesetPage);
     assertThat(driver.getCurrentUrl()).isEqualTo(pages.framesetPage);
@@ -387,7 +382,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes() {
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl()).isEqualTo(pages.iframePage);

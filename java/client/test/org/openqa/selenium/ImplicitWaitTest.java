@@ -139,7 +139,6 @@ public class ImplicitWaitTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   @NotYetImplemented(SAFARI)
   public void testShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfFrameSwitchTo() {
     driver.manage().timeouts().implicitlyWait(1, SECONDS);

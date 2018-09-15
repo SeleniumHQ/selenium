@@ -87,7 +87,6 @@ public class ContentEditableTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/667")
   public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
@@ -101,7 +100,6 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testShouldBeAbleToTypeIntoTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");

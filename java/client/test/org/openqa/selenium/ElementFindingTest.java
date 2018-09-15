@@ -57,7 +57,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME,
       reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
-  @Ignore(IE)
   public void testShouldBeAbleToFindASingleElementByIdWithNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("white space"));
@@ -83,7 +82,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME,
       reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
-  @Ignore(IE)
   public void testShouldBeAbleToFindMultipleElementsByIdWithNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     List<WebElement> elements = driver.findElements(By.id("white space"));
@@ -561,7 +559,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = IE, reason = "IE supports only short version option[selected]")
   public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector() {
     driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
     WebElement element = driver.findElement(By.cssSelector("option[selected='selected']"));

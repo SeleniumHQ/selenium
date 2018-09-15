@@ -212,7 +212,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
