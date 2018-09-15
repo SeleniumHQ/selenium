@@ -172,7 +172,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = ALL, reason = "All tested browses scroll non-scrollable frames")
+  @Ignore(value = ALL, reason = "All tested browsers scroll non-scrollable frames")
   public void testShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_non_scrolling_frame.html"));
     driver.switchTo().frame("scrolling_frame");

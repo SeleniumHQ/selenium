@@ -67,7 +67,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @NotYetImplemented(value = SAFARI)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
     initLocalDriver("none");
@@ -85,7 +84,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   @Ignore(CHROME)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
@@ -110,7 +108,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(CHROME)
-  @NotYetImplemented(value = SAFARI)
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResources() {
     initLocalDriver("eager");
@@ -133,7 +130,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(CHROME)
-  @NotYetImplemented(SAFARI)
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
     initLocalDriver("eager");
@@ -209,7 +205,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(value = SAFARI)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformed() {
     assumeFalse("Fails in Sauce Cloud", shouldUseSauce());

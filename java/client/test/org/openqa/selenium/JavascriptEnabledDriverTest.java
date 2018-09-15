@@ -31,6 +31,7 @@ import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 public class JavascriptEnabledDriverTest extends JUnit4TestBase {
@@ -210,7 +211,9 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    * SimonStewart 2010-10-04
    */
   @NeedsFreshDriver
+  @NoDriverAfterTest
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickALinkThatClosesAWindow() {
     driver.get(pages.javascriptPage);
 

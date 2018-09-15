@@ -94,7 +94,6 @@ public class UploadTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(CHROME)
-  @NotYetImplemented(value = SAFARI, reason = "Throws WebDriverException")
   @Ignore(HTMLUNIT)
   public void testClickFileInput() {
     driver.get(pages.uploadPage);
