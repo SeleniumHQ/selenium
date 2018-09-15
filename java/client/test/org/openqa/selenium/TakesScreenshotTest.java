@@ -143,7 +143,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME)
   @Ignore(value = FIREFOX)
-  @NotYetImplemented(value = SAFARI)
   public void testShouldCaptureScreenshotOfAnElement() throws Exception {
     driver.get(appServer.whereIs("screen/screen.html"));
     WebElement element = driver.findElement(By.id("cell11"));
@@ -166,6 +165,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
   @Ignore(value = IE, reason = "takes only visible viewport")
+  @NotYetImplemented(SAFARI)
   public void testShouldCaptureScreenshotOfPageWithLongX() {
     driver.get(appServer.whereIs("screen/screen_x_long.html"));
 
@@ -187,6 +187,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
   @Ignore(value = IE, reason = "takes only visible viewport")
+  @NotYetImplemented(SAFARI)
   public void testShouldCaptureScreenshotOfPageWithLongY() {
     driver.get(appServer.whereIs("screen/screen_y_long.html"));
 
@@ -209,6 +210,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldCaptureScreenshotOfPageWithTooLongX() {
     driver.get(appServer.whereIs("screen/screen_x_too_long.html"));
 
@@ -231,6 +233,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldCaptureScreenshotOfPageWithTooLongY() {
     driver.get(appServer.whereIs("screen/screen_y_too_long.html"));
 

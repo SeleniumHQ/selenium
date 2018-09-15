@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.Platform.LINUX;
-import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -98,9 +97,6 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = SAFARI,
-      reason = "getPosition after setPosition doesn't match up exactly, " +
-          "as expected - probably due to nuances in Mac OSX window manager.")
   public void testSetsThePositionOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).

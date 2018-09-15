@@ -48,8 +48,8 @@ import org.openqa.selenium.testing.drivers.Browser;
 public class DragAndDropTest extends JUnit4TestBase {
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testDragAndDropRelative() {
-    assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
@@ -67,6 +67,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
     WebElement img1 = driver.findElement(By.id("test1"));
@@ -77,6 +78,7 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @NotYetImplemented(SAFARI)
   public void testDragAndDropToElementInIframe() {
     driver.get(pages.iframePage);
     final WebElement iframe = driver.findElement(By.tagName("iframe"));
@@ -123,9 +125,8 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testElementInDiv() {
-    assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
-
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();
@@ -137,7 +138,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(FIREFOX)
-  @NotYetImplemented(SAFARI)
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
@@ -213,7 +213,7 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);

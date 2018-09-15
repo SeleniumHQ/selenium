@@ -161,6 +161,5 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     long time = end - start;
 
     assertThat(time).isGreaterThanOrEqualTo(1000);
-
   }
 }

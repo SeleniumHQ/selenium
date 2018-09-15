@@ -81,7 +81,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
       }
     } else if (BrowserType.IE.equals(name)) {
       className = "org.openqa.selenium.ie.InternetExplorerDriver";
-    } else if (BrowserType.SAFARI.equals(name)) {
+    } else if (name.toLowerCase().contains(BrowserType.SAFARI)) {
       className = "org.openqa.selenium.safari.SafariDriver";
     } else {
       // The last chance saloon.
