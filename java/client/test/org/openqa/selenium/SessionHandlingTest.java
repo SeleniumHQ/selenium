@@ -52,7 +52,6 @@ public class SessionHandlingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     driver.close();
     sleepTight(3000);
