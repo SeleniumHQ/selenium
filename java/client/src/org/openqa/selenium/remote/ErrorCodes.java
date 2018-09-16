@@ -213,7 +213,7 @@ public class ErrorCodes {
   // exception to a W3C state, this KnownError provides the default exception and Json Wire Protocol
   // status to send.
   private static final ImmutableSet<KnownError> KNOWN_ERRORS = ImmutableSet.<KnownError>builder()
-    .add(new KnownError(ASYNC_SCRIPT_TIMEOUT, "script timeout", 408, ScriptTimeoutException.class, true, true))
+    .add(new KnownError(ASYNC_SCRIPT_TIMEOUT, "script timeout", 500, ScriptTimeoutException.class, true, true))
     .add(new KnownError(ELEMENT_CLICK_INTERCEPTED, "element click intercepted", 400, ElementClickInterceptedException.class, true, true))
     .add(new KnownError(ELEMENT_NOT_SELECTABLE, "element not selectable", 400, ElementNotSelectableException.class, true, true))
     .add(new KnownError(ELEMENT_NOT_INTERACTABLE, "element not interactable", 400, ElementNotInteractableException.class, true, true))
@@ -239,7 +239,7 @@ public class ErrorCodes {
     .add(new KnownError(NO_SUCH_WINDOW, "no such window", 404, NoSuchWindowException.class, true, true))
     .add(new KnownError(SESSION_NOT_CREATED, "session not created", 500, SessionNotCreatedException.class ,true, true))
     .add(new KnownError(STALE_ELEMENT_REFERENCE, "stale element reference", 404, StaleElementReferenceException.class, true, true))
-    .add(new KnownError(TIMEOUT, "timeout", 408, TimeoutException.class, true, true))
+    .add(new KnownError(TIMEOUT, "timeout", 500, TimeoutException.class, true, true))
     .add(new KnownError(XPATH_LOOKUP_ERROR, "invalid selector", 400, InvalidSelectorException.class, false, false))
     .add(new KnownError(UNABLE_TO_CAPTURE_SCREEN, "unable to capture screen", 500, ScreenshotException.class, true, true))
     .add(new KnownError(UNABLE_TO_SET_COOKIE, "unable to set cookie", 500, UnableToSetCookieException.class, true, true))
