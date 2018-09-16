@@ -17,12 +17,17 @@
 
 package org.openqa.selenium;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -84,7 +89,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
+  public void testShouldReturnTheValueOfTheIndexAttributeEvenIfItIsMissing() {
     driver.get(pages.formPage);
 
     WebElement multiSelect = driver.findElement(By.id("multi"));
@@ -400,5 +405,32 @@ public class ElementAttributeTest extends JUnit4TestBase {
     driver.get(pages.userDefinedProperty);
     WebElement element = driver.findElement(By.id("d"));
     assertThat(element.getAttribute("dynamicProperty")).isEqualTo("sampleValue");
+  }
+
+  @Test
+  public void shouldTreatContenteditableAsEnumeratedButNotBoolean() {
+    checkEnumeratedAttribute("contenteditable", "true", "false", "yes", "no", "", "blabla");
+  }
+
+  @Test
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(MARIONETTE)
+  public void shouldTreatDraggableAsEnumeratedButNotBoolean() {
+    checkEnumeratedAttribute("draggable", "true", "false", "yes", "no", "", "blabla");
+  }
+
+  private void checkEnumeratedAttribute(String name, String... values) {
+    asList(values).forEach((value) -> {
+      driver.get(appServer.create(new Page().withBody(
+          String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
+      assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isEqualTo(value);
+    });
+
+    driver.get(appServer.create(new Page().withBody(String.format("<div id=\"attr\" %s>", name))));
+    assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isEqualTo("");
+
+    driver.get(appServer.create(new Page().withBody("<div id=\"attr\">")));
+    assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isNull();
   }
 }
