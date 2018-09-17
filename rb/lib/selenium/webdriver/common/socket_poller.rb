@@ -59,6 +59,7 @@ module Selenium
 
       CONNECTED_ERRORS = [Errno::EISCONN]
       CONNECTED_ERRORS << Errno::EINVAL if Platform.windows?
+      CONNECTED_ERRORS << Errno::EALREADY if Platform.wsl?
 
       if Platform.jruby?
         # we use a plain TCPSocket here since JRuby has issues select()ing on a connecting socket
