@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.7
+=========
+ * Instituted limits on x and y offsets for actions.
+ * Corrected finding of extracted dll on startup.
+
 v3.14.0.6
 =========
  * Updated to make JSON serialization of JavaScript objects more compliant.
