@@ -218,7 +218,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
   WIN32_FIND_DATA find_file_data;
   HANDLE file_handle = ::FindFirstFile(initial_file.c_str(), &find_file_data);
   if (file_handle != INVALID_HANDLE_VALUE) {
-    ::CloseHandle(file_handle);
+    ::FindClose(file_handle);
     unsigned int error_code = ::GetTempFileName(extraction_path.c_str(),
                                                 TEMP_FILE_PREFIX,
                                                 0,
