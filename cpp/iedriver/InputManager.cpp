@@ -39,6 +39,7 @@
 #define USER_INTERACTION_MUTEX_NAME L"WebDriverUserInteractionMutex"
 #define WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT 100
 #define MOVE_ERROR_TEMPLATE "The requested mouse movement to (%d, %d) would be outside the bounds of the current view port (left: %d, right: %d, top: %d, bottom: %d)"
+#define MOVE_OVERFLOW_ERROR_TEMPLATE "The requested ending %s (%lld) would be outside the legal bounds (less than -2147483648 or greater than 2147483647"
 
 #define MODIFIER_KEY_SHIFT 1
 #define MODIFIER_KEY_CTRL 2
@@ -331,12 +332,12 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper,
     }
   }
 
-  int x_offset = 0;
+  long x_offset = 0;
   if (move_to_action.isMember("x") && move_to_action["x"].isInt()) {
     x_offset = move_to_action["x"].asInt();
   }
 
-  int y_offset = 0;
+  long y_offset = 0;
   if (move_to_action.isMember("y") && move_to_action["y"].isInt()) {
     y_offset = move_to_action["y"].asInt();
   }
@@ -419,10 +420,27 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper,
       end_y = y_offset;
     } else {
       if (offset_specified) {
-        // An offset was specified. At this point, the end coordinates should be
-        // set to either (1) the previous mouse position if there was no element
-        // specified, or (2) the origin of the element from which to calculate the
-        // offset.
+        // An offset was specified. At this point, the end coordinates should
+        // be set to either (1) the previous mouse position if there was no
+        // element specified, or (2) the origin of the element from which to
+        // calculate the offset. While it may not be strictly spec-compliant,
+        // attempting to set an offset larger than 2,147,483,647 will be
+        // regarded as outside the move bounds.
+        long long temp_x = static_cast<long long>(end_x) + static_cast<long long>(x_offset);
+        if (temp_x > INT_MAX || temp_x < INT_MIN) {
+          input_state->error_info = StringUtilities::Format(MOVE_OVERFLOW_ERROR_TEMPLATE,
+                                                            "x coordinate",
+                                                            temp_x);
+          return EMOVETARGETOUTOFBOUNDS;
+        }
+        long long temp_y = static_cast<long long>(end_y) + static_cast<long long>(y_offset);
+        if (temp_y > INT_MAX || temp_y < INT_MIN) {
+          input_state->error_info = StringUtilities::Format(MOVE_OVERFLOW_ERROR_TEMPLATE,
+                                                            "y coordinate",
+                                                            temp_y);
+          return EMOVETARGETOUTOFBOUNDS;
+        }
+
         end_x += x_offset;
         end_y += y_offset;
       }
