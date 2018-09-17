@@ -56,11 +56,23 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
     driver.findElement(By.partialLinkText("last speech")).click();
 
-    long yOffset = (Long) ((JavascriptExecutor) driver).executeScript(scrollScript);
-
+    Object x = ((JavascriptExecutor) driver).executeScript(scrollScript);
     // Focusing on to click, but not actually following,
     // the link will scroll it in to view, which is a few pixels further than 0
-    assertThat(yOffset).describedAs("Did not scroll").isGreaterThan(300L);
+    // According to documentation at https://developer.mozilla.org/en-US/docs/Web/API/Window/pageYOffset
+    // window.pageYOffset may not return integer value.
+    // With the following changes in below we are checking the type of returned object and assigning respectively 
+    // the value of 'yOffset'
+    if ( x instanceof Long )
+    {
+      long yOffset = (Long)x;
+      assertThat(yOffset).describedAs("Did not scroll").isGreaterThan(300L);
+    }
+    else if ( x instanceof Double )
+    {
+      double yOffset = (Double)x;
+      assertThat(yOffset).describedAs("Did not scroll").isGreaterThan(300.0);
+    }
   }
 
   @Test
