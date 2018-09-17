@@ -589,7 +589,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE supports only short version option[selected]")]
         public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector()
         {
             driver.Url = (EnvironmentManager.Instance.UrlBuilder.WhereIs("locators_tests/boolean_attribute_selected.html"));
