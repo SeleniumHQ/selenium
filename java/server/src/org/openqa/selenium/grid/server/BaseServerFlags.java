@@ -19,32 +19,16 @@ package org.openqa.selenium.grid.server;
 
 import com.beust.jcommander.Parameter;
 
-import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigValue;
 
-import java.util.Optional;
-
-public class BaseServerConfig implements Config {
+public class BaseServerFlags {
 
   @Parameter(description = "Port to listen on", names = {"-p", "--port"})
+  @ConfigValue(section = "server", name = "port")
   private int port = 0;
 
   @Parameter(description = "Maximum number of listener threads", names = "--max-threads")
+  @ConfigValue(section = "server", name = "max-threads")
   private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
 
-  @Override
-  public Optional<String> get(String section, String option) {
-    switch (section) {
-      case "server":
-        switch (option) {
-          case "max-threads":
-            return Optional.of(String.valueOf(maxThreads));
-
-          case "port":
-            return Optional.of(String.valueOf(port));
-        }
-        break;
-    }
-
-    return Optional.empty();
-  }
 }
