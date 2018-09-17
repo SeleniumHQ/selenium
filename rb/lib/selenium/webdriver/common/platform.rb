@@ -90,6 +90,11 @@ module Selenium
         os == :linux
       end
 
+      def wsl?
+        return false unless linux?
+        File.read('/proc/version').include?('Microsoft')
+      end
+
       def cygwin?
         RUBY_PLATFORM =~ /cygwin/
         !Regexp.last_match.nil?
