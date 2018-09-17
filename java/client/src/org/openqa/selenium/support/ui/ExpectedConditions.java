@@ -884,7 +884,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("value to be \"%s\". Current value: \"%s\"", value, currentValue);
+        return String.format("element found by %s to have value \"%s\". Current value: \"%s\"",
+                             locator, value, currentValue);
       }
     };
   }
@@ -912,7 +913,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("text to be \"%s\". Current text: \"%s\"", value, currentValue);
+        return String.format("element found by %s to have text \"%s\". Current text: \"%s\"",
+                             locator, value, currentValue);
       }
     };
   }
@@ -942,8 +944,8 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String
-          .format("text to match pattern \"%s\". Current text: \"%s\"", pattern.pattern(),
-                  currentValue);
+          .format("text found by %s to match pattern \"%s\". Current text: \"%s\"",
+                  locator, pattern.pattern(), currentValue);
       }
     };
   }
@@ -969,8 +971,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("number to be more than \"%s\". Current number: \"%s\"", number,
-                             currentNumber);
+        return String.format("number of elements found by %s to be more than \"%s\". Current number: \"%s\"",
+                             locator, number, currentNumber);
       }
     };
   }
@@ -997,8 +999,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("number to be less than \"%s\". Current number: \"%s\"", number,
-                             currentNumber);
+        return String.format("number of elements found by %s to be less than \"%s\". Current number: \"%s\"",
+                             locator, number, currentNumber);
       }
     };
   }
@@ -1025,7 +1027,8 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String
-          .format("number to be \"%s\". Current number: \"%s\"", number, currentNumber);
+          .format("number of elements found by %s to be \"%s\". Current number: \"%s\"",
+                  locator, number, currentNumber);
       }
     };
   }
@@ -1114,7 +1117,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("value to contain \"%s\". Current value: \"%s\"", value, currentValue);
+        return String.format("value found by %s to contain \"%s\". Current value: \"%s\"",
+                             locator, value, currentValue);
       }
     };
   }
