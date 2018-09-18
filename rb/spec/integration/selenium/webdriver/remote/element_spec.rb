@@ -20,11 +20,9 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     describe Element, only: {driver: :remote} do
-      before do
+      around do |example|
         driver.file_detector = ->(filename) { File.join(__dir__, filename) }
-      end
-
-      after do
+        example.run
         driver.file_detector = nil
       end
 
@@ -42,7 +40,7 @@ module Selenium
         end
       end
 
-      context 'when uploading multiple files', only: {browser: :chrome} do
+      context 'when uploading multiple files', only: {browser: %i[chrome firefox]} do
         it 'uses the file detector' do
           driver.navigate.to url_for('upload_multiple.html')
 
