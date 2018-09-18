@@ -32,15 +32,15 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
 
 import org.junit.Test;
 import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -173,9 +173,7 @@ public class JsonHttpCommandCodecTest {
 
   @Test
   public void canExtractSessionIdFromRequestBody() {
-    JsonObject json = new JsonObject();
-    json.addProperty("sessionId", "sessionX");
-    String data = json.toString();
+    String data = new Json().toJson(ImmutableMap.of("sessionId", "sessionX"));
     HttpRequest request = new HttpRequest(POST, "/foo/bar/baz");
     request.setContent(data.getBytes(UTF_8));
     codec.defineCommand("foo", POST, "/foo/bar/baz");
@@ -197,13 +195,10 @@ public class JsonHttpCommandCodecTest {
 
   @Test
   public void extractsAllParameters() {
-    JsonObject json = new JsonObject();
-    json.addProperty("sessionId", "sessionX");
-    json.addProperty("fruit", "apple");
-    json.addProperty("color", "red");
-    json.addProperty("size", "large");
-    String data = json.toString();
-
+    String data = new Json().toJson(ImmutableMap.of("sessionId", "sessionX",
+                                                    "fruit", "apple",
+                                                    "color", "red",
+                                                    "size", "large"));
     HttpRequest request = new HttpRequest(POST, "/fruit/apple/size/large");
     request.setContent(data.getBytes(UTF_8));
     codec.defineCommand("pick", POST, "/fruit/:fruit/size/:size");
@@ -216,13 +211,12 @@ public class JsonHttpCommandCodecTest {
 
   @Test
   public void ignoresNullSessionIdInSessionBody() {
-    JsonObject json = new JsonObject();
-    json.add("sessionId", JsonNull.INSTANCE);
-    json.addProperty("fruit", "apple");
-    json.addProperty("color", "red");
-    json.addProperty("size", "large");
-    String data = json.toString();
-
+    Map<String, Object> map = new HashMap<>();
+    map.put("sessionId", null);
+    map.put("fruit", "apple");
+    map.put("color", "red");
+    map.put("size", "large");
+    String data = new Json().toJson(map);
     HttpRequest request = new HttpRequest(POST, "/fruit/apple/size/large");
     request.setContent(data.getBytes(UTF_8));
     codec.defineCommand("pick", POST, "/fruit/:fruit/size/:size");

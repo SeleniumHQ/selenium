@@ -251,7 +251,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1487705")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);

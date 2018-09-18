@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import org.openqa.selenium.json.Json;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,6 +25,7 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServlet;
@@ -45,12 +45,12 @@ public class CreatePageServlet extends HttpServlet {
       HttpServletResponse response)
       throws IOException {
     String content = request.getReader().lines().collect(Collectors.joining());
-    JsonElement json = new JsonParser().parse(content);
+    Map<String, String> json = new Json().toType(content, Json.MAP_TYPE);
 
     Path tempPageDir = Paths.get(getServletContext().getInitParameter("tempPageDir"));
     Path target = Files.createTempFile(tempPageDir, "page", ".html");
     try (Writer out = new FileWriter(target.toFile())) {
-      out.write(json.getAsJsonObject().getAsJsonPrimitive("content").getAsString());
+      out.write(json.get("content"));
     }
 
     response.setContentType("text/plain");
