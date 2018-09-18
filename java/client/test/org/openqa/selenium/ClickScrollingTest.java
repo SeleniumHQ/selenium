@@ -65,12 +65,12 @@ public class ClickScrollingTest extends JUnit4TestBase {
     // the value of 'yOffset'
     if ( x instanceof Long )
     {
-      long yOffset = (Long)x;
+      long yOffset = (long)x;
       assertThat(yOffset).describedAs("Did not scroll").isGreaterThan(300L);
     }
     else if ( x instanceof Double )
     {
-      double yOffset = (Double)x;
+      double yOffset = (double)x;
       assertThat(yOffset).describedAs("Did not scroll").isGreaterThan(300.0);
     }
   }
