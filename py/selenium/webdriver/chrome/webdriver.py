@@ -33,7 +33,7 @@ class WebDriver(RemoteWebDriver):
     def __init__(self, executable_path="chromedriver", port=0,
                  options=None, service_args=None,
                  desired_capabilities=None, service_log_path=None,
-                 chrome_options=None):
+                 chrome_options=None, keep_alive=True):
         """
         Creates a new instance of the chrome driver.
 
@@ -42,9 +42,13 @@ class WebDriver(RemoteWebDriver):
         :Args:
          - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
          - port - port you would like the service to run, if left as 0, a free port will be found.
-         - desired_capabilities: Dictionary object with non-browser specific
+         - options - this takes an instance of ChromeOptions
+         - service_args - List of args to pass to the driver service
+         - desired_capabilities - Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
-         - options: this takes an instance of ChromeOptions
+         - service_log_path - Where to log information from the driver.
+         - chrome_options - Deprecated argument for options
+         - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
         if chrome_options:
             warnings.warn('use options instead of chrome_options',
@@ -72,7 +76,8 @@ class WebDriver(RemoteWebDriver):
             RemoteWebDriver.__init__(
                 self,
                 command_executor=ChromeRemoteConnection(
-                    remote_server_addr=self.service.service_url),
+                    remote_server_addr=self.service.service_url,
+                    keep_alive=keep_alive),
                 desired_capabilities=desired_capabilities)
         except Exception:
             self.quit()
