@@ -34,7 +34,7 @@ class WebDriver(RemoteWebDriver):
     def __init__(self, executable_path='IEDriverServer.exe', capabilities=None,
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
                  log_level=DEFAULT_LOG_LEVEL, service_log_path=DEFAULT_SERVICE_LOG_PATH, options=None,
-                 ie_options=None, desired_capabilities=None, log_file=None):
+                 ie_options=None, desired_capabilities=None, log_file=None, keep_alive=False):
         """
         Creates a new instance of the chrome driver.
 
@@ -44,10 +44,15 @@ class WebDriver(RemoteWebDriver):
          - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
          - capabilities: capabilities Dictionary object
          - port - port you would like the service to run, if left as 0, a free port will be found.
+         - timeout - no longer used, kept for backward compatibility
+         - host - IP address for the service
          - log_level - log level you would like the service to run.
          - service_log_path - target of logging of service, may be "stdout", "stderr" or file path.
-         - options: IE Options instance, providing additional IE options
-         - desired_capabilities: alias of capabilities; this will make the signature consistent with RemoteWebDriver.
+         - options - IE Options instance, providing additional IE options
+         - ie_options - Deprecated argument for options
+         - desired_capabilities - alias of capabilities; this will make the signature consistent with RemoteWebDriver.
+         - log_file - Deprecated argument for service_log_path
+         - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
         """
         if log_file:
             warnings.warn('use service_log_path instead of log_file',
@@ -88,7 +93,8 @@ class WebDriver(RemoteWebDriver):
         RemoteWebDriver.__init__(
             self,
             command_executor='http://localhost:%d' % self.port,
-            desired_capabilities=capabilities)
+            desired_capabilities=capabilities,
+            keep_alive=keep_alive)
         self._is_remote = False
 
     def quit(self):

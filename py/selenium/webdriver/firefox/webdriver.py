@@ -51,7 +51,8 @@ class WebDriver(RemoteWebDriver):
                  timeout=30, capabilities=None, proxy=None,
                  executable_path="geckodriver", options=None,
                  service_log_path="geckodriver.log", firefox_options=None,
-                 service_args=None, desired_capabilities=None, log_path=None):
+                 service_args=None, desired_capabilities=None, log_path=None,
+                 keep_alive=True):
         """Starts a new local session of Firefox.
 
         Based on the combination and specificity of the various keyword
@@ -95,10 +96,14 @@ class WebDriver(RemoteWebDriver):
             defaults to picking up the binary from the system path.
         :param options: Instance of ``options.Options``.
         :param service_log_path: Where to log information from the driver.
+        :param firefox_options: Deprecated argument for options
+        :param service_args: List of args to pass to the driver service
         :param desired_capabilities: alias of capabilities. In future
             versions of this library, this will replace 'capabilities'.
             This will make the signature consistent with RemoteWebDriver.
-
+        :param log_path: Deprecated argument for service_log_path
+        :param keep_alive: Whether to configure remote_connection.RemoteConnection to use
+             HTTP keep-alive.
         """
         if log_path:
             warnings.warn('use service_log_path instead of log_path',
@@ -188,7 +193,7 @@ class WebDriver(RemoteWebDriver):
                 self,
                 command_executor=executor,
                 desired_capabilities=capabilities,
-                keep_alive=True)
+                keep_alive=keep_alive)
 
         self._is_remote = False
 
