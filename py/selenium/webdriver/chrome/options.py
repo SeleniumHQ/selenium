@@ -188,7 +188,7 @@ class Options(object):
     def set_headless(self, headless=True):
         """ Deprecated, options.headless = True """
         warnings.warn('use setter for headless property instead of set_headless',
-                      DeprecationWarning)
+                      DeprecationWarning, stacklevel=2)
         self.headless = headless
 
     def to_capabilities(self):

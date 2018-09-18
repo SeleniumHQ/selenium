@@ -184,7 +184,7 @@ class FirefoxProfile(object):
 
         warnings.warn(
             "This method has been deprecated. Please pass in the proxy object to the Driver Object",
-            DeprecationWarning)
+            DeprecationWarning, stacklevel=2)
         if proxy is None:
             raise ValueError("proxy can not be None")
 
