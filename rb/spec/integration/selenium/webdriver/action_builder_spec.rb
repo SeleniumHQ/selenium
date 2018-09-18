@@ -89,7 +89,8 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcad')
         end
 
-        it 'can send keys to element' do
+        # https://github.com/mozilla/geckodriver/issues/1375
+        it 'can send keys to element', except: {browser: :firefox} do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
