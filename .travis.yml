@@ -4,7 +4,7 @@ env:
   global:
     - DISPLAY=:99.0
     - PYTEST_ADDOPTS="--verbose --instafail"
-    - FF_ESR_BINARY=$HOME/firefox-latest-esr/firefox/firefox-bin
+    - FF_ESR_BINARY=$HOME/firefox-52.9.0esr/firefox/firefox-bin
     - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
 git:
   depth: 10
