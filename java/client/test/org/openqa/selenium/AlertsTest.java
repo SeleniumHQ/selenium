@@ -346,7 +346,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1477977")
+  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1477977")
   public void testHandlesTwoAlertsFromOneInteraction() {
     driver.get(appServer.create(new Page()
         .withScripts(
@@ -413,7 +413,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
   @Ignore(SAFARI)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/1187")
+  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/1187")
   public void testShouldNotHandleAlertInAnotherWindow() {
     String pageWithOnLoad = appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
