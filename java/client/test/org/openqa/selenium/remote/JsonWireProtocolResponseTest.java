@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -106,7 +105,7 @@ public class JsonWireProtocolResponseTest {
     WebDriverException exception = new SessionNotCreatedException("me no likey");
 
     ImmutableMap<String, ?> payload = ImmutableMap.of(
-            "value", new Gson().fromJson(new Json().toJson(exception), Map.class),
+            "value", new Json().toType(new Json().toJson(exception), Json.MAP_TYPE),
             "status", ErrorCodes.SESSION_NOT_CREATED);
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(

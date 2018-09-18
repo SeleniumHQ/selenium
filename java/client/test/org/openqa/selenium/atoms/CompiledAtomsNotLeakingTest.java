@@ -19,10 +19,6 @@ package org.openqa.selenium.atoms;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
@@ -30,8 +26,10 @@ import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.json.Json;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class CompiledAtomsNotLeakingTest {
 
@@ -106,18 +104,14 @@ public class CompiledAtomsNotLeakingTest {
 
       String jsonResult = (String) eval(context, nestedScript, FRAGMENT_PATH);
 
-      try {
-        JsonObject result = new JsonParser().parse(jsonResult).getAsJsonObject();
+      Map<String, Object> result = new Json().toType(jsonResult, Json.MAP_TYPE);
 
-        assertThat(result.get("status").getAsLong()).as(jsonResult).isEqualTo(0);
-
-        result = result.get("value").getAsJsonObject();
-        assertThat(result.get("status").getAsLong()).as(jsonResult).isEqualTo(0);
-        assertThat(result.get("value").getAsLong()).as(jsonResult).isEqualTo(3);
-
-      } catch (JsonSyntaxException e) {
-        throw new RuntimeException("JSON result was: " + jsonResult, e);
-      }
+      assertThat(result.get("status")).isInstanceOf(Long.class).as(jsonResult).isEqualTo(0L);
+      assertThat(result.get("value")).isInstanceOf(Map.class);
+      assertThat((Map<String, Object>) result.get("value"))
+          .hasSize(2)
+          .containsEntry("status", 0L)
+          .containsEntry("value", 3L);
 
       assertThat(eval(context, "_")).isEqualTo(1234);
       return null;

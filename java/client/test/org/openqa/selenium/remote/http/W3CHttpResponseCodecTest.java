@@ -24,12 +24,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.ErrorCodes.METHOD_NOT_ALLOWED;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
 
 import org.junit.Test;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 
@@ -108,7 +108,7 @@ public class W3CHttpResponseCodecTest {
   }
 
   private HttpResponse createValidResponse(int statusCode, Map<String, ?> data) {
-    byte[] contents = new Gson().toJson(data).getBytes(UTF_8);
+    byte[] contents = new Json().toJson(data).getBytes(UTF_8);
 
     HttpResponse response = new HttpResponse();
     response.setStatus(statusCode);
