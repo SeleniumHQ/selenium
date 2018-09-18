@@ -101,10 +101,12 @@ class WebDriver(RemoteWebDriver):
 
         """
         if log_path:
-            warnings.warn('use service_log_path instead of log_path', DeprecationWarning)
+            warnings.warn('use service_log_path instead of log_path',
+                          DeprecationWarning, stacklevel=2)
             service_log_path = log_path
         if firefox_options:
-            warnings.warn('use options instead of firefox_options', DeprecationWarning)
+            warnings.warn('use options instead of firefox_options',
+                          DeprecationWarning, stacklevel=2)
             options = firefox_options
         self.binary = None
         self.profile = None

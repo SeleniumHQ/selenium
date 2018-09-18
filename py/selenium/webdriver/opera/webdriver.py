@@ -43,7 +43,8 @@ class OperaDriver(ChromiumDriver):
          - options: this takes an instance of ChromeOptions
         """
         if opera_options:
-            warnings.warn('use options instead of opera_options', DeprecationWarning)
+            warnings.warn('use options instead of opera_options',
+                          DeprecationWarning, stacklevel=2)
             options = opera_options
 
         executable_path = (executable_path if executable_path is not None

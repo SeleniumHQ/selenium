@@ -28,7 +28,8 @@ class WebDriver(RemoteWebDriver):
     def __init__(self, executable_path='MicrosoftWebDriver.exe',
                  capabilities=None, port=0, verbose=False, service_log_path=None, log_path=None):
         if log_path:
-            warnings.warn('use service_log_path instead of log_path', DeprecationWarning)
+            warnings.warn('use service_log_path instead of log_path',
+                          DeprecationWarning, stacklevel=2)
             service_log_path = log_path
 
         self.port = port

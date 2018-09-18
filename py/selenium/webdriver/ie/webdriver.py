@@ -50,10 +50,12 @@ class WebDriver(RemoteWebDriver):
          - desired_capabilities: alias of capabilities; this will make the signature consistent with RemoteWebDriver.
         """
         if log_file:
-            warnings.warn('use service_log_path instead of log_file', DeprecationWarning)
+            warnings.warn('use service_log_path instead of log_file',
+                          DeprecationWarning, stacklevel=2)
             service_log_path = log_file
         if ie_options:
-            warnings.warn('use options instead of ie_options', DeprecationWarning)
+            warnings.warn('use options instead of ie_options',
+                          DeprecationWarning, stacklevel=2)
             options = ie_options
         self.port = port
         if self.port == 0:
