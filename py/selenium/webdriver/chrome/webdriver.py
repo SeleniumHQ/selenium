@@ -47,7 +47,8 @@ class WebDriver(RemoteWebDriver):
          - options: this takes an instance of ChromeOptions
         """
         if chrome_options:
-            warnings.warn('use options instead of chrome_options', DeprecationWarning)
+            warnings.warn('use options instead of chrome_options',
+                          DeprecationWarning, stacklevel=2)
             options = chrome_options
 
         if options is None:
