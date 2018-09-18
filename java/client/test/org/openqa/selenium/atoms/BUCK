@@ -26,6 +26,7 @@ java_library(
   name = 'tests',
   srcs = glob(['*.java']),
   deps = [
+    '//java/client/src/org/openqa/selenium/json:json',
     '//java/client/test/org/openqa/selenium:helpers',
     '//java/client/test/org/openqa/selenium/testing:helpers',
     '//third_party/java/assertj:assertj',
