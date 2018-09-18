@@ -26,7 +26,23 @@ from .service import Service
 class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path='MicrosoftWebDriver.exe',
-                 capabilities=None, port=0, verbose=False, service_log_path=None, log_path=None):
+                 capabilities=None, port=0, verbose=False, service_log_path=None,
+                 log_path=None, keep_alive=False):
+        """
+        Creates a new instance of the chrome driver.
+
+        Starts the service and then creates new instance of chrome driver.
+
+        :Args:
+         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
+         - capabilities - Dictionary object with non-browser specific
+           capabilities only, such as "proxy" or "loggingPref".
+         - port - port you would like the service to run, if left as 0, a free port will be found.
+         - verbose - whether to set verbose logging in the service
+         - service_log_path - Where to log information from the driver.
+         - log_path: Deprecated argument for service_log_path
+         - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
+         """
         if log_path:
             warnings.warn('use service_log_path instead of log_path',
                           DeprecationWarning, stacklevel=2)
@@ -45,7 +61,8 @@ class WebDriver(RemoteWebDriver):
         RemoteWebDriver.__init__(
             self,
             command_executor=RemoteConnection('http://localhost:%d' % self.port,
-                                              resolve_ip=False),
+                                              resolve_ip=False,
+                                              keep_alive=keep_alive),
             desired_capabilities=capabilities)
         self._is_remote = False
 
