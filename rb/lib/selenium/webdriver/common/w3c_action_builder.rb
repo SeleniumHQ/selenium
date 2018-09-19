@@ -190,7 +190,7 @@ module Selenium
 
       def tick(*action_devices)
         return if @async
-        @devices.each { |device| device.create_pause(0) unless action_devices.include? device }
+        @devices.each { |device| device.create_pause unless action_devices.include? device }
       end
 
       #
