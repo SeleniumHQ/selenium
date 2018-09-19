@@ -37,7 +37,7 @@ module Selenium
           @actions.clear
         end
 
-        def create_pause(duration = nil)
+        def create_pause(duration = 0)
           add_action(Pause.new(self, duration))
         end
 
