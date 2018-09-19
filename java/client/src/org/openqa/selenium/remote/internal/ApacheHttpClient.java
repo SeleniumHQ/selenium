@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.remote.internal;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 import static org.apache.http.protocol.HttpCoreContext.HTTP_TARGET_HOST;
 
 import org.apache.http.Header;
@@ -27,9 +27,11 @@ import org.apache.http.HttpHost;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.protocol.BasicHttpContext;
@@ -42,10 +44,11 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.BindException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -59,11 +62,13 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
 
   private final URL url;
   private final HttpClient client;
+  private final RequestConfig requestConfig;
   private final Map<Map.Entry<String, Integer>, HttpHost> cachedHosts;
 
-  public ApacheHttpClient(HttpClient client, URL url) {
-    this.client = checkNotNull(client, "null HttpClient");
-    this.url = checkNotNull(url, "null URL");
+  public ApacheHttpClient(HttpClient client, RequestConfig requestConfig, URL url) {
+    this.client = requireNonNull(client, "null HttpClient");
+    this.requestConfig = requireNonNull(requestConfig, "null request config");
+    this.url = requireNonNull(url, "null URL");
 
     this.cachedHosts = new LinkedHashMap<Map.Entry<String, Integer>, HttpHost>(200) {
       @Override
@@ -131,7 +136,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     return new BasicHttpContext();
   }
 
-  private static HttpUriRequest createHttpUriRequest(HttpMethod method, URL url)
+  private HttpUriRequest createHttpUriRequest(HttpMethod method, URL url)
       throws IOException {
     URI uri = null;
     try {
@@ -140,19 +145,31 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       throw new IOException(e);
     }
 
+    HttpRequestBase request;
     switch (method) {
       case DELETE:
-        return new HttpDelete(uri);
+        request = new HttpDelete(uri);
+        break;
+
       case GET:
-        return new HttpGet(uri);
+        request = new HttpGet(uri);
+        break;
+
       case POST:
-        return new HttpPost(uri);
+        request = new HttpPost(uri);
+        break;
+
+      default:
+        throw new IllegalArgumentException("Unknown http method: " + method);
     }
-    throw new AssertionError("Unsupported method: " + method);
+
+    request.setConfig(requestConfig);
+    return request;
   }
 
   private org.apache.http.HttpResponse fallBackExecute(
-      HttpContext context, HttpUriRequest httpMethod) throws IOException {
+      HttpContext context,
+      HttpUriRequest httpMethod) throws IOException {
     try {
       return client.execute(getHost(httpMethod), httpMethod, context);
     } catch (BindException | NoHttpResponseException e) {
@@ -262,7 +279,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     }
 
     public Factory(HttpClientFactory clientFactory) {
-      this.clientFactory = checkNotNull(clientFactory, "null HttpClientFactory");
+      this.clientFactory = requireNonNull(clientFactory, "null HttpClientFactory");
     }
 
     @Override
@@ -270,19 +287,37 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       return new Builder() {
         @Override
         public org.openqa.selenium.remote.http.HttpClient createClient(URL url) {
-          checkNotNull(url, "null URL");
+          requireNonNull(url, "null URL");
           HttpClient client;
           if (url.getUserInfo() != null) {
             StringTokenizer tokens = new StringTokenizer(url.getUserInfo(), ":");
             UsernamePasswordCredentials credentials =
                 new UsernamePasswordCredentials(tokens.nextToken(), tokens.nextToken());
-            client = clientFactory.createHttpClient(credentials, (int) connectionTimeout.toMillis(),
-                                                    (int) readTimeout.toMillis());
+
+            client = clientFactory.createHttpClient(
+                credentials,
+                (int) connectionTimeout.toMillis(),
+                (int) readTimeout.toMillis());
           } else {
-            client = clientFactory.createHttpClient(null, (int) connectionTimeout.toMillis(),
-                                                    (int) readTimeout.toMillis());
+            client = clientFactory.createHttpClient(
+                null,
+                (int) connectionTimeout.toMillis(),
+                (int) readTimeout.toMillis());
           }
-          return new ApacheHttpClient(client, url);
+
+          RequestConfig.Builder requestConfig = RequestConfig.custom();
+          if (proxy != null) {
+            checkArgument(proxy.type() == Proxy.Type.HTTP,
+                          "Only proxies of type HTTP are supported");
+            checkArgument(proxy.address() instanceof InetSocketAddress);
+
+            InetSocketAddress address = (InetSocketAddress) proxy.address();
+
+            HttpHost host = new HttpHost(address.getHostName(), address.getPort(), "http");
+            requestConfig.setProxy(host);
+          }
+
+          return new ApacheHttpClient(client, requestConfig.build(), url);
         }
       };
     }
