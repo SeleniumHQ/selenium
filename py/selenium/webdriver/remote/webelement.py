@@ -482,7 +482,7 @@ class WebElement(object):
     def is_displayed(self):
         """Whether the element is visible to a user."""
         # Only go into this conditional for browsers that don't use the atom themselves
-        if self._w3c and self.parent.capabilities['browserName'] == 'safari':
+        if self._w3c:
             return self.parent.execute_script(
                 "return (%s).apply(null, arguments);" % isDisplayed_js,
                 self)
