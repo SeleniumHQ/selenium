@@ -19,7 +19,6 @@ package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
@@ -27,6 +26,7 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -61,22 +61,27 @@ public class GetLogsTest extends JUnit4TestBase {
   @Test
   public void logBufferShouldBeResetAfterEachGetLogCall() {
     assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
-    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    for (String logType : logTypes) {
-      driver.get(pages.simpleTestPage);
-      LogEntries firstEntries = driver.manage().logs().get(logType);
-      assumeTrue(firstEntries.getAll().size() > 0);
-      LogEntries secondEntries = driver.manage().logs().get(logType);
-      assertThat(hasOverlappingLogEntries(firstEntries, secondEntries))
-          .describedAs("There should be no overlapping log entries in consecutive get log calls for %s logs", logType)
-          .isFalse();
-    }
+    driver.get(pages.errorsPage);
+    driver.findElement(By.cssSelector("input")).click();
+
+    LogEntries firstEntries = driver.manage().logs().get(LogType.BROWSER);
+    assertThat(firstEntries.getAll()).isNotEmpty();
+    assertThat(driver.manage().logs().get(LogType.BROWSER).getAll()).isEmpty();
+
+    driver.findElement(By.cssSelector("input")).click();
+    LogEntries secondEntries = driver.manage().logs().get(LogType.BROWSER);
+    assertThat(secondEntries.getAll()).isNotEmpty();
+    assertThat(hasOverlappingLogEntries(firstEntries, secondEntries))
+        .describedAs("There should be no overlapping log entries in consecutive get log calls")
+        .isFalse();
   }
 
   @Test
   public void differentLogsShouldNotContainTheSameLogEntries() {
     assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
-    driver.get(pages.simpleTestPage);
+    driver.get(pages.errorsPage);
+    driver.findElement(By.cssSelector("input")).click();
+
     Map<String, LogEntries> logTypeToEntriesMap = new HashMap<>();
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
@@ -133,6 +138,7 @@ public class GetLogsTest extends JUnit4TestBase {
     loggingPrefs.enable(logType, logLevel);
     Capabilities caps = new ImmutableCapabilities(CapabilityType.LOGGING_PREFS, loggingPrefs);
     localDriver = new WebDriverBuilder().get(caps);
-    localDriver.get(pages.simpleTestPage);
+    localDriver.get(pages.errorsPage);
+    localDriver.findElement(By.cssSelector("input")).click();
   }
 }
