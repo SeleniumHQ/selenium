@@ -266,27 +266,26 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
     }
 
     @Override
-    public org.openqa.selenium.remote.http.HttpClient createClient(URL url) {
-      return createClient(url, Duration.ofMinutes(2), Duration.ofHours(3));
+    public Builder builder() {
+      return new Builder() {
+        @Override
+        public org.openqa.selenium.remote.http.HttpClient createClient(URL url) {
+          checkNotNull(url, "null URL");
+          HttpClient client;
+          if (url.getUserInfo() != null) {
+            StringTokenizer tokens = new StringTokenizer(url.getUserInfo(), ":");
+            UsernamePasswordCredentials credentials =
+                new UsernamePasswordCredentials(tokens.nextToken(), tokens.nextToken());
+            client = clientFactory.createHttpClient(credentials, (int) connectionTimeout.toMillis(),
+                                                    (int) readTimeout.toMillis());
+          } else {
+            client = clientFactory.createHttpClient(null, (int) connectionTimeout.toMillis(),
+                                                    (int) readTimeout.toMillis());
+          }
+          return new ApacheHttpClient(client, url);
+        }
+      };
     }
-
-    @Override
-    public org.openqa.selenium.remote.http.HttpClient createClient(URL url,
-                                                                   Duration connectionTimeout,
-                                                                   Duration readTimeout) {
-      checkNotNull(url, "null URL");
-      HttpClient client;
-      if (url.getUserInfo() != null) {
-        StringTokenizer tokens = new StringTokenizer(url.getUserInfo(), ":");
-        UsernamePasswordCredentials credentials =
-            new UsernamePasswordCredentials(tokens.nextToken(), tokens.nextToken());
-        client = clientFactory.createHttpClient(credentials, (int) connectionTimeout.toMillis(),
-                                                (int) readTimeout.toMillis());
-      } else {
-        client = clientFactory.createHttpClient(null, (int) connectionTimeout.toMillis(),
-                                                (int) readTimeout.toMillis());
-      }
-      return new ApacheHttpClient(client, url);    }
 
     @Override
     public void cleanupIdleClients() {

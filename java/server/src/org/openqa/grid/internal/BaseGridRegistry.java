@@ -24,6 +24,7 @@ import java.net.URL;
 import java.time.Duration;
 
 public abstract class BaseGridRegistry implements GridRegistry {
+
   protected final HttpClient.Factory httpClientFactory;
 
   // The following needs to be volatile because we expose a public setters
@@ -33,6 +34,7 @@ public abstract class BaseGridRegistry implements GridRegistry {
     this.httpClientFactory = HttpClient.Factory.createDefault();
     this.hub = hub;
   }
+
   /**
    * @see GridRegistry#getHub()
    */
@@ -49,7 +51,7 @@ public abstract class BaseGridRegistry implements GridRegistry {
 
   /**
    * @return the {@link HttpClient.Factory} to use.
-   * @deprecated use {@link BaseGridRegistry#getHttpClient(URL,int,int)}
+   * @deprecated use {@link BaseGridRegistry#getHttpClient(URL, int, int)}
    */
   @Override
   public HttpClient getHttpClient(URL url) {
@@ -58,7 +60,9 @@ public abstract class BaseGridRegistry implements GridRegistry {
 
   @Override
   public HttpClient getHttpClient(URL url, int connectionTimeout, int readTimeout) {
-    return httpClientFactory.createClient(url, Duration.ofSeconds(connectionTimeout),
-                                          Duration.ofSeconds(readTimeout));
+    return httpClientFactory.builder()
+        .connectionTimeout(Duration.ofSeconds(connectionTimeout))
+        .readTimeout(Duration.ofSeconds(readTimeout))
+        .createClient(url);
   }
 }
