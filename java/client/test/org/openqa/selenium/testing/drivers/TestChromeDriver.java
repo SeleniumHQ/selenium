@@ -52,10 +52,6 @@ public class TestChromeDriver extends RemoteWebDriver implements WebStorage, Loc
   private RemoteWebStorage webStorage;
   private RemoteLocationContext locationContext;
 
-  public TestChromeDriver() {
-    super(chromeWithCustomCapabilities(null));
-  }
-
   public TestChromeDriver(Capabilities capabilities) {
     super(getServiceUrl(), chromeWithCustomCapabilities(capabilities));
     webStorage = new RemoteWebStorage(getExecuteMethod());

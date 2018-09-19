@@ -36,10 +36,6 @@ import java.net.URL;
 public class TestOperaBlinkDriver extends RemoteWebDriver {
   private static OperaDriverService service;
 
-  public TestOperaBlinkDriver() {
-    super(operaWithCustomCapabilities(null));
-  }
-
   public TestOperaBlinkDriver(Capabilities capabilities) {
     super(getServiceUrl(), operaWithCustomCapabilities(capabilities));
   }
