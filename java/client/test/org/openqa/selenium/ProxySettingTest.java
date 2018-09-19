@@ -29,17 +29,27 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
+import org.littleshoot.proxy.HttpFilters;
+import org.littleshoot.proxy.HttpFiltersAdapter;
+import org.littleshoot.proxy.HttpFiltersSourceAdapter;
+import org.littleshoot.proxy.HttpProxyServer;
+import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.ProxyServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.seleniumhq.jetty9.server.Handler;
 import org.seleniumhq.jetty9.server.Request;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.server.handler.AbstractHandler;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -227,5 +237,66 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   private static HostAndPort getHostAndPort(Server server) {
     return HostAndPort.fromParts(server.getURI().getHost(), server.getURI().getPort());
+  }
+
+  public static class ProxyServer {
+    private HttpProxyServer proxyServer;
+    private final String baseUrl;
+    private final List<String> uris = new ArrayList<>();
+
+    public ProxyServer() {
+      int port = PortProber.findFreePort();
+
+      String address = new NetworkUtils().getPrivateLocalAddress();
+      baseUrl = String.format("%s:%d", address, port);
+
+      proxyServer = DefaultHttpProxyServer.bootstrap().withAllowLocalOnly(false).withPort(port)
+          .withFiltersSource(new HttpFiltersSourceAdapter() {
+            public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+              return new HttpFiltersAdapter(originalRequest) {
+                public HttpResponse clientToProxyRequest(HttpObject httpObject) {
+                  String uri = originalRequest.uri();
+                  String[] parts = uri.split("/");
+                  if (parts.length == 0) {
+                    return null;
+                  }
+                  String finalPart = parts[parts.length - 1];
+                  uris.add(finalPart);
+                  return null;
+                }
+
+                @Override
+                public HttpObject serverToProxyResponse(HttpObject httpObject) {
+                  return httpObject;
+                }
+              };
+            }
+          })
+          .start();
+    }
+
+    public String getBaseUrl() {
+      return baseUrl;
+    }
+
+    /**
+     * Checks if a resource has been requested using the short name of the resource.
+     *
+     * @param resourceName The short name of the resource to check.
+     * @return true if the resource has been called.
+     */
+    public boolean hasBeenCalled(String resourceName) {
+      return uris.contains(resourceName);
+    }
+
+    public void destroy() {
+      proxyServer.stop();
+    }
+
+    public Proxy asProxy() {
+      Proxy proxy = new Proxy();
+      proxy.setHttpProxy(baseUrl);
+      return proxy;
+    }
   }
 }

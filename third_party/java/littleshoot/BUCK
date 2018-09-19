@@ -10,7 +10,7 @@ prebuilt_jar(
     '//third_party/java/udt:barchart-udt-bundle'
   ],
   visibility = [
-    '//java/client/test/org/openqa/selenium/testing:test-base',
+    '//java/client/test/org/openqa/selenium:tests',
   ],
 )
 
