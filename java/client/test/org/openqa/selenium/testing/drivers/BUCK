@@ -34,6 +34,7 @@ java_library(name = 'drivers',
     '//java/server/src/org/openqa/grid/selenium:selenium',
     '//third_party/java/github:org.eclipse.egit.github.core',
     '//third_party/java/guava:guava',
+    '//third_party/java/selenium:htmlunit-driver',
     '//third_party/java/junit:junit',
   ],
   visibility = [

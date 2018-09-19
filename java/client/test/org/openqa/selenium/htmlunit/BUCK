@@ -1,6 +1,6 @@
 java_test(name = 'htmlunit',
   srcs = [
-    'JavascriptEnabledHtmlUnitDriverTests.java',
+    'HtmlUnitDriverTests.java',
   ],
   vm_args = [
     '-Dselenium.browser=htmlunit',
