@@ -21,7 +21,7 @@ import platform
 import socket
 import string
 
-import urllib3
+from urllib3 import PoolManager
 
 try:
     from urllib import parse
@@ -103,41 +103,58 @@ class RemoteConnection(object):
 
         return headers
 
-    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=True):
+    # todo See if this actually does anything - Kamaroyl
+    @staticmethod
+    def parse_remote_server(remote_server_address, resolve_ip):
+        """If resolve ip is true, take apart remote_server_address and try to connect to address
+        unless the scheme is https, in which case just put the address back together
+        :param remote_server_address: address of remote server
+        :param resolve_ip: boolean on whether to try to resolve the hostname
+        :return: re-parsed remote_server_address
+        """
+        if resolve_ip:
+            parsed_url = parse.urlparse(remote_server_address)
+            if parsed_url.hostname:
+                port = parsed_url.port or None
+
+                if parsed_url.scheme == "https":
+                    ip = parsed_url.hostname
+
+                elif port and not common_utils.is_connectable(port, parsed_url.hostname):
+                    ip = None
+                    LOGGER.warning('Could not connect to port {} on host '
+                                   '{}'.format(port, parsed_url.hostname))
+
+                else:
+                    ip = common_utils.find_connectable_ip(parsed_url.hostname,
+                                                          port=port)
+                if ip:
+                    netloc = ip
+                    if parsed_url.port:
+                        netloc = common_utils.join_host_port(netloc,
+                                                             parsed_url.port)
+                    if parsed_url.username:
+                        auth = parsed_url.username
+                        if parsed_url.password:
+                            auth += ':%s' % parsed_url.password
+
+                        netloc = '%s@%s' % (auth, netloc)
+
+                    url_parts = (parsed_url.scheme, netloc, parsed_url.path,
+                                 parsed_url.params, parsed_url.query, parsed_url.fragment)
+                    remote_server_address = parse.urlunparse(url_parts)
+                else:
+                    LOGGER.warning('Could not get IP address for host: {}'
+                                   .format(parsed_url.hostname))
+        return remote_server_address
+
+    def __init__(self, remote_server_addr, keep_alive=False, retry_count=3, resolve_ip=True):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
-        parsed_url = parse.urlparse(remote_server_addr)
-        if parsed_url.hostname and resolve_ip:
-            port = parsed_url.port or None
-            if parsed_url.scheme == "https":
-                ip = parsed_url.hostname
-            elif port and not common_utils.is_connectable(port, parsed_url.hostname):
-                ip = None
-                LOGGER.info('Could not connect to port {} on host '
-                            '{}'.format(port, parsed_url.hostname))
-            else:
-                ip = common_utils.find_connectable_ip(parsed_url.hostname,
-                                                      port=port)
-            if ip:
-                netloc = ip
-                if parsed_url.port:
-                    netloc = common_utils.join_host_port(netloc,
-                                                         parsed_url.port)
-                if parsed_url.username:
-                    auth = parsed_url.username
-                    if parsed_url.password:
-                        auth += ':%s' % parsed_url.password
-                    netloc = '%s@%s' % (auth, netloc)
-                remote_server_addr = parse.urlunparse(
-                    (parsed_url.scheme, netloc, parsed_url.path,
-                     parsed_url.params, parsed_url.query, parsed_url.fragment))
-            else:
-                LOGGER.info('Could not get IP address for host: %s' %
-                            parsed_url.hostname)
+        self._url = self.parse_remote_server(remote_server_addr, resolve_ip)
 
-        self._url = remote_server_addr
-        if keep_alive:
-            self._conn = urllib3.PoolManager(timeout=self._timeout)
+        # Keep the name _conn in case someone has been clearing the pool externally with private variable
+        self._conn = PoolManager(timeout=self._timeout, retries=retry_count)
 
         self._commands = {
             Command.STATUS: ('GET', '/status'),
@@ -391,40 +408,31 @@ class RemoteConnection(object):
 
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
-        resp = None
+
+        # Don't add body unless method allows it
         if body and method != 'POST' and method != 'PUT':
             body = None
 
-        if self.keep_alive:
-            resp = self._conn.request(method, url, body=body, headers=headers)
-
-            statuscode = resp.status
-        else:
-            http = urllib3.PoolManager(timeout=self._timeout)
-            resp = http.request(method, url, body=body, headers=headers)
-
-            statuscode = resp.status
-            if not hasattr(resp, 'getheader'):
-                if hasattr(resp.headers, 'getheader'):
-                    resp.getheader = lambda x: resp.headers.getheader(x)
-                elif hasattr(resp.headers, 'get'):
-                    resp.getheader = lambda x: resp.headers.get(x)
+        resp = self._conn.request(method, url, body=body, headers=headers)
+        LOGGER.debug('Headers: {}'.format(headers))
+        status_code = resp.status
 
         data = resp.data.decode('UTF-8')
+
         try:
-            if 300 <= statuscode < 304:
-                return self._request('GET', resp.getheader('location'))
-            if 399 < statuscode <= 500:
-                return {'status': statuscode, 'value': data}
+            if 399 < status_code <= 500:
+                return {'status': status_code, 'value': data}
+
             content_type = []
             if resp.getheader('Content-Type') is not None:
                 content_type = resp.getheader('Content-Type').split(';')
+
             if not any([x.startswith('image/png') for x in content_type]):
 
                 try:
                     data = utils.load_json(data.strip())
                 except ValueError:
-                    if 199 < statuscode < 300:
+                    if 199 < status_code < 300:
                         status = ErrorCode.SUCCESS
                     else:
                         status = ErrorCode.UNKNOWN_ERROR
@@ -441,3 +449,7 @@ class RemoteConnection(object):
         finally:
             LOGGER.debug("Finished Request")
             resp.close()
+
+    # now can use with closing
+    def close(self):
+        self._conn.clear()
