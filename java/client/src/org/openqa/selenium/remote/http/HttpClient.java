@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.internal.OkHttpClient;
 
 import java.io.IOException;
+import java.net.Proxy;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Objects;
@@ -96,6 +97,7 @@ public interface HttpClient {
 
     protected Duration connectionTimeout = Duration.ofMinutes(2);
     protected Duration readTimeout = Duration.ofHours(3);
+    protected Proxy proxy = null;
 
     /**
      * Set the connection timeout to a given value. Note that setting to negative values is not
@@ -119,6 +121,17 @@ public interface HttpClient {
       checkArgument(!duration.isNegative(), "Read time out cannot be negative");
 
       this.readTimeout = duration;
+
+      return this;
+    }
+
+    /**
+     * Set the {@link Proxy} that should be used by the {@link HttpClient} (<b>not</b> the
+     * {@link org.openqa.selenium.WebDriver} instance!). If this is not set, then an implementation
+     * specific method for selecting a proxy will be used.
+     */
+    public Builder proxy(Proxy proxy) {
+      this.proxy = Objects.requireNonNull(proxy, "Proxy must be set");
 
       return this;
     }
