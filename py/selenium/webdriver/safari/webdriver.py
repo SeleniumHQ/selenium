@@ -110,3 +110,18 @@ class WebDriver(RemoteWebDriver):
     def debug(self):
         self.execute("ATTACH_DEBUGGER")
         self.execute_script("debugger;")
+
+    # First available in Safari 12 and Safari Technology Preview 53.
+    def new_window(self):
+        if not self.w3c:
+            raise WebDriverException("New window command is only supported by safaridriver when using W3C dialect.")
+
+        return self.execute("NEW_WINDOW", {"newTab": False})["value"]
+
+    # First available in Safari 12 and Safari Technology Preview 53.
+    def new_tab(self):
+        if not self.w3c:
+            raise WebDriverException("New tab command is only supported by safaridriver when using W3C dialect.")
+
+        return self.execute("NEW_WINDOW", {"newTab": True})["value"]
+
