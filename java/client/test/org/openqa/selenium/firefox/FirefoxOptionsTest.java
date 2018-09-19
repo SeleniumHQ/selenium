@@ -34,6 +34,7 @@ import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -44,7 +45,6 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.testing.JreSystemProperty;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
@@ -156,7 +156,6 @@ public class FirefoxOptionsTest {
   @Test
   public void shouldPickUpBinaryFromSystemPropertyIfSet() throws IOException {
     JreSystemProperty property = new JreSystemProperty(BROWSER_BINARY);
-    String resetValue = property.get();
 
     Path binary = Files.createTempFile("firefox", ".exe");
     try (OutputStream ignored = Files.newOutputStream(binary, DELETE_ON_CLOSE)) {
@@ -172,14 +171,13 @@ public class FirefoxOptionsTest {
 
       assertThat(firefoxBinary.getPath()).isEqualTo(binary.toString());
     } finally {
-      property.set(resetValue);
+      property.reset();
     }
   }
 
   @Test
   public void shouldPickUpLegacyValueFromSystemProperty() {
     JreSystemProperty property = new JreSystemProperty(DRIVER_USE_MARIONETTE);
-    String resetValue = property.get();
 
     try {
       // No value should default to using Marionette
@@ -195,14 +193,13 @@ public class FirefoxOptionsTest {
       options = new FirefoxOptions();
       assertThat(options.isLegacy()).isFalse();
     } finally {
-      property.set(resetValue);
+      property.reset();
     }
   }
 
   @Test
   public void settingMarionetteToFalseAsASystemPropertyDoesNotPrecedence() {
     JreSystemProperty property = new JreSystemProperty(DRIVER_USE_MARIONETTE);
-    String resetValue = property.get();
 
     try {
       Capabilities caps = new ImmutableCapabilities(MARIONETTE, true);
@@ -211,7 +208,7 @@ public class FirefoxOptionsTest {
       FirefoxOptions options = new FirefoxOptions().merge(caps);
       assertThat(options.isLegacy()).isFalse();
     } finally {
-      property.set(resetValue);
+      property.reset();
     }
   }
 
@@ -221,7 +218,6 @@ public class FirefoxOptionsTest {
     assumeThat(defaultProfile).isNotNull();
 
     JreSystemProperty property = new JreSystemProperty(BROWSER_PROFILE);
-    String resetValue = property.get();
     try {
       property.set("default");
       FirefoxOptions options = new FirefoxOptions();
@@ -229,7 +225,7 @@ public class FirefoxOptionsTest {
 
       assertThat(profile).isNotNull();
     } finally {
-      property.set(resetValue);
+      property.reset();
     }
   }
 
@@ -240,13 +236,12 @@ public class FirefoxOptionsTest {
     assumeThat(foundProfile).isNull();
 
     JreSystemProperty property = new JreSystemProperty(BROWSER_PROFILE);
-    String resetValue = property.get();
     try {
       property.set(unlikelyProfileName);
       assertThatExceptionOfType(WebDriverException.class)
           .isThrownBy(FirefoxOptions::new);
     } finally {
-      property.set(resetValue);
+      property.reset();
     }
   }
 
@@ -317,4 +312,30 @@ public class FirefoxOptionsTest {
     assertThat(seen).isEqualTo(expected);
   }
 
+  private static class JreSystemProperty {
+
+    private final String name;
+    private final String originalValue;
+
+    public JreSystemProperty(String name) {
+      this.name = Preconditions.checkNotNull(name);
+      this.originalValue = System.getProperty(name);
+    }
+
+    public String get() {
+      return System.getProperty(name);
+    }
+
+    public void set(String value) {
+      if (value == null) {
+        System.clearProperty(name);
+      } else {
+        System.setProperty(name, value);
+      }
+    }
+
+    public void reset() {
+      set(originalValue);
+    }
+  }
 }

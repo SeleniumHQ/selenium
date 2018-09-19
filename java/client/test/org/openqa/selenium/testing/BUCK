@@ -23,7 +23,6 @@ java_library(name = 'helpers',
   srcs = [
     'DevMode.java',
     'InProject.java',
-    'JreSystemProperty.java',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:core',
@@ -38,7 +37,6 @@ java_library(name = 'helpers',
 java_library(name = 'test-base',
   srcs = [
     'JUnit4TestBase.java',
-    'ProxyServer.java',
     'SeleniumTestRunner.java',
     'TestUtilities.java',
   ],
