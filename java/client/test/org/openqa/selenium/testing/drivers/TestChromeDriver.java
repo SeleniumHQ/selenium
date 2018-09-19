@@ -56,30 +56,29 @@ public class TestChromeDriver extends RemoteWebDriver implements WebStorage, Loc
     super(chromeWithCustomCapabilities(null));
   }
 
-  public TestChromeDriver(Capabilities capabilities) throws IOException {
+  public TestChromeDriver(Capabilities capabilities) {
     super(getServiceUrl(), chromeWithCustomCapabilities(capabilities));
     webStorage = new RemoteWebStorage(getExecuteMethod());
     locationContext = new RemoteLocationContext(getExecuteMethod());
   }
 
-  private static URL getServiceUrl() throws IOException {
-    if (service == null && !SauceDriver.shouldUseSauce()) {
-      Path logFile = Files.createTempFile("chromedriver", ".log");
-      service = new ChromeDriverService.Builder()
-          .withVerbose(true)
-          .withLogFile(logFile.toFile())
-          .build();
-      LOG.info("chromedriver will log to " + logFile);
-      try {
+  private static URL getServiceUrl() {
+    try {
+      if (service == null && !SauceDriver.shouldUseSauce()) {
+        Path logFile = Files.createTempFile("chromedriver", ".log");
+        service = new ChromeDriverService.Builder()
+            .withVerbose(true)
+            .withLogFile(logFile.toFile())
+            .build();
+        LOG.info("chromedriver will log to " + logFile);
         service.start();
-      } catch (IOException e) {
-        throw new RuntimeException(e);
+        // Fugly.
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> service.stop()));
       }
-
-      // Fugly.
-      Runtime.getRuntime().addShutdownHook(new Thread(() -> service.stop()));
+      return service.getUrl();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
-    return service.getUrl();
   }
 
   private static Capabilities chromeWithCustomCapabilities(Capabilities originalCapabilities) {
