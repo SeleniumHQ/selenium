@@ -32,14 +32,9 @@ import java.util.function.Supplier;
 
 public class DefaultDriverSupplier implements Supplier<WebDriver> {
 
-  private Class<? extends WebDriver> driverClass;
-  private final Capabilities desiredCapabilities;
-
   private Supplier<WebDriver> driverSupplier;
 
   public DefaultDriverSupplier(Capabilities desiredCapabilities) {
-    this.desiredCapabilities = desiredCapabilities;
-
     String browserName = desiredCapabilities == null ? "" : desiredCapabilities.getBrowserName();
 
     if (BrowserType.CHROME.equals(browserName)) {
