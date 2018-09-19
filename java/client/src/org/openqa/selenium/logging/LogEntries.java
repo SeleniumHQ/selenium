@@ -17,13 +17,15 @@
 
 package org.openqa.selenium.logging;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
+
 import org.openqa.selenium.Beta;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.StreamSupport;
 
 /**
  * Represent a pool of {@link LogEntry}.  This class also provides filtering mechanisms based on
@@ -35,11 +37,8 @@ public class LogEntries implements Iterable<LogEntry> {
   private final List<LogEntry> entries;
 
   public LogEntries(Iterable<LogEntry> entries) {
-    List<LogEntry> mutableEntries = new ArrayList<>();
-    for (LogEntry entry : entries) {
-      mutableEntries.add(entry);
-    }
-    this.entries = Collections.unmodifiableList(mutableEntries);
+    this.entries = unmodifiableList(
+        StreamSupport.stream(entries.spliterator(), false).collect(toList()));
   }
 
   /**
@@ -56,15 +55,9 @@ public class LogEntries implements Iterable<LogEntry> {
    * @return all log entries for that level and above
    */
   public List<LogEntry> filter(Level level) {
-    List<LogEntry> toReturn = new ArrayList<>();
-
-    for (LogEntry entry : entries) {
-      if (entry.getLevel().intValue() >= level.intValue()) {
-        toReturn.add(entry);
-      }
-    }
-
-    return toReturn;
+    return unmodifiableList(entries.stream()
+        .filter(entry -> entry.getLevel().intValue() >= level.intValue())
+        .collect(toList()));
   }
 
   public Iterator<LogEntry> iterator() {
