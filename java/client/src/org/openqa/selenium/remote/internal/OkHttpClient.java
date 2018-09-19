@@ -126,6 +126,7 @@ public class OkHttpClient implements HttpClient {
               .connectionPool(pool)
               .followRedirects(true)
               .followSslRedirects(true)
+              .proxy(proxy)
               .readTimeout(readTimeout.toMillis(), MILLISECONDS)
               .connectTimeout(connectionTimeout.toMillis(), MILLISECONDS);
 
