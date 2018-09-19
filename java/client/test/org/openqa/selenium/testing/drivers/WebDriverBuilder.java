@@ -100,7 +100,6 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
             new GridSupplier(desiredCaps),
             new RemoteSupplier(desiredCaps),
             new TestInternetExplorerSupplier(desiredCaps),
-            new ReflectionBackedDriverSupplier(desiredCaps),
             new DefaultDriverSupplier(desiredCaps))
         .map(Supplier::get)
         .filter(Objects::nonNull)
