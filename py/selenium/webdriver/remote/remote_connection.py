@@ -44,6 +44,24 @@ class RemoteConnection(object):
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
 
     _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+    _retries = 0
+
+    @classmethod
+    def get_retries(cls):
+        """
+        :return:
+            returns the number of retries urllib3 will use when making requests
+        """
+        return cls._retries
+
+    @classmethod
+    def set_retries(cls, retries):
+        """
+        Sets the number of retries to be used in urllib3 when making requests
+        :Args:
+            - retries - number of retries for http/s requests made
+        """
+        cls._retries=retries
 
     @classmethod
     def get_timeout(cls):
@@ -148,13 +166,14 @@ class RemoteConnection(object):
                                    .format(parsed_url.hostname))
         return remote_server_address
 
-    def __init__(self, remote_server_addr, keep_alive=False, retry_count=3, resolve_ip=True):
+    def __init__(self, remote_server_addr, keep_alive=False, retries=0, resolve_ip=True):
         # Attempt to resolve the hostname and get an IP address.
+
         self.keep_alive = keep_alive
         self._url = self.parse_remote_server(remote_server_addr, resolve_ip)
 
         # Keep the name _conn in case someone has been clearing the pool externally with private variable
-        self._conn = PoolManager(timeout=self._timeout, retries=retry_count)
+        self._conn = PoolManager(timeout=self._timeout, retries=retries)
 
         self._commands = {
             Command.STATUS: ('GET', '/status'),
@@ -413,7 +432,8 @@ class RemoteConnection(object):
         if body and method != 'POST' and method != 'PUT':
             body = None
 
-        resp = self._conn.request(method, url, body=body, headers=headers)
+        resp = self._conn.request(method, url, body=body, headers=headers,
+                                  timeout=self._timeout, retries=self._retries)
         LOGGER.debug('Headers: {}'.format(headers))
         status_code = resp.status
 
@@ -449,7 +469,13 @@ class RemoteConnection(object):
         finally:
             LOGGER.debug("Finished Request")
             resp.close()
+            # clear connections - we lose the connections pools,
+            # but we keep the main object around avoiding recreating it.
+            # and we are avoiding gc cleaning up our sockets
+            if not self.keep_alive:
+                self._conn.clear()
 
-    # now can use with closing
+    # now can use with closing!
+    # don't rely on gc to clean things up for you
     def close(self):
         self._conn.clear()
