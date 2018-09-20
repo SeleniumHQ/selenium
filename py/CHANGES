@@ -1,9 +1,20 @@
+Selenium 3.14.1
+* Fix ability to set timeout for urllib3 (#6286)
+* get_cookie uses w3c endpoint when compliant
+* Remove body from GET requests (#6250)
+* Fix actions pause for fraction of a second (#6300)
+* Fixed input pausing for some actions methods
+* Capabilities can be set on Options classes
+* WebElement rect method is now forward compatible for OSS endpoints (#6355)
+* Deprecation warnings now have a stacklevel of 2
+* keep_alive can now be set on Webdriver init (#6316)
+* isDisplayed atom is now used for all w3c compliant browser, fixing issue with Safari 12
+
 Selenium 3.14.0
 * Fix doc of URL-related ExpectedCondition (#6236)
 * Added ExpectedCondition invisibility_of_element
 * Swap out httplib for urllib3
 * Be consistent with webdriver init kwarg service_log_path (#5725)
-
 
 Selenium 3.13.0
 
