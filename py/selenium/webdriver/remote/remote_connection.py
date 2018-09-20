@@ -166,9 +166,10 @@ class RemoteConnection(object):
         return remote_server_address
 
     def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=True):
-        # Attempt to resolve the hostname and get an IP address.
 
         self.keep_alive = keep_alive
+
+        # Attempt to resolve the hostname and get an IP address.
         self._url = self.parse_remote_server(remote_server_addr, resolve_ip)
 
         # Keep the name _conn in case someone has been clearing the pool externally with private variable
@@ -259,8 +260,8 @@ class RemoteConnection(object):
             if not self.keep_alive:
                 self._conn.clear()
 
-    # now can use with closing!
-    # Avoid relying on gc to clean things up
+    # now can use with contextlib.closing!
+    # Avoid relying on gc to clean up sockets
     def close(self):
         self._conn.clear()
 
