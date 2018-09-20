@@ -121,7 +121,6 @@ class RemoteConnection(object):
 
         return headers
 
-    # todo See if this actually does anything - Kamaroyl
     @staticmethod
     def parse_remote_server(remote_server_address, resolve_ip):
         """If resolve ip is true, take apart remote_server_address and try to connect to address
@@ -261,7 +260,7 @@ class RemoteConnection(object):
                 self._conn.clear()
 
     # now can use with closing!
-    # don't rely on gc to clean things up for you
+    # Avoid relying on gc to clean things up
     def close(self):
         self._conn.clear()
 
@@ -479,4 +478,3 @@ class RemoteConnection(object):
         Command.MINIMIZE_WINDOW:
             ('POST', '/session/$sessionId/window/minimize')
     }
-
