@@ -26,86 +26,85 @@ import java.util.function.Function;
 
 class W3CHandshakeResponse implements HandshakeResponse {
 
-  private final Function<InitialHandshakeResponse, Optional<ProtocolHandshake.Result>> error = tuple -> {
-    Object rawValue = tuple.getData().get("value");
-    if (!(rawValue instanceof Map)) {
-      return Optional.empty();
-    }
-
-    Map<?, ?> rawMap = (Map<?, ?>) rawValue;
-
-    Object rawMessage = rawMap.get("message");
-    Object rawError = rawMap.get("error");
-    Object rawStackTrace = rawMap.get("stacktrace");
-    rawStackTrace = rawStackTrace == null ? "" : rawStackTrace;
-
-    if (!(rawError instanceof String) || (!(rawMessage instanceof String))) {
-      return Optional.empty();
-    }
-
-    if (!(rawStackTrace instanceof String)) {
-      rawStackTrace = String.valueOf(rawStackTrace);
-    }
-
-    Response response = new Response();
-    response.setState((String) rawError);
-    response.setStatus(new ErrorCodes().toStatus((String) rawError, Optional.of(tuple.getStatusCode())));
-
-    Class<? extends WebDriverException> type = new ErrorCodes().getExceptionType((String) rawError);
-    try {
-      WebDriverException exception = type.getConstructor(String.class)
-          .newInstance((String) rawMessage);
-      exception.addInfo("remote stacktrace", (String) rawStackTrace);
-      response.setValue(exception);
-    } catch (ReflectiveOperationException e) {
-      response.setValue(rawMessage);
-    }
-
-    new ErrorHandler().throwIfResponseFailed(response, tuple.getRequestDuration().toMillis());
-    // We never get this far
-    return Optional.empty();
-  };
-
-  private final Function<InitialHandshakeResponse, Optional<ProtocolHandshake.Result>> success = tuple -> {
-    if (tuple.getData().containsKey("status")) {
-      return Optional.empty();
-    }
-
-    Object rawValue = tuple.getData().get("value");
-    if (!(rawValue instanceof Map)) {
-      return Optional.empty();
-    }
-
-    @SuppressWarnings("unchecked") Map<Object, Object> rawMap = (Map<Object, Object>) rawValue;
-    Object rawSessionId = rawMap.get("sessionId");
-    Object rawCapabilities = rawMap.get("capabilities");
-
-    if (!(rawSessionId instanceof String) || !(rawCapabilities instanceof Map)) {
-      return Optional.empty();
-    }
-
-    // Ensure Map keys are all strings.
-    for (Object key : ((Map<?, ?>) rawCapabilities).keySet()) {
-      if (!(key instanceof String)) {
-        return Optional.empty();
+  @Override
+  public Function<InitialHandshakeResponse, ProtocolHandshake.Result> errorHandler() {
+    return tuple -> {
+      Object rawValue = tuple.getData().get("value");
+      if (!(rawValue instanceof Map)) {
+        return null;
       }
-    }
 
-    @SuppressWarnings("unchecked") Map<String, Object> caps = (Map<String, Object>) rawCapabilities;
+      Map<?, ?> rawMap = (Map<?, ?>) rawValue;
 
-    String sessionId = (String) rawSessionId;
-    return Optional.of(new ProtocolHandshake.Result(Dialect.W3C, sessionId, caps));
-  };
+      Object rawMessage = rawMap.get("message");
+      Object rawError = rawMap.get("error");
+      Object rawStackTrace = rawMap.get("stacktrace");
+      rawStackTrace = rawStackTrace == null ? "" : rawStackTrace;
 
+      if (!(rawError instanceof String) || (!(rawMessage instanceof String))) {
+        return null;
+      }
+
+      if (!(rawStackTrace instanceof String)) {
+        rawStackTrace = String.valueOf(rawStackTrace);
+      }
+
+      Response response = new Response();
+      response.setState((String) rawError);
+      response.setStatus(
+          new ErrorCodes().toStatus((String) rawError, Optional.of(tuple.getStatusCode())));
+
+      Class<? extends WebDriverException>
+          type =
+          new ErrorCodes().getExceptionType((String) rawError);
+      try {
+        WebDriverException exception = type.getConstructor(String.class)
+            .newInstance((String) rawMessage);
+        exception.addInfo("remote stacktrace", (String) rawStackTrace);
+        response.setValue(exception);
+      } catch (ReflectiveOperationException e) {
+        response.setValue(rawMessage);
+      }
+
+      new ErrorHandler().throwIfResponseFailed(response, tuple.getRequestDuration().toMillis());
+      // We never get this far
+      return null;
+    };
+  }
 
   @Override
-  public Function<InitialHandshakeResponse, Optional<ProtocolHandshake.Result>> getResponseFunction() {
-    return resp -> {
-      Optional<ProtocolHandshake.Result> result = error.apply(resp);
-      if (!result.isPresent()) {
-        result = success.apply(resp);
+  public Function<InitialHandshakeResponse, ProtocolHandshake.Result> successHandler() {
+    return tuple -> {
+      if (tuple.getData().containsKey("status")) {
+        return null;
       }
-      return result;
+
+      Object rawValue = tuple.getData().get("value");
+      if (!(rawValue instanceof Map)) {
+        return null;
+      }
+
+      @SuppressWarnings("unchecked") Map<Object, Object> rawMap = (Map<Object, Object>) rawValue;
+      Object rawSessionId = rawMap.get("sessionId");
+      Object rawCapabilities = rawMap.get("capabilities");
+
+      if (!(rawSessionId instanceof String) || !(rawCapabilities instanceof Map)) {
+        return null;
+      }
+
+      // Ensure Map keys are all strings.
+      for (Object key : ((Map<?, ?>) rawCapabilities).keySet()) {
+        if (!(key instanceof String)) {
+          return null;
+        }
+      }
+
+      @SuppressWarnings("unchecked") Map<String, Object>
+          caps =
+          (Map<String, Object>) rawCapabilities;
+
+      String sessionId = (String) rawSessionId;
+      return new ProtocolHandshake.Result(Dialect.W3C, sessionId, caps);
     };
   }
 }
