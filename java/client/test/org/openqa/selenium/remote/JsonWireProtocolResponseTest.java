@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -29,9 +28,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
-
-import java.util.Map;
-import java.util.Optional;
 
 public class JsonWireProtocolResponseTest {
 
@@ -48,12 +44,10 @@ public class JsonWireProtocolResponseTest {
         200,
         payload);
 
-    Optional<ProtocolHandshake.Result> optionalResult =
+    ProtocolHandshake.Result result =
         new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
-    assertThat(optionalResult.isPresent()).isTrue();
-    ProtocolHandshake.Result result = optionalResult.get();
-
+    assertThat(result).isNotNull();
     assertThat(result.getDialect()).isEqualTo(Dialect.OSS);
     Response response = result.createResponse();
 
@@ -76,10 +70,10 @@ public class JsonWireProtocolResponseTest {
         200,
         payload);
 
-    Optional<ProtocolHandshake.Result> optionalResult =
+    ProtocolHandshake.Result result =
         new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
-    assertThat(optionalResult.isPresent()).isFalse();
+    assertThat(result).isNull();
   }
 
   @Test
@@ -94,10 +88,10 @@ public class JsonWireProtocolResponseTest {
         200,
         payload);
 
-    Optional<ProtocolHandshake.Result> optionalResult =
+    ProtocolHandshake.Result result =
         new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
-    assertThat(optionalResult.isPresent()).isFalse();
+    assertThat(result).isNull();
   }
 
   @Test

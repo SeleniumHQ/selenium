@@ -27,8 +27,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 
-import java.util.Optional;
-
 public class W3CHandshakeResponseTest {
 
   @Test
@@ -44,12 +42,10 @@ public class W3CHandshakeResponseTest {
         200,
         payload);
 
-    Optional<ProtocolHandshake.Result> optionalResult =
+    ProtocolHandshake.Result result =
         new W3CHandshakeResponse().getResponseFunction().apply(initialResponse);
 
-    assertThat(optionalResult.isPresent()).isTrue();
-    ProtocolHandshake.Result result = optionalResult.get();
-
+    assertThat(result).isNotNull();
     assertThat(result.getDialect()).isEqualTo(Dialect.W3C);
     Response response = result.createResponse();
 
@@ -72,10 +68,10 @@ public class W3CHandshakeResponseTest {
         200,
         payload);
 
-    Optional<ProtocolHandshake.Result> optionalResult =
+    ProtocolHandshake.Result result =
         new W3CHandshakeResponse().getResponseFunction().apply(initialResponse);
 
-    assertThat(optionalResult.isPresent()).isFalse();
+    assertThat(result).isNull();
   }
 
   @Test
@@ -90,10 +86,10 @@ public class W3CHandshakeResponseTest {
         200,
         payload);
 
-    Optional<ProtocolHandshake.Result> optionalResult =
+    ProtocolHandshake.Result result =
         new W3CHandshakeResponse().getResponseFunction().apply(initialResponse);
 
-    assertThat(optionalResult.isPresent()).isFalse();
+    assertThat(result).isNull();
   }
 
   @Test

@@ -21,5 +21,12 @@ import java.util.Optional;
 import java.util.function.Function;
 
 interface HandshakeResponse {
-  Function<InitialHandshakeResponse, Optional<ProtocolHandshake.Result>> getResponseFunction();
+
+  Function<InitialHandshakeResponse, ProtocolHandshake.Result> errorHandler();
+
+  Function<InitialHandshakeResponse, ProtocolHandshake.Result> successHandler();
+
+  default Function<InitialHandshakeResponse, ProtocolHandshake.Result> getResponseFunction() {
+    return resp -> Optional.ofNullable(errorHandler().apply(resp)).orElse(successHandler().apply(resp));
+  }
 }
