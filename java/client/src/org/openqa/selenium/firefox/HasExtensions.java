@@ -15,13 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+package org.openqa.selenium.firefox;
+
+import org.openqa.selenium.Beta;
 
 import java.nio.file.Path;
 
 /**
  * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
  */
+@Beta
 public interface HasExtensions {
 
   /**

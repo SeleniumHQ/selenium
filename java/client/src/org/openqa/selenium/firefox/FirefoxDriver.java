@@ -25,7 +25,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.HasExtensions;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
