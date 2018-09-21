@@ -17,13 +17,15 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
+import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasExtensions;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
@@ -32,12 +34,15 @@ import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Set;
 
@@ -53,7 +58,7 @@ import java.util.Set;
  *WebDriver driver = new FirefoxDriver(options);
  * </pre>
  */
-public class FirefoxDriver extends RemoteWebDriver implements WebStorage {
+public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExtensions {
 
   public static final class SystemProperty {
 
@@ -96,6 +101,24 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage {
   public static final String PROFILE = "firefox_profile";
   public static final String MARIONETTE = "marionette";
 
+  private static class ExtraCommands {
+    static String INSTALL_EXTENSION = "installExtension";
+    static String UNINSTALL_EXTENSION = "uninstallExtension";
+  }
+
+  private static final ImmutableMap<String, CommandInfo> EXTRA_COMMANDS = ImmutableMap.of(
+      ExtraCommands.INSTALL_EXTENSION,
+      new CommandInfo("/session/:sessionId/moz/addon/install", HttpMethod.POST),
+      ExtraCommands.UNINSTALL_EXTENSION,
+      new CommandInfo("/session/:sessionId/moz/addon/uninstall", HttpMethod.POST)
+  );
+
+  private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
+    public FirefoxDriverCommandExecutor(DriverService service) {
+      super(service, EXTRA_COMMANDS);
+    }
+  }
+
   protected FirefoxBinary binary;
   private RemoteWebStorage webStorage;
 
@@ -127,22 +150,22 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage {
   }
 
   public FirefoxDriver(GeckoDriverService service) {
-    super(new DriverCommandExecutor(service), new FirefoxOptions());
+    super(new FirefoxDriverCommandExecutor(service), new FirefoxOptions());
     webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
   public FirefoxDriver(XpiDriverService service) {
-    super(new DriverCommandExecutor(service), new FirefoxOptions());
+    super(new FirefoxDriverCommandExecutor(service), new FirefoxOptions());
     webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
   public FirefoxDriver(GeckoDriverService service, FirefoxOptions options) {
-    super(new DriverCommandExecutor(service), dropCapabilities(options));
+    super(new FirefoxDriverCommandExecutor(service), dropCapabilities(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
   public FirefoxDriver(XpiDriverService service, FirefoxOptions options) {
-    super(new DriverCommandExecutor(service), dropCapabilities(options));
+    super(new FirefoxDriverCommandExecutor(service), dropCapabilities(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
@@ -150,7 +173,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage {
     Objects.requireNonNull(options, "No options to construct executor from");
     DriverService.Builder<?, ?> builder;
 
-    if (! Boolean.parseBoolean(System.getProperty(DRIVER_USE_MARIONETTE, "true"))
+    if (! Boolean.parseBoolean(System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE, "true"))
         || options.isLegacy()) {
       FirefoxProfile profile = options.getProfile();
       if (profile == null) {
@@ -165,7 +188,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage {
           .usingFirefoxBinary(options.getBinary());
     }
 
-    return new DriverCommandExecutor(builder.build());
+    return new FirefoxDriverCommandExecutor(builder.build());
   }
 
   @Override
@@ -194,8 +217,19 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage {
     return marionette instanceof Boolean && ! (Boolean) marionette;
   }
 
+  @Override
+  public String installExtension(Path path) {
+    return (String) execute(ExtraCommands.INSTALL_EXTENSION,
+                            singletonMap("path", path.toAbsolutePath().toString())).getValue();
+  }
+
+  @Override
+  public void uninstallExtension(String extensionId) {
+    execute(ExtraCommands.UNINSTALL_EXTENSION, singletonMap("id", extensionId));
+  }
+
   private static Boolean forceMarionetteFromSystemProperty() {
-    String useMarionette = System.getProperty(DRIVER_USE_MARIONETTE);
+    String useMarionette = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
     if (useMarionette == null) {
       return null;
     }
