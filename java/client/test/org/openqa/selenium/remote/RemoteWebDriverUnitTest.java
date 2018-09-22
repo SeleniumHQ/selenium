@@ -32,6 +32,7 @@ import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public class RemoteWebDriverUnitTest {
 
@@ -85,6 +86,7 @@ public class RemoteWebDriverUnitTest {
       if (invocation.<Command>getArgument(0).getName().equals(DriverCommand.NEW_SESSION)) {
         Response newSessionResponse = new Response();
         newSessionResponse.setValue(EMPTY_MAP);
+        newSessionResponse.setSessionId(UUID.randomUUID().toString());
         return newSessionResponse;
       } else {
         Response nullResponse = new Response();
