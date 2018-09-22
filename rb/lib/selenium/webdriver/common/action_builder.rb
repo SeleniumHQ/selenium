@@ -319,7 +319,7 @@ module Selenium
       def drag_and_drop(source, target)
         click_and_hold source
         move_to        target
-        release        target
+        release
 
         self
       end
