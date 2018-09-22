@@ -26,47 +26,11 @@ import org.openqa.selenium.Platform;
 import java.io.File;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public class WindowsUtils {
 
-  private static Logger LOG = Logger.getLogger(WindowsUtils.class.getName());
   private static final boolean THIS_IS_WINDOWS = Platform.getCurrent().is(WINDOWS);
-  private static String taskkill = null;
   private static Properties env = null;
-
-  /**
-   * Kill processes by name
-   *
-   * @param name name of the process to kill
-   * @deprecated
-   */
-  @Deprecated
-  public static void killByName(String name) {
-    executeCommand(findTaskKill(), "/f", "/t", "/im", name);
-  }
-
-  /**
-   * Kills the specified process ID
-   *
-   * @param processID PID to kill
-   * @deprecated
-   */
-  @Deprecated
-  public static void killPID(String processID) {
-    executeCommand(findTaskKill(), "/f", "/t", "/pid", processID);
-  }
-
-  private static String executeCommand(String commandName, String... args) {
-    CommandLine cmd = new CommandLine(commandName, args);
-    cmd.execute();
-
-    String output = cmd.getStdOut();
-    if (cmd.getExitCode() == 0 || cmd.getExitCode() ==  128 || cmd.getExitCode() ==  255) {
-      return output;
-    }
-    throw new RuntimeException("exec return code " + cmd.getExitCode() + ": " + output);
-  }
 
   /**
    * Returns the current process environment variables
@@ -128,55 +92,6 @@ public class WindowsUtils {
       }
     }
     return null;
-  }
-
-  /**
-   * Finds the system root directory, e.g. "c:\windows" or "c:\winnt"
-   *
-   * @return location of system root
-   * @deprecated
-   */
-  @Deprecated
-  public static File findSystemRoot() {
-    Properties p = loadEnvironment();
-    String systemRootPath = p.getProperty("SystemRoot");
-    if (systemRootPath == null) {
-      systemRootPath = p.getProperty("SYSTEMROOT");
-    }
-    if (systemRootPath == null) {
-      systemRootPath = p.getProperty("systemroot");
-    }
-    if (systemRootPath == null) {
-      throw new RuntimeException("SystemRoot apparently not set!");
-    }
-    File systemRoot = new File(systemRootPath);
-    if (!systemRoot.exists()) {
-      throw new RuntimeException("SystemRoot doesn't exist: " + systemRootPath);
-    }
-    return systemRoot;
-  }
-
-  /**
-   * Finds taskkill.exe
-   *
-   * @return the exact path to taskkill.exe, or just the string "taskkill" if it couldn't be found
-   *         (in which case you can pass that to exec to try to run it from the path)
-   * @deprecated
-   */
-  @Deprecated
-  public static String findTaskKill() {
-    if (taskkill != null) {
-      return taskkill;
-    }
-    File systemRoot = findSystemRoot();
-    File taskkillExe = new File(systemRoot, "system32/taskkill.exe");
-    if (taskkillExe.exists()) {
-      taskkill = taskkillExe.getAbsolutePath();
-      return taskkill;
-    }
-    LOG.warning("Couldn't find taskkill! Hope it's on the path...");
-    taskkill = "taskkill";
-    return taskkill;
   }
 
   /**
