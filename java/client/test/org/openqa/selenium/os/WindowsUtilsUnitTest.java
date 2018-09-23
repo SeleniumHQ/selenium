@@ -17,9 +17,11 @@
 package org.openqa.selenium.os;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.Platform.WINDOWS;
 
 import org.junit.Assume;
 import org.junit.Test;
+import org.openqa.selenium.Platform;
 
 import java.util.Properties;
 
@@ -27,13 +29,12 @@ public class WindowsUtilsUnitTest {
 
   @Test
   public void testLoadEnvironment() {
-    Assume.assumeTrue(WindowsUtils.thisIsWindows());
+    Assume.assumeTrue(Platform.getCurrent().is(WINDOWS));
 
     String osVersion = System.getProperty("os.version");
     assertThat(osVersion).matches("^(\\d)+\\.(\\d)+$");
 
     Properties p = WindowsUtils.loadEnvironment();
     assertThat(p).isNotEmpty();
-    assertThat(WindowsUtils.findSystemRoot()).isNotNull();
   }
 }
