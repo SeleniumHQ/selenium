@@ -39,7 +39,6 @@ import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -129,11 +128,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
   }
 
-  @NeedsLocalEnvironment(reason = "Carefully timing based")
   @Test
-  @Ignore(CHROME)
-  @Ignore(MARIONETTE)
-  @Ignore(SAFARI)
   public void testShouldGetTextOfAlertOpenedInSetTimeout() {
     driver.get(appServer.create(new Page()
         .withTitle("Testing Alerts")
@@ -143,11 +138,7 @@ public class AlertsTest extends JUnit4TestBase {
             "<a href='#' id='slow-alert' onclick='slowAlert();'>click me</a>")));
 
     driver.findElement(By.id("slow-alert")).click();
-
-    // DO NOT WAIT OR SLEEP HERE.
-    // This is a regression test for a bug where only the first switchTo call would throw,
-    // and only if it happens before the alert actually loads.
-    Alert alert = driver.switchTo().alert();
+    Alert alert = wait.until(alertIsPresent());
     try {
       assertThat(alert.getText()).isEqualTo("Slow");
     } finally {
