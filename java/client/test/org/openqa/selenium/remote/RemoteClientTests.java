@@ -30,6 +30,7 @@ import org.openqa.selenium.remote.internal.CircularOutputStreamTest;
     ProtocolHandshakeTest.class,
     RemoteLogsTest.class,
     RemoteWebDriverInitializationTest.class,
+    RemoteWebDriverUnitTest.class,
     W3CHandshakeResponseTest.class
 })
 public class RemoteClientTests {

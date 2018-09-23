@@ -36,6 +36,7 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
@@ -322,6 +323,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Response response = execute(DriverCommand.FIND_ELEMENT,
         ImmutableMap.of("using", by, "value", using));
     Object value = response.getValue();
+    if (value == null) { // see https://github.com/SeleniumHQ/selenium/issues/5809
+      throw new NoSuchElementException(String.format("Cannot locate an element using %s=%s", by, using));
+    }
     WebElement element;
     try {
       element = (WebElement) value;
