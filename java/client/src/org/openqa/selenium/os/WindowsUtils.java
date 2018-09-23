@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.Properties;
 
+@Deprecated
 public class WindowsUtils {
 
   private static final boolean THIS_IS_WINDOWS = Platform.getCurrent().is(WINDOWS);
@@ -37,6 +38,7 @@ public class WindowsUtils {
    *
    * @return the current process environment variables
    */
+  @Deprecated
   public static synchronized Properties loadEnvironment() {
     if (env != null) {
       return env;
@@ -54,10 +56,12 @@ public class WindowsUtils {
    *
    * @return the path to the Windows Program Files
    */
+  @Deprecated
   public static String getProgramFilesPath() {
     return getEnvVarPath("ProgramFiles", "C:\\Program Files").replace(" (x86)", "");
   }
 
+  @Deprecated
   public static String getProgramFiles86Path() {
     return getEnvVarPath("ProgramFiles(x86)", "C:\\Program Files (x86)");
   }
@@ -73,6 +77,7 @@ public class WindowsUtils {
     return new File(defaultValue).getAbsolutePath();
   }
 
+  @Deprecated
   public static ImmutableList<String> getPathsInProgramFiles(final String childPath) {
     return new ImmutableList.Builder<String>()
         .add(getFullPath(WindowsUtils.getProgramFilesPath(), childPath))
@@ -84,6 +89,7 @@ public class WindowsUtils {
     return new File(parent, child).getAbsolutePath();
   }
 
+  @Deprecated
   public static String getEnvVarIgnoreCase(String var) {
     Properties p = loadEnvironment();
     for (String key : p.stringPropertyNames()) {
@@ -98,7 +104,9 @@ public class WindowsUtils {
    * Returns true if the current OS is MS Windows; false otherwise
    *
    * @return true if the current OS is MS Windows; false otherwise
+   * @deprecated Use <code>Platform.getCurrent().is(WINDOWS)</code> instead
    */
+  @Deprecated
   public static boolean thisIsWindows() {
     return THIS_IS_WINDOWS;
   }

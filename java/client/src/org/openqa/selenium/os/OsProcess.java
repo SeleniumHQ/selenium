@@ -20,7 +20,7 @@ package org.openqa.selenium.os;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.copyOf;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
+import static org.openqa.selenium.Platform.WINDOWS;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -29,6 +29,7 @@ import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.MultiOutputStream;
@@ -116,7 +117,7 @@ class OsProcess {
 
     // I literally have no idea why we don't try and kill the process nicely on Windows. If you do,
     // answers on the back of a postcard to SeleniumHQ, please.
-    if (!thisIsWindows()) {
+    if (!Platform.getCurrent().is(WINDOWS)) {
       watchdog.destroyProcess();
       watchdog.waitForTerminationAfterDestroy(2, SECONDS);
     }
