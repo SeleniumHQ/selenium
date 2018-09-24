@@ -58,7 +58,8 @@ import javax.servlet.Servlet;
 
 public class BaseServer<T extends BaseServer> implements Server<T> {
 
-  private final static Logger LOG = Logger.getLogger(BaseServer.class.getName());
+  private static final Logger LOG = Logger.getLogger(BaseServer.class.getName());
+  private static final int MAX_SHUTDOWN_RETRIES = 8;
 
   private final org.seleniumhq.jetty9.server.Server server;
   private final Map<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>>
@@ -203,13 +204,24 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
 
   @Override
   public void stop() {
-    try {
-      server.stop();
-    } catch (RuntimeException e) {
-      throw e;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    int numTries = 0;
+    Exception shutDownException = null;
+
+    // shut down the jetty server (try try again)
+    while (numTries <= MAX_SHUTDOWN_RETRIES) {
+      numTries++;
+      try {
+        server.stop();
+
+        // If we reached here stop didn't throw an exception, so we can assume success.
+      } catch (Exception ex) { // org.openqa.jetty.jetty.Server.stop() throws Exception
+        shutDownException = ex;
+        // If Exception is thrown we try to stop the jetty server again
+      }
     }
+
+    // This is bad!! Jetty didn't shutdown.
+    throw new RuntimeException(shutDownException);
   }
 
   @Override
