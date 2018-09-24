@@ -44,6 +44,7 @@ import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.io.UncheckedIOException;
+import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -51,10 +52,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
 public class BaseServer implements Server<BaseServer> {
+
+  private final static Logger LOG = Logger.getLogger(BaseServer.class.getName());
 
   private final org.seleniumhq.jetty9.server.Server server;
   private final Map<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>>
@@ -179,9 +183,19 @@ public class BaseServer implements Server<BaseServer> {
       PortProber.waitForPortUp(getUrl().getPort(), 10, SECONDS);
 
       return this;
-    } catch (RuntimeException e) {
-      throw e;
     } catch (Exception e) {
+      try {
+        stop();
+      } catch (Exception ignore) {
+      }
+      if (e instanceof BindException) {
+        LOG.severe(String.format(
+            "Port %s is busy, please choose a free port and specify it using -port option",
+            getUrl().getPort()));
+      }
+      if (e instanceof RuntimeException) {
+        throw (RuntimeException) e;
+      }
       throw new RuntimeException(e);
     }
   }
