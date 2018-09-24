@@ -66,6 +66,10 @@ public class AnnotatedConfig implements Config {
         throw new ConfigException("Unable to read field: " + field);
       }
 
+      if (value == null) {
+        continue;
+      }
+
       Map<String, String> section = values.getOrDefault(annotation.section(), new HashMap<>());
       section.put(annotation.name(), String.valueOf(value));
       values.put(annotation.section(), section);
