@@ -53,7 +53,9 @@ class ActiveSessionCommandExecutor implements CommandExecutor {
       return response;
     }
 
-    HttpRequest request = session.getUpstreamDialect().getCommandCodec().encode(command);
+    // The command is about to be sent to the session, which expects it to be
+    // encoded as if it has come from the downstream end, not the upstream end.
+    HttpRequest request = session.getDownstreamDialect().getCommandCodec().encode(command);
 
     HttpResponse httpResponse = new HttpResponse();
     session.execute(request, httpResponse);
