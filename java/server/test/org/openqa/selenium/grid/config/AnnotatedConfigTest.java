@@ -78,4 +78,37 @@ public class AnnotatedConfigTest {
     new AnnotatedConfig(new WithBadAnnotation());
   }
 
+  @Test
+  public void shouldWalkInheritanceHierarchy() {
+    class Parent {
+      @ConfigValue(section = "cheese", name = "type")
+      private final String value = "cheddar";
+    }
+
+    class Child extends Parent {
+    }
+
+    Config config = new AnnotatedConfig(new Child());
+
+    assertEquals(Optional.of("cheddar"), config.get("cheese", "type"));
+  }
+
+  @Test
+  public void configValuesFromChildClassesAreMoreImportant() {
+    class Parent {
+      @ConfigValue(section = "cheese", name = "type")
+      private final String value = "cheddar";
+    }
+
+    class Child extends Parent {
+      @ConfigValue(section = "cheese", name = "type")
+      private final String cheese = "gorgonzola";
+    }
+
+    Config config = new AnnotatedConfig(new Child());
+
+    assertEquals(Optional.of("gorgonzola"), config.get("cheese", "type"));
+
+  }
+
 }
