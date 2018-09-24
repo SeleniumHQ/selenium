@@ -23,9 +23,9 @@ import static org.openqa.selenium.remote.server.WebDriverServlet.NEW_SESSION_PIP
 
 import com.beust.jcommander.JCommander;
 
+import org.openqa.grid.internal.cli.StandaloneCliOptions;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
-import org.openqa.grid.internal.cli.StandaloneCliOptions;
 import org.openqa.grid.selenium.node.ChromeMutator;
 import org.openqa.grid.selenium.node.FirefoxMutator;
 import org.openqa.grid.shared.GridNodeServer;
@@ -50,7 +50,6 @@ import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.net.BindException;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
