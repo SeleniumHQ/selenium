@@ -58,6 +58,8 @@ public class Json {
     try (StringReader reader = new StringReader(source);
          JsonInput json = newInput(reader)) {
       return fromJson.coerce(json, typeOfT, setter);
+    } catch (JsonException e) {
+      throw new JsonException("Unable to parse: " + source, e);
     }
   }
 
