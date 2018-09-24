@@ -34,6 +34,7 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.seleniumhq.jetty9.security.ConstraintMapping;
 import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
+import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.ServerConnector;
@@ -56,7 +57,8 @@ import javax.servlet.Servlet;
 public class BaseServer implements Server<BaseServer> {
 
   private final org.seleniumhq.jetty9.server.Server server;
-  private final Map<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>> handlers;
+  private final Map<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>>
+      handlers;
   private final ServletContextHandler servletContextHandler;
   private final Injector injector;
   private final URL url;
@@ -64,12 +66,14 @@ public class BaseServer implements Server<BaseServer> {
   public BaseServer(BaseServerOptions options) {
     int port = options.getPort() == 0 ? PortProber.findFreePort() : options.getPort();
 
-    String host;
-    try {
-      host = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
-    } catch (WebDriverException ignored) {
-      host = "localhost";
-    }
+    String host = options.getHostname().orElseGet(() -> {
+      try {
+        return new NetworkUtils().getNonLoopbackAddressOfThisMachine();
+      } catch (WebDriverException ignored) {
+        return "localhost";
+      }
+    });
+
     try {
       this.url = new URL("http", host, port, "");
     } catch (MalformedURLException e) {
@@ -102,7 +106,9 @@ public class BaseServer implements Server<BaseServer> {
         });
 
     this.servletContextHandler = new ServletContextHandler(ServletContextHandler.SECURITY);
-    ConstraintSecurityHandler securityHandler = (ConstraintSecurityHandler) servletContextHandler.getSecurityHandler();
+    ConstraintSecurityHandler
+        securityHandler =
+        (ConstraintSecurityHandler) servletContextHandler.getSecurityHandler();
 
     Constraint disableTrace = new Constraint();
     disableTrace.setName("Disable TRACE");
@@ -117,16 +123,22 @@ public class BaseServer implements Server<BaseServer> {
     enableOther.setName("Enable everything but TRACE");
     ConstraintMapping enableOtherMapping = new ConstraintMapping();
     enableOtherMapping.setConstraint(enableOther);
-    enableOtherMapping.setMethodOmissions(new String[] {"TRACE"});
+    enableOtherMapping.setMethodOmissions(new String[]{"TRACE"});
     enableOtherMapping.setPathSpec("/");
     securityHandler.addConstraintMapping(enableOtherMapping);
 
     server.setHandler(servletContextHandler);
 
     HttpConfiguration httpConfig = new HttpConfiguration();
+    httpConfig.setSecureScheme("https");
+
     ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+    http.setHost(getUrl().getHost());
     http.setPort(getUrl().getPort());
-    server.addConnector(http);
+
+    http.setIdleTimeout(500000);
+
+    server.setConnectors(new Connector[]{http});
 
     addServlet(new CommandHandlerServlet(injector, handlers), "/*");
   }

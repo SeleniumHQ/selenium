@@ -23,11 +23,17 @@ import org.openqa.selenium.grid.config.ConfigValue;
 
 public class BaseServerFlags {
 
-  @Parameter(description = "Port to listen on", names = {"-p", "--port"})
+  @Parameter(
+      names = {"--host"},
+      description =  "IP or hostname : usually determined automatically.")
+  @ConfigValue(section = "server", name = "hostname")
+  private String host;
+
+  @Parameter(description = "Port to listen on.", names = {"-p", "--port"})
   @ConfigValue(section = "server", name = "port")
   private int port = 0;
 
-  @Parameter(description = "Maximum number of listener threads", names = "--max-threads")
+  @Parameter(description = "Maximum number of listener threads.", names = "--max-threads")
   @ConfigValue(section = "server", name = "max-threads")
   private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
 
