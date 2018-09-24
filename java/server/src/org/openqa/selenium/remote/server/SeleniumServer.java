@@ -60,15 +60,6 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
   private final StandaloneConfiguration configuration;
   private Map<String, Class<? extends Servlet>> extraServlets;
 
-  /**
-   * This lock is very important to ensure that SeleniumServer and the underlying Jetty instance
-   * shuts down properly. It ensures that ProxyHandler does not add an SslRelay to the Jetty server
-   * dynamically (needed for SSL proxying) if the server has been shut down or is in the process of
-   * getting shut down.
-   */
-  private final Object shutdownLock = new Object();
-  private static final int MAX_SHUTDOWN_RETRIES = 8;
-
   private ObjectName objectName;
   private ActiveSessions allSessions;
 
