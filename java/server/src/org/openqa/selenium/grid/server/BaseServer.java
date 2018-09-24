@@ -138,7 +138,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
     httpConfig.setSecureScheme("https");
 
     ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-    http.setHost(getUrl().getHost());
+    options.getHostname().ifPresent(http::setHost);
     http.setPort(getUrl().getPort());
 
     http.setIdleTimeout(500000);
