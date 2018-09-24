@@ -56,7 +56,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
-public class BaseServer implements Server<BaseServer> {
+public class BaseServer<T extends BaseServer> implements Server<T> {
 
   private final static Logger LOG = Logger.getLogger(BaseServer.class.getName());
 
@@ -176,13 +176,14 @@ public class BaseServer implements Server<BaseServer> {
   }
 
   @Override
-  public BaseServer start() {
+  public T start() {
     try {
       server.start();
 
       PortProber.waitForPortUp(getUrl().getPort(), 10, SECONDS);
 
-      return this;
+      //noinspection unchecked
+      return (T) this;
     } catch (Exception e) {
       try {
         stop();
@@ -201,10 +202,12 @@ public class BaseServer implements Server<BaseServer> {
   }
 
   @Override
-  public BaseServer stop() {
+  public T stop() {
     try {
       server.stop();
-      return this;
+      
+      //noinspection unchecked
+      return (T) this;
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
