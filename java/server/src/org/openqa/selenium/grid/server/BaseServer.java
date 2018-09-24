@@ -167,6 +167,10 @@ public class BaseServer implements Server<BaseServer> {
     handlers.put(Objects.requireNonNull(selector), Objects.requireNonNull(handler));
   }
 
+  public boolean isStarted() {
+    return server.isStarted();
+  }
+
   @Override
   public BaseServer start() {
     try {
