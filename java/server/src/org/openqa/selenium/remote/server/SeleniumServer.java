@@ -29,6 +29,7 @@ import org.openqa.grid.selenium.node.ChromeMutator;
 import org.openqa.grid.selenium.node.FirefoxMutator;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpHandler;
+import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.server.BaseServer;
@@ -95,6 +96,11 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
   private void addExtraServlets() {
     if (extraServlets != null && extraServlets.size() > 0) {
       for (String path : extraServlets.keySet()) {
+        // This ugly hack allows people to keep adding the display help servlet.
+        if (DisplayHelpServlet.class.equals(extraServlets.get(path))) {
+          continue;
+        }
+
         addServlet(extraServlets.get(path), path);
       }
     }
