@@ -25,6 +25,6 @@ public interface HasLifecycle<T> {
 
   T start();
 
-  T stop();
+  void stop();
 
 }

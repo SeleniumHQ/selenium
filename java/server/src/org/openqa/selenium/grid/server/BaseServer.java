@@ -202,12 +202,9 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
   }
 
   @Override
-  public T stop() {
+  public void stop() {
     try {
       server.stop();
-      
-      //noinspection unchecked
-      return (T) this;
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
