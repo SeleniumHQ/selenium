@@ -92,7 +92,11 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
     throws ServletException, IOException {
 
     String cmd = req.getParameter("cmd");
-    SessionId sessionId = new SessionId(req.getParameter("sessionId"));
+
+    SessionId sessionId = null;
+    if (req.getParameter("sessionId") != null) {
+      sessionId = new SessionId(req.getParameter("sessionId"));
+    }
     String[] args = deserializeArgs(req);
 
     if (cmd == null) {
