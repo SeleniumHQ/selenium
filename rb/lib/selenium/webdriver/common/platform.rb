@@ -25,8 +25,7 @@ module Selenium
       module_function
 
       def home
-        # jruby has an issue with ENV['HOME'] on Windows
-        @home ||= jruby? ? ENV_JAVA['user.home'] : ENV['HOME']
+        @home ||= Dir.home
       end
 
       def engine
