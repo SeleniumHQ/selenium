@@ -214,6 +214,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
         server.stop();
 
         // If we reached here stop didn't throw an exception, so we can assume success.
+        return;
       } catch (Exception ex) { // org.openqa.jetty.jetty.Server.stop() throws Exception
         shutDownException = ex;
         // If Exception is thrown we try to stop the jetty server again
