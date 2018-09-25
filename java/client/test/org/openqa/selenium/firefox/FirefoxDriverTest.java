@@ -20,7 +20,6 @@ package org.openqa.selenium.firefox;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeNotNull;
-import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -54,7 +53,6 @@ import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
@@ -66,15 +64,12 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class FirefoxDriverTest extends JUnit4TestBase {
-
-  private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
 
   private FirefoxDriver localDriver;
 
@@ -521,15 +516,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
                  + "mouseup in over (handled by body)\n"
                  + "click in over (handled by over)\n"
                  + "click in over (handled by body)");
-  }
-
-  @Test
-  public void canInstallAndUninstallExtensionsOnTheFly() {
-    assumeTrue(driver instanceof FirefoxDriver);
-    FirefoxDriver localDriver = (FirefoxDriver) driver;
-    Path extension = InProject.locate(MOOLTIPASS_PATH);
-    String extId = localDriver.installExtension(extension);
-    localDriver.uninstallExtension(extId);
   }
 
   private static class CustomFirefoxProfile extends FirefoxProfile {}
