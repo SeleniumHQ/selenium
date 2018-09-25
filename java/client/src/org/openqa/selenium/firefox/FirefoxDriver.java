@@ -219,7 +219,8 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   @Override
   public String installExtension(Path path) {
     return (String) execute(ExtraCommands.INSTALL_EXTENSION,
-                            singletonMap("path", path.toAbsolutePath().toString())).getValue();
+                            ImmutableMap.of("path", path.toAbsolutePath().toString(),
+                                            "temporary", false)).getValue();
   }
 
   @Override
