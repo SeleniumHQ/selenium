@@ -97,7 +97,7 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
     if (extraServlets != null && extraServlets.size() > 0) {
       for (String path : extraServlets.keySet()) {
         // This ugly hack allows people to keep adding the display help servlet.
-        if (DisplayHelpServlet.class.equals(extraServlets.get(path))) {
+        if ("/*".equals(path) && DisplayHelpServlet.class.equals(extraServlets.get(path))) {
           continue;
         }
 
