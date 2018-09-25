@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -78,8 +79,15 @@ public class Injector {
               .max(Comparator.comparing(canda -> canda.args.size()));
 
       if (!possibleConstructor.isPresent()) {
-        throw new UnableToInstaniateInstanceException(
-            "Unable to find required matches for constructor of: " + stereotype);
+        // List all constructors to help with debugging
+        StringBuilder message = new StringBuilder()
+            .append("Unable to find required matches for constructor of: ")
+            .append(stereotype)
+            .append(". Available constructors:");
+        Arrays.stream(stereotype.getDeclaredConstructors()).forEach(
+            constructor -> message.append("\n").append(constructor));
+
+        throw new UnableToInstaniateInstanceException(message.toString());
       }
 
       ConstructorAndArgs canda = possibleConstructor.get();
