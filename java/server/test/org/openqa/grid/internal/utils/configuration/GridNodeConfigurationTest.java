@@ -246,6 +246,20 @@ public class GridNodeConfigurationTest {
   }
 
   @Test
+  public void testOnlyHubPortShouldGetDefaultHubHost() {
+    GridNodeConfiguration gnc = parseCliOptions("-hubPort", "1234");
+    assertThat(gnc.getHubPort().intValue()).isEqualTo(1234);
+    assertThat(gnc.getHubHost()).isEqualTo("localhost");
+  }
+
+  @Test
+  public void testOnlyHubHostShouldGetDefaultHubPort() {
+    GridNodeConfiguration gnc = parseCliOptions("-hubHost", "dummyhost");
+    assertThat(gnc.getHubPort().intValue()).isEqualTo(4444);
+    assertThat(gnc.getHubHost()).isEqualTo("dummyhost");
+  }
+
+  @Test
   public void testGetHubPortFromHubOption() {
     GridNodeConfiguration gnc = parseCliOptions("-hub", "http://dummyhost:1234/wd/hub");
     assertThat(gnc.getHubPort().intValue()).isEqualTo(1234);

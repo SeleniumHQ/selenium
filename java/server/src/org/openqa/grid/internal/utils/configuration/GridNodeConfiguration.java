@@ -218,9 +218,10 @@ public class GridNodeConfiguration extends GridConfiguration {
     if (cliConfig.getHub() != null) {
       hub = cliConfig.getHub();
     } else if (cliConfig.getHubHost() != null || cliConfig.getHubPort() != null) {
+      HostPort defaultHubHostPort = getHubHostPort();
       hub = null;
-      ofNullable(cliConfig.getHubHost()).ifPresent(v -> hubHost = v);
-      ofNullable(cliConfig.getHubPort()).ifPresent(v -> hubPort = v);
+      hubHost = ofNullable(cliConfig.getHubHost()).orElse(defaultHubHostPort.host);
+      hubPort = ofNullable(cliConfig.getHubPort()).orElse(defaultHubHostPort.port);
     }
   }
 
@@ -233,19 +234,17 @@ public class GridNodeConfiguration extends GridConfiguration {
   }
 
   private HostPort getHubHostPort() {
-    if (hubHostPort == null) { // parse options
-      // -hub has precedence
-      if (hub != null) {
-        try {
-          URL u = new URL(hub);
-          hubHostPort = new HostPort(u.getHost(), u.getPort());
-        } catch (MalformedURLException mURLe) {
-          throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
-        }
-      } else if (hubHost != null || hubPort != null) {
-        hubHostPort = new HostPort(ofNullable(hubHost).orElse(DEFAULT_CONFIG_FROM_JSON.getHubHost()),
-                                   ofNullable(hubPort).orElse(DEFAULT_CONFIG_FROM_JSON.getHubPort()));
+    // -hub has precedence
+    if (hub != null) {
+      try {
+        URL u = new URL(hub);
+        hubHostPort = new HostPort(u.getHost(), u.getPort());
+      } catch (MalformedURLException mURLe) {
+        throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
       }
+    } else if (hubHost != null || hubPort != null) {
+      hubHostPort = new HostPort(ofNullable(hubHost).orElse(DEFAULT_CONFIG_FROM_JSON.getHubHost()),
+                                 ofNullable(hubPort).orElse(DEFAULT_CONFIG_FROM_JSON.getHubPort()));
     }
     return hubHostPort;
   }
