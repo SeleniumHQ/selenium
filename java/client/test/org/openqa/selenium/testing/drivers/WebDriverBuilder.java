@@ -33,6 +33,7 @@ import org.openqa.selenium.safari.SafariOptions;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,9 +44,15 @@ import java.util.stream.Stream;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
 
+  private static LinkedList<Runnable> shutdownActions = new LinkedList<>();
   private static Set<WebDriver> managedDrivers = new HashSet<>();
   static {
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> managedDrivers.forEach(WebDriver::quit)));
+    shutdownActions.add(() -> managedDrivers.forEach(WebDriver::quit));
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdownActions.forEach(Runnable::run)));
+  }
+
+  static void addShutdownAction(Runnable action) {
+    shutdownActions.add(action);
   }
 
   private static Map<Browser, Supplier<Capabilities>> capabilitySuppliers =
