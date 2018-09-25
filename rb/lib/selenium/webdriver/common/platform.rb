@@ -30,7 +30,7 @@ module Selenium
       end
 
       def engine
-        @engine ||= defined?(RUBY_ENGINE) ? RUBY_ENGINE.to_sym : :ruby
+        @engine ||= RUBY_ENGINE.to_sym
       end
 
       def os
