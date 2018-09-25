@@ -102,11 +102,7 @@ module Selenium
       end
 
       def null_device
-        @null_device ||= if defined?(File::NULL)
-                           File::NULL
-                         else
-                           Platform.windows? ? 'NUL' : '/dev/null'
-                         end
+        File::NULL
       end
 
       def wrap_in_quotes_if_necessary(str)
