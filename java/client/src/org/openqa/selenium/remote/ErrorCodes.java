@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
@@ -49,6 +51,8 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
+import java.net.HttpURLConnection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -132,7 +136,7 @@ public class ErrorCodes {
     List<KnownError> possibleMatches = KNOWN_ERRORS.stream()
       .filter(knownError -> knownError.getW3cCode().equals(webdriverState))
       .filter(KnownError::isCanonicalForW3C)
-      .sorted((a,b) -> Integer.compare(a.getJsonCode(),b.getJsonCode()))
+      .sorted(Comparator.comparingInt(KnownError::getJsonCode))
       .collect(Collectors.toList());
 
     if (possibleMatches.isEmpty()) {
@@ -147,6 +151,15 @@ public class ErrorCodes {
         error.getW3cHttpStatus()));
     }
     return error.getJsonCode();
+  }
+
+  public int getHttpStatusCode(Throwable throwable) {
+    return KNOWN_ERRORS.stream()
+        .filter(error -> error.getException().isAssignableFrom(throwable.getClass()))
+        .filter(KnownError::isCanonicalForW3C)
+        .map(KnownError::getW3cHttpStatus)
+        .findAny()
+        .orElse(HTTP_INTERNAL_ERROR);
   }
 
   /**

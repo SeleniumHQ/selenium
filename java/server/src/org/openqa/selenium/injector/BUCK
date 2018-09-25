@@ -6,6 +6,6 @@ java_library(
     ],
     visibility = [
         "//java/server/src/org/openqa/selenium/...",
-        "//java/server/test/org/openqa/selenium/injector:",
+        "//java/server/test/org/openqa/selenium/...",
     ],
 )

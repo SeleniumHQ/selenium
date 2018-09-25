@@ -8,7 +8,12 @@ java_test(
         "//java/client/src/org/openqa/selenium/remote:remote",
         "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/server:server",
+        "//java/server/src/org/openqa/selenium/grid/web:web",
+        "//java/server/src/org/openqa/selenium/injector:injector",
+        "//java/server/test/org/openqa/testing:test-base",
+        "//third_party/java/assertj:assertj",
         "//third_party/java/guava:guava",
         "//third_party/java/junit:junit",
+        "//third_party/java/servlet:javax.servlet-api",
     ],
 )
