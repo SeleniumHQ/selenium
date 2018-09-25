@@ -1,4 +1,4 @@
-JETTY_VERSION = '9.4.8.v20180619'
+JETTY_VERSION = '9.4.12.v20180830'
 
 java_library(
   name = 'jetty',
@@ -82,9 +82,9 @@ export_file(
 
 prebuilt_jar(
   name = 'jetty-client',
-  maven_coords = 'org.eclipse.jetty:jetty-client:jar:9.4.8.v20180619',
-  binary_jar = 'jetty-client-9.4.8.v20180619.jar',
-  source_jar = 'jetty-client-9.4.8.v20180619-sources.jar',
+  maven_coords = 'org.eclipse.jetty:jetty-client:jar:9.4.12.v20180830',
+  binary_jar = 'jetty-client-9.4.12.v20180830.jar',
+  source_jar = 'jetty-client-9.4.12.v20180830-sources.jar',
   deps = [
     ':jetty-http',
     ':jetty-io'
@@ -97,9 +97,9 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'jetty-http',
-  maven_coords = 'org.eclipse.jetty:jetty-http:jar:9.4.8.v20180619',
-  binary_jar = 'jetty-http-9.4.8.v20180619.jar',
-  source_jar = 'jetty-http-9.4.8.v20180619-sources.jar',
+  maven_coords = 'org.eclipse.jetty:jetty-http:jar:9.4.12.v20180830',
+  binary_jar = 'jetty-http-9.4.12.v20180830.jar',
+  source_jar = 'jetty-http-9.4.12.v20180830-sources.jar',
   deps = [
     ':jetty-io',
     ':jetty-util'
@@ -108,9 +108,9 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'jetty-io',
-  maven_coords = 'org.eclipse.jetty:jetty-io:jar:9.4.8.v20180619',
-  binary_jar = 'jetty-io-9.4.8.v20180619.jar',
-  source_jar = 'jetty-io-9.4.8.v20180619-sources.jar',
+  maven_coords = 'org.eclipse.jetty:jetty-io:jar:9.4.12.v20180830',
+  binary_jar = 'jetty-io-9.4.12.v20180830.jar',
+  source_jar = 'jetty-io-9.4.12.v20180830-sources.jar',
   deps = [
     ':jetty-util'
   ],
@@ -121,9 +121,9 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'jetty-jmx',
-  maven_coords = 'org.eclipse.jetty:jetty-jmx:jar:9.4.8.v20180619',
-  binary_jar = 'jetty-jmx-9.4.8.v20180619.jar',
-  source_jar = 'jetty-jmx-9.4.8.v20180619-sources.jar',
+  maven_coords = 'org.eclipse.jetty:jetty-jmx:jar:9.4.12.v20180830',
+  binary_jar = 'jetty-jmx-9.4.12.v20180830.jar',
+  source_jar = 'jetty-jmx-9.4.12.v20180830-sources.jar',
   deps = [
     ':jetty-util'
   ],
@@ -131,9 +131,9 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'jetty-security',
-  maven_coords = 'org.eclipse.jetty:jetty-security:jar:9.4.8.v20180619',
-  binary_jar = 'jetty-security-9.4.8.v20180619.jar',
-  source_jar = 'jetty-security-9.4.8.v20180619-sources.jar',
+  maven_coords = 'org.eclipse.jetty:jetty-security:jar:9.4.12.v20180830',
+  binary_jar = 'jetty-security-9.4.12.v20180830.jar',
+  source_jar = 'jetty-security-9.4.12.v20180830-sources.jar',
   deps = [
     ':jetty-server'
   ],
@@ -141,9 +141,9 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'jetty-server',
-  maven_coords = 'org.eclipse.jetty:jetty-server:jar:9.4.8.v20180619',
-  binary_jar = 'jetty-server-9.4.8.v20180619.jar',
-  source_jar = 'jetty-server-9.4.8.v20180619-sources.jar',
+  maven_coords = 'org.eclipse.jetty:jetty-server:jar:9.4.12.v20180830',
+  binary_jar = 'jetty-server-9.4.12.v20180830.jar',
+  source_jar = 'jetty-server-9.4.12.v20180830-sources.jar',
   deps = [
     ':jetty-http',
     ':jetty-io',
@@ -154,9 +154,9 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'jetty-servlet',
-  maven_coords = 'org.eclipse.jetty:jetty-servlet:jar:9.4.8.v20180619',
-  binary_jar = 'jetty-servlet-9.4.8.v20180619.jar',
-  source_jar = 'jetty-servlet-9.4.8.v20180619-sources.jar',
+  maven_coords = 'org.eclipse.jetty:jetty-servlet:jar:9.4.12.v20180830',
+  binary_jar = 'jetty-servlet-9.4.12.v20180830.jar',
+  source_jar = 'jetty-servlet-9.4.12.v20180830-sources.jar',
   deps = [
     ':jetty-jmx',
     ':jetty-security'
@@ -165,9 +165,9 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'jetty-util',
-  maven_coords = 'org.eclipse.jetty:jetty-util:jar:9.4.8.v20180619',
-  binary_jar = 'jetty-util-9.4.8.v20180619.jar',
-  source_jar = 'jetty-util-9.4.8.v20180619-sources.jar',
+  maven_coords = 'org.eclipse.jetty:jetty-util:jar:9.4.12.v20180830',
+  binary_jar = 'jetty-util-9.4.12.v20180830.jar',
+  source_jar = 'jetty-util-9.4.12.v20180830-sources.jar',
   deps = [
     '//third_party/java/servlet:javax.servlet-api'
   ],
@@ -178,9 +178,9 @@ prebuilt_jar(
 
 prebuilt_jar(
   name = 'jetty-xml',
-  maven_coords = 'org.eclipse.jetty:jetty-xml:jar:9.4.8.v20180619',
-  binary_jar = 'jetty-xml-9.4.8.v20180619.jar',
-  source_jar = 'jetty-xml-9.4.8.v20180619-sources.jar',
+  maven_coords = 'org.eclipse.jetty:jetty-xml:jar:9.4.12.v20180830',
+  binary_jar = 'jetty-xml-9.4.12.v20180830.jar',
+  source_jar = 'jetty-xml-9.4.12.v20180830-sources.jar',
   deps = [
     ':jetty-util'
   ],
