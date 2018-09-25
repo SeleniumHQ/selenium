@@ -25,9 +25,12 @@ import org.openqa.selenium.grid.component.HasLifecycle;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.UrlTemplate;
 import org.openqa.selenium.injector.Injector;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
@@ -58,6 +61,29 @@ public interface Server<T extends Server> extends HasLifecycle<T> {
       BiFunction<Injector, HttpRequest, CommandHandler> handler);
 
   URL getUrl();
+
+  default void addHandler(
+      HttpMethod method,
+      String urlTemplate,
+      BiFunction<Injector, HttpRequest, CommandHandler> handler) {
+    Objects.requireNonNull(method, "Method must be set");
+
+    UrlTemplate template = new UrlTemplate(urlTemplate);
+
+    addHandler(
+        req -> method == req.getMethod() && template.match(req.getUri()) != null,
+        (inj, req) -> {
+          UrlTemplate.Match match = template.match(req.getUri());
+          if (match != null && match.getParameters().get("sessionId") != null) {
+            inj = Injector.builder()
+                .parent(inj)
+                .register(new SessionId(match.getParameters().get("sessionId")))
+                .build();
+          }
+          return handler.apply(inj, req);
+        }
+    );
+  }
 
   static Predicate<HttpRequest> delete(String template) {
     UrlTemplate urlTemplate = new UrlTemplate(template);
