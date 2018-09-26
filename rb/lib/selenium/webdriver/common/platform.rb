@@ -206,17 +206,3 @@ module Selenium
     end # Platform
   end # WebDriver
 end # Selenium
-
-if $PROGRAM_NAME == __FILE__
-  p engine: Selenium::WebDriver::Platform.engine,
-    os: Selenium::WebDriver::Platform.os,
-    ruby_version: Selenium::WebDriver::Platform.ruby_version,
-    jruby?: Selenium::WebDriver::Platform.jruby?,
-    windows?: Selenium::WebDriver::Platform.windows?,
-    home: Selenium::WebDriver::Platform.home,
-    bitsize: Selenium::WebDriver::Platform.bitsize,
-    localhost: Selenium::WebDriver::Platform.localhost,
-    ip: Selenium::WebDriver::Platform.ip,
-    interfaces: Selenium::WebDriver::Platform.interfaces,
-    null_device: Selenium::WebDriver::Platform.null_device
-end
