@@ -32,16 +32,19 @@ module Selenium
 
       it 'logs warnings by default' do
         expect(WebDriver.logger.level).to eq(2)
+        expect(WebDriver.logger).to be_warn
       end
 
       it 'logs everything if $DEBUG is set to true' do
         $DEBUG = true
         expect(WebDriver.logger.level).to eq(0)
+        expect(WebDriver.logger).to be_debug
       end
 
       it 'allows to change level during execution' do
         WebDriver.logger.level = :info
         expect(WebDriver.logger.level).to eq(1)
+        expect(WebDriver.logger).to be_info
       end
 
       it 'outputs to stdout by default' do
