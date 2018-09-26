@@ -8,10 +8,6 @@ prebuilt_jar(
     '//third_party/java/commons-codec:commons-codec',
     '//third_party/java/commons-logging:commons-logging'
   ],
-  visibility = [
-    '//java/client/test/...',
-    '//java/server/test/...',
-  ],
 )
 
 prebuilt_jar(
