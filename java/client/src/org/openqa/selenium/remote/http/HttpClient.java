@@ -24,7 +24,6 @@ import com.google.common.base.Preconditions;
 
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.internal.OkHttpClient;
 
 import java.io.IOException;
@@ -63,9 +62,6 @@ public interface HttpClient {
     static Factory createDefault() {
       String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
       switch (defaultFactory) {
-        case "apache":
-          return new ApacheHttpClient.Factory();
-
         case "okhttp":
         default:
           return new OkHttpClient.Factory();

@@ -9,9 +9,7 @@ prebuilt_jar(
     '//third_party/java/commons-logging:commons-logging'
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium/remote:remote-lib',
     '//java/client/test/...',
-    '//java/server/src/org/openqa/grid:grid',
     '//java/server/test/...',
   ],
 )
