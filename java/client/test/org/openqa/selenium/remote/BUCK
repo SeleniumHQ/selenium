@@ -14,7 +14,6 @@ java_test(name = 'common-tests',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/guava:guava',
     '//third_party/java/assertj:assertj',
-    '//third_party/java/httpcomponents:httpclient',
     '//third_party/java/junit:junit',
   ])
 
