@@ -35,7 +35,6 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.Random;
@@ -510,7 +509,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   public void testGetShouldSwitchToDefaultContext() {
     driver.get(pages.iframePage);

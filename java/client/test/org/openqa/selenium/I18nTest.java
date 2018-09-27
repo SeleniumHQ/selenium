@@ -25,13 +25,11 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
@@ -103,7 +101,6 @@ public class I18nTest extends JUnit4TestBase {
     assertThat(el.getAttribute("value")).isEqualTo(input);
   }
 
-  @NeedsFreshDriver
   @Test
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
@@ -116,7 +113,6 @@ public class I18nTest extends JUnit4TestBase {
     assertThat(text).isEqualTo(shalom);
   }
 
-  @NeedsFreshDriver
   @Test
   @Ignore(IE)
   @Ignore(CHROME)

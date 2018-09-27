@@ -77,7 +77,6 @@ public class AlertsTest extends JUnit4TestBase {
             "<div id='text'>acceptor</div>"));
   }
 
-  @NoDriverAfterTest
   @Test
   public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
     driver.get(alertPage("cheese"));
