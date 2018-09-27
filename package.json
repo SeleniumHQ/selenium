@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "renovate": "^13.84.1",
+    "yarn": "^1.10.1",
+    "yarn-global-modules": "^1.0.1"
+  }
+}
