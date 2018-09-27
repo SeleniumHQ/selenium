@@ -67,6 +67,7 @@ public class BuckBuild {
 
     ImmutableList<String> command = builder.build();
     CommandLine commandLine = new CommandLine(command.toArray(new String[0]));
+    commandLine.setWorkingDirectory(projectRoot.toAbsolutePath().toString());
     commandLine.copyOutputTo(System.err);
     commandLine.execute();
 
@@ -84,6 +85,7 @@ public class BuckBuild {
 
     ImmutableList<String> command = builder.build();
     CommandLine commandLine = new CommandLine(command.toArray(new String[command.size()]));
+    commandLine.setWorkingDirectory(projectRoot.toAbsolutePath().toString());
     commandLine.copyOutputTo(System.err);
     commandLine.execute();
 

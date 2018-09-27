@@ -35,6 +35,8 @@ import javax.servlet.Servlet;
 
 public interface Server<T extends Server> extends HasLifecycle<T> {
 
+  boolean isStarted();
+
   /**
    * Until we can migrate to {@link CommandHandler}s for everything, we leave this escape hatch.
    *

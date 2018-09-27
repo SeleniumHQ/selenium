@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.remote;
 
+import java.util.Objects;
+
 public class SessionId {
 
   private final String opaqueKey;
 
   public SessionId(String opaqueKey) {
-    this.opaqueKey = opaqueKey;
+    this.opaqueKey = Objects.requireNonNull(opaqueKey, "Session ID key has not been set.");
   }
 
   @Override
