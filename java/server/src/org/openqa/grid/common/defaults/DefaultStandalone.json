@@ -1,8 +1,0 @@
-{
-  "port": 4444,
-  "role": "standalone",
-  "debug": false,
-  "browserTimeout": 0,
-  "timeout": 1800,
-  "enablePassThrough": true
-}

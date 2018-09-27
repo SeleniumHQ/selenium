@@ -1,5 +1,0 @@
-This directory contains modules internal to selenium-webdriver that are not
-intended for general consumption. They may change at any time.
-
-All files in this directory and the atoms/ subdirectory may only depend on
-built-in JavaScript features and other modules in this directory.

@@ -1,8 +1,0 @@
-# This is a snapshot generated from the same target in the safari branch.
-# We don't actually need it renamed, but we do want it copied to build
-# output.
-rename(
-    name = "client",
-    srcs = ["client.js"],
-    out = "client.js
-)

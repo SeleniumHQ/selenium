@@ -1,3 +1,0 @@
-rake_task(name = "selenium-webdriver",
-  task_name = "node:deploy",
-  out = "javascript/node/selenium-webdriver")
