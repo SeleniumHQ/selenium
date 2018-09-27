@@ -1,0 +1,72 @@
+<script language="JavaScript">
+    if (window["selenium_has_been_loaded_into_this_window"]==null)
+    {
+
+        __SELENIUM_JS__
+// Some background on the code below: broadly speaking, where we are relative to other windows
+// when running in proxy injection mode depends on whether we are in a frame set file or not.
+//
+// In regular HTML files, the selenium JavaScript is injected into an iframe called "selenium"
+// in order to reduce its impact on the JavaScript environment (through namespace pollution,
+// etc.).  So in regular HTML files, we need to look at the parent of the current window when we want
+// a handle to, e.g., the application window.
+//
+// In frame set files, we can't use an iframe, so we put the JavaScript in the head element and share
+// the window with the frame set.  So in this case, we need to look at the current window, not the
+// parent when looking for, e.g., the application window.  (TODO: Perhaps I should have just
+// assigned a regular frame for selenium?)
+//
+BrowserBot.prototype.getContentWindow = function() {
+    return window;
+};
+
+BrowserBot.prototype.getTargetWindow = function(windowName) {
+    return window;
+};
+
+BrowserBot.prototype.getCurrentWindow = function() {
+    return window;
+};
+
+LOG.openLogWindow = function(message, className) {
+	// disable for now
+};
+
+BrowserBot.prototype.relayToRC = function(name) {
+	var object = eval(name);
+        var s = 'state:' + serializeObject(name, object) + "\n";
+        sendToRC(s,"state=true");
+}
+
+function selenium_frameRunTest(oldOnLoadRoutine) {
+	if (oldOnLoadRoutine) {
+		eval(oldOnLoadRoutine);
+	}
+        runSeleniumTest();
+}
+
+function seleniumOnLoad() {
+    injectedSessionId = "@SESSION_ID@";
+    window["selenium_has_been_loaded_into_this_window"] = true;
+    runSeleniumTest();
+}
+
+function seleniumOnUnload() {
+	sendToRC("Current window or frame is closed!", "closing=true");
+}
+
+if (window.addEventListener) {
+        window.addEventListener("load", seleniumOnLoad, false);	// firefox
+        window.addEventListener("unload", seleniumOnUnload, false);	// firefox
+} else if (window.attachEvent){
+    	window.attachEvent("onload", seleniumOnLoad);	// IE
+        window.attachEvent("onunload", seleniumOnUnload);	// IE
+}
+else {
+    	throw "causing a JavaScript error to tell the world that I did not arrange to be run on load";
+}
+
+injectedSessionId = "@SESSION_ID@";
+proxyInjectionMode = true;
+}
+</script>

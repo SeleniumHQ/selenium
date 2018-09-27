@@ -1,0 +1,51 @@
+/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* Author: larrypo@google.com (Larry Powelson) */
+
+.goog-hovercard div {
+  border: solid 5px #69748C;
+  width: 300px;
+  height: 115px;
+  background-color: white;
+  font-family: arial, sans-serif;
+}
+
+.goog-hovercard .goog-shadow {
+  border: transparent;
+  background-color: black;
+  filter: alpha(Opacity=1);
+  opacity: 0.01;
+  -moz-opacity: 0.01;
+}
+
+.goog-hovercard table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+.goog-hovercard-icons td {
+  border-bottom: 1px solid #ccc;
+  padding: 0px;
+  margin: 0px;
+  text-align: center;
+  height: 19px;
+  width: 100px;
+  font-size: 90%;
+}
+
+.goog-hovercard-icons td + td {
+  border-left: 1px solid #ccc;
+}
+
+.goog-hovercard-content {
+  border-collapse: collapse;
+}
+
+.goog-hovercard-content td {
+  padding-left: 15px;
+}

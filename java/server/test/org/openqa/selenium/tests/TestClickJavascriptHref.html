@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Click</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">TestClickJavaScriptHref<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_click_javascript_page.html</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+<p>Click a regular link</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>link</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>link clicked: foo</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+<p>Click link with multiple javascript calls</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>linkWithMultipleJavascriptStatements</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>alert1</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>alert2</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>alert3</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+<p>Click a link with javascript:void() href</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>linkWithJavascriptVoidHref</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>onclick</td>
+      <td/>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Click Page 1</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+<p>Click a link where onclick returns false</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>linkWithOnclickReturnsFalse</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Click Page 1</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+<p>No alert should be raised.</p>
+<p>Click an image enclosed in a link</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>enclosedImage</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>enclosedImage clicked</td>
+      <td>&nbsp;</td>
+    </tr>
+
+  </tbody>
+</table>
+</body>
+</html>

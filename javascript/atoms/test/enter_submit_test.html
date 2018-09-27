@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>enter_submit_test</title>
+<script src="test_bootstrap.js"></script>
+<script type="text/javascript">
+  goog.require('bot.Keyboard');
+  goog.require('bot.Keyboard.Key');
+  goog.require('bot.dom');
+  goog.require('goog.Promise');
+  goog.require('goog.dom');
+  goog.require('goog.events');
+  goog.require('goog.events.EventType');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script type="text/javascript">
+  var submitFired;
+  var wasSubmitted;
+  var waitForSubmit;
+
+  var submitted = goog.nullFunction;
+
+  function setUp() {
+    submitFired = false;
+    wasSubmitted = false;
+    waitForSubmit = new goog.Promise(function(done) {
+      submitted = function() {
+        wasSubmitted = true;
+        done();
+      };
+    });
+  }
+
+  function submitForm(formName, opt_cancelSubmit) {
+    var target = document.getElementById(formName + 'text1');
+    var keyboard = new bot.Keyboard();
+    keyboard.moveCursor(target);
+    goog.events.listen(document.getElementById(formName),
+        goog.events.EventType.SUBMIT, function(e) {
+          submitFired = true;
+          if (opt_cancelSubmit) {
+            e.preventDefault();
+          }
+        });
+    keyboard.pressKey(bot.Keyboard.Keys.ENTER);
+  }
+
+  function testTwoTextboxesAndOneSubmitIsSubmitted() {
+    submitForm('form1');
+    return waitForSubmit.then(function() {
+      assertTrue(submitFired);
+    });
+  }
+
+  function testOneTextboxesAndOneSubmitIsSubmitted() {
+    submitForm('form2');
+    return waitForSubmit.then(function() {
+      assertTrue(submitFired);
+    });
+  }
+
+  function testOneTextboxesAndNoSubmitIsSubmitted() {
+    submitForm('form4');
+    return waitForSubmit.then(function() {
+      assertTrue(submitFired);
+    });
+  }
+
+  function testTwoTextboxesAndTwoSubmitsIsSubmitted() {
+    submitForm('form5');
+    return waitForSubmit.then(function() {
+      assertTrue(submitFired);
+    });
+  }
+
+  function testKeyDownCancelNotSubmitted() {
+    submitForm('form6');
+    assertFalse(submitFired);
+    assertFalse(wasSubmitted);
+  }
+
+  function testKeyPressCancelNotSubmitted() {
+    submitForm('form7');
+    assertFalse(submitFired);
+    assertFalse(wasSubmitted);
+  }
+
+  function testKeyUpCancelSubmitted() {
+    submitForm('form8');
+    return waitForSubmit.then(function() {
+      assertTrue(submitFired);
+    });
+  }
+
+  function testCancelSubmitFiredNotSubmitted() {
+    submitForm('form9', true);
+    assertTrue(submitFired);
+  }
+</script>
+<form id="form1" action="javascript:submitted()">
+  <input type="text" id="form1text1"></input><br/>
+  <input type="text" id="form1text2"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form2" action="javascript:submitted()">
+  <input type="text" id="form2text1"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form3" action="javascript:submitted()">
+  <input type="text" id="form3text1"></input><br/>
+  <input type="text" id="form3text2"></input><br/>
+</form>
+<form id="form4" action="javascript:submitted()">
+  <input type="text" id="form4text1"></input><br/>
+</form>
+<form id="form5" action="javascript:submitted()">
+  <input type="text" id="form5text1"></input><br/>
+  <input type="text" id="form5text2"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form6" action="javascript:submitted()">
+  <input type="text" id="form6text1" onkeydown="return false"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form7" action="javascript:submitted()">
+  <input type="text" id="form7text1" onkeypress="return false"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form8" action="javascript:submitted()">
+  <input type="text" id="form8text1" onkeyup="return false"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+<form id="form9" action="javascript:submitted()">
+  <input type="text" id="form9text1"></input><br/>
+  <input type="submit" value="submit"></input><br/>
+</form>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Selenium IDE Test</title>
+    <link rel="stylesheet" type="text/css" href="chrome://selenium-ide/content/jsunit/css/jsUnitStyle.css">
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/lib/prototype.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/atoms.js"/></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/htmlutils.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/selenium-browserbot.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitCore.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/preferences.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/testCase.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/testSuite.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/application.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/storedHistory.js"></script>
+		<script type="text/javascript">
+function setUp() {
+    Preferences.useTestBranch();
+    this.app = new Application();
+    app.baseURLHistory.clear();
+}
+
+function testExactMatchPattern() {
+	assertEquals("Selenium IDE", exactMatchPattern("Selenium IDE"));
+	assertEquals("exact:OpenQA:Selenium IDE", exactMatchPattern("OpenQA:Selenium IDE"));
+	assertEquals("exact:abc?", exactMatchPattern("abc?"));
+	assertEquals("exact:ab*c", exactMatchPattern("ab*c"));
+}
+
+function testSaveState() {
+    Preferences.setString("baseURL", "");
+    app.options.rememberBaseURL = "true";
+    app.baseURL = "http://www.google.com/";
+    app.saveState();
+    assertEquals("http://www.google.com/", Preferences.getString("baseURL"));
+}
+
+function testAddBaseURLHistory() {
+    var count = 0;
+    app.addObserver({
+            baseURLChanged: function() {
+                count += 1;
+            }});
+    app.setBaseURL("http://www.yahoo.com/");
+    assertEquals(1, count);
+    app.setBaseURL("http://www.google.com/");
+    app.setBaseURL("");
+    app.setBaseURL("http://www.msn.com/");
+    app.setBaseURL("http://www.google.com/");
+    assertEquals(["http://www.google.com/", "http://www.msn.com/", "http://www.yahoo.com/"].join(","), Preferences.getArray("baseURLHistory").join(","));
+}
+
+function testSetTestCaseShouldChangeBaseURL() {
+    var testCase = new TestCase();
+    testCase.setBaseURL("http://slashdot.org");
+    app.setTestCase(testCase);
+    assertEquals("http://slashdot.org", app.baseURL);
+}
+
+function testFirstTestCaseShouldHaveTemporaryTitle() {
+    app.newTestSuite();
+    assertEquals("Untitled", app.testCase.tempTitle);
+    assert(!app.testCase.title);
+    assert(!app.testCase.file);
+    assertEquals("Untitled", app.testCase.getTitle());
+}
+
+    </script>
+  </head>
+
+  <body>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+{
+    "userManagement": {
+        "home": {
+            "title": "用户",
+            "createLabel": "创建新用户",
+            "createOrEditLabel": "创建或编辑用户"
+        },
+        "created": "用户 {{ param }} 创建成功",
+        "updated": "用户 {{ param }} 更新成功",
+        "deleted": "用户 {{ param }} 删除成功",
+        "delete": {
+            "question": "你确定要删除用户 {{ login }} ?"
+        },
+        "detail": {
+            "title": "用户"
+        },
+        "login": "登录",
+        "firstName": "名字",
+        "lastName": "姓氏",
+        "email": "邮箱",
+        "activated": "已激活",
+        "deactivated": "失效",
+        "profiles": "角色",
+        "langKey": "语言",
+        "createdBy": "创建人",
+        "createdDate": "创建时间",
+        "lastModifiedBy": "最近修改人",
+        "lastModifiedDate": "最近修改时间"
+    }
+}

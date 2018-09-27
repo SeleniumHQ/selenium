@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>test</title>
+	</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">test</td></tr>
+</thead><tbody>
+<tr>
+	<td>setTimeout</td>
+	<td>60000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Forums and Blogs</td>
+	<td></td>
+</tr>
+<!-- test user-extensions.js -->
+<tr>
+	<td>typeRepeated</td>
+	<td>jive-query</td>
+	<td>test</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>jive-query</td>
+	<td>testtest</td>
+</tr>
+<!-- test UI-Element definition -->
+<tr>
+	<td>assertElementPresent</td>
+	<td>ui=homepage::bannerAd()</td>
+	<td></td>
+</tr>
+<!-- test javascript eval -->
+<tr>
+	<td>storeEval</td>
+	<td>new Date().getTime()</td>
+	<td>test</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>jive-query</td>
+	<td>javascript{"abc" + storedVars['test']}</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>jive-query</td>
+	<td>regexp:^abc\d+$</td>
+</tr>
+<!-- test goBack -->
+<tr>
+	<td>goBackAndWait</td>
+	<td></td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

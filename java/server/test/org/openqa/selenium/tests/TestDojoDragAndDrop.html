@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>TestDojoDragDrop</title>
+</head>
+<body>
+
+Warning: IE gives an access denied when running this test off the file system, but it works great off of a real live web server.
+
+<table cellpadding="1" cellspacing="1" border="1">
+<tbody>
+<tr><td rowspan="1" colspan="3">TestDojoDragDrop</td></tr>
+<tr>
+	<td>open</td>
+	<td>../tests/html/dojo-0.4.0-mini/tests/dnd/test_simple.html</td>
+	<td></td>
+</tr>
+<tr>
+	<td>dragAndDropToObject</td>
+	<td>1_3</td>
+	<td>2_1</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>either side of me*list 1 item 3</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

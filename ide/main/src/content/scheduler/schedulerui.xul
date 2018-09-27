@@ -1,0 +1,165 @@
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://selenium-ide/skin/schedulerui.css" type="text/css"?>
+<!--
+Copyright 2013 Samit Badle
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE dialog [
+    <!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
+    %browserDTD;
+    ]>
+<dialog buttons="accept,cancel"
+        id="selenium-ide-scheduler"
+        title="Test Scheduler"
+        width="520"
+        height="600"
+        onload="initScheduler()"
+        ondialogaccept="return saveScheduler();"
+        ondialogcancel="return cancelScheduler();"
+        defaultButton=""
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/scheduler/schedule.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/scheduler/natural-language-english.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/dndReorderedListbox.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/browser/mozilla/prompt-service.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/scheduler/schedulerui.js"/>
+<!--
+    <!ENTITY % schedulerDTD SYSTEM "chrome://selenium-ide/locale/scheduler.dtd">
+    %schedulerDTD;
+-->
+  <tabbox id="schedulerTabbox" flex="1">
+    <tabs id="schedulerTabs" orient="horizontal">
+      <tab id="job-tab" label="New Job"/>
+      <tab id="jobs-tab" label="Jobs"/>
+      <tab label="Activity"/>
+    </tabs>
+    <tabpanels id="schedulerTabpannels" flex="1">
+      <tabpanel id="jobTab" orient="vertical">
+        <hbox align="center">
+          <label value="Title"/>
+          <textbox id="jobTitle" multiline="false" flex="1"/>
+        </hbox>
+        <!-- TODO add a means of selecting an action -->
+        <!-- TODO include the following in a container so that the correct action can be used -->
+        <groupbox>
+          <hbox align="center">
+            <label value="Suite"/>
+            <textbox id="suitePath" multiline="false" flex="1"/>
+            <button label="Choose" oncommand="chooseSuite()"/>
+          </hbox>
+        </groupbox>
+        <!-- TODO add a means of selecting a scheduler -->
+        <!-- TODO include the following in a container so that the correct scheduler can be used -->
+        <groupbox>
+          <caption label="Schedule"/>
+          <vbox>
+            <hbox flex="1">
+              <vbox class="time-checkboxes" flex="1">
+                <checkbox id="day-select" label="Day" class="checkbox-header" oncommand="toggle(this.checked, 'day')"/>
+                <checkbox id="day0" label="Sunday"/>
+                <checkbox id="day1" label="Monday"/>
+                <checkbox id="day2" label="Tuesday"/>
+                <checkbox id="day3" label="Wednesday"/>
+                <checkbox id="day4" label="Thursday"/>
+                <checkbox id="day5" label="Friday"/>
+                <checkbox id="day6" label="Saturday"/>
+              </vbox>
+              <vbox class="vsep"><separator class="groove-thin" orient="vertical"/></vbox>
+              <vbox class="time-checkboxes" flex="1">
+                <checkbox id="hour-select" label="Hour" class="checkbox-header" oncommand="toggle(this.checked, 'hour')"/>
+                <checkbox id="hour0" label="00"/>
+                <checkbox id="hour1" label="01"/>
+                <checkbox id="hour2" label="02"/>
+                <checkbox id="hour3" label="03"/>
+                <checkbox id="hour4" label="04"/>
+                <checkbox id="hour5" label="05"/>
+                <checkbox id="hour6" label="06"/>
+                <checkbox id="hour7" label="07"/>
+                <checkbox id="hour8" label="08"/>
+                <checkbox id="hour9" label="09"/>
+                <checkbox id="hour10" label="10"/>
+                <checkbox id="hour11" label="11"/>
+              </vbox>
+              <vbox class="time-checkboxes" flex="1">
+                <checkbox id="hour2-select" label="Hour" class="checkbox-header" oncommand="toggle(this.checked, 'hour', 12)"/>
+                <checkbox id="hour12" label="12"/>
+                <checkbox id="hour13" label="13"/>
+                <checkbox id="hour14" label="14"/>
+                <checkbox id="hour15" label="15"/>
+                <checkbox id="hour16" label="16"/>
+                <checkbox id="hour17" label="17"/>
+                <checkbox id="hour18" label="18"/>
+                <checkbox id="hour19" label="19"/>
+                <checkbox id="hour20" label="20"/>
+                <checkbox id="hour21" label="21"/>
+                <checkbox id="hour22" label="22"/>
+                <checkbox id="hour23" label="23"/>
+              </vbox>
+              <vbox class="vsep"><separator class="groove-thin" orient="vertical"/></vbox>
+              <vbox class="time-checkboxes" flex="1">
+                <checkbox id="minute-select" label="Minute" class="checkbox-header" oncommand="toggle(this.checked, 'minute')"/>
+                <checkbox id="minute0" label="00"/>
+                <checkbox id="minute1" label="05"/>
+                <checkbox id="minute2" label="10"/>
+                <checkbox id="minute3" label="15"/>
+                <checkbox id="minute4" label="20"/>
+                <checkbox id="minute5" label="25"/>
+                <checkbox id="minute6" label="30"/>
+                <checkbox id="minute7" label="35"/>
+                <checkbox id="minute8" label="40"/>
+                <checkbox id="minute9" label="45"/>
+                <checkbox id="minute10" label="50"/>
+                <checkbox id="minute11" label="55"/>
+              </vbox>
+            </hbox>
+            <separator class="groove-thin"/>
+            <hbox align="center">
+              <label value="Advanced"/>
+              <!--<textbox id="cronExpression" multiline="false" flex="1"/>-->
+              <menulist id="cronExpression" editable="true" onkeypress="cronEnter(event);" flex="1">
+                <menupopup>
+                  <menuitem label="Every 5 minutes" value="* * *"/>
+                  <menuitem label="Every hour" value="* * 0"/>
+                  <menuitem label="Every 2 hours at 25 minutes" value="* */2 5"/>
+                  <menuitem label="Every day at 8:30am" value="* 8 6"/>
+                  <menuitem label="Every Tue,Wed at 1:00pm" value="2,3 13 0"/>
+                  <menuitem label="Every weekday at 8" value="1-5 8 0"/>
+                </menupopup>
+              </menulist>
+              <button label="Change" oncommand="cronExpression(this.value)"/>
+            </hbox>
+            <hbox align="center">
+              <checkbox id="jobRunNow" label="Run Now" tooltiptext="Run this job immediately"/>
+              <label id="jobNextRun" value="" flex="1"/>
+            </hbox>
+          </vbox>
+        </groupbox>
+      </tabpanel>
+      <tabpanel id="jobsTab" orient="vertical">
+        <listbox id="job-list" onselect="selectJob(this)" onkeypress="jobListEnter(event);" flex="1"/>
+      </tabpanel>
+      <tabpanel orient="vertical" id="activityTab">
+        <listbox id="activity-list" flex="1"/>
+      </tabpanel>
+    </tabpanels>
+  </tabbox>
+  <hbox>
+    <button id="add-job-button" label="+" tooltiptext="Add a new job" oncommand="addJob()"/>
+    <button id="remove-job-button" label="-" tooltiptext="Remove selected job" oncommand="removeJob()"/>
+    <label value="" flex="1"/>
+    <checkbox id="schedulerState" label="Turn scheduler ON"/>
+  </hbox>
+</dialog>

@@ -1,0 +1,56 @@
+import org.gradle.internal.os.OperatingSystem
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'com.moowork.node'
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-devtools"
+    compile "com.h2database:h2"
+}
+
+def profiles = 'dev'
+if (project.hasProperty('no-liquibase')) {
+    profiles += ',no-liquibase'
+}
+if (project.hasProperty('tls')) {
+    profiles += ',tls'
+}
+
+bootRun {
+    args = []
+}
+
+task webpackBuildDev(type: NpmTask, dependsOn: 'npm_install') {
+    onlyIf { shouldWebpackRun() == true }
+    args = ["run", "webpack:build"]
+}
+
+war {
+    webAppDirName = 'src/main/webapp/'
+}
+
+task copyIntoStatic (type: Copy) {
+    from 'build/www/'
+    into 'build/resources/main/static'
+}
+
+processResources {
+    filesMatching('**/application.yml') {
+        filter {
+            it.replace('#project.version#', version)
+        }
+        filter {
+            it.replace('#spring.profiles.active#', profiles)
+        }
+    }
+}
+
+processResources.dependsOn webpackBuildDev
+copyIntoStatic.dependsOn processResources
+bootJar.dependsOn copyIntoStatic
+
+yarn_install.onlyIf { shouldWebpackRun() == true }
+
+def shouldWebpackRun() {
+    file('build/www/app/main.bundle.js').exists() == false || project.hasProperty('webpack')
+}

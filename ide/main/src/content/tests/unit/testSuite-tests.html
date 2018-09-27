@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Selenium IDE Test</title>
+    <link rel="stylesheet" type="text/css" href="chrome://selenium-ide/content/jsunit/css/jsUnitStyle.css">
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/lib/prototype.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/htmlutils.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/atoms.js"/></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/selenium-browserbot.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitCore.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/preferences.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/file-utils.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/testSuite.js"></script>
+		<script type="text/javascript">
+function setUp() {
+    window._alert = window.alert;
+}
+
+function tearDown() {
+    window.alert = window._alert;
+}
+
+function testLoad() {
+    var testSuite = TestSuite.loadInputStream(FileUtils.openURLInputStream("chrome://selenium-ide/content/tests/unit/testSuite-tests-sampleSuite.html"));
+    assertEquals(3, testSuite.tests.length);
+    assertEquals("./Test1.html", testSuite.tests[0].filename);
+    assertEquals("Test1", testSuite.tests[0].title);
+    assertEquals("./Test3.html", testSuite.tests[2].filename);
+    assertEquals("Test3", testSuite.tests[2].title);
+}
+
+function testSave() {
+    var testSuite = new TestSuite();
+    var testCaseFile = FileUtils.getTempDir().clone();
+    var testCase = {};
+    testCaseFile.append("Test.html");
+    testCase.file = testCaseFile;
+    testCase.getTitle = function() { return "Test Case" };
+    testSuite.addTestCaseFromContent(testCase);
+    
+    var file = FileUtils.getTempDir().clone();
+    file.append("SeleniumIDE-TestSuite-test.html");
+    testSuite.file = file;
+
+    testSuite.save();
+    var content = FileUtils.readFile(file);
+    debug("content: " + content);
+    assert(/<html .*?>[\s\S]+<tr><td><a href="Test.html">Test Case<\/a><\/td><\/tr>\n[\s\S]+<\/html>/.test(content));
+
+    testCaseFile = FileUtils.getTempDir().clone();
+    testCaseFile.append("foo");
+    testCaseFile.append("Test.html");
+    testCase.file = testCaseFile;
+
+    testSuite.save();
+    var content = FileUtils.readFile(file);
+    debug("content 2: " + content);
+    assert(/<html .*?>[\s\S]+<tr><td><a href="foo\/Test.html">Test Case<\/a><\/td><\/tr>\n[\s\S]+<\/html>/.test(content));
+    
+    file.remove(false);
+}
+
+function testGetFile() {
+    var testSuite = new TestSuite();
+    var file = FileUtils.getFile(FileUtils.getProfileDir().path);
+    file.append("DummyTestSuite.html");
+    testSuite.file = file;
+    var testCase = new TestSuite.TestCase(testSuite, "./TestCase.html", "TestCase");
+    assertEquals("TestCase.html", testCase.getFile().leafName);
+}
+
+function testGenerateNewTestCaseTitle() {
+    var suite = new TestSuite();
+    loadTests([]);
+    assertEquals("Untitled", suite.generateNewTestCaseTitle());
+    loadTests(["Untitled"]);
+    assertEquals("Untitled 2", suite.generateNewTestCaseTitle());
+    loadTests(["Untitled", "Untitled 2"]);
+    assertEquals("Untitled 3", suite.generateNewTestCaseTitle());
+    loadTests(["Untitled 3"]);
+    assertEquals("Untitled 4", suite.generateNewTestCaseTitle());
+
+    function loadTests(tests) {
+        suite.tests = [];
+        tests.forEach(function(name) {
+                suite.tests.push(new TestSuite.TestCase(suite, name, name));
+            });
+    }
+}
+
+function testRemoveTestCase() {
+    var suite = new TestSuite();
+    var removedTestCase = null;
+    var tests = [new TestSuite.TestCase(suite, "test", "test"),
+                 new TestSuite.TestCase(suite, "foo", "bar")];
+    tests.forEach(function(test) { suite.tests.push(test); });
+    suite.addObserver({
+            testCaseRemoved: function(testCase) {
+                removedTestCase = testCase;
+            }
+        });
+    suite.remove(tests[0]);
+    assertEquals(tests[0], removedTestCase);
+    assertEquals(1, suite.tests.length);
+    var error;
+    window.alert = function(msg) {
+        error = msg;
+    }
+    suite.remove(tests[1]);
+    assert(!!error);
+    assertEquals(1, suite.tests.length);
+}
+</script>
+  </head>
+  <body>
+  </body>
+</html>

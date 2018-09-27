@@ -1,0 +1,63 @@
+apply plugin: 'org.springframework.boot'
+apply plugin: 'com.gorylenko.gradle-git-properties'
+apply plugin: 'com.moowork.node'
+
+dependencies {
+    testCompile "com.h2database:h2"
+}
+
+def profiles = 'prod'
+if (project.hasProperty('no-liquibase')) {
+    profiles += ',no-liquibase'
+}
+
+if (project.hasProperty('swagger')) {
+    profiles += ',swagger'
+}
+
+bootRun {
+    args = []
+}
+
+task webpack_test(type: NpmTask, dependsOn: 'npm_install') {
+    args = ["run", "webpack:test"]
+}
+
+task webpack(type: NpmTask, dependsOn: 'npm_install') {
+    args = ["run", "webpack:prod"]
+}
+
+war {
+    webAppDirName = 'build/www/'
+}
+
+task copyIntoStatic (type: Copy) {
+    from 'build/www/'
+    into 'build/resources/main/static'
+}
+
+processResources {
+    filesMatching('**/application.yml') {
+        filter {
+            it.replace('#project.version#', version)
+        }
+        filter {
+            it.replace('#spring.profiles.active#', profiles)
+        }
+    }
+}
+
+generateGitProperties {
+    onlyIf {
+        !source.isEmpty()
+    }
+}
+
+gitProperties {
+    keys = ['git.branch', 'git.commit.id.abbrev', 'git.commit.id.describe']
+}
+
+test.dependsOn webpack_test
+processResources.dependsOn webpack
+copyIntoStatic.dependsOn processResources
+bootJar.dependsOn copyIntoStatic

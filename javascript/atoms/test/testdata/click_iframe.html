@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <a id="iframeClickTarget">An anchor in an iframe</a>
+    <a id="iframeClickTargetWithAChild">An anchor in an <strong>nested</strong> element in an iframe</a>
+    <a id="clickTargetThatGoesNowhere" href="#">Click me, I go nowhere</a>
+    <a id="otherFrame" href="click_destination.html" target="other">I load elsewhere</a>
+    <form id="form" action="click_destination.html" method="get">
+      <input id="submitForm" type="submit" name="submitButton" value="Submit" />
+    </form>
+    <form id="otherForm" action="click_destination.html">
+      <input id="submitFormWithInlineHandler" onclick="return false;" type="submit" value="SubmitWithInlineHandler" />
+    </form>
+    <form id="buttonForm" action="click_destination.html">
+      <button id="submitFormButtonTag" type="submit">
+        <strong id="buttonText">Click Me</strong>
+      </button>
+    </form>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>TestPopup</title>
+	</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">TestPopup</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>chrome://selenium-ide/content/tests/functional/startRecording.html</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>chrome://selenium-ide/content/tests/functional/aut/test_popup.html</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=show popup</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPopUp</td>
+	<td>popup</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>selectWindow</td>
+	<td>name=popup</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>aaa</td>
+</tr>
+<tr>
+	<td>setTimeout</td>
+	<td>10000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>close</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectWindow</td>
+	<td>null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=dummy</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>chrome://selenium-ide/content/tests/functional/verifyCommands.html#TestPopup.html</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>result</td>
+	<td>regexp:.+</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>result</td>
+	<td>Success</td>
+</tr>
+</tbody></table>
+</body>
+</html>

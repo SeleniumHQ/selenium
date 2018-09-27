@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!--
+Copyright 2012 Software Freedom Conservancy. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<title>sessionview_test.html</title>
+<script src="test_bootstrap.js"></script>
+<link href="../style.css" rel="stylesheet">
+<script>
+  goog.require('bot.Keyboard.Keys');
+  goog.require('bot.action');
+  goog.require('bot.dom');
+  goog.require('goog.events');
+  goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.recordFunction');
+  goog.require('remote.ui.SessionView');
+  goog.require('webdriver.Session');
+</script>
+<div id="renderTarget"></div>
+<script>
+  var SESSION = new webdriver.Session('bugs bunny', {
+    'browserName': 'chrome',
+    'version': '',
+    'platform': 'ANY',
+    'javascriptEnabled': true
+  });
+  var renderTarget = document.getElementById('renderTarget');
+  var view;
+
+  function setUp() {
+    view = new remote.ui.SessionView();
+  }
+
+  function tearDown() {
+    view.dispose();
+  }
+
+  function viewSession(session) {
+    view.render(renderTarget);
+    view.update(session);
+  }
+
+  function testInitiallyShowsEmptyView() {
+    view.render(renderTarget);
+    assertTrue(bot.dom.isShown(view.emptyViewElement_));
+    assertFalse(bot.dom.isShown(view.viewElement_));
+  }
+
+  function testUpdateView() {
+    viewSession(SESSION);
+    assertEquals('bugs bunny', view.sessionIdSpan_.innerHTML);
+  }
+
+  function testCorrectlyTogglesBetweenEmptyAndNormalViewOnUpdates() {
+    view.render(renderTarget);
+    assertTrue(bot.dom.isShown(view.emptyViewElement_));
+    assertFalse(bot.dom.isShown(view.viewElement_));
+
+    view.update(SESSION);
+    assertFalse(bot.dom.isShown(view.emptyViewElement_));
+    assertTrue(bot.dom.isShown(view.viewElement_));
+
+    view.update(null);
+    assertTrue(bot.dom.isShown(view.emptyViewElement_));
+    assertFalse(bot.dom.isShown(view.viewElement_));
+  }
+
+  function testDoesNotFireDeleteEventIfActionCanceled() {
+    var onDelete = goog.testing.recordFunction();
+    goog.events.listen(view, remote.ui.Event.Type.DELETE, onDelete);
+
+    viewSession(SESSION);
+    bot.action.click(view.deleteSessionButton_.getElement());
+    bot.action.click(view.confirmDialog_.getButtonSet().getButton('cancel'));
+    assertEquals(0, onDelete.getCallCount());
+  }
+
+  function testFiresDeleteEventIfActionConfirmed() {
+    var onDelete = goog.testing.recordFunction();
+    goog.events.listen(view, remote.ui.Event.Type.DELETE, onDelete);
+
+    viewSession(SESSION);
+    bot.action.click(view.deleteSessionButton_.getElement());
+    bot.action.click(view.confirmDialog_.getButtonSet().getButton('ok'));
+    assertEquals(1, onDelete.getCallCount());
+  }
+
+  function testFiresScreenshotEventWhenButtonClicked() {
+    var onScreenshot = goog.testing.recordFunction();
+    goog.events.listen(view, remote.ui.Event.Type.SCREENSHOT, onScreenshot);
+
+    var session = new webdriver.Session('fluffy bunny', {});
+    viewSession(session);
+    bot.action.click(view.screenshotButton_.getElement());
+    assertEquals(1, onScreenshot.getCallCount());
+  }
+</script>

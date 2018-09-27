@@ -1,0 +1,60 @@
+TRACING
+- Tracing is now color coded by trace level
+- Traces are now prefixed with the Test Page and Test Function from which the trace is made
+
+ASSERTION FUNCTIONS
+- assertArrayEquals(array1, array2) introduced
+- assertObjectEquals(object1, object2) introduced
+- assertHTMLEquals function introduced
+- assertEvaluatesToTrue and assertEvaluatesToFalse introduced
+- assertHashEquals     }
+- assertRoughlyEquals  } Pivotal functions
+- assertContains       }
+
+- changed expected/actual values display strings to use angle brackets, rather than square brackets
+
+- CLIENT-SIDE
+- HTML in result output is now correctly escaped
+- page load timeout changed to 120 seconds by default
+- setup page timeout change to 120 seconds by default
+- cache-buster for testpage retrieval & results submission
+- jsUnitRestoredHTMLDiv
+- turn off tracing, alerts, confirms when submitting
+- testPage parameter should be URL-encoded (only opera cares though)
+- Speed-up of Firefox/Mozilla (thanks to Chris Wesseling)
+- jsUnitMockTimeout.js (thanks to Pivotal, especially Nathan Wilmes)
+
+SERVER
+- start-browser scripts in bin
+- Migration of Java code to require Java 5.0
+- JSPs require a JDK
+- StandaloneTest and DistributedTest continue on after a failure in a particular browser or remote server respectively
+- StandaloneTest has a suite() method that makes the test run have multiple JUnit tests, one per browser
+- DistribuedTest has a suite() method that makes the test run have multiple JUnit tests, one per remote machine URL
+- Change to XML output format of test runs to include more information and be more hierarchical (machine->browser->test page->test case)
+- Logs are now prefixed with "JSTEST-" in order to match JUnit's "TEST-"
+- Logs now contain the browser ID (e.g. JSTEST-12345.5.xml means browser with ID 5); displayer servlet now takes an id and a browserId parameter
+- added support for launching the default system browser on Windows and UNIX (see the constant on net.jsunit.StandaloneTest)
+- StandaloneTest now runs tests in all specified browsers, even after an earlier browser failed
+- New "config" servlet that shows the configuration as XML of the server
+- Distributed Tests now send back an XML document that includes the XML for browser results as opposed to just a "success"/"failure" node
+- runner servlet takes a "url" querystring parameter that overrides the server's url property
+- test run requests to the JsUnitServer and the FarmServer are queued up and in serial so that different clients don't step on eachother
+- addition of new configuration parameter, "closeBrowsersAfterTestRuns", for whether to attempt to close browsers after test runs
+- addition of new configuration property, "timeoutSeconds", for how long to time browsers out
+- addition of new configuration property, "ignoreUnresponsiveRemoteMachines", for whether to care that remote machines don't uccessfully run the tests
+- addition of new configuration property, "description", which contains a human-readable description of the server
+- new index.jsp ("/") page
+- jsunit.org registered; redirects to edwardh.com/jsunit
+
+BUGS
+- fix for "retry test run" bug
+- bug 1070436 fixed
+- bug with multiple browsers and resultId specified fixed
+- Bug 1281427 fixed (test submission for Opera)
+- Safari fix
+- Bug 1431040 fixed
+
+ECLIPSE PLUGIN
+- Eclipse plugin version 1.0
+

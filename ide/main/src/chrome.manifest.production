@@ -1,0 +1,21 @@
+# chrome.manifest for development
+content selenium-ide  chrome/content/
+content selenium-ide-platform chrome/content/ platform
+
+overlay chrome://browser/content/browser.xul  chrome://selenium-ide/content/selenium-ide-overlay.xul
+
+locale selenium-ide en-US chrome/locale/en-US/
+locale selenium-ide fr-FR chrome/locale/fr-FR/
+locale selenium-ide ja-JP chrome/locale/ja-JP/
+locale selenium-ide pt-BR chrome/locale/pt-BR/
+locale selenium-ide sv-SE chrome/locale/sv-SE/
+
+skin selenium-ide classic/1.0 chrome/skin/classic/
+skin selenium-ide-platform classic/1.0 chrome/skin/classic/platforms/ appversion>=3.0
+
+# Samit: Enh: Added style for the icon on firefox toolbar
+style chrome://global/content/customizeToolbar.xul         chrome://selenium-ide/skin/toolbar.css
+
+interfaces components/SeleniumIDEGenericAutoCompleteSearch.xpt
+component {E5226A0D-4698-4E15-9D6D-86771AE172C9} components/SeleniumIDEGenericAutoCompleteSearch.js
+contract @mozilla.org/autocomplete/search;1?name=selenium-ide-generic {E5226A0D-4698-4E15-9D6D-86771AE172C9}

@@ -1,0 +1,162 @@
+/* ==========================================================================
+Right-to-Left support
+========================================================================== */
+
+html[dir='rtl'] {
+    .col,
+    .col-auto,
+    .col-1,
+    .col-2,
+    .col-3,
+    .col-4,
+    .col-5,
+    .col-6,
+    .col-7,
+    .col-8,
+    .col-9,
+    .col-10,
+    .col-11,
+    .col-12,
+    .col-sm-1,
+    .col-sm-2,
+    .col-sm-3,
+    .col-sm-4,
+    .col-sm-5,
+    .col-sm-6,
+    .col-sm-7,
+    .col-sm-8,
+    .col-sm-9,
+    .col-sm-10,
+    .col-sm-11,
+    .col-sm-12,
+    .col-md-1,
+    .col-md-2,
+    .col-md-3,
+    .col-md-4,
+    .col-md-5,
+    .col-md-6,
+    .col-md-7,
+    .col-md-8,
+    .col-md-9,
+    .col-md-10,
+    .col-md-11,
+    .col-md-12,
+    .col-lg-1,
+    .col-lg-2,
+    .col-lg-3,
+    .col-lg-4,
+    .col-lg-5,
+    .col-lg-6,
+    .col-lg-7,
+    .col-lg-8,
+    .col-lg-9,
+    .col-lg-10,
+    .col-lg-11,
+    .col-lg-12,
+    .col-xl-1,
+    .col-xl-2,
+    .col-xl-3,
+    .col-xl-4,
+    .col-xl-5,
+    .col-xl-6,
+    .col-xl-7,
+    .col-xl-8,
+    .col-xl-9,
+    .col-xl-10,
+    .col-xl-11,
+    .col-xl-12 {
+        float: right;
+    }
+    body {
+        text-align: right;
+    }
+    .navbar-nav > li {
+        float: right;
+    }
+    .dl-horizontal dt {
+        float: right;
+    }
+    th {
+        text-align: right;
+    }
+    .dropdown-menu {
+        text-align: right;
+    }
+    .modal-header .close {
+        margin-left: 0rem;
+    }
+    .modal-footer {
+        text-align: left;
+    }
+    .jh-create-entity {
+        float: left !important;
+    }
+    .form-check-input {
+        margin-left: 0rem;
+        margin-right: -1.25rem;
+    }
+    .form-check-label {
+        padding-left: 0rem;
+        padding-right: 1.25rem;
+    }
+    .input-group .form-control:not(:last-child),
+    .input-group-prepend,
+    .input-group-btn:not(:last-child) > .btn,
+    .input-group-btn:not(:last-child) > .btn-group > .btn,
+    .input-group-btn:not(:last-child) > .dropdown-toggle,
+    .input-group-btn:not(:first-child) > .btn:not(:last-child):not(.dropdown-toggle),
+    .input-group-btn:not(:first-child) > .btn-group:not(:last-child) > .btn {
+        @include border-right-radius($border-radius);
+        @include border-left-radius(0);
+    }
+    .input-group-prepend {
+        border-left: 0;
+        border-right: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    .input-group .form-control:not(:first-child),
+    .input-group-append,
+    .input-group-btn:not(:first-child) > .btn,
+    .input-group-btn:not(:first-child) > .btn-group > .btn,
+    .input-group-btn:not(:first-child) > .dropdown-toggle,
+    .input-group-btn:not(:last-child) > .btn:not(:first-child),
+    .input-group-btn:not(:last-child) > .btn-group:not(:first-child) > .btn {
+        @include border-left-radius($border-radius);
+        @include border-right-radius(0);
+    }
+    .form-control + .input-group-append {
+        border-right: 0;
+        border-left: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    .modal-footer > :not(:first-child) {
+        margin-left: 0rem;
+        margin-right: 0.25rem;
+    }
+    .btn-group > .btn:first-child {
+        margin-right: 0;
+        &:not(:last-child):not(.dropdown-toggle) {
+            @include border-right-radius($border-radius);
+            @include border-left-radius(0);
+        }
+    }
+    .btn-group > .btn:last-child:not(:first-child),
+    .btn-group > .dropdown-toggle:not(:first-child) {
+        @include border-left-radius($border-radius);
+        @include border-right-radius(0);
+    }
+    .page-item {
+        &:first-child {
+            .page-link {
+                margin-right: 0;
+                margin-left: -1px;
+                @include border-left-radius(0);
+                @include border-right-radius($border-radius);
+            }
+        }
+        &:last-child {
+            .page-link {
+                @include border-right-radius(0);
+                @include border-left-radius($border-radius);
+            }
+        }
+    }
+}

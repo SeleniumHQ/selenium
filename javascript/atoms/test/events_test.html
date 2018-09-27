@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+<title>events_test.html</title>
+<script src="test_bootstrap.js"></script>
+<script type="text/javascript">
+  goog.require('bot.events');
+  goog.require('bot.events.EventType');
+  goog.require('bot.locators');
+  goog.require('bot.userAgent');
+  goog.require('goog.array');
+  goog.require('goog.events');
+  goog.require('goog.testing.jsunit');
+  goog.require('goog.userAgent');
+  goog.require('goog.userAgent.product');
+</script>
+</head>
+<body>
+<form>
+  <input id="target" type="text">
+</form>
+<script type="text/javascript">
+  var target = bot.locators.findElement({id: 'target'});
+
+  /**
+   * Fires an event of the given type on the target input box with the optional
+   * event arguments and asserts the event was fired on the target. If a
+   * listener is provided, it is applied to the event.
+   */
+  function fireAndTest(type, opt_args, opt_listener) {
+    var fired = false, exception = null;
+    goog.events.listenOnce(target, type.toString(), function(event) {
+      fired = true;
+      try {
+        assertEquals(target, event.target);
+        if (opt_listener) {
+          opt_listener(event);
+        }
+      } catch (e) {
+        // Save any exception here and rethrow them outside the listener;
+        // otherwise the JS runner may not catch them and report the error.
+        exception = e;
+      }
+    });
+    bot.events.fire(target, type, opt_args);
+    assertTrue('Event was not fired', fired);
+    if (exception) {
+      throw exception;
+    }
+  }
+
+  function testCanFireEvent() {
+    fireAndTest(bot.events.EventType.FOCUS);
+  }
+
+  function testCanFireMouseEvent() {
+    fireAndTest(bot.events.EventType.MOUSEMOVE, {
+      clientX: 0,
+      clientY: 0,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      relatedTarget: null,
+      wheelDelta: 0
+    });
+  }
+
+  function testCanFireKeyboardEvent() {
+    fireAndTest(bot.events.EventType.KEYDOWN, {
+      keyCode: 0,
+      charCode: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false
+    });
+  }
+
+  function testCanFireTouchEvent() {
+    if (!goog.userAgent.product.CHROME && !goog.userAgent.MOBILE) {
+      return;
+    }
+
+    var touch = {
+      identifier: 0,
+      clientX: 0,
+      clientY: 0,
+      screenX: 0,
+      screenY: 0,
+      pageX: 0,
+      pageY: 0
+    };
+    fireAndTest(bot.events.EventType.TOUCHSTART, {
+      touches: [touch],
+      targetTouches: [touch],
+      changedTouches: [touch],
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      relatedTarget: null,
+      clientX: 0,
+      clientY: 0,
+      scale: 0,
+      rotation: 0
+    });
+  }
+
+  function testCanFireMSGestureEvent() {
+    if (!bot.events.SUPPORTS_MSPOINTER_EVENTS) {
+      return;
+    }
+    fireAndTest(bot.events.EventType.MSGESTURESTART, {
+      clientX: 0,
+      clientY: 0,
+      translationX: 0,
+      translationY: 0,
+      scale: 0,
+      expansion: 0,
+      rotation: 0,
+      velocityX: 0,
+      velocityY: 0,
+      velocityExpansion: 0,
+      velocityAngular: 0,
+      relatedTarget: null
+    });
+  }
+
+  function testCanFireMSPointerEvent() {
+    if (!bot.events.SUPPORTS_MSPOINTER_EVENTS) {
+      return;
+    }
+    fireAndTest(bot.events.EventType.MSPOINTERMOVE, {
+      clientX: 0,
+      clientY: 0,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      relatedTarget: null,
+      width: 1,
+      height: 1,
+      pressure: 10,
+      rotation: 0,
+      pointerIdArg: 1,
+      tiltX: 0,
+      tiltY: 0,
+      pointerType: MSPointerEvent.MSPOINTER_TYPE_MOUSE,
+      isPrimary: 2
+    });
+  }
+
+  function testIsSynthentic() {
+    fireAndTest(bot.events.EventType.CHANGE, {}, function(event) {
+      assertTrue(bot.events.isSynthetic(event));
+      assertTrue(bot.events.isSynthetic(event.getBrowserEvent()));
+    });
+  }
+
+  function testRelatedTargetCorrectlySet() {
+    var args = {
+      clientX: 0,
+      clientY: 0,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      relatedTarget: document.body,
+      wheelDelta: 0
+    };
+
+    fireAndTest(bot.events.EventType.MOUSEOUT, args, function(event) {
+      assertEquals(args.relatedTarget, event.relatedTarget);
+      // We are only able to set the native from/toElement on IE >= 8.
+      if (goog.userAgent.IE && Object.defineProperty) {
+        var nativeEvent = event.getBrowserEvent();
+        assertEquals(target, nativeEvent.fromElement);
+        assertEquals(args.relatedTarget, nativeEvent.toElement);
+      }
+    });
+
+    fireAndTest(bot.events.EventType.MOUSEOVER, args, function(event) {
+      assertEquals(args.relatedTarget, event.relatedTarget);
+      // We are only able to set the native from/toElement on IE >= 8.
+      if (goog.userAgent.IE && Object.defineProperty) {
+        var nativeEvent = event.getBrowserEvent();
+        assertEquals(args.relatedTarget, nativeEvent.fromElement);
+        assertEquals(target, nativeEvent.toElement);
+      }
+    });
+  }
+
+  function testWheelDeltaCorrectlySet() {
+    var args = {
+      clientX: 0,
+      clientY: 0,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      relatedTarget: null,
+      wheelDelta: 0
+    };
+
+    function fireMouseWheelAndTestWheelDeltaAndDetail(wheelDelta, detail) {
+      fireAndTest(bot.events.EventType.MOUSEWHEEL, args, function(event) {
+        var nativeEvent = event.getBrowserEvent();
+        if ((goog.userAgent.IE && Object.defineProperty) || goog.userAgent.WEBKIT) {
+          assertEquals(wheelDelta, nativeEvent.wheelDelta);
+        } else if (goog.userAgent.IE && !Object.defineProperty) {
+          assertEquals(wheelDelta, nativeEvent.detail);
+        }
+        if (goog.userAgent.GECKO) {
+          assertEquals(detail, nativeEvent.detail);
+        }
+      });
+    }
+
+    // Test a positive delta wheel scroll.
+    args.wheelDelta = 120;
+    fireMouseWheelAndTestWheelDeltaAndDetail(120, -3);
+
+    // Test a negative delta wheel scroll.
+    args.wheelDelta = -80;
+    fireMouseWheelAndTestWheelDeltaAndDetail(-80, 2);
+  }
+
+  function testMousePixelScrollFiresCorrectlyOnlyOnFirefox() {
+    var args = {
+      clientX: 0,
+      clientY: 0,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      relatedTarget: null,
+      wheelDelta: 15
+    };
+
+    if (goog.userAgent.GECKO) {
+      fireAndTest(bot.events.EventType.MOUSEPIXELSCROLL, args, function(event) {
+        assertEquals(15, event.getBrowserEvent().detail);
+      });
+    } else {
+      assertThrows(function() {
+        bot.events.fire(target, bot.events.EventType.MOUSEPIXELSCROLL, args);
+      });
+    }
+  }
+</script>
+</body>
+</html>

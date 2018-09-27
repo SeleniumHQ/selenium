@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <title>history_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot');
+    goog.require('bot.locators');
+    goog.require('bot.test');
+    goog.require('bot.userAgent');
+    goog.require('bot.window');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.Promise');
+    goog.require('goog.testing.TestCase');
+    goog.require('goog.testing.asserts');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.platform');
+    goog.require('goog.userAgent.product');
+  </script>
+</head>
+<body>
+<iframe id="frame"></iframe>
+<script type="text/javascript">
+  var frame = null;
+  var popup = null;
+  var resolver = null;
+
+  var initFrame = new goog.Promise(function(ready) {
+    // On Android WebView, window.open will cause a dialog prompt and prevent
+    // the page from loading. For these
+    // browsers, we test history in an iframe instead of a popup, which limits
+    // the history properties we can reliably check.
+    if (goog.userAgent.product.ANDROID) {
+      // A bug in prior versions of WebKit (persisting into Safari 5) causes the
+      // initial page of an iframe to not enter the browser history, so we
+      // initialize the iframe to a dummy page and the test cases here do not
+      // make any assertions about this page being in the browser history.
+      frame = bot.locators.findElement({'id': 'frame'});
+      goog.events.listen(frame, 'load', notifyLoaded);
+      waitForLoad().then(function() {
+        bot.setWindow(goog.dom.getFrameContentWindow(frame));
+        ready();
+      });
+      frame.src = 'testdata/history_page0.html';
+    } else {
+      ready();
+    }
+  });
+
+  function waitForLoad() {
+    resolver = goog.Promise.withResolver();
+    return resolver.promise;
+  }
+
+  function notifyLoaded() {
+    // A dummy onunload event ensures the browser will not cache the page
+    // and will fire a load event when on history.back() and forward(), see:
+    // http://www.webkit.org/blog/516/webkit-page-cache-ii-the-unload-event/
+    bot.getWindow().onunload = goog.nullFunction;
+
+    window.setTimeout(function() {
+      resolver.resolve();
+    }, 0);
+  }
+
+  function setUpPage() {
+    goog.testing.TestCase.getActiveTestCase().promiseTimeout = 30000; // 30s
+  }
+
+  function setUp() {
+    // setUpPage does not wait on returned promises, so return a promise from
+    // each setUp to make sure we wait for the initial frame setup.
+    return initFrame;
+  }
+
+  function tearDown() {
+    if (popup) {
+      popup.close();
+      popup = null;
+    }
+  }
+
+  function load(url) {
+    var loc = window.location.href;
+    url = loc.substring(0, loc.lastIndexOf('/') + 1) + url;
+    var loaded = waitForLoad();
+    if (popup || frame) {
+      assertNotEquals('bot.setWindow() not called', bot.getWindow(), window);
+      bot.getWindow().location.href = url;
+    } else {
+      popup = window.open(url);
+      assertTrue('window.open() failed: is a pop-up blocker enabled?', !!popup);
+      bot.setWindow(popup);
+    }
+    return loaded;
+  }
+
+  function back(numPages) {
+    var loaded = waitForLoad();
+    bot.window.back(numPages);
+    return loaded;
+  }
+
+  function forward(numPages) {
+    var loaded = waitForLoad();
+    bot.window.forward(numPages);
+    return loaded;
+  }
+
+  function assertUrlContains(str) {
+    assertContains(str, bot.getWindow().location.href);
+  }
+
+  function testErrorThrownWhenNumPagesNonPositive() {
+    assertThrows(goog.partial(bot.window.back, 0));
+    assertThrows(goog.partial(bot.window.back, 0));
+    assertThrows(goog.partial(bot.window.back, -1));
+    assertThrows(goog.partial(bot.window.forward, -1));
+  }
+
+  function testErrorThrowWhenNumPagesNotLessThanHistoryLength() {
+    // If not testing with popups, cannot check this property reliably,
+    // because we cannot guarantee the history stack starts fresh.
+    if (!popup) {
+      return;
+    }
+    return load('testdata/history_page1.html').then(function() {
+      return load('testdata/history_page2.html');
+    }).then(function() {
+      assertThrows(goog.partial(bot.window.back, 3));
+      if (!goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533')) {
+        assertThrows(goog.partial(bot.window.forward, 3));
+      }
+    });
+  }
+
+  function testBackForwardOnePage() {
+    return load('testdata/history_page1.html').
+        then(goog.partial(load, 'testdata/history_page2.html')).
+        then(goog.partial(back, 1)).
+        then(goog.partial(assertUrlContains, 'history_page1.html')).
+        then(goog.partial(forward, 1)).
+        then(goog.partial(assertUrlContains, 'history_page2.html'));
+  }
+
+  function testBackForwardMultiplePages() {
+    return load('testdata/history_page1.html').
+        then(goog.partial(load, 'testdata/history_page2.html')).
+        then(goog.partial(load, 'testdata/history_page3.html')).
+        then(goog.partial(back, 2)).
+        then(goog.partial(assertUrlContains, 'history_page1.html')).
+        then(goog.partial(forward, 2)).
+        then(goog.partial(assertUrlContains, 'history_page3.html'));
+  }
+</script>
+</body>
+</html>

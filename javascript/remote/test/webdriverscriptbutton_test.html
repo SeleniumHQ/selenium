@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<title>webdriverscriptbutton_test.html</title>
+<script src="test_bootstrap.js"></script>
+<link href="../style.css" rel="stylesheet">
+<script>
+  goog.require('bot.Keyboard.Keys');
+  goog.require('bot.action');
+  goog.require('bot.dom');
+  goog.require('goog.events');
+  goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.recordFunction');
+  goog.require('goog.ui.Component.EventType');
+  goog.require('remote.ui.WebDriverScriptButton');
+</script>
+<script>
+  var button;
+
+  function setUp() {
+    button = new remote.ui.WebDriverScriptButton();
+    button.render();
+  }
+
+
+  function tearDown() {
+    button.dispose();
+  }
+
+
+  function openDialog() {
+    assertFalse(button.openScriptDialog_.isVisible());
+    bot.action.click(button.getElement());
+    assertTrue(button.openScriptDialog_.isVisible());
+  }
+
+
+  function testDoesNotFireLoadScriptEventOnCancel() {
+    openDialog();
+
+    var onLoad = goog.testing.recordFunction();
+    goog.events.listen(button, remote.ui.WebDriverScriptButton.LOAD_SCRIPT,
+        onLoad);
+
+    bot.action.type(button.openScriptDialog_.input_.getElement(),
+        'http://www.google.com');
+    bot.action.click(
+        button.openScriptDialog_.getButtonSet().getButton('cancel'));
+    assertFalse('Dialog was not closed', button.openScriptDialog_.isVisible());
+    assertEquals(0, onLoad.getCallCount());
+  }
+
+
+  function testFiresLoadScriptEventOnAccept() {
+    openDialog();
+
+    var onLoad = goog.testing.recordFunction();
+    goog.events.listen(button, remote.ui.WebDriverScriptButton.LOAD_SCRIPT,
+        onLoad);
+
+    bot.action.type(button.openScriptDialog_.input_.getElement(),
+        'http://www.google.com');
+    bot.action.click(
+        button.openScriptDialog_.getButtonSet().getButton('ok'));
+    assertFalse('Dialog was not closed', button.openScriptDialog_.isVisible());
+
+    assertEquals(1, onLoad.getCallCount());
+
+    var args = onLoad.getLastCall().getArguments();
+    assertEquals(1, args.length);
+    assertEquals('http://www.google.com', args[0].data);
+  }
+
+</script>

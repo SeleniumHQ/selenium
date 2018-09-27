@@ -1,0 +1,6 @@
+The SafariDriver code has been moved to the `safari` branch:
+
+https://github.com/seleniumhq/selenium/tree/safari
+
+This directly only contains a snapshot of the JavaScript needed by clients to
+initiate a connection with the SafariDriver.

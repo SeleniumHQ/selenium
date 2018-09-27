@@ -1,0 +1,62 @@
+<html>
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<script type="text/javascript">
+<!--
+    // This JavaScript will dump all the parameters in the URL. Useful for checking forms.
+    // if you are are not using a webserver.
+
+    // paramsMap is an associative array (like a Java map, Perl hash, or Python dictionary).
+    var paramsMap = new Array();
+
+    var query=this.location.search.substring(1);
+    if (query.length > 0){
+        var params=query.split("&");
+        for (var i=0 ; i<params.length ; i++){
+            var pos = params[i].indexOf("=");
+            var name = params[i].substring(0, pos);
+            var value = params[i].substring(pos + 1);
+            paramsMap[name] = value;
+        }
+    }
+// -->
+</script>
+
+</head>
+<body>
+<img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
+<h2>
+    <script type="text/javascript">
+    <!--
+    message = "Welcome, " + paramsMap['username'] + "!";
+    document.writeln(message);
+    // -->
+    </script>
+</h2>
+<br>
+
+Here are the values you entered in <a href="./test_type_page1.html">test_type_page1.html</a>:
+<br />
+<script type="text/javascript">
+<!--
+    document.writeln("username&nbsp;:&nbsp;" + paramsMap['username'] + "<br \/>");
+    document.writeln("password&nbsp;:&nbsp;" + paramsMap['password'] + "<br \/>");
+// -->
+</script>
+</body>
+<html>

@@ -1,0 +1,19 @@
+{
+    "home": {
+        "title": "أهلا وسهلا بك، جافا هبستر!",
+        "subtitle": "هذه صفحتك الرئيسية",
+        "logged": {
+            "message": "قمت بتسجيل الدخول كمستخدم \"{{username}}\"."
+        },
+        "question": "إذا كان لديك أي سؤال حول JHipster:",
+        "link": {
+            "homepage": "JHipster homepage",
+            "stackoverflow": "JHipster on Stack Overflow",
+            "bugtracker": "JHipster bug tracker",
+            "chat": "JHipster public chat room",
+            "follow": "follow @java_hipster on Twitter"
+        },
+        "like": "إذا كنت تحب JHipster، لا تنسى أن تعطي لنا نجم على",
+        "github": "GitHub"
+    }
+}

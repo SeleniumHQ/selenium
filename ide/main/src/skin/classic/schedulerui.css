@@ -1,0 +1,20 @@
+.checkbox-header {
+  font-weight: bold;
+}
+
+vbox.vsep {
+  border-left: 1px ridge #606060;
+}
+
+.time-checkboxes {
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+#jobNextRun {
+  text-align: right;
+}
+
+#jobNextRun.nextRunError {
+    color: #A94442;
+}

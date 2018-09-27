@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd"> 
+
+<title>Dojo Button Widget Test</title>
+
+<style type="text/css"> body { margin: 50px; } </style>
+
+<script type="text/javascript">
+	var djConfig = { isDebug: true };
+</script>
+
+<script type="text/javascript" src="../../dojo.js"></script>
+<script type="text/javascript">
+	dojo.require("dojo.dnd.HtmlDragMove");
+	dojo.require("dojo.event.*");
+
+	function byId(id){
+		return document.getElementById(id);
+	}
+
+	function init(){
+		new dojo.dnd.HtmlDragMoveSource(byId("layer1"));
+		new dojo.dnd.HtmlDragSource(byId("layer2"));
+		new dojo.dnd.HtmlDragMoveSource(byId("layer3"));
+		new dojo.dnd.HtmlDragMoveSource(byId("link1"));
+		new dojo.dnd.HtmlDragMoveSource(byId("span1"));
+		new dojo.dnd.HtmlDragMoveSource(byId("table1"));
+	}
+
+	dojo.event.connect(dojo, "loaded", "init");
+</script>
+
+<div id="layer1" style="border: 1px solid black;">
+	<ul>
+		<li>list 1 item 1</li>
+		<li>list 1 item 2</li>
+		<li>list 1 item 3</li>
+	</ul>
+</div>
+
+<ul id="layer2">
+	<li>list 2 item 1</li>
+	<li>list 2 item 2</li>
+	<li>list 2 item 3</li>
+</ul>
+
+<!-- test for positioning bug if object is inside a form (that isn't at the top left of the body -->
+<form>
+	This list is inside a form:
+	<ul id="layer3">
+		<li>list 3 item 1</li>
+		<li>list 3 item 2</li>
+		<li>list 3 item 3</li>
+	</ul>
+</form>
+
+<a id="link1" href="#">a link</a>
+
+<span id="span1">a span</span>
+
+<table id="table1" border=1>
+<tr><td>i</td><td>'</td><td>m</td></tr>
+<tr><td>a</td><td>t</td><td>a</td></tr>
+<tr><td>b</td><td>l</td><td>e</td></tr>
+</table>
+
+

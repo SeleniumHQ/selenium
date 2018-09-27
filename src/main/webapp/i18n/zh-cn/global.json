@@ -1,0 +1,135 @@
+{
+    "global": {
+        "title": "Selenium",
+        "browsehappy": "您目前使用<strong>过于老旧</strong>的浏览器, 建议您<a href=\"http://browsehappy.com/?locale=en\">升级浏览器</a>让您有更佳的上网体验.",
+        "menu": {
+            "home": "首页",
+            "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
+            "entities": {
+                "main": "数据",
+                "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+            },
+            "account": {
+                "main": "账号",
+                "settings": "设置",
+                "password": "密码",
+                "sessions": "会话",
+                "login": "登录",
+                "logout": "退出",
+                "register": "注册"
+            },
+            "admin": {
+                "main": "管理",
+                "userManagement": "用户管理",
+                "tracker": "追踪使用者",
+                "metrics": "资源监控",
+                "health": "服务状态",
+                "configuration": "配置",
+                "logs": "日志",
+                "audits": "审核",
+                "apidocs": "API",
+                "database": "数据库",
+                "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
+            },
+            "language": "语言"
+        },
+        "form": {
+            "username": "账号",
+            "username.placeholder": "您的账号",
+            "currentpassword": "当前密码",
+            "currentpassword.placeholder": "您的当前密码",
+            "newpassword": "新密码",
+            "newpassword.placeholder": "您的新密码",
+            "confirmpassword": "新密码确认",
+            "confirmpassword.placeholder": "确认您的新密码",
+            "email": "电子邮件",
+            "email.placeholder": "您的电子邮件"
+        },
+        "messages": {
+            "info": {
+                "authenticated": {
+                    "prefix": "如果您要",
+                    "link": "登录",
+                    "suffix": ", 您可以使用默认账号:<br/>- 管理员 (账号=\"admin\"和密码=\"admin\") <br/>- 普通用户 (账号=\"user\"和密码=\"user\")."
+                },
+                "register": {
+                    "noaccount": "您还没有账号",
+                    "link": "注册一个新账号"
+                }
+            },
+            "error": {
+                "dontmatch" : "您输入的密码和确认密码不匹配!"
+            },
+            "validate": {
+                "newpassword": {
+                    "required": "您的密码是必填项.",
+                    "minlength": "您的密码长度至少要有5个字符",
+                    "maxlength": "您的密码长度不能超过50个字符",
+                    "strength": "密码强度:"
+                },
+                "confirmpassword": {
+                    "required": "您的确认密码是必填项.",
+                    "minlength": "您的确认密码长度至少要有5个字符",
+                    "maxlength": "您的确认密码长度不能超过50个字符"
+                },
+                "email": {
+                    "required": "您的电子邮件是必填项.",
+                    "invalid": "您的电子邮件格式格式不正确.",
+                    "minlength": "您的电子邮件长度至少要有5个字符",
+                    "maxlength": "您的电子邮件长度不能超过50个字符"
+                }
+            }
+        },
+        "field": {
+            "id" : "ID"
+        },
+        "ribbon": {
+            "dev":"Development"
+        },
+        "item-count": "显示第 {{first}} - {{second}} 条，共 {{total}} 条"
+    },
+    "entity": {
+        "action": {
+            "addblob": "增加 BLOB",
+            "addimage": "增加图片",
+            "back": "返回",
+            "cancel": "取消",
+            "delete": "删除",
+            "edit": "编辑",
+            "open": "Open",
+            "save": "保存",
+            "view": "查看"
+        },
+        "detail": {
+            "field": "字段",
+            "value": "值"
+        },
+        "delete": {
+            "title": "确认删除"
+        },
+        "validation": {
+            "required": "本字段不能为空.",
+            "minlength": "本字段最短长度为 {{min}} 个字符.",
+            "maxlength": "本字段最大长度为 {{max}} 个字符.",
+            "min": "本字段不能小于 {{min}}.",
+            "max": "本字段不能大于 {{max}}.",
+            "minbytes": "本字段不少于 {{min}} 字符.",
+            "maxbytes": "本字段不多余 {{max}} 字符.",
+            "pattern": "本字段必须符合模式 {{pattern}}.",
+            "number": "本字段必须为数字.",
+            "datetimelocal": "本字段必须为日期和时间."
+        }
+    },
+    "error": {
+        "internalServerError": "Internal server error",
+        "server.not.reachable": "服务器无法访问",
+        "url.not.found": "Not found",
+        "NotNull": "域 {{fieldName}} 不能为空!",
+        "Size": "域 {{fieldName}} 不满足最大/最小值限制!",
+        "userexists": "该用户名已存在!",
+        "emailexists": "该邮箱已被使用!",
+        "idexists": "新建的 {{entityName}} 不能包含ID",
+        "idnull": "Invalid ID"
+    },
+    "footer": "这里是页脚"
+}

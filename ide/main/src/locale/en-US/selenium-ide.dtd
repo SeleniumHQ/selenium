@@ -1,0 +1,93 @@
+<!ENTITY selenium-ide.name "Selenium IDE">
+<!ENTITY selenium-ide.version "2.9.0">
+<!ENTITY selenium-ide.sidebar.title "&selenium-ide.name; &selenium-ide.version;">
+<!ENTITY selenium-ide.standalone.title "&selenium-ide.name; &selenium-ide.version;">
+
+<!ENTITY firefox.sidebar.view-menu.label "&selenium-ide.name;">
+
+<!ENTITY newTestCmd.label "New Test Case">
+<!ENTITY addTestCmd.label "Add Test Case...">
+<!ENTITY openCmd.label "Open...">
+<!ENTITY saveTestCmd.label "Save Test Case">
+<!ENTITY saveTestAsCmd.label "Save Test Case As...">
+<!ENTITY exportCmd.label "Export Test Case As...">
+<!ENTITY optionsCmd.label "Options...">
+<!ENTITY formatCmd.label "Format">
+<!ENTITY clipboardFormatCmd.label "Clipboard Format">
+<!ENTITY tableTab.label "Table">
+<!ENTITY sourceTab.label "Source">
+<!ENTITY runRadio.label "Run">
+<!ENTITY walkRadio.label "Walk">
+<!ENTITY stepRadio.label "Step">
+<!ENTITY playSuiteButton.tooltip "Play entire test suite">
+<!ENTITY playButton.tooltip "Play current test case">
+<!ENTITY pauseButton.tooltip "Pause / Resume">
+<!ENTITY stepButton.tooltip "Step">
+<!ENTITY speedSliderFast.label "Fast">
+<!ENTITY speedSliderFaster.label "Faster">
+<!ENTITY speedSliderFastest.label "Fastest">
+<!ENTITY speedSliderSlowest.label "Slowest">
+<!ENTITY speedSliderSlower.label "Slower">
+<!ENTITY speedSliderSlow.label "Slow">
+<!ENTITY recordButton.tooltip "Record">
+<!ENTITY baseURL.label "Base URL">
+<!ENTITY baseURLTextbox.tooltip "Enter the URL of the website you are testing. Used for playing &quot;open&quot; command.">
+<!ENTITY resetWindowCmd.label "Reset IDE Window">
+
+<!ENTITY fileMenu.label "File">
+<!ENTITY runMenu.label "Actions">
+<!ENTITY optionsMenu.label "Options">
+
+<!ENTITY command.label "Command">
+<!ENTITY target.label "Target">
+<!ENTITY value.label "Value">
+<!ENTITY findTarget.label "Find">
+
+<!ENTITY helpDocumentation.label "Documentation">
+<!ENTITY helpReportIssue.label "Report Issue">
+<!ENTITY helpSearchIssues.label "Search Issues">
+<!ENTITY helpSubmitDiagInfo.label "Submit Diagnostic Information">
+<!ENTITY helpReleaseNotes.label "Release Notes">
+<!ENTITY helpBlog.label "Official Selenium Blog">
+<!ENTITY helpWebsite.label "Official Selenium Website">
+
+<!ENTITY logConsole.label "Log">
+<!ENTITY logFilter.debug.label "Debug">
+<!ENTITY logFilter.info.label "Info">
+<!ENTITY logFilter.warn.label "Warn">
+<!ENTITY logFilter.error.label "Error">
+<!ENTITY logClear.label "Clear">
+<!ENTITY reference.label "Reference">
+
+<!ENTITY contextMenu.cut.label "Cut">
+<!ENTITY contextMenu.copy.label "Copy">
+<!ENTITY contextMenu.paste.label "Paste">
+<!ENTITY contextMenu.delete.label "Delete">
+<!ENTITY contextMenu.insertCommand.label "Insert New Command">
+<!ENTITY contextMenu.insertComment.label "Insert New Comment">
+<!ENTITY contextMenu.clear.label "Clear All">
+<!ENTITY contextMenu.breakpoint.label "Toggle Breakpoint">
+<!ENTITY contextMenu.startpoint.label "Set / Clear Start Point">
+<!ENTITY contextMenu.execCommand.label "Execute this command">
+<!ENTITY contextMenu.playSuiteHere.label "Play test suite from here">
+
+<!ENTITY uiReference.label "UI-Element">
+<!ENTITY rollupReference.label "Rollup">
+<!ENTITY rollupButton.tooltip "Apply rollup rules">
+
+<!ENTITY suiteTree.testCase.label "Test Case">
+<!ENTITY newSuiteCmd.label "New Test Suite">
+<!ENTITY openSuiteCmd.label "Open Test Suite...">
+<!ENTITY saveSuiteCmd.label "Save Test Suite">
+<!ENTITY saveSuiteAsCmd.label "Save Test Suite As...">
+<!ENTITY exportSuiteCmd.label "Export Test Suite As...">
+<!ENTITY recentSuiteCmd.label "Recent Test Suites">
+<!ENTITY recentTestCmd.label "Recent Test Cases">
+
+<!ENTITY testCaseProperties.label "Properties...">
+
+<!ENTITY reloadExtButton.tooltip "Reload">
+<!ENTITY tableViewUnavailable.label "Table view is not available with this format.">
+<!ENTITY suiteProgressRuns.label "Runs:">
+<!ENTITY suiteProgressFailures.label "Failures:">
+<!ENTITY internalTestsMenu.label "Test Selenium IDE">

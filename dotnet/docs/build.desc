@@ -1,0 +1,12 @@
+dotnet_docs(name = "docs",
+  srcs = [
+    "//dotnet/src/webdriver:webdriver",
+    "//dotnet/src/support:support",
+    "//dotnet/src/core:core",
+    "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium",
+  ],
+  project = "docs.shfbproj",
+  website = "build/docs/dotnet/web",
+  helpfile = "WebDriver.chm",
+  out = "build/dotnet/dist/WebDriver.chm"
+)

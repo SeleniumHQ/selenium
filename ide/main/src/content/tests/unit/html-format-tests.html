@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Selenium IDE Test</title>
+    <link rel="stylesheet" type="text/css" href="chrome://selenium-ide/content/jsunit/css/jsUnitStyle.css">
+		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitCore.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/preferences.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/file-utils.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/testCase.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/xhtml-entities.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/formats/html.js"></script>
+		<script type="text/javascript">
+function setUp() {
+	this.log = new Log("format");
+	options.escapeXmlEntities = "html";
+}
+
+function testDecodeTextWithHtmlFormat() {
+	assertEquals("abc", decodeText("abc"));
+
+	assertEquals("' '", decodeText("'&#xA0;'"));
+	assertEquals("' '", decodeText("'&#160;'"));
+	assertEquals("' '", decodeText("'&nbsp;'"));
+
+	assertEquals("'abc'", decodeText("'abc'"));
+	assertEquals("&amp;", decodeText("&amp;amp;"));
+	assertEquals("a=b&c=d", decodeText("a=b&c=d"));
+	assertEquals("&foobar;", decodeText("&foobar;"));
+	assertEquals("<foobar>", decodeText("&lt;foobar&gt;"));
+    assertEquals("a\nb", decodeText("a<br>b"));
+    assertEquals("a\nb", decodeText("a<br />b"));
+}
+
+function testEncodeTextWithHtmlFormat() {
+    assert((new RegExp(XhtmlEntityChars)).test("<"));
+	assertEquals("&nbsp;", encodeText("\xA0"));
+	assertEquals(" ", encodeText(" "));
+	assertEquals("&nbsp;&nbsp;", encodeText("  "));
+	assertEquals("'abc'", encodeText("'abc'"));
+	assertEquals("&amp;amp;", encodeText("&amp;"));
+	assertEquals("a=b&amp;c=d", encodeText("a=b&c=d"));
+	assertEquals("&amp;foobar;", encodeText("&foobar;"));
+	assertEquals("&lt;foobar&gt;", encodeText("<foobar>"));
+    assertEquals("<br />", encodeText("\n"));
+}
+
+function testParse() {
+	var source = FileUtils.readURL("chrome://selenium-ide/content/tests/unit/html/TestWaitInPopupWindow.html");
+	var testCase = new TestCase();
+	parse(testCase, source);
+	var commands = testCase.commands;
+	assertEquals(" open command ", commands.shift().comment);
+	assertEquals("open", commands.shift().command);
+	assertEquals("click", commands.shift().command);
+	assertEquals(" waitForPopUp command ", commands.shift().comment);
+	assertEquals("waitForPopUp", commands.shift().command);
+	assertEquals("selectWindow", commands.shift().command);
+	assertEquals("verifyTitle", commands.shift().command);
+	assertEquals("setTimeout", commands.shift().command);
+	assertEquals("clickAndWait", commands.shift().command);
+	assertEquals("verifyTitle", commands.shift().command);
+	assertEquals("setTimeout", commands.shift().command);
+	assertEquals("clickAndWait", commands.shift().command);
+	assertEquals("verifyTitle", commands.shift().command);
+	assertEquals("close", commands.shift().command);
+	assertEquals("selectWindow", commands.shift().command);
+	assertEquals(0, commands.length);
+}
+
+function testParseXHTML() {
+	var source = FileUtils.readURL("chrome://selenium-ide/content/tests/unit/html/XhtmlTestCase.xml");
+	var testCase = new TestCase();
+	parse(testCase, source);
+	var commands = testCase.commands;
+	assertEquals("open", commands.shift().command);
+	assertEquals("click", commands.shift().command);
+	assertEquals(0, commands.length);
+    assertEquals("http://www.yahoo.com/", testCase.baseURL);
+}
+
+function testParseEmptyTD() {
+    var source = FileUtils.readURL("chrome://selenium-ide/content/tests/unit/html/TestEmptyTD.html");
+    var testCase = new TestCase();
+    parse(testCase, source);
+    var commands = testCase.commands;
+    assertEquals("open", commands.shift().command);
+    assertEquals("type", commands.shift().command);
+    assertEquals("verifyValue", commands.shift().command);
+    assertEquals(0, commands.length);
+}
+</script>
+  </head>
+
+  <body>
+  </body>
+</html>

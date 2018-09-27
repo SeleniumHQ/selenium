@@ -1,0 +1,317 @@
+/*
+ * Copyright 2011 Software Freedom Conservancy
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+/*---( Layout )---*/
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    overflow: auto;
+}
+
+td {
+    position: static;
+}
+
+tr {
+    vertical-align: top;
+}
+
+.layout {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+.layout td {
+    border: 0;
+}
+
+iframe {
+    border: 0px;
+    width: 100%;
+    height: 100%;
+    background: white;
+    /*  HBC - this particular property seems to be causing an issue in
+        conjunction with the native Draw() method in Snapsie. I don't really
+        see a visual difference from commenting this out, so I'm going ahead
+        with it.
+    overflow: auto; */
+}
+
+/*---( Style )---*/
+
+body, html {
+    font-family: Verdana, Arial, sans-serif;
+}
+
+.selenium th, .selenium td {
+    border: 1px solid #999;
+}
+
+.header {
+    background: #ccc;
+    padding: 0;
+    font-size: 90%;
+}
+
+.remoterunner {
+	font-size: 10pt;
+}
+
+.remoterunner fieldset {
+	padding: 0.25em;
+}
+
+.remoterunner button, .remoterunner label {
+	margin-right: 1em;
+}
+
+
+#controlPanel {
+    padding: 0.5ex;
+    background: #eee;
+    overflow: auto;
+    font-size: 75%;
+    text-align: center;
+}
+
+#controlPanel fieldset {
+    margin: 0.3ex;
+    padding: 0.3ex;
+}
+
+#controlPanel fieldset legend {
+    color: black;
+}
+
+#controlPanel button {
+    margin: 0.5ex;
+}
+
+#imageButtonPanel button {
+    width: 24px;
+    height: 20px;
+    background-color:white;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+}
+
+#controlPanel #runSuite {
+    width: 32px;
+    background-image: url("icons/all.png");
+}
+
+#controlPanel #runSeleniumTest {
+    width: 32px;
+    background-image: url("icons/selected.png");
+}
+
+.cssPauseTest {
+    background-image: url("icons/pause.png");
+}
+
+.cssPauseTest[disabled]  {
+    background-image: url("icons/pause_disabled.png");
+}
+
+.cssContinueTest {
+    background-image: url("icons/continue.png");
+}
+
+.cssContinueTest[disabled] {
+    background-image: url("icons/continue_disabled.png");
+}
+
+#controlPanel #stepTest {
+    background-image: url("icons/step.png");
+}
+
+#controlPanel #stepTest[disabled] {
+    background-image: url("icons/step_disabled.png");
+}
+
+#controlPanel table {
+    font-size: 100%;
+}
+
+#controlPanel th, #controlPanel td {
+    border: 0;
+}
+
+h1 {
+    margin: 0.2ex;
+    font-size: 130%;
+    font-weight: bold;
+}
+
+h2 {
+    margin: 0.2ex;
+    font-size: 80%;
+    font-weight: normal;
+}
+
+.selenium a {
+    color: black;
+    text-decoration: none;
+}
+
+.selenium a:hover {
+    text-decoration: underline;
+}
+
+button, label {
+    cursor: pointer;
+}
+
+#stats {
+    margin: 0.5em auto 0.5em auto;
+}
+
+#stats th, #stats td {
+    text-align: left;
+    padding-left: 2px;
+}
+
+#stats th {
+    text-decoration: underline;
+}
+
+#stats td.count {
+    font-weight: bold;
+    text-align: right;
+}
+
+#testRuns {
+    color: green;
+}
+
+#testFailures {
+    color: red;
+}
+
+#commandPasses {
+    color: green;
+}
+
+#commandFailures {
+    color: red;
+}
+
+#commandErrors {
+    color: #f90;
+}
+
+
+/*---( Logging Console )---*/
+
+#logging-console {
+    background: #fff;
+    font-size: 75%;
+}
+
+#logging-console #banner {
+    display: block;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background: #ddd;
+    border-bottom: 1px solid #666;
+}
+
+#logging-console #logLevelChooser {
+    float: right;
+    margin: 3px;
+}
+
+#logging-console ul {
+    list-style-type: none;
+    margin: 0px;
+    margin-top: 3em;
+    padding-left: 5px;
+}
+
+#logging-console li {
+    margin: 2px;
+    border-top: 1px solid #ccc;
+}
+
+#logging-console li.error {
+    font-weight: bold;
+    color: red;
+    white-space:pre-wrap;
+}
+
+#logging-console li.warn {
+    color: red;
+}
+
+#logging-console li.debug {
+    color: green;
+}
+
+div.executionOptions {
+    padding-left: 5em;
+}
+
+div.executionOptions label, div.executionOptions input {
+    display: block;
+    float: left;
+}
+
+div.executionOptions br {
+    clear: left;
+}
+
+#speedSlider {
+    text-align: left;
+    margin: 0px auto;
+    width: 260px;
+    line-height: 0px;
+    font-size: 0px;
+    padding: 0px;
+}
+
+#speedSlider #speedTrack {
+    background-color: #333;
+    width: 260px;
+    height: 2px;
+    line-height: 2px;
+    z-index: 1;
+    border: 1px solid;
+    border-color: #999 #ddd #ddd #999;
+    cursor: pointer;
+}
+
+#speedSlider #speedHandle {
+    width: 12px;
+    top: -8px;
+    background-color: #666;
+    position: relative;
+    margin: 0px;
+    height: 8px;
+    line-height: 8px;
+    z-index: 1;
+    border: 1px solid;
+    border-color: #999 #333 #333 #999;
+    cursor: pointer;
+}

@@ -1,0 +1,48 @@
+apply plugin: "org.sonarqube"
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = '0.8.2'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "http://localhost:9001"
+        property "sonar.exclusions", "src/main/webapp/content/**/*.*,src/main/webapp/i18n/*.js, build/www/**/*.*"
+
+        property "sonar.issue.ignore.multicriteria", "S3437,S4502,S4684,UndocumentedApi,BoldAndItalicTagsCheck"
+
+        // Rule https://sonarcloud.io/coding_rules?open=Web%3ABoldAndItalicTagsCheck&rule_key=Web%3ABoldAndItalicTagsCheck is ignored. Even if we agree that using the "i" tag is an awful practice, this is what is recommended by http://fontawesome.io/examples/
+        property "sonar.issue.ignore.multicriteria.BoldAndItalicTagsCheck.resourceKey", ">src/main/webapp/app/**/*.*"
+        property "sonar.issue.ignore.multicriteria.BoldAndItalicTagsCheck.ruleKey", "Web:BoldAndItalicTagsCheck"
+
+        // Rule https://sonarcloud.io/coding_rules?open=squid%3AS3437&rule_key=squid%3AS3437 is ignored, as a JPA-managed field cannot be transient
+        property "sonar.issue.ignore.multicriteria.S3437.resourceKey", "src/main/java/**/*"
+        property "sonar.issue.ignore.multicriteria.S3437.ruleKey", "squid:S3437"
+
+        // Rule https://sonarcloud.io/coding_rules?open=squid%3AUndocumentedApi&rule_key=squid%3AUndocumentedApi is ignored, as we want to follow "clean code" guidelines and classes, methods and arguments names should be self-explanatory
+        property "sonar.issue.ignore.multicriteria.UndocumentedApi.resourceKey", "src/main/java/**/*"
+        property "sonar.issue.ignore.multicriteria.UndocumentedApi.ruleKey", "squid:UndocumentedApi"
+        // Rule https://sonarcloud.io/coding_rules?open=squid%3AS4502&rule_key=squid%3AS4502 is ignored, as for JWT tokens we are not subject to CSRF attack
+        property "sonar.issue.ignore.multicriteria.S4502.resourceKey", "src/main/java/**/*"
+        property "sonar.issue.ignore.multicriteria.S4502.ruleKey", "squid:S4502"
+
+        // Rule https://sonarcloud.io/coding_rules?open=squid%3AS4684&rule_key=squid%3AS4684
+        property "sonar.issue.ignore.multicriteria.S4684.resourceKey", "src/main/java/**/*"
+        property "sonar.issue.ignore.multicriteria.S4684.ruleKey", "squid:S4684"
+
+        property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/test.exec"
+        property "sonar.java.codeCoveragePlugin", "jacoco"
+        property "sonar.testExecutionReportPaths", "${project.buildDir}/test-results/jest/TESTS-results-sonar.xml"
+        property "sonar.typescript.lcov.reportPaths", "${project.buildDir}/test-results/lcov.info"
+        property "sonar.junit.reportPaths", "${project.buildDir}/test-results/test"
+        property "sonar.sources", "${project.projectDir}/src/main/"
+        property "sonar.tests", "${project.projectDir}/src/test/"
+    }
+}

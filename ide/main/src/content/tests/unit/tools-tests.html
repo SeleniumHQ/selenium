@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Selenium IDE Test</title>
+    <link rel="stylesheet" type="text/css" href="chrome://selenium-ide/content/jsunit/css/jsUnitStyle.css">
+    <script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitCore.js"></script>
+    <script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/selenium-browserdetect.js"></script>
+    <script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/lib/prototype.js"></script>
+    <script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/scripts/htmlutils.js"></script>
+    <script type="text/javascript" src="chrome://selenium-ide/content/preferences.js"></script>
+    <script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
+    <script type="text/javascript">
+function setUp() {
+}
+
+function testLineReader() {
+    var reader = new LineReader("Good morning\r\nGood afternoon\nGood evening\rGood night");
+    assertEquals("Good morning", reader.read());
+    assertEquals("Good afternoon", reader.read());
+    assertEquals("Good evening", reader.read());
+    assertEquals("Good night", reader.read());
+    assertNull(reader.read());
+}
+
+function testUnderscore() {
+    assertEquals('click_and_wait', StringUtils.underscore('clickAndWait'));
+}
+
+function testLogFormatDate() {
+    var log = new Log("Test");
+    assertEquals("2007-09-05 13:00:12.034", log._formatDate(new Date(2007, 9 - 1, 5, 13, 0, 12, 34)));
+}
+
+function testLogDebug() {
+    var log = new Log("Test");
+    var result = null;
+    log._getThreshold = function() { return "DEBUG"; }
+    log._write = function(message) {
+        result = message;
+    }
+    log.debug("foobar");
+    assert("bad log line: " + result, /^Selenium IDE \[DEBUG\] \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3} Test: foobar$/.test(result));
+}
+    </script>
+  </head>
+
+  <body>
+  </body>
+</html>

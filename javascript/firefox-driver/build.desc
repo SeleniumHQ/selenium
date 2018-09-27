@@ -1,0 +1,372 @@
+mozilla_xpt(name = "command-processor-xpt",
+  srcs = [ "extension/idl/nsICommandProcessor.idl" ])
+
+mozilla_xpt(name = "response-handler-xpt",
+  srcs = [ "extension/idl/nsIResponseHandler.idl" ])
+
+mozilla_xpt(name = "httpd-xpt",
+  srcs = [ "extension/idl/nsIHttpServer.idl" ])
+
+mozilla_xpt(name = "status-xpt",
+  srcs = [ "extension/idl/wdIStatus.idl" ])
+
+mozilla_xpt(name = "coordinates-xpt",
+  srcs = [ "extension/idl/wdICoordinate.idl" ])
+
+mozilla_xpt(name = "modifier-keys-xpt",
+  srcs = [ "extension/idl/wdIModifierKeys.idl" ])
+
+mozilla_xpt(name = "mouse-xpt",
+  srcs = [ "extension/idl/wdIMouse.idl" ])
+
+mozilla_extension(name = "webdriver_legacy",
+  content = [
+    "extension/content/**/*.js",
+    "extension/content/fxdriver.xul",
+  ],
+  components = [
+    "extension/components/httpd.js",
+    ":bad-cert-listener",
+    ":command-processor",
+    ":command-processor-xpt",
+    ":coordinates-xpt",
+    ":modifier-keys",
+    ":modifier-keys-xpt",
+    ":driver-component",
+    ":httpd-xpt",
+    ":mouse-xpt",
+    ":prompt-service",
+    ":response-handler-xpt",
+    ":session",
+    ":session-store",
+    ":status-xpt",
+    ":synthetic-mouse",
+  ],
+  resources = [
+    { ":web-element-cache" : "resource/modules/web-element-cache.js" },
+    { "js/timer.js" : "resource/modules/timer.js" },
+    { "js/evaluate.js" : "resource/evaluate.js" },
+  ],
+  chrome = "extension/chrome.manifest",
+  install = "extension/install.rdf")
+
+js_binary(name = "bad-cert-listener",
+  srcs = [
+    "js/badCertListener.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":logging",
+    ":moz",
+    "//javascript/webdriver/atoms:all_js"
+  ])
+
+js_binary(name = "command-processor",
+  srcs = [
+    "js/nsCommandProcessor.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  flags = [
+      "--language_in=ECMASCRIPT5",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":error",
+    ":events",
+    ":firefoxdriver",
+    ":logging",
+    ":modals",
+    ":moz",
+    ":session-store",
+    ":timer",
+    ":utils",
+    ":webelement",
+    "//javascript/webdriver/atoms:all_js"
+  ])
+
+js_binary(name = "driver-component",
+  srcs = [
+    "js/driver-component.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  flags = [
+    "--language_in=ECMASCRIPT5",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":dispatcher",
+    ":events",
+    ":firefoxdriver",
+    ":webdriverserver",
+    ":webelement",
+    "//javascript/webdriver/atoms:all_js",
+  ])
+
+js_binary(name = "modifier-keys",
+  srcs = [
+    "js/modifierKeys.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":moz",
+    ":utils",
+    "//javascript/webdriver/atoms:all_js",
+  ])
+
+js_binary(name = "prompt-service",
+  srcs = [
+    "js/promptService.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":logging",
+    ":modals",
+    ":moz",
+  ])
+
+js_binary(name = "session",
+  srcs = [
+    "js/wdsession.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":logging",
+    ":moz",
+  ])
+
+js_binary(name = "session-store",
+  srcs = [
+    "js/sessionstore.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":logging",
+    ":modals",
+    ":moz",
+    ":proxy",
+    ":session",
+  ])
+
+js_binary(name = "synthetic-mouse",
+  srcs = [
+    "js/syntheticMouse.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":firefox-utils",
+    ":logging",
+    ":moz",
+    ":utils",
+    "//javascript/webdriver/atoms:all_js",
+  ])
+
+js_binary(name = "web-element-cache",
+  srcs = [
+    "js/element_cache.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":firefox-utils",
+    ":moz",
+    ":utils",
+    "//javascript/webdriver/atoms:all_js"
+  ])
+
+
+js_library(name = "dispatcher",
+  srcs = [ "js/dispatcher.js" ],
+  deps = [
+    ":error",
+    ":request",
+    ":response",
+    ":utils",
+    "//javascript/atoms:all_js",
+  ])
+
+js_library(name = "firefox-utils",
+  srcs = [
+    "js/firefox-utils.js",
+  ],
+  deps = [
+    ":logging",
+    ":moz",
+    "//javascript/atoms:all_js",
+  ])
+
+js_library(name = "firefoxdriver",
+  srcs = [ "js/firefoxDriver.js" ],
+  deps = [
+    ":modals",
+    ":preconditions",
+    ":screenshot",
+    ":timer",
+    ":utils",
+    ":webelement",
+    ":webloadinglistener",
+    "//javascript/atoms:all_js",
+  ])
+
+js_library(name = "error",
+  srcs = [ "js/error.js", ])
+
+js_library(name = "events",
+  srcs = [ "js/events.js", ])
+
+js_library(name = "files",
+  srcs = [
+    "js/files.js",
+  ],
+  deps = [
+    ":error",
+  ])
+
+js_library(name = "logging",
+  srcs = [
+    "js/logger.js",
+    "js/profiler.js",
+  ],
+  deps = [
+    ":files",
+    ":moz",
+    ":prefs",
+    "//javascript/webdriver:logging_lib",
+  ])
+
+js_library(name = "modals",
+  srcs = [ "js/modals.js" ],
+  deps = [
+    ":firefox-utils",
+    ":logging",
+    ":moz",
+    ":timer",
+    ":utils",
+    "//javascript/atoms:all_js",
+  ])
+
+js_library(name = "moz",
+  srcs = [ "js/moz.js" ],
+  deps = [
+    "//javascript/atoms:all_js",
+  ])
+
+js_library(name = "preconditions",
+  srcs = [ "js/preconditions.js", ],
+  deps = [
+    ":utils",
+    "//javascript/atoms:all_js",
+  ])
+
+js_library(name = "prefs",
+  srcs = [
+    "js/prefs.js",
+  ])
+
+js_library(name = "proxy",
+  srcs = [ "js/proxy.js" ],
+  deps = [
+    ":logging",
+    ":moz",
+  ])
+
+js_library(name = "request",
+  srcs = [ "js/request.js" ],
+  deps = [
+    ":utils",
+  ])
+
+js_library(name = "response",
+  srcs = [ "js/response.js" ])
+
+js_library(name = "screenshot",
+  srcs = [ "js/screenshooter.js" ],
+  deps = [
+    ":moz",
+  ])
+
+js_library(name = "timer",
+  srcs = [ "js/timer.js" ])
+
+js_library(name = "utils",
+  srcs = [ "js/utils.js" ],
+  deps = [
+    ":error",
+    ":firefox-utils",
+    ":logging",
+    ":moz",
+    ":webloadinglistener",
+    "//javascript/atoms:all_js",
+  ])
+
+js_library(name = "webdriverserver",
+  srcs = [ "js/webdriverserver.js" ],
+  deps = [
+    ":dispatcher",
+    ":firefoxdriver",
+    ":logging",
+    ":moz",
+    ":utils",
+  ])
+
+js_library(name = "webelement",
+  srcs = [ "js/wrappedElement.js" ],
+  deps = [
+    ":logging",
+    ":moz",
+    ":preconditions",
+    ":utils",
+    ":webloadinglistener",
+    "//javascript/atoms:all_js",
+    "//javascript/webdriver:all_js",
+  ])
+
+js_library(name = "webloadinglistener",
+  srcs = [ "js/webLoadingListener.js" ],
+  deps = [
+    ":timer",
+  ])
+
+export_file(name = "webdriver_prefs_legacy",
+  srcs = [ "webdriver.json" ])

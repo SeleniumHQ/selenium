@@ -1,0 +1,10 @@
+{
+    "configuration": {
+        "title": "الاعدادات",
+        "filter": "التصفية (عن طريق اختصار)",
+        "table": {
+            "prefix": "بادئة",
+            "properties": "الخصائص"
+        }
+    }
+}

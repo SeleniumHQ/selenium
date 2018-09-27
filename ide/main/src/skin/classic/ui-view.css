@@ -1,0 +1,61 @@
+body {
+    font-family: sans-serif;
+    font-size: 9pt;
+    background-color: white;
+}
+
+div {
+    margin-bottom: 2px;
+}
+
+a {
+    cursor: pointer;
+    background: #fef;
+}
+
+.target-pageset-name {
+    font-size: large;
+    font-weight: bolder;
+    color: #6ab;
+}
+.target-element-name {
+    font-size: large;
+    font-weight: bolder;
+}
+.target-pageset-description {
+    color: #6ab;
+}
+.target-element-description {
+}
+.target-arg-list, .example-list {
+    margin-top: 0px;
+    margin-bottom: 0px; 
+}
+.target-arg-name {
+    margin-top: 4px;
+    font-weight: bolder;
+    color: #5a2;
+}
+.target-arg-description {
+    margin-left: 2em;
+}
+.target-arg-default-values {
+    /* margin-left: 2em; */
+    font-family: monospace;
+    font-size: 8pt;
+}
+
+.example-title {
+    margin-top: 4px;
+    font-weight: bolder;
+    color: #959;
+}
+.example-locator {
+    margin-left:2em;
+    font-family: monospace;
+    font-size: 8pt;
+}
+.undefined {
+    font-weight: bolder;
+    color: red;
+}

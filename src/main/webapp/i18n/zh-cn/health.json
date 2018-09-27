@@ -1,0 +1,28 @@
+{
+    "health": {
+        "title": "服务状态",
+        "refresh.button": "刷新",
+        "stacktrace": "堆栈调用",
+        "details": {
+            "details": "详细情况",
+            "properties": "属性",
+            "name": "名称",
+            "value": "值",
+            "error": "错误"
+        },
+        "indicator": {
+            "diskSpace": "硬盘空间",
+            "mail": "电子邮件",
+            "db": "数据库"
+        },
+        "table": {
+            "service": "服务名称",
+            "status": "状态"
+        },
+        "status": {
+            "UNKNOWN": "UNKNOWN",
+            "UP": "正常",
+            "DOWN": "异常"
+        }
+    }
+}

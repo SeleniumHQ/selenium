@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<!--
+Copyright 2012 Software Freedom Conservancy. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<title>sessioncontainer_test.html</title>
+<script src="test_bootstrap.js"></script>
+<link href="../style.css" rel="stylesheet">
+<script>
+  goog.require('bot.Keyboard.Keys');
+  goog.require('bot.action');
+  goog.require('bot.dom');
+  goog.require('goog.events');
+  goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.recordFunction');
+  goog.require('remote.ui.Event.Type');
+  goog.require('remote.ui.SessionContainer');
+  goog.require('webdriver.Session');
+</script>
+<div id="renderTarget"></div>
+<script>
+  var SESSIONS = [
+      new webdriver.Session('apples', {'browserName': 'chrome'}),
+      new webdriver.Session('oranges', {'browserName': 'firefox'}),
+      new webdriver.Session('bananas', {'browserName': 'internet explorer'})
+  ];
+
+  var container;
+
+  function setUp() {
+    container = new remote.ui.SessionContainer([
+        'chrome',
+        'firefox',
+        'internet explorer'
+    ]);
+    container.render(document.getElementById('renderTarget'));
+  }
+
+  function tearDown() {
+    container.dispose();
+  }
+
+  function assertSelectedTabIs(index, content) {
+    var tab = container.tabBar_.getSelectedTab();
+    assertNotNull(tab);
+    assertEquals(
+        'Expected session(' + SESSIONS[index].getId() + '), but was ' +
+            'session(' + tab.session_.getId() + ')',
+        SESSIONS[index], tab.session_);
+    assertEquals(content, tab.getContent());
+  }
+
+  function assertNoTabsSelected() {
+    assertNull('Did not expect to have a tab selected',
+        container.tabBar_.getSelectedTab());
+  }
+
+  function assertSessions(opt_numPending, var_args) {
+    var numPending = 0;
+    var numSessions = arguments.length;
+    if (goog.isNumber(opt_numPending)) {
+      numPending = opt_numPending;
+      numSessions = Math.max(numSessions - numPending, 0);
+    }
+
+    var numChildren = container.tabBar_.getChildCount();
+    assertEquals('Wrong # expected children', numSessions + numPending,
+        numChildren);
+
+    var i = 0;
+    for (; i < numSessions; ++i) {
+      var child = container.tabBar_.getChildAt(i);
+      assertTrue('Not a session tab at ' + i,
+          child instanceof remote.ui.SessionContainer.SessionTab_);
+
+      var expected = arguments[i + numPending];
+      assertEquals(
+          'Wrong session at ' + i + '; expected ' + expected.getId() +
+              ', but was ' + child.session_.getId(),
+          expected, child.session_);
+    }
+
+    var foundPending = numChildren - i;
+    assertEquals('Wrong # pending tabs', numPending, foundPending);
+    for (; i < numChildren; ++i) {
+      child = container.tabBar_.getChildAt(i);
+      assertFalse('Found a session tab at ' + i,
+          child instanceof remote.ui.SessionContainer.SessionTab_);
+    }
+  }
+
+  function assertShowsEmptyView() {
+    assertFalse('View element is shown',
+        bot.dom.isShown(container.view_.viewElement_));
+    assertTrue('Empty view element is not shown',
+        bot.dom.isShown(container.view_.emptyViewElement_));
+  }
+
+  function testAdd_selectsNewSession() {
+    assertNoTabsSelected();
+    assertSessions();
+    container.addSession(SESSIONS[0]);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions(SESSIONS[0]);
+  }
+
+  function testAdd_replacesFirstPendingSession() {
+    container.addPendingTab_();
+    container.addPendingTab_();
+    assertNoTabsSelected();
+    assertSessions(2);
+
+    container.addSession(SESSIONS[0]);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions(1, SESSIONS[0]);
+  }
+
+  function testRefresh_noCurrentSessionsNoNewSessions() {
+    assertNoTabsSelected();
+    assertSessions();
+    container.refreshSessions([]);
+    assertNoTabsSelected();
+    assertSessions();
+  }
+
+  function testRefresh_noCurrentSessionsWithNewSessions() {
+    assertNoTabsSelected();
+    assertSessions();
+    container.refreshSessions(SESSIONS);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions.apply(null, SESSIONS);
+  }
+
+  function testRefresh_removesOldSessions_allSessionsRemoved() {
+    assertNoTabsSelected();
+    assertSessions();
+    container.refreshSessions(SESSIONS);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions.apply(null, SESSIONS);
+    container.refreshSessions([]);
+    assertNoTabsSelected();
+    assertSessions();
+  }
+
+  function testRefresh_removesOldSessions_currentIsNotRemoved() {
+    assertNoTabsSelected();
+    assertSessions();
+    container.refreshSessions(SESSIONS);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions.apply(null, SESSIONS);
+
+    container.refreshSessions([SESSIONS[0]]);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions(SESSIONS[0]);
+  }
+
+  function testRefresh_removesOldSessions_currentIsRemoved() {
+    assertNoTabsSelected();
+    assertSessions();
+    container.refreshSessions(SESSIONS);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions.apply(null, SESSIONS);
+
+    var sessions = goog.array.slice(SESSIONS, 1);
+    container.refreshSessions(sessions);
+    assertSelectedTabIs(1, 'Firefox');
+    assertSessions.apply(null, sessions);
+  }
+
+  function testRefresh_removesOldSessions_allAreRemoved() {
+    assertNoTabsSelected();
+    assertSessions();
+    container.refreshSessions(SESSIONS);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions.apply(null, SESSIONS);
+
+    container.refreshSessions([]);
+    assertNoTabsSelected();
+    assertSessions();
+    assertShowsEmptyView();
+  }
+
+  function testRefresh_addsNewSessions() {
+    assertNoTabsSelected();
+    assertSessions();
+    container.refreshSessions([SESSIONS[0]]);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions(SESSIONS[0]);
+
+    container.refreshSessions(SESSIONS);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions.apply(null, SESSIONS);
+  }
+
+  function testRefresh_addsNewSessions_currentIsRemoved() {
+    assertNoTabsSelected();
+    assertSessions();
+    container.refreshSessions([SESSIONS[0]]);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions(SESSIONS[0]);
+
+    var sessions = goog.array.slice(SESSIONS, 1);
+    container.refreshSessions(sessions);
+    assertSelectedTabIs(1, 'Firefox');
+    assertSessions.apply(null, sessions);
+  }
+
+  function testRefresh_removesPendingTabs() {
+    container.addPendingTab_();
+    container.addPendingTab_();
+    assertSessions(2);
+
+    container.refreshSessions([SESSIONS[0]]);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions(SESSIONS[0]);
+  }
+
+  function testRemove_removeOnlySession() {
+    container.refreshSessions([SESSIONS[0]]);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions(SESSIONS[0]);
+
+    container.removeSession(SESSIONS[0]);
+    assertNoTabsSelected();
+    assertSessions();
+  }
+
+  function testRemove_removeSession_notSelected() {
+    container.refreshSessions(SESSIONS);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions.apply(null, SESSIONS);
+
+    container.removeSession(SESSIONS[1]);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions(SESSIONS[0], SESSIONS[2]);
+  }
+
+  function testRemove_removeSession_isSelected() {
+    container.refreshSessions(SESSIONS);
+    assertSelectedTabIs(0, 'Chrome');
+    assertSessions.apply(null, SESSIONS);
+
+    container.removeSession(SESSIONS[0]);
+    assertSelectedTabIs(1, 'Firefox');
+    assertSessions(SESSIONS[1], SESSIONS[2]);
+  }
+
+  function testRemovingPendingTabs() {
+    container.addPendingTab_();
+    assertEquals(1, container.pendingTabs_.length);
+    assertEquals(1, container.tabBar_.getChildCount());
+
+    container.removePendingTab();
+    assertEquals(0, container.pendingTabs_.length);
+    assertEquals(0, container.tabBar_.getChildCount());
+  }
+
+  function testRefreshButton() {
+    var onRefresh = goog.testing.recordFunction();
+    goog.events.listen(container, remote.ui.Event.Type.REFRESH,
+        onRefresh);
+
+    container.setEnabled(false);
+    assertFalse(bot.dom.isEnabled(container.refreshButton_));
+    bot.action.click(container.refreshButton_);
+    assertEquals(0, onRefresh.getCallCount());
+
+    container.setEnabled(true);
+    assertTrue(bot.dom.isEnabled(container.refreshButton_));
+    bot.action.click(container.refreshButton_);
+    assertEquals(1, onRefresh.getCallCount());
+  }
+
+  function testAllowsDeleteEventToBubble() {
+    container.addSession(SESSIONS[0]);
+
+    var onViewDelete = goog.testing.recordFunction();
+    goog.events.listen(container.view_, remote.ui.Event.Type.DELETE,
+        onViewDelete);
+
+    bot.action.click(container.view_.deleteSessionButton_.getElement());
+    bot.action.click(
+        container.view_.confirmDialog_.getButtonSet().getButton('ok'));
+    assertEquals(1, onViewDelete.getCallCount());
+
+    var session = container.getSelectedSession();
+    assertNotNull('No session selected?', session);
+    assertEquals(
+        'Expected ' + SESSIONS[0].getId() + ', but was ' + session.getId(),
+        SESSIONS[0], session);
+  }
+
+  function testCreateButton() {
+    var onCreate = goog.testing.recordFunction();
+    goog.events.listen(container, remote.ui.Event.Type.CREATE, onCreate);
+
+    container.setEnabled(false);
+    assertFalse(bot.dom.isEnabled(container.createButton_));
+    bot.action.click(container.createButton_);
+    assertFalse(container.createSessionDialog_.isVisible());
+    assertEquals(0, onCreate.getCallCount());
+
+    container.setEnabled(true);
+    assertTrue(bot.dom.isEnabled(container.createButton_));
+    bot.action.click(container.createButton_);
+    assertTrue(container.createSessionDialog_.isVisible());
+    assertEquals(0, onCreate.getCallCount());
+
+    container.createSessionDialog_.browserSelect_.selectedIndex = 2;
+    bot.action.click(
+        container.createSessionDialog_.getButtonSet().getButton('ok'));
+    assertEquals(1, onCreate.getCallCount());
+
+    var lastCall = onCreate.getLastCall();
+    var args = lastCall.getArguments();
+    assertEquals(1, args.length);
+    assertEquals('firefox', args[0].data['browserName']);
+    assertSessions(1);
+  }
+</script>

@@ -1,0 +1,36 @@
+<html>
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<title>Click Page 1</title>
+<script type="text/javascript">
+var foo = "foo";
+function navigateTo(url) {
+}
+</script>
+</head>
+<body>
+<img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
+<a id="link" href="javascript:alert('link clicked: ' + foo)">link</a><br>
+<a id="linkWithEnclosedImage" href="javascript:alert('enclosedImage clicked')"><img id="enclosedImage" src="./banner.gif"></a><br/>
+<a id="linkWithJavascriptVoidHref" href="javascript:void(0);" onclick="alert('onclick')">link with void href</a><br/>
+<a id="linkWithOnclickReturnsFalse" href="javascript:alert('linkWithOnclickReturnsFalse clicked')" onclick="return false;">link with onclick returns false</a><br/>
+<a id="linkWithMultipleJavascriptStatements" href="javascript:  alert('alert1'); alert('alert2') ; alert ('alert3')">link with multiple javascript calls</a><br/>
+
+</body>
+
+</html>

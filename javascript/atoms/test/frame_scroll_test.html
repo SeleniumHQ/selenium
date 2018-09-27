@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>frame_scroll_test</title>
+  <script src="test_bootstrap.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    goog.require('bot');
+    goog.require('bot.userAgent');
+    goog.require('bot.window');
+    goog.require('goog.dom');
+    goog.require('goog.math.Coordinate');
+    goog.require('goog.testing.jsunit');
+  </script>
+</head>
+<body>
+  <iframe id="frame" src="testdata/styled_size.html"></iframe>
+  <script type="text/javascript">
+    var frame = document.getElementById('frame');
+
+    function setUpPage() {
+      bot.setWindow(goog.dom.getFrameContentWindow(frame));
+    }
+
+    function verifyScroll(expectedScroll) {
+      var actualScroll = bot.window.getScroll();
+      assertEquals(expectedScroll.width, actualScroll.width);
+      assertEquals(expectedScroll.height, actualScroll.height);
+    }
+
+    function testFrameGetScroll() {
+      frame.scrollLeft = '10px';
+      frame.scrollTop = '20px';
+      verifyScroll(new goog.math.Coordinate(10, 20));
+    }
+
+    function testFrameSetScroll() {
+      var pos = new goog.math.Coordinate(200, 150);
+      bot.window.setScroll(pos);
+      verifyScroll(pos);
+    }
+
+    function testFrameSetScrollUsingGetScroll() {
+      var pos = bot.window.getScroll();
+      bot.window.setScroll(pos);
+      verifyScroll(pos);
+    }
+  </script>
+</body>
+</html>

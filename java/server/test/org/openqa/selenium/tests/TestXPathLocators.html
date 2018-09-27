@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+    <meta content="text/html; charset=ISO-8859-1"
+          http-equiv="content-type">
+        <title>Test XPath Locators</title>
+<script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-browserdetect.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../tests/filter-tests-for-browser.js"></script>
+
+
+</head>
+
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+        <tr>
+            <td rowspan="1" colspan="3">Test XPath Locators<br>
+            </td>
+        </tr>
+
+        <tr>
+            <td>open</td>
+            <td>../tests/html/test_locators.html</td>
+            <td>&nbsp;</td>
+        </tr>
+
+        <tr>
+            <td>verifyText</td>
+            <td>xpath=//a</td>
+            <td>this is the first element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>xpath=//a[@class='a2']</td>
+            <td>this is the second element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>xpath=//*[@class='a2']</td>
+            <td>this is the second element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>xpath=//a[2]</td>
+            <td>this is the second element</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>xpath=//a[position()=2]</td>
+            <td>this is the second element</td>
+        </tr>
+        <tr>
+            <td>verifyElementNotPresent</td>
+            <td>xpath=//a[@href='foo']</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>verifyAttribute</td>
+            <td>xpath=//a[contains(@href,'#id1')]/@class</td>
+            <td>a1</td>
+        </tr>
+        
+    </tbody>
+</table>
+<p>SEL-165: search for text w/ and w/out nbsp: "this is the&amp;nbsp;second element" and "this is the second element"</p>
+
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+
+        <tr>
+            <td>verifyElementPresent</td>
+            <td>xpath=//a[text()="this is the${nbsp}third element"]</td>
+            <td>&nbsp;</td>
+        </tr>
+
+    </tbody>
+</table>
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+
+        <tr>
+            <td>verifyText</td>
+            <td>//a</td>
+            <td>this is the first element</td>
+        </tr>
+        <tr>
+            <td>verifyAttribute</td>
+            <td>//a[contains(@href,'#id1')]/@class</td>
+            <td>a1</td>
+        </tr>
+
+
+        <tr>
+            <td>verifyText</td>
+            <td>xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td</td>
+            <td>theCellText</td>
+        </tr>
+
+        <tr>
+            <td>click</td>
+            <td>//input[@name='name2' and @value='yes']</td>
+            <td>&nbsp;</td>
+        </tr>
+
+        <tr><td colspan="3"><i>test for SEL-242</i></td></tr>
+
+        <tr>
+            <td>verifyElementPresent</td>
+            <td>xpath=//*[text()="right"]</td>
+            <td>&nbsp;</td>
+        </tr>
+        
+        <tr><td colspan="3"><i>test for SEL-444</i></td></tr>
+
+        <tr>
+            <td>verifyValue</td>
+            <td>xpath=//div[@id='nested1']/div[1]//input[2]</td>
+            <td>nested3b</td>
+        </tr>
+        
+        <tr><td colspan="3"><i>test for SEL-486 and assignId</i></td></tr>
+
+        <tr>
+            <td>verifyValue</td>
+            <td>xpath=id('nested1')/div[1]//input[2]</td>
+            <td>nested3b</td>
+        </tr>
+        
+        <tr>
+            <td>verifyValue</td>
+            <td>xpath=id('anotherNested')//div[contains(@id, 'useful')]//input</td>
+            <td>winner</td>
+        </tr>
+        
+        <tr>
+            <td>assignId</td>
+            <td>xpath=//*[text()="right"]</td>
+            <td>rightButton</td>
+        </tr>
+        
+        <tr>
+            <td>verifyElementPresent</td>
+            <td>rightButton</td>
+            <td>&nbsp;</td>
+        </tr>
+        
+        <tr><td colspan="3"><i>xpath counting</i></td></tr>
+
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>id('nested1')/div[1]//input</td>
+            <td>2</td>
+        </tr>
+        
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='nonexistent']</td>
+            <td>0</td>
+        </tr>
+
+        <tr><td colspan="3"><i>test for SEL-347</i></td></tr>
+
+        <tr>
+            <td>verifyElementPresent</td>
+            <td>xpath=//a[@href="javascript:doFoo('a', 'b')"]</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr><td colspan="3"><i>test for SEL-492</i></td></tr>
+        <tr>
+            <td>verifyElementNotPresent</td>
+            <td>xpath=id('foo')//applet</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>assertFailureOnNext</td>
+            <td>false</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>verifyElementPresent</td>
+            <td>xpath=id('foo')//applet2</td>
+            <td></td>
+        </tr>
+        <tr><td colspan="3"><i>test for badly formatted xpath</i></td></tr>
+        <tr>
+            <td>assertErrorOnNext</td>
+            <td>regexp:^Invalid xpath ((\[2\]:)|(\[3\]: XPath parse error)) //a\[0\}</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>verifyElementPresent</td>
+            <td>xpath=//a[0}</td>
+            <td>&nbsp;</td>
+        </tr>
+
+    </tbody>
+</table>
+
+<!--
+These cases are now covered by the "in play attributes" optimization.
+
+<p>Test toggling of ignoreAttributesWithoutValue. The test must be performed using the non-native ajaxslt engine. After the test, native xpaths are re-enabled.</p>
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+
+        <tr>
+            <td>allowNativeXpath</td>
+            <td>false</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>ignoreAttributesWithoutValue</td>
+            <td>false</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='ignore']/a[@class]</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>//div[@id='ignore']/a[@class][1]</td>
+            <td>over the rainbow</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>//div[@id='ignore']/a[@class][2]</td>
+            <td>skies are blue</td>
+        </tr>
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='ignore']/a[@class='']</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>//div[@id='ignore']/a[@class='']</td>
+            <td>skies are blue</td>
+        </tr>
+        <tr>
+            <td>ignoreAttributesWithoutValue</td>
+            <td>true</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='ignore']/a[@class]</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>//div[@id='ignore']/a[@class]</td>
+            <td>over the rainbow</td>
+        </tr>
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='ignore']/a[@class='']</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>allowNativeXpath</td>
+            <td>true</td>
+            <td>&nbsp;</td>
+        </tr>
+-->
+        
+    </tbody>
+</table>
+</body>
+</html>

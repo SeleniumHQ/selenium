@@ -1,0 +1,30 @@
+{
+    "userManagement": {
+        "home": {
+            "title": "المستخدمين",
+            "createLabel": "إنشاء مستخدم جديد",
+            "createOrEditLabel": "إنشاء أو تعديل مستخدم"
+        },
+        "created": "يتم إنشاء مستخدم جديد مع معرف {{ param }}",
+        "updated": "يتم تحديث المستخدم مع معرف{{ param }}",
+        "deleted": "تم حذف المستخدم مع معرف{{ param }}",
+        "delete": {
+            "question": "هل أنت متأكد أنك تريد حذف المستخدم {{ login }}?"
+        },
+        "detail": {
+            "title": "مستخدم"
+        },
+        "login": "تسجيل الدخول",
+        "firstName": "الاسم الاول",
+        "lastName": "اللقب",
+        "email": "البريد الإلكتروني",
+        "activated": "مفعل",
+        "deactivated": "غير مفعل",
+        "profiles": "الملفات الشخصية",
+        "langKey": "لغة",
+        "createdBy": "تم إنشاؤها بواسطة",
+        "createdDate": "تاريخ الإنشاء",
+        "lastModifiedBy": "عدل من قبل",
+        "lastModifiedDate": "تاريخ التعديل"
+    }
+}

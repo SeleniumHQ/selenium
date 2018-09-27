@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <script type="application/javascript;version=1.7" src="chrome://browser/content/browser.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"></script>
+    <script type="text/javascript">
+      function load() {
+        SeleniumIDE.Loader.openRecorder();
+        setTimeout(initEditor, 100);
+      }
+
+      function initEditor() {
+        var editor = SeleniumIDE.Loader.getTopEditor();
+        if (!editor) {
+          setTimeout(initEditor, 100);
+          return;
+        }
+        document.getElementById("status").innerHTML = "OK";
+      }
+    </script>
+  </head>
+  <body onload="load()">
+    <div id="status"></div>
+  </body>
+</html>

@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<!--
+Copyright 2005 Shinya Kasatani
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<?xml-stylesheet href="chrome://global/content/xul.css" type="text/css"?>
+<?xml-stylesheet href="chrome://browser/skin/browser.css" type="text/css"?>
+<?xml-stylesheet href="chrome://selenium-ide/skin/selenium-ide.css" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
+<?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
+<?xul-overlay href="chrome://selenium-ide/content/selenium-ide-common.xul"?>
+
+<!DOCTYPE window [
+<!ENTITY % browserDTD SYSTEM "chrome://browser/locale/browser.dtd">
+%browserDTD;
+<!ENTITY % seleniumIdeDTD SYSTEM "chrome://selenium-ide/locale/selenium-ide.dtd">
+%seleniumIdeDTD;
+]>
+
+<window title="&selenium-ide.standalone.title;"
+  id="selenium-ide"
+  windowtype="global:selenium-ide"
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  width="600"
+  height="550"
+  persist="screenX screenY width height"
+  onload="new StandaloneEditor(window)"
+  onunload="window.editor.unload()"
+  onclose="return window.editor.confirmClose()">
+  <stringbundle id="strings" />
+  <commandset id="editMenuCommands"/>
+  <commandset id="baseMenuCommandSet"/>
+  <commandset id="seleniumIDECommands"/>
+  <commandset id="seleniumIDEUpdater"/>
+  <keyset id="editMenuKeys" />
+  <keyset id="seleniumIDEKeys" />
+  <popupset id="seleniumIDEPopup" />
+
+  <toolbox>
+    <menubar id="menubar">
+      <menu id="fileMenu" />
+      <menu id="menu_edit" />
+      <menu id="runMenu" />
+      <menu id="optionsMenu">
+        <menupopup id="options-popup">
+          <menuitem id="menu-reset-window" label="&resetWindowCmd.label;" oncommand="window.editor.resetWindow();" accesskey="R"/>
+        </menupopup>
+      </menu>
+      <menu id="windowMenu"/>
+      <menu id="menu_help" />
+      <menupopup id="menu_ToolsPopup"/> <!-- for Mac -->
+    </menubar>
+    <toolbar id="toolbar1">
+      <hbox align="center" flex="1">
+	<label value="&baseURL.label;"/>
+	<textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;" 
+		 onchange="window.editor.app.setBaseURL(this.value)"
+		 ontextentered="window.editor.app.setBaseURL(this.value)"
+         type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" tabscrolling="true"/>
+      </hbox>
+    </toolbar>
+    <toolbar id="toolbar2" iconsize="small" mode="icons">
+      <stack id="speedSliderBox" />
+      <toolbarbutton id="play-suite-button" label="Play TestSuite" class="icon" tooltiptext="&playSuiteButton.tooltip;" command="cmd_selenium_play_suite"/>
+      <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play"/>
+      <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
+      <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="&stepButton.tooltip;" command="cmd_selenium_step"/>
+      <toolbarseparator/>
+      <toolbarbutton id="rollup-button" label="Rollup" class="icon" tooltiptext="&rollupButton.tooltip;" command="cmd_selenium_rollup"/>
+      <toolbarbutton id="reload-button" label="Reload" class="icon" tooltiptext="&reloadExtButton.tooltip;" command="cmd_selenium_reload" hidden="true"/>
+      <toolbarseparator/>
+      <toolbarbutton id="browser-button"/>
+      <toolbarbutton id="close-webdriver-button" label="Close Webdriver" class="toolbar2 toolbarbutton-1" tooltiptext="Close Webdriver session to the Selenium Server" oncommand="window.editor.selDebugger.closeWebDriverSession()"/>
+      <toolbarspacer flex="1"/>
+      <toolbarbutton id="schedule-button"/>
+      <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="&recordButton.tooltip;" checked="true" command="cmd_selenium_record"/>
+    </toolbar>
+  </toolbox>
+
+  <vbox flex="1">
+    <hbox id="mainhbox" width="150" persist="height width" flex="1">
+      <vbox id="suitePane" persist="height width" />
+      <splitter id="suiteTreeSplitter" collapse="before" persist="state">
+        <grippy/>
+      </splitter>
+      <vbox id="testCasePane" flex="3" height="300" width="450" persist="height width">
+          <tabbox id="tabbox" flex="1">
+            <tabs orient="horizontal" onselect="if (window.editor) { window.editor.tabSelected(selectedItem.id) }" id="viewTabs">
+              <tab id="editorTab" label="&tableTab.label;" />
+              <tab id="sourceTab" label="&sourceTab.label;" />
+            </tabs>
+            <tabpanels flex="1">
+              <stack>
+                <vbox flex="1">
+                  <tree id="commands" flex="1" enableColumnDrag="false" hidecolumnpicker="true"
+                    context="treeContextMenu" onselect="window.editor.treeView.selectCommand()"
+                    ondblclick="goDoCommand('cmd_selenium_exec_command')" disableKeyNavigation="true">
+                    <treecols>
+                      <treecol id="command" label="&command.label;" width="120" overflow="true"/>
+                      <splitter class="tree-splitter" />
+                      <treecol id="target" label="&target.label;" flex="3" width="120"/>
+                      <splitter class="tree-splitter" />
+                      <treecol id="value" label="&value.label;" flex="3" width="120"/>
+                    </treecols>
+                    <treechildren ondraggesture="nsDragAndDrop.startDrag(event, commandsDragObserver);"/>
+                  </tree>
+                  <separator class="thin"/>
+                  <!-- command editing -->
+                  <vbox id="commandDetail" persist="height">
+                    <grid>
+                      <columns>
+                        <column/>
+                        <column flex="1"/>
+                      </columns>
+                      <rows>
+                        <row align="center">
+                          <!-- do drop down that depends upon the element type -->
+                          <label control="commandAction" value="&command.label;"/>
+                          <textbox disabled="true" id="commandAction" oninput="window.editor.treeView.updateCurrentCommand('command', this.value)" onchange="window.editor.autoCompleteCommand(this.value)" type="autocomplete" autocompletesearch="selenium-ide-generic" autofill="true" completedefaultindex="true" completeselectedindex="true" enablehistory="true" tabscrolling="false"/>
+                        </row>
+                        <row align="center">
+                          <!-- show different options collected by the client. Allow user to override -->
+                          <label control="commandTarget" value="&target.label;"/>
+                          <hbox flex="1">
+                            <textbox flex="1" disabled="true" id="commandTarget" oninput="window.editor.treeView.updateCurrentCommand('target', window.editor.treeView.decodeText(this.value))" type="autocomplete" autocompletesearch="selenium-ide-generic" completedefaultindex="true" enablehistory="true" showcommentcolumn="true" tabscrolling="false"/>
+                            <button label="Select" disabled="true" oncommand="window.editor.selDebugger.selectElement()" id="selectElementButton"/>
+                            <button label="&findTarget.label;" disabled="true" oncommand="window.editor.selDebugger.showElement(document.getElementById('commandTarget').value)" id="findElementButton"/>
+                          </hbox>
+                        </row>
+                        <row align="right" id="selectElementTip" style="display: none">
+                          <label></label>
+                          <description>Select an element by clicking on it in the browser or click Cancel to cancel.</description>
+                        </row>
+                         <row align="center">
+                          <label control="commandValue" value="&value.label;"/>
+                          <textbox disabled="true" id="commandValue" oninput="window.editor.treeView.updateCurrentCommand('value', window.editor.treeView.decodeText(this.value))"/>
+                        </row>
+                      </rows>
+                    </grid>
+                  </vbox>
+                </vbox>
+                <vbox id="tableViewUnavailable" />
+              </stack>
+              <tabpanel orient="vertical">
+                <textbox id="source" multiline="true" flex="1" onchange="window.editor.sourceView.syncModel()" oninput="window.editor.saveTC();" wrap="off"/>
+              </tabpanel>
+            </tabpanels>
+          </tabbox>
+      </vbox>
+    </hbox>
+    <splitter id="logSplitter" collapse="after" persist="state">
+	  <grippy/>
+    </splitter>
+	
+    <vbox id="logBox" flex="1" height="100"/>
+    
+  </vbox>
+
+</window>
+

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>focus_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.test');
+    goog.require('goog.Promise');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
+  </script>
+  <script type="text/javascript">
+    var events = goog.events;
+    var eventType = goog.events.EventType;
+
+    var text1, text2, actualEvents, expectedEvents;
+
+    function setUp() {
+      actualEvents = [];
+      expectedEvents = [];
+
+      text1 = goog.dom.$('text1');
+      text2 = goog.dom.$('text2');
+
+      // Make sure neither text1 nor text2 have focus. Since this could
+      // cause events to dispatch, we need to wait for them to do so
+      // before continuing. In IE, this means continuing in a timeout.
+      bot.action.focusOnElement(goog.dom.$('dummyFocusHolder'));
+      return timeout();
+    }
+
+
+    function tearDown() {
+      events.removeAll(text1);
+      events.removeAll(text2);
+    }
+
+    function buildRecord(id, type) {
+      return id + ': ' + type;
+    }
+
+    function recordBlurAndFocus(el) {
+      events.listen(el, [eventType.FOCUS, eventType.BLUR], function(e) {
+        actualEvents.push(buildRecord(e.target.id, e.type));
+      });
+    }
+
+    function expect(eventType, onElement) {
+      expectedEvents.push(buildRecord(onElement.id, eventType));
+    }
+
+    function assertHasExpectedEventOrder() {
+      assertArrayEquals(expectedEvents, actualEvents);
+    }
+
+    function assertElementIsActiveElement(expected) {
+      var actual = goog.dom.getActiveElement(document);
+      if (actual) {
+        // NOTE(jleyba): Using assertEquals(expected, document.activeElement)
+        // causes an error in IE when the assertion fails (from trying to
+        // convert the DOM elements into strings for the error message):
+        //     "'constructor' is null or not an object".
+        // The following assertions give us the same check without this error.
+        var msg = 'Expected "' + expected.id + '" to be the activeElement, ' +
+                  'but was "' + actual.id + '".';
+        assertTrue(msg, expected == actual);
+      }
+    }
+
+    /**
+     * Pauses the test momentarily so IE can dispatch the onfocus event, which
+     * is scheduled for the next event loop after element.focus() is called.
+     */
+    function timeout() {
+      return new goog.Promise(function(done) {
+        setTimeout(done, 5);
+      });
+    }
+
+    function testShouldBeAbleToFocusOnAnElement() {
+      // NOTE(jleyba): Test does not work on IE 8 with the new IE Driver,
+      // I suspect due to something similar to
+      // http://support.microsoft.com/kb/973528
+      if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('8')) {
+        return;
+      }
+      if (!bot.test.isWindowFocused()) {
+        return;
+      }
+      recordBlurAndFocus(text1);
+      recordBlurAndFocus(text2);
+
+      expect(eventType.FOCUS, text1);
+      bot.action.focusOnElement(text1);
+      return timeout().then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(text1);
+
+        expect(eventType.BLUR, text1);
+        expect(eventType.FOCUS, text2);
+        bot.action.focusOnElement(text2);
+        return timeout();
+      }).then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(text2);
+
+        expect(eventType.BLUR, text2);
+        expect(eventType.FOCUS, text1);
+        bot.action.focusOnElement(text1);
+        return timeout();
+      }).then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(text1);
+      });
+    }
+
+    function testShouldRetainFocusIfElementIsAlreadyActive() {
+      if (!bot.test.isWindowFocused()) {
+        return;
+      }
+
+      recordBlurAndFocus(text1);
+      recordBlurAndFocus(text2);
+
+      expect(eventType.FOCUS, text1);
+      bot.action.focusOnElement(text1);
+      return timeout().then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(text1);
+
+        bot.action.focusOnElement(text1);
+        return timeout();
+      }).then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(text1);
+      });
+    }
+
+    function testShouldRetainFocusIfFirstFocusableAncestorIsAlreadyActive() {
+      if (!bot.test.isWindowFocused()) {
+        return;
+      }
+
+      var parent = document.getElementById('hideOnBlur');
+      var child = document.getElementById('hideOnBlurChild');
+      recordBlurAndFocus(parent);
+
+      expect(eventType.FOCUS, parent);
+      bot.action.focusOnElement(parent);
+      return timeout().then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(parent);
+
+        bot.action.focusOnElement(child);
+        // No additional events expected. The parent should retain focus.
+        return timeout();
+      }).then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(parent);
+
+        bot.action.focusOnElement(text1);
+        expect(eventType.BLUR, parent);
+        return timeout();
+      }).then(function() {
+        assertHasExpectedEventOrder();
+      });
+    }
+
+    function testFocusOnHiddenElementThrows() {
+      var element = document.getElementById('invisibleText');
+      assertThrows(goog.partial(bot.action.focusOnElement, element));
+    }
+
+    function testFocusOnDisabledElementThrows() {
+      var element = document.getElementById('disabledText');
+      assertThrows(goog.partial(bot.action.focusOnElement, element));
+    }
+
+    function testIsFocusable() {
+      if (goog.userAgent.IE) {
+        // TODO: Don't skip this.
+        return;
+      }
+      function assertIsFocusable(element, opt_reason) {
+        assertTrue(opt_reason || '', bot.dom.isFocusable(element));
+      }
+
+      function assertNotFocusable(element, opt_reason) {
+        assertFalse(opt_reason || '', bot.dom.isFocusable(element));
+      }
+
+      goog.array.forEach(bot.dom.FOCUSABLE_FORM_FIELDS_, function(tagName) {
+        assertIsFocusable(goog.dom.createDom(tagName),
+            tagName + ' is a focusable form field');
+      });
+
+      var div = goog.dom.createDom('DIV');
+      assertNotFocusable(div);
+
+      div.setAttribute('tabindex', '0');
+      assertIsFocusable(div, 'has a tab index of 0');
+
+      div.tabIndex = -1;
+      assertEquals('-1', bot.dom.getAttribute(div, 'tabindex'));
+      assertNotFocusable(div, 'has a negative tab index');
+
+      div.tabIndex = 2;
+      assertEquals('2', bot.dom.getAttribute(div, 'tabindex'));
+      assertIsFocusable(div, 'has a tab index of 2');
+
+      div.removeAttribute('tabindex');
+      assertNull(bot.dom.getAttribute(div, 'tabindex'));
+      assertNotFocusable(div, 'tab index was removed');
+    }
+  </script>
+</head>
+<body>
+<form action="javascript:void(0)">
+  <input id="text1" type="text"/>
+  <input id="text2" type="text"/>
+  <input id="dummyFocusHolder" type="text"/>
+  <div>
+    <div>Input fields for manual testing. Each will report when they receive or
+      lose focus.</div>
+    Test 1: <input id="test1" type="text"/>
+    Test 2: <input id="test2" type="text"/>
+    <div>
+      <button id="focusDance">Click to simulate focus change</button>
+      <button id="clearTestLog">Click to clear log</button>
+      <button id="opennewwindow" onclick="window.open(window.location)">
+        Re-run test in a new window</button>
+    </div>
+    <div style="border:1px solid black; margin: 5px; padding: 5px; width:50%">
+      <div style="border-bottom: 1px solid black">Test Log</div>
+      <div id="testLog"></div>
+    </div>
+    <div>
+      <div><strong>Invisible textbox</strong></div>
+      <input id="invisibleText" type="text" style="visibility:hidden"/>
+    </div>
+    <div>
+      <div><strong>Disabled textbox</strong></div>
+      <input id="disabledText" type="text" value="I'm disabled" disabled/>
+    </div>
+    <div id="hideOnBlur" tabindex="0"
+         style="width: 100px; height: 100px; border: 1px solid red"
+         onblur="this.style.display = 'none';">
+      <div id="hideOnBlurChild"
+           style="width: 30px; height: 30px; border: 1px solid blue">
+        x
+      </div>
+      Focusable. Will hide when focus is lost.
+    </div>
+    <script type="text/javascript">
+      function log(msg) {
+        goog.dom.$('testLog').appendChild(
+            goog.dom.createDom('div', null,
+              goog.dom.createTextNode(msg)));
+      }
+
+      function reportBlurFocus(e) {
+        var et = eventType;
+        goog.events.listen(e, [et.FOCUS, et.BLUR], function(e) {
+          log(e.type + ' on ' + e.target.id);
+        });
+      }
+      reportBlurFocus(goog.dom.$('test1'));
+      reportBlurFocus(goog.dom.$('test2'));
+
+      goog.events.listen(goog.dom.$('focusDance'), eventType.CLICK,
+        function(e) {
+          log('starting focus dance in .5s');
+          log('  will focus on 1, then 2, then 1 again');
+          window.setTimeout(function() {
+            bot.action.focusOnElement(goog.dom.$('test1'));
+            bot.action.focusOnElement(goog.dom.$('test2'));
+            bot.action.focusOnElement(goog.dom.$('test1'));
+            log('if you see this before event logs, then events are ' +
+                'fired in a separate event loop');
+          }, 500);
+        });
+      goog.events.listen(goog.dom.$('clearTestLog'), eventType.CLICK,
+        function(e) {
+          goog.dom.removeChildren(goog.dom.$('testLog'));
+        });
+    </script>
+  </div>
+</form>
+</body>
+</html>

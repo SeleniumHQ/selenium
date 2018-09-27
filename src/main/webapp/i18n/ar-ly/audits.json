@@ -1,0 +1,27 @@
+{
+    "audits": {
+        "title": "فحص الحسابات",
+        "filter": {
+            "title": "التصفية حسب التاريخ",
+            "from": "من",
+            "to": "الى",
+            "button": {
+                "weeks": "أسابيع",
+                "today": "اليوم",
+                "clear": "ازالة",
+                "close": "أغلق"
+            }
+        },
+        "table": {
+            "header": {
+                "principal": "مستخدم",
+                "date": "تاريخ",
+                "status": "حالة",
+                "data": "بيانات إضافية"
+            },
+            "data": {
+                "remoteAddress": "العنوان"
+            }
+        }
+    }
+}

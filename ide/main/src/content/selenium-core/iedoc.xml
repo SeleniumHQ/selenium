@@ -1,0 +1,1841 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<apidoc>
+
+<top>Defines an object that runs Selenium commands.
+
+<h3><a name="locators"></a>Element Locators</h3>
+<p>
+Element Locators tell Selenium which HTML element a command refers to.
+The format of a locator is:</p>
+<blockquote>
+<em>locatorType</em><strong>=</strong><em>argument</em>
+</blockquote>
+
+<p>
+We support the following strategies for locating elements:
+</p>
+
+<ul>
+<li><strong>identifier</strong>=<em>id</em>: 
+Select the element with the specified &#064;id attribute. If no match is
+found, select the first element whose &#064;name attribute is <em>id</em>.
+(This is normally the default; see below.)</li>
+<li><strong>id</strong>=<em>id</em>:
+Select the element with the specified &#064;id attribute.</li>
+
+<li><strong>name</strong>=<em>name</em>:
+Select the first element with the specified &#064;name attribute.
+<ul class="first last simple">
+<li>username</li>
+<li>name=username</li>
+</ul>
+
+<p>The name may optionally be followed by one or more <em>element-filters</em>, separated from the name by whitespace.  If the <em>filterType</em> is not specified, <strong>value</strong> is assumed.</p>
+
+<ul class="first last simple">
+<li>name=flavour value=chocolate</li>
+</ul>
+</li>
+<li><strong>dom</strong>=<em>javascriptExpression</em>: 
+
+Find an element by evaluating the specified string.  This allows you to traverse the HTML Document Object
+Model using JavaScript.  Note that you must not return a value in this string; simply make it the last expression in the block.
+<ul class="first last simple">
+<li>dom=document.forms['myForm'].myDropdown</li>
+<li>dom=document.images[56]</li>
+<li>dom=function foo() { return document.links[1]; }; foo();</li>
+</ul>
+
+</li>
+
+<li><strong>xpath</strong>=<em>xpathExpression</em>: 
+Locate an element using an XPath expression.
+<ul class="first last simple">
+<li>xpath=//img[&#064;alt='The image alt text']</li>
+<li>xpath=//table[&#064;id='table1']//tr[4]/td[2]</li>
+<li>xpath=//a[contains(&#064;href,'#id1')]</li>
+<li>xpath=//a[contains(&#064;href,'#id1')]/&#064;class</li>
+<li>xpath=(//table[&#064;class='stylee'])//th[text()='theHeaderText']/../td</li>
+<li>xpath=//input[&#064;name='name2' and &#064;value='yes']</li>
+<li>xpath=//*[text()="right"]</li>
+
+</ul>
+</li>
+<li><strong>link</strong>=<em>textPattern</em>:
+Select the link (anchor) element which contains text matching the
+specified <em>pattern</em>.
+<ul class="first last simple">
+<li>link=The link text</li>
+</ul>
+
+</li>
+
+<li><strong>css</strong>=<em>cssSelectorSyntax</em>:
+Select the element using css selectors. Please refer to <a href="http://www.w3.org/TR/REC-CSS2/selector.html">CSS2 selectors</a>, <a href="http://www.w3.org/TR/2001/CR-css3-selectors-20011113/">CSS3 selectors</a> for more information. You can also check the TestCssLocators test in the selenium test suite for an example of usage, which is included in the downloaded selenium core package.
+<ul class="first last simple">
+<li>css=a[href="#id3"]</li>
+<li>css=span#firstChild + span</li>
+</ul>
+<p>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </p>
+</li>
+
+<li><strong>ui</strong>=<em>uiSpecifierString</em>:
+Locate an element by resolving the UI specifier string to another locator, and evaluating it. See the <a href="http://svn.openqa.org/fisheye/browse/~raw,r=trunk/selenium/trunk/src/main/resources/core/scripts/ui-doc.html">Selenium UI-Element Reference</a> for more details.
+<ul class="first last simple">
+<li>ui=loginPages::loginButton()</li>
+<li>ui=settingsPages::toggle(label=Hide Email)</li>
+<li>ui=forumPages::postBody(index=2)//a[2]</li>
+</ul>
+</li>
+
+</ul>
+
+<p>
+Without an explicit locator prefix, Selenium uses the following default
+strategies:
+</p>
+
+<ul class="simple">
+<li><strong>dom</strong>, for locators starting with &quot;document.&quot;</li>
+<li><strong>xpath</strong>, for locators starting with &quot;//&quot;</li>
+<li><strong>identifier</strong>, otherwise</li>
+</ul>
+
+<h3><a name="element-filters">Element Filters</a></h3>
+<blockquote>
+<p>Element filters can be used with a locator to refine a list of candidate elements.  They are currently used only in the 'name' element-locator.</p>
+<p>Filters look much like locators, ie.</p>
+<blockquote>
+<em>filterType</em><strong>=</strong><em>argument</em></blockquote>
+
+<p>Supported element-filters are:</p>
+<p><strong>value=</strong><em>valuePattern</em></p>
+<blockquote>
+Matches elements based on their values.  This is particularly useful for refining a list of similarly-named toggle-buttons.</blockquote>
+<p><strong>index=</strong><em>index</em></p>
+<blockquote>
+Selects a single element based on its position in the list (offset from zero).</blockquote>
+</blockquote>
+
+<h3><a name="patterns"></a>String-match Patterns</h3>
+
+<p>
+Various Pattern syntaxes are available for matching string values:
+</p>
+<ul>
+<li><strong>glob:</strong><em>pattern</em>:
+Match a string against a "glob" (aka "wildmat") pattern. "Glob" is a
+kind of limited regular-expression syntax typically used in command-line
+shells. In a glob pattern, "*" represents any sequence of characters, and "?"
+represents any single character. Glob patterns match against the entire
+string.</li>
+<li><strong>regexp:</strong><em>regexp</em>:
+Match a string using a regular-expression. The full power of JavaScript
+regular-expressions is available.</li>
+<li><strong>regexpi:</strong><em>regexpi</em>:
+Match a string using a case-insensitive regular-expression.</li>
+<li><strong>exact:</strong><em>string</em>:
+
+Match a string exactly, verbatim, without any of that fancy wildcard
+stuff.</li>
+</ul>
+<p>
+If no pattern prefix is specified, Selenium assumes that it's a "glob"
+pattern.
+</p>
+<p>
+For commands that return multiple values (such as verifySelectOptions),
+the string being matched is a comma-separated list of the return values,
+where both commas and backslashes in the values are backslash-escaped.
+When providing a pattern, the optional matching syntax (i.e. glob,
+regexp, etc.) is specified once, as usual, at the beginning of the
+pattern.
+</p></top>
+
+<function name="click">
+
+<param name="locator">an element locator</param>
+
+<comment>Clicks on a link, button, checkbox or radio button. If the click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.</comment>
+
+</function>
+
+<function name="doubleClick">
+
+<param name="locator">an element locator</param>
+
+<comment>Double clicks on a link, button, checkbox or radio button. If the double click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.</comment>
+
+</function>
+
+<function name="contextMenu">
+
+<param name="locator">an element locator</param>
+
+<comment>Simulates opening the context menu for the specified element (as might happen if the user "right-clicked" on the element).</comment>
+
+</function>
+
+<function name="clickAt">
+
+<param name="locator">an element locator</param>
+
+<param name="coordString">specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</param>
+
+<comment>Clicks on a link, button, checkbox or radio button. If the click action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.</comment>
+
+</function>
+
+<function name="doubleClickAt">
+
+<param name="locator">an element locator</param>
+
+<param name="coordString">specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</param>
+
+<comment>Doubleclicks on a link, button, checkbox or radio button. If the action
+causes a new page to load (like a link usually does), call
+waitForPageToLoad.</comment>
+
+</function>
+
+<function name="contextMenuAt">
+
+<param name="locator">an element locator</param>
+
+<param name="coordString">specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</param>
+
+<comment>Simulates opening the context menu for the specified element (as might happen if the user "right-clicked" on the element).</comment>
+
+</function>
+
+<function name="fireEvent">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="eventName">the event name, e.g. "focus" or "blur"</param>
+
+<comment>Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
+handler.</comment>
+
+</function>
+
+<function name="focus">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Move the focus to the specified element; for example, if the element is an input field, move the cursor to that field.</comment>
+
+</function>
+
+<function name="keyPress">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="keySequence">Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".</param>
+
+<comment>Simulates a user pressing and releasing a key.</comment>
+
+</function>
+
+<function name="shiftKeyDown">
+
+<comment>Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.</comment>
+
+</function>
+
+<function name="shiftKeyUp">
+
+<comment>Release the shift key.</comment>
+
+</function>
+
+<function name="metaKeyDown">
+
+<comment>Press the meta key and hold it down until doMetaUp() is called or a new page is loaded.</comment>
+
+</function>
+
+<function name="metaKeyUp">
+
+<comment>Release the meta key.</comment>
+
+</function>
+
+<function name="altKeyDown">
+
+<comment>Press the alt key and hold it down until doAltUp() is called or a new page is loaded.</comment>
+
+</function>
+
+<function name="altKeyUp">
+
+<comment>Release the alt key.</comment>
+
+</function>
+
+<function name="controlKeyDown">
+
+<comment>Press the control key and hold it down until doControlUp() is called or a new page is loaded.</comment>
+
+</function>
+
+<function name="controlKeyUp">
+
+<comment>Release the control key.</comment>
+
+</function>
+
+<function name="keyDown">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="keySequence">Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".</param>
+
+<comment>Simulates a user pressing a key (without releasing it yet).</comment>
+
+</function>
+
+<function name="keyUp">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="keySequence">Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".</param>
+
+<comment>Simulates a user releasing a key.</comment>
+
+</function>
+
+<function name="mouseOver">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Simulates a user hovering a mouse over the specified element.</comment>
+
+</function>
+
+<function name="mouseOut">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Simulates a user moving the mouse pointer away from the specified element.</comment>
+
+</function>
+
+<function name="mouseDown">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Simulates a user pressing the left mouse button (without releasing it yet) on
+the specified element.</comment>
+
+</function>
+
+<function name="mouseDownRight">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Simulates a user pressing the right mouse button (without releasing it yet) on
+the specified element.</comment>
+
+</function>
+
+<function name="mouseDownAt">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="coordString">specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</param>
+
+<comment>Simulates a user pressing the left mouse button (without releasing it yet) at
+the specified location.</comment>
+
+</function>
+
+<function name="mouseDownRightAt">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="coordString">specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</param>
+
+<comment>Simulates a user pressing the right mouse button (without releasing it yet) at
+the specified location.</comment>
+
+</function>
+
+<function name="mouseUp">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Simulates the event that occurs when the user releases the mouse button (i.e., stops
+holding the button down) on the specified element.</comment>
+
+</function>
+
+<function name="mouseUpRight">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Simulates the event that occurs when the user releases the right mouse button (i.e., stops
+holding the button down) on the specified element.</comment>
+
+</function>
+
+<function name="mouseUpAt">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="coordString">specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</param>
+
+<comment>Simulates the event that occurs when the user releases the mouse button (i.e., stops
+holding the button down) at the specified location.</comment>
+
+</function>
+
+<function name="mouseUpRightAt">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="coordString">specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</param>
+
+<comment>Simulates the event that occurs when the user releases the right mouse button (i.e., stops
+holding the button down) at the specified location.</comment>
+
+</function>
+
+<function name="mouseMove">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.</comment>
+
+</function>
+
+<function name="mouseMoveAt">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="coordString">specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.</param>
+
+<comment>Simulates a user pressing the mouse button (without releasing it yet) on
+the specified element.</comment>
+
+</function>
+
+<function name="type">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="value">the value to type</param>
+
+<comment>Sets the value of an input field, as though you typed it in.
+
+<p>Can also be used to set the value of combo boxes, check boxes, etc. In these cases,
+value should be the value of the option selected, not the visible text.</p></comment>
+
+</function>
+
+<function name="typeKeys">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<param name="value">the value to type</param>
+
+<comment>Simulates keystroke events on the specified element, as though you typed the value key-by-key.
+
+<p>This is a convenience method for calling keyDown, keyUp, keyPress for every character in the specified string;
+this is useful for dynamic UI widgets (like auto-completing combo boxes) that require explicit key events.</p>
+
+<p>Unlike the simple "type" command, which forces the specified value into the page directly, this command
+may or may not have any visible effect, even in cases where typing keys would normally have a visible effect.
+For example, if you use "typeKeys" on a form element, you may or may not see the results of what you typed in
+the field.</p>
+<p>In some cases, you may need to use the simple "type" command to set the value of the field and then the "typeKeys" command to
+send the keystroke events corresponding to what you just typed.</p></comment>
+
+</function>
+
+<function name="setSpeed">
+
+<param name="value">the number of milliseconds to pause after operation</param>
+
+<comment>Set execution speed (i.e., set the millisecond length of a delay which will follow each selenium operation).  By default, there is no such delay, i.e.,
+the delay is 0 milliseconds.</comment>
+
+</function>
+
+<function name="getSpeed">
+
+<return type="string">the execution speed in milliseconds.</return>
+
+<comment>Get execution speed (i.e., get the millisecond length of the delay following each selenium operation).  By default, there is no such delay, i.e.,
+the delay is 0 milliseconds.
+
+See also setSpeed.</comment>
+
+</function>
+
+<function name="check">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Check a toggle-button (checkbox/radio)</comment>
+
+</function>
+
+<function name="uncheck">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Uncheck a toggle-button (checkbox/radio)</comment>
+
+</function>
+
+<function name="select">
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<param name="optionLocator">an option locator (a label by default)</param>
+
+<comment>Select an option from a drop-down using an option locator.
+
+<p>
+Option locators provide different ways of specifying options of an HTML
+Select element (e.g. for selecting a specific option, or for asserting
+that the selected option satisfies a specification). There are several
+forms of Select Option Locator.
+</p>
+<ul>
+<li><strong>label</strong>=<em>labelPattern</em>:
+matches options based on their labels, i.e. the visible text. (This
+is the default.)
+<ul class="first last simple">
+<li>label=regexp:^[Oo]ther</li>
+</ul>
+</li>
+<li><strong>value</strong>=<em>valuePattern</em>:
+matches options based on their values.
+<ul class="first last simple">
+<li>value=other</li>
+</ul>
+
+
+</li>
+<li><strong>id</strong>=<em>id</em>:
+
+matches options based on their ids.
+<ul class="first last simple">
+<li>id=option1</li>
+</ul>
+</li>
+<li><strong>index</strong>=<em>index</em>:
+matches an option based on its index (offset from zero).
+<ul class="first last simple">
+
+<li>index=2</li>
+</ul>
+</li>
+</ul>
+<p>
+If no option locator prefix is provided, the default behaviour is to match on <strong>label</strong>.
+</p></comment>
+
+</function>
+
+<function name="addSelection">
+
+<param name="locator">an <a href="#locators">element locator</a> identifying a multi-select box</param>
+
+<param name="optionLocator">an option locator (a label by default)</param>
+
+<comment>Add a selection to the set of selected options in a multi-select element using an option locator.
+
+@see #doSelect for details of option locators</comment>
+
+</function>
+
+<function name="removeSelection">
+
+<param name="locator">an <a href="#locators">element locator</a> identifying a multi-select box</param>
+
+<param name="optionLocator">an option locator (a label by default)</param>
+
+<comment>Remove a selection from the set of selected options in a multi-select element using an option locator.
+
+@see #doSelect for details of option locators</comment>
+
+</function>
+
+<function name="removeAllSelections">
+
+<param name="locator">an <a href="#locators">element locator</a> identifying a multi-select box</param>
+
+<comment>Unselects all of the selected options in a multi-select element.</comment>
+
+</function>
+
+<function name="submit">
+
+<param name="formLocator">an <a href="#locators">element locator</a> for the form you want to submit</param>
+
+<comment>Submit the specified form. This is particularly useful for forms without
+submit buttons, e.g. single-input "Search" forms.</comment>
+
+</function>
+
+<function name="open">
+
+<param name="url">the URL to open; may be relative or absolute</param>
+
+<comment>Opens an URL in the test frame. This accepts both relative and absolute
+URLs.
+
+The &quot;open&quot; command waits for the page to load before proceeding,
+ie. the &quot;AndWait&quot; suffix is implicit.
+
+<em>Note</em>: The URL must be on the same domain as the runner HTML
+due to security restrictions in the browser (Same Origin Policy). If you
+need to open an URL on another domain, use the Selenium Server to start a
+new browser session on that domain.</comment>
+
+</function>
+
+<function name="openWindow">
+
+<param name="url">the URL to open, which can be blank</param>
+
+<param name="windowID">the JavaScript window ID of the window to select</param>
+
+<comment>Opens a popup window (if a window with that ID isn't already open).
+After opening the window, you'll need to select it using the selectWindow
+command.
+
+<p>This command can also be a useful workaround for bug SEL-339.  In some cases, Selenium will be unable to intercept a call to window.open (if the call occurs during or before the "onLoad" event, for example).
+In those cases, you can force Selenium to notice the open window's name by using the Selenium openWindow command, using
+an empty (blank) url, like this: openWindow("", "myFunnyWindow").</p></comment>
+
+</function>
+
+<function name="selectWindow">
+
+<param name="windowID">the JavaScript window ID of the window to select</param>
+
+<comment>Selects a popup window using a window locator; once a popup window has been selected, all
+commands go to that window. To select the main window again, use null
+as the target.
+
+<p>
+
+Window locators provide different ways of specifying the window object:
+by title, by internal JavaScript "name," or by JavaScript variable.
+</p>
+<ul>
+<li><strong>title</strong>=<em>My Special Window</em>:
+Finds the window using the text that appears in the title bar.  Be careful;
+two windows can share the same title.  If that happens, this locator will
+just pick one.
+</li>
+<li><strong>name</strong>=<em>myWindow</em>:
+Finds the window using its internal JavaScript "name" property.  This is the second 
+parameter "windowName" passed to the JavaScript method window.open(url, windowName, windowFeatures, replaceFlag)
+(which Selenium intercepts).
+</li>
+<li><strong>var</strong>=<em>variableName</em>:
+Some pop-up windows are unnamed (anonymous), but are associated with a JavaScript variable name in the current
+application window, e.g. "window.foo = window.open(url);".  In those cases, you can open the window using
+"var=foo".
+</li>
+</ul>
+<p>
+If no window locator prefix is provided, we'll try to guess what you mean like this:</p>
+<p>1.) if windowID is null, (or the string "null") then it is assumed the user is referring to the original window instantiated by the browser).</p>
+<p>2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed
+that this variable contains the return value from a call to the JavaScript window.open() method.</p>
+<p>3.) Otherwise, selenium looks in a hash it maintains that maps string names to window "names".</p>
+<p>4.) If <em>that</em> fails, we'll try looping over all of the known windows to try to find the appropriate "title".
+Since "title" is not necessarily unique, this may have unexpected behavior.</p>
+
+<p>If you're having trouble figuring out the name of a window that you want to manipulate, look at the Selenium log messages
+which identify the names of windows created via window.open (and therefore intercepted by Selenium).  You will see messages
+like the following for each window as it is opened:</p>
+
+<p><code>debug: window.open call intercepted; window ID (which you can use with selectWindow()) is "myNewWindow"</code></p>
+
+<p>In some cases, Selenium will be unable to intercept a call to window.open (if the call occurs during or before the "onLoad" event, for example).
+(This is bug SEL-339.)  In those cases, you can force Selenium to notice the open window's name by using the Selenium openWindow command, using
+an empty (blank) url, like this: openWindow("", "myFunnyWindow").</p></comment>
+
+</function>
+
+<function name="selectPopUp">
+
+<param name="windowID">an identifier for the popup window, which can take on a                  number of different meanings</param>
+
+<comment>Simplifies the process of selecting a popup window (and does not offer
+functionality beyond what <code>selectWindow()</code> already provides).
+<ul>
+<li>If <code>windowID</code> is either not specified, or specified as
+"null", the first non-top window is selected. The top window is the one
+that would be selected by <code>selectWindow()</code> without providing a
+<code>windowID</code> . This should not be used when more than one popup
+window is in play.</li>
+<li>Otherwise, the window will be looked up considering
+<code>windowID</code> as the following in order: 1) the "name" of the
+window, as specified to <code>window.open()</code>; 2) a javascript
+variable which is a reference to a window; and 3) the title of the
+window. This is the same ordered lookup performed by
+<code>selectWindow</code> .</li>
+</ul></comment>
+
+</function>
+
+<function name="deselectPopUp">
+
+<comment>Selects the main window. Functionally equivalent to using
+<code>selectWindow()</code> and specifying no value for
+<code>windowID</code>.</comment>
+
+</function>
+
+<function name="selectFrame">
+
+<param name="locator">an <a href="#locators">element locator</a> identifying a frame or iframe</param>
+
+<comment>Selects a frame within the current window.  (You may invoke this command
+multiple times to select nested frames.)  To select the parent frame, use
+"relative=parent" as a locator; to select the top frame, use "relative=top".
+You can also select a frame by its 0-based index number; select the first frame with
+"index=0", or the third frame with "index=2".
+
+<p>You may also use a DOM expression to identify the frame you want directly,
+like this: <code>dom=frames["main"].frames["subframe"]</code></p></comment>
+
+</function>
+
+<function name="getWhetherThisFrameMatchFrameExpression">
+
+<return type="boolean">true if the new frame is this code's window</return>
+
+<param name="currentFrameString">starting frame</param>
+
+<param name="target">new frame (which might be relative to the current one)</param>
+
+<comment>Determine whether current/locator identify the frame containing this running code.
+
+<p>This is useful in proxy injection mode, where this code runs in every
+browser frame and window, and sometimes the selenium server needs to identify
+the "current" frame.  In this case, when the test calls selectFrame, this
+routine is called for each frame to figure out which one has been selected.
+The selected frame will return true, while all others will return false.</p></comment>
+
+</function>
+
+<function name="getWhetherThisWindowMatchWindowExpression">
+
+<return type="boolean">true if the new window is this code's window</return>
+
+<param name="currentWindowString">starting window</param>
+
+<param name="target">new window (which might be relative to the current one, e.g., "_parent")</param>
+
+<comment>Determine whether currentWindowString plus target identify the window containing this running code.
+
+<p>This is useful in proxy injection mode, where this code runs in every
+browser frame and window, and sometimes the selenium server needs to identify
+the "current" window.  In this case, when the test calls selectWindow, this
+routine is called for each window to figure out which one has been selected.
+The selected window will return true, while all others will return false.</p></comment>
+
+</function>
+
+<function name="waitForPopUp">
+
+<param name="windowID">the JavaScript window "name" of the window that will appear (not the text of the title bar)                 If unspecified, or specified as "null", this command will                 wait for the first non-top window to appear (don't rely                 on this if you are working with multiple popups                 simultaneously).</param>
+
+<param name="timeout">a timeout in milliseconds, after which the action will return with an error.                If this value is not specified, the default Selenium                timeout will be used. See the setTimeout() command.</param>
+
+<comment>Waits for a popup window to appear and load up.</comment>
+
+</function>
+
+<function name="chooseCancelOnNextConfirmation">
+
+<comment><p>
+By default, Selenium's overridden window.confirm() function will
+return true, as if the user had manually clicked OK; after running
+this command, the next call to confirm() will return false, as if
+the user had clicked Cancel.  Selenium will then resume using the
+default behavior for future confirmations, automatically returning 
+true (OK) unless/until you explicitly call this command for each
+confirmation.
+</p>
+<p>
+Take note - every time a confirmation comes up, you must
+consume it with a corresponding getConfirmation, or else
+the next selenium operation will fail.
+</p></comment>
+
+</function>
+
+<function name="chooseOkOnNextConfirmation">
+
+<comment><p>
+Undo the effect of calling chooseCancelOnNextConfirmation.  Note
+that Selenium's overridden window.confirm() function will normally automatically
+return true, as if the user had manually clicked OK, so you shouldn't
+need to use this command unless for some reason you need to change
+your mind prior to the next confirmation.  After any confirmation, Selenium will resume using the
+default behavior for future confirmations, automatically returning 
+true (OK) unless/until you explicitly call chooseCancelOnNextConfirmation for each
+confirmation.
+</p>
+<p>
+Take note - every time a confirmation comes up, you must
+consume it with a corresponding getConfirmation, or else
+the next selenium operation will fail.
+</p></comment>
+
+</function>
+
+<function name="answerOnNextPrompt">
+
+<param name="answer">the answer to give in response to the prompt pop-up</param>
+
+<comment>Instructs Selenium to return the specified answer string in response to
+the next JavaScript prompt [window.prompt()].</comment>
+
+</function>
+
+<function name="goBack">
+
+<comment>Simulates the user clicking the "back" button on their browser.</comment>
+
+</function>
+
+<function name="refresh">
+
+<comment>Simulates the user clicking the "Refresh" button on their browser.</comment>
+
+</function>
+
+<function name="close">
+
+<comment>Simulates the user clicking the "close" button in the titlebar of a popup
+window or tab.</comment>
+
+</function>
+
+<function name="isAlertPresent">
+
+<return type="boolean">true if there is an alert</return>
+
+<comment>Has an alert occurred?
+
+<p>
+This function never throws an exception
+</p></comment>
+
+</function>
+
+<function name="isPromptPresent">
+
+<return type="boolean">true if there is a pending prompt</return>
+
+<comment>Has a prompt occurred?
+
+<p>
+This function never throws an exception
+</p></comment>
+
+</function>
+
+<function name="isConfirmationPresent">
+
+<return type="boolean">true if there is a pending confirmation</return>
+
+<comment>Has confirm() been called?
+
+<p>
+This function never throws an exception
+</p></comment>
+
+</function>
+
+<function name="getAlert">
+
+<return type="string">The message of the most recent JavaScript alert</return>
+
+<comment>Retrieves the message of a JavaScript alert generated during the previous action, or fail if there were no alerts.
+
+<p>Getting an alert has the same effect as manually clicking OK. If an
+alert is generated but you do not consume it with getAlert, the next Selenium action
+will fail.</p>
+
+<p>Under Selenium, JavaScript alerts will NOT pop up a visible alert
+dialog.</p>
+
+<p>Selenium does NOT support JavaScript alerts that are generated in a
+page's onload() event handler. In this case a visible dialog WILL be
+generated and Selenium will hang until someone manually clicks OK.</p></comment>
+
+</function>
+
+<function name="getConfirmation">
+
+<return type="string">the message of the most recent JavaScript confirmation dialog</return>
+
+<comment>Retrieves the message of a JavaScript confirmation dialog generated during
+the previous action.
+
+<p>
+By default, the confirm function will return true, having the same effect
+as manually clicking OK. This can be changed by prior execution of the
+chooseCancelOnNextConfirmation command. 
+</p>
+<p>
+If an confirmation is generated but you do not consume it with getConfirmation,
+the next Selenium action will fail.
+</p>
+
+<p>
+NOTE: under Selenium, JavaScript confirmations will NOT pop up a visible
+dialog.
+</p>
+
+<p>
+NOTE: Selenium does NOT support JavaScript confirmations that are
+generated in a page's onload() event handler. In this case a visible
+dialog WILL be generated and Selenium will hang until you manually click
+OK.
+</p></comment>
+
+</function>
+
+<function name="getPrompt">
+
+<return type="string">the message of the most recent JavaScript question prompt</return>
+
+<comment>Retrieves the message of a JavaScript question prompt dialog generated during
+the previous action.
+
+<p>Successful handling of the prompt requires prior execution of the
+answerOnNextPrompt command. If a prompt is generated but you
+do not get/verify it, the next Selenium action will fail.</p>
+
+<p>NOTE: under Selenium, JavaScript prompts will NOT pop up a visible
+dialog.</p>
+
+<p>NOTE: Selenium does NOT support JavaScript prompts that are generated in a
+page's onload() event handler. In this case a visible dialog WILL be
+generated and Selenium will hang until someone manually clicks OK.</p></comment>
+
+</function>
+
+<function name="getLocation">
+
+<return type="string">the absolute URL of the current page</return>
+
+<comment>Gets the absolute URL of the current page.</comment>
+
+</function>
+
+<function name="getTitle">
+
+<return type="string">the title of the current page</return>
+
+<comment>Gets the title of the current page.</comment>
+
+</function>
+
+<function name="getBodyText">
+
+<return type="string">the entire text of the page</return>
+
+<comment>Gets the entire text of the page.</comment>
+
+</function>
+
+<function name="getValue">
+
+<return type="string">the element value, or "on/off" for checkbox/radio elements</return>
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Gets the (whitespace-trimmed) value of an input field (or anything else with a value parameter).
+For checkbox/radio elements, the value will be "on" or "off" depending on
+whether the element is checked or not.</comment>
+
+</function>
+
+<function name="getText">
+
+<return type="string">the text of the element</return>
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Gets the text of an element. This works for any element that contains
+text. This command uses either the textContent (Mozilla-like browsers) or
+the innerText (IE-like browsers) of the element, which is the rendered
+text shown to the user.</comment>
+
+</function>
+
+<function name="highlight">
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Briefly changes the backgroundColor of the specified element yellow.  Useful for debugging.</comment>
+
+</function>
+
+<function name="getEval">
+
+<return type="string">the results of evaluating the snippet</return>
+
+<param name="script">the JavaScript snippet to run</param>
+
+<comment>Gets the result of evaluating the specified JavaScript snippet.  The snippet may
+have multiple lines, but only the result of the last line will be returned.
+
+<p>Note that, by default, the snippet will run in the context of the "selenium"
+object itself, so <code>this</code> will refer to the Selenium object.  Use <code>window</code> to
+refer to the window of your application, e.g. <code>window.document.getElementById('foo')</code></p>
+
+<p>If you need to use
+a locator to refer to a single element in your application page, you can
+use <code>this.browserbot.findElement("id=foo")</code> where "id=foo" is your locator.</p></comment>
+
+</function>
+
+<function name="isChecked">
+
+<return type="boolean">true if the checkbox is checked, false otherwise</return>
+
+<param name="locator">an <a href="#locators">element locator</a> pointing to a checkbox or radio button</param>
+
+<comment>Gets whether a toggle-button (checkbox/radio) is checked.  Fails if the specified element doesn't exist or isn't a toggle-button.</comment>
+
+</function>
+
+<function name="getTable">
+
+<return type="string">the text from the specified cell</return>
+
+<param name="tableCellAddress">a cell address, e.g. "foo.1.4"</param>
+
+<comment>Gets the text from a cell of a table. The cellAddress syntax
+tableLocator.row.column, where row and column start at 0.</comment>
+
+</function>
+
+<function name="getSelectedLabels">
+
+<return type="string[]">an array of all selected option labels in the specified select drop-down</return>
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<comment>Gets all option labels (visible text) for selected options in the specified select or multi-select element.</comment>
+
+</function>
+
+<function name="getSelectedLabel">
+
+<return type="string">the selected option label in the specified select drop-down</return>
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<comment>Gets option label (visible text) for selected option in the specified select element.</comment>
+
+</function>
+
+<function name="getSelectedValues">
+
+<return type="string[]">an array of all selected option values in the specified select drop-down</return>
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<comment>Gets all option values (value attributes) for selected options in the specified select or multi-select element.</comment>
+
+</function>
+
+<function name="getSelectedValue">
+
+<return type="string">the selected option value in the specified select drop-down</return>
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<comment>Gets option value (value attribute) for selected option in the specified select element.</comment>
+
+</function>
+
+<function name="getSelectedIndexes">
+
+<return type="string[]">an array of all selected option indexes in the specified select drop-down</return>
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<comment>Gets all option indexes (option number, starting at 0) for selected options in the specified select or multi-select element.</comment>
+
+</function>
+
+<function name="getSelectedIndex">
+
+<return type="string">the selected option index in the specified select drop-down</return>
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<comment>Gets option index (option number, starting at 0) for selected option in the specified select element.</comment>
+
+</function>
+
+<function name="getSelectedIds">
+
+<return type="string[]">an array of all selected option IDs in the specified select drop-down</return>
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<comment>Gets all option element IDs for selected options in the specified select or multi-select element.</comment>
+
+</function>
+
+<function name="getSelectedId">
+
+<return type="string">the selected option ID in the specified select drop-down</return>
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<comment>Gets option element ID for selected option in the specified select element.</comment>
+
+</function>
+
+<function name="isSomethingSelected">
+
+<return type="boolean">true if some option has been selected, false otherwise</return>
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<comment>Determines whether some option in a drop-down menu is selected.</comment>
+
+</function>
+
+<function name="getSelectOptions">
+
+<return type="string[]">an array of all option labels in the specified select drop-down</return>
+
+<param name="selectLocator">an <a href="#locators">element locator</a> identifying a drop-down menu</param>
+
+<comment>Gets all option labels in the specified select drop-down.</comment>
+
+</function>
+
+<function name="getAttribute">
+
+<return type="string">the value of the specified attribute</return>
+
+<param name="attributeLocator">an element locator followed by an &#064; sign and then the name of the attribute, e.g. "foo&#064;bar"</param>
+
+<comment>Gets the value of an element attribute. The value of the attribute may
+differ across browsers (this is the case for the "style" attribute, for
+example).</comment>
+
+</function>
+
+<function name="isTextPresent">
+
+<return type="boolean">true if the pattern matches the text, false otherwise</return>
+
+<param name="pattern">a <a href="#patterns">pattern</a> to match with the text of the page</param>
+
+<comment>Verifies that the specified text pattern appears somewhere on the rendered page shown to the user.</comment>
+
+</function>
+
+<function name="isElementPresent">
+
+<return type="boolean">true if the element is present, false otherwise</return>
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Verifies that the specified element is somewhere on the page.</comment>
+
+</function>
+
+<function name="isVisible">
+
+<return type="boolean">true if the specified element is visible, false otherwise</return>
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Determines if the specified element is visible. An
+element can be rendered invisible by setting the CSS "visibility"
+property to "hidden", or the "display" property to "none", either for the
+element itself or one if its ancestors.  This method will fail if
+the element is not present.</comment>
+
+</function>
+
+<function name="isEditable">
+
+<return type="boolean">true if the input element is editable, false otherwise</return>
+
+<param name="locator">an <a href="#locators">element locator</a></param>
+
+<comment>Determines whether the specified input element is editable, ie hasn't been disabled.
+This method will fail if the specified element isn't an input element.</comment>
+
+</function>
+
+<function name="getAllButtons">
+
+<return type="string[]">the IDs of all buttons on the page</return>
+
+<comment>Returns the IDs of all buttons on the page.
+
+<p>If a given button has no ID, it will appear as "" in this array.</p></comment>
+
+</function>
+
+<function name="getAllLinks">
+
+<return type="string[]">the IDs of all links on the page</return>
+
+<comment>Returns the IDs of all links on the page.
+
+<p>If a given link has no ID, it will appear as "" in this array.</p></comment>
+
+</function>
+
+<function name="getAllFields">
+
+<return type="string[]">the IDs of all field on the page</return>
+
+<comment>Returns the IDs of all input fields on the page.
+
+<p>If a given field has no ID, it will appear as "" in this array.</p></comment>
+
+</function>
+
+<function name="getAttributeFromAllWindows">
+
+<return type="string[]">the set of values of this attribute from all known windows.</return>
+
+<param name="attributeName">name of an attribute on the windows</param>
+
+<comment>Returns an array of JavaScript property values from all known windows having one.</comment>
+
+</function>
+
+<function name="dragdrop">
+
+<param name="locator">an element locator</param>
+
+<param name="movementsString">offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"</param>
+
+<comment>deprecated - use dragAndDrop instead</comment>
+
+</function>
+
+<function name="setMouseSpeed">
+
+<param name="pixels">the number of pixels between "mousemove" events</param>
+
+<comment>Configure the number of pixels between "mousemove" events during dragAndDrop commands (default=10).
+<p>Setting this value to 0 means that we'll send a "mousemove" event to every single pixel
+in between the start location and the end location; that can be very slow, and may
+cause some browsers to force the JavaScript to timeout.</p>
+
+<p>If the mouse speed is greater than the distance between the two dragged objects, we'll
+just send one "mousemove" at the start location and then one final one at the end location.</p></comment>
+
+</function>
+
+<function name="getMouseSpeed">
+
+<return type="number">the number of pixels between "mousemove" events during dragAndDrop commands (default=10)</return>
+
+<comment>Returns the number of pixels between "mousemove" events during dragAndDrop commands (default=10).</comment>
+
+</function>
+
+<function name="dragAndDrop">
+
+<param name="locator">an element locator</param>
+
+<param name="movementsString">offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"</param>
+
+<comment>Drags an element a certain distance and then drops it</comment>
+
+</function>
+
+<function name="dragAndDropToObject">
+
+<param name="locatorOfObjectToBeDragged">an element to be dragged</param>
+
+<param name="locatorOfDragDestinationObject">an element whose location (i.e., whose center-most pixel) will be the point where locatorOfObjectToBeDragged  is dropped</param>
+
+<comment>Drags an element and drops it on another element</comment>
+
+</function>
+
+<function name="windowFocus">
+
+<comment>Gives focus to the currently selected window</comment>
+
+</function>
+
+<function name="windowMaximize">
+
+<comment>Resize currently selected window to take up the entire screen</comment>
+
+</function>
+
+<function name="getAllWindowIds">
+
+<return type="string[]">Array of identifiers of all windows that the browser knows about.</return>
+
+<comment>Returns the IDs of all windows that the browser knows about in an array.</comment>
+
+</function>
+
+<function name="getAllWindowNames">
+
+<return type="string[]">Array of names of all windows that the browser knows about.</return>
+
+<comment>Returns the names of all windows that the browser knows about in an array.</comment>
+
+</function>
+
+<function name="getAllWindowTitles">
+
+<return type="string[]">Array of titles of all windows that the browser knows about.</return>
+
+<comment>Returns the titles of all windows that the browser knows about in an array.</comment>
+
+</function>
+
+<function name="getHtmlSource">
+
+<return type="string">the entire HTML source</return>
+
+<comment>Returns the entire HTML source between the opening and
+closing "html" tags.</comment>
+
+</function>
+
+<function name="setCursorPosition">
+
+<param name="locator">an <a href="#locators">element locator</a> pointing to an input element or textarea</param>
+
+<param name="position">the numerical position of the cursor in the field; position should be 0 to move the position to the beginning of the field.  You can also set the cursor to -1 to move it to the end of the field.</param>
+
+<comment>Moves the text cursor to the specified position in the given input element or textarea.
+This method will fail if the specified element isn't an input element or textarea.</comment>
+
+</function>
+
+<function name="getElementIndex">
+
+<return type="number">of relative index of the element to its parent (starting from 0)</return>
+
+<param name="locator">an <a href="#locators">element locator</a> pointing to an element</param>
+
+<comment>Get the relative index of an element to its parent (starting from 0). The comment node and empty text node
+will be ignored.</comment>
+
+</function>
+
+<function name="isOrdered">
+
+<return type="boolean">true if element1 is the previous sibling of element2, false otherwise</return>
+
+<param name="locator1">an <a href="#locators">element locator</a> pointing to the first element</param>
+
+<param name="locator2">an <a href="#locators">element locator</a> pointing to the second element</param>
+
+<comment>Check if these two elements have same parent and are ordered siblings in the DOM. Two same elements will
+not be considered ordered.</comment>
+
+</function>
+
+<function name="getElementPositionLeft">
+
+<return type="number">of pixels from the edge of the frame.</return>
+
+<param name="locator">an <a href="#locators">element locator</a> pointing to an element OR an element itself</param>
+
+<comment>Retrieves the horizontal position of an element</comment>
+
+</function>
+
+<function name="getElementPositionTop">
+
+<return type="number">of pixels from the edge of the frame.</return>
+
+<param name="locator">an <a href="#locators">element locator</a> pointing to an element OR an element itself</param>
+
+<comment>Retrieves the vertical position of an element</comment>
+
+</function>
+
+<function name="getElementWidth">
+
+<return type="number">width of an element in pixels</return>
+
+<param name="locator">an <a href="#locators">element locator</a> pointing to an element</param>
+
+<comment>Retrieves the width of an element</comment>
+
+</function>
+
+<function name="getElementHeight">
+
+<return type="number">height of an element in pixels</return>
+
+<param name="locator">an <a href="#locators">element locator</a> pointing to an element</param>
+
+<comment>Retrieves the height of an element</comment>
+
+</function>
+
+<function name="getCursorPosition">
+
+<return type="number">the numerical position of the cursor in the field</return>
+
+<param name="locator">an <a href="#locators">element locator</a> pointing to an input element or textarea</param>
+
+<comment>Retrieves the text cursor position in the given input element or textarea; beware, this may not work perfectly on all browsers.
+
+<p>Specifically, if the cursor/selection has been cleared by JavaScript, this command will tend to
+return the position of the last location of the cursor, even though the cursor is now gone from the page.  This is filed as <a href="http://jira.openqa.org/browse/SEL-243">SEL-243</a>.</p>
+This method will fail if the specified element isn't an input element or textarea, or there is no cursor in the element.</comment>
+
+</function>
+
+<function name="getExpression">
+
+<return type="string">the value passed in</return>
+
+<param name="expression">the value to return</param>
+
+<comment>Returns the specified expression.
+
+<p>This is useful because of JavaScript preprocessing.
+It is used to generate commands like assertExpression and waitForExpression.</p></comment>
+
+</function>
+
+<function name="getXpathCount">
+
+<return type="number">the number of nodes that match the specified xpath</return>
+
+<param name="xpath">the xpath expression to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.</param>
+
+<comment>Returns the number of nodes that match the specified xpath, eg. "//table" would give
+the number of tables.</comment>
+
+</function>
+
+<function name="getCssCount">
+
+<return type="number">the number of nodes that match the specified css selector</return>
+
+<param name="css">the css selector to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.</param>
+
+<comment>Returns the number of nodes that match the specified selector, eg. "css=table" would give
+the number of tables.</comment>
+
+</function>
+
+<function name="assignId">
+
+<param name="locator">an <a href="#locators">element locator</a> pointing to an element</param>
+
+<param name="identifier">a string to be used as the ID of the specified element</param>
+
+<comment>Temporarily sets the "id" attribute of the specified element, so you can locate it in the future
+using its ID rather than a slow/complicated XPath.  This ID will disappear once the page is
+reloaded.</comment>
+
+</function>
+
+<function name="allowNativeXpath">
+
+<param name="allow">boolean, true means we'll prefer to use native XPath; false means we'll only use JS XPath</param>
+
+<comment>Specifies whether Selenium should use the native in-browser implementation
+of XPath (if any native version is available); if you pass "false" to
+this function, we will always use our pure-JavaScript xpath library.
+Using the pure-JS xpath library can improve the consistency of xpath
+element locators between different browser vendors, but the pure-JS
+version is much slower than the native implementations.</comment>
+
+</function>
+
+<function name="ignoreAttributesWithoutValue">
+
+<param name="ignore">boolean, true means we'll ignore attributes without value                        at the expense of xpath "correctness"; false means                        we'll sacrifice speed for correctness.</param>
+
+<comment>Specifies whether Selenium will ignore xpath attributes that have no
+value, i.e. are the empty string, when using the non-native xpath
+evaluation engine. You'd want to do this for performance reasons in IE.
+However, this could break certain xpaths, for example an xpath that looks
+for an attribute whose value is NOT the empty string.
+
+The hope is that such xpaths are relatively rare, but the user should
+have the option of using them. Note that this only influences xpath
+evaluation when using the ajaxslt engine (i.e. not "javascript-xpath").</comment>
+
+</function>
+
+<function name="waitForCondition">
+
+<param name="script">the JavaScript snippet to run</param>
+
+<param name="timeout">a timeout in milliseconds, after which this command will return with an error</param>
+
+<comment>Runs the specified JavaScript snippet repeatedly until it evaluates to "true".
+The snippet may have multiple lines, but only the result of the last line
+will be considered.
+
+<p>Note that, by default, the snippet will be run in the runner's test window, not in the window
+of your application.  To get the window of your application, you can use
+the JavaScript snippet <code>selenium.browserbot.getCurrentWindow()</code>, and then
+run your JavaScript in there</p></comment>
+
+</function>
+
+<function name="setTimeout">
+
+<param name="timeout">a timeout in milliseconds, after which the action will return with an error</param>
+
+<comment>Specifies the amount of time that Selenium will wait for actions to complete.
+
+<p>Actions that require waiting include "open" and the "waitFor*" actions.</p>
+The default timeout is 30 seconds.</comment>
+
+</function>
+
+<function name="waitForPageToLoad">
+
+<param name="timeout">a timeout in milliseconds, after which this command will return with an error</param>
+
+<comment>Waits for a new page to load.
+
+<p>You can use this command instead of the "AndWait" suffixes, "clickAndWait", "selectAndWait", "typeAndWait" etc.
+(which are only available in the JS API).</p>
+
+<p>Selenium constantly keeps track of new pages loading, and sets a "newPageLoaded"
+flag when it first notices a page load.  Running any other Selenium command after
+turns the flag to false.  Hence, if you want to wait for a page to load, you must
+wait immediately after a Selenium command that caused a page-load.</p></comment>
+
+</function>
+
+<function name="waitForFrameToLoad">
+
+<param name="frameAddress">FrameAddress from the server side</param>
+
+<param name="timeout">a timeout in milliseconds, after which this command will return with an error</param>
+
+<comment>Waits for a new frame to load.
+
+<p>Selenium constantly keeps track of new pages and frames loading, 
+and sets a "newPageLoaded" flag when it first notices a page load.</p>
+
+See waitForPageToLoad for more information.</comment>
+
+</function>
+
+<function name="getCookie">
+
+<return type="string">all cookies of the current page under test</return>
+
+<comment>Return all cookies of the current page under test.</comment>
+
+</function>
+
+<function name="getCookieByName">
+
+<return type="string">the value of the cookie</return>
+
+<param name="name">the name of the cookie</param>
+
+<comment>Returns the value of the cookie with the specified name, or throws an error if the cookie is not present.</comment>
+
+</function>
+
+<function name="isCookiePresent">
+
+<return type="boolean">true if a cookie with the specified name is present, or false otherwise.</return>
+
+<param name="name">the name of the cookie</param>
+
+<comment>Returns true if a cookie with the specified name is present, or false otherwise.</comment>
+
+</function>
+
+<function name="createCookie">
+
+<param name="nameValuePair">name and value of the cookie in a format "name=value"</param>
+
+<param name="optionsString">options for the cookie. Currently supported options include 'path', 'max_age' and 'domain'.      the optionsString's format is "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the unit      of the value of 'max_age' is second.  Note that specifying a domain that isn't a subset of the current domain will      usually fail.</param>
+
+<comment>Create a new cookie whose path and domain are same with those of current page
+under test, unless you specified a path for this cookie explicitly.</comment>
+
+</function>
+
+<function name="deleteCookie">
+
+<param name="name">the name of the cookie to be deleted</param>
+
+<param name="optionsString">options for the cookie. Currently supported options include 'path', 'domain'      and 'recurse.' The optionsString's format is "path=/path/, domain=.foo.com, recurse=true".      The order of options are irrelevant. Note that specifying a domain that isn't a subset of      the current domain will usually fail.</param>
+
+<comment>Delete a named cookie with specified path and domain.  Be careful; to delete a cookie, you
+need to delete it using the exact same path and domain that were used to create the cookie.
+If the path is wrong, or the domain is wrong, the cookie simply won't be deleted.  Also
+note that specifying a domain that isn't a subset of the current domain will usually fail.
+
+Since there's no way to discover at runtime the original path and domain of a given cookie,
+we've added an option called 'recurse' to try all sub-domains of the current domain with
+all paths that are a subset of the current path.  Beware; this option can be slow.  In
+big-O notation, it operates in O(n*m) time, where n is the number of dots in the domain
+name and m is the number of slashes in the path.</comment>
+
+</function>
+
+<function name="deleteAllVisibleCookies">
+
+<comment>Calls deleteCookie with recurse=true on all cookies visible to the current page.
+As noted on the documentation for deleteCookie, recurse=true can be much slower
+than simply deleting the cookies using a known domain/path.</comment>
+
+</function>
+
+<function name="setBrowserLogLevel">
+
+<param name="logLevel">one of the following: "debug", "info", "warn", "error" or "off"</param>
+
+<comment>Sets the threshold for browser-side logging messages; log messages beneath this threshold will be discarded.
+Valid logLevel strings are: "debug", "info", "warn", "error" or "off".
+To see the browser logs, you need to
+either show the log window in GUI mode, or enable browser-side logging in Selenium RC.</comment>
+
+</function>
+
+<function name="runScript">
+
+<param name="script">the JavaScript snippet to run</param>
+
+<comment>Creates a new "script" tag in the body of the current test window, and 
+adds the specified text into the body of the command.  Scripts run in
+this way can often be debugged more easily than scripts executed using
+Selenium's "getEval" command.  Beware that JS exceptions thrown in these script
+tags aren't managed by Selenium, so you should probably wrap your script
+in try/catch blocks if there is any chance that the script will throw
+an exception.</comment>
+
+</function>
+
+<function name="addLocationStrategy">
+
+<param name="strategyName">the name of the strategy to define; this should use only   letters [a-zA-Z] with no spaces or other punctuation.</param>
+
+<param name="functionDefinition">a string defining the body of a function in JavaScript.   For example: <code>return inDocument.getElementById(locator);</code></param>
+
+<comment>Defines a new function for Selenium to locate elements on the page.
+For example,
+if you define the strategy "foo", and someone runs click("foo=blah"), we'll
+run your function, passing you the string "blah", and click on the element 
+that your function
+returns, or throw an "Element not found" error if your function returns null.
+
+We'll pass three arguments to your function:
+<ul>
+<li>locator: the string the user passed in</li>
+<li>inWindow: the currently selected window</li>
+<li>inDocument: the currently selected document</li>
+</ul>
+The function must return null if the element can't be found.</comment>
+
+</function>
+
+<function name="captureEntirePageScreenshot">
+
+<param name="filename">the path to the file to persist the screenshot as. No                  filename extension will be appended by default.                  Directories will not be created if they do not exist,                    and an exception will be thrown, possibly by native                  code.</param>
+
+<param name="kwargs">a kwargs string that modifies the way the screenshot                  is captured. Example: "background=#CCFFDD" .                  Currently valid options:                  <dl>                   <dt>background</dt>                     <dd>the background CSS for the HTML document. This                     may be useful to set for capturing screenshots of                     less-than-ideal layouts, for example where absolute                     positioning causes the calculation of the canvas                     dimension to fail and a black background is exposed                     (possibly obscuring black text).</dd>                  </dl></param>
+
+<comment>Saves the entire contents of the current window canvas to a PNG file.
+Contrast this with the captureScreenshot command, which captures the
+contents of the OS viewport (i.e. whatever is currently being displayed
+on the monitor), and is implemented in the RC only. Currently this only
+works in Firefox when running in chrome mode, and in IE non-HTA using
+the EXPERIMENTAL "Snapsie" utility. The Firefox implementation is mostly
+borrowed from the Screengrab! Firefox extension. Please see
+http://www.screengrab.org and http://snapsie.sourceforge.net/ for
+details.</comment>
+
+</function>
+
+<function name="rollup">
+
+<param name="rollupName">the name of the rollup command</param>
+
+<param name="kwargs">keyword arguments string that influences how the                    rollup expands into commands</param>
+
+<comment>Executes a command rollup, which is a series of commands with a unique
+name, and optionally arguments that control the generation of the set of
+commands. If any one of the rolled-up commands fails, the rollup is
+considered to have failed. Rollups may also contain nested rollups.</comment>
+
+</function>
+
+<function name="addScript">
+
+<param name="scriptContent">the Javascript content of the script to add</param>
+
+<param name="scriptTagId">(optional) the id of the new script tag. If                       specified, and an element with this id already                       exists, this operation will fail.</param>
+
+<comment>Loads script content into a new script tag in the Selenium document. This
+differs from the runScript command in that runScript adds the script tag
+to the document of the AUT, not the Selenium document. The following
+entities in the script content are replaced by the characters they
+represent:
+
+    &lt;
+    &gt;
+    &amp;
+
+The corresponding remove command is removeScript.</comment>
+
+</function>
+
+<function name="removeScript">
+
+<param name="scriptTagId">the id of the script element to remove.</param>
+
+<comment>Removes a script tag from the Selenium document identified by the given
+id. Does nothing if the referenced tag doesn't exist.</comment>
+
+</function>
+
+<function name="useXpathLibrary">
+
+<param name="libraryName">name of the desired library Only the following three can be chosen: <ul>   <li>"ajaxslt" - Google's library</li>   <li>"javascript-xpath" - Cybozu Labs' faster library</li>   <li>"default" - The default library.  Currently the default library is "ajaxslt" .</li> </ul> If libraryName isn't one of these three, then  no change will be made.</param>
+
+<comment>Allows choice of one of the available libraries.</comment>
+
+</function>
+
+<function name="setContext">
+
+<param name="context">the message to be sent to the browser</param>
+
+<comment>Writes a message to the status bar and adds a note to the browser-side
+log.</comment>
+
+</function>
+
+<function name="attachFile">
+
+<param name="fieldLocator">an <a href="#locators">element locator</a></param>
+
+<param name="fileLocator">a URL pointing to the specified file. Before the file  can be set in the input field (fieldLocator), Selenium RC may need to transfer the file    to the local machine before attaching the file in a web page form. This is common in selenium  grid configurations where the RC server driving the browser is not the same  machine that started the test.   Supported Browsers: Firefox ("*chrome") only.</param>
+
+<comment>Sets a file input (upload) field to the file listed in fileLocator</comment>
+
+</function>
+
+<function name="captureScreenshot">
+
+<param name="filename">the absolute path to the file to be written, e.g. "c:\blah\screenshot.png"</param>
+
+<comment>Captures a PNG screenshot to the specified file.</comment>
+
+</function>
+
+<function name="captureScreenshotToString">
+
+<return type="string">The base 64 encoded string of the screen shot (PNG file)</return>
+
+<comment>Capture a PNG screenshot.  It then returns the file as a base 64 encoded string.</comment>
+
+</function>
+
+<function name="captureEntirePageScreenshotToString">
+
+<return type="string">The base 64 encoded string of the page screenshot (PNG file)</return>
+
+<param name="kwargs">A kwargs string that modifies the way the screenshot is captured. Example: "background=#CCFFDD". This may be useful to set for capturing screenshots of less-than-ideal layouts, for example where absolute positioning causes the calculation of the canvas dimension to fail and a black background is exposed  (possibly obscuring black text).</param>
+
+<comment>Downloads a screenshot of the browser current window canvas to a 
+based 64 encoded PNG file. The <em>entire</em> windows canvas is captured,
+including parts rendered outside of the current view port.
+
+Currently this only works in Mozilla and when running in chrome mode.</comment>
+
+</function>
+
+<function name="shutDownSeleniumServer">
+
+<comment>Kills the running Selenium Server and all browser sessions.  After you run this command, you will no longer be able to send
+commands to the server; you can't remotely start the server once it has been stopped.  Normally
+you should prefer to run the "stop" command, which terminates the current browser session, rather than 
+shutting down the entire server.</comment>
+
+</function>
+
+<function name="retrieveLastRemoteControlLogs">
+
+<return type="string">The last N log messages as a multi-line string.</return>
+
+<comment>Retrieve the last messages logged on a specific remote control. Useful for error reports, especially
+when running multiple remote controls in a distributed environment. The maximum number of log messages
+that can be retrieve is configured on remote control startup.</comment>
+
+</function>
+
+<function name="keyDownNative">
+
+<param name="keycode">an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!</param>
+
+<comment>Simulates a user pressing a key (without releasing it yet) by sending a native operating system keystroke.
+This function uses the java.awt.Robot class to send a keystroke; this more accurately simulates typing
+a key on the keyboard.  It does not honor settings from the shiftKeyDown, controlKeyDown, altKeyDown and
+metaKeyDown commands, and does not target any particular HTML element.  To send a keystroke to a particular
+element, focus on the element first before running this command.</comment>
+
+</function>
+
+<function name="keyUpNative">
+
+<param name="keycode">an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!</param>
+
+<comment>Simulates a user releasing a key by sending a native operating system keystroke.
+This function uses the java.awt.Robot class to send a keystroke; this more accurately simulates typing
+a key on the keyboard.  It does not honor settings from the shiftKeyDown, controlKeyDown, altKeyDown and
+metaKeyDown commands, and does not target any particular HTML element.  To send a keystroke to a particular
+element, focus on the element first before running this command.</comment>
+
+</function>
+
+<function name="keyPressNative">
+
+<param name="keycode">an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!</param>
+
+<comment>Simulates a user pressing and releasing a key by sending a native operating system keystroke.
+This function uses the java.awt.Robot class to send a keystroke; this more accurately simulates typing
+a key on the keyboard.  It does not honor settings from the shiftKeyDown, controlKeyDown, altKeyDown and
+metaKeyDown commands, and does not target any particular HTML element.  To send a keystroke to a particular
+element, focus on the element first before running this command.</comment>
+
+</function>
+
+</apidoc>

@@ -1,0 +1,15 @@
+{
+    "sessions": {
+        "title": "جلسات العمل النشطة ل [<b>{{username}}</b>]",
+        "table": {
+            "ipaddress": "IP عنوان",
+            "useragent": "وكيل المستخدم",
+            "date": "تاريخ",
+            "button": "إبطال"
+        },
+        "messages": {
+            "success": "<strong>الجلسة أبطلت!</strong>",
+            "error": "<strong>حدث خطأ!</strong> تعذر ابطال الجلسة"
+        }
+    }
+}

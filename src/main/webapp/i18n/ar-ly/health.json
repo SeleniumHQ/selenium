@@ -1,0 +1,28 @@
+{
+    "health": {
+        "title": "تدقيقات الصحة",
+        "refresh.button": "تحديث",
+        "stacktrace": "تتبع المكدس",
+        "details": {
+            "details": "تفاصيل",
+            "properties": "الخصائص",
+            "name": "اسم",
+            "value": "القيمة",
+            "error": "خطأ"
+        },
+        "indicator": {
+            "diskSpace": "مساحة القرص",
+            "mail": "البريد الإلكتروني",
+            "db": "قاعدة البيانات"
+        },
+        "table": {
+            "service": "اسم الخدمة",
+            "status": "الحالة"
+        },
+        "status": {
+            "UNKNOWN": "UNKNOWN",
+            "UP": "تشتغل",
+            "DOWN": "عاطلة"
+        }
+    }
+}

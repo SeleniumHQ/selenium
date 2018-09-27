@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>svg_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.dom');
+    goog.require('bot.inject');
+    goog.require('bot.locators');
+    goog.require('bot.test');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+  </script>
+  <script type="text/javascript">
+    // This is called by the test runner prior to each test, preventing the
+    // tests from being run if the browser does not support inline SVG.
+    function shouldRunTests() {
+      return bot.test.SUPPORTS_INLINE_SVG;
+    }
+
+    function testSvgElementsShouldBeVisible() {
+      var element = bot.locators.findElement({id: 'rect'});
+      assertTrue(bot.dom.isShown(element));
+    }
+
+    function testFocusingOnSvgElementDoesNotThrow() {
+      var element = bot.locators.findElement({id: 'rect'});
+      var otherElement = bot.locators.findElement({id: 'text'});
+      bot.action.focusOnElement(otherElement);
+      bot.action.focusOnElement(element);
+    }
+
+    function testGettingTextOfSvgElementDoesNotThrow() {
+      var element = bot.locators.findElement({id: 'text'});
+      bot.dom.getVisibleText(element);
+    }
+
+    function testSvgLineWithZeroSizeBoundingBoxIsShown() {
+      if ((goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher(536)) ||
+          (goog.userAgent.GECKO && !goog.userAgent.isVersionOrHigher(17))) {
+        // Older versions of WebKit report an incorrect bounding box for
+        // SVG elements, causing the isShown check in this test to fail.
+        return;
+      }
+      var element = bot.locators.findElement({id: 'path'});
+      assertTrue(bot.dom.isShown(element));
+    }
+
+    function testSvgClientRect() {
+      var e = bot.locators.findElement({id: 'rect'});
+      var rect = bot.dom.getClientRect(e);
+      assertSvgRectApprox(10, 10, 10, 10, rect);
+    }
+
+    function testSvgClientRectOfTransformed() {
+      var e = bot.locators.findElement({id: 'transformed'});
+      var rect = bot.dom.getClientRect(e);
+      assertSvgRectApprox(-10, -10, 10, 10, rect);
+    }
+
+    function testClickingOnElementInSvgDocument() {
+      var frame = window.frames[0];
+      var rect = bot.locators.findElement({id: 'rect'}, frame.document);
+      assertEquals('blue', rect.getAttribute('fill'));
+      bot.action.click(rect);
+      assertEquals('green', rect.getAttribute('fill'));
+    }
+
+    function testExecutingScriptInSvgDocument() {
+      var frame = window.frames[0];
+      var bgEl = bot.locators.findElement({id: 'bg'}, frame.document);
+
+      assertEquals('red', bgEl.getAttribute('fill'));
+      bot.inject.executeScript(
+          'document.getElementById("bg").setAttribute("fill", "yellow")',
+          [], false, frame);
+      assertEquals('yellow', bgEl.getAttribute('fill'));
+    }
+
+    function assertSvgRectApprox(left, top, width, height, rect) {
+      // The bounding box attributes of the SVG element won't be precisely
+      // obeyed by the browser.The rect should be at least offset by its x and y
+      // values, and the height and width should be around the specified values.
+      assertInRange('left', left, left + 10, rect.left);
+      assertInRange('top', top, top + 10, rect.top);
+      assertInRange('width', width - 1, width + 6, rect.width);
+      assertInRange('height', height - 1, height + 6, rect.height);
+
+      function assertInRange(desc, min, max, value) {
+        assertTrue(desc + ' too small', value >= min);
+        assertTrue(desc + ' too big', value < max);
+      }
+    }
+  </script>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <rect id="rect" fill="red" stroke="none" width="10" height="10" x="10" y="10"/>
+  <text id="text" fill="black" font-size="12" font-family="Arial" x="25" y="20">Apple</text>
+  <path id="path" d="M 100 15 L 200 15" stroke="red" stroke-width="10"/>
+  <rect id="transformed" transform="translate(-20, -20)" fill="green" stroke="none" width="10" height="10" x="10" y="10"/>
+</svg>
+<div>
+  <script>
+    // Don't attempt to load our svg document in browsers that do not support
+    // SVG (I'm looking at you, IE<9). Doing so will cause problems when
+    // running tests with WebDriver.
+    var src = shouldRunTests() ? "testdata/rect.svg" : "";
+    document.write('<iframe src="' + src + '"></' + 'iframe>');
+  </script>
+</div>
+</body>
+</html>

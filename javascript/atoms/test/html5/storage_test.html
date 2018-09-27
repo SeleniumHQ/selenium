@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>HTML5 storage</title>
+  <script src="../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.storage');
+    goog.require('bot.html5');
+    goog.require('goog.array');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent.product');
+  </script>
+
+  <script type="text/javascript">
+    // WebDriver does not enable storage for Firefox (b/5787180).
+    var LOCAL_STORAGE_NOT_WORKING =
+        !bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE) ||
+        goog.userAgent.product.FIREFOX;
+    var SESSION_STORAGE_NOT_WORKING =
+        !bot.html5.isSupported(bot.html5.API.SESSION_STORAGE) ||
+        goog.userAgent.product.FIREFOX;
+
+    function testGetLocalStorage() {
+      if (LOCAL_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var storage = bot.storage.getLocalStorage();
+      assertEquals(storage.getStorageMap(), localStorage);
+    }
+
+    function testGetLocalStorageWithWindow() {
+      if (LOCAL_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var storage = bot.storage.getLocalStorage(bot.getWindow());
+      assertEquals(storage.getStorageMap(), localStorage);
+    }
+
+    function testGetSessionStorage() {
+      if (SESSION_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var storage = bot.storage.getSessionStorage();
+      assertEquals(storage.getStorageMap(), sessionStorage);
+    }
+
+    function testGetSessionStorageWithWindow() {
+      if (SESSION_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var storage = bot.storage.getSessionStorage(bot.getWindow());
+      assertEquals(storage.getStorageMap(), storage.getStorageMap());
+    }
+
+    function testClear() {
+      if (LOCAL_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var storage = bot.storage.getLocalStorage();
+      storage.clear();
+      assertEquals(0, storage.size());
+
+      storage.setItem('first', 'one');
+      storage.setItem('second', 'two');
+      storage.setItem('third', 'two');
+      storage.clear();
+      assertEquals(0, storage.size());
+      assertNull(storage.getItem('first'));
+      assertNull(storage.getItem('second'));
+      assertNull(storage.getItem('third'));
+    }
+
+    function testSetAndGetSimpleItem() {
+      if (SESSION_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var storage = bot.storage.getSessionStorage();
+
+      // set-get
+      storage.setItem('first', 'one');
+      assertEquals('one', storage.getItem('first'));
+      storage.setItem('second', 2);
+      assertEquals('2', storage.getItem('second'));
+      assertNull(storage.getItem('third'));
+
+      // resetItem
+      storage.setItem('first', '1');
+      assertEquals('1', storage.getItem('first'));
+
+      storage.clear();
+    }
+
+    function testSetArbitraryValue() {
+      if (SESSION_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var storage = bot.storage.getSessionStorage();
+
+      // set different types of value
+      storage.setItem('foo', '');
+      assertEquals('', storage.getItem('foo'));
+      var d = new Date(2011, 02, 29, 12, 33, 44, 44);
+      storage.setItem('date', d);
+      assertEquals(d.toString(), storage.getItem('date'));
+
+      // set null value.
+      storage.setItem('foo1', null);
+      assertEquals('null', storage.getItem('foo1'));
+      storage.setItem('foo2', 'null');
+      assertEquals(storage.getItem('foo1'), storage.getItem('foo2'));
+
+      storage.clear();
+    }
+
+    function testRemoveItem() {
+      if (SESSION_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var storage = bot.storage.getSessionStorage();
+      storage.clear();
+
+      storage.setItem('first', 'one');
+      storage.setItem('second', 'two');
+
+      assertEquals('one', storage.removeItem('first'));
+      assertEquals('two', storage.removeItem('second'));
+      assertEquals(null, storage.removeItem('first'));
+      assertEquals(null, storage.removeItem('foo'));
+    }
+
+    function testSize() {
+      if (SESSION_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var storage = bot.storage.getSessionStorage();
+      storage.clear();
+
+      storage.setItem('first', 'one');
+      storage.setItem('second', 'two');
+      storage.setItem('third', 'three');
+      assertEquals(3, storage.size());
+    }
+
+    function testKeySet() {
+      if (SESSION_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var storage = bot.storage.getSessionStorage();
+      storage.clear();
+
+      storage.setItem('third', 'three');
+      storage.setItem('first', 'one');
+      storage.setItem('second', 'two');
+      assertEquals(3, storage.size());
+
+      // keySet
+      var keys = storage.keySet();
+      // Use goog.array.indexOf because IE9 doesn't have Array.indexOf
+      assertNotEquals(-1, goog.array.indexOf(keys, 'first'));
+      assertNotEquals(-1, goog.array.indexOf(keys, 'second'));
+      assertEquals(-1, goog.array.indexOf(keys, 'five'));
+      var sortedKeys = keys.sort();
+      assertArrayEquals(['first', 'second', 'third'], sortedKeys);
+    }
+
+    function testIdenticalLocalStorage() {
+      if (LOCAL_STORAGE_NOT_WORKING) {
+        return;
+      }
+      var localStorage1 = bot.storage.getLocalStorage();
+      var localStorage2 = bot.storage.getLocalStorage();
+
+      localStorage1.clear();
+      assertEquals(0, localStorage1.size());
+      assertEquals(0, localStorage2.size());
+      localStorage1.setItem('foo', 'bar');
+      assertEquals('bar', localStorage1.getItem('foo'));
+      assertEquals('bar', localStorage2.getItem('foo'));
+
+      localStorage2.removeItem('foo');
+      assertNull(localStorage1.getItem('foo'));
+      assertNull(localStorage2.getItem('foo'));
+    }
+
+    function testPersistentLocalStorage() {
+      if (LOCAL_STORAGE_NOT_WORKING) {
+        return;
+      }
+
+      var localStorage = bot.storage.getLocalStorage();
+
+      if (goog.isNull(localStorage.getItem('foosession'))) {
+        localStorage.setItem('foosession', 'barsession');
+      }
+      assertEquals('barsession', localStorage.getItem('foosession'));
+      localStorage.removeItem('foosession');
+      assertNull(localStorage.getItem('foosession'));
+    }
+  </script>
+
+</head>
+<body>
+</body>
+</html>

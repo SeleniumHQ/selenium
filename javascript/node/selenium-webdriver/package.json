@@ -1,0 +1,44 @@
+{
+  "name": "selenium-webdriver",
+  "version": "4.0.0-alpha.1",
+  "description": "The official WebDriver JavaScript bindings from the Selenium project",
+  "license": "Apache-2.0",
+  "keywords": [
+    "automation",
+    "selenium",
+    "testing",
+    "webdriver",
+    "webdriverjs"
+  ],
+  "homepage": "https://github.com/SeleniumHQ/selenium",
+  "bugs": {
+    "url": "https://github.com/SeleniumHQ/selenium/issues"
+  },
+  "main": "./index",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SeleniumHQ/selenium.git"
+  },
+  "engines": {
+    "node": ">= 8.9.0"
+  },
+  "dependencies": {
+    "jszip": "^3.1.3",
+    "rimraf": "^2.5.4",
+    "tmp": "0.0.30",
+    "xml2js": "^0.4.17"
+  },
+  "devDependencies": {
+    "express": "^4.14.0",
+    "jasmine": "^2.8.0",
+    "mocha": "^3.1.2",
+    "multer": "^1.2.0",
+    "promises-aplus-tests": "^2.1.2",
+    "serve-index": "^1.8.0",
+    "sinon": "^1.17.6"
+  },
+  "scripts": {
+    "test": "mocha -t 600000 --recursive test",
+    "test-jasmine": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
+  }
+}

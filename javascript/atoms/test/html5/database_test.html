@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Web database storage</title>
+  <script src='../test_bootstrap.js'></script>
+  <script type='text/javascript'>
+    goog.require('bot');
+    goog.require('bot.html5');
+    goog.require('bot.storage.database');
+    goog.require('goog.Promise');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <script type='text/javascript'>
+    var DATABASE_NOT_WORKING =
+        !bot.html5.isSupported(bot.html5.API.DATABASE) ||
+        (goog.userAgent.product.ANDROID && bot.userAgent.isProductVersion(4) &&
+            !bot.userAgent.isProductVersion(5));
+
+    var createdDatabase;
+
+    /**
+     * Initial function to create the database. I use the top-level window
+     * to create the database.
+     * This function must not fail or throw error for of the test functions.
+     */
+    function setUpPage() {
+      createdDatabase = new goog.Promise(function(success, failure) {
+        if (DATABASE_NOT_WORKING) {
+          success();
+          return;
+        }
+
+        try {
+          var win = bot.getWindow();
+          // Keep the DB size below 5 MB. Above that size, Safari will prompt
+          // for permission and cause this test to hang.
+          var db = win.openDatabase('testDB', '1.0', 'db name', 2 * 1024 * 1024);
+          db.transaction(function(tx) {
+            tx.executeSql('CREATE TABLE IF NOT EXISTS docids (id INTEGER ' +
+                'PRIMARY KEY, name TEXT, owner TEXT)');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (11, "aa", "Manager")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (1, "aabb", "Eng-A")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (31, "abc", "Eng-B")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (0, "aabb", "Eng-A")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (2, "yyy", "Eng-D")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (3, "zzz", "Eng-A")');
+            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (90, "aabb", "Eng-E")');
+          }, failure, success);
+        } catch (e) {
+          failure(e);
+        }
+      });
+    }
+
+
+    function setUp() {
+      return createdDatabase;  // setUpPage does not wait on returned promises.
+    }
+
+
+    function testOpenDatabaseWithSameVersion() {
+      if (DATABASE_NOT_WORKING) {
+        return;
+      }
+
+      var db;
+      try {
+        db = bot.storage.database.openOrCreate('testDB', '1.0');
+      } catch (e) {
+        fail(e.message);
+      }
+
+      assertNotNull(db);
+      assertEquals(db.version, '1.0');
+    }
+
+
+    function testOpenDatabaseWithAnyVersion() {
+      if (DATABASE_NOT_WORKING) {
+        return;
+      }
+
+      var db;
+      try {
+        db = bot.storage.database.openOrCreate('testDB');
+      } catch (e) {
+        fail(e.message);
+      }
+
+      assertNotNull(db);
+      assertEquals(db.version, '1.0');
+    }
+
+
+    function testOpenDatabaseWrongVersion() {
+      if (DATABASE_NOT_WORKING) {
+        return;
+      }
+
+      try {
+        var db = bot.storage.database.openOrCreate('testDB', '2.0');
+      } catch (e) {
+        // Exception should be thrown on opening a database with wrong
+        // version.
+        return;
+      }
+
+      fail('Database should fail to open.');
+    }
+
+
+    function testExecuteSqlWithInvalidSqlStatement() {
+      if (DATABASE_NOT_WORKING) {
+        return;
+      }
+
+      return new goog.Promise(function(success, failure) {
+        var onQueryResult = function() {
+          failure('Transaction should not succeed with invalid SQL statement');
+        };
+        var onTxSuccess = onQueryResult;
+        var onTxFailure = success;
+
+        // WITH is errorneously used instead of WHERE
+        bot.storage.database.executeSql('testDB',
+            'SELECT * from docids WITH id = 1', [],
+            onQueryResult,
+            onTxFailure,
+            onTxSuccess);
+      });
+    }
+
+
+    function testExecuteSqlWithValidArgument() {
+      if (DATABASE_NOT_WORKING) {
+        return;
+      }
+
+      return new goog.Promise(function(success, failure) {
+        bot.storage.database.executeSql('testDB',
+            'SELECT id from docids WHERE owner = ? AND name = ?',
+            ['Eng-A', 'aabb'],
+            function(tx, result) {
+              success(result);
+            },
+            goog.partial(failure, 'Transaction should succeed, not fail'),
+            goog.nullFunction);
+      }).then(function(result) {
+        assertEquals(result.rows.length, 2);
+        assertEquals(result.rowsAffected, 0);
+        assertEquals(result.rows[0].id, 0);
+        assertEquals(result.rows[1].id, 1);
+      });
+    }
+
+
+    function testExecuteSqlInsertAndDelete() {
+      if (DATABASE_NOT_WORKING) {
+        return;
+      }
+
+      //Grouping insert and delete together to keep no side-effect later.
+      return executeSqlInsert().then(executeSqlDelete);
+    }
+
+    function executeSqlInsert() {
+      return new goog.Promise(function(success, fail) {
+        bot.storage.database.executeSql('testDB',
+            'INSERT OR REPLACE INTO docids (id, name, owner) VALUES (?, ?, ?)',
+            [999, 'file1', 'Eng-L'],
+            function(tx, result) {
+              success(result);
+            },
+            goog.partial(fail, 'Transaction should succeed, not fail'),
+            goog.nullFunction);
+      }).then(function(result) {
+        assertEquals(result.rowsAffected, 1);
+        assertEquals(result.rows.length, 0);
+      });
+    }
+
+    function executeSqlDelete() {
+      return new goog.Promise(function(success, fail) {
+        bot.storage.database.executeSql('testDB',
+            'DELETE FROM docids WHERE id=999',
+            [],
+            function(tx, result) {
+              success(result);
+            },
+            goog.partial(fail, 'Transaction should succeed, not fail'),
+            goog.nullFunction);
+      }).then(function(result) {
+        assertEquals(result.rowsAffected, 1);
+        assertEquals(result.rows.length, 0);
+      });
+    }
+  </script>
+</head>
+<body></body>
+</html>

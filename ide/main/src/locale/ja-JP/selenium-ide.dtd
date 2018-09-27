@@ -1,0 +1,93 @@
+<!ENTITY selenium-ide.name "Selenium IDE">
+<!ENTITY selenium-ide.version "2.9.0">
+<!ENTITY selenium-ide.sidebar.title "&selenium-ide.name; &selenium-ide.version;">
+<!ENTITY selenium-ide.standalone.title "&selenium-ide.name; &selenium-ide.version;">
+
+<!ENTITY firefox.sidebar.view-menu.label "&selenium-ide.name;">
+
+<!ENTITY newTestCmd.label "テストケースを新規作成">
+<!ENTITY addTestCmd.label "テストケースを追加...">
+<!ENTITY openCmd.label "テストケースを開く...">
+<!ENTITY saveTestCmd.label "テストケースを保存">
+<!ENTITY saveTestAsCmd.label "テストケースに名前を付けて保存...">
+<!ENTITY exportCmd.label "テストケースをエクスポート...">
+<!ENTITY optionsCmd.label "設定...">
+<!ENTITY formatCmd.label "フォーマット">
+<!ENTITY clipboardFormatCmd.label "クリップボードのフォーマット">
+<!ENTITY tableTab.label "テーブル">
+<!ENTITY sourceTab.label "ソース">
+<!ENTITY runRadio.label "速く">
+<!ENTITY walkRadio.label "ゆっくり">
+<!ENTITY stepRadio.label "ステップ">
+<!ENTITY playSuiteButton.tooltip "テストスイート全体を実行">
+<!ENTITY playButton.tooltip "現在のテストケースを実行">
+<!ENTITY pauseButton.tooltip "一時停止/再開">
+<!ENTITY stepButton.tooltip "1ステップ実行">
+<!ENTITY speedSliderFast.label "Fast">
+<!ENTITY speedSliderFaster.label "高速化">
+<!ENTITY speedSliderFastest.label "最速">
+<!ENTITY speedSliderSlowest.label "遅い">
+<!ENTITY speedSliderSlower.label "遅い">
+<!ENTITY speedSliderSlow.label "Slow">
+<!ENTITY recordButton.tooltip "テストの記録">
+<!ENTITY baseURL.label "Base URL">
+<!ENTITY baseURLTextbox.tooltip "テストを実施するWebサイトの URL を入力してください。&quot;open&quot; コマンドの実行に使われます。">
+<!ENTITY resetWindowCmd.label "リセットIDEのウィンドウ">
+
+<!ENTITY fileMenu.label "ファイル">
+<!ENTITY runMenu.label "アクション">
+<!ENTITY optionsMenu.label "オプション">
+
+<!ENTITY command.label "コマンド">
+<!ENTITY target.label "対象">
+<!ENTITY value.label "値">
+<!ENTITY findTarget.label "検索">
+
+<!ENTITY helpDocumentation.label "ドキュメンテーション">
+<!ENTITY helpReportIssue.label "レポートを発行">
+<!ENTITY helpSearchIssues.label "Search Issues">
+<!ENTITY helpSubmitDiagInfo.label "Submit Diagnostic Information">
+<!ENTITY helpReleaseNotes.label "リリースノート">
+<!ENTITY helpBlog.label "公式のSeleniumブログ">
+<!ENTITY helpWebsite.label "公式のSeleniumのウェブサイト">
+
+<!ENTITY logConsole.label "ログ">
+<!ENTITY logFilter.debug.label "デバッグ">
+<!ENTITY logFilter.info.label "情報">
+<!ENTITY logFilter.warn.label "警告">
+<!ENTITY logFilter.error.label "エラー">
+<!ENTITY logClear.label "消去">
+<!ENTITY reference.label "リファレンス">
+
+<!ENTITY contextMenu.cut.label "切り取り">
+<!ENTITY contextMenu.copy.label "コピー">
+<!ENTITY contextMenu.paste.label "貼り付け">
+<!ENTITY contextMenu.delete.label "削除">
+<!ENTITY contextMenu.insertCommand.label "コマンドを挿入">
+<!ENTITY contextMenu.insertComment.label "コメントを挿入">
+<!ENTITY contextMenu.clear.label "すべて削除">
+<!ENTITY contextMenu.breakpoint.label "ブレークポイントの指定/解除">
+<!ENTITY contextMenu.startpoint.label "開始位置の指定/解除">
+<!ENTITY contextMenu.execCommand.label "このコマンドを実行">
+<!ENTITY contextMenu.playSuiteHere.label "Play test suite from here">
+
+<!ENTITY uiReference.label "UI-Element">
+<!ENTITY rollupReference.label "Rollup">
+<!ENTITY rollupButton.tooltip "Apply rollup rules">
+
+<!ENTITY suiteTree.testCase.label "テストケース">
+<!ENTITY newSuiteCmd.label "テストスイートを新規作成">
+<!ENTITY openSuiteCmd.label "テストスイートを開く...">
+<!ENTITY saveSuiteCmd.label "テストスイートを保存">
+<!ENTITY saveSuiteAsCmd.label "テストスイートに名前を付けて保存...">
+<!ENTITY exportSuiteCmd.label "テストスイートをエクスポート...">
+<!ENTITY recentSuiteCmd.label "最近開いたテストスイート">
+<!ENTITY recentTestCmd.label "最近開いたテストケース">
+
+<!ENTITY testCaseProperties.label "プロパティ...">
+
+<!ENTITY reloadExtButton.tooltip "リロード">
+<!ENTITY tableViewUnavailable.label "Table view is not available with this format.">
+<!ENTITY suiteProgressRuns.label "Runs:">
+<!ENTITY suiteProgressFailures.label "Failures:">
+<!ENTITY internalTestsMenu.label "Test Selenium IDE">

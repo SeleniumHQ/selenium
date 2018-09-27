@@ -1,0 +1,91 @@
+<html>
+<head>
+    <title>select_test</title>
+    <script type="text/javascript" src="test_bootstrap.js"></script>
+    <script type="text/javascript">
+        goog.require('bot.locators');
+        goog.require('core.select');
+        goog.require('goog.testing.jsunit');
+    </script>
+
+    <script type="text/javascript">
+        function testASingleSelectedAlwaysHasSomethingSelected() {
+          assertTrue(core.select.isSomethingSelected('theSelect'));
+        }
+
+        function testAMultiSelectMightNotHaveSomethingSelected() {
+          assertFalse(core.select.isSomethingSelected('multi'));
+        }
+
+        function testCanGetSelectedLabel() {
+          bot.locators.findElement({id: 'o2'}).selected = true;
+          var label = core.select.getSelectedText("theSelect");
+          assertEquals("Second Option", label);
+
+          try {
+            core.select.getSelectedText('multi');
+            fail('expected an error to have been thrown');
+          } catch (ignored) {
+          }
+        }
+
+        function testGetSelectedXOnlyExpectsOneOptionToBeSelected() {
+           try {
+            core.select.getSelectedText('manyselected');
+            fail('expected an error to have been thrown');
+          } catch (ignored) {
+          }
+        }
+
+        function testCanSelectASingleOptionByIndex() {
+          core.select.setSelected('theSelect', 'index=4');
+          var text = core.select.getSelectedText('theSelect');
+
+          assertEquals('Fifth Option', text);
+        }
+
+        function testCanSelectASingleOptionByText() {
+          core.select.setSelected('theSelect', 'Third Option');
+          var text = core.select.getSelectedText('theSelect');
+
+          assertEquals('Third Option', text);
+        }
+
+        function testCanObtainAnEmptyValuedOption() {
+          core.select.setSelected('theSelect', 'value=');
+          var text = core.select.getSelectedText('theSelect');
+
+          assertEquals('Empty Value Option', text);
+        }
+    </script>
+</head>
+<body>
+
+<form action="#" method="get">
+    <select name="theSelect" id="theSelect">
+        <option value="option1" id="o1">First Option</option>
+        <option value="option2" id="o2" selected="true">Second Option</option>
+        <option value="option3" id="o3">Third Option</option>
+        <option value="option4" id="o4">Fourth Option</option>
+        <option value="option5" id="o4">Fifth Option</option>
+        <option value="option6" id="o6">Sixth Option</option>
+        <option value="" id="o7">Empty Value Option</option>
+        <option value="option8" id="o8"></option>
+    </select>
+
+    <select name="multi" multiple="true">
+        <option value="one">One</option>
+        <option value="two">Two</option>
+    </select>
+
+    <select name="manyselected" multiple>
+        <option value="cheese" selected>Cheese</option>
+        <option value="peas">Peas</option>
+        <option value="bacon" selected>Bacon</option>
+    </select>
+
+    <input name="theInput">
+</form>
+
+</body>
+</html>

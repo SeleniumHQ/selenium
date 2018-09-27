@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2011 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+
+Author: nicksantos@google.com (Nick Santos)
+-->
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Closure Performance Tests - Vector math</title>
+  <link rel="stylesheet" type="text/css"
+        href="../testing/performancetable.css"/>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.crypt');
+    goog.require('goog.string');
+    goog.require('goog.testing.PerformanceTable');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.vec.Vec4');
+  </script>
+</head>
+<body>
+  <h1>Closure Performance Tests - Vector Math</h1>
+  <p>
+    <strong>User-agent:</strong>
+    <script>document.write(navigator.userAgent);</script>
+  </p>
+  <div id="perfTable"></div>
+  <hr>
+
+  <script>
+    var table = new goog.testing.PerformanceTable(
+        goog.dom.getElement('perfTable'));
+    var createVec4FromValues = goog.vec.Vec4.createFromValues;
+    var scaleVec4 = goog.vec.Vec4.scale;
+
+    var negateVec4ByScaling = function(v, result) {
+      return scaleVec4(v, -1, result);
+    };
+
+    var negateVec4ByNegation = function(v, result) {
+      result[0] = -v[0];
+      result[1] = -v[1];
+      result[2] = -v[2];
+      result[3] = -v[3];
+      return result;
+    };
+
+    var negateVec4ByMultiplication = function(v, result) {
+      result[0] = -1 * v[0];
+      result[1] = -1 * v[1];
+      result[2] = -1 * v[2];
+      result[3] = -1 * v[3];
+      return result;
+    };
+
+    function createRandomVec4() {
+      return createVec4FromValues(
+          Math.random(),
+          Math.random(),
+          Math.random(),
+          Math.random());
+    }
+
+    function testNegateVec4ByScaling() {
+      var v = createRandomVec4();
+      for (var i = 0; i < 2000000; i++) {
+        // Warm the trace tree to see if that makes a difference.
+        scaleVec4(v, 1, v);
+      }
+
+      table.run(
+          function() {
+            for (var i = 0; i < 2000000; i++) {
+              negateVec4ByScaling(v, v);
+            }
+          },
+          'Negate vector by calling scale()');
+    }
+
+    function testNegateVec4ByNegation() {
+      var v = createRandomVec4();
+      for (var i = 0; i < 2000000; i++) {
+        // Warm the trace tree to see if that makes a difference.
+        scaleVec4(v, 1, v);
+      }
+
+      table.run(
+          function() {
+            for (var i = 0; i < 2000000; i++) {
+              negateVec4ByNegation(v, v);
+            }
+          },
+          'Negate vector by negating directly');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>test_mouse_events1</title>
+
+    <script type="text/javascript">
+      function register(msg) {
+        var log = document.getElementById('log');
+        log.innerHTML = '<p>' + msg + '</p>';
+      }
+    </script>
+</head>
+<body>
+
+<div id="out" onmouseout="register('out');">
+    <p>Mouse out of here, please.</p>
+</div>
+
+<div id="log">
+</div>
+
+</body>
+</html>

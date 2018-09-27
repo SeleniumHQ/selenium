@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>element_test.html</title>
+  <script src="../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.locators');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.ExpectedFailures');
+    goog.require('webdriver.atoms.element');
+  </script>
+
+  <script type="text/javascript">
+    var expectedFailures;
+
+    function setUp() {
+      expectedFailures = new goog.testing.ExpectedFailures();
+    }
+
+
+    function tearDown() {
+      expectedFailures.handleTearDown();
+    }
+
+    function testShouldReturnTheValueOfAnAttribute() {
+      var element = bot.locators.findElement({id: 'has_id'});
+
+      assertEquals('cheese', webdriver.atoms.element.getAttribute(element, 'title'));
+    }
+
+    function testShouldReturnNullIfAValueDoesNotExistAsAnAttributeOrAProperty() {
+      var element = bot.locators.findElement({id: 'has_id'});
+
+      assertNull(webdriver.atoms.element.getAttribute(element, 'this_does_not_exist'));
+    }
+
+    function testShouldReturnTheValueOfAProperty() {
+      var element = bot.locators.findElement({id: 'has_property'});
+
+      assertEquals("This is an example", webdriver.atoms.element.getAttribute(element, 'value'));
+    }
+
+    function testShouldReturnValuesAsStrings() {
+      var element = bot.locators.findElement({id: 'has_property'});
+
+      assertEquals('2', webdriver.atoms.element.getAttribute(element, 'rows'));
+    }
+
+    function testShouldReturnSameValueForClassAndClassName() {
+      var element = document.body;
+
+      assertEquals(webdriver.atoms.element.getAttribute(element, 'class'),
+                   webdriver.atoms.element.getAttribute(element, 'className'));
+    }
+
+    function testShouldReturnBooleanPropertiesAsStrings() {
+      var readOnlyElement = bot.locators.findElement({id: 'ro'}),
+            normalElement = bot.locators.findElement({id: 'normal'});
+
+      assertEquals("true", webdriver.atoms.element.getAttribute(readOnlyElement, 'readonly'));
+    }
+
+    function testSettingAnyValueForABooleanAttributeSetsItToTrue() {
+      var element = bot.locators.findElement({id: 'bad-ro'});
+
+      assertEquals("true", webdriver.atoms.element.getAttribute(element, 'readonly'));
+    }
+
+    function testShouldAttemptToStringifyTheStyleProperty() {
+      var element = bot.locators.findElement({id: 'green'});
+
+      var style = webdriver.atoms.element.getAttribute(element, 'style').toLowerCase();
+      assertTrue(style.indexOf('background-color') != -1);
+    }
+
+    function testShouldCorrectlyReportTheValueOfCheckedForRadioButtons() {
+      var selected = bot.locators.findElement({id: 'selected-radio'});
+      var unselected = bot.locators.findElement({id: 'unselected-radio'});
+
+      assertEquals("true", webdriver.atoms.element.getAttribute(selected, 'checked'));
+      assertNull(webdriver.atoms.element.getAttribute(unselected, 'checked'));
+    }
+
+    function testShouldIndicateWhetherAnElementIsSelected() {
+      var input = bot.locators.findElement({id: 'normal'});
+      var unselectedRadio = bot.locators.findElement({id: 'unselected-radio'});
+      var selectedRadio = bot.locators.findElement({id: 'selected-radio'});
+      var unselectedOption = bot.locators.findElement({id: 'unselected-option'});
+      var selectedOption = bot.locators.findElement({id: 'selected-option'});
+
+      assertTrue(webdriver.atoms.element.isSelected(selectedRadio));
+      assertTrue(webdriver.atoms.element.isSelected(selectedOption));
+      assertFalse(webdriver.atoms.element.isSelected(unselectedRadio));
+      assertFalse(webdriver.atoms.element.isSelected(unselectedOption));
+      assertFalse(webdriver.atoms.element.isSelected(input));
+    }
+
+    function testShouldCorrectlyReportTheValueOfSelectedForRadioButtons() {
+      var selected = bot.locators.findElement({id: 'selected-radio'});
+      var unselected = bot.locators.findElement({id: 'unselected-radio'});
+
+      assertEquals("true", webdriver.atoms.element.getAttribute(selected, 'selected'));
+      assertNull(webdriver.atoms.element.getAttribute(unselected, 'selected'));
+    }
+
+    function testMultiplePropertyOfSelectsIsABoolean() {
+      var element = bot.locators.findElement({name: 'multi'});
+
+      assertEquals('true', webdriver.atoms.element.getAttribute(element, 'multiple'));
+    }
+
+    function testShouldReturnAnEmptyStringIfAnAttributeIsSetButEmpty() {
+      var element = bot.locators.findElement({id: 'body'});
+
+      assertEquals('', webdriver.atoms.element.getAttribute(element, 'style'));
+    }
+
+    function testShouldFallBackToUsingAttributeIfPropertyAvailableButNotSet() {
+      var element = bot.locators.findElement({id: 'body'});
+
+      assertEquals('body', webdriver.atoms.element.getAttribute(element, 'name'));
+    }
+
+    function testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
+      var notInput = bot.locators.findElement({id: 'has_id'});
+      assertNull(webdriver.atoms.element.getAttribute(notInput, 'disabled'));
+
+      var enabled =  bot.locators.findElement({id: 'normal'});
+      assertNull(webdriver.atoms.element.getAttribute(enabled, 'disabled'));
+
+      var broken =  bot.locators.findElement({id: 'disabled'});
+      assertEquals("true", webdriver.atoms.element.getAttribute(broken, 'disabled'));
+    }
+
+    function testTheTopWindowsTitleShouldNotBeConsideredVisibleText() {
+      var title = bot.locators.findElement({tagName: 'title'});
+      assertEquals('', webdriver.atoms.element.getText(title));
+    }
+
+    function testAFrameDocumentsTitleShouldNotBeConsideredVisibleText() {
+      var frameDoc = bot.locators.findElement({id: 'frame_page_frame'}).contentWindow.document;
+      var title = bot.locators.findElement({tagName: 'title'}, frameDoc);
+      assertEquals('frame page', frameDoc.title);
+      assertEquals('', webdriver.atoms.element.getText(title));
+    }
+
+    function testCanGetVisibleText() {
+      var para = bot.locators.findElement({id: 'has_id'});
+      assertEquals('This has an ID', webdriver.atoms.element.getText(para));
+    }
+
+    function testWillReturnValueOfIndexForAnOptionEvenIfNotDeclared() {
+      var select = bot.locators.findElement({id: 'multi'});
+      var options = bot.locators.findElements({tagName: 'option'});
+      assertEquals("1", webdriver.atoms.element.getAttribute(options[1], 'index'));
+    }
+
+    function testShouldReturnTheProtocolOfAnImage() {
+      var image = bot.locators.findElement({id: 'image'});
+      var url = webdriver.atoms.element.getAttribute(image, 'src');
+      assertTrue(url, url.indexOf('http') == 0);
+    }
+
+    function testShouldReturnNullWhenGettingSrcAttributeOfInvalidImageTag() {
+      var image = bot.locators.findElement({id: 'invalidImgTag'});
+      var url = webdriver.atoms.element.getAttribute(image, 'src');
+      assertNull(url);
+    }
+
+    function testShouldReturnNullForNonPresentBooleanAttribute() {
+      var el = document.getElementById('disabled');
+      assertNull(webdriver.atoms.element.getAttribute(el, 'required'));
+    }
+
+    function testShouldReturnTrueForBooleanProperty() {
+      var el = document.getElementById('image');
+      assertEquals('true', webdriver.atoms.element.getAttribute(el, 'complete'));
+    }
+
+    function testShouldReturnTrueForSpecifiedBooleanProperty() {
+      var el = document.getElementById('nowrap');
+      assertEquals('true', webdriver.atoms.element.getAttribute(el, 'nowrap'));
+    }
+
+    function testShouldReturnFalseForSpellcheckFalse() {
+      var el = document.getElementById('nospell');
+      assertEquals('false', webdriver.atoms.element.getAttribute(el, 'spellcheck'));
+    }
+
+    function testShouldReturnTrueForSpellcheckTrue() {
+      var el = document.getElementById('spell');
+      assertEquals('true', webdriver.atoms.element.getAttribute(el, 'spellcheck'));
+    }
+
+    function testShouldReturnTrueForSpellcheckUndefined() {
+      var el = document.getElementById('normal');
+      var defaultSpellcheck = 'false';
+      if (goog.userAgent.WEBKIT) {
+        defaultSpellcheck = 'true';
+      }
+      if (goog.userAgent.IE && !goog.userAgent.product.isVersion(10)) {
+        defaultSpellcheck = 'undefined';
+      }
+      assertEquals(defaultSpellcheck, webdriver.atoms.element.getAttribute(el, 'spellcheck'));
+    }
+
+    var newLine = bot.userAgent.IE_DOC_PRE9 ? '\r\n' : '\n';
+
+    function testTypingEnterKeyOnTextArea() {
+      var el = document.getElementById('textarea');
+      el.value = '';
+      webdriver.atoms.element.type(el,
+          ['hello', webdriver.Key.ENTER, webdriver.Key.ENTER, 'world']);
+      assertEquals('hello' + newLine + newLine + 'world', el.value);
+    }
+
+    function testTypingNewlineOnTextArea() {
+      var el = document.getElementById('textarea');
+      el.value = '';
+      webdriver.atoms.element.type(el, ['hello\n\nworld']);
+      assertEquals('hello' + newLine + newLine + 'world', el.value);
+    }
+
+    function testCanUseNullKeyToReleaseModifiers_modifiersNotPersisted() {
+      var el = document.getElementById('textarea');
+      el.value = '';
+      webdriver.atoms.element.type(
+          el, ['abc', webdriver.Key.SHIFT, 'def', webdriver.Key.NULL, 'ghi']);
+      assertEquals('abcDEFghi', el.value);
+    }
+
+    function testCanUseNullKeyToReleaseModifiers_modifiersPersisted() {
+      var keyboard = new bot.Keyboard();
+      var el = document.getElementById('textarea');
+      el.value = '';
+      webdriver.atoms.element.type(
+          el, ['abc', webdriver.Key.SHIFT, 'def'], keyboard, true);
+      assertEquals('abcDEF', el.value);
+
+      webdriver.atoms.element.type(
+          el, ['ghi', webdriver.Key.NULL, 'jkl'], keyboard, true);
+      assertEquals('abcDEFGHIjkl', el.value);
+    }
+  </script>
+</head>
+<body id="body" class="c" style="" name="body">
+
+<p id="has_id" title="cheese">This has an ID</p>
+
+<textarea id="has_property" rows="2">This is an example</textarea>
+<textarea id="textarea"></textarea>
+
+<form action="#" name="fishy">
+  <input type="text" id="normal">
+  <input type="text" id="ro" readonly>
+  <input type="text" id="bad-ro" readonly="false">
+  <input disabled id="disabled">
+
+  <input type="radio" id="unselected-radio" name="fishy">Fishy
+  <input type="radio" id="selected-radio" name="fishy" checked="true">Dishy
+  <input type="radio" name="fishy">Cheesy too
+
+  <select multiple='multiple' name="multi">
+    <option id="selected-option" selected=true>Selected</option>
+    <option id="unselected-option">Unselected</option>
+    <option>Ham</option>
+    <option selected="selected">Sausages</option>
+    <option>Onion gravy</option>
+    </select>
+  </select>
+
+  <input id="nospell" spellcheck="false"/>
+  <input id="spell" spellcheck="true"/>
+</form>
+
+<img src="kitten.jpg" id="image">
+<!-- Here comes an invalid <img> tag which has no src attribute ... -->
+<img id="invalidImgTag" />
+
+<div style="background-color: green" id="green">This is a green div</div>
+<div id="nowrap" nowrap>Unwrappable</div>
+
+<iframe name="frame_page" id="frame_page_frame" src="frame_page.html"></iframe>
+</body>
+</html>

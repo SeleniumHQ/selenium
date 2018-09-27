@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>HTML5 local storage</title>
+  <script src="../../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.html5');
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.atoms.storage.local');
+  </script>
+
+  <script type="text/javascript">
+    function testClear() {
+      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        return;
+      }
+
+      webdriver.atoms.storage.local.clear();
+      assertEquals(0, webdriver.atoms.storage.local.size());
+
+      webdriver.atoms.storage.local.setItem('first', 'one');
+      webdriver.atoms.storage.local.setItem('second', 'two');
+      webdriver.atoms.storage.local.setItem('third', 'two');
+      webdriver.atoms.storage.local.clear();
+      assertEquals(0, webdriver.atoms.storage.local.size());
+      assertNull(webdriver.atoms.storage.local.getItem('first'));
+      assertNull(webdriver.atoms.storage.local.getItem('second'));
+      assertNull(webdriver.atoms.storage.local.getItem('third'));
+    }
+
+    function testSetAndGetSimpleItem() {
+      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        return;
+      }
+
+      webdriver.atoms.storage.local.clear();
+
+      // set-get
+      webdriver.atoms.storage.local.setItem('first', 'one');
+      assertEquals('one', webdriver.atoms.storage.local.getItem('first'));
+
+      // resetItem
+      webdriver.atoms.storage.local.setItem('first', '1');
+      assertEquals('1', webdriver.atoms.storage.local.getItem('first'));
+
+    }
+
+    function testRemoveItem() {
+      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        return;
+      }
+
+      webdriver.atoms.storage.local.clear();
+
+      webdriver.atoms.storage.local.setItem('first', 'one');
+      assertEquals('one', webdriver.atoms.storage.local.removeItem('first'));
+
+      assertEquals(null, webdriver.atoms.storage.local.removeItem('first'));
+      assertEquals(null, webdriver.atoms.storage.local.removeItem('foo'));
+    }
+
+    function testSize() {
+      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        return;
+      }
+
+      webdriver.atoms.storage.local.clear();
+
+      webdriver.atoms.storage.local.setItem('first', 'one');
+      webdriver.atoms.storage.local.setItem('second', 'two');
+      webdriver.atoms.storage.local.setItem('third', 'three');
+      assertEquals(3, webdriver.atoms.storage.local.size());
+    }
+
+    function testKeySet() {
+      if (!bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+        return;
+      }
+
+      webdriver.atoms.storage.local.clear();
+
+      webdriver.atoms.storage.local.setItem('third', 'three');
+      webdriver.atoms.storage.local.setItem('first', 'one');
+      webdriver.atoms.storage.local.setItem('second', 'two');
+
+      // keySet
+      var keys = webdriver.atoms.storage.local.keySet();
+      var sortedKeys = keys.sort();
+      assertArrayEquals(['first', 'second', 'third'], sortedKeys);
+    }
+  </script>
+
+</head>
+<body>
+</body>
+</html>

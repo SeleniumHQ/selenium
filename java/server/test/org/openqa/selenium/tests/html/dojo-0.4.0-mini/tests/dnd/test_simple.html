@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd"> 
+
+<title>Dojo Button Widget Test</title>
+
+<script type="text/javascript">
+	var djConfig = { isDebug: true };
+</script>
+
+<script type="text/javascript" src="../../dojo.js"></script>
+<script type="text/javascript">
+	dojo.require("dojo.dnd.*");
+	dojo.require("dojo.event.*");
+
+	function byId(id){
+		return document.getElementById(id);
+	}
+
+	function init(){
+		// list one
+		var dl = byId("dragList1");
+		new dojo.dnd.HtmlDropTarget(dl, ["li1"]);
+		var lis = dl.getElementsByTagName("li");
+		for(var x=0; x<lis.length; x++){
+			new dojo.dnd.HtmlDragSource(lis[x], "li1");
+		}
+
+		// list two
+		var dl = byId("dragList2");
+		new dojo.dnd.HtmlDropTarget(dl, ["li1"]);
+		var lis = dl.getElementsByTagName("li");
+		for(var x=0; x<lis.length; x++){
+			new dojo.dnd.HtmlDragSource(lis[x], "li1");
+		}
+
+		// list three
+		var dl = byId("dragList3");
+		new dojo.dnd.HtmlDropTarget(dl, ["li2"]);
+		var lis = dl.getElementsByTagName("li");
+		for(var x=0; x<lis.length; x++){
+			new dojo.dnd.HtmlDragSource(lis[x], "li2");
+		}
+	}
+
+	dojo.event.connect(dojo, "loaded", "init");
+</script>
+
+<ul id="dragList1">
+	<li id="1_1">list 1 item 1 
+		<a href="http://www.google.com">Google</a>
+		<input value="type in me">
+		<input type="button" value="ClickMe">
+		<input type="checkbox">
+		<input type="radio" name="radio" value="1" checked> 
+		<input type="radio" name="radio" value="2"> 
+		<button>Inline Button</button>
+	</li>
+	<li id="1_2">list 1 item 2</li>
+	<li id="1_3">list 1 item 3</li>
+</ul>
+
+<p>Here some text between two lists. You should be able to drag between the lists either side of me.</p>
+
+<ul id="dragList2">
+	<li id="2_1">list 2 item 1</li>
+	<li id="2_2">list 2 item 2</li>
+	<li id="2_3">list 2 item 3</li>
+</ul>
+
+<p>Here some text between two lists. You should only be able to drag items from the list below to the list below and not to the other two lists.</p>
+
+<ul id="dragList3">
+	<li id="3_1">list 3 item 1</li>
+	<li id="3_2">list 3 item 2</li>
+	<li id="3_3">list 3 item 3</li>
+</ul>
+

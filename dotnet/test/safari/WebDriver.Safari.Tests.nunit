@@ -1,0 +1,7 @@
+<NUnitProject>
+	<Settings appbase="." />
+  <Config name="Default" binpathtype="None">
+    <assembly path="WebDriver.Common.Tests.dll" />
+		<assembly path="WebDriver.Safari.Tests.dll" />
+	</Config>
+</NUnitProject>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<title>inject_test.html</title>
+<script src="test_bootstrap.js"></script>
+<script>
+  goog.require('bot.inject');
+  goog.require('bot.userAgent');
+  goog.require('core.inject');
+  goog.require('goog.array');
+  goog.require('goog.dom');
+  goog.require('goog.json');
+  goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.ExpectedFailures');
+  goog.require('goog.userAgent.product');
+</script>
+<body>
+<script>
+  goog.global.MY_GLOBAL_CONSTANT = 123;
+
+  var expectedFailures;
+
+  function setUp() {
+    expectedFailures = new goog.testing.ExpectedFailures();
+  }
+
+  function tearDown() {
+    expectedFailures.handleTearDown();
+
+    // Force the cache to be recreated on the next access. We cannot
+    // "delete" it here because IE complains about it being an unsupported
+    // operation.
+    document[bot.inject.cache.CACHE_KEY_] = null;
+
+    // Delete our test frame, if it was created.
+    var testFrame = goog.dom.$('test-frame');
+    if (testFrame) {
+      goog.dom.removeNode(testFrame);
+    }
+  }
+
+  function createTestFrame() {
+    var testFrame = goog.dom.createElement('iframe');
+    testFrame.id = 'test-frame';
+    testFrame.src = 'javascript:void(0);';
+    document.body.appendChild(testFrame);
+    return testFrame;
+  }
+
+  function executeScript(script, opt_window, var_args) {
+    var result = core.inject.executeScript({
+      'script': script,
+      'args': goog.array.slice(arguments, 2)
+    }, opt_window);
+
+    var parsedResult = goog.json.parse(result);
+    assertEquals('Script failed: ' + result,
+        bot.ErrorCode.SUCCESS, parsedResult['status']);
+    return parsedResult['value'];
+  }
+
+  function testExecutesScriptInThisWindowByDefault() {
+    assertEquals('Returned the wrong value', goog.global.MY_GLOBAL_CONSTANT,
+        executeScript('return MY_GLOBAL_CONSTANT'));
+  }
+
+  function testCanExecuteScriptsInTheContextOfAnotherWindow() {
+    var testFrame = createTestFrame();
+    var testFrameWin = goog.dom.getFrameContentWindow(testFrame);
+    expectedFailures.expectFailureFor(
+        (goog.userAgent.product.ANDROID &&
+         !bot.userAgent.isEngineVersion(534)));
+    expectedFailures.run(function() {
+      assertEquals('undefined',
+          executeScript('return typeof MY_GLOBAL_CONSTANT', testFrameWin));
+    });
+  }
+
+  function testUpdatesElementReferencesToBeSeleneseLocators() {
+    var el = executeScript('return document.body');
+    assertNotNull(el);
+    assertEquals('object', goog.typeOf(el));
+    assertTrue(goog.json.serialize(el), 'ELEMENT' in el);
+    assertEquals('string', goog.typeOf(el['ELEMENT']));
+    assertEquals('stored=', el['ELEMENT'].substring(0, 'stored='.length));
+  }
+
+  function testCanReuseElementsReturnedByPreviousInvocagtions() {
+    var el = executeScript('return document.body');
+    assertEquals('body',
+        executeScript('return arguments[0].tagName.toLowerCase()', undefined,
+            el));
+  }
+</script>
+</body>

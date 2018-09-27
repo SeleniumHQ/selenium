@@ -1,0 +1,178 @@
+AllCops:
+  TargetRubyVersion: 2.0
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Style/BracesAroundHashParameters:
+  EnforcedStyle: context_dependent
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Lint/HandleExceptions:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%i': '[]'
+    '%w': '[]'
+
+Style/RegexpLiteral:
+  EnforcedStyle: mixed
+
+# Consider documenting all top-level classes and modules
+Style/Documentation:
+  Enabled: false
+
+# Port Integers do not need underscores
+Style/NumericLiterals:
+  Enabled: false
+
+# Bug
+Naming/FileName:
+  Exclude:
+    - 'lib/selenium-webdriver.rb'
+
+# These need to be fixed
+Style/MutableConstant:
+  Exclude:
+    - 'lib/selenium/webdriver/common/socket_poller.rb'
+    - 'lib/selenium/webdriver/remote/legacy_bridge.rb'
+    - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
+
+# TODO: Refactor Chrome::Bridge#create_capabilities
+Metrics/PerceivedComplexity:
+  Max: 11
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
+    - 'lib/selenium/webdriver/chrome/driver.rb'
+    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+
+Metrics/CyclomaticComplexity:
+  Max: 9
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
+    - 'lib/selenium/webdriver/chrome/driver.rb'
+    - 'lib/selenium/webdriver/common/driver.rb'
+    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
+
+Metrics/ClassLength:
+  Max: 140
+  Exclude:
+    - 'lib/selenium/webdriver/firefox/profile.rb'
+    - 'lib/selenium/webdriver/remote/legacy_bridge.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/oss/bridge.rb'
+    - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
+    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/w3c/bridge.rb'
+    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
+
+Metrics/AbcSize:
+  Max: 33
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/driver.rb'
+    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
+    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/support/color.rb'
+
+Metrics/LineLength:
+  Max: 130
+  Exclude:
+    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/bridge.rb'
+    - 'lib/selenium/webdriver/ie/service.rb'
+    - 'spec/unit/selenium/server_spec.rb'
+    - 'spec/integration/selenium/webdriver/timeout_spec.rb'
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'lib/selenium/webdriver/common/platform.rb'
+    - 'spec/**/*'
+
+Metrics/MethodLength:
+  Max: 33
+  Exclude:
+    - 'lib/selenium/webdriver/chrome/driver.rb'
+    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - "**/*_spec.rb"
+
+Metrics/ParameterLists:
+  Exclude:
+    - 'lib/selenium/webdriver/common/interactions/pointer_input.rb'
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: false
+
+Layout/EmptyLinesAroundBlockBody:
+  Exclude:
+    - 'spec/**/*'
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+Lint/UnusedBlockArgument:
+  Enabled: false
+
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+Lint/UselessAssignment:
+  Exclude:
+    - 'spec/unit/selenium/webdriver/chrome/service_spec.rb'
+
+Performance/Caller:
+  Enabled: false
+
+Style/CommentAnnotation:
+  Enabled: false
+
+Style/FormatString:
+  Exclude:
+    - 'lib/selenium/webdriver/atoms.rb'
+
+Style/MethodMissing:
+  Exclude:
+    - 'lib/selenium/webdriver/support/event_firing_bridge.rb'
+    - 'lib/selenium/webdriver/support/block_event_listener.rb'
+
+Layout/MultilineMethodCallIndentation:
+  Exclude:
+    - 'spec/unit/selenium/webdriver/chrome/profile_spec.rb'
+
+Style/MultilineMemoization:
+  Enabled: false
+
+Style/MutableConstant:
+  Enabled: false
+
+Style/RedundantBegin:
+  Exclude:
+    - 'spec/integration/selenium/webdriver/driver_spec.rb'
+
+Style/RedundantSelf:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/TrailingCommaInLiteral:
+  Enabled: false
+
+Style/Dir:
+  Exclude:
+    - 'selenium-webdriver.gemspec'
+
+Lint/RescueWithoutErrorClass:
+  Enabled: false

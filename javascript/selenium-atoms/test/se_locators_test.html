@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>se_locators_test.html</title>
+  <script type="text/javascript" src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.inject.cache');
+    goog.require('bot.locators');
+    goog.require('goog.testing.jsunit');
+    goog.require('core.locators');
+    goog.require('core.text');
+  </script>
+
+  <script type="text/javascript">
+    function testShouldLocateElementById() {
+      var expected = bot.locators.findElement({id: 'has_id'});
+      var found = core.locators.findElement("id=has_id");
+
+      assertEquals(expected, found);
+    }
+
+    function testShouldDetectWhetherAnElementIsNotPresent() {
+      assertFalse(core.locators.isElementPresent('id=not_there'));
+    }
+
+    function testShouldDetectWhetherAnElementIsPresent() {
+      assertTrue(core.locators.isElementPresent('id=has_id'));
+    }
+
+    function testShouldFindElementsByName() {
+      var expected = bot.locators.findElement({name: 'check_me'});
+      var found = core.locators.findElement("name=check_me");
+
+      assertEquals(expected, found);
+    }
+
+    function testShouldFindElementsByNameImplicitly() {
+      var expected = bot.locators.findElement({name: 'check_me'});
+      var found = core.locators.findElement("check_me");
+
+      assertEquals(expected, found);
+    }
+
+    function testShouldFilterNameResults() {
+      var expected = bot.locators.findElement({id: 'cheese'});
+      var found = core.locators.findElement("name=cheese value=stilton");
+
+      assertEquals(expected, found);
+
+      found = core.locators.findElement("name=cheese index=2");
+
+      assertEquals(expected, found);
+    }
+
+    function testShouldBeAbleToFindElementsByClass() {
+      var expected = bot.locators.findElement({id: 'classy'});
+      var found = core.locators.findElement("class=find_me");
+
+      assertEquals(expected, found);
+    }
+
+    function testShouldBeAbleToFindElementsByAltText() {
+      var expected = bot.locators.findElement({id: 'alt'});
+      var found = core.locators.findElement("alt=cheesey");
+
+      assertEquals(expected, found);
+    }
+
+    function testWillLookUpStoredElementReferences() {
+      var element = bot.locators.findElement({id: 'alt'});
+      var key = bot.inject.cache.addElement(element);
+
+      var found = core.locators.findElement("stored=" + key);
+      assertEquals(element, found);
+    }
+
+    function testImplicitSearchesByNameUseFilters() {
+      var element = bot.locators.findElement({id: 'option-chilli'});
+      var found = core.locators.findElement('option chilli');
+
+      assertEquals(element, found);
+    }
+
+    function testCanFindElementsByLinkText() {
+      var element = bot.locators.findElement({id: 'link'});
+      var found = core.locators.findElement('link=this is a link');
+
+      assertEquals(element, found);
+    }
+
+    function testShouldRecurseIntoSubFramesInTheSameDomain() {
+      
+    }
+
+    function testShouldReturnTheElementIfPassedInAsTheLocator() {
+        var element = bot.locators.findElement({id: 'classy'});
+        var found = core.locators.findElement(element);
+
+        assertEquals(element, found);
+    }
+  </script>
+</head>
+<body>
+  <p id="has_id">Everyone loves cheese</p>
+
+  <form action="#">
+    <input type="checkbox" name="check_me">I am a checkbox
+    <input type="radio" name="cheese" value="brie">Brie
+    <input type="radio" name="cheese" value="cheddar">Cheddar
+    <input type="radio" name="cheese" value="stilton" id="cheese">Stilton
+
+    <fieldset>
+      <legend>Options</legend>
+      <input type="checkbox" id="option-cheese" name="option" value="cheese" checked="yes"> Cheese<br/>
+      <input type="checkbox" id="option-chilli" name="option" value="chilli"> Chilli Flakes<br/>
+    </fieldset>
+  </form>
+
+  <div id="classy" class="find_me">Tasty, tasty cheese.</div>
+
+  <img src="#" alt="cheesey" id="alt">
+
+  Find me! <a id="link" href="#">this is a link</a>
+</body>
+</html>

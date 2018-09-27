@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Expire" content="0"/>
+  <title>click_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.locators');
+    goog.require('bot.test');
+    goog.require('bot.userAgent');
+    goog.require('goog.Uri');
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.math.Coordinate');
+    goog.require('goog.style');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+  </script>
+  <script type="text/javascript">
+    var clicker;
+    var clickLocation;
+    var divConsole;
+
+    var findElement = bot.locators.findElement;
+    var findElements = bot.locators.findElements;
+    var log = goog.debug.Logger.getLogger('click_test');
+
+    var FIRST_EVENT_OF_CLICK = goog.userAgent.IE ?
+        goog.events.EventType.MOUSEMOVE : goog.events.EventType.MOUSEOVER;
+    var SECOND_EVENT_OF_CLICK = goog.userAgent.IE ?
+        goog.events.EventType.MOUSEOVER : goog.events.EventType.MOUSEMOVE;
+
+    function checkActionCompatibility(action) {
+      if (action == bot.action.tap) {
+        return bot.events.SUPPORTS_TOUCH_EVENTS;
+      }
+      return true;
+    }
+
+    function resetClicker() {
+      divConsole.clear();
+      goog.style.showElement(clicker, true);
+      goog.events.removeAll(clicker);
+      goog.events.listen(clicker,
+          [goog.events.EventType.MOUSEOVER,
+           goog.events.EventType.MOUSEMOVE,
+           goog.events.EventType.MOUSEDOWN,
+           goog.events.EventType.MOUSEUP,
+           goog.events.EventType.CLICK,
+           goog.events.EventType.DBLCLICK,
+           goog.events.EventType.BLUR,
+           goog.events.EventType.FOCUS],
+          function(e) {
+            log.info(e.type);
+          });
+      blurClicker();
+    }
+
+    function blurClicker() {
+      clicker.blur();
+      goog.dom.$('focusSink').focus();
+    }
+
+    function hideClickerOn(eventType) {
+      goog.events.listen(clicker, eventType, function() {
+        goog.style.showElement(clicker, false);
+      });
+    }
+
+    // We don't care about sub-pixel resolution, but Macs seem to report it
+    function assertCoordinatesEqual(expected, actual) {
+      assertEquals(Math.floor(expected), Math.floor(actual));
+    }
+
+    function setUp() {
+      blurClicker();
+    }
+
+    function tearDown() {
+      resetClicker();
+    }
+
+    function shouldNotBeAbleToClickOnAnElementThatIsNotShown(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var noHeightElement = goog.dom.$('noHeight');
+      var threw = false;
+      try {
+        action(noHeightElement);
+      } catch (ex) {
+        assertEquals(bot.ErrorCode.ELEMENT_NOT_VISIBLE, ex.code);
+        threw = true;
+      }
+      assertTrue(threw);
+    }
+
+    var testClickShouldNotBeAbleToClickOnAnElementThatIsNotShown = goog.partial(
+          shouldNotBeAbleToClickOnAnElementThatIsNotShown, bot.action.click);
+
+    var testTapShouldNotBeAbleToClickOnAnElementThatIsNotShown = goog.partial(
+          shouldNotBeAbleToClickOnAnElementThatIsNotShown, bot.action.tap);
+
+    function shouldClickInTheMiddleOfAnElement(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clicker = findElement({id: 'clicker'});
+
+      goog.events.removeAll(clicker);
+      var clickedXY = null;
+      goog.events.listen(clicker, goog.events.EventType.MOUSEUP, function(e) {
+        // We are looking for event.offsetX/Y here, but can't use them due to
+        // browser incompatibilities.
+        clickedXY = {x: e.clientX, y: e.clientY};
+      });
+
+      action(clicker);
+      assertNotNull(clickedXY);
+
+      // Calculate the coordinates that should be clicked according to the
+      // top left corner of the browser's content area
+      var clickSize = goog.style.getSize(clicker);
+      var clickPos = goog.style.getClientPosition(clicker);
+      assertCoordinatesEqual(clickedXY.x, clickPos.x + (clickSize.width / 2));
+      assertCoordinatesEqual(clickedXY.y, clickPos.y + (clickSize.height / 2));
+    }
+
+    var testClickShouldClickInTheMiddleOfAnElement = goog.partial(
+          shouldClickInTheMiddleOfAnElement, bot.action.click);
+
+    var testTapShouldClickInTheMiddleOfAnElement = goog.partial(
+          shouldClickInTheMiddleOfAnElement, bot.action.tap);
+
+    function shouldClickTheCoordofAnElement(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clicker = findElement({id: 'clicker'});
+
+      goog.events.removeAll(clicker);
+      var clickedXY = null;
+      goog.events.listen(clicker, goog.events.EventType.CLICK, function(e) {
+        clickedXY = {x: e.clientX, y: e.clientY};
+      });
+
+      var coord = new goog.math.Coordinate(3, 3);
+      action(clicker, coord);
+      assertNotNull(clickedXY);
+
+      // Calculate the coordinates that should be clicked according to the
+      // top left corner of the browser's content area
+      var clickPos = goog.style.getClientPosition(clicker);
+      assertCoordinatesEqual(clickedXY.x, clickPos.x + coord.x);
+      assertCoordinatesEqual(clickedXY.y, clickPos.y + coord.y);
+    }
+
+    var testClickShouldClickTheCoordofAnElement = goog.partial(
+          shouldClickTheCoordofAnElement, bot.action.click);
+
+    var testTapShouldClickTheCoordofAnElement = goog.partial(
+          shouldClickTheCoordofAnElement, bot.action.tap);
+
+    function testShouldRightClickTheCoordOfAnElement() {
+      var clicker = findElement({id: 'rightClickTarget'});
+
+      goog.events.removeAll(clicker);
+      var clickedXY = null;
+      goog.events.listen(clicker, goog.events.EventType.MOUSEDOWN,
+      function(e) {
+        clickedXY = {x: e.clientX, y: e.clientY};
+      });
+
+      var coord = new goog.math.Coordinate(3, 3);
+      bot.action.rightClick(clicker, coord);
+      assertNotNull(clickedXY);
+      assertEquals(clicker.value, 'Right Clicked!');
+
+      // Calculate the coordinates that should be clicked according to the
+      // top left corner of the browser's content area
+      var clickPos = goog.style.getClientPosition(clicker);
+      assertCoordinatesEqual(clickedXY.x, clickPos.x + coord.x);
+      assertCoordinatesEqual(clickedXY.y, clickPos.y + coord.y);
+    }
+
+    function testShouldGenerateTheCorrectClickSequence() {
+      var expectedEvents = [
+        FIRST_EVENT_OF_CLICK,
+        SECOND_EVENT_OF_CLICK,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK];
+      var events = [];
+      goog.events.listen(clicker, expectedEvents, function(e) {
+        events.push(e.type);
+      });
+      bot.action.click(clicker);
+      assertArrayEquals(expectedEvents, events);
+    }
+
+    function testShouldGenerateTheCorrectDoubleClickSequence() {
+      var expectedEvents = [
+        FIRST_EVENT_OF_CLICK,
+        SECOND_EVENT_OF_CLICK,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK,
+        goog.events.EventType.DBLCLICK];
+      var events = [];
+      // We use the global clicker element. It is reset in the
+      // teardown function.
+      goog.events.listen(clicker, expectedEvents, function(e) {
+        events.push(e.type);
+      });
+      bot.action.doubleClick(clicker);
+      assertArrayEquals(expectedEvents, events);
+    }
+
+    // http://code.google.com/p/selenium/issues/detail?id=1207
+    function shouldRespondCorrectlyIfElementIsHiddenMidClickSequence(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      if (goog.userAgent.IE) {
+        // TODO: Test must be async to handle focus events properly.
+        return;
+      }
+
+      var clickEvents = [
+        goog.events.EventType.MOUSEMOVE,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.FOCUS,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK
+      ];
+
+      function runTest(hideOn, expectedEvents) {
+        resetClicker();
+        var events = [];
+        goog.events.listen(clicker, clickEvents, function(e) {
+          events.push(e.type);
+        });
+        hideClickerOn(hideOn);
+
+        assertTrue('Should start shown', bot.dom.isShown(clicker));
+        action(clicker);
+        assertFalse('Should end not shown; hid on: ' + hideOn,
+            bot.dom.isShown(clicker));
+        assertArrayEquals(expectedEvents, events);
+      }
+
+      // Test hiding on each of the expected events in the click sequence.
+      for (var i = 0; i < clickEvents.length; i++) {
+        var hideOn = clickEvents[i];
+
+        // When the element becomes hidden, no further elements should fire. The
+        // exception is that if mouseup is fired, then click must also be fired,
+        // as a click is defined as a mousedown and mouseup at the same location.
+        var expectedEvents;
+        if (hideOn == goog.events.EventType.MOUSEUP) {
+          expectedEvents = clickEvents;
+        } else {
+          expectedEvents = goog.array.slice(clickEvents, 0, i + 1);
+        }
+
+        // If we expect a focus event, only test if the window is focused.
+        if (!goog.array.contains(expectedEvents, goog.events.EventType.FOCUS) ||
+             bot.test.isWindowFocused()) {
+          runTest(hideOn, expectedEvents);
+        }
+      }
+    }
+
+    var testClickShouldRespondCorrectlyIfElementIsHiddenMidClickSequence =
+        goog.partial(shouldRespondCorrectlyIfElementIsHiddenMidClickSequence,
+                     bot.action.click);
+
+    var testTapShouldRespondCorrectlyIfElementIsHiddenMidClickSequence =
+        goog.partial(shouldRespondCorrectlyIfElementIsHiddenMidClickSequence,
+                     bot.action.tap);
+
+
+    function cancelledMousedownDoesNotFocus(expectedEvents, action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var events = [];
+      goog.events.listen(clicker,
+          [goog.events.EventType.MOUSEOVER,
+           goog.events.EventType.MOUSEMOVE,
+           goog.events.EventType.MOUSEDOWN,
+           goog.events.EventType.FOCUS,
+           goog.events.EventType.MOUSEUP,
+           goog.events.EventType.CLICK,
+           goog.events.EventType.MOUSEOUT],
+          function(e) {
+            events.push(e.type);
+          });
+      goog.events.listen(clicker, goog.events.EventType.MOUSEDOWN, function(e) {
+        e.preventDefault();
+      });
+      action(clicker);
+      assertArrayEquals(expectedEvents, events);
+    }
+
+    var expectedTapEvents = [
+        goog.events.EventType.MOUSEMOVE,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK];
+
+    var expectedIETouchEvents = [
+        goog.events.EventType.MOUSEMOVE,
+        goog.events.EventType.MOUSEOVER,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK,
+        goog.events.EventType.MOUSEOUT];
+
+    var expectedClickEvents = [
+        FIRST_EVENT_OF_CLICK,
+        SECOND_EVENT_OF_CLICK,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK];
+
+    var testClickCancelledMousedownDoesNotFocus = goog.partial(
+          cancelledMousedownDoesNotFocus,
+          expectedClickEvents,
+          bot.action.click);
+
+    var testTapCancelledMousedownDoesNotFocus = goog.partial(
+          cancelledMousedownDoesNotFocus,
+          bot.userAgent.IE_DOC_10 ? expectedIETouchEvents : expectedTapEvents,
+          bot.action.tap);
+
+    function shouldBeAbleToClickOnElementsWithOpacityZero(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clickJacker = findElement({id: 'clickJacker'});
+      if (bot.userAgent.IE_DOC_PRE9) {
+        clickJacker.style.filter = 'alpha(opacity=0)';
+      } else {
+        clickJacker.style.opacity = 0;
+      }
+      assertEquals('Precondition failed: clickJacker should be transparent',
+                   0, bot.dom.getOpacity(clickJacker));
+      action(clickJacker);
+      assertEquals(1, bot.dom.getOpacity(clickJacker));
+    }
+
+    var testClickShouldBeAbleToClickOnElementsWithOpacityZero = goog.partial(
+          shouldBeAbleToClickOnElementsWithOpacityZero, bot.action.click);
+
+    var testTapShouldBeAbleToClickOnElementsWithOpacityZero = goog.partial(
+          shouldBeAbleToClickOnElementsWithOpacityZero, bot.action.tap);
+
+    function shouldNotBeAbleToClickOnElementWithPointerEventsNone(action) {
+      if (!checkActionCompatibility(action) || goog.userAgent.IE ||
+          (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.2'))) {
+        return;
+      }
+      var el = findElement({id: 'pointerEvents'});
+      action(el);
+      assertEquals('Pass', bot.dom.getVisibleText(el));
+    }
+
+    var testClickShouldNotBeAbleToClickOnElementWithPointerEventsNone = goog.partial(
+        shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.click);
+
+    var testTapShouldNotBeAbleToClickOnElementWithPointerEventsNone = goog.partial(
+        shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.tap);
+
+    function testClickShouldNotScrollWhenElementInView() {
+      if (bot.userAgent.MOBILE) {
+        return;
+      }
+      var target = findElement({id: 'targetInView'});
+      var oldPos = goog.style.getClientPosition(target);
+      bot.action.click(target);
+      var newPos = goog.style.getClientPosition(target);
+      assertObjectEquals(oldPos, newPos);
+    }
+
+    function testClickShouldScrollWhenElementNotInView() {
+      if (bot.userAgent.MOBILE) {
+        return;
+      }
+      var target = findElement({id: 'targetNotInView'});
+      var oldPos = goog.style.getClientPosition(target);
+      bot.action.click(target);
+      // In Safari 6, the affects of window.scrollTo are applied
+      // applied asynchronously, so we cannot verify scrolling here.
+      if (!bot.userAgent.SAFARI_6) {
+        var newPos = goog.style.getClientPosition(target);
+        assertNotEquals(oldPos.y, newPos.y);
+      }
+      window.scrollTo(0, 0);
+    }
+  </script>
+</head>
+<body>
+  <form action="javascript:void(0)">
+    <label for="focusSink">Focus sink:</label><input id="focusSink" type="text"/><br/>
+    <label for="clicker">Click me:</label><input id="clicker" type="checkbox"/><br/>
+    <div id="log"></div>
+    <script type="text/javascript">
+      clicker = goog.dom.$('clicker');
+      clickLocation = goog.style.getBounds(clicker);
+
+      divConsole = new goog.debug.DivConsole(goog.dom.$('log'));
+      divConsole.setCapturing(true);
+    </script>
+  </form>
+  <img id="noHeight" style="height:0;" src="testdata/map.png"/>
+  <input id="disabled" type="text" value="I'm disabled" disabled/>
+  <a id="clickTarget">Click me!</a>
+  <input id="rightClickTarget" type="text"
+     oncontextmenu="this.value='Right Clicked!'; return false;"/>
+  <div>
+    <div id="clickJacker"
+         style="position:absolute;float:left;
+                width:200px;height:100px; padding:10px;
+                background-color:cyan;
+                border:1px solid cyan;">Click jacked!</div>
+    <div style="width:200px; height:100px;
+                border:1px solid black; padding:10px">Click Me</div>
+    <script type="text/javascript">
+      var clickJacker = document.getElementById('clickJacker');
+      function setOpacity(opacity) {
+        if (bot.userAgent.IE_DOC_PRE9) {
+          clickJacker.style.filter = 'alpha(opacity=' + (opacity * 100) + ')';
+        } else {
+          clickJacker.style.opacity = opacity;
+        }
+      }
+      setOpacity(0);
+
+      goog.events.listen(clickJacker, goog.events.EventType.CLICK,
+          function(e) {
+            setOpacity(1);
+          });
+    </script>
+  </div>
+  <p id="pointerEvents" onclick="this.textContent='Error';" style="pointer-events: none;">Pass</p>
+  <iframe id="iframe" src="testdata/click_iframe.html">
+  </iframe>
+  <div id="targetInView" style="position: absolute; top: 10px; left: 10px">target in view</div>
+  <div id="targetNotInView" style="position: absolute; top: 10000px">target not in view</div>
+</body>
+</html>

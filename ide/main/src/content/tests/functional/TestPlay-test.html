@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Selenium IDE Test</title>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/lib/prototype.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/lib/scriptaculous/scriptaculous.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/selenium-core/lib/scriptaculous/unittest.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/preferences.js"></script>
+    <script type="text/javascript" src="chrome://selenium-ide/content/selenium-ide-loader.js"></script>
+  </head>
+
+  <body>
+  <div id="testlog">
+  </div>
+  <script type="text/javascript">
+Test.Unit.Testcase.prototype.waitFor = function(condition, nextPart) {
+  this.wait(3000, function() {
+    if (condition()) {
+      nextPart();
+    } else {
+      this.waitFor(condition, nextPart);
+    }
+  });
+};
+
+new Test.Unit.Runner({
+  setup: function() {
+  },
+
+  teardown: function() {
+  },
+
+  testPlay: function() { with(this) {
+    var editor = SeleniumIDE.Loader.getTopEditor();
+    editor.getOptions().userExtensionsURL = "chrome://selenium-ide/content/tests/functional/TestTestRunner-extension.js";
+    var testCase = editor.app.getFormats().getDefaultFormat().loadFile("chrome://selenium-ide/content/tests/functional/TestTestRunner-testcase.html", true);
+    editor.app.setTestCaseWithNewSuite(testCase);
+    editor.app.setBaseURL("http://www.openqa.org/");
+    var testWindow = editor.showInBrowser("about:blank", true);
+    var complete = false;
+    wait(1000, function() {
+            editor.selDebugger.start(function(failed) {
+                    assert(!failed);
+                    complete = true;
+                });
+    waitFor(function() {
+            return complete;
+        }.bind(this),
+        function() {
+            testWindow.close();
+        }.bind(this));
+    });
+  }}
+
+});
+    </script>
+  </body>
+</html>

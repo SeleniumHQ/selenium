@@ -1,0 +1,1447 @@
+3.14.0 (2018-08-03)
+===================
+
+Ruby:
+  * Allow to customize default duration of movement of pointer actions using
+    Driver#action#default_move_duration= (thanks @prakharrr)
+  * Fixed an accidentally removed Selenium::WebDriver::Error::TimeoutError (thanks @twalpole)
+
+Server:
+  * Fixed an issue when Server.latest couldn't parse the version
+
+Remote:
+  * Added support for uploading multiple files by passing them as a string
+    separated by \n to Element#send_keys. Please, note that not all the drivers
+    have multiple file upload implemented (tested to work in ChromeDriver).
+
+3.13.1 (2018-07-20)
+===================
+
+Chrome:
+  * Fixed an issue when empty Chrome options would cause DevToolsActivePort issue (thanks @artplan1)
+
+Remote:
+  * Support detecting local files (thanks @mskvn)
+
+3.13.0 (2018-06-25)
+===================
+
+Ruby:
+  * Address warnings for redefined methods and uninitialized instance variables
+
+Chrome:
+  * Chrome options capabilities updated to use goog:chromeOptions.
+    Note that Selenium now requires ChromeDriver v2.31 at minimum.
+  * Added ability to tell headless Chrome to save files using Driver#download_path= (thanks @pelly)
+
+3.12.0 (2018-05-08)
+===================
+
+Ruby:
+  * Added User-Agent header to requests from Selenium to give remote
+    ends more visibility into distribution of clients (thanks @sah)
+  * Added Selenium::WebDriver::VERSION constant (thanks @sah)
+  * Added changelog link to RubyGems page
+  * Fixed a bug when requests were sent with empty Content-Type,
+    which should instead be application/json (issue #5615 and #5659)
+  * Fixed a bug when failed connection attempt was retried without
+    grace period for remote to resolve its problem (thanks @amckinley42)
+  * Fixed a bug with accidentally removed HasNetworkConnection driver extension
+
+Chrome:
+  * Fixed a bug when deprecation message for using Chrome extensions
+    was incorrectly shown (thanks @treby)
+
+Safari:
+  * Added support getting permissions via Driver#permissions
+  * Added support setting permissions via Driver#permissions=
+  * Added support enabling web inspector via Driver#attach_debugger
+
+3.11.0 (2018-03-11)
+===================
+
+Ruby:
+  * No changes in Ruby bindings for this release
+
+3.10.0 (2018-03-02)
+===================
+
+Ruby:
+  * Added Errno::EAFNOSUPPORT to the list of ignored errors when finding port (thanks @jtarchie)
+  * Added automatic conversion of noProxy to the list of strings as required
+    by W3C WebDriver Specification (issue #5004)
+
+Chrome:
+  * Added Chrome::Options#headless! shortcut to enable headless mode (thanks @pulkitsharma07)
+
+IE:
+  * Added support for getting local storage using Driver#local_storage
+  * Added support for getting session storage using Driver#session_storage
+
+3.9.0 (2018-02-06)
+==================
+
+Ruby:
+  * Fixed a bug when omitted capabilities caused NoMethodError (issue #5185)
+  * Fixed a bug when getting page source in W3C dialect caused WebDriverError (thanks @KazuCocoa)
+  * Fixed a bug when getting backtrace of server error would case NoMethodError (thanks @mcking49)
+  * Updated YARD to ~> 0.9.11
+  * Updated rubyzip to ~> 1.2 (thanks @michaelglass)
+
+Chrome:
+  * Added support for getting network conditions via Driver#network_conditions
+  * Added support for setting network conditions via Driver#network_conditions=
+  * Added support to allow driver respond with custom error codes (issue #5376)
+
+Firefox:
+  * Improved GeckoDriver binary lookup mechanism (issue #5240)
+
+3.8.0 (2017-12-01)
+==================
+
+Ruby:
+  * Removed deprecated Alert#authenticate
+  * Removed deprecated :port initialization argument of Remote::Bridge.
+    Use :url instead.
+  * Removed deprecated Selenium::WebDriver::Remote::W3CCapabilities.
+    Use Selenium::WebDriver::Remote::Capabilities instead.
+
+IE:
+  * Remove deprecated :log_file driver initialization argument.
+    Use driver_opts: {log_file: ''} instead.
+  * Remove deprecated :log_level driver initialization argument.
+    Use driver_opts: {log_level: ''} instead.
+  * Remove deprecated :implementation driver initialization argument.
+    Use driver_opts: {implementation: ''} instead.
+  * Removed deprecated :service_args driver initialization argument.
+    Use driver_opts: {args: ['--some-switch']} instead.
+
+Chrome:
+  * Removed deprecated :service_log_path driver initialization argument.
+    Use driver_opts: {log_path: 'path'} instead.
+  * Removed deprecated :service_args driver initialization argument.
+    Use driver_opts: {args: ['--some-switch']} instead.
+
+Firefox:
+  * Removed deprecated :service_args driver initialization argument.
+    Use driver_opts: {args: ['--some-switch']} instead.
+
+Safari:
+  * Removed deprecated :service_args driver initialization argument.
+    Use driver_opts: {args: ['--some-switch']} instead.
+
+Edge:
+  * Removed deprecated :service_args driver initialization argument.
+    Use driver_opts: {args: ['--some-switch']} instead.
+
+3.7.0 (2017-11-03)
+==================
+
+Ruby:
+  * Added //rb:lint task to check codebase using RuboCop (thanks @RustyNail)
+  * Fixed codebase to comply more to Ruby community style guide (thanks @RustyNail)
+  * Packaged all dependencies to Selenium repository so that non-Ruby committers
+    can build and test Ruby bindings easier
+  * Update errors list according to latest changes of specification (thanks @jaysonesmith)
+
+Firefox:
+  * Added Firefox::Options#headless! shortcut to enable headless mode (thanks @franzliedke)
+
+3.6.0 (2017-09-25)
+==================
+
+Edge:
+  * Fixed a bug when execute_script failed using server + Edge (issue #4651)
+
+Firefox:
+  * Fixed a bug when web extension failed to install using profile class (issue #4093)
+
+PhantomJS:
+  * Support is deprecated in favor of headless Chrome/Firefox or HTMLUnit.
+    PhantomJS is no longer actively developed, and support will eventually
+    be dropped.
+
+3.5.2 (2017-09-07)
+==================
+
+Ruby:
+  * Removed platformVersion from W3C payload (issue #4641)
+  * Fixed a bug when proxy type was not compliant to specification (issue #4574)
+  * Added support for passing speed to flick action (issue #4549)
+  * Using TouchActionBuilder no longer prints mouse/key deprecations
+  * Deprecated Alert#authenticate
+  * Added support for DEBUG environment variable which enables full debug mode in gem
+
+Firefox:
+  * Fixed a bug when page load timeout was not properly constructed in new session payload
+  * Fixed a bug when GeckoDriver error stacktrace was not displayed (issue #3683)
+
+Chrome:
+  * Added workaround for the case when findElements call returns null (issue #4555)
+  * Chrome::Driver now includes touch actions by default
+
+3.5.1 (2017-08-15)
+==================
+
+Ruby:
+  * Fixed a bug when Chrome/Firefox (and probably other) drivers could not be
+    started on JRuby (issue #4453).
+
+3.5.0 (2017-08-10)
+==================
+
+Firefox:
+  * Firefox subprocess output is now only redirected when debug is set (issue #4311)
+  * Fixed a bug where non-integers could be sent when setting window rect
+  * Fixed Firefox location detection on Windows_x64 (thanks kamenlitchev)
+  * Fixed passing of profile with a W3C compatible remote end
+
+IE:
+  * Added new IE::Options class that should be used to customize browser
+    behavior (native events, element scroll behavior, etc).
+    The instance of options class can be passed to driver initialization using
+    :options key. Old way of passing these customization directly to driver
+    initialization is deprecated.
+
+3.4.4 (2017-07-13)
+==================
+
+Firefox:
+  * Added support for GeckoDriver install addon command (issue 4215).
+  * Added support for GeckoDriver uninstall addon command (issue 4215).
+  * Raise error when passing :firefox_options as capability.
+
+Ruby:
+  * Fixed a bug when childprocess were leaking /dev/null file descriptor (issue 4285).
+  * Make Remote::Driver class so that it can be inherited from.
+
+3.4.3 (2017-06-16)
+==================
+
+Ruby:
+  * Fixed a regression when passing symbol as :desired_capabilities caused NoMethodError (issue 4187).
+
+3.4.2 (2017-06-14)
+==================
+
+Ruby:
+  * Added unhandledPromptBehavior to the list of known capabilities.
+  * Added timeouts to the list of known capabilities.
+  * Fixed a regression when passing hash as :desired_capabilities caused NoMethodError (issue 4172, thanks Thomas Walpole).
+  * Fixed a regression when extension capabilities (the ones that have ":" inside)
+    were filtered out when doing protocol handshake.
+  * Improved handling of capability names passed as plain camelCased strings
+    vs Rubyish snake_cased symbols when doing protocol handshake.
+
+Chrome:
+  * Fixed a regression when passing :switches to driver initialization was ignored.
+
+3.4.1 (2017-06-13)
+==================
+
+Ruby:
+  * Implemented a new dual-dialect mechanism for communication with drivers
+    (a.k.a. protocol handshake). There shouldn't be any noticeable differences
+    but since this is a significant refactoring of internal APIs, some bugs
+    could slip into the release.
+  * Renamed ElementClickIntercepted to ElementClickInterceptedError.
+  * Renamed ElementNotInteractable to ElementNotInteractableError.
+  * Deprecated W3CCapabilities in favor of Capabilities (it was meant to be private API).
+  * Added a warning when trying to save screenshot without .png extension (thanks @abotalov).
+
+IE:
+  * Added support for both old IEDriver which uses OSS dialect of JSON wire
+    protocol (<= 3.4.0) and new IEDriver which uses W3C dialect (not yet released).
+
+Safari:
+  * Removed runtime dependencies used for old SafariDriver (u.g. websocket).
+
+Chrome:
+  * Added new Chrome::Options class that should be used to customize browser
+    behavior (command line arguments, extensions, preferences, mobile emulation, etc.).
+    The instance of options class can be passed to driver initialization using
+    :options key. Old way of passing these customization directly to driver
+    initialization is deprecated.
+
+Firefox:
+  * Added new Firefox::Options class that should be used to customize browser
+    behavior (command line arguments, profile, preferences, Firefox binary, etc.).
+    The instance of options class can be passed to driver initialization using
+    :options key. Old way of passing these customization directly to driver
+    initialization is deprecated.
+
+3.4.0 (2017-04-21)
+===================
+
+Edge:
+  * Fix bug when response is not wrapped with "value"
+
+Firefox:
+  * Support geckodriver v0.16
+
+Ruby:
+  * Support ElementClickIntercepted error from W3C spec
+  * Support ElementNotInteractable error from W3C spec
+  * Implement window rect commands
+  * Implement window minimize command
+
+3.3.0 (2017-03-07)
+===================
+
+Firefox:
+  * geckodriver v0.15 or later is required
+
+W3C:
+  * Support for command response data to be wrapped in a 'value' key
+  * Support for updated timeout formats
+
+3.2.2 (2017-03-01)
+===================
+
+Ruby:
+  * Fix bug for supporting Logger output on Ruby versions < 2.3
+  * Add more logging and adjust output levels
+
+Remote:
+  * Support for creating Remote session with browser name and url parameters
+
+3.2.1 (2017-02-24)
+===================
+
+Ruby:
+  * Fix bug for supporting Logger on Ruby versions < 2.3
+
+3.2.0 (2017-02-22)
+===================
+
+Ruby:
+  * Implement new Logger class
+  * Fix issue with chromedriver process leader incompatibility on Win7 (issue 3512)
+
+3.1.0 (2017-02-14)
+===================
+
+Firefox:
+  * implement W3C actions endpoint
+
+3.0.8 (2017-02-08)
+===================
+
+Firefox:
+  * Fix signature of element returned from #active_element
+
+3.0.7 (2017-02-06)
+===================
+
+Firefox:
+  * Fix signature of element arrays returned from #find_elements (issue 3471)
+
+3.0.6 (2017-02-05)
+===================
+
+Firefox:
+  * Implement W3C window position
+  * Update implementation for W3C send text to alert
+  * Implement timeout settings
+  * Remove default capabilities (thanks lmtierney)
+  * Fix signature of elements returned from #execute_script (thanks Thomas Walpole)
+
+3.0.5 (2016-12-27)
+===================
+
+Ruby:
+  * Support for Ruby 2.4.0 (Thanks jamespdo)
+
+3.0.4 (2016-12-21)
+===================
+
+Firefox:
+  * Implement profile support via geckodriver (#2933 thanks lmtierney)
+
+Ruby:
+  * Fix bug preventing use of Curb client (#2951 thanks clarkenciel)
+  * Support Net::HTTP::Persistent version 3 (#3219 thanks Pete Johns)
+  * Allow Net::HTTP::Default to set open_timout and read_timeout independently (#3264 thanks richseviora)
+  * Change default for Net::HTTP::Default#open_timeout to facilitate debuggers  (#3264 thanks richseviora)
+
+3.0.3 (2016-11-26)
+===================
+
+Ruby:
+  * Allow drivers to be executed from batch files on Windows
+
+3.0.2 (2016-11-25)
+===================
+
+Ruby:
+  * Implement #driver_path as parameter when initializing a driver (thanks lmtierney)
+  * Improve Ruby syntax in driver commands (thanks joe_schulte)
+  * Improve performance when shutting down drivers (thanks lmtierney)
+  * Fix bug for finding open ports on Windows (thanks kou1okada)
+  * Fix bug in auto detection of drivers which allowed selection of non-executable binaries
+
+W3C:
+  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney) 
+  * Implement element #property method (thanks lmtierney) 
+
+Chrome:
+  * Fix bug in switches (thanks danvine) 
+
+3.0.1 (2016-11-06)
+===================
+
+Ruby:
+  * Always send JSON Wire Protocol commands to server instead of W3C commands
+
+3.0.0 (2016-10-13)
+===================
+
+Firefox:
+  * Update :firefox_options support for geckodriver 0.11
+
+3.0.0.beta4 (2016-09-29)
+===================
+
+Ruby:
+  * Remove support for deprecated driver options
+  * Add support for latest driver options
+  * Add support for :port parameter for launching driver
+  * Add support for :service_args parameter for driver command line switches
+  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto ) 
+
+Firefox:
+  * Add support for :firefox_options in geckodriver
+
+Safari:
+  * Remove support for legacy Safari driver (use Apple's driver built in to Safari 10+)
+
+Chrome:
+  * Set chromedriver to not log by default
+
+3.0.0.beta3.1 (2016-09-03)
+===================
+
+Firefox:
+  * Fixed bug - legacy firefox extension included in gem
+
+3.0.0.beta3 (2016-09-01)
+===================
+
+Firefox:
+  * Implemented w3c getAttribute with javascript atom
+
+3.0.0.beta2.1 (2016-08-03)
+===================
+
+Ruby:
+  * Fixed bug in collections
+
+3.0.0.beta2 (2016-08-02)
+===================
+
+Firefox:
+  * Fixed bug with form submission
+  * Improved w3c element handling
+
+3.0.0.beta1 (2016-07-28)
+===================
+
+Ruby:
+  * Remove support for RC client
+  * Remove support for Ruby < 2.0
+  * Update code to support designated style guidelines
+  * Chrome/GeckoDriver/PhantomJS/IE/Edge drivers are refactored to use standard
+    service class (issue 1797)
+  * Option `:timeout` was removed from IE server (issue 1797)
+
+Chrome:
+  * Remove override of default chromedriver behavior for chrome.detach (issue 2418)
+
+Firefox:
+  * Rename wires to geckodriver
+  * Change default usage from FirefoxDriver to geckodriver
+
+Safari:
+  * Initial support for Apple's Safari Driver in Sierra (issue #2475)
+
+Android and iPhone:
+  * Remove support for deprecated classes (Issue #2476)
+
+2.53.0 (2016-03-15)
+===================
+
+Ruby:
+  * Removed dependency on "multi_json" (issue 1632)
+  * Properly handle namespaces in install manifest of Firefox add-ons (issue 1143)
+  * Improve error handling when stopping browsers (thanks bsedat)
+  * Fix deselecting options in select lists (thanks glib-briia)
+  * Fix w3c error handling
+  * Update w3c Capabilities support
+
+IE:
+  * support for alert credentials (issue #1698, thanks Alan Baird & trabulmonkee)
+
+2.52.0 (2016-02-12)
+===================
+
+No Ruby changes in this release.
+
+2.51.0 (2016-02-05)
+===================
+
+No Ruby changes in this release.
+
+2.50.0 (2016-01-27)
+===================
+
+Firefox:
+ * Fix bug for locating binary in local path  (issue 1523, thanks Gopal Patel)
+
+2.49.0 (2016-01-13)
+===================
+
+Ruby:
+  * support for SessionNotCreatedError (thanks Alexander Bayandin)
+
+Safari:
+  * Limit support to OS X (issue 1186)
+  * support for multiple concurrent drivers
+
+PhantomJS:
+  * Implement Socket locking
+
+IE:
+  * support for multiple concurrent drivers
+
+Chrome:
+  * prevent 404 error when shutting down Chrome service (thanks Fumiaki MATSUSHIMA)
+  * logging turned on by default
+  * support local storage capabilities
+
+Firefox:
+  * support setting the location of Firefox binary to use when run locally
+  * add default lookup of Homebrew Cask default directory (issue 1437)
+
+W3C Specification:
+  * support for using with Remote WebDriver
+  * implement window size command
+  * implement window position command
+  * implement element size command
+  * implement element position command
+  * implement full screen window command
+  * implement page source command
+
+2.48.1 (2015-10-13)
+===================
+
+Firefox:
+  * Mozilla's Wires Driver for Marionette works with Remote WebDriver
+
+2.48.0 (2015-10-07)
+===================
+
+Firefox:
+  * Initial implementation of Mozilla's Wires Driver for Marionette; Supported in version 43 and higher
+
+Edge:
+  * Fix execution with Remote Server
+  * Fix Javascript Execution
+  * Implement Alert Handling
+  * Implement Window Switching
+
+Ruby:
+  * Initial implementation of W3C WebDriver syntax to support Mozilla Wires
+  * Change to RSpec expect syntax
+  * Specs can be run from relative directories
+
+
+2.47.1 (2015-07-31)
+===================
+
+Edge:
+  * Initial implementation of Microsoft's EdgeDriver
+
+
+2.47.0 (2015-07-29)
+===================
+
+Safari:
+  * Remove support for installing additional extensions due to architectural changes introduced with Safari 7
+
+2.46.2 (2015-06-05)
+===================
+* Fix encoding issue which prevents Element#send_keys to work on Ruby < 2.0 (#621)
+
+2.46.1 (2015-06-04)
+===================
+  * Fix aborted rubygems.org release
+
+2.46.0 (2015-06-04)
+===================
+
+Firefox:
+  * Support for Firefox 38
+  * Fix performance bug by not forcing garbage collection in httpd.js
+
+Chrome:
+  * Fixed ChromeDriver port race condition (#449 - thanks Jason Anderson)
+
+Ruby changes:
+  * Retry binding to ports unavailable by EADDRNOTAVAIL (#394).
+  * Remove Presto-Opera support (Blink-based Opera still supported)
+
+2.45.0 (2015-02-28)
+===================
+
+Firefox:
+  * Native events in Firefox relied on an API that Mozilla no longer
+    provides. As such, fall back to synthesized events on recent Firefox
+    versions.
+
+Ruby changes:
+  * Allow switching windows when current window is closed (thanks Titus Fortner).
+  * Add :javascript_enabled to Android capabilities.
+
+2.44.0 (2014-10-05)
+===================
+
+No Ruby changes in this release.
+
+Firefox:
+  * Native event support for Firefox 24, 31, 32 and 33
+
+2.43.0 (2014-09-09)
+===================
+
+* Make sure UnhandledAlertErrors includes the alert text if provided by the driver.
+* Firefox
+  - Make sure the browser process is properly killed if silent startup hangs (#7392)
+  - native events support for Firefox 24, 31 and 32
+* Loosen websocket dependency to ~> 1.0
+* Add support for `switch_to.parent_frame` (thanks abotalov)
+* Fix download location for Selenium::Server.{latest,get} (#7049 - thanks marekj)
+
+2.42.0 (2014-05-23)
+===================
+
+Firefox:
+  * Fix for extensions whose install.rdf uses an attribute for em:id (#5978)
+  * Support for Firefox 29 Native Events
+
+2.41.0 (2014-03-28)
+===================
+
+* Removed dead browser visibility methods.
+* Firefox:
+  * Native events support for Firefox 28 (removed support for 26)
+
+2.40.0 (2014-02-19)
+===================
+
+* Fix bug where FileReaper would not reap files added in a child process
+* Document AbstractEventListener (#5994)
+* Safari:
+  * Add Safari::Options + clean up Safari extension handling (#6382)
+  * Add support for user extensions (#6815)
+* Firefox:
+  * Support native events for Firefox 27 + removed native event support for Firefox 25
+
+2.39.0 (2013-12-17)
+===================
+
+* Firefox: Native events support for Firefox 26.
+* Add deprecation warning to the Android driver.
+* Make sure selenium/client doesn't require Rake (#6709)
+
+2.38.0 (2013-12-05)
+===================
+
+* Enforce required Ruby version in gemspec, not just transitively through rubyzip.
+* Expose the logging API (beta API, subject to change) in the Ruby client: driver.manage.logs #=> Selenium::WebDriver::Logs
+* Update to support native events for Firefox 25
+
+
+2.37.0 (2013-10-18)
+===================
+
+* As of this version, selenium-webdriver no longer supports Ruby < 1.9.2
+* Depend on rubyzip ~> 1.0.0
+* Added SOCKS proxy support
+* Fixed support for SVG documents in the atoms.
+* Fixed computing an element's container dimensions to account for  the scrollbar size when scrolling
+* Added Capabilities.htmlunitwithjs
+
+Chrome:
+  * Pass through the prefs option as a Chrome capability (#5929).
+Firefox:
+  * Updated Firefox native event components to support Firefox 24.
+  * New elementScrollBehavior capability.
+  * Fixed getLocation to work on scrolled pages.
+  * Fixed autoscrolling for elements located in frames.
+  * Fixed drag-n-drop for elements in frames with native events
+IE:
+  * Use native events by default, also for remote IE (#4695)
+Safari:
+  * Enable screenshots and input devices in the client.
+
+2.35.1 (2013-08-26)
+===================
+
+* Depend on rubyzip < 1.0.0
+
+2.35.0 (2013-08-14)
+===================
+
+Firefox:
+  * Updated Firefox native event components to support Firefox 23.
+
+2.34.0 (2013-08-06)
+===================
+
+Remote:
+  * Add `Driver#remote_status` (remote driver only) (#5669)
+Firefox:
+  * Updated Firefox native event components to support Firefox 22.
+iPhone:
+  * The driver is now deprecated (see http://appium.io/ or http://ios-driver.github.io/ios-driver/ for a replacement)
+Various:
+  * Updated our copy of the Closure compiler and library to the most
+    recent versions.
+  * Updated the atoms library, including support for MS pointer events
+    and refinements to element visibility tests.
+  * Update synthesized mouse implementation. Mouse moves are
+    implemented using nsIDOMWindowUtils.
+  * Added support for the HTML5 "hidden" attribute. If an element, or
+    ancestor, has hidden attribute make, it is not shown.
+
+2.33.0 (2013-05-26)
+===================
+
+Remote:
+  * Support rotating devices, such as iPhone & iPad in simulator and Android browser in emulator
+  * Support for interacting with touch screen devices, such as iPhone & iPad in simulator and Android browser in emulator
+  * Improve error messages for invalid wire protocol responses
+Chrome:
+  * Accept :service_log_path for Chrome. (#3475)
+IE:
+  * IE >=9 versions triggerMouseEvent like other browsers (#2218).
+Various:
+  * Element#text ignores elements in <head>
+
+
+2.32.1 (2013-04-11)
+===================
+
+Safari:
+  * Fix typo when encoding the Safari server redirect URL (#5472)
+
+2.32.0 (2013-04-09)
+===================
+
+Safari:
+  * The Safari extension is now packaged with the gem and automatically installed (#5322)
+  * Improved detection of the binary location on 64-bit windows (#5273)
+Opera:
+  * Allow passing :desired_capabailities (#5279)
+Firefox:
+  * This release supports versions 10esr, 17esr, 19, 20.
+  * Improved SVG support
+Other:
+  * Allow #click_and_hold without target (#5410).
+  * Remove assumptions about returned capabilities (for ios-driver)
+
+2.31.0 (2013-03-02)
+===================
+
+Remote:
+  * Expose session_id on the remote driver when used directly (#5240).
+Firefox:
+  * Native events in Firefox 19
+Opera:
+  * Treat UNSPECIFIED proxy type as a nil proxy (#5081).
+Other:
+  * Add ability to pass :desired_capabilities to all the Ruby drivers, not just for :remote.
+    Direct arguments take presendence. (#5078, see also https://github.com/SeleniumHQ/selenium/pull/8, https://github.com/SeleniumHQ/selenium/pull/11)
+
+2.30.0 (2013-02-20)
+===================
+
+Firefox:
+  * Firefox 19 support (for synthesized events)
+Remote:
+  * Pass along firefox_binary correctly (#5152)
+Safari:
+  * Don't overwrite Driver#browser
+Other
+  * Alert#text should raise on closed alert.
+
+2.29.0 (2013-01-21)
+===================
+
+Firefox:
+  * Firefox 18 support (for native events).
+IE:
+  * New 'requireWindowFocus' desired capability.
+  * IE view port calculation take scroll bars into account (#3602)
+Safari:
+  * Replace 'libwebsocket' with 'websocket' gem. This should ensure
+    support with recent Safari.
+Other:
+  * Fix Cygwin issue in PortProber/Firefox::Bianry (#4963)
+
+2.27.2 (2012-12-11)
+===================
+
+Firefox:
+  * Fix for native events in v17 (packaging mistake)
+
+2.27.1 (2012-12-07)
+===================
+
+Firefox:
+  * Fix "g[b] is not an object" error when passing null to execute_script.
+
+2.27.0 (2012-12-06)
+===================
+
+Firefox:
+  * Support for Firefox 17.
+IE:
+  * Path to the server executable can be specified (S::W::IE.path=)
+Other:
+  * Added :phantomjs driver
+
+2.26.0 (2012-11-02)
+===================
+
+Firefox:
+  * Added support for native events for Firefox 15 and 16.
+  * Modified FirefoxDriver to use atoms to switch between frames.
+  * FIXED: 4309: 'Could not convert Native argument arg 0' error with Firefox.
+  * FIXED: 4375: Executing javascript hangs Firefox.
+  * FIXED: 4165: WebDriver fails on a machine with no IP address.
+Safari:
+  * Fixed SafariDriver to allow calling .quit() consecutively without error.
+  * FIXED: 4676: Unable to fire javascript events into SVG's.
+  * FIXED: 3969: SafariDriver should auto-dismiss alerts.
+IE:
+  * FIXED: 4535: Hover still does not work perfectly in IE.
+  * FIXED: 4593: Alert.accept() Cancels the Resend Alert/Dialog Box.
+
+2.25.0 (2012-07-19)
+===================
+
+* Respect no_proxy / NO_PROXY env vars (#4007).
+* Improve error message if a configured proxy refuses the connection.
+* Ignored exception can be configured on the Wait class.
+* Add Selenium::WebDriver::Support::Color class.
+* Ignore Errno::ENETUNREACH when trying to detect our local IP (#4165).
+* Ignore Errno::EADDRNOTAVAIL in PortProber (#3987).
+* Firefox:
+  * Enumerate through client rects until finding one with non-zero dimensions when clicking.
+  * Updated supported versions of Firefox to 17.
+  * Allow windows to be resized from a frame (#3897).
+  * Fix an issue where a call to submit could hang the driver.
+* IE:
+  * Ability to configure logging through the :log_file and :log_level options.
+  * Increasing stability of file upload dialog handling (#3858)
+* Better handling of overflow edge cases when determining element visibility.
+
+2.24.0 (2012-06-19)
+===================
+
+* bot.dom.getVisibleText does not properly handle display:run-in or display:table (#1584).
+* CSS selectors now support compound selectors.
+* IE:
+  * Failure to click on an element in the IE Driver will yield a more meaningful error.
+  * Crash on IE8 when S_FALSE is returned from get_Document (#4064)
+  * DLLs are no longer bundled with the gem, users must use the standalone server from now on.
+* Firefox:
+  * Support for Firefox 13
+  * Ability to pass :proxy directly as Firefox option (no Profile needed).
+
+2.22.2 (2012-06-05)
+===================
+
+* Improve method for determining the local IP (#3987).
+
+2.22.1 (2012-06-01)
+===================
+
+* Fix for 1.8.7 behaviour of Socket.getaddrinfo.
+* Automatically reap Firefox profile on exit, not just in #quit.
+
+2.22.0 (2012-05-29)
+===================
+
+* Fix conflict with ActiveSupport's Object#load (#3819)
+* IE:
+  * Default to standalone server executable, fall back to bundled DLLs.
+  * The 'nativeEvents' capabilitiy is exposed as :native_events in the Ruby client (mode still experimental).
+* Firefox:
+  * Native events for Firefox 12.
+  * Native events retained for Firefox 3.x, 10 and 11.
+  * Fix for typing in Firefox 12
+  * Fix for typing on XHTML pages (#3647)
+  * Fix for maximizing windows when switched to a frame (#3758)
+  * Handle alerts from nested iframes (#3825)
+* Remote:
+  * Honor HTTP_PROXY env vars (#3838).
+* Element#attribute returns nil if a boolean attribute is not present.
+* NoSuchWindowError will be thrown if the currently selected window is closed and another command is sent.
+* Safari:
+  * support for frame switching, snapshot taking, execute script
+  * message protocol changed, not backwards compatible with 2.21.
+* Style attributes are no longer lower-cased by default (#1089).
+* Make sure the Ruby client kills Firefox even when the RPC fails.
+* Make sure the Ruby client checks all network interfaces when finding free ports.
+
+
+2.21.2 (2012-04-18)
+===================
+
+* Check MultiJson.respond_to?, depend on ~> 1.0
+
+2.21.1 (2012-04-16)
+===================
+
+* Set multi_json dependency to < 1.3 to avoid deprecation warnings.
+
+2.21.0 (2012-04-11)
+===================
+
+* Add Selenium::WebDriver::Window#maximize (#3489)
+* Safari:
+  * New driver! See https://github.com/SeleniumHQ/selenium/wiki/SafariDriver.
+* Firefox:
+  * Significant stability improvements.
+  * Native events support for Firefox 11
+  * Dropped native events support for Firefox 4-9
+  * Window maximize implementation.
+* IE:
+  * Ignore invisible dialogs (#3360).
+  * Window maximize implementation.
+* Android:
+  * Accept SSL certificates (#3504).
+
+2.20.0 (2012-02-28)
+===================
+
+* Loosen the multi_json and ffi dependencies (#3446)
+* Firefox:
+  * Introduce a timeout for page loads. This needs to be used in
+    conjunction with the unstable page load detection. Exposed as
+    Timeouts#page_load=
+* Scroll containing elements, not just windows (#3391).
+* Element#{style => css_value}, with an alias for backwards compatibility.
+* Atoms:
+  * Submit a form when the enter button is pressed in its input
+    element.
+  * Add a "mouse pixel scroll" event to the atoms events module.
+  * Adding a public "mouseOver" action and a little internal
+    refactoring around the mouseOver functionality.
+* Selenium::WebDriver::Wait: polling interval reduced from 0.5 to 0.2 seconds.
+
+2.19.0 (2012-02-08)
+===================
+
+* RC client supports server-side WebDriver-backed Selenium.
+* Touch APIs implemented in the Ruby client (Android only)
+* Firefox:
+  * Fix deserialization of user.js in Firefox::Profile
+  * Native events implemented for Firefox 10.
+  * Renamed the experimental "fast" page loaded strategy "unstable"
+    and disable queuing of commands when it's enabled.
+  * Disabled native events for Firefox 8 as it's deprecated by Mozilla.
+  * Fix for exceptions thrown when an alert occurs during script execution.
+* Chrome:
+  * New download link for the server component:
+    http://code.google.com/p/chromedriver/downloads/list
+
+2.18.0 (2012-01-27)
+===================
+
+* Fix for getting value attribute of option elements. (#3169)
+* Firefox and IE:
+  * Raise UnhandledAlertError if an alert is present during an operation. The unhandled alert is also dismissed to mitigate repeat exceptions.
+* Firefox:
+  * Better handling of getText invocations on SVG elements.
+  * Fix for Element#click in Firefox 4. (#3253)
+  * Fixed bug when deserializing user.js in Firefox::Profile.
+  * Default profile preferences now read from shared JSON blob.
+* Android and iPhone:
+  * Client support for the geolocation API (see Selenium::WebDriver::DriverExtensions::HasLocation)
+  * Client support for the web storage API (see Selenium::WebDriver::DriverExtensions::HasWebStorage)
+* iPhone:
+  * Server now supports frame switching (for frames in the same domain).
+
+2.17.0 (2012-01-16)
+===================
+
+* Firefox:
+  * Fix excessive unwrapping when switching windows.
+  * Set toolkit.telemetry.{enabled,rejected} in the default Firefox profile.
+  * Support up to version 12 with synthesized events.
+  * Fixed issues launching Firefox 9 due to modal dialog (#3154, #3144)
+* Chrome:
+  * Now accepts a :url option, pointing to an already running Chrome server.
+  * Now accepts a :proxy option (i.e. Selenium::WebDriver::Proxy instance).
+* iPhone:
+  * iWebDriver will auto-play HTML5 video (#3152)
+* Element#attribute("value") falls back to the text of option tags, if no value attribute is specified (#3169)
+
+2.16.0 (2012-01-04)
+===================
+
+* Firefox:
+  * Native events support for Firefox 9
+  * Allow apps to use offline storage by default
+  * Fix excessive unwrapping when executing mouseMove
+  * Click in the middle, rather than the top-left of elements (#3034, #2700)
+* IE:
+  * Raise StaleElementReferenceError when interacting with elements outside the currently focused frame
+  * Handle frames and iframes in showModalDialog windows
+* Chrome:
+  * Improve client handling of invalid error responses
+* iPhone:
+  * Updated to latest CocoaHTTPServer
+* Remote:
+  * Improve performance of Element#== by only making an RPC when necessary.
+  * Disallow caching of GET requests
+* Various:
+  * Raise ArgumentError instead of UnsupportedOperationError on invalid modifier key
+  * Improve docs for Server, ActionBuilder and Window
+  * Update to latest Sizzle (used for :css selectors in older browsers)
+
+2.15.0 (2011-12-08)
+===================
+
+* Firefox:
+  * Now supports up to Firefox 11 (for syntesized events)
+  * Implicit waits now change how long we wait for alerts. This
+    functionality will change in 2.16
+  * Fix scrolling issue (#2700)
+* IE:
+  * Fix issue with getWindowHandles() and showModalDialog() (#1828)
+  * Add support for the window sizing and positioning API
+* Make Platform.bitsize use the correct constant from FFI
+* WebDriver internals:
+  * Atoms code contribution from Google
+  * Closure updated
+
+
+2.14.0 (2011-11-29)
+===================
+
+* Add Selenium::WebDriver::Support::Select class to ease working with select lists.
+* Add Capabilities.ipad and Capabilities.iphone (#2895)
+* Replace json_pure dependency with multi_json. (#2901)
+* Don't leave sockets hanging in SYN_SENT state while polling.
+* Allow selecting option elements even if the enclosing select has zero opacity.
+* Exception renames (old names aliased and will still work in rescues):
+  * ObsoleteElementError      -> StaleElementReferenceError
+  * UnhandledError            -> UnknownError
+  * UnexpectedJavascriptError -> JavascriptError
+  * NoAlertOpenError          -> NoAlertPresentError
+  * ElementNotDisplayedError  -> ElementNotVisibleError
+* Firefox:
+  * Fixed issue with scrolling on small viewports with native events.
+  * Fix CSS selector support in Firefox 3.0
+* IE:
+  * Implement the window control API
+
+2.13.0 (2011-11-18)
+===================
+
+* Firefox:
+  * Recovering from null window references in the Firefox driver (#1438)
+
+2.12.2 (2011-11-13)
+===================
+
+* Firefox
+  * Fix issue where Firefox 8 would throw permission errors after document.domain was modified (#2863).
+  * Force window to the foreground on launch (see https://bugzilla.mozilla.org/show_bug.cgi?id=566671)
+
+2.12.1 (2011-11-11)
+===================
+
+* Fix regression when typing into contenteditable elements.
+
+2.12.0 (2011-11-10)
+===================
+
+* Loosened the ffi dependency now that Windows support is back (#2755).
+* Fix shutdown issues when using net-http-persistent against remote servers.
+* Added beta window control API (see Selenium::WebDriver::Options#window).
+* Firefox
+  * Support for Firefox 8.
+  * Better reporting of page size when attempting to move out of bounds.
+  * Beta implementation of window control.
+
+2.11.0
+======
+
+(release skipped since it included only server-side changes)
+
+2.10.0 (2011-10-27)
+===================
+
+* Improve native keyboard emulation on Windows.
+* Allow commas in CSS selectors (#2301)
+* Firefox:
+  * Fix intermittent error when finding elements by XPath (#2099)
+  * Fix detection of maximum page size (#2700)
+  * Avoid extension selection dialog (extensions.autoDisableScopes)
+  * Fix invalid wire responses from the synthetic mouse (#2695)
+  * Don't scroll unnecessarily (#1771).
+* IE:
+  * Improve handling of #clear on disabled or readonly elements.
+
+2.9.1 (2011-10-24)
+==================
+
+* Workaround for invalid error responses (#2695).
+
+2.9.0 (2011-10-21)
+==================
+
+* Support file uploads to the remote server (see Selenium::WebDriver::DriverExtensions::UploadsFiles)
+* New exception: Selenium::WebDriver::Error::MoveTargetOutOfBoundsError
+* Implemented Chrome::Profile#add_extension
+* Better respect for preformatted text in Element#text
+* Reduced scrolling during tests for IE and Firefox.
+* Firefox:
+  * Support for experimental page load detection.
+* IE:
+  * Better detection of where to click on links (#2675).
+  * Improve handling of modal dialogs (showModalDialog).
+
+2.8.0 (2011-10-06)
+==================
+
+* Firefox
+  - Avoid telemetry prompt on Firefox 7
+  - Allow parallel execution with native events on Linux (#1326)
+  - Added native events support for Firefox 7 on Linux/Windows
+  - Improve search for libX11 for native events on Linux (#384)
+  - Fix double click with native events
+* Chrome
+  - Fail fast if the chromedriver server is not executable.
+* IE
+  - Fix find_element bug (#2563)
+
+
+2.7.0 (2011-09-23)
+==================
+
+* Firefox
+  - no longer types in the URL bar (#2487)
+  - fixed native events click() issue when element is out of view
+  - double click + get no longer hangs firefox (#2456)
+  - make sure escaped backslashes are properly escaped when serializing a Firefox profile (#2485)
+* IE
+  - fix event firing issue (#2516)
+* Opera
+  - don't start the remote service if the driver is passed bad arguments
+
+2.6.0 (2011-09-13)
+==================
+
+* Rescue and retry on Errno::EADDRINUSE to work around ephemeral ports issue on Windows.
+* Use correct default URL for the Android driver.
+* Profile zipping now follows symlinks (#2416).
+* Firefox
+  - Disable malware check
+  - Various #click improvements
+  - Don't scroll if element is already in view
+* IE:
+  - improve scrolling to elements with 'overflow: scroll'
+  - properly trigger jQuery change events (#2207)
+  - improve handling of nested modal dialogs
+* Opera:
+  - capabilities exposed as options to Selenium::WebDriver.for
+* Various iPhone driver fixes (e.g. #1396)
+
+2.5.0 (2011-08-23)
+==================
+
+* IE: support for double click and fix for clicks close to edge of window.
+* Fix for clicking links that overflow into multiple lines (#1020).
+* Correct initial cursor position when typing into text fields with Firefox 6.
+* Native events support for Firefox 6 on Windows and Linux.
+* Fix bug in Android::Bridge when no :http_client option was passed.
+* Set chrome.detach to tell chromedriver to leave browser running on exit.
+
+2.4.0 (2011-08-11)
+==================
+
+* Firefox 6 support.
+* Raise in switch_to.alert when no alert is present.
+* Improved handling of non-breaking spaces for Element#text.
+
+2.3.2 (2011-08-01)
+==================
+
+* Re-releasing since 2.3.1 was a buggy build.
+
+2.3.1 (2011-08-01)
+==================
+
+* Fix bug where Firefox would hang if Firefox::Profile#log_file= was set.
+
+2.3.0 (2011-08-01)
+==================
+
+* Add Selenium::WebDriver::Chrome::Profile
+* Better detection of clickable areas in Firefox.
+* Merge of Google-contributed code into the underlying Atoms.
+* IE click issue fixed (#1650)
+* No longer raise in Element#inspect if the element is obsolete.
+
+
+2.2.0 (2011-07-26)
+==================
+
+* Add ability to listen for WebDriver events
+* Fix Android/iPhone bridges to work similar to others (https://github.com/jnicklas/capybara/issues/425)
+* Various atoms fixes
+* Element equality now works properly with the remote server (#251).
+
+2.1.0 (2011-07-18)
+==================
+
+* Various improvments to the IE driver (#2049, #1870)
+* Atoms fixes (#1776, #1972).
+* Synthetic mouse clicks do not propagate errors in onmouseover.
+
+2.0.1 (2011-07-11)
+==================
+
+* Make sure at_exit hooks aren't inherited by child processes.
+
+2.0.0 (2011-07-08)
+==================
+
+* Remove deprecated methods Element#{toggle,select,drag_and_drop_*,value}.
+* Add ability to pass :verbose, :native_events to the Chrome driver.
+* Synthetic mouse implementation for Firefox - improves drag and drop support platforms without native events.
+* Added Selenium::WebDriver::Opera (requires the remote server).
+* Fix for locating Firefox on 64-bit Windows when missing from the registry.
+* Fix native events on Firefox 4, 5.
+
+0.2.2 (2011-06-22)
+==================
+
+* Deprecate Element#{toggle,select,drag_and_drop_*}
+* Chrome.path= now sets the path to Chrome, Chrome.driver_path= the path to the chromedriver server.
+* Fix argument names in Mouse#move_to and Mouse#move_by.
+* Support Firefox 5
+* Chrome and Firefox drivers now includes the HasInputDevices module.
+* Selenium::Rake::ServerTask now works with Rake 0.9.
+
+0.2.1 (2011-06-01)
+==================
+
+* Allow passing custom command line switches to Chrome (requires today's release of the Chrome server)
+* Avoid mutating arguments to find_element (issue #1273).
+* Avoid conflicts when SUT modifies Array.prototype
+* Allow setting arbitrary capabilities by adding Capabilities#[]=
+* The Chrome driver is extended with TakesScreenshot.
+* IE driver detects bad protected mode settings.
+* Firefox driver no longer considers opacity when determining visibility.
+* Fix for ActionBuilder#move_by.
+* Treat Errno::EBADF as an indication that we failed to grab the socket lock (issue #1611).
+* Ensure Firefox launches don't hang on some Ruby versions (by improving Selenium::WebDriver::SocketPoller).
+* Various internal driver improvements.
+
+0.2.0 (2011-04-22)
+==================
+
+* Update Ruby bindings to use the rewritten Chrome driver (see https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver).
+* Add deprecation warning for WebDriver::Element#value (use Element#attribute("value") instead).
+* Change the default timeout for Wait instances to 5 seconds.
+* Fix bug where locators would fail if Object.prototype had been modified.
+* Various IE fixes
+  - Issues: #698, #1444
+  - Improved handling of showModalDialog()
+  - Full-size screenshots
+* Allow users to override the dom.max_script_run_time preference in Firefox.
+* Removed DesiredCapabilities.safari, which was never supported anyway.
+* Add DesiredCapabilities.opera, which will be supported in the Remote server if OperaDriver is on the classpath.
+* Print warnings for deprecated constants in the RC client:
+  - Selenium::SeleniumDriver => Selenium::Client::Driver
+  - Selenium::CommandError   => Selenium::Client::CommandError
+* Removed top-level constants:
+  - SeleniumHelper (available as Selenium::Client::SeleniumHelper)
+  - SeleniumCommandError (available as Selenium::Client::CommandError)
+
+0.1.4 (2011-03-21)
+==================
+
+* Support for Firefox 4.
+* Search PATH for Firefox / Chrome on OS X as well.
+* Bump dependencies for ffi and childprocess (#1356).
+* Find module renamed to SearchContext
+* Deprecated methods Driver#hover and Options#{speed,speed=} removed.
+* Improve IE driver stability, IE9 support
+* Added basic ActionBuilder and HasInputDevices#action. Not applicable for all browsers.
+* Added Driver#execute_async_script
+* Some WebDriver exception classes have been renamed to match its Java equivalents:
+    ElementNotEnabledError   -> InvalidElementStateError
+    UnknownScriptResultError -> XpathLookupError
+* Fix bug where Element#disabled? would alternate between true/false (r11438)
+
+0.1.3 (2011-02-14)
+==================
+
+* Several crashing bugs fixed in the IE driver.
+* Alert API available through the remote driver.
+* Driver#refresh fixed in the IE driver.
+* Fixed paths for IE DLLs on Cygwin.
+* Screenshot support in the IE and Remote drivers.
+* Fix #1152 by avoiding IPv6 loopback.
+* Added Mouse and Keyboard classes, accessible as Driver#{mouse,keyboard}. Considered experimental (IE + HtmlUnit only at the moment).
+* Automation atoms now used extensively in the IE driver.
+* Firefox::Bridge is now easier to extend (i.e. with a custom launcher).
+* Add S::W::Remote::Http::Persistent (currently only usable with the remote server).
+* IE driver passes along options like the other remote drivers, enabling user-specified HTTP clients.
+* :firefox_profile added to Remote::Capabilities, enabling passing a profile to remote Firefoxes.
+* IE driver now supports launching multiple instances of the browser.
+* Remove some Ruby warnings (uninitialized ivars, URI.escape).
+
+
+0.1.2 (2010-12-22)
+==================
+
+* Changed frame switching behaviour (http://groups.google.com/group/selenium-developers/browse_thread/thread/8dc7938c35bb3968)
+* IE driver rewrite landed.
+* Initial support for alerts/prompts (in Firefox).
+* Cygwin support.
+* Driver#execute_script now properly wraps elements inside Hashes.
+* Various fixes for Firefox 4.
+
+0.1.1 (2010-11-29)
+==================
+
+* Fix for Chrome.path=
+* Remote drivers always add Content-Length for POST requests (thanks joshuachisholm)
+* Fix for JS execution bug in the IE driver
+* Add ability to specify a proxy on the Http::Default client.
+* The remote drivers' :http_client argument now take a configured instance.
+
+0.1.0 (2010-11-11)
+===================
+
+* selenium-client code (Se1/RC client) is now included in the gem (require "selenium/client").
+* Add Selenium::WebDriver::Proxy, used to configure proxies for Firefox::Profile and the remote driver.
+* Tweaked Firefox profile preferences, improve logging, disabled crash reporter.
+* Reap Firefox profiles on close, not just on exit.
+* Add selenium/rake/server_task and selenium/server which wraps the Selenium server jar.
+* Various Firefox driver improvements (GC race conditions ++).
+* IE::Bridge#initialize now takes an options hash like the other bridges.
+* Added basic iPhone and Android driver classes.
+* Firefox driver now works on FreeBSD.
+
+
+0.0.29 (2010-10-09)
+===================
+
+* Element#find_element with :xpath follows the XPath spec (i.e. results are not limited to the receiver's subtree).
+* Element#attribute(attribute) now returns "false" instead of nil.
+* Firefox::Profile instances can now be reused for multiple drivers.
+* Redirect Firefox console logs to a file with Firefox::Profile.log_file=
+* Added a simple Wait class, based on WebDriverWait in Java.
+* Search PATH for Firefox executable on Windows also.
+* Added Capabilities.android
+* Fix saving of screenshots on Windows and Ruby 1.9 (using "wb" mode string)
+* CSS selector support in the remote driver
+* CSS selector support for IE (using querySelector when available, Sizzle elsewhere)
+* CSS selector support for older versions of Firefox (through Sizzle)
+* Cookie expiration dates are now handled correctly (#730)
+* Make Driver#bridge private, since this seems to be a common cause of confusion.
+* Add {Element,Remote::Capabilities}#as_json for Rails 3 (http://jonathanjulian.com/2010/04/rails-to_json-or-as_json/)
+* User can configure path to exectuables with {Firefox,Chrome}.path = "/some/path"
+* Added "chromium" as a possible name for the Chrome binary (#769)
+* Correctly set the HTTP client timeout (#768)
+* switch_to.window with block now handles exceptions and non-local returns.
+* switch_to.window with block returns the result of the block.
+* Extracted handling of child processes to a separate gem: http://github.com/jarib/childprocess
+
+
+0.0.28 (2010-08-23)
+===================
+
+* Fix behaviour of Element#==, Element#eql? and Element#hash (#hash still has issues on IE / remote).
+* Include remote server backtrace in raised errors (if available).
+* Chrome: Untrusted certificate support.
+* IE: Fix NoMethodError when getElementAttribute returns nil.
+* Driver#[] shorthand can take a locator hash, not just an id string.
+
+0.0.27 (2010-07-22)
+===================
+
+* Fixes for Element#attribute on IE / Firefox
+
+0.0.26 (2010-07-19)
+===================
+
+* Work around Curb issue: http://github.com/taf2/curb/issues/issue/40
+
+0.0.25 (2010-07-19)
+===================
+
+* Prevent Firefox from launching in offline mode (issue #587).
+* Add ability to set Firefox' binary path through Selenium::WebDriver::Firefox::Binary.path=
+* Add ability to install Firefox XPIs through Profile#add_extension.
+* Better packaging/building of Firefox/Chrome extensions, which adds rubyzip as a dependency.
+* Remote client supports HTTPS (issue #613 - thanks kkaempf).
+* Fix error message for TimeOutError in the IE driver (issue #602)
+* Add ability to use Chrome's default profile.
+* Fix for frame behaviour in Chrome (issue #273).
+* Standard gem directory structure (issue #475).
+
+0.0.24 (2010-06-17)
+==================
+
+* Fix issues with quitting Firefox/Chrome on Windows + MRI.
+
+
+0.0.23 (2010-06-15)
+===================
+
+* Improved the HTTP clients:
+  - hopefully fix some occasional socket errors on Windows
+  - rescue error on driver.close() with curb
+
+0.0.22 (2010-06-11)
+===================
+
+* Bugfix: Workaround for http://github.com/taf2/curb/issues/issue/33 - curb would sometimes use DELETE for GET requests.
+* Minor doc fix
+* Add ability to set timeout for HTTP clients
+
+0.0.21 (2010-06-11)
+===================
+
+* User can specify :http_client for the Firefox driver.
+* Refactor HTTP client code
+* Add Remote::Http::Curb as an alternative to the default (net/http) client.
+
+
+0.0.20 (2010-06-03)
+===================
+
+* Fix bug where Firefox would hang on quit().
+
+0.0.19 (2010-05-31)
+===================
+
+* Add a max redirect check to the remote driver
+* Add Firefox::Profile#assume_untrusted_certificate_issuer=
+* Add implicit waits (Selenium::WebDriver::Timeouts)
+* at_exit hook to clean temporary profiles
+* Fix for Errno::ECONNABORTED errors on Windows
+* Fix issue where Firefox::Profile#secure_ssl= would have no effect
+* Fix issue where locating elements by :css would fail in the Chrome driver.
+* IE driver now works on 64-bit rubies.

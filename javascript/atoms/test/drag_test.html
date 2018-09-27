@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>drag_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.dom');
+    goog.require('goog.events');
+    goog.require('goog.fx.DragDropGroup');
+    goog.require('goog.math.Coordinate');
+    goog.require('goog.testing.jsunit');
+  </script>
+
+  <style type="text/css">
+    div#testDiv,div#testDiv2 {
+      width: 40px;
+      height: 20px;
+      top: 25px;
+      left: 300px;
+      border: 3px solid #AF0078;
+      position: absolute;
+    }
+    div#testDiv2 {
+      top: 10px;
+      left: 200px;
+      width: 200px;
+      height: 100px;
+      z-index: -1;
+    }
+  </style>
+
+  <script type="text/javascript">
+    function testClosureFxDragAndDrop() {
+      // Setup Drag and Drop using goog.fx
+      var testDiv = document.getElementById('testDiv');
+      var testDiv2 = document.getElementById('testDiv2');
+      var div1 = new goog.fx.DragDropGroup();
+      var div2 = new goog.fx.DragDropGroup();
+      div1.addItem(testDiv, 'Drag me');
+      div2.addItem(testDiv2, 'Destination');
+      div1.addTarget(div2);
+      div1.init();
+      div2.init();
+
+      goog.events.listen(div2, 'drop', function(event) {
+        var dragSrc = event.dragSourceItem;
+        var elem = event.dragSourceItem.element;
+        var rect = bot.dom.getClientRect(elem);
+        elem.style.left = rect.left +
+            (event.clientX - dragSrc.startPosition_.x) + 'px';
+        elem.style.top = rect.top + (event.clientY - dragSrc.startPosition_.y) +
+                          'px';
+      });
+
+      // Start testing
+      var target = document.getElementById('testDiv');
+      var rectOld = bot.dom.getClientRect(target);
+      var coords = new goog.math.Coordinate(15, 5);
+      var dx = -75;
+      var dy = 35;
+      bot.action.drag(target, dx, dy, 2, coords);
+
+      var rectNew = bot.dom.getClientRect(target);
+      assertEquals('Wrong x coordinate', rectNew.left, rectOld.left + dx);
+      assertEquals('Wrong y coordinate', rectNew.top, rectOld.top + dy);
+
+      // End of the test
+      div1.dispose();
+      div2.dispose();
+    }
+
+    function elementThatMovesDuringDrag(action) {
+      // IE is not compatible with touch actions.
+      // Also IE6 does not render this test page properly,
+      // so we must skip this test for IE6.
+      if ((action == bot.action.swipe && !bot.events.SUPPORTS_TOUCH_EVENTS) ||
+          (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+        return;
+      }
+      // Setup a simple Drag and Drop object
+      var DragDropDiv = function(element) {
+        this.element_ = element;
+        this.dragging_ = false;
+        this.x_ = 0;
+        this.y_ = 0;
+        if (action == bot.action.drag) {
+          goog.events.listen(this.element_, goog.events.EventType.MOUSEDOWN,
+                             this.startMove, false, this);
+          goog.events.listen(this.element_, goog.events.EventType.MOUSEMOVE,
+                             this.move, false, this);
+          goog.events.listen(this.element_, goog.events.EventType.MOUSEUP,
+                             this.endMove, false, this);
+        } else {
+          goog.events.listen(this.element_, goog.events.EventType.TOUCHSTART,
+                             this.startMove, false, this);
+          goog.events.listen(this.element_, goog.events.EventType.TOUCHMOVE,
+                             this.move, false, this);
+          goog.events.listen(this.element_, goog.events.EventType.TOUCHEND,
+                             this.endMove, false, this);
+        }
+      };
+      DragDropDiv.prototype.startMove = function(event) {
+        this.dragging_ = true;
+        if (action == bot.action.drag) {
+          this.x_ = event.clientX;
+          this.y_ = event.clientY;
+        } else {
+          var e = event.getBrowserEvent();
+          if (e.touches) {
+            this.x_ = e.touches[0].clientX;
+            this.y_ = e.touches[0].clientY;
+          }
+        }
+      };
+      DragDropDiv.prototype.move = function(event) {
+        if (this.dragging_) {
+          var dx, dy;
+          if (action == bot.action.drag) {
+            dx = event.clientX - this.x_;
+            dy = event.clientY - this.y_;
+            this.x_ = event.clientX;
+            this.y_ = event.clientY;
+          } else {
+            var e = event.getBrowserEvent();
+            dx = e.touches[0].clientX - this.x_;
+            dy = e.touches[0].clientY - this.y_;
+            this.x_ = e.touches[0].clientX;
+            this.y_ = e.touches[0].clientY;
+            event.preventDefault();
+          }
+          var elementStyle = this.element_.style;
+          elementStyle.left = parseInt(elementStyle.left) + dx + 'px';
+          elementStyle.top = parseInt(elementStyle.top) + dy + 'px';
+        }
+      };
+      DragDropDiv.prototype.endMove = function(event) {
+        this.dragging_ = false;
+        if (action == bot.action.drag) {
+          this.x_ = event.clientX;
+          this.y_ = event.clientY;
+        } else {
+          var e = event.getBrowserEvent();
+          if (e.changedTouches) {
+            this.x_ = e.changedTouches[0].clientX;
+            this.y_ = e.changedTouches[0].clientY;
+          }
+        }
+      };
+
+      var target = document.getElementById('dragDiv');
+      var dragDiv = new DragDropDiv(target);
+
+      // Start testing
+      var initRect = bot.dom.getClientRect(target);
+      var coords = new goog.math.Coordinate(5, 5);
+      var dx = 25;
+      var dy = -30;
+      action(target, dx, dy, 1, coords);
+
+      var finalRect = bot.dom.getClientRect(target);
+      assertEquals(finalRect.left, initRect.left + dx);
+      assertEquals(finalRect.top, initRect.top + dy);
+    }
+
+    var testDragElementThatMovesDuringDrag = goog.partial(
+        elementThatMovesDuringDrag, bot.action.drag);
+
+    var testSwipeElementThatMovesDuringDrag = goog.partial(
+        elementThatMovesDuringDrag, bot.action.swipe);
+
+
+    function testElementThatMovesDuringMouseMove(action) {
+      // IE6 does not render this test page properly,
+      // so we must skip this test for IE6.
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+          return;
+      }
+      // Tests an element that moves when the mouse moves. Intended to mimic
+      // an element that acts as a cursor. In bot.action.drag the sequence of
+      // events is mousemove, mousedown, mousemove, and mouseup where the first
+      // mousemove is intended to simulate the event for the initial mouseover.
+      // If an element moves in response to that initial mousemove, we need to
+      // handle that case.
+      var CursorDiv = function(element) {
+        this.element_ = element;
+        var currentRect = bot.dom.getClientRect(element);
+        // Initialize to the middle of the element.
+        this.x_ = currentRect.left + 25;
+        this.y_ = currentRect.top + 25;
+        goog.events.listen(this.element_, goog.events.EventType.MOUSEMOVE,
+                           this.move, false, this);
+      };
+      CursorDiv.prototype.move = function(event) {
+        var dx = event.clientX - this.x_;
+        var dy = event.clientY - this.y_;
+        this.x_ = event.clientX;
+        this.y_ = event.clientY;
+
+        var elementStyle = this.element_.style;
+        elementStyle.left = parseInt(elementStyle.left) + dx + 'px';
+        elementStyle.top = parseInt(elementStyle.top) + dy + 'px';
+      };
+
+      var target = document.getElementById('cursorDiv');
+      var cursorDiv = new CursorDiv(target);
+
+      // Start testing
+      var initRect = bot.dom.getClientRect(target);
+      var coords = new goog.math.Coordinate(10, 10);
+      var dx = 100;
+      var dy = 0;
+      bot.action.drag(target, dx, dy, 1, coords);
+
+      var finalRect = bot.dom.getClientRect(target);
+      assertEquals(finalRect.left, initRect.left + dx - 15);
+      assertEquals(finalRect.top, initRect.top + dy - 15);
+    }
+  </script>
+</head>
+<body>
+<div id="testDiv" style="background-color: red;" >Drag</div>
+<div id="testDiv2">Drop inside me.</div>
+<div id="dragDiv" style="position:fixed; top:50px; left:50px;
+  background-color:yellow; -ms-touch-action:none"> Drag Me </div>
+<div id="cursorDiv" style="position:fixed; top:100px; left:50px; width:50px;
+  height:50px; background-color:blue; -ms-touch-action:none"> Cursor </div>
+</body>
+</html>

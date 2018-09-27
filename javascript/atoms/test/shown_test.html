@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>shown_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot');
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('bot.userAgent');
+    goog.require('goog.dom');
+    goog.require('goog.style');
+    goog.require('goog.testing.ExpectedFailures');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.platform');
+  </script>
+
+  <style>
+    #box{
+      border: 1px solid black;
+    }
+    #box ul{
+      height: 250px;
+      overflow: hidden;
+    }
+    #box ul > li{
+      height: 50px;
+    }
+    #box ul > li > a{
+      height: 26px;
+    }
+  </style>
+  <script type="text/javascript">
+    var isShown = bot.dom.isShown;
+    var findElement = bot.locators.findElement;
+    var expectedFailures;
+
+    function setUp() {
+      expectedFailures = new goog.testing.ExpectedFailures();
+    }
+
+    function tearDown() {
+      expectedFailures.handleTearDown();
+      goog.style.setStyle(document.body, 'display', 'block');
+      goog.style.setStyle(document.body, 'overflow', 'auto');
+    }
+
+    function testMustBeGivenAnElement() {
+      assertThrows(function() {
+        isShown(undefined);
+      });
+    }
+
+    function testBodyShown() {
+      assertTrue(isShown(document.body));
+    }
+
+    function testBodyAlwaysShown() {
+      goog.style.setStyle(document.body, 'display', 'none');
+      assertTrue("BODY element must *always* be shown", isShown(document.body));
+    }
+
+    function testCanDetermineIfAnElementIsShownOrNot() {
+      assertTrue(isShown(findElement({id: 'displayed'})));
+      assertFalse(isShown(findElement({id: 'none'})));
+      assertFalse(isShown(findElement({id: 'suppressedParagraph'})));
+      assertFalse(isShown(findElement({id: 'hidden'})));
+    }
+
+    function testIsShownTakesIntoAccountParentDisplay() {
+      var parent = findElement({id: 'hiddenparent'});
+      assertFalse('parent is explicitly set to display:none',
+          isShown(parent));
+
+      var childDiv = findElement({id: 'hiddenchild'});
+      var hiddenLink = findElement({id: 'hiddenlink'});
+
+      assertFalse(isShown(childDiv));
+      assertFalse(isShown(hiddenLink));
+    }
+
+
+    function testIsShownTakesIntoAccountParentVisibility() {
+      var parent = findElement({id: 'hiddenFormFields'});
+      var child = findElement({id: 'untogglable'});
+
+      expectedFailures.expectFailureFor(
+          goog.userAgent.IE && goog.userAgent.platform.isVersion(6) &&
+          !goog.userAgent.platform.isVersion(6.1),
+          'Vista fails this test, have not figured it out yet...');
+      // TODO: Figure it out
+      expectedFailures.run(function() {
+        assertFalse(isShown(parent));
+        assertFalse(isShown(child));
+      });
+    }
+
+    function testCountElementsAsVisibleIfStylePropertyHasBeenSet() {
+      var shown = findElement({id: 'visibleSubElement'});
+      assertTrue(isShown(shown));
+    }
+
+    function testHiddenInputElementsAreNeverVisible() {
+      var hidden = findElement({name: 'hidden'});
+      assertFalse(isShown(hidden));
+    }
+
+
+    function testElementWithZeroHeightIsNotConsideredDisplayed() {
+      // IE6 doesn't render the element correctly for the test to work.
+      if (goog.userAgent.IE && bot.userAgent.isEngineVersion(6)) {
+        return;
+      }
+      var zeroHeight = findElement({id: 'zeroheight'});
+      assertFalse(isShown(zeroHeight));
+    }
+
+
+    function testElementWithZeroWidthIsNotConsideredDisplayed() {
+      // IE6 doesn't render the element correctly for the test to work.
+      if (goog.userAgent.IE && bot.userAgent.isEngineVersion(6)) {
+        return;
+      }
+
+      var zeroWidth = findElement({id: 'zerowidth'});
+      assertFalse(isShown(zeroWidth));
+    }
+
+    function testElementWithOnlyWhitespaceReturnsConsistentResults() {
+      var span = findElement({id: 'onlyWhitespace'});
+      // Make sure we report the same result every time. Both will be true in
+      // most browsers, except IE7 and earlier, where they will both be false.
+      assertEquals(isShown(span), isShown(span));
+    }
+
+    function testCorrectlyDeterminesVisibilityViaDisplayStyle() {
+      var span = findElement({id: 'visibleSpan'});
+      assertFalse(isShown(span));
+    }
+
+
+    function testThrowsErrorIfPassedATextNode() {
+      var textNode = findElement({id: 'displayed'}).firstChild;
+      var err = assertThrows('Argument to isShown must be of type Element',
+          function() {
+            isShown(textNode);
+          });
+      assertEquals('Argument to isShown must be of type Element', err.message);
+    }
+
+
+    function testOptionShownWhenEnclosingSelectShown() {
+      var option = findElement({id: 'shownOption'});
+      assertTrue(isShown(option));
+    }
+
+
+    function testOptionNotShownWhenEnclosingSelectNotShown() {
+      var option = findElement({id: 'hiddenOption'});
+      assertFalse(isShown(option));
+    }
+
+
+    function testOrphanOptionIsNotShown() {
+      var option = findElement({id: 'orphanOption'});
+      // In some browsers, an orphan option is not rendered at all.
+      assertFalse(!!option && isShown(option));
+    }
+
+    function testMapShownWhenImageShown() {
+      var map = findElement({id: 'shownMap'});
+      assertTrue(isShown(map));
+    }
+
+    function testMapNotShownWhenImageNotShown() {
+      var map = findElement({id: 'hiddenImageMap'});
+      assertFalse(isShown(map));
+    }
+
+    function testMapNotShownWhenNoImage() {
+      var map = findElement({id: 'noImageMap'});
+      assertFalse(isShown(map));
+    }
+
+    function testMapNotShownWhenNoName() {
+      var map = findElement({id: 'noNameMap'});
+      assertFalse(isShown(map));
+    }
+
+    function testAreaShownWhenEnclosingMapShown() {
+      var area = findElement({id: 'shownArea'});
+      assertTrue(isShown(area));
+    }
+
+    function testAreaNotShownWhenEnclosingMapNotShown() {
+      var area = findElement({id: 'hiddenArea'});
+      assertFalse(isShown(area));
+    }
+
+    function testOrphanAreaIsNotShown() {
+      var area = findElement({id: 'orphanArea'});
+      // In some browsers, an orphan area is not rendered at all.
+      assertFalse(!!area && isShown(area));
+    }
+
+    function testElementWithNestedBlockLevelElementShown() {
+      var containsNestedBlock = findElement({id: 'containsNestedBlock'});
+      assertTrue(isShown(containsNestedBlock));
+    }
+
+    function testZeroOpacityMakesElementNotShown() {
+      var transparent = findElement({id: 'transparent'});
+      assertFalse(isShown(transparent));
+    }
+
+    function testTitleIsNotShown() {
+      var title = findElement({tagName: 'title'});
+      assertFalse(isShown(title));
+    }
+
+    function testTitleOfFrameWindowNotShown() {
+      var iframe = findElement({id: 'iframe'});
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var iframeTitle = findElement({tagName: 'title'}, iframeDoc);
+      assertFalse(isShown(iframeTitle));
+    }
+
+    function testTwoEmptyDivsAreZeroSizedAndNotShown() {
+      var element = goog.dom.createDom('div', null,
+          goog.dom.createDom('div'));
+      document.body.appendChild(element);
+      var size = bot.dom.getClientRect(element);
+      // Width will be equivalent of width:100%
+      assertEquals('Should have 0 height', 0, size.height);
+      assertFalse(isShown(element));
+    }
+
+    function testZeroSizedDivIsShownIfDescendantHasSize() {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
+      }
+      var element = goog.dom.createDom('div',
+          {id: 'ZeroSizedDiv', style: 'width:0;height:0'},
+          goog.dom.createDom('div', null,
+              goog.dom.createDom('img', {
+                src: 'testdata/map.png',
+                height: '126',
+                width: '364'
+              })));
+      document.body.appendChild(element);
+      var size = bot.dom.getClientRect(element);
+      assertEquals('Should have 0 width', 0, size.width);
+      assertEquals('Should have 0 height', 0, size.height);
+      assertTrue(isShown(element));
+    }
+
+    function testZeroSizedAbsolutePositionedBlockElementsAreShownIfDescendantHasSize() {
+      var div = goog.partial(goog.dom.createDom, 'div');
+
+      function position(element, left, top, opt_zIndex) {
+        element.style.position = 'absolute';
+        element.style.left = left;
+        element.style.top = top;
+        if (opt_zIndex)
+          element.style.zIndex = opt_zIndex;
+        return element;
+      }
+
+      function size(element, width, height) {
+        element.style.width = width;
+        element.style.height = height;
+        return element;
+      }
+
+      var root = position(div(), 0, 0, 1),
+          child = position(div(), 0, 0, 100),
+          grandChild = position(div(), 0, 0),
+          greatGrandChild = size(position(div(), 0, 0), '250px', '250px');
+
+      grandChild.appendChild(greatGrandChild);
+      child.appendChild(grandChild);
+      root.appendChild(child);
+      document.body.appendChild(root);
+
+      var size = bot.dom.getClientRect(root);
+      assertEquals('Should have 0 width', 0, size.width);
+      assertEquals('Should have 0 height', 0, size.height);
+      assertTrue('Should still be considered shown', isShown(root));
+    }
+
+    /** @see http://code.google.com/p/selenium/issues/detail?id=2922 */
+    function testOptionsInInvisibleSelectAreStillShown() {
+      var select = goog.dom.$('invisiSelect');
+      assertEquals(0, bot.dom.getOpacity(select));
+      assertFalse(bot.dom.isShown(select));
+      assertTrue('Select should be visible when ignoring opacity',
+          bot.dom.isShown(select, true));
+      assertTrue(bot.dom.isShown(select.firstChild));
+    }
+
+    /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
+    function testMapsForInvisibleImagesAreShownWhenIgnoringOpacity() {
+      var img = goog.dom.$('invisiImg');
+      assertEquals(0, bot.dom.getOpacity(img));
+      assertFalse(bot.dom.isShown(img));
+      assertTrue(bot.dom.isShown(img, true));
+
+      var map = goog.dom.$('invisiShownMap');
+      assertFalse(bot.dom.isShown(map));
+      assertTrue(bot.dom.isShown(map, true));
+
+      var area = goog.dom.$('invisiShownArea');
+      assertFalse(bot.dom.isShown(area));
+      assertTrue(bot.dom.isShown(area, true));
+     }
+
+    function testNoscriptElementIsNotShown() {
+      var noscript = findElement({id: 'noscript'});
+      assertFalse(isShown(noscript));
+    }
+
+    function testThatItemsHiddenWithOverflowHiddenAreFalse() {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
+      }
+      var target = findElement({id: 'target'});
+      assertFalse(isShown(target));
+    }
+
+    function testThatItemsAreConsideredInvisbleIfAbsolutePositionIsNotInCascade() {
+      var target = findElement({id: 'iHaveAbsolutePosition'});
+      assertFalse(isShown(target));
+    }
+
+    function testZeroSizeElemWithOverflowHiddenAndTextNotShown() {
+      var target = findElement({id: 'bug5022'});
+      assertFalse(isShown(target));
+    }
+
+    function testOverflowHiddenWithFixedPositionChild() {
+      var target = findElement({id: 'overflowHiddenWithFixedPositionChild'});
+      var child = findElement({id: 'fixedPositionChild'});
+      goog.dom.removeChildren(child);
+      assertFalse(isShown(target));
+      goog.dom.setTextContent(child, 'some content');
+      assertTrue(isShown(target));
+    }
+
+    function testThatElementIsShownWithZIndex() {
+      assertTrue(isShown(findElement({id: 'bug5109'})));
+    }
+
+    function testNegativePositionedParentWithPositionPositionedChildIsShown() {
+      var target = findElement({id: 'negativePositionWithPositivePositionChildren'});
+      assertTrue(isShown(target));
+    }
+
+    function testCanNotSeeElementWithHiddenAttribute() {
+      expectedFailures.expectFailureFor(
+          (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(11)) ||
+              bot.userAgent.ANDROID_PRE_GINGERBREAD,
+          'IE and Android Froyo do not understand hidden attribute');
+      var elem = findElement({id: 'html5hidden'});
+      expectedFailures.run(function() {
+        assertFalse(isShown(elem));
+      });
+    }
+
+    function testTableRowDefaultVisibility() {
+      var elem = findElement({id: 'visible-row'});
+      assertTrue(isShown(elem));
+      assertTrue(isShown(elem.firstChild));
+    }
+
+    function testTableRowCollapsedVisibility() {
+      expectedFailures.expectFailureFor(
+          (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(8)),
+          'IE does not support visibilty:collapsed until IE8');
+      var elem = findElement({id: 'collapsed-row'});
+      expectedFailures.run(function() {
+        assertFalse(isShown(elem));
+        assertFalse(isShown(elem.firstChild));
+      });
+    }
+
+    function testVisibleTableRowAfterCollapsedRow() {
+      var elem = findElement({id: 'post-collapsed-row'});
+      assertTrue(isShown(elem));
+      assertTrue(isShown(elem.firstChild));
+    }
+  </script>
+
+  <style type="text/css">
+    #nav {
+      padding: 0; margin: 0; list-style: none;
+    }
+    #nav li {
+      float: left; position: relative; width: 10em;
+    }
+    #nav li ul {
+      display: none; position: absolute; top: 1em; left: 0;
+    }
+    #nav li > ul { top: auto; left: auto; }
+    #nav li:hover ul, #nav li.over ul{ display: block; background: white; }
+    #transparent {
+      opacity: 0; /* non IE */
+      filter:alpha(opacity=0); /* IE 6+ */
+    }
+    #zeroheight, #zerowidth {
+      border: 0;
+      padding: 0;
+      margin: 0;
+    }
+    #zerowidth {
+      width: 0;
+      height: 70px;
+    }
+    #zeroheight {
+      width: 70px;
+      height: 0;
+    }
+    box-popup {
+      border : 1px;
+      min-width : 150px;
+    }
+    #box{
+      border: 1px solid black;
+    }
+    #box ul{
+      height: 250px;
+      overflow: hidden;
+    }
+    #box ul > li{
+      height: 50px;
+    }
+    #box ul > li > a{
+      height: 26px;
+    }
+  </style>
+</head>
+<body>
+<div style="left: 30px; top: 10px; visibility: visible; position: absolute; overflow: visible;"
+     class="box-popup" id="suggest">
+    <p>Hello world. I like cheese.</p>
+</div>
+<div>
+    <p id="displayed">Displayed</p>
+
+    <p id="transparent">Transparent</p>
+
+    <form action="#"><input type="hidden" name="hidden"/></form>
+
+    <p id="none" style="display: none;">Display set to none</p>
+
+    <p id="hidden" style="visibility: hidden;">Hidden</p>
+
+    <div id="hiddenparent" style="height: 2em; display: none;">
+        <div id="hiddenchild">
+            <a href="#" id="hiddenlink">ok</a>
+        </div>
+    </div>
+
+    <div id="hiddenFormFields" style="visibility: hidden;">
+      <span>
+        <input id="unclickable"/>
+        <input type="checkbox" id="untogglable" checked="checked"/>Check box you can't see
+      </span>
+    </div>
+
+    <div style="display:none">
+        <span id="visibleSpan" style="display:block">cheese puffs</span>
+    </div>
+
+    <p id="outer" style="visibility: hidden">A
+      <b id="visibleSubElement" style="visibility: visible">sub-element that is
+        explicitly visible</b> using CSS visibility=visible</p>
+
+    <noscript id='noscript'>Noscript subelement that is not visible</noscript>
+</div>
+
+<img id="zeroheight" src="testdata/map.png">
+<img id="zerowidth" src="testdata/map.png">
+
+<p id="suppressedParagraph" style="display: none">A paragraph suppressed using CSS display=none</p>
+
+<select>
+  <option id="shownOption" style="display:none;visibility:hidden;">
+</select>
+<select style="display:none;">
+  <option id="hiddenOption">
+</select>
+<option id="orphanOption"></option>
+
+<label>invisible select:
+<select id="invisiSelect" style="opacity:0; filter:alpha(opacity=0)"><option>Test</option></select>
+</label>
+
+<img usemap="#shownMap" src="testdata/map.png">
+<map id="shownMap" name="shownMap">
+  <area id="shownArea" shape="rect" coords="0,0,1,1" href="#">
+</map>
+<img usemap="#hiddenImageMap" src="testdata/map.png" style="visibility: hidden">
+<map id="hiddenImageMap" name="hiddenImageMap">
+  <area id="hiddenArea" shape="rect" coords="0,0,1,1" href="#">
+</map>
+<map id="noImageMap" name="noImageMap"></map>
+<map id="noNameMap"></map>
+<img id="invisiImg" usemap="#invisiShownMap" src="testdata/map.png" width="91" height="31"
+    style="opacity:0; filter:alpha(opacity=0)">
+<map id="invisiShownMap" name="invisiShownMap">
+  <area id="invisiShownArea" shape="rect" coords="0,0,1,1" href="#">
+</map>
+
+<area id="orphanArea" shape="rect" coords="0,0,1,1" href="#"></area>
+
+<a id="containsNestedBlock" href="#"><div style="display:block;">text</div></a>
+
+<iframe id="iframe" src="testdata/iframe_page.html"></iframe>
+
+<span id="onlyWhitespace">  </span>
+<div id="box">
+   <ul id="list1">
+     <li><a>Item 1</a></li>
+     <li><a>Item 2</a></li>
+     <li><a>Item 3</a></li>
+     <li><a>Item 4</a></li>
+     <li><a>Item 5</a></li>
+     <li><a>Item 6</a></li>
+     <li><a>Item 7</a></li>
+     <li id="target"><a>Item 8</a></li>
+   </ul>
+</div>
+<div id="grandparent" style="display:none;width:10px;">
+  <div id="parent" style="position:absolute;right:10px;">
+    <div id="iHaveAbsolutePosition" style="display:block">I am over here</div>
+  </div>
+</div>
+
+<div id="bug5022" style="overflow:hidden; height:0; width:0;">
+  This is a zero height/width div and overflow hidden
+</div>
+
+<div style="overflow:hidden; height:0; width:0;">
+  <div id="overflowHiddenWithFixedPositionChild">
+    This is a zero height/width div and overflow hidden
+    <div id="fixedPositionChild" style="position:fixed"></div>
+  </div>
+</div>
+
+<div style="position:relative;
+            width:300px;
+            height:300px;
+            background-image:url(testdata/kitten1.jpg);
+            background-position:center;">
+ <a id="bug5109" href="kitten2.jpg"
+    style="display:block;
+           position:relative;
+           width:100px;
+           height:100px;
+           left:-60px;
+           top:-66px;
+           background-image:url(testdata/kitten2.jpg);
+           background-position:center;"></a>
+</div>
+
+<div id="negativePositionWithPositivePositionChildren"
+    style="position:absolute;left:-10px;top:-10px">
+  <div style="position:absolute;left:100px;top:100px">
+      positivePositionChildInNegativePositionParent
+  </div>
+</div>
+<div id='html5hidden' hidden>This is not visible</div>
+<table>
+<tr id="visible-row"><td>a</td></tr>
+<tr id="collapsed-row" style="visibility:collapse"><td>b</td></tr>
+<tr id="post-collapsed-row"><td>c</td></tr>
+</table>
+</body>
+</html>

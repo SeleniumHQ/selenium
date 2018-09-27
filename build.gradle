@@ -1,0 +1,270 @@
+import org.gradle.internal.os.OperatingSystem
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.spring.io/plugins-release" }
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${spring_boot_version}"
+        classpath "io.spring.gradle:propdeps-plugin:0.0.10.RELEASE"
+        classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.2"
+        //jhipster-needle-gradle-buildscript-dependency - JHipster will add additional gradle build script plugins here
+    }
+}
+
+plugins {
+    id "org.sonarqube" version "2.6.2"
+    id "net.ltgt.apt-eclipse" version "0.18"
+    id "net.ltgt.apt-idea" version "0.18"
+    id "net.ltgt.apt" version "0.18"
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "com.moowork.node" version "1.2.0"
+    id 'org.liquibase.gradle' version '2.0.1'
+    //jhipster-needle-gradle-plugins - JHipster will add additional gradle plugins here
+}
+
+apply plugin: 'java'
+sourceCompatibility=1.8
+targetCompatibility=1.8
+// Until JHipster supports JDK 9
+assert System.properties['java.specification.version'] == '1.8'
+
+apply plugin: 'maven'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'war'
+apply plugin: 'propdeps'
+apply plugin: 'com.moowork.node'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'idea'
+
+dependencyManagement {
+  imports {
+    mavenBom 'io.github.jhipster:jhipster-dependencies:' + jhipster_dependencies_version
+    //jhipster-needle-gradle-dependency-management - JHipster will add additional dependencies management here
+  }
+}
+
+defaultTasks 'bootRun'
+
+group = 'com.mycompany.myapp'
+version = '0.0.1-SNAPSHOT'
+
+description = ''
+
+bootWar {
+   mainClassName = 'com.mycompany.myapp.SeleniumApp'
+}
+
+war {
+
+}
+
+springBoot {
+    mainClassName = 'com.mycompany.myapp.SeleniumApp'
+    buildInfo()
+}
+
+if (OperatingSystem.current().isWindows()) {
+    // https://stackoverflow.com/questions/40037487/the-filename-or-extension-is-too-long-error-using-gradle
+    task classpathJar(type: Jar) {
+        dependsOn configurations.runtime
+        appendix = 'classpath'
+
+        doFirst {
+            manifest {
+                attributes 'Class-Path': configurations.runtime.files.collect {
+                    it.toURI().toURL().toString().replaceFirst(/file:\/+/, '/').replaceAll(' ', '%20')
+                }.join(' ')
+            }
+        }
+    }
+
+    bootRun {
+        dependsOn classpathJar
+        doFirst {
+            classpath = files("$buildDir/classes/java/main", "$buildDir/resources/main", classpathJar.archivePath)
+        }
+    }
+}
+
+test {
+    exclude '**/CucumberTest*'
+
+    // uncomment if the tests reports are not generated
+    // see https://github.com/jhipster/generator-jhipster/pull/2771 and https://github.com/jhipster/generator-jhipster/pull/4484
+    // ignoreFailures true
+    reports.html.enabled = false
+}
+
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/tests")
+    reportOn test
+}
+
+
+apply from: 'gradle/docker.gradle'
+apply from: 'gradle/sonar.gradle'
+//jhipster-needle-gradle-apply-from - JHipster will add additional gradle scripts to be applied here
+
+if (project.hasProperty('prod')) {
+    apply from: 'gradle/profile_prod.gradle'
+} else {
+    apply from: 'gradle/profile_dev.gradle'
+}
+
+
+if (!project.hasProperty('runList')) {
+    project.ext.runList = 'main'
+}
+
+project.ext.diffChangelogFile = 'src/main/resources/config/liquibase/changelog/' + new Date().format('yyyyMMddHHmmss') + '_changelog.xml'
+
+liquibase {
+    activities {
+        main {
+            driver 'org.h2.Driver'
+            url 'jdbc:h2:file:./target/h2db/db/selenium'
+            username 'selenium'
+            password ''
+            changeLogFile 'src/main/resources/config/liquibase/master.xml'
+            defaultSchemaName ''
+            logLevel 'debug'
+            classpath 'src/main/resources/'
+        }
+        diffLog {
+            driver 'org.h2.Driver'
+            url 'jdbc:h2:file:./target/h2db/db/selenium'
+            username 'selenium'
+            password ''
+            changeLogFile project.ext.diffChangelogFile
+            referenceUrl 'hibernate:spring:com.mycompany.myapp.domain?dialect=org.hibernate.dialect.H2Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
+            defaultSchemaName ''
+            logLevel 'debug'
+            classpath 'src/main/resources/'
+        }
+    }
+
+    runList = project.ext.runList
+}
+
+configurations {
+    providedRuntime
+    compile.exclude module: "spring-boot-starter-tomcat"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    //jhipster-needle-gradle-repositories - JHipster will add additional repositories
+}
+
+dependencies {
+    // Use ", version: jhipster_dependencies_version, changing: true" if you want
+    // to use a SNAPSHOT release instead of a stable release
+    compile group: "io.github.jhipster", name: "jhipster-framework"
+    compile "org.springframework.boot:spring-boot-starter-cache"
+    compile "io.dropwizard.metrics:metrics-core"
+    compile "io.dropwizard.metrics:metrics-jcache"
+    compile "io.dropwizard.metrics:metrics-json"
+    compile "io.dropwizard.metrics:metrics-jvm"
+    compile "io.dropwizard.metrics:metrics-servlet"
+    compile "io.dropwizard.metrics:metrics-servlets"
+    compile "net.logstash.logback:logstash-logback-encoder"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-hppc"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-hibernate5"
+    compile "com.fasterxml.jackson.core:jackson-annotations"
+    compile "com.fasterxml.jackson.core:jackson-databind"
+    compile "com.fasterxml.jackson.module:jackson-module-afterburner"
+    compile "com.ryantenney.metrics:metrics-spring"
+    compile "javax.cache:cache-api"
+    compile "org.hibernate:hibernate-core"
+    compile "com.zaxxer:HikariCP"
+    compile "org.apache.commons:commons-lang3"
+    compile "commons-io:commons-io"
+    compile "javax.transaction:javax.transaction-api"
+    compile "org.ehcache:ehcache"
+    compile "org.hibernate:hibernate-jcache"
+    compile "org.hibernate:hibernate-entitymanager"
+    compile "org.hibernate:hibernate-envers"
+    compile "org.hibernate.validator:hibernate-validator"
+    compile "org.liquibase:liquibase-core"
+    compile "com.mattbertolini:liquibase-slf4j"
+    liquibaseRuntime "org.liquibase:liquibase-core"
+    liquibaseRuntime "org.liquibase.ext:liquibase-hibernate5:${liquibase_hibernate5_version}"
+    liquibaseRuntime sourceSets.main.compileClasspath
+    compile "org.springframework.boot:spring-boot-loader-tools"
+    compile "org.springframework.boot:spring-boot-starter-mail"
+    compile "org.springframework.boot:spring-boot-starter-logging"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.springframework.boot:spring-boot-starter-aop"
+    compile "org.springframework.boot:spring-boot-starter-data-jpa"
+    compile "org.springframework.boot:spring-boot-starter-security"
+    compile ("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    compile "org.springframework.boot:spring-boot-starter-undertow"
+    compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+    compile "org.zalando:problem-spring-web:0.24.0-RC.0"
+    compile "org.springframework.cloud:spring-cloud-spring-service-connector"
+    compile "org.springframework.security:spring-security-config"
+    compile "org.springframework.security:spring-security-data"
+    compile "org.springframework.security:spring-security-web"
+    compile "io.jsonwebtoken:jjwt-api"
+    runtime "io.jsonwebtoken:jjwt-impl"
+    runtime "io.jsonwebtoken:jjwt-jackson"
+    compile ("io.springfox:springfox-swagger2") {
+        exclude module: 'mapstruct'
+    }
+    compile "io.springfox:springfox-bean-validators"
+    compile "org.mariadb.jdbc:mariadb-java-client"
+    liquibaseRuntime "org.mariadb.jdbc:mariadb-java-client"
+    compile "org.mapstruct:mapstruct-jdk8:${mapstruct_version}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
+    annotationProcessor "org.hibernate:hibernate-jpamodelgen"
+    annotationProcessor ("org.springframework.boot:spring-boot-configuration-processor") {
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
+    testCompile "com.jayway.jsonpath:json-path"
+    testCompile ("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
+    testCompile "org.springframework.security:spring-security-test"
+    testCompile "org.springframework.boot:spring-boot-test"
+    testCompile "org.assertj:assertj-core"
+    testCompile "junit:junit"
+    testCompile "org.mockito:mockito-core"
+    testCompile "com.mattbertolini:liquibase-slf4j"
+    testCompile "org.hamcrest:hamcrest-library"
+    testCompile "com.h2database:h2"
+    liquibaseRuntime "com.h2database:h2"
+    //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
+}
+
+task cleanResources(type: Delete) {
+    delete 'build/resources'
+}
+
+wrapper {
+    gradleVersion = '4.9'
+}
+
+task stage(dependsOn: 'bootWar') {
+}
+
+if (project.hasProperty('nodeInstall')) {
+    node {
+        version = "${node_version}"
+        npmVersion = "${npm_version}"
+        yarnVersion = "${yarn_version}"
+        download = true
+    }
+}
+
+compileJava.dependsOn processResources
+processResources.dependsOn cleanResources,bootBuildInfo
+bootBuildInfo.mustRunAfter cleanResources

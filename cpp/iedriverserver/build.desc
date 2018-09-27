@@ -1,0 +1,29 @@
+visualc_release(name = "win32",
+  deps = [
+    "//javascript/ie-driver:atoms",
+    ":sizzle"
+  ],
+  platform = "Win32",
+  project = "IEDriverServer.vcxproj",
+  desc = "InternetExplorerDriver standalone server for 32-bit IE",
+  out = "Win32/Release/IEDriverServer.exe"
+)
+
+visualc_release(name = "x64",
+  deps = [
+    "//javascript/ie-driver:atoms",
+    ":sizzle"
+  ],
+  platform = "x64",
+  project = "IEDriverServer.vcxproj",
+  desc = "InternetExplorerDriver standalone server for 64-bit IE",
+  out = "x64/Release/IEDriverServer.exe"
+)
+
+rake_task(name = "sizzle",
+  task_name = "sizzle_header",
+  out = "cpp/iedriver/Generated/sizzle.h")
+
+rake_task(name = "ie_result_type_cpp",
+  task_name = "ie_result_type_cpp",
+  out = "cpp/iedriver/Generated/IEReturnTypes.h")
