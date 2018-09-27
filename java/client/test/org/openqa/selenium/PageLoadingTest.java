@@ -202,7 +202,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformed() {
     assumeFalse("Fails in Sauce Cloud", shouldUseSauce());
     assertThatExceptionOfType(WebDriverException.class)
@@ -211,7 +210,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = SAFARI)
-  @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
     assumeFalse("Fails in Sauce Cloud", shouldUseSauce());
     assertThatExceptionOfType(WebDriverException.class)
@@ -247,7 +245,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @NeedsFreshDriver
-  @NoDriverAfterTest
   @Test
   @NotYetImplemented(value = HTMLUNIT,
       reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
@@ -343,7 +340,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   // Note: If this test ever fixed/enabled on Firefox, check if it also needs @NoDriverAfterTest OR
   // if @NoDriverAfterTest can be removed from some other tests in this class.
-  @NoDriverAfterTest
   @Test
   @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
@@ -353,7 +349,6 @@ public class PageLoadingTest extends JUnit4TestBase {
     testPageLoadTimeoutIsEnforced(3);
   }
 
-  @NoDriverAfterTest
   @Test
   @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
@@ -366,7 +361,6 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertPageLoadTimeoutIsEnforced(pageLoadTimeout, pageLoadTimeBuffer);
   }
 
-  @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
@@ -381,7 +375,6 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   @NotYetImplemented(value = SAFARI)
   @Ignore(value = FIREFOX, travis = true)
@@ -414,7 +407,6 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
@@ -446,7 +438,6 @@ public class PageLoadingTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   @Ignore(CHROME)
   @NotYetImplemented(value = SAFARI)

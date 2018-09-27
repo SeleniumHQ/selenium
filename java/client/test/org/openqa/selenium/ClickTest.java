@@ -148,7 +148,7 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @NoDriverAfterTest
+  @NoDriverAfterTest(failedOnly = true)
   @Test
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);

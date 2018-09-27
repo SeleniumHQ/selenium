@@ -37,7 +37,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -108,7 +107,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertThat(img1.getLocation()).isEqualTo(initial.moveBy(20, 20));
   }
 
-  @NeedsFreshDriver // fails in Sauce if run in a dirty state; to be investigated
   @Test
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
   @Ignore(MARIONETTE)

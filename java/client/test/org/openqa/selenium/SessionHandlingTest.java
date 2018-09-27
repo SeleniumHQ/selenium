@@ -66,7 +66,6 @@ public class SessionHandlingTest extends JUnit4TestBase {
     assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
   }
 
-  @NoDriverAfterTest
   @Test
   public void shouldContinueAfterSleep() {
     sleepTight(10000);
