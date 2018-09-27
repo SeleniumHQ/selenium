@@ -20,12 +20,18 @@ package org.openqa.selenium.grid.server;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 
+import java.util.Optional;
+
 public class BaseServerOptions {
 
   private final Config config;
 
   public BaseServerOptions(Config config) {
     this.config = config;
+  }
+
+  public Optional<String> getHostname() {
+    return config.get("server", "hostname");
   }
 
   public int getPort() {

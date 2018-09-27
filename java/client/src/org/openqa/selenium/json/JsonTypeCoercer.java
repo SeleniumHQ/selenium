@@ -86,6 +86,7 @@ class JsonTypeCoercer {
             .add(new NumberCoercer<>(Short.class, Number::shortValue))
             .add(new StringCoercer())
             .add(new EnumCoercer())
+            .add(new UrlCoercer())
 
             // From Selenium
             .add(new MapCoercer<>(

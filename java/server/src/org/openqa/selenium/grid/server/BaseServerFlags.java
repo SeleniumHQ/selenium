@@ -15,15 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.internal;
+package org.openqa.selenium.grid.server;
 
-import org.openqa.selenium.remote.http.HttpClient;
+import com.beust.jcommander.Parameter;
 
-public class ApacheHttpClientTest extends HttpClientTestBase {
+import org.openqa.selenium.grid.config.ConfigValue;
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ApacheHttpClient.Factory();
-  }
+public class BaseServerFlags {
+
+  @Parameter(
+      names = {"--host"},
+      description =  "IP or hostname : usually determined automatically.")
+  @ConfigValue(section = "server", name = "hostname")
+  private String host;
+
+  @Parameter(description = "Port to listen on.", names = {"-p", "--port"})
+  @ConfigValue(section = "server", name = "port")
+  private int port = 0;
+
+  @Parameter(description = "Maximum number of listener threads.", names = "--max-threads")
+  @ConfigValue(section = "server", name = "max-threads")
+  private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
 
 }

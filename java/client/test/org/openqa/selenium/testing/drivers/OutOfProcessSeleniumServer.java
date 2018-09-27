@@ -98,7 +98,7 @@ public class OutOfProcessSeleniumServer {
       throw new RuntimeException(e);
     }
 
-    Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
+    WebDriverBuilder.addShutdownAction(this::stop);
 
     return this;
   }

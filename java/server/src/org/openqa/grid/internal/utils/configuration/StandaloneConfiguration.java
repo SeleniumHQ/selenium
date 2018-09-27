@@ -30,6 +30,7 @@ import org.openqa.grid.internal.cli.CommonCliOptions;
 import org.openqa.grid.internal.cli.StandaloneCliOptions;
 import org.openqa.grid.internal.utils.configuration.json.CommonJsonConfiguration;
 import org.openqa.grid.internal.utils.configuration.json.StandaloneJsonConfiguration;
+import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeCoercer;
@@ -88,6 +89,7 @@ public class StandaloneConfiguration {
   /**
    *   Max threads for Jetty. Defaults to {@code null}.
    */
+  @ConfigValue(section = "server", name = "max-threads")
   public Integer jettyMaxThreads;
 
   /**
@@ -99,11 +101,13 @@ public class StandaloneConfiguration {
    * Hostname or IP to use. Defaults to {@code null}. Automatically determined when {@code null}.
    */
   // initially defaults to null from type
+  @ConfigValue(section = "server", name = "hostname")
   public String host;
 
   /**
    * Port to bind to. Default determined by configuration type.
    */
+  @ConfigValue(section = "server", name = "port")
   public Integer port;
 
   /**

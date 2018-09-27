@@ -34,6 +34,7 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.seleniumhq.jetty9.security.ConstraintMapping;
 import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
+import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.ServerConnector;
@@ -43,6 +44,7 @@ import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.io.UncheckedIOException;
+import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -50,13 +52,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
-public class BaseServer implements Server<BaseServer> {
+public class BaseServer<T extends BaseServer> implements Server<T> {
+
+  private static final Logger LOG = Logger.getLogger(BaseServer.class.getName());
+  private static final int MAX_SHUTDOWN_RETRIES = 8;
 
   private final org.seleniumhq.jetty9.server.Server server;
-  private final Map<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>> handlers;
+  private final Map<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>>
+      handlers;
   private final ServletContextHandler servletContextHandler;
   private final Injector injector;
   private final URL url;
@@ -64,12 +71,14 @@ public class BaseServer implements Server<BaseServer> {
   public BaseServer(BaseServerOptions options) {
     int port = options.getPort() == 0 ? PortProber.findFreePort() : options.getPort();
 
-    String host;
-    try {
-      host = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
-    } catch (WebDriverException ignored) {
-      host = "localhost";
-    }
+    String host = options.getHostname().orElseGet(() -> {
+      try {
+        return new NetworkUtils().getNonLoopbackAddressOfThisMachine();
+      } catch (WebDriverException ignored) {
+        return "localhost";
+      }
+    });
+
     try {
       this.url = new URL("http", host, port, "");
     } catch (MalformedURLException e) {
@@ -102,7 +111,9 @@ public class BaseServer implements Server<BaseServer> {
         });
 
     this.servletContextHandler = new ServletContextHandler(ServletContextHandler.SECURITY);
-    ConstraintSecurityHandler securityHandler = (ConstraintSecurityHandler) servletContextHandler.getSecurityHandler();
+    ConstraintSecurityHandler
+        securityHandler =
+        (ConstraintSecurityHandler) servletContextHandler.getSecurityHandler();
 
     Constraint disableTrace = new Constraint();
     disableTrace.setName("Disable TRACE");
@@ -117,16 +128,22 @@ public class BaseServer implements Server<BaseServer> {
     enableOther.setName("Enable everything but TRACE");
     ConstraintMapping enableOtherMapping = new ConstraintMapping();
     enableOtherMapping.setConstraint(enableOther);
-    enableOtherMapping.setMethodOmissions(new String[] {"TRACE"});
+    enableOtherMapping.setMethodOmissions(new String[]{"TRACE"});
     enableOtherMapping.setPathSpec("/");
     securityHandler.addConstraintMapping(enableOtherMapping);
 
     server.setHandler(servletContextHandler);
 
     HttpConfiguration httpConfig = new HttpConfiguration();
+    httpConfig.setSecureScheme("https");
+
     ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+    options.getHostname().ifPresent(http::setHost);
     http.setPort(getUrl().getPort());
-    server.addConnector(http);
+
+    http.setIdleTimeout(500000);
+
+    server.setConnectors(new Connector[]{http});
 
     addServlet(new CommandHandlerServlet(injector, handlers), "/*");
   }
@@ -155,31 +172,57 @@ public class BaseServer implements Server<BaseServer> {
     handlers.put(Objects.requireNonNull(selector), Objects.requireNonNull(handler));
   }
 
+  public boolean isStarted() {
+    return server.isStarted();
+  }
+
   @Override
-  public BaseServer start() {
+  public T start() {
     try {
       server.start();
 
       PortProber.waitForPortUp(getUrl().getPort(), 10, SECONDS);
 
-      return this;
-    } catch (RuntimeException e) {
-      throw e;
+      //noinspection unchecked
+      return (T) this;
     } catch (Exception e) {
+      try {
+        stop();
+      } catch (Exception ignore) {
+      }
+      if (e instanceof BindException) {
+        LOG.severe(String.format(
+            "Port %s is busy, please choose a free port and specify it using -port option",
+            getUrl().getPort()));
+      }
+      if (e instanceof RuntimeException) {
+        throw (RuntimeException) e;
+      }
       throw new RuntimeException(e);
     }
   }
 
   @Override
-  public BaseServer stop() {
-    try {
-      server.stop();
-      return this;
-    } catch (RuntimeException e) {
-      throw e;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+  public void stop() {
+    int numTries = 0;
+    Exception shutDownException = null;
+
+    // shut down the jetty server (try try again)
+    while (numTries <= MAX_SHUTDOWN_RETRIES) {
+      numTries++;
+      try {
+        server.stop();
+
+        // If we reached here stop didn't throw an exception, so we can assume success.
+        return;
+      } catch (Exception ex) { // org.openqa.jetty.jetty.Server.stop() throws Exception
+        shutDownException = ex;
+        // If Exception is thrown we try to stop the jetty server again
+      }
     }
+
+    // This is bad!! Jetty didn't shutdown.
+    throw new RuntimeException(shutDownException);
   }
 
   @Override
