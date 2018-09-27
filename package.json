@@ -1,7 +1,11 @@
 {
   "dependencies": {
+    "generator-jest": "^1.6.0",
+    "generator-mocha": "^2.0.1",
+    "gulp-yarn": "^2.0.0",
     "renovate": "^13.84.1",
     "yarn": "^1.10.1",
+    "yarn-config-directory": "^1.0.2",
     "yarn-global-modules": "^1.0.1"
   }
 }
