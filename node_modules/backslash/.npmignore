@@ -1,0 +1,4 @@
+*.sw[a-p]
+/node_modules/
+npm-debug.log
+/coverage/

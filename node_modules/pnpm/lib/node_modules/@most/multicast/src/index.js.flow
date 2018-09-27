@@ -1,0 +1,16 @@
+// @flow
+
+import type { Sink, Scheduler, Source, Disposable } from 'most';
+import { Stream } from 'most';
+
+declare export default function multicast<A>(s: Stream<A>): Stream<A>;
+
+declare export class MulticastSource<A> {
+  constructor(source: Source<A>): MulticastSource<A>;
+  run(sink: Sink<A>, scheduler: Scheduler): Disposable<A>;
+  add(sink: Sink<A>): number;
+  remove(sink: Sink<A>): number;
+  event(time: number, value: A): void;
+  end(time: number, value: A): void;
+  error(time: number, err: Error): void;
+}

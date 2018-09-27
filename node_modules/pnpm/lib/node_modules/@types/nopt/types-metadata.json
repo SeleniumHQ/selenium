@@ -1,0 +1,25 @@
+{
+    "authors": "jbondc <https://github.com/jbondc>",
+    "definitionFilename": "index.d.ts",
+    "libraryDependencies": [],
+    "moduleDependencies": [],
+    "libraryMajorVersion": "3",
+    "libraryMinorVersion": "0",
+    "libraryName": "nopt 3.0.1",
+    "typingsPackageName": "nopt",
+    "projectName": "https://github.com/npm/nopt",
+    "sourceRepoURL": "https://www.github.com/DefinitelyTyped/DefinitelyTyped",
+    "sourceBranch": "types-2.0",
+    "kind": "ProperModule",
+    "globals": [
+        "nopt"
+    ],
+    "declaredModules": [
+        "nopt"
+    ],
+    "files": [
+        "index.d.ts"
+    ],
+    "hasPackageJson": false,
+    "contentHash": "a5594fce19fe3d9fd6f089049007c28684a8aa292a171b6bd14e67c43c531368"
+}

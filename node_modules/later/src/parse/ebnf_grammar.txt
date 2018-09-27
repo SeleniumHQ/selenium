@@ -1,0 +1,15 @@
+Composite ::= Schedule ('also' Schedule)* (('except' Schedule) ('also' Schedule)*)?
+
+Schedule ::= (
+('on the' ('first' | 'last' | Number_Range) Period) |
+('every' ('weekend' | 'weekday' | ((Number Period)) (('starting on the' Number Period) | ('between the' Number 'and' Number))?)) |
+('after' ((Number Period) | Time)) |
+('before' ((Number Period) | Time)) |
+('at' Time ('and' Time)*) |
+('on' Day (Day_Range)?) |
+('of' Month (Month_Range)?) |
+('in' Year (Year_Range)?)
+
+)+
+
+Range ::= (('-' | 'through') Value) | ((',' | 'and') Value)+

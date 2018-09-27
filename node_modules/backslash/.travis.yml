@@ -1,0 +1,10 @@
+language: node_js
+
+script:
+  - node_modules/.bin/istanbul cover node_modules/.bin/_mocha
+  - cat coverage/lcov.info | node_modules/.bin/coveralls
+node_js:
+  - "0.10"
+  - "0.11"
+  - "0.12"
+  - "iojs"

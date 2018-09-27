@@ -1,0 +1,35 @@
+# basic cases
+0; ;one two three
+1; ;one two three
+2; ;one two three
+3; ;one two three
+4; ;one two three
+-1; ;one two three
+
+# basic cases with a regex 
+0;\s+;one two\t three
+0;\s+;one\ttwo \tthree
+0;\s+;one   two \t three
+
+# empty leading fields
+0; ; one two three
+2; ; one two three
+0; ;   one two three
+
+# 1 empty trailing field
+0; ;one two three 
+1; ;one two three 
+2; ;one two three 
+3; ;one two three 
+4; ;one two three 
+-1; ;one two three 
+
+# 3 empty trailing fields
+0; ;one two three   
+1; ;one two three   
+2; ;one two three   
+3; ;one two three   
+4; ;one two three   
+5; ;one two three   
+6; ;one two three   
+-1; ;one two three   

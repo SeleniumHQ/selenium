@@ -1,0 +1,26 @@
+language: node_js
+
+env:
+    - CXX=g++-4.8
+
+node_js:
+    - "4"
+    - "6"
+
+addons:
+    apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-4.8
+
+before_install:
+    - $CXX --version
+    - npm install node-gyp -g
+
+before_script:
+
+script:
+    - npm test
+
+sudo: false
