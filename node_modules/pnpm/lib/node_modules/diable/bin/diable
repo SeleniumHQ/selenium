@@ -1,0 +1,52 @@
+#!/usr/bin/env node
+
+// Dependencies
+var Diable = require("../lib")
+  , Clp = require("clp")
+  , Logger = require("bug-killer")
+  , Package = require("../package")
+  ;
+
+// Create options and add them
+var pathOption = new Clp.Option(["p", "path"], "The script path.", "path")
+  , execOption = new Clp.Option(["e", "exec"], "The executable app.", "app", "node")
+  , argsOption = new Clp.Option(["a", "args"], "The arguments to pass.", "args")
+  , cwdOption = new Clp.Option(["c", "cwd"], "The CWD where the daemonized process will run.", "path")
+  , parser = new Clp({
+        name: "Diable"
+      , version: Package.version
+      , process: true
+      , exe: Package.name
+      , examples: [
+            "diable -p path/to/script.js"
+          , "diable -p some-script.sh -e sh"
+          , "diable -p path/to/script.js -a '--some args'"
+        ]
+      , docs_url: Package.homepage
+    }, [pathOption, execOption, argsOption, cwdOption])
+  ;
+
+// Parse the arguments
+if (argsOption.value) {
+    argsOption.value = argsOption.value.match(/"[^"]+"|'[^']+'|\S+/g);
+}
+
+if (Diable.isDaemon()) {
+    Logger.log("You are already a daemon. Unset the `__is_daemon` environment variable and try again.", "warn");
+    return;
+}
+
+// Daemonize a script
+if (pathOption.value || execOption.value) {
+debugger
+    var proc = Diable.daemonize(pathOption.value, argsOption.value, {
+        cwd: cwdOption.value
+      , command: execOption.value
+    });
+    Logger.log("Daemonizing " + pathOption.value);
+    Logger.log("Process id: " + proc.pid);
+    return;
+}
+
+// Output
+Logger.log("Please provide the path to the script to daemonize or a command to run. Run `diable -h` for help.", "error");

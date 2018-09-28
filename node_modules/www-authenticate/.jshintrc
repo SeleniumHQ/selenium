@@ -1,0 +1,23 @@
+{
+  "strict": true,
+  "quotmark": "single",
+  "curly": true,
+  "eqeqeq": true,
+  "immed": true,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "sub": true,
+  "undef": true,
+  "boss": true,
+  "eqnull": true,
+  "node": true,
+  "noempty": true,
+  "es5": true,
+  "esnext": false,
+  "expr": false,
+  "globals": {
+    "describe": false,
+    "it": false
+  }
+}

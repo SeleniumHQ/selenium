@@ -1,6 +1,16 @@
 {
   "dependencies": {
 <<<<<<< HEAD
+<<<<<<< HEAD
+    "generator-jest": "^1.6.0",
+    "generator-mocha": "^2.0.1",
+    "gulp-yarn": "^2.0.0",
+    "mocha": "^5.2.0",
+    "renovate": "^13.84.1",
+    "yarn": "^1.10.1",
+    "yarn-config-directory": "^1.0.2",
+=======
+<<<<<<< HEAD
     "generator-jest": "^1.6.0",
     "generator-mocha": "^2.0.1",
     "gulp-yarn": "^2.0.0",
@@ -11,6 +21,11 @@
     "renovate": "^13.84.1",
     "yarn": "^1.10.1",
 >>>>>>> 48da39b38734d0031fcda507dd8d08b930779dc8
+>>>>>>> 69c1f061da7fc0814bf49a0a0086cfa3f587d21e
+=======
+    "renovate": "^13.84.1",
+    "yarn": "^1.10.1",
+>>>>>>> commit
     "yarn-global-modules": "^1.0.1"
   }
 }
