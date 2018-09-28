@@ -151,16 +151,16 @@ public class FirefoxProfileTest {
   public void shouldInstallExtensionFromZip() {
     profile.addExtension(InProject.locate(FIREBUG_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
-    File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
-    assertThat(extensionDir).exists();
+    File extensionFile = new File(profileDir, "extensions/firebug@software.joehewitt.com.xpi");
+    assertThat(extensionFile).exists().isFile();
   }
 
   @Test
   public void shouldInstallWebExtensionFromZip() {
     profile.addExtension(InProject.locate(MOOLTIPASS_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
-    File extensionDir = new File(profileDir, "extensions/MooltipassExtension@1.1.87");
-    assertThat(extensionDir).exists();
+    File extensionFile = new File(profileDir, "extensions/MooltipassExtension@1.1.87.xpi");
+    assertThat(extensionFile).exists().isFile();
   }
 
   @Test
@@ -170,7 +170,7 @@ public class FirefoxProfileTest {
     profile.addExtension(unzippedExtension);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
-    assertThat(extensionDir).exists();
+    assertThat(extensionDir).exists().isDirectory();
   }
 
   @Test
