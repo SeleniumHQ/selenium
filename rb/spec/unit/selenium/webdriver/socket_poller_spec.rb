@@ -46,7 +46,7 @@ module Selenium
           wait  = Time.parse('2010-01-01 00:00:04')
           stop  = Time.parse('2010-01-01 00:00:06')
 
-          allow(Time).to receive(:now).and_return(start, wait, stop)
+          expect(Process).to receive(:clock_gettime).and_return(start, wait, stop)
           expect(poller).not_to be_connected
         end
       end
@@ -61,12 +61,11 @@ module Selenium
         it 'returns false if the socket is still listening after the given timeout' do
           setup_connect true
 
-          start = Time.parse('2010-01-01 00:00:00')
-          wait  = Time.parse('2010-01-01 00:00:04')
-          stop  = Time.parse('2010-01-01 00:00:06')
+          start = Time.parse('2010-01-01 00:00:00').to_f
+          wait  = Time.parse('2010-01-01 00:00:04').to_f
+          stop  = Time.parse('2010-01-01 00:00:06').to_f
 
-          # on rbx, we can't add expectations to Time.now since it will be called by the kernel code.
-          allow(poller).to receive(:time_now).and_return(start, wait, stop)
+          expect(Process).to receive(:clock_gettime).and_return(start, wait, stop)
           expect(poller).not_to be_closed
         end
       end
