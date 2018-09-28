@@ -201,6 +201,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
+  @NeedsFreshDriver(value = FIREFOX, reason = "No idea why it throws in a fresh driver only")
   @Test
   public void testShouldThrowIfUrlIsMalformed() {
     assumeFalse("Fails in Sauce Cloud", shouldUseSauce());
