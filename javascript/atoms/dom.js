@@ -348,7 +348,13 @@ bot.dom.isContentEditable = function(element) {
 bot.dom.isEditable = function(element) {
   return (bot.dom.isTextual(element) ||
           bot.dom.isFileInput(element) ||
-          bot.dom.isInputType(element, 'range')) &&
+          bot.dom.isInputType(element, 'range') ||
+          bot.dom.isInputType(element, 'date') ||
+          bot.dom.isInputType(element, 'month') ||
+          bot.dom.isInputType(element, 'week') ||
+          bot.dom.isInputType(element, 'time') ||
+          bot.dom.isInputType(element, 'datetime-local') ||
+          bot.dom.isInputType(element, 'color')) &&
       !bot.dom.getProperty(element, 'readOnly');
 };
 
