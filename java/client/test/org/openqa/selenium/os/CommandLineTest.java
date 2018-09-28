@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,7 +113,42 @@ public class CommandLineTest {
   public void testDestroy() {
     CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.executeAsync();
+    assertThat(commandLine.isRunning()).isTrue();
     commandLine.destroy();
+    assertThat(commandLine.isRunning()).isFalse();
+  }
+
+  @Test
+  public void canHandleOutput() {
+    CommandLine commandLine = new CommandLine(testExecutable);
+    commandLine.execute();
+    assertThat(commandLine.getStdOut()).isNotEmpty().contains("ping");
+  }
+
+  @Test
+  public void canCopyOutput() {
+    CommandLine commandLine = new CommandLine(testExecutable);
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    commandLine.copyOutputTo(buffer);
+    commandLine.execute();
+    assertThat(buffer.toByteArray()).isNotEmpty();
+    assertThat(commandLine.getStdOut()).isEqualTo(buffer.toString());
+  }
+
+  @Test
+  public void canDetectSuccess() {
+    CommandLine commandLine = new CommandLine(testExecutable, "localhost");
+    commandLine.execute();
+    assertThat(commandLine.isSuccessful()).isTrue();
+    assertThat(commandLine.getExitCode()).isEqualTo(0);
+  }
+
+  @Test
+  public void canDetectFailure() {
+    CommandLine commandLine = new CommandLine(testExecutable);
+    commandLine.execute();
+    assertThat(commandLine.isSuccessful()).isFalse();
+    assertThat(commandLine.getExitCode()).isNotEqualTo(0);
   }
 
   @Test
