@@ -68,21 +68,39 @@ public class FileExtension implements Extension {
               toInstall.getAbsolutePath()));
     }
 
-    File root = obtainRootDirectory(toInstall);
+    if (toInstall.isDirectory()) {
+      installExtensionFromDirectoryTo(extensionsDir);
+    } else {
+      installExtensionFromFileTo(extensionsDir);
+    }
+  }
 
-    String id = getExtensionId(root);
+  private void installExtensionFromDirectoryTo(File extensionsDir) throws IOException {
+    String id = getExtensionId(toInstall);
+    File target = new File(extensionsDir, id);
 
-    File extensionDirectory = new File(extensionsDir, id);
-
-    if (extensionDirectory.exists() && !FileHandler.delete(extensionDirectory)) {
-      throw new IOException("Unable to delete existing extension directory: " + extensionDirectory);
+    if (target.exists() && !FileHandler.delete(target)) {
+      throw new IOException("Unable to delete existing extension directory: " + target);
     }
 
+    FileHandler.createDir(target);
+    FileHandler.makeWritable(target);
+    FileHandler.copy(toInstall, target);
+  }
 
-    FileHandler.createDir(extensionDirectory);
-    FileHandler.makeWritable(extensionDirectory);
-    FileHandler.copy(root, extensionDirectory);
-    TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(root);
+  private void installExtensionFromFileTo(File extensionsDir) throws IOException {
+    File unpackedExt = obtainRootDirectory(toInstall);
+    String id = getExtensionId(unpackedExt);
+    File target = new File(extensionsDir, id + ".xpi");
+
+    if (target.exists() && !FileHandler.delete(target)) {
+      throw new IOException("Unable to delete existing extension file: " + target);
+    }
+
+    FileHandler.createDir(extensionsDir);
+    FileHandler.makeWritable(extensionsDir);
+    FileHandler.copy(toInstall, target);
+    TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(unpackedExt);
   }
 
   private File obtainRootDirectory(File extensionToInstall) throws IOException {
