@@ -187,7 +187,7 @@ public class FirefoxProfileTest {
   public void shouldInstallExtensionUsingClasspath() {
     profile.addExtension(SynthesizedFirefoxDriver.class, FIREBUG_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
-    File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
+    File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com.xpi");
     assertThat(extensionDir).exists();
   }
 
