@@ -33,7 +33,7 @@ class WebDriver(RemoteWebDriver):
 
     """
 
-    def __init__(self, port=0, executable_path="/usr/bin/safaridriver", reuse_service=False,
+    def __init__(self, port=0, service_args=None, executable_path="/usr/bin/safaridriver", reuse_service=False,
                  desired_capabilities=DesiredCapabilities.SAFARI, quiet=False,
                  keep_alive=True):
         """
@@ -48,10 +48,11 @@ class WebDriver(RemoteWebDriver):
          - quiet - If True, the driver's stdout and stderr is suppressed.
          - keep_alive - Whether to configure SafariRemoteConnection to use
              HTTP keep-alive. Defaults to False.
+         - service_args : List of args to pass to the safaridriver service
         """
 
         self._reuse_service = reuse_service
-        self.service = Service(executable_path, port=port, quiet=quiet)
+        self.service = Service(executable_path, port=port, service_args=service_args, quiet=quiet)
         if not reuse_service:
             self.service.start()
 
