@@ -173,18 +173,50 @@ def test_autodetect_proxy_is_set_in_profile():
     assert profile.default_preferences["network.proxy.type"] == ProxyType.AUTODETECT['ff_value']
 
 
-def test_that_we_can_add_a_webextension(capabilities, webserver):
-    extension_filename = 'webextension.xpi'
-    # TODO: This file should probably live in a common directory.
+def test_add_extension_web_extension_with_id(capabilities, webserver):
     current_directory = os.path.dirname(os.path.realpath(__file__))
     root_directory = os.path.join(current_directory, '..', '..', '..', '..', '..')
-    data_directory = os.path.join(root_directory, 'javascript', 'node',
-                                  'selenium-webdriver', 'lib', 'test', 'data', 'firefox')
-    full_extension_filename = os.path.join(data_directory, extension_filename)
+    # TODO: This file should probably live in a common directory.
+    extension_path = os.path.join(root_directory, 'javascript', 'node', 'selenium-webdriver',
+                                  'lib', 'test', 'data', 'firefox', 'webextension.xpi')
 
     profile = FirefoxProfile()
-    profile.add_extension(full_extension_filename)
+    profile.add_extension(extension_path)
 
     driver = Firefox(capabilities=capabilities, firefox_profile=profile)
+    profile_path = driver.firefox_profile.path
+    extension_path_in_profile = os.path.join(profile_path, 'extensions', 'webextensions-selenium-example@example.com')
+    assert os.path.exists(extension_path_in_profile)
     driver.get(webserver.where_is('simpleTest.html'))
     driver.find_element_by_id('webextensions-selenium-example')
+    driver.quit()
+
+
+def test_add_extension_web_extension_without_id(capabilities, webserver):
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+    root_directory = os.path.join(current_directory, '..', '..', '..', '..', '..')
+    extension_path = os.path.join(root_directory, 'third_party', 'firebug', 'mooltipass-1.1.87.xpi')
+
+    profile = FirefoxProfile()
+    profile.add_extension(extension_path)
+
+    driver = Firefox(capabilities=capabilities, firefox_profile=profile)
+    profile_path = driver.firefox_profile.path
+    extension_path_in_profile = os.path.join(profile_path, 'extensions', 'MooltipassExtension@1.1.87')
+    assert os.path.exists(extension_path_in_profile)
+    driver.quit()
+
+
+def test_add_extension_legacy_extension(capabilities, webserver):
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+    root_directory = os.path.join(current_directory, '..', '..', '..', '..', '..')
+    extension_path = os.path.join(root_directory, 'third_party', 'firebug', 'firebug-1.5.0-fx.xpi')
+
+    profile = FirefoxProfile()
+    profile.add_extension(extension_path)
+
+    driver = Firefox(capabilities=capabilities, firefox_profile=profile)
+    profile_path = driver.firefox_profile.path
+    extension_path_in_profile = os.path.join(profile_path, 'extensions', 'firebug@software.joehewitt.com')
+    assert os.path.exists(extension_path_in_profile)
+    driver.quit()
