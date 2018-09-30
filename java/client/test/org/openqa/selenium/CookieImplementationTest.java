@@ -84,7 +84,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   public void testShouldBeAbleToAddCookie() {
     String key = generateUniqueKey();
     String value = "foo";
-    Cookie cookie = new Cookie.Builder(key, value).domain("comp1").build();
+    Cookie cookie = new Cookie.Builder(key, value).domain(domainHelper.getHostName()).build();
     assertCookieIsNotPresentWithName(key);
 
     driver.manage().addCookie(cookie);
