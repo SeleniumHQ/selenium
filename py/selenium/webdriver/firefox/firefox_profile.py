@@ -333,8 +333,12 @@ class FirefoxProfile(object):
         def parse_manifest_json(content):
             """Extracts the details from the contents of a WebExtensions `manifest.json` file."""
             manifest = json.loads(content)
+            try:
+                id = manifest['applications']['gecko']['id']
+            except KeyError:
+                id = manifest['name'].replace(" ", "") + "@" + manifest['version']
             return {
-                'id': manifest['applications']['gecko']['id'],
+                'id': id,
                 'version': manifest['version'],
                 'name': manifest['version'],
                 'unpack': False,
