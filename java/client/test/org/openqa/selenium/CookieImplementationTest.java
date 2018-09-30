@@ -23,6 +23,7 @@ import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Before;
@@ -30,6 +31,7 @@ import org.junit.Test;
 import org.openqa.selenium.environment.DomainHelper;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.net.URI;
@@ -196,6 +198,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(SAFARI)
+  @NotYetImplemented(MARIONETTE)
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
@@ -474,6 +477,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(IE)
   @Ignore(SAFARI)
+  @NotYetImplemented(MARIONETTE)
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod")
