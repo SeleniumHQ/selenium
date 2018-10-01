@@ -23,6 +23,8 @@ import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.function.Supplier;
 
 public class RemoteSupplier implements Supplier<WebDriver> {
@@ -40,11 +42,24 @@ public class RemoteSupplier implements Supplier<WebDriver> {
       return null;
     }
 
-    if (!started) {
-      startServer();
+    String externalServer = System.getProperty("selenium.externalServer");
+    URL serverUrl;
+    if (externalServer != null) {
+      try {
+        serverUrl = new URL(externalServer);
+      } catch (MalformedURLException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      if (!started) {
+        startServer();
+      }
+      serverUrl = server.getWebDriverUrl();
     }
 
-    RemoteWebDriver driver = new RemoteWebDriver(server.getWebDriverUrl(), desiredCapabilities);
+
+    RemoteWebDriver driver = null;
+    driver = new RemoteWebDriver(serverUrl, desiredCapabilities);
     driver.setFileDetector(new LocalFileDetector());
     return driver;
   }
