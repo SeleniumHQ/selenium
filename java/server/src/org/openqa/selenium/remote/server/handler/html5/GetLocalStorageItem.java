@@ -20,6 +20,8 @@ package org.openqa.selenium.remote.server.handler.html5;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
+import java.util.Map;
+
 public class GetLocalStorageItem extends WebDriverHandler<String> {
   private volatile String key;
 
@@ -28,13 +30,15 @@ public class GetLocalStorageItem extends WebDriverHandler<String> {
   }
 
   @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    key = (String) allParameters.get("key");
+  }
+
+  @Override
   public String call() throws Exception {
     return Utils.getWebStorage(getUnwrappedDriver())
         .getLocalStorage().getItem(key);
-  }
-
-  public void setKey(String key) {
-    this.key = key;
   }
 
   @Override

@@ -18,12 +18,11 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 
-public abstract class WebElementHandler<T> extends WebDriverHandler<T> implements JsonParametersAware {
+public abstract class WebElementHandler<T> extends WebDriverHandler<T> {
   private volatile String elementId;
 
   protected WebElementHandler(Session session) {
@@ -32,6 +31,7 @@ public abstract class WebElementHandler<T> extends WebDriverHandler<T> implement
 
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     elementId = (String) allParameters.get("id");
   }
 

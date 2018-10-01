@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 
-public class ChangeUrl extends WebDriverHandler<Void> implements JsonParametersAware {
+public class ChangeUrl extends WebDriverHandler<Void> {
 
   private volatile String url;
 
@@ -32,6 +31,7 @@ public class ChangeUrl extends WebDriverHandler<Void> implements JsonParametersA
 
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     url = (String) allParameters.get("url");
   }
 

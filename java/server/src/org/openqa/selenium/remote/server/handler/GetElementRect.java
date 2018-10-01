@@ -33,7 +33,6 @@ public class GetElementRect extends WebElementHandler<Rectangle> {
     return element.getRect();
   }
 
-
   @Override
   public String toString() {
     return String.format("[get element rect: %s]", getElementAsString());

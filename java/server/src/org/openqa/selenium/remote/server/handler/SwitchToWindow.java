@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 
-public class SwitchToWindow extends WebDriverHandler<Void> implements JsonParametersAware {
+public class SwitchToWindow extends WebDriverHandler<Void> {
 
   private volatile String name;
 
@@ -30,15 +29,13 @@ public class SwitchToWindow extends WebDriverHandler<Void> implements JsonParame
     super(session);
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     if (allParameters.containsKey("name")) {
-      setName((String) allParameters.get("name"));
+      name = (String) allParameters.get("name");
     } else {
-      setName((String) allParameters.get("handle"));
+      name = (String) allParameters.get("handle");
     }
   }
 

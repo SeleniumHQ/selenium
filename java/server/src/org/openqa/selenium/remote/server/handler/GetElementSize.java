@@ -33,7 +33,6 @@ public class GetElementSize extends WebElementHandler<Dimension> {
     return element.getSize();
   }
 
-
   @Override
   public String toString() {
     return String.format("[get element size: %s]", getElementAsString());

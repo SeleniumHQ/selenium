@@ -23,13 +23,12 @@ import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 
 import java.util.Map;
 
-public class Flick extends WebElementHandler<Void> implements JsonParametersAware {
+public class Flick extends WebElementHandler<Void> {
 
   private static final String ELEMENT = "element";
   private static final String XOFFSET = "xoffset";
@@ -49,26 +48,8 @@ public class Flick extends WebElementHandler<Void> implements JsonParametersAwar
   }
 
   @Override
-  public Void call() throws Exception {
-    TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
-
-    if (elementId != null) {
-      WebElement element = getKnownElements().get(elementId);
-      Coordinates elementLocation = ((Locatable) element).getCoordinates();
-      touchScreen.flick(elementLocation, xOffset, yOffset, speed);
-    } else {
-      touchScreen.flick(xSpeed, ySpeed);
-    }
-
-    return null;
-  }
-
-  @Override
-  public String toString() {
-    return String.format("[Flick]");
-  }
-
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     if (allParameters.containsKey(ELEMENT) && allParameters.get(ELEMENT) != null) {
       elementId = (String) allParameters.get(ELEMENT);
       try {
@@ -98,6 +79,26 @@ public class Flick extends WebElementHandler<Void> implements JsonParametersAwar
         throw new WebDriverException("Illegal (non-numeric) y speed value for flick passed: " + allParameters.get(YSPEED), ex);
       }
     }
+  }
+
+  @Override
+  public Void call() throws Exception {
+    TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
+
+    if (elementId != null) {
+      WebElement element = getKnownElements().get(elementId);
+      Coordinates elementLocation = ((Locatable) element).getCoordinates();
+      touchScreen.flick(elementLocation, xOffset, yOffset, speed);
+    } else {
+      touchScreen.flick(xSpeed, ySpeed);
+    }
+
+    return null;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("[Flick]");
   }
 
 }

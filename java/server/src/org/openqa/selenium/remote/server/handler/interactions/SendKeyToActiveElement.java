@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.server.handler.interactions;
 
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SendKeyToActiveElement extends WebDriverHandler<Void> implements JsonParametersAware {
+public class SendKeyToActiveElement extends WebDriverHandler<Void> {
 
   private final List<String> keys = new ArrayList<>();
 
@@ -38,6 +37,7 @@ public class SendKeyToActiveElement extends WebDriverHandler<Void> implements Js
   @SuppressWarnings({"unchecked"})
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     // TODO: merge this code with the code in the SendKeys handler.
     List<String> rawKeys = (List<String>) allParameters.get("value");
     keys.addAll(rawKeys);

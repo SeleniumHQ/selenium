@@ -22,19 +22,24 @@ import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 
 import java.util.Map;
 
-public class DoubleTapOnElement extends WebElementHandler<Void> implements JsonParametersAware {
+public class DoubleTapOnElement extends WebElementHandler<Void> {
 
   private static final String ELEMENT = "element";
   private String elementId;
 
   public DoubleTapOnElement(Session session) {
     super(session);
+  }
+
+  @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    elementId = (String) allParameters.get(ELEMENT);
   }
 
   @Override
@@ -51,10 +56,6 @@ public class DoubleTapOnElement extends WebElementHandler<Void> implements JsonP
   @Override
   public String toString() {
     return String.format("[DoubleTap: %s]", elementId);
-  }
-
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    elementId = (String) allParameters.get(ELEMENT);
   }
 
 }
