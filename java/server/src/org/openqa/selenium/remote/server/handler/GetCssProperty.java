@@ -20,6 +20,8 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
 
+import java.util.Map;
+
 public class GetCssProperty extends WebElementHandler<String> {
   private volatile String propertyName;
 
@@ -27,8 +29,10 @@ public class GetCssProperty extends WebElementHandler<String> {
     super(session);
   }
 
-  public void setPropertyName(String propertyName) {
-    this.propertyName = propertyName;
+  @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    propertyName = (String) allParameters.get("propertyName");
   }
 
   @Override
