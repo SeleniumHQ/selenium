@@ -18,13 +18,12 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class SetScriptTimeout extends WebDriverHandler<Void> implements JsonParametersAware {
+public class SetScriptTimeout extends WebDriverHandler<Void> {
 
   private volatile long millis;
 
@@ -32,7 +31,9 @@ public class SetScriptTimeout extends WebDriverHandler<Void> implements JsonPara
     super(session);
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     try {
       millis = ((Number) allParameters.get("ms")).longValue();
     } catch (ClassCastException ex) {

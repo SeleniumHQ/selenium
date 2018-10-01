@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Date;
@@ -26,12 +25,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class AddCookie extends WebDriverHandler<Void> implements JsonParametersAware {
+public class AddCookie extends WebDriverHandler<Void> {
 
   private volatile Map<String, Object> rawCookie;
 
   public AddCookie(Session session) {
     super(session);
+  }
+
+  @Override
+  @SuppressWarnings({"unchecked"})
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    rawCookie = new HashMap<>((Map<String, Object>) allParameters.get("cookie"));
   }
 
   @Override
@@ -41,14 +47,6 @@ public class AddCookie extends WebDriverHandler<Void> implements JsonParametersA
     getDriver().manage().addCookie(cookie);
 
     return null;
-  }
-
-  @SuppressWarnings({"unchecked"})
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    if (allParameters == null) {
-      return;
-    }
-    rawCookie = new HashMap<>((Map<String, Object>) allParameters.get("cookie"));
   }
 
   protected Cookie createCookie() {

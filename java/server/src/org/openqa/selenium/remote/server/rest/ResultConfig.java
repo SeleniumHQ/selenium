@@ -27,7 +27,6 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.RequiresSession;
 import org.openqa.selenium.remote.server.RequiresAllSessions;
@@ -111,12 +110,10 @@ public class ResultConfig {
     final RestishHandler<?> handler = handlerFactory.createHandler(sessionId);
 
     try {
-      if (handler instanceof JsonParametersAware) {
-        @SuppressWarnings("unchecked")
-        Map<String, Object> parameters = (Map<String, Object>) command.getParameters();
-        if (!parameters.isEmpty()) {
-          ((JsonParametersAware) handler).setJsonParameters(parameters);
-        }
+      @SuppressWarnings("unchecked")
+      Map<String, Object> parameters = (Map<String, Object>) command.getParameters();
+      if (parameters != null && !parameters.isEmpty()) {
+        handler.setJsonParameters(parameters);
       }
 
       throwUpIfSessionTerminated(sessionId);

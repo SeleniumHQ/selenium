@@ -23,13 +23,12 @@ import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
 import java.util.Map;
 
-public class MouseMoveToLocation extends WebDriverHandler<Void> implements JsonParametersAware {
+public class MouseMoveToLocation extends WebDriverHandler<Void> {
   private static final String XOFFSET = "xoffset";
   private static final String YOFFSET = "yoffset";
   private static final String ELEMENT = "element";
@@ -41,6 +40,33 @@ public class MouseMoveToLocation extends WebDriverHandler<Void> implements JsonP
 
   public MouseMoveToLocation(Session session) {
     super(session);
+  }
+
+  @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    if (allParameters.containsKey(ELEMENT) && allParameters.get(ELEMENT) != null) {
+      elementId = (String) allParameters.get(ELEMENT);
+      elementProvided = true;
+    } else {
+      elementProvided = false;
+    }
+
+    if (allParameters.containsKey(XOFFSET) && allParameters.containsKey(YOFFSET)) {
+      try {
+        xOffset = ((Number) allParameters.get(XOFFSET)).intValue();
+      } catch (ClassCastException ex) {
+        throw new WebDriverException("Illegal (non-numeric) x offset value for mouse move passed: " + allParameters.get(XOFFSET), ex);
+      }
+      try {
+        yOffset = ((Number) allParameters.get(YOFFSET)).intValue();
+      } catch (ClassCastException ex) {
+        throw new WebDriverException("Illegal (non-numeric) y offset value for mouse move passed: " + allParameters.get(YOFFSET), ex);
+      }
+      offsetsProvided = true;
+    } else {
+      offsetsProvided = false;
+    }
   }
 
   @Override
@@ -66,28 +92,4 @@ public class MouseMoveToLocation extends WebDriverHandler<Void> implements JsonP
     return String.format("[mousemove: %s %b]", elementId, offsetsProvided);
   }
 
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    if (allParameters.containsKey(ELEMENT) && allParameters.get(ELEMENT) != null) {
-      elementId = (String) allParameters.get(ELEMENT);
-      elementProvided = true;
-    } else {
-      elementProvided = false;
-    }
-
-    if (allParameters.containsKey(XOFFSET) && allParameters.containsKey(YOFFSET)) {
-      try {
-        xOffset = ((Number) allParameters.get(XOFFSET)).intValue();
-      } catch (ClassCastException ex) {
-        throw new WebDriverException("Illegal (non-numeric) x offset value for mouse move passed: " + allParameters.get(XOFFSET), ex);
-      }
-      try {
-        yOffset = ((Number) allParameters.get(YOFFSET)).intValue();
-      } catch (ClassCastException ex) {
-        throw new WebDriverException("Illegal (non-numeric) y offset value for mouse move passed: " + allParameters.get(YOFFSET), ex);
-      }
-      offsetsProvided = true;
-    } else {
-      offsetsProvided = false;
-    }
-  }
 }
