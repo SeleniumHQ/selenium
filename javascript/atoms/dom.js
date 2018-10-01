@@ -587,14 +587,8 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     var parent = bot.dom.getParentNodeInComposedDom(e);
 
     if (bot.dom.IS_SHADOW_DOM_ENABLED && (parent instanceof ShadowRoot)) {
-      if (parent.host.shadowRoot !== parent) {
-        // There is a younger shadow root, which will take precedence over
-        // the shadow this element is in, thus this element won't be
-        // displayed.
-        return false;
-      } else {
-        parent = parent.host;
-      }
+      // For backward compatibility, treat all shadow roots as shown.
+      return true;
     }
 
     if (parent && (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
@@ -602,7 +596,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       return true;
     }
 
-    return parent && displayed(parent);
+    return !!parent && displayed(parent);
   }
 
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);

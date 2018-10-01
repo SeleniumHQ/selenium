@@ -857,6 +857,8 @@ module Javascript
         flags.push("--jscomp_error=undefinedVars")
         flags.push("--jscomp_error=uselessCode")
         flags.push("--jscomp_error=visibility")
+	# Work around https://github.com/google/closure-compiler/issues/1044
+	flags.push("--use_types_for_optimization=false")
 
         expanded_flags = flags.join(" ") <<
            " --js='" <<

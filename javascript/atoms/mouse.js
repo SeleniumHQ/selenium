@@ -143,7 +143,7 @@ bot.Mouse.NO_BUTTON_VALUE_INDEX_ = 3;
  *               click/    mouseup/   mouseout/  mousemove  contextmenu
  *               dblclick  mousedown  mouseover
  * IE_DOC_PRE9   0 0 0 X   1 4 2 X    0 0 0 0    1 4 2 0    X X 0 X
- * WEBKIT/IE9    0 1 2 X   0 1 2 X    0 1 2 0    0 1 2 0    X X 2 X
+ * WEBKIT/IE9    0 1 2 X   0 1 2 X    0 1 2 4    0 1 2 4    X X 2 X
  * GECKO         0 1 2 X   0 1 2 X    0 0 0 0    0 0 0 0    X X 2 X
  * </pre>
  * @private {!Object.<bot.events.EventType, !Array.<?number>>}
@@ -163,8 +163,8 @@ bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function() {
     buttonValueMap[bot.events.EventType.CLICK] = [0, 1, 2, null];
     buttonValueMap[bot.events.EventType.CONTEXTMENU] = [null, null, 2, null];
     buttonValueMap[bot.events.EventType.MOUSEUP] = [0, 1, 2, null];
-    buttonValueMap[bot.events.EventType.MOUSEOUT] = [0, 1, 2, 0];
-    buttonValueMap[bot.events.EventType.MOUSEMOVE] = [0, 1, 2, 0];
+    buttonValueMap[bot.events.EventType.MOUSEOUT] = [0, 1, 2, 4];
+    buttonValueMap[bot.events.EventType.MOUSEMOVE] = [0, 1, 2, 4];
   } else {
     buttonValueMap[bot.events.EventType.CLICK] = [0, 1, 2, null];
     buttonValueMap[bot.events.EventType.CONTEXTMENU] = [null, null, 2, null];

@@ -142,6 +142,10 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
 
   offset = goog.style.getClientPosition(elem);
   var windowSize = goog.dom.getDomHelper(elem).getViewportSize();
+  // Chrome uses either doc.documentElement or doc.body, depending on
+  // compatibility settings. For reliability, call scrollHelper on both.
+  // Calling scrollHelper on the wrong object is harmless.
+  scrollHelper(doc.documentElement, windowSize, offset, region, center);
   scrollHelper(doc.body, windowSize, offset, region, center);
 };
 
