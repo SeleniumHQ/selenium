@@ -135,7 +135,7 @@ webdriver.ie.getElementRect = function (element) {
   // For now, we'll return a custom object. If we need
   // more functionality later provided by goog.math.Rect,
   // we can upgrade to that when needed.
-  var size = goog.style.getSize(element);
+  var size = goog.style.getTransformedSize(element);
   var location = goog.style.getPageOffset(element);
   return {
      'x': location.x, 'y': location.y,

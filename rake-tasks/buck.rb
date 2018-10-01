@@ -1,3 +1,4 @@
+require 'inifile'
 require 'open3'
 require 'rake-tasks/checks'
 
@@ -5,48 +6,14 @@ module Buck
 
   def self.download
     @@buck_bin ||= (
-      if File.exist?('.nobuckcheck') && present?('buck')
-        # We'll assume the user knows how to kill buck themselves
-        return ["buck"]
-      end
+      cmd = if windows?
+              buckconfigs = [IniFile.load('.buckconfig.local'), IniFile.load('.buckconfig')]
+              python_interpreter = buckconfigs.lazy.map { |c| c && c['parser']['python_interpreter'] }.find(&:itself)
+              [python_interpreter || "python", "buckw"]
+            else
+              ["./buckw"]
+            end
 
-      version = File.open('.buckversion').first.chomp
-      cached_hash = File.open('.buckhash').first.chomp
-
-      out = File.expand_path("buck-out/crazy-fun/#{version}/buck.pex")
-      out_hash = File.exist?(out) ? Digest::MD5.file(out).hexdigest : nil
-
-      if cached_hash == out_hash
-        # Make sure we're running a pristine buck instance
-        cmd = (windows?) ? ["python", out] : [out]
-        sh cmd.join(" ") + " kill", :verbose => true
-        return cmd
-      end
-
-      url = "https://github.com/SeleniumHQ/buck/releases/download/buck-release-#{version}/buck.pex"
-      out_dir = File.dirname out
-      FileUtils.mkdir_p(out_dir) unless File.exist?(out_dir)
-
-      require "third_party/java/httpcomponents/httpcore-4.4.9"
-      require "third_party/java/httpcomponents/httpclient-4.5.5"
-      require "third_party/java/commons-logging/commons-logging-1.2"
-      require "third_party/java/commons-io/commons-io-2.6"
-
-      puts "Downloading buck build tool, it can take up to several minutes..."
-
-      httpclient = org.apache.http.impl.client.HttpClients.custom()
-                       .setRedirectStrategy(org.apache.http.impl.client.LaxRedirectStrategy.new())
-                       .setDefaultRequestConfig(org.apache.http.client.config.RequestConfig.custom()
-                                                    .setCookieSpec("standard").build())
-                       .build()
-      httpget = org.apache.http.client.methods.HttpGet.new(url)
-      response = httpclient.execute(httpget)
-      entity = response.getEntity()
-      org.apache.commons.io.FileUtils.copyInputStreamToFile(entity.getContent(), java.io.File.new(out))
-      org.apache.http.util.EntityUtils.consume(entity) unless entity.nil?
-
-      File.chmod(0755, out)
-      cmd = (windows?) ? ["python", out] : [out]
       sh cmd.join(" ") + " kill", :verbose => true
       cmd
     )

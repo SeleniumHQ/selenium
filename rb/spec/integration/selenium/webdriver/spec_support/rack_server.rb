@@ -116,9 +116,14 @@ module Selenium
 
           def call(env)
             case env['PATH_INFO']
-            when '/common/upload'
+            when '/upload'
               req = Rack::Request.new(env)
-              body = req['upload'][:tempfile].read
+              body = case req['upload']
+                     when Array
+                       req['upload'].map { |upload| upload[:tempfile].read }.join("\n")
+                     when Hash
+                       req['upload'][:tempfile].read
+                     end
 
               [200, {'Content-Type' => 'text/html'}, [body]]
             else

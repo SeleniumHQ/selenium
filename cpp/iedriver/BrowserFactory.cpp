@@ -301,7 +301,8 @@ void BrowserFactory::LaunchBrowserUsingCreateProcess(PROCESS_INFORMATION* proc_i
   executable_and_url.append(L" ");
   executable_and_url.append(this->initial_browser_url_);
 
-  LOG(TRACE) << "IE starting command line is: '" << LOGWSTRING(executable_and_url) << "'.";
+  LOG(TRACE) << "IE starting command line is: '"
+             << LOGWSTRING(executable_and_url) << "'.";
 
   LPWSTR command_line = new WCHAR[executable_and_url.size() + 1];
   wcscpy_s(command_line,
@@ -780,6 +781,7 @@ bool BrowserFactory::CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
                                 TokenPrimary,
                                 mic_token_handle);
     if (!result) {
+      LOGERR(WARN) << "CreateLowIntegrityLevelToken: Could not duplicate token";
       ::CloseHandle(*process_token_handle);
     }
    }
@@ -790,6 +792,7 @@ bool BrowserFactory::CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
       tml.Label.Attributes = SE_GROUP_INTEGRITY;
       tml.Label.Sid = *sid;
     } else {
+      LOGERR(WARN) << "CreateLowIntegrityLevelToken: Could not convert string SID to SID";
       ::CloseHandle(*process_token_handle);
       ::CloseHandle(*mic_token_handle);
     }
@@ -801,6 +804,7 @@ bool BrowserFactory::CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
                                    &tml,
                                    sizeof(tml) + ::GetLengthSid(*sid));
     if (!result) {
+      LOGERR(WARN) << "CreateLowIntegrityLevelToken: Could not set token information to low level";
       ::CloseHandle(*process_token_handle);
       ::CloseHandle(*mic_token_handle);
       ::LocalFree(*sid);
@@ -898,6 +902,8 @@ void BrowserFactory::InvokeClearCacheUtility(bool use_low_integrity_level) {
         ::CloseHandle(process_info.hProcess);
         ::CloseHandle(process_info.hThread);
         LOG(DEBUG) << "Cache clearing complete.";
+      } else {
+        LOGERR(WARN) << "Could not create process for clearing cache.";
       }
     }
 
@@ -1012,9 +1018,17 @@ void BrowserFactory::GetExecutableLocation() {
                                 L"\\LocalServer32";
     std::wstring executable_location;
 
+    // If we are a 32-bit driver instance, running on 64-bit Windows,
+    // we want to bypass the registry redirection so that we can get
+    // the actual location of the browser executable. The primary place
+    // this matters is when getting the browser version; the secondary
+    // place is if the user specifies to use the CreateProcess API for
+    // launching the browser, hence the 'true' argument in the following
+    // call to RegistryUtilities::GetRegistryValue.
     if (RegistryUtilities::GetRegistryValue(HKEY_LOCAL_MACHINE,
                                             location_key,
                                             L"",
+                                            true,
                                             &executable_location)) {
       // If the executable location in the registry has an environment
       // variable in it, expand the environment variable to an absolute

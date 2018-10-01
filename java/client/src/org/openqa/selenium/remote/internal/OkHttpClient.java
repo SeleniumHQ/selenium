@@ -116,51 +116,50 @@ public class OkHttpClient implements HttpClient {
   public static class Factory implements HttpClient.Factory {
 
     private final ConnectionPool pool = new ConnectionPool();
-    private final long connectionTimeout;
-    private final long readTimeout;
-
-    public Factory() {
-      this(Duration.ofMinutes(2), Duration.ofHours(3));
-    }
-
-    public Factory(Duration connectionTimeout, Duration readTimeout) {
-      Objects.requireNonNull(connectionTimeout, "Connection timeout cannot be null");
-      Objects.requireNonNull(readTimeout, "Read timeout cannot be null");
-
-      this.connectionTimeout = connectionTimeout.toMillis();
-      this.readTimeout = readTimeout.toMillis();
-    }
 
     @Override
-    public HttpClient createClient(URL url) {
-      okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
-          .connectionPool(pool)
-          .followRedirects(true)
-          .followSslRedirects(true)
-          .retryOnConnectionFailure(false)
-          .readTimeout(readTimeout, MILLISECONDS)
-          .connectTimeout(connectionTimeout, MILLISECONDS);
+    public Builder builder() {
+      return new Builder() {
+        @Override
+        public HttpClient createClient(URL url) {
+          okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
+              .connectionPool(pool)
+              .followRedirects(true)
+              .followSslRedirects(true)
+              .proxy(proxy)
+              .readTimeout(readTimeout.toMillis(), MILLISECONDS)
+              .connectTimeout(connectionTimeout.toMillis(), MILLISECONDS);
 
-      String info = url.getUserInfo();
-      if (!Strings.isNullOrEmpty(info)) {
-        String[] parts = info.split(":", 2);
-        String user = parts[0];
-        String pass = parts.length > 1 ? parts[1] : null;
+          String info = url.getUserInfo();
+          if (!Strings.isNullOrEmpty(info)) {
+            String[] parts = info.split(":", 2);
+            String user = parts[0];
+            String pass = parts.length > 1 ? parts[1] : null;
 
-        String credentials = Credentials.basic(user, pass);
+            String credentials = Credentials.basic(user, pass);
 
-        client.authenticator((route, response) -> {
-          if (response.request().header("Authorization") != null) {
-            return null; // Give up, we've already attempted to authenticate.
+            client.authenticator((route, response) -> {
+              if (response.request().header("Authorization") != null) {
+                return null; // Give up, we've already attempted to authenticate.
+              }
+
+              return response.request().newBuilder()
+                  .header("Authorization", credentials)
+                  .build();
+            });
           }
 
-          return response.request().newBuilder()
-              .header("Authorization", credentials)
-              .build();
-        });
-      }
+          client.addNetworkInterceptor(chain -> {
+            Request request = chain.request();
+            Response response = chain.proceed(request);
+            return response.code() == 408
+                   ? response.newBuilder().code(500).message("Server-Side Timeout").build()
+                   : response;
+          });
 
-      return new OkHttpClient(client.build(), url);
+          return new OkHttpClient(client.build(), url);
+        }
+      };
     }
 
     @Override

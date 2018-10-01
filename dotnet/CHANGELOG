@@ -1,3 +1,138 @@
+v3.14.0
+=======
+ * Refactored .NET capability handling. This version introduces a large and
+   intrusive refactor of the .NET bindings' capability handling. It introduces
+   a new class, `RemoteSessionSettings`, for use with creating remote sessions
+   via `RemoteWebDriver`. Additionally, the `DesiredCapabilities` class is now
+   marked as deprecated and will generate a compile warning on its use.
+
+   Almost without exeception, users should not be using DesiredCapabilities in
+   .NET. The browser-specific options classes provide functionality for adding
+   any additional capabilities that would need to be sent to a remote end. One
+   possible exception is when using RemoteWebDriver to connect to a remote
+   server implementation, where the ToCapabilites method has been called,
+   but the user wants to add additional capabilities, even though they could
+   and should have been added before calling the method. In a future release,
+   calling ToCapabilities will result in a read-only capabilities object, but
+   recognizing that many users already have existing code that does this,
+   moving immediately to make the returned object read-only is premature. For
+   the moment, then, the SetCapabilty method is now marked as deprecated on
+   DesiredCapabilities. In the next version of the .NET bindings, the return
+   from ToCapabilities will be changed to return a read-only object.
+
+   The RemoteSessionSettings class is designed for use cases where the user
+   wants to create a remote session using RemoteWebDriver where all of the
+   nodes in the session creation support the W3C WebDriver Specification
+   dialect of the wire protocol. This class is designed to be used in
+   conjunction with the browser-specific driver options classes for matching
+   capabilities on the remote end.
+
+   For single-browser cases, it is still possible (though unnecessary) to
+   use a browser-specific driver options class (`ChromeOptions`,
+   `FirefoxOptions`, etc.) by calling the `ToCapabilities()` method, but as
+   previously mentioned, in the future, the capabilities returned will be
+   read-only, and will not be able to be added to. Users who feel the need
+   to modify the options class after converting to capabilities are encouraged
+   to add the additional capabilites to the options class before the conversion
+   by appropriate use of the `AddAdditionalCapability` method.
+ * Exposed additional extension points to better control HTTP communications
+   between the language bindings and the remote end implemention. For the
+   .NET implementation of HttpCommandExecutor, we now expose a Proxy property
+   for proxying requests between the .NET code and the remote end WebDriver
+   implementation. Note carefully that this is entirely separate from the
+   proxy used by the browser for monitoring communications between the browser
+   and the server hosting the page being automated.
+
+   Additionally, this change exposes the IsKeepAliveEnabled property to make
+   it easier to set whether or not the "keep alive" header is sent when
+   communicating between the language bindings and the remote end WebDriver
+   implementation.
+
+   Finally, for local use, the DriverServiceCommandExecutor now exposes a
+   property to allow the user to set tho newly-exposed properties by allowing
+   access to the internal HttpCommandExecutor of the driver service.
+ * Added a workaround for Safari Tech Preview to send the proper browser name
+   to the driver.
+ * Added type-safe properties for Safari capabilities in .NET SafariOptions.
+ * Marked .NET hardware manipulation interfaces deprecated.  The `Mouse`
+   `Keyboard`, and `TouchScreen` properties were never intended for direct
+   use in users' code. These interfaces, and the properties that reference
+   them, are now being marked as deprecated. The correct way to simulate
+   advanced user input is to use the `Actions` or `ActionBuilder` classes.
+ * Removed long-deprecated local PhantomJS support from .NET, as well as
+   other deprecated code.
+
+v3.13.1
+=======
+ * Updated to fully remove use of internal CreateElement method in favor of
+   a factory object.
+
+v3.13.0
+=======
+ * (on behalf of Jake Durand) Replaced Chrome with Firefox in .NET
+   documentation comments.
+ * (on behalf of Michael Keeley) Modified to allow extension of
+   RemoteWebElement for caching properties. This approach is not one with
+   which the Selenium development team is entirely comfortable, and downstream
+   projects are strongly encouraged to prefer composition over inheritance.
+ * Reinstated ICommandExecutor descending from IDisposable. Now that the
+   Appium project has implemented the methods required by an implementation
+   of IDisposable, this change can be made upstream in the Selenium project.
+   As this change has been rolled back once before to accommodate downstream
+   projects, it will be incumbent upon them to update their libraries now, as
+   it will not be rolled back again. In the case of Appium, this is merely
+   awaiting a binary release; other downstream projects will be responsible
+   for managing their own code changes and release schedule.
+ * Removed legacy WebDriver extension when using Geckodriver. When a
+   FirefoxProfile object is created in the .NET bindings, the legacy WebDriver
+   extension is included in that profile by default. This includes the case
+   where the user is using Geckodriver. When using Geckodriver, the legacy
+   extension is doing nothing more than taking up space. This commit adds an
+   internal method to detect when a FirefoxProfile object is being used with
+   geckodriver, and removes the extension from the list of extensions in the
+   profile before the profile is serialized to disk, and subsequently to a
+   base64-encoded string for transmission over the wire to geckodriver. Fixes
+   issue #6043.
+ * Updated EdgeOptions to include type-safe properties for Edge-specific
+   capabilities.
+ * Added property to force use of legacy protocol for Safari. Starting with
+   Safari Technology Preview 58, and continuing with the driver released with
+   Safari 12, the driver executable uses the W3C Specification dialect of the
+   prototcol by default. It includes a command-line switch, however, to force
+   the use of the legacy open-source project dialect of the protocol. This
+   commit adds a property to the SafariDriverService object allowing users to
+   set that command-line switch. Note that if this property (false by default)
+   is set to true for a version of the driver that does not support the switch,
+   it will cause errors. If set to false, the .NET bindings do not modify the
+   safaridriver command line at all.
+ * Fixed mouse movement in .NET. The previous commit to the mouse movement for
+   .NET changed the optional element ID from `null` to the empty string. This
+   is incorrect. If no element is specified in the move (for non-spec-compliant
+   driver), omit the ID altogether.
+ * Fixed null pointer exception for .NET on Safari with mouse movements.
+ * (on behalf of Clay Martin) Fixed quit command for default state of Edge
+   driver.
+
+v3.12.1
+=======
+ * Updated .NET escaping of CSS selectors for the find-by-ID and find-by-name
+   cases. This is especially important for drivers that adhere to the W3C
+   WebDriver Specification.
+ * The .NET bindings no longer swallow exceptions for navigation to malformed
+   URLs.
+ * Added inadvertently omitted FirefoxDriver constructor for .NET.
+   To maintain consistency with other drivers, we are adding a constructor
+   that takes a FirefoxDriverService and a FirefoxOptions. All other drivers
+   have a "service and options" constructor, making Firefox the outlier.
+ * Updated use of command-line args for protocol selection for Edge in .NET.
+   The UseSpecCompliantProtocol property of the EdgeDriverService object now
+   is a nullable boolean instead of just a boolean. If the property is
+   assigned a value (true or false), it will add the appropriate command-line
+   argument ("--w3c" or "--jwp", respectively) to the executable command
+   line. Users using versions of MicrosoftWebDriver.exe that do not support
+   those command-line arguments should leave the property unset (as a null
+   value).
+
 v3.12.0
 =======
  * Updated unhandled JavaScript errors to throw WebDriverException in .NET.

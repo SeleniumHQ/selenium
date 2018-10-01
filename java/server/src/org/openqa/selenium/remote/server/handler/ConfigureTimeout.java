@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Arrays;
@@ -28,7 +27,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class ConfigureTimeout extends WebDriverHandler<Void> implements JsonParametersAware {
+public class ConfigureTimeout extends WebDriverHandler<Void> {
 
   private static final String IMPLICIT = "implicit";
   private static final String PAGE_LOAD = "page load";
@@ -41,7 +40,9 @@ public class ConfigureTimeout extends WebDriverHandler<Void> implements JsonPara
     super(session);
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     String type = (String) allParameters.get("type");
 
     if (type != null) {

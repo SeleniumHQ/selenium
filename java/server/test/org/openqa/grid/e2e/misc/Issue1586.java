@@ -32,8 +32,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
-import java.net.MalformedURLException;
-
 // see http://code.google.com/p/selenium/issues/detail?id=1586
 public class Issue1586 {
 
@@ -57,7 +55,7 @@ public class Issue1586 {
 
   @Test
   @Ignore("Extremely slow test, for issue1586. Excluding from regression.")
-  public void test() throws MalformedURLException {
+  public void test() {
     WebDriver driver = null;
     try {
       driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), GridTestHelper.getDefaultBrowserCapability());
@@ -78,7 +76,7 @@ public class Issue1586 {
   }
 
   @After
-  public void stop() throws Exception {
+  public void stop() {
     hub.stop();
   }
 }

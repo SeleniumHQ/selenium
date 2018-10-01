@@ -20,13 +20,12 @@ package org.openqa.grid.internal.cli;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
-
 public class StandaloneCliOptions extends CommonCliOptions {
 
-  public StandaloneCliOptions parse(String[] args) {
-    JCommander.newBuilder().addObject(this).build().parse(args);
-    return this;
+  public JCommander parse(String... args) {
+    JCommander commander = JCommander.newBuilder().addObject(this).build();
+    commander.parse(args);
+    return commander;
   }
 
   /**
@@ -39,14 +38,8 @@ public class StandaloneCliOptions extends CommonCliOptions {
   )
   private String configFile;
 
-  public StandaloneConfiguration toConfiguration() {
-    StandaloneConfiguration configuration = new StandaloneConfiguration();
-    if (configFile != null) {
-      // read configuration from the file
-    }
-
-    fillCommonConfiguration(configuration);
-    return configuration;
+  public String getConfigFile() {
+    return configFile;
   }
 
 }

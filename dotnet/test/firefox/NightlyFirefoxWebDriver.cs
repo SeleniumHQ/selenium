@@ -8,8 +8,18 @@ namespace OpenQA.Selenium.Firefox
     public class NightlyFirefoxWebDriver : FirefoxDriver
     {
         public NightlyFirefoxWebDriver(FirefoxDriverService service)
-            : base(service, new FirefoxOptions() { BrowserExecutableLocation = @"C:\Program Files (x86)\Nightly\firefox.exe" }, RemoteWebDriver.DefaultCommandTimeout)
+            : this(service, DefaultOptions)
         {
+        }
+
+        public NightlyFirefoxWebDriver(FirefoxDriverService service, FirefoxOptions options)
+            : base(service, options)
+        {
+        }
+
+        public static FirefoxOptions DefaultOptions
+        {
+            get { return new FirefoxOptions() { BrowserExecutableLocation = @"C:\Program Files (x86)\Nightly\firefox.exe" }; }
         }
     }
 }

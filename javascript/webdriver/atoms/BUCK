@@ -1,4 +1,4 @@
-include_defs('//javascript/JAVASCRIPT_DEFS')
+load("//javascript:rules.bzl", "closure_fragment")
 
 closure_library(name = 'atoms-lib',
   srcs = glob(['*.js', 'storage/*.js']),

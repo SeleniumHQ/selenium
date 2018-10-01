@@ -24,13 +24,11 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.ErrorHandler;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 
-
-public class W3CActions extends WebDriverHandler<Void> implements JsonParametersAware {
+public class W3CActions extends WebDriverHandler<Void> {
 
   private Map<String, Object> allParameters;
 
@@ -40,6 +38,7 @@ public class W3CActions extends WebDriverHandler<Void> implements JsonParameters
 
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     this.allParameters = allParameters;
   }
 

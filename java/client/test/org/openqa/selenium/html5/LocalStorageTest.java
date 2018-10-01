@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.html5;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 
@@ -45,17 +44,17 @@ public class LocalStorageTest extends JUnit4TestBase {
 
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
     local.clear();
-    assertEquals("Local Storage isn't empty.", 0, local.size());
+    assertThat(local.size()).isEqualTo(0);
 
     local.setItem("FOO", "BAR");
-    assertEquals("BAR", local.getItem("FOO"));
+    assertThat(local.getItem("FOO")).isEqualTo("BAR");
 
     local.setItem("FOO1", "BAR1");
-    assertEquals("BAR1", local.getItem("FOO1"));
-    assertEquals(2, local.size());
+    assertThat(local.getItem("FOO1")).isEqualTo("BAR1");
+    assertThat(local.size()).isEqualTo(2);
 
     local.clear();
-    assertEquals(0, local.size());
+    assertThat(local.size()).isEqualTo(0);
   }
 
   @Test
@@ -69,13 +68,11 @@ public class LocalStorageTest extends JUnit4TestBase {
     local.setItem("FOO3", "BAR3");
 
     Set<String> keySet = local.keySet();
-    assertTrue(keySet.size() == 3);
-    assertTrue(keySet.contains("FOO1"));
-    assertTrue(keySet.contains("FOO2"));
-    assertTrue(keySet.contains("FOO3"));
+    assertThat(keySet.size()).isEqualTo(3);
+    assertThat(keySet).contains("FOO1", "FOO2", "FOO3");
 
     local.clear();
-    assertTrue(local.keySet().isEmpty());
+    assertThat(local.keySet()).isEmpty();
   }
 
   @Test
@@ -84,10 +81,10 @@ public class LocalStorageTest extends JUnit4TestBase {
     local.setItem("FOO1", "BAR1");
     local.setItem("FOO2", "BAR2");
     local.setItem("FOO3", "BAR3");
-    assertEquals(3, local.size());
+    assertThat(local.size()).isEqualTo(3);
 
     local.clear();
-    assertEquals(0, local.size());
+    assertThat(local.size()).isEqualTo(0);
   }
 
   @Test
@@ -97,10 +94,10 @@ public class LocalStorageTest extends JUnit4TestBase {
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
     local.clear();
     local.setItem("FOO", "BAR");
-    assertEquals(1, local.size());
+    assertThat(local.size()).isEqualTo(1);
     String removedItemValue = local.removeItem("FOO");
-    assertEquals("BAR", removedItemValue);
-    assertEquals(0, local.size());
+    assertThat(removedItemValue).isEqualTo("BAR");
+    assertThat(local.size()).isEqualTo(0);
     local.clear();
   }
 
@@ -114,18 +111,18 @@ public class LocalStorageTest extends JUnit4TestBase {
     session.clear();
     local.setItem("FOO", "BAR_LOCAL");
     session.setItem("FOO", "BAR_SESSION");
-    assertEquals(1, local.size());
-    assertEquals(1, session.size());
-    assertEquals("BAR_LOCAL", local.getItem("FOO"));
-    assertEquals("BAR_SESSION", session.getItem("FOO"));
+    assertThat(local.size()).isEqualTo(1);
+    assertThat(session.size()).isEqualTo(1);
+    assertThat(local.getItem("FOO")).isEqualTo("BAR_LOCAL");
+    assertThat(session.getItem("FOO")).isEqualTo("BAR_SESSION");
     String removedItemValue = session.removeItem("FOO");
-    assertEquals("BAR_SESSION", removedItemValue);
-    assertEquals(1, local.size());
-    assertEquals(0, session.size());
+    assertThat(removedItemValue).isEqualTo("BAR_SESSION");
+    assertThat(local.size()).isEqualTo(1);
+    assertThat(session.size()).isEqualTo(0);
     removedItemValue = local.removeItem("FOO");
-    assertEquals("BAR_LOCAL", removedItemValue);
-    assertEquals(0, local.size());
-    assertEquals(0, session.size());
+    assertThat(removedItemValue).isEqualTo("BAR_LOCAL");
+    assertThat(local.size()).isEqualTo(0);
+    assertThat(session.size()).isEqualTo(0);
     local.clear();
     session.clear();
   }

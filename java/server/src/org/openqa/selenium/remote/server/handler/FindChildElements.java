@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.LinkedHashSet;
@@ -30,15 +29,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class FindChildElements extends WebElementHandler<Set<Map<String, String>>>
-    implements JsonParametersAware {
+public class FindChildElements extends WebElementHandler<Set<Map<String, String>>> {
   private volatile By by;
 
   public FindChildElements(Session session) {
     super(session);
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     by = newBySelector().pickFromJsonParameters(allParameters);
   }
 

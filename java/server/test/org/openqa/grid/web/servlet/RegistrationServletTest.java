@@ -17,11 +17,12 @@
 
 package org.openqa.grid.web.servlet;
 
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.EMPTY_MAP;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +45,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-public class RegistrationServletTest extends BaseServletTest {
+public class RegistrationServletTest extends RegistrationAwareServletTest {
 
   private Map<String, Object> requestWithoutConfig;
   private Map<String, Object> grid2Request;
@@ -60,14 +61,14 @@ public class RegistrationServletTest extends BaseServletTest {
     baseRequest.put("class", "com.example.grid.BaseRequest");
 
     requestWithoutConfig = new TreeMap<>(baseRequest);
-    requestWithoutConfig.put("capabilities", ImmutableList.of());
+    requestWithoutConfig.put("capabilities", EMPTY_LIST);
 
     grid2Request = new TreeMap<>(baseRequest);
-    grid2Request.put("capabilities", ImmutableList.of());
-    grid2Request.put("configuration", ImmutableMap.of());
+    grid2Request.put("capabilities", EMPTY_LIST);
+    grid2Request.put("configuration", EMPTY_MAP);
 
     grid3Request = new TreeMap<>(baseRequest);
-    grid3Request.put("capabilities", ImmutableList.of());
+    grid3Request.put("capabilities", EMPTY_LIST);
     grid3Request.put("configuration", new GridNodeConfiguration());
   }
 
@@ -85,32 +86,19 @@ public class RegistrationServletTest extends BaseServletTest {
     servlet.init();
   }
 
-  /**
-   * Gives the servlet some time to add the proxy -- which happens on a separate thread.
-   */
-  private void waitForServletToAddProxy() throws Exception {
-    int tries = 0;
-    int size;
-    while (tries < 10) {
-      size = ((RegistrationServlet) servlet).getRegistry().getAllProxies().size();
-      if (size > 0) {
-        break;
-      }
-      Thread.sleep(1000);
-      tries += 1;
-    }
-  }
+
 
   /**
    * Tests that the registration request servlet throws an error for a request without a proxy
    * configuration
    */
-  @Test(expected = GridConfigurationException.class)
-  public void testInvalidV2Registration() throws Exception {
-    requestWithoutConfig.put("capabilities", ImmutableList.of(new FirefoxOptions()));
+  @Test
+  public void testInvalidV2Registration() {
+    requestWithoutConfig.put("capabilities", singletonList(new FirefoxOptions()));
     requestWithoutConfig.put("id", "http://dummynode:1111");
 
-    sendCommand("POST", "/", requestWithoutConfig);
+    assertThatExceptionOfType(GridConfigurationException.class)
+        .isThrownBy(() -> sendCommand("POST", "/", requestWithoutConfig));
   }
 
   /**
@@ -125,7 +113,7 @@ public class RegistrationServletTest extends BaseServletTest {
     config.put("proxy", null);
     grid2Request.put("configuration", config);
 
-    grid2Request.put("capabilities", ImmutableList.of(new FirefoxOptions()));
+    grid2Request.put("capabilities", singletonList(new FirefoxOptions()));
     String id = "http://dummynode:1234";
     grid2Request.put("id", id);
 
@@ -156,7 +144,7 @@ public class RegistrationServletTest extends BaseServletTest {
     config.proxy = null;
     grid3Request.put("configuration", config);
 
-    grid3Request.put("capabilities", ImmutableList.of(new FirefoxOptions()));
+    grid3Request.put("capabilities", singletonList(new FirefoxOptions()));
     String id = "http://dummynode:2345";
     grid3Request.put("id", id);
     final FakeHttpServletResponse response = sendCommand("POST", "/", grid3Request);

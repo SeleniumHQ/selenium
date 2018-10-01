@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.interactions.touch;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.interactions.Locatable;
 
 /**
  * Tests the basic double tap operations.
@@ -35,12 +35,6 @@ public class TouchDoubleTapTest extends TouchTestBase {
     return new TouchActions(driver);
   }
 
-  private void doubleTapOnElement(String elementId) {
-    WebElement toDoubleTap = driver.findElement(By.id(elementId));
-    Action doubleTap = getBuilder(driver).doubleTap(toDoubleTap).build();
-    doubleTap.perform();
-  }
-
   @Test
   public void testCanDoubleTapOnAnImageAndAlterLocationOfElementsInScreen() {
     driver.get(pages.longContentPage);
@@ -49,11 +43,13 @@ public class TouchDoubleTapTest extends TouchTestBase {
     int y = ((Locatable) image).getCoordinates().inViewPort().y;
     // The element is located at a certain point, after double tapping,
     // the y coordinate must change.
-    assertTrue(y > 100);
+    assertThat(y).isGreaterThan(100);
 
-    doubleTapOnElement("imagestart");
+    Action doubleTap = getBuilder(driver).doubleTap(image).build();
+    doubleTap.perform();
+
     y = ((Locatable) image).getCoordinates().inViewPort().y;
-    assertTrue(y < 50);
+    assertThat(y).isLessThan(50);
   }
 
 }

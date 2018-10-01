@@ -337,6 +337,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="toElement">The element to which to move the mouse.</param>
         /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
         /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
+        /// <param name="offsetOrigin">The <see cref="MoveToElementOffsetOrigin"/> value from which to calculate the offset.</param>
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY, MoveToElementOffsetOrigin offsetOrigin)
         {

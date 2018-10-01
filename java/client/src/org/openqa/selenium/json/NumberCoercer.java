@@ -20,6 +20,7 @@ package org.openqa.selenium.json;
 import com.google.common.primitives.Primitives;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -27,9 +28,9 @@ import java.util.function.Function;
 class NumberCoercer<T extends Number> extends TypeCoercer<T> {
 
   private final Class<T> stereotype;
-  private final Function<String, T> mapper;
+  private final Function<Number, T> mapper;
 
-  NumberCoercer(Class<T> stereotype, Function<String, T> mapper) {
+  NumberCoercer(Class<T> stereotype, Function<Number, T> mapper) {
     this.stereotype = Objects.requireNonNull(stereotype);
     this.mapper = Objects.requireNonNull(mapper);
   }
@@ -42,14 +43,23 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
   @Override
   public BiFunction<JsonInput, PropertySetting, T> apply(Type ignored) {
     return (jsonInput, setting) -> {
-      JsonType type = jsonInput.peek();
+      Number number;
+      switch (jsonInput.peek()) {
+        case NUMBER:
+          number = jsonInput.nextNumber();
+          break;
 
-      if (type != JsonType.NUMBER) {
-        throw new JsonException(
-            "Cannot coerce something that is not a number to a number: " + type);
+        case STRING:
+          try {
+            number = new BigDecimal(jsonInput.nextString());
+          } catch (NumberFormatException e) {
+            throw new JsonException(e);
+          }
+          break;
+
+        default:
+          throw new JsonException("Unable to coerce to a number: " + jsonInput.peek());
       }
-
-      String number = jsonInput.nextString();
       return mapper.apply(number);
     };
   }

@@ -49,12 +49,14 @@ def testShouldBeAbleToGetAFragmentOnTheCurrentPage(driver, pages):
 
 
 @pytest.mark.xfail_marionette(raises=WebDriverException)
+@pytest.mark.xfail_remote(raises=WebDriverException)
 def testShouldReturnWhenGettingAUrlThatDoesNotResolve(driver):
     #  Of course, we're up the creek if this ever does get registered
     driver.get("http://www.thisurldoesnotexist.comx/")
 
 
 @pytest.mark.xfail_marionette(raises=WebDriverException)
+@pytest.mark.xfail_remote(raises=WebDriverException)
 def testShouldReturnWhenGettingAUrlThatDoesNotConnect(driver):
     #  Here's hoping that there's nothing here. There shouldn't be
     driver.get("http://localhost:3001")
@@ -116,6 +118,7 @@ def testShouldBeAbleToNavigateForwardsInTheBrowserHistory(driver, pages):
 
 @pytest.mark.xfail_ie
 @pytest.mark.xfail_marionette(run=False)
+@pytest.mark.xfail_remote(run=False)
 @pytest.mark.xfail_chrome(run=False)
 def testShouldNotHangifDocumentOpenCallIsNeverFollowedByDocumentCloseCall(driver, pages):
     pages.load("document_write_in_onload.html")

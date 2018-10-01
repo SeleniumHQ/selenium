@@ -2,10 +2,12 @@
 ./go javadocs || exit
 
 # Python
-./go py_docs || exit
+./go //py:setup //py:init py_docs || exit
 
 # Ruby
 ./go //rb:docs || exit
+
+git checkout rb/Gemfile.lock
 
 # switch to gh-pages and copy the files
 git checkout gh-pages || exit

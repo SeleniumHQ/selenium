@@ -348,7 +348,13 @@ bot.dom.isContentEditable = function(element) {
 bot.dom.isEditable = function(element) {
   return (bot.dom.isTextual(element) ||
           bot.dom.isFileInput(element) ||
-          bot.dom.isInputType(element, 'range')) &&
+          bot.dom.isInputType(element, 'range') ||
+          bot.dom.isInputType(element, 'date') ||
+          bot.dom.isInputType(element, 'month') ||
+          bot.dom.isInputType(element, 'week') ||
+          bot.dom.isInputType(element, 'time') ||
+          bot.dom.isInputType(element, 'datetime-local') ||
+          bot.dom.isInputType(element, 'color')) &&
       !bot.dom.getProperty(element, 'readOnly');
 };
 
@@ -1257,7 +1263,7 @@ bot.dom.getParentNodeInComposedDom = function(node) {
   var /**@type {Node}*/ parent = node.parentNode;
 
   // Shadow DOM v1
-  if (parent.shadowRoot && node.assignedSlot !== undefined) {
+  if (parent && parent.shadowRoot && node.assignedSlot !== undefined) {
     // Can be null on purpose, meaning it has no parent as
     // it hasn't yet been slotted
     return node.assignedSlot ? node.assignedSlot.parentNode : null;

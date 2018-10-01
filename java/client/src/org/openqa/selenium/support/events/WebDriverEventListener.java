@@ -217,7 +217,7 @@ public interface WebDriverEventListener {
    * @param throwable the exception that will be thrown
    */
   void onException(Throwable throwable, WebDriver driver);
-  
+
   /**
    * Called before {@link org.openqa.selenium.TakesScreenshot#getScreenshotAs(OutputType)}
    * allows the implementation to determine which type of output will be generated
@@ -226,7 +226,7 @@ public interface WebDriverEventListener {
    * @param target target type, @see OutputType
    */
   <X> void beforeGetScreenshotAs(OutputType<X> target);
-  
+
   /**
    * Called after {@link org.openqa.selenium.TakesScreenshot#getScreenshotAs(OutputType)}
    * allows the implementation to determine which type of output was generated
@@ -238,4 +238,20 @@ public interface WebDriverEventListener {
    */
   <X> void afterGetScreenshotAs(OutputType<X> target, X screenshot);
 
+  /**
+   * Called before {@link WebElement#getText()} method is being called
+   *
+   * @param element - {@link WebElement} against which call is being made
+   * @param driver - instance of {@link WebDriver}
+   */
+  void beforeGetText(WebElement element, WebDriver driver);
+
+  /**
+   * Called right after {@link WebElement#getText()} method is being called
+   *
+   * @param element - {@link WebElement} against which call is being made
+   * @param driver - instance of {@link WebDriver}
+   * @param text    - {@link String} object extracted from respective {@link WebElement}
+   */
+  void afterGetText(WebElement element, WebDriver driver, String text);
 }

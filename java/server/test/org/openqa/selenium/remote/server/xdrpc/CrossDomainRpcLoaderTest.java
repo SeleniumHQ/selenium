@@ -22,14 +22,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.openqa.selenium.json.Json;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -38,10 +39,6 @@ import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Unit tests for {@link CrossDomainRpcLoader}.
- */
-@RunWith(JUnit4.class)
 public class CrossDomainRpcLoaderTest {
 
   private HttpServletRequest mockRequest;
@@ -88,7 +85,10 @@ public class CrossDomainRpcLoaderTest {
     HttpServletRequest mockRequest = createJsonRequest("GET", "/", json);
 
     CrossDomainRpc rpc = new CrossDomainRpcLoader().loadRpc(mockRequest);
-    assertEquals("{\"foo\":\"bar\"}", rpc.getData());
+
+    Object data = new Json().toType(rpc.getData(), MAP_TYPE);
+
+    assertEquals(ImmutableMap.of("foo", "bar"), data);
   }
 
   private HttpServletRequest createJsonRequest(final String method,
@@ -106,7 +106,7 @@ public class CrossDomainRpcLoaderTest {
     final ByteArrayInputStream stream = new ByteArrayInputStream(json.toString().getBytes(UTF_8));
     when(mockRequest.getInputStream()).thenReturn(new ServletInputStream() {
       @Override
-      public int read() throws IOException {
+      public int read() {
         return stream.read();
       }
 

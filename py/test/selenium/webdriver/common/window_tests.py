@@ -82,8 +82,6 @@ def test_should_set_the_position_of_the_current_window(driver):
 
 @pytest.mark.xfail_firefox(raises=WebDriverException,
                            reason='Get Window Rect command not implemented')
-@pytest.mark.xfail_remote(raises=WebDriverException,
-                          reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
 def test_should_get_the_rect_of_the_current_window(driver):
@@ -96,8 +94,6 @@ def test_should_get_the_rect_of_the_current_window(driver):
 
 @pytest.mark.xfail_firefox(raises=WebDriverException,
                            reason='Get Window Rect command not implemented')
-@pytest.mark.xfail_remote(raises=WebDriverException,
-                          reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
 def test_should_set_the_rect_of_the_current_window(driver):
@@ -125,8 +121,6 @@ def test_should_set_the_rect_of_the_current_window(driver):
                           reason='Fullscreen command not implemented')
 @pytest.mark.xfail_firefox(raises=WebDriverException,
                            reason='Fullscreen command not implemented')
-@pytest.mark.xfail_remote(raises=WebDriverException,
-                          reason='Fullscreen command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Fullscreen command not implemented')
 @pytest.mark.skipif(os.environ.get('CI') == 'true',
@@ -153,8 +147,6 @@ def test_should_fullscreen_the_current_window(driver):
                           reason='Minimize command not implemented')
 @pytest.mark.xfail_firefox(raises=WebDriverException,
                            reason='Minimize command not implemented')
-@pytest.mark.xfail_remote(raises=WebDriverException,
-                          reason='Minimize command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Minimize command not implemented')
 @pytest.mark.skipif(os.environ.get('CI') == 'true',

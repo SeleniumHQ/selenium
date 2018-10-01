@@ -6,7 +6,6 @@ namespace OpenQA.Selenium.Html5
     public class LocationContextTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of geolocation.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support setting altitude value.")]
@@ -22,7 +21,7 @@ namespace OpenQA.Selenium.Html5
             hasLocationContextDriver.LocationContext.PhysicalLocation = new Location(40.714353, -74.005973, 0.056747);
 
             Location location = hasLocationContextDriver.LocationContext.PhysicalLocation;
-            Assert.IsNotNull(location, "Failed to get location context handle");
+            Assert.That(location, Is.Not.Null, "Failed to get location context handle");
 
             Assert.AreEqual(40.714353, location.Latitude, "Latitudes do not match");
             Assert.AreEqual(-74.005973, location.Longitude, "Longitudes do not match");

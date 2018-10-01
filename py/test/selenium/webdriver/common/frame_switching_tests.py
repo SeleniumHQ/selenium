@@ -228,6 +228,8 @@ def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(driver, pages):
 
 @pytest.mark.xfail_marionette(raises=WebDriverException,
                               reason='https://github.com/mozilla/geckodriver/issues/610')
+@pytest.mark.xfail_remote(raises=WebDriverException,
+                          reason='https://github.com/mozilla/geckodriver/issues/610')
 def testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(0)
@@ -371,6 +373,8 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement
 @pytest.mark.xfail_chrome(raises=NoSuchElementException)
 @pytest.mark.xfail_marionette(raises=WebDriverException,
                               reason='https://github.com/mozilla/geckodriver/issues/614')
+@pytest.mark.xfail_remote(raises=WebDriverException,
+                          reason='https://github.com/mozilla/geckodriver/issues/614')
 @pytest.mark.xfail_webkitgtk(raises=NoSuchElementException)
 def testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")

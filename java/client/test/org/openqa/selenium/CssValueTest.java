@@ -17,10 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.openqa.selenium.support.Color;
@@ -35,12 +32,12 @@ public class CssValueTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("green-parent"));
     Color backgroundColour = Color.fromString(element.getCssValue("background-color"));
 
-    assertEquals(new Color(0, 128, 0, 1), backgroundColour);
+    assertThat(backgroundColour).isEqualTo(new Color(0, 128, 0, 1));
 
     element = driver.findElement(By.id("red-item"));
     backgroundColour = Color.fromString(element.getCssValue("background-color"));
 
-    assertEquals(new Color(255, 0, 0, 1), backgroundColour);
+    assertThat(backgroundColour).isEqualTo(new Color(255, 0, 0, 1));
   }
 
   @Test
@@ -49,11 +46,11 @@ public class CssValueTest extends JUnit4TestBase {
 
     WebElement element = driver.findElement(By.id("namedColor"));
     Color backgroundColour = Color.fromString(element.getCssValue("background-color"));
-    assertEquals(new Color(0, 128, 0, 1), backgroundColour);
+    assertThat(backgroundColour).isEqualTo(new Color(0, 128, 0, 1));
 
     element = driver.findElement(By.id("rgb"));
     backgroundColour = Color.fromString(element.getCssValue("background-color"));
-    assertEquals(new Color(0, 128, 0, 1), backgroundColour);
+    assertThat(backgroundColour).isEqualTo(new Color(0, 128, 0, 1));
   }
 
   @Test
@@ -64,9 +61,7 @@ public class CssValueTest extends JUnit4TestBase {
     String backgroundColour = element.getCssValue("background-color");
 
     // TODO: How should this be standardized? Should it be standardized?
-    assertThat(backgroundColour, anyOf(
-        equalTo("transparent"),
-        equalTo("rgba(0, 0, 0, 0)")));
+    assertThat(backgroundColour).isIn("transparent", "rgba(0, 0, 0, 0)");
   }
 
 }

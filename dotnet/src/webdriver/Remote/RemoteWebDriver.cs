@@ -195,37 +195,7 @@ namespace OpenQA.Selenium.Remote
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("url", value);
-
-                try
-                {
-                    this.Execute(DriverCommand.Get, parameters);
-                }
-                catch (WebDriverTimeoutException)
-                {
-                    // WebDriverTimeoutException is a subclass of WebDriverException,
-                    // and should be rethrown instead of caught by the catch block
-                    // for WebDriverExceptions.
-                    throw;
-                }
-                catch (WebDriverException)
-                {
-                    // Catch the exeception, if any. This is consistent with other
-                    // drivers, in that no exeception is thrown when going to an
-                    // invalid URL.
-                }
-                catch (InvalidOperationException)
-                {
-                    // Catch the exeception, if any. This is consistent with other
-                    // drivers, in that no exeception is thrown when going to an
-                    // invalid URL.
-                }
-                catch (NotImplementedException)
-                {
-                    // Chrome throws NotImplementedException if the URL is invalid.
-                    // Catch the exeception, if any. This is consistent with other
-                    // drivers, in that no exeception is thrown when going to an
-                    // invalid URL.
-                }
+                this.Execute(DriverCommand.Get, parameters);
             }
         }
 
@@ -291,6 +261,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets an <see cref="IKeyboard"/> object for sending keystrokes to the browser.
         /// </summary>
+        [Obsolete("This property was never intended to be used in user code. Use the Actions or ActionBuilder class to send direct keyboard input.")]
         public IKeyboard Keyboard
         {
             get { return this.keyboard; }
@@ -299,6 +270,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets an <see cref="IMouse"/> object for sending mouse commands to the browser.
         /// </summary>
+        [Obsolete("This property was never intended to be used in user code. Use the Actions or ActionBuilder class to send direct mouse input.")]
         public IMouse Mouse
         {
             get { return this.mouse; }
@@ -991,7 +963,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>The selector with invalid characters escaped.</returns>
         internal static string EscapeCssSelector(string selector)
         {
-            string escaped = Regex.Replace(selector, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+            string escaped = Regex.Replace(selector, @"([ '""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
             if (selector.Length > 0 && char.IsDigit(selector[0]))
             {
                 escaped = @"\" + (30 + int.Parse(selector.Substring(0, 1), CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture) + " " + selector.Substring(1);
@@ -1091,21 +1063,58 @@ namespace OpenQA.Selenium.Remote
         protected void StartSession(ICapabilities desiredCapabilities)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("desiredCapabilities", this.GetLegacyCapabilitiesDictionary(desiredCapabilities));
 
-            Dictionary<string, object> firstMatchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
+            // If the object passed into the RemoteWebDriver constructor is a
+            // RemoteSessionSettings object, it is expected that all intermediate
+            // and end nodes are compliant with the W3C WebDriver Specification,
+            // and therefore will already contain all of the appropriate values
+            // for establishing a session.
+            RemoteSessionSettings remoteSettings = desiredCapabilities as RemoteSessionSettings;
+            if (remoteSettings == null)
+            {
+                parameters.Add("desiredCapabilities", this.GetLegacyCapabilitiesDictionary(desiredCapabilities));
 
-            List<object> firstMatchCapabilitiesList = new List<object>();
-            firstMatchCapabilitiesList.Add(firstMatchCapabilities);
+                Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
 
-            Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
-            specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
-            parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
+                // TODO: Remove this when chromedriver bug 2371 is fixed.
+                // (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2371)
+                // Chromedriver does not recognize the W3C capability when put in the
+                // "firstMatch" property of the new session command payload, but it does
+                // recognize it in the "alwaysMatch" property. Temporarily, and only if
+                // we are using a set of capabilities for Chrome where the W3C capability
+                // is specified, use them in alwaysMatch instead of firstMatch. This
+                // piece of code is intended to only be temporary.
+                bool forceAlwaysMatch = false;
+                if (matchCapabilities.ContainsKey(Chrome.ChromeOptions.ForceAlwaysMatchCapabilityName))
+                {
+                    forceAlwaysMatch = true;
+                    matchCapabilities.Remove(Chrome.ChromeOptions.ForceAlwaysMatchCapabilityName);
+                }
+
+                Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
+                if (forceAlwaysMatch)
+                {
+                    specCompliantCapabilitiesDictionary["alwaysMatch"] = matchCapabilities;
+                }
+                else
+                {
+                    List<object> firstMatchCapabilitiesList = new List<object>();
+                    firstMatchCapabilitiesList.Add(matchCapabilities);
+
+                    specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
+                }
+
+                parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
+            }
+            else
+            {
+                parameters.Add("capabilities", remoteSettings.ToDictionary());
+            }
 
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
             Dictionary<string, object> rawCapabilities = (Dictionary<string, object>)response.Value;
-            DesiredCapabilities returnedCapabilities = new DesiredCapabilities(rawCapabilities);
+            ReturnedCapabilities returnedCapabilities = new ReturnedCapabilities(rawCapabilities);
             this.capabilities = returnedCapabilities;
             this.sessionId = new SessionId(response.SessionId);
         }
@@ -1120,7 +1129,7 @@ namespace OpenQA.Selenium.Remote
         protected virtual Dictionary<string, object> GetLegacyCapabilitiesDictionary(ICapabilities legacyCapabilities)
         {
             Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
-            DesiredCapabilities capabilitiesObject = legacyCapabilities as DesiredCapabilities;
+            IHasCapabilitiesDictionary capabilitiesObject = legacyCapabilities as IHasCapabilitiesDictionary;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
                 capabilitiesDictionary.Add(entry.Key, entry.Value);
@@ -1139,7 +1148,7 @@ namespace OpenQA.Selenium.Remote
         protected virtual Dictionary<string, object> GetCapabilitiesDictionary(ICapabilities capabilitiesToConvert)
         {
             Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
-            DesiredCapabilities capabilitiesObject = capabilitiesToConvert as DesiredCapabilities;
+            IHasCapabilitiesDictionary capabilitiesObject = capabilitiesToConvert as IHasCapabilitiesDictionary;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
                 if (CapabilityType.IsSpecCompliantCapabilityName(entry.Key))
@@ -1223,18 +1232,6 @@ namespace OpenQA.Selenium.Remote
             parameters.Add("value", value);
             Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
             return this.GetElementsFromResponse(commandResponse);
-        }
-
-        /// <summary>
-        /// Creates a <see cref="RemoteWebElement"/> with the specified ID.
-        /// </summary>
-        /// <param name="elementId">The ID of this element.</param>
-        /// <returns>A <see cref="RemoteWebElement"/> with the specified ID.</returns>
-        [Obsolete("This method is no longer called to create RemoteWebElement instances. Implement a subclass of RemoteWebElementFactory and set the ElementFactory property to create instances of custom RemoteWebElement subclasses.")]
-        protected virtual RemoteWebElement CreateElement(string elementId)
-        {
-            RemoteWebElement toReturn = new RemoteWebElement(this, elementId);
-            return toReturn;
         }
 
         /// <summary>
@@ -1438,6 +1435,9 @@ namespace OpenQA.Selenium.Remote
                         case WebDriverResult.UnexpectedJavaScriptError:
                             throw new WebDriverException(errorMessage);
 
+                        case WebDriverResult.MoveTargetOutOfBounds:
+                            throw new WebDriverException(errorMessage);
+
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));
                     }
@@ -1468,17 +1468,9 @@ namespace OpenQA.Selenium.Remote
 
             if (resultAsDictionary != null)
             {
-                if (resultAsDictionary.ContainsKey(RemoteWebElement.ElementReferencePropertyName))
+                if (this.elementFactory.ContainsElementReference(resultAsDictionary))
                 {
-                    string id = (string)resultAsDictionary[RemoteWebElement.ElementReferencePropertyName];
-                    RemoteWebElement element = this.CreateElement(id);
-                    returnValue = element;
-                }
-                else if (resultAsDictionary.ContainsKey(RemoteWebElement.LegacyElementReferencePropertyName))
-                {
-                    string id = (string)resultAsDictionary[RemoteWebElement.LegacyElementReferencePropertyName];
-                    RemoteWebElement element = this.CreateElement(id);
-                    returnValue = element;
+                    returnValue = this.elementFactory.CreateElement(resultAsDictionary);
                 }
                 else
                 {

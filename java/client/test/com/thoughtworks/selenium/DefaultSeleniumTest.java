@@ -27,7 +27,7 @@ public class DefaultSeleniumTest {
   private static final String prefix = "setContext,com.thoughtworks.selenium.DefaultSeleniumTest: ";
 
   @Test
-  public void testBannerSimple() throws Throwable {
+  public void testBannerSimple() {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
     selenium.showContextualBanner();
@@ -35,7 +35,7 @@ public class DefaultSeleniumTest {
   }
 
   @Test
-  public void testMoreComplexExample() throws Throwable {
+  public void testMoreComplexExample() {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
     selenium.showContextualBanner();
@@ -43,7 +43,7 @@ public class DefaultSeleniumTest {
   }
 
   @Test
-  public void testEvenMOREComplexExample() throws Throwable {
+  public void testEvenMOREComplexExample() {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
     selenium.showContextualBanner();

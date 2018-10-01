@@ -34,9 +34,10 @@ import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 import javax.management.MalformedObjectNameException;
@@ -114,8 +115,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   private volatile boolean down = false;
   private volatile boolean poll = true;
 
-  // TODO freynaud
-  private List<RemoteException> errors = new CopyOnWriteArrayList<>();
+  private final List<RemoteException> errors = Collections.synchronizedList(new ArrayList<>());
   private Thread pollingThread = null;
 
   @ManagedAttribute
@@ -175,9 +175,10 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   }
 
   public void addNewEvent(RemoteException event) {
-    errors.add(event);
-    onEvent(errors, event);
-
+    synchronized (errors) {
+      errors.add(event);
+      onEvent(new ArrayList<>(errors), event);
+    }
   }
 
   public void onEvent(List<RemoteException> events, RemoteException lastInserted) {
@@ -185,6 +186,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
       if (e instanceof RemoteNotReachableException) {
         LOG.info(e.getMessage());
         down = true;
+        // We are already in a synchronized block, so do not need to synchronize again
         this.errors.clear();
       }
       if (e instanceof RemoteUnregisterException) {

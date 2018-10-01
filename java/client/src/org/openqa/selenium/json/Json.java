@@ -17,35 +17,33 @@
 
 package org.openqa.selenium.json;
 
-import com.google.common.io.CharStreams;
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UncheckedIOException;
+import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
 public class Json {
-  static final Gson GSON = new GsonBuilder()
-      .setLenient()
-      .serializeNulls()
-      .disableHtmlEscaping()
-      .create();
-
   public static final Type LIST_OF_MAPS_TYPE = new TypeToken<List<Map<String, Object>>>() {}.getType();
   public static final Type MAP_TYPE = new TypeToken<Map<String, Object>>() {}.getType();
   public static final Type OBJECT_TYPE = new TypeToken<Object>() {}.getType();
 
   private final JsonTypeCoercer fromJson = new JsonTypeCoercer();
-  private final BeanToJsonConverter toJson = new BeanToJsonConverter();
 
   public String toJson(Object toConvert) {
-    return toJson.convert(toConvert);
+    try (Writer writer = new StringWriter();
+        JsonOutput jsonOutput = newOutput(writer)) {
+      jsonOutput.write(toConvert);
+      return writer.toString();
+    } catch (IOException e) {
+      throw new JsonException(e);
+    }
   }
 
   public <T> T toType(String source, Type typeOfT) {
@@ -60,18 +58,16 @@ public class Json {
     try (StringReader reader = new StringReader(source);
          JsonInput json = newInput(reader)) {
       return fromJson.coerce(json, typeOfT, setter);
+    } catch (JsonException e) {
+      throw new JsonException("Unable to parse: " + source, e);
     }
   }
 
   public JsonInput newInput(Reader from) throws UncheckedIOException {
-    return new JsonInput(GSON.newJsonReader(from), fromJson);
+    return new JsonInput(from, fromJson);
   }
 
   public JsonOutput newOutput(Appendable to) throws UncheckedIOException {
-    try {
-      return new JsonOutput(toJson, GSON.newJsonWriter(CharStreams.asWriter(to)));
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    return new JsonOutput(to);
   }
 }

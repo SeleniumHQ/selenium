@@ -69,10 +69,18 @@ std::wstring StringUtilities::ToWString(const std::string& input) {
 
   if (output.size() > 0) {
     if (FALSE == ::IsNormalizedString(NormalizationC, output.c_str(), -1)) {
-      int required = ::NormalizeString(NormalizationC, output.c_str(), -1, NULL, 0);
+      int required = ::NormalizeString(NormalizationC,
+                                       output.c_str(),
+                                       -1,
+                                       NULL,
+                                       0);
       output_buffer.clear();
       output_buffer.resize(required);
-      ::NormalizeString(NormalizationC, output.c_str(), -1, &output_buffer[0], output_buffer.size());
+      ::NormalizeString(NormalizationC,
+                        output.c_str(),
+                        -1,
+                        &output_buffer[0],
+                        static_cast<int>(output_buffer.size()));
       output = &output_buffer[0];
     }
   }

@@ -24,14 +24,19 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -149,23 +154,15 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
     builder.append(getRequestQueue());
 
-
-    if (request.getParameter("config") != null) {
-      builder.append(getConfigInfo(request.getParameter("configDebug") != null));
-    } else {
-      builder.append("<a href='?config=true&configDebug=true'>view config</a>");
-    }
-
+    builder.append(getConfigInfo());
 
     builder.append("</div>");
     builder.append("</body>");
     builder.append("</html>");
 
-    InputStream in = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
-    try {
+    try (InputStream in = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"))) {
       ByteStreams.copy(in, response.getOutputStream());
     } finally {
-      in.close();
       response.getOutputStream().close();
     }
   }
@@ -198,7 +195,6 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append("</h2>");
     builder.append("<div><a id='helplink' target='_blank' href='https://github.com/SeleniumHQ/selenium/wiki/Grid2'>Help</a></div>");
     builder.append("</div>");
-    builder.append("");
     return builder.toString();
   }
 
@@ -208,32 +204,56 @@ public class ConsoleServlet extends RegistryBasedServlet {
    *
    * @return html representation of the hub config
    */
-  private String getConfigInfo(boolean verbose) {
-
+  private String getConfigInfo() {
     StringBuilder builder = new StringBuilder();
 
+    builder.append("<div id='hub-config-container'>");
     GridHubConfiguration config = getRegistry().getHub().getConfiguration();
-    builder.append("<div  id='hub-config'>");
+    builder.append("<div id='hub-config-content'>");
     builder.append("<b>Config for the hub :</b><br/>");
     builder.append(prettyHtmlPrint(config));
+    builder.append(getVerboseConfig()); // Display verbose configuration details
+    builder.append("</div>"); // End of Config Content
 
-    if (verbose) {
+    // Display View/Hide Link at the bottom beneath the details
+    builder.append("<a id='config-view-toggle' href='#'>View Config</a>");
+    builder.append("</div>"); // End of Config Container
+    return builder.toString();
+  }
 
-      GridHubConfiguration tmp = new GridHubConfiguration();
+  /**
+   * Displays more detailed configuration
+   * @return html representation of the verbose hub config
+   */
+  private String getVerboseConfig() {
+    StringBuilder builder = new StringBuilder();
+    GridHubConfiguration config = getRegistry().getHub().getConfiguration();
 
-      builder.append("<b>Config details :</b><br/>");
-      builder.append("<b>hub launched with :</b>");
-      builder.append(config.toString());
+    builder.append("<div id='verbose-config-container'>");
+    builder.append("<a id='verbose-config-view-toggle' href='#'>View Verbose</a>");
 
-      builder.append("<br/><b>the final configuration comes from :</b><br/>");
-      builder.append("<b>the default :</b><br/>");
-      builder.append(prettyHtmlPrint(tmp));
+    builder.append("<div id='verbose-config-content'>");
+    GridHubConfiguration tmp = new GridHubConfiguration();
 
-      builder.append("<br/><b>updated with params :</b></br>");
-      tmp.merge(config);
-      builder.append(prettyHtmlPrint(tmp));
+    builder.append("<br/><b>The final configuration comes from:</b><br/>");
+    builder.append("<b>the default :</b><br/>");
+    builder.append(prettyHtmlPrint(tmp));
+
+    if (config.getCliConfig() != null) {
+      builder.append("<b>updated with command line options:</b><br/>");
+      builder.append(String.join(" ", config.getCliConfig().getRawArgs()));
+
+      if (config.getCliConfig().getConfigFile() != null) {
+        builder.append("<br/><b>and configuration loaded from ").append(config.getCliConfig().getConfigFile()).append(":</b><br/>");
+        try {
+          builder.append(String.join("<br/>", Files.readAllLines(new File(config.getCliConfig().getConfigFile()).toPath())));
+        } catch (IOException e) {
+          builder.append("<b>").append(e.getMessage()).append("</b>");
+        }
+      }
     }
-    builder.append("</div>");
+    builder.append("</div>"); // End of Verbose Content
+    builder.append("</div>"); // End of Verbose Container
     return builder.toString();
   }
 

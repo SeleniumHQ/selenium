@@ -1,5 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
-
 java_library(
     name = "node",
     srcs = glob(["*.java"]),

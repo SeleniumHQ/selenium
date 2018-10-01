@@ -42,7 +42,7 @@ public class HttpRequest extends HttpMessage {
   }
 
   /**
-   * Get a query parameter. The implementation will take care of decoding the from percent encoding.
+   * Get a query parameter. The implementation will take care of decoding from the percent encoding.
    */
   public String getQueryParameter(String name) {
     return queryParameters.get(name).stream().findFirst().orElse(null);

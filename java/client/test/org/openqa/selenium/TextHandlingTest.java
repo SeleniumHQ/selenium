@@ -17,17 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
@@ -36,17 +26,12 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
-
-import java.util.regex.Pattern;
 
 public class TextHandlingTest extends JUnit4TestBase {
 
@@ -56,10 +41,10 @@ public class TextHandlingTest extends JUnit4TestBase {
   public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {
     driver.get(pages.simpleTestPage);
     String selectText = driver.findElement(By.id("oneline")).getText();
-    assertThat(selectText, equalTo("A single line of text"));
+    assertThat(selectText).isEqualTo("A single line of text");
 
     String getText = driver.findElement(By.id("oneline")).getText();
-    assertThat(getText, equalTo("A single line of text"));
+    assertThat(getText).isEqualTo("A single line of text");
   }
 
   @Test
@@ -67,9 +52,10 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("multiline")).getText();
 
-    assertThat(text.contains("A div containing"), is(true));
-    assertThat(text.contains("More than one line of text"), is(true));
-    assertThat(text.contains("and block level elements"), is(true));
+    assertThat(text).contains(
+        "A div containing",
+        "More than one line of text",
+        "and block level elements");
   }
 
   @Test
@@ -77,11 +63,9 @@ public class TextHandlingTest extends JUnit4TestBase {
   public void testShouldIgnoreScriptElements() {
     driver.get(pages.javascriptEnhancedForm);
     WebElement labelForUsername = driver.findElement(By.id("labelforusername"));
-    String text = labelForUsername.getText();
 
-    assertThat(labelForUsername.findElements(By.tagName("script")).size(), is(1));
-    assertThat(text, not(containsString("document.getElementById")));
-    assertThat(text, is("Username:"));
+    assertThat(labelForUsername.findElements(By.tagName("script"))).hasSize(1);
+    assertThat(labelForUsername.getText()).isEqualTo("Username:");
   }
 
   @Test
@@ -90,9 +74,10 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("multiline")).getText();
 
-    assertThat(text, startsWith("A div containing" + newLine));
-    assertThat(text, containsString("More than one line of text" + newLine));
-    assertThat(text, endsWith("and block level elements"));
+    assertThat(text)
+        .startsWith("A div containing" + newLine)
+        .contains("More than one line of text" + newLine)
+        .endsWith("and block level elements");
   }
 
   @Test
@@ -101,7 +86,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("lotsofspaces")).getText();
 
-    assertThat(text, equalTo("This line has lots of spaces."));
+    assertThat(text).isEqualTo("This line has lots of spaces.");
   }
 
   @Test
@@ -110,8 +95,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("multiline")).getText();
 
-    assertThat(text, startsWith("A div containing"));
-    assertThat(text, endsWith("block level elements"));
+    assertThat(text).startsWith("A div containing").endsWith("block level elements");
   }
 
   @Test
@@ -120,44 +104,43 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("nbsp")).getText();
 
-    assertThat(text, equalTo("This line has a non-breaking space"));
+    assertThat(text).isEqualTo("This line has a non-breaking space");
   }
 
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldNotCollapseANonBreakingSpaces() {
     driver.get(pages.simpleTestPage);
-    WebElement element = driver.findElement(By.id("nbspandspaces"));
-    String text = element.getText();
+    String text = driver.findElement(By.id("nbspandspaces")).getText();
 
-    assertThat(text, equalTo("This line has a   non-breaking space and spaces"));
+    assertThat(text).isEqualTo("This line has a   non-breaking space and spaces");
   }
 
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldNotTrimNonBreakingSpacesAtTheEndOfALineInTheMiddleOfText() {
     driver.get(pages.simpleTestPage);
-    WebElement element = driver.findElement(By.id("multilinenbsp"));
-    String text = element.getText();
-    assertThat(text, startsWith("These lines  \n"));
+    String text = driver.findElement(By.id("multilinenbsp")).getText();
+
+    assertThat(text).startsWith("These lines  \n");
   }
 
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldNotTrimNonBreakingSpacesAtTheStartOfALineInTheMiddleOfText() {
     driver.get(pages.simpleTestPage);
-    WebElement element = driver.findElement(By.id("multilinenbsp"));
-    String text = element.getText();
-    assertThat(text, containsString("\n  have"));
+    String text = driver.findElement(By.id("multilinenbsp")).getText();
+
+    assertThat(text).contains("\n  have");
   }
 
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldNotTrimTrailingNonBreakingSpacesInMultilineText() {
     driver.get(pages.simpleTestPage);
-    WebElement element = driver.findElement(By.id("multilinenbsp"));
-    String text = element.getText();
-    assertThat(text, endsWith("trailing NBSPs  "));
+    String text = driver.findElement(By.id("multilinenbsp")).getText();
+
+    assertThat(text).endsWith("trailing NBSPs  ");
   }
 
   @Test
@@ -166,8 +149,8 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("inline")).getText();
 
-    assertThat(text,
-        equalTo("This line has text within elements that are meant to be displayed inline"));
+    assertThat(text)
+        .isEqualTo("This line has text within elements that are meant to be displayed inline");
   }
 
   @Test
@@ -175,7 +158,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("span")).getText();
 
-    assertThat(text, equalTo("An inline element"));
+    assertThat(text).isEqualTo("An inline element");
   }
 
   @Test
@@ -183,10 +166,10 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("preformatted")).getText();
 
-    assertThat(text, equalTo("   This section has a preformatted\n" +
-        "    text block    \n" +
-        "  split in four lines\n" +
-        "         "));
+    assertThat(text).isEqualTo("   This section has a preformatted\n" +
+                               "    text block    \n" +
+                               "  split in four lines\n" +
+                               "         ");
   }
 
   @Test
@@ -194,12 +177,13 @@ public class TextHandlingTest extends JUnit4TestBase {
   public void testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("div-with-pre")).getText();
-    assertThat(text, equalTo("before pre\n" +
-        "   This section has a preformatted\n" +
-        "    text block    \n" +
-        "  split in four lines\n" +
-        "         \n" +
-        "after pre"));
+
+    assertThat(text).isEqualTo("before pre\n" +
+                               "   This section has a preformatted\n" +
+                               "    text block    \n" +
+                               "  split in four lines\n" +
+                               "         \n" +
+                               "after pre");
   }
 
   @Test
@@ -216,7 +200,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     textarea.sendKeys(expectedText);
 
     String seenText = textarea.getAttribute("value");
-    assertThat(seenText, equalTo(expectedText));
+    assertThat(seenText).isEqualTo(expectedText);
   }
 
   @Test
@@ -227,24 +211,24 @@ public class TextHandlingTest extends JUnit4TestBase {
     input.sendKeys(expectedValue);
     String seenValue = input.getAttribute("value");
 
-    assertThat(seenValue, equalTo(expectedValue));
+    assertThat(seenValue).isEqualTo(expectedValue);
   }
 
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldReturnEmptyStringWhenTextIsOnlySpaces() {
     driver.get(pages.xhtmlTestPage);
-
     String text = driver.findElement(By.id("spaces")).getText();
-    assertThat(text, equalTo(""));
+
+    assertThat(text).isEqualTo("");
   }
 
   @Test
   public void testShouldReturnEmptyStringWhenTextIsEmpty() {
     driver.get(pages.xhtmlTestPage);
-
     String text = driver.findElement(By.id("empty")).getText();
-    assertThat(text, equalTo(""));
+
+    assertThat(text).isEqualTo("");
   }
 
   @Test
@@ -252,48 +236,46 @@ public class TextHandlingTest extends JUnit4TestBase {
     assumeFalse("IE version < 9 doesn't support application/xhtml+xml mime type", TestUtilities.isOldIe(driver));
 
     driver.get(pages.xhtmlFormPage);
-
     String text = driver.findElement(By.id("self-closed")).getText();
-    assertThat(text, equalTo(""));
+
+    assertThat(text).isEqualTo("");
   }
 
   @Test
   public void testShouldNotTrimSpacesWhenLineWraps() {
     driver.get(pages.simpleTestPage);
-
     String text = driver.findElement(By.xpath("//table/tbody/tr[1]/td[1]")).getText();
-    assertThat(text, equalTo("beforeSpace afterSpace"));
+
+    assertThat(text).isEqualTo("beforeSpace afterSpace");
   }
 
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldHandleSiblingBlockLevelElements() {
     driver.get(pages.simpleTestPage);
-
     String text = driver.findElement(By.id("twoblocks")).getText();
 
-    assertThat(text, is("Some text" + newLine + "Some more text"));
+    assertThat(text).isEqualTo("Some text" + newLine + "Some more text");
   }
 
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(pages.simpleTestPage);
-
     String text = driver.findElement(By.id("nestedblocks")).getText();
 
-    assertThat(text, is("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine
-        + "and also" + newLine + "Brie"));
+    assertThat(text)
+        .isEqualTo("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine
+                   + "and also" + newLine + "Brie");
   }
 
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldHandleWhitespaceInInlineElements() {
     driver.get(pages.simpleTestPage);
-
     String text = driver.findElement(By.id("inlinespan")).getText();
 
-    assertThat(text, is("line has text"));
+    assertThat(text).isEqualTo("line has text");
   }
 
   @Test
@@ -301,7 +283,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.macbethPage);
     String source = driver.getPageSource().trim().toLowerCase();
 
-    assertThat(source.endsWith("</html>"), is(true));
+    assertThat(source).endsWith("</html>");
   }
 
   @Test
@@ -312,22 +294,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     WebElement label = driver.findElement(By.id("label1"));
     String labelText = label.getText();
 
-    assertThat(labelText, matchesPattern("foo[\\n\\r]+bar"));
-  }
-
-  private Matcher<String> matchesPattern(String javaRegex) {
-    final Pattern pattern = Pattern.compile(javaRegex);
-
-    return new TypeSafeMatcher<String>() {
-      @Override
-      public boolean matchesSafely(String s) {
-        return pattern.matcher(s).matches();
-      }
-
-      public void describeTo(Description description) {
-        description.appendText("a string matching the pattern " + pattern);
-      }
-    };
+    assertThat(labelText).matches("foo[\\n\\r]+bar");
   }
 
   @Test
@@ -338,8 +305,8 @@ public class TextHandlingTest extends JUnit4TestBase {
     String empty = driver.findElement(By.id("suppressedParagraph")).getText();
     String explicit = driver.findElement(By.id("outer")).getText();
 
-    assertEquals("", empty);
-    assertEquals("sub-element that is explicitly visible", explicit);
+    assertThat(empty).isEqualTo("");
+    assertThat(explicit).isEqualTo("sub-element that is explicitly visible");
   }
 
   @Test
@@ -350,22 +317,23 @@ public class TextHandlingTest extends JUnit4TestBase {
     WebElement tr = driver.findElement(By.id("hidden_text"));
     String text = tr.getText();
 
-    assertTrue(text.contains("some text"));
-    assertFalse(text.contains("some more text"));
+    assertThat(text).contains("some text").doesNotContain("some more text");
   }
 
   @Test
   public void testTextOfAnInputFieldShouldBeEmpty() {
     driver.get(pages.formPage);
-    WebElement input = driver.findElement(By.id("inputWithText"));
-    assertEquals("", input.getText());
+    String text = driver.findElement(By.id("inputWithText")).getText();
+
+    assertThat(text).isEqualTo("");
   }
 
   @Test
   public void testTextOfATextAreaShouldBeEqualToItsDefaultText() {
     driver.get(pages.formPage);
-    WebElement area = driver.findElement(By.id("withText"));
-    assertEquals("Example text", area.getText());
+    String text = driver.findElement(By.id("withText")).getText();
+
+    assertThat(text).isEqualTo("Example text");
   }
 
   @Test
@@ -375,7 +343,8 @@ public class TextHandlingTest extends JUnit4TestBase {
     WebElement area = driver.findElement(By.id("withText"));
     String oldText = area.getText();
     area.sendKeys("New Text");
-    assertEquals(oldText, area.getText());
+
+    assertThat(area.getText()).isEqualTo(oldText);
   }
 
   @Test
@@ -385,22 +354,21 @@ public class TextHandlingTest extends JUnit4TestBase {
     WebElement area = driver.findElement(By.id("withText"));
     String oldText = area.getAttribute("value");
     ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]", area, "New Text");
-    assertEquals(oldText, area.getText());
+    assertThat(area.getText()).isEqualTo(oldText);
   }
 
   @Test
   public void testShouldGetTextWhichIsAValidJSONObject() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("simpleJsonText"));
-    assertEquals("{a=\"b\", c=1, d=true}", element.getText());
-    // assertEquals("{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.getText());
+    assertThat(element.getText()).isEqualTo("{a=\"b\", c=1, d=true}");
   }
 
   @Test
   public void testShouldGetTextWhichIsAValidComplexJSONObject() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("complexJsonText"));
-    assertEquals("{a=\"\\\\b\\\\\\\"\'\\\'\"}", element.getText());
+    assertThat(element.getText()).isEqualTo("{a=\"\\\\b\\\\\\\"\'\\\'\"}");
   }
 
   @Test
@@ -411,11 +379,11 @@ public class TextHandlingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("EH")).findElement(By.tagName("nobr"));
     String text = element.getText();
     String expected = "Some notes";
-    assertNotSame("RTL mark should not be present", text.codePointAt(0), 8206);
+    assertThat(text.codePointAt(0)).describedAs("RTL mark should not be present").isNotEqualTo(8206);
     // Note: If this assertion fails but the content of the strings *looks* the same
     // it may be because of hidden unicode LTR character being included in the string.
     // That's the reason for the previous assert.
-    assertEquals(expected, element.getText());
+    assertThat(element.getText()).isEqualTo(expected);
   }
 
   @Test
@@ -424,7 +392,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("trimmedSpace")).getText();
 
-    assertEquals("test", text);
+    assertThat(text).isEqualTo("test");
   }
 
   @Test
@@ -434,9 +402,9 @@ public class TextHandlingTest extends JUnit4TestBase {
                   "<div id='comma'>12,345</div>",
                   "<div id='space'>12 345</div>")));
 
-    assertThat(driver.findElement(By.id("point")).getText(), is("12.345"));
-    assertThat(driver.findElement(By.id("comma")).getText(), is("12,345"));
-    assertThat(driver.findElement(By.id("space")).getText(), is("12 345"));
+    assertThat(driver.findElement(By.id("point")).getText()).isEqualTo("12.345");
+    assertThat(driver.findElement(By.id("comma")).getText()).isEqualTo("12,345");
+    assertThat(driver.findElement(By.id("space")).getText()).isEqualTo("12 345");
   }
 
   @Test
@@ -445,10 +413,12 @@ public class TextHandlingTest extends JUnit4TestBase {
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void canHandleTextTransformProperty() {
     driver.get(pages.simpleTestPage);
-    assertThat(driver.findElement(By.id("capitalized")).getText(), is(
-        isChrome(driver) ? "Hello, World! Bla-Bla-BLA" : "Hello, World! Bla-bla-BLA"));
-    assertThat(driver.findElement(By.id("lowercased")).getText(), is("hello, world! bla-bla-bla"));
-    assertThat(driver.findElement(By.id("uppercased")).getText(), is("HELLO, WORLD! BLA-BLA-BLA"));
+    assertThat(driver.findElement(By.id("capitalized")).getText())
+        .isEqualTo(isChrome(driver) ? "Hello, World! Bla-Bla-BLA" : "Hello, World! Bla-bla-BLA");
+    assertThat(driver.findElement(By.id("lowercased")).getText())
+        .isEqualTo("hello, world! bla-bla-bla");
+    assertThat(driver.findElement(By.id("uppercased")).getText())
+        .isEqualTo("HELLO, WORLD! BLA-BLA-BLA");
   }
 
 }

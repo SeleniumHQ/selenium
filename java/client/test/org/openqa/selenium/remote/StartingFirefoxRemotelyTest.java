@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.After;
 import org.junit.Assume;
@@ -68,7 +68,7 @@ public class StartingFirefoxRemotelyTest extends JUnit4TestBase {
 
     localDriver = new RemoteWebDriver(remoteUrl, caps);
     localDriver.get(pages.xhtmlTestPage);
-    assertEquals("XHTML Test Page", localDriver.getTitle());
+    assertThat(localDriver.getTitle()).isEqualTo("XHTML Test Page");
   }
 
   @Test
@@ -79,7 +79,7 @@ public class StartingFirefoxRemotelyTest extends JUnit4TestBase {
 
     localDriver = new RemoteWebDriver(remoteUrl, caps);
     localDriver.get(pages.xhtmlTestPage);
-    assertEquals("XHTML Test Page", localDriver.getTitle());
+    assertThat(localDriver.getTitle()).isEqualTo("XHTML Test Page");
   }
 
   @Test
@@ -88,13 +88,13 @@ public class StartingFirefoxRemotelyTest extends JUnit4TestBase {
 
     localDriver = new RemoteWebDriver(remoteUrl, options);
     localDriver.get(pages.xhtmlTestPage);
-    assertEquals("XHTML Test Page", localDriver.getTitle());
+    assertThat(localDriver.getTitle()).isEqualTo("XHTML Test Page");
   }
 
   @Test
   public void canStartFirefoxWithoutAnyConfigurationOptions() {
     localDriver = new RemoteWebDriver(remoteUrl, new FirefoxOptions());
     localDriver.get(pages.xhtmlTestPage);
-    assertEquals("XHTML Test Page", localDriver.getTitle());
+    assertThat(localDriver.getTitle()).isEqualTo("XHTML Test Page");
   }
 }

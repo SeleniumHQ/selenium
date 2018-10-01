@@ -17,13 +17,17 @@
 
 package org.openqa.selenium.html5;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.byLessThan;
 import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.testing.Driver.CHROME;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.testing.Driver;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 public class LocationContextTest  extends JUnit4TestBase {
 
@@ -33,15 +37,33 @@ public class LocationContextTest  extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldSetAndGetLocation() {
+  public void testShouldSetAndGetLatitude() {
     driver.get(pages.html5Page);
 
-    ((LocationContext) driver).setLocation(
-        new Location(40.714353, -74.005973, 0.056747));
+    ((LocationContext) driver).setLocation(new Location(40.714353, -74.005973, 0.056747));
     Location location = ((LocationContext) driver).location();
-    assertNotNull(location);
-    assertEquals(40.714353, location.getLatitude(), 0.000001);
-    assertEquals(-74.005973, location.getLongitude(), 0.000001);
-    assertEquals(0.056747, location.getAltitude(), 0.000001);
+    assertThat(location).isNotNull();
+    assertThat(location.getLatitude()).isCloseTo(40.714353, byLessThan(0.000001));
+  }
+
+  @Test
+  public void testShouldSetAndGetLongitude() {
+    driver.get(pages.html5Page);
+
+    ((LocationContext) driver).setLocation(new Location(40.714353, -74.005973, 0.056747));
+    Location location = ((LocationContext) driver).location();
+    assertThat(location).isNotNull();
+    assertThat(location.getLongitude()).isCloseTo(-74.005973, byLessThan(0.000001));
+  }
+
+  @Test
+  @NotYetImplemented(CHROME)
+  public void testShouldSetAndGetAltitude() {
+    driver.get(pages.html5Page);
+
+    ((LocationContext) driver).setLocation(new Location(40.714353, -74.005973, 0.056747));
+    Location location = ((LocationContext) driver).location();
+    assertThat(location).isNotNull();
+    assertThat(location.getAltitude()).isCloseTo(0.056747, byLessThan(0.000001));
   }
 }

@@ -20,66 +20,124 @@ package org.openqa.selenium.json;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class SimplePropertyDescriptor {
-  private String name;
-  private Method readMethod;
-  private Method writeMethod;
 
-  public SimplePropertyDescriptor() {
-  }
+  private final static Function<Object, Object> GET_CLASS_NAME = obj -> {
+    if (obj == null) {
+      return null;
+    }
 
-  public SimplePropertyDescriptor(String name, Method readMethod, Method writeMethod) {
+    if (obj instanceof Class) {
+      return ((Class<?>) obj).getName();
+    }
+
+    return obj.getClass().getName();
+  };
+
+  private final String name;
+  private final Function<Object, Object> read;
+  private final Method write;
+
+  public SimplePropertyDescriptor(String name, Function<Object, Object> read, Method write) {
     this.name = name;
-    this.readMethod = readMethod;
-    this.writeMethod = writeMethod;
+    this.read = read;
+    this.write = write;
   }
 
   public String getName() {
     return name;
   }
 
-  public Method getReadMethod() {
-    return readMethod;
+  public Function<Object, Object> getReadMethod() {
+    return read;
   }
 
   public Method getWriteMethod() {
-    return writeMethod;
+    return write;
   }
 
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
     Map<String, SimplePropertyDescriptor> properties = new HashMap<>();
+
+    properties.put(
+        "class",
+        new SimplePropertyDescriptor("class", GET_CLASS_NAME, null));
+
     for (Method m : clazz.getMethods()) {
-      String methodName = m.getName();
-      if (methodName.length() > 2 && methodName.startsWith("is")) {
-        String propertyName = uncapitalize(methodName.substring(2));
-        if (properties.containsKey(propertyName))
-          properties.get(propertyName).readMethod = m;
-        else
-          properties.put(propertyName, new SimplePropertyDescriptor(propertyName, m, null));
-      }
-      if (methodName.length() <= 3) {
+      if (Class.class.equals(m.getDeclaringClass()) ||
+          Object.class.equals(m.getDeclaringClass())) {
         continue;
       }
-      String propertyName = uncapitalize(methodName.substring(3));
-      if (methodName.startsWith("get") || methodName.startsWith("has")) {
-        if (properties.containsKey(propertyName))
-          properties.get(propertyName).readMethod = m;
-        else
-          properties.put(propertyName, new SimplePropertyDescriptor(propertyName, m, null));
+
+      String methodName = m.getName();
+      String propertyName = null;
+
+      Method readMethod = null;
+      Method writeMethod = null;
+
+      if (hasPrefix("is", methodName)) {
+        readMethod = m;
+        propertyName = uncapitalize(methodName.substring(2));
+      } else if (hasPrefix("get", methodName) || hasPrefix("has", methodName)) {
+        readMethod = m;
+        propertyName = uncapitalize(methodName.substring(3));
+      } else if (hasPrefix("set", methodName)) {
+        if (m.getParameterCount() == 1) {
+          writeMethod = m;
+          propertyName = uncapitalize(methodName.substring(3));
+        }
       }
-      if (methodName.startsWith("set")) {
-        if (properties.containsKey(propertyName))
-          properties.get(propertyName).writeMethod = m;
-        else
-          properties.put(propertyName, new SimplePropertyDescriptor(propertyName, null, m));
+
+      if (readMethod != null && readMethod.getParameterCount() != 0) {
+        readMethod = null;
+      }
+
+      Function<Object, Object> read = null;
+
+      if (readMethod != null) {
+        final Method finalReadMethod = readMethod;
+
+        read = obj -> {
+          try {
+            finalReadMethod.setAccessible(true);
+            return finalReadMethod.invoke(obj);
+          } catch (ReflectiveOperationException e) {
+            throw new JsonException(e);
+          }
+        };
+      }
+
+      if (readMethod != null || writeMethod != null) {
+        SimplePropertyDescriptor descriptor = properties.getOrDefault(propertyName, new SimplePropertyDescriptor(propertyName, null, null));
+
+        properties.put(
+            propertyName,
+            new SimplePropertyDescriptor(
+                propertyName,
+                read != null ? read : descriptor.getReadMethod(),
+                writeMethod != null ? writeMethod : descriptor.getWriteMethod()));
       }
     }
+
     SimplePropertyDescriptor[] pdsArray = new SimplePropertyDescriptor[properties.size()];
     return properties.values().toArray(pdsArray);
   }
 
   private static String uncapitalize(String s) {
     return s.substring(0, 1).toLowerCase() + s.substring(1);
+  }
+
+  private static boolean hasPrefix(String prefix, String methodName) {
+    if (methodName.length() < prefix.length() + 1) {
+      return false;
+    }
+
+    if (!methodName.startsWith(prefix)) {
+      return false;
+    }
+
+    return Character.isUpperCase(methodName.charAt(prefix.length()));
   }
 }

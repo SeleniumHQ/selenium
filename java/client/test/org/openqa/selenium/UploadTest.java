@@ -17,9 +17,8 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
@@ -27,9 +26,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import com.google.common.io.Files;
 
@@ -84,25 +81,21 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testCleanFileInput() {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
     element.sendKeys(testFile.getAbsolutePath());
     element.clear();
-    assertEquals("", element.getAttribute("value"));
+    assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
   @Test
-  @Ignore(IE)
   @Ignore(CHROME)
-  @NotYetImplemented(value = SAFARI, reason = "Throws WebDriverException")
   @Ignore(HTMLUNIT)
   public void testClickFileInput() {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
-    Throwable ex = catchThrowable(element::click);
-    assertThat(ex, instanceOf(InvalidArgumentException.class));
+    assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(element::click);
   }
 
   @Test

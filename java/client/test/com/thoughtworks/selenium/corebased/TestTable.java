@@ -23,9 +23,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestTable extends InternalSelenseTestBase {
-  /* See http://code.google.com/p/selenium/issues/detail?id=2286 */
+  /* See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2255 */
   @Test @Ignore
-  public void getValueFramTableTwiceInARowShouldWork() throws Exception {
+  public void getValueFramTableTwiceInARowShouldWork() {
     selenium.open("../tests/html/test_table.html");
 
     String value1 = selenium.getTable("test_table.0.0");

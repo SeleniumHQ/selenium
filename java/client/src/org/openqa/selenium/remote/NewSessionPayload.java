@@ -22,6 +22,7 @@ import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -56,7 +57,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,24 +88,24 @@ public class NewSessionPayload implements Closeable {
   private final FileBackedOutputStream backingStore;
   private final ImmutableSet<Dialect> dialects;
 
-  public static NewSessionPayload create(Capabilities caps) throws IOException {
+  public static NewSessionPayload create(Capabilities caps) {
     // We need to convert the capabilities into a new session payload. At this point we're dealing
     // with references, so I'm Just Sure This Will Be Fine.
     return create(ImmutableMap.of("desiredCapabilities", caps.asMap()));
   }
 
-  public static NewSessionPayload create(Map<String, ?> source) throws IOException {
+  public static NewSessionPayload create(Map<String, ?> source) {
     Objects.requireNonNull(source, "Payload must be set");
 
     String json = new Json().toJson(source);
     return new NewSessionPayload(new StringReader(json));
   }
 
-  public static NewSessionPayload create(Reader source) throws IOException {
+  public static NewSessionPayload create(Reader source) {
     return new NewSessionPayload(source);
   }
 
-  private NewSessionPayload(Reader source) throws IOException {
+  private NewSessionPayload(Reader source) {
     // Dedicate up to 10% of all RAM or 20% of available RAM (whichever is smaller) to storing this
     // payload.
     int threshold = (int) Math.min(
@@ -114,6 +117,8 @@ public class NewSessionPayload implements Closeable {
     backingStore = new FileBackedOutputStream(threshold);
     try (Writer writer = new OutputStreamWriter(backingStore, UTF_8)) {
       CharStreams.copy(source, writer);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
 
     ImmutableSet.Builder<CapabilitiesFilter> adapters = ImmutableSet.builder();
@@ -136,15 +141,20 @@ public class NewSessionPayload implements Closeable {
     this.transforms = transforms.build();
 
     ImmutableSet.Builder<Dialect> dialects = ImmutableSet.builder();
-    if (getOss() != null) {
-      dialects.add(Dialect.OSS);
-    }
-    if (getAlwaysMatch() != null || getFirstMatches() != null) {
-      dialects.add(Dialect.W3C);
-    }
-    this.dialects = dialects.build();
+    try {
+      if (getOss() != null) {
+        dialects.add(Dialect.OSS);
+      }
+      if (getAlwaysMatch() != null || getFirstMatches() != null) {
+        dialects.add(Dialect.W3C);
+      }
 
-    validate();
+      this.dialects = dialects.build();
+
+      validate();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   private void validate() throws IOException {
@@ -210,6 +220,7 @@ public class NewSessionPayload implements Closeable {
             .orElse(new ImmutableCapabilities())
             .asMap();
       }
+      Map<String, Object> ossFirst = new HashMap<>(first);
       if (first.containsKey(CapabilityType.PROXY)) {
         Map<String, Object> proxyMap;
         Object rawProxy = first.get(CapabilityType.PROXY);
@@ -221,24 +232,22 @@ public class NewSessionPayload implements Closeable {
           proxyMap = new HashMap<>();
         }
         if (proxyMap.containsKey("noProxy")) {
+          Map<String, Object> ossProxyMap = new HashMap<>(proxyMap);
           Object rawData = proxyMap.get("noProxy");
           if (rawData instanceof List) {
-            proxyMap.put("noProxy", ((List<String>) rawData).stream().collect(Collectors.joining(",")));
+            ossProxyMap.put("noProxy", ((List<String>) rawData).stream().collect(Collectors.joining(",")));
           }
-          first.put(CapabilityType.PROXY, proxyMap);
+          ossFirst.put(CapabilityType.PROXY, ossProxyMap);
         }
       }
 
       // Write the first capability we get as the desired capability.
       json.name("desiredCapabilities");
-      json.write(first);
+      json.write(ossFirst);
 
-      // And write the first capability for gecko13
+      // Now for the w3c capabilities
       json.name("capabilities");
       json.beginObject();
-
-      json.name("desiredCapabilities");
-      json.write(first);
 
       // Then write everything into the w3c payload. Because of the way we do this, it's easiest
       // to just populate the "firstMatch" section. The spec says it's fine to omit the
@@ -290,19 +299,23 @@ public class NewSessionPayload implements Closeable {
    * equivalent W3C capabilities isn't particularly easy, so it's hoped that this approach gives us
    * the most compatible implementation.
    */
-  public Stream<Capabilities> stream() throws IOException {
-    // OSS first
-    Stream<Map<String, Object>> oss = Stream.of(getOss());
+  public Stream<Capabilities> stream() {
+    try {
+      // OSS first
+      Stream<Map<String, Object>> oss = Stream.of(getOss());
 
-    // And now W3C
-    Stream<Map<String, Object>> w3c = getW3C();
+      // And now W3C
+      Stream<Map<String, Object>> w3c = getW3C();
 
-    return Stream.concat(oss, w3c)
-        .filter(Objects::nonNull)
-        .map(this::applyTransforms)
-        .filter(Objects::nonNull)
-        .distinct()
-        .map(ImmutableCapabilities::new);
+      return Stream.concat(oss, w3c)
+          .filter(Objects::nonNull)
+          .map(this::applyTransforms)
+          .filter(Objects::nonNull)
+          .distinct()
+          .map(ImmutableCapabilities::new);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   public ImmutableSet<Dialect> getDownstreamDialects() {
@@ -310,8 +323,12 @@ public class NewSessionPayload implements Closeable {
   }
 
   @Override
-  public void close() throws IOException {
-    backingStore.reset();
+  public void close() {
+    try {
+      backingStore.reset();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   private Map<String, Object> getOss() throws IOException {
@@ -410,6 +427,26 @@ public class NewSessionPayload implements Closeable {
       toReturn.put(PLATFORM_NAME, String.valueOf(capabilities.get(PLATFORM)));
     }
 
+    if (capabilities.containsKey(PROXY)) {
+      Map<String, Object> proxyMap;
+      Object rawProxy = capabilities.get(CapabilityType.PROXY);
+      if (rawProxy instanceof Proxy) {
+        proxyMap = ((Proxy) rawProxy).toJson();
+      } else if (rawProxy instanceof Map) {
+        proxyMap = (Map<String, Object>) rawProxy;
+      } else {
+        proxyMap = new HashMap<>();
+      }
+      if (proxyMap.containsKey("noProxy")) {
+        Map<String, Object> w3cProxyMap = new HashMap<>(proxyMap);
+        Object rawData = proxyMap.get("noProxy");
+        if (rawData instanceof String) {
+          w3cProxyMap.put("noProxy", Arrays.asList(((String) rawData).split(",\\s*")));
+        }
+        toReturn.put(CapabilityType.PROXY, w3cProxyMap);
+      }
+    }
+
     return toReturn;
   }
 
@@ -500,5 +537,16 @@ public class NewSessionPayload implements Closeable {
       }
     }
     return toReturn;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder res = new StringBuilder();
+    try {
+      writeTo(res);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return res.toString();
   }
 }

@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
@@ -30,7 +31,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -39,9 +40,8 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.HasIdentity;
-import org.openqa.selenium.interactions.internal.Locatable;
-import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.io.Zip;
 
 import java.io.File;
@@ -52,8 +52,9 @@ import java.util.Map;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
                                          FindsByTagName, FindsByClassName, FindsByCssSelector,
-                                         FindsByXPath, WrapsDriver, Locatable, HasIdentity,
-                                         TakesScreenshot {
+                                         FindsByXPath, WrapsDriver, HasIdentity,
+                                         TakesScreenshot,
+                                         org.openqa.selenium.interactions.Locatable {
   private String foundBy;
   protected String id;
   protected RemoteWebDriver parent;
@@ -88,8 +89,13 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void sendKeys(CharSequence... keysToSend) {
-    if (keysToSend == null) {
+    if (keysToSend == null || keysToSend.length == 0) {
       throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
+    }
+    for (CharSequence cs : keysToSend) {
+      if (cs == null) {
+        throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
+      }
     }
     File localFile = fileDetector.getLocalFile(keysToSend);
     if (localFile != null) {
@@ -180,6 +186,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
                                 ImmutableMap.of("id", id, "using", using, "value", value));
 
     Object responseValue = response.getValue();
+    if (responseValue == null) { // see https://github.com/SeleniumHQ/selenium/issues/5809
+      throw new NoSuchElementException(String.format("Cannot locate an element using %s=%s", using, value));
+    }
     WebElement element;
     try {
       element = (WebElement) responseValue;
@@ -341,6 +350,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return new Dimension(width, height);
   }
 
+  @SuppressWarnings({"unchecked"})
   public Rectangle getRect() {
     Response response = execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
     Map<String, Object> rawRect = (Map<String, Object>) response.getValue();

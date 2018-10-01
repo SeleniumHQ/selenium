@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -108,7 +109,7 @@ public class ProtocolHandshake {
       blob = new Json().toType(response.getContentString(), Map.class);
     } catch (JsonException e) {
       throw new WebDriverException(
-          "Unable to parse remote response: " + response.getContentString());
+          "Unable to parse remote response: " + response.getContentString(), e);
     }
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
@@ -118,11 +119,9 @@ public class ProtocolHandshake {
 
     return Stream.of(
         new JsonWireProtocolResponse().getResponseFunction(),
-        new Gecko013ProtocolResponse().getResponseFunction(),
         new W3CHandshakeResponse().getResponseFunction())
         .map(func -> func.apply(initialResponse))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
+        .filter(Objects::nonNull)
         .findFirst();
   }
 

@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -9,7 +10,6 @@ namespace OpenQA.Selenium
     public class WindowSwitchingTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations()
         {
             driver.Url = xhtmlTestPage;
@@ -53,8 +53,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle()
         {
             driver.Url = (xhtmlTestPage);
@@ -87,8 +85,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed()
         {
             driver.Url = (xhtmlTestPage);
@@ -134,8 +130,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed()
         {
             driver.Url = (xhtmlTestPage);
@@ -169,7 +163,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToIterateOverAllOpenWindows()
         {
             driver.Url = xhtmlTestPage;
@@ -184,7 +177,7 @@ namespace OpenQA.Selenium
             List<string> seenHandles = new List<string>();
             foreach (string handle in allWindowHandles)
             {
-                Assert.IsFalse(seenHandles.Contains(handle));
+                Assert.That(seenHandles, Has.No.Member(handle));
                 driver.SwitchTo().Window(handle);
                 seenHandles.Add(handle);
             }
@@ -197,12 +190,6 @@ namespace OpenQA.Selenium
         {
             bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
             bool isIE6 = TestUtilities.IsIE6(driver);
-            bool isMarionette = TestUtilities.IsMarionette(driver);
-
-            if (isMarionette)
-            {
-                Assert.Ignore("Hangs Firefox under Marionette");
-            }
 
             driver.Url = xhtmlTestPage;
 
@@ -231,17 +218,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void CanCallGetWindowHandlesAfterClosingAWindow()
         {
             bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
             bool isIE6 = TestUtilities.IsIE6(driver);
-            bool isMarionette = TestUtilities.IsMarionette(driver);
-
-            if (isMarionette)
-            {
-                Assert.Ignore("Clicking on element that closes window can hang Marionette.");
-            }
 
             driver.Url = xhtmlTestPage;
 
@@ -276,7 +256,7 @@ namespace OpenQA.Selenium
 
             String currentHandle = driver.CurrentWindowHandle;
 
-            Assert.IsNotNull(currentHandle);
+            Assert.That(currentHandle, Is.Not.Null);
         }
 
         [Test]
@@ -301,7 +281,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         public void CanCloseWindowWhenMultipleWindowsAreOpen()
         {
@@ -326,18 +305,73 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
+        public void CanCloseWindowAndSwitchBackToMainWindow()
+        {
+            driver.Url = xhtmlTestPage;
+
+            ReadOnlyCollection<string> currentWindowHandles = driver.WindowHandles;
+            string mainHandle = driver.CurrentWindowHandle;
+
+            driver.FindElement(By.Name("windowOne")).Click();
+
+            WaitFor(WindowCountToBe(2), "Window count was not 2");
+
+            ReadOnlyCollection<string> allWindowHandles = driver.WindowHandles;
+
+            // There should be two windows. We should also see each of the window titles at least once.
+            Assert.AreEqual(2, allWindowHandles.Count);
+
+           foreach(string handle in allWindowHandles)
+            {
+                if (handle != mainHandle)
+                {
+                    driver.SwitchTo().Window(handle);
+                    driver.Close();
+                }
+            }
+
+            driver.SwitchTo().Window(mainHandle);
+
+            string newHandle = driver.CurrentWindowHandle;
+            Assert.AreEqual(mainHandle, newHandle);
+
+            Assert.AreEqual(1, driver.WindowHandles.Count);
+        }
+
+        [Test]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         public void ClosingOnlyWindowShouldNotCauseTheBrowserToHang()
         {
             driver.Url = xhtmlTestPage;
             driver.Close();
         }
 
-        //////////////////////////////////////////////////////////
-        // Tests below here do not exist in the Java unit tests.
-        //////////////////////////////////////////////////////////
-
         [Test]
-        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/610")]
+        public void ShouldFocusOnTheTopMostFrameAfterSwitchingToAWindow()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("window_switching_tests/page_with_frame.html");
+
+            ReadOnlyCollection<string> currentWindowHandles = driver.WindowHandles;
+            string mainWindow = driver.CurrentWindowHandle;
+
+            driver.FindElement(By.Id("a-link-that-opens-a-new-window")).Click();
+            WaitFor(WindowCountToBe(2), "Window count was not 2");
+
+            driver.SwitchTo().Frame("myframe");
+
+            driver.SwitchTo().Window("newWindow");
+            driver.Close();
+            driver.SwitchTo().Window(mainWindow);
+
+            driver.FindElement(By.Name("myframe"));
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
         public void ShouldGetBrowserHandles()
         {
             driver.Url = xhtmlTestPage;
@@ -366,7 +400,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore("Ignored for all browsers")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void CloseShouldCloseCurrentHandleOnly()
         {
@@ -387,10 +420,9 @@ namespace OpenQA.Selenium
 
             ReadOnlyCollection<string> handles = driver.WindowHandles;
 
-            Assert.IsFalse(handles.Contains(handle2), "Invalid handle still in handle list");
-            Assert.IsTrue(handles.Contains(handle1), "Valid handle not in handle list");
+            Assert.That(handles, Has.No.Member(handle2), "Invalid handle still in handle list");
+            Assert.That(handles, Contains.Item(handle1), "Valid handle not in handle list");
         }
-
 
         private void SleepBecauseWindowsTakeTimeToOpen()
         {

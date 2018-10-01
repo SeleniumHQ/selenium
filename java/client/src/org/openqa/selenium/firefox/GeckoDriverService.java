@@ -29,6 +29,7 @@ import com.google.common.io.ByteStreams;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -55,8 +56,11 @@ public class GeckoDriverService extends DriverService {
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  public GeckoDriverService(File executable, int port, ImmutableList<String> args,
-                            ImmutableMap<String, String> environment) throws IOException {
+  public GeckoDriverService(
+      File executable,
+      int port,
+      ImmutableList<String> args,
+      ImmutableMap<String, String> environment) throws IOException {
     super(executable, port, args, environment);
   }
 
@@ -123,6 +127,25 @@ public class GeckoDriverService extends DriverService {
     @Deprecated
     public Builder(FirefoxBinary binary) {
       this.firefoxBinary = binary;
+    }
+
+    @Override
+    public int score(Capabilities capabilites) {
+      if (capabilites.is(FirefoxDriver.MARIONETTE)) {
+        return 0;  // We're not meant for this one.
+      }
+
+      int score = 0;
+
+      if (BrowserType.FIREFOX.equals(capabilites.getBrowserName())) {
+        score++;
+      }
+
+      if (capabilites.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
+        score++;
+      }
+
+      return score;
     }
 
     /**

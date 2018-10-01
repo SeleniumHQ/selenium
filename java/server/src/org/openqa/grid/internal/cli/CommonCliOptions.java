@@ -19,8 +19,6 @@ package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.Parameter;
 
-import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
-
 public abstract class CommonCliOptions {
 
   @Parameter(
@@ -90,7 +88,7 @@ public abstract class CommonCliOptions {
    */
   @Parameter(
       names = {"-timeout", "-sessionTimeout"},
-      description = "<Integer> in seconds : Specifies the timeout before the server automatically kills a session that hasn't had any activity in the last X seconds. The test slot will then be released for another test to use. This is typically used to take care of client crashes. For grid hub/node roles, cleanUpCycle must also be set."
+      description = "<Integer> in seconds : Specifies the timeout before the server automatically kills a session that hasn't had any activity in the last X seconds. The test slot will then be released for another test to use. This is typically used to take care of client crashes. For grid hub/node roles, cleanUpCycle must also be set. If a node does not specify it, the hub value will be used."
   )
   private Integer timeout;
 
@@ -99,7 +97,7 @@ public abstract class CommonCliOptions {
    */
   @Parameter(
       names = "-browserTimeout",
-      description = "<Integer> in seconds : number of seconds a browser session is allowed to hang while a WebDriver command is running (example: driver.get(url)). If the timeout is reached while a WebDriver command is still processing, the session will quit. Minimum value is 60. An unspecified, zero, or negative value means wait indefinitely."
+      description = "<Integer> in seconds : number of seconds a browser session is allowed to hang while a WebDriver command is running (example: driver.get(url)). If the timeout is reached while a WebDriver command is still processing, the session will quit. Minimum value is 60. An unspecified, zero, or negative value means wait indefinitely. If a node does not specify it, the hub value will be used."
   )
   private Integer browserTimeout;
 
@@ -136,27 +134,44 @@ public abstract class CommonCliOptions {
   // initially defaults to false from boolean primitive type
   private Boolean captureLogsOnQuit = false;
 
-  void fillCommonConfiguration(StandaloneConfiguration configuration) {
-    if (debug != null) {
-      configuration.debug = debug;
-    }
-    if (log != null) {
-      configuration.log = log;
-    }
-    if (host == null) {
-      host = "0.0.0.0"; //default to all IPv4 interfaces
-    }
-    configuration.host = host;
-    if (port != null) {
-      configuration.port = port;
-    }
-    if (timeout != null) {
-      configuration.timeout = timeout;
-    }
-    if (browserTimeout != null) {
-      configuration.browserTimeout = browserTimeout;
-    }
+  public Boolean getVersion() {
+    return version;
   }
 
-  abstract public StandaloneConfiguration toConfiguration();
+  public Boolean getHelp() {
+    return help;
+  }
+
+  public Boolean getDebug() {
+    return debug;
+  }
+
+  public String getLog() {
+    return log;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public String getHost() {
+    return host;
+  }
+
+  public Integer getPort() {
+    return port;
+  }
+
+  public Integer getTimeout() {
+    return timeout;
+  }
+
+  public Integer getBrowserTimeout() {
+    return browserTimeout;
+  }
+
+  public Integer getJettyMaxThreads() {
+    return jettyMaxThreads;
+  }
+
 }

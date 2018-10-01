@@ -98,6 +98,8 @@ public class OutOfProcessSeleniumServer {
       throw new RuntimeException(e);
     }
 
+    WebDriverBuilder.addShutdownAction(this::stop);
+
     return this;
   }
 

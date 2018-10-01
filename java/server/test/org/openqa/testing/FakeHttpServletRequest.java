@@ -17,6 +17,11 @@
 
 package org.openqa.testing;
 
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.google.common.net.MediaType;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -54,35 +59,15 @@ public class FakeHttpServletRequest extends HeaderContainer
   private final Map<String, String> parameters;
   private final String method;
 
-  private ServletInputStream inputStream = new ServletInputStream() {
-    @Override
-    public boolean isFinished() {
-      return false;
-    }
-
-    @Override
-    public boolean isReady() {
-      return true;
-    }
-
-    @Override
-    public void setReadListener(ReadListener readListener) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public int read() throws IOException {
-      return 0;
-    }
-  };
+  private ServletInputStream inputStream;
 
   public FakeHttpServletRequest(String method, UrlInfo requestUrl) {
     this.attributes = new HashMap<>();
     this.parameters = new HashMap<>();
     this.method = method.toUpperCase();
     this.requestUrl = requestUrl;
-
-    setBody("");
+    //Input stream should only be constructed when there's a valid body set from outside.
+    this.inputStream = null;
   }
 
   public void setParameters(Map<String, String> parameters) {
@@ -217,7 +202,16 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   public String getCharacterEncoding() {
-    throw new UnsupportedOperationException();
+    try {
+      String contentType = getHeader(CONTENT_TYPE);
+      if (contentType != null) {
+        MediaType mediaType = MediaType.parse(contentType);
+        return mediaType.charset().or(UTF_8).toString();
+      }
+    } catch (IllegalArgumentException ignored) {
+      // Do nothing.
+    }
+    return UTF_8.toString();
   }
 
   public void setCharacterEncoding(String s) throws UnsupportedEncodingException {

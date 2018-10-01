@@ -4,7 +4,7 @@ env:
   global:
     - DISPLAY=:99.0
     - PYTEST_ADDOPTS="--verbose --instafail"
-    - FF_ESR_BINARY=$HOME/firefox-latest-esr/firefox/firefox-bin
+    - FF_ESR_BINARY=$HOME/firefox-52.9.0esr/firefox/firefox-bin
     - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
 git:
   depth: 10
@@ -27,7 +27,7 @@ _browsers:
       firefox: latest
   firefox-esr: &firefox-esr
     addons:
-      firefox: latest-esr
+      firefox: "52.9.0esr"
   firefox-nightly: &firefox-nightly
     addons:
       firefox: latest-nightly
@@ -66,7 +66,7 @@ matrix:
       <<: *python
       <<: *firefox-nightly
   include:
-    - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests"
+    - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests //java/client/test/org/openqa/selenium/testing/drivers/..."
       <<: *java
     - env: BUCK="test //java/client/test/org/openqa/selenium/atoms:test"
       <<: *java
@@ -82,7 +82,7 @@ matrix:
     - env: MARIONETTE=1 BUCK="test firefox-test"
       <<: *java
       <<: *firefox-nightly
-    - env: BUCK="test java-small-tests"
+    - env: BUCK="test --labels small --always-exclude //java/..."
       <<: *java
     - env: BUCK="test internal-grid-test"
       <<: *java
@@ -115,9 +115,9 @@ matrix:
       <<: *python
       <<: *firefox-esr
       python: 3.6
-    - env: TOXENV=py36-remote
+    - env: MARIONETTE=1 TOXENV=py36-remote
       <<: *python
-      <<: *firefox-esr
+      <<: *firefox-nightly
       python: 3.6
     - env: MARIONETTE=1 TOXENV=py36-marionette
       <<: *python

@@ -49,10 +49,13 @@ void ActionsCommandHandler::ExecuteInternal(
     response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Actions value is not an array");
     return;
   }
-  status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions_parameter_iterator->second);
+  std::string error_info = "";
+  status_code = executor.input_manager()->PerformInputSequence(browser_wrapper,
+                                                               actions_parameter_iterator->second,
+                                                               &error_info);
   if (status_code != WD_SUCCESS) {
     if (status_code == EMOVETARGETOUTOFBOUNDS) {
-      response->SetErrorResponse(status_code, "The requested mouse movement would be outside the bounds of the current view port.");
+      response->SetErrorResponse(status_code, error_info);
     } else {
       response->SetErrorResponse(status_code, "Unexpected error performing action sequence.");
     }

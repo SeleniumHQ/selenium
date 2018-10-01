@@ -21,8 +21,10 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URL;
+import java.time.Duration;
 
 public abstract class BaseGridRegistry implements GridRegistry {
+
   protected final HttpClient.Factory httpClientFactory;
 
   // The following needs to be volatile because we expose a public setters
@@ -47,8 +49,20 @@ public abstract class BaseGridRegistry implements GridRegistry {
     this.hub = hub;
   }
 
+  /**
+   * @return the {@link HttpClient.Factory} to use.
+   * @deprecated use {@link BaseGridRegistry#getHttpClient(URL, int, int)}
+   */
   @Override
   public HttpClient getHttpClient(URL url) {
     return httpClientFactory.createClient(url);
+  }
+
+  @Override
+  public HttpClient getHttpClient(URL url, int connectionTimeout, int readTimeout) {
+    return httpClientFactory.builder()
+        .connectionTimeout(Duration.ofSeconds(connectionTimeout))
+        .readTimeout(Duration.ofSeconds(readTimeout))
+        .createClient(url);
   }
 }

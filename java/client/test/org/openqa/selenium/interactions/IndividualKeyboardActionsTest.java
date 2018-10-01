@@ -17,27 +17,21 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.interactions.internal.Locatable;
 
 /**
  * Unit test for all simple keyboard actions.
  *
  */
-@RunWith(JUnit4.class)
 public class IndividualKeyboardActionsTest {
 
   @Mock private Keyboard mockKeyboard;
@@ -132,12 +126,9 @@ public class IndividualKeyboardActionsTest {
   public void keyDownActionFailsOnNonModifier() {
     final Keys keyToPress = Keys.BACK_SPACE;
 
-    try {
-      new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, keyToPress);
-      fail();
-    } catch (IllegalArgumentException e) {
-      assertTrue(e.getMessage().contains("modifier keys"));
-    }
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, keyToPress))
+        .withMessageContaining("modifier keys");
   }
 
   @Test

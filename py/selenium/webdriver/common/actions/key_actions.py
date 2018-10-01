@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from .interaction import Interaction
+from .interaction import Interaction, KEY
 from .key_input import KeyInput
 from ..utils import keys_to_typing
 
@@ -23,30 +23,28 @@ class KeyActions(Interaction):
 
     def __init__(self, source=None):
         if source is None:
-            source = KeyInput()
+            source = KeyInput(KEY)
         self.source = source
         super(KeyActions, self).__init__(source)
 
-    def key_down(self, letter, element=None):
-        return self._key_action("create_key_down",
-                                letter, element)
+    def key_down(self, letter):
+        return self._key_action("create_key_down", letter)
 
-    def key_up(self, letter, element=None):
-        return self._key_action("create_key_up",
-                                letter, element)
+    def key_up(self, letter):
+        return self._key_action("create_key_up", letter)
 
     def pause(self, duration=0):
         return self._key_action("create_pause", duration)
 
-    def send_keys(self, text, element=None):
+    def send_keys(self, text):
         if not isinstance(text, list):
             text = keys_to_typing(text)
         for letter in text:
-            self.key_down(letter, element)
-            self.key_up(letter, element)
+            self.key_down(letter)
+            self.key_up(letter)
         return self
 
-    def _key_action(self, action, letter, element=None):
+    def _key_action(self, action, letter):
         meth = getattr(self.source, action)
         meth(letter)
         return self

@@ -26,6 +26,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,6 +102,12 @@ public class TestUtilities {
     }
     Capabilities caps = ((HasCapabilities) driver).getCapabilities();
     String chromedriverVersion = (String) caps.getCapability("chrome.chromedriverVersion");
+    if (chromedriverVersion == null) {
+      Object chrome = caps.getCapability("chrome");
+      if (chrome != null) {
+        chromedriverVersion = (String) ((Map<?,?>) chrome).get("chromedriverVersion");
+      }
+    }
     if (chromedriverVersion != null) {
       String[] versionMajorMinor = chromedriverVersion.split("\\.", 2);
       if (versionMajorMinor.length > 1) {
@@ -199,14 +206,5 @@ public class TestUtilities {
 
   public static boolean isOnTravis() {
     return Boolean.valueOf(System.getenv("TRAVIS"));
-  }
-
-  public static Throwable catchThrowable(Runnable f) {
-    try {
-      f.run();
-    } catch (Throwable throwable) {
-      return throwable;
-    }
-    return null;
   }
 }

@@ -27,6 +27,7 @@ import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
 import org.openqa.grid.web.servlet.HubStatusServlet;
 import org.openqa.grid.web.servlet.HubW3CStatusServlet;
 import org.openqa.grid.web.servlet.LifecycleServlet;
+import org.openqa.grid.web.servlet.NodeSessionsServlet;
 import org.openqa.grid.web.servlet.ProxyStatusServlet;
 import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
@@ -92,13 +93,14 @@ public class Hub implements Stoppable {
     try {
       registry = (GridRegistry) Class.forName(config.registry).newInstance();
       registry.setHub(this);
+      registry.setThrowOnCapabilityNotPresent(config.throwOnCapabilityNotPresent);
     } catch (Throwable e) {
       throw new GridConfigurationException("Error creating class with " + config.registry +
                                            " : " + e.getMessage(), e);
     }
 
     if (config.host == null) {
-      updateHostToNonLoopBackAddressOfThisMachine();
+      config.host = "0.0.0.0"; //default to all adapters
     }
 
     if (config.port == null) {
@@ -130,6 +132,7 @@ public class Hub implements Stoppable {
     handler.addServlet(DriverServlet.class.getName(), "/selenium-server/driver/*");
 
     handler.addServlet(ProxyStatusServlet.class.getName(), "/grid/api/proxy/*");
+    handler.addServlet(NodeSessionsServlet.class.getName(), "/grid/api/sessions/*");
 
     handler.addServlet(HubStatusServlet.class.getName(), "/grid/api/hub/*");
 

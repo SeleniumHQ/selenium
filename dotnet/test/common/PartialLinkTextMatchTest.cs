@@ -13,7 +13,7 @@ namespace OpenQA.Selenium
             IWebElement elem = driver.FindElement(By.Id("links"));
 
             IWebElement res = elem.FindElement(By.PartialLinkText("link with formatting tags"));
-            Assert.IsNotNull(res);
+            Assert.That(res, Is.Not.Null);
             Assert.AreEqual("link with formatting tags", res.Text);
         }
 
@@ -24,7 +24,7 @@ namespace OpenQA.Selenium
             IWebElement elem = driver.FindElement(By.Id("links"));
 
             IWebElement res = elem.FindElement(By.PartialLinkText("link with leading space"));
-            Assert.IsNotNull(res);
+            Assert.That(res, Is.Not.Null);
             Assert.AreEqual("link with leading space", res.Text);
         }
 
@@ -36,7 +36,7 @@ namespace OpenQA.Selenium
 
             IWebElement res =
                 elem.FindElement(By.PartialLinkText("link with trailing space"));
-            Assert.IsNotNull(res);
+            Assert.That(res, Is.Not.Null);
             Assert.AreEqual("link with trailing space", res.Text);
         }
 
@@ -47,7 +47,7 @@ namespace OpenQA.Selenium
             IWebElement elem = driver.FindElement(By.Id("links"));
 
             ReadOnlyCollection<IWebElement> elements = elem.FindElements(By.PartialLinkText("link"));
-            Assert.IsNotNull(elements);
+            Assert.That(elements, Is.Not.Null);
             Assert.AreEqual(6, elements.Count);
         }
         
@@ -61,7 +61,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void testElementCanGetLinkByLinkTestIgnoringTrailingWhitespace()
+        public void ElementCanGetLinkByLinkTestIgnoringTrailingWhitespace()
         {
             driver.Url = simpleTestPage;
             IWebElement elem = driver.FindElement(By.Id("links"));

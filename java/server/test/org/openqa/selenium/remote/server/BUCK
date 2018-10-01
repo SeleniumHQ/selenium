@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 java_test(name = 'small-tests',
   srcs = [
     'RemoteServerTests.java',
@@ -6,6 +5,9 @@ java_test(name = 'small-tests',
   vm_args = [
     '-Dselenium.browser=htmlunit',
     '-Dselenium.browser.remote=true',
+  ],
+  labels = [
+    'small',
   ],
   deps = [
     ':tests',
@@ -26,6 +28,7 @@ java_library(name = 'tests',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/test/org/openqa/selenium/testing:test-base',
     '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
+    '//java/server/src/org/openqa/selenium/grid/web:web',
     '//java/server/src/org/openqa/selenium/remote/server:server',
     '//java/server/src/org/openqa/selenium/remote/server:sessions',
     '//java/server/src/org/openqa/selenium/remote/server:webdriver-servlet',
@@ -33,8 +36,7 @@ java_library(name = 'tests',
     '//java/server/test/org/openqa/testing:test-base',
     '//third_party/java/gson:gson',
     '//third_party/java/guava:guava',
-    '//third_party/java/hamcrest:hamcrest-library',
-    '//third_party/java/httpcomponents:httpclient',
+    '//third_party/java/assertj:assertj',
     '//third_party/java/jetty:jetty',
     '//third_party/java/junit:junit',
     '//third_party/java/mockito:mockito-core',

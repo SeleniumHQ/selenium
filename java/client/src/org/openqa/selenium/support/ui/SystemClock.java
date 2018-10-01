@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.support.ui;
 
+/**
+ * @deprecated Use {@link java.time.Clock#systemDefaultZone()}.
+ */
+@Deprecated
 public class SystemClock implements Clock {
 
   public long laterBy(long durationInMillis) {

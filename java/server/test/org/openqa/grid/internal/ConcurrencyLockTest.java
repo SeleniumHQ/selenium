@@ -65,7 +65,7 @@ public class ConcurrencyLockTest {
 
   }
 
-  private List<String> results = Collections.synchronizedList(new ArrayList<String>());
+  private List<String> results = Collections.synchronizedList(new ArrayList<>());
 
   @Test(timeout = 10000)
   public void runTest() throws InterruptedException {

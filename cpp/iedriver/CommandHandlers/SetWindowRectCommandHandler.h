@@ -18,6 +18,10 @@
 
 #include "../IECommandHandler.h"
 
+namespace Json {
+  class Value;
+}
+
 namespace webdriver {
 
 class SetWindowRectCommandHandler : public IECommandHandler {
@@ -31,10 +35,14 @@ class SetWindowRectCommandHandler : public IECommandHandler {
                        Response* response);
 
  private:
-  bool GetNumericParameter(const ParametersMap& command_parameters,
-                           const std::string& argument_name,
+  bool GetNumericParameter(const std::string& argument_name,
+                           const bool is_positive_required,
+                           const Json::Value& parameter_value,
                            int* argument_value,
                            std::string* error_message);
+  bool IsParameterDefined(const ParametersMap& command_parameters,
+                          const std::string& parameter_name,
+                          Json::Value* parameter_value);
 };
 
 } // namespace webdriver

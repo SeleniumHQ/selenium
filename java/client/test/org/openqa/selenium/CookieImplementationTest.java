@@ -17,20 +17,13 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Before;
@@ -38,6 +31,7 @@ import org.junit.Test;
 import org.openqa.selenium.environment.DomainHelper;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.net.URI;
@@ -85,14 +79,14 @@ public class CookieImplementationTest extends JUnit4TestBase {
     addCookieOnServerSide(new Cookie(key, value));
 
     Cookie cookie = driver.manage().getCookieNamed(key);
-    assertEquals(value, cookie.getValue());
+    assertThat(cookie.getValue()).isEqualTo(value);
   }
 
   @Test
   public void testShouldBeAbleToAddCookie() {
     String key = generateUniqueKey();
     String value = "foo";
-    Cookie cookie = new Cookie.Builder(key, value).build();
+    Cookie cookie = new Cookie.Builder(key, value).domain(domainHelper.getHostName()).build();
     assertCookieIsNotPresentWithName(key);
 
     driver.manage().addCookie(cookie);
@@ -122,10 +116,10 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
     openAnotherPage();
     cookies = driver.manage().getCookies();
-    assertEquals(countBefore + 2, cookies.size());
+    assertThat(cookies.size()).isEqualTo(countBefore + 2);
 
-    assertTrue(cookies.contains(one));
-    assertTrue(cookies.contains(two));
+    assertThat(cookies.contains(one)).isTrue();
+    assertThat(cookies.contains(two)).isTrue();
   }
 
   @Test
@@ -178,8 +172,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     options.deleteCookieNamed(cookieOneName);
     Set<Cookie> cookies = options.getCookies();
 
-    assertFalse(cookies.toString(), cookies.contains(cookie1));
-    assertTrue(cookies.toString(), cookies.contains(cookie2));
+    assertThat(cookies).doesNotContain(cookie1);
+    assertThat(cookies).contains(cookie2);
   }
 
   @Test
@@ -204,6 +198,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(SAFARI)
+  @NotYetImplemented(MARIONETTE)
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
@@ -224,7 +219,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().addCookie(cookie);
 
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
-    assertNull(driver.manage().getCookieNamed(cookieName));
+    assertThat(driver.manage().getCookieNamed(cookieName)).isNull();
   }
 
   @Test
@@ -288,7 +283,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
     driver.get(domainHelper.getUrlForFirstValidHostname("javascriptPage.html"));
     Set<Cookie> cookies = driver.manage().getCookies();
-    assertTrue(cookies.contains(cookie));
+    assertThat(cookies).contains(cookie);
   }
 
   @Test
@@ -307,12 +302,12 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.get(domainHelper.getUrlForFirstValidHostname("child/grandchild/grandchildPage.html"));
     driver.manage().deleteCookieNamed("rodent");
 
-    assertNull(driver.manage().getCookies().toString(), driver.manage().getCookieNamed("rodent"));
+    assertThat(driver.manage().getCookieNamed("rodent")).isNull();
 
     Set<Cookie> cookies = driver.manage().getCookies();
-    assertEquals(2, cookies.size());
-    assertTrue(cookies.contains(cookie1));
-    assertTrue(cookies.contains(cookie3));
+    assertThat(cookies).hasSize(2);
+    assertThat(cookies).contains(cookie1);
+    assertThat(cookies).contains(cookie3);
 
     driver.manage().deleteAllCookies();
     driver.get(domainHelper.getUrlForFirstValidHostname("child/grandchild/grandchildPage.html"));
@@ -355,9 +350,9 @@ public class CookieImplementationTest extends JUnit4TestBase {
       }
     }
 
-    assertNotNull("Cookie was null", retrievedCookie);
+    assertThat(retrievedCookie).isNotNull();
     // Cookie.equals only compares name, domain and path
-    assertEquals(addedCookie, retrievedCookie);
+    assertThat(retrievedCookie).isEqualTo(addedCookie);
   }
 
   @Test
@@ -370,8 +365,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().addCookie(addedCookie);
 
     Cookie retrieved = driver.manage().getCookieNamed("fish");
-    assertNotNull(retrieved);
-    assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
+    assertThat(retrieved).isNotNull();
+    assertThat(retrieved.getExpiry()).isEqualTo(addedCookie.getExpiry());
   }
 
   @Test
@@ -390,7 +385,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.navigate().refresh();
 
     Cookie retrieved = driver.manage().getCookieNamed("fish");
-    assertNotNull(retrieved);
+    assertThat(retrieved).isNotNull();
   }
 
   @Test
@@ -409,8 +404,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.navigate().refresh();
 
     Cookie retrieved = driver.manage().getCookieNamed("fish");
-    assertNotNull(retrieved);
-    assertTrue(retrieved.isSecure());
+    assertThat(retrieved).isNotNull();
+    assertThat(retrieved.isSecure()).isTrue();
   }
 
   @Test
@@ -426,7 +421,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
     driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
     Cookie retrieved = driver.manage().getCookieNamed("fish");
-    assertNotNull(retrieved);
+    assertThat(retrieved).isNotNull();
   }
 
   @Test
@@ -443,8 +438,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
     driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
     Cookie retrieved = driver.manage().getCookieNamed("fish");
-    assertNotNull(retrieved);
-    assertTrue(retrieved.isHttpOnly());
+    assertThat(retrieved).isNotNull();
+    assertThat(retrieved.isHttpOnly()).isTrue();
   }
 
   @Test
@@ -454,8 +449,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().addCookie(cookie);
 
     cookie = driver.manage().getCookieNamed("fish");
-    assertNull(
-      "Cookie expired before it was set, so nothing should be returned: " + cookie, cookie);
+    assertThat(cookie).as("Cookie expired before it was set, so nothing should be returned").isNull();
   }
 
   @Test
@@ -483,6 +477,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(IE)
   @Ignore(SAFARI)
+  @NotYetImplemented(MARIONETTE)
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod")
@@ -492,14 +487,13 @@ public class CookieImplementationTest extends JUnit4TestBase {
     WebDriver.Options options = driver.manage();
     options.addCookie(cookie1);
     options.addCookie(cookie2);
-    assertEquals(driver.manage().getCookies().size(), 2);
+    assertThat(driver.manage().getCookies()).hasSize(2);
 
     driver.manage().deleteCookie(cookie1);
 
-    assertEquals(driver.manage().getCookies().size(), 1);
+    assertThat(driver.manage().getCookies()).hasSize(1);
     Cookie retrieved = driver.manage().getCookieNamed("fish");
-    assertNotNull("Cookie was null", retrieved);
-    assertEquals(cookie2, retrieved);
+    assertThat(retrieved).isEqualTo(cookie2);
   }
 
   private String generateUniqueKey() {
@@ -507,53 +501,46 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   private void assertNoCookiesArePresent() {
-    Set<Cookie> cookies = driver.manage().getCookies();
-    assertTrue("Cookies were not empty, present: " + cookies,
-               cookies.isEmpty());
+    assertThat(driver.manage().getCookies()).isEmpty();
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertEquals("Cookies were not empty", "", documentCookie);
+      assertThat(documentCookie).isEqualTo("");
     }
   }
 
   private void assertSomeCookiesArePresent() {
-    assertFalse("Cookies were empty",
-                driver.manage().getCookies().isEmpty());
+    assertThat(driver.manage().getCookies()).isNotEmpty();
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertNotSame("Cookies were empty", "", documentCookie);
+      assertThat(documentCookie).as("Cookies were empty").isNotEqualTo("");
     }
   }
 
   private void assertCookieIsNotPresentWithName(final String key) {
-    assertNull("Cookie was present with name " + key, driver.manage().getCookieNamed(key));
+    assertThat(driver.manage().getCookieNamed(key)).as("Cookie with name " + key).isNull();
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertThat("Cookie was present with name " + key,
-                 documentCookie,
-                 not(containsString(key + "=")));
+      assertThat(documentCookie).as("Cookie with name " + key).doesNotContain((key + "="));
     }
   }
 
   private void assertCookieIsPresentWithName(final String key) {
-    assertNotNull("Cookie was not present with name " + key, driver.manage().getCookieNamed(key));
+    assertThat(driver.manage().getCookieNamed(key)).as("Cookie with name " + key).isNotNull();
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertThat("Cookie was not present with name " + key + ", got: " + documentCookie,
-          documentCookie,
-          containsString(key + "="));
+      assertThat(documentCookie)
+          .as("Cookie was not present with name " + key + ", got: " + documentCookie)
+          .contains(key + "=");
     }
   }
 
   private void assertCookieHasValue(final String key, final String value) {
-    assertEquals("Cookie had wrong value",
-                 value,
-                 driver.manage().getCookieNamed(key).getValue());
+    assertThat(driver.manage().getCookieNamed(key).getValue()).isEqualTo(value);
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertThat("Cookie was present with name " + key,
-          documentCookie,
-          containsString(key + "=" + value));
+      assertThat(documentCookie)
+          .as("Cookie was present with name " + key)
+          .contains(key + "=" + value);
     }
   }
 

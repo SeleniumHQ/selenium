@@ -17,37 +17,32 @@
 
 package org.openqa.selenium.support.ui;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@RunWith(JUnit4.class)
 public class SelectTest{
 
-  @Test(expected = UnexpectedTagNameException.class)
+  @Test
   public void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
     final WebElement element = mock(WebElement.class);
     when(element.getTagName()).thenReturn("a");
 
-    new Select(element);
+    assertThatExceptionOfType(UnexpectedTagNameException.class)
+        .isThrownBy(() -> new Select(element));
   }
 
   private Select selectElementWithMultipleEqualTo(final String multipleAttribute) {
@@ -57,20 +52,19 @@ public class SelectTest{
   @Test
   public void shouldIndicateThatASelectCanSupportMultipleOptions() {
     Select select = selectElementWithMultipleEqualTo("multiple");
-    assertTrue(select.isMultiple());
+    assertThat(select.isMultiple()).isTrue();
   }
 
   @Test
   public void shouldIndicateThatASelectCanSupportMultipleOptionsWithEmptyMultipleAttribute() {
     Select select = selectElementWithMultipleEqualTo("");
-    assertTrue(select.isMultiple());
+    assertThat(select.isMultiple()).isTrue();
   }
 
   @Test
   public void shouldNotIndicateThatANormalSelectSupportsMultipleOptions() {
     Select select = selectElementWithMultipleEqualTo(null);
-
-    assertFalse(select.isMultiple());
+    assertThat(select.isMultiple()).isFalse();
   }
 
   private WebElement mockSelectWebElement(String multiple) {
@@ -83,7 +77,6 @@ public class SelectTest{
   private Select selectWithOptions(List<WebElement> options) {
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.tagName("option"))).thenReturn(options);
-
     return new Select(element);
   }
 
@@ -92,7 +85,7 @@ public class SelectTest{
     final List<WebElement> expectedOptions = Collections.emptyList();
     Select select = selectWithOptions(expectedOptions);
 
-    assertSame(expectedOptions, select.getOptions());
+    assertThat(select.getOptions()).isSameAs(expectedOptions);
   }
 
   private WebElement mockOption(String name, boolean isSelected) {
@@ -111,33 +104,34 @@ public class SelectTest{
   public void shouldReturnOptionsWhichAreSelected() {
     final WebElement optionGood = mockOption("good", true);
     final WebElement optionBad = mockOption("bad", false);
-    final List<WebElement> options = asList(optionBad, optionGood);
+    final List<WebElement> options = Arrays.asList(optionBad, optionGood);
 
     Select select = selectWithOptions(options);
     List<WebElement> returnedOptions = select.getAllSelectedOptions();
 
-    assertEquals(1, returnedOptions.size());
-    assertSame(optionGood, returnedOptions.get(0));
+    assertThat(returnedOptions).hasSize(1);
+    assertThat(returnedOptions.get(0)).isSameAs(optionGood);
   }
 
   @Test
   public void shouldReturnFirstSelectedOptions() {
     final WebElement firstOption = mockOption("first", true);
     final WebElement secondOption = mockOption("second", true);
-    final List<WebElement> options = asList(firstOption, secondOption);
+    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     Select select = selectWithOptions(options);
     WebElement firstSelected = select.getFirstSelectedOption();
 
-    assertSame(firstOption, firstSelected);
+    assertThat(firstSelected).isSameAs(firstOption);
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void shouldThrowANoSuchElementExceptionIfNothingIsSelected() {
     final WebElement firstOption = mockOption("first", false);
-    Select select = selectWithOptions(asList(firstOption));
+    Select select = selectWithOptions(Collections.singletonList(firstOption));
 
-    select.getFirstSelectedOption();
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(select::getFirstSelectedOption);
   }
 
   @Test
@@ -146,7 +140,7 @@ public class SelectTest{
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[normalize-space(.) = \"fish\"]")))
-        .thenReturn(asList(firstOption));
+        .thenReturn(Collections.singletonList(firstOption));
 
     Select select = new Select(element);
     select.selectByVisibleText("fish");
@@ -159,7 +153,7 @@ public class SelectTest{
     final WebElement firstOption = mockOption("first", true, 0);
     final WebElement secondOption = mockOption("second", false, 1);
 
-    Select select = selectWithOptions(asList(firstOption, secondOption));
+    Select select = selectWithOptions(Arrays.asList(firstOption, secondOption));
     select.selectByIndex(1);
 
     verify(firstOption, never()).click();
@@ -172,7 +166,7 @@ public class SelectTest{
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[@value = \"b\"]"))).thenReturn(
-        asList(firstOption));
+        Collections.singletonList(firstOption));
 
     Select select = new Select(element);
     select.selectByValue("b");
@@ -185,17 +179,18 @@ public class SelectTest{
     final WebElement firstOption = mockOption("first", true);
     final WebElement secondOption = mockOption("second", false);
 
-    Select select = selectWithOptions(asList(firstOption, secondOption));
+    Select select = selectWithOptions(Arrays.asList(firstOption, secondOption));
     select.deselectAll();
 
     verify(firstOption).click();
     verify(secondOption, never()).click();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void shouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
     Select select = selectElementWithMultipleEqualTo(null);
-    select.deselectAll();
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(select::deselectAll);
   }
 
   @Test
@@ -205,7 +200,7 @@ public class SelectTest{
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[normalize-space(.) = \"b\"]")))
-        .thenReturn(asList(firstOption, secondOption));
+        .thenReturn(Arrays.asList(firstOption, secondOption));
 
     Select select = new Select(element);
     select.deselectByVisibleText("b");
@@ -219,7 +214,7 @@ public class SelectTest{
     final WebElement firstOption = mockOption("first", true, 2);
     final WebElement secondOption = mockOption("second", false, 1);
 
-    Select select = selectWithOptions(asList(firstOption, secondOption));
+    Select select = selectWithOptions(Arrays.asList(firstOption, secondOption));
     select.deselectByIndex(2);
 
     verify(firstOption).click();
@@ -233,7 +228,7 @@ public class SelectTest{
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[@value = \"b\"]")))
-        .thenReturn(asList(firstOption, secondOption));
+        .thenReturn(Arrays.asList(firstOption, secondOption));
 
     Select select = new Select(element);
     select.deselectByValue("b");
@@ -251,7 +246,7 @@ public class SelectTest{
     final WebElement element = mockSelectWebElement("multiple");
     when(element.getTagName()).thenReturn("select");
     when(element.getAttribute("multiple")).thenReturn("false");
-    when(element.findElements(xpath1)).thenReturn(Collections.<WebElement>emptyList());
+    when(element.findElements(xpath1)).thenReturn(Collections.emptyList());
     when(element.findElements(xpath2)).thenReturn(Collections.singletonList(firstOption));
     when(firstOption.getText()).thenReturn("foo bar");
 
@@ -263,35 +258,26 @@ public class SelectTest{
 
   @Test
   public void shouldIndicateWhetherASelectIsMultipleCorrectly() {
-    assertFalse(selectElementWithMultipleEqualTo("false").isMultiple());
-    assertFalse(selectElementWithMultipleEqualTo(null).isMultiple());
-    assertTrue(selectElementWithMultipleEqualTo("true").isMultiple());
-    assertTrue(selectElementWithMultipleEqualTo("multiple").isMultiple());
+    assertThat(selectElementWithMultipleEqualTo("false").isMultiple()).isFalse();
+    assertThat(selectElementWithMultipleEqualTo(null).isMultiple()).isFalse();
+    assertThat(selectElementWithMultipleEqualTo("true").isMultiple()).isTrue();
+    assertThat(selectElementWithMultipleEqualTo("multiple").isMultiple()).isTrue();
   }
 
   @Test
   public void shouldThrowAnExceptionIfThereAreNoElementsToSelect() {
     final WebElement element = mockSelectWebElement("false");
-    when(element.findElements(Mockito.<By>any())).thenReturn(Collections.<WebElement>emptyList());
+    when(element.findElements(Mockito.any())).thenReturn(Collections.emptyList());
 
     Select select = new Select(element);
 
-    try {
-      select.selectByIndex(12);
-      fail("Was not meant to pass");
-    } catch (NoSuchElementException ignored) {
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> select.selectByIndex(12));
 
-    try {
-      select.selectByValue("not there");
-      fail("Was not meant to pass");
-    } catch (NoSuchElementException ignored) {
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> select.selectByValue("not there"));
 
-    try {
-      select.selectByVisibleText("also not there");
-      fail("Was not meant to pass");
-    } catch (NoSuchElementException ignored) {
-    }
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> select.selectByVisibleText("also not there"));
   }
 }

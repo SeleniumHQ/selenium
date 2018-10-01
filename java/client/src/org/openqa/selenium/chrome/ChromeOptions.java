@@ -195,7 +195,7 @@ public class ChromeOptions extends MutableCapabilities {
   }
 
   /**
-   * Sets an experimental option.  Useful for new ChromeDriver options not yet
+   * Sets an experimental option. Useful for new ChromeDriver options not yet
    * exposed through the {@link ChromeOptions} API.
    *
    * @param name Name of the experimental option.

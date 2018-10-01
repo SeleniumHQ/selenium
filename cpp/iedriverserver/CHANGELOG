@@ -9,6 +9,252 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.9
+=========
+ * Added ability to return text of JavaScript errors. Until this change,
+   if the IE driver encountered an error in a user's JavaScript, there was
+   no way to return the actual error text. This change fixes that. The text
+   of the JavaScript error will be returned so it can be used as part of
+   the exception thrown by the language bindings.
+
+v3.14.0.8
+=========
+ * Updated obscured element check for IE. The W3C WebDriver Specification
+   dictates that checking for elements being obscured by other elements
+   should rely on calling elementsFromPoint. However, there is a bug in
+   IE's elementsFromPoint implementation. if two sibling elements have the
+   same z-index, the one specified second in the DOM order is usually on
+   top. The exception is if there is a child element that has a specified
+   z-index greater than the ancestor z-index. The IE elementsFromPoint
+   implementation ignores the child element case, so we have to manually
+   look for child elements that may be rendered on top of the element found
+   outside the element DOM tree of the element we are attempting to interact
+   with.
+
+v3.14.0.7
+=========
+ * Instituted limits on x and y offsets for actions.
+ * Corrected finding of extracted dll on startup.
+
+v3.14.0.6
+=========
+ * Updated to make JSON serialization of JavaScript objects more compliant.
+   When returning values from user-specified JavaScript, the presence of a
+   toJSON() property indicates that function is what should be used to
+   serialize the object. Additionally, for objects that are not recognized
+   as JavaScript objects via the properties of the IDispatch, and do not
+   have a toJSON property, the driver will now make a last-ditch attempt
+   to serialize the value for return by calling JSON.stringify().
+
+v3.14.0.5
+=========
+ * Updated to manually initialize cookie manager on new window open. When
+   a new window is requested by the browser, the driver creates one, but
+   does not set the window handle of the window to a proper value. This
+   is normally not an issue, but in the edge case where the user wants to
+   manipulate cookies in the new window, the cookie manager does not have
+   a window handle set to facilitate the transfer of cookie information
+   from the driver code to the browser. This change rectifies that problem.
+
+v3.14.0.4
+=========
+ * Updated to return 500 for timeouts instead of 408. Some HTTP clients
+   would retry when receiving a 408 status code. Switching to 500 resolves
+   that issue.
+ * Updated driver for the case of clicking element with children. The
+   case where one attempts to click on an element that must be scrolled into
+   view, and where the element has child elements, but the first node is a
+   text node was broken for IE. In this case, to guarantee the proper element
+   is clicked (and that an embedded child does not receive the click), the
+   driver would attempt to click on the text node. However, the coordinate
+   calculation when the element had to be scrolled into view was flawed. This
+   commit changes from using the boundingLeft and boundingTop properties of
+   IHTMLTextRangeMetrics to using offsetLeft and offsetTop in an attempt to
+   correct the calculation of the location of the text to be clicked on.
+ * Updated driver to return non-integer values for element rect.
+ * Made driver spec compliant for setting largest timeout value.
+ * Updated to properly find XML documents for element enabled and CSS values
+ * Refactored opening and closing of new browser windows. This simplifies,
+   streamlines, and makes more robust the driver code responsible for finding
+   new browser windows when opened by users' code, like clicking a link that
+   opens the target in a new browser window. It also simplifies the code that
+   executes when a browser window is closed. There is a chance this change
+   introduces a slight performance delay in the process of opening a new
+   browser window, but in the interest of making the driver more robust, it
+   is preferable to live with the delay and figure out a way to reduce or
+   eliminate it later.
+
+v3.14.0.3
+=========
+ * Updated to properly validate duration property of pause actions.
+
+v3.14.0.2
+=========
+ * Robustness change for invalid command payloads to comply with W3C Spec.
+ * Updated to truncate obscured element click error message to a reasonable
+   length.
+ * Handle null pointers for cookie values. Fixes issue #6261.
+
+v3.14.0.1
+=========
+ * Updated to properly set the "path" property on cookies when a document
+   is specified in the property.
+
+v3.14.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Modified to prevent attempt to return IDispatch that is not IHTMLElement.
+   When returning values from JavaScript, if a variant value is an IDispatch,
+   but does not implement IHTMLElement, and also is not recognized as a
+   JavaScript array or object, avoid returning it from the script. This is
+   also to prevent returning things like a window or document reference, as
+   those items contain recursive references that cannot be properly
+   serialized to JSON.
+ * (on behalf of Mike Bellew) Fixed null pointer exception when managed
+   element is not found. The command executor has a chance to return an error
+   code of ENOSUCHELEMENT when executing scripts. This leaves the element
+   wrapper object equal to null, which in turn ends up throwing an exception
+   on the next like of code when it tries to use the element. This would
+   cause a crash in IEDriver and it shuts down
+
+v3.13.0.5
+=========
+ * Modified to silently dismiss onbeforeupdate dialogs. The W3C WebDriver
+   Specification dictates that all onbeforeupdate dialogs are automatically
+   dismissed without notification. This commit brings the IE driver into
+   compliance with that part of the spec.
+ * Resetting frame focus to top-level frame on refresh. The W3C WebDriver
+   Specification dictates that issuing the Refresh command will reset the
+   focus to the top-level frame. This commit brings the IE driver into
+   compliance with that part of the spec.
+
+v3.13.0.4
+=========
+ * Made set window rect command spec-compliant for x and y coordinates
+
+v3.13.0.3
+=========
+ * Fixed crashing bug in obscured element detection.
+ * Modified to extract IE internal library to IEDriver.tmp first.
+   If the file IEDriver.tmp exists in the destination directory, then use
+   the result of the `GetTempFileName` API, which results in a file named
+   "IEDxxxxx.tmp" where "xxxxx" is a random number.
+ * Added version resources to internal IE driver library.
+
+v3.13.0.2
+=========
+ * Modified to prevent keyup actions if key is not already down for IE.
+   This change now checks that a specified key is down before sending any
+   input events when a keyUp action is specified. This prevents spurious
+   events detected by the browser, events which cannot happen with an actual
+   user.
+ * Refactored IE sendKeys command handler to handle multiple file uploads.
+   Until now, the IE driver has not handled the "multiple" attribute for
+   <input type="file"> elements. This construct is now supported, and it is
+   possible to specify multiple files for upload if the multiple attribute is
+   set on the <input> element. To do so, use a string containing full path
+   and file name to each file to be uploaded, separated by new line
+   characters (e.g.: "C:\path\to\file\one.txt\nC:\path\to\file\two.txt"). One
+   caveat to this approach is that when specifying multiple files, all files
+   must be located in the same directory. This is not a limitation imposed by
+   the driver; it is a limitation imposed by IE itself. It is a known
+   limitation, and cannot be fixed in the driver until and unless the browser
+   allows it.
+ * Added wait for navigation to IE accept and dismiss alert commands. When
+   accepting or dismissing an alert, particularly when it is raised during
+   the onload event, it is possible for the driver to not recognize that
+   navigation is still pending once the alert is handled. This change is an
+   attempt at better allowing the driver to recognize this situation and act
+   accordingly.
+
+v3.13.0.1
+=========
+ * Updated to automatically dismiss onBeforeUnload event dialogs. This is a
+   change from previous behavior, where such dialogs were handled via the
+   standard alert handling commands. The W3C WebDriver Specification demands
+   that onBeforeUnload dialogs be dismissed automatically, with no input
+   allowed for the user. This may be a breaking change for some users who are
+   currently relying on the alert-handling commands to handle these alerts;
+   however, not implementing this behavior makes the driver not compliant with
+   the specificiation. Users in that state will have no choice but to modify
+   their code to accomodate the new, spec-compliant behavior.
+ * Updated the reset action to be spec-compliant. This means that when the
+   "Release Actions" command is sent, that pressed keystrokes and mouse
+   buttons are reset to the "up" position in the correct order.
+ * Corrected "invalid session id" response to be spec-compliant
+
+v3.13.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v3.12.0.5
+=========
+ * Updating to indicate elements with 'pointer-events' style of 'none' as
+   obscured, triggering "element click intercepted" error response. This is
+   in keeping with the W3C WebDriver Specification that demands this behavior.
+
+v3.12.0.4
+=========
+ * Updates to JavaScript automation atoms.
+ * Use elementFromPoint for IE driver in determining obscured elements. This
+   is in direct violation of the algorithm specified in the W3C WebDriver
+   Specification, but it fixes a class of IE-specific bugs that present
+   themselves when using elementsFromPoint. This is used to shortcut the use
+   of elementsFromPoint if it is not necessary.
+ * Added additional logging to IE driver for setting window focus.
+ * Updated IE driver to use SendInput for a single input at a time. The IE
+   driver uses the Windows `SendInput` API when a session is initiated with
+   the `requireWindowFocus` capability. This is a low-level user input
+   simulation API, and very closely mimics the use of a physical mouse and
+   keyboard. One of the guarantees of the API is that when one sends an array
+   of `INPUT` structures, then no input messages can be inserted into the
+   middle of the input stream. However, it appears that there are cases where
+   sending multiple input structures that IE does not process all of them.
+   This leads to truncated or missing keys when using the Selenium sendKeys
+   method. This change makes the driver use SendInput, but only passing a
+   single INPUT structure at a time. This is dangerous, in that it allows
+   other inputs to potentially be slipped into the input stream. This change
+   makes the driver prefer one form of instability (potentially unwanted
+   input events) over another (input events not processed by the browser).
+
+   Additionally, this change introduces an additional method for forcing the
+   IE window into focus before sending input. This additional method uses the
+   Windows UI Automation accessibility API to do this. The potential down
+   side to using this (apparently) more reliable mechanism is that it may
+   introduce a slight performance penalty, as the UI Automation API is
+   notoriously slow. In practice, this performance penalty is observed to be
+   on the order of milliseconds, so the trade-off here is deemed worth the
+   risk, and there is no way to disable this new check.
+
+v3.12.0.3
+=========
+ * Refactored IE waiting for page load on click. This commit restores some
+   previously lost functionality for waiting for a page to load on click of
+   an element. The race condition for detecting when a navigation is started
+   is mitigated by a short wait (50ms) on the click.
+ * Made "eager" page load strategy not wait for frame navigation to be
+   completed before returning.
+
+v3.12.0.2
+=========
+ * Added log warning for mismatched bitness of driver and browser when
+   sending keys.
+ * Updated to better support using CreateProcess API for launching IE.
+   The driver checks the registry for the location of the iexplore.exe
+   executable. In the case of a 32-bit driver on 64-bit Windows, the
+   registry calls are redirected to the Wow6432Node in the registry,
+   which ultimately points to ielowutl.exe instead of iexplore.exe. In
+   this case, we will now bypass the registry redirection, and read the
+   proper location from the 64-bit browser executable. A side effect of
+   this is that users wanting to use the CreateProcess API will need to
+   use the 64-bit version of the IE driver on 64-bit Windows, contrary to
+   most expectations. It is important to note that using this API and
+   launching the browser in this way is not consistent with how the user
+   will launch IE, and if the driver is used for testing purposes, it will
+   not be giving identical results to what the end-user of the application
+   being tested will use when running IE.
+
 v3.12.0.1
 =========
  * Update close window command to return list of remaining window handles.

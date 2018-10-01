@@ -17,14 +17,10 @@
 
 package org.openqa.selenium.remote;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -33,14 +29,10 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 
-import java.net.MalformedURLException;
-import java.util.Map;
-import java.util.Optional;
-
 public class JsonWireProtocolResponseTest {
 
   @Test
-  public void successfulResponseGetsParsedProperly() throws MalformedURLException {
+  public void successfulResponseGetsParsedProperly() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     ImmutableMap<String, ?> payload =
         ImmutableMap.of(
@@ -52,19 +44,17 @@ public class JsonWireProtocolResponseTest {
         200,
         payload);
 
-    Optional<ProtocolHandshake.Result> optionalResult =
+    ProtocolHandshake.Result result =
         new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
-    assertTrue(optionalResult.isPresent());
-    ProtocolHandshake.Result result = optionalResult.get();
-
-    assertEquals(Dialect.OSS, result.getDialect());
+    assertThat(result).isNotNull();
+    assertThat(result.getDialect()).isEqualTo(Dialect.OSS);
     Response response = result.createResponse();
 
-    assertEquals("success", response.getState());
-    assertEquals(0, (int) response.getStatus());
+    assertThat(response.getState()).isEqualTo("success");
+    assertThat((int) response.getStatus()).isEqualTo(0);
 
-    assertEquals(caps.asMap(), response.getValue());
+    assertThat(response.getValue()).isEqualTo(caps.asMap());
   }
 
   @Test
@@ -80,10 +70,10 @@ public class JsonWireProtocolResponseTest {
         200,
         payload);
 
-    Optional<ProtocolHandshake.Result> optionalResult =
+    ProtocolHandshake.Result result =
         new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
-    assertFalse(optionalResult.isPresent());
+    assertThat(result).isNull();
   }
 
   @Test
@@ -98,10 +88,10 @@ public class JsonWireProtocolResponseTest {
         200,
         payload);
 
-    Optional<ProtocolHandshake.Result> optionalResult =
+    ProtocolHandshake.Result result =
         new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
-    assertFalse(optionalResult.isPresent());
+    assertThat(result).isNull();
   }
 
   @Test
@@ -109,7 +99,7 @@ public class JsonWireProtocolResponseTest {
     WebDriverException exception = new SessionNotCreatedException("me no likey");
 
     ImmutableMap<String, ?> payload = ImmutableMap.of(
-            "value", new Gson().fromJson(new Json().toJson(exception), Map.class),
+            "value", new Json().toType(new Json().toJson(exception), Json.MAP_TYPE),
             "status", ErrorCodes.SESSION_NOT_CREATED);
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
@@ -117,13 +107,8 @@ public class JsonWireProtocolResponseTest {
         500,
         payload);
 
-
-    try {
-      new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
-      fail();
-    } catch (SessionNotCreatedException e) {
-      assertTrue(e.getMessage().contains("me no likey"));
-    }
-
+    assertThatExceptionOfType(SessionNotCreatedException.class)
+        .isThrownBy(() -> new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse))
+        .withMessageContaining("me no likey");
   }
 }

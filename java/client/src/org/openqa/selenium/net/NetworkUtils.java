@@ -214,11 +214,4 @@ public class NetworkUtils {
       result.append("\n");
     }
   }
-
-  @SuppressWarnings({"UseOfSystemOutOrSystemErr"})
-  public static void main(String[] args) {
-    System.out.println(getNetWorkDiags());
-  }
-
-
 }

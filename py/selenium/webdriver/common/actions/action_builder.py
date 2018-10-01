@@ -26,7 +26,7 @@ from .pointer_input import PointerInput
 class ActionBuilder(object):
     def __init__(self, driver, mouse=None, keyboard=None):
         if mouse is None:
-            mouse = PointerInput(interaction.POINTER, "mouse")
+            mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
         if keyboard is None:
             keyboard = KeyInput(interaction.KEY)
         self.devices = [mouse, keyboard]
@@ -62,8 +62,8 @@ class ActionBuilder(object):
         self._add_input(new_input)
         return new_input
 
-    def add_pointer_input(self, type_, name):
-        new_input = PointerInput(type_, name)
+    def add_pointer_input(self, kind, name):
+        new_input = PointerInput(kind, name)
         self._add_input(new_input)
         return new_input
 
@@ -76,6 +76,9 @@ class ActionBuilder(object):
         self.driver.execute(Command.W3C_ACTIONS, enc)
 
     def clear_actions(self):
+        """
+            Clears actions that are already stored on the remote end
+        """
         self.driver.execute(Command.W3C_CLEAR_ACTIONS)
 
     def _add_input(self, input):

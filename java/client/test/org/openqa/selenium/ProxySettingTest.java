@@ -17,9 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
@@ -31,18 +29,27 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
+import org.littleshoot.proxy.HttpFilters;
+import org.littleshoot.proxy.HttpFiltersAdapter;
+import org.littleshoot.proxy.HttpFiltersSourceAdapter;
+import org.littleshoot.proxy.HttpProxyServer;
+import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.ProxyServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.seleniumhq.jetty9.server.Handler;
 import org.seleniumhq.jetty9.server.Request;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.server.handler.AbstractHandler;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,7 +92,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     registerDriverTeardown(driver);
 
     driver.get(appServer.whereElseIs("simpleTest.html"));
-    assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
+    assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isTrue();
   }
 
   @Test
@@ -100,10 +107,10 @@ public class ProxySettingTest extends JUnit4TestBase {
     registerDriverTeardown(driver);
 
     driver.get(appServer.whereIs("simpleTest.html"));
-    assertFalse("Proxy should not have been called", proxyServer.hasBeenCalled("simpleTest.html"));
+    assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isFalse();
 
     driver.get(appServer.whereElseIs("simpleTest.html"));
-    assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
+    assertThat(proxyServer.hasBeenCalled("simpleTest.html")).isTrue();
   }
 
   @Test
@@ -126,8 +133,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     registerDriverTeardown(driver);
 
     driver.get(appServer.whereElseIs("mouseOver.html"));
-    assertEquals("Should follow proxy to another server",
-        "Hello, world!", driver.findElement(By.tagName("h3")).getText());
+    assertThat(driver.findElement(By.tagName("h3")).getText()).isEqualTo("Hello, world!");
   }
 
   @Test
@@ -155,12 +161,10 @@ public class ProxySettingTest extends JUnit4TestBase {
     registerDriverTeardown(driver);
 
     driver.get("http://" + getHostAndPort(helloServer));
-    assertEquals("Should follow proxy to another server",
-        "Goodbye, world!", driver.findElement(By.tagName("h3")).getText());
+    assertThat(driver.findElement(By.tagName("h3")).getText()).isEqualTo("Goodbye, world!");
 
     driver.get(appServer.whereElseIs("simpleTest.html"));
-    assertEquals("Proxy should have permitted direct access to host",
-        "Heading", driver.findElement(By.tagName("h1")).getText());
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Heading");
   }
 
   private void registerDriverTeardown(final WebDriver driver) {
@@ -233,5 +237,66 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   private static HostAndPort getHostAndPort(Server server) {
     return HostAndPort.fromParts(server.getURI().getHost(), server.getURI().getPort());
+  }
+
+  public static class ProxyServer {
+    private HttpProxyServer proxyServer;
+    private final String baseUrl;
+    private final List<String> uris = new ArrayList<>();
+
+    public ProxyServer() {
+      int port = PortProber.findFreePort();
+
+      String address = new NetworkUtils().getPrivateLocalAddress();
+      baseUrl = String.format("%s:%d", address, port);
+
+      proxyServer = DefaultHttpProxyServer.bootstrap().withAllowLocalOnly(false).withPort(port)
+          .withFiltersSource(new HttpFiltersSourceAdapter() {
+            public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+              return new HttpFiltersAdapter(originalRequest) {
+                public HttpResponse clientToProxyRequest(HttpObject httpObject) {
+                  String uri = originalRequest.uri();
+                  String[] parts = uri.split("/");
+                  if (parts.length == 0) {
+                    return null;
+                  }
+                  String finalPart = parts[parts.length - 1];
+                  uris.add(finalPart);
+                  return null;
+                }
+
+                @Override
+                public HttpObject serverToProxyResponse(HttpObject httpObject) {
+                  return httpObject;
+                }
+              };
+            }
+          })
+          .start();
+    }
+
+    public String getBaseUrl() {
+      return baseUrl;
+    }
+
+    /**
+     * Checks if a resource has been requested using the short name of the resource.
+     *
+     * @param resourceName The short name of the resource to check.
+     * @return true if the resource has been called.
+     */
+    public boolean hasBeenCalled(String resourceName) {
+      return uris.contains(resourceName);
+    }
+
+    public void destroy() {
+      proxyServer.stop();
+    }
+
+    public Proxy asProxy() {
+      Proxy proxy = new Proxy();
+      proxy.setHttpProxy(baseUrl);
+      return proxy;
+    }
   }
 }

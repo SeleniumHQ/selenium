@@ -62,7 +62,8 @@ public:
   void Initialize(InputManagerSettings settings);
 
   int PerformInputSequence(BrowserHandle browser_wrapper,
-                           const Json::Value& sequence);
+                           const Json::Value& sequence,
+                           std::string* error_info);
   void Reset(BrowserHandle browser_wrapper);
 
   //void StartPersistentEvents(void);

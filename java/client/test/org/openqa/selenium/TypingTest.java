@@ -17,24 +17,17 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static com.google.common.base.Joiner.on;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-
-import com.google.common.base.Joiner;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -52,7 +45,7 @@ public class TypingTest extends JUnit4TestBase {
     keyReporter.sendKeys("a");
 
     WebElement result = driver.findElement(By.id("result"));
-    assertThat(result.getText(), containsString("press:"));
+    assertThat(result.getText()).contains("press:");
   }
 
   @Test
@@ -63,7 +56,7 @@ public class TypingTest extends JUnit4TestBase {
     keyReporter.sendKeys("I");
 
     WebElement result = driver.findElement(By.id("result"));
-    assertThat(result.getText(), containsString("down:"));
+    assertThat(result.getText()).contains("down:");
   }
 
   @Test
@@ -74,7 +67,7 @@ public class TypingTest extends JUnit4TestBase {
     keyReporter.sendKeys("a");
 
     WebElement result = driver.findElement(By.id("result"));
-    assertThat(result.getText(), containsString("up:"));
+    assertThat(result.getText()).contains("up:");
   }
 
   @Test
@@ -84,7 +77,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("abc def");
 
-    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+    assertThat(keyReporter.getAttribute("value")).isEqualTo("abc def");
   }
 
   @Test
@@ -94,7 +87,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("ABC DEF");
 
-    assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
+    assertThat(keyReporter.getAttribute("value")).isEqualTo("ABC DEF");
   }
 
   @Test
@@ -104,7 +97,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("\"");
 
-    assertThat(keyReporter.getAttribute("value"), is("\""));
+    assertThat(keyReporter.getAttribute("value")).isEqualTo("\"");
   }
 
   @Test
@@ -120,7 +113,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("@");
 
-    assertThat(keyReporter.getAttribute("value"), is("@"));
+    assertThat(keyReporter.getAttribute("value")).isEqualTo("@");
   }
 
   @Test
@@ -130,7 +123,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("me@eXample.com");
 
-    assertThat(keyReporter.getAttribute("value"), is("me@eXample.com"));
+    assertThat(keyReporter.getAttribute("value")).isEqualTo("me@eXample.com");
   }
 
   @Test
@@ -140,7 +133,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys(Keys.ARROW_LEFT);
 
-    assertThat(keyReporter.getAttribute("value"), is(""));
+    assertThat(keyReporter.getAttribute("value")).isEqualTo("");
   }
 
   @Test
@@ -150,7 +143,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("tet", Keys.ARROW_LEFT, "s");
 
-    assertThat(keyReporter.getAttribute("value"), is("test"));
+    assertThat(keyReporter.getAttribute("value")).isEqualTo("test");
   }
 
   @Test
@@ -162,7 +155,7 @@ public class TypingTest extends JUnit4TestBase {
     element.sendKeys("I like cheese");
 
     WebElement result = driver.findElement(By.id("result"));
-    assertThat(result.getText(), equalTo("I like cheese"));
+    assertThat(result.getText()).isEqualTo("I like cheese");
   }
 
   @Test
@@ -176,7 +169,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement result = driver.findElement(By.id("result"));
     // Because the key down gets the result before the input element is
     // filled, we're a letter short here
-    assertThat(result.getText(), equalTo("I like chees"));
+    assertThat(result.getText()).isEqualTo("I like chees");
   }
 
   @Test
@@ -190,7 +183,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement result = driver.findElement(By.id("result"));
     // Because the key down gets the result before the input element is
     // filled, we're a letter short here
-    assertThat(result.getText(), equalTo("I like chees"));
+    assertThat(result.getText()).isEqualTo("I like chees");
   }
 
   @Test
@@ -202,7 +195,7 @@ public class TypingTest extends JUnit4TestBase {
     element.sendKeys("I like cheese");
 
     WebElement result = driver.findElement(By.id("result"));
-    assertThat(result.getText(), equalTo("I like cheese"));
+    assertThat(result.getText()).isEqualTo("I like cheese");
   }
 
   @Test
@@ -216,7 +209,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement result = driver.findElement(By.id("result"));
     // Because the key down gets the result before the input element is
     // filled, we're a letter short here
-    assertThat(result.getText(), equalTo("I like chees"));
+    assertThat(result.getText()).isEqualTo("I like chees");
   }
 
   @Test
@@ -230,7 +223,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement result = driver.findElement(By.id("result"));
     // Because the key down gets the result before the input element is
     // filled, we're a letter short here
-    assertThat(result.getText(), equalTo("I like chees"));
+    assertThat(result.getText()).isEqualTo("I like chees");
   }
 
   @Test
@@ -242,17 +235,16 @@ public class TypingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("theworks"));
 
     element.sendKeys("a");
-    assertThat(result.getText().trim(), is("focus keydown keypress keyup"));
+    assertThat(result.getText().trim()).isEqualTo("focus keydown keypress keyup");
   }
 
   private static void checkRecordedKeySequence(WebElement element, int expectedKeyCode) {
-    assertThat(element.getText().trim(),
-               anyOf(is(String.format("down: %1$d press: %1$d up: %1$d", expectedKeyCode)),
-                     is(String.format("down: %1$d up: %1$d", expectedKeyCode))));
+    assertThat(element.getText().trim()).isIn(
+        String.format("down: %1$d press: %1$d up: %1$d", expectedKeyCode),
+        String.format("down: %1$d up: %1$d", expectedKeyCode));
   }
 
   @Test
-  @Ignore(IE)
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.opera &&
                 getEffectivePlatform().is(Platform.WINDOWS));
@@ -275,7 +267,7 @@ public class TypingTest extends JUnit4TestBase {
     checkRecordedKeySequence(result, 39);
 
     // And leave no rubbish/printable keys in the "keyReporter"
-    assertThat(element.getAttribute("value"), is(""));
+    assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
   @Test
@@ -289,23 +281,19 @@ public class TypingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys(Keys.ARROW_DOWN);
-    assertThat(result.getText().trim(), containsString("down: 40"));
-    assertThat(result.getText().trim(), containsString("up: 40"));
+    assertThat(result.getText().trim()).contains("down: 40", "up: 40");
 
     element.sendKeys(Keys.ARROW_UP);
-    assertThat(result.getText().trim(), containsString("down: 38"));
-    assertThat(result.getText().trim(), containsString("up: 38"));
+    assertThat(result.getText().trim()).contains("down: 38", "up: 38");
 
     element.sendKeys(Keys.ARROW_LEFT);
-    assertThat(result.getText().trim(), containsString("down: 37"));
-    assertThat(result.getText().trim(), containsString("up: 37"));
+    assertThat(result.getText().trim()).contains("down: 37", "up: 37");
 
     element.sendKeys(Keys.ARROW_RIGHT);
-    assertThat(result.getText().trim(), containsString("down: 39"));
-    assertThat(result.getText().trim(), containsString("up: 39"));
+    assertThat(result.getText().trim()).contains("down: 39", "up: 39");
 
     // And leave no rubbish/printable keys in the "keyReporter"
-    assertThat(element.getAttribute("value"), is(""));
+    assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
   @Test
@@ -317,7 +305,7 @@ public class TypingTest extends JUnit4TestBase {
     String numericLineCharsNonShifted = "`1234567890-=[]\\;,.'/42";
     element.sendKeys(numericLineCharsNonShifted);
 
-    assertThat(element.getAttribute("value"), is(numericLineCharsNonShifted));
+    assertThat(element.getAttribute("value")).isEqualTo(numericLineCharsNonShifted);
   }
 
   @Test
@@ -331,8 +319,8 @@ public class TypingTest extends JUnit4TestBase {
     String numericShiftsEtc = "~!@#$%^&*()_+{}:\"<>?|END~";
     element.sendKeys(numericShiftsEtc);
 
-    assertThat(element.getAttribute("value"), is(numericShiftsEtc));
-    assertThat(result.getText().trim(), containsString(" up: 16"));
+    assertThat(element.getAttribute("value")).isEqualTo(numericShiftsEtc);
+    assertThat(result.getText().trim()).contains(" up: 16");
   }
 
   @Test
@@ -344,7 +332,7 @@ public class TypingTest extends JUnit4TestBase {
     String lowerAlphas = "abcdefghijklmnopqrstuvwxyz";
     element.sendKeys(lowerAlphas);
 
-    assertThat(element.getAttribute("value"), is(lowerAlphas));
+    assertThat(element.getAttribute("value")).isEqualTo(lowerAlphas);
   }
 
   @Test
@@ -358,8 +346,8 @@ public class TypingTest extends JUnit4TestBase {
     String upperAlphas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     element.sendKeys(upperAlphas);
 
-    assertThat(element.getAttribute("value"), is(upperAlphas));
-    assertThat(result.getText().trim(), containsString(" up: 16"));
+    assertThat(element.getAttribute("value")).isEqualTo(upperAlphas);
+    assertThat(result.getText().trim()).contains(" up: 16");
   }
 
   @Test
@@ -375,8 +363,8 @@ public class TypingTest extends JUnit4TestBase {
         "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
     element.sendKeys(allPrintable);
 
-    assertThat(element.getAttribute("value"), is(allPrintable));
-    assertThat(result.getText().trim(), containsString(" up: 16"));
+    assertThat(element.getAttribute("value")).isEqualTo(allPrintable);
+    assertThat(result.getText().trim()).contains(" up: 16");
   }
 
   @Test
@@ -387,7 +375,7 @@ public class TypingTest extends JUnit4TestBase {
 
     element.sendKeys("a" + Keys.LEFT + "b" + Keys.RIGHT +
                      Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1");
-    assertThat(element.getAttribute("value"), is("ba1"));
+    assertThat(element.getAttribute("value")).isEqualTo("ba1");
   }
 
   @Test
@@ -402,7 +390,7 @@ public class TypingTest extends JUnit4TestBase {
     element.sendKeys("abc" + Keys.HOME + "0" + Keys.LEFT + Keys.RIGHT +
                      Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
                      "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
-    assertThat(element.getAttribute("value"), is("0000abc1111"));
+    assertThat(element.getAttribute("value")).isEqualTo("0000abc1111");
   }
 
   @Test
@@ -412,13 +400,13 @@ public class TypingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("abcdefghi");
-    assertThat(element.getAttribute("value"), is("abcdefghi"));
+    assertThat(element.getAttribute("value")).isEqualTo("abcdefghi");
 
     element.sendKeys(Keys.LEFT, Keys.LEFT, Keys.DELETE);
-    assertThat(element.getAttribute("value"), is("abcdefgi"));
+    assertThat(element.getAttribute("value")).isEqualTo("abcdefgi");
 
     element.sendKeys(Keys.LEFT, Keys.LEFT, Keys.BACK_SPACE);
-    assertThat(element.getAttribute("value"), is("abcdfgi"));
+    assertThat(element.getAttribute("value")).isEqualTo("abcdfgi");
   }
 
   @Test
@@ -429,7 +417,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("abcd" + Keys.SPACE + "fgh" + Keys.SPACE + "ij");
-    assertThat(element.getAttribute("value"), is("abcd fgh ij"));
+    assertThat(element.getAttribute("value")).isEqualTo("abcd fgh ij");
   }
 
   @Test
@@ -444,7 +432,7 @@ public class TypingTest extends JUnit4TestBase {
                      Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
                      Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
                      Keys.NUMPAD3 + "abcd");
-    assertThat(element.getAttribute("value"), is("abcd*-+.,09+;=/3abcd"));
+    assertThat(element.getAttribute("value")).isEqualTo("abcd*-+.,09+;=/3abcd");
   }
 
   @Test
@@ -456,7 +444,7 @@ public class TypingTest extends JUnit4TestBase {
 
     element.sendKeys("FUNCTION" + Keys.F4 + "-KEYS" + Keys.F4);
     element.sendKeys("" + Keys.F4 + "-TOO" + Keys.F4);
-    assertThat(element.getAttribute("value"), is("FUNCTION-KEYS-TOO"));
+    assertThat(element.getAttribute("value")).isEqualTo("FUNCTION-KEYS-TOO");
   }
 
   @Test
@@ -467,11 +455,11 @@ public class TypingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("abcd efgh");
-    assertThat(element.getAttribute("value"), is("abcd efgh"));
+    assertThat(element.getAttribute("value")).isEqualTo("abcd efgh");
 
     element.sendKeys(Keys.SHIFT, Keys.LEFT, Keys.LEFT, Keys.LEFT);
     element.sendKeys(Keys.DELETE);
-    assertThat(element.getAttribute("value"), is("abcd e"));
+    assertThat(element.getAttribute("value")).isEqualTo("abcd e");
   }
 
   @Test
@@ -489,10 +477,10 @@ public class TypingTest extends JUnit4TestBase {
 
     element.sendKeys(Keys.HOME);
     element.sendKeys("" + Keys.SHIFT + Keys.END);
-    assertThat(result.getText(), containsString(" up: 16"));
+    assertThat(result.getText()).contains(" up: 16");
 
     element.sendKeys(Keys.DELETE);
-    assertThat(element.getAttribute("value"), is(""));
+    assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
   @Test
@@ -507,21 +495,20 @@ public class TypingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("done" + Keys.HOME);
-    assertThat(element.getAttribute("value"), is("done"));
+    assertThat(element.getAttribute("value")).isEqualTo("done");
 
     element.sendKeys(Keys.SHIFT + "ALL " + Keys.HOME);
-    assertThat(element.getAttribute("value"), is("ALL done"));
+    assertThat(element.getAttribute("value")).isEqualTo("ALL done");
 
     element.sendKeys(Keys.DELETE);
-    assertThat(element.getAttribute("value"), is("done"));
+    assertThat(element.getAttribute("value")).isEqualTo("done");
 
     element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME);
-    assertThat(element.getAttribute("value"), is("done"));
-    assertThat( // Note: trailing SHIFT up here
-                result.getText().trim(), containsString(" up: 16"));
+    assertThat(element.getAttribute("value")).isEqualTo("done");
+    assertThat(result.getText().trim()).contains(" up: 16");
 
     element.sendKeys(Keys.DELETE);
-    assertThat(element.getAttribute("value"), is(""));
+    assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
   // control-x control-v here for cut & paste tests, these work on windows
@@ -540,14 +527,14 @@ public class TypingTest extends JUnit4TestBase {
 
     String paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
     element.sendKeys(paste);
-    assertThat(element.getAttribute("value"), is(paste));
+    assertThat(element.getAttribute("value")).isEqualTo(paste);
 
     element.sendKeys(Keys.HOME);
     element.sendKeys("" + Keys.SHIFT + Keys.END);
-    assertThat(result.getText().trim(), containsString(" up: 16"));
+    assertThat(result.getText().trim()).contains(" up: 16");
 
     element.sendKeys(Keys.CONTROL, "x");
-    assertThat(element.getAttribute("value"), is(""));
+    assertThat(element.getAttribute("value")).isEqualTo("");
 
     element.sendKeys(Keys.CONTROL, "v");
     wait.until(elementValueToEqual(element, paste));
@@ -557,21 +544,21 @@ public class TypingTest extends JUnit4TestBase {
                      Keys.SHIFT + Keys.END);
 
     element.sendKeys(Keys.CONTROL, "x");
-    assertThat(element.getAttribute("value"), is(paste.substring(0, paste.length() - 3)));
+    assertThat(element.getAttribute("value")).isEqualTo(paste.substring(0, paste.length() - 3));
 
     // Paste the last 3 letters.
     element.sendKeys(Keys.CONTROL, "v");
-    assertThat(element.getAttribute("value"), is(paste));
+    assertThat(element.getAttribute("value")).isEqualTo(paste);
 
     element.sendKeys(Keys.HOME);
     element.sendKeys(Keys.CONTROL, "v");
     element.sendKeys(Keys.CONTROL, "v" + "v");
     element.sendKeys(Keys.CONTROL, "v" + "v" + "v");
-    assertThat(element.getAttribute("value"), is("EFGEFGEFGEFGEFGEFG" + paste));
+    assertThat(element.getAttribute("value")).isEqualTo("EFGEFGEFGEFGEFGEFG" + paste);
 
     element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME +
                      Keys.NULL + Keys.DELETE);
-    assertThat(element.getAttribute("value"), is(""));
+    assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
   @Test
@@ -581,7 +568,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("no-type"));
 
     element.sendKeys("should say cheese");
-    assertThat(element.getAttribute("value"), is("should say cheese"));
+    assertThat(element.getAttribute("value")).isEqualTo("should say cheese");
   }
 
   @Test
@@ -591,7 +578,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement silent = driver.findElement(By.name("suppress"));
 
     silent.sendKeys("s");
-    assertThat(silent.getAttribute("value"), is(""));
+    assertThat(silent.getAttribute("value")).isEqualTo("");
   }
 
   @Test
@@ -604,7 +591,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement result = driver.findElement(By.id("result"));
 
     silent.sendKeys("s");
-    assertThat(result.getText().trim(), is(""));
+    assertThat(result.getText().trim()).isEqualTo("");
   }
 
   @Test
@@ -612,7 +599,7 @@ public class TypingTest extends JUnit4TestBase {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("email"));
     email.sendKeys("foobar");
-    assertThat(email.getAttribute("value"), equalTo("foobar"));
+    assertThat(email.getAttribute("value")).isEqualTo("foobar");
   }
 
   @Test
@@ -620,15 +607,15 @@ public class TypingTest extends JUnit4TestBase {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));
     email.sendKeys("33");
-    assertThat(email.getAttribute("value"), equalTo("33"));
+    assertThat(email.getAttribute("value")).isEqualTo("33");
   }
 
   @Test
   public void testShouldThrowIllegalArgumentException() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));
-    Throwable t = catchThrowable(() -> email.sendKeys((CharSequence[]) null));
-    assertThat(t, instanceOf(IllegalArgumentException.class));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> email.sendKeys((CharSequence[]) null));
   }
 
   @Test
@@ -638,26 +625,26 @@ public class TypingTest extends JUnit4TestBase {
     WebElement input = driver.findElement(By.id("target"));
     WebElement log = driver.findElement(By.id("log"));
 
-    assertEquals("", log.getAttribute("value"));
+    assertThat(log.getAttribute("value")).isEqualTo("");
 
     input.sendKeys("b");
-    assertThat(getValueText(log), equalTo(Joiner.on('\n').join(
+    assertThat(getValueText(log)).isEqualTo(on('\n').join(
         "keydown (target)",
         "keyup (target)",
-        "keyup (body)")));
+        "keyup (body)"));
 
     input.sendKeys("a");
 
     // Some drivers (IE, Firefox) do not always generate the final keyup event since the element
     // is removed from the DOM in response to the keypress (note, this is a product of how events
     // are generated and does not match actual user behavior).
-    String expected = Joiner.on('\n').join(
+    String expected = String.join("\n",
         "keydown (target)",
         "keyup (target)",
         "keyup (body)",
         "keydown (target)",
         "a pressed; removing");
-    assertThat(getValueText(log), anyOf(equalTo(expected), equalTo(expected + "\nkeyup (body)")));
+    assertThat(getValueText(log)).isIn(expected, expected + "\nkeyup (body)");
   }
 
   @Test
@@ -667,7 +654,7 @@ public class TypingTest extends JUnit4TestBase {
     input.sendKeys("e");
     input.clear();
     input.sendKeys("3");
-    assertEquals("3", input.getAttribute("value"));
+    assertThat(input.getAttribute("value")).isEqualTo("3");
   }
 
   private static String getValueText(WebElement el) {

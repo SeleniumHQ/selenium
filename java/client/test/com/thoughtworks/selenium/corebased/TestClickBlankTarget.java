@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestClickBlankTarget extends InternalSelenseTestBase {
   @Test
-  public void testClickBlankTarget() throws Exception {
+  public void testClickBlankTarget() {
     selenium.open("../tests/html/Frames.html");
     selenium.selectFrame("bottomFrame");
     selenium.click("changeBlank");

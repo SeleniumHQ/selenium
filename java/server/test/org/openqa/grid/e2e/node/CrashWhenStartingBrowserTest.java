@@ -41,7 +41,6 @@ import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
-import java.net.MalformedURLException;
 import java.time.Duration;
 import java.util.function.Function;
 
@@ -119,7 +118,7 @@ public class CrashWhenStartingBrowserTest {
   }
 
   @After
-  public void stop() throws Exception {
+  public void stop() {
     remote.stopRemoteServer();
     hub.stop();
   }

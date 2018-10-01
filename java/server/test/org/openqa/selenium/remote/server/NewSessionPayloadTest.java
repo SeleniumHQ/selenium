@@ -17,15 +17,18 @@
 
 package org.openqa.selenium.remote.server;
 
-
+import static java.util.Arrays.asList;
+import static java.util.Collections.EMPTY_MAP;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -43,75 +46,79 @@ import java.util.Map;
 public class NewSessionPayloadTest {
 
   @Test
-  public void shouldIndicateDownstreamOssDialect() throws IOException {
-    ImmutableMap<String, ImmutableMap<String, String>> caps = ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of("browserName", "cheese"));
+  public void shouldIndicateDownstreamOssDialect() {
+    Map<String, Map<String, String>> caps = singletonMap(
+        "desiredCapabilities", singletonMap(
+            "browserName", "cheese"));
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
+      assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
     }
 
     String json = new Json().toJson(caps);
     try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
-      assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
+      assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
     }
   }
 
   @Test
-  public void shouldIndicateDownstreamW3cDialect() throws IOException {
-    ImmutableMap<String, ImmutableMap<String, ImmutableMap<String, String>>> caps = ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("browserName", "cheese")));
+  public void shouldIndicateDownstreamW3cDialect() {
+    Map<String, Map<String, Map<String, String>>> caps = singletonMap(
+        "capabilities", singletonMap(
+            "alwaysMatch", singletonMap(
+                "browserName", "cheese")));
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      assertEquals(ImmutableSet.of(Dialect.W3C), payload.getDownstreamDialects());
+      assertEquals(singleton(Dialect.W3C), payload.getDownstreamDialects());
     }
 
     String json = new Json().toJson(caps);
     try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
-      assertEquals(ImmutableSet.of(Dialect.W3C), payload.getDownstreamDialects());
+      assertEquals(singleton(Dialect.W3C), payload.getDownstreamDialects());
     }
   }
 
   @Test
-  public void shouldDefaultToAssumingADownstreamOssDialect() throws IOException {
-    ImmutableMap<String, Object> caps = ImmutableMap.of();
+  public void shouldDefaultToAssumingADownstreamOssDialect() {
+    Map<String, Object> caps = EMPTY_MAP;
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
+      assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
     }
 
     String json = new Json().toJson(caps);
     try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
-      assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
+      assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
     }
   }
 
   @Test
-  public void shouldOfferStreamOfSingleOssCapabilitiesIfThatIsOnlyOption() throws IOException {
-    List<Capabilities> capabilities = create(ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of("browserName", "cheese")));
+  public void shouldOfferStreamOfSingleOssCapabilitiesIfThatIsOnlyOption() {
+    List<Capabilities> capabilities = create(singletonMap(
+        "desiredCapabilities", singletonMap(
+            "browserName", "cheese")));
 
     assertEquals(capabilities.toString(), 1, capabilities.size());
     assertEquals("cheese", capabilities.get(0).getBrowserName());
   }
 
   @Test
-  public void shouldReturnAlwaysMatchIfNoFirstMatchIsPresent() throws IOException {
-    List<Capabilities> capabilities = create(ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("browserName", "cheese"))));
+  public void shouldReturnAlwaysMatchIfNoFirstMatchIsPresent() {
+    List<Capabilities> capabilities = create(singletonMap(
+        "capabilities", singletonMap(
+            "alwaysMatch", singletonMap(
+                "browserName", "cheese"))));
 
     assertEquals(capabilities.toString(), 1, capabilities.size());
     assertEquals("cheese", capabilities.get(0).getBrowserName());
   }
 
   @Test
-  public void shouldReturnEachFirstMatchIfNoAlwaysMatchIsPresent() throws IOException {
-    List<Capabilities> capabilities = create(ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-            "firstMatch", ImmutableList.of(
-                ImmutableMap.of("browserName", "cheese"),
-                ImmutableMap.of("browserName", "peas")))));
+  public void shouldReturnEachFirstMatchIfNoAlwaysMatchIsPresent() {
+    List<Capabilities> capabilities = create(singletonMap(
+        "capabilities", singletonMap(
+            "firstMatch", asList(
+                singletonMap("browserName", "cheese"),
+                singletonMap("browserName", "peas")))));
 
     assertEquals(capabilities.toString(), 2, capabilities.size());
     assertEquals("cheese", capabilities.get(0).getBrowserName());
@@ -119,11 +126,13 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldOfferStreamOfW3cCapabilitiesIfPresent() throws IOException {
+  public void shouldOfferStreamOfW3cCapabilitiesIfPresent() {
     List<Capabilities> capabilities = create(ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of("browserName", "cheese"),
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("browserName", "peas"))));
+        "desiredCapabilities", singletonMap(
+            "browserName", "cheese"),
+        "capabilities", singletonMap(
+            "alwaysMatch", singletonMap(
+                "browserName", "peas"))));
 
     // We expect a synthetic w3c capability for the mismatching OSS capabilities
     assertEquals(capabilities.toString(), 2, capabilities.size());
@@ -131,13 +140,14 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldMergeAlwaysAndFirstMatches() throws IOException {
-    List<Capabilities> capabilities = create(ImmutableMap.of(
+  public void shouldMergeAlwaysAndFirstMatches() {
+    List<Capabilities> capabilities = create(singletonMap(
         "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("se:cake", "also cheese"),
-            "firstMatch", ImmutableList.of(
-                ImmutableMap.of("browserName", "cheese"),
-                ImmutableMap.of("browserName", "peas")))));
+            "alwaysMatch", singletonMap(
+                "se:cake", "also cheese"),
+            "firstMatch", asList(
+                singletonMap("browserName", "cheese"),
+                singletonMap("browserName", "peas")))));
 
     assertEquals(capabilities.toString(), 2, capabilities.size());
     assertEquals("cheese", capabilities.get(0).getBrowserName());
@@ -149,9 +159,10 @@ public class NewSessionPayloadTest {
 
   // The name for the platform capability changed from "platform" to "platformName" in the spec.
   @Test
-  public void shouldCorrectlyExtractPlatformNameFromOssCapabilities() throws IOException {
-    List<Capabilities> capabilities = create(ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of("platform", "linux")));
+  public void shouldCorrectlyExtractPlatformNameFromOssCapabilities() {
+    List<Capabilities> capabilities = create(singletonMap(
+        "desiredCapabilities", singletonMap(
+            "platform", "linux")));
 
     assertEquals(Platform.LINUX, capabilities.get(0).getPlatform());
     assertEquals(Platform.LINUX, capabilities.get(0).getCapability("platform"));
@@ -159,50 +170,51 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldCorrectlyExtractPlatformFromW3cCapabilities() throws IOException {
-    List<Capabilities> capabilities = create(ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("platformName", "linux"))));
+  public void shouldCorrectlyExtractPlatformFromW3cCapabilities() {
+    List<Capabilities> capabilities = create(singletonMap(
+        "capabilities", singletonMap(
+            "alwaysMatch", singletonMap(
+                "platformName", "linux"))));
 
     assertEquals(Platform.LINUX, capabilities.get(0).getPlatform());
     assertEquals(null, capabilities.get(0).getCapability("platform"));
     assertEquals("linux", capabilities.get(0).getCapability("platformName"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void shouldValidateW3cCapabilitiesByComplainingAboutKeysThatAreNotExtensions()
-      throws IOException {
-    create(ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("cake", "cheese"))));
-    fail("We should never see this");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void shouldValidateW3cCapabilitiesByComplainingAboutDuplicateFirstAndAlwaysMatchKeys()
-      throws IOException {
-    create(ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("se:cake", "cheese"),
-            "firstMatch", ImmutableList.of(ImmutableMap.of("se:cake", "sausages")))));
-    fail("We should never see this");
+  @Test
+  public void shouldValidateW3cCapabilitiesByComplainingAboutKeysThatAreNotExtensions() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> create(singletonMap(
+            "capabilities", singletonMap(
+                "alwaysMatch", singletonMap(
+                    "cake", "cheese")))));
   }
 
   @Test
-  public void convertEverythingToFirstMatchOnlyifPayloadContainsAlwaysMatchSectionAndOssCapabilities()
-      throws IOException {
+  public void shouldValidateW3cCapabilitiesByComplainingAboutDuplicateFirstAndAlwaysMatchKeys() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> create(singletonMap(
+            "capabilities", ImmutableMap.of(
+                "alwaysMatch", singletonMap(
+                    "se:cake", "cheese"),
+                "firstMatch", singletonList(
+                    singletonMap("se:cake", "sausages"))))));
+  }
+
+  @Test
+  public void convertEverythingToFirstMatchOnlyifPayloadContainsAlwaysMatchSectionAndOssCapabilities() {
     List<Capabilities> capabilities = create(ImmutableMap.of(
         "desiredCapabilities", ImmutableMap.of(
             "browserName", "firefox",
             "platform", "WINDOWS"),
         "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of(
+            "alwaysMatch", singletonMap(
                 "platformName", "macos"),
-            "firstMatch", ImmutableList.of(
-                ImmutableMap.of("browserName", "foo"),
-                ImmutableMap.of("browserName", "firefox")))));
+            "firstMatch", asList(
+                singletonMap("browserName", "foo"),
+                singletonMap("browserName", "firefox")))));
 
-    assertEquals(ImmutableList.of(
+    assertEquals(asList(
         // From OSS
         new ImmutableCapabilities("browserName", "firefox", "platform", "WINDOWS"),
         // Generated from OSS
@@ -216,7 +228,7 @@ public class NewSessionPayloadTest {
   @Test
   public void forwardsMetaDataAssociatedWithARequest() throws IOException {
     try (NewSessionPayload payload = NewSessionPayload.create(    ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of(),
+        "desiredCapabilities", EMPTY_MAP,
         "cloud:user", "bob",
         "cloud:key", "there is no cake"))) {
       StringBuilder toParse = new StringBuilder();
@@ -230,9 +242,9 @@ public class NewSessionPayloadTest {
 
   @Test
   public void doesNotForwardRequiredCapabilitiesAsTheseAreVeryLegacy() throws IOException {
-    try (NewSessionPayload payload = NewSessionPayload.create(    ImmutableMap.of(
-        "capabilities", ImmutableMap.of(),
-        "requiredCapabilities", ImmutableMap.of("key", "so it's not empty")))) {
+    try (NewSessionPayload payload = NewSessionPayload.create(ImmutableMap.of(
+        "capabilities", EMPTY_MAP,
+        "requiredCapabilities", singletonMap("key", "so it's not empty")))) {
       StringBuilder toParse = new StringBuilder();
       payload.writeTo(toParse);
       Map<String, Object> seen = new Json().toType(toParse.toString(), MAP_TYPE);
@@ -241,17 +253,17 @@ public class NewSessionPayloadTest {
     }
   }
 
-  private List<Capabilities> create(Map<String, ?> source) throws IOException {
+  private List<Capabilities> create(Map<String, ?> source) {
     List<Capabilities> presumablyFromMemory;
     List<Capabilities> fromDisk;
 
     try (NewSessionPayload payload = NewSessionPayload.create(source)) {
-      presumablyFromMemory = payload.stream().collect(ImmutableList.toImmutableList());
+      presumablyFromMemory = payload.stream().collect(toList());
     }
 
     String json = new Json().toJson(source);
     try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
-      fromDisk = payload.stream().collect(ImmutableList.toImmutableList());
+      fromDisk = payload.stream().collect(toList());
     }
 
     assertEquals(presumablyFromMemory, fromDisk);

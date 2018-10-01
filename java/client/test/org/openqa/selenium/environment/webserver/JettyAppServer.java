@@ -20,15 +20,16 @@ package org.openqa.selenium.environment.webserver;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.net.PortProber.findFreePort;
+import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.testing.InProject.locate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonObject;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -57,10 +58,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.EnumSet;
+import java.util.Optional;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
 public class JettyAppServer implements AppServer {
@@ -120,8 +119,7 @@ public class JettyAppServer implements AppServer {
 
     TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
     tempPageDir = tempFs.createTempDir("pages", "test");
-    ServletContextHandler tempContext = addResourceHandler(
-        TEMP_SRC_CONTEXT_PATH, tempPageDir.toPath());
+    addResourceHandler(TEMP_SRC_CONTEXT_PATH, tempPageDir.toPath());
     defaultContext.setInitParameter("tempPageDir", tempPageDir.getAbsolutePath());
     defaultContext.setInitParameter("hostname", hostName);
     defaultContext.setInitParameter("port", ""+port);
@@ -146,14 +144,16 @@ public class JettyAppServer implements AppServer {
     addServlet(defaultContext, "/createPage", CreatePageServlet.class);
   }
 
+  private static Optional<Integer> getEnvValue(String key) {
+    return Optional.ofNullable(System.getenv(key)).map(Integer::parseInt);
+  }
+
   private static int getHttpPort() {
-    String port = System.getenv(FIXED_HTTP_PORT_ENV_NAME);
-    return port == null ? findFreePort() : Integer.parseInt(port);
+    return getEnvValue(FIXED_HTTP_PORT_ENV_NAME).orElseGet(PortProber::findFreePort);
   }
 
   private static int getHttpsPort() {
-    String port = System.getenv(FIXED_HTTPS_PORT_ENV_NAME);
-    return port == null ? findFreePort() : Integer.parseInt(port);
+    return getEnvValue(FIXED_HTTPS_PORT_ENV_NAME).orElseGet(PortProber::findFreePort);
   }
 
   @Override
@@ -201,9 +201,7 @@ public class JettyAppServer implements AppServer {
   @Override
   public String create(Page page) {
     try {
-      JsonObject converted = new JsonObject();
-      converted.addProperty("content", page.toString());
-      byte[] data = converted.toString().getBytes(UTF_8);
+      byte[] data = new Json().toJson(singletonMap("content", page.toString())).getBytes(UTF_8);
 
       HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
@@ -286,15 +284,7 @@ public class JettyAppServer implements AppServer {
       throw new RuntimeException(e);
     }
   }
-
-  public void addFilter(
-      ServletContextHandler context,
-      Class<? extends Filter> filter,
-      String path,
-      DispatcherType dispatches) {
-    context.addFilter(filter, path, EnumSet.of(dispatches));
-  }
-
+  
   protected ServletContextHandler addResourceHandler(String contextPath, Path resourceBase) {
     ServletContextHandler context = new ServletContextHandler();
 
@@ -320,13 +310,11 @@ public class JettyAppServer implements AppServer {
   }
 
   protected static int getHttpPortFromEnv() {
-    String port = System.getenv(FIXED_HTTP_PORT_ENV_NAME);
-    return port == null ? DEFAULT_HTTP_PORT : Integer.parseInt(port);
+    return getEnvValue(FIXED_HTTP_PORT_ENV_NAME).orElse(DEFAULT_HTTP_PORT);
   }
 
   protected static int getHttpsPortFromEnv() {
-    String port = System.getenv(FIXED_HTTPS_PORT_ENV_NAME);
-    return port == null ? DEFAULT_HTTPS_PORT : Integer.parseInt(port);
+    return getEnvValue(FIXED_HTTPS_PORT_ENV_NAME).orElse(DEFAULT_HTTPS_PORT);
   }
 
   public static void main(String[] args) {

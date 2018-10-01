@@ -226,7 +226,7 @@ class RubyMappings
 end # RubyMappings
 
 def ruby(opts)
-  cmd = ["bundle", "exec", "ruby"]
+  cmd = ["bundle", "exec", "ruby", "-w"]
 
   if opts[:debug]
     cmd << "-d"

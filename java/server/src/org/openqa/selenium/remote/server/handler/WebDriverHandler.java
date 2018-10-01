@@ -20,7 +20,7 @@ package org.openqa.selenium.remote.server.handler;
 import com.google.common.base.Preconditions;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.server.Session;

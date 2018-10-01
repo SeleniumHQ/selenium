@@ -84,7 +84,8 @@ module Selenium
           end
 
           def satisfies_window_manager?
-            @window_manager.nil? || (@window_manager == (!Selenium::WebDriver::Platform.linux? || !ENV['DESKTOP_SESSION'].nil?))
+            (!defined?(@window_manager) || @window_manager.nil?) ||
+              (@window_manager == (!Selenium::WebDriver::Platform.linux? || !ENV['DESKTOP_SESSION'].nil?))
           end
         end # Guard
       end # Guards

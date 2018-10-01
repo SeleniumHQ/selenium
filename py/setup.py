@@ -29,7 +29,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "3.12.0",
+    'version': "3.14.1",
     'license': 'Apache 2.0',
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
@@ -67,15 +67,8 @@ setup_args = {
                  'selenium.webdriver.phantomjs',
                  'selenium.webdriver.remote',
                  'selenium.webdriver.support', ],
-    'package_data': {
-        'selenium.webdriver.firefox': ['*.xpi', 'webdriver_prefs.json'],
-        'selenium.webdriver.remote': ['getAttribute.js', 'isDisplayed.js'],
-    },
-    'data_files': [('selenium/webdriver/firefox/x86', ['selenium/webdriver/firefox/x86/x_ignore_nofocus.so']),
-                   ('selenium/webdriver/firefox/amd64', ['selenium/webdriver/firefox/amd64/x_ignore_nofocus.so']),
-                   ('selenium/webdriver/remote', ['selenium/webdriver/remote/getAttribute.js']),
-                   ('selenium/webdriver/remote', ['selenium/webdriver/remote/isDisplayed.js'])],
     'include_package_data': True,
+    'install_requires': ['urllib3'],
     'zip_safe': False
 }
 

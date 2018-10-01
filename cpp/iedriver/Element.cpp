@@ -148,6 +148,11 @@ bool Element::IsEnabled() {
 
   CComPtr<IHTMLDocument2> doc;
   this->GetContainingDocument(false, &doc);
+
+  if (this->IsXmlDocument(doc)) {
+    return false;
+  }
+
   Script script_wrapper(doc, script_source, 1);
   script_wrapper.AddArgument(this->element_);
   int status_code = script_wrapper.Execute();
@@ -159,6 +164,47 @@ bool Element::IsEnabled() {
   }
 
   return result;
+}
+
+bool Element::IsXmlDocument(IHTMLDocument2* doc) {
+  LOG(TRACE) << "Entering Element::IsXmlDocument";
+  // If the document has an xmlVersion property, it can be either an XML
+  // document or an XHTML document. Otherwise, it's an HTML document.
+  CComPtr<IHTMLDocument7> xml_version_document;
+  HRESULT hr = doc->QueryInterface<IHTMLDocument7>(&xml_version_document);
+  if (SUCCEEDED(hr) && xml_version_document) {
+    CComBSTR xml_version = "";
+    hr = xml_version_document->get_xmlVersion(&xml_version);
+    if (SUCCEEDED(hr) && xml_version && xml_version != L"") {
+      // The document is either XML or XHTML, so to differentiate between
+      // the two cases, check for a doctype of "html". If we can't find
+      // a doctype property, or the doctype is anything other than "html",
+      // the document is an XML document.
+      CComPtr<IHTMLDocument5> doc_type_document;
+      hr = doc->QueryInterface<IHTMLDocument5>(&doc_type_document);
+      if (SUCCEEDED(hr) && doc_type_document) {
+        CComPtr<IHTMLDOMNode> doc_type_dom_node;
+        hr = doc_type_document->get_doctype(&doc_type_dom_node);
+        if (SUCCEEDED(hr) && doc_type_dom_node) {
+          CComPtr<IDOMDocumentType> doc_type;
+          hr = doc_type_dom_node->QueryInterface<IDOMDocumentType>(&doc_type);
+          if (SUCCEEDED(hr) && doc_type) {
+            CComBSTR type_name_bstr = L"";
+            hr = doc_type->get_name(&type_name_bstr);
+            type_name_bstr.ToLower();
+            std::wstring type_name(type_name_bstr);
+            LOG(INFO) << LOGWSTRING(type_name);
+            if (SUCCEEDED(hr) && type_name != L"html") {
+              return true;
+            }
+          }
+        } else {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 bool Element::IsInteractable() {
@@ -246,10 +292,34 @@ bool Element::IsObscured(LocationInfo* click_location,
     return false;
   }
 
-  bool is_obscured = false;
-
   CComPtr<IHTMLDocument2> doc;
   this->GetContainingDocument(false, &doc);
+
+  // If an element has a style value where pointer-events is set to 'none',
+  // the element is "obscured" by definition.
+  CComPtr<IHTMLWindow2> window;
+  hr = doc->get_parentWindow(&window);
+  if (SUCCEEDED(hr) && window) {
+    CComPtr<IHTMLWindow7> window7;
+    hr = window->QueryInterface<IHTMLWindow7>(&window7);
+    if (SUCCEEDED(hr) && window7) {
+      CComPtr<IHTMLDOMNode> node;
+      hr = this->element_->QueryInterface<IHTMLDOMNode>(&node);
+      if (SUCCEEDED(hr) && node) {
+        CComPtr<IHTMLCSSStyleDeclaration> computed_style;
+        hr = window7->getComputedStyle(node, NULL, &computed_style);
+        if (SUCCEEDED(hr) && computed_style) {
+          CComBSTR pointer_events_value = L"";
+          hr = computed_style->get_pointerEvents(&pointer_events_value);
+          if (SUCCEEDED(hr) && pointer_events_value == L"none") {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  bool is_obscured = false;
 
   std::vector<LocationInfo> frame_locations;
   LocationInfo element_location = {};
@@ -280,6 +350,14 @@ bool Element::IsObscured(LocationInfo* click_location,
     y = top + (height / 2);
   }
 
+  CComPtr<IHTMLElement> element_hit;
+  hr = doc->elementFromPoint(x, y, &element_hit);
+  if (SUCCEEDED(hr) && element_.IsEqualObject(element_hit)) {
+    // Short circuit the use of elementsFromPoint if we don't
+    // have to use it.
+    return false;
+  }
+
   CComPtr<IHTMLDocument8> elements_doc;
   hr = doc.QueryInterface<IHTMLDocument8>(&elements_doc);
   if (FAILED(hr)) {
@@ -296,6 +374,8 @@ bool Element::IsObscured(LocationInfo* click_location,
                                        static_cast<float>(y),
                                        &elements_hit);
   if (SUCCEEDED(hr) && elements_hit != NULL) {
+    std::vector<Element> parents;
+    this->GetParentElements(&parents);
     long element_count;
     elements_hit->get_length(&element_count);
     for (long index = 0; index < element_count; ++index) {
@@ -310,16 +390,96 @@ bool Element::IsObscured(LocationInfo* click_location,
       }
 
       bool is_list_element_displayed;
-      Element element_wrapper(element_in_list,
+      Element list_element_wrapper(element_in_list,
                                    this->containing_window_handle_);
-      status_code = element_wrapper.IsDisplayed(false,
-                                                &is_list_element_displayed);
+      status_code = list_element_wrapper.IsDisplayed(false,
+                                                     &is_list_element_displayed);
       if (is_list_element_displayed) {
         VARIANT_BOOL is_child;
         hr = this->element_->contains(element_in_list, &is_child);
         VARIANT_BOOL is_ancestor;
         hr = element_in_list->contains(this->element_, &is_ancestor);
-        is_obscured = is_child != VARIANT_TRUE && is_ancestor != VARIANT_TRUE;
+        bool found_element_not_in_tree = is_child != VARIANT_TRUE &&
+                                         is_ancestor != VARIANT_TRUE;
+        if (found_element_not_in_tree) {
+          // This whole block of code is because there is a bug in IE's
+          // elementsFromPoint implementation. if two sibling elements have
+          // the same z-index, the one specified second in the DOM order is
+          // usually on top. The exception is if there is a child element
+          // that has a specified z-index greater than the ancestor z-index.
+          // The elementsFromPoint implementation ignores the child element
+          // case, so we have to manually look for child elements that may
+          // be rendered on top of the element found outside the element tree.
+          std::vector<Element> list_element_parents;
+          int element_index = -1;
+          int outside_element_index = -1;
+          this->GetFirstUncommonAncestor(&parents,
+                                         &list_element_wrapper,
+                                         &list_element_parents,
+                                         &element_index,
+                                         &outside_element_index);
+
+          int z_index = 0;
+          bool has_defined_z_index = this->GetFirstDefinedZIndex(&parents,
+                                                                 element_index,
+                                                                 &z_index);
+
+          int list_element_z_index = 0;
+          bool list_element_has_defined_z_index = list_element_wrapper.GetFirstDefinedZIndex(&list_element_parents,
+                                                                                             outside_element_index,
+                                                                                             &list_element_z_index);
+
+          if (has_defined_z_index) {
+            if (list_element_has_defined_z_index) {
+              if (z_index < list_element_z_index) {
+                // Both elements have defined z-index, and the element
+                // outside this element's DOM tree has the higher value.
+                is_obscured = true;
+              } else if (z_index == list_element_z_index) {
+                // Both elements have a defined z-index, and they are equal.
+                // Starting with this element, walk the DOM tree up to the
+                // first uncommon ancestor to see if there are any elements
+                // with a higher, explicitly defined z-index. If we did not
+                // find a defined z-index, then check the DOM order, where
+                // the second element in the DOM is rendered on top.
+                bool must_check_dom_order = true;
+                bool found_ancestor_z_index = this->GetZIndex(&z_index);
+                int i = 0;
+                while (i < element_index) {
+                  if (found_ancestor_z_index) {
+                    if (z_index >= list_element_z_index) {
+                      must_check_dom_order = false;
+                      break;
+                    }
+                  }
+                  found_ancestor_z_index = parents[i].GetZIndex(&z_index);
+                  ++i;
+                }
+                if (must_check_dom_order) {
+                  long child_index = this->GetIndex();
+                  long other_child_index = list_element_wrapper.GetIndex();
+                  if (other_child_index > child_index) {
+                    is_obscured = true;
+                  }
+                }
+              }
+            } else {
+              // Only this element has a z-index defined in its tree. If
+              // the z-index is less than 0, the element outside this one's
+              // DOM tree will be rendered on top of this element.
+              if (z_index < 0) {
+                is_obscured = true;
+              }
+            }
+          } else {
+            // Only the element outside this one's DOM tree has a z-index
+            // explicitly defined. If the value is greater than 0, the outside
+            // element will be rendered on top of this element.
+            if (list_element_z_index > 0) {
+              is_obscured = true;
+            }
+          }
+        }
         if (is_obscured) {
           // Return the top-most element in the event we find an obscuring
           // element in the tree between this element and the top-most one.
@@ -328,6 +488,10 @@ bool Element::IsObscured(LocationInfo* click_location,
           CComBSTR outer_html_bstr;
           hr = element_in_list->get_outerHTML(&outer_html_bstr);
           std::wstring outer_html = outer_html_bstr;
+          size_t bracket_pos = outer_html.find(L'>');
+          if (bracket_pos != std::wstring::npos) {
+            outer_html = outer_html.substr(0, bracket_pos + 1);
+          }
           *obscuring_element_description = StringUtilities::ToString(outer_html);
           break;
         }
@@ -336,6 +500,179 @@ bool Element::IsObscured(LocationInfo* click_location,
   }
 
   return is_obscured;
+}
+
+void Element::GetFirstUncommonAncestor(std::vector<Element>* parents,
+                                       Element* other_element,
+                                       std::vector<Element>* other_element_parents,
+                                       int* element_index,
+                                       int* other_element_index) {
+  other_element->GetParentElements(other_element_parents);
+  *element_index = static_cast<int>(parents->size() - 1);
+  *other_element_index = static_cast<int>(other_element_parents->size() - 1);
+  bool is_common_ancestor = true;
+  while (is_common_ancestor) {
+    if (*element_index >= 0 &&
+        *other_element_index >= 0 &&
+        parents->at(*element_index).IsEqual(other_element_parents->at(*other_element_index))) {
+      --(*element_index);
+      --(*other_element_index);
+    } else {
+      is_common_ancestor = false;
+    }
+  }
+}
+
+
+bool Element::GetFirstDefinedZIndex(std::vector<Element>* parent_elements,
+                                    int start_index,
+                                    int* z_index) {
+  int element_index = start_index;
+  Element context_element = *this;
+  if (element_index >= 0) {
+    context_element = parent_elements->at(element_index);
+  }
+
+  bool has_defined_z_index = context_element.GetZIndex(z_index);
+  while (element_index >= 0 && !has_defined_z_index) {
+    --element_index;
+    if (element_index >= 0) {
+      context_element = parent_elements->at(element_index);
+      has_defined_z_index = context_element.GetZIndex(z_index);
+    }
+  }
+
+  // We've run through all of the ancestor elements (starting with the
+  // first uncommon ancestor) to see if any of them have a defined
+  // z-index, and have found none. Try to find the z-index on this
+  // element as a fallback.
+  if (!has_defined_z_index) {
+    has_defined_z_index = this->GetZIndex(z_index);
+  }
+
+  return has_defined_z_index;
+}
+
+bool Element::IsEqual(Element other_element) {
+  return this->element_.IsEqualObject(other_element.element());
+}
+
+long Element::GetIndex() {
+  CComPtr<IHTMLElement> parent_element;
+  HRESULT hr = this->element_->get_parentElement(&parent_element);
+  CComPtr<IDispatch> children_dispatch;
+  hr = parent_element->get_children(&children_dispatch);
+  CComPtr<IHTMLElementCollection> children;
+  hr = children_dispatch.QueryInterface<IHTMLElementCollection>(&children);
+  long child_count = 0;
+  hr = children->get_length(&child_count);
+  if (child_count > 0) {
+    for (long i = 0; i < child_count; ++i) {
+      CComVariant child_index = i;
+      CComPtr<IDispatch> child_element;
+      children->item(child_index, child_index, &child_element);
+      if (this->element_.IsEqualObject(child_element)) {
+        return i;
+      }
+    }
+  }
+  return -1;
+}
+
+void Element::GetParentElements(std::vector<Element>* parent_elements) {
+  this->GetParentElements(this->element_, parent_elements);
+}
+
+void Element::GetParentElements(IHTMLElement* current_element,
+                                std::vector<Element>* parent_elements) {
+  CComPtr<IHTMLElement> parent_element;
+  HRESULT hr = current_element->get_parentElement(&parent_element);
+  if (SUCCEEDED(hr) &&
+      parent_element &&
+      !parent_element.IsEqualObject(current_element)) {
+    Element parent_wrapper(parent_element, this->containing_window_handle_);
+    parent_elements->push_back(parent_wrapper);
+    this->GetParentElements(parent_element, parent_elements);
+  }
+}
+
+bool Element::GetZIndex(int* z_index) {
+  std::string tag_name = this->GetTagName();
+  if (tag_name == "html") {
+    return false;
+  }
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+
+  // If an element has a style value where pointer-events is set to 'none',
+  // the element is "obscured" by definition.
+  CComPtr<IHTMLWindow2> window;
+  HRESULT hr = doc->get_parentWindow(&window);
+  if (SUCCEEDED(hr) && window) {
+    CComPtr<IHTMLWindow7> style_window;
+    hr = window->QueryInterface<IHTMLWindow7>(&style_window);
+    if (SUCCEEDED(hr) && style_window) {
+      CComPtr<IHTMLDOMNode> node;
+      hr = this->element_->QueryInterface<IHTMLDOMNode>(&node);
+      if (SUCCEEDED(hr) && node) {
+        CComPtr<IHTMLCSSStyleDeclaration> computed_style;
+        hr = style_window->getComputedStyle(node, NULL, &computed_style);
+        if (SUCCEEDED(hr) && computed_style) {
+          CComBSTR position;
+          computed_style->get_position(&position);
+          bool is_positioned = position != L"static";
+
+          CComVariant z_index_variant;
+          computed_style->get_zIndex(&z_index_variant);
+          bool is_auto = false;
+          if (z_index_variant.vt == VT_BSTR) {
+            CComBSTR z_index_bstr = z_index_variant.bstrVal;
+            if (z_index_bstr == L"auto") {
+              is_auto = true;
+            }
+          }
+
+          // Positioned elements with a z-index value other than "auto" form
+          // a new stacking context.
+          if (is_positioned && !is_auto) {
+            *z_index = z_index_variant.intVal;
+            return true;
+          }
+
+          //TODO: Handle flex-box elements
+
+          // Create a new stacking context in the following cases:
+          // The element has a position of fixed and a z-index of auto
+          bool is_fixed = position == L"fixed" || position == L"sticky";
+          if (is_fixed) {
+            *z_index = 0;
+            return true;
+          }
+
+          // The element has opacity < 1 and is not positioned or has a
+          // z-index of auto
+          CComVariant opacity;
+          hr = computed_style->get_opacity(&opacity);
+          if (SUCCEEDED(hr) && opacity.dblVal < 1.0) {
+            *z_index = 0;
+            return true;
+          }
+
+          // TODO: Handle the following cases where the element creates
+          // a new stacking context.
+          // The element is transformed
+          // The element has a perspective value set
+          // The element has isolation set to 'isolate'
+          // The element has a filter set
+          // The element has a mix-blend-mode set
+          // The element is clipped
+          // The element has a mask
+        }
+      }
+    }
+  }
+  return false;
 }
 
 bool Element::IsEditable() {
@@ -480,6 +817,13 @@ int Element::GetCssPropertyValue(const std::string& property_name,
   LOG(TRACE) << "Entering Element::GetCssPropertyValue";
 
   int status_code = WD_SUCCESS;
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  if (this->IsXmlDocument(doc)) {
+    *property_value = "";
+    return status_code;
+  }
+
   // The atom is just the definition of an anonymous
   // function: "function() {...}"; Wrap it in another function so we can
   // invoke it with our arguments without polluting the current namespace.
@@ -487,8 +831,6 @@ int Element::GetCssPropertyValue(const std::string& property_name,
   script_source += atoms::asString(atoms::GET_EFFECTIVE_STYLE);
   script_source += L")})();";
 
-  CComPtr<IHTMLDocument2> doc;
-  this->GetContainingDocument(false, &doc);
   Script script_wrapper(doc, script_source, 2);
   script_wrapper.AddArgument(this->element_);
   script_wrapper.AddArgument(property_name);
@@ -580,7 +922,7 @@ int Element::GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
 bool Element::IsHiddenByOverflow() {
   LOG(TRACE) << "Entering Element::IsHiddenByOverflow";
 
-  bool isOverflow = false;
+  bool is_overflow = false;
 
   std::wstring script_source(L"(function() { return (");
   script_source += atoms::asString(atoms::IS_IN_PARENT_OVERFLOW);
@@ -594,12 +936,12 @@ bool Element::IsHiddenByOverflow() {
   if (status_code == WD_SUCCESS) {
     std::wstring raw_overflow_state(script_wrapper.result().bstrVal);
     std::string overflow_state = StringUtilities::ToString(raw_overflow_state);
-    isOverflow = (overflow_state == "scroll");
+    is_overflow = (overflow_state == "scroll");
   } else {
     LOG(WARN) << "Unable to determine is element hidden by overflow";
   }
 
-  return isOverflow;
+  return is_overflow;
 }
 
 bool Element::IsLocationVisibleInFrames(const LocationInfo location,
@@ -1384,16 +1726,16 @@ bool Element::GetTextBoundaries(LocationInfo* text_info) {
   }
 
   long top = 0;
-  hr = range_metrics->get_boundingTop(&top);
+  hr = range_metrics->get_offsetTop(&top);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Call to get_boundingTop on range metrics failed.";
+    LOGHR(WARN, hr) << "Call to get_offsetTop on range metrics failed.";
     return false;
   }
 
   long left = 0;
-  hr = range_metrics->get_boundingLeft(&left);
+  hr = range_metrics->get_offsetLeft(&left);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Call to get_boundingLeft on range metrics failed.";
+    LOGHR(WARN, hr) << "Call to get_offsetLeft on range metrics failed.";
     return false;
   }
 

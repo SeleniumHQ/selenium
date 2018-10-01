@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.interactions;
 
-import com.google.common.collect.ImmutableList;
-
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,6 +44,6 @@ public class PauseAction implements Action, IsInteraction {
 
   @Override
   public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
-    return ImmutableList.of(new Pause(keyboard, Duration.ofMillis(pause)));
+    return Collections.singletonList(new Pause(keyboard, Duration.ofMillis(pause)));
   }
 }

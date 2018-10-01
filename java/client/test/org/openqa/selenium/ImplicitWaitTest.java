@@ -17,16 +17,13 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.After;
 import org.junit.Before;
@@ -70,8 +67,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
   public void testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
-    Throwable t = catchThrowable(() -> driver.findElement(By.id("box0")));
-    assertThat(t, instanceOf(NoSuchElementException.class));
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> driver.findElement(By.id("box0")));
   }
 
   @Test
@@ -79,8 +76,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(3000, MILLISECONDS);
     driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
-    Throwable t = catchThrowable(() -> driver.findElement(By.id("box0")));
-    assertThat(t, instanceOf(NoSuchElementException.class));
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> driver.findElement(By.id("box0")));
   }
 
   @Test
@@ -93,7 +90,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     add.click();
 
     List<WebElement> elements = driver.findElements(By.className("redbox"));
-    assertFalse(elements.isEmpty());
+    assertThat(elements).isNotEmpty();
   }
 
   @Test
@@ -101,7 +98,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
     List<WebElement> elements = driver.findElements(By.className("redbox"));
-    assertTrue(elements.isEmpty());
+    assertThat(elements).isEmpty();
   }
 
   @Test
@@ -109,7 +106,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
     List<WebElement> elements = driver.findElements(By.id("redbox"));
-    assertTrue(elements.toString(), elements.isEmpty());
+    assertThat(elements).isEmpty();
   }
 
   @Test
@@ -122,7 +119,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     add.click();
 
     List<WebElement> elements = driver.findElements(By.className("redbox"));
-    assertTrue(elements.isEmpty());
+    assertThat(elements).isEmpty();
   }
 
   @Test
@@ -136,13 +133,12 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     WebElement revealed = driver.findElement(By.id("revealed"));
     driver.manage().timeouts().implicitlyWait(5000, MILLISECONDS);
 
-    assertFalse("revealed should not be visible", revealed.isDisplayed());
+    assertThat(revealed.isDisplayed()).isFalse();
     reveal.click();
     revealed.sendKeys("hello world");
   }
 
   @Test
-  @Ignore(IE)
   @NotYetImplemented(SAFARI)
   public void testShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfFrameSwitchTo() {
     driver.manage().timeouts().implicitlyWait(1, SECONDS);
@@ -163,7 +159,6 @@ public class ImplicitWaitTest extends JUnit4TestBase {
 
     long time = end - start;
 
-    assertTrue(time >= 1000);
-
+    assertThat(time).isGreaterThanOrEqualTo(1000);
   }
 }

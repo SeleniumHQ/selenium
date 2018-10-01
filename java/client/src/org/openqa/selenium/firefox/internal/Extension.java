@@ -20,6 +20,10 @@ package org.openqa.selenium.firefox.internal;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @deprecated Internal class. Visibility will be reduced and won't be exported from module.
+ */
+@Deprecated
 public interface Extension {
   void writeTo(File parentDirectory) throws IOException;
 }

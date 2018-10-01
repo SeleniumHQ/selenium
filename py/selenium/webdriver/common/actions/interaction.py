@@ -21,6 +21,12 @@ POINTER = "pointer"
 NONE = "none"
 SOURCE_TYPES = set([KEY, POINTER, NONE])
 
+POINTER_MOUSE = "mouse"
+POINTER_TOUCH = "touch"
+POINTER_PEN = "pen"
+
+POINTER_KINDS = set([POINTER_MOUSE, POINTER_TOUCH, POINTER_PEN])
+
 
 class Interaction(object):
 
@@ -38,6 +44,7 @@ class Pause(Interaction):
         self.duration = duration
 
     def encode(self):
-        output = {"type": self.PAUSE}
-        output["duration"] = self.duration * 1000
-        return output
+        return {
+            "type": self.PAUSE,
+            "duration": int(self.duration * 1000)
+        }

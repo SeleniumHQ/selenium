@@ -77,7 +77,7 @@ module Selenium
 
           extensions.concat(@encoded_extensions)
 
-          opts = {directory: @directory || layout_on_disk}
+          opts = {directory: directory || layout_on_disk}
           opts[:extensions] = extensions if extensions.any?
           opts
         end

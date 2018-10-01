@@ -1,6 +1,9 @@
 java_test(
     name = "proxy",
     srcs = glob(["*.java"]),
+    labels = [
+        "small",
+    ],
     deps = [
         "//java/server/src/org/openqa/grid:grid",
         "//java/server/src/org/openqa/grid/selenium:classes",

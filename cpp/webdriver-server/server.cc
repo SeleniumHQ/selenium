@@ -19,6 +19,7 @@
 #include <cstring>
 #include <sstream>
 #include "session.h"
+#include "errorcodes.h"
 #include "uri_info.h"
 #include "logging.h"
 
@@ -307,9 +308,7 @@ std::string Server::ReadRequestBody(struct mg_connection* conn,
       break;
     }
   }
-  if (content_length == 0) {
-    request_body = "{}";
-  } else {
+  if (content_length != 0) {
     std::vector<char> buffer(content_length + 1);
     int bytes_read = 0;
     while (bytes_read < content_length) {
@@ -340,7 +339,8 @@ std::string Server::DispatchCommand(const std::string& uri,
 
   if (command == webdriver::CommandType::NoCommand) {
     // Hand-code the response for an unknown URL
-    serialized_response.append("{ \"error\" : \"unknown method\", ");
+    serialized_response.append("{ \"value\" : { ");
+    serialized_response.append("\"error\" : \"unknown method\", ");
     serialized_response.append("\"message\" : \"Command not found: ");
     serialized_response.append(http_verb);
     serialized_response.append(" ");
@@ -364,10 +364,14 @@ std::string Server::DispatchCommand(const std::string& uri,
         serialized_response.append("{ \"value\" : null }");
       } else {
         // Hand-code the response for an invalid session id
-        serialized_response.append("{ \"error\" : \"invalid session id\", ");
+        serialized_response.append("{ \"value\" : { ");
+        serialized_response.append("\"error\" : \"");
+        serialized_response.append(ERROR_INVALID_SESSION_ID).append("\", ");
         serialized_response.append("\"message\" : \"session ");
         serialized_response.append(session_id);
-        serialized_response.append(" does not exist\" }");
+        serialized_response.append(" does not exist\", ");
+        serialized_response.append("\"stacktrace\" : \"\" }");
+        serialized_response.append("}");
       }
     } else {
       if (command == webdriver::CommandType::NewSession &&
@@ -375,7 +379,8 @@ std::string Server::DispatchCommand(const std::string& uri,
         // According to the W3C Specification, only a single session is
         // allowed by a single driver instance.
         serialized_response.append("{ \"value\" : { ");
-        serialized_response.append("\"error\" : \"session not created\", ");
+        serialized_response.append("\"error\" : \"");
+        serialized_response.append(ERROR_SESSION_NOT_CREATED).append("\", ");
         serialized_response.append("\"message\" : \"only one session may ");
         serialized_response.append("be created at a time, and a session ");
         serialized_response.append("already exists\", ");

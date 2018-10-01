@@ -246,6 +246,25 @@ public class XpiDriverService extends DriverService {
     private FirefoxBinary binary = null;
     private FirefoxProfile profile = null;
 
+    @Override
+    public int score(Capabilities capabilites) {
+      if (!capabilites.is(FirefoxDriver.MARIONETTE)) {
+        return 0;
+      }
+
+      int score = 1;
+
+      if (capabilites.getCapability(FirefoxDriver.BINARY) != null) {
+        score++;
+      }
+
+      if (capabilites.getCapability(FirefoxDriver.PROFILE) != null) {
+        score++;
+      }
+
+      return score;
+    }
+
     public Builder withBinary(FirefoxBinary binary) {
       this.binary = Preconditions.checkNotNull(binary);
       return this;

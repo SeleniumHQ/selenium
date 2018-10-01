@@ -27,7 +27,11 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.openqa.grid.internal.cli.StandaloneCliOptions;
+import org.openqa.grid.internal.utils.configuration.json.StandaloneJsonConfiguration;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,39 +40,45 @@ import java.util.Map;
 
 public class StandaloneConfigurationTest {
 
+  static final Integer DEFAULT_TIMEOUT = 1800;
+  static final Integer DEFAULT_BROWSER_TIMEOUT = 0;
+  static final String DEFAULT_HOST = "0.0.0.0";
+  static final Integer DEFAULT_PORT = 4444;
+  static final Boolean DEFAULT_DEBUG_TOGGLE = false;
+
   @Test
   public void testDefaults() {
-    StandaloneConfiguration sc = new StandaloneConfiguration();
-    assertEquals(StandaloneConfiguration.DEFAULT_ROLE, sc.role);
-    assertEquals(StandaloneConfiguration.DEFAULT_BROWSER_TIMEOUT, sc.browserTimeout);
-    assertEquals(StandaloneConfiguration.DEFAULT_DEBUG_TOGGLE, sc.debug);
-    assertEquals(StandaloneConfiguration.DEFAULT_TIMEOUT, sc.timeout);
-    assertEquals(StandaloneConfiguration.DEFAULT_PORT, sc.port);
-    assertEquals(null, sc.host);
+    checkDefaults(new StandaloneConfiguration());
+  }
+
+  @Test
+  public void testConstructorEqualsDefaultConfig() {
+    checkDefaults(new StandaloneConfiguration(
+        StandaloneJsonConfiguration.loadFromResourceOrFile(StandaloneConfiguration.DEFAULT_STANDALONE_CONFIG_FILE)));
+  }
+
+  @Test
+  public void testDefaultsFromCli() {
+    checkDefaults(new StandaloneConfiguration(new StandaloneCliOptions()));
+  }
+
+  private void checkDefaults(StandaloneConfiguration sc) {
+    assertEquals(StandaloneConfiguration.ROLE, sc.role);
+    assertEquals(DEFAULT_BROWSER_TIMEOUT, sc.browserTimeout);
+    assertEquals(DEFAULT_DEBUG_TOGGLE, sc.debug);
+    assertEquals(DEFAULT_TIMEOUT, sc.timeout);
+    assertEquals(DEFAULT_PORT, sc.port);
+    assertEquals(DEFAULT_HOST, sc.host);
     assertNull(sc.jettyMaxThreads);
     assertNull(sc.log);
   }
 
   @Test
-  public void testConstructorEqualsDefaultConfig() {
-    StandaloneConfiguration actual = new StandaloneConfiguration();
-    StandaloneConfiguration expected =
-      StandaloneConfiguration.loadFromJson(StandaloneConfiguration.DEFAULT_STANDALONE_CONFIG_FILE, StandaloneConfiguration.class);
-
-    assertEquals(expected.role, actual.role);
-    assertEquals(expected.browserTimeout, actual.browserTimeout);
-    assertEquals(expected.debug, actual.debug);
-    assertEquals(expected.timeout, actual.timeout);
-    assertEquals(expected.jettyMaxThreads, actual.jettyMaxThreads);
-    assertEquals(expected.log, actual.log);
-    assertEquals(expected.port, actual.port);
-    assertEquals(null, actual.host);
-  }
-
-  @Test
   public void commandLineParsing() {
     String[] args = "-timeout 32123 -browserTimeout 456".split(" ");
-    StandaloneConfiguration sc = new StandaloneCliOptions().parse(args).toConfiguration();
+    StandaloneCliOptions options = new StandaloneCliOptions();
+    options.parse(args);
+    StandaloneConfiguration sc = new StandaloneConfiguration(options);
     assertEquals(32123, sc.timeout.intValue());
     assertEquals(456, sc.browserTimeout.intValue());
   }
@@ -169,4 +179,20 @@ public class StandaloneConfigurationTest {
     assertNotEquals(other.log, sc.log);
     assertNotEquals(other.role, sc.role);
   }
+
+  @Test
+  public void testLoadFromFile() throws IOException {
+    String json = "{\"role\":\"standalone\", \"port\":1234, \"debug\":true, \"timeout\":1800, \"browserTimeout\":2400, \"jettyMaxThreads\":10}";
+    Path nodeConfig = Files.createTempFile("standalone", ".json");
+    Files.write(nodeConfig, json.getBytes());
+
+    StandaloneConfiguration sc = new StandaloneConfiguration(StandaloneJsonConfiguration.loadFromResourceOrFile(json));
+
+    assertEquals(1234, sc.port.intValue());
+    assertEquals(true, sc.debug);
+    assertEquals(1800, sc.timeout.intValue());
+    assertEquals(2400, sc.browserTimeout.intValue());
+    assertEquals(10, sc.jettyMaxThreads.intValue());
+  }
+
 }

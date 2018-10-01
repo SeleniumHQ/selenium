@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Firefox;
@@ -7,9 +7,9 @@ using OpenQA.Selenium.Chrome;
 namespace OpenQA.Selenium
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.Firefox, "Firefox driver (when using Marionette/Geckodriver) does not support logs API")]
     [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
     [IgnoreBrowser(Browser.Edge, "Edge driver does not support logs API")]
-    [IgnoreBrowser(Browser.PhantomJS, "PhantomJS driver does not support logs API")]
 	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
 	public class AvailableLogsTest : DriverTestFixture
     {
@@ -34,7 +34,7 @@ namespace OpenQA.Selenium
             }
 
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
-            Assert.IsTrue(logTypes.Contains(LogType.Browser), "Browser logs should be enabled by default");
+            Assert.That(logTypes, Contains.Item(LogType.Browser));
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace OpenQA.Selenium
             // Do one action to have *something* in the client logs.
             driver.Url = formsPage;
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
-            Assert.IsTrue(logTypes.Contains(LogType.Client), "Client logs should be enabled by default");
+            Assert.That(logTypes, Contains.Item(LogType.Client));
             bool foundExecutingStatement = false;
             bool foundExecutedStatement = false;
             foreach (LogEntry logEntry in driver.Manage().Logs.GetLog(LogType.Client))
@@ -59,8 +59,8 @@ namespace OpenQA.Selenium
                 foundExecutedStatement |= logEntry.ToString().Contains("Executed: ");
             }
 
-            Assert.IsTrue(foundExecutingStatement);
-            Assert.IsTrue(foundExecutedStatement);
+            Assert.That(foundExecutingStatement, Is.True);
+            Assert.That(foundExecutedStatement, Is.True);
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace OpenQA.Selenium
             }
 
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
-            Assert.IsTrue(logTypes.Contains(LogType.Driver), "Remote driver logs should be enabled by default");
+            Assert.That(logTypes, Contains.Item(LogType.Driver), "Remote driver logs should be enabled by default");
         }
 
         [Test]
@@ -84,11 +84,10 @@ namespace OpenQA.Selenium
             }
 
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
-            Assert.IsFalse(logTypes.Contains(LogType.Profiler), "Profiler logs should not be enabled by default");
+            Assert.That(logTypes, Has.No.Member(LogType.Profiler), "Profiler logs should not be enabled by default");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Safari does not support profiler logs")]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not support profiler logs")]
         public void ShouldBeAbleToEnableProfilerLog()
         {
@@ -97,10 +96,9 @@ namespace OpenQA.Selenium
                 Assert.Ignore("Marionette does not support logs API.");
             }
 
-            DesiredCapabilities caps = new DesiredCapabilities();
             CreateWebDriverWithProfiling();
             ReadOnlyCollection<string> logTypes = localDriver.Manage().Logs.AvailableLogTypes;
-            Assert.IsTrue(logTypes.Contains(LogType.Profiler), "Profiler log should be enabled");
+            Assert.That(logTypes, Contains.Item(LogType.Profiler), "Profiler log should be enabled");
         }
 
         [Test]
@@ -110,16 +108,16 @@ namespace OpenQA.Selenium
             //assumeTrue(Boolean.getBoolean("selenium.browser.remote"));
 
             ReadOnlyCollection<string> logTypes = localDriver.Manage().Logs.AvailableLogTypes;
-            Assert.IsTrue(logTypes.Contains(LogType.Server), "Server logs should be enabled by default");
+            Assert.That(logTypes, Contains.Item(LogType.Server), "Server logs should be enabled by default");
         }
 
         private void CreateWebDriverWithProfiling()
         {
             if (TestUtilities.IsFirefox(driver))
             {
-                DesiredCapabilities caps = DesiredCapabilities.Firefox();
-                caps.SetCapability(CapabilityType.EnableProfiling, true);
-                localDriver = new FirefoxDriver(caps);
+                FirefoxOptions options = new FirefoxOptions();
+                options.AddAdditionalCapability(CapabilityType.EnableProfiling, true, true);
+                localDriver = new FirefoxDriver(options);
             }
             else if (TestUtilities.IsChrome(driver))
             {

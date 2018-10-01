@@ -20,7 +20,7 @@ package org.openqa.selenium.remote;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.interactions.Coordinates;
 
 import java.util.HashMap;
 import java.util.Map;

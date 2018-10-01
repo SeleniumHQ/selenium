@@ -18,9 +18,11 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.server.Session;
+
+import java.util.Map;
 
 public class ElementEquality extends WebElementHandler<Boolean> {
   private volatile String otherId;
@@ -29,8 +31,10 @@ public class ElementEquality extends WebElementHandler<Boolean> {
     super(session);
   }
 
-  public void setOther(String otherId) {
-    this.otherId = otherId;
+  @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    otherId = (String) allParameters.get("other");
   }
 
   @Override

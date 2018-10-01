@@ -27,7 +27,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.testing.DevMode;
 
@@ -45,16 +44,8 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
   private static boolean runBuild = true;
   private static File cachedExt = null;
 
-  public SynthesizedFirefoxDriver() {
-    this(new FirefoxOptions());
-  }
-
   public SynthesizedFirefoxDriver(Capabilities desiredCapabilities) {
     super(tweakCapabilities(desiredCapabilities));
-  }
-
-  public SynthesizedFirefoxDriver(FirefoxOptions options) {
-    super(tweakCapabilities(options));
   }
 
   private static Capabilities tweakCapabilities(Capabilities desiredCaps) {

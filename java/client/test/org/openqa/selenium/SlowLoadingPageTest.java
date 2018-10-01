@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -52,6 +52,6 @@ public class SlowLoadingPageTest extends JUnit4TestBase {
   }
 
   private static void assertElapsed(long expected, long actual) {
-    assertTrue(expected + "ms should have elapsed, but was: " + actual, expected <= actual);
+    assertThat(actual).isGreaterThanOrEqualTo(expected);
   }
 }

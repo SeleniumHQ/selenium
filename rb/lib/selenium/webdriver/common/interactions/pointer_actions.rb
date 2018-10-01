@@ -18,7 +18,15 @@
 module Selenium
   module WebDriver
     module PointerActions
-      DEFAULT_MOVE_DURATION = 0.25 # 250 milliseconds
+      attr_writer :default_move_duration
+
+      #
+      # The overridable duration for movement used by methods in this module
+      #
+
+      def default_move_duration
+        @default_move_duration ||= 0.25 # 250 milliseconds
+      end
 
       #
       # Presses (without releasing) at the current location of the PointerInput device. This is equivalent to:
@@ -98,7 +106,7 @@ module Selenium
           left = 0
           top = 0
         end
-        pointer.create_pointer_move(duration: DEFAULT_MOVE_DURATION,
+        pointer.create_pointer_move(duration: default_move_duration,
                                     x: left,
                                     y: top,
                                     element: element)
@@ -125,7 +133,7 @@ module Selenium
 
       def move_by(right_by, down_by, device: nil)
         pointer = get_pointer(device)
-        pointer.create_pointer_move(duration: DEFAULT_MOVE_DURATION,
+        pointer.create_pointer_move(duration: default_move_duration,
                                     x: Integer(right_by),
                                     y: Integer(down_by),
                                     origin: Interactions::PointerMove::POINTER)
@@ -152,7 +160,7 @@ module Selenium
 
       def move_to_location(x, y, device: nil)
         pointer = get_pointer(device)
-        pointer.create_pointer_move(duration: DEFAULT_MOVE_DURATION,
+        pointer.create_pointer_move(duration: default_move_duration,
                                     x: Integer(x),
                                     y: Integer(y),
                                     origin: Interactions::PointerMove::VIEWPORT)

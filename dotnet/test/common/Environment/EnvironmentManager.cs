@@ -127,6 +127,11 @@ namespace OpenQA.Selenium.Environment
             return driverFactory.CreateDriver(driverType);
         }
 
+        public IWebDriver CreateDriverInstance(DriverOptions options)
+        {
+            return driverFactory.CreateDriverWithOptions(driverType, options);
+        }
+
         public IWebDriver CreateFreshDriver()
         {
             CloseCurrentDriver();

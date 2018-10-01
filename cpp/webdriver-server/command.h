@@ -36,6 +36,7 @@ class Command {
   void Deserialize(const std::string& json);
 
   std::string command_type(void) const { return this->command_type_; }
+  bool is_valid_parameters(void) const { return this->is_valid_parameters_; }
   ParametersMap command_parameters(void) const {
     return this->command_parameters_;
   }
@@ -45,6 +46,8 @@ class Command {
   std::string command_type_;
   // Session ID for this command.
   std::string session_id_;
+  // Flag indicating that parameters were valid.
+  bool is_valid_parameters_;
   // Command parameters passed as JSON in the body of the request.
   ParametersMap command_parameters_;
 

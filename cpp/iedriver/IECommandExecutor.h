@@ -33,14 +33,7 @@
 #define ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS 2000
 #define DEFAULT_FILE_UPLOAD_DIALOG_TIMEOUT_IN_MILLISECONDS 3000
 #define MAX_HTML_DIALOG_RETRIES 5
-#define IGNORE_UNEXPECTED_ALERTS "ignore"
-#define ACCEPT_UNEXPECTED_ALERTS "accept"
-#define DISMISS_UNEXPECTED_ALERTS "dismiss"
-#define ACCEPT_AND_NOTIFY_UNEXPECTED_ALERTS "accept and notify"
-#define DISMISS_AND_NOTIFY_UNEXPECTED_ALERTS "dismiss and notify"
-#define NORMAL_PAGE_LOAD_STRATEGY "normal"
-#define EAGER_PAGE_LOAD_STRATEGY "eager"
-#define NONE_PAGE_LOAD_STRATEGY "none"
+#define MAX_SAFE_INTEGER 9007199254740991L
 
 namespace webdriver {
 
@@ -69,7 +62,10 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
     MESSAGE_HANDLER(WD_GET_RESPONSE, OnGetResponse)
     MESSAGE_HANDLER(WD_WAIT, OnWait)
     MESSAGE_HANDLER(WD_BROWSER_NEW_WINDOW, OnBrowserNewWindow)
+    MESSAGE_HANDLER(WD_BEFORE_NEW_WINDOW, OnBeforeNewWindow)
+    MESSAGE_HANDLER(WD_AFTER_NEW_WINDOW, OnAfterNewWindow)
     MESSAGE_HANDLER(WD_BROWSER_QUIT, OnBrowserQuit)
+    MESSAGE_HANDLER(WD_BROWSER_CLOSE_WAIT, OnBrowserCloseWait)
     MESSAGE_HANDLER(WD_IS_SESSION_VALID, OnIsSessionValid)
     MESSAGE_HANDLER(WD_NEW_HTML_DIALOG, OnNewHtmlDialog)
     MESSAGE_HANDLER(WD_GET_QUIT_STATUS, OnGetQuitStatus)
@@ -89,7 +85,10 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   LRESULT OnGetResponse(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnBrowserNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnBeforeNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnAfterNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnBrowserCloseWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnIsSessionValid(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnGetQuitStatus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -105,6 +104,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   static unsigned int WINAPI ThreadProc(LPVOID lpParameter);
   static unsigned int WINAPI WaitThreadProc(LPVOID lpParameter);
   static unsigned int WINAPI ScriptWaitThreadProc(LPVOID lpParameter);
+  static unsigned int WINAPI DelayPostMessageThreadProc(LPVOID lpParameter);
 
   std::string current_browser_id(void) const { 
     return this->current_browser_id_; 
@@ -218,6 +218,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
 
   void PopulateElementFinderMethods(void);
 
+  void CreateWaitThread(const std::string& deferred_response);
+  void CreateWaitThread(const std::string& deferred_response,
+                        const bool is_deferred_command_execution);
+  void CreateDelayPostMessageThread(const DWORD delay_time,
+                                    const HWND window_handle,
+                                    const UINT message_to_post);
+  bool IsCommandValidWithAlertPresent(void);
   bool IsAlertActive(BrowserHandle browser, HWND* alert_handle);
   bool HandleUnexpectedAlert(BrowserHandle browser,
                              HWND alert_handle,
@@ -253,6 +260,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   bool is_waiting_;
   bool is_valid_;
   bool is_quitting_;
+  bool is_awaiting_new_window_;
 
   BrowserFactory* factory_;
   InputManager* input_manager_;

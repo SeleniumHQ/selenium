@@ -17,40 +17,22 @@
 
 package org.openqa.grid.internal.cli;
 
-import static org.openqa.grid.internal.utils.configuration.GridHubConfiguration.DEFAULT_HUB_CONFIG_FILE;
-
-import com.beust.jcommander.IDefaultProvider;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
-import org.openqa.selenium.json.Json;
-
-import java.util.Map;
 
 public class GridHubCliOptions extends CommonGridCliOptions {
 
-  public GridHubCliOptions parse(String[] args) {
-    JCommander.newBuilder().addObject(this).build().parse(args);
+  private String[] rawArgs;
 
-    if (configFile != null) {
-      //re-parse the args using any -nodeConfig specified to init
-      JCommander.newBuilder().addObject(this)
-          .defaultProvider(defaults(fromConfigFile(configFile))).build().parse(args);
-    }
-    return this;
-  }
-
-  private IDefaultProvider defaults(String json) {
-    Map<String, Object> map = (Map<String, Object>) new Json().toType(json, Map.class);
-    map.remove("custom");
-    return optionName -> {
-      String option = optionName.replaceAll("-", "");
-      return map.containsKey(option) && map.get(option) != null ? map.get(option).toString() : null;
-    };
+  public JCommander parse(String... args) {
+    rawArgs = args;
+    JCommander commander = JCommander.newBuilder().addObject(this).build();
+    commander.parse(args);
+    return commander;
   }
 
   /**
@@ -108,31 +90,31 @@ public class GridHubCliOptions extends CommonGridCliOptions {
   )
   private String registry;
 
-  public GridHubConfiguration toConfiguration() {
-    GridHubConfiguration configuration = GridHubConfiguration.loadFromJSON(
-        configFile == null ? DEFAULT_HUB_CONFIG_FILE : configFile);
-
-    fillCommonConfiguration(configuration);
-    fillCommonGridConfiguration(configuration);
-    if (configFile != null) {
-      configuration.hubConfig = configFile;
-    }
-    if (capabilityMatcher != null) {
-      configuration.capabilityMatcher = capabilityMatcher;
-    }
-    if (newSessionWaitTimeout != null) {
-      configuration.newSessionWaitTimeout = newSessionWaitTimeout;
-    }
-    if (prioritizer != null) {
-      configuration.prioritizer = prioritizer;
-    }
-    if (throwOnCapabilityNotPresent != null) {
-      configuration.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
-    }
-    if (registry != null) {
-      configuration.registry = registry;
-    }
-    return configuration;
+  public String getConfigFile() {
+    return configFile;
   }
 
+  public CapabilityMatcher getCapabilityMatcher() {
+    return capabilityMatcher;
+  }
+
+  public Integer getNewSessionWaitTimeout() {
+    return newSessionWaitTimeout;
+  }
+
+  public Prioritizer getPrioritizer() {
+    return prioritizer;
+  }
+
+  public Boolean getThrowOnCapabilityNotPresent() {
+    return throwOnCapabilityNotPresent;
+  }
+
+  public String getRegistry() {
+    return registry;
+  }
+
+  public String[] getRawArgs() {
+    return rawArgs;
+  }
 }

@@ -20,6 +20,7 @@ from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoAlertPresentException
+from selenium.webdriver.remote.webdriver import WebElement
 
 """
  * Canned "Expected Conditions" which are generally useful within webdriver
@@ -67,7 +68,7 @@ class url_contains(object):
     """ An expectation for checking that the current url contains a
     case-sensitive substring.
     url is the fragment of url expected,
-    returns True when the title matches, False otherwise
+    returns True when the url matches, False otherwise
     """
     def __init__(self, url):
         self.url = url
@@ -79,7 +80,7 @@ class url_contains(object):
 class url_matches(object):
     """An expectation for checking the current url.
     pattern is the expected pattern, which must be an exact match
-    returns True if the title matches, false otherwise."""
+    returns True if the url matches, false otherwise."""
     def __init__(self, pattern):
         self.pattern = pattern
 
@@ -93,7 +94,7 @@ class url_matches(object):
 class url_to_be(object):
     """An expectation for checking the current url.
     url is the expected url, which must be an exact match
-    returns True if the title matches, false otherwise."""
+    returns True if the url matches, false otherwise."""
     def __init__(self, url):
         self.url = url
 
@@ -259,11 +260,14 @@ class invisibility_of_element_located(object):
     locator used to find the element
     """
     def __init__(self, locator):
-        self.locator = locator
+        self.target = locator
 
     def __call__(self, driver):
         try:
-            return _element_if_visible(_find_element(driver, self.locator), False)
+            target = self.target
+            if not isinstance(target, WebElement):
+                target = _find_element(driver, target)
+            return _element_if_visible(target, False)
         except (NoSuchElementException, StaleElementReferenceException):
             # In the case of NoSuchElement, returns true because the element is
             # not present in DOM. The try block checks if the element is present
@@ -271,6 +275,16 @@ class invisibility_of_element_located(object):
             # In the case of StaleElementReference, returns true because stale
             # element reference implies that element is no longer visible.
             return True
+
+
+class invisibility_of_element(invisibility_of_element_located):
+    """ An Expectation for checking that an element is either invisible or not
+    present on the DOM.
+
+    element is either a locator (text) or an WebElement
+    """
+    def __init(self, element):
+        self.target = element
 
 
 class element_to_be_clickable(object):

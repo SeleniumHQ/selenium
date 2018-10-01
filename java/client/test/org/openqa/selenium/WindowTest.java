@@ -17,14 +17,10 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.Platform.LINUX;
-import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -38,14 +34,10 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   public void testGetsTheSizeOfTheCurrentWindow() {
-    assumeFalse(
-        "window().getSize() is not implemented for Chrome for Android. "
-        + "https://code.google.com/p/chromedriver/issues/detail?id=1005",
-        TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     Dimension size = driver.manage().window().getSize();
 
-    assertThat(size.width, is(greaterThan(0)));
-    assertThat(size.height, is(greaterThan(0)));
+    assertThat(size.width).isGreaterThan(0);
+    assertThat(size.height).isGreaterThan(0);
   }
 
   @Test
@@ -53,7 +45,7 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
+    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
         SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     // resize relative to the initial size, since we don't know what it is
@@ -66,7 +58,7 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
+    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
         SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     driver.get(pages.framesetPage);
@@ -81,7 +73,7 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
+    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
         SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     driver.get(pages.iframePage);
@@ -100,19 +92,16 @@ public class WindowTest extends JUnit4TestBase {
     // If the Chrome under test is launched by default as maximized, the window
     // coordinates may have small negative values (note that elements in the
     // viewport are, of course, still clickable).
-    assertThat(position.x, is(greaterThanOrEqualTo(-10)));
-    assertThat(position.y, is(greaterThanOrEqualTo(-10)));
+    assertThat(position.x).isGreaterThanOrEqualTo(-10);
+    assertThat(position.y).isGreaterThanOrEqualTo(-10);
   }
 
   @Test
-  @Ignore(value = SAFARI,
-      reason = "getPosition after setPosition doesn't match up exactly, " +
-          "as expected - probably due to nuances in Mac OSX window manager.")
-  public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {
+  public void testSetsThePositionOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
+    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
         SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     WebDriver.Window window = driver.manage().window();
@@ -136,27 +125,27 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   @Ignore(travis = true)
-  public void testCanMaximizeTheWindow() throws InterruptedException {
+  public void testCanMaximizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
 
-    changeSizeTo(new Dimension(450, 273));
+    changeSizeTo(new Dimension(640, 273));
     maximize();
   }
 
   @SwitchToTopAfterTest
   @Test
   @Ignore(travis = true)
-  public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
+  public void testCanMaximizeTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(450, 274));
+    changeSizeTo(new Dimension(640, 274));
 
     driver.switchTo().frame("fourth");
     maximize();
@@ -165,14 +154,14 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(travis = true)
-  public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
+  public void testCanMaximizeTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(450, 275));
+    changeSizeTo(new Dimension(640, 275));
 
     driver.switchTo().frame("iframe1-name");
     maximize();

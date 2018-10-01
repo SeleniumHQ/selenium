@@ -1,4 +1,4 @@
-﻿// <copyright file="IHasTouchScreen.cs" company="WebDriver Committers">
+// <copyright file="IHasTouchScreen.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,11 +16,14 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+
 namespace OpenQA.Selenium
 {
     /// <summary>
     /// Interface implemented by each driver that allows access to touch screen capabilities.
     /// </summary>
+    [Obsolete("Use the TouchActions or ActionBuilder class to simulate touch input.")]
     public interface IHasTouchScreen
     {
         /// <summary>

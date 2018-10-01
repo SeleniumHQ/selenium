@@ -22,10 +22,13 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.Location;
+import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 
 import java.io.File;
@@ -42,39 +45,36 @@ import java.util.logging.Logger;
  * entire test suite. We do not use {@link org.openqa.selenium.chrome.ChromeDriver} since that starts and stops the service
  * with each instance (and that is too expensive for our purposes).
  */
-public class TestChromeDriver extends RemoteWebDriver implements WebStorage {
+public class TestChromeDriver extends RemoteWebDriver implements WebStorage, LocationContext {
   private final static Logger LOG = Logger.getLogger(TestChromeDriver.class.getName());
 
   private static ChromeDriverService service;
   private RemoteWebStorage webStorage;
+  private RemoteLocationContext locationContext;
 
-  public TestChromeDriver() {
-    super(chromeWithCustomCapabilities(null));
-  }
-
-  public TestChromeDriver(Capabilities capabilities) throws IOException {
+  public TestChromeDriver(Capabilities capabilities) {
     super(getServiceUrl(), chromeWithCustomCapabilities(capabilities));
     webStorage = new RemoteWebStorage(getExecuteMethod());
+    locationContext = new RemoteLocationContext(getExecuteMethod());
   }
 
-  private static URL getServiceUrl() throws IOException {
-    if (service == null && !SauceDriver.shouldUseSauce()) {
-      Path logFile = Files.createTempFile("chromedriver", ".log");
-      service = new ChromeDriverService.Builder()
-          .withVerbose(true)
-          .withLogFile(logFile.toFile())
-          .build();
-      LOG.info("chromedriver will log to " + logFile);
-      try {
+  private static URL getServiceUrl() {
+    try {
+      if (service == null && !SauceDriver.shouldUseSauce()) {
+        Path logFile = Files.createTempFile("chromedriver", ".log");
+        service = new ChromeDriverService.Builder()
+            .withVerbose(true)
+            .withLogFile(logFile.toFile())
+            .build();
+        LOG.info("chromedriver will log to " + logFile);
         service.start();
-      } catch (IOException e) {
-        throw new RuntimeException(e);
+        // Fugly.
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> service.stop()));
       }
-
-      // Fugly.
-      Runtime.getRuntime().addShutdownHook(new Thread(() -> service.stop()));
+      return service.getUrl();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
-    return service.getUrl();
   }
 
   private static Capabilities chromeWithCustomCapabilities(Capabilities originalCapabilities) {
@@ -111,5 +111,15 @@ public class TestChromeDriver extends RemoteWebDriver implements WebStorage {
   @Override
   public SessionStorage getSessionStorage() {
     return webStorage.getSessionStorage();
+  }
+
+  @Override
+  public Location location() {
+    return locationContext.location();
+  }
+
+  @Override
+  public void setLocation(Location location) {
+    locationContext.setLocation(location);
   }
 }

@@ -8,9 +8,19 @@ namespace OpenQA.Selenium.Chrome
 {
     public class SpecCompliantChromeDriver : ChromeDriver
     {
-        public SpecCompliantChromeDriver(ChromeDriverService service) :
-            base(service, new ChromeOptions() { UseSpecCompliantProtocol = true })
+        public SpecCompliantChromeDriver(ChromeDriverService service)
+            : this(service, DefaultOptions)
         {
+        }
+
+        public SpecCompliantChromeDriver(ChromeDriverService service, ChromeOptions options)
+            : base(service, options)
+        {
+        }
+
+        public static ChromeOptions DefaultOptions
+        {
+            get { return new ChromeOptions() { UseSpecCompliantProtocol = true }; }
         }
     }
 }

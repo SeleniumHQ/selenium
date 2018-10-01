@@ -23,7 +23,7 @@ import org.junit.Test;
 
 public class TestVerifications extends InternalSelenseTestBase {
   @Test
-  public void testVerifications() throws Exception {
+  public void testVerifications() {
     selenium.open("../tests/html/test_verifications.html?foo=bar");
     verifyTrue(selenium.getLocation().matches(
         "^[\\s\\S]*/tests/html/test_verifications\\.html[\\s\\S]*$"));

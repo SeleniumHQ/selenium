@@ -6,6 +6,7 @@ java_binary(
   ],
   visibility = [
     '//third_party/java/jetty:',
+    '//third_party/java/websocket:',
   ],
 )
 

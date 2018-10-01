@@ -17,15 +17,20 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import static com.google.common.collect.ImmutableSortedMap.toImmutableSortedMap;
+import static com.google.common.collect.Ordering.natural;
+import static java.util.Optional.ofNullable;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.annotations.Expose;
 
 import org.openqa.grid.common.GridConfiguredJson;
 import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.grid.internal.cli.CommonCliOptions;
+import org.openqa.grid.internal.cli.StandaloneCliOptions;
+import org.openqa.grid.internal.utils.configuration.json.CommonJsonConfiguration;
+import org.openqa.grid.internal.utils.configuration.json.StandaloneJsonConfiguration;
+import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeCoercer;
@@ -37,72 +42,35 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Field;
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StandaloneConfiguration {
   public static final String DEFAULT_STANDALONE_CONFIG_FILE = "org/openqa/grid/common/defaults/DefaultStandalone.json";
 
-  /*
-   * IMPORTANT - Keep these constant values in sync with the ones specified in
-   * 'defaults/DefaultStandalone.json'  -- if for no other reasons documentation & consistency.
-   */
+  private static StandaloneJsonConfiguration DEFAULT_CONFIG_FROM_JSON
+      = StandaloneJsonConfiguration.loadFromResourceOrFile(DEFAULT_STANDALONE_CONFIG_FILE);
 
-  /**
-   * Default client timeout
-   */
   @VisibleForTesting
-  static final Integer DEFAULT_TIMEOUT = 1800;
-
-  /**
-   * Default browser timeout
-   */
-  @VisibleForTesting
-  static final Integer DEFAULT_BROWSER_TIMEOUT = 0;
-
-  /**
-   * Default standalone role
-   */
-  @VisibleForTesting
-  static final String DEFAULT_ROLE = "standalone";
-
-  /**
-   * Default standalone port
-   */
-  @VisibleForTesting
-  static final Integer DEFAULT_PORT = 4444;
-
-  /**
-   * Default state of LogeLevel.FINE log output toggle
-   */
-  @VisibleForTesting
-  static final Boolean DEFAULT_DEBUG_TOGGLE = false;
-
+  static final String ROLE = "standalone";
 
   /*
    * config parameters which do not serialize to json
    */
-  @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private transient boolean avoidProxy;
+  private boolean avoidProxy;
 
-  @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private transient boolean browserSideLog;
+  private boolean browserSideLog;
 
-  @Expose( serialize = false )
   // initially defaults to false from boolean primitive type
-  private transient boolean captureLogsOnQuit;
+  private boolean captureLogsOnQuit;
 
   /*
    * config parameters which serialize and deserialize to/from json
@@ -111,57 +79,79 @@ public class StandaloneConfiguration {
   /**
    * Browser timeout. Default 0 (indefinite wait).
    */
-  @Expose
-  public Integer browserTimeout = DEFAULT_BROWSER_TIMEOUT;
+  public Integer browserTimeout;
 
   /**
    * Enable {@code LogLevel.FINE} log messages. Default {@code false}.
    */
-  @Expose
-  public Boolean debug = DEFAULT_DEBUG_TOGGLE;
+  public Boolean debug;
 
   /**
    *   Max threads for Jetty. Defaults to {@code null}.
    */
-  @Expose
+  @ConfigValue(section = "server", name = "max-threads")
   public Integer jettyMaxThreads;
 
   /**
    *   Filename to use for logging. Defaults to {@code null}.
    */
-  @Expose
   public String log;
 
   /**
    * Hostname or IP to use. Defaults to {@code null}. Automatically determined when {@code null}.
    */
-  @Expose
   // initially defaults to null from type
+  @ConfigValue(section = "server", name = "hostname")
   public String host;
 
   /**
    * Port to bind to. Default determined by configuration type.
    */
-  @Expose
-  public Integer port = DEFAULT_PORT;
+  @ConfigValue(section = "server", name = "port")
+  public Integer port;
 
   /**
    * Server role. Default determined by configuration type.
    */
-  @Expose
-  public String role = DEFAULT_ROLE;
+  public String role;
 
   /**
    * Client timeout. Default 1800 sec.
    */
-  @Expose
-  public Integer timeout = DEFAULT_TIMEOUT;
+  public Integer timeout;
 
   /**
    * Creates a new configuration using the default values.
    */
   public StandaloneConfiguration() {
-    // nothing to do.
+    this(DEFAULT_CONFIG_FROM_JSON);
+  }
+
+  public StandaloneConfiguration(CommonJsonConfiguration jsonConfig) {
+    this.role = ROLE;
+    this.debug = jsonConfig.getDebug();
+    this.log = jsonConfig.getLog();
+    host = ofNullable(jsonConfig.getHost()).orElse("0.0.0.0");
+    this.port = jsonConfig.getPort();
+    this.timeout = jsonConfig.getTimeout();
+    this.browserTimeout = jsonConfig.getBrowserTimeout();
+    this.jettyMaxThreads = jsonConfig.getJettyMaxThreads();
+  }
+
+  public StandaloneConfiguration(StandaloneCliOptions cliConfig) {
+    this(ofNullable(cliConfig.getConfigFile()).map(StandaloneJsonConfiguration::loadFromResourceOrFile)
+             .orElse(DEFAULT_CONFIG_FROM_JSON));
+    merge(cliConfig);
+  }
+
+  void merge(CommonCliOptions cliConfig) {
+    ofNullable(cliConfig.getDebug()).ifPresent(v -> debug = v);
+    ofNullable(cliConfig.getLog()).ifPresent(v -> log = v);
+    ofNullable(cliConfig.getHost()).ifPresent(v -> host = v);
+    ofNullable(cliConfig.getPort()).ifPresent(v -> port = v);
+    ofNullable(cliConfig.getTimeout()).ifPresent(v -> timeout = v);
+    ofNullable(cliConfig.getBrowserTimeout()).ifPresent(v -> browserTimeout = v);
+    ofNullable(cliConfig.getJettyMaxThreads()).ifPresent(v -> jettyMaxThreads = v);
   }
 
   public static<T extends StandaloneConfiguration> T loadFromJson(String resource, Class<T> type) {
@@ -283,31 +273,25 @@ public class StandaloneConfiguration {
    * Return a JsonElement representation of the configuration. Does not serialize nulls.
    */
   public Map<String, Object> toJson() {
-    Set<Field> fields = new HashSet<>();
-    for (Class current = getClass(); !current.equals(Object.class); current = current.getSuperclass()) {
-      fields.addAll(Arrays.asList(current.getDeclaredFields()));
-    }
+    Map<String, Object> json = new HashMap<>();
+    json.put("browserTimeout", browserTimeout);
+    json.put("debug", debug);
+    json.put("jettyMaxThreads", jettyMaxThreads);
+    json.put("log", log);
+    json.put("host", host);
+    json.put("port", port);
+    json.put("role", role);
+    json.put("timeout", timeout);
 
-    return fields.stream()
-        .filter(field -> field.getAnnotation(Expose.class) != null)
-        .filter(field -> field.getAnnotation(Expose.class).serialize())
-        .peek(field -> field.setAccessible(true))
-        .map(
-            field -> {
-              try {
-                Object value = field.get(StandaloneConfiguration.this);
-                // TODO: avoid nastiness like this
-                if (value instanceof CapabilityMatcher || value instanceof Prioritizer) {
-                  value = value.getClass().getName();
-                }
-                return new AbstractMap.SimpleImmutableEntry<>(field.getName(), value);
-              } catch (ReflectiveOperationException e) {
-                throw new WebDriverException(e);
-              }
-            })
-        // Note: it's important that nulls ARE NOT serialized, for backwards compatibility
+    serializeFields(json);
+
+    return json.entrySet().stream()
         .filter(entry -> entry.getValue() != null)
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(toImmutableSortedMap(natural(), Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  protected void serializeFields(Map<String, Object> appendTo) {
+    // Do nothing here.
   }
 
   /**

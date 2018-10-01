@@ -1,5 +1,5 @@
-# BUILD FILE SYNTAX: SKYLARK
 load("//:selenium-version.bzl", "SE_VERSION")
+load("//java:rules.bzl", "java_library")
 
 java_library(
   name = 'api',
@@ -45,6 +45,7 @@ java_library(
 java_library(name = 'remote',
   maven_coords = 'org.seleniumhq.selenium:selenium-remote-driver:' + SE_VERSION,
   maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
+  module_info = 'module-info.txt',
   srcs = [
     'Augmenter.java',
     'AugmenterProvider.java',
@@ -71,7 +72,6 @@ java_library(name = 'remote',
   visibility = ['PUBLIC'],
 )
 
-
 java_library(name = 'remote-lib',
   srcs = [
     'AcceptedW3CCapabilityKeys.java',
@@ -82,7 +82,6 @@ java_library(name = 'remote-lib',
     'ErrorHandler.java',
     'ExecuteMethod.java',
     'FileDetector.java',
-    'Gecko013ProtocolResponse.java',
     'HandshakeResponse.java',
     'HttpCommandExecutor.java',
     'InitialHandshakeResponse.java',
@@ -119,8 +118,6 @@ java_library(name = 'remote-lib',
     'http/JsonHttpResponseCodec.java',
     'http/W3CHttpCommandCodec.java',
     'http/W3CHttpResponseCodec.java',
-    'internal/ApacheHttpClient.java',
-    'internal/HttpClientFactory.java',
     'internal/HttpUrlBuilder.java',
     'internal/OkHttpClient.java',
     'internal/JsonToWebElementConverter.java',
@@ -138,7 +135,6 @@ java_library(name = 'remote-lib',
     ':capabilities',
     '//java/client/src/org/openqa/selenium/json:json',
     '//java/client/src/org/openqa/selenium/remote/session:session',
-    '//third_party/java/httpcomponents:httpclient',
     '//third_party/java/okhttp3:okhttp',
   ],
   deps = [

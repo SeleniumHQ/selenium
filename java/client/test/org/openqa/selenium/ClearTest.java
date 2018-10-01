@@ -17,16 +17,14 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -39,24 +37,25 @@ public class ClearTest extends JUnit4TestBase {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("writableTextInput"));
     element.clear();
-    assertEquals("", element.getAttribute("value"));
+    assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testTextInputShouldNotClearWhenDisabled() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textInputnotenabled"));
-    assertEquals(false, element.isEnabled());
-    Throwable t = catchThrowable(element::clear);
-    assertThat(t, instanceOf(InvalidElementStateException.class));
+    assertThat(element.isEnabled()).isFalse();
+    assertThatExceptionOfType(InvalidElementStateException.class)
+        .isThrownBy(element::clear);
   }
 
   @Test
   public void testTextInputShouldNotClearWhenReadOnly() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("readOnlyTextInput"));
-    Throwable t = catchThrowable(element::clear);
-    assertThat(t, instanceOf(InvalidElementStateException.class));
+    assertThatExceptionOfType(InvalidElementStateException.class)
+        .isThrownBy(element::clear);
   }
 
   @Test
@@ -64,23 +63,23 @@ public class ClearTest extends JUnit4TestBase {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("writableTextArea"));
     element.clear();
-    assertEquals("", element.getAttribute("value"));
+    assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
   @Test
   public void testTextAreaShouldNotClearWhenDisabled() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textAreaNotenabled"));
-    Throwable t = catchThrowable(element::clear);
-    assertThat(t, instanceOf(InvalidElementStateException.class));
+    assertThatExceptionOfType(InvalidElementStateException.class)
+        .isThrownBy(element::clear);
   }
 
   @Test
   public void testTextAreaShouldNotClearWhenReadOnly() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textAreaReadOnly"));
-    Throwable t = catchThrowable(element::clear);
-    assertThat(t, instanceOf(InvalidElementStateException.class));
+    assertThatExceptionOfType(InvalidElementStateException.class)
+        .isThrownBy(element::clear);
   }
 
   @Test
@@ -88,7 +87,7 @@ public class ClearTest extends JUnit4TestBase {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("content-editable"));
     element.clear();
-    assertEquals("", element.getText());
+    assertThat(element.getText()).isEqualTo("");
   }
 
   @Test
@@ -157,7 +156,6 @@ public class ClearTest extends JUnit4TestBase {
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearColorInput() {
     shouldBeAbleToClearInput(By.name("color_input"), "#00ffff");
   }
@@ -205,9 +203,9 @@ public class ClearTest extends JUnit4TestBase {
   private void shouldBeAbleToClearInput(By locator, String oldValue) {
     driver.get(appServer.whereIs("inputs.html"));
     WebElement element = driver.findElement(locator);
-    assertEquals(oldValue, element.getAttribute("value"));
+    assertThat(element.getAttribute("value")).isEqualTo(oldValue);
     element.clear();
-    assertEquals("", element.getAttribute("value"));
+    assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
 }

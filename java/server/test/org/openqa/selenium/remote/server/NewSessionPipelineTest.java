@@ -31,6 +31,8 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.openqa.grid.selenium.node.FirefoxMutator;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.io.IOException;
@@ -39,7 +41,7 @@ import java.util.Optional;
 public class NewSessionPipelineTest {
 
   @Test
-  public void shouldCallSessionFactory() throws IOException {
+  public void shouldCallSessionFactory() {
     SessionFactory factory = mock(SessionFactory.class);
     when(factory.isSupporting(any())).thenReturn(true);
     SessionFactory fallback = mock(SessionFactory.class);
@@ -60,7 +62,7 @@ public class NewSessionPipelineTest {
   }
 
   @Test
-  public void shouldBeAbleToFallBack() throws IOException {
+  public void shouldBeAbleToFallBack() {
     SessionFactory factory = mock(SessionFactory.class);
     SessionFactory fallback = mock(SessionFactory.class);
     ActiveSession session = mock(ActiveSession.class);
@@ -79,7 +81,7 @@ public class NewSessionPipelineTest {
   }
 
   @Test
-  public void shouldUseMutators() throws IOException {
+  public void shouldUseMutators() {
     SessionFactory factory = mock(SessionFactory.class);
     when(factory.isSupporting(any())).thenReturn(true);
     ActiveSession session = mock(ActiveSession.class);
@@ -103,7 +105,7 @@ public class NewSessionPipelineTest {
   }
 
   @Test
-  public void shouldNotUseFactoriesThatDoNotSupportTheCapabilities() throws IOException {
+  public void shouldNotUseFactoriesThatDoNotSupportTheCapabilities() {
     SessionFactory toBeIgnored = mock(SessionFactory.class);
     when(toBeIgnored.isSupporting(any())).thenReturn(false);
     when(toBeIgnored.apply(any(), any())).thenThrow(new AssertionError("Must not be called"));

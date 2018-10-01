@@ -16,11 +16,17 @@
 [build]
   metadata_storage = sqlite
 
+[buildfile]
+  includes = //java/rules.bzl
+
 [cache]
   mode = dir
+  # This is large enough to contain everything built in //java/...
+  dir_max_size = 1GB
 
 [parser]
   polyglot_parsing_enabled = true
+  default_build_file_syntax = SKYLARK
 
 [resources]
   resource_aware_scheduling_enabled = true
@@ -57,4 +63,4 @@
   ie-test       = //java/client/test/org/openqa/selenium/ie:ie
   opera-test    = //java/client/test/org/openqa/selenium/opera:opera
   safari-test   = //java/client/test/org/openqa/selenium/safari:safari
-  java-small-tests = //java/client/test/org/openqa/selenium:small-tests //java/client/test/org/openqa/selenium/json:small-tests //java/client/test/org/openqa/selenium/support:small-tests //java/client/test/org/openqa/selenium/remote:common-tests //java/client/test/org/openqa/selenium/remote:client-tests //java/server/test/org/openqa/grid/selenium/node:node //java/server/test/org/openqa/grid/selenium/proxy:proxy //java/server/test/org/openqa/selenium/remote/server:small-tests //java/server/test/org/openqa/selenium/remote/server/log:test
+  java-small-tests = //java/client/test/org/openqa/selenium:small-tests //java/client/test/org/openqa/selenium/json:small-tests //java/client/test/org/openqa/selenium/support:small-tests //java/client/test/org/openqa/selenium/remote:common-tests //java/client/test/org/openqa/selenium/remote:client-tests //java/server/test/org/openqa/grid/selenium/node:node //java/server/test/org/openqa/grid/selenium/proxy:proxy //java/server/test/org/openqa/selenium/remote/server:small-tests //java/server/test/org/openqa/selenium/remote/server/log:test //java/server/test/org/openqa/selenium/injector:small-tests

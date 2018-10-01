@@ -21,9 +21,6 @@ import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
@@ -45,6 +42,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -430,15 +428,24 @@ public class BaseRemoteProxy implements RemoteProxy {
     return config.timeout * 1000;
   }
 
+  /**
+   * @return the {@link HttpClient.Factory} to use.
+   * @deprecated use {@link BaseRemoteProxy#getHttpClient(URL, int, int)}
+   */
   public HttpClient getHttpClient(URL url) {
     return getRegistry().getHttpClient(url);
+  }
+
+  public HttpClient getHttpClient(URL url, int connectionTimeout, int readTimeout) {
+    return getRegistry().getHttpClient(url, connectionTimeout, readTimeout);
   }
 
   public Map<String, Object> getProxyStatus() {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
 
     HttpRequest r = new HttpRequest(GET, url);
-    HttpClient client = getHttpClient(getRemoteHost());
+    HttpClient client = getHttpClient(getRemoteHost(), config.nodeStatusCheckTimeout,
+                                      config.nodeStatusCheckTimeout);
     HttpResponse response;
     String existingName = Thread.currentThread().getName();
     try {
@@ -465,15 +472,6 @@ public class BaseRemoteProxy implements RemoteProxy {
     } finally {
       Thread.currentThread().setName(existingName);
     }
-  }
-
-  /**
-   * @deprecated Use {@link #getProxyStatus()}.
-   */
-  @Deprecated
-  public JsonObject getStatus() throws GridException {
-    Map<String, Object> status = getProxyStatus();
-    return new Gson().toJsonTree(status).getAsJsonObject();
   }
 
   @ManagedAttribute

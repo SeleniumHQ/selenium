@@ -24,7 +24,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.net.MalformedURLException;

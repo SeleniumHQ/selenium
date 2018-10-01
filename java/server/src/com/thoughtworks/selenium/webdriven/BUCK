@@ -1,5 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
-
 java_library(name = 'rc-emulation-servlet',
   srcs = [
     'WebDriverBackedSeleniumServlet.java',
@@ -7,6 +5,7 @@ java_library(name = 'rc-emulation-servlet',
   deps = [
     '//java/client/src/com/thoughtworks/selenium:leg-rc',
     '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/server/src/org/openqa/selenium/grid/web:web',
     '//java/server/src/org/openqa/selenium/remote/server:server',
     '//java/server/src/org/openqa/selenium/remote/server:sessions',
     '//java/server/src/org/openqa/selenium/remote/server:webdriver-servlet',

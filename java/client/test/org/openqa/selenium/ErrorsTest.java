@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.Driver.IE;
 
 import org.junit.Test;
@@ -27,9 +27,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 public class ErrorsTest extends JUnit4TestBase {
 
   /**
-   * Regression test for Selenium RC issue 363.
-   * http://code.google.com/p/selenium/issues/detail?id=363
-   * <p/>
    * This will trivially pass on browsers that do not support the onerror handler (e.g. Internet
    * Explorer).
    */
@@ -39,6 +36,6 @@ public class ErrorsTest extends JUnit4TestBase {
     driver.get(pages.errorsPage);
     Object result = ((JavascriptExecutor) driver).
         executeScript("return window.ERRORS.join('\\n');");
-    assertEquals("Should have no errors", "", result);
+    assertThat(result).isEqualTo("");
   }
 }

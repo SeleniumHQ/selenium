@@ -63,9 +63,12 @@ class MapCoercer<T> extends TypeCoercer<T> {
     return (jsonInput, setting) -> {
       jsonInput.beginObject();
       T toReturn = new JsonInputIterator(jsonInput).asStream()
-          .map(in -> new AbstractMap.SimpleImmutableEntry<>(
-              coercer.coerce(in, keyType, setting),
-              coercer.coerce(in, valueType, setting)))
+          .map(in -> {
+                 Object key = coercer.coerce(in, keyType, setting);
+                 Object value = coercer.coerce(in, valueType, setting);
+
+                 return new AbstractMap.SimpleImmutableEntry<>(key, value);
+          })
           .collect(collector);
       jsonInput.endObject();
 

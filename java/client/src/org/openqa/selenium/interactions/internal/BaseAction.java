@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.interactions.internal;
 
-import com.google.common.base.Preconditions;
-
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Locatable;
 
 import java.util.Optional;
 
@@ -43,11 +42,13 @@ public abstract class BaseAction {
       return Optional.empty();
     }
 
-    Preconditions.checkState(
-        where.getCoordinates().getAuxiliary() instanceof WebElement,
-        "%s: Unable to find element to use: %s",
-        this,
-        where.getCoordinates());
+    if (!(where.getCoordinates().getAuxiliary() instanceof WebElement)) {
+      throw new IllegalStateException(String.format(
+          "%s: Unable to find element to use: %s",
+          this,
+          where.getCoordinates()));
+    }
+
     return Optional.of((WebElement) where.getCoordinates().getAuxiliary());
   }
 }

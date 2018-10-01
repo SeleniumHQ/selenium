@@ -29,7 +29,7 @@ public class TestTypeRichText extends InternalSelenseTestBase {
   }
 
   @Test
-  public void testTypeRichText() throws Exception {
+  public void testTypeRichText() {
     String isIe = selenium.getEval("browserVersion.isIE");
     if (Boolean.valueOf(isIe)) {
       return;

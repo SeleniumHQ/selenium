@@ -456,6 +456,7 @@ namespace OpenQA.Selenium.Opera
                 capabilities.SetCapability(pair.Key, pair.Value);
             }
 
+            // Should return capabilities.AsReadOnly(), and will in a future release.
             return capabilities;
         }
 

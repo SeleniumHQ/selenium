@@ -32,7 +32,10 @@ import java.util.Optional;
 
 /**
  * Wrapper around Firefox executable.
+ *
+ * @deprecated Internal class. Visibility will be reduced and won't be exported from module.
  */
+@Deprecated
 public class Executable {
 
   private final File binary;

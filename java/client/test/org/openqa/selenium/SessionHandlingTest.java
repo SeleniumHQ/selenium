@@ -17,12 +17,10 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -44,6 +42,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = FIREFOX)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
+  @NotYetImplemented(SAFARI)
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     driver.close();
     sleepTight(3000);
@@ -53,13 +52,10 @@ public class SessionHandlingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX)
-  @NotYetImplemented(value = SAFARI, reason = "throws NoSuchWindowException")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     driver.close();
     sleepTight(3000);
-    Throwable t = catchThrowable(driver::getCurrentUrl);
-    assertThat(t, instanceOf(NoSuchSessionException.class));
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
   }
 
   @NoDriverAfterTest
@@ -67,8 +63,13 @@ public class SessionHandlingTest extends JUnit4TestBase {
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     driver.quit();
     sleepTight(3000);
-    Throwable t = catchThrowable(driver::getCurrentUrl);
-    assertThat(t, instanceOf(NoSuchSessionException.class));
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
+  }
+
+  @Test
+  public void shouldContinueAfterSleep() {
+    sleepTight(10000);
+    driver.getWindowHandle(); // should not throw
   }
 
   private void sleepTight(long duration) {

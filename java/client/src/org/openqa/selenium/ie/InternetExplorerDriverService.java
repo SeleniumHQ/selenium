@@ -21,7 +21,9 @@ import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -108,6 +110,21 @@ public class InternetExplorerDriverService extends DriverService {
     private String host = null;
     private File extractPath = null;
     private Boolean silent = null;
+
+    @Override
+    public int score(Capabilities capabilites) {
+      int score = 0;
+
+      if (BrowserType.IE.equals(capabilites.getBrowserName())) {
+        score++;
+      }
+
+      if (capabilites.getCapability(InternetExplorerOptions.IE_OPTIONS) != null) {
+        score++;
+      }
+
+      return score;
+    }
 
     /**
      * Configures the logging level for the driver server.

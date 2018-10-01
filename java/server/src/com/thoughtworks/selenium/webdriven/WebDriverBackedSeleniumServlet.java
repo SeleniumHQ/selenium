@@ -27,7 +27,7 @@ import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.ActiveSession;
+import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
@@ -92,7 +92,11 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
     throws ServletException, IOException {
 
     String cmd = req.getParameter("cmd");
-    SessionId sessionId = new SessionId(req.getParameter("sessionId"));
+
+    SessionId sessionId = null;
+    if (req.getParameter("sessionId") != null) {
+      sessionId = new SessionId(req.getParameter("sessionId"));
+    }
     String[] args = deserializeArgs(req);
 
     if (cmd == null) {

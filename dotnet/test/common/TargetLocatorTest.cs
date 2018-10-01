@@ -11,14 +11,14 @@ namespace OpenQA.Selenium
         public void ShouldThrowExceptionAfterSwitchingToNonExistingFrameIndex()
         {
             driver.Url = framesPage;
-            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame(10));
+            Assert.That(() => driver.SwitchTo().Frame(10), Throws.InstanceOf<NoSuchFrameException>());
         }
 
         [Test]
         public void ShouldThrowExceptionAfterSwitchingToNonExistingFrameName()
         {
             driver.Url = framesPage;
-            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame("æ©ñµøöíúüþ®éåä²doesnotexist"));
+            Assert.That(() => driver.SwitchTo().Frame("Ã¦Â©Ã±ÂµÃ¸Ã¶Ã­ÃºÃ¼Ã¾Â®Ã©Ã¥Ã¤Â²doesnotexist"), Throws.InstanceOf<NoSuchFrameException>());
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace OpenQA.Selenium
         {
             string frameName = null;
             driver.Url = framesPage;
-            Assert.Throws<ArgumentNullException>(() => driver.SwitchTo().Frame(frameName));
+            Assert.That(() => driver.SwitchTo().Frame(frameName), Throws.InstanceOf<ArgumentNullException>());
         }
 
         [Test]
@@ -35,11 +35,11 @@ namespace OpenQA.Selenium
             driver.Url = iframesPage;
             driver.SwitchTo().Frame("iframe1");
             IWebElement element = driver.FindElement(By.Name("id-name1"));
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
 
             driver.SwitchTo().DefaultContent();
             element = driver.FindElement(By.Id("iframe_page_heading"));
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
         }
 
         [Test]
@@ -48,11 +48,11 @@ namespace OpenQA.Selenium
             driver.Url = iframesPage;
             driver.SwitchTo().Frame(0);
             IWebElement element = driver.FindElement(By.Name("id-name1"));
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
 
             driver.SwitchTo().DefaultContent();
             element = driver.FindElement(By.Id("iframe_page_heading"));
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
         }
 
         [Test]

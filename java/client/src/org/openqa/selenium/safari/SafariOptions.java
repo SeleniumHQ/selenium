@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.safari;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import com.google.common.collect.ImmutableSortedMap;
 
 import org.openqa.selenium.Capabilities;
@@ -34,7 +36,7 @@ import java.util.TreeMap;
  * <p>Example usage:
  * <pre><code>
  * SafariOptions options = new SafariOptions()
- * options.setUseCleanSession(true);
+ * options.setUseTechnologyPreview(true);
  *
  * // For use with SafariDriver:
  * SafariDriver driver = new SafariDriver(options);
@@ -47,21 +49,29 @@ import java.util.TreeMap;
  */
 public class SafariOptions extends MutableCapabilities {
 
+  static final String SAFARI_TECH_PREVIEW = "Safari Technology Preview";
+
   /**
    * Key used to store SafariOptions in a {@link Capabilities} object.
+   * @deprecated No replacement. Use the methods on this class
    */
+  @Deprecated
   public static final String CAPABILITY = "safari.options";
 
   private interface Option {
-    String CLEAN_SESSION = "cleanSession";
+    @Deprecated
     String TECHNOLOGY_PREVIEW = "technologyPreview";
+
+    // Defined by Apple
+    String AUTOMATIC_INSPECTION  = "safari:automaticInspection";
+    String AUTOMATIC_PROFILING = "safari:automaticProfiling";
   }
 
   private Map<String, Object> options = new TreeMap<>();
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
-    setCapability(CapabilityType.BROWSER_NAME, "safari");
+    setCapability(BROWSER_NAME, "safari");
   }
 
   public SafariOptions(Capabilities source) {
@@ -109,21 +119,28 @@ public class SafariOptions extends MutableCapabilities {
   }
 
   // Setters
+  
+  /**
+   * Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
+   * the automatic inspection. Defaults to disabling the automatic inspection.
+   *
+   * @param automaticInspection If true, the SafariDriver will enable the Automation Inspection,
+   *                            otherwise will disable.
+   */
+  public SafariOptions setAutomaticInspection(boolean automaticInspection) {
+    setCapability(Option.AUTOMATIC_INSPECTION, automaticInspection);
+    return this;
+  }
 
   /**
-   * Instruct the SafariDriver to delete all existing session data when starting a new session.
-   * This includes browser history, cache, cookies, HTML5 local storage, and HTML5 databases.
+   * Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable
+   * the automatic profiling. Defaults to disabling the automatic profiling.
    *
-   * <p><strong>Warning:</strong> Since Safari uses a single profile for the
-   * current user, enabling this capability will permanently erase any existing
-   * session data.
-   *
-   * @param useCleanSession If true, the SafariDriver will erase all existing session data.
-   * @deprecated SafariDriver always runs a clean session
+   * @param automaticProfiling If true, the SafariDriver will enable the Automation Profiling,
+   *                            otherwise will disable.
    */
-  @Deprecated
-  public SafariOptions useCleanSession(boolean useCleanSession) {
-    options.put(Option.CLEAN_SESSION, useCleanSession);
+  public SafariOptions setAutomaticProfiling(boolean automaticProfiling) {
+    setCapability(Option.AUTOMATIC_PROFILING, automaticProfiling);
     return this;
   }
 
@@ -136,6 +153,8 @@ public class SafariOptions extends MutableCapabilities {
    */
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     options.put(Option.TECHNOLOGY_PREVIEW, useTechnologyPreview);
+    // Use an object here, rather than a boolean to avoid a stack overflow
+    super.setCapability(BROWSER_NAME, useTechnologyPreview ? SAFARI_TECH_PREVIEW : "safari");
     return this;
   }
 
@@ -164,8 +183,17 @@ public class SafariOptions extends MutableCapabilities {
 
   // Getters
 
+  public boolean getAutomaticInspection() {
+    return Boolean.TRUE.equals(getCapability(Option.AUTOMATIC_INSPECTION));
+  }
+
+  public boolean getAutomaticProfiling() {
+    return Boolean.TRUE.equals(is(Option.AUTOMATIC_PROFILING));
+  }
+
   public boolean getUseTechnologyPreview() {
-    return (boolean) options.getOrDefault(Option.TECHNOLOGY_PREVIEW, false);
+    return SAFARI_TECH_PREVIEW.equals(getBrowserName()) ||
+           options.get(Option.TECHNOLOGY_PREVIEW) == Boolean.TRUE;
   }
 
   // (De)serialization of the options
@@ -178,9 +206,9 @@ public class SafariOptions extends MutableCapabilities {
   private static SafariOptions fromJsonMap(Map<?, ?> options)  {
     SafariOptions safariOptions = new SafariOptions();
 
-    Boolean useTechnologyPreview = (Boolean) options.get(Option.TECHNOLOGY_PREVIEW);
-    if (useTechnologyPreview != null) {
-      safariOptions.setUseTechnologyPreview(useTechnologyPreview);
+    Object useTechnologyPreview = options.get(Option.TECHNOLOGY_PREVIEW);
+    if (useTechnologyPreview instanceof Boolean) {
+      safariOptions.setUseTechnologyPreview((Boolean) useTechnologyPreview);
     }
 
     return safariOptions;

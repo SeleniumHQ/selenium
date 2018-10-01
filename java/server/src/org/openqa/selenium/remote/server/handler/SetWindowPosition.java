@@ -19,12 +19,11 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 
-public class SetWindowPosition extends WebDriverHandler<Void> implements JsonParametersAware {
+public class SetWindowPosition extends WebDriverHandler<Void> {
 
   private Point position;
 
@@ -32,7 +31,9 @@ public class SetWindowPosition extends WebDriverHandler<Void> implements JsonPar
     super(session);
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     int x, y;
     try {
       x = ((Number) allParameters.get("x")).intValue();

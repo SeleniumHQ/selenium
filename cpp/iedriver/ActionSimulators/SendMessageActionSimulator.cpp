@@ -41,10 +41,18 @@ int SendMessageActionSimulator::SimulateActions(BrowserHandle browser_wrapper,
                                                 std::vector<INPUT> inputs,
                                                 InputState* input_state) {
   LOG(TRACE) << "Entering InputManager::PerformInputWithSendMessage";
+  HWND window_handle = browser_wrapper->GetContentWindowHandle();
+
   HookProcessor message_processor;
   message_processor.Initialize("GetMessageProc", WH_GETMESSAGE);
+  if (!message_processor.CanSetWindowsHook(window_handle)) {
+    LOG(WARN) << "Keystrokes may be slow! There is a mismatch in the "
+              << "bitness between the driver and browser. In particular, "
+              << "be sure you are not attempting to use a 64-bit "
+              << "IEDriverServer.exe against IE 10 or 11, even on 64-bit "
+              << "Windows.";
+  }
 
-  HWND window_handle = browser_wrapper->GetContentWindowHandle();
   DWORD browser_thread_id = ::GetWindowThreadProcessId(window_handle, NULL);
   DWORD current_thread_id = ::GetCurrentThreadId();
   BOOL attached = ::AttachThreadInput(current_thread_id, browser_thread_id, TRUE);

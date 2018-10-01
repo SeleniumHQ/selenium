@@ -1,4 +1,4 @@
-﻿// <copyright file="SafariDriverService.cs" company="WebDriver Committers">
+// <copyright file="SafariDriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,6 +18,7 @@
 
 using System;
 using System.Net;
+using System.Text;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Safari
@@ -32,6 +33,8 @@ namespace OpenQA.Selenium.Safari
 
         private static readonly Uri SafariDriverDownloadUrl = new Uri("http://apple.com");
 
+        private bool useLegacyProtocol;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriverService"/> class.
         /// </summary>
@@ -41,6 +44,38 @@ namespace OpenQA.Selenium.Safari
         private SafariDriverService(string executablePath, string executableFileName, int port)
             : base(executablePath, port, executableFileName, SafariDriverDownloadUrl)
         {
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use the default open-source project
+        /// dialect of the protocol instead of the default dialect compliant with the
+        /// W3C WebDriver Specification.
+        /// </summary>
+        /// <remarks>
+        /// This is only valid for versions of the driver for Safari that target Safari 12
+        /// or later, and will result in an error if used with prior versions of the driver.
+        /// </remarks>
+        public bool UseLegacyProtocol
+        {
+            get { return this.useLegacyProtocol; }
+            set { this.useLegacyProtocol = value; }
+        }
+
+        /// <summary>
+        /// Gets the command-line arguments for the driver service.
+        /// </summary>
+        protected override string CommandLineArguments
+        {
+            get
+            {
+                StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
+                if (this.useLegacyProtocol)
+                {
+                    argsBuilder.Append(" --legacy");
+                }
+
+                return argsBuilder.ToString();
+            }
         }
 
         /// <summary>

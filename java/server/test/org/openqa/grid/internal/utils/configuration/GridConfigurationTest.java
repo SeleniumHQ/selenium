@@ -34,6 +34,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GridConfigurationTest {
+
+  static final Integer DEFAULT_TIMEOUT = StandaloneConfigurationTest.DEFAULT_TIMEOUT;
+  static final Integer DEFAULT_BROWSER_TIMEOUT = StandaloneConfigurationTest.DEFAULT_BROWSER_TIMEOUT;
+  static final String DEFAULT_HOST = StandaloneConfigurationTest.DEFAULT_HOST;
+  static final Integer DEFAULT_PORT = StandaloneConfigurationTest.DEFAULT_PORT;
+  static final Boolean DEFAULT_DEBUG_TOGGLE = StandaloneConfigurationTest.DEFAULT_DEBUG_TOGGLE;
+
   @Test
   public void testDefaults() {
     GridConfiguration gc = new GridConfiguration();
@@ -42,16 +49,16 @@ public class GridConfigurationTest {
     assertNull(gc.maxSession);
     assertNotNull(gc.custom);
     assertTrue(gc.custom.isEmpty());
-    assertNull(gc.host);
+    assertEquals(DEFAULT_HOST, gc.host);
     assertNotNull(gc.servlets);
     assertTrue(gc.servlets.isEmpty());
     assertNotNull(gc.withoutServlets);
     assertTrue(gc.withoutServlets.isEmpty());
     // these values come from the StandaloneConfiguration base class
-    assertEquals(GridConfiguration.DEFAULT_PORT, gc.port);
-    assertEquals(GridConfiguration.DEFAULT_TIMEOUT, gc.timeout);
-    assertEquals(GridConfiguration.DEFAULT_BROWSER_TIMEOUT, gc.browserTimeout);
-    assertEquals(GridConfiguration.DEFAULT_DEBUG_TOGGLE, gc.debug);
+    assertEquals(DEFAULT_PORT, gc.port);
+    assertEquals(DEFAULT_TIMEOUT, gc.timeout);
+    assertEquals(DEFAULT_BROWSER_TIMEOUT, gc.browserTimeout);
+    assertEquals(DEFAULT_DEBUG_TOGGLE, gc.debug);
     assertNull(gc.jettyMaxThreads);
     assertNull(gc.log);
     assertEquals("standalone", gc.role);

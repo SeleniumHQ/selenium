@@ -17,8 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -46,19 +45,19 @@ public class SvgElementTest extends JUnit4TestBase {
     WebElement svg = driver.findElement(By.cssSelector("svg"));
 
     List<WebElement> groupElements = svg.findElements(By.cssSelector("g"));
-    assertEquals(5, groupElements.size());
+    assertThat(groupElements).hasSize(5);
 
     groupElements.get(1).click();
     WebElement resultElement = driver.findElement(By.id("result"));
 
     wait.until(elementTextToEqual(resultElement, "slice_red"));
-    assertEquals("slice_red", resultElement.getText());
+    assertThat(resultElement.getText()).isEqualTo("slice_red");
 
     groupElements.get(2).click();
     resultElement = driver.findElement(By.id("result"));
 
     wait.until(elementTextToEqual(resultElement, "slice_green"));
-    assertEquals("slice_green", resultElement.getText());
+    assertThat(resultElement.getText()).isEqualTo("slice_green");
   }
 
   private static WebElement findAppleElement(List<WebElement> textElements) {
@@ -81,12 +80,12 @@ public class SvgElementTest extends JUnit4TestBase {
     List<WebElement> textElements = svg.findElements(By.cssSelector("text"));
 
     WebElement appleElement = findAppleElement(textElements);
-    assertNotNull(appleElement);
+    assertThat(appleElement).isNotNull();
 
     appleElement.click();
     WebElement resultElement = driver.findElement(By.id("result"));
     wait.until(elementTextToEqual(resultElement, "text_apple"));
-    assertEquals("text_apple", resultElement.getText());
+    assertThat(resultElement.getText()).isEqualTo("text_apple");
   }
 
 }

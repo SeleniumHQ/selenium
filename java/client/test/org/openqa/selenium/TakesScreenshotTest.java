@@ -17,9 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
@@ -79,7 +77,6 @@ import javax.imageio.ImageIO;
 // TODO(user): test screenshots at guaranteed minimized browsers
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
-@Ignore(value = IE, reason = "strange colors appeared")
 public class TakesScreenshotTest extends JUnit4TestBase {
 
   private TakesScreenshot screenshooter;
@@ -103,22 +100,22 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   public void testGetScreenshotAsFile() {
     driver.get(pages.simpleTestPage);
     tempFile = screenshooter.getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
+    assertThat(tempFile.exists()).isTrue();
+    assertThat(tempFile.length()).isGreaterThan(0);
   }
 
   @Test
   public void testGetScreenshotAsBase64() {
     driver.get(pages.simpleTestPage);
     String screenshot = screenshooter.getScreenshotAs(OutputType.BASE64);
-    assertTrue(screenshot.length() > 0);
+    assertThat(screenshot.length()).isGreaterThan(0);
   }
 
   @Test
   public void testGetScreenshotAsBinary() {
     driver.get(pages.simpleTestPage);
     byte[] screenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
-    assertTrue(screenshot.length > 0);
+    assertThat(screenshot.length).isGreaterThan(0);
   }
 
   @Test
@@ -146,29 +143,29 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME)
   @Ignore(value = FIREFOX)
-  @Ignore(value = IE)
-  @NotYetImplemented(value = SAFARI)
   public void testShouldCaptureScreenshotOfAnElement() throws Exception {
     driver.get(appServer.whereIs("screen/screen.html"));
     WebElement element = driver.findElement(By.id("cell11"));
 
     byte[] imageData = element.getScreenshotAs(OutputType.BYTES);
-    assertTrue(imageData != null);
-    assertTrue(imageData.length > 0);
+    assertThat(imageData).isNotNull();
+    assertThat(imageData.length).isGreaterThan(0);
     BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
-    assertTrue(image != null);
+    assertThat(image).isNotNull();
 
     Raster raster = image.getRaster();
     String hex = String.format("#%02x%02x%02x",
                                (raster.getSample(1, 1, 0)),
                                (raster.getSample(1, 1, 1)),
                                (raster.getSample(1, 1, 2)));
-    assertEquals("#0f12f7", hex);
+    assertThat(hex).isEqualTo("#0f12f7");
   }
 
   @Test
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
+  @Ignore(value = IE, reason = "takes only visible viewport")
+  @NotYetImplemented(SAFARI)
   public void testShouldCaptureScreenshotOfPageWithLongX() {
     driver.get(appServer.whereIs("screen/screen_x_long.html"));
 
@@ -189,6 +186,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
+  @Ignore(value = IE, reason = "takes only visible viewport")
+  @NotYetImplemented(SAFARI)
   public void testShouldCaptureScreenshotOfPageWithLongY() {
     driver.get(appServer.whereIs("screen/screen_y_long.html"));
 
@@ -211,6 +210,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldCaptureScreenshotOfPageWithTooLongX() {
     driver.get(appServer.whereIs("screen/screen_x_too_long.html"));
 
@@ -233,6 +233,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldCaptureScreenshotOfPageWithTooLongY() {
     driver.get(appServer.whereIs("screen/screen_y_too_long.html"));
 
@@ -274,7 +275,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = IE, reason = "v9 shows strange border which broke color comparison")
   public void testShouldCaptureScreenshotAtFramePage() {
     // Fails on Sauce for whatever reason; probably display or window manager.
     assumeFalse(SauceDriver.shouldUseSauce()
@@ -337,7 +337,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = IE, reason = "v9 shows strange border which broke color comparison")
   @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() {
     // Fails on Sauce for whatever reason; probably display or window manager.
@@ -371,7 +370,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = IE, reason = "v9 shows strange border which broke color comparison")
   @Ignore(CHROME)
   @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() {
@@ -409,10 +407,10 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     BufferedImage image = null;
     try {
       byte[] imageData = screenshooter.getScreenshotAs(OutputType.BYTES);
-      assertTrue(imageData != null);
-      assertTrue(imageData.length > 0);
+      assertThat(imageData).isNotNull();
+      assertThat(imageData.length).isGreaterThan(0);
       image = ImageIO.read(new ByteArrayInputStream(imageData));
-      assertTrue(image != null);
+      assertThat(image).isNotNull();
     } catch (IOException e) {
       fail("Image screenshot file is invalid: " + e.getMessage());
     }
@@ -462,8 +460,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     try {
       int height = image.getHeight();
       int width = image.getWidth();
-      assertTrue(width > 0);
-      assertTrue(height > 0);
+      assertThat(width > 0).isTrue();
+      assertThat(height > 0).isTrue();
 
       Raster raster = image.getRaster();
       for (int i = 0; i < width; i = i + stepX) {
@@ -479,7 +477,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
       fail("Unable to get actual colors from screenshot: " + e.getMessage());
     }
 
-    assertTrue(colors.size() > 0);
+    assertThat(colors).isNotEmpty();
 
     return colors;
   }
@@ -491,8 +489,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
    * @param actualColors   - set of actual colors
    */
   private void compareColors(Set<String> expectedColors, Set<String> actualColors) {
-    assertFalse("Actual image has only black color", onlyBlack(actualColors));
-    assertFalse("Actual image has only white color", onlyWhite(actualColors));
+    assertThat(onlyBlack(actualColors)).as("Only black").isFalse();
+    assertThat(onlyWhite(actualColors)).as("Only white").isFalse();
 
     // Ignore black and white for further comparison
     Set<String> cleanActualColors = Sets.newHashSet(actualColors);

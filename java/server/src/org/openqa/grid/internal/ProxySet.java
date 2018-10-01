@@ -160,4 +160,9 @@ public class ProxySet implements Iterable<RemoteProxy> {
   public void setThrowOnCapabilityNotPresent(boolean throwOnCapabilityNotPresent) {
     this.throwOnCapabilityNotPresent = throwOnCapabilityNotPresent;
   }
+
+  public boolean isThrowOnCapabilityNotPresent() {
+    return throwOnCapabilityNotPresent;
+  }
+
 }

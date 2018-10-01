@@ -22,12 +22,10 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
-import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -50,9 +48,6 @@ public class SelfRegisteringRemoteTest {
     }
 
     @Override
-    public void setConfiguration(StandaloneConfiguration configuration) { }
-
-    @Override
     public void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets) {
       this.extraServlets = extraServlets;
     }
@@ -60,7 +55,7 @@ public class SelfRegisteringRemoteTest {
 
 
   @Test
-  public void testHubRegistrationWhenPortExplicitlyZeroedOut() throws MalformedURLException {
+  public void testHubRegistrationWhenPortExplicitlyZeroedOut() {
     GridNodeServer server = new DummyGridNodeServer();
     RegistrationRequest request = new RegistrationRequest();
     request.getConfiguration().port = 0;
@@ -87,7 +82,7 @@ public class SelfRegisteringRemoteTest {
 
     // there should be three servlets on the remote's map -- The resource servlet, the
     // help servlet, and the one we added above.
-    assertEquals(5, remote.getNodeServlets().size());
+    assertEquals(4, remote.getNodeServlets().size());
     assertEquals(ResourceServlet.class, remote.getNodeServlets().get("/resources/*"));
     assertEquals(DisplayHelpServlet.class,
                  remote.getNodeServlets().get("/extra/DisplayHelpServlet/*"));
@@ -97,7 +92,7 @@ public class SelfRegisteringRemoteTest {
     remote.startRemoteServer(); // does not actually start anything.
 
     // verify the expected extra servlets also made it to the server instance
-    assertEquals(5, ((DummyGridNodeServer) server).extraServlets.size());
+    assertEquals(4, ((DummyGridNodeServer) server).extraServlets.size());
     assertEquals(ResourceServlet.class,
                  ((DummyGridNodeServer) server).extraServlets.get("/resources/*"));
     assertEquals(DisplayHelpServlet.class,

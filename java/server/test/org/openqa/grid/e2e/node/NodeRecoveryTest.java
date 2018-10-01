@@ -58,10 +58,9 @@ public class NodeRecoveryTest {
     hub.start();
 
     node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
+    node.getConfiguration().timeout = ORIGINAL_TIMEOUT;
     // register a selenium 1 with a timeout of 3 sec
-
     node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
-    node.setTimeout(ORIGINAL_TIMEOUT, 100);
     node.setRemoteServer(new SeleniumServer(node.getConfiguration()));
     node.startRemoteServer();
     node.sendRegistrationRequest();
@@ -73,7 +72,8 @@ public class NodeRecoveryTest {
 
     assertEquals(hub.getRegistry().getAllProxies().size(), 1);
     for (RemoteProxy p : hub.getRegistry().getAllProxies()) {
-      assertEquals(p.getTimeOut(), ORIGINAL_TIMEOUT * 1000);
+      // Nodes fetch timeout and browserTimeout from the hub and update their configs
+      assertEquals(ORIGINAL_TIMEOUT * 1000, p.getTimeOut());
     }
 
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
@@ -82,9 +82,8 @@ public class NodeRecoveryTest {
     // kill the node
     node.stopRemoteServer();
 
-
-    // change its config.
-    node.setTimeout(NEW_TIMEOUT, 100);
+    // changing the node timeout, it should be kept after restarting and registering again
+    node.getConfiguration().timeout = NEW_TIMEOUT;
 
     // restart it
     node.setRemoteServer(new SeleniumServer(node.getConfiguration()));

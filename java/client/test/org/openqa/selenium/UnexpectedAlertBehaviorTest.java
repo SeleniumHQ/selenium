@@ -17,16 +17,14 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.After;
 import org.junit.Test;
@@ -38,13 +36,12 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-@Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/617")
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   private WebDriver driver2;
 
   @After
-  public void quitDriver() throws Exception {
+  public void quitDriver() {
     if (driver2 != null) {
       driver2.quit();
     }
@@ -90,9 +87,8 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
   public void canIgnoreUnhandledAlert() {
-    Throwable t = catchThrowable(
-        () -> runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.IGNORE, "Text ignored", true));
-    assertThat(t, instanceOf(UnhandledAlertException.class));
+    assertThatExceptionOfType(UnhandledAlertException.class).isThrownBy(
+        () -> runScenarioWithUnhandledAlert(IGNORE, "Text ignored", true));
     driver2.switchTo().alert().dismiss();
   }
 

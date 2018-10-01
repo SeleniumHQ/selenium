@@ -1,4 +1,4 @@
-﻿// <copyright file="RemoteMouse.cs" company="WebDriver Committers">
+// <copyright file="RemoteMouse.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -107,10 +107,6 @@ namespace OpenQA.Selenium.Remote
             {
                 string elementId = where.AuxiliaryLocator.ToString();
                 parameters.Add("element", elementId);
-            }
-            else
-            {
-                parameters.Add("element", null);
             }
 
             parameters.Add("xoffset", offsetX);

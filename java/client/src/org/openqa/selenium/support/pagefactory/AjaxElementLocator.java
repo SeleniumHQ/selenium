@@ -20,11 +20,10 @@ package org.openqa.selenium.support.pagefactory;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.SlowLoadableComponent;
-import org.openqa.selenium.support.ui.SystemClock;
 
 import java.lang.reflect.Field;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,12 +47,30 @@ public class AjaxElementLocator extends DefaultElementLocator {
    * @param timeOutInSeconds How long to wait for the element to appear. Measured in seconds.
    * @param annotations	AbstractAnnotations class implementation
    */
-  public AjaxElementLocator(SearchContext context, int timeOutInSeconds, AbstractAnnotations annotations) {
-    this(new SystemClock(), context, timeOutInSeconds, annotations);
+  public AjaxElementLocator(
+      SearchContext context,
+      int timeOutInSeconds,
+      AbstractAnnotations annotations) {
+    this(Clock.systemDefaultZone(), context, timeOutInSeconds, annotations);
   }
 
-  public AjaxElementLocator(Clock clock, SearchContext context, int timeOutInSeconds,
-                            AbstractAnnotations annotations) {
+  /**
+   * @deprecated Use {@link #AjaxElementLocator(Clock, SearchContext, int, AbstractAnnotations)}.
+   */
+  @Deprecated
+  public AjaxElementLocator(
+      org.openqa.selenium.support.ui.Clock clock,
+      SearchContext context,
+      int timeOutInSeconds,
+      AbstractAnnotations annotations) {
+    this(clock.asJreClock(), context, timeOutInSeconds, annotations);
+  }
+
+  public AjaxElementLocator(
+      Clock clock,
+      SearchContext context,
+      int timeOutInSeconds,
+      AbstractAnnotations annotations) {
     super(context, annotations);
     this.timeOutInSeconds = timeOutInSeconds;
     this.clock = clock;
@@ -67,10 +84,26 @@ public class AjaxElementLocator extends DefaultElementLocator {
    * @param timeOutInSeconds How long to wait for the element to appear. Measured in seconds.
    */
   public AjaxElementLocator(SearchContext searchContext, Field field, int timeOutInSeconds) {
-    this(new SystemClock(), searchContext, field, timeOutInSeconds);
+    this(Clock.systemDefaultZone(), searchContext, field, timeOutInSeconds);
   }
 
-  public AjaxElementLocator(Clock clock, SearchContext searchContext, Field field, int timeOutInSeconds) {
+  /**
+   * @deprecated Use {@link #AjaxElementLocator(Clock, SearchContext, int, AbstractAnnotations)}.
+   */
+  @Deprecated
+  public AjaxElementLocator(
+      org.openqa.selenium.support.ui.Clock clock,
+      SearchContext searchContext,
+      Field field,
+      int timeOutInSeconds) {
+    this(clock.asJreClock(), searchContext, timeOutInSeconds, new Annotations(field));
+  }
+
+  public AjaxElementLocator(
+      Clock clock,
+      SearchContext searchContext,
+      Field field,
+      int timeOutInSeconds) {
     this(clock, searchContext, timeOutInSeconds, new Annotations(field));
   }
 
@@ -136,6 +169,11 @@ public class AjaxElementLocator extends DefaultElementLocator {
     private NoSuchElementException lastException;
     private WebElement element;
 
+    @Deprecated
+    public SlowLoadingElement(org.openqa.selenium.support.ui.Clock clock, int timeOutInSeconds) {
+      super(clock, timeOutInSeconds);
+    }
+
     public SlowLoadingElement(Clock clock, int timeOutInSeconds) {
       super(clock, timeOutInSeconds);
     }
@@ -176,6 +214,11 @@ public class AjaxElementLocator extends DefaultElementLocator {
   private class SlowLoadingElementList extends SlowLoadableComponent<SlowLoadingElementList> {
     private NoSuchElementException lastException;
     private List<WebElement> elements;
+
+    @Deprecated
+    public SlowLoadingElementList(org.openqa.selenium.support.ui.Clock clock, int timeOutInSeconds) {
+      this(clock.asJreClock(), timeOutInSeconds);
+    }
 
     public SlowLoadingElementList(Clock clock, int timeOutInSeconds) {
       super(clock, timeOutInSeconds);

@@ -43,6 +43,12 @@ module Selenium
             'upload_throughput' => 789
           )
         end
+
+        it 'sets download path' do
+          driver.download_path = File.expand_path(__dir__)
+          # there is no simple way to verify that it's now possible to download
+          # at least it doesn't crash
+        end
       end
     end # Chrome
   end # WebDriver

@@ -25,3 +25,4 @@ class ChromeRemoteConnection(RemoteConnection):
         self._commands["launchApp"] = ('POST', '/session/$sessionId/chromium/launch_app')
         self._commands["setNetworkConditions"] = ('POST', '/session/$sessionId/chromium/network_conditions')
         self._commands["getNetworkConditions"] = ('GET', '/session/$sessionId/chromium/network_conditions')
+        self._commands['executeCdpCommand'] = ('POST', '/session/$sessionId/goog/cdp/execute')

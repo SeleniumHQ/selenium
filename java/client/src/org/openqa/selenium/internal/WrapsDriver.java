@@ -17,17 +17,9 @@
 
 package org.openqa.selenium.internal;
 
-import org.openqa.selenium.WebDriver;
-
 /**
- * This interface indicates that the implementing class knows about the driver that contains it and
- * can export it.
- *
- * @author eran.mes@gmail.com (Eran Mes)
+ * @deprecated Use {@link org.openqa.selenium.WrapsDriver} instead.
  */
-public interface WrapsDriver {
-  /**
-   * @return The driver that contains this element.
-   */
-  WebDriver getWrappedDriver();
+public interface WrapsDriver extends org.openqa.selenium.WrapsDriver {
+
 }

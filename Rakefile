@@ -31,7 +31,6 @@ require 'rake-tasks/crazy_fun/mappings/visualstudio'
 # The original build rules
 require 'rake-tasks/task-gen'
 require 'rake-tasks/checks'
-require 'rake-tasks/dotnet'
 require 'rake-tasks/c'
 require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
@@ -46,7 +45,7 @@ end
 verbose($DEBUG)
 
 def release_version
-  "3.12"
+  "3.14"
 end
 
 def version
@@ -288,14 +287,7 @@ task :test_rb_remote => [
 
 task :test_py => [ :py_prep_for_install_release, "//py:marionette_test:run" ]
 
-task :test_dotnet => [
-  "//dotnet/test:firefox:run"
-]
-
 task :test => [ :test_javascript, :test_java, :test_rb ]
-if (msbuild_installed?)
-  task :test => [ :test_dotnet ]
-end
 if (python?)
   task :test => [ :test_py ]
 end
@@ -309,8 +301,6 @@ task :clean do
   rm_rf 'java/client/build/'
   rm_rf 'dist/'
 end
-
-task :dotnet => [ "//dotnet", "//dotnet:support", "//dotnet:core", "//dotnet:webdriverbackedselenium" ]
 
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.
@@ -453,7 +443,7 @@ end
 task :'maven-dry-run' => JAVA_RELEASE_TARGETS do |t|
   t.prerequisites.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd('publish', ['--dry-run', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
+      Buck::buck_cmd('publish', ['--dry-run', '--include-source', '--include-docs', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
     end
   end
 end

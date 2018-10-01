@@ -19,8 +19,6 @@ package org.openqa.selenium.remote.server.rest;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.gson.JsonObject;
-
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;

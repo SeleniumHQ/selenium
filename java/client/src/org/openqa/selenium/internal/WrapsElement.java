@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.internal;
 
-import org.openqa.selenium.WebElement;
+public interface WrapsElement extends org.openqa.selenium.WrapsElement {
 
-/**
- * Indicates that there is an underlying element that can be used
- */
-public interface WrapsElement {
-  WebElement getWrappedElement();
 }

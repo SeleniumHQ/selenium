@@ -22,6 +22,7 @@
 
 #include "logging.h"
 
+#include "RegistryUtilities.h"
 #include "StringUtilities.h"
 
 #define MAX_BUFFER_SIZE 32768
@@ -137,13 +138,9 @@ bool HookProcessor::CanSetWindowsHook(HWND window_handle) {
 }
 
 bool HookProcessor::Is64BitProcess(HANDLE process_handle) {
-  bool is_64_bit = false;
-  SYSTEM_INFO system_info;
-  ::GetNativeSystemInfo(&system_info);
-  if (system_info.wProcessorArchitecture == 0) {
-    // wProcessorArchitecture == 0 means processor architecture
-    // is "x86", and therefore 32-bit. A 64-bit process can
-    // never run on the 32-bit OS, so the process must be 32-bit.
+  if (!RegistryUtilities::Is64BitWindows()) {
+    // A 64-bit process can never run on the 32-bit OS,
+    // so the process must be 32-bit.
     return false;
   }
 

@@ -46,25 +46,45 @@ class SendKeysCommandHandler : public IECommandHandler {
  private:
   static unsigned int WINAPI SetFileValue(void *file_data);
   static bool SendFileNameKeys(FileNameData* file_data);
-  static bool GetFileSelectionDialogCandidates(std::vector<HWND> parent_window_handles, IUIAutomation* ui_automation, IUIAutomationElementArray** dialog_candidates);
-  static bool FillFileName(const wchar_t* file_name, IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog);
-  static bool AcceptFileSelection(IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog);
-  static bool WaitForFileSelectionDialogClose(const int timeout, IUIAutomationElement* file_selection_dialog);
-  static bool FindFileSelectionErrorDialog(IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog, IUIAutomationElement** error_dialog);
-  static bool DismissFileSelectionErrorDialog(IUIAutomation* ui_automation, IUIAutomationElement* error_dialog);
-  static bool DismissFileSelectionDialog(IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog);
+  static bool GetFileSelectionDialogCandidates(std::vector<HWND> parent_window_handles,
+                                               IUIAutomation* ui_automation,
+                                               IUIAutomationElementArray** dialog_candidates);
+  static bool FillFileName(const wchar_t* file_name,
+                           IUIAutomation* ui_automation,
+                           IUIAutomationElement* file_selection_dialog);
+  static bool AcceptFileSelection(IUIAutomation* ui_automation,
+                                  IUIAutomationElement* file_selection_dialog);
+  static bool WaitForFileSelectionDialogClose(const int timeout,
+                                              IUIAutomationElement* file_selection_dialog);
+  static bool FindFileSelectionErrorDialog(IUIAutomation* ui_automation,
+                                           IUIAutomationElement* file_selection_dialog,
+                                           IUIAutomationElement** error_dialog);
+  static bool DismissFileSelectionErrorDialog(IUIAutomation* ui_automation,
+                                              IUIAutomationElement* error_dialog);
+  static bool DismissFileSelectionDialog(IUIAutomation* ui_automation,
+                                         IUIAutomationElement* file_selection_dialog);
 
   static bool LegacySelectFile(FileNameData* file_data);
-  static bool LegacySendKeysToFileUploadAlert(HWND dialog_window_handle, const wchar_t* value);
+  static bool LegacySendKeysToFileUploadAlert(HWND dialog_window_handle,
+                                              const wchar_t* value);
 
-  static BOOL CALLBACK FindWindowWithClassNameAndProcess(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindWindowWithClassNameAndProcess(HWND hwnd,
+                                                         LPARAM arg);
 
-  bool VerifyPageHasFocus(HWND top_level_window_handle,
-                          HWND browser_pane_window_handle);
+  void UploadFile(BrowserHandle browser_wrapper,
+                  ElementHandle element,
+                  const IECommandExecutor& executor,
+                  const std::wstring& file_name,
+                  Response* response);
+  bool IsFileUploadElement(ElementHandle element_wrapper);
+  bool HasMultipleAttribute(ElementHandle element_wrapper);
+  bool VerifyPageHasFocus(BrowserHandle browser_wrapper);
   bool WaitUntilElementFocused(IHTMLElement* element);
   bool SetInsertionPoint(IHTMLElement* element);
   bool IsContentEditable(IHTMLElement* element);
   void SetElementFocus(IHTMLElement* element);
+  Json::Value CreateActionSequencePayload(const IECommandExecutor& executor,
+                                          std::wstring* keys);
 
   static std::wstring error_text;
 };

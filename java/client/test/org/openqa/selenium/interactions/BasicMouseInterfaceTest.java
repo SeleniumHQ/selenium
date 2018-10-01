@@ -17,11 +17,12 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.support.Colors.GREEN;
+import static org.openqa.selenium.support.Colors.RED;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -77,7 +78,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     Action drop = getBuilder(driver).release(dragInto).build();
 
-    assertEquals("Nothing happened.", dragReporter.getText());
+    assertThat(dragReporter.getText()).isEqualTo("Nothing happened.");
 
     try {
       holdItem.perform();
@@ -85,29 +86,31 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
       moveToOtherList.perform();
 
       String text = dragReporter.getText();
-      assertTrue(text, text.matches("Nothing happened. (?:DragOut *)+"));
+      assertThat(text).matches("Nothing happened. (?:DragOut *)+");
     } finally {
       drop.perform();
     }
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     performDragAndDropWithMouse();
     WebElement dragInto = driver.findElement(By.id("sortable1"));
-    assertEquals(6, dragInto.findElements(By.tagName("li")).size());
+    assertThat(dragInto.findElements(By.tagName("li"))).hasSize(6);
   }
 
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
   @Test
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testDraggingElementWithMouseFiresEvents() {
     performDragAndDropWithMouse();
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
     // This is failing under HtmlUnit. A bug was filed.
     String text = dragReporter.getText();
-    assertTrue(text, text.matches("Nothing happened. (?:DragOut *)+DropIn RightItem 3"));
+    assertThat(text).matches("Nothing happened. (?:DragOut *)+DropIn RightItem 3");
   }
 
   private boolean isElementAvailable(WebDriver driver, By locator) {
@@ -133,6 +136,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
@@ -164,11 +168,11 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     dropInto = driver.findElement(By.id("droppable"));
     String text = dropInto.findElement(By.tagName("p")).getText();
 
-    assertEquals("Dropped!", text);
+    assertThat(text).isEqualTo("Dropped!");
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/661")
+  @NotYetImplemented(SAFARI)
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
@@ -177,9 +181,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     Action dblClick = getBuilder(driver).doubleClick(toDoubleClick).build();
 
     dblClick.perform();
-    String testFieldContent = shortWait.until(elementValueToEqual(toDoubleClick, "DoubleClicked"));
-    assertEquals("Value should change to DoubleClicked.", "DoubleClicked",
-                 testFieldContent);
+    shortWait.until(elementValueToEqual(toDoubleClick, "DoubleClicked"));
   }
 
   @Test
@@ -191,8 +193,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     Action contextClick = getBuilder(driver).contextClick(toContextClick).build();
 
     contextClick.perform();
-    assertEquals("Value should change to ContextClicked.", "ContextClicked",
-                 toContextClick.getAttribute("value"));
+    assertThat(toContextClick.getAttribute("value")).isEqualTo("ContextClicked");
   }
 
   @Test
@@ -207,23 +208,14 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     wait.until(elementValueToEqual(toClick, "Clicked"));
 
-    assertEquals("Value should change to Clicked.", "Clicked",
-                 toClick.getAttribute("value"));
+    assertThat(toClick.getAttribute("value")).isEqualTo("Clicked");
   }
 
   @Test
-  @Ignore(IE)
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
-
-    try {
-      Action contextClick = getBuilder(driver).moveToElement(null).build();
-
-      contextClick.perform();
-      fail("Shouldn't be allowed to click on null element.");
-    } catch (IllegalArgumentException expected) {
-      // Expected.
-    }
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> getBuilder(driver).moveToElement(null).build());
   }
 
   @Test
@@ -241,12 +233,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     // TODO(andreastt): Is this correct behaviour?  Should the last known mouse position be
     // disregarded if calling click() from a an Actions chain?
-    try {
-      getBuilder(driver).click().build().perform();
-      fail("Shouldn't be allowed to click without a context.");
-    } catch (InvalidCoordinatesException expected) {
-      // expected
-    }
+    assertThatExceptionOfType(InvalidCoordinatesException.class)
+        .isThrownBy(() -> getBuilder(driver).click().build().perform());
   }
 
   @Test
@@ -322,13 +310,13 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("menu1"));
 
     final WebElement item = driver.findElement(By.id("item1"));
-    assertEquals("", item.getText());
+    assertThat(item.getText()).isEqualTo("");
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
     new Actions(driver).moveToElement(element).build().perform();
 
     wait.until(not(elementTextToEqual(item, "")));
-    assertEquals("Item 1", item.getText());
+    assertThat(item.getText()).isEqualTo("Item 1");
   }
 
   @Test
@@ -342,7 +330,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("menu1"));
 
     final WebElement item = driver.findElement(By.id("item1"));
-    assertEquals("", item.getText());
+    assertThat(item.getText()).isEqualTo("");
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
     new Actions(driver).moveToElement(element).build().perform();
@@ -352,12 +340,11 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     wait.until(not(elementTextToEqual(item, "")));
 
-    assertEquals("Item 1", item.getText());
+    assertThat(item.getText()).isEqualTo("Item 1");
   }
 
   @Test
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void testMovingMouseByRelativeOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -376,6 +363,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testMovingMouseToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -390,6 +378,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testMovingMouseToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -404,6 +393,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @NeedsFreshDriver({IE, CHROME, MARIONETTE})
   @Test
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testMoveRelativeToBody() {
     try {
       driver.get(pages.mouseTrackerPage);
@@ -460,12 +450,12 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     new Actions(driver).moveToElement(greenbox, 1, 1).perform();
 
-    assertEquals(
-        Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+    assertThat(Color.fromString(redbox.getCssValue("background-color")))
+        .isEqualTo(GREEN.getColorValue());
 
     new Actions(driver).moveToElement(redbox).perform();
-    assertEquals(
-        Colors.RED.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+    assertThat(Color.fromString(redbox.getCssValue("background-color")))
+        .isEqualTo(RED.getColorValue());
 
     // IE8 (and *only* IE8) requires a move of 2 pixels. All other browsers
     // would be happy with 1.

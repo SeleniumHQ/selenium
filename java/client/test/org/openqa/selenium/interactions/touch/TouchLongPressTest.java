@@ -24,18 +24,15 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.interactions.Coordinates;
 
 /**
  * Tests the long press action.
  */
-@RunWith(JUnit4.class)
 public class TouchLongPressTest {
 
   @Mock private TouchScreen mockTouch;

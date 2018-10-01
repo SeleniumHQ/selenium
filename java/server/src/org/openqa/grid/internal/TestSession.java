@@ -85,7 +85,7 @@ public class TestSession {
   private volatile long sessionCreatedAt;
   private volatile long lastActivity;
   private final Map<String, Object> requestedCapabilities;
-  private Map<String, Object> objects = Collections.synchronizedMap(new HashMap<String, Object>());
+  private Map<String, Object> objects = Collections.synchronizedMap(new HashMap<>());
   private volatile boolean ignoreTimeout = false;
   private final Clock clock;
   private volatile boolean forwardingRequest;
@@ -201,15 +201,8 @@ public class TestSession {
 
 
   private HttpClient getClient(URL url) {
-    GridRegistry reg = slot.getProxy().getRegistry();
-    long browserTimeout = TimeUnit.SECONDS.toMillis(reg.getHub().getConfiguration().browserTimeout);
-    if (browserTimeout > 0) {
-      final long selenium_server_cleanup_cycle = browserTimeout / 10;
-      browserTimeout += (selenium_server_cleanup_cycle + MAX_NETWORK_LATENCY);
-      browserTimeout *=2; // Lets not let this happen too often
-    }
-
-    return slot.getProxy().getHttpClient(url);
+    Integer browserTimeout = slot.getProxy().getConfig().browserTimeout;
+    return slot.getProxy().getHttpClient(url, browserTimeout, browserTimeout);
   }
 
   /*

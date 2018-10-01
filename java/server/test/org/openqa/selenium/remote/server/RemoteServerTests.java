@@ -31,7 +31,6 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
 @Suite.SuiteClasses({
     ActiveSessionsTest.class,
     ActiveSessionFactoryTest.class,
-    AllHandlersTest.class,
     CapabilitiesComparatorTest.class,
     ConfigureTimeoutTest.class,
     CrossDomainRpcLoaderTest.class,
@@ -39,17 +38,13 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     DriverFactoryTest.class,
     NewSessionPayloadTest.class,
     NewSessionPipelineTest.class,
-    PassthroughTest.class,
-    ProtocolConverterTest.class,
     ResponsesTest.class,
     ResultConfigTest.class,
     SendKeyToActiveElementTest.class,
     SessionLogsTest.class,
     SyntheticNewSessionPayloadTest.class,
-    TeeReaderTest.class,
     UploadFileTest.class,
     org.openqa.selenium.remote.server.commandhandler.UploadFileTest.class,
-    UrlTemplateTest.class,
     UtilsTest.class,
     WebDriverServletTest.class
 })

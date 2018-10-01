@@ -17,14 +17,10 @@
 
 package org.openqa.grid.web.servlet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.grid.web.servlet.console.ConsoleServlet;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
@@ -35,7 +31,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-@RunWith(JUnit4.class)
 public class DisplayHelpServletTest extends BaseServletTest {
 
   @Before
@@ -54,30 +49,38 @@ public class DisplayHelpServletTest extends BaseServletTest {
 
   @Test
   public void testGetHelpPageForStandalone() throws IOException, ServletException {
-    assertEquals(servlet.getInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER), "standalone");
-    assertEquals(servlet.getInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER), "/wd/hub");
+    assertThat("standalone")
+        .isEqualTo(servlet.getInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER));
+    assertThat("/wd/hub")
+        .isEqualTo(servlet.getInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER));
 
     FakeHttpServletResponse response = sendCommand("GET", "/");
-    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-    assertNotNull(response.getBody());
-    assertTrue(response.getBody().contains("Whoops! The URL specified routes to this help page."));
-    assertTrue(response.getBody().contains("\"type\":\"Standalone\""));
-    assertTrue(response.getBody().contains("\"consoleLink\":\"/wd/hub\""));
+    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
+
+    String body = response.getBody();
+    assertThat(body).isNotNull().contains(
+        "Whoops! The URL specified routes to this help page.",
+        "\"type\": \"Standalone\"",
+        "\"consoleLink\": \"\\u002fwd\\u002fhub\"");
   }
 
   @Test
   public void testGetHelpPageAsset() throws IOException, ServletException {
     FakeHttpServletResponse response = sendCommand("GET", "/assets/displayhelpservlet.css");
-    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-    assertNotNull(response.getBody());
-    assertTrue(response.getBody().contains("#help-heading #logo"));
+    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
+    assertThat(response.getBody()).isNotNull().contains("#help-heading #logo");
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testNoSuchAsset() throws IOException, ServletException {
-    // will result in a call to sendError ..
-    // FakeHttpServlet will then turn that into an UnsupportedOperationException
-    sendCommand("GET", "/assets/foo.bar");
+    FakeHttpServletResponse response = sendCommand("GET", "/assets/foo.bar");
+    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_NOT_FOUND);
+  }
+
+  @Test
+  public void testAccessRoot() throws IOException, ServletException {
+    FakeHttpServletResponse response = sendCommand("GET", "/");
+    assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_OK);
   }
 
 }

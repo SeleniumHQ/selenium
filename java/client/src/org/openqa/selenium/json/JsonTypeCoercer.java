@@ -60,6 +60,7 @@ class JsonTypeCoercer {
   JsonTypeCoercer(Iterable<TypeCoercer<?>> coercers) {
     this.additionalCoercers = ImmutableSet.copyOf(coercers);
 
+    //noinspection unchecked
     this.coercers =
         // Note: we call out when ordering matters.
         ImmutableSet.<TypeCoercer>builder()
@@ -68,23 +69,24 @@ class JsonTypeCoercer {
             // From java
             .add(new BooleanCoercer())
 
-            .add(new NumberCoercer<>(Byte.class, Byte::parseByte))
-            .add(new NumberCoercer<>(Double.class, Double::parseDouble))
-            .add(new NumberCoercer<>(Float.class, Float::parseFloat))
-            .add(new NumberCoercer<>(Integer.class, Integer::parseInt))
-            .add(new NumberCoercer<>(Long.class, Long::parseLong))
+            .add(new NumberCoercer<>(Byte.class, Number::byteValue))
+            .add(new NumberCoercer<>(Double.class, Number::doubleValue))
+            .add(new NumberCoercer<>(Float.class, Number::floatValue))
+            .add(new NumberCoercer<>(Integer.class, Number::intValue))
+            .add(new NumberCoercer<>(Long.class, Number::longValue))
             .add(
                 new NumberCoercer<>(
                     Number.class,
-                    str -> {
-                      if (str.indexOf('.') != -1) {
-                        return Double.parseDouble(str);
+                    num -> {
+                      if (num.doubleValue() % 1 != 0) {
+                        return num.doubleValue();
                       }
-                      return Long.parseLong(str);
+                      return num.longValue();
                     }))
-            .add(new NumberCoercer<>(Short.class, Short::parseShort))
+            .add(new NumberCoercer<>(Short.class, Number::shortValue))
             .add(new StringCoercer())
             .add(new EnumCoercer())
+            .add(new UrlCoercer())
 
             // From Selenium
             .add(new MapCoercer<>(
@@ -134,8 +136,7 @@ class JsonTypeCoercer {
                 (BiFunction<JsonInput, PropertySetting, Object>)
                     (jsonInput, setter) -> {
                       if (jsonInput.peek() == JsonType.NULL) {
-                        jsonInput.skipValue();
-                        return null;
+                        return jsonInput.nextNull();
                       }
 
                       //noinspection unchecked

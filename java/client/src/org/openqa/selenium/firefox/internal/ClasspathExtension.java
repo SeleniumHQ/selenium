@@ -28,6 +28,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
+/**
+ * @deprecated Internal class. Visibility will be reduced and won't be exported from module.
+ */
+@Deprecated
 public class ClasspathExtension implements Extension {
   private final Class<?> loadResourcesUsing;
   private final String loadFrom;

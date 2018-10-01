@@ -8,16 +8,24 @@ namespace OpenQA.Selenium.Edge
 {
     public class SpecCompliantEdgeDriver : EdgeDriver
     {
-        public SpecCompliantEdgeDriver() :
-            base(CreateSpecCompliantEdgeDriverService(), new EdgeOptions())
+        public SpecCompliantEdgeDriver()
+            : this(DefaultService, new EdgeOptions())
         {
         }
 
-        private static EdgeDriverService CreateSpecCompliantEdgeDriverService()
+        public SpecCompliantEdgeDriver(EdgeDriverService service, EdgeOptions options)
+            : base(service, options)
         {
-            EdgeDriverService service = EdgeDriverService.CreateDefaultService();
-            service.UseSpecCompliantProtocol = true;
-            return service;
+        }
+
+        public static EdgeDriverService DefaultService
+        {
+            get
+            {
+                EdgeDriverService service = EdgeDriverService.CreateDefaultService();
+                service.UseSpecCompliantProtocol = true;
+                return service;
+            }
         }
     }
 }

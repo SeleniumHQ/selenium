@@ -17,14 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeNotNull;
 import static org.mockito.Mockito.any;
@@ -34,6 +27,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
@@ -49,7 +43,6 @@ import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -90,12 +83,12 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void canStartDriverWithNoParameters() {
     localDriver = new FirefoxDriver();
-    assertEquals("firefox", localDriver.getCapabilities().getBrowserName());
+    assertThat(localDriver.getCapabilities().getBrowserName()).isEqualTo("firefox");
   }
 
   @Test
   @Ignore(value = MARIONETTE, reason = "Assumed to be covered by tests for GeckoDriverService")
-  public void canStartDriverWithSpecifiedBinary() throws IOException {
+  public void canStartDriverWithSpecifiedBinary() {
     FirefoxBinary binary = spy(new FirefoxBinary());
     FirefoxOptions options = new FirefoxOptions()
         .setBinary(binary);
@@ -121,9 +114,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     localDriver = new FirefoxDriver(caps);
 
-    assertEquals(
-        "none",
-        localDriver.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY));
+    assertThat(localDriver.getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
   }
 
   @Test
@@ -162,7 +153,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = MARIONETTE, reason = "Assumed to be covered by tests for GeckoDriverService")
-  public void canSetBinaryInCapabilities() throws IOException {
+  public void canSetBinaryInCapabilities() {
     FirefoxBinary binary = spy(new FirefoxBinary());
     Capabilities caps = new ImmutableCapabilities(FirefoxDriver.BINARY, binary);
 
@@ -172,7 +163,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canSetBinaryPathInCapabilities() throws IOException {
+  public void canSetBinaryPathInCapabilities() {
     String binPath = new FirefoxBinary().getPath();
     Capabilities caps = new ImmutableCapabilities(FirefoxDriver.BINARY, binPath);
 
@@ -214,8 +205,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       driver2.get(pages.formPage);
       fail("Should have thrown.");
     } catch (UnreachableBrowserException e) {
-      assertThat("Must contain descriptive error", e.getMessage(),
-          containsString("Error communicating with the remote browser"));
+      assertThat(e.getMessage()).contains("Error communicating with the remote browser");
     } finally {
       keptExecutor.execute(new Command(sessionId, DriverCommand.QUIT));
     }
@@ -224,7 +214,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
-  public void shouldWaitUntilBrowserHasClosedProperly() throws Exception {
+  public void shouldWaitUntilBrowserHasClosedProperly() {
     driver.get(pages.simpleTestPage);
     driver.quit();
     JUnit4TestBase.removeDriver();
@@ -248,8 +238,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       driver.get(pages.xhtmlTestPage);
       secondDriver.get(pages.formPage);
 
-      assertThat(driver.getTitle(), is("XHTML Test Page"));
-      assertThat(secondDriver.getTitle(), is("We Leave From Here"));
+      assertThat(driver.getTitle()).isEqualTo("XHTML Test Page");
+      assertThat(secondDriver.getTitle()).isEqualTo("We Leave From Here");
     } finally {
       secondDriver.quit();
     }
@@ -270,7 +260,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     new WebDriverWait(localDriver, 30).until(titleIs("We Leave From Here"));
     String title = localDriver.getTitle();
 
-    assertThat(title, is("We Leave From Here"));
+    assertThat(title).isEqualTo("We Leave From Here");
   }
 
   @Test
@@ -282,11 +272,11 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("webdriver.log.file", logFile.getAbsolutePath());
 
     localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-    assertTrue("log file should exist", logFile.exists());
+    assertThat(logFile).exists();
   }
 
   @Test
-  public void shouldBeAbleToStartFromProfileWithLogFileSetToStdout() throws IOException {
+  public void shouldBeAbleToStartFromProfileWithLogFileSetToStdout() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("webdriver.log.file", "/dev/stdout");
 
@@ -317,10 +307,10 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     localDriver = new FirefoxDriver(new FirefoxOptions().setBinary(binary));
     Dimension size = localDriver.manage().window().getSize();
-    assertThat(size.width, greaterThanOrEqualTo(800));
-    assertThat(size.width, lessThan(850));
-    assertThat(size.height, greaterThanOrEqualTo(600));
-    assertThat(size.height, lessThan(650));
+    assertThat(size.width).isGreaterThanOrEqualTo(800);
+    assertThat(size.width).isLessThan(850);
+    assertThat(size.height).isGreaterThanOrEqualTo(600);
+    assertThat(size.height).isLessThan(650);
   }
 
 
@@ -331,7 +321,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
     Capabilities caps = localDriver.getCapabilities();
-    assertFalse(caps.is(ACCEPT_SSL_CERTS));
+    assertThat(caps.is(ACCEPT_SSL_CERTS)).isFalse();
   }
 
   @Test
@@ -352,7 +342,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/273")
   public void canAccessUrlProtectedByBasicAuth() {
     driver.get(appServer.whereIsWithCredentials("basicAuth", "test", "test"));
-    assertEquals("authorized", driver.findElement(By.tagName("h1")).getText());
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
   }
 
   @Test
@@ -378,7 +368,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       }
 
       public void assertOnRightPage() {
-        assertEquals(url, myDriver.getCurrentUrl());
+        assertThat(myDriver.getCurrentUrl()).isEqualTo(url);
       }
     }
 
@@ -440,7 +430,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
             inputField.clear();
             inputField.sendKeys(s);
             String value = inputField.getAttribute("value");
-            assertThat(value, is(s));
+            assertThat(value).isEqualTo(s);
           }
         });
       }
@@ -480,7 +470,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
-  // See http://code.google.com/p/selenium/issues/detail?id=1774
+  // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1774
   @Test
   public void canStartFirefoxDriverWithSubclassOfFirefoxProfile() {
     new FirefoxDriver(new FirefoxOptions().setProfile(new CustomFirefoxProfile())).quit();
@@ -494,8 +484,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void searchingByCssDoesNotPolluteGlobalNamespaceWithSizzleLibrary() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.cssSelector("div.content"));
-    assertEquals(true,
-        ((JavascriptExecutor) driver).executeScript("return typeof Sizzle == 'undefined';"));
+    assertThat(((JavascriptExecutor) driver).executeScript("return typeof Sizzle == 'undefined';"))
+        .isEqualTo(true);
   }
 
   /**
@@ -506,8 +496,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
     ((JavascriptExecutor) driver).executeScript("window.Sizzle = 'original sizzle value';");
     driver.findElement(By.cssSelector("div.content"));
-    assertEquals("original sizzle value",
-        ((JavascriptExecutor) driver).executeScript("return window.Sizzle + '';"));
+    assertThat(((JavascriptExecutor) driver).executeScript("return window.Sizzle + '';"))
+        .isEqualTo("original sizzle value");
   }
 
   @Test
@@ -518,8 +508,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     localDriver = new FirefoxDriver(options);
     localDriver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
     localDriver.findElement(By.id("under")).click();
-    assertEquals(localDriver.findElement(By.id("log")).getText(),
-                 "Log:\n"
+    assertThat(localDriver.findElement(By.id("log")).getText())
+        .isEqualTo("Log:\n"
                  + "mousedown in over (handled by over)\n"
                  + "mousedown in over (handled by body)\n"
                  + "mouseup in over (handled by over)\n"

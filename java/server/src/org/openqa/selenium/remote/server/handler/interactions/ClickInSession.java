@@ -19,17 +19,33 @@ package org.openqa.selenium.remote.server.handler.interactions;
 
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
 import java.util.Map;
 
-public class ClickInSession extends WebDriverHandler<Void> implements JsonParametersAware {
+public class ClickInSession extends WebDriverHandler<Void> {
   volatile boolean leftMouseButton = true;
 
   public ClickInSession(Session session) {
     super(session);
+  }
+
+  @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    if (allParameters.containsKey("button")) {
+      int button = ((Long) allParameters.get("button")).intValue();
+      switch (button) {
+        // TODO: Use proper enum values for this.
+        case 0:
+          leftMouseButton = true;
+          break;
+        case 2:
+          leftMouseButton = false;
+          break;
+      }
+    }
   }
 
   @Override
@@ -50,19 +66,4 @@ public class ClickInSession extends WebDriverHandler<Void> implements JsonParame
     return String.format("[click: %s]", "nothing");
   }
 
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    if (allParameters.containsKey("button")) {
-      int button = ((Long) allParameters.get("button")).intValue();
-      switch (button) {
-      // TODO: Use proper enum values for this.
-        case 0:
-          leftMouseButton = true;
-          break;
-        case 2:
-          leftMouseButton = false;
-          break;
-      }
-    }
-
-  }
 }

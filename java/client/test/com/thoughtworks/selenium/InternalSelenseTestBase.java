@@ -45,7 +45,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.InProject;
@@ -136,7 +136,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   public ExternalResource initializeSelenium = new ExternalResource() {
     @Override
-    protected void before() throws Throwable {
+    protected void before() {
       selenium = INSTANCE;
       if (selenium != null) {
         return;
@@ -188,7 +188,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   public ExternalResource addNecessaryJavascriptCommands = new ExternalResource() {
     @Override
-    protected void before() throws Throwable {
+    protected void before() {
       if (selenium == null || !(selenium instanceof WebDriverBackedSelenium)) {
         return;
       }
@@ -211,7 +211,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   public ExternalResource returnFocusToMainWindow = new ExternalResource() {
     @Override
-    protected void before() throws Throwable {
+    protected void before() {
       if (selenium == null) {
         return;
       }

@@ -107,7 +107,7 @@ public class RegistryTest {
   }
 
   @Test
-  public void emptyRegistry() throws Throwable {
+  public void emptyRegistry() {
     GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     try {
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
@@ -132,7 +132,7 @@ public class RegistryTest {
   }
 
   @Test
-  public void CapabilityNotPresentRegistry() throws Throwable {
+  public void CapabilityNotPresentRegistry() {
     GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     try {
       registry.add(new BaseRemoteProxy(req, registry));

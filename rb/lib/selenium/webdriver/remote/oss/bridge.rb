@@ -362,9 +362,13 @@ module Selenium
           end
 
           def send_keys_to_element(element, keys)
+            # TODO: rework file detectors before Selenium 4.0
             if @file_detector
-              local_file = @file_detector.call(keys)
-              keys = upload(local_file) if local_file
+              local_files = keys.first.split("\n").map { |key| @file_detector.call(Array(key)) }.compact
+              if local_files.any?
+                keys = local_files.map { |local_file| upload(local_file) }
+                keys = keys.join("\n")
+              end
             end
 
             execute :send_keys_to_element, {id: element}, {value: Array(keys)}
@@ -372,7 +376,8 @@ module Selenium
 
           def upload(local_file)
             unless File.file?(local_file)
-              raise Error::WebDriverError, "you may only upload files: #{local_file.inspect}"
+              WebDriver.logger.debug("File detector only works with files. #{local_file.inspect} isn`t a file!")
+              raise Error::WebDriverError, "You are trying to work with something that isn't a file."
             end
 
             execute :upload_file, {}, {file: Zipper.zip_file(local_file)}

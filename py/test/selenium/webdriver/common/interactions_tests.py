@@ -143,10 +143,7 @@ def testCannotMoveToANullLocator(driver, pages):
         move.perform()
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
 @pytest.mark.xfail_firefox
-@pytest.mark.xfail_remote
 def testClickingOnFormElements(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("formSelectionPage.html")
@@ -154,7 +151,6 @@ def testClickingOnFormElements(driver, pages):
     selectThreeOptions = ActionChains(driver) \
         .click(options[1]) \
         .key_down(Keys.SHIFT) \
-        .click(options[2]) \
         .click(options[3]) \
         .key_up(Keys.SHIFT)
     selectThreeOptions.perform()
@@ -167,6 +163,8 @@ def testClickingOnFormElements(driver, pages):
 
 
 @pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
+@pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
 def testSelectingMultipleItems(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
@@ -193,6 +191,8 @@ def testSelectingMultipleItems(driver, pages):
 
 @pytest.mark.xfail_marionette(
     reason='https://github.com/mozilla/geckodriver/issues/646')
+@pytest.mark.xfail_remote(
+    reason='https://github.com/mozilla/geckodriver/issues/646')
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element_by_id("working")
@@ -205,6 +205,28 @@ def testSendingKeysToActiveElementWithModifier(driver, pages):
         .perform()
 
     assert "ABC" == e.get_attribute('value')
+
+
+def testSendingKeysToElement(driver, pages):
+    pages.load("formPage.html")
+    e = driver.find_element_by_id("working")
+
+    ActionChains(driver).send_keys_to_element(e, 'abc').perform()
+
+    assert "abc" == e.get_attribute('value')
+
+
+def testCanSendKeysBetweenClicks(driver, pages):
+    """
+    For W3C, ensures that the correct number of pauses are given to the other
+    input device.
+    """
+    pages.load('javascriptPage.html')
+    keyup = driver.find_element_by_id("keyUp")
+    keydown = driver.find_element_by_id("keyDown")
+    ActionChains(driver).click(keyup).send_keys('foobar').click(keydown).perform()
+
+    assert 'foobar' == keyup.get_attribute('value')
 
 
 def test_can_reset_interactions(driver, pages):

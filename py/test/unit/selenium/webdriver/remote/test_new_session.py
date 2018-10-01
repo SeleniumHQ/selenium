@@ -46,6 +46,16 @@ def test_converts_proxy_type_value_to_lowercase_for_w3c(mocker):
     mock.assert_called_with(Command.NEW_SESSION, expected_params)
 
 
+def test_works_as_context_manager(mocker):
+    mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.execute')
+    quit_ = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.quit')
+
+    with WebDriver() as driver:
+        assert isinstance(driver, WebDriver)
+
+    assert quit_.call_count == 1
+
+
 @pytest.mark.parametrize('browser_name', ['firefox', 'chrome', 'ie', 'opera'])
 def test_accepts_firefox_options_to_remote_driver(mocker, browser_name):
     options = import_module('selenium.webdriver.{}.options'.format(browser_name))

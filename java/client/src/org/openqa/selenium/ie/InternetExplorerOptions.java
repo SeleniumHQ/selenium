@@ -44,7 +44,6 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
-import org.openqa.selenium.internal.ElementScrollBehavior;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
@@ -69,7 +68,7 @@ import java.util.stream.Stream;
 @Beta
 public class InternetExplorerOptions extends MutableCapabilities {
 
-  private final static String IE_OPTIONS = "se:ieOptions";
+  final static String IE_OPTIONS = "se:ieOptions";
 
   private static final String FULL_PAGE_SCREENSHOT = "ie.enableFullPageScreenshot";
   private static final String UPLOAD_DIALOG_TIMEOUT = "ie.fileUploadDialogTimeout";
@@ -92,6 +91,7 @@ public class InternetExplorerOptions extends MutableCapabilities {
       .add(REQUIRE_WINDOW_FOCUS)
       .add(UPLOAD_DIALOG_TIMEOUT)
       .add(VALIDATE_COOKIE_DOCUMENT_TYPE)
+      .add(NATIVE_EVENTS)
       .build();
 
   private Map<String, Object> ieOptions = new HashMap<>();
@@ -207,8 +207,13 @@ public class InternetExplorerOptions extends MutableCapabilities {
     return amend(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
   }
 
+  @Deprecated
   public InternetExplorerOptions enableNativeEvents() {
     return amend(NATIVE_EVENTS, true);
+  }
+
+  public InternetExplorerOptions disableNativeEvents() {
+    return  amend(NATIVE_EVENTS, false);
   }
 
   public InternetExplorerOptions ignoreZoomSettings() {

@@ -60,9 +60,9 @@ module Selenium
                          log: '/path/to/log'}
 
           args = ["--binary=#{driver_opts[:binary]}",
-                  "–-log=#{driver_opts[:log]}",
-                  "–-marionette-port=#{driver_opts[:marionette_port]}",
-                  "–-host=#{driver_opts[:host]}"]
+                  "--log=#{driver_opts[:log]}",
+                  "--marionette-port=#{driver_opts[:marionette_port]}",
+                  "--host=#{driver_opts[:host]}"]
 
           driver = Driver.new(http_client: http, driver_opts: driver_opts)
           expect(driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args

@@ -17,13 +17,20 @@
 
 package org.openqa.selenium.remote.http;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.base.Preconditions;
+
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.internal.BuildInfo;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.internal.OkHttpClient;
 
 import java.io.IOException;
+import java.net.Proxy;
 import java.net.URL;
+import java.time.Duration;
+import java.util.Objects;
 
 /**
  * Defines a simple client for making HTTP requests.
@@ -34,8 +41,8 @@ public interface HttpClient {
       "selenium/%s (java %s)",
       new BuildInfo().getReleaseLabel(),
       (Platform.getCurrent().family() == null ?
-          Platform.getCurrent().toString().toLowerCase() :
-          Platform.getCurrent().family().toString().toLowerCase()));
+       Platform.getCurrent().toString().toLowerCase() :
+       Platform.getCurrent().family().toString().toLowerCase()));
 
   /**
    * Executes the given request, following any redirects if necessary.
@@ -48,12 +55,13 @@ public interface HttpClient {
 
   interface Factory {
 
+    /**
+     * Use the {@code webdriver.http.factory} system property to determine which implementation of
+     * {@link HttpClient} should be used.
+     */
     static Factory createDefault() {
       String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
       switch (defaultFactory) {
-        case "apache":
-          return new ApacheHttpClient.Factory();
-
         case "okhttp":
         default:
           return new OkHttpClient.Factory();
@@ -61,16 +69,69 @@ public interface HttpClient {
     }
 
     /**
+     * By default {@link #createClient(URL)} will pick sensible defaults for the {@link HttpClient}
+     * to use, but if more control is needed, the {@link Builder} gives access to this.
+     */
+    Builder builder();
+
+    /**
      * Creates a HTTP client that will send requests to the given URL.
      *
-     * @param url URL
-     * @return HttpClient
+     * @param url URL The base URL for requests.
      */
-    HttpClient createClient(URL url);
+    default HttpClient createClient(URL url) {
+      return builder().createClient(url);
+    }
 
     /**
      * Closes idle clients.
      */
     void cleanupIdleClients();
+  }
+
+  abstract class Builder {
+
+    protected Duration connectionTimeout = Duration.ofMinutes(2);
+    protected Duration readTimeout = Duration.ofHours(3);
+    protected Proxy proxy = null;
+
+    /**
+     * Set the connection timeout to a given value. Note that setting to negative values is not
+     * allowed, and that a timeout of {@code 0} results in unspecified behaviour.
+     */
+    public Builder connectionTimeout(Duration duration) {
+      requireNonNull(duration, "Connection time out must be set");
+      checkArgument(!duration.isNegative(), "Connection time out cannot be negative");
+
+      this.connectionTimeout = duration;
+
+      return this;
+    }
+
+    /**
+     * Set the read timeout to a given value. Note that setting to negative values is not
+     * allowed, and that a timeout of {@code 0} results in unspecified behaviour.
+     */
+    public Builder readTimeout(Duration duration) {
+      requireNonNull(duration, "Read time out must be set");
+      checkArgument(!duration.isNegative(), "Read time out cannot be negative");
+
+      this.readTimeout = duration;
+
+      return this;
+    }
+
+    /**
+     * Set the {@link Proxy} that should be used by the {@link HttpClient} (<b>not</b> the
+     * {@link org.openqa.selenium.WebDriver} instance!). If this is not set, then an implementation
+     * specific method for selecting a proxy will be used.
+     */
+    public Builder proxy(Proxy proxy) {
+      this.proxy = Objects.requireNonNull(proxy, "Proxy must be set");
+
+      return this;
+    }
+
+    public abstract HttpClient createClient(URL url);
   }
 }

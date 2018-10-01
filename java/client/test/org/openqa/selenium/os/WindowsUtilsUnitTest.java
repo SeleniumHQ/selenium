@@ -16,42 +16,25 @@
 // under the License.
 package org.openqa.selenium.os;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.Platform.WINDOWS;
 
-import org.junit.Before;
+import org.junit.Assume;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.openqa.selenium.Platform;
 
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-@RunWith(JUnit4.class)
 public class WindowsUtilsUnitTest {
-
-  private int majorVersion;
-  private int minorVersion;
-  private Pattern WIN_OS_VERSION = Pattern.compile("^(\\d)+\\.(\\d)+$");
-
-  @Before
-  public void setUp() {
-    if (!WindowsUtils.thisIsWindows()) return;
-    String osVersion = System.getProperty("os.version");
-    Matcher m = WIN_OS_VERSION.matcher(osVersion);
-    if (!m.find()) fail("osVersion doesn't look right: " + osVersion);
-    majorVersion = Integer.parseInt(m.group(1));
-    minorVersion = Integer.parseInt(m.group(2));
-  }
 
   @Test
   public void testLoadEnvironment() {
-    if (!WindowsUtils.thisIsWindows()) return;
+    Assume.assumeTrue(Platform.getCurrent().is(WINDOWS));
+
+    String osVersion = System.getProperty("os.version");
+    assertThat(osVersion).matches("^(\\d)+\\.(\\d)+$");
+
     Properties p = WindowsUtils.loadEnvironment();
-    assertFalse("Environment appears to be empty!", p.isEmpty());
-    assertNotNull("SystemRoot env var apparently not set on Windows!",
-        WindowsUtils.findSystemRoot());
+    assertThat(p).isNotEmpty();
   }
 }

@@ -1,10 +1,12 @@
-# BUILD FILE SYNTAX: SKYLARK
 java_test(name = 'lift',
   srcs = glob([
     '*.java',
     'find/*.java',
     'match/*.java',
   ]),
+  labels = [
+    'small',
+  ],
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/lift:lift',
