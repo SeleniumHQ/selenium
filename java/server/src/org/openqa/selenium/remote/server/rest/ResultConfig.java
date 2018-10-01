@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.server.rest;
 import com.google.common.collect.Lists;
 
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
@@ -71,17 +70,6 @@ public class ResultConfig {
     RestishHandler<?> createHandler(SessionId sessionId) throws Exception;
   }
 
-  protected RestishHandler<?> populate(RestishHandler<?> handler, Command command) {
-    for (Map.Entry<String, ?> entry : command.getParameters().entrySet()) {
-      try {
-        PropertyMunger.set(entry.getKey(), handler, entry.getValue());
-      } catch (Exception e) {
-        throw new WebDriverException(e);
-      }
-    }
-    return handler;
-  }
-
   public Response handle(Command command) throws Exception {
     Response response = new Response();
     SessionId sessionId = command.getSessionId();
@@ -91,7 +79,6 @@ public class ResultConfig {
 
     throwUpIfSessionTerminated(sessionId);
     final RestishHandler<?> handler = handlerFactory.createHandler(sessionId);
-    populate(handler, command);
 
     try {
       if (handler instanceof JsonParametersAware) {
