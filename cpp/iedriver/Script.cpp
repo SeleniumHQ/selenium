@@ -22,8 +22,9 @@
 #include "AsyncScriptExecutor.h"
 #include "Element.h"
 #include "IECommandExecutor.h"
-#include "VariantUtilities.h"
+#include "ScriptException.h"
 #include "StringUtilities.h"
+#include "VariantUtilities.h"
 
 namespace webdriver {
 
@@ -179,6 +180,7 @@ bool Script::ResultIsObject() {
 int Script::Execute() {
   LOG(TRACE) << "Entering Script::Execute";
 
+  HRESULT hr = S_OK;
   CComVariant result = L"";
   CComBSTR error_description = L"";
 
@@ -197,14 +199,17 @@ int Script::Execute() {
     return WD_SUCCESS;
   }
 
+  CComPtr<IDispatchEx> function_dispatch;
+  hr = temp_function.pdispVal->QueryInterface<IDispatchEx>(&function_dispatch);
+  if (FAILED(hr)) {
+    LOG(WARN) << "Anonymous function object does not implement IDispatchEx";
+    return EUNEXPECTEDJSERROR;
+  }
+
   // Grab the "call" method out of the returned function
   DISPID call_member_id;
-  OLECHAR FAR* call_member_name = L"call";
-  HRESULT hr = temp_function.pdispVal->GetIDsOfNames(IID_NULL,
-                                                     &call_member_name,
-                                                     1,
-                                                     LOCALE_USER_DEFAULT,
-                                                     &call_member_id);
+  CComBSTR call_member_name = L"call";
+  hr = function_dispatch->GetDispID(call_member_name, 0, &call_member_id);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Cannot locate call method on anonymous function";
     return EUNEXPECTEDJSERROR;
@@ -241,14 +246,17 @@ int Script::Execute() {
   int return_code = WD_SUCCESS;
   EXCEPINFO exception;
   memset(&exception, 0, sizeof exception);
-  hr = temp_function.pdispVal->Invoke(call_member_id,
-                                      IID_NULL,
-                                      LOCALE_USER_DEFAULT,
-                                      DISPATCH_METHOD,
-                                      &call_parameters, 
-                                      &result,
-                                      &exception,
-                                      0);
+  CComPtr<IServiceProvider> custom_exception_service_provider;
+  hr = ScriptException::CreateInstance<IServiceProvider>(&custom_exception_service_provider);
+  CComPtr<IScriptException> custom_exception;
+  hr = custom_exception_service_provider.QueryInterface<IScriptException>(&custom_exception);
+  hr = function_dispatch->InvokeEx(call_member_id,
+                                   LOCALE_USER_DEFAULT,
+                                   DISPATCH_METHOD,
+                                   &call_parameters,
+                                   &result,
+                                   &exception,
+                                   custom_exception_service_provider);
 
   if (FAILED(hr)) {
     if (DISP_E_EXCEPTION == hr) {
@@ -257,7 +265,16 @@ int Script::Execute() {
       LOG(INFO) << "Exception message was: '" << error_description << "'";
       LOG(INFO) << "Exception source was: '" << error_source << "'";
     } else {
-      LOGHR(DEBUG, hr) << "Failed to execute anonymous function, no exception information retrieved";
+      bool is_handled = false;
+      hr = custom_exception->IsExceptionHandled(&is_handled);
+      if (is_handled) {
+        error_description = "Error from JavaScript: ";
+        CComBSTR script_message = L"";
+        custom_exception->GetDescription(&script_message);
+        error_description.Append(script_message);
+      } else {
+        LOGHR(DEBUG, hr) << "Failed to execute anonymous function, no exception information retrieved";
+      }
     }
 
     result.Clear();

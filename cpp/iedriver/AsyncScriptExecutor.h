@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_ASYNCATOMEXECUTOR_H_
-#define WEBDRIVER_IE_ASYNCATOMEXECUTOR_H_
+#ifndef WEBDRIVER_IE_ASYNCSCRIPTEXECUTOR_H_
+#define WEBDRIVER_IE_ASYNCSCRIPTEXECUTOR_H_
 
 #include <vector>
 
@@ -112,5 +112,5 @@ class AsyncScriptExecutor : public CWindowImpl<AsyncScriptExecutor>, public IEle
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_ASYNCATOMEXECUTOR_H_
+#endif // WEBDRIVER_IE_ASYNCSCRIPTEXECUTOR_H_
 

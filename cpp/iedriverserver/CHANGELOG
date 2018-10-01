@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.9
+=========
+ * Added ability to return text of JavaScript errors. Until this change,
+   if the IE driver encountered an error in a user's JavaScript, there was
+   no way to return the actual error text. This change fixes that. The text
+   of the JavaScript error will be returned so it can be used as part of
+   the exception thrown by the language bindings.
+
 v3.14.0.8
 =========
  * Updated obscured element check for IE. The W3C WebDriver Specification
