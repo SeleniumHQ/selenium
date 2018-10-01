@@ -26,6 +26,8 @@ java_library(name = 'server',
     'InputStreamWrappingServletInputStream.java',
     'JsonHttpCommandHandler.java',
     'JsonParametersAware.java',
+    'RequiresAllSessions.java',
+    'RequiresSession.java',
     'SnapshotScreenListener.java',
     'StaticResourceHandler.java',
   ] + glob([
