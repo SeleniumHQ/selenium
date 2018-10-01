@@ -211,6 +211,11 @@ LRESULT AsyncScriptExecutor::OnExecuteScript(UINT uMsg,
         TransferReturnedElements();
         return 0;
       }
+    } else {
+      if (script_to_execute.ResultIsString()) {
+        script_to_execute.ConvertResultToJsonValue(this,
+                                                   &this->script_result_);
+      }
     }
   }
   this->is_execution_completed_ = true;

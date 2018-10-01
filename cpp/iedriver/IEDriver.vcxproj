@@ -173,6 +173,7 @@
     <ClCompile Include="Browser.cpp" />
     <ClCompile Include="BrowserCookie.cpp" />
     <ClCompile Include="BrowserFactory.cpp" />
+    <ClCompile Include="cominterfaces.cpp" />
     <ClCompile Include="CommandHandlerRepository.cpp" />
     <ClCompile Include="CommandHandlers\AcceptAlertCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\ActionsCommandHandler.cpp" />
@@ -232,6 +233,7 @@
     <ClCompile Include="CommandHandlers\SwitchToParentFrameCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\SwitchToWindowCommandHandler.cpp" />
     <ClCompile Include="CookieManager.cpp" />
+    <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DocumentHost.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="ElementFinder.cpp" />
@@ -247,6 +249,7 @@
     <ClCompile Include="ProxyManager.cpp" />
     <ClCompile Include="RegistryUtilities.cpp" />
     <ClCompile Include="Script.cpp" />
+    <ClCompile Include="ScriptException.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -269,6 +272,7 @@
     <ClInclude Include="Browser.h" />
     <ClInclude Include="BrowserCookie.h" />
     <ClInclude Include="BrowserFactory.h" />
+    <ClInclude Include="cominterfaces.h" />
     <ClInclude Include="CommandExecutor.h" />
     <ClInclude Include="CommandHandlerRepository.h" />
     <ClInclude Include="CommandHandlers\AcceptAlertCommandHandler.h" />
@@ -331,6 +335,7 @@
     <ClInclude Include="CommandHandlers\SwitchToWindowCommandHandler.h" />
     <ClInclude Include="CookieManager.h" />
     <ClInclude Include="CustomTypes.h" />
+    <ClInclude Include="dllmain.h" />
     <ClInclude Include="DocumentHost.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="ElementFinder.h" />
@@ -354,6 +359,7 @@
     <ClInclude Include="RegistryUtilities.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Script.h" />
+    <ClInclude Include="ScriptException.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringUtilities.h" />
     <ClInclude Include="targetver.h" />

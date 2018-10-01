@@ -510,9 +510,9 @@ LRESULT IECommandExecutor::OnScriptWait(UINT uMsg,
                       NULL,
                       NULL);
         int status_code = static_cast<int>(::SendMessage(browser->script_executor_handle(),
-                                                          WD_ASYNC_SCRIPT_GET_RESULT,
-                                                          NULL,
-                                                          reinterpret_cast<LPARAM>(&script_result)));
+                                                         WD_ASYNC_SCRIPT_GET_RESULT,
+                                                         NULL,
+                                                         reinterpret_cast<LPARAM>(&script_result)));
         if (status_code != WD_SUCCESS) {
           std::string error_message = "Error executing JavaScript";
           if (script_result.isString()) {
