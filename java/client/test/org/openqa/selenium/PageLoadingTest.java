@@ -428,7 +428,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(e).isInstanceOf(TimeoutException.class);
 
       int duration = (int) (end - start);
-      assertThat(duration).isGreaterThan(2000);
+      assertThat(duration).isGreaterThanOrEqualTo(2000);
       assertThat(duration).isLessThan(4000);
     } finally {
       driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
@@ -492,7 +492,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(e).isInstanceOf(TimeoutException.class);
 
       long duration = end - start;
-      assertThat(duration).isGreaterThan(webDriverPageLoadTimeout * 1000);
+      assertThat(duration).isGreaterThanOrEqualTo(webDriverPageLoadTimeout * 1000);
       assertThat(duration).isLessThan((webDriverPageLoadTimeout + pageLoadTimeBuffer) * 1000);
     }
   }

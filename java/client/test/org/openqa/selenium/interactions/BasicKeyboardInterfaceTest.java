@@ -20,6 +20,7 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -159,6 +160,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testThrowsIllegalArgumentExceptionWithNoParameters() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -173,6 +175,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testThrowsIllegalArgumentExceptionWithNullInParameters() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -180,6 +183,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNull() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
@@ -187,6 +191,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNullOnly() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(

@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -419,6 +420,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   @NotYetImplemented(CHROME)
   @NotYetImplemented(MARIONETTE)
   @Ignore(FIREFOX)
+  @NotYetImplemented(HTMLUNIT)
   public void shouldTreatDraggableAsEnumeratedButNotBoolean() {
     checkEnumeratedAttribute("draggable", "true", "false", "yes", "no", "", "blabla");
   }
