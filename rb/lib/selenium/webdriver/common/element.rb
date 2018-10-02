@@ -196,7 +196,7 @@ module Selenium
       #
 
       def displayed?
-        bridge.element_displayed? @id
+        bridge.element_displayed? self
       end
 
       #
