@@ -28,6 +28,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.Collection;
@@ -126,6 +127,7 @@ public class JsonOutput implements Closeable {
         .put(Date.class::isAssignableFrom, (obj, depth) -> append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))))
         .put(Enum.class::isAssignableFrom, (obj, depth) -> append(asString(obj)))
         .put(File.class::isAssignableFrom, (obj, depth) -> append(((File) obj).getAbsolutePath()))
+        .put(URI.class::isAssignableFrom, (obj, depth) -> append(asString(((URI) obj).toString())))
         .put(URL.class::isAssignableFrom, (obj, depth) -> append(asString(((URL) obj).toExternalForm())))
         .put(Level.class::isAssignableFrom, (obj, depth) -> append(asString(LogLevelMapping.getName((Level) obj))))
         .put(
