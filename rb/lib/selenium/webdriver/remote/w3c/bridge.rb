@@ -42,7 +42,7 @@ module Selenium
 
           def commands(command)
             case command
-            when :status, :is_element_displayed
+            when :status
               Remote::OSS::Bridge::COMMANDS[command]
             else
               COMMANDS[command]
@@ -506,7 +506,7 @@ module Selenium
           end
 
           def element_displayed?(element)
-            execute :is_element_displayed, id: element
+            execute_atom :isDisplayed, element
           end
 
           def element_value_of_css_property(element, prop)

@@ -528,7 +528,7 @@ module Selenium
           end
 
           def element_displayed?(element)
-            execute :is_element_displayed, id: element
+            execute :is_element_displayed, id: element.ref
           end
 
           def element_value_of_css_property(element, prop)
