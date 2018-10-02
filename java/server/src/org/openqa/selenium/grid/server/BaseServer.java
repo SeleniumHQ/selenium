@@ -145,7 +145,9 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
 
     server.setConnectors(new Connector[]{http});
 
-    addServlet(new CommandHandlerServlet(injector, handlers), "/*");
+    CommandHandler delegate = new CompoundHandler(injector, handlers);
+    W3CCommandHandler handler = new W3CCommandHandler(delegate);
+    addServlet(new CommandHandlerServlet(handler), "/*");
   }
 
   @Override

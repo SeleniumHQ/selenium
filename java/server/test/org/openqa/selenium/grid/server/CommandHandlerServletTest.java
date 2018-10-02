@@ -75,10 +75,7 @@ public class CommandHandlerServletTest {
     Injector injector = Injector.builder().register(new Json()).build();
 
     CommandHandlerServlet servlet = new CommandHandlerServlet(
-        injector,
-        ImmutableMap.of(
-            (req) -> true, (inj, ingored) ->
-                (req, res) -> res.setContent(cheerfulGreeting.getBytes(UTF_8))));
+        (req, res) -> res.setContent(cheerfulGreeting.getBytes(UTF_8)));
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/hello-world"));
     FakeHttpServletResponse response = new FakeHttpServletResponse();
@@ -93,7 +90,8 @@ public class CommandHandlerServletTest {
   public void shouldCorrectlyReturnAnUnknownCommandExceptionForUnmappableUrls() throws IOException {
     Injector injector = Injector.builder().register(new Json()).build();
 
-    CommandHandlerServlet servlet = new CommandHandlerServlet(injector, ImmutableMap.of());
+    CommandHandlerServlet servlet = new CommandHandlerServlet(
+        new W3CCommandHandler(new CompoundHandler(injector, ImmutableMap.of())));
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/missing"));
     FakeHttpServletResponse response = new FakeHttpServletResponse();
@@ -109,12 +107,14 @@ public class CommandHandlerServletTest {
     Injector injector = Injector.builder().register(new Json()).build();
 
     CommandHandlerServlet servlet = new CommandHandlerServlet(
-        injector,
-        ImmutableMap.of(
-            req -> true,
-            (inj, ignored) -> (req, res) -> {
-              throw new UnableToSetCookieException("Yowza");
-            }));
+        new W3CCommandHandler(
+            new CompoundHandler(
+                injector,
+                ImmutableMap.of(
+                    req -> true,
+                    (inj, ignored) -> (req, res) -> {
+                      throw new UnableToSetCookieException("Yowza");
+                    }))));
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/exceptional"));
     FakeHttpServletResponse response = new FakeHttpServletResponse();
