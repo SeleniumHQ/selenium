@@ -102,10 +102,16 @@ def is_connectable(port, host="localhost"):
      - port - The port to connect.
     """
     socket_ = None
+
+    if sys.version_info > (3, 4):
+        expected_exceptions = (socket.error, ConnectionResetError)
+    else:
+        expected_exceptions = (socket.error,)
+
     try:
         socket_ = socket.create_connection((host, port), 1)
         result = True
-    except (socket.error, ConnectionResetError) as e:
+    except expected_exceptions:
         result = False
     finally:
         if socket_:
