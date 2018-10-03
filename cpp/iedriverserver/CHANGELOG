@@ -9,6 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.10
+==========
+ * Partially reverting obscured element check. The updated obscured check
+   introduced in 3.14.0.8 assumed that there was a bug in IE's implementation
+   of elementsFromPoint. This is not the case. The actual bug is that the
+   driver did not take into account elements found outside the DOM tree of
+   the element being interacted with should not be flagged as obscuring the
+   target element if its pointer-events CSS property is "none". This is
+   because while the element may technically be rendered above the target
+   element in the DOM, it does not interfere with attempts to interact with
+   elements below it, since pointer events are not triggered.
+
 v3.14.0.9
 =========
  * Added ability to return text of JavaScript errors. Until this change,
@@ -19,12 +31,12 @@ v3.14.0.9
 
 v3.14.0.8
 =========
- * Updated obscured element check for IE. The W3C WebDriver Specification
-   dictates that checking for elements being obscured by other elements
-   should rely on calling elementsFromPoint. However, there is a bug in
-   IE's elementsFromPoint implementation. if two sibling elements have the
-   same z-index, the one specified second in the DOM order is usually on
-   top. The exception is if there is a child element that has a specified
+ * Updated obscured element check. The W3C WebDriver Specification dictates
+   that checking for elements being obscured by other elements should rely
+   on calling elementsFromPoint. However, there is a bug in IE's
+   elementsFromPoint implementation. if two sibling elements have the same
+   z-index, the one specified second in the DOM order is usually on top.
+   The exception is if there is a child element that has a specified
    z-index greater than the ancestor z-index. The IE elementsFromPoint
    implementation ignores the child element case, so we have to manually
    look for child elements that may be rendered on top of the element found

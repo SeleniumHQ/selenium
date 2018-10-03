@@ -70,8 +70,6 @@ class Element {
   bool IsDocumentFocused(IHTMLDocument2* focused_doc);
   bool IsObscured(LocationInfo* click_location,
                   std::string* obscuring_element_description);
-  bool IsEqual(Element other_element);
-  void GetParentElements(std::vector<Element>* parents);
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }
@@ -98,18 +96,7 @@ class Element {
   bool HasFirstChildTextNodeOfMultipleChildren(void);
   bool GetTextBoundaries(LocationInfo* text_info);
 
-  void GetParentElements(IHTMLElement* current_element,
-                         std::vector<Element>* parents);
-  bool GetZIndex(int* z_index);
-  bool GetFirstDefinedZIndex(std::vector<Element>* parent_elements,
-                             int start_index,
-                             int* z_index);
-  void GetFirstUncommonAncestor(std::vector<Element>* parents,
-                                Element* other_element,
-                                std::vector<Element>* other_element_parents,
-                                int* element_index,
-                                int* other_element_index);
-  long GetIndex(void);
+  bool GetComputedStyle(IHTMLCSSStyleDeclaration** computed_style);
 
   std::string element_id_;
   CComPtr<IHTMLElement> element_;
