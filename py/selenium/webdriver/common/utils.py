@@ -105,7 +105,7 @@ def is_connectable(port, host="localhost"):
     try:
         socket_ = socket.create_connection((host, port), 1)
         result = True
-    except socket.error:
+    except (socket.error, ConnectionResetError) as e:
         result = False
     finally:
         if socket_:
