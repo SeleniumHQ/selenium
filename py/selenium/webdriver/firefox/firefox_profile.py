@@ -343,42 +343,59 @@ class FirefoxProfile(object):
                 finally:
                     compressed_file.close()
             elif os.path.isdir(addon_path):
-                with open(os.path.join(addon_path, 'install.rdf'), 'r') as f:
+                addon_contents = os.listdir(addon_path)
+
+                if 'install.rdf' in addon_contents:
+                    manifest_source = 'install.rdf'
+                elif 'manifest.json' in addon_contents:
+                    manifest_source = 'manifest.json'
+
+                with open(os.path.join(addon_path, manifest_source), 'r') as f:
                     manifest = f.read()
             else:
                 raise IOError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
         except (IOError, KeyError) as e:
             raise AddonFormatError(str(e), sys.exc_info()[2])
+        
+        if manifest_source is 'install.rdf':
+            try:
+                doc = minidom.parseString(manifest)
 
-        try:
-            doc = minidom.parseString(manifest)
+                # Get the namespaces abbreviations
+                em = get_namespace_id(doc, 'http://www.mozilla.org/2004/em-rdf#')
+                rdf = get_namespace_id(doc, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
-            # Get the namespaces abbreviations
-            em = get_namespace_id(doc, 'http://www.mozilla.org/2004/em-rdf#')
-            rdf = get_namespace_id(doc, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+                description = doc.getElementsByTagName(rdf + 'Description').item(0)
+                if description is None:
+                    description = doc.getElementsByTagName('Description').item(0)
+                for node in description.childNodes:
+                    # Remove the namespace prefix from the tag for comparison
+                    entry = node.nodeName.replace(em, "")
+                    if entry in details.keys():
+                        details.update({entry: get_text(node)})
+                if details.get('id') is None:
+                    for i in range(description.attributes.length):
+                        attribute = description.attributes.item(i)
+                        if attribute.name == em + 'id':
+                            details.update({'id': attribute.value})
+            except Exception as e:
+                raise AddonFormatError(str(e), sys.exc_info()[2])
 
-            description = doc.getElementsByTagName(rdf + 'Description').item(0)
-            if description is None:
-                description = doc.getElementsByTagName('Description').item(0)
-            for node in description.childNodes:
-                # Remove the namespace prefix from the tag for comparison
-                entry = node.nodeName.replace(em, "")
-                if entry in details.keys():
-                    details.update({entry: get_text(node)})
-            if details.get('id') is None:
-                for i in range(description.attributes.length):
-                    attribute = description.attributes.item(i)
-                    if attribute.name == em + 'id':
-                        details.update({'id': attribute.value})
-        except Exception as e:
-            raise AddonFormatError(str(e), sys.exc_info()[2])
+        elif manifest_source is 'manifest.json':
+            doc = json.loads(manifest)
 
-        # turn unpack into a true/false value
-        if isinstance(details['unpack'], str):
-            details['unpack'] = details['unpack'].lower() == 'true'
-
-        # If no ID is set, the add-on is invalid
-        if details.get('id') is None:
-            raise AddonFormatError('Add-on id could not be found.')
+            try:
+                details['version'] = doc['version']
+                details['name'] = doc['name']
+            except KeyError:
+                raise AddonFormatError('Add-on manifest.json is missing mandatory fields. https://developer.mozilla.org/en-US/Add-ons/WebExtensions/manifest.json')
+            
+            try:
+                id_ = doc['applications']['gecko']['id']
+            except KeyError:
+                id_ = "%s@%s" % (doc['name'], doc['version'])
+                id_ = ''.join(id_.split())
+            finally:
+                details["id"] = id_
 
         return details
