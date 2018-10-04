@@ -106,7 +106,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @NotYetImplemented(SAFARI)
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
