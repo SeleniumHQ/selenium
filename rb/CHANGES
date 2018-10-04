@@ -1,3 +1,27 @@
+3.14.1 (2018-10-03)
+===================
+
+Ruby:
+  * Added a workaround to ignore Errno::EALREADY error when starting drivers
+    on Windows Subsystem for Linux
+  * Changed default pause duration to 0 for Selenium::WebDriver::Driver#action#pause (thanks @twalpole)
+  * Deprecated Selenium::WebDriver::PortProber#random
+    in favor of Selenium::WebDriver::PortProber#above
+  * Fixed a bug when Selenium::WebDriver::Element#drag_and_drop would not
+    work in certain cases
+  * Updated RubyZip dependency to 1.2.2 which fixes security vulnerability
+
+Edge:
+  * Added support for --silent driver flag
+  * Fixed an incorrect dash symbol when passing arguments to MicrosoftWebDriver.exe
+
+Firefox:
+  * Fixed an incorrect dash symbol when passing arguments to GeckoDriver
+
+Safari:
+  * Fixed a bug when Selenium::WebDriver::Element#displayed? would raise error
+    in Safari 12
+
 3.14.0 (2018-08-03)
 ===================
 
