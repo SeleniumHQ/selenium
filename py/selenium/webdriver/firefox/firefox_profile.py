@@ -330,6 +330,16 @@ class FirefoxProfile(object):
                     rc.append(node.data)
             return ''.join(rc).strip()
 
+        def parse_manifest_json(content):
+            """Extracts the details from the contents of a WebExtensions `manifest.json` file."""
+            manifest = json.loads(content)
+            return {
+                'id': manifest['applications']['gecko']['id'],
+                'version': manifest['version'],
+                'name': manifest['version'],
+                'unpack': False,
+            }
+
         if not os.path.exists(addon_path):
             raise IOError('Add-on path does not exist: %s' % addon_path)
 
@@ -339,10 +349,18 @@ class FirefoxProfile(object):
                 # it will cause an exception thrown in Python 2.6.
                 try:
                     compressed_file = zipfile.ZipFile(addon_path, 'r')
+                    if 'manifest.json' in compressed_file.namelist():
+                        return parse_manifest_json(compressed_file.read('manifest.json'))
+
                     manifest = compressed_file.read('install.rdf')
                 finally:
                     compressed_file.close()
             elif os.path.isdir(addon_path):
+                manifest_json_filename = os.path.join(addon_path, 'manifest.json')
+                if os.path.exists(manifest_json_filename):
+                    with open(manifest_json_filename, 'r') as f:
+                        return parse_manifest_json(f.read())
+
                 with open(os.path.join(addon_path, 'install.rdf'), 'r') as f:
                     manifest = f.read()
             else:
