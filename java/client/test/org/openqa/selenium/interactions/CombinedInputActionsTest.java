@@ -20,6 +20,7 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
@@ -326,8 +327,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .keyUp(Keys.SHIFT)
         .perform();
 
-    assertThat(driver.getWindowHandles())
-        .describedAs("Should have opened a new window").hasSize(nWindows + 1);
+    wait.until(windowHandleCountToBe(nWindows + 1));
     assertThat(driver.getTitle())
         .describedAs("Should not have navigated away").isEqualTo(originalTitle);
   }
