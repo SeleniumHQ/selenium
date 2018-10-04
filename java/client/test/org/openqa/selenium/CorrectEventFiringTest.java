@@ -60,7 +60,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/906")
   @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
   public void testShouldFireFocusEventInNonTopmostWindow() {
@@ -303,7 +302,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/906")
   @Ignore(value = SAFARI, reason = "Allows only one instance")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));

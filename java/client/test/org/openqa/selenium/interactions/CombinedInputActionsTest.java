@@ -311,7 +311,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   public void testCombiningShiftAndClickResultsInANewWindow() {
