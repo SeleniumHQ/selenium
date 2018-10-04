@@ -56,11 +56,13 @@ module Selenium
         it 'accepts driver options' do
           driver_opts = {host: 'localhost',
                          package: '/path/to/pkg',
+                         silent: true,
                          verbose: true}
 
           args = ["--host=#{driver_opts[:host]}",
                   "--package=#{driver_opts[:package]}",
-                  "-verbose"]
+                  "--silent",
+                  "--verbose"]
 
           driver = Driver.new(http_client: http, driver_opts: driver_opts)
           expect(driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
