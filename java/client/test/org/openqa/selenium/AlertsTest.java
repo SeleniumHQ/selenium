@@ -384,7 +384,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   public void testShouldHandleAlertOnPageLoadUsingGet() {
     driver.get(appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
