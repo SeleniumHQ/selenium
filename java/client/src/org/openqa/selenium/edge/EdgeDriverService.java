@@ -53,6 +53,19 @@ public class EdgeDriverService extends DriverService{
   */
   public static final String EDGE_DRIVER_VERBOSE_LOG_PROPERTY = "webdriver.edge.verboseLogging";
 
+  /**
+   * Boolean system property that defines whether the MictosoftWebDriver executable
+   * should use the a protocol dialect compliant with the W3C WebDriver Specification.
+   * <p>
+   * Setting this property to a non-<see langword="null"/> value for driver
+   * executables matched to versions of Windows before the 2018 Fall Creators
+   * Update will result in a the driver executable shutting down without
+   * execution, and all commands will fail. Do not set this property unless
+   * you are certain your version of the MicrosoftWebDriver.exe supports the
+   * </p>
+   */
+  public static final String EDGE_DRIVER_USE_SPEC_COMPLIANT_PROTOCOL = "webdriver.edge.useSpecCompliantProtocol";
+
   public EdgeDriverService(File executable, int port, ImmutableList<String> args,
       ImmutableMap<String, String> environment) throws IOException {
       super(executable, port, args, environment);
@@ -99,6 +112,14 @@ public class EdgeDriverService extends DriverService{
 
       if (Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY)) {
         argsBuilder.add("--verbose");
+      }
+      
+      if(System.getProperty(EDGE_DRIVER_USE_SPEC_COMPLIANT_PROTOCOL) != null){
+        if (Boolean.getBoolean(EDGE_DRIVER_USE_SPEC_COMPLIANT_PROTOCOL)) {
+          argsBuilder.add("--w3c");
+        } else {
+          argsBuilder.add("--jwp");
+        }
       }
 
       return argsBuilder.build();
