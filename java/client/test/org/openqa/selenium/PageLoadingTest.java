@@ -126,7 +126,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   @Ignore(CHROME)
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
