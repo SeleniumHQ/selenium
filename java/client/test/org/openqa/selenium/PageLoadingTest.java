@@ -18,6 +18,7 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.fail;
@@ -190,14 +191,9 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(MARIONETTE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
-    try {
-      // Of course, we're up the creek if this ever does get registered
-      driver.get("http://www.thisurldoesnotexist.comx/");
-    } catch (IllegalStateException e) {
-      if (!isIeDriverTimedOutException(e)) {
-        throw e;
-      }
-    }
+    assertThatCode(
+        () -> driver.get("http://www.thisurldoesnotexist.comx/"))
+        .doesNotThrowAnyException();
   }
 
   @NeedsFreshDriver(value = FIREFOX, reason = "No idea why it throws in a fresh driver only")
