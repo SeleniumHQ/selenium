@@ -23,7 +23,6 @@ import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;
@@ -116,8 +115,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME,
-      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
   public void testFindElementByIdWhenIdContainsNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_special_chars"));
@@ -144,8 +141,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME,
-      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
   public void testFindElementsByIdWithNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_special_chars"));
