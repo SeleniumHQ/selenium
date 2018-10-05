@@ -267,11 +267,6 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     storedDriver.remove();
   }
 
-  protected boolean isIeDriverTimedOutException(IllegalStateException e) {
-    // The IE driver may throw a timed out exception
-    return e.getClass().getName().contains("TimedOutException");
-  }
-
   private static boolean matches(Browser browser, Driver[] drivers) {
     for (Driver driver : drivers) {
       switch (driver) {
