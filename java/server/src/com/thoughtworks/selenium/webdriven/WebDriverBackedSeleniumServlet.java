@@ -75,6 +75,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
         PROCESSORS.remove(session.getId());
       }
     };
+    sessions.addListener(listener);
 
     this.pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory()).create();
   }
