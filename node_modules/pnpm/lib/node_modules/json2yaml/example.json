@@ -1,0 +1,14 @@
+{
+  "foo": "bar",
+  "baz": [
+    "qux",
+    "quxx"
+  ],
+  "corge": null,
+  "grault": 1,
+  "garply": true,
+  "waldo": "false",
+  "fred": "undefined",
+  "emptyarr": [],
+  "emptyobj": {}
+}

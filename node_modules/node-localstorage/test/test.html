@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<script type="text/javascript">
+		  function displayLocalStorageData() {
+    		var output = "LOCALSTORAGE DATA:\n------------------------------------\n";
+        if (localStorage) {
+            if (localStorage.length) {
+               for (var i = 0; i < localStorage.length; i++) {
+                   output += localStorage.key(i) + ': ' + localStorage.getItem(localStorage.key(i)) + '\n';
+               }
+            } else {
+               output += 'There is no data stored for this domain.';
+            }
+        } else {
+            output += 'Your browser does not support local storage.'
+        }
+        console.log(output);
+      }
+      
+      // What if the value is not a string?
+      o = {a:1, b:'hello', c:{x: 1, y: new Date()}};
+      console.log(o.toString());
+      s = 'hello'
+      console.log(s.toString());
+      localStorage.setItem('1', o);
+      console.log(typeof(localStorage.getItem('1')));
+      a = [1, 'some string', {a:1, b:'some string', c:{x: 1, y: 2}}]
+      console.log(a.toString());
+      localStorage.setItem('2', a);
+      console.log(typeof(localStorage.getItem('2')));
+      // After running the above in Firefox, Safari, and Chrome, they all seem to do a .toString() on the value
+      
+      // What if the key is not a string?
+      localStorage.setItem(99, 'hello Number')
+      localStorage.setItem(o, 'hello Object')
+      localStorage.setItem(a, 'hello Array')
+      // After running the above in all 3 browsers, I can confirm that this also seems to do a .toString() on the key
+      
+      displayLocalStorageData();
+		</script>
+		
+	</head>
+	<body>
+		
+	</body>
+</html>

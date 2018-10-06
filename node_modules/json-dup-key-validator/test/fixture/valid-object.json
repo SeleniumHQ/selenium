@@ -1,0 +1,9 @@
+{
+  "a": "a string value",
+  "with back quote\"": [123 , 234, 345, 3.451 ],
+  "with back spash\\": {
+    "nested": [null, true, false  ],
+    "nestedEmptyArr": [],
+    "nestedEmptyObj": {}
+  }
+}

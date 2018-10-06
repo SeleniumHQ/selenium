@@ -1,0 +1,25 @@
+- test case for docker hub v1 private repo pull
+- v2 push support (complete the v2 api)
+- examples/listTags.js (or whatever name) to show how to key of v1 or v2
+  automatically determined.
+- switch to restify-clients (not until my http-proxy improvements are in tho!)
+- pagination for v2 API endpoints that support that (e.g.
+  https://docs.docker.com/registry/spec/api/#listing-repositories)
+- better error wrapping from reg errors. E.g.a 404 (say for
+  `v2/getManifest.js alpine:nosuchtag` returns:
+
+        { [NotFoundError: {"errors":[{"code":"MANIFEST_UNKNOWN","message":"manifest
+           unknown","detail":"unknown manifest name=library/busybox tag=unknowntag"}]}
+        body: { errors:
+             [ { code: 'MANIFEST_UNKNOWN',
+                    message: 'manifest unknown',
+                           detail: 'unknown manifest name=library/busybox
+                           tag=unknowntag' } ] }
+
+  Whitelisted improved wrapping?
+  There is no restCode here for example. Clients having to key on the
+  statusCode sucks.
+- Docker-Content-Digest: are there tarsum.v1+sha256:... ones out there to
+  worry about?
+- would be nice to have an example that showed how to reliably impl 'docker pull'
+  from either v2 or v1 (e.g. as in the imgapi impl).

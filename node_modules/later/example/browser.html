@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body>
+</body>
+
+<script src="../later.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+// create the desired schedule
+var sched = later.parse.text('every 5 mins on the 30th sec');
+
+// calculate the next 5 occurrences using local time
+later.date.localTime();
+var results = later.schedule(sched).next(5);
+
+for (var i = 0; i < results.length; i++) {
+  document.write('<p>' + results[i].toLocaleString() + '</p>');
+}
+
+</script>
+</html>
