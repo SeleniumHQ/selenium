@@ -31,6 +31,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Objects;
+import java.util.Locale;
 
 /**
  * Defines a simple client for making HTTP requests.
@@ -41,8 +42,8 @@ public interface HttpClient {
       "selenium/%s (java %s)",
       new BuildInfo().getReleaseLabel(),
       (Platform.getCurrent().family() == null ?
-       Platform.getCurrent().toString().toLowerCase() :
-       Platform.getCurrent().family().toString().toLowerCase()));
+       Platform.getCurrent().toString().toLowerCase(Locale.US) :
+       Platform.getCurrent().family().toString().toLowerCase(Locale.US)));
 
   /**
    * Executes the given request, following any redirects if necessary.
