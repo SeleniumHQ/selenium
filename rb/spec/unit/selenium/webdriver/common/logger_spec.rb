@@ -57,6 +57,7 @@ module Selenium
           WebDriver.logger.warn('message')
           expect(File.read('test.log')).to include('WARN Selenium message')
         ensure
+          WebDriver.logger.close
           File.delete('test.log')
         end
       end

@@ -36,7 +36,9 @@ module Selenium
     class Logger
       extend Forwardable
 
-      def_delegators :@logger, :debug, :debug?,
+      def_delegators :@logger,
+                     :close,
+                     :debug, :debug?,
                      :info, :info?,
                      :warn, :warn?,
                      :error, :error?,
@@ -68,7 +70,7 @@ module Selenium
       # @api private
       #
       def io
-        @logger.instance_variable_get(:@logdev).instance_variable_get(:@dev)
+        @logger.instance_variable_get(:@logdev).dev
       end
 
       #
