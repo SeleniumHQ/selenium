@@ -282,6 +282,7 @@ bool Element::IsFocusable() {
 }
 
 bool Element::IsObscured(LocationInfo* click_location,
+                         long* obscuring_element_index,
                          std::string* obscuring_element_description) {
   CComPtr<ISVGElement> svg_element;
   HRESULT hr = this->element_->QueryInterface<ISVGElement>(&svg_element);
@@ -344,6 +345,25 @@ bool Element::IsObscured(LocationInfo* click_location,
     // Short circuit the use of elementsFromPoint if we don't
     // have to use it.
     return false;
+  } else {
+    // Short circuit in the case where this element is specifically
+    // a <label> element, and the top-most element as determined by
+    // elementFromPoint is a direct child of this element. This is
+    // to work around IE's bug in elementsFromPoint that does not
+    // return <label> elements in the list of elements hit.
+    // N.B., this is a hack of the highest order, and there's every
+    // likelihood that some page somewhere will fail this check.
+    CComPtr<IHTMLLabelElement> label;
+    hr = this->element_->QueryInterface<IHTMLLabelElement>(&label);
+    if (SUCCEEDED(hr) && label) {
+      CComPtr<IHTMLElement> list_element_parent;
+      hr = element_hit->get_parentElement(&list_element_parent);
+      if (SUCCEEDED(hr) && list_element_parent) {
+        if (this->element_.IsEqualObject(list_element_parent)) {
+          return false;
+        }
+      }
+    }
   }
 
   CComPtr<IHTMLDocument8> elements_doc;
@@ -388,6 +408,15 @@ bool Element::IsObscured(LocationInfo* click_location,
         bool found_element_not_in_tree = is_child != VARIANT_TRUE &&
                                          is_ancestor != VARIANT_TRUE;
         if (found_element_not_in_tree) {
+          CComPtr<IHTMLFrameBase> frame_element;
+          hr = element_in_list->QueryInterface<IHTMLFrameBase>(&frame_element);
+          if (SUCCEEDED(hr) && frame_element) {
+            // Candidate element is a <frame> or <iframe>, meaning it must
+            // be a different document tree, which implies that it cannot
+            // be obscuring the element we are attempting to click on.
+            continue;
+          }
+
           CComPtr<IHTMLCSSStyleDeclaration> list_element_computed_style;
           if (list_element_wrapper.GetComputedStyle(&list_element_computed_style)) {
             // If the element has a pointer-events value set to 'none', it
@@ -396,8 +425,26 @@ bool Element::IsObscured(LocationInfo* click_location,
             // not obscuring this element.
             CComBSTR list_element_pointer_events_value = L"";
             hr = list_element_computed_style->get_pointerEvents(&list_element_pointer_events_value);
-            if (SUCCEEDED(hr) && list_element_pointer_events_value != L"none") {
-              is_obscured = true;
+            if (SUCCEEDED(hr) && list_element_pointer_events_value == L"none") {
+              continue;
+            } else {
+              CComVariant opacity_variant;
+              hr = list_element_computed_style->get_opacity(&opacity_variant);
+              if (SUCCEEDED(hr)) {
+                double opacity_value = 1.0;
+                if (opacity_variant.vt == VT_BSTR) {
+                  opacity_value = _wtof(opacity_variant.bstrVal);
+                } else {
+                  opacity_value = opacity_variant.dblVal;
+                }
+
+                // If the element has an opacity less than 1.0, it's in a
+                // different stacking context, and will be drawn below the
+                // element we want to interact with.
+                if (opacity_value >= 1.0) {
+                  is_obscured = true;
+                }
+              }
             }
           } else {
             // We were unable to retrieve the computed style, so we must assume
@@ -417,6 +464,7 @@ bool Element::IsObscured(LocationInfo* click_location,
           if (bracket_pos != std::wstring::npos) {
             outer_html = outer_html.substr(0, bracket_pos + 1);
           }
+          *obscuring_element_index = index;
           *obscuring_element_description = StringUtilities::ToString(outer_html);
           break;
         }
@@ -912,6 +960,12 @@ bool Element::IsInline() {
   CComPtr<IHTMLSpanElement> span;
   hr = this->element_->QueryInterface(&span);
   if (span) {
+    return true;
+  }
+
+  CComPtr<IHTMLLabelElement> label;
+  hr = this->element_->QueryInterface(&label);
+  if (label) {
     return true;
   }
 
