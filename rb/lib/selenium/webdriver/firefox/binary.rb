@@ -37,7 +37,7 @@ module Selenium
           if Platform.cygwin?
             profile_path = Platform.cygwin_path(profile_path, windows: true)
           elsif Platform.windows?
-            profile_path = profile_path.tr('/', '\\')
+            profile_path = Platform.windows_path(profile_path)
           end
 
           ENV['XRE_CONSOLE_LOG'] = profile.log_file if profile.log_file

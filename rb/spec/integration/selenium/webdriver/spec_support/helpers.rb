@@ -46,11 +46,11 @@ module Selenium
         end
 
         def fix_windows_path(path)
-          return path unless WebDriver::Platform.os.windows?
+          return path unless WebDriver::Platform.windows?
 
           if GlobalTestEnv.browser == :ie
             path = path[%r{file://(.*)}, 1]
-            path.tr!('/', '\\')
+            path = WebDriver::Platform.windows_path(path)
 
             "file://#{path}"
           else
