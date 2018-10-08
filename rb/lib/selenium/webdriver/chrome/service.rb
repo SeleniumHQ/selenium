@@ -26,8 +26,8 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 9515
-        @executable = 'chromedriver'
-        @missing_text = <<~ERROR
+        EXECUTABLE = 'chromedriver'
+        MISSING_TEXT = <<~ERROR
           Unable to find chromedriver. Please download the server from
           https://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH.
           More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.

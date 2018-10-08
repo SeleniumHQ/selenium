@@ -36,13 +36,6 @@ module Selenium
       SOCKET_LOCK_TIMEOUT = 45
       STOP_TIMEOUT        = 20
 
-      @executable = nil
-      @missing_text = nil
-
-      class << self
-        attr_reader :executable, :missing_text
-      end
-
       attr_accessor :host
 
       def initialize(executable_path, port, driver_opts)
@@ -55,8 +48,8 @@ module Selenium
       end
 
       def binary_path(path)
-        path = Platform.find_binary(self.class.executable) if path.nil?
-        raise Error::WebDriverError, self.class.missing_text unless path
+        path = Platform.find_binary(self.class::EXECUTABLE) if path.nil?
+        raise Error::WebDriverError, self.class::MISSING_TEXT unless path
 
         Platform.assert_executable path
         path
