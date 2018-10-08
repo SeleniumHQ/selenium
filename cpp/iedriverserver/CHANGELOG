@@ -9,9 +9,27 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.11
+==========
+ * Added hack to obscured element check for label elements. As per the
+   W3C WebDriver Specification, the IE driver uses elementsFromPoint to
+   determine whether an element being clicked on is obscured. However,
+   there is a bug in the IE implementation of elementsFromPoint that if
+   the element parent tree contains a <label> element, that element is
+   omitted from the list of elements returned by elementsFromPoint. This
+   change is to work around that bug. The solution implemented here is
+   to check if the top-most element as returned by elementFromPoint is
+   a direct descendent of the element we want to click on, and the 
+   element we want to click on is a <label>, we assume the element is
+   not obscured. Note carefully that this is a hack of the highest
+   order, and there's every likelihood that some page, somewhere will
+   fail this check. Upon receiving an issue report with a complete
+   reproduction case that includes a page clearly demonstrating the
+   issue, we will then revisit this algorithm.
+
 v3.14.0.10
 ==========
- * Partially reverting obscured element check. The updated obscured check
+ * Partially reverted obscured element check. The updated obscured check
    introduced in 3.14.0.8 assumed that there was a bug in IE's implementation
    of elementsFromPoint. This is not the case. The actual bug is that the
    driver did not take into account elements found outside the DOM tree of
