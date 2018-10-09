@@ -57,9 +57,9 @@ public interface Capabilities {
   }
 
   /**
-   * @deprecated Use is(SUPPORTS_JAVASCRIPT) instead.
    * @see #is(String)
    * @see org.openqa.selenium.remote.CapabilityType#SUPPORTS_JAVASCRIPT
+   * @deprecated Use is(SUPPORTS_JAVASCRIPT) instead.
    */
   @Deprecated
   default boolean isJavascriptEnabled() {
@@ -72,16 +72,16 @@ public interface Capabilities {
   Map<String, ?> asMap();
 
   /**
-   * @see org.openqa.selenium.remote.CapabilityType
    * @param capabilityName The capability to return.
    * @return The value, or null if not set.
+   * @see org.openqa.selenium.remote.CapabilityType
    */
   Object getCapability(String capabilityName);
 
   /**
-   * @see org.openqa.selenium.remote.CapabilityType
    * @param capabilityName The capability to check.
    * @return Whether or not the value is not null and not false.
+   * @see org.openqa.selenium.remote.CapabilityType
    */
   default boolean is(String capabilityName) {
     Object cap = getCapability(capabilityName);
