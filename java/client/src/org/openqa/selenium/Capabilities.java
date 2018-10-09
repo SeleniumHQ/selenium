@@ -98,8 +98,7 @@ public interface Capabilities {
    * {@code this}.
    */
   default Capabilities merge(Capabilities other) {
-    HashMap<String, Object> map = new HashMap<>();
-    map.putAll(asMap());
+    HashMap<String, Object> map = new HashMap<>(asMap());
     if (other != null) {
       map.putAll(other.asMap());
     }

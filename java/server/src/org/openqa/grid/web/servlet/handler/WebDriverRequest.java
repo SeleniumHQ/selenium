@@ -67,9 +67,7 @@ public class WebDriverRequest extends SeleniumBasedRequest {
       Capabilities caps = payload.stream()
           .findFirst()
           .orElseThrow(() -> new GridException("No capabilities found in request: " + json));
-      Map<String, Object> toReturn = new HashMap<>();
-      toReturn.putAll(caps.asMap());
-      return toReturn;
+      return new HashMap<>(caps.asMap());
     } catch (GridException e) {
       throw e;
     } catch (Exception e) {
