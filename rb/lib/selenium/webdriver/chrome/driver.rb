@@ -28,6 +28,7 @@ module Selenium
         include DriverExtensions::HasNetworkConditions
         include DriverExtensions::HasTouchScreen
         include DriverExtensions::HasWebStorage
+        include DriverExtensions::HasLocation
         include DriverExtensions::TakesScreenshot
         include DriverExtensions::DownloadsFiles
 
