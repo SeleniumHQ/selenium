@@ -64,7 +64,7 @@ public class JdkAugmenter extends BaseAugmenter {
   @Override
   protected <X> X create(RemoteWebDriver driver, Map<String, AugmenterProvider> augmentors,
       X objectToAugment) {
-    Map<String, ?> capabilities = driver.getCapabilities().asMap();
+    Map<String, Object> capabilities = driver.getCapabilities().asMap();
     Map<Method, InterfaceImplementation> augmentationHandlers = new HashMap<>();
 
     Set<Class<?>> proxiedInterfaces = new HashSet<>();
@@ -75,7 +75,7 @@ public class JdkAugmenter extends BaseAugmenter {
       superClass = superClass.getSuperclass();
     }
 
-    for (Map.Entry<String, ?> capabilityName : capabilities.entrySet()) {
+    for (Map.Entry<String, Object> capabilityName : capabilities.entrySet()) {
       AugmenterProvider augmenter = augmentors.get(capabilityName.getKey());
       if (augmenter == null) {
         continue;

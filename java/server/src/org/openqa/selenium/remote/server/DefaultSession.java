@@ -223,7 +223,7 @@ public class DefaultSession implements Session {
         caps.setCapability(CapabilityType.HAS_TOUCHSCREEN, true);
       }
       //noinspection unchecked
-      return (Map<String, Object>) caps.asMap();
+      return caps.asMap();
     }
   }
 

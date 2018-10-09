@@ -42,7 +42,7 @@ public enum SeleniumProtocol {
    * @return the {@link SeleniumProtocol} or throws a {@link GridException} if the capabilities
    * does not define a recognized protocol.
    */
-  public static SeleniumProtocol fromCapabilitiesMap(Map<String, ?> capabilities) {
+  public static SeleniumProtocol fromCapabilitiesMap(Map<String, Object> capabilities) {
     String type = (String) capabilities.get(SELENIUM_PROTOCOL);
     if (type == null || type.trim().isEmpty()) {
       return WebDriver;
@@ -62,7 +62,7 @@ public enum SeleniumProtocol {
    * @param capabilities map of capabilities to consider
    * @return the protocol path defined by the capabilities or the value of {@link #getPath}.
    */
-  public String getPathConsideringCapabilitiesMap(Map<String, ?> capabilities) {
+  public String getPathConsideringCapabilitiesMap(Map<String, Object> capabilities) {
     String localPath = (String) capabilities.get(PATH);
     if (localPath != null) {
       return localPath;

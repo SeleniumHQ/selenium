@@ -216,7 +216,7 @@ public class NewSessionPayload implements Closeable {
       Map<String, Object> first = getOss();
       if (first == null) {
         //noinspection unchecked
-        first = (Map<String, Object>) stream().findFirst()
+        first = stream().findFirst()
             .orElse(new ImmutableCapabilities())
             .asMap();
       }

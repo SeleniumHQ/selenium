@@ -57,8 +57,7 @@ public class FirefoxMutator implements Function<Capabilities, Capabilities> {
       options.putAll(originalOptions);
     }
 
-    Map<String, Object> toReturn = new HashMap<>();
-    toReturn.putAll(capabilities.asMap());
+    Map<String, Object> toReturn = new HashMap<>(capabilities.asMap());
 
     if (config.getCapability(BINARY) != null) {
       if (!(capabilities.getCapability(BINARY) instanceof String)) {
