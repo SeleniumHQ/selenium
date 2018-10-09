@@ -208,8 +208,6 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/element/$id/attribute/$name'),
             Command.GET_ELEMENT_PROPERTY:
                 ('GET', '/session/$sessionId/element/$id/property/$name'),
-            Command.ELEMENT_EQUALS:
-                ('GET', '/session/$sessionId/element/$id/equals/$other'),
             Command.GET_ALL_COOKIES: ('GET', '/session/$sessionId/cookie'),
             Command.ADD_COOKIE: ('POST', '/session/$sessionId/cookie'),
             Command.GET_COOKIE: ('GET', '/session/$sessionId/cookie/$name'),
