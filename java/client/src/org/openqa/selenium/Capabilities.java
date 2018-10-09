@@ -69,7 +69,7 @@ public interface Capabilities {
   /**
    * @return The capabilities as a Map.
    */
-  Map<String, ?> asMap();
+  Map<String, Object> asMap();
 
   /**
    * @param capabilityName The capability to return.
