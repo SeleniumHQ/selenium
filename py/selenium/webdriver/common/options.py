@@ -17,6 +17,7 @@
 
 from abc import ABCMeta, abstractmethod
 
+
 class BaseOptions(object):
     """
     Base class for individual browser options

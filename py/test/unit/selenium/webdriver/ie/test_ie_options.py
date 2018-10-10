@@ -172,3 +172,13 @@ def test_to_capabilities_should_not_modify_set_options(opts):
     assert opts.options.get('foo') == 'bar'
     assert opts.arguments[0] == arg
     assert opts.additional_options.get('baz') == 'qux'
+
+
+def test_starts_with_default_capabilities(opts):
+    from selenium.webdriver import DesiredCapabilities
+    assert opts._caps == DesiredCapabilities.INTERNETEXPLORER
+
+
+def test_is_a_baseoptions(opts):
+    from selenium.webdriver.common.options import BaseOptions
+    assert isinstance(opts, BaseOptions)
