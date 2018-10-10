@@ -138,19 +138,6 @@ public class InternetExplorerDriverService extends DriverService {
     }
 
     /**
-     * Configures the driver engine implementation for the driver server.
-     *
-     * @param engineImplementation The engine implementation to be used.
-     * @return A self reference.
-     * 
-     * @deprecated There are no more multiple IE driver engines
-     */
-    @Deprecated
-    public Builder withEngineImplementation(InternetExplorerDriverEngine engineImplementation) {
-      return this;
-    }
-
-    /**
      * Configures the host to which the driver server bound.
      *
      * @param host A host name.
