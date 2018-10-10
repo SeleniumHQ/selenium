@@ -198,9 +198,9 @@ int InputManager::GetTicks(const Json::Value& sequences, Json::Value* ticks) {
       if (action.isMember("type") &&
           action["type"].isString() &&
           action["type"].asString() == "pause") {
-        if (!action.isMember("duration") ||
-            action["duration"].type() != Json::ValueType::intValue ||
-            action["duration"].asInt() < 0) {
+        if (action.isMember("duration") &&
+            (action["duration"].type() != Json::ValueType::intValue ||
+            action["duration"].asInt() < 0)) {
           return EINVALIDARGUMENT;
         }
         if (device_type == "key") {
@@ -631,7 +631,10 @@ bool InputManager::IsSingleKey(const std::wstring& input) {
 int InputManager::Pause(BrowserHandle browser_wrapper,
                         const Json::Value& pause_action) {
   int status_code = 0;
-  int duration = pause_action["duration"].asInt();
+  int duration = 0;
+  if (pause_action.isMember("duration")) {
+    duration = pause_action["duration"].asInt();
+  }
   if (duration > 0) {
     this->AddPauseInput(browser_wrapper->GetContentWindowHandle(), duration);
   }

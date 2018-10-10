@@ -9,6 +9,19 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.12
+==========
+ * Allowed duration property of pause actions to be omitted.
+ * Cleaned up variant copying for getElementAttribute command.
+ * Expanded inline element detection for obscured elements. This commit
+   expands on the hack that was introduced in 3.14.0.11. It turns out
+   that <label> elements are not the only ones to suffer from issues
+   with elementsFromPoint. Rather, we now check for all types of inline
+   elements. This change also refactors the calculation of the hit-
+   testing point for calling elementsFromPoint in the first place, as
+   it only makes sense to call from within the context of the element's
+   document (omitting frames).
+
 v3.14.0.11
 ==========
  * Added hack to obscured element check for label elements. As per the
