@@ -937,13 +937,24 @@ namespace OpenQA.Selenium.Remote
                 return true;
             }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.Id);
-            parameters.Add("other", otherAsElement.Id);
+            if (!driver.IsSpecificationCompliant)
+            {
+                try
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    parameters.Add("id", this.Id);
+                    parameters.Add("other", otherAsElement.Id);
 
-            Response response = this.Execute(DriverCommand.ElementEquals, parameters);
-            object value = response.Value;
-            return value != null && value is bool && (bool)value;
+                    Response response = this.Execute(DriverCommand.ElementEquals, parameters);
+                    object value = response.Value;
+                    return value != null && value is bool && (bool)value;
+                }
+                catch (NotImplementedException)
+                {
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
