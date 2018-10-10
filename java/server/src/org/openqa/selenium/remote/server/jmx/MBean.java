@@ -200,7 +200,7 @@ public class MBean implements DynamicMBean {
         try {
           return (ObjectName) bean.getClass().getMethod("getObjectName").invoke(bean);
         } catch (IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {
-          return new ObjectName(String.format("%s:%s",
+          return new ObjectName(String.format("%s:type=%s",
                                               bean.getClass().getPackage().getName(),
                                               bean.getClass().getSimpleName()));
         }
