@@ -566,7 +566,7 @@ int Element::GetAttributeValue(const std::string& attribute_name,
   status_code = script_wrapper.Execute();
   
   if (status_code == WD_SUCCESS) {
-    *attribute_value = script_wrapper.result();
+    ::VariantCopy(attribute_value, &script_wrapper.result());
   } else {
     LOG(WARN) << "Failed to determine element attribute";
   }
