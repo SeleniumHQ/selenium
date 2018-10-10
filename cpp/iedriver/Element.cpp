@@ -293,9 +293,6 @@ bool Element::IsObscured(LocationInfo* click_location,
     return false;
   }
 
-  CComPtr<IHTMLDocument2> doc;
-  this->GetContainingDocument(false, &doc);
-
   // If an element has a style value where pointer-events is set to 'none',
   // the element is "obscured" by definition, since any mouse interaction
   // will not be handled by the element.
@@ -308,64 +305,49 @@ bool Element::IsObscured(LocationInfo* click_location,
     }
   }
 
-  bool is_obscured = false;
-
-  std::vector<LocationInfo> frame_locations;
+  // The element being obscured only makes sense within the context
+  // of its own document, even if it's not in the top-level document.
   LocationInfo element_location = {};
-  int status_code = this->GetLocation(&element_location, &frame_locations);
-  bool document_contains_frames = frame_locations.size() != 0;
-  *click_location = this->CalculateClickPoint(element_location,
-                                              document_contains_frames);
+  int status_code = this->GetLocation(&element_location, nullptr);
+  *click_location = this->CalculateClickPoint(element_location, false);
   long x = click_location->x;
   long y = click_location->y;
-  if (document_contains_frames) {
-    // If the document contains frames, we'll need to do elementsFromPoint
-    // for the framed document, ignoring the frame offsets.
-    CComPtr<IHTMLElement2> rect_element;
-    this->element_->QueryInterface<IHTMLElement2>(&rect_element);
-    CComPtr<IHTMLRect> rect;
-    rect_element->getBoundingClientRect(&rect);
-    long top = 0, bottom = 0, left = 0, right = 0;
 
-    rect->get_top(&top);
-    rect->get_left(&left);
-    rect->get_bottom(&bottom);
-    rect->get_right(&right);
+  bool is_inline = this->IsInline();
 
-    long width = right - left;
-    long height = bottom - top;
-
-    x = left + (width / 2);
-    y = top + (height / 2);
-  }
-
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
   CComPtr<IHTMLElement> element_hit;
   hr = doc->elementFromPoint(x, y, &element_hit);
-  if (SUCCEEDED(hr) && element_.IsEqualObject(element_hit)) {
-    // Short circuit the use of elementsFromPoint if we don't
-    // have to use it.
-    return false;
-  } else {
-    // Short circuit in the case where this element is specifically
-    // a <label> element, and the top-most element as determined by
-    // elementFromPoint is a direct child of this element. This is
-    // to work around IE's bug in elementsFromPoint that does not
-    // return <label> elements in the list of elements hit.
-    // N.B., this is a hack of the highest order, and there's every
-    // likelihood that some page somewhere will fail this check.
-    CComPtr<IHTMLLabelElement> label;
-    hr = this->element_->QueryInterface<IHTMLLabelElement>(&label);
-    if (SUCCEEDED(hr) && label) {
-      CComPtr<IHTMLElement> list_element_parent;
-      hr = element_hit->get_parentElement(&list_element_parent);
-      if (SUCCEEDED(hr) && list_element_parent) {
-        if (this->element_.IsEqualObject(list_element_parent)) {
-          return false;
+  if (SUCCEEDED(hr) && element_hit) {
+    if (element_.IsEqualObject(element_hit)) {
+      // Short circuit the use of elementsFromPoint if we don't
+      // have to use it.
+      return false;
+    } else {
+      // Short circuit in the case where this element is specifically
+      // an "inline" element (<label>, <span>, <a>, at present),
+      // and the top-most element as determined by elementFromPoint is
+      // a direct child of this element. This is to work around IE's bug
+      // in elementsFromPoint that does not return inline elements in the
+      // list of elements hit.
+      // N.B., this is a hack of the highest order, and there's every
+      // likelihood that some page somewhere will fail this check.
+      if (is_inline) {
+        CComPtr<IHTMLElement> element_hit_parent;
+        hr = element_hit->get_parentElement(&element_hit_parent);
+        CComBSTR element_hit_parent_tag;
+        element_hit_parent->get_tagName(&element_hit_parent_tag);
+        if (SUCCEEDED(hr) && element_hit_parent) {
+          if (this->element_.IsEqualObject(element_hit_parent)) {
+            return false;
+          }
         }
       }
     }
   }
 
+  bool is_obscured = false;
   CComPtr<IHTMLDocument8> elements_doc;
   hr = doc.QueryInterface<IHTMLDocument8>(&elements_doc);
   if (FAILED(hr)) {
@@ -419,37 +401,33 @@ bool Element::IsObscured(LocationInfo* click_location,
 
           CComPtr<IHTMLCSSStyleDeclaration> list_element_computed_style;
           if (list_element_wrapper.GetComputedStyle(&list_element_computed_style)) {
-            // If the element has a pointer-events value set to 'none', it
-            // may be technically obscuring this element, but manipulating
-            // it with the pointer device has no effect, so it is effectively
-            // not obscuring this element.
             CComBSTR list_element_pointer_events_value = L"";
             hr = list_element_computed_style->get_pointerEvents(&list_element_pointer_events_value);
-            if (SUCCEEDED(hr) && list_element_pointer_events_value == L"none") {
-              continue;
-            } else {
-              CComVariant opacity_variant;
-              hr = list_element_computed_style->get_opacity(&opacity_variant);
-              if (SUCCEEDED(hr)) {
-                double opacity_value = 1.0;
-                if (opacity_variant.vt == VT_BSTR) {
-                  opacity_value = _wtof(opacity_variant.bstrVal);
-                } else {
-                  opacity_value = opacity_variant.dblVal;
-                }
-
-                // If the element has an opacity less than 1.0, it's in a
-                // different stacking context, and will be drawn below the
-                // element we want to interact with.
-                if (opacity_value >= 1.0) {
-                  is_obscured = true;
-                }
-              }
+            if (SUCCEEDED(hr) && list_element_pointer_events_value != L"none") {
+              // If the element has a pointer-events value set to 'none', it
+              // may be technically obscuring this element, but manipulating
+              // it with the pointer device has no effect, so it is effectively
+              // not obscuring this element.
+              is_obscured = true;
+              break;
             }
           } else {
             // We were unable to retrieve the computed style, so we must assume
             // the other element is obscuring this one.
             is_obscured = true;
+            break;
+          }
+        } else {
+          // Repeating the immediate-child-of-inline-element hack from above for
+          // elements found in the list.
+          if (is_inline) {
+            CComPtr<IHTMLElement> list_element_parent;
+            hr = element_in_list->get_parentElement(&list_element_parent);
+            if (SUCCEEDED(hr) && list_element_parent) {
+              if (this->element_.IsEqualObject(list_element_parent)) {
+                break;
+              }
+            }
           }
         }
         if (is_obscured) {
@@ -809,10 +787,11 @@ bool Element::IsSelected() {
   return selected;
 }
 
-int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* frame_locations) {
+int Element::GetLocation(LocationInfo* location,
+                         std::vector<LocationInfo>* frame_locations) {
   LOG(TRACE) << "Entering Element::GetLocation";
 
-  bool hasAbsolutePositionReadyToReturn = false;
+  bool has_absolute_position_ready_to_return = false;
 
   CComPtr<IHTMLElement2> element2;
   HRESULT hr = this->element_->QueryInterface(&element2);
@@ -845,7 +824,7 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
             if (RectHasNonZeroDimensions(rect)) {
               // IE returns absolute positions in the page, rather than frame- and scroll-bound
               // positions, for clientRects (as opposed to boundingClientRects).
-              hasAbsolutePositionReadyToReturn = true;
+              has_absolute_position_ready_to_return = true;
               break;
             }
           }
@@ -887,17 +866,22 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
     CComPtr<IHTMLDOMChildrenCollection> children;
     children_dispatch->QueryInterface<IHTMLDOMChildrenCollection>(&children);
     if (!!children) {
-      long childrenCount = 0;
-      children->get_length(&childrenCount);
-      for (long i = 0; i < childrenCount; ++i) {
-        CComPtr<IDispatch> childDispatch;
-        children->item(i, &childDispatch);
+      long children_count = 0;
+      children->get_length(&children_count);
+      for (long i = 0; i < children_count; ++i) {
+        CComPtr<IDispatch> child_dispatch;
+        children->item(i, &child_dispatch);
         CComPtr<IHTMLElement> child;
-        childDispatch->QueryInterface(&child);
+        child_dispatch->QueryInterface(&child);
         if (child != NULL) {
-          Element childElement(child, this->containing_window_handle_);
-          std::vector<LocationInfo> child_frame_locations;
-          int result = childElement.GetLocation(location, &child_frame_locations);
+          int result = WD_SUCCESS;
+          Element child_element(child, this->containing_window_handle_);
+          if (frame_locations == nullptr) {
+            result = child_element.GetLocation(location, nullptr);
+          } else {
+            std::vector<LocationInfo> child_frame_locations;
+            result = child_element.GetLocation(location, &child_frame_locations);
+          }
           if (result == WD_SUCCESS) {
             return result;
           }
@@ -917,7 +901,7 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
   long h = bottom - top;
 
   bool element_is_in_frame = this->AppendFrameDetails(frame_locations);
-  if (!hasAbsolutePositionReadyToReturn) {
+  if (!has_absolute_position_ready_to_return) {
     // On versions of IE prior to 8 on Vista, if the element is out of the 
     // viewport this would seem to return 0,0,0,0. IE 8 returns position in 
     // the DOM regardless of whether it's in the browser viewport.
@@ -990,6 +974,10 @@ bool Element::RectHasNonZeroDimensions(IHTMLRect* rect) {
 
 bool Element::AppendFrameDetails(std::vector<LocationInfo>* frame_locations) {
   LOG(TRACE) << "Entering Element::GetFrameDetails";
+
+  if (frame_locations == nullptr) {
+    return false;
+  }
 
   CComPtr<IHTMLDocument2> owner_doc;
   int status_code = this->GetContainingDocument(true, &owner_doc);
