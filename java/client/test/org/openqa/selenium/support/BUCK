@@ -32,11 +32,9 @@ java_test(name = 'large-tests',
 )
 
 java_library(name = 'tests',
-  srcs = glob(['**/*Test.java']) + [
-    'ui/FakeClock.java',
-    'ui/TickingClock.java',
-  ],
+  srcs = glob(['**/*Test.java']),
   deps = [
+    ':clock',
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/support:page-factory',
@@ -56,4 +54,18 @@ java_library(name = 'tests',
   visibility = [
     '//java/client/test/org/openqa/selenium/...',
   ]
+)
+
+java_library(name = 'clock',
+  srcs = [
+    'ui/TickingClock.java',
+  ],
+  exported_deps = [
+    # Transitively exposes Sleeper
+    '//java/client/src/org/openqa/selenium/support/ui:clock',
+  ],
+  visibility = [
+      "//java/client/test/...",
+      "//java/server/test/...",
+  ],
 )
