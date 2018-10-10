@@ -238,8 +238,7 @@ bool SendKeysCommandHandler::HasMultipleAttribute(ElementHandle element_wrapper)
                                                        &multiple_value);
   if (status_code == WD_SUCCESS &&
       VariantUtilities::VariantIsString(multiple_value)) {
-    std::wstring value(multiple_value.bstrVal);
-    if (value == L"true") {
+    if (multiple_value.bstrVal == L"true") {
       allows_multiple = true;
     }
   }
