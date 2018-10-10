@@ -17,23 +17,36 @@
 
 package org.openqa.selenium.support.ui;
 
-public class TickingClock implements Clock, Sleeper {
-  private long now = 0;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+
+public class TickingClock extends Clock implements Sleeper {
+
+  private long now = 17;
 
   public long now() {
     return now;
   }
 
-  public long laterBy(long durationInMillis) {
-    return now + durationInMillis;
-  }
-
-  public boolean isNowBefore(long endInMillis) {
-    return now < endInMillis;
+  @Override
+  public void sleep(Duration duration) {
+    now += duration.toMillis();
   }
 
   @Override
-  public void sleep(java.time.Duration duration) {
-    now += duration.toMillis();
+  public ZoneId getZone() {
+    return ZoneId.systemDefault();
+  }
+
+  @Override
+  public Clock withZone(ZoneId zone) {
+    return this;
+  }
+
+  @Override
+  public Instant instant() {
+    return Instant.ofEpochMilli(now);
   }
 }

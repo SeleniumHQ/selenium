@@ -18,7 +18,6 @@
 package org.openqa.selenium.support.ui;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -26,6 +25,8 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 
+import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -75,16 +76,16 @@ public class FluentWait<T> implements Wait<T> {
    * @deprecated use {@link #DEFAULT_WAIT_DURATION}
    */
   @Deprecated
-  public static final Duration FIVE_HUNDRED_MILLIS = new Duration(DEFAULT_SLEEP_TIMEOUT, MILLISECONDS);
+  public static final Duration FIVE_HUNDRED_MILLIS = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
-  private static final java.time.Duration DEFAULT_WAIT_DURATION = java.time.Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
+  private static final Duration DEFAULT_WAIT_DURATION = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
   private final T input;
   private final java.time.Clock clock;
   private final Sleeper sleeper;
 
-  private java.time.Duration timeout = DEFAULT_WAIT_DURATION;
-  private java.time.Duration interval = DEFAULT_WAIT_DURATION;
+  private Duration timeout = DEFAULT_WAIT_DURATION;
+  private Duration interval = DEFAULT_WAIT_DURATION;
   private Supplier<String> messageSupplier = () -> null;
 
   private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
@@ -93,22 +94,12 @@ public class FluentWait<T> implements Wait<T> {
    * @param input The input value to pass to the evaluated conditions.
    */
   public FluentWait(T input) {
-    this(input, new SystemClock(), Sleeper.SYSTEM_SLEEPER);
+    this(input, Clock.systemDefaultZone(), Sleeper.SYSTEM_SLEEPER);
   }
 
   /**
-   * @param input The input value to pass to the evaluated conditions.
-   * @param clock The clock to use when measuring the timeout.
-   * @param sleeper Used to put the thread to sleep between evaluation loops.
-   */
-  @Deprecated
-  public FluentWait(T input, Clock clock, Sleeper sleeper) {
-    this(input, clock.asJreClock(), sleeper);
-  }
-
-  /**
-   * @param input The input value to pass to the evaluated conditions.
-   * @param clock The clock to use when measuring the timeout.
+   * @param input   The input value to pass to the evaluated conditions.
+   * @param clock   The clock to use when measuring the timeout.
    * @param sleeper Used to put the thread to sleep between evaluation loops.
    */
   public FluentWait(T input, java.time.Clock clock, Sleeper sleeper) {
@@ -121,15 +112,14 @@ public class FluentWait<T> implements Wait<T> {
    * Sets how long to wait for the evaluated condition to be true. The default timeout is
    * {@link #FIVE_HUNDRED_MILLIS}.
    *
-   * @deprecated use {@link #withTimeout(java.time.Duration)}
-   *
    * @param duration The timeout duration.
-   * @param unit The unit of time.
+   * @param unit     The unit of time.
    * @return A self reference.
+   * @deprecated use {@link #withTimeout(Duration)}
    */
   @Deprecated
   public FluentWait<T> withTimeout(long duration, TimeUnit unit) {
-    return withTimeout(java.time.Duration.of(duration, toChronoUnit(unit)));
+    return withTimeout(Duration.of(duration, toChronoUnit(unit)));
   }
 
 
@@ -140,7 +130,7 @@ public class FluentWait<T> implements Wait<T> {
    * @param timeout The timeout duration.
    * @return A self reference.
    */
-  public FluentWait<T> withTimeout(java.time.Duration timeout) {
+  public FluentWait<T> withTimeout(Duration timeout) {
     this.timeout = timeout;
     return this;
   }
@@ -174,15 +164,14 @@ public class FluentWait<T> implements Wait<T> {
    * In reality, the interval may be greater as the cost of actually evaluating a condition function
    * is not factored in. The default polling interval is {@link #FIVE_HUNDRED_MILLIS}.
    *
-   * @deprecated use {@link #pollingEvery(java.time.Duration)}
-   *
    * @param duration The timeout duration.
-   * @param unit The unit of time.
+   * @param unit     The unit of time.
    * @return A self reference.
+   * @deprecated use {@link #pollingEvery(Duration)}
    */
   @Deprecated
   public FluentWait<T> pollingEvery(long duration, TimeUnit unit) {
-    return pollingEvery(java.time.Duration.of(duration, toChronoUnit(unit)));
+    return pollingEvery(Duration.of(duration, toChronoUnit(unit)));
   }
 
   /**
@@ -195,7 +184,7 @@ public class FluentWait<T> implements Wait<T> {
    * @param interval The timeout duration.
    * @return A self reference.
    */
-  public FluentWait<T> pollingEvery(java.time.Duration interval) {
+  public FluentWait<T> pollingEvery(Duration interval) {
     this.interval = interval;
     return this;
   }
@@ -205,7 +194,7 @@ public class FluentWait<T> implements Wait<T> {
    * Any exceptions not whitelisted will be allowed to propagate, terminating the wait.
    *
    * @param types The types of exceptions to ignore.
-   * @param <K> an Exception that extends Throwable
+   * @param <K>   an Exception that extends Throwable
    * @return A self reference.
    */
   public <K extends Throwable> FluentWait<T> ignoreAll(Collection<Class<? extends K>> types) {
@@ -214,26 +203,26 @@ public class FluentWait<T> implements Wait<T> {
   }
 
   /**
-   * @see #ignoreAll(Collection)
    * @param exceptionType exception to ignore
    * @return a self reference
+   * @see #ignoreAll(Collection)
    */
   public FluentWait<T> ignoring(Class<? extends Throwable> exceptionType) {
     return this.ignoreAll(ImmutableList.<Class<? extends Throwable>>of(exceptionType));
   }
 
   /**
-   * @see #ignoreAll(Collection)
-   * @param firstType exception to ignore
+   * @param firstType  exception to ignore
    * @param secondType another exception to ignore
    * @return a self reference
+   * @see #ignoreAll(Collection)
    */
   public FluentWait<T> ignoring(Class<? extends Throwable> firstType,
                                 Class<? extends Throwable> secondType) {
 
     return this.ignoreAll(ImmutableList.of(firstType, secondType));
   }
-  
+
   /**
    * Repeatedly applies this instance's input value to the given function until one of the following
    * occurs:
@@ -245,9 +234,9 @@ public class FluentWait<T> implements Wait<T> {
    * </ol>
    *
    * @param isTrue the parameter to pass to the {@link ExpectedCondition}
-   * @param <V> The function's expected return type.
+   * @param <V>    The function's expected return type.
    * @return The function's return value if the function returned something different
-   *         from null or false before the timeout expired.
+   * from null or false before the timeout expired.
    * @throws TimeoutException If the timeout expires.
    */
   @Override
@@ -274,7 +263,7 @@ public class FluentWait<T> implements Wait<T> {
       // with a zero timeout can succeed.
       if (end.isBefore(clock.instant())) {
         String message = messageSupplier != null ?
-            messageSupplier.get() : null;
+                         messageSupplier.get() : null;
 
         String timeoutMessage = String.format(
             "Expected condition failed: %s (tried for %d second(s) with %d milliseconds interval)",
@@ -306,9 +295,9 @@ public class FluentWait<T> implements Wait<T> {
    * Throws a timeout exception. This method may be overridden to throw an exception that is
    * idiomatic for a particular test infrastructure, such as an AssertionError in JUnit4.
    *
-   * @param message The timeout message.
+   * @param message       The timeout message.
    * @param lastException The last exception to be thrown and subsequently suppressed while waiting
-   *        on a function.
+   *                      on a function.
    * @return Nothing will ever be returned; this return type is only specified as a convenience.
    */
   protected RuntimeException timeoutException(String message, Throwable lastException) {

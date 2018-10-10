@@ -76,23 +76,6 @@ public class WebDriverWait extends FluentWait<WebDriver> {
    * @param timeOutInSeconds The timeout in seconds when an expectation is
    * @param sleepTimeOut The timeout used whilst sleeping. Defaults to 500ms called.
    */
-  @Deprecated
-  public WebDriverWait(
-      WebDriver driver,
-      Clock clock,
-      Sleeper sleeper,
-      long timeOutInSeconds,
-      long sleepTimeOut) {
-    this(driver, clock.asJreClock(), sleeper, timeOutInSeconds, sleepTimeOut);
-  }
-
-  /**
-   * @param driver The WebDriver instance to pass to the expected conditions
-   * @param clock The clock to use when measuring the timeout
-   * @param sleeper Object used to make the current thread go to sleep.
-   * @param timeOutInSeconds The timeout in seconds when an expectation is
-   * @param sleepTimeOut The timeout used whilst sleeping. Defaults to 500ms called.
-   */
   public WebDriverWait(
       WebDriver driver,
       java.time.Clock clock,
@@ -105,7 +88,6 @@ public class WebDriverWait extends FluentWait<WebDriver> {
     ignoring(NotFoundException.class);
     this.driver = driver;
   }
-
 
   @Override
   protected RuntimeException timeoutException(String message, Throwable lastException) {

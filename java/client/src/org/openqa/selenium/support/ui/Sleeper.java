@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
-import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 /**
  * Abstraction around {@link Thread#sleep(long)} to permit better testability.
@@ -30,21 +29,8 @@ public interface Sleeper {
   /**
    * Sleeps for the specified duration of time.
    *
-   * @deprecated use {@link #sleep(java.time.Duration)}
-   *
    * @param duration How long to sleep.
    * @throws InterruptedException If the thread is interrupted while sleeping.
    */
-  @Deprecated
-  default void sleep(Duration duration) throws InterruptedException {
-    sleep(java.time.Duration.of(duration.in(TimeUnit.MILLISECONDS), ChronoUnit.MILLIS));
-  }
-
-  /**
-   * Sleeps for the specified duration of time.
-   *
-   * @param duration How long to sleep.
-   * @throws InterruptedException If the thread is interrupted while sleeping.
-   */
-  void sleep(java.time.Duration duration) throws InterruptedException;
+  void sleep(Duration duration) throws InterruptedException;
 }

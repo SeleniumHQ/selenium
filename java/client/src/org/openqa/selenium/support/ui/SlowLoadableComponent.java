@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -34,16 +35,9 @@ import java.time.Instant;
  */
 public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     extends LoadableComponent<T> {
-  private final java.time.Clock clock;
-  private final Duration timeOutInSeconds;
 
-  /**
-   * @deprecated Use {@link #SlowLoadableComponent(java.time.Clock, int)}.
-   */
-  @Deprecated
-  public SlowLoadableComponent(Clock clock, int timeOutInSeconds) {
-    this(clock.asJreClock(), timeOutInSeconds);
-  }
+  private final Clock clock;
+  private final Duration timeOutInSeconds;
 
   public SlowLoadableComponent(java.time.Clock clock, int timeOutInSeconds) {
     this.clock = clock;
