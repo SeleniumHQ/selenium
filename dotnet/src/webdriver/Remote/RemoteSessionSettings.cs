@@ -46,6 +46,28 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Creates a new instance of the <see cref="RemoteSessionSettings"/> class,
+        /// containing the specified <see cref="DriverOptions"/> to use in the remote
+        /// session.
+        /// </summary>
+        /// <param name="mustMatchDriverOptions">
+        /// A <see cref="DriverOptions"/> object that contains values that must be matched
+        /// by the remote end to create the remote session.
+        /// </param>
+        /// <param name="firstMatchDriverOptions">
+        /// A list of <see cref="DriverOptions"/> objects that contain values that may be matched
+        /// by the remote end to create the remote session.
+        /// </param>
+        public RemoteSessionSettings(DriverOptions mustMatchDriverOptions, params DriverOptions[] firstMatchDriverOptions)
+        {
+            this.mustMatchDriverOptions = mustMatchDriverOptions;
+            foreach (DriverOptions firstMatchOption in firstMatchDriverOptions)
+            {
+                this.AddFirstMatchDriverOption(firstMatchOption);
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating the options that must be matched by the remote end to create a session.
         /// </summary>
         internal DriverOptions MustMatchDriverOptions
@@ -88,38 +110,9 @@ namespace OpenQA.Selenium
                     throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "The capability {0} is not present in this set of capabilities", capabilityName));
                 }
 
-                return null;
-
-                if (!this.remoteMetadataSettings.ContainsKey(capabilityName))
-                {
-                    throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "The capability {0} is not present in this set of capabilities", capabilityName));
-                }
-
                 return this.remoteMetadataSettings[capabilityName];
             }
 
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="RemoteSessionSettings"/> class,
-        /// containing the specified <see cref="DriverOptions"/> to use in the remote
-        /// session.
-        /// </summary>
-        /// <param name="mustMatchDriverOptions">
-        /// A <see cref="DriverOptions"/> object that contains values that must be matched
-        /// by the remote end to create the remote session.
-        /// </param>
-        /// <param name="firstMatchDriverOptions">
-        /// A list of <see cref="DriverOptions"/> objects that contain values that may be matched
-        /// by the remote end to create the remote session.
-        /// </param>
-        public RemoteSessionSettings(DriverOptions mustMatchDriverOptions, params DriverOptions[] firstMatchDriverOptions)
-        {
-            this.mustMatchDriverOptions = mustMatchDriverOptions;
-            foreach (DriverOptions firstMatchOption in firstMatchDriverOptions)
-            {
-                this.AddFirstMatchDriverOption(firstMatchOption);
-            }
         }
 
         /// <summary>
