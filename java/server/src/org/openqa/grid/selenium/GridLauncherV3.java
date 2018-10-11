@@ -60,33 +60,30 @@ public class GridLauncherV3 {
   private static final BuildInfo buildInfo = new BuildInfo();
 
   private PrintStream out;
-  private String[] args;
 
   @FunctionalInterface
   private interface GridItemLauncher {
-
     Optional<Stoppable> launch(PrintStream out) throws Exception;
   }
 
   private static Map<String, Function<String[], GridItemLauncher>> LAUNCHERS = buildLaunchers();
 
   public static void main(String[] args) {
-    new GridLauncherV3(args).launch();
+    new GridLauncherV3().launch(args);
   }
 
-  public GridLauncherV3(String[] args) {
-    this(System.out, args);
+  public GridLauncherV3() {
+    this(System.out);
   }
 
   @VisibleForTesting
-  public GridLauncherV3(PrintStream out, String[] args) {
+  public GridLauncherV3(PrintStream out) {
     this.out = out;
-    this.args = args;
 
     System.setProperty("org.seleniumhq.jetty9.LEVEL", "WARN");
   }
 
-  public Optional<Stoppable> launch() {
+  public Optional<Stoppable> launch(String[] args) {
     GridItemLauncher launcher = buildLauncher(args);
 
     if (launcher == null) {
