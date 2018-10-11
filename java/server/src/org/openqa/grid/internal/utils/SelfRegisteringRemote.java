@@ -111,7 +111,7 @@ public class SelfRegisteringRemote {
     this.server = server;
   }
 
-  public boolean startRemoteServer() throws Exception {
+  public boolean startRemoteServer() {
     if (server == null) {
       throw new GridConfigurationException("no server set to register to the hub");
     }

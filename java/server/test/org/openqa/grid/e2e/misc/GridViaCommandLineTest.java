@@ -57,7 +57,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -65,17 +64,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class GridViaCommandLineTest {
 
-  private Optional<Stoppable> server;
-  private Optional<Stoppable> node;
+  private Stoppable server = ()->{};
+  private Stoppable node = ()->{};
 
   @After
   public void stopServer() {
-    if (server != null) {
-      server.ifPresent(Stoppable::stop);
-    }
-    if (node != null) {
-      node.ifPresent(Stoppable::stop);
-    }
+    server.stop();
+    node.stop();
   }
 
   @Test
@@ -126,7 +121,7 @@ public class GridViaCommandLineTest {
     String[] args = {"-log", tempLog.toString(), "-port", port.toString()};
 
     server = new GridLauncherV3().launch(args);
-    assertTrue(server.isPresent());
+    assertNotNull(server);
     waitUntilServerIsAvailableOnPort(port);
 
     String log = String.join("", Files.readAllLines(tempLog));
@@ -140,8 +135,8 @@ public class GridViaCommandLineTest {
     String[] args = {"-role", "standalone", "-port", port.toString()};
 
     server = new GridLauncherV3(new PrintStream(outSpy)).launch(args);
-    assertTrue(server.isPresent());
-    assertThat(server.get()).isInstanceOf(SeleniumServer.class);
+    assertNotNull(server);
+    assertThat(server).isInstanceOf(SeleniumServer.class);
     waitUntilServerIsAvailableOnPort(port);
 
     String content = getContentOf(port, "/");
@@ -159,8 +154,8 @@ public class GridViaCommandLineTest {
     String[] args = {"-port", port.toString()};
 
     server = new GridLauncherV3(new PrintStream(outSpy)).launch(args);
-    assertTrue(server.isPresent());
-    assertThat(server.get()).isInstanceOf(SeleniumServer.class);
+    assertNotNull(server);
+    assertThat(server).isInstanceOf(SeleniumServer.class);
     waitUntilServerIsAvailableOnPort(port);
   }
 
@@ -171,7 +166,7 @@ public class GridViaCommandLineTest {
     String[] args = {"-debug", "-log", tempLog.toString(), "-port", port.toString()};
 
     server = new GridLauncherV3().launch(args);
-    assertTrue(server.isPresent());
+    assertNotNull(server);
 
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
                                            DesiredCapabilities.htmlUnit());
@@ -186,7 +181,7 @@ public class GridViaCommandLineTest {
     String[] args = {"-log", tempLog.toString(), "-port", port.toString(), "-timeout", "5"};
 
     server = new GridLauncherV3().launch(args);
-    assertTrue(server.isPresent());
+    assertNotNull(server);
 
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
                                            DesiredCapabilities.htmlUnit());
@@ -244,7 +239,7 @@ public class GridViaCommandLineTest {
                         "-throwOnCapabilityNotPresent", "true"};
 
     server = new GridLauncherV3().launch(hubArgs);
-    Hub hub = (Hub) server.orElse(null);
+    Hub hub = (Hub) server;
     assertNotNull("Hub didn't start with given parameters." ,hub);
 
     assertTrue("throwOnCapabilityNotPresent was false in the Hub and it was passed as true",
@@ -257,7 +252,7 @@ public class GridViaCommandLineTest {
     hubArgs = new String[]{"-role", "hub", "-host", "localhost", "-port", hubPort.toString(),
                            "-throwOnCapabilityNotPresent", "false"};
     server = new GridLauncherV3().launch(hubArgs);
-    hub = (Hub) server.orElse(null);
+    hub = (Hub) server;
     assertNotNull("Hub didn't start with given parameters." ,hub);
 
     assertFalse("throwOnCapabilityNotPresent was true in the Hub and it was passed as false",
@@ -291,8 +286,8 @@ public class GridViaCommandLineTest {
     server = new GridLauncherV3().launch(hubArgs);
     waitUntilServerIsAvailableOnPort(hubPort);
 
-    assertThat(server.get()).isInstanceOf(Hub.class);
-    GridHubConfiguration realHubConfig = ((Hub) server.get()).getConfiguration();
+    assertThat(server).isInstanceOf(Hub.class);
+    GridHubConfiguration realHubConfig = ((Hub) server).getConfiguration();
     assertEquals(10000, realHubConfig.cleanUpCycle.intValue());
     assertEquals(30000, realHubConfig.browserTimeout.intValue());
     assertEquals(3600, realHubConfig.timeout.intValue());

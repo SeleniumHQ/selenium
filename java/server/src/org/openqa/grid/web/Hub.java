@@ -239,7 +239,7 @@ public class Hub implements Stoppable {
     return json.toType(json.toJson(config.toJson()), Map.class);
   }
 
-  public void start() throws Exception {
+  public void start() {
     initServer();
 
     try {
