@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.grid.web.CompoundHandler;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorHandler;

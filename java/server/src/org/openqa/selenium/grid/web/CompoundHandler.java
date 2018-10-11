@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.server;
+package org.openqa.selenium.grid.web;
 
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.grid.web.CommandHandler;

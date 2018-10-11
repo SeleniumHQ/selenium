@@ -1,0 +1,18 @@
+
+java_test(
+    name = "sessionmap",
+    srcs = glob(["*.java"]),
+    labels = [
+        "small",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/grid/data:data",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap:sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/local:local",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/remote:remote",
+        "//java/server/src/org/openqa/selenium/grid/web:web",
+        "//third_party/java/assertj:assertj",
+        "//third_party/java/junit:junit",
+    ],
+)
