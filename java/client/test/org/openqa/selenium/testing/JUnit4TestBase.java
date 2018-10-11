@@ -37,7 +37,6 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -49,7 +48,7 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 @RunWith(SeleniumTestRunner.class)
-public abstract class JUnit4TestBase implements WrapsDriver {
+public abstract class JUnit4TestBase {
 
   private static final Logger logger = Logger.getLogger(JUnit4TestBase.class.getName());
 
@@ -224,10 +223,6 @@ public abstract class JUnit4TestBase implements WrapsDriver {
         return base;
       }
     }
-  }
-
-  public WebDriver getWrappedDriver() {
-    return storedDriver.get();
   }
 
   private void createDriver() {
