@@ -16,7 +16,7 @@
 # under the License.
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from ..common.options import BaseOptions
+from selenium.webdriver.common.options import BaseOptions
 
 
 class Options(BaseOptions):

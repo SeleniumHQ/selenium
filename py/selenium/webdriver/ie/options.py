@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from ..common.options import ArgOptions
+from selenium.webdriver.common.options import ArgOptions
 
 
 class ElementScrollBehavior(object):

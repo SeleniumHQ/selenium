@@ -21,7 +21,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from ..common.options import ArgOptions
+from selenium.webdriver.common.options import ArgOptions
 
 
 class Log(object):
