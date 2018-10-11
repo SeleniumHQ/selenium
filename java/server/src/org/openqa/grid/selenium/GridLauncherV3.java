@@ -66,7 +66,7 @@ public class GridLauncherV3 {
     Stoppable launch(PrintStream out);
   }
 
-  private static Map<String, Function<String[], GridItemLauncher>> LAUNCHERS = buildLaunchers();
+  private static Map<GridRole, Function<String[], GridItemLauncher>> LAUNCHERS = buildLaunchers();
 
   public static void main(String[] args) {
     new GridLauncherV3().launch(args);
@@ -118,12 +118,12 @@ public class GridLauncherV3 {
     }
 
     GridRole gridRole = GridRole.get(role);
-    if (gridRole == null || LAUNCHERS.get(gridRole.toString()) == null) {
+    if (gridRole == null || LAUNCHERS.get(gridRole) == null) {
       printInfoAboutRoles(role);
       return null;
     }
 
-    return LAUNCHERS.get(gridRole.toString()).apply(args);
+    return LAUNCHERS.get(gridRole).apply(args);
   }
 
   private void printInfoAboutRoles(String roleCommandLineArg) {
@@ -208,7 +208,7 @@ public class GridLauncherV3 {
     }
   }
 
-  private static Map<String, Function<String[], GridItemLauncher>> buildLaunchers() {
+  private static Map<GridRole, Function<String[], GridItemLauncher>> buildLaunchers() {
     BiConsumer<JCommander, PrintStream> usage = (commander, out) -> {
       StringBuilder toPrint = new StringBuilder();
       commander.usage(toPrint);
@@ -222,112 +222,101 @@ public class GridLauncherV3 {
           buildInfo.getBuildRevision()));
     };
 
-    ImmutableMap.Builder<String, Function<String[], GridItemLauncher>> launchers =
-        ImmutableMap.<String, Function<String[], GridItemLauncher>>builder()
-            .put(GridRole.NOT_GRID.toString(), (args) -> new GridItemLauncher() {
-              @Override
-              public Stoppable launch(PrintStream out) {
-                StandaloneCliOptions options = new StandaloneCliOptions();
-                JCommander commander = options.parse(args);
+    return ImmutableMap.<GridRole, Function<String[], GridItemLauncher>>builder()
+        .put(GridRole.NOT_GRID, (args) -> out -> {
+          StandaloneCliOptions options = new StandaloneCliOptions();
+          JCommander commander = options.parse(args);
 
-                if (options.getVersion()) {
-                  version.accept(out);
-                  return ()->{};
-                }
+          if (options.getVersion()) {
+            version.accept(out);
+            return ()->{};
+          }
 
-                if (options.getHelp()) {
-                  usage.accept(commander, out);
-                  return ()->{};
-                }
+          if (options.getHelp()) {
+            usage.accept(commander, out);
+            return ()->{};
+          }
 
-                configureLogging(options.getLog(), options.getDebug());
+          configureLogging(options.getLog(), options.getDebug());
 
-                log.info(String.format(
-                    "Selenium build info: version: '%s', revision: '%s'",
-                    buildInfo.getReleaseLabel(),
-                    buildInfo.getBuildRevision()));
+          log.info(String.format(
+              "Selenium build info: version: '%s', revision: '%s'",
+              buildInfo.getReleaseLabel(),
+              buildInfo.getBuildRevision()));
 
-                StandaloneConfiguration configuration = new StandaloneConfiguration(options);
-                log.info(String.format(
-                    "Launching a standalone Selenium Server on port %s", configuration.port));
-                SeleniumServer server = new SeleniumServer(configuration);
-                server.boot();
-                return server;
-              }
-            })
-            .put(GridRole.HUB.toString(), (args) -> new GridItemLauncher() {
+          StandaloneConfiguration configuration = new StandaloneConfiguration(options);
+          log.info(String.format(
+              "Launching a standalone Selenium Server on port %s", configuration.port));
+          SeleniumServer server = new SeleniumServer(configuration);
+          server.boot();
+          return server;
+        })
 
-              @Override
-              public Stoppable launch(PrintStream out) {
-                GridHubCliOptions options = new GridHubCliOptions();
-                JCommander commander = options.parse(args);
+        .put(GridRole.HUB, (args) -> out -> {
+          GridHubCliOptions options = new GridHubCliOptions();
+          JCommander commander = options.parse(args);
 
-                if (options.getVersion()) {
-                  version.accept(out);
-                  return ()->{};
-                }
+          if (options.getVersion()) {
+            version.accept(out);
+            return ()->{};
+          }
 
-                if (options.getHelp()) {
-                  usage.accept(commander, out);
-                  return ()->{};
-                }
+          if (options.getHelp()) {
+            usage.accept(commander, out);
+            return ()->{};
+          }
 
-                configureLogging(options.getLog(), options.getDebug());
+          configureLogging(options.getLog(), options.getDebug());
 
-                log.info(String.format(
-                    "Selenium build info: version: '%s', revision: '%s'",
-                    buildInfo.getReleaseLabel(),
-                    buildInfo.getBuildRevision()));
+          log.info(String.format(
+              "Selenium build info: version: '%s', revision: '%s'",
+              buildInfo.getReleaseLabel(),
+              buildInfo.getBuildRevision()));
 
-                GridHubConfiguration configuration = new GridHubConfiguration(options);
-                log.info(String.format(
-                    "Launching Selenium Grid hub on port %s", configuration.port));
-                Hub hub = new Hub(configuration);
-                hub.start();
-                return hub;
-              }
-            })
-            .put(GridRole.NODE.toString(), (args) -> new GridItemLauncher() {
+          GridHubConfiguration configuration = new GridHubConfiguration(options);
+          log.info(String.format(
+              "Launching Selenium Grid hub on port %s", configuration.port));
+          Hub hub = new Hub(configuration);
+          hub.start();
+          return hub;
+        })
 
-              @Override
-              public Stoppable launch(PrintStream out) {
-                GridNodeCliOptions options = new GridNodeCliOptions();
-                JCommander commander = options.parse(args);
+        .put(GridRole.NODE, (args) -> out -> {
+          GridNodeCliOptions options = new GridNodeCliOptions();
+          JCommander commander = options.parse(args);
 
-                if (options.getVersion()) {
-                  version.accept(out);
-                  return ()->{};
-                }
+          if (options.getVersion()) {
+            version.accept(out);
+            return ()->{};
+          }
 
-                if (options.getHelp()) {
-                  usage.accept(commander, out);
-                  return ()->{};
-                }
+          if (options.getHelp()) {
+            usage.accept(commander, out);
+            return ()->{};
+          }
 
-                configureLogging(options.getLog(), options.getDebug());
+          configureLogging(options.getLog(), options.getDebug());
 
-                log.info(String.format(
-                    "Selenium build info: version: '%s', revision: '%s'",
-                    buildInfo.getReleaseLabel(),
-                    buildInfo.getBuildRevision()));
+          log.info(String.format(
+              "Selenium build info: version: '%s', revision: '%s'",
+              buildInfo.getReleaseLabel(),
+              buildInfo.getBuildRevision()));
 
-                GridNodeConfiguration configuration = new GridNodeConfiguration(options);
-                if (configuration.port == null || configuration.port == -1) {
-                  configuration.port = PortProber.findFreePort();
-                }
-                log.info(String.format(
-                    "Launching a Selenium Grid node on port %s", configuration.port));
-                SelfRegisteringRemote remote = new SelfRegisteringRemote(configuration);
-                SeleniumServer server = new SeleniumServer(remote.getConfiguration());
-                remote.setRemoteServer(server);
-                if (remote.startRemoteServer()) {
-                  log.info("Selenium Grid node is up and ready to register to the hub");
-                  remote.startRegistrationProcess();
-                }
-                return server;
-              }
-            });
-
-    return launchers.build();
+          GridNodeConfiguration configuration = new GridNodeConfiguration(options);
+          if (configuration.port == null || configuration.port == -1) {
+            configuration.port = PortProber.findFreePort();
+          }
+          log.info(String.format(
+              "Launching a Selenium Grid node on port %s", configuration.port));
+          SelfRegisteringRemote remote = new SelfRegisteringRemote(configuration);
+          SeleniumServer server = new SeleniumServer(remote.getConfiguration());
+          remote.setRemoteServer(server);
+          if (remote.startRemoteServer()) {
+            log.info("Selenium Grid node is up and ready to register to the hub");
+            remote.startRegistrationProcess();
+          }
+          return server;
+        })
+    .build();
   }
 }
