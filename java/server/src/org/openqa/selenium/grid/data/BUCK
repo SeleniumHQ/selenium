@@ -1,12 +1,13 @@
+
 java_library(
-    name = "web",
+    name = "data",
     srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/remote:remote",
-        "//java/server/src/org/openqa/selenium/injector:injector",
         "//third_party/java/guava:guava",
     ],
     visibility = [
-        "//java/server/...",
-    ]
+        "//java/server/src/org/openqa/selenium/grid/...",
+        "//java/server/test/org/openqa/selenium/grid/...",
+    ],
 )

@@ -27,6 +27,7 @@ import com.google.common.net.MediaType;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.CompoundHandler;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
