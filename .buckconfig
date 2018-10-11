@@ -17,7 +17,6 @@
   metadata_storage = sqlite
 
 [buildfile]
-  name = BUILD
   includes = //java/rules.bzl
 
 [cache]
