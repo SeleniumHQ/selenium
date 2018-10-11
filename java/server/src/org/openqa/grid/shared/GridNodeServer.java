@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.servlet.Servlet;
 
 public interface GridNodeServer extends Stoppable {
-  boolean boot() throws Exception;
+  boolean boot();
   int getRealPort();
   void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets);
 }

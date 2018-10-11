@@ -63,7 +63,7 @@ public class GridLauncherV3 {
 
   @FunctionalInterface
   private interface GridItemLauncher {
-    Optional<Stoppable> launch(PrintStream out) throws Exception;
+    Stoppable launch(PrintStream out);
   }
 
   private static Map<String, Function<String[], GridItemLauncher>> LAUNCHERS = buildLaunchers();
@@ -83,18 +83,10 @@ public class GridLauncherV3 {
     System.setProperty("org.seleniumhq.jetty9.LEVEL", "WARN");
   }
 
-  public Optional<Stoppable> launch(String[] args) {
-    GridItemLauncher launcher = buildLauncher(args);
-
-    if (launcher == null) {
-      return Optional.empty();
-    }
-
-    try {
-      return launcher.launch(out);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+  public Stoppable launch(String[] args) {
+    return Optional.ofNullable(buildLauncher(args))
+        .map(l -> l.launch(out))
+        .orElse(()->{});
   }
 
   /**
@@ -103,7 +95,7 @@ public class GridLauncherV3 {
    * @return null if no role is found, or a properly populated {@link GridItemLauncher}.
    */
   private GridItemLauncher buildLauncher(String[] args) {
-    if (Arrays.stream(args).anyMatch("-htmlSuite"::equals)) {
+    if (Arrays.asList(args).contains("-htmlSuite")) {
       out.println(Joiner.on("\n").join(
           "Download the Selenium HTML Runner from http://www.seleniumhq.org/download/ and",
           "use that to run your HTML suite."));
@@ -234,18 +226,18 @@ public class GridLauncherV3 {
         ImmutableMap.<String, Function<String[], GridItemLauncher>>builder()
             .put(GridRole.NOT_GRID.toString(), (args) -> new GridItemLauncher() {
               @Override
-              public Optional<Stoppable> launch(PrintStream out) {
+              public Stoppable launch(PrintStream out) {
                 StandaloneCliOptions options = new StandaloneCliOptions();
                 JCommander commander = options.parse(args);
 
                 if (options.getVersion()) {
                   version.accept(out);
-                  return Optional.empty();
+                  return ()->{};
                 }
 
                 if (options.getHelp()) {
                   usage.accept(commander, out);
-                  return Optional.empty();
+                  return ()->{};
                 }
 
                 configureLogging(options.getLog(), options.getDebug());
@@ -260,24 +252,24 @@ public class GridLauncherV3 {
                     "Launching a standalone Selenium Server on port %s", configuration.port));
                 SeleniumServer server = new SeleniumServer(configuration);
                 server.boot();
-                return Optional.of(server);
+                return server;
               }
             })
             .put(GridRole.HUB.toString(), (args) -> new GridItemLauncher() {
 
               @Override
-              public Optional<Stoppable> launch(PrintStream out) throws Exception {
+              public Stoppable launch(PrintStream out) {
                 GridHubCliOptions options = new GridHubCliOptions();
                 JCommander commander = options.parse(args);
 
                 if (options.getVersion()) {
                   version.accept(out);
-                  return Optional.empty();
+                  return ()->{};
                 }
 
                 if (options.getHelp()) {
                   usage.accept(commander, out);
-                  return Optional.empty();
+                  return ()->{};
                 }
 
                 configureLogging(options.getLog(), options.getDebug());
@@ -292,24 +284,24 @@ public class GridLauncherV3 {
                     "Launching Selenium Grid hub on port %s", configuration.port));
                 Hub hub = new Hub(configuration);
                 hub.start();
-                return Optional.of(hub);
+                return hub;
               }
             })
             .put(GridRole.NODE.toString(), (args) -> new GridItemLauncher() {
 
               @Override
-              public Optional<Stoppable> launch(PrintStream out) throws Exception {
+              public Stoppable launch(PrintStream out) {
                 GridNodeCliOptions options = new GridNodeCliOptions();
                 JCommander commander = options.parse(args);
 
                 if (options.getVersion()) {
                   version.accept(out);
-                  return Optional.empty();
+                  return ()->{};
                 }
 
                 if (options.getHelp()) {
                   usage.accept(commander, out);
-                  return Optional.empty();
+                  return ()->{};
                 }
 
                 configureLogging(options.getLog(), options.getDebug());
@@ -332,7 +324,7 @@ public class GridLauncherV3 {
                   log.info("Selenium Grid node is up and ready to register to the hub");
                   remote.startRegistrationProcess();
                 }
-                return Optional.of(server);
+                return server;
               }
             });
 
