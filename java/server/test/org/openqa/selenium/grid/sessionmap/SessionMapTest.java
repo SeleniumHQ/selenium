@@ -28,17 +28,13 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
-import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.PassthroughHttpClient;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 /**
  * We test the session map by ensuring that the HTTP protocol is properly adhered to. If this is
@@ -110,24 +106,4 @@ public class SessionMapTest {
     remote.get(id);
   }
 
-  private static class PassthroughHttpClient<T extends Predicate<HttpRequest> & CommandHandler>
-      implements HttpClient {
-
-    private final T handler;
-
-    public PassthroughHttpClient(T handler) {
-      this.handler = handler;
-    }
-
-    @Override
-    public HttpResponse execute(HttpRequest request) throws IOException {
-      if (!handler.test(request)) {
-        throw new IOException("Doomed");
-      }
-
-      HttpResponse response = new HttpResponse();
-      handler.execute(request, response);
-      return response;
-    }
-  }
 }

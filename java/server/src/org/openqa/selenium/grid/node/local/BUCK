@@ -1,13 +1,15 @@
+
 java_library(
-    name = "session",
+    name = "local",
     srcs = glob(["*.java"]),
     deps = [
-        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/grid/node:node",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap:sessionmap",
         "//java/server/src/org/openqa/selenium/grid/web:web",
         "//third_party/java/guava:guava",
     ],
     visibility = [
-        "//java/server/src/org/openqa/selenium/...",
+        "//java/server/src/org/openqa/selenium/grid/...",
         "//java/server/test/org/openqa/selenium/grid/...",
     ],
 )
