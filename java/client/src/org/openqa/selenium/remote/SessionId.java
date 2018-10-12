@@ -18,10 +18,15 @@
 package org.openqa.selenium.remote;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class SessionId {
 
   private final String opaqueKey;
+
+  public SessionId(UUID uuid) {
+    this(Objects.requireNonNull(uuid, "Session ID key has not been set.").toString());
+  }
 
   public SessionId(String opaqueKey) {
     this.opaqueKey = Objects.requireNonNull(opaqueKey, "Session ID key has not been set.");
