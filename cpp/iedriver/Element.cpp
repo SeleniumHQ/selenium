@@ -640,11 +640,26 @@ int Element::GetCssPropertyValue(const std::string& property_name,
   status_code = script_wrapper.Execute();
 
   if (status_code == WD_SUCCESS) {
-    std::wstring raw_value(script_wrapper.result().bstrVal);
+    std::wstring raw_value = L"";
+    if (script_wrapper.ResultIsString()) {
+      raw_value.assign(script_wrapper.result().bstrVal);
+    } else if (script_wrapper.ResultIsInteger()) {
+      long int_value = script_wrapper.result().lVal;
+      raw_value = std::to_wstring(int_value);
+    } else if (script_wrapper.ResultIsDouble()) {
+      double dbl_value = script_wrapper.result().dblVal;
+      raw_value = std::to_wstring(dbl_value);
+    } else if (script_wrapper.ResultIsBoolean()) {
+      if (script_wrapper.result().boolVal == VARIANT_TRUE) {
+        raw_value = L"true";
+      } else {
+        raw_value = L"false";
+      }
+    }
     std::string value = StringUtilities::ToString(raw_value);
-    std::transform(raw_value.begin(),
-                   raw_value.end(),
-                   raw_value.begin(),
+    std::transform(value.begin(),
+                   value.end(),
+                   value.begin(),
                    tolower);
     *property_value = value;
   } else {
