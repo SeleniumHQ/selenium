@@ -28,6 +28,11 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Represents a running instance of a WebDriver session. It is identified by a {@link SessionId}.
+ * The serialized form is designed to mimic that of the return value of the New Session command, but
+ * an additional {@code uri} field must also be present.
+ */
 public class Session {
 
   private final SessionId id;
