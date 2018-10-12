@@ -25,7 +25,7 @@ class Service(service.Service):
     Object that manages the starting and stopping of the SafariDriver
     """
 
-    def __init__(self, executable_path, port=0, service_args=None, quiet=False):
+    def __init__(self, executable_path, port=0, quiet=False, service_args=None):
         """
         Creates a new instance of the Service
 

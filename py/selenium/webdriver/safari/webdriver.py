@@ -33,9 +33,9 @@ class WebDriver(RemoteWebDriver):
 
     """
 
-    def __init__(self, port=0, service_args=None, executable_path="/usr/bin/safaridriver", reuse_service=False,
+    def __init__(self, port=0, executable_path="/usr/bin/safaridriver", reuse_service=False,
                  desired_capabilities=DesiredCapabilities.SAFARI, quiet=False,
-                 keep_alive=True):
+                 keep_alive=True, service_args=None):
         """
 
         Creates a new Safari driver instance and launches or finds a running safaridriver service.
