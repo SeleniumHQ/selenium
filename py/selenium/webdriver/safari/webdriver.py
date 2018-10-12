@@ -52,7 +52,7 @@ class WebDriver(RemoteWebDriver):
         """
 
         self._reuse_service = reuse_service
-        self.service = Service(executable_path, port=port, service_args=service_args, quiet=quiet)
+        self.service = Service(executable_path, port=port, quiet=quiet, service_args=service_args)
         if not reuse_service:
             self.service.start()
 
