@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+import com.beust.jcommander.JCommander;
+
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
@@ -76,7 +78,7 @@ public class DefaultRemoteProxyTest {
     registry.getHub().getConfiguration().cleanUpCycle = cleanupCycle;
     String[] args = new String[]{"-role", "webdriver"};
     GridNodeCliOptions options = new GridNodeCliOptions();
-    options.parse(args);
+    JCommander.newBuilder().addObject(options).build().parse(args);
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration(options);
     nodeConfiguration.port = new Random().nextInt(100);
     nodeConfiguration.timeout = 1;
