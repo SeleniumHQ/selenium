@@ -31,7 +31,8 @@ class Service(service.Service):
 
         :Args:
          - executable_path : Path to the SafariDriver
-         - port : Port the service is running on 
+         - port : Port the service is running on
+         - quiet : Suppress driver stdout and stderr
          - service_args : List of args to pass to the safaridriver service """
 
         if not os.path.exists(executable_path):
