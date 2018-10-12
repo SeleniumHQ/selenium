@@ -17,6 +17,7 @@
 
 package org.openqa.grid.internal.cli;
 
+import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 public abstract class CommonCliOptions {
@@ -133,6 +134,8 @@ public abstract class CommonCliOptions {
   )
   // initially defaults to false from boolean primitive type
   private Boolean captureLogsOnQuit = false;
+
+  public abstract JCommander parse(String... args);
 
   public Boolean getVersion() {
     return version;

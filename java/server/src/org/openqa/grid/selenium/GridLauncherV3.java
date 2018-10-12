@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMap;
 import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.common.GridRole;
+import org.openqa.grid.internal.cli.CommonCliOptions;
 import org.openqa.grid.internal.cli.GridHubCliOptions;
 import org.openqa.grid.internal.cli.GridNodeCliOptions;
 import org.openqa.grid.internal.cli.StandaloneCliOptions;
@@ -45,9 +46,6 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -63,10 +61,10 @@ public class GridLauncherV3 {
 
   @FunctionalInterface
   private interface GridItemLauncher {
-    Stoppable launch(PrintStream out, String[] args);
+    Stoppable launch(String[] args);
   }
 
-  private static Map<GridRole, GridItemLauncher> LAUNCHERS = buildLaunchers();
+  private Map<GridRole, GridItemLauncher> LAUNCHERS = buildLaunchers();
 
   public static void main(String[] args) {
     new GridLauncherV3().launch(args);
@@ -85,7 +83,7 @@ public class GridLauncherV3 {
 
   public Stoppable launch(String[] args) {
     return Optional.ofNullable(buildLauncher(args))
-        .map(l -> l.launch(out, args))
+        .map(l -> l.launch(args))
         .orElse(()->{});
   }
 
@@ -152,18 +150,18 @@ public class GridLauncherV3 {
   }
 
   private void printWrappedLine(String prefix, String msg) {
-    printWrappedLine(out, prefix, msg, true);
+    printWrappedLine(prefix, msg, true);
   }
 
-  private void printWrappedLine(PrintStream output, String prefix, String msg, boolean first) {
-    output.print(prefix);
+  private void printWrappedLine(String prefix, String msg, boolean first) {
+    out.print(prefix);
     if (!first) {
-      output.print("  ");
+      out.print("  ");
     }
     int defaultWrap = 70;
     int wrap = defaultWrap - prefix.length();
     if (wrap > msg.length()) {
-      output.println(msg);
+      out.println(msg);
       return;
     }
     String lineRaw = msg.substring(0, wrap);
@@ -172,8 +170,8 @@ public class GridLauncherV3 {
       spaceIndex = lineRaw.length();
     }
     String line = lineRaw.substring(0, spaceIndex);
-    output.println(line);
-    printWrappedLine(output, prefix, msg.substring(spaceIndex + 1), false);
+    out.println(line);
+    printWrappedLine(prefix, msg.substring(spaceIndex + 1), false);
   }
 
   private static void configureLogging(String log, boolean debug) {
@@ -208,41 +206,39 @@ public class GridLauncherV3 {
     }
   }
 
-  private static Map<GridRole, GridItemLauncher> buildLaunchers() {
-    BiConsumer<JCommander, PrintStream> usage = (commander, out) -> {
+  private String version() {
+    return String.format(
+        "Selenium server version: %s, revision: %s",
+        buildInfo.getReleaseLabel(),
+        buildInfo.getBuildRevision());
+  }
+
+  private boolean parse(CommonCliOptions options, String[] args) {
+    JCommander commander = options.parse(args);
+    if (options.getVersion()) {
+      out.println(version());
+      return false;
+    }
+
+    if (options.getHelp()) {
       StringBuilder toPrint = new StringBuilder();
       commander.usage(toPrint);
       out.append(toPrint);
-    };
+      return false;
+    }
 
-    Consumer<PrintStream> version = out -> {
-      out.println(String.format(
-          "Selenium server version: %s, revision: %s",
-          buildInfo.getReleaseLabel(),
-          buildInfo.getBuildRevision()));
-    };
+    configureLogging(options.getLog(), options.getDebug());
+    log.info(version());
+    return true;
+  }
 
+  private Map<GridRole, GridItemLauncher> buildLaunchers() {
     return ImmutableMap.<GridRole, GridItemLauncher>builder()
-        .put(GridRole.NOT_GRID, (out, args) -> {
+        .put(GridRole.NOT_GRID, (args) -> {
           StandaloneCliOptions options = new StandaloneCliOptions();
-          JCommander commander = options.parse(args);
-
-          if (options.getVersion()) {
-            version.accept(out);
+          if (!parse(options, args)) {
             return ()->{};
           }
-
-          if (options.getHelp()) {
-            usage.accept(commander, out);
-            return ()->{};
-          }
-
-          configureLogging(options.getLog(), options.getDebug());
-
-          log.info(String.format(
-              "Selenium build info: version: '%s', revision: '%s'",
-              buildInfo.getReleaseLabel(),
-              buildInfo.getBuildRevision()));
 
           StandaloneConfiguration configuration = new StandaloneConfiguration(options);
           log.info(String.format(
@@ -252,26 +248,11 @@ public class GridLauncherV3 {
           return server;
         })
 
-        .put(GridRole.HUB, (out, args) -> {
+        .put(GridRole.HUB, (args) -> {
           GridHubCliOptions options = new GridHubCliOptions();
-          JCommander commander = options.parse(args);
-
-          if (options.getVersion()) {
-            version.accept(out);
+          if (!parse(options, args)) {
             return ()->{};
           }
-
-          if (options.getHelp()) {
-            usage.accept(commander, out);
-            return ()->{};
-          }
-
-          configureLogging(options.getLog(), options.getDebug());
-
-          log.info(String.format(
-              "Selenium build info: version: '%s', revision: '%s'",
-              buildInfo.getReleaseLabel(),
-              buildInfo.getBuildRevision()));
 
           GridHubConfiguration configuration = new GridHubConfiguration(options);
           log.info(String.format(
@@ -281,26 +262,11 @@ public class GridLauncherV3 {
           return hub;
         })
 
-        .put(GridRole.NODE, (out, args) -> {
+        .put(GridRole.NODE, (args) -> {
           GridNodeCliOptions options = new GridNodeCliOptions();
-          JCommander commander = options.parse(args);
-
-          if (options.getVersion()) {
-            version.accept(out);
+          if (!parse(options, args)) {
             return ()->{};
           }
-
-          if (options.getHelp()) {
-            usage.accept(commander, out);
-            return ()->{};
-          }
-
-          configureLogging(options.getLog(), options.getDebug());
-
-          log.info(String.format(
-              "Selenium build info: version: '%s', revision: '%s'",
-              buildInfo.getReleaseLabel(),
-              buildInfo.getBuildRevision()));
 
           GridNodeConfiguration configuration = new GridNodeConfiguration(options);
           if (configuration.port == null || configuration.port == -1) {
