@@ -20,6 +20,7 @@ package org.openqa.selenium;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Objects;
 
 public class ImmutableCapabilities extends AbstractCapabilities implements Serializable {
 
@@ -73,5 +74,15 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
 
   public ImmutableCapabilities(Map<String, ?> capabilities) {
     capabilities.forEach(this::setCapability);
+  }
+
+  public static ImmutableCapabilities copyOf(Capabilities capabilities) {
+    Objects.requireNonNull(capabilities, "Capabilities must be set");
+
+    if (capabilities instanceof ImmutableCapabilities) {
+      return (ImmutableCapabilities) capabilities;
+    }
+
+    return new ImmutableCapabilities(capabilities);
   }
 }
