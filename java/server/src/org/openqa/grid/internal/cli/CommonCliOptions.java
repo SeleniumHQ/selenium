@@ -17,7 +17,6 @@
 
 package org.openqa.grid.internal.cli;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 public abstract class CommonCliOptions {
@@ -110,8 +109,6 @@ public abstract class CommonCliOptions {
       description = "<Integer> : max number of threads for Jetty. An unspecified, zero, or negative value means the Jetty default value (200) will be used."
   )
   private Integer jettyMaxThreads;
-
-  public abstract JCommander parse(String... args);
 
   public Boolean getVersion() {
     return version;

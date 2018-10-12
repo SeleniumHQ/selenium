@@ -21,6 +21,8 @@ import static org.junit.Assert.fail;
 
 import com.google.common.base.Throwables;
 
+import com.beust.jcommander.JCommander;
+
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
@@ -49,7 +51,7 @@ public class GridTestHelper {
                      "-hub",hub.toString(),
                      "-port",String.valueOf(PortProber.findFreePort())};
     GridNodeCliOptions options = new GridNodeCliOptions();
-    options.parse(args);
+    JCommander.newBuilder().addObject(options).build().parse(args);
     GridNodeConfiguration config = new GridNodeConfiguration(options);
     RegistrationRequest req = RegistrationRequest.build(config);
     SelfRegisteringRemote remote = new SelfRegisteringRemote(req);

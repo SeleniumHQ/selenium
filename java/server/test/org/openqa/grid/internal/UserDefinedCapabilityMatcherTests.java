@@ -19,6 +19,8 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 
+import com.beust.jcommander.JCommander;
+
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.cli.GridNodeCliOptions;
@@ -34,7 +36,7 @@ public class UserDefinedCapabilityMatcherTests {
     GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
     String[] args = new String[]{"-role", "webdriver","-id", "abc","-host","localhost"};
     GridNodeCliOptions options = new GridNodeCliOptions();
-    options.parse(args);
+    JCommander.newBuilder().addObject(options).build().parse(args);
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration(options);
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
@@ -52,7 +54,7 @@ public class UserDefinedCapabilityMatcherTests {
     Hub hub = new Hub(hubConfig);
     String[] args = new String[]{"-role", "webdriver","-id", "abc","-host","localhost"};
     GridNodeCliOptions options = new GridNodeCliOptions();
-    options.parse(args);
+    JCommander.newBuilder().addObject(options).build().parse(args);
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration(options);
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;

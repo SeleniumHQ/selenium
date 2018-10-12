@@ -190,9 +190,9 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
 
   public static void main(String[] args) {
     StandaloneCliOptions options = new StandaloneCliOptions();
-    options.parse(args);
+    JCommander.newBuilder().addObject(options).build().parse(args);
 
-    if (options.help) {
+    if (options.getHelp()) {
       StringBuilder message = new StringBuilder();
       new JCommander(options).usage(message);
       System.err.println(message.toString());
@@ -201,15 +201,5 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
 
     SeleniumServer server = new SeleniumServer(new StandaloneConfiguration(options));
     server.boot();
-  }
-
-  public static void usage(String msg) {
-    if (msg != null) {
-      System.out.println(msg);
-    }
-
-    StandaloneCliOptions options = new StandaloneCliOptions();
-    JCommander commander = options.parse();
-    commander.usage();
   }
 }

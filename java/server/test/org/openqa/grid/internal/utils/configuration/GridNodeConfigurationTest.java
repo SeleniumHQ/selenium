@@ -23,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import com.beust.jcommander.JCommander;
+
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
@@ -196,12 +198,8 @@ public class GridNodeConfigurationTest {
 
   @Test
   public void testWithCapabilitiesArgs() {
-    final String[] args = new String[] { "-capabilities",
-                                       "browserName=chrome,platform=linux,maxInstances=10,boolean=false" };
-
-    GridNodeCliOptions options = new GridNodeCliOptions();
-    options.parse(args);
-    GridNodeConfiguration gnc = new GridNodeConfiguration(options);
+    GridNodeConfiguration gnc = parseCliOptions(
+        "-capabilities", "browserName=chrome,platform=linux,maxInstances=10,boolean=false");
     assertThat(gnc.capabilities).hasSize(1);
     assertThat(gnc.capabilities.get(0).getBrowserName()).isEqualTo("chrome");
     assertThat(gnc.capabilities.get(0).getCapability("maxInstances")).isEqualTo(10L);
@@ -366,7 +364,7 @@ public class GridNodeConfigurationTest {
 
   private GridNodeConfiguration parseCliOptions(String... args) {
     GridNodeCliOptions options = new GridNodeCliOptions();
-    options.parse(args);
+    JCommander.newBuilder().addObject(options).build().parse(args);
     return new GridNodeConfiguration(options);
   }
 

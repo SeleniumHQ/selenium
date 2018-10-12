@@ -24,6 +24,8 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.gson.Gson;
 
+import com.beust.jcommander.JCommander;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -192,7 +194,7 @@ public class BaseRemoteProxyTest {
 
   private GridNodeConfiguration parseCliOptions(String... args) {
     GridNodeCliOptions options = new GridNodeCliOptions();
-    options.parse(args);
+    JCommander.newBuilder().addObject(options).build().parse(args);
     return new GridNodeConfiguration(options);
   }
 }

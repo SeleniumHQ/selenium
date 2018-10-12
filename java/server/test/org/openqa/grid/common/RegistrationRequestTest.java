@@ -25,6 +25,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import com.beust.jcommander.JCommander;
+
 import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.grid.common.exception.GridConfigurationException;
@@ -380,7 +382,7 @@ public class RegistrationRequestTest {
 
   private GridNodeConfiguration parseCliOptions(String... args) {
     GridNodeCliOptions opts = new GridNodeCliOptions();
-    opts.parse(args);
+    JCommander.newBuilder().addObject(opts).build().parse(args);
     return new GridNodeConfiguration(opts);
   }
 }

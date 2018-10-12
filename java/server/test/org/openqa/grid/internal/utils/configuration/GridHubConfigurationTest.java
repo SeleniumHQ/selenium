@@ -19,6 +19,8 @@ package org.openqa.grid.internal.utils.configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.beust.jcommander.JCommander;
+
 import org.junit.Test;
 import org.openqa.grid.internal.cli.GridHubCliOptions;
 import org.openqa.grid.internal.utils.configuration.json.HubJsonConfiguration;
@@ -166,7 +168,7 @@ public class GridHubConfigurationTest {
     String[] args = ("-servlet com.foo.bar.ServletA -servlet com.foo.bar.ServletB"
                      + " -custom foo=bar,bar=baz").split(" ");
     GridHubCliOptions options = new GridHubCliOptions();
-    options.parse(args);
+    JCommander.newBuilder().addObject(options).build().parse(args);
     ghc = new GridHubConfiguration(options);
 
     assertThat(ghc.toString())
@@ -179,7 +181,7 @@ public class GridHubConfigurationTest {
     String[] hubArgs = {"-capabilityMatcher", "org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                         "-prioritizer", "org.openqa.grid.internal.utils.configuration.PlaceHolderTestingPrioritizer"};
     GridHubCliOptions options = new GridHubCliOptions();
-    options.parse(hubArgs);
+    JCommander.newBuilder().addObject(options).build().parse(hubArgs);
     GridHubConfiguration ghc = new GridHubConfiguration(options);
     assertThat(ghc.capabilityMatcher.getClass().getCanonicalName())
         .isEqualTo("org.openqa.grid.internal.utils.DefaultCapabilityMatcher");

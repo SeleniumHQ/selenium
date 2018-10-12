@@ -32,11 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -239,14 +236,14 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append("<b>the default :</b><br/>");
     builder.append(prettyHtmlPrint(tmp));
 
-    if (config.getCliConfig() != null) {
+    if (config.getRawArgs() != null) {
       builder.append("<b>updated with command line options:</b><br/>");
-      builder.append(String.join(" ", config.getCliConfig().getRawArgs()));
+      builder.append(String.join(" ", config.getRawArgs()));
 
-      if (config.getCliConfig().getConfigFile() != null) {
-        builder.append("<br/><b>and configuration loaded from ").append(config.getCliConfig().getConfigFile()).append(":</b><br/>");
+      if (config.getConfigFile() != null) {
+        builder.append("<br/><b>and configuration loaded from ").append(config.getConfigFile()).append(":</b><br/>");
         try {
-          builder.append(String.join("<br/>", Files.readAllLines(new File(config.getCliConfig().getConfigFile()).toPath())));
+          builder.append(String.join("<br/>", Files.readAllLines(new File(config.getConfigFile()).toPath())));
         } catch (IOException e) {
           builder.append("<b>").append(e.getMessage()).append("</b>");
         }

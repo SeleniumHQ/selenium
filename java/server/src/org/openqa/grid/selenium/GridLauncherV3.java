@@ -214,7 +214,8 @@ public class GridLauncherV3 {
   }
 
   private boolean parse(CommonCliOptions options, String[] args) {
-    JCommander commander = options.parse(args);
+    JCommander commander = JCommander.newBuilder().addObject(options).build();
+    commander.parse(args);
     if (options.getVersion()) {
       out.println(version());
       return false;
@@ -255,6 +256,8 @@ public class GridLauncherV3 {
           }
 
           GridHubConfiguration configuration = new GridHubConfiguration(options);
+          configuration.setRawArgs(args); // for grid console
+
           log.info(String.format(
               "Launching Selenium Grid hub on port %s", configuration.port));
           Hub hub = new Hub(configuration);
