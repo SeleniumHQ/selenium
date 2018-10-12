@@ -63,10 +63,10 @@ public class GridLauncherV3 {
 
   @FunctionalInterface
   private interface GridItemLauncher {
-    Stoppable launch(PrintStream out);
+    Stoppable launch(PrintStream out, String[] args);
   }
 
-  private static Map<GridRole, Function<String[], GridItemLauncher>> LAUNCHERS = buildLaunchers();
+  private static Map<GridRole, GridItemLauncher> LAUNCHERS = buildLaunchers();
 
   public static void main(String[] args) {
     new GridLauncherV3().launch(args);
@@ -85,7 +85,7 @@ public class GridLauncherV3 {
 
   public Stoppable launch(String[] args) {
     return Optional.ofNullable(buildLauncher(args))
-        .map(l -> l.launch(out))
+        .map(l -> l.launch(out, args))
         .orElse(()->{});
   }
 
@@ -123,7 +123,7 @@ public class GridLauncherV3 {
       return null;
     }
 
-    return LAUNCHERS.get(gridRole).apply(args);
+    return LAUNCHERS.get(gridRole);
   }
 
   private void printInfoAboutRoles(String roleCommandLineArg) {
@@ -208,7 +208,7 @@ public class GridLauncherV3 {
     }
   }
 
-  private static Map<GridRole, Function<String[], GridItemLauncher>> buildLaunchers() {
+  private static Map<GridRole, GridItemLauncher> buildLaunchers() {
     BiConsumer<JCommander, PrintStream> usage = (commander, out) -> {
       StringBuilder toPrint = new StringBuilder();
       commander.usage(toPrint);
@@ -222,8 +222,8 @@ public class GridLauncherV3 {
           buildInfo.getBuildRevision()));
     };
 
-    return ImmutableMap.<GridRole, Function<String[], GridItemLauncher>>builder()
-        .put(GridRole.NOT_GRID, (args) -> out -> {
+    return ImmutableMap.<GridRole, GridItemLauncher>builder()
+        .put(GridRole.NOT_GRID, (out, args) -> {
           StandaloneCliOptions options = new StandaloneCliOptions();
           JCommander commander = options.parse(args);
 
@@ -252,7 +252,7 @@ public class GridLauncherV3 {
           return server;
         })
 
-        .put(GridRole.HUB, (args) -> out -> {
+        .put(GridRole.HUB, (out, args) -> {
           GridHubCliOptions options = new GridHubCliOptions();
           JCommander commander = options.parse(args);
 
@@ -281,7 +281,7 @@ public class GridLauncherV3 {
           return hub;
         })
 
-        .put(GridRole.NODE, (args) -> out -> {
+        .put(GridRole.NODE, (out, args) -> {
           GridNodeCliOptions options = new GridNodeCliOptions();
           JCommander commander = options.parse(args);
 
