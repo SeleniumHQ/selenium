@@ -75,6 +75,11 @@ class WebElement(object):
         """The text of the element."""
         return self._execute(Command.GET_ELEMENT_TEXT)['value']
 
+    @property
+    def css_classes(self):
+        """A list of the CSS classes of the element."""
+        return self.get_attribute('class').split()
+
     def click(self):
         """Clicks the element."""
         self._execute(Command.CLICK_ELEMENT)
