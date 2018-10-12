@@ -33,6 +33,11 @@ import java.io.File;
 import java.io.IOException;
 
 public class SafariDriverService extends DriverService {
+  /**
+   * Boolean system property that defines whether the safaridriver executable should be started
+   * in legacy mode (JWP).
+   */
+  public static final String SAFARI_DRIVER_LEGACY_PROPERTY = "webdriver.safari.legacy";
 
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
   private static final File TP_SAFARI_DRIVER_EXECUTABLE =
@@ -76,6 +81,8 @@ public class SafariDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
     SafariDriverService, SafariDriverService.Builder> {
 
+    private boolean legacy = Boolean.getBoolean(SAFARI_DRIVER_LEGACY_PROPERTY);
+
     public Builder() {
       usingTechnologyPreview(false);
     }
@@ -101,6 +108,17 @@ public class SafariDriverService extends DriverService {
       return score;
     }
 
+    /**
+     * Configures the driver server dialect.
+     *
+     * @param legacy True for legacy mode (JWP), false otherwise.
+     * @return A self reference.
+     */
+    public Builder withLegacy(boolean legacy) {
+      this.legacy = legacy;
+      return this;
+    }
+
     public SafariDriverService.Builder usingTechnologyPreview(boolean useTechnologyPreview) {
       if (useTechnologyPreview) {
         usingDriverExecutable(TP_SAFARI_DRIVER_EXECUTABLE);
@@ -115,7 +133,13 @@ public class SafariDriverService extends DriverService {
     }
 
     protected ImmutableList<String> createArgs() {
-      return ImmutableList.of("--port", String.valueOf(getPort()));
+      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
+      argsBuilder.add(String.format("--port=%d", getPort()));
+      if (legacy) {
+        argsBuilder.add("--legacy");
+      }
+
+      return argsBuilder.build();
     }
 
     protected SafariDriverService createDriverService(
