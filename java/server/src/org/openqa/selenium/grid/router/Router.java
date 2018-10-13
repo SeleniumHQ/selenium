@@ -15,48 +15,46 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
+package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.NewSessionPayload;
+import org.openqa.selenium.grid.web.CompoundHandler;
+import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Objects;
 import java.util.function.Predicate;
 
-class CreateSession implements Predicate<HttpRequest>, CommandHandler {
+/**
+ * A simple router that is aware of the selenium-protocol.
+ */
+public class Router implements Predicate<HttpRequest>, CommandHandler {
 
-  private final Distributor distributor;
-  private final Json json;
+  private final CompoundHandler handler;
 
-  public CreateSession(Distributor distributor, Json json) {
-    this.distributor = Objects.requireNonNull(distributor);
-    this.json = Objects.requireNonNull(json);
+  public Router(SessionMap sessions, Distributor distributor) {
+    HandleSession activeSession = new HandleSession(sessions);
+
+    handler = new CompoundHandler(
+        Injector.builder().build(),
+        ImmutableMap.of(
+            activeSession, (inj, req) -> activeSession,
+            sessions, (inj, req) -> sessions,
+            distributor, (inj, req) -> distributor));
   }
 
   @Override
   public boolean test(HttpRequest req) {
-    return req.getMethod() == POST && "/session".equals(req.getUri());
+    return handler.test(req);
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    try (Reader reader = new StringReader(req.getContentString());
-         NewSessionPayload payload = NewSessionPayload.create(reader)) {
-      Session session = distributor.newSession(payload);
-
-      resp.setContent(json.toJson(ImmutableMap.of("value", session)).getBytes(UTF_8));
-    }
+    handler.execute(req, resp);
   }
 }
