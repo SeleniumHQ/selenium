@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.node.local;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
@@ -27,7 +28,6 @@ import org.openqa.selenium.grid.web.ReverseProxyHandler;
 
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -37,7 +37,7 @@ class SessionFactory
     implements Predicate<Capabilities>, Function<Capabilities, Optional<SessionAndHandler>> {
 
   private final SessionMap sessions;
-  private final Map<String, Object> capabilities;
+  private final Capabilities capabilities;
   private final Function<Capabilities, Session> generator;
   private volatile boolean available = true;
 
@@ -46,8 +46,12 @@ class SessionFactory
       Capabilities capabilities,
       Function<Capabilities, Session> generator) {
     this.sessions = Objects.requireNonNull(sessions);
-    this.capabilities = Objects.requireNonNull(capabilities).asMap();
+    this.capabilities = Objects.requireNonNull(ImmutableCapabilities.copyOf(capabilities));
     this.generator = Objects.requireNonNull(generator);
+  }
+
+  public Capabilities getCapabilities() {
+    return capabilities;
   }
 
   public boolean isAvailable() {
@@ -59,10 +63,10 @@ class SessionFactory
       return false;
     }
 
-    return this.capabilities.entrySet().stream()
-        .map(entry -> Objects.equals(entry.getValue(), capabilities.getCapability(entry.getKey())))
-        .reduce(Boolean::logicalAnd)
-        .orElse(false);
+    return this.capabilities.getCapabilityNames().stream()
+        .allMatch(name -> Objects.equals(
+            this.capabilities.getCapability(name), capabilities.getCapability(name)));
+
   }
 
   @Override
@@ -74,7 +78,7 @@ class SessionFactory
     this.available = false;
     Session session;
     try {
-       session = generator.apply(capabilities);
+      session = generator.apply(capabilities);
     } catch (Throwable throwable) {
       this.available = true;
       return Optional.empty();

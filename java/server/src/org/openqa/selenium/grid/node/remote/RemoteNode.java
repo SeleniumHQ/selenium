@@ -22,6 +22,9 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
@@ -35,16 +38,31 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URI;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class RemoteNode extends Node {
 
   public static final Json JSON = new Json();
   private final Function<HttpRequest, HttpResponse> client;
+  private final URI externalUri;
+  private final Set<Capabilities> capabilities;
 
-  public RemoteNode(HttpClient client) {
+  public RemoteNode(
+      UUID id,
+      URI externalUri,
+      Collection<Capabilities> capabilities,
+      HttpClient client) {
+    super(id);
+    this.externalUri = Objects.requireNonNull(externalUri);
+    this.capabilities = ImmutableSet.copyOf(capabilities);
+
     Objects.requireNonNull(client);
     this.client = req -> {
       try {
@@ -53,6 +71,16 @@ public class RemoteNode extends Node {
         throw new UncheckedIOException(e);
       }
     };
+  }
+
+  @Override
+  public boolean isSupporting(Capabilities capabilities) {
+    return this.capabilities.stream()
+        .anyMatch(caps -> caps.getCapabilityNames().stream()
+            .allMatch(name -> Objects.equals(
+                caps.getCapability(name),
+                capabilities.getCapability(name))));
+
   }
 
   @Override
@@ -110,4 +138,12 @@ public class RemoteNode extends Node {
 
     Values.get(res, Void.class);
   }
+
+  private Map<String, Object> toJson() {
+    return ImmutableMap.of(
+        "id", getId(),
+        "uri", externalUri,
+        "capabilities", capabilities);
+  }
+
 }

@@ -17,9 +17,11 @@
 
 package org.openqa.selenium;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -103,5 +105,9 @@ public interface Capabilities {
       map.putAll(other.asMap());
     }
     return new ImmutableCapabilities(map);
+  }
+
+  default Set<String> getCapabilityNames() {
+    return Collections.unmodifiableSet(asMap().keySet());
   }
 }

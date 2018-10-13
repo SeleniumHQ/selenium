@@ -23,6 +23,7 @@ import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -40,9 +41,12 @@ import java.net.URI;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class LocalNode extends Node {
 
@@ -57,6 +61,7 @@ public class LocalNode extends Node {
       Ticker ticker,
       Duration sessionTimeout,
       List<SessionFactory> factories) {
+    super(UUID.randomUUID());
 
     Preconditions.checkArgument(
         maxSessionCount > 0,
@@ -76,6 +81,11 @@ public class LocalNode extends Node {
   public int getCurrentSessionCount() {
     // It seems wildly unlikely we'll overflow an int
     return Math.toIntExact(currentSessions.size());
+  }
+
+  @Override
+  public boolean isSupporting(Capabilities capabilities) {
+    return factories.parallelStream().anyMatch(factory -> factory.test(capabilities));
   }
 
   @Override
@@ -152,6 +162,15 @@ public class LocalNode extends Node {
 
     currentSessions.invalidate(id);
     session.stop();
+  }
+
+  private Map<String, Object> toJson() {
+    return ImmutableMap.of(
+        "id", getId(),
+        "uri", externalUri,
+        "capabilities", factories.stream()
+            .map(SessionFactory::getCapabilities)
+            .collect(Collectors.toSet()));
   }
 
   public static Builder builder(URI uri, SessionMap sessions) {

@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import com.google.common.collect.ImmutableSet;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -87,14 +89,18 @@ public class NodeTest {
         .build();
 
     HttpClient client = new PassthroughHttpClient<>(local);
-    node = new RemoteNode(client);
+    node = new RemoteNode(
+        UUID.randomUUID(),
+        uri,
+        ImmutableSet.of(caps),
+        client);
   }
 
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
     Node local = LocalNode.builder(uri, sessions).build();
     HttpClient client = new PassthroughHttpClient<>(local);
-    Node node = new RemoteNode(client);
+    Node node = new RemoteNode(UUID.randomUUID(), uri, ImmutableSet.of(), client);
 
     Optional<Session> session = node.newSession(caps);
 
@@ -224,7 +230,11 @@ public class NodeTest {
     Node local = LocalNode.builder(uri, sessions)
         .add(caps, c -> new Recording())
         .build();
-    Node remote = new RemoteNode(new PassthroughHttpClient<>(local));
+    Node remote = new RemoteNode(
+        UUID.randomUUID(),
+        uri,
+        ImmutableSet.of(caps),
+        new PassthroughHttpClient<>(local));
 
     Session session = remote.newSession(caps)
         .orElseThrow(() -> new RuntimeException("Session not created"));
