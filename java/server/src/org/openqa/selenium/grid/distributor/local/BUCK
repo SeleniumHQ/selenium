@@ -1,0 +1,19 @@
+
+java_library(
+    name = "local",
+    srcs = glob(["*.java"]),
+    exported_deps = [
+        "//java/server/src/org/openqa/selenium/grid/distributor:distributor",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/grid/web:web",
+        "//java/server/src/org/openqa/selenium/grid/node:node",
+        "//java/server/src/org/openqa/selenium/grid/node/remote:remote",
+        "//third_party/java/guava:guava",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid/...",
+        "//java/server/test/org/openqa/selenium/grid/...",
+    ]
+)

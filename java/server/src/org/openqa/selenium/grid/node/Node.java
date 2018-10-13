@@ -31,8 +31,9 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 /**
@@ -85,8 +86,11 @@ import java.util.function.Predicate;
 public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
   private final CompoundHandler handler;
+  private final UUID id;
 
-  protected Node() {
+  protected Node(UUID id) {
+    this.id = Objects.requireNonNull(id);
+
     Json json = new Json();
 
     NewNodeSession create = new NewNodeSession(this, json);
@@ -108,15 +112,21 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
             destroy, (inj, req) -> destroy));
   }
 
-  public abstract Optional<Session> newSession(Capabilities capabilities);
+  public UUID getId() {
+    return id;
+  }
 
-  protected abstract boolean isSessionOwner(SessionId id);
+  public abstract Optional<Session> newSession(Capabilities capabilities);
 
   public abstract void executeWebDriverCommand(HttpRequest req, HttpResponse resp);
 
   public abstract Session getSession(SessionId id) throws NoSuchSessionException;
 
   public abstract void stop(SessionId id) throws NoSuchSessionException;
+
+  protected abstract boolean isSessionOwner(SessionId id);
+
+  public abstract boolean isSupporting(Capabilities capabilities);
 
   @Override
   public boolean test(HttpRequest req) {

@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.Deque;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -127,8 +128,9 @@ public class JsonOutput implements Closeable {
         .put(Date.class::isAssignableFrom, (obj, depth) -> append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))))
         .put(Enum.class::isAssignableFrom, (obj, depth) -> append(asString(obj)))
         .put(File.class::isAssignableFrom, (obj, depth) -> append(((File) obj).getAbsolutePath()))
-        .put(URI.class::isAssignableFrom, (obj, depth) -> append(asString(((URI) obj).toString())))
+        .put(URI.class::isAssignableFrom, (obj, depth) -> append(asString((obj).toString())))
         .put(URL.class::isAssignableFrom, (obj, depth) -> append(asString(((URL) obj).toExternalForm())))
+        .put(UUID.class::isAssignableFrom, (obj, depth) -> append(asString(((UUID) obj).toString())))
         .put(Level.class::isAssignableFrom, (obj, depth) -> append(asString(LogLevelMapping.getName((Level) obj))))
         .put(
             SessionId.class::isAssignableFrom,

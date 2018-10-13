@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.function.Predicate;
 
 public class PassthroughHttpClient<T extends Predicate<HttpRequest> & CommandHandler>
@@ -42,5 +43,30 @@ public class PassthroughHttpClient<T extends Predicate<HttpRequest> & CommandHan
     HttpResponse response = new HttpResponse();
     handler.execute(request, response);
     return response;
+  }
+
+  public static class Factory<T extends Predicate<HttpRequest> & CommandHandler>
+      implements HttpClient.Factory {
+
+    private final T handler;
+
+    public Factory(T handler) {
+      this.handler = handler;
+    }
+
+    @Override
+    public Builder builder() {
+      return new Builder() {
+        @Override
+        public HttpClient createClient(URL url) {
+          return new PassthroughHttpClient<>(handler);
+        }
+      };
+    }
+
+    @Override
+    public void cleanupIdleClients() {
+      // Does nothing
+    }
   }
 }
