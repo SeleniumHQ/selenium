@@ -15,29 +15,23 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.server;
+package org.openqa.selenium.grid.node.local;
 
 import com.beust.jcommander.Parameter;
 
 import org.openqa.selenium.grid.config.ConfigValue;
 
-public class BaseServerFlags {
+public class NodeFlags {
 
   @Parameter(
-      names = {"--host"},
-      description =  "IP or hostname : usually determined automatically.")
-  @ConfigValue(section = "server", name = "hostname")
-  private String host;
+      names = {"--detect-drivers"},
+      description = "Autodetect which drivers are available on the current system, and add them to the node.")
+  @ConfigValue(section = "node", name = "detect-drivers")
+  private boolean autoconfigure;
 
-  @Parameter(description = "Port to listen on.", names = {"-p", "--port"})
-  @ConfigValue(section = "server", name = "port")
-  private int port;
-
-  @Parameter(description = "Maximum number of listener threads.", names = "--max-threads")
-  @ConfigValue(section = "server", name = "max-threads")
-  private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
-
-  public BaseServerFlags(int defaultPort) {
-    this.port = defaultPort;
+  public void configure(LocalNode.Builder node) {
+    if (autoconfigure) {
+      AutoConfigureNode.addSystemDrivers(node);
+    }
   }
 }

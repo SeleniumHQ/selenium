@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.web;
 
 import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
