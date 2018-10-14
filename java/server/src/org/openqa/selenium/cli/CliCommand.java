@@ -23,6 +23,11 @@ public interface CliCommand {
 
   String getDescription();
 
-  Runnable configure(String... args);
+  Executable configure(String... args);
+
+  interface Executable {
+
+    void run() throws Exception;
+  }
 
 }

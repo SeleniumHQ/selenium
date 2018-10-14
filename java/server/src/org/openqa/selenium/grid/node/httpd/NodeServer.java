@@ -15,14 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.commands;
+package org.openqa.selenium.grid.node.httpd;
 
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
@@ -30,45 +29,46 @@ import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.distributor.DistributorOptions;
+import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.local.NodeFlags;
-import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.grid.sessionmap.SessionMapOptions;
+import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
+import org.openqa.selenium.remote.http.HttpClient;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
 
 @AutoService(CliCommand.class)
-public class Standalone implements CliCommand {
+public class NodeServer implements CliCommand {
 
   @Override
   public String getName() {
-    return "standalone";
+    return "node";
   }
 
   @Override
   public String getDescription() {
-    return "The selenium server, running everything in-process.";
+    return "Adds this server as a node in the selenium grid.";
   }
 
   @Override
   public Executable configure(String... args) {
+
     HelpFlags help = new HelpFlags();
-    BaseServerFlags baseFlags = new BaseServerFlags(4444);
+    BaseServerFlags serverFlags = new BaseServerFlags(5555);
     NodeFlags nodeFlags = new NodeFlags();
 
     JCommander commander = JCommander.newBuilder()
-        .programName("standalone")
-        .addObject(baseFlags)
+        .programName(getName())
         .addObject(help)
+        .addObject(serverFlags)
         .addObject(nodeFlags)
         .build();
 
@@ -87,39 +87,33 @@ public class Standalone implements CliCommand {
 
       Config config = new CompoundConfig(
           new AnnotatedConfig(help),
-          new AnnotatedConfig(baseFlags),
+          new AnnotatedConfig(serverFlags),
+          new AnnotatedConfig(nodeFlags),
           new EnvConfig(),
-          new ConcatenatingConfig("selenium", '.', System.getProperties()));
+          new ConcatenatingConfig("node", '.', System.getProperties()));
 
-      SessionMap sessions = new LocalSessionMap();
-      Distributor distributor = new LocalDistributor();
-      Router router = new Router(sessions, distributor);
+      SessionMapOptions sessionsOptions = new SessionMapOptions(config);
+      URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
+      SessionMap sessions = new RemoteSessionMap(
+          HttpClient.Factory.createDefault().createClient(sessionMapUrl));
 
-      String hostName;
-      try {
-        hostName = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
-      } catch (WebDriverException e) {
-        hostName = "localhost";
-      }
+      BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      int port = config.getInt("server", "port")
-          .orElseThrow(() -> new IllegalArgumentException("No port to use configured"));
-      URI localhost = null;
-      try {
-        localhost = new URI("http", null, hostName, port, null, null, null);
-      } catch (URISyntaxException e) {
-        throw new RuntimeException(e);
-      }
+      LocalNode.Builder builder = LocalNode.builder(serverOptions.getExternalUri(), sessions);
+      nodeFlags.configure(builder);
+      LocalNode node = builder.build();
 
-      LocalNode.Builder node = LocalNode.builder(localhost, sessions)
-          .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
-      nodeFlags.configure(node);
+      DistributorOptions distributorOptions = new DistributorOptions(config);
+      URL distributorUrl = distributorOptions.getDistributorUri().toURL();
+      Distributor distributor = new RemoteDistributor(
+          HttpClient.Factory.createDefault().createClient(distributorUrl));
 
-      distributor.add(node.build());
-
-      Server<?> server = new BaseServer<>(new BaseServerOptions(config));
-      server.addHandler(router, (inj, req) -> router);
+      Server<?> server = new BaseServer<>(serverOptions);
+      server.addHandler(node, (inj, req) -> node);
       server.start();
+
+      distributor.add(node);
+      System.out.println("Added node");
     };
   }
 }

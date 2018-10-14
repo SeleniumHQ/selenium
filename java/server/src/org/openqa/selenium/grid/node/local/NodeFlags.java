@@ -21,7 +21,41 @@ import com.beust.jcommander.Parameter;
 
 import org.openqa.selenium.grid.config.ConfigValue;
 
+import java.net.URI;
+
 public class NodeFlags {
+
+  @Parameter(names = {"--distributor", "-d"}, description = "Address of the distributor.")
+  @ConfigValue(section = "distributor", name = "host")
+  private URI distributorServer;
+
+  @Parameter(
+      names = "--distributor-port",
+      description = "Port on which the distributor is listening.")
+  @ConfigValue(section = "distributor", name = "port")
+  private int distributorServerPort;
+
+  @Parameter(
+      names = "--distributor-host",
+      description = "Port on which the distributor is listening.")
+  @ConfigValue(section = "distributor", name = "hostname")
+  private String distributorServerHost;
+
+  @Parameter(names = {"--sessions", "-s"}, description = "Address of the distributor.")
+  @ConfigValue(section = "sessions", name = "host")
+  private URI sessionServer;
+
+  @Parameter(
+      names = "--sessions-port",
+      description = "Port on which the sesion map server is listening.")
+  @ConfigValue(section = "sessions", name = "port")
+  private int sessionServerPort;
+
+  @Parameter(
+      names = "--sessions-host",
+      description = "Port on which the sesion map server is listening.")
+  @ConfigValue(section = "sessions", name = "hostname")
+  private String sessionServerHost;
 
   @Parameter(
       names = {"--detect-drivers"},

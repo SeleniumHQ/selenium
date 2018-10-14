@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.config;
 
 public class ConfigException extends RuntimeException {
 
-  public ConfigException(String message) {
-    super(message);
+  public ConfigException(String message, Object... args) {
+    super(String.format(message, args));
   }
 }
