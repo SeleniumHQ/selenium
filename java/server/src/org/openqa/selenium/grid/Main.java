@@ -97,7 +97,7 @@ public class Main {
         out.append(getName()).append("\n\n");
         out.append(getDescription()).append("\n").append("\n");
 
-        int indent = Math.min(longest, 25);
+        int indent = Math.min(longest + 2, 25);
         String format = "  %-" + longest + "s";
 
         PrintWriter indented = new WrappedPrintWriter(System.out, 72, indent);
