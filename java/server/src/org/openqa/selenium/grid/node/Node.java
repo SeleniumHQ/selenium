@@ -41,7 +41,7 @@ import java.util.function.Predicate;
  * only reachable via localhost and a network. Or they could be something else entirely.
  * <p>
  * This class responds to the following URLs:
- * <table>
+ * <table summary="HTTP commands the Node understands">
  * <tr>
  *   <th>Verb</th>
  *   <th>URL Template</th>
