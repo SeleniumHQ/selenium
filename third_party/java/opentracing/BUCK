@@ -1,0 +1,7 @@
+prebuilt_jar(
+  name = 'opentracing-api',
+  maven_coords = 'io.opentracing:opentracing-api:jar:0.31.0',
+  binary_jar = 'opentracing-api-0.31.0.jar',
+  source_jar = 'opentracing-api-0.31.0-sources.jar',
+)
+
