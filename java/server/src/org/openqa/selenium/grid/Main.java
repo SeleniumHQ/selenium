@@ -20,6 +20,7 @@ package org.openqa.selenium.grid;
 import static java.util.Comparator.comparing;
 
 import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.cli.CliCommand.Executable;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 
 import java.io.PrintWriter;
@@ -30,7 +31,7 @@ import java.util.TreeSet;
 
 public class Main {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
     ServiceLoader.load(CliCommand.class).forEach(commands::add);
 
@@ -60,7 +61,7 @@ public class Main {
         .findFirst()
         .orElse(new Help(commands));
 
-    Runnable primed = command.configure(remainingArgs);
+    Executable primed = command.configure(remainingArgs);
     primed.run();
   }
 
@@ -84,13 +85,13 @@ public class Main {
     }
 
     @Override
-    public Runnable configure(String... args) {
+    public Executable configure(String... args) {
       return () -> {
         int longest = commands.stream()
-            .map(CliCommand::getName)
-            .max(Comparator.comparingInt(String::length))
-            .map(String::length)
-            .orElse(0) + 2;  // two space padding either side
+                          .map(CliCommand::getName)
+                          .max(Comparator.comparingInt(String::length))
+                          .map(String::length)
+                          .orElse(0) + 2;  // two space padding either side
 
         PrintWriter out = new WrappedPrintWriter(System.out, 72, 0);
         out.append(getName()).append("\n\n");

@@ -4,6 +4,7 @@ java_library(
     srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/data:data",
         "//java/server/src/org/openqa/selenium/grid/web:web",
         "//java/server/src/org/openqa/selenium/injector:injector",

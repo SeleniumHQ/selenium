@@ -19,12 +19,17 @@ package org.openqa.selenium.grid.server;
 
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 public class BaseServerOptions {
 
   private final Config config;
+  private int port = -1;
 
   public BaseServerOptions(Config config) {
     this.config = config;
@@ -35,12 +40,18 @@ public class BaseServerOptions {
   }
 
   public int getPort() {
+    if (port != -1) {
+      return port;
+    }
+
     int port = config.getInt("server", "port")
-        .orElse(0);
+        .orElseGet(PortProber::findFreePort);
 
     if (port < 0) {
       throw new ConfigException("Port cannot be less than 0: " + port);
     }
+
+    this.port = port;
 
     return port;
   }
@@ -54,5 +65,19 @@ public class BaseServerOptions {
     }
 
     return count;
+  }
+
+  public URI getExternalUri() {
+    // Assume the host given is addressable if it's been set
+    String host = getHostname()
+        .orElseGet(() -> new NetworkUtils().getNonLoopbackAddressOfThisMachine());
+
+    int port = getPort();
+
+    try {
+      return new URI("http", null, host, port, null, null, null);
+    } catch (URISyntaxException e) {
+      throw new ConfigException("Cannot determine external URI: " + e.getMessage());
+    }
   }
 }
