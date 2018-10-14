@@ -38,7 +38,7 @@ import java.util.function.Predicate;
  * running.
  * <p>
  * This class responds to the following URLs:
- * <table>
+ * <table summary="HTTP commands the SessionMap understands">
  * <tr>
  *   <th>Verb</th>
  *   <th>URL Template</th>
