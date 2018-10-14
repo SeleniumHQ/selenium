@@ -15,29 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.server;
+package org.openqa.selenium.cli;
 
-import com.beust.jcommander.Parameter;
+public interface CliCommand {
 
-import org.openqa.selenium.grid.config.ConfigValue;
+  String getName();
 
-public class BaseServerFlags {
+  String getDescription();
 
-  @Parameter(
-      names = {"--host"},
-      description =  "IP or hostname : usually determined automatically.")
-  @ConfigValue(section = "server", name = "hostname")
-  private String host;
+  Runnable configure(String... args);
 
-  @Parameter(description = "Port to listen on.", names = {"-p", "--port"})
-  @ConfigValue(section = "server", name = "port")
-  private int port;
-
-  @Parameter(description = "Maximum number of listener threads.", names = "--max-threads")
-  @ConfigValue(section = "server", name = "max-threads")
-  private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
-
-  public BaseServerFlags(int defaultPort) {
-    this.port = defaultPort;
-  }
 }

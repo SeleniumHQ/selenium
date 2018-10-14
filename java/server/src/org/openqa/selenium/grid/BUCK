@@ -1,0 +1,25 @@
+
+java_binary(
+    name = "selenium",
+    main_class = "org.openqa.selenium.grid.Main",
+    deps = [
+        ":lib",
+        "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/edge:edge",
+        "//java/client/src/org/openqa/selenium/firefox:firefox",
+        "//java/client/src/org/openqa/selenium/ie:ie",
+        "//java/server/src/org/openqa/selenium/grid/commands:commands",
+    ],
+    visibility = [
+    ],
+)
+
+java_library(
+    name = "lib",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/server/src/org/openqa/selenium/cli:cli",
+    ],
+    visibility = [
+    ],
+)
