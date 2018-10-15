@@ -64,7 +64,7 @@ public class Json {
   }
 
   public JsonInput newInput(Reader from) throws UncheckedIOException {
-    return new JsonInput(from, fromJson);
+    return new JsonInput(from, fromJson, PropertySetting.BY_NAME);
   }
 
   public JsonOutput newOutput(Appendable to) throws UncheckedIOException {

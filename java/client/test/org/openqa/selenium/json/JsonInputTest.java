@@ -29,6 +29,7 @@ import static org.openqa.selenium.json.JsonType.NUMBER;
 import static org.openqa.selenium.json.JsonType.START_COLLECTION;
 import static org.openqa.selenium.json.JsonType.START_MAP;
 import static org.openqa.selenium.json.JsonType.STRING;
+import static org.openqa.selenium.json.PropertySetting.BY_NAME;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -201,7 +202,7 @@ public class JsonInputTest {
   public void shouldDecodeUnicodeEscapesProperly() {
     String raw = "{\"text\": \"\\u003Chtml\"}";
 
-    try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer())) {
+    try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer(), BY_NAME)) {
       Map<String, Object> map = in.read(MAP_TYPE);
 
       assertThat(map.get("text")).isEqualTo("<html");
@@ -211,6 +212,6 @@ public class JsonInputTest {
   private JsonInput newInput(Object toParse) {
     String raw = new Gson().toJson(toParse);
     StringReader reader = new StringReader(raw);
-    return new JsonInput(reader, new JsonTypeCoercer());
+    return new JsonInput(reader, new JsonTypeCoercer(), BY_NAME);
   }
 }

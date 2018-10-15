@@ -39,10 +39,11 @@ public class JsonInput implements Closeable {
   // figuring out whether we're expecting a NAME properly.
   private Deque<Container> stack = new ArrayDeque<>();
 
-  JsonInput(Readable source, JsonTypeCoercer coercer) {
+  JsonInput(Readable source, JsonTypeCoercer coercer, PropertySetting setter) {
     this.source = Objects.requireNonNull(source);
     this.coercer = Objects.requireNonNull(coercer);
     this.input = new Input(source);
+    this.setter = Objects.requireNonNull(setter);
   }
 
   public JsonInput propertySetting(PropertySetting setter) {
