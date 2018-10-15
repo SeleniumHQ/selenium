@@ -21,6 +21,7 @@ import platform
 import socket
 import string
 
+import certifi
 import urllib3
 
 try:
@@ -44,6 +45,7 @@ class RemoteConnection(object):
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
 
     _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+    _ca_cert = certifi.where()
 
     @classmethod
     def get_timeout(cls):
@@ -69,6 +71,25 @@ class RemoteConnection(object):
         Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT
         """
         cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+
+    @classmethod
+    def get_certificate_bundle_path(cls):
+        """
+        :Returns:
+            Paths of the .pem encoded certificate to verify connection to comand executor
+        """
+        return cls._ca_cert
+
+    @classmethod
+    def set_certificate_bundle_path(cls, path):
+        """
+        Set the path to the certificate bundle to verifiy connection to command executor.
+        Set to None to disable certificate validation.
+
+        :Args:
+            - path - path of a .pem encoded certificate chain
+        """
+        cls._ca_cert = path
 
     @classmethod
     def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
@@ -137,7 +158,13 @@ class RemoteConnection(object):
 
         self._url = remote_server_addr
         if keep_alive:
-            self._conn = urllib3.PoolManager(timeout=self._timeout)
+            pool_manager_init_args = {
+                'timeout': self._timeout
+            }
+            if self._ca_cert:
+                pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
+                pool_manager_init_args['ca_certs'] = self._ca_cert
+            self._conn = urllib3.PoolManager(**pool_manager_init_args)
 
         self._commands = {
             Command.STATUS: ('GET', '/status'),
@@ -398,7 +425,13 @@ class RemoteConnection(object):
 
             statuscode = resp.status
         else:
-            http = urllib3.PoolManager(timeout=self._timeout)
+            pool_manager_init_args = {
+                'timeout': self._timeout
+            }
+            if self._ca_cert:
+                pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
+                pool_manager_init_args['ca_certs'] = self._ca_cert
+            http = urllib3.PoolManager(**pool_manager_init_args)
             resp = http.request(method, url, body=body, headers=headers)
 
             statuscode = resp.status
