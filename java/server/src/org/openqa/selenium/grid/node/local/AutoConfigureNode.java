@@ -49,7 +49,13 @@ public class AutoConfigureNode {
 
     // Same
     List<DriverService.Builder> builders = new ArrayList<>();
-    ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
+    ServiceLoader.load(DriverService.Builder.class).forEach(builder -> {
+      try {
+        builders.add(builder);
+      } catch (Exception e) {
+        // Alright. Don't add the builder
+      }
+    });
 
     infos.forEach(info -> {
       Capabilities caps = info.getCanonicalCapabilities();
