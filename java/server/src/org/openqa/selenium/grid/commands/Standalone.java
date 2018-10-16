@@ -39,6 +39,7 @@ import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.net.NetworkUtils;
@@ -118,7 +119,7 @@ public class Standalone implements CliCommand {
       distributor.add(node.build());
 
       Server<?> server = new BaseServer<>(new BaseServerOptions(config));
-      server.addHandler(router, (inj, req) -> router);
+      server.addHandler(router, (inj, req) -> new W3CCommandHandler(router));
       server.start();
     };
   }

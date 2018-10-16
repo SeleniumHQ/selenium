@@ -38,6 +38,7 @@ import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.SessionMapOptions;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
@@ -109,11 +110,10 @@ public class NodeServer implements CliCommand {
           HttpClient.Factory.createDefault().createClient(distributorUrl));
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addHandler(node, (inj, req) -> node);
+      server.addHandler(node, (inj, req) -> new W3CCommandHandler(node));
       server.start();
 
       distributor.add(node);
-      System.out.println("Added node");
     };
   }
 }
