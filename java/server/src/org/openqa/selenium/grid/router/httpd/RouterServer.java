@@ -39,6 +39,7 @@ import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.SessionMapOptions;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
@@ -108,7 +109,7 @@ public class RouterServer implements CliCommand {
       Router router = new Router(sessions, distributor);
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addHandler(router, (inj, req) -> router);
+      server.addHandler(router, (inj, req) -> new W3CCommandHandler(router));
       server.start();
     };
   }
