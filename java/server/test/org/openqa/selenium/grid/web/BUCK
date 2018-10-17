@@ -1,11 +1,24 @@
 java_test(
     name = "web",
     labels = [ "small" ],
-    srcs = glob(["*.java"]),
+    srcs = glob(["*Test.java"]),
     deps = [
+        ":utils",
         "//java/client/src/org/openqa/selenium/remote:remote",
         "//java/server/src/org/openqa/selenium/grid/web:web",
         "//third_party/java/guava:guava",
         "//third_party/java/junit:junit",
+    ],
+)
+
+java_library(
+    name = "utils",
+    srcs = glob(["*.java"], exclude = ["*Test.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/grid/web:web",
+    ],
+    visibility = [
+        "//java/server/test/org/openqa/selenium/grid/...",
     ],
 )

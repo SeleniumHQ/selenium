@@ -55,7 +55,9 @@ class FirefoxProfile(object):
         Initialises a new instance of a Firefox Profile
 
         :args:
-         - profile_directory: Directory of profile that you want to use.
+         - profile_directory: Directory of profile that you want to use. If a
+           directory is passed in it will be cloned and the cloned directory
+           will be used by the driver when instantiated.
            This defaults to None and will create a new
            directory when object is created.
         """

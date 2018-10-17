@@ -473,7 +473,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not implicitly handle onBeforeUnload alert")]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
-        //[IgnoreBrowser(Browser.Edge, "Edge driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
+        [IgnoreBrowser(Browser.Edge, "Edge driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
         public void ShouldImplicitlyHandleAlertOnPageBeforeUnload()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage().WithTitle("Success"));

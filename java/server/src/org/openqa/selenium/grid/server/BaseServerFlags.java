@@ -31,10 +31,13 @@ public class BaseServerFlags {
 
   @Parameter(description = "Port to listen on.", names = {"-p", "--port"})
   @ConfigValue(section = "server", name = "port")
-  private int port = 0;
+  private int port;
 
   @Parameter(description = "Maximum number of listener threads.", names = "--max-threads")
   @ConfigValue(section = "server", name = "max-threads")
   private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
 
+  public BaseServerFlags(int defaultPort) {
+    this.port = defaultPort;
+  }
 }

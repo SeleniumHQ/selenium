@@ -75,7 +75,8 @@ public class GridHubConfiguration extends GridConfiguration {
 
   public String registry;
 
-  private GridHubCliOptions cliConfig;
+  private String[] rawArgs;
+  private String configFile;
 
   /**
    * Creates a new configuration using the default values.
@@ -104,8 +105,8 @@ public class GridHubConfiguration extends GridConfiguration {
   public GridHubConfiguration(GridHubCliOptions cliConfig) {
     this(ofNullable(cliConfig.getConfigFile()).map(HubJsonConfiguration::loadFromResourceOrFile)
              .orElse(DEFAULT_CONFIG_FROM_JSON));
-    this.cliConfig = cliConfig;
     super.merge(cliConfig);
+    this.configFile = cliConfig.getConfigFile();
     ofNullable(cliConfig.getNewSessionWaitTimeout()).ifPresent(v -> newSessionWaitTimeout = v);
     ofNullable(cliConfig.getThrowOnCapabilityNotPresent()).ifPresent(v -> throwOnCapabilityNotPresent = v);
     ofNullable(cliConfig.getRegistry()).ifPresent(v -> registry = v);
@@ -201,7 +202,15 @@ public class GridHubConfiguration extends GridConfiguration {
     return sb.toString();
   }
 
-  public GridHubCliOptions getCliConfig() {
-    return cliConfig;
+  public void setRawArgs(String[] rawArgs) {
+    this.rawArgs = rawArgs;
+  }
+
+  public String[] getRawArgs() {
+    return rawArgs;
+  }
+
+  public String getConfigFile() {
+    return configFile;
   }
 }
