@@ -102,7 +102,7 @@ public class InternetExplorerOptions extends MutableCapabilities {
   }
 
   public InternetExplorerOptions(Capabilities source) {
-    super();
+    this();
 
     merge(source);
   }
