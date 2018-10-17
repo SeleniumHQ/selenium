@@ -83,8 +83,15 @@ public class SafariDriverService extends DriverService {
 
     private boolean legacy = Boolean.getBoolean(SAFARI_DRIVER_LEGACY_PROPERTY);
 
-    public Builder() {
-      usingTechnologyPreview(false);
+    /**
+     * Configures the driver server dialect.
+     *
+     * @param legacy True for legacy mode (JWP), false otherwise.
+     * @return A self reference.
+     */
+    public Builder withLegacy(boolean legacy) {
+      this.legacy = legacy;
+      return this;
     }
 
     @Override
@@ -106,17 +113,6 @@ public class SafariDriverService extends DriverService {
       }
 
       return score;
-    }
-
-    /**
-     * Configures the driver server dialect.
-     *
-     * @param legacy True for legacy mode (JWP), false otherwise.
-     * @return A self reference.
-     */
-    public Builder withLegacy(boolean legacy) {
-      this.legacy = legacy;
-      return this;
     }
 
     public SafariDriverService.Builder usingTechnologyPreview(boolean useTechnologyPreview) {
