@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
@@ -180,7 +179,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "Need to release atoms fix from #4351")
   public void testShouldNotReturnRootElementWhenFindingChildrenById() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.id("test_id"));
