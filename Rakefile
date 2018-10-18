@@ -96,7 +96,13 @@ end
 # Finally, find every file named "build.desc" in the project, and generate
 # rake tasks from them. These tasks are normal rake tasks, and can be invoked
 # from rake.
-crazy_fun.create_tasks(Dir["**/build.desc"])
+crazy_fun.create_tasks(Dir["common/**/build.desc"])
+crazy_fun.create_tasks(Dir["cpp/**/build.desc"])
+crazy_fun.create_tasks(Dir["ide/**/build.desc"])
+crazy_fun.create_tasks(Dir["javascript/**/build.desc"])
+crazy_fun.create_tasks(Dir["py/**/build.desc"])
+crazy_fun.create_tasks(Dir["rake-tasks/**/build.desc"])
+crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 
 # Buck integration. Loaded after CrazyFun has initialized all the tasks it'll handle.
 # This is because the buck integration creates a rule for "//.*"
