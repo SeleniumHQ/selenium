@@ -15,5 +15,7 @@
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-repacked.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/yaml/snakeyaml-1.19.jar" sourcepath="/third-party/java/yaml/snakeyaml-1.19-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/beust/jcommander-1.72.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/service/auto-service-1.0-rc4.jar" sourcepath="/third-party/java/service/auto-service-1.0-rc4-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/assertj/assertj-core-3.11.1.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
