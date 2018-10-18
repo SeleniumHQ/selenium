@@ -51,7 +51,7 @@ public class Hub implements CliCommand {
 
   @Override
   public String getDescription() {
-    return "A grid hub, composed of sessions, distributor, and router";
+    return "A grid hub, composed of sessions, distributor, and router.";
   }
 
   @Override
@@ -89,7 +89,7 @@ public class Hub implements CliCommand {
       SessionMap sessions = new LocalSessionMap();
       Distributor distributor = new LocalDistributor();
       Router router = new Router(sessions, distributor);
-      
+
       Server<?> server = new BaseServer<>(new BaseServerOptions(config));
       server.addHandler(router, (inj, req) -> new W3CCommandHandler(router));
       server.start();
