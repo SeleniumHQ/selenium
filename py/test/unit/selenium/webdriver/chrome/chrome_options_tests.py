@@ -73,9 +73,10 @@ def test_raises_exception_if_extension_does_not_exist(options):
 
 
 def test_add_extension(options, mocker):
+    pth = path.abspath(path.expanduser('/foo/bar'))
     mocker.patch('os.path.exists').return_value = True
-    options.add_extension('/foo/bar')
-    assert '/foo/bar' in options._extension_files
+    options.add_extension(pth)
+    assert pth in options._extension_files
 
 
 def test_raises_exception_if_encoded_extension_is_falsy(options):
