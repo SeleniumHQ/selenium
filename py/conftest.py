@@ -63,7 +63,7 @@ def pytest_ignore_collect(path, config):
     drivers_opt = config.getoption('drivers')
     _drivers = set(drivers).difference(drivers_opt or drivers)
     if drivers_opt:
-       _drivers.add('unit')
+        _drivers.add('unit')
     parts = path.dirname.split(os.path.sep)
     return len([d for d in _drivers if d.lower() in parts]) > 0
 
