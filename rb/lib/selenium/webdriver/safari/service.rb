@@ -24,7 +24,7 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 7050
-        @executable = '/usr/bin/safaridriver'.freeze
+        @executable = 'safaridriver'.freeze
         @missing_text = <<-ERROR.gsub(/\n +| {2,}/, ' ').freeze
           Unable to find Apple's safaridriver which comes with Safari 10.
           More info at https://webkit.org/blog/6900/webdriver-support-in-safari-10/
@@ -35,13 +35,6 @@ module Selenium
         end
 
         private
-
-        def binary_path(path)
-          path = self.class.executable if path.nil?
-          raise Error::WebDriverError, self.class.missing_text unless path
-          Platform.assert_executable path
-          path
-        end
 
         def start_process
           @process = build_process(@executable_path, "--port=#{@port}", *@extra_args)
