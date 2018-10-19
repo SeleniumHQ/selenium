@@ -25,21 +25,6 @@ module Selenium
         port
       end
 
-      def self.random
-        # TODO: Avoid this
-        #
-        # (a) should pick a port that's guaranteed to be free on all interfaces
-        # (b) should pick a random port outside the ephemeral port range
-        #
-        WebDriver.logger.deprecate 'PortProber.random', 'PortProber.above(port)'
-
-        server = TCPServer.new(Platform.localhost, 0)
-        port   = server.addr[1]
-        server.close
-
-        port
-      end
-
       IGNORED_ERRORS = [Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT].tap { |arr|
         arr << Errno::EBADF if Platform.cygwin?
         arr << Errno::EACCES if Platform.windows?
