@@ -317,7 +317,7 @@ public class AlertsTest extends JUnit4TestBase {
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
     driver.get(promptPage("This is a default value"));
 
-    driver.findElement(By.id("prompt")).click();
+    wait.until(presenceOfElementLocated(By.id("prompt"))).click();
     Alert alert = wait.until(alertIsPresent());
     alert.accept();
 
