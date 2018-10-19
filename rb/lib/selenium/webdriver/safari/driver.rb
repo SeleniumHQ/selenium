@@ -30,7 +30,7 @@ module Selenium
         include DriverExtensions::TakesScreenshot
 
         def initialize(opts = {})
-          opts[:desired_capabilities] ||= Remote::Capabilities.safari
+          opts[:desired_capabilities] = create_capabilities(opts)
 
           unless opts.key?(:url)
             driver_path = opts.delete(:driver_path) || Safari.driver_path
@@ -53,6 +53,15 @@ module Selenium
           super
         ensure
           @service.stop if @service
+        end
+
+        private
+
+        def create_capabilities(opts = {})
+          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.safari }
+          options = opts.delete(:options) { Options.new }
+          caps.merge!(options.as_json)
+          caps
         end
 
       end # Driver
