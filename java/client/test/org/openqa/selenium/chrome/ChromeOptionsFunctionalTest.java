@@ -34,6 +34,7 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
 
 /**
  * Functional tests for {@link ChromeOptions}.
@@ -116,4 +117,16 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     new WebDriverWait(driver, 10).until(titleIs("clicks"));
   }
 
+  @NeedsLocalEnvironment
+  @Test
+  public void chromeMergeOptionsMergesArguments() {
+    ChromeOptions one = new ChromeOptions().addArguments("verbose");
+    ChromeOptions two = new ChromeOptions().addArguments("silent");
+    one.merge(two);
+
+    List<String> args = one.getArguments();
+
+    assertThat(args).contains("verbose");
+    assertThat(args).contains("silent");
+  }
 }

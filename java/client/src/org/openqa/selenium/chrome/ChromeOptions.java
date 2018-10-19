@@ -92,6 +92,12 @@ public class ChromeOptions extends MutableCapabilities {
     return this;
   }
 
+  public ChromeOptions merge(ChromeOptions extraCapabilities) {
+    this.merge((Capabilities) extraCapabilities);
+    this.args.addAll(extraCapabilities.args);
+    return this;
+  }
+
   /**
    * Sets the path to the Chrome executable. This path should exist on the
    * machine which will launch Chrome. The path should either be absolute or
@@ -143,6 +149,14 @@ public class ChromeOptions extends MutableCapabilities {
   public ChromeOptions addArguments(List<String> arguments) {
     args.addAll(arguments);
     return this;
+  }
+
+  /**
+   * retrieves list of arguments
+   * @return
+   */
+  public List<String> getArguments() {
+    return this.args;
   }
 
   /**
@@ -295,4 +309,6 @@ public class ChromeOptions extends MutableCapabilities {
 
     return Collections.unmodifiableMap(toReturn);
   }
+
+
 }
