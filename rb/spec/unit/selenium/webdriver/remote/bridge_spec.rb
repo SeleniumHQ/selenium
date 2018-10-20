@@ -50,6 +50,65 @@ module Selenium
             Bridge.handshake(http_client: http, desired_capabilities: Capabilities.ie)
           end
 
+          it 'passes options as capabilities' do
+            payload = JSON.generate(
+              desiredCapabilities: {
+                browserName: '',
+                version: '',
+                platform: 'ANY',
+                javascriptEnabled: false,
+                cssSelectorsEnabled: false,
+                takesScreenshot: false,
+                nativeEvents: false,
+                rotatable: false
+              },
+              capabilities: {
+                firstMatch: [{
+                  'goog:chromeOptions' => {
+                    args: %w[foo bar]
+                  }
+                }]
+              }
+            )
+
+            expect(http).to receive(:request)
+              .with(any_args, payload)
+              .and_return('status' => 200, 'sessionId' => 'foo', 'value' => {})
+
+            Bridge.handshake(http_client: http, options: Chrome::Options.new(args: %w[foo bar]))
+          end
+
+          it 'passes options as capabilities' do
+            payload = JSON.generate(
+              desiredCapabilities: {
+                browserName: 'internet explorer',
+                version: '',
+                platform: 'WINDOWS',
+                javascriptEnabled: false,
+                cssSelectorsEnabled: true,
+                takesScreenshot: true,
+                nativeEvents: true,
+                rotatable: false
+              },
+              capabilities: {
+                firstMatch: [{
+                  browserName: 'internet explorer',
+                  'se:ieOptions' => {
+                    nativeEvents: true,
+                    'ie.browserCommandLineSwitches' => '--host=127.0.0.1'
+                  }
+                }]
+              }
+            )
+
+            expect(http).to receive(:request)
+              .with(any_args, payload)
+              .and_return('status' => 200, 'sessionId' => 'foo', 'value' => {})
+
+            options = IE::Options.new(args: ['--host=127.0.0.1'], native_events: true)
+            Bridge.handshake(http_client: http, desired_capabilities: :ie, options: options)
+          end
+
           it 'uses OSS bridge when necessary' do
             allow(http).to receive(:request)
               .and_return('status' => 200, 'sessionId' => 'foo', 'value' => {})

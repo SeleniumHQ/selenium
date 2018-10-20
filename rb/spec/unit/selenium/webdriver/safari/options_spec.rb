@@ -24,10 +24,10 @@ module Selenium
         describe '#as_json' do
           it 'returns JSON hash' do
             options = Options.new(automatic_inspection: true, automatic_profiling: true)
-            expect(options.as_json).to eq({
+            expect(options.as_json).to eq(
               'safari:automaticInspection' => true,
               'safari:automaticProfiling' => true
-            })
+            )
           end
         end
       end # Options
