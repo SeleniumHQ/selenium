@@ -50,7 +50,7 @@ module Selenium
           end
 
           bridge = new(opts)
-          capabilities = bridge.create_session(desired_capabilities)
+          capabilities = bridge.create_session(desired_capabilities, opts.delete(:options))
 
           case bridge.dialect
           when :oss
@@ -73,8 +73,10 @@ module Selenium
 
         def initialize(opts = {})
           opts = opts.dup
+
           http_client = opts.delete(:http_client) { Http::Default.new }
           url = opts.delete(:url) { "http://#{Platform.localhost}:#{PORT}/wd/hub" }
+          opts.delete(:options)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -93,8 +95,8 @@ module Selenium
         # Creates session handling both OSS and W3C dialects.
         #
 
-        def create_session(desired_capabilities)
-          response = execute(:new_session, {}, merged_capabilities(desired_capabilities))
+        def create_session(desired_capabilities, options = nil)
+          response = execute(:new_session, {}, merged_capabilities(desired_capabilities, options))
 
           @session_id = response['sessionId']
           oss_status = response['status']
@@ -173,8 +175,9 @@ module Selenium
           COMMANDS[command]
         end
 
-        def merged_capabilities(oss_capabilities)
+        def merged_capabilities(oss_capabilities, options = nil)
           w3c_capabilities = W3C::Capabilities.from_oss(oss_capabilities)
+          w3c_capabilities.merge!(options.as_json) if options
 
           {
             desiredCapabilities: oss_capabilities,
