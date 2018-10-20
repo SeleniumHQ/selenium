@@ -145,14 +145,14 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
     http.setIdleTimeout(500000);
 
     server.setConnectors(new Connector[]{http});
-
-    CommandHandler delegate = new CompoundHandler(injector, handlers);
-    W3CCommandHandler handler = new W3CCommandHandler(delegate);
-    addServlet(new CommandHandlerServlet(handler), "/*");
   }
 
   @Override
   public void addServlet(Class<? extends Servlet> servlet, String pathSpec) {
+    if (server.isRunning()) {
+      throw new IllegalStateException("You may not add a servlet to a running server");
+    }
+
     servletContextHandler.addServlet(
         Objects.requireNonNull(servlet),
         Objects.requireNonNull(pathSpec));
@@ -160,6 +160,10 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
 
   @Override
   public void addServlet(Servlet servlet, String pathSpec) {
+    if (server.isRunning()) {
+      throw new IllegalStateException("You may not add a servlet to a running server");
+    }
+
     servletContextHandler.addServlet(
         new ServletHolder(Objects.requireNonNull(servlet)),
         Objects.requireNonNull(pathSpec));
@@ -170,7 +174,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
       Predicate<HttpRequest> selector,
       BiFunction<Injector, HttpRequest, CommandHandler> handler) {
     if (server.isRunning()) {
-      throw new RuntimeException("You may not add a handler to a running server");
+      throw new IllegalStateException("You may not add a handler to a running server");
     }
     handlers.put(Objects.requireNonNull(selector), Objects.requireNonNull(handler));
   }
@@ -182,6 +186,10 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
   @Override
   public T start() {
     try {
+      CommandHandler delegate = new CompoundHandler(injector, handlers);
+      W3CCommandHandler handler = new W3CCommandHandler(delegate);
+      addServlet(new CommandHandlerServlet(handler), "/*");
+
       server.start();
 
       PortProber.waitForPortUp(getUrl().getPort(), 10, SECONDS);

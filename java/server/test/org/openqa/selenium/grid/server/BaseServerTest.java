@@ -18,12 +18,15 @@
 package org.openqa.selenium.grid.server;
 
 import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.grid.server.Server.get;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -35,14 +38,14 @@ import java.net.URL;
 
 public class BaseServerTest {
 
+  private BaseServerOptions emptyOptions = new BaseServerOptions(new MapConfig(ImmutableMap.of()));
+
   @Test
   public void baseServerStartsAndDoesNothing() throws IOException {
-    Server server = new BaseServer(new BaseServerOptions(new MapConfig(ImmutableMap.of()))).start();
+    Server<?> server = new BaseServer<>(emptyOptions).start();
 
     URL url = server.getUrl();
-
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
-
     HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
 
     // Although we don't expect the server to be ready, we do expect the request to succeed.
@@ -50,6 +53,49 @@ public class BaseServerTest {
 
     // And we expect the content to be UTF-8 encoded JSON.
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(response.getHeader("Content-Type")));
+  }
+
+  @Test
+  public void shouldAllowAHandlerToBeRegistered() throws IOException {
+    Server<?> server = new BaseServer<>(emptyOptions);
+    server.addHandler(
+        get("/cheese"),
+        (inj, ignored) -> (req, res) -> res.setContent("cheddar".getBytes(UTF_8)));
+
+    server.start();
+    URL url = server.getUrl();
+    HttpClient client = HttpClient.Factory.createDefault().createClient(url);
+    HttpResponse response = client.execute(new HttpRequest(GET, "/cheese"));
+
+    assertEquals("cheddar", response.getContentString());
+  }
+
+  @Test
+  public void ifTwoHandlersRespondToTheSameRequestTheLastOneAddedWillBeUsed() throws IOException {
+    Server<?> server = new BaseServer<>(emptyOptions);
+    server.addHandler(
+        get("/status"),
+        (inj, ignored) -> (req, res) -> res.setContent("one".getBytes(UTF_8)));
+    server.addHandler(
+        get("/status"),
+        (inj, ignored) -> (req, res) -> res.setContent("two".getBytes(UTF_8)));
+
+    server.start();
+    URL url = server.getUrl();
+    HttpClient client = HttpClient.Factory.createDefault().createClient(url);
+    HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
+
+    assertEquals("two", response.getContentString());
+
+  }
+
+  @Test
+  public void addHandlersOnceServerIsStartedIsAnError() {
+    Server<BaseServer> server = new BaseServer<>(emptyOptions);
+    server.start();
+
+    Assertions.assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
+        () -> server.addHandler(get("/foo"), (inj, ignored) -> (req, res) -> {}));
   }
 
 }
