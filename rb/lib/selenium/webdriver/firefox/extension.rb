@@ -88,10 +88,10 @@ module Selenium
 
           manifest = JSON.parse(File.read(manifest_path))
           if manifest.key?('application') && manifest['application'].key?('gecko')
-	    manifest['application']['gecko']['id']
-	  else
-	    [manifest['name'].delete(' '), manifest['version']].join('@')
-	  end
+	          manifest['application']['gecko']['id']
+	        else
+	          [manifest['name'].delete(' '), manifest['version']].join('@')
+	        end
         end
       end # Extension
     end # Firefox
