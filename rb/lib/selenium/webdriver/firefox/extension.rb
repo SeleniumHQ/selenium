@@ -87,10 +87,11 @@ module Selenium
           return unless File.exist?(manifest_path)
 
           manifest = JSON.parse(File.read(manifest_path))
-          id = if manifest.key?('application') && manifest['application'].key?('gecko')
-                 manifest['application']['gecko']['id']
-               end
-          id || [manifest['name'].delete(' '), manifest['version']].join('@')
+          if manifest.key?('application') && manifest['application'].key?('gecko')
+	    manifest['application']['gecko']['id']
+	  else
+	    [manifest['name'].delete(' '), manifest['version']].join('@')
+	  end
         end
       end # Extension
     end # Firefox
