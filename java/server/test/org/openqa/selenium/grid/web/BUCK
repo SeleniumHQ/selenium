@@ -5,7 +5,9 @@ java_test(
     deps = [
         ":utils",
         "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/grid/server:server",
         "//java/server/src/org/openqa/selenium/grid/web:web",
+        "//third_party/java/assertj:assertj",
         "//third_party/java/guava:guava",
         "//third_party/java/junit:junit",
     ],

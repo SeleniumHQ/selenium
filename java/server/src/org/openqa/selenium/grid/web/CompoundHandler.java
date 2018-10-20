@@ -17,17 +17,34 @@
 
 package org.openqa.selenium.grid.web;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
+/**
+ * Presents a collection of {@link CommandHandler}s as a single unit. Should there be more than
+ * handler that responds to a given {@link HttpRequest}, then the last one returned from the
+ * underlying {@link Map}'s key set will be returned (that is, if the map preserves insertion order
+ * the last inserted handler will be returned). This means that handlers added later take precedence
+ * over handlers added first, allowing them to be overridden.
+ */
 public class CompoundHandler implements Predicate<HttpRequest>, CommandHandler {
 
   private final Injector injector;
@@ -38,8 +55,20 @@ public class CompoundHandler implements Predicate<HttpRequest>, CommandHandler {
       Injector injector,
       Map<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>> handlers) {
 
-    this.injector = Objects.requireNonNull(injector);
-    this.handlers = Objects.requireNonNull(handlers);
+    this.injector = Objects.requireNonNull(injector, "Injector must be set");
+
+    Objects.requireNonNull(handlers, "Handlers to use must be set");
+
+    // First reverse the key set. In maps without a defined order in the key set, this doesn't mean
+    // much.
+    Deque<Predicate<HttpRequest>> deque = new ArrayDeque<>();
+    handlers.keySet().forEach(deque::addFirst);
+
+    // Now bbuild up the map we want to actually use.
+    ImmutableMap.Builder<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>>
+        built = ImmutableMap.builder();
+    deque.forEach(key -> built.put(key, handlers.get(key)));
+    this.handlers = built.build();
   }
 
   @Override
