@@ -99,9 +99,10 @@ public class DisplayHelpHandler implements CommandHandler {
 
           final String json = jsonBuilder.toString();
 
-          final String htmlTemplate =
-              new BufferedReader(new InputStreamReader(in, UTF_8)).lines()
-                  .collect(Collectors.joining("\n"));
+          final String htmlTemplate;
+          try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, UTF_8))) {
+              htmlTemplate = reader.lines().collect(Collectors.joining("\n"));
+          }
           final String updatedTemplate =
               htmlTemplate.replace(HELPER_SERVLET_TEMPLATE_CONFIG_JSON_VAR, json);
           if (resource.equals("/")) {
