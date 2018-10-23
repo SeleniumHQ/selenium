@@ -107,12 +107,9 @@ public class AlertsTest extends JUnit4TestBase {
 
     driver.findElement(By.id("alert")).click();
     Alert alert = wait.until(alertIsPresent());
-    try {
-      assertThatExceptionOfType(IllegalArgumentException.class)
-          .isThrownBy(() -> alert.sendKeys(null));
-    } finally {
-      alert.accept();
-    }
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> alert.sendKeys(null));
   }
 
   @Test
@@ -138,11 +135,8 @@ public class AlertsTest extends JUnit4TestBase {
 
     driver.findElement(By.id("slow-alert")).click();
     Alert alert = wait.until(alertIsPresent());
-    try {
-      assertThat(alert.getText()).isEqualTo("Slow");
-    } finally {
-      alert.accept();
-    }
+
+    assertThat(alert.getText()).isEqualTo("Slow");
   }
 
   @Test
@@ -201,12 +195,8 @@ public class AlertsTest extends JUnit4TestBase {
     driver.findElement(By.id("alert")).click();
 
     Alert alert = wait.until(alertIsPresent());
-    try {
-      assertThatExceptionOfType(ElementNotInteractableException.class)
-          .isThrownBy(() -> alert.sendKeys("cheese"));
-    } finally {
-      alert.accept();
-    }
+    assertThatExceptionOfType(ElementNotInteractableException.class)
+        .isThrownBy(() -> alert.sendKeys("cheese"));
   }
 
   @Test
