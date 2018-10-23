@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.internal;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.common.base.Strings;
@@ -62,7 +63,7 @@ public class OkHttpClient implements HttpClient {
         rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
       }
 
-      url = HttpUrl.parse(rawUrl).newBuilder();
+      url = requireNonNull(HttpUrl.parse(rawUrl), "Unable to parse: " + rawUrl).newBuilder();
     } catch (NullPointerException e) {
       throw new IOException("Unable to parse URL: " + baseUrl.toString() + request.getUri());
     }
