@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.internal;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.common.base.Strings;
@@ -36,8 +35,6 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.Duration;
-import java.util.Objects;
 import java.util.Optional;
 
 public class OkHttpClient implements HttpClient {
@@ -55,18 +52,18 @@ public class OkHttpClient implements HttpClient {
     Request.Builder builder = new Request.Builder();
 
     HttpUrl.Builder url;
-    try {
-      String rawUrl;
-      if (request.getUri().startsWith("http:") || request.getUri().startsWith("https:")) {
-        rawUrl = request.getUri();
-      } else {
-        rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
-      }
+    String rawUrl;
+    if (request.getUri().startsWith("http:") || request.getUri().startsWith("https:")) {
+      rawUrl = request.getUri();
+    } else {
+      rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
+    }
 
-      url = requireNonNull(HttpUrl.parse(rawUrl), "Unable to parse: " + rawUrl).newBuilder();
-    } catch (NullPointerException e) {
+    HttpUrl parsed = HttpUrl.parse(rawUrl);
+    if (parsed == null) {
       throw new IOException("Unable to parse URL: " + baseUrl.toString() + request.getUri());
     }
+    url = parsed.newBuilder();
 
     for (String name : request.getQueryParameterNames()) {
       for (String value : request.getQueryParameters(name)) {
