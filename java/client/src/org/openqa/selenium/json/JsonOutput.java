@@ -311,13 +311,21 @@ public class JsonOutput implements Closeable {
     } catch (NoSuchMethodException e) {
       return getMethod(clazz.getSuperclass(), methodName);
     } catch (SecurityException e) {
-      return null;
+      throw new JsonException(
+          "Unable to find the method because of a security constraint: " + methodName,
+          e);
     }
   }
 
   private JsonOutput convertUsingMethod(String methodName, Object toConvert, int depth) {
     try {
       Method method = getMethod(toConvert.getClass(), methodName);
+      if (method == null) {
+        throw new JsonException(String.format(
+            "Unable to read object %s using method %s",
+            toConvert,
+            methodName));
+      }
       Object value = method.invoke(toConvert);
 
       return write(value, depth);
