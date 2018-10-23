@@ -208,9 +208,10 @@ public class RemoteWebDriverBuilder {
                   "Attempt to start the underlying service more than once");
             }
             try {
-              serviceRef.set(plan.getDriverService());
-              serviceRef.get().start();
-              return serviceRef.get().getUrl();
+              DriverService service = plan.getDriverService();
+              serviceRef.set(service);
+              service.start();
+              return service.getUrl();
             } catch (IOException e) {
               throw new SessionNotCreatedException(e.getMessage(), e);
             }
