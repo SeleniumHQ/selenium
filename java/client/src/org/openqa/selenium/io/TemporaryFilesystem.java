@@ -23,6 +23,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * A wrapper around temporary filesystem behaviour.
@@ -35,15 +38,25 @@ public class TemporaryFilesystem {
   private final Thread shutdownHook = new Thread(this::deleteTemporaryFiles);
 
   private static File sysTemp = new File(System.getProperty("java.io.tmpdir"));
+  private static final ReadWriteLock lock = new ReentrantReadWriteLock();
   private static TemporaryFilesystem instance = new TemporaryFilesystem(sysTemp);
 
   public static TemporaryFilesystem getDefaultTmpFS() {
-    return instance;
+    Lock readLock = lock.readLock();
+    readLock.lock();
+    try {
+      return instance;
+    } finally {
+      readLock.unlock();
+    }
   }
 
   public static void setTemporaryDirectory(File directory) {
-    synchronized (TemporaryFilesystem.class) {
+    Lock writeLock = lock.writeLock();
+    try {
       instance = new TemporaryFilesystem(directory);
+    } finally {
+      writeLock.unlock();
     }
   }
 
@@ -142,7 +155,7 @@ public class TemporaryFilesystem {
 
   public boolean deleteBaseDir() {
     boolean wasDeleted = baseDir.delete();
-    if (! baseDir.exists()) {
+    if (!baseDir.exists()) {
       Runtime.getRuntime().removeShutdownHook(shutdownHook);
     }
     return wasDeleted;
