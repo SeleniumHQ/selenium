@@ -53,6 +53,7 @@ public class TemporaryFilesystem {
 
   public static void setTemporaryDirectory(File directory) {
     Lock writeLock = lock.writeLock();
+    writeLock.lock();
     try {
       instance = new TemporaryFilesystem(directory);
     } finally {
