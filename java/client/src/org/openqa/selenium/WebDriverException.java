@@ -55,6 +55,8 @@ public class WebDriverException extends RuntimeException {
 
         if (!process.waitFor(2, TimeUnit.SECONDS)) {
           process.destroyForcibly();
+          // According to the docs for `destroyForcibly` this is a good idea.
+          process.waitFor(2, TimeUnit.SECONDS);
         }
         if (process.exitValue() == 0) {
           try (InputStreamReader isr = new InputStreamReader(process.getInputStream());
