@@ -405,6 +405,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @NeedsLocalEnvironment
+  @Ignore(value = CHROME, reason = "Flaky")
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
     // Get the sleeping servlet with a pause of 5 seconds
     String slowPage = appServer.whereIs("sleep?time=5");
