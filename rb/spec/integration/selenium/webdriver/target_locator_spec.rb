@@ -289,7 +289,8 @@ module Selenium
           expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
         end
 
-        it 'raises NoAlertOpenError if no alert is present' do
+        # https://github.com/mozilla/geckodriver/issues/1404
+        it 'raises NoAlertOpenError if no alert is present', except: {browser: :firefox} do
           expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError, /alert|modal/i)
         end
 
