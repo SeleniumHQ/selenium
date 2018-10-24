@@ -41,7 +41,7 @@ public class TestOperaBlinkDriver extends RemoteWebDriver {
   }
 
   private static URL getServiceUrl() {
-    if (service == null && !SauceDriver.shouldUseSauce()) {
+    if (service == null) {
       service = OperaDriverService.createDefaultService();
       try {
         service.start();

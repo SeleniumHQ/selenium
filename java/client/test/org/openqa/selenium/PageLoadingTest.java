@@ -36,7 +36,6 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.drivers.SauceDriver.shouldUseSauce;
 
 import org.junit.After;
 import org.junit.Test;
@@ -199,7 +198,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NeedsFreshDriver(value = FIREFOX, reason = "No idea why it throws in a fresh driver only")
   @Test
   public void testShouldThrowIfUrlIsMalformed() {
-    assumeFalse("Fails in Sauce Cloud", shouldUseSauce());
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> driver.get("www.test.com"));
   }
@@ -207,7 +205,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = SAFARI)
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
-    assumeFalse("Fails in Sauce Cloud", shouldUseSauce());
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> driver.get("http://localhost:3001bla"));
   }
