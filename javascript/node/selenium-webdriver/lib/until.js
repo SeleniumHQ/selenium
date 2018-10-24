@@ -49,6 +49,12 @@ const webdriver = require('./webdriver'),
     WebElementCondition = webdriver.WebElementCondition;
 
 
+function elementIfVisible(element) {
+  return element.isDisplayed().then(displayed => {
+      return displayed? element : null;
+  });
+}
+
 /**
  * Creates a condition that will wait until the input driver is able to switch
  * to the designated frame. The target frame may be specified as
@@ -119,6 +125,31 @@ exports.alertIsPresent = function alertIsPresent() {
     });
   });
 };
+
+/**
+ * Creates a condition for checking that an element is present on the DOM of a page and visible.
+ * Visibility means that the element is not only displayed but also has a height and width that is
+ * greater than 0.
+ *
+ * @param {!By} locator used to find the element
+ * @return {!Condition<WebElement>} the WebElement once it is located and visible
+*/
+exports.visibilityOfElementLocated = function(locator) {
+  return new Condition('visibility of element located by ' + locator.toString(), function(driver) {
+      return driver.findElement(locator).then(element => {
+          return elementIfVisible(element).then(elementVisible => {
+              return elementVisible;
+          });
+
+      }, e => {
+          if(e instanceof StaleElementReferenceError) {
+              // if the element is stale, means that it no longer exists in the page and is not visible
+              return null;
+          }
+          throw e;
+      });
+  })
+}
 
 
 /**
@@ -226,6 +257,53 @@ exports.urlMatches = function urlMatches(regex) {
   });
 };
 
+/**
+ * Creates a condition that checks if an element is either invisible or not present on the DOM.
+ *
+ * @param {!By} locator used to find the element
+ * @return {!Condition<boolean>} true if the element is not displayed or the element doesn't exist or stale element
+ */
+exports.invisibilityOfElementLocated = function(locator) {
+  return new Condition('visibility of element located by ' + locator.toString(), function(driver) {
+      return driver.findElement(locator).then(element => {
+          return element.isDisplayed().then(displayed => !displayed);
+      }, e => {
+          if(e instanceof error.NoSuchElementError || e instanceof StaleElementReferenceError) {
+              // returns true because the element is not present in DOM.
+
+              // returns true because stale element reference implies that element
+              // is no longer visible.
+              return true;
+          }
+          throw e;
+      });
+  });
+}
+
+/**
+ * Creates a condition that checks if an element is visible and enabled such that you can click it.
+ *
+ * @param {!By} locator used to find the element
+ * @return {!Condition<WebElement>} the WebElement once it is located and clickable (visible and enabled)
+ */
+exports.elementToBeClickable = function(locator) {
+  return new Condition('for element '+ locator.toString() + ' to be clickable', function (driver) {
+      return driver.findElement(locator).then(element => {
+          return elementIfVisible(element).then(elementToBeVisible => {
+              if(!elementToBeVisible) return null;
+
+              return elementToBeVisible.isEnabled().then(isEnabled => {
+                  return isEnabled? element : null;
+              });
+          });
+      }, e => {
+          if (e instanceof error.StaleElementReferenceError) {
+              return null;
+          }
+          throw e;
+      })
+  });
+}
 
 /**
  * Creates a condition that will loop until an element is
