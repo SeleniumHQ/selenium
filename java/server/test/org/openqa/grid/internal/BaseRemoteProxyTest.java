@@ -19,10 +19,9 @@ package org.openqa.grid.internal;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-
-import com.google.gson.Gson;
+import static org.openqa.selenium.json.PropertySetting.BY_FIELD;
 
 import com.beust.jcommander.JCommander;
 
@@ -37,6 +36,7 @@ import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -70,8 +70,8 @@ public class BaseRemoteProxyTest {
         RemoteProxyFactory.getNewBasicRemoteProxy(caps, "http://machine4:4444/", registry);
 
 
-    assertTrue(p1.equals(p1));
-    assertFalse(p1.equals(p2));
+    assertEquals(p1, p1);
+    assertNotEquals(p1, p2);
   }
 
   @Test
@@ -79,7 +79,7 @@ public class BaseRemoteProxyTest {
     Map<String, Object> cap = new HashMap<>();
     cap.put(CapabilityType.APPLICATION_NAME, "corrupted");
 
-    GridNodeConfiguration config = new Gson().fromJson("{\"remoteHost\":\"ebay.com\"}", GridNodeConfiguration.class);
+    GridNodeConfiguration config = new Json().toType("{\"remoteHost\":\"ebay.com\"}", GridNodeConfiguration.class, BY_FIELD);
     config.capabilities.add(new DesiredCapabilities(cap));
     RegistrationRequest request = new RegistrationRequest(config);
 
