@@ -19,9 +19,6 @@ package org.openqa.selenium.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.base.Throwables;
-
-import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.RuleChain;
@@ -82,8 +79,7 @@ public abstract class JUnit4TestBase {
     .outerRule(new TraceMethodNameRule())
     .around(new ManageDriverRule())
     .around(new SwitchToTopRule())
-    .around(new NotYetImplementedRule())
-    .around(new CoveringUpSauceErrorsRule());
+    .around(new NotYetImplementedRule());
 
   private class TraceMethodNameRule extends TestWatcher {
     @Override
@@ -143,41 +139,6 @@ public abstract class JUnit4TestBase {
       SwitchToTopAfterTest annotation = description.getAnnotation(SwitchToTopAfterTest.class);
       if (annotation != null) {
         driver.switchTo().defaultContent();
-      }
-    }
-  }
-
-  private class CoveringUpSauceErrorsRule implements TestRule {
-    @Override
-    public Statement apply(final Statement base, final Description description) {
-      return new Statement() {
-        @Override
-        public void evaluate() throws Throwable {
-          try {
-            base.evaluate();
-          } catch (Throwable t) {
-            dealWithSauceFailureIfNecessary(t);
-            // retry if we got a 'sauce' failure
-            base.evaluate();
-          }
-        }
-      };
-    }
-
-    private void dealWithSauceFailureIfNecessary(Throwable t) {
-      String message = t.getMessage();
-      if (!(t instanceof AssumptionViolatedException) && message != null
-          && (message.contains("sauce") || message.contains("Sauce"))) {
-        try {
-          removeDriver();
-          createDriver();
-        } catch (Exception e) {
-          t.addSuppressed(e);
-          throw new RuntimeException("Sauce-related failure. Tried re-creating the driver, but that failed too.", t);
-        }
-      } else {
-        Throwables.throwIfUnchecked(t);
-        throw new RuntimeException(t);
       }
     }
   }
