@@ -38,7 +38,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.Browser;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.logging.Logger;
@@ -271,8 +270,7 @@ public abstract class JUnit4TestBase {
 
         case REMOTE:
           if (Boolean.getBoolean("selenium.browser.grid") ||
-              Boolean.getBoolean("selenium.browser.remote") ||
-              SauceDriver.shouldUseSauce()) {
+              Boolean.getBoolean("selenium.browser.remote")) {
             return true;
           }
           break;

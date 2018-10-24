@@ -60,7 +60,7 @@ public class TestChromeDriver extends RemoteWebDriver implements WebStorage, Loc
 
   private static URL getServiceUrl() {
     try {
-      if (service == null && !SauceDriver.shouldUseSauce()) {
+      if (service == null) {
         Path logFile = Files.createTempFile("chromedriver", ".log");
         service = new ChromeDriverService.Builder()
             .withVerbose(true)

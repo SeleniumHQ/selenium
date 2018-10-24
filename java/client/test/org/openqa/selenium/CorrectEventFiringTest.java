@@ -40,7 +40,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
@@ -443,9 +442,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
-    assumeFalse("Skipping test which fails in IE on Sauce",
-                SauceDriver.shouldUseSauce() && TestUtilities.isInternetExplorer(driver));
-
     driver.get(pages.clickEventPage);
 
     WebElement element = driver.findElement(By.id("eventish"));
