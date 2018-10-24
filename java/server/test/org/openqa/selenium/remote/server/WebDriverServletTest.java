@@ -18,14 +18,16 @@
 package org.openqa.selenium.remote.server;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +48,7 @@ import org.openqa.testing.FakeHttpServletResponse;
 import org.openqa.testing.UrlInfo;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +59,7 @@ public class WebDriverServletTest {
   private static final String BASE_URL = "http://localhost:4444";
   private static final String CONTEXT_PATH = "/wd/hub";
 
+  private Json json = new Json();
   private ActiveSessions testSessions;
   private WebDriverServlet driverServlet;
   private WebDriver driver;
@@ -97,10 +101,10 @@ public class WebDriverServletTest {
 
     WebDriver driver = testSessions.get(sessionId).getWrappedDriver();
 
-    JsonObject json = new JsonObject();
-    json.addProperty("url", "http://www.google.com");
+    Map<String, Object> json = ImmutableMap.of("url", "http://www.google.com");
     FakeHttpServletResponse response = sendCommand("POST",
-        String.format("/session/%s/url", sessionId), json);
+                                                   String.format("/session/%s/url", sessionId),
+                                                   json);
 
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 
@@ -110,7 +114,7 @@ public class WebDriverServletTest {
   @Test
   public void reportsBadRequestForMalformedCrossDomainRpcs()
       throws IOException, ServletException {
-    FakeHttpServletResponse response = sendCommand("POST", "/xdrpc", new JsonObject());
+    FakeHttpServletResponse response = sendCommand("POST", "/xdrpc", ImmutableMap.of());
 
     assertEquals(HttpServletResponse.SC_BAD_REQUEST, response.getStatus());
     assertEquals("Missing required parameter: method\r\n", response.getBody());
@@ -123,78 +127,73 @@ public class WebDriverServletTest {
 
     WebDriver driver = testSessions.get(sessionId).getWrappedDriver();
 
-    JsonObject json = new JsonObject();
-    json.addProperty("method", "POST");
-    json.addProperty("path", String.format("/session/%s/url", sessionId));
-    JsonObject data = new JsonObject();
-    data.addProperty("url", "http://www.google.com");
-    json.add("data", data);
+    Map<String, Object> json = ImmutableMap.of(
+        "method", "POST",
+        "path", String.format("/session/%s/url", sessionId),
+        "data", ImmutableMap.of("url", "http://www.google.com"));
     FakeHttpServletResponse response = sendCommand("POST", "/xdrpc", json);
 
     verify(driver).get("http://www.google.com");
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     assertEquals("application/json; charset=utf-8",
-        response.getHeader("content-type"));
+                 response.getHeader("content-type"));
 
-    JsonObject jsonResponse = new JsonParser().parse(response.getBody()).getAsJsonObject();
-    assertEquals(ErrorCodes.SUCCESS, jsonResponse.get("status").getAsInt());
-    assertEquals(sessionId.toString(), jsonResponse.get("sessionId").getAsString());
-    assertTrue(jsonResponse.get("value").isJsonNull());
+    Map<String, Object> jsonResponse = this.json.toType(response.getBody(), MAP_TYPE);
+    assertEquals(ErrorCodes.SUCCESS, ((Number) jsonResponse.get("status")).intValue());
+    assertEquals(sessionId.toString(), jsonResponse.get("sessionId"));
+    assertNull(jsonResponse.get("value"));
   }
 
   @Test
   public void doesNotRedirectForNewSessionsRequestedViaCrossDomainRpc()
       throws IOException, ServletException {
-    JsonObject json = new JsonObject();
-    json.addProperty("method", "POST");
-    json.addProperty("path", "/session");
-    JsonObject caps = new JsonObject();
-    caps.addProperty(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
-    caps.addProperty(CapabilityType.VERSION, true);
-    JsonObject data = new JsonObject();
-    data.add("desiredCapabilities", caps);
-    json.add("data", data);
+    Map<String, Object> json = ImmutableMap.of(
+        "method", "POST",
+        "path", "/session",
+        "data", ImmutableMap.of(
+            "desiredCapabilities", ImmutableMap.of(
+                CapabilityType.BROWSER_NAME, BrowserType.FIREFOX,
+                CapabilityType.VERSION, true)));
     FakeHttpServletResponse response = sendCommand("POST", "/xdrpc", json);
 
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     assertEquals("application/json; charset=utf-8",
-        response.getHeader("content-type"));
+                 response.getHeader("content-type"));
 
-    JsonObject jsonResponse = new JsonParser().parse(response.getBody()).getAsJsonObject();
-    assertEquals(ErrorCodes.SUCCESS, jsonResponse.get("status").getAsInt());
-    assertFalse(jsonResponse.get("sessionId").isJsonNull());
+    Map<String, Object> jsonResponse = this.json.toType(response.getBody(), MAP_TYPE);
+    assertEquals(ErrorCodes.SUCCESS, ((Number) jsonResponse.get("status")).intValue());
+    assertNotNull(jsonResponse.get("sessionId"));
 
-    JsonObject value = jsonResponse.get("value").getAsJsonObject();
+    Map<?, ?> value = (Map<?, ?>) jsonResponse.get("value");
     // values: browsername, version, remote session id.
     assertEquals(value.toString(), 3, value.entrySet().size());
-    assertEquals(BrowserType.FIREFOX, value.get(CapabilityType.BROWSER_NAME).getAsString());
-    assertTrue(value.get(CapabilityType.VERSION).getAsBoolean());
+    assertEquals(BrowserType.FIREFOX, value.get(CapabilityType.BROWSER_NAME));
+    assertTrue((Boolean) value.get(CapabilityType.VERSION));
   }
 
   @Test
   public void handlesInvalidCommandsToRootOfDriverService()
       throws IOException, ServletException {
     // Command path will be null in servlet API when request is to the context root (e.g. /wd/hub).
-    FakeHttpServletResponse response = sendCommand("POST", null, new JsonObject());
+    FakeHttpServletResponse response = sendCommand("POST", null, ImmutableMap.of());
 
     // An Unknown Command has an HTTP status code of 404. Fact.
     assertEquals(404, response.getStatus());
 
-    JsonObject jsonResponse = new JsonParser().parse(response.getBody()).getAsJsonObject();
-    assertEquals(ErrorCodes.UNKNOWN_COMMAND, jsonResponse.get("status").getAsInt());
+    Map<String, Object> jsonResponse = json.toType(response.getBody(), MAP_TYPE);
+    assertEquals(ErrorCodes.UNKNOWN_COMMAND, ((Number) jsonResponse.get("status")).intValue());
 
-    JsonObject value = jsonResponse.get("value").getAsJsonObject();
-    assertNotNull(value.get("message").getAsString());
+    Map<?, ?> value = (Map<?, ?>) jsonResponse.get("value");
+    assertThat(value.get("message")).isInstanceOf(String.class);
   }
 
   private SessionId createSession() throws IOException, ServletException {
-    JsonObject caps = new JsonObject();
-    caps.add("desiredCapabilities", new JsonObject());
+    Map<String, Object> caps = ImmutableMap.of("desiredCapabilities", ImmutableMap.of());
     FakeHttpServletResponse response = sendCommand("POST", "/session", caps);
 
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 
-    Response resp = new Json().toType(response.getBody(), Response.class);
+    Response resp = json.toType(response.getBody(), Response.class);
 
     String sessionId = resp.getSessionId();
     assertNotNull(sessionId);
@@ -202,11 +201,13 @@ public class WebDriverServletTest {
     return new SessionId(sessionId);
   }
 
-  private FakeHttpServletResponse sendCommand(String method, String commandPath,
-      JsonObject parameters) throws IOException, ServletException {
+  private FakeHttpServletResponse sendCommand(
+      String method,
+      String commandPath,
+      Map<String, Object> parameters) throws IOException, ServletException {
     FakeHttpServletRequest request = new FakeHttpServletRequest(method, createUrl(commandPath));
     if (parameters != null) {
-      request.setBody(parameters.toString());
+      request.setBody(new Json().toJson(parameters));
     }
 
     FakeHttpServletResponse response = new FakeHttpServletResponse();
