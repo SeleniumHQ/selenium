@@ -18,8 +18,6 @@
 package org.openqa.selenium.testing.drivers;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.openqa.selenium.Platform.LINUX;
-import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.EDGE;
@@ -41,7 +39,6 @@ import org.junit.runner.Description;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreList;
-import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.util.Arrays;
@@ -98,9 +95,6 @@ public class TestIgnorance {
       ignored = !ignored;
     }
 
-    ignored |= isIgnoredBecauseOfNativeEvents(method.getTestClass().getAnnotation(NativeEventsRequired.class));
-    ignored |= isIgnoredBecauseOfNativeEvents(method.getAnnotation(NativeEventsRequired.class));
-
     ignored |= isIgnoredDueToEnvironmentVariables(method);
 
     ignored |= isIgnoredDueToBeingOnSauce(method);
@@ -110,28 +104,6 @@ public class TestIgnorance {
 
   private boolean isIgnoredBecauseOfJUnit4Ignore(org.junit.Ignore annotation) {
     return annotation != null;
-  }
-
-  private boolean isIgnoredBecauseOfNativeEvents(NativeEventsRequired annotation) {
-    if (annotation == null) {
-      return false;
-    }
-
-    if (neverNativeEvents.contains(browser)) {
-      return true;
-    }
-
-    if (alwaysNativeEvents.contains(browser)) {
-      return false;
-    }
-
-    if (!Boolean.getBoolean("selenium.browser.native_events")) {
-      return true;
-    }
-
-    // We only have native events on Linux and Windows.
-    Platform platform = getEffectivePlatform();
-    return !(platform.is(LINUX) || platform.is(WINDOWS));
   }
 
   private static Platform getEffectivePlatform() {
