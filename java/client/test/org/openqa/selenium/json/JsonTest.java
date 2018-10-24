@@ -33,8 +33,6 @@ import static org.openqa.selenium.logging.LogType.SERVER;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -174,11 +172,9 @@ public class JsonTest {
   @SuppressWarnings("unchecked")
   @Test
   public void canPopulateAMap() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.addProperty("cheese", "brie");
-    toConvert.addProperty("foodstuff", "cheese");
+    String raw = "{\"cheese\": \"brie\", \"foodstuff\": \"cheese\"}";
 
-    Map<String, String> map = new Json().toType(toConvert.toString(), Map.class);
+    Map<String, String> map = new Json().toType(raw, Map.class);
     assertThat(map)
         .hasSize(2)
         .containsEntry("cheese", "brie")
@@ -187,10 +183,9 @@ public class JsonTest {
 
   @Test
   public void canPopulateAMapThatContainsNull() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.add("foo", JsonNull.INSTANCE);
+    String raw = "{\"foo\": null}";
 
-    Map<?,?> converted = new Json().toType(toConvert.toString(), Map.class);
+    Map<?,?> converted = new Json().toType(raw, Map.class);
     assertThat(converted.size()).isEqualTo(1);
     assertThat(converted.containsKey("foo")).isTrue();
     assertThat(converted.get("foo")).isNull();
@@ -198,43 +193,35 @@ public class JsonTest {
 
   @Test
   public void canPopulateASimpleBean() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.addProperty("value", "time");
+    String raw = "{\"value\": \"time\"}";
 
-    SimpleBean bean = new Json().toType(toConvert.toString(), SimpleBean.class);
+    SimpleBean bean = new Json().toType(raw, SimpleBean.class);
     assertThat(bean.getValue()).isEqualTo("time");
   }
 
   @Test
   public void willSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.addProperty("value", "time");
-    toConvert.addProperty("frob", "telephone");
+    String raw = "{\"value\": \"time\", \"frob\": \"telephone\"}";
 
-    SimpleBean bean = new Json().toType(toConvert.toString(), SimpleBean.class);
+    SimpleBean bean = new Json().toType(raw, SimpleBean.class);
 
     assertThat(bean.getValue()).isEqualTo("time");
   }
 
   @Test
   public void shouldSetPrimitiveValuesToo() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.addProperty("magicNumber", 3);
+    String raw = "{\"magicNumber\": 3}";
 
-    Map<?,?> map = new Json().toType(toConvert.toString(), Map.class);
+    Map<?,?> map = new Json().toType(raw, Map.class);
 
     assertThat(map.get("magicNumber")).isEqualTo(3L);
   }
 
   @Test
   public void shouldPopulateFieldsOnNestedBeans() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.addProperty("name", "frank");
-    JsonObject child = new JsonObject();
-    child.addProperty("value", "lots");
-    toConvert.add("bean", child);
+    String raw = "{\"name\": \"frank\", \"bean\": {\"value\": \"lots\"}}";
 
-    ContainingBean bean = new Json().toType(toConvert.toString(), ContainingBean.class);
+    ContainingBean bean = new Json().toType(raw, ContainingBean.class);
 
     assertThat(bean.getName()).isEqualTo("frank");
     assertThat(bean.getBean().getValue()).isEqualTo("lots");
@@ -254,11 +241,9 @@ public class JsonTest {
 
   @Test
   public void shouldUseAMapToRepresentComplexObjects() {
-    JsonObject toModel = new JsonObject();
-    toModel.addProperty("thing", "hairy");
-    toModel.addProperty("hairy", "true");
+    String toModel = "{\"thing\": \"hairy\", \"hairy\": true}";
 
-    Map<?,?> modelled = new Json().toType(toModel.toString(), Object.class);
+    Map<?,?> modelled = new Json().toType(toModel, Object.class);
     assertThat(modelled).hasSize(2);
   }
 
@@ -374,14 +359,13 @@ public class JsonTest {
 
   @Test
   public void shouldParseCapabilitiesWithLoggingPreferences() {
-    JsonObject prefs = new JsonObject();
-    prefs.addProperty("browser", "WARNING");
-    prefs.addProperty("client", "DEBUG");
-    prefs.addProperty("driver", "ALL");
-    prefs.addProperty("server", "OFF");
-
-    JsonObject caps = new JsonObject();
-    caps.add(CapabilityType.LOGGING_PREFS, prefs);
+    String caps = String.format(
+        "{\"%s\": {" +
+        "\"browser\": \"WARNING\"," +
+        "\"client\": \"DEBUG\", " +
+        "\"driver\": \"ALL\", " +
+        "\"server\": \"OFF\"}}",
+        CapabilityType.LOGGING_PREFS);
 
     Capabilities converted = new Json().toType(caps.toString(), Capabilities.class);
 
@@ -396,14 +380,9 @@ public class JsonTest {
 
   @Test
   public void shouldNotParseQuotedJsonObjectsAsActualJsonObjects() {
-    JsonObject inner = new JsonObject();
-    inner.addProperty("color", "green");
-    inner.addProperty("number", 123);
+    String jsonStr = "{\"inner\":\"{\\\"color\\\":\\\"green\\\",\\\"number\\\":123}\"}";
 
-    JsonObject outer = new JsonObject();
-    outer.addProperty("inner", inner.toString());
-
-    String jsonStr = outer.toString();
+    System.out.println(jsonStr);
 
     Object convertedOuter = new Json().toType(jsonStr, Map.class);
     assertThat(convertedOuter).isInstanceOf(Map.class);
@@ -411,22 +390,19 @@ public class JsonTest {
     Object convertedInner = ((Map<?,?>) convertedOuter).get("inner");
     assertThat(convertedInner).isNotNull();
     assertThat(convertedInner).isInstanceOf(String.class);
-    assertThat(convertedInner.toString()).isEqualTo(inner.toString());
+    assertThat(convertedInner.toString()).isEqualTo("{\"color\":\"green\",\"number\":123}");
   }
 
   @Test
   public void shouldBeAbleToConvertASelenium3CommandToASelenium2Command() {
     SessionId expectedId = new SessionId("thisisakey");
 
-    JsonObject rawJson = new JsonObject();
     // In selenium 2, the sessionId is an object. In selenium 3, it's a straight string.
-    rawJson.addProperty("sessionId", expectedId.toString());
-    rawJson.addProperty("name", "some command");
-    rawJson.add("parameters", new JsonObject());
+    String raw = "{\"sessionId\": \"" + expectedId.toString() + "\", " +
+                 "\"name\": \"some command\"," +
+                 "\"parameters\": {}}";
 
-    String stringified = rawJson.toString();
-
-    Command converted = new Json().toType(stringified, Command.class);
+    Command converted = new Json().toType(raw, Command.class);
 
     assertThat(converted.getSessionId()).isEqualTo(expectedId);
   }

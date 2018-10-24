@@ -31,10 +31,6 @@ import static org.openqa.selenium.json.JsonType.START_MAP;
 import static org.openqa.selenium.json.JsonType.STRING;
 import static org.openqa.selenium.json.PropertySetting.BY_NAME;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-
 import org.junit.Test;
 
 import java.io.StringReader;
@@ -44,53 +40,53 @@ public class JsonInputTest {
 
   @Test
   public void shouldParseBooleanValues() {
-    JsonInput input = newInput(true);
+    JsonInput input = newInput("true");
     assertThat(input.peek()).isEqualTo(BOOLEAN);
     assertThat(input.nextBoolean()).isTrue();
 
-    input = newInput(false);
+    input = newInput("false");
     assertThat(input.peek()).isEqualTo(BOOLEAN);
     assertThat(input.nextBoolean()).isFalse();
   }
 
   @Test
   public void shouldParseNonDecimalNumbersAsLongs() {
-    JsonInput input = newInput(42);
+    JsonInput input = newInput("42");
     assertThat(input.peek()).isEqualTo(NUMBER);
     assertThat(input.nextNumber()).isEqualTo(42L);
   }
 
   @Test
   public void shouldParseDecimalNumbersAsDoubles() {
-    JsonInput input = newInput(42.0);
+    JsonInput input = newInput("42.0");
     assertThat(input.peek()).isEqualTo(NUMBER);
     assertThat((Double) input.nextNumber()).isEqualTo(42.0d);
   }
 
   @Test
   public void shouldHandleNullValues() {
-    JsonInput input = newInput(null);
+    JsonInput input = newInput("null");
     assertThat(input.peek()).isEqualTo(NULL);
     assertThat(input.nextNull()).isNull();
   }
 
   @Test
   public void shouldBeAbleToReadAString() {
-    JsonInput input = newInput("cheese");
+    JsonInput input = newInput("\"cheese\"");
     assertThat(input.peek()).isEqualTo(STRING);
     assertThat(input.nextString()).isEqualTo("cheese");
   }
 
   @Test
   public void shouldBeAbleToReadTheEmptyString() {
-    JsonInput input = newInput("");
+    JsonInput input = newInput("\"\"");
     assertThat(input.peek()).isEqualTo(STRING);
     assertThat(input.nextString()).isEqualTo("");
   }
 
   @Test
   public void anEmptyArrayHasNoContents() {
-    JsonInput input = newInput(ImmutableList.of());
+    JsonInput input = newInput("[]");
     assertThat(input.peek()).isEqualTo(START_COLLECTION);
     input.beginArray();
     assertThat(input.hasNext()).isFalse();
@@ -100,7 +96,7 @@ public class JsonInputTest {
 
   @Test
   public void anArrayWithASingleElementHasNextButOnlyOneValue() {
-    JsonInput input = newInput(ImmutableList.of("peas"));
+    JsonInput input = newInput("[ \"peas\"]");
     input.beginArray();
     assertThat(input.nextString()).isEqualTo("peas");
     input.endArray();
@@ -108,7 +104,7 @@ public class JsonInputTest {
 
   @Test
   public void anArrayWithMultipleElementsReturnsTrueFromHasNextMoreThanOnce() {
-    JsonInput input = newInput(ImmutableList.of("brie", "cheddar"));
+    JsonInput input = newInput("[\"brie\", \"cheddar\"]");
     input.beginArray();
     assertThat(input.hasNext()).isTrue();
     assertThat(input.nextString()).isEqualTo("brie");
@@ -120,14 +116,14 @@ public class JsonInputTest {
 
   @Test
   public void callingHasNextWhenNotInAnArrayOrMapIsAnError() {
-    JsonInput input = newInput("cheese");
+    JsonInput input = newInput("\"cheese\"");
     assertThatExceptionOfType(JsonException.class)
         .isThrownBy(input::hasNext);
   }
 
   @Test
   public void anEmptyMapHasNoContents() {
-    JsonInput input = newInput(ImmutableMap.of());
+    JsonInput input = newInput("{      }");
     assertThat(input.peek()).isEqualTo(START_MAP);
     input.beginObject();
     assertThat(input.hasNext()).isFalse();
@@ -137,7 +133,7 @@ public class JsonInputTest {
 
   @Test
   public void canReadAMapWithASingleEntry() {
-    JsonInput input = newInput(ImmutableMap.of("cheese", "feta"));
+    JsonInput input = newInput("{\"cheese\": \"feta\"}");
     input.beginObject();
     assertThat(input.hasNext()).isTrue();
     assertThat(input.peek()).isEqualTo(NAME);
@@ -150,10 +146,10 @@ public class JsonInputTest {
 
   @Test
   public void canReadAMapWithManyEntries() {
-    JsonInput input = newInput(ImmutableMap.of(
-        "cheese", "stilton",
-        "vegetable", "peas",
-        "random", 42));
+    JsonInput input = newInput("{" +
+        "\"cheese\": \"stilton\"," +
+        "\"vegetable\": \"peas\"," +
+        "\"random\": 42}");
 
     assertThat(input.peek()).isEqualTo(START_MAP);
     input.beginObject();
@@ -176,8 +172,7 @@ public class JsonInputTest {
 
   @Test
   public void nestedMapIsFine() {
-    JsonInput input = newInput(ImmutableMap.of(
-        "map", ImmutableMap.of("child", ImmutableList.of("hello", "world"))));
+    JsonInput input = newInput("{\"map\": {\"child\": [\"hello\",\"world\"]}}");
 
     input.beginObject();
     assertThat(input.hasNext()).isTrue();
@@ -209,8 +204,7 @@ public class JsonInputTest {
     }
   }
 
-  private JsonInput newInput(Object toParse) {
-    String raw = new Gson().toJson(toParse);
+  private JsonInput newInput(String raw) {
     StringReader reader = new StringReader(raw);
     return new JsonInput(reader, new JsonTypeCoercer(), BY_NAME);
   }
