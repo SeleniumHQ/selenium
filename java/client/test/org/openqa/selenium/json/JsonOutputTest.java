@@ -31,12 +31,11 @@ import static org.openqa.selenium.logging.LogType.SERVER;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSyntaxException;
+//import com.google.gson.JsonPrimitive;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -326,8 +325,8 @@ public class JsonOutputTest {
     // Make sure that the parser does actually reject this so the test is
     // meaningful. If this stops failing, choose a different malformed JSON
     // string.
-    assertThatExceptionOfType(JsonSyntaxException.class)
-        .isThrownBy(() -> new JsonParser().parse(raw).toString());
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(() -> new Json().toType(raw, String.class));
 
     String json = convert(new JsonAware(raw));
 
@@ -392,7 +391,7 @@ public class JsonOutputTest {
   @Test
   public void shouldConvertUnhandledAlertException() {
     RuntimeException clientError = new UnhandledAlertException("unhandled alert", "cheese!");
-    Map<String, Object> obj = new Gson().fromJson(new StringReader(convert(clientError)), Map.class);
+    Map<String, Object> obj = new Json().toType(new StringReader(convert(clientError)), Map.class);
     assertThat(obj).containsKey("alert");
     assertThat(obj.get("alert")).isEqualTo(ImmutableMap.of("text", "cheese!"));
   }
