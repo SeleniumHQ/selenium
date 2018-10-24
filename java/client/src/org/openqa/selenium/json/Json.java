@@ -51,15 +51,22 @@ public class Json {
   }
 
   public <T> T toType(String source, Type typeOfT, PropertySetting setter) {
+    try (StringReader reader = new StringReader(source)) {
+      return toType(reader, typeOfT, setter);
+    }
+  }
+
+  public <T> T toType(Reader source, Type typeOfT) {
+    return toType(source, typeOfT, PropertySetting.BY_NAME);
+  }
+
+  public <T> T toType(Reader source, Type typeOfT, PropertySetting setter) {
     if (setter == null) {
       throw new JsonException("Mechanism for setting properties must be set");
     }
 
-    try (StringReader reader = new StringReader(source);
-         JsonInput json = newInput(reader)) {
+    try (JsonInput json = newInput(source)) {
       return fromJson.coerce(json, typeOfT, setter);
-    } catch (JsonException e) {
-      throw new JsonException("Unable to parse: " + source, e);
     }
   }
 
