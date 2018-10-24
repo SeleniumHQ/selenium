@@ -131,14 +131,13 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(IE)
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearRangeInput() {
-    shouldBeAbleToClearInput(By.name("range_input"), "42");
+    shouldBeAbleToClearInput(By.name("range_input"), "42", "50");
   }
 
   @Test
@@ -152,12 +151,11 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearColorInput() {
-    shouldBeAbleToClearInput(By.name("color_input"), "#00ffff");
+    shouldBeAbleToClearInput(By.name("color_input"), "#00ffff", "#000000");
   }
 
   @Test
@@ -196,11 +194,15 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   private void shouldBeAbleToClearInput(By locator, String oldValue) {
+    shouldBeAbleToClearInput(locator, oldValue, "");
+  }
+
+  private void shouldBeAbleToClearInput(By locator, String oldValue, String clearedValue) {
     driver.get(appServer.whereIs("inputs.html"));
     WebElement element = driver.findElement(locator);
     assertThat(element.getAttribute("value")).isEqualTo(oldValue);
     element.clear();
-    assertThat(element.getAttribute("value")).isEqualTo("");
+    assertThat(element.getAttribute("value")).isEqualTo(clearedValue);
   }
 
 }
