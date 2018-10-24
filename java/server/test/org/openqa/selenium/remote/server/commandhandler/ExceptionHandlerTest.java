@@ -19,27 +19,22 @@ package org.openqa.selenium.remote.server.commandhandler;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.junit.Assert.assertEquals;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import org.junit.Test;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.server.commandhandler.ExceptionHandler;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class ExceptionHandlerTest {
-
-  private final static Type MAP_TYPE = new TypeToken<Map<String, Object>>(){}.getType();
 
   @Test
   public void shouldSetErrorCodeForJsonWireProtocol() {
@@ -49,7 +44,7 @@ public class ExceptionHandlerTest {
 
     assertEquals(HTTP_INTERNAL_ERROR, response.getStatus());
 
-    Map<String, Object> err = new Gson().fromJson(response.getContentString(), MAP_TYPE);
+    Map<String, Object> err = new Json().toType(response.getContentString(), MAP_TYPE);
     assertEquals(ErrorCodes.NO_SUCH_SESSION, ((Number) err.get("status")).intValue());
   }
 
@@ -59,9 +54,9 @@ public class ExceptionHandlerTest {
     HttpResponse response = new HttpResponse();
     new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"), response);
 
-    Map<String, Object> err = new Gson().fromJson(response.getContentString(), MAP_TYPE);
+    Map<String, Object> err = new Json().toType(response.getContentString(), MAP_TYPE);
     Map<?, ?> value = (Map<?, ?>) err.get("value");
-    assertEquals(value.toString(),"no such alert", value.get("error"));
+    assertEquals(value.toString(), "no such alert", value.get("error"));
   }
 
   @Test
@@ -71,7 +66,7 @@ public class ExceptionHandlerTest {
     HttpResponse response = new HttpResponse();
     new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"), response);
 
-    Map<String, Object> err = new Gson().fromJson(response.getContentString(), MAP_TYPE);
+    Map<String, Object> err = new Json().toType(response.getContentString(), MAP_TYPE);
     Map<?, ?> value = (Map<?, ?>) err.get("value");
 
     assertEquals(ErrorCodes.SESSION_NOT_CREATED, ((Number) err.get("status")).intValue());

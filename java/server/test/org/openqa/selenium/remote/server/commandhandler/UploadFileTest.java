@@ -25,12 +25,12 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-import com.google.gson.Gson;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
@@ -41,7 +41,6 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.grid.session.ActiveSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,11 +73,11 @@ public class UploadFileTest {
     File tempFile = touch(null, "foo");
     String encoded = Zip.zip(tempFile);
 
-    Gson gson = new Gson();
+    Json json = new Json();
     UploadFile uploadFile = new UploadFile(new Json(), session);
     Map<String, Object> args = ImmutableMap.of("file", encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
-    request.setContent(gson.toJson(args).getBytes(UTF_8));
+    request.setContent(json.toJson(args).getBytes(UTF_8));
     HttpResponse response = new HttpResponse();
     uploadFile.execute(request, response);
 
@@ -100,11 +99,11 @@ public class UploadFileTest {
     touch(baseDir, "unwanted");
     String encoded = Zip.zip(baseDir);
 
-    Gson gson = new Gson();
+    Json json = new Json();
     UploadFile uploadFile = new UploadFile(new Json(), session);
     Map<String, Object> args = ImmutableMap.of("file", encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
-    request.setContent(gson.toJson(args).getBytes(UTF_8));
+    request.setContent(json.toJson(args).getBytes(UTF_8));
     HttpResponse response = new HttpResponse();
     uploadFile.execute(request, response);
 
