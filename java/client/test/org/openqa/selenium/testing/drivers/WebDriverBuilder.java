@@ -66,6 +66,9 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         if (Boolean.getBoolean("selenium.ie.disable_native_events")) {
           options.disableNativeEvents();
         }
+        if (Boolean.getBoolean("selenium.ie.require_window_focus")) {
+          options.requireWindowFocus();
+        }
         return options;
       })
       .put(Browser.htmlunit, DesiredCapabilities::htmlUnit)
