@@ -35,6 +35,8 @@ module Selenium
           wait.until { driver.find_element(id: 'upload_label').displayed? }
 
           driver.switch_to.frame('upload_target')
+          wait.until { driver.find_element(xpath: '//body') }
+
           body = driver.find_element(xpath: '//body')
           expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(3)
         end
@@ -49,6 +51,8 @@ module Selenium
           wait.until { driver.find_element(id: 'upload_label').displayed? }
 
           driver.switch_to.frame('upload_target')
+          wait.until { driver.find_element(xpath: '//body') }
+
           body = driver.find_element(xpath: '//body')
           expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(4)
         end
