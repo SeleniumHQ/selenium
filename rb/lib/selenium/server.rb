@@ -199,7 +199,7 @@ module Selenium
       stop_process if @process
       poll_for_shutdown
 
-      @log_file.close if @log_file
+      @log_file.close if defined?(@log_file)
     end
 
     def webdriver_url
