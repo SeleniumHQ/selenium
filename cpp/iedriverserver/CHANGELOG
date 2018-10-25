@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.14.0.15
+==========
+ * Fixed change in behavior recognizing closing of showModalDialog windows.
+   Fixes issue #6574.
+
 v3.14.0.14
 ==========
  * Fixed retrieval of CSS properties that return non-string values. Fixes
