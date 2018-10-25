@@ -63,8 +63,8 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
           .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
       .put(Browser.ie, () -> {
         InternetExplorerOptions options = new InternetExplorerOptions();
-        if (Boolean.getBoolean("selenium.browser.native_events")) {
-          options.enableNativeEvents();
+        if (Boolean.getBoolean("selenium.ie.disable_native_events")) {
+          options.disableNativeEvents();
         }
         return options;
       })
