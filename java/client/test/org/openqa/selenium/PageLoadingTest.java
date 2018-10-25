@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
@@ -37,7 +36,6 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
-import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -46,34 +44,29 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Set;
 
 public class PageLoadingTest extends JUnit4TestBase {
 
-  private WebDriver localDriver;
-
-  private void initLocalDriver(String strategy) {
-    removeDriver();
-    if (localDriver != null) {
-      localDriver.quit();
-    }
-    Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, strategy);
-    localDriver = new WebDriverBuilder().get(caps);
+  private void initDriverWithLoadStrategy(String strategy) {
+    createNewDriver(new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, strategy));
   }
 
   @Test
   @NeedsLocalEnvironment
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
-    initLocalDriver("none");
+    initDriverWithLoadStrategy("none");
 
     String slowPage = appServer.whereIs("sleep?time=5");
 
     long start = System.currentTimeMillis();
-    localDriver.get(slowPage);
+    driver.get(slowPage);
     long end = System.currentTimeMillis();
 
     long duration = end - start;
@@ -84,18 +77,20 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @NeedsLocalEnvironment
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   @Ignore(value = CHROME, reason = "Flaky")
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
-    initLocalDriver("none");
+    initDriverWithLoadStrategy("none");
 
     String slowPage = appServer.whereIs("sleep?time=5");
 
-    localDriver.get(slowPage);
+    driver.get(slowPage);
     // We discard the element, but want a check to make sure the page is loaded
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.tagName("body")));
+    wait.until(presenceOfElementLocated(By.tagName("body")));
 
     long start = System.currentTimeMillis();
-    localDriver.navigate().refresh();
+    driver.navigate().refresh();
     long end = System.currentTimeMillis();
 
     long duration = end - start;
@@ -107,16 +102,18 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @NeedsLocalEnvironment
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   public void testEagerStrategyShouldNotWaitForResources() {
-    initLocalDriver("eager");
+    initDriverWithLoadStrategy("eager");
 
     String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
 
     long start = System.currentTimeMillis();
-    localDriver.get(slowPage);
+    driver.get(slowPage);
     // We discard the element, but want a check to make sure the GET actually
     // completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.id("peas")));
+    wait.until(presenceOfElementLocated(By.id("peas")));
     long end = System.currentTimeMillis();
 
     // The slow loading resource on that page takes 6 seconds to return. If we
@@ -128,19 +125,21 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @NeedsLocalEnvironment
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
-    initLocalDriver("eager");
+    initDriverWithLoadStrategy("eager");
 
     String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
 
-    localDriver.get(slowPage);
+    driver.get(slowPage);
     // We discard the element, but want a check to make sure the GET actually completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.id("peas")));
+    wait.until(presenceOfElementLocated(By.id("peas")));
 
     long start = System.currentTimeMillis();
-    localDriver.navigate().refresh();
+    driver.navigate().refresh();
     // We discard the element, but want a check to make sure the refresh actually completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.id("peas")));
+    wait.until(presenceOfElementLocated(By.id("peas")));
     long end = System.currentTimeMillis();
 
     // The slow loading resource on that page takes 6 seconds to return. If we
@@ -151,15 +150,17 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
-    initLocalDriver("eager");
+    initDriverWithLoadStrategy("eager");
 
     String slowPage = appServer.whereIs("sleep?time=3");
 
-    localDriver.get(slowPage);
+    driver.get(slowPage);
 
     // We discard the element, but want a check to make sure the GET actually completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.tagName("body")));
+    wait.until(presenceOfElementLocated(By.tagName("body")));
   }
 
   @Test
@@ -447,14 +448,6 @@ public class PageLoadingTest extends JUnit4TestBase {
     new WebDriverWait(driver, 30)
         .ignoring(StaleElementReferenceException.class)
         .until(elementTextToEqual(By.tagName("body"), "Slept for 11s"));
-  }
-
-  @After
-  public void quitDriver() {
-    if (this.localDriver != null) {
-      this.localDriver.quit();
-      this.localDriver = null;
-    }
   }
 
   /**
