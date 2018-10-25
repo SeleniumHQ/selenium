@@ -28,6 +28,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -98,6 +99,12 @@ public abstract class JUnit4TestBase {
     @Override
     protected void starting(Description description) {
       super.starting(description);
+      NoDriverBeforeTest killSharedDriver = description.getAnnotation(NoDriverBeforeTest.class);
+      if (killSharedDriver != null && matches(browser, killSharedDriver.value())) {
+        System.out.println("Destroying driver before test " + description);
+        removeDriver();
+        return;
+      }
       NeedsFreshDriver annotation = description.getAnnotation(NeedsFreshDriver.class);
       if (annotation != null && matches(browser, annotation.value())) {
         System.out.println("Restarting driver before test " + description);
@@ -191,12 +198,30 @@ public abstract class JUnit4TestBase {
     shortWait = new WebDriverWait(driver, 5);
   }
 
-  public static WebDriver actuallyCreateDriver() {
+  public void createNewDriver(Capabilities capabilities) {
+    removeDriver();
+    driver = actuallyCreateDriver(capabilities);
+    wait = new WebDriverWait(driver, 10);
+    shortWait = new WebDriverWait(driver, 5);
+  }
+
+  private static WebDriver actuallyCreateDriver() {
     WebDriver driver = storedDriver.get();
 
     if (driver == null ||
         (driver instanceof RemoteWebDriver && ((RemoteWebDriver)driver).getSessionId() == null)) {
       driver = new WebDriverBuilder().get();
+      storedDriver.set(driver);
+    }
+    return storedDriver.get();
+  }
+
+  private static WebDriver actuallyCreateDriver(Capabilities capabilities) {
+    WebDriver driver = storedDriver.get();
+
+    if (driver == null ||
+        (driver instanceof RemoteWebDriver && ((RemoteWebDriver)driver).getSessionId() == null)) {
+      driver = new WebDriverBuilder().get(capabilities);
       storedDriver.set(driver);
     }
     return storedDriver.get();
