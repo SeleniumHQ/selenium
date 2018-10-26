@@ -101,7 +101,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='notWorking']"));
@@ -112,7 +111,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
@@ -141,7 +139,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldIndicateWhenATextAreaIsDisabled() {
     driver.get(pages.formPage);
     WebElement textArea = driver.findElement(By.xpath("//textarea[@id='notWorkingArea']"));
@@ -149,7 +146,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldIndicateWhenASelectIsDisabled() {
     driver.get(pages.formPage);
 
