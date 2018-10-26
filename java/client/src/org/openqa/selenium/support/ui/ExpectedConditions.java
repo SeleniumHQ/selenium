@@ -1135,6 +1135,19 @@ public class ExpectedConditions {
     return driver -> getAttributeOrCssValue(element, attribute).isPresent();
   }
 
+  /**
+   * An expectation for checking WebElement with given locator has any non empty value for given
+   * attribute.
+   *
+   * @param locator   used to find the element
+   * @param attribute used to define css or html attribute
+   * @return Boolean  true when element has css or html attribute with non empty value
+   */
+  public static ExpectedCondition<Boolean> attributeToBeNotEmpty(final By locator,
+                                                                 final String attribute) {
+    return driver -> getAttributeOrCssValue(driver.findElement(locator), attribute).isPresent();
+  }
+
   private static Optional<String> getAttributeOrCssValue(WebElement element, String name) {
     String value = element.getAttribute(name);
     if (value == null || value.isEmpty()) {

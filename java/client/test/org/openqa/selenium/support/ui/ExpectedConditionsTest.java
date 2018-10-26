@@ -531,7 +531,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAttributeToBeNotEmptyForElementLocatedReturnsTrueWhenAttributeIsNotEmptyCss() {
+  public void waitingForAttributeToBeNotEmptyForWebElementReturnsTrueWhenAttributeIsNotEmptyCss() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("test1");
@@ -540,7 +540,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAttributeToBeNotEmptyForElementLocatedReturnsTrueWhenAttributeIsNotEmptyHtml() {
+  public void waitingForAttributeToBeNotEmptyForWebElementReturnsTrueWhenAttributeIsNotEmptyHtml() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn("test1");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
@@ -559,13 +559,69 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAttributetToBeNotEmptyForElementLocatedThrowsTimeoutExceptionWhenAttributeIsEmpty() {
+  public void waitingForAttributetToBeNotEmptyForWebElementThrowsTimeoutExceptionWhenAttributeIsEmpty() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
 
     assertThatExceptionOfType(TimeoutException.class)
         .isThrownBy(() -> wait.until(attributeToBeNotEmpty(mockElement, attributeName)));
+  }
+
+  @Test
+  public void waitingForAttributetToBeNotEmptyForWebElementThrowsTimeoutExceptionWhenAttributeDoesntExist() {
+    String attributeName = "test";
+    when(mockElement.getAttribute(attributeName)).thenReturn(null);
+    when(mockElement.getCssValue(attributeName)).thenReturn(null);
+
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(attributeToBeNotEmpty(mockElement, attributeName)));
+  }
+
+  @Test
+  public void waitingForAttributeToBeNotEmptyForElementLocatedReturnsTrueWhenAttributeIsNotEmptyCss() {
+    String testSelector = "testSelector";
+    String attributeName = "test";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn("test1");
+
+    assertThat(wait.until(attributeToBeNotEmpty(By.cssSelector(testSelector), attributeName))).isTrue();
+  }
+
+  @Test
+  public void waitingForAttributeToBeNotEmptyForElementLocatedReturnsTrueWhenAttributeIsNotEmptyHtml() {
+    String testSelector = "testSelector";
+    String attributeName = "test";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getAttribute(attributeName)).thenReturn("test1");
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    assertThat(wait.until(attributeToBeNotEmpty(By.cssSelector(testSelector), attributeName))).isTrue();
+  }
+
+  @Test
+  public void waitingForAttributetToBeNotEmptyForElementLocatedThrowsTimeoutExceptionWhenAttributeIsEmpty() {
+    String testSelector = "testSelector";
+    String attributeName = "test";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getCssValue(attributeName)).thenReturn("");
+
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(attributeToBeNotEmpty(By.cssSelector(testSelector), attributeName)));
+  }
+
+  @Test
+  public void waitingForAttributetToBeNotEmptyForElementLocatedThrowsTimeoutExceptionWhenAttributeDoesntExist() {
+    String testSelector = "testSelector";
+    String attributeName = "test";
+    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockElement.getAttribute(attributeName)).thenReturn(null);
+    when(mockElement.getCssValue(attributeName)).thenReturn(null);
+
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(attributeToBeNotEmpty(By.cssSelector(testSelector), attributeName)));
   }
 
   @Test
