@@ -155,7 +155,7 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   @Ignore(travis = true)
-  //@Ignore(SAFARI)
+  @Ignore(SAFARI)
   public void canFullscreenTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -168,7 +168,7 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(travis = true)
-  //@Ignore(SAFARI)
+  @Ignore(SAFARI)
   public void canFullscreenTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -184,7 +184,7 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(travis = true)
-  //@Ignore(SAFARI)
+  @Ignore(SAFARI)
   public void canFullscreenTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).

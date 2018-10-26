@@ -226,6 +226,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
 
@@ -370,9 +371,9 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = SAFARI)
   @Ignore(value = FIREFOX, travis = true)
   @Ignore(HTMLUNIT)
+  @Ignore(value = SAFARI, reason = "Flaky")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
