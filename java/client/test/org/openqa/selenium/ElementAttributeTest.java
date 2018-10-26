@@ -417,6 +417,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   @NotYetImplemented(MARIONETTE)
   @Ignore(FIREFOX)
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void shouldTreatDraggableAsEnumeratedButNotBoolean() {
     checkEnumeratedAttribute("draggable", "true", "false", "yes", "no", "", "blabla");
   }
