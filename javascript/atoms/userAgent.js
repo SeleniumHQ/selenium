@@ -152,7 +152,7 @@ bot.userAgent.WEBEXTENSION = (function() {
   // The content script global object is different than it's window
   // Which requires accessing the chrome and browser objects through this
   try {
-    return !!((chrome || browser).runtime);
+    return !!((chrome || eval('browser')).runtime);
   } catch (e) {
     return false;
   }
