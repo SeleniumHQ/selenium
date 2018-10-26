@@ -558,7 +558,7 @@ bot.Device.shouldFollowHref_ = function(element) {
     return false;
   }
 
-  if (!bot.userAgent.FIREFOX_EXTENSION) {
+  if (!(bot.userAgent.FIREFOX_EXTENSION || bot.userAgent.WEBEXTENSION)) {
     return true;
   }
 
