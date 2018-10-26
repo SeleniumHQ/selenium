@@ -41,7 +41,6 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testTextInputShouldNotClearWhenDisabled() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textInputnotenabled"));
@@ -135,7 +134,6 @@ public class ClearTest extends JUnit4TestBase {
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(IE)
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearRangeInput() {
     shouldBeAbleToClearInput(By.name("range_input"), "42", "50");
   }
