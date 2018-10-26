@@ -130,8 +130,6 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(IE)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearRangeInput() {
@@ -149,8 +147,6 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearColorInput() {
     shouldBeAbleToClearInput(By.name("color_input"), "#00ffff", "#000000");
