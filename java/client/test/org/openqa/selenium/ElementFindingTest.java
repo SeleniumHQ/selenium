@@ -110,7 +110,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @NotYetImplemented(SAFARI)
   public void testFindingMultipleElementsByEmptyIdShouldReturnEmptyList() {
     driver.get(pages.formPage);
@@ -342,7 +342,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(SAFARI)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -358,7 +358,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(SAFARI)
   public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -424,7 +424,7 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToFindElementByXPathWithNamespace() {
     driver.get(pages.svgPage);
