@@ -29,6 +29,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.NodeStatus;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
@@ -137,6 +138,15 @@ public class RemoteNode extends Node {
     HttpResponse res = client.apply(req);
 
     Values.get(res, Void.class);
+  }
+
+  @Override
+  public NodeStatus getStatus() {
+    HttpRequest req = new HttpRequest(GET, "/status");
+
+    HttpResponse res = client.apply(req);
+
+    return Values.get(res, NodeStatus.class);
   }
 
   private Map<String, Object> toJson() {

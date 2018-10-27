@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.node;
 
+import static org.openqa.selenium.grid.server.Server.get;
+
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
@@ -34,6 +36,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 /**
@@ -43,43 +46,43 @@ import java.util.function.Predicate;
  * This class responds to the following URLs:
  * <table summary="HTTP commands the Node understands">
  * <tr>
- *   <th>Verb</th>
- *   <th>URL Template</th>
- *   <th>Meaning</th>
+ * <th>Verb</th>
+ * <th>URL Template</th>
+ * <th>Meaning</th>
  * </tr>
  * <tr>
- *   <td>POST</td>
- *   <td>/se/grid/node/session</td>
- *   <td>Attempts to start a new session for the given node. The posted data should be a
- *     json-serialized {@link Capabilities} instance. Returns a serialized {@link Session}.
- *     Subclasses of {@code Node} are expected to register the session with the
- *     {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
+ * <td>POST</td>
+ * <td>/se/grid/node/session</td>
+ * <td>Attempts to start a new session for the given node. The posted data should be a
+ * json-serialized {@link Capabilities} instance. Returns a serialized {@link Session}.
+ * Subclasses of {@code Node} are expected to register the session with the
+ * {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
  * </tr>
  * <tr>
- *   <td>GET</td>
- *   <td>/se/grid/node/session/{sessionId}</td>
- *   <td>Finds the {@link Session} identified by {@code sessionId} and returns the JSON-serialized
- *     form.</td>
+ * <td>GET</td>
+ * <td>/se/grid/node/session/{sessionId}</td>
+ * <td>Finds the {@link Session} identified by {@code sessionId} and returns the JSON-serialized
+ * form.</td>
  * </tr>
  * <tr>
- *   <td>DELETE</td>
- *   <td>/se/grid/node/session/{sessionId}</td>
- *   <td>Stops the {@link Session} identified by {@code sessionId}. It is expected that this will
- *     also cause the session to removed from the
- *     {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
+ * <td>DELETE</td>
+ * <td>/se/grid/node/session/{sessionId}</td>
+ * <td>Stops the {@link Session} identified by {@code sessionId}. It is expected that this will
+ * also cause the session to removed from the
+ * {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
  * </tr>
  * <tr>
- *   <td>GET</td>
- *   <td>/se/grid/node/owner/{sessionId}</td>
- *   <td>Allows the node to be queried about whether or not it owns the {@link Session} identified
- *     by {@code sessionId}. This returns a boolean.</td>
+ * <td>GET</td>
+ * <td>/se/grid/node/owner/{sessionId}</td>
+ * <td>Allows the node to be queried about whether or not it owns the {@link Session} identified
+ * by {@code sessionId}. This returns a boolean.</td>
  * </tr>
  * <tr>
- *   <td>*</td>
- *   <td>/session/{sessionId}/*</td>
- *   <td>The request is forwarded to the {@link Session} identified by {@code sessionId}. When the
- *     Quit command is called, the {@link Session} should remove itself from the
- *     {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
+ * <td>*</td>
+ * <td>/session/{sessionId}/*</td>
+ * <td>The request is forwarded to the {@link Session} identified by {@code sessionId}. When the
+ * Quit command is called, the {@link Session} should remove itself from the
+ * {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
  * </tr>
  * </table>
  */
@@ -104,12 +107,14 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
             .register(this)
             .register(new Json())
             .build(),
-        ImmutableMap.of(
-            create, (inj, req) -> create,
-            owner, (inj, req) -> owner,
-            execute, (inj, req) -> execute,
-            read, (inj, req) -> read,
-            destroy, (inj, req) -> destroy));
+        ImmutableMap.<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>>builder()
+            .put(create, (inj, req) -> create)
+            .put(owner, (inj, req) -> owner)
+            .put(execute, (inj, req) -> execute)
+            .put(read, (inj, req) -> read)
+            .put(destroy, (inj, req) -> destroy)
+            .put(get("/status"), (inj, req) -> inj.newInstance(StatusHandler.class))
+            .build());
   }
 
   public UUID getId() {
@@ -127,6 +132,8 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
   protected abstract boolean isSessionOwner(SessionId id);
 
   public abstract boolean isSupporting(Capabilities capabilities);
+
+  public abstract NodeStatus getStatus();
 
   @Override
   public boolean test(HttpRequest req) {
