@@ -203,9 +203,8 @@ public class GridNodeConfiguration extends GridConfiguration {
   public GridNodeConfiguration(GridNodeCliOptions cliConfig) {
     this(ofNullable(cliConfig.getConfigFile()).map(NodeJsonConfiguration::loadFromResourceOrFile)
              .orElse(DEFAULT_CONFIG_FROM_JSON));
-    super.merge(cliConfig);
+    super.merge(cliConfig.getCommonGridOptions());
     ofNullable(cliConfig.getCapabilities()).ifPresent(v -> capabilities = v);
-    ofNullable(cliConfig.getMaxSession()).ifPresent(v -> maxSession = v);
     ofNullable(cliConfig.getRegister()).ifPresent(v -> register = v);
     ofNullable(cliConfig.getRegisterCycle()).ifPresent(v -> registerCycle = v);
     ofNullable(cliConfig.getNodeStatusCheckTimeout()).ifPresent(v -> nodeStatusCheckTimeout = v);

@@ -19,7 +19,7 @@ package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.Parameter;
 
-public abstract class CommonCliOptions {
+public class CommonCliOptions {
 
   @Parameter(
       names = {"--version", "-version"},

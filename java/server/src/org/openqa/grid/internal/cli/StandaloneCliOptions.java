@@ -18,8 +18,16 @@
 package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 
-public class StandaloneCliOptions extends CommonCliOptions {
+public class StandaloneCliOptions {
+
+  @ParametersDelegate
+  private CommonCliOptions commonOptions = new CommonCliOptions();
+
+  public CommonCliOptions getCommonOptions() {
+    return commonOptions;
+  }
 
   /**
    * JSON config file to use. Defaults to {@code null}.

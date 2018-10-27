@@ -18,12 +18,20 @@
 package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 
-public class GridHubCliOptions extends CommonGridCliOptions {
+public class GridHubCliOptions {
+
+  @ParametersDelegate
+  private CommonGridCliOptions commonGridOptions = new CommonGridCliOptions();
+
+  public CommonGridCliOptions getCommonGridOptions() {
+    return commonGridOptions;
+  }
 
   /**
    * Hub specific json config file to use. Defaults to {@code null}.

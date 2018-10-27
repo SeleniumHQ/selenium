@@ -22,6 +22,7 @@ import static java.util.Optional.ofNullable;
 import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.cli.CommonGridCliOptions;
 import org.openqa.grid.internal.cli.GridHubCliOptions;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
@@ -102,16 +103,16 @@ public class GridHubConfiguration extends GridConfiguration {
         .orElse(DEFAULT_CONFIG_FROM_JSON.getPrioritizer());
   }
 
-  public GridHubConfiguration(GridHubCliOptions cliConfig) {
-    this(ofNullable(cliConfig.getConfigFile()).map(HubJsonConfiguration::loadFromResourceOrFile)
+  public GridHubConfiguration(GridHubCliOptions hubOptions) {
+    this(ofNullable(hubOptions.getConfigFile()).map(HubJsonConfiguration::loadFromResourceOrFile)
              .orElse(DEFAULT_CONFIG_FROM_JSON));
-    super.merge(cliConfig);
-    this.configFile = cliConfig.getConfigFile();
-    ofNullable(cliConfig.getNewSessionWaitTimeout()).ifPresent(v -> newSessionWaitTimeout = v);
-    ofNullable(cliConfig.getThrowOnCapabilityNotPresent()).ifPresent(v -> throwOnCapabilityNotPresent = v);
-    ofNullable(cliConfig.getRegistry()).ifPresent(v -> registry = v);
-    ofNullable(cliConfig.getCapabilityMatcher()).ifPresent(v -> capabilityMatcher = v);
-    ofNullable(cliConfig.getPrioritizer()).ifPresent(v -> prioritizer = v);
+    super.merge(hubOptions.getCommonGridOptions());
+    this.configFile = hubOptions.getConfigFile();
+    ofNullable(hubOptions.getNewSessionWaitTimeout()).ifPresent(v -> newSessionWaitTimeout = v);
+    ofNullable(hubOptions.getThrowOnCapabilityNotPresent()).ifPresent(v -> throwOnCapabilityNotPresent = v);
+    ofNullable(hubOptions.getRegistry()).ifPresent(v -> registry = v);
+    ofNullable(hubOptions.getCapabilityMatcher()).ifPresent(v -> capabilityMatcher = v);
+    ofNullable(hubOptions.getPrioritizer()).ifPresent(v -> prioritizer = v);
   }
 
   /**
