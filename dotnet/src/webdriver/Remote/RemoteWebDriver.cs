@@ -1076,33 +1076,11 @@ namespace OpenQA.Selenium.Remote
 
                 Dictionary<string, object> matchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
 
-                // TODO: Remove this when chromedriver bug 2371 is fixed.
-                // (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2371)
-                // Chromedriver does not recognize the W3C capability when put in the
-                // "firstMatch" property of the new session command payload, but it does
-                // recognize it in the "alwaysMatch" property. Temporarily, and only if
-                // we are using a set of capabilities for Chrome where the W3C capability
-                // is specified, use them in alwaysMatch instead of firstMatch. This
-                // piece of code is intended to only be temporary.
-                bool forceAlwaysMatch = false;
-                if (matchCapabilities.ContainsKey(Chrome.ChromeOptions.ForceAlwaysMatchCapabilityName))
-                {
-                    forceAlwaysMatch = true;
-                    matchCapabilities.Remove(Chrome.ChromeOptions.ForceAlwaysMatchCapabilityName);
-                }
+                List<object> firstMatchCapabilitiesList = new List<object>();
+                firstMatchCapabilitiesList.Add(matchCapabilities);
 
                 Dictionary<string, object> specCompliantCapabilitiesDictionary = new Dictionary<string, object>();
-                if (forceAlwaysMatch)
-                {
-                    specCompliantCapabilitiesDictionary["alwaysMatch"] = matchCapabilities;
-                }
-                else
-                {
-                    List<object> firstMatchCapabilitiesList = new List<object>();
-                    firstMatchCapabilitiesList.Add(matchCapabilities);
-
-                    specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
-                }
+                specCompliantCapabilitiesDictionary["firstMatch"] = firstMatchCapabilitiesList;
 
                 parameters.Add("capabilities", specCompliantCapabilitiesDictionary);
             }

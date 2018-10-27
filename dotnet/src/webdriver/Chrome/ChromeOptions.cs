@@ -586,15 +586,7 @@ namespace OpenQA.Selenium.Chrome
                 capabilities.SetCapability(pair.Key, pair.Value);
             }
 
-            // TODO: Remove this if block when chromedriver bug 2371 is fixed
-            // (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2371)
-            if (this.useSpecCompliantProtocol)
-            {
-                capabilities.SetCapability(ForceAlwaysMatchCapabilityName, true);
-            }
-
-            // Should return capabilities.AsReadOnly(), and will in a future release.
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
 
         private Dictionary<string, object> BuildChromeOptionsDictionary()
