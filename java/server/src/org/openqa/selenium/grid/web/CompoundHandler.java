@@ -39,7 +39,7 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 /**
- * Presents a collection of {@link CommandHandler}s as a single unit. Should there be more than
+ * Presents a collection of {@link CommandHandler}s as a single unit. Should there be more than one
  * handler that responds to a given {@link HttpRequest}, then the last one returned from the
  * underlying {@link Map}'s key set will be returned (that is, if the map preserves insertion order
  * the last inserted handler will be returned). This means that handlers added later take precedence
