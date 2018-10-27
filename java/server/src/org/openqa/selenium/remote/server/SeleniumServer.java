@@ -192,7 +192,7 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
     StandaloneCliOptions options = new StandaloneCliOptions();
     JCommander.newBuilder().addObject(options).build().parse(args);
 
-    if (options.getHelp()) {
+    if (options.getCommonOptions().getHelp()) {
       StringBuilder message = new StringBuilder();
       new JCommander(options).usage(message);
       System.err.println(message.toString());

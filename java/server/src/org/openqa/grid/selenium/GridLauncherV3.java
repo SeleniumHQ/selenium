@@ -213,22 +213,23 @@ public class GridLauncherV3 {
         buildInfo.getBuildRevision());
   }
 
-  private boolean parse(CommonCliOptions options, String[] args) {
+  private boolean parse(String[] args, Object options, CommonCliOptions common) {
     JCommander commander = JCommander.newBuilder().addObject(options).build();
     commander.parse(args);
-    if (options.getVersion()) {
+
+    if (common.getVersion()) {
       out.println(version());
       return false;
     }
 
-    if (options.getHelp()) {
+    if (common.getHelp()) {
       StringBuilder toPrint = new StringBuilder();
       commander.usage(toPrint);
       out.append(toPrint);
       return false;
     }
 
-    configureLogging(options.getLog(), options.getDebug());
+    configureLogging(common.getLog(), common.getDebug());
     log.info(version());
     return true;
   }
@@ -237,7 +238,7 @@ public class GridLauncherV3 {
     return ImmutableMap.<GridRole, GridItemLauncher>builder()
         .put(GridRole.NOT_GRID, (args) -> {
           StandaloneCliOptions options = new StandaloneCliOptions();
-          if (!parse(options, args)) {
+          if (!parse(args, options, options.getCommonOptions())) {
             return ()->{};
           }
 
@@ -251,7 +252,7 @@ public class GridLauncherV3 {
 
         .put(GridRole.HUB, (args) -> {
           GridHubCliOptions options = new GridHubCliOptions();
-          if (!parse(options, args)) {
+          if (!parse(args, options, options.getCommonGridOptions().getCommonOptions())) {
             return ()->{};
           }
 
@@ -267,7 +268,7 @@ public class GridLauncherV3 {
 
         .put(GridRole.NODE, (args) -> {
           GridNodeCliOptions options = new GridNodeCliOptions();
-          if (!parse(options, args)) {
+          if (!parse(args, options, options.getCommonGridOptions().getCommonOptions())) {
             return ()->{};
           }
 

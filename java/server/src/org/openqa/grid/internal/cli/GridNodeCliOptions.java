@@ -19,18 +19,20 @@ package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.MutableCapabilities;
 
 import java.util.List;
 
-public class GridNodeCliOptions extends CommonGridCliOptions {
+public class GridNodeCliOptions {
 
-  public JCommander parse(String... args) {
-    JCommander commander = JCommander.newBuilder().addObject(this).build();
-    commander.parse(args);
-    return commander;
+  @ParametersDelegate
+  private CommonGridCliOptions commonGridOptions = new CommonGridCliOptions();
+
+  public CommonGridCliOptions getCommonGridOptions() {
+    return commonGridOptions;
   }
 
   /**
