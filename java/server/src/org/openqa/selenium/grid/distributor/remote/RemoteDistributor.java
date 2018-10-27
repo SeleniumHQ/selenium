@@ -19,11 +19,13 @@ package org.openqa.selenium.grid.distributor.remote;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.DistributorStatus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
@@ -82,12 +84,20 @@ public class RemoteDistributor extends Distributor {
 
   @Override
   public void remove(UUID nodeId) {
-
     Objects.requireNonNull(nodeId, "Node ID must be set");
     HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId);
 
     HttpResponse response = client.apply(request);
 
     Values.get(response, Void.class);
+  }
+
+  @Override
+  public DistributorStatus getStatus() {
+    HttpRequest request = new HttpRequest(GET, "/status");
+
+    HttpResponse response = client.apply(request);
+
+    return Values.get(response, DistributorStatus.class);
   }
 }

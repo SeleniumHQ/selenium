@@ -30,6 +30,7 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.NodeStatus;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -45,6 +46,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -162,6 +164,26 @@ public class LocalNode extends Node {
 
     currentSessions.invalidate(id);
     session.stop();
+  }
+
+  @Override
+  public NodeStatus getStatus() {
+
+    Map<Capabilities, Integer> available = new ConcurrentHashMap<>();
+    Map<Capabilities, Integer> used = new ConcurrentHashMap<>();
+
+    for (SessionFactory factory : factories) {
+      Map<Capabilities, Integer> map = factory.isAvailable() ? available : used;
+      Capabilities caps = factory.getCapabilities();
+      Integer count = map.getOrDefault(caps, 0);
+      map.put(caps, count + 1);
+    }
+
+    return new NodeStatus(
+        getId(),
+        externalUri,
+        available,
+        used);
   }
 
   private Map<String, Object> toJson() {

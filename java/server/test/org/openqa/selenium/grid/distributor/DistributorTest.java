@@ -105,6 +105,25 @@ public class DistributorTest {
   }
 
   @Test
+  public void registeringTheSameNodeMultipleTimesOnlyCountsTheFirstTime()
+      throws URISyntaxException {
+    URI nodeUri = new URI("http://example:5678");
+    URI routableUri = new URI("http://localhost:1234");
+
+    LocalSessionMap sessions = new LocalSessionMap();
+    LocalNode node = LocalNode.builder(routableUri, sessions)
+        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
+        .build();
+
+    local.add(node);
+    local.add(node);
+
+    DistributorStatus status = local.getStatus();
+
+    assertThat(status.getNodes().size()).isEqualTo(1);
+  }
+
+  @Test
   public void theMostLightlyLoadedNodeIsSelectedFirst() {
 
   }

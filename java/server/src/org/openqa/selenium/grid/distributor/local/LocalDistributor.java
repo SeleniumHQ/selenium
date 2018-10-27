@@ -17,11 +17,17 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.DistributorStatus;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.NodeStatus;
 import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.util.HashSet;
@@ -61,5 +67,14 @@ public class LocalDistributor extends Distributor {
   @Override
   public void remove(UUID nodeId) {
     nodes.removeIf(node -> nodeId.equals(node.getId()));
+  }
+
+  @Override
+  public DistributorStatus getStatus() {
+    ImmutableList<NodeStatus> nodesStatuses = this.nodes.stream()
+        .map(Node::getStatus)
+        .collect(toImmutableList());
+
+    return new DistributorStatus(nodesStatuses);
   }
 }

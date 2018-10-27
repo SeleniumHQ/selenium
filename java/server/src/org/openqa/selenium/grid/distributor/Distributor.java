@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.openqa.selenium.grid.server.Server.get;
+
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
@@ -34,6 +36,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 /**
@@ -79,11 +82,13 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
     RemoveNode removeNode = new RemoveNode(this);
 
     handler = new CompoundHandler(
-        Injector.builder().build(),
-        ImmutableMap.of(
-            create, (inj, req) -> create,
-            addNode, (inj, req) -> addNode,
-            removeNode, (inj, req) -> removeNode));
+        Injector.builder().register(this).register(json).build(),
+        ImmutableMap.<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>>builder()
+            .put(create, (inj, req) -> create)
+            .put(addNode, (inj, req) -> addNode)
+            .put(removeNode, (inj, req) -> removeNode)
+            .put(get("/status"), (Injector inj, HttpRequest req) -> inj.newInstance(StatusHandler.class))
+            .build());
   }
 
   public abstract Session newSession(NewSessionPayload payload) throws SessionNotCreatedException;
@@ -91,6 +96,8 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
   public abstract void add(Node node);
 
   public abstract void remove(UUID nodeId);
+
+  public abstract DistributorStatus getStatus();
 
   @Override
   public boolean test(HttpRequest req) {
