@@ -35,6 +35,7 @@ import java.util.Optional;
 /**
  * Base class for all mouse-related actions.
  */
+@Deprecated
 public abstract class MouseAction extends BaseAction implements IsInteraction {
 
   public enum Button {

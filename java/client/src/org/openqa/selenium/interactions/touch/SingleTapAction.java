@@ -25,6 +25,7 @@ import org.openqa.selenium.interactions.internal.TouchAction;
 /**
  * Creates a single tap gesture on a touch screen
  */
+@Deprecated
 public class SingleTapAction extends TouchAction implements Action {
 
   public SingleTapAction(TouchScreen touchScreen, Locatable locationProvider) {

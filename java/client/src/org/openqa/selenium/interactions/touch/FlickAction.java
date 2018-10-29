@@ -25,6 +25,7 @@ import org.openqa.selenium.interactions.internal.TouchAction;
 /**
  * Creates a flick gesture.
  */
+@Deprecated
 public class FlickAction extends TouchAction implements Action {
 
   private int xOffset;
