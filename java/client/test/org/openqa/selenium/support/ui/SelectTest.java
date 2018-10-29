@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SelectTest{
+public class SelectTest {
 
   @Test
   public void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
