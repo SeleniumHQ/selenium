@@ -19,7 +19,12 @@ package org.openqa.selenium.remote;
 
 import org.openqa.selenium.interactions.HasTouchScreen;
 
-/** Provides the RemoteTouchScreen for getTouch method to the proxy. */
+/**
+ * Provides the RemoteTouchScreen for getTouch method to the proxy.
+ *
+ * @deprecated {@link org.openqa.selenium.interactions.TouchScreen} is deprecated.
+ */
+@Deprecated
 public class AddRemoteTouchScreen implements AugmenterProvider {
 
   @Override
