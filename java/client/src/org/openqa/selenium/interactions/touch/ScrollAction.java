@@ -25,6 +25,7 @@ import org.openqa.selenium.interactions.internal.TouchAction;
 /**
  * Creates a scroll gesture.
  */
+@Deprecated
 public class ScrollAction extends TouchAction implements Action {
 
   private final int xOffset;

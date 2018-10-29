@@ -37,6 +37,7 @@ import java.util.Optional;
 /**
  * Represents a general action related to keyboard input.
  */
+@Deprecated
 public abstract class KeysRelatedAction extends BaseAction implements IsInteraction {
   protected final Keyboard keyboard;
   protected final Mouse mouse;
