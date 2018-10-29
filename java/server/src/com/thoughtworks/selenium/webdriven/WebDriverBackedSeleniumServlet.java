@@ -25,13 +25,13 @@ import com.google.common.base.Splitter;
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.NewSessionPayload;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
-import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
 import org.openqa.selenium.remote.server.WebDriverServlet;
 

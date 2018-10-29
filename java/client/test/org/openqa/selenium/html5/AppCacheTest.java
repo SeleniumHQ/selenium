@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.html5;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.html5.AppCacheStatus.UNCACHED;
 

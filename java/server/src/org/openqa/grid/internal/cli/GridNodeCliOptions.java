@@ -17,7 +17,6 @@
 
 package org.openqa.grid.internal.cli;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 

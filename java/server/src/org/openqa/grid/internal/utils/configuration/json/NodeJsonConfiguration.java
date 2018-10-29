@@ -22,7 +22,6 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.List;
-import java.util.Objects;
 
 public class NodeJsonConfiguration extends GridJsonConfiguration {
 

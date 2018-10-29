@@ -24,7 +24,6 @@ import static org.junit.Assert.fail;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
-import org.openqa.selenium.grid.web.UrlTemplate;
 
 public class UrlTemplateTest {
 

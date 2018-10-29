@@ -35,7 +35,6 @@ import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.remote.NewSessionPayload;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public class NewSessionPipelineTest {

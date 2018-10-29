@@ -18,9 +18,9 @@
 package org.openqa.selenium;
 
 import static com.google.common.base.Throwables.getRootCause;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.By.id;

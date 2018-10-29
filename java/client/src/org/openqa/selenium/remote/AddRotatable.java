@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.DeviceRotation;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;

@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
-import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
 import static org.openqa.selenium.PageLoadStrategy.EAGER;
 import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;

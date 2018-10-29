@@ -18,9 +18,6 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.Sets;
 
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.injector.Injector;
@@ -29,10 +26,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
