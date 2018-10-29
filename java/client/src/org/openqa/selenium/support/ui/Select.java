@@ -21,9 +21,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 /**
  * Models a SELECT tag, providing helper methods to select and deselect options.
@@ -77,15 +77,7 @@ public class Select implements ISelect {
    */
   @Override
   public List<WebElement> getAllSelectedOptions() {
-    List<WebElement> toReturn = new ArrayList<>();
-
-    for (WebElement option : getOptions()) {
-      if (option.isSelected()) {
-        toReturn.add(option);
-      }
-    }
-
-    return toReturn;
+    return getOptions().stream().filter(WebElement::isSelected).collect(Collectors.toList());
   }
 
   /**
@@ -95,13 +87,8 @@ public class Select implements ISelect {
    */
   @Override
   public WebElement getFirstSelectedOption() {
-    for (WebElement option : getOptions()) {
-      if (option.isSelected()) {
-        return option;
-      }
-    }
-
-    throw new NoSuchElementException("No options are selected");
+    return getOptions().stream().filter(WebElement::isSelected).findFirst()
+        .orElseThrow(() -> new NoSuchElementException("No options are selected"));
   }
 
   /**
@@ -119,16 +106,15 @@ public class Select implements ISelect {
     List<WebElement> options =
       element.findElements(By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
 
-    boolean matched = false;
     for (WebElement option : options) {
       setSelected(option, true);
       if (!isMultiple()) {
         return;
       }
-      matched = true;
     }
 
-    if (options.isEmpty() && text.contains(" ")) {
+    boolean matched = !options.isEmpty();
+    if (!matched && text.contains(" ")) {
       String subStringWithoutSpace = getLongestSubstringWithoutSpace(text);
       List<WebElement> candidates;
       if ("".equals(subStringWithoutSpace)) {
@@ -177,15 +163,7 @@ public class Select implements ISelect {
    */
   @Override
   public void selectByIndex(int index) {
-    String match = String.valueOf(index);
-
-    for (WebElement option : getOptions()) {
-      if (match.equals(option.getAttribute("index"))) {
-        setSelected(option, true);
-        return;
-      }
-    }
-    throw new NoSuchElementException("Cannot locate option with index: " + index);
+    setSelectedByIndex(index, true);
   }
 
   /**
@@ -199,20 +177,11 @@ public class Select implements ISelect {
    */
   @Override
   public void selectByValue(String value) {
-    List<WebElement> options = element.findElements(By.xpath(
-      ".//option[@value = " + Quotes.escape(value) + "]"));
-
-    boolean matched = false;
-    for (WebElement option : options) {
+    for (WebElement option : findOptionsByValue(value)) {
       setSelected(option, true);
       if (!isMultiple()) {
         return;
       }
-      matched = true;
-    }
-
-    if (!matched) {
-      throw new NoSuchElementException("Cannot locate option with value: " + value);
     }
   }
 
@@ -250,15 +219,8 @@ public class Select implements ISelect {
         "You may only deselect options of a multi-select");
     }
 
-    List<WebElement> options = element.findElements(By.xpath(
-      ".//option[@value = " + Quotes.escape(value) + "]"));
-    boolean matched = false;
-    for (WebElement option : options) {
+    for (WebElement option : findOptionsByValue(value)) {
       setSelected(option, false);
-      matched = true;
-    }
-    if (!matched) {
-      throw new NoSuchElementException("Cannot locate option with value: " + value);
     }
   }
 
@@ -277,15 +239,7 @@ public class Select implements ISelect {
         "You may only deselect options of a multi-select");
     }
 
-    String match = String.valueOf(index);
-
-    for (WebElement option : getOptions()) {
-      if (match.equals(option.getAttribute("index"))) {
-        setSelected(option, false);
-        return;
-      }
-    }
-    throw new NoSuchElementException("Cannot locate option with index: " + index);
+    setSelectedByIndex(index, false);
   }
 
   /**
@@ -307,16 +261,34 @@ public class Select implements ISelect {
 
     List<WebElement> options = element.findElements(By.xpath(
       ".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
-
-    boolean matched = false;
-    for (WebElement option : options) {
-      setSelected(option, false);
-      matched = true;
-    }
-
-    if (!matched) {
+    if (options.isEmpty()) {
       throw new NoSuchElementException("Cannot locate element with text: " + text);
     }
+
+    for (WebElement option : options) {
+      setSelected(option, false);
+    }
+  }
+
+  private List<WebElement> findOptionsByValue(String value) {
+    List<WebElement> options = element.findElements(By.xpath(
+        ".//option[@value = " + Quotes.escape(value) + "]"));
+    if (options.isEmpty()) {
+      throw new NoSuchElementException("Cannot locate option with value: " + value);
+    }
+    return options;
+  }
+
+  private void setSelectedByIndex(int index, boolean select) {
+    String match = String.valueOf(index);
+
+    for (WebElement option : getOptions()) {
+      if (match.equals(option.getAttribute("index"))) {
+        setSelected(option, select);
+        return;
+      }
+    }
+    throw new NoSuchElementException("Cannot locate option with index: " + index);
   }
 
   /**
@@ -329,8 +301,7 @@ public class Select implements ISelect {
    *          deselected (false)
    */
   private void setSelected(WebElement option, boolean select) {
-    boolean isSelected=option.isSelected();
-    if ((!isSelected && select) || (isSelected && !select)) {
+    if (option.isSelected() != select) {
       option.click();
     }
   }
