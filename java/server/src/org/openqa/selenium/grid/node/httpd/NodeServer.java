@@ -23,6 +23,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
 import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
@@ -45,9 +46,14 @@ import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URL;
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
 
 @AutoService(CliCommand.class)
 public class NodeServer implements CliCommand {
+
+  public static final Logger LOG = Logger.getLogger(NodeServer.class.getName());
 
   @Override
   public String getName() {
@@ -113,7 +119,23 @@ public class NodeServer implements CliCommand {
       server.addHandler(node, (inj, req) -> new W3CCommandHandler(node));
       server.start();
 
-      distributor.add(node);
+      Regularly regularly = new Regularly(
+          "Register Node with Distributor",
+          Duration.ofMinutes(5),
+          Duration.ofSeconds(30));
+
+      AtomicBoolean registered = new AtomicBoolean(false);
+
+      regularly.submit(() -> {
+        boolean previously = registered.get();
+        registered.set(false);
+
+        distributor.add(node);
+        registered.set(true);
+        if (!previously) {
+          LOG.info("Successfully registered with distributor");
+        }
+      });
     };
   }
 }
