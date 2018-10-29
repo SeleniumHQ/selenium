@@ -19,8 +19,6 @@ package org.openqa.grid.internal.utils.configuration.json;
 
 import org.openqa.selenium.json.JsonInput;
 
-import java.util.Objects;
-
 public class StandaloneJsonConfiguration extends CommonJsonConfiguration {
 
   private StandaloneJsonConfiguration() {}

@@ -35,7 +35,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-//import com.google.gson.JsonPrimitive;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -71,6 +70,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Stream;
+
+//import com.google.gson.JsonPrimitive;
 
 
 public class JsonOutputTest {

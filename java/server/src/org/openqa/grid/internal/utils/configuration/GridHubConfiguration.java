@@ -22,7 +22,6 @@ import static java.util.Optional.ofNullable;
 import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.cli.CommonGridCliOptions;
 import org.openqa.grid.internal.cli.GridHubCliOptions;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.utils.CapabilityMatcher;

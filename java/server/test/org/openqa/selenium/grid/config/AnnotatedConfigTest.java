@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;

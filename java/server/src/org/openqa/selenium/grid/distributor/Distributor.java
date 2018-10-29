@@ -21,7 +21,6 @@ import static org.openqa.selenium.grid.server.Server.get;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;

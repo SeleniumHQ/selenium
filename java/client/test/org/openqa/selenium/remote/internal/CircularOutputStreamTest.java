@@ -19,11 +19,11 @@ package org.openqa.selenium.remote.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
 import org.junit.Test;
 import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 

@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 
-//import org.apache.commons.io.output.NullOutputStream;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
@@ -36,6 +35,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+
+//import org.apache.commons.io.output.NullOutputStream;
 
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.

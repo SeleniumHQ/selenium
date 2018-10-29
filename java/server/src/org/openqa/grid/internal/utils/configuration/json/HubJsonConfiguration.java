@@ -22,8 +22,6 @@ import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
 import org.openqa.selenium.json.JsonInput;
 
-import java.util.Objects;
-
 public class HubJsonConfiguration extends GridJsonConfiguration {
 
   private HubJsonConfiguration() {}

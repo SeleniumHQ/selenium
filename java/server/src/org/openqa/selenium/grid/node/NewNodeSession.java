@@ -20,8 +20,6 @@ package org.openqa.selenium.grid.node;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;

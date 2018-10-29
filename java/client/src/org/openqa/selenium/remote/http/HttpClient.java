@@ -20,8 +20,6 @@ package org.openqa.selenium.remote.http;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Preconditions;
-
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.internal.OkHttpClient;

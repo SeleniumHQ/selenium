@@ -24,8 +24,6 @@ import static org.openqa.selenium.testing.Driver.CHROME;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.testing.Driver;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 

@@ -32,7 +32,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Objects;
 import java.util.function.Predicate;
 

@@ -24,7 +24,6 @@ import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.WindowsUtils.getPathsInProgramFiles;
-import org.openqa.selenium.remote.service.DriverService;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -35,6 +34,7 @@ import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ExecutableFinder;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.FileNotFoundException;

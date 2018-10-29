@@ -36,7 +36,6 @@ import static org.openqa.selenium.testing.drivers.Browser.opera;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.runner.Description;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreList;
 

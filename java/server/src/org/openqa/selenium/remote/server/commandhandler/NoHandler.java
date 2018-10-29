@@ -24,10 +24,10 @@ import static org.openqa.selenium.remote.ErrorCodes.UNKNOWN_COMMAND;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.grid.web.CommandHandler;
 
 import java.io.IOException;
 import java.util.Collections;

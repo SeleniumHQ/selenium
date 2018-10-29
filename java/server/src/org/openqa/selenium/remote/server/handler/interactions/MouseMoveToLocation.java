@@ -19,10 +19,10 @@ package org.openqa.selenium.remote.server.handler.interactions;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 

@@ -35,7 +35,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
