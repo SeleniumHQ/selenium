@@ -34,7 +34,7 @@ import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.awt.*;
+import java.awt.Robot;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class InternetExplorerDriverTest extends JUnit4TestBase {
