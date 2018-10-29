@@ -51,7 +51,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
-import java.net.HttpURLConnection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
