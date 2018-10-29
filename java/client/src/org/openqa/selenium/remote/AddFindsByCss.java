@@ -24,6 +24,10 @@ import org.openqa.selenium.internal.FindsByCssSelector;
 
 import java.util.Map;
 
+/**
+ * @deprecated Everything now finds by css
+ */
+@Deprecated
 public class AddFindsByCss implements AugmenterProvider {
   public Class<?> getDescribedInterface() {
     return FindsByCssSelector.class;
