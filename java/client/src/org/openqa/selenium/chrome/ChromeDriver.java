@@ -136,7 +136,7 @@ public class ChromeDriver extends RemoteWebDriver
 
   /**
    * Creates a new ChromeDriver instance. The {@code capabilities} will be passed to the
-   * chromedriver service.
+   * ChromeDriver service.
    *
    * @param capabilities The capabilities required from the ChromeDriver.
    * @see #ChromeDriver(ChromeDriverService, Capabilities)
@@ -230,7 +230,7 @@ public class ChromeDriver extends RemoteWebDriver
   /**
    * Launches Chrome app specified by id.
    *
-   * @param id chrome app id
+   * @param id Chrome app id.
    */
   public void launchApp(String id) {
     execute(ChromeDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
