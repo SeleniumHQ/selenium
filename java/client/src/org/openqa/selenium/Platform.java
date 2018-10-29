@@ -168,6 +168,17 @@ public enum Platform {
     }
   },
 
+  MOJAVE("mojave", "os x 10.14", "macos 10.14") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "macOS 10.14";
+    }
+  },
+
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
    */
