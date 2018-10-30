@@ -17,6 +17,6 @@
 
 module Selenium
   module WebDriver
-    VERSION = '3.14.1'.freeze
+    VERSION = '3.141.0'.freeze
   end # WebDriver
 end # Selenium
