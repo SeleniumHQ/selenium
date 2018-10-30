@@ -54,7 +54,16 @@ public class HubW3CStatusServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException {
-    List<RemoteProxy> allProxies = registry.getAllProxies().getSorted();
+    List<RemoteProxy> allProxies = registry.getAllProxies().getSorted()
+        .parallelStream().filter(remoteProxy -> {
+          // Only counting proxies that reply at their status endpoint
+          try {
+            remoteProxy.getProxyStatus();
+            return true;
+          } catch (Exception e) {
+            return false;
+          }
+        }).collect(Collectors.toList());
     List<RemoteProxy> busyProxies = allProxies.parallelStream()
         .filter(proxy -> proxy.getMaxNumberOfConcurrentTestSessions() - proxy.getTotalUsed() <= 0)
         .collect(Collectors.toList());
