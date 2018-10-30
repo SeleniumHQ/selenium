@@ -161,11 +161,11 @@ module Selenium
       # Get current screen resolution
       #
 
-      def get_screen_height
+      def screen_height
         @bridge.executeScript("return screen.height")
       end
 
-      def get_screen_width
+      def screen_width
         @bridge.executeScript("return screen.width")
       end
 
@@ -173,8 +173,8 @@ module Selenium
       # Maximize the window according to screen size
       #
       def maximize_acc_to_resolution
-        @bridge.setWindowSize(get_screen_width,get_screen_height)
-        @bridge.setWindowPosition(0,0)
+        @bridge.setWindowSize(screen_height, screen_width)
+        @bridge.setWindowPosition(0, 0)
       end
 
     end # Window
