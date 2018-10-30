@@ -29,6 +29,7 @@ v3.141.0
 * Grid: Nodes and Hubs can now be started in any order, and
   configuration will be correct Fixes #3064.
 * Added a basic ServiceBuilder for Internet Explorer (#6181)
+* Version number is a better approximation of π.
 
 v3.14.0
 =======
