@@ -1,3 +1,35 @@
+v3.141.0
+========
+
+* Hub status should only count reachable proxies. Fixes #6494.
+* Deprecated the original Actions API in favour of the W3C approach.
+* Correct localisation of platform name (#6491)
+* Beta commands in SafariDriver for opening a new window or tab.
+* Clean up of internal of `Select` element wrapper (#6501)
+* Acknowledge that Mojave is a `Platform` (#6552)
+* Deleted many command-line options marked as deprecated some time
+  ago.
+* Removed Selenium's own deprecated `Duration` and `Clock` classes in
+  favour of those provided by the JRE.
+* Fixed WebDriverBackedSelenium servlet by registering a session
+  finalization listener.
+* Installing Firefox extensions in the same form as they provided,
+  either as a file or as a directory. With the release of Firefox 62
+  Mozilla discontinued support for unpacked sideloaded extensions in
+  Release channel. Users must themselves choose proper format to use
+  in their tests depending on the browser version they run tests in.
+* Prepended command names in https error response reports (#6321)
+* Removed the apache-backed httpclient.
+* Fixing regression in Grid: if -hubPort was specified through CLI
+  params but not -hubHost, the node tried to register to
+  http://null:hubPort.
+* Fixing regression in Grid by using browserTimeout again to set
+  timeouts in the HttpClient.
+* Grid: adding image for Safari Technology Preview, fixes #6297
+* Grid: Nodes and Hubs can now be started in any order, and
+  configuration will be correct Fixes #3064.
+* Added a basic ServiceBuilder for Internet Explorer (#6181)
+
 v3.14.0
 =======
 
