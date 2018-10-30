@@ -156,6 +156,27 @@ module Selenium
       def full_screen
         @bridge.full_screen_window
       end
+
+      #
+      # Get current screen resolution
+      #
+
+      def screen_height
+        @bridge.executeScript("return screen.height")
+      end
+
+      def screen_width
+        @bridge.executeScript("return screen.width")
+      end
+
+      #
+      # Maximize the window according to screen size
+      #
+      def maximize_acc_to_resolution
+        @bridge.setWindowSize(screen_height, screen_width)
+        @bridge.setWindowPosition(0, 0)
+      end
+
     end # Window
   end # WebDriver
 end # Selenium
