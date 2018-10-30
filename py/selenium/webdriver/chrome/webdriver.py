@@ -121,6 +121,12 @@ class WebDriver(RemoteWebDriver):
             'network_conditions': network_conditions
         })
 
+    def set_download_path(self, download_path):
+        browser.command_executor._commands['send_command'] = ('POST', '/session/$sessionId/chromium/send_command')
+        params = {'cmd': 'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': download_path}}
+
+        self.execute('send_command', params)
+
     def execute_cdp_cmd(self, cmd, cmd_args):
         """
         Execute Chrome Devtools Protocol command and get returned result
