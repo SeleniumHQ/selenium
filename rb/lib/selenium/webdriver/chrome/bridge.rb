@@ -23,7 +23,7 @@ module Selenium
         COMMANDS = {
           get_network_conditions: [:get, '/session/:session_id/chromium/network_conditions'.freeze],
           set_network_conditions: [:post, '/session/:session_id/chromium/network_conditions'.freeze],
-          send_command: [:post, '/session/:session_id/chromium/send_command'.freeze]
+          send_command: [:post, '/session/:session_id/goog/cdp/execute'.freeze]
         }.freeze
 
         def commands(command)
