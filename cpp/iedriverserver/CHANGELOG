@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.0.0
+==========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * Version number updated to continue with "digits of pi" theme.
+
 v3.14.0.15
 ==========
  * Fixed change in behavior recognizing closing of showModalDialog windows.
