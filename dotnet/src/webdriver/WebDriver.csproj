@@ -87,7 +87,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(BuildSystem)' == 'buck'">
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\firefox-driver\webdriver\webdriver.xpi">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\firefox-driver\webdriver__\webdriver.xpi">
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxExt.zip</LogicalName>
     </EmbeddedResource>
