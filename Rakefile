@@ -103,6 +103,7 @@ crazy_fun.create_tasks(Dir["javascript/**/build.desc"])
 crazy_fun.create_tasks(Dir["py/**/build.desc"])
 crazy_fun.create_tasks(Dir["rake-tasks/**/build.desc"])
 crazy_fun.create_tasks(Dir["rb/**/build.desc"])
+crazy_fun.create_tasks(Dir["third_party/**/build.desc"])
 
 # Buck integration. Loaded after CrazyFun has initialized all the tasks it'll handle.
 # This is because the buck integration creates a rule for "//.*"
