@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 
 /**
  * Wrapper around Firefox executable.
@@ -74,9 +73,9 @@ class Executable {
   }
 
   private void loadApplicationIni() {
-    Optional<Path> applicationIni = getResource("application.ini");
-    if (applicationIni.isPresent()) {
-      try (BufferedReader reader = Files.newBufferedReader(applicationIni.get())) {
+    Path applicationIni = getResource("application.ini");
+    if (Files.exists(applicationIni)) {
+      try (BufferedReader reader = Files.newBufferedReader(applicationIni)) {
         reader.lines().map(String::trim).forEach(line -> {
           if (line.startsWith("Version=")) {
             version = line.substring("Version=".length());
@@ -93,10 +92,10 @@ class Executable {
   }
 
   private void loadChannelPref() {
-    Optional<Path> channelPrefs = getResource("defaults/pref/channel-prefs.js");
+    Path channelPrefs = getResource("defaults/pref/channel-prefs.js");
 
-    if (channelPrefs.isPresent()) {
-      try (BufferedReader reader = Files.newBufferedReader(channelPrefs.get())) {
+    if (Files.exists(channelPrefs)) {
+      try (BufferedReader reader = Files.newBufferedReader(channelPrefs)) {
         reader.lines().map(String::trim).forEach(line -> {
           if (line.startsWith("pref(")) {
             channel = FirefoxBinary.Channel.fromString(
@@ -114,18 +113,12 @@ class Executable {
     channel = FirefoxBinary.Channel.RELEASE;
   }
 
-  private Optional<Path> getResource(String resourceName) {
+  private Path getResource(String resourceName) {
     Path binaryLocation = binary.getAbsoluteFile().toPath();
-    Path discovered;
     if (Platform.getCurrent().is(Platform.MAC)) {
-      discovered = binaryLocation.getParent().getParent().resolve("Resources").resolve(resourceName);
+      return binaryLocation.getParent().getParent().resolve("Resources").resolve(resourceName);
     } else {
-      discovered = binaryLocation.getParent().resolve(resourceName);
+      return binaryLocation.getParent().resolve(resourceName);
     }
-
-    if (Files.exists(discovered)) {
-      return Optional.of(discovered);
-    }
-    return Optional.empty();
   }
 }
