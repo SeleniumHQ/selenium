@@ -76,19 +76,19 @@ class Executable {
     Path applicationIni = getResource("application.ini");
     if (Files.exists(applicationIni)) {
       try (BufferedReader reader = Files.newBufferedReader(applicationIni)) {
-        reader.lines().map(String::trim).forEach(line -> {
-          if (line.startsWith("Version=")) {
-            version = line.substring("Version=".length());
-          }
-        });
+        version = reader.lines()
+            .map(String::trim)
+            .filter(line -> line.startsWith("Version="))
+            .findFirst()
+            .map(line -> line.substring("Version=".length()))
+            .orElseThrow(() -> new WebDriverException("Cannot get version info for Firefox binary " + binary));
       } catch (IOException e) {
-        throw new WebDriverException("Cannot get version info for of Firefox binary " + binary, e);
+        throw new WebDriverException("Cannot get version info for Firefox binary " + binary, e);
       }
-      return;
+    } else {
+      // Set version to something with a ridiculously high number.
+      version = "1000.0 unknown";
     }
-
-    // Set version to something with a ridiculously high number.
-    version = "1000.0 unknown";
   }
 
   private void loadChannelPref() {
@@ -96,21 +96,21 @@ class Executable {
 
     if (Files.exists(channelPrefs)) {
       try (BufferedReader reader = Files.newBufferedReader(channelPrefs)) {
-        reader.lines().map(String::trim).forEach(line -> {
-          if (line.startsWith("pref(")) {
-            channel = FirefoxBinary.Channel.fromString(
+        channel = reader.lines()
+            .map(String::trim)
+            .filter(line -> line.startsWith("pref(\"app.update.channel\""))
+            .findFirst()
+            .map(line -> FirefoxBinary.Channel.fromString(
                 line.substring("pref(\"app.update.channel\", \"".length(),
-                               line.length() - "\");".length()));
-          }
-        });
+                               line.length() - "\");".length())))
+            .orElseThrow(() -> new WebDriverException("Cannot get channel info for Firefox binary " + binary));
       } catch (IOException e) {
         throw new WebDriverException("Cannot get channel info for Firefox binary " + binary, e);
       }
-      return;
+    } else {
+      // Pick a sane default
+      channel = FirefoxBinary.Channel.RELEASE;
     }
-
-    // Pick a sane default
-    channel = FirefoxBinary.Channel.RELEASE;
   }
 
   private Path getResource(String resourceName) {

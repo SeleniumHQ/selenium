@@ -43,12 +43,14 @@ public class ExecutableTest {
   @Test
   public void canFindVersion() {
     Executable exe = new Executable(new File(binaryPath));
-    assertThat(exe.getVersion()).isNotEmpty();
+    System.out.println(exe.getVersion());
+    assertThat(exe.getVersion()).isNotEmpty().isNotEqualTo("1000.0 unknown");
   }
 
   @Test
   public void canFindChannel() {
     Executable exe = new Executable(new File(binaryPath));
+    System.out.println(exe.getChannel());
     assertThat(exe.getChannel()).isNotNull();
   }
 
