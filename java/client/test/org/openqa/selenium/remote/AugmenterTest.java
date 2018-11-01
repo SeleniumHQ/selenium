@@ -122,7 +122,7 @@ public class AugmenterTest extends BaseAugmenterTest {
 
   @Test
   public void shouldAugmentRemoteWebDriverWithExtraCapabilities() {
-    Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_WEB_STORAGE, true);
     StubExecutor stubExecutor = new StubExecutor(caps);
     WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
