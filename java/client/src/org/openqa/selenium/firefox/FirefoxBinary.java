@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.os.WindowsUtils.getPathsInProgramFiles;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -49,7 +48,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FirefoxBinary {
@@ -400,9 +401,10 @@ public class FirefoxBinary {
 
     Platform current = Platform.getCurrent();
     if (current.is(WINDOWS)) {
-      executables.addAll(Stream.of(getPathsInProgramFiles("Mozilla Firefox\\firefox.exe"),
-                                   getPathsInProgramFiles("Firefox Developer Edition\\firefox.exe"),
-                                   getPathsInProgramFiles("Nightly\\firefox.exe"))
+      executables.addAll(Stream.of("Mozilla Firefox\\firefox.exe",
+                                   "Firefox Developer Edition\\firefox.exe",
+                                   "Nightly\\firefox.exe")
+          .map(FirefoxBinary::getPathsInProgramFiles)
           .flatMap(List::stream)
           .map(File::new).filter(File::exists)
           .map(Executable::new).collect(toList()));
@@ -454,4 +456,35 @@ public class FirefoxBinary {
     return executables.build().stream();
   }
 
+  private static List<String> getPathsInProgramFiles(final String childPath) {
+    return Stream.of(getProgramFilesPath(), getProgramFiles86Path())
+        .map(parent -> new File(parent, childPath).getAbsolutePath())
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Returns the path to the Windows Program Files. On non-English versions, this is not necessarily
+   * "C:\Program Files".
+   *
+   * @return the path to the Windows Program Files
+   */
+  private static String getProgramFilesPath() {
+    return getEnvVarPath("ProgramFiles", "C:\\Program Files").replace(" (x86)", "");
+  }
+
+  private static String getProgramFiles86Path() {
+    return getEnvVarPath("ProgramFiles(x86)", "C:\\Program Files (x86)");
+  }
+
+  private static String getEnvVarPath(final String envVar, final String defaultValue) {
+    return getEnvVarIgnoreCase(envVar)
+        .map(File::new).filter(File::exists).map(File::getAbsolutePath)
+        .orElseGet(() -> new File(defaultValue).getAbsolutePath());
+  }
+
+  private static Optional<String> getEnvVarIgnoreCase(String var) {
+    return System.getenv().entrySet().stream()
+        .filter(e -> e.getKey().equalsIgnoreCase(var))
+        .findFirst().map(Map.Entry::getValue);
+  }
 }

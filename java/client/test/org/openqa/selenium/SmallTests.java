@@ -31,7 +31,6 @@ import org.openqa.selenium.net.LinuxEphemeralPortRangeDetectorTest;
 import org.openqa.selenium.net.NetworkUtilsTest;
 import org.openqa.selenium.net.UrlCheckerTest;
 import org.openqa.selenium.os.CommandLineTest;
-import org.openqa.selenium.os.WindowsUtilsUnitTest;
 import org.openqa.selenium.testing.drivers.IgnoreComparatorUnitTest;
 
 @RunWith(Suite.class)
@@ -59,7 +58,6 @@ import org.openqa.selenium.testing.drivers.IgnoreComparatorUnitTest;
     TemporaryFilesystemTest.class,
     UrlCheckerTest.class,
     WebDriverExceptionTest.class,
-    WindowsUtilsUnitTest.class,
     ZipTest.class,
 
     org.openqa.selenium.support.SmallTests.class,
