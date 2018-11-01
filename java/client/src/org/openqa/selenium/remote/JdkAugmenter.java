@@ -131,7 +131,6 @@ public class JdkAugmenter extends BaseAugmenter {
     public Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
       InterfaceImplementation handler = handlers.get(method);
       try {
-        System.out.println("Method: " + method + "all handlers: " + handlers.keySet());
         if (null == handler) {
           return method.invoke(realInstance, args);
         }
