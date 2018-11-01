@@ -1,3 +1,29 @@
+3.141.0 (2018-10-31)
+====================
+
+Edge:
+  * Added new Edge::Options class that should be used to customize browser
+    behavior. The instance of options class can be passed to driver
+    initialization using :options key. Please, note that using options require
+    insiders builds of Edge.
+
+Chrome:
+  * Included HasLocation to Chrome driver (thanks @sidonath).
+  * Updated endpoint to send Chrome Debugging Protocol commands. The old one
+    has been deprecated in ChromeDriver 40.
+
+Safari:
+  * Added new Safari::Options class that should be used to customize browser
+    behavior. The instance of options class can be passed to driver
+    initialization using :options key. Please, note that using options require
+    Safari 12+.
+
+Remote:
+  * Allow passing Options instances to remote driver initialization using
+    :options key. This feature allows to use browser-specific options classes
+    (Chrome::Options, Firefox::Options, etc.) and pass them to Server/Grid
+    instead of capabilities.
+
 3.14.1 (2018-10-03)
 ===================
 
