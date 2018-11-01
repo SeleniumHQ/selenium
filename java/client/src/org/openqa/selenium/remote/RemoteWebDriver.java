@@ -68,6 +68,7 @@ import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -450,7 +451,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     try {
       execute(DriverCommand.QUIT);
-    } finally {
+      if(System.getProperty("os.name").startsWith("Windows")) {
+        Runtime.getRuntime().exec("taskkill /f /t /im " + "chromedriver.exe").waitFor();
+        Runtime.getRuntime().exec("taskkill /f /t /im " + "geckodriver.exe.exe").waitFor();
+      }
+    }
+    catch (IOException | InterruptedException e){
+      logger.info("Failed to kill process: " + e.getMessage());
+    }
+      finally
+    {
       sessionId = null;
     }
   }
