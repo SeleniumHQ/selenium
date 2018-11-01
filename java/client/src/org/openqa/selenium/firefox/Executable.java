@@ -15,13 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox.internal;
+package org.openqa.selenium.firefox;
 
 import com.google.common.base.Preconditions;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.FirefoxBinary;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,11 +31,8 @@ import java.util.Optional;
 
 /**
  * Wrapper around Firefox executable.
- *
- * @deprecated Internal class. Visibility will be reduced and won't be exported from module.
  */
-@Deprecated
-public class Executable {
+class Executable {
 
   private final File binary;
   private String version;
