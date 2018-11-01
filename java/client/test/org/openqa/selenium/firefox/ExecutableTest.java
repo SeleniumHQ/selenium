@@ -17,18 +17,39 @@
 
 package org.openqa.selenium.firefox;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    FirefoxDriverTest.class,
-    FirefoxOptionsTest.class,
-    FirefoxProfileTest.class,
-    MarionetteTest.class,
-    PreferencesTest.class,
-    ExecutableTest.class,
-})
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.Assume;
+import org.openqa.selenium.WebDriverException;
 
-public class FirefoxSpecificTests {
+import java.io.File;
+
+public class ExecutableTest {
+
+  private String binaryPath;
+
+  @Before
+  public void setUp() {
+    try {
+      binaryPath = new FirefoxBinary().getPath();
+    } catch (WebDriverException ex) {
+      ex.printStackTrace();
+      Assume.assumeTrue(false);
+    }
+  }
+
+  @Test
+  public void canFindVersion() {
+    Executable exe = new Executable(new File(binaryPath));
+    assertThat(exe.getVersion()).isNotEmpty();
+  }
+
+  @Test
+  public void canFindChannel() {
+    Executable exe = new Executable(new File(binaryPath));
+    assertThat(exe.getChannel()).isNotNull();
+  }
+
 }
