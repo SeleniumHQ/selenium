@@ -446,10 +446,11 @@ class IWebDriver {
    *           function(!WebDriver): T)} condition The condition to
    *     wait on, defined as a promise, condition object, or  a function to
    *     evaluate as a condition.
-   * @param {number=} timeout How long to wait for the condition to be true.
+   * @param {number=} timeout The duration in milliseconds, how long to wait
+   *     for the condition to be true.
    * @param {string=} message An optional message to use if the wait times out.
-   * @param {number=} pollTimeout How long to wait between polling the
-   *     condition.
+   * @param {number=} pollTimeout The duration in milliseconds, how long to
+   *     wait between polling the condition.
    * @return {!(IThenable<T>|WebElementPromise)} A promise that will be
    *     resolved with the first truthy value returned by the condition
    *     function, or rejected if the condition times out. If the input
