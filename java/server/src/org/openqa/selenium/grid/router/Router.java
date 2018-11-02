@@ -23,6 +23,7 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.CompoundHandler;
+import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -35,7 +36,8 @@ import java.util.function.Predicate;
  */
 public class Router implements Predicate<HttpRequest>, CommandHandler {
 
-  private final CompoundHandler handler;
+  private final Injector injector;
+  private final Routes handlerFactory;
 
   public Router(SessionMap sessions, Distributor distributor) {
     HandleSession activeSession = new HandleSession(sessions);
