@@ -20,6 +20,7 @@ package org.openqa.selenium.internal;
 /**
  * @deprecated Use {@link org.openqa.selenium.WrapsDriver} instead.
  */
+@Deprecated
 public interface WrapsDriver extends org.openqa.selenium.WrapsDriver {
 
 }

@@ -29,6 +29,7 @@ import java.util.List;
  *
  * @deprecated Use {@link Actions#contextClick(WebElement)}
  */
+@Deprecated
 public class ContextClickAction extends MouseAction implements Action {
   public ContextClickAction(Mouse mouse, Locatable where) {
     super(mouse, where);
