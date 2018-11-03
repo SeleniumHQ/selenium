@@ -235,7 +235,7 @@ public class NewSessionPayload implements Closeable {
           Map<String, Object> ossProxyMap = new HashMap<>(proxyMap);
           Object rawData = proxyMap.get("noProxy");
           if (rawData instanceof List) {
-            ossProxyMap.put("noProxy", ((List<String>) rawData).stream().collect(Collectors.joining(",")));
+            ossProxyMap.put("noProxy", String.join(",", ((List<String>) rawData)));
           }
           ossFirst.put(CapabilityType.PROXY, ossProxyMap);
         }
