@@ -185,7 +185,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNull() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[]{"x", null, "y"}));
+        () -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
   }
 
   @Test
