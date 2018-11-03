@@ -91,10 +91,12 @@ public class HttpCommandProcessor implements CommandProcessor {
     this.extensionJs = "";
   }
 
+  @Override
   public String getRemoteControlServerLocation() {
     return rcServerLocation;
   }
 
+  @Override
   public String doCommand(String commandName, String[] args) {
     DefaultRemoteCommand command = new DefaultRemoteCommand(commandName, args);
     String result = executeCommandOnServlet(command.getCommandURLString());
@@ -231,16 +233,19 @@ public class HttpCommandProcessor implements CommandProcessor {
    *
    * @param extensionJs the extra extension Javascript to include in this browser session.
    */
+  @Override
   public void setExtensionJs(String extensionJs) {
     this.extensionJs = extensionJs;
   }
 
+  @Override
   public void start() {
     String result = getString("getNewBrowserSession",
         new String[] {browserStartCommand, browserURL, extensionJs});
     setSessionInProgress(result);
   }
 
+  @Override
   public void start(String optionsString) {
     String result = getString("getNewBrowserSession",
         new String[] {browserStartCommand, browserURL,
@@ -254,6 +259,7 @@ public class HttpCommandProcessor implements CommandProcessor {
    *
    * @param optionsObject start options
    */
+  @Override
   public void start(Object optionsObject) {
     start(optionsObject.toString());
   }
@@ -262,6 +268,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     sessionId = result;
   }
 
+  @Override
   public void stop() {
     if (hasSessionInProgress()) {
       doCommand("testComplete", null);
@@ -273,6 +280,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     return null != sessionId;
   }
 
+  @Override
   public String getString(String commandName, String[] args) {
     String result = doCommand(commandName, args);
     if (result.length() >= "OK,".length()) {
@@ -282,6 +290,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     return "";
   }
 
+  @Override
   public String[] getStringArray(String commandName, String[] args) {
     String result = getString(commandName, args);
     return parseCSV(result);
@@ -318,6 +327,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     return output.toArray(new String[output.size()]);
   }
 
+  @Override
   public Number getNumber(String commandName, String[] args) {
     String result = getString(commandName, args);
     Number n;
@@ -333,6 +343,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     return n;
   }
 
+  @Override
   public Number[] getNumberArray(String commandName, String[] args) {
     String[] result = getStringArray(commandName, args);
     Number[] n = new Number[result.length];
@@ -346,6 +357,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     return n;
   }
 
+  @Override
   public boolean getBoolean(String commandName, String[] args) {
     String result = getString(commandName, args);
     boolean b;
@@ -360,6 +372,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     throw new RuntimeException("result was neither 'true' nor 'false': " + result);
   }
 
+  @Override
   public boolean[] getBooleanArray(String commandName, String[] args) {
     String[] result = getStringArray(commandName, args);
     boolean[] b = new boolean[result.length];

@@ -32,6 +32,7 @@ public class SingleTapAction extends TouchAction implements Action {
     super(touchScreen, locationProvider);
   }
 
+  @Override
   public void perform() {
     touchScreen.singleTap(getActionLocation());
   }

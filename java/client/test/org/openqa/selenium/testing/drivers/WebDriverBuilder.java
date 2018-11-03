@@ -98,6 +98,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     this.toBuild = Optional.ofNullable(toBuild).orElse(Browser.CHROME);
   }
 
+  @Override
   public WebDriver get() {
     return get(new ImmutableCapabilities());
   }

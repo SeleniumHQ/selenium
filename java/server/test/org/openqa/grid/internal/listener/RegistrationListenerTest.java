@@ -50,6 +50,7 @@ public class RegistrationListenerTest {
       super(request, registry);
     }
 
+    @Override
     public void beforeRegistration() {
       try {
         Thread.sleep(1000);
@@ -98,6 +99,7 @@ public class RegistrationListenerTest {
       super(request, registry);
     }
 
+    @Override
     public void beforeRegistration() {
       synchronized (lock) {
         if (firstRun) {
@@ -128,6 +130,7 @@ public class RegistrationListenerTest {
       super(request, registry);
     }
 
+    @Override
     public void beforeRegistration() {
       try {
         Thread.sleep(1000);

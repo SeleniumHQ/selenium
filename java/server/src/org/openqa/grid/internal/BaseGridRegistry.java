@@ -38,6 +38,7 @@ public abstract class BaseGridRegistry implements GridRegistry {
   /**
    * @see GridRegistry#getHub()
    */
+  @Override
   public Hub getHub() {
     return hub;
   }
@@ -45,6 +46,7 @@ public abstract class BaseGridRegistry implements GridRegistry {
   /**
    * @see GridRegistry#setHub(Hub)
    */
+  @Override
   public void setHub(Hub hub) {
     this.hub = hub;
   }

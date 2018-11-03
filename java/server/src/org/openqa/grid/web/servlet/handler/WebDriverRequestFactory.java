@@ -22,6 +22,7 @@ import org.openqa.grid.internal.GridRegistry;
 import javax.servlet.http.HttpServletRequest;
 
 public class WebDriverRequestFactory implements SeleniumBasedRequestFactory {
+  @Override
   public SeleniumBasedRequest createFromRequest(HttpServletRequest request, GridRegistry registry) {
     String path = request.getServletPath();
     if (!"/wd/hub".equals(path)) {

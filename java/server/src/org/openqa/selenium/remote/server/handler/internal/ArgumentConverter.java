@@ -35,6 +35,7 @@ public class ArgumentConverter implements Function<Object, Object> {
     this.knownElements = knownElements;
   }
 
+  @Override
   public Object apply(Object arg) {
     if (arg instanceof Map) {
       @SuppressWarnings("unchecked")

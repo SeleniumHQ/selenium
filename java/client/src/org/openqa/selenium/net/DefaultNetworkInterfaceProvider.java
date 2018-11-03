@@ -35,6 +35,7 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
   private final List<NetworkInterface> cachedInterfaces;
 
 
+  @Override
   public Iterable<NetworkInterface> getNetworkInterfaces() {
     return cachedInterfaces;
   }
@@ -62,6 +63,7 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
     return "lo";
   }
 
+  @Override
   public NetworkInterface getLoInterface() {
     final String localIF = getLocalInterfaceName();
     try {

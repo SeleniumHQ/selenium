@@ -29,54 +29,67 @@ import java.util.Set;
 
 public class StubDriver implements WebDriver, HasInputDevices, HasTouchScreen {
 
+  @Override
   public void get(String url) {
     throw new UnsupportedOperationException("get");
   }
 
+  @Override
   public String getCurrentUrl() {
     throw new UnsupportedOperationException("getCurrentUrl");
   }
 
+  @Override
   public String getTitle() {
     throw new UnsupportedOperationException("getTitle");
   }
 
+  @Override
   public List<WebElement> findElements(By by) {
     throw new UnsupportedOperationException("findElements");
   }
 
+  @Override
   public WebElement findElement(By by) {
     throw new UnsupportedOperationException("findElement");
   }
 
+  @Override
   public String getPageSource() {
     throw new UnsupportedOperationException("getPageSource");
   }
 
+  @Override
   public void close() {
     throw new UnsupportedOperationException("close");
   }
 
+  @Override
   public void quit() {
     throw new UnsupportedOperationException("quit");
   }
 
+  @Override
   public Set<String> getWindowHandles() {
     throw new UnsupportedOperationException("getWindowHandles");
   }
 
+  @Override
   public String getWindowHandle() {
     throw new UnsupportedOperationException("getWindowHandle");
   }
 
+  @Override
   public TargetLocator switchTo() {
     throw new UnsupportedOperationException("switchTo");
   }
 
+  @Override
   public Navigation navigate() {
     throw new UnsupportedOperationException("navigate");
   }
 
+  @Override
   public Options manage() {
     throw new UnsupportedOperationException("manage");
   }
@@ -86,14 +99,17 @@ public class StubDriver implements WebDriver, HasInputDevices, HasTouchScreen {
   }
 
   // TODO(eran): Why does this not throw an exception like everything else?
+  @Override
   public Keyboard getKeyboard() {
     return null;
   }
 
+  @Override
   public Mouse getMouse() {
     return null;
   }
 
+  @Override
   public TouchScreen getTouch() {
     return null;
   }

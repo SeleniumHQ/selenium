@@ -29,10 +29,12 @@ public class InProcessTestEnvironment implements TestEnvironment {
     appServer.start();
   }
 
+  @Override
   public AppServer getAppServer() {
     return appServer;
   }
 
+  @Override
   public void stop() {
     appServer.stop();
   }

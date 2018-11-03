@@ -36,6 +36,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
 
   private File testFile;
 
+  @Override
   @Before
   public void setUp() throws Exception {
     testFile = createTmpFile(FILE_HTML);

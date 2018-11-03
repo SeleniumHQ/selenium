@@ -34,10 +34,12 @@ public interface OutputType<T> {
    * Obtain the screenshot as base64 data.
    */
   OutputType<String> BASE64 = new OutputType<String>() {
+    @Override
     public String convertFromBase64Png(String base64Png) {
       return base64Png;
     }
 
+    @Override
     public String convertFromPngBytes(byte[] png) {
       return Base64.getEncoder().encodeToString(png);
     }
@@ -51,10 +53,12 @@ public interface OutputType<T> {
    * Obtain the screenshot as raw bytes.
    */
   OutputType<byte[]> BYTES = new OutputType<byte[]>() {
+    @Override
     public byte[] convertFromBase64Png(String base64Png) {
       return Base64.getMimeDecoder().decode(base64Png);
     }
 
+    @Override
     public byte[] convertFromPngBytes(byte[] png) {
       return png;
     }
@@ -69,10 +73,12 @@ public interface OutputType<T> {
    * to users to make a copy of this file.
    */
   OutputType<File> FILE = new OutputType<File>() {
+    @Override
     public File convertFromBase64Png(String base64Png) {
       return save(BYTES.convertFromBase64Png(base64Png));
     }
 
+    @Override
     public File convertFromPngBytes(byte[] data) {
       return save(data);
     }

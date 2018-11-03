@@ -290,6 +290,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
    *     path segment prefixed with a ":" will be replaced with the corresponding parameter
    *     from the encoded command.
    */
+  @Override
   public void defineCommand(String name, HttpMethod method, String pathPattern) {
     defineCommand(name, new CommandSpec(method, pathPattern));
   }

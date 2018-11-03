@@ -47,6 +47,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
     this.factory = factory;
   }
 
+  @Override
   public Object decorate(ClassLoader loader, Field field) {
     if (!(WebElement.class.isAssignableFrom(field.getType())
           || isDecoratableList(field))) {

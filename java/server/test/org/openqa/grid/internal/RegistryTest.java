@@ -199,6 +199,7 @@ public class RegistryTest {
 
     }
 
+    @Override
     public void beforeRegistration() {
       int registrationTime = randomGenerator.nextInt(1000);
       if (registrationTime > 900) {

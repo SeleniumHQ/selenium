@@ -41,6 +41,7 @@ public class PriorityTest {
 
   // priority rule : the request with the highest priority goes first.
   private static Prioritizer highestNumberHasPriority = new Prioritizer() {
+    @Override
     public int compareTo(Map<String, Object> a, Map<String, Object> b) {
       int priorityA = Integer.parseInt(a.get("_priority").toString());
       int priorityB = Integer.parseInt(b.get("_priority").toString());
@@ -113,6 +114,7 @@ public class PriorityTest {
     for (RequestHandler h : requests) {
       final RequestHandler req = h;
       new Thread(new Runnable() { // Thread safety reviewed
+            @Override
             public void run() {
               req.process();
             }

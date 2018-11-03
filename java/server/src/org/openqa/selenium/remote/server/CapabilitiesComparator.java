@@ -109,6 +109,7 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
     return Ordering.from(new CapabilitiesComparator(against, currentPlatform)).max(toCompare);
   }
 
+  @Override
   public int compare(final Capabilities a, final Capabilities b) {
     return compareWith.compare(a, b);
   }

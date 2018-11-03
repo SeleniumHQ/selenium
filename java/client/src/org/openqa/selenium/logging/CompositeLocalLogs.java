@@ -48,6 +48,7 @@ class CompositeLocalLogs extends LocalLogs {
     return allTypesLogger.get(logType);
   }
 
+  @Override
   public Set<String> getAvailableLogTypes() {
     TreeSet<String> toReturn = new TreeSet<>();
     toReturn.addAll(predefinedTypeLogger.getAvailableLogTypes());

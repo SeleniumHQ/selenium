@@ -46,6 +46,7 @@ public @interface FindBys {
   FindBy[] value();
 
   class FindByBuilder extends AbstractFindByBuilder {
+    @Override
     public By buildIt(Object annotation, Field field) {
       FindBys findBys = (FindBys) annotation;
       assertValidFindBys(findBys);

@@ -189,6 +189,7 @@ public class SelfRegisteringRemote {
       if (registerCycleInterval > 0) {
         new Thread(new Runnable() { // Thread safety reviewed
 
+          @Override
           public void run() {
             boolean first = true;
             LOG.info("Starting auto registration thread. Will try to register every "

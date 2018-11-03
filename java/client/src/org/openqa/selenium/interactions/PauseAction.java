@@ -35,6 +35,7 @@ public class PauseAction implements Action, IsInteraction {
     this.pause = pause;
   }
 
+  @Override
   public void perform() {
     try {
       Thread.sleep(pause);

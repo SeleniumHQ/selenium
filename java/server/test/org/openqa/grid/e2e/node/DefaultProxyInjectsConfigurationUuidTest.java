@@ -104,14 +104,17 @@ public class DefaultProxyInjectsConfigurationUuidTest {
     HttpServletRequest httpreq = mock(HttpServletRequest.class);
     return new SeleniumBasedRequest(httpreq, registry, RequestType.START_SESSION, desiredCapability) {
 
+      @Override
       public ExternalSessionKey extractSession() {
         return null;
       }
 
+      @Override
       public RequestType extractRequestType() {
         return null;
       }
 
+      @Override
       public Map<String, Object> extractDesiredCapability() {
         return getDesiredCapabilities();
       }
@@ -124,6 +127,7 @@ public class DefaultProxyInjectsConfigurationUuidTest {
       super(request,null, request.getRegistry());
     }
 
+    @Override
     public void setSession(TestSession session) {
       super.setSession(session);
     }

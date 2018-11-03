@@ -34,6 +34,7 @@ public class ClickAction extends MouseAction implements Action {
     super(mouse, locationProvider);
   }
 
+  @Override
   public void perform() {
     moveToLocation();
     mouse.click(getActionLocation());

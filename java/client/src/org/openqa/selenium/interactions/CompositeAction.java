@@ -29,6 +29,7 @@ import java.util.Objects;
 public class CompositeAction implements Action, IsInteraction {
   private final List<Action> actionsList = new ArrayList<>();
 
+  @Override
   public void perform() {
     for (Action action : actionsList) {
       action.perform();

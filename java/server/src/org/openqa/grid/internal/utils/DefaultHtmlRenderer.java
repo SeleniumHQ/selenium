@@ -38,6 +38,7 @@ public class DefaultHtmlRenderer implements HtmlRenderer {
     this.proxy = proxy;
   }
 
+  @Override
   public String renderSummary() {
     StringBuilder builder = new StringBuilder();
     builder.append("<fieldset>");

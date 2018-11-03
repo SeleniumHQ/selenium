@@ -43,6 +43,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
   private static Supplier<ImmutableMap<String, CoreStepFactory>> REFLECTIVE_STEPS =
     Suppliers.memoize(ReflectivelyDiscoveredSteps::discover);
 
+  @Override
   public ImmutableMap<String, CoreStepFactory> get() {
     return REFLECTIVE_STEPS.get();
   }

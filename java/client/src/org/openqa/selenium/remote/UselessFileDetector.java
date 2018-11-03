@@ -23,6 +23,7 @@ import java.io.File;
  * A file detector that never finds anything.
  */
 public class UselessFileDetector implements FileDetector {
+  @Override
   public File getLocalFile(CharSequence... keys) {
     return null;
   }

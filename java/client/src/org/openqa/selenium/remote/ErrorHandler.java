@@ -292,6 +292,7 @@ public class ErrorHandler {
    */
   private static class FrameInfoToStackFrame
       implements Function<Map<String, Object>, StackTraceElement> {
+    @Override
     public StackTraceElement apply(Map<String, Object> frameInfo) {
       if (frameInfo == null) {
         return null;

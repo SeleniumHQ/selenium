@@ -30,6 +30,7 @@ public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
     this.caps = caps;
   }
 
+  @Override
   public WebDriver get() {
     if (caps == null) {
       return null;
