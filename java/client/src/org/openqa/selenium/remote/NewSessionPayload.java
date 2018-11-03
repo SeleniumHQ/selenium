@@ -503,8 +503,7 @@ public class NewSessionPayload implements Closeable {
   }
 
   private Map<String, Object> applyTransforms(Map<String, Object> caps) {
-    Queue<Map.Entry<String, Object>> toExamine = new LinkedList<>();
-    toExamine.addAll(caps.entrySet());
+    Queue<Map.Entry<String, Object>> toExamine = new LinkedList<>(caps.entrySet());
     Set<String> seenKeys = new HashSet<>();
     Map<String, Object> toReturn = new TreeMap<>();
 

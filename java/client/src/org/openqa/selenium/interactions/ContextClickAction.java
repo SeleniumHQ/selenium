@@ -46,9 +46,8 @@ public class ContextClickAction extends MouseAction implements Action {
 
   @Override
   public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
-    List<Interaction> interactions = new ArrayList<>();
 
-    interactions.addAll(moveToLocation(mouse));
+    List<Interaction> interactions = new ArrayList<>(moveToLocation(mouse));
     interactions.add(mouse.createPointerDown(Button.RIGHT.asArg()));
     interactions.add(mouse.createPointerUp(Button.RIGHT.asArg()));
 
