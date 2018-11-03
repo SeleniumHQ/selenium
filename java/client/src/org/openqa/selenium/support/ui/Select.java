@@ -22,6 +22,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
@@ -304,5 +305,22 @@ public class Select implements ISelect {
     if (option.isSelected() != select) {
       option.click();
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Select select = (Select) o;
+    return Objects.equals(element, select.element);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(element);
   }
 }
