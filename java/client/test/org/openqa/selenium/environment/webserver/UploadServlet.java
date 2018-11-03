@@ -21,6 +21,7 @@ import org.seleniumhq.jetty9.server.Request;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
@@ -54,7 +55,7 @@ public class UploadServlet extends HttpServlet {
     try {
       in = upload.getInputStream();
       in.read(buffer, 0, (int) upload.getSize());
-      content = new String(buffer, "UTF-8");
+      content = new String(buffer, StandardCharsets.UTF_8);
     } finally {
       if (in != null) {
         in.close();

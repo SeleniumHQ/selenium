@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class I18nTest extends InternalSelenseTestBase {
 
@@ -78,7 +79,7 @@ public class I18nTest extends InternalSelenseTestBase {
   private void verifyText(String expected, String id) throws UnsupportedEncodingException {
     assertTrue(selenium.isTextPresent(expected));
     String actual = selenium.getText(id);
-    byte[] result = actual.getBytes("UTF-8");
+    byte[] result = actual.getBytes(StandardCharsets.UTF_8);
     for (int i = 0; i < result.length; i++) {
       Byte b = new Byte(result[i]);
     }
