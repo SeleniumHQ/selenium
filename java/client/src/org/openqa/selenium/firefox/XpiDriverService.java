@@ -303,10 +303,10 @@ public class XpiDriverService extends DriverService {
   static XpiDriverService createDefaultService(Capabilities caps) {
     Builder builder = new Builder().usingAnyFreePort();
 
-    FirefoxProfile profile = Stream.<ThrowingSupplier<FirefoxProfile>>of(
+    Stream.<ThrowingSupplier<FirefoxProfile>>of(
         () -> (FirefoxProfile) caps.getCapability(FirefoxDriver.PROFILE),
         () -> FirefoxProfile.fromJson((String) caps.getCapability(FirefoxDriver.PROFILE)),
-        () -> ((FirefoxOptions) caps).getProfile(),
+        ((FirefoxOptions) caps)::getProfile,
         () -> (FirefoxProfile) ((Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS)).get("profile"),
         () -> FirefoxProfile.fromJson((String) ((Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS)).get("profile")),
         () -> {
@@ -328,11 +328,7 @@ public class XpiDriverService extends DriverService {
         })
         .filter(Objects::nonNull)
         .findFirst()
-        .orElse(null);
-
-    if (profile != null) {
-      builder.withProfile(profile);
-    }
+        .ifPresent(builder::withProfile);
 
     Object binary = caps.getCapability(FirefoxDriver.BINARY);
     if (binary != null) {
