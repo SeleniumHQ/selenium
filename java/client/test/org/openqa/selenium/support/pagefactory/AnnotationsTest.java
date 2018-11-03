@@ -102,7 +102,7 @@ public class AnnotationsTest {
   @PageFactoryFinder(FindByXXXX.FindByXXXXBuilder.class)
   public @interface FindByXXXX {
 
-    public static class FindByXXXXBuilder extends AbstractFindByBuilder {
+    class FindByXXXXBuilder extends AbstractFindByBuilder {
 
       @Override
       public By buildIt(Object annotation, Field field) {

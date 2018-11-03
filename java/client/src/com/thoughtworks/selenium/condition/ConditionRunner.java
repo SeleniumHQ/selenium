@@ -58,7 +58,7 @@ public interface ConditionRunner {
    * Used by implementations of {@link ConditionRunner#waitFor(Condition)} to provide context to the
    * {@link Condition isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)} method
    */
-  public interface Context {
+  interface Context {
 
     /**
      * @return the condition runner inside which this condition is being run.

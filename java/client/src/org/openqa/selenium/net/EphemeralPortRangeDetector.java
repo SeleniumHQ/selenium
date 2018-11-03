@@ -35,11 +35,11 @@ public interface EphemeralPortRangeDetector
    * Returns the first port in the ephemeral range
    * @return The first ephemeral port
    */
-  public int getLowestEphemeralPort();
+  int getLowestEphemeralPort();
   /**
    * Returns the last port that could be searched for free ports
    * @return The first port that may be free
    */
-  public int getHighestEphemeralPort();
+  int getHighestEphemeralPort();
 
 }
