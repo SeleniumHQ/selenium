@@ -128,11 +128,7 @@ public class PageFactory {
       } catch (NoSuchMethodException e) {
         return pageClassToProxy.newInstance();
       }
-    } catch (InstantiationException e) {
-      throw new RuntimeException(e);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } catch (InvocationTargetException e) {
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
   }

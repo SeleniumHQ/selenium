@@ -64,8 +64,7 @@ public abstract class Condition {
         Method format =
             String.class.getMethod("format", new Class[] {String.class, Object[].class});
         return (String) format.invoke(null, new Object[] {message, args});
-      } catch (NoSuchMethodException e) {
-      } catch (IllegalAccessException e) {
+      } catch (NoSuchMethodException | IllegalAccessException e) {
       } catch (InvocationTargetException e) {
         Throwable throwable = e.getCause();
         if (throwable instanceof RuntimeException) {

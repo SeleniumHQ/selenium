@@ -132,8 +132,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
           }
 
           return System.currentTimeMillis() - seenAt > 1000;
-        } catch (NoSuchElementException ignored) {
-        } catch (NullPointerException ignored) {
+        } catch (NoSuchElementException | NullPointerException ignored) {
         }
 
         return false;
