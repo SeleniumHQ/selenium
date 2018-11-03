@@ -114,6 +114,7 @@ public enum Keys implements CharSequence {
     return codePoint;
   }
 
+  @Override
   public char charAt(int index) {
     if (index == 0) {
       return keyCode;
@@ -122,10 +123,12 @@ public enum Keys implements CharSequence {
     return 0;
   }
 
+  @Override
   public int length() {
     return 1;
   }
 
+  @Override
   public CharSequence subSequence(int start, int end) {
     if (start == 0 && end == 1) {
       return String.valueOf(keyCode);

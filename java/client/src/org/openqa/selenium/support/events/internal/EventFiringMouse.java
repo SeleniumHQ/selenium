@@ -37,30 +37,37 @@ public class EventFiringMouse implements Mouse {
     this.mouse = ((HasInputDevices) this.driver).getMouse();
   }
 
+  @Override
   public void click(Coordinates where) {
     mouse.click(where);
   }
 
+  @Override
   public void doubleClick(Coordinates where) {
     mouse.doubleClick(where);
   }
 
+  @Override
   public void mouseDown(Coordinates where) {
     mouse.mouseDown(where);
   }
 
+  @Override
   public void mouseUp(Coordinates where) {
     mouse.mouseUp(where);
   }
 
+  @Override
   public void mouseMove(Coordinates where) {
     mouse.mouseMove(where);
   }
 
+  @Override
   public void mouseMove(Coordinates where, long xOffset, long yOffset) {
     mouse.mouseMove(where, xOffset, yOffset);
   }
 
+  @Override
   public void contextClick(Coordinates where) {
     mouse.contextClick(where);
   }

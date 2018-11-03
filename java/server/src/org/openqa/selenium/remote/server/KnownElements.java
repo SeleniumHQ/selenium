@@ -54,6 +54,7 @@ public class KnownElements {
 
   private WebElement proxyElement(final WebElement element, final String id) {
     InvocationHandler handler = new InvocationHandler() {
+      @Override
       public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
         if ("getId".equals(method.getName())) {
           return id;

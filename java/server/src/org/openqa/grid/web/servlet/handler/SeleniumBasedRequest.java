@@ -201,30 +201,37 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
       this.is = is;
     }
 
+    @Override
     public int read() throws IOException {
       return is.read();
     }
 
+    @Override
     public boolean markSupported() {
       return false;
     }
 
+    @Override
     public synchronized void mark(int i) {
       throw new RuntimeException("not implemented");
     }
 
+    @Override
     public synchronized void reset() throws IOException {
       throw new RuntimeException("not implemented");
     }
 
+    @Override
     public boolean isFinished() {
       return false;
     }
 
+    @Override
     public boolean isReady() {
       return true;
     }
 
+    @Override
     public void setReadListener(ReadListener readListener) {
       throw new RuntimeException("setReadListener");
     }

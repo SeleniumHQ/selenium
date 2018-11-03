@@ -25,10 +25,12 @@ import org.openqa.selenium.ScreenOrientation;
 
 public class AddRotatable implements AugmenterProvider {
 
+  @Override
   public Class<?> getDescribedInterface() {
     return Rotatable.class;
   }
 
+  @Override
   public InterfaceImplementation getImplementation(Object value) {
     return (executeMethod, self, method, args) -> {
       String m = method.getName();

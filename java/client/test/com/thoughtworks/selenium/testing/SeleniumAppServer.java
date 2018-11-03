@@ -41,6 +41,7 @@ public class SeleniumAppServer extends JettyAppServer {
     return InProject.locate("java/server/test/org/openqa/selenium");
   }
 
+  @Override
   protected String getMainContextPath(String relativeUrl) {
     if (!relativeUrl.startsWith("/")) {
       relativeUrl = RC_CONTEXT_PATH + "/" + relativeUrl;

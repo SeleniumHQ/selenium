@@ -83,10 +83,12 @@ public abstract class BaseAugmenterTest {
 
     BaseAugmenter augmenter = getAugmenter();
     augmenter.addDriverAugmentation("foo", new AugmenterProvider() {
+      @Override
       public Class<?> getDescribedInterface() {
         return MyInterface.class;
       }
 
+      @Override
       public InterfaceImplementation getImplementation(Object value) {
         return (executeMethod, self, method, args) -> "Hello World";
       }
@@ -147,10 +149,12 @@ public abstract class BaseAugmenterTest {
 
     BaseAugmenter augmenter = getAugmenter();
     augmenter.addElementAugmentation("foo", new AugmenterProvider() {
+      @Override
       public Class<?> getDescribedInterface() {
         return MyInterface.class;
       }
 
+      @Override
       public InterfaceImplementation getImplementation(Object value) {
         return (executeMethod, self, method, args) -> "Hello World";
       }
@@ -231,6 +235,7 @@ public abstract class BaseAugmenterTest {
       this.capabilities = capabilities;
     }
 
+    @Override
     public Response execute(Command command) {
       if (DriverCommand.NEW_SESSION.equals(command.getName())) {
         Response response = new Response(new SessionId("foo"));

@@ -27,6 +27,7 @@ public class LocalFileDetector implements FileDetector {
 
   private static final Logger log = Logger.getLogger(LocalFileDetector.class.getName());
 
+  @Override
   public File getLocalFile(CharSequence... keys) {
     StringBuilder builder = new StringBuilder();
     for (CharSequence chars : keys) {

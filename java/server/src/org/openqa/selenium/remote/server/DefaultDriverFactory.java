@@ -85,6 +85,7 @@ public class DefaultDriverFactory implements DriverFactory {
     registerServiceLoaders(runningOn);
   }
 
+  @Override
   public void registerDriverProvider(DriverProvider driverProvider) {
     capabilitiesToDriverProvider.put(driverProvider.getProvidedCapabilities(), driverProvider);
   }
@@ -99,6 +100,7 @@ public class DefaultDriverFactory implements DriverFactory {
     return capabilitiesToDriverProvider.get(bestMatchingCapabilities);
   }
 
+  @Override
   public WebDriver newInstance(Capabilities capabilities) {
     DriverProvider provider = getProviderMatching(capabilities);
     if (provider.canCreateDriverInstanceFor(capabilities)) {

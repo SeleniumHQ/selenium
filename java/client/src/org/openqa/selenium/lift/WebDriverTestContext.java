@@ -52,20 +52,24 @@ public class WebDriverTestContext implements TestContext {
     this.sleeper = sleeper;
   }
 
+  @Override
   public void quit() {
     driver.quit();
   }
 
+  @Override
   public void goTo(String url) {
     driver.get(url);
   }
 
+  @Override
   public void assertPresenceOf(Finder<WebElement, WebDriver> finder) {
     assertPresenceOf(atLeast(1), finder);
   }
 
+  @Override
   public void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
-      Finder<WebElement, WebDriver> finder) {
+                               Finder<WebElement, WebDriver> finder) {
     Collection<WebElement> foundElements = finder.findFrom(driver);
     if (!cardinalityConstraint.matches(foundElements.size())) {
       Description description = new StringDescription();
@@ -83,11 +87,13 @@ public class WebDriverTestContext implements TestContext {
     }
   }
 
+  @Override
   public void type(String input, Finder<WebElement, WebDriver> finder) {
     WebElement element = findOneElementTo("type into", finder);
     element.sendKeys(input);
   }
 
+  @Override
   public void clickOn(Finder<WebElement, WebDriver> finder) {
     WebElement element = findOneElementTo("click on", finder);
     element.click();
@@ -122,6 +128,7 @@ public class WebDriverTestContext implements TestContext {
     throw new java.lang.AssertionError(message);
   }
 
+  @Override
   public void waitFor(final Finder<WebElement, WebDriver> finder, final long timeoutMillis) {
     final ExpectedCondition<Boolean> elementsDisplayedPredicate = driver ->
         finder.findFrom(driver).stream().anyMatch(WebElement::isDisplayed);

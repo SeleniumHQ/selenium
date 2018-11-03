@@ -33,6 +33,7 @@ public abstract class BaseFinder<S, T> implements Finder<S, T> {
 
   protected List<Matcher<S>> matchers = new ArrayList<>();
 
+  @Override
   public Collection<S> findFrom(T context) {
 
     Collection<S> found = extractFrom(context);
@@ -43,11 +44,13 @@ public abstract class BaseFinder<S, T> implements Finder<S, T> {
     return allMatching(matchers, found);
   }
 
+  @Override
   public Finder<S, T> with(Matcher<S> matcher) {
     this.matchers.add(matcher);
     return this;
   }
 
+  @Override
   public void describeTo(Description description) {
     describeTargetTo(description);
     for (Matcher<?> matcher : matchers) {
@@ -84,6 +87,7 @@ public abstract class BaseFinder<S, T> implements Finder<S, T> {
         return true;
       }
 
+      @Override
       public void describeTo(Description description) {
         for (Matcher<S> matcher : matcherList) {
           matcher.describeTo(description);

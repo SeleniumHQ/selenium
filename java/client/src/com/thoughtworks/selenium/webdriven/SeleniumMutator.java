@@ -34,6 +34,7 @@ public class SeleniumMutator implements ScriptMutator {
     this.atom = atom;
   }
 
+  @Override
   public void mutate(String script, StringBuilder appendTo) {
     if (!pattern.matcher(script).matches()) {
       return;

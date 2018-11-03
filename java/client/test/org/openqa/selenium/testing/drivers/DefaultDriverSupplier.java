@@ -73,6 +73,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     }
   }
 
+  @Override
   public WebDriver get() {
     return driverSupplier.get();
   }

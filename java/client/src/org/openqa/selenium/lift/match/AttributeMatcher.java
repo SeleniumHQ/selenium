@@ -41,6 +41,7 @@ public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
     return matcher.matches(item.getAttribute(name));
   }
 
+  @Override
   public void describeTo(Description description) {
     description.appendText("attribute ").appendValue(name);
     matcher.describeTo(description);

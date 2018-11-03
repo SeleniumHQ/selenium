@@ -26,14 +26,17 @@ import java.util.Set;
 public abstract class LocalLogs implements Logs {
 
   private static final LocalLogs NULL_LOGGER = new LocalLogs() {
+    @Override
     public LogEntries get(String logType) {
       return new LogEntries(Collections.emptyList());
     }
 
+    @Override
     public Set<String> getAvailableLogTypes() {
       return Collections.emptySet();
     }
 
+    @Override
     public void addEntry(String logType, LogEntry entry) {
     }
   };
@@ -71,6 +74,7 @@ public abstract class LocalLogs implements Logs {
   protected LocalLogs() {
   }
 
+  @Override
   public abstract LogEntries get(String logType);
 
   public abstract void addEntry(String logType, LogEntry entry);

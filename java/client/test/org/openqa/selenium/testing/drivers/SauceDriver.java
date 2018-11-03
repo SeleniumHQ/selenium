@@ -160,6 +160,7 @@ public class SauceDriver extends RemoteWebDriver {
     return Platform.extractFromSysProperty(getDesiredOS());
   }
 
+  @Override
   public <X> X getScreenshotAs(OutputType<X> target) {
     // Get the screenshot as base64.
     String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();

@@ -125,15 +125,18 @@ public class JreAppServer implements AppServer {
     return this;
   }
 
+  @Override
   public void start() {
     server.start();
     PortProber.waitForPortUp(server.getAddress().getPort(), 5, SECONDS);
   }
 
+  @Override
   public void stop() {
     server.stop(0);
   }
 
+  @Override
   public String whereIs(String relativeUrl) {
     return createUrl("http", getHostName(), relativeUrl);
   }
@@ -194,6 +197,7 @@ public class JreAppServer implements AppServer {
     }
   }
 
+  @Override
   public String getHostName() {
     return "localhost";
   }

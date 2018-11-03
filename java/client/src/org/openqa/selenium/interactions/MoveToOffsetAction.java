@@ -44,6 +44,7 @@ public class MoveToOffsetAction extends MouseAction implements Action {
     yOffset = y;
   }
 
+  @Override
   public void perform() {
     mouse.mouseMove(getActionLocation(), xOffset, yOffset);
   }

@@ -62,11 +62,13 @@ public class SessionListenerTest {
       super(request, registry);
     }
 
+    @Override
     public void afterSession(TestSession session) {
       session.put("FLAG", false);
 
     }
 
+    @Override
     public void beforeSession(TestSession session) {
       session.put("FLAG", true);
     }
@@ -104,8 +106,10 @@ public class SessionListenerTest {
       super(request, registry);
     }
 
+    @Override
     public void afterSession(TestSession session) {}
 
+    @Override
     public void beforeSession(TestSession session) {
       if (firstCall) {
         firstCall = false;
@@ -158,10 +162,12 @@ public class SessionListenerTest {
       super(request, registry);
     }
 
+    @Override
     public void afterSession(TestSession session) {
       throw new NullPointerException();
     }
 
+    @Override
     public void beforeSession(TestSession session) {}
   }
 
@@ -212,6 +218,7 @@ public class SessionListenerTest {
       super(request, registry);
     }
 
+    @Override
     public void afterSession(TestSession session) {
       session.put("after", true);
       try {
@@ -233,8 +240,10 @@ public class SessionListenerTest {
       }
     }
 
+    @Override
     public void beforeSession(TestSession session) {}
 
+    @Override
     public void beforeRelease(TestSession session) {
       getRegistry().terminate(session, SessionTerminationReason.CLIENT_STOPPED_SESSION);
     }

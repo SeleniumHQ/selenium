@@ -54,11 +54,13 @@ public class RemoteProxySlowSetup {
   @Test
   public void addDup() throws InterruptedException {
     new Thread(new Runnable() { // Thread safety reviewed
+      @Override
       public void run() {
         registry.add(p1);
       }
     }).start();
     new Thread(new Runnable() { // Thread safety reviewed
+      @Override
       public void run() {
         registry.add(p2);
       }
@@ -95,6 +97,7 @@ public class RemoteProxySlowSetup {
       super(req, registry);
     }
 
+    @Override
     public void beforeRegistration() {
       try {
         updateFlag();

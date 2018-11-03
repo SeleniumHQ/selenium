@@ -125,6 +125,7 @@ public class GridConfiguration extends StandaloneConfiguration {
            withoutServlets.contains(servlet.getCanonicalName());
   }
 
+  @Override
   protected void serializeFields(Map<String, Object> appendTo) {
     super.serializeFields(appendTo);
 

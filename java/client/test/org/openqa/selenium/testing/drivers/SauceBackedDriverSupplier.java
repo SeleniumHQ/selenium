@@ -32,6 +32,7 @@ public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
     this.capabilities = caps;
   }
 
+  @Override
   public WebDriver get() {
     if (!SauceDriver.shouldUseSauce()) {
       return null;

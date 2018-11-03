@@ -37,6 +37,7 @@ public class RemoteSupplier implements Supplier<WebDriver> {
     this.desiredCapabilities = desiredCapabilities;
   }
 
+  @Override
   public WebDriver get() {
     if (desiredCapabilities == null || !Boolean.getBoolean("selenium.browser.remote")) {
       return null;

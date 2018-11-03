@@ -39,6 +39,7 @@ public class ResultConverter implements Function<Object, Object> {
     this.knownElements = knownElements;
   }
 
+  @Override
   public Object apply(Object result) {
     if (result instanceof WebElement) {
       String elementId = knownElements.add((WebElement) result);

@@ -60,6 +60,7 @@ public class FileExtension implements Extension {
     this.toInstall = toInstall;
   }
 
+  @Override
   public void writeTo(File extensionsDir) throws IOException {
     if (!toInstall.isDirectory() &&
         !FileHandler.isZipped(toInstall.getAbsolutePath())) {
@@ -174,6 +175,7 @@ public class FileExtension implements Extension {
 
       XPath xpath = XPathFactory.newInstance().newXPath();
       xpath.setNamespaceContext(new NamespaceContext() {
+        @Override
         public String getNamespaceURI(String prefix) {
           if ("em".equals(prefix)) {
             return EM_NAMESPACE_URI;
@@ -184,10 +186,12 @@ public class FileExtension implements Extension {
           return XMLConstants.NULL_NS_URI;
         }
 
+        @Override
         public String getPrefix(String uri) {
           throw new UnsupportedOperationException("getPrefix");
         }
 
+        @Override
         public Iterator<String> getPrefixes(String uri) {
           throw new UnsupportedOperationException("getPrefixes");
         }

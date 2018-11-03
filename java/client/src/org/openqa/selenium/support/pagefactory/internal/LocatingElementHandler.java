@@ -32,6 +32,7 @@ public class LocatingElementHandler implements InvocationHandler {
     this.locator = locator;
   }
 
+  @Override
   public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
     WebElement element;
     try {

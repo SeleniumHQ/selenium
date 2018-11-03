@@ -34,6 +34,7 @@ public class ScreenshotListener implements IResultListener {
     this.selenium = selenium;
   }
 
+  @Override
   public void onTestFailure(ITestResult result) {
     Reporter.setCurrentTestResult(result);
 
@@ -54,36 +55,45 @@ public class ScreenshotListener implements IResultListener {
     Reporter.setCurrentTestResult(null);
   }
 
+  @Override
   public void onConfigurationFailure(ITestResult result) {
     onTestFailure(result);
   }
 
 
+  @Override
   public void onFinish(ITestContext context) {
   }
 
+  @Override
   public void onStart(ITestContext context) {
     outputDirectory = new File(context.getOutputDirectory());
   }
 
+  @Override
   public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
   }
 
 
 
+  @Override
   public void onTestSkipped(ITestResult result) {
   }
 
+  @Override
   public void onTestStart(ITestResult result) {
   }
 
+  @Override
   public void onTestSuccess(ITestResult result) {
   }
 
+  @Override
   public void onConfigurationSuccess(ITestResult itr) {
   }
 
 
+  @Override
   public void onConfigurationSkip(ITestResult itr) {
   }
 }

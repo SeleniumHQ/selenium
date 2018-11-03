@@ -263,6 +263,7 @@ public class Hub implements Stoppable {
     log.info(String.format("Clients should connect to %s", getWebDriverHubRequestURL()));
   }
 
+  @Override
   public void stop() {
     registry.stop();
     try {

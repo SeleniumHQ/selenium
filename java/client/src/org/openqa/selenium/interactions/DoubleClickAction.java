@@ -38,6 +38,7 @@ public class DoubleClickAction extends MouseAction implements Action {
   /**
    * Double-clicks on the given element.
    */
+  @Override
   public void perform() {
     moveToLocation();
     mouse.doubleClick(getActionLocation());

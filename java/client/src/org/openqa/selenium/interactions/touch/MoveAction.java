@@ -36,6 +36,7 @@ public class MoveAction extends TouchAction implements Action {
     this.y = y;
   }
 
+  @Override
   public void perform() {
     touchScreen.move(x, y);
   }

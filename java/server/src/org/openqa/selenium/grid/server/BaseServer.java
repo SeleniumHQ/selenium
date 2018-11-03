@@ -184,6 +184,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
     this.routes.add(route);
   }
 
+  @Override
   public boolean isStarted() {
     return server.isStarted();
   }

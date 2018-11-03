@@ -41,6 +41,7 @@ public class DefaultProxyHtmlRenderer implements HtmlRenderer {
 
 
 
+  @Override
   public String renderSummary() {
     StringBuilder builder = new StringBuilder();
     builder.append("<div class='proxy'>");

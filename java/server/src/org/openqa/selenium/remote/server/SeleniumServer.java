@@ -71,6 +71,7 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
     objectName = new JMXHelper().register(this).getObjectName();
   }
 
+  @Override
   public int getRealPort() {
     if (isStarted()) {
       return getUrl().getPort();
@@ -106,10 +107,12 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
     }
   }
 
+  @Override
   public void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets) {
     this.extraServlets = extraServlets;
   }
 
+  @Override
   public boolean boot() {
     long inactiveSessionTimeoutSeconds = configuration.timeout == null ?
                                          Long.MAX_VALUE / 1000 : configuration.timeout;
@@ -161,6 +164,7 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
   /**
    * Stops the Jetty server
    */
+  @Override
   public void stop() {
     try {
       super.stop();

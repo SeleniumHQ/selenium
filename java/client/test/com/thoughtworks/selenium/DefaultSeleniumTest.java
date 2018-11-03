@@ -54,10 +54,12 @@ public class DefaultSeleniumTest {
   private static class MyCommandProcessor implements CommandProcessor {
     StringBuilder commands = new StringBuilder();
 
+    @Override
     public String getRemoteControlServerLocation() {
       return "";
     }
 
+    @Override
     public String doCommand(String command, String[] args) {
       commands.append(command);
       for (int i = 0; i < args.length; i++) {
@@ -68,42 +70,53 @@ public class DefaultSeleniumTest {
       return null;
     }
 
+    @Override
     public void setExtensionJs(String extensionJs) {
     }
 
 
+    @Override
     public void start() {
     }
 
+    @Override
     public void start(String optionsString) {
     }
 
+    @Override
     public void start(Object optionsObject) {
     }
 
+    @Override
     public void stop() {
     }
 
+    @Override
     public String getString(String string, String[] strings) {
       return null;
     }
 
+    @Override
     public String[] getStringArray(String string, String[] strings) {
       return new String[0];
     }
 
+    @Override
     public Number getNumber(String string, String[] strings) {
       return null;
     }
 
+    @Override
     public Number[] getNumberArray(String string, String[] strings) {
       return new Number[0];
     }
 
+    @Override
     public boolean getBoolean(String string, String[] strings) {
       return false;
     }
 
+    @Override
     public boolean[] getBooleanArray(String string, String[] strings) {
       return new boolean[0];
     }
