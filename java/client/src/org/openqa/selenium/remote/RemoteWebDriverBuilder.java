@@ -280,11 +280,7 @@ public class RemoteWebDriverBuilder {
       return options
           .stream()
           .map(HashMap::new) // Make a copy so we don't alter the original values
-          .map(
-              map -> {
-                map.putAll(additionalCapabilities);
-                return map;
-              })
+          .peek(map -> map.putAll(additionalCapabilities))
           .map(ImmutableCapabilities::new)
           .map(
               caps ->
