@@ -96,7 +96,6 @@ public class CookieServlet extends HttpServlet {
     } else {
       response.getOutputStream().println(
           String.format(RESPONSE_STRING, "Unrecognized action", action));
-      return;
     }
   }
 }
