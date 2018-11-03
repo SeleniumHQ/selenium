@@ -97,10 +97,8 @@ public class Build {
 
     @Override
     public void run() {
-      BufferedReader buildOutput = null;
-      try {
-        buildOutput =
-            new BufferedReader(new InputStreamReader(buildProcess.getInputStream()), 8192);
+      try (BufferedReader buildOutput = new BufferedReader(
+          new InputStreamReader(buildProcess.getInputStream()), 8192)) {
         for (String s = buildOutput.readLine(); s != null && !interrupted(); s =
             buildOutput.readLine()) {
           try {
@@ -111,13 +109,6 @@ public class Build {
       } catch (Throwable e) {
         System.err.print("ERROR: Could not read from stdout of " + buildProcess + ":");
         e.printStackTrace(System.err);
-      } finally {
-        if (buildOutput != null) {
-          try {
-            buildOutput.close();
-          } catch (Throwable ignored) {
-          }
-        }
       }
     }
   }

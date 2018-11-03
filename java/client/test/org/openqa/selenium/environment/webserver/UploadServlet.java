@@ -50,16 +50,10 @@ public class UploadServlet extends HttpServlet {
     Part upload = request.getPart("upload");
 
     byte[] buffer = new byte[(int) upload.getSize()];
-    InputStream in = null;
     String content;
-    try {
-      in = upload.getInputStream();
+    try (InputStream in = upload.getInputStream()) {
       in.read(buffer, 0, (int) upload.getSize());
       content = new String(buffer, StandardCharsets.UTF_8);
-    } finally {
-      if (in != null) {
-        in.close();
-      }
     }
 
     // Slow down the upload so we can verify WebDriver waits.
