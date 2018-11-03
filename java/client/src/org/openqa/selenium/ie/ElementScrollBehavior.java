@@ -25,7 +25,7 @@ public enum ElementScrollBehavior {
 
   private int value;
 
-  private ElementScrollBehavior(int value) {
+  ElementScrollBehavior(int value) {
     this.value = value;
   }
 
