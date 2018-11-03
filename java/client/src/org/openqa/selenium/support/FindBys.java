@@ -45,7 +45,7 @@ import java.lang.reflect.Field;
 public @interface FindBys {
   FindBy[] value();
 
-  public static class FindByBuilder extends AbstractFindByBuilder {
+  class FindByBuilder extends AbstractFindByBuilder {
     public By buildIt(Object annotation, Field field) {
       FindBys findBys = (FindBys) annotation;
       assertValidFindBys(findBys);

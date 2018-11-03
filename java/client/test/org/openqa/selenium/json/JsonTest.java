@@ -367,7 +367,7 @@ public class JsonTest {
         "\"server\": \"OFF\"}}",
         CapabilityType.LOGGING_PREFS);
 
-    Capabilities converted = new Json().toType(caps.toString(), Capabilities.class);
+    Capabilities converted = new Json().toType(caps, Capabilities.class);
 
     LoggingPreferences lp =
         (LoggingPreferences) converted.getCapability(CapabilityType.LOGGING_PREFS);

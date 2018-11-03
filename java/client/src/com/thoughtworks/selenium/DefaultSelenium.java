@@ -177,7 +177,7 @@ public class DefaultSelenium implements Selenium {
     int len = methodName.length();
     for (int i = 0; i < len; i++) {
       char ch = methodName.charAt(i);
-      nextOneIsUpperCase = i < len - 1 ? Character.isUpperCase(methodName.charAt(i + 1)) : true;
+      nextOneIsUpperCase = i >= len - 1 || Character.isUpperCase(methodName.charAt(i + 1));
 
       if ((Character.isUpperCase(ch) && (!lastOneWasUpperCase || !nextOneIsUpperCase))) {
         context.append(" ");

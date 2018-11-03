@@ -75,8 +75,7 @@ public class PageFactory {
    *               should be proxied.
    */
   public static void initElements(WebDriver driver, Object page) {
-    final WebDriver driverRef = driver;
-    initElements(new DefaultElementLocatorFactory(driverRef), page);
+    initElements(new DefaultElementLocatorFactory(driver), page);
   }
 
   /**
@@ -88,8 +87,7 @@ public class PageFactory {
    * @param page    The object to decorate the fields of
    */
   public static void initElements(ElementLocatorFactory factory, Object page) {
-    final ElementLocatorFactory factoryRef = factory;
-    initElements(new DefaultFieldDecorator(factoryRef), page);
+    initElements(new DefaultFieldDecorator(factory), page);
   }
 
   /**
@@ -130,11 +128,7 @@ public class PageFactory {
       } catch (NoSuchMethodException e) {
         return pageClassToProxy.newInstance();
       }
-    } catch (InstantiationException e) {
-      throw new RuntimeException(e);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } catch (InvocationTargetException e) {
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
   }

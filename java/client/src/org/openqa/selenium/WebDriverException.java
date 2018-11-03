@@ -88,10 +88,8 @@ public class WebDriverException extends RuntimeException {
       try {
         NetworkInterface en0 = NetworkInterface.getByName("en0");
         Enumeration<InetAddress> addresses = en0.getInetAddresses();
-        while (addresses.hasMoreElements()) {
-          InetAddress inetAddress = addresses.nextElement();
-          address = inetAddress.getHostAddress();
-          break;
+        if (addresses.hasMoreElements()) {
+          address = addresses.nextElement().getHostAddress();
         }
       } catch (Exception e) {
         // Fall through and go the slow way.

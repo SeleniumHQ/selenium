@@ -111,7 +111,7 @@ public class SeleneseTestBase {
   protected int getDefaultPort() {
     try {
       Class<?> c = Class.forName("org.openqa.selenium.server.RemoteControlConfiguration");
-      Method getDefaultPort = c.getMethod("getDefaultPort", new Class[0]);
+      Method getDefaultPort = c.getMethod("getDefaultPort");
       Integer portNumber = (Integer) getDefaultPort.invoke(null);
       return portNumber.intValue();
     } catch (Exception e) {

@@ -102,12 +102,9 @@ public class FileExtension implements Extension {
   private File obtainRootDirectory(File extensionToInstall) throws IOException {
     File root = extensionToInstall;
     if (!extensionToInstall.isDirectory()) {
-      BufferedInputStream bis =
-          new BufferedInputStream(new FileInputStream(extensionToInstall));
-      try {
+      try (BufferedInputStream bis = new BufferedInputStream(
+          new FileInputStream(extensionToInstall))) {
         root = Zip.unzipToTempDir(bis, "unzip", "stream");
-      } finally {
-        bis.close();
       }
     }
     return root;

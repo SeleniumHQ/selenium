@@ -176,7 +176,7 @@ abstract class AbstractCapabilities implements Capabilities {
     } else {
       String s = String.valueOf(stringify);
       if (s.length() > 30) {
-        value.append(s.substring(0, 27)).append("...");
+        value.append(s, 0, 27).append("...");
       } else {
         value.append(s);
       }
