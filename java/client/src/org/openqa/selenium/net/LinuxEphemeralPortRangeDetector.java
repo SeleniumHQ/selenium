@@ -55,10 +55,12 @@ public class LinuxEphemeralPortRangeDetector implements EphemeralPortRangeDetect
     lastEphemeralPort = highPort;
   }
 
+  @Override
   public int getLowestEphemeralPort() {
     return firstEphemeralPort;
   }
 
+  @Override
   public int getHighestEphemeralPort() {
     return lastEphemeralPort;
   }

@@ -81,6 +81,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     }
   }
 
+  @Override
   public void beforeRelease(TestSession session) {
     // release the resources remotely if the remote started a browser.
     if (session.getExternalKey() == null) {
@@ -93,11 +94,13 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   }
 
 
+  @Override
   public void afterCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
     session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
   }
 
 
+  @Override
   public void beforeCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
     session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executing ...");
   }
@@ -129,11 +132,13 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     }
   }
 
+  @Override
   public void startPolling() {
     pollingThread = new Thread(new Runnable() { // Thread safety reviewed
           int failedPollingTries = 0;
           long downSince = 0;
 
+          @Override
           public void run() {
             while (poll) {
               try {
@@ -169,11 +174,13 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     pollingThread.start();
   }
 
+  @Override
   public void stopPolling() {
     poll = false;
     pollingThread.interrupt();
   }
 
+  @Override
   public void addNewEvent(RemoteException event) {
     synchronized (errors) {
       errors.add(event);
@@ -181,6 +188,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     }
   }
 
+  @Override
   public void onEvent(List<RemoteException> events, RemoteException lastInserted) {
     for (RemoteException e : events) {
       if (e instanceof RemoteNotReachableException) {
@@ -230,10 +238,12 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
    * the server. That way the version / install location mapping is done only once at the node
    * level.
    */
+  @Override
   public void beforeSession(TestSession session) {
     // Nothing to do by default
   }
 
+  @Override
   public void afterSession(TestSession session) {
     // nothing to do here in this default implementation
   }

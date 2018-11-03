@@ -63,6 +63,7 @@ public class LogEntries implements Iterable<LogEntry> {
         .collect(toList()));
   }
 
+  @Override
   public Iterator<LogEntry> iterator() {
     return entries.iterator();
   }

@@ -42,6 +42,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     this.driver = driver;
   }
 
+  @Override
   public Object apply(Object result) {
     if (result instanceof Collection<?>) {
       Collection<?> results = (Collection<?>) result;

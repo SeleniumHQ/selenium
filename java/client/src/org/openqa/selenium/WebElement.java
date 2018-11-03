@@ -165,6 +165,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * @see org.openqa.selenium.By
    * @see org.openqa.selenium.WebDriver.Timeouts
    */
+  @Override
   List<WebElement> findElements(By by);
 
   /**
@@ -183,6 +184,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * @see org.openqa.selenium.By
    * @see org.openqa.selenium.WebDriver.Timeouts
    */
+  @Override
   WebElement findElement(By by);
 
   /**

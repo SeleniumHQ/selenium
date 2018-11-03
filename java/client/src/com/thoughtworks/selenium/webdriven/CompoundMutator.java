@@ -80,6 +80,7 @@ public class CompoundMutator implements ScriptMutator {
     mutators.add(mutator);
   }
 
+  @Override
   public void mutate(String script, StringBuilder outputTo) {
     StringBuilder nested = new StringBuilder();
 

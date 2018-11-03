@@ -39,6 +39,7 @@ public class ContextClickAction extends MouseAction implements Action {
    * Emulates clicking on the mouse button that would bring up contextual menus (usually
    * right-clicking).
    */
+  @Override
   public void perform() {
     moveToLocation();
     mouse.contextClick(getActionLocation());

@@ -61,6 +61,7 @@ public class GridShutdownTest {
     List<Thread> threads = new ArrayList<>();
     for (int i = 0; i < numRequests(); i++) {
       final Thread thread = new Thread(new Runnable() { // Thread safety reviewed
+            @Override
             public void run() {
               latch.countDown();
               RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ff);

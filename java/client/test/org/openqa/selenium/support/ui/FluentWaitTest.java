@@ -197,6 +197,7 @@ public class FluentWaitTest {
         + "(tried for 0 second(s) with 500 milliseconds interval)");
 
     Function<Object, Boolean> condition = new Function<Object, Boolean>() {
+      @Override
       public Boolean apply(Object ignored) {
         return false;
       }
@@ -241,6 +242,7 @@ public class FluentWaitTest {
 
     final TestException sentinelException = new TestException();
     FluentWait<WebDriver> wait = new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper) {
+      @Override
       protected RuntimeException timeoutException(String message, Throwable lastException) {
         throw sentinelException;
       }

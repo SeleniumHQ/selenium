@@ -58,6 +58,7 @@ class SessionFactory
     return available;
   }
 
+  @Override
   public boolean test(Capabilities capabilities) {
     if (!isAvailable()) {
       return false;

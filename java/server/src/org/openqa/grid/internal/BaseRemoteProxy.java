@@ -73,14 +73,17 @@ public class BaseRemoteProxy implements RemoteProxy {
   private volatile boolean stop = false;
   private CleanUpThread cleanUpThread;
 
+  @Override
   public List<TestSlot> getTestSlots() {
     return testSlots;
   }
 
+  @Override
   public <T extends GridRegistry> T getRegistry() {
     return (T) registry;
   }
 
+  @Override
   public CapabilityMatcher getCapabilityHelper() {
     return capabilityMatcher;
   }
@@ -163,6 +166,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     this.testSlots = Collections.unmodifiableList(slots);
   }
 
+  @Override
   public void setupTimeoutListener() {
     cleanUpThread = null;
     if (this instanceof TimeoutListener) {
@@ -175,6 +179,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
   }
 
+  @Override
   public String getId() {
     if (id == null) {
       throw new RuntimeException("Bug. Trying to use the id on a proxy but it hasn't been set.");
@@ -183,6 +188,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return id;
   }
 
+  @Override
   public void teardown() {
     stop = true;
   }
@@ -202,6 +208,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       this.proxy = proxy;
     }
 
+    @Override
     public void run() {
 
       log.fine("cleanup thread starting...");
@@ -260,24 +267,29 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
   }
 
+  @Override
   public GridNodeConfiguration getConfig() {
     return config;
   }
 
+  @Override
   public RegistrationRequest getOriginalRegistrationRequest() {
     return request;
   }
 
+  @Override
   @ManagedAttribute
   public int getMaxNumberOfConcurrentTestSessions() {
     return config.maxSession;
   }
 
+  @Override
   @ManagedAttribute
   public URL getRemoteHost() {
     return remoteHost;
   }
 
+  @Override
   public TestSession getNewSession(Map<String, Object> requestedCapability) {
     log.fine("Trying to create a new session on node " + this);
 
@@ -301,6 +313,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return null;
   }
 
+  @Override
   @ManagedAttribute
   public int getTotalUsed() {
     int totalUsed = 0;
@@ -319,6 +332,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return getTestSlots().size();
   }
 
+  @Override
   public boolean hasCapability(Map<String, Object> requestedCapability) {
     for (TestSlot slot : getTestSlots()) {
       if (slot.matches(requestedCapability)) {
@@ -329,6 +343,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     return false;
   }
 
+  @Override
   @ManagedAttribute
   public boolean isBusy() {
     return getTotalUsed() != 0;
@@ -405,6 +420,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   }
 
   // less busy to more busy.
+  @Override
   public int compareTo(RemoteProxy o) {
     if (o == null) {
       return -1;
@@ -419,10 +435,12 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   private final HtmlRenderer renderer = new DefaultHtmlRenderer(this);
 
+  @Override
   public HtmlRenderer getHtmlRender() {
     return renderer;
   }
 
+  @Override
   public int getTimeOut() {
     return config.timeout * 1000;
   }
@@ -431,14 +449,17 @@ public class BaseRemoteProxy implements RemoteProxy {
    * @return the {@link HttpClient.Factory} to use.
    * @deprecated use {@link BaseRemoteProxy#getHttpClient(URL, int, int)}
    */
+  @Override
   public HttpClient getHttpClient(URL url) {
     return getRegistry().getHttpClient(url);
   }
 
+  @Override
   public HttpClient getHttpClient(URL url, int connectionTimeout, int readTimeout) {
     return getRegistry().getHttpClient(url, connectionTimeout, readTimeout);
   }
 
+  @Override
   public Map<String, Object> getProxyStatus() {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
 
@@ -473,11 +494,13 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
   }
 
+  @Override
   @ManagedAttribute
   public float getResourceUsageInPercent() {
     return 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
   }
 
+  @Override
   @ManagedAttribute
   public long getLastSessionStart() {
     long last = -1;

@@ -50,6 +50,7 @@ public class SendKeysAction extends KeysRelatedAction implements Action {
     this(keyboard, mouse, null, keysToSend);
   }
 
+  @Override
   public void perform() {
     focusOnElement();
 

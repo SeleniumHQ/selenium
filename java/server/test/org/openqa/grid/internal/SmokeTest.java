@@ -73,6 +73,7 @@ public class SmokeTest {
 
     for (int i = 0; i < MAX; i++) {
       new Thread(new Runnable() { // Thread safety reviewed
+        @Override
         public void run() {
           RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ie);
           newSessionRequest.process();
@@ -85,6 +86,7 @@ public class SmokeTest {
 
     for (int i = 0; i < MAX; i++) {
       new Thread(new Runnable() {  // Thread safety reviewed
+        @Override
         public void run() {
           RequestHandler newSessionRequest =  GridHelper.createNewSessionHandler(registry, ff);
           newSessionRequest.process();

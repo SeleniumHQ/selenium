@@ -61,6 +61,7 @@ public class DefaultElementLocator implements ElementLocator {
   /**
    * Find the element.
    */
+  @Override
   public WebElement findElement() {
     if (cachedElement != null && shouldCache()) {
       return cachedElement;
@@ -77,6 +78,7 @@ public class DefaultElementLocator implements ElementLocator {
   /**
    * Find the element list.
    */
+  @Override
   public List<WebElement> findElements() {
     if (cachedElementList != null && shouldCache()) {
       return cachedElementList;

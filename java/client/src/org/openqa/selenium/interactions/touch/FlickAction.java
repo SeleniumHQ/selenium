@@ -50,6 +50,7 @@ public class FlickAction extends TouchAction implements Action {
     this.ySpeed = ySpeed;
   }
 
+  @Override
   public void perform() {
     if (where != null) {
       touchScreen.flick(getActionLocation(), xOffset, yOffset, speed);

@@ -39,6 +39,7 @@ public class TextMatcher extends TypeSafeMatcher<WebElement> {
     return matcher.matches(item.getText());
   }
 
+  @Override
   public void describeTo(Description description) {
     description.appendText("text ");
     matcher.describeTo(description);

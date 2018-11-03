@@ -103,6 +103,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     commandCodec.defineCommand(commandName, info.getMethod(), info.getUrl());
   }
 
+  @Override
   public void setLocalLogs(LocalLogs logs) {
     this.logs = logs;
   }
@@ -115,6 +116,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     return remoteServer;
   }
 
+  @Override
   public Response execute(Command command) throws IOException {
     if (command.getSessionId() == null) {
       if (QUIT.equals(command.getName())) {

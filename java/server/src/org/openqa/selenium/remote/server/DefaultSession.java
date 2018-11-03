@@ -115,6 +115,7 @@ public class DefaultSession implements Session {
     return propertySaysQuiet && !isExplicitlyDisabledByCapability;
   }
 
+  @Override
   public void close() {
     try {
       WebDriver driver = getDriver();
@@ -132,22 +133,27 @@ public class DefaultSession implements Session {
     }
   }
 
+  @Override
   public WebDriver getDriver() {
     return driver;
   }
 
+  @Override
   public KnownElements getKnownElements() {
     return knownElements;
   }
 
+  @Override
   public Map<String, Object> getCapabilities() {
     return capabilities;
   }
 
+  @Override
   public void attachScreenshot(String base64EncodedImage) {
     this.base64EncodedImage = base64EncodedImage;
   }
 
+  @Override
   public String getAndClearScreenshot() {
     String temp = this.base64EncodedImage;
     base64EncodedImage = null;
@@ -167,6 +173,7 @@ public class DefaultSession implements Session {
       this.capabilities = capabilities;
     }
 
+    @Override
     public EventFiringWebDriver call() throws Exception {
       WebDriver rawDriver = factory.newInstance(capabilities);
       Capabilities actualCapabilities = capabilities;
@@ -227,10 +234,12 @@ public class DefaultSession implements Session {
     }
   }
 
+  @Override
   public SessionId getSessionId() {
     return sessionId;
   }
 
+  @Override
   public TemporaryFilesystem getTemporaryFileSystem() {
     return tempFs;
   }

@@ -79,6 +79,7 @@ public class ThreadGuard {
       this.underlying = underlyingWebDriver;
     }
 
+    @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       try {
         if (Thread.currentThread().getId() != threadId) {

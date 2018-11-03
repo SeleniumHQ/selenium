@@ -48,6 +48,7 @@ public class GridSupplier implements Supplier<WebDriver> {
     this.desired = desired;
   }
 
+  @Override
   public WebDriver get() {
     if (desired == null || !Boolean.getBoolean("selenium.browser.grid")) {
       return null;

@@ -266,6 +266,7 @@ public class JsonOutput implements Closeable {
     return this;
   }
 
+  @Override
   public void close() {
     if (appendable instanceof Closeable) {
       try {

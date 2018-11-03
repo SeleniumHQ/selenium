@@ -132,6 +132,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
         .findFirst().orElse(null);
   }
 
+  @Override
   public Iterator<RemoteProxy> iterator() {
     return proxies.iterator();
   }

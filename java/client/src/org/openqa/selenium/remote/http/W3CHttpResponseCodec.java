@@ -174,6 +174,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     return toReturn;
   }
 
+  @Override
   protected Response reconstructValue(Response response) {
     response.setValue(elementConverter.apply(response.getValue()));
     return response;

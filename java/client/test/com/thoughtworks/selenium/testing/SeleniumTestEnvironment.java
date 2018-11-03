@@ -138,6 +138,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
     this(PortProber.findFreePort());
   }
 
+  @Override
   public AppServer getAppServer() {
     return appServer;
   }
@@ -146,6 +147,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
     return seleniumServerUrl;
   }
 
+  @Override
   public void stop() {
     appServer.stop();
     command.destroy();

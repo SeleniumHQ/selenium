@@ -45,6 +45,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   private static final Logger LOG = Logger.getLogger(DefaultGridRegistry.class.getName());
 
   protected static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+    @Override
     public void uncaughtException(Thread t, Throwable e) {
       LOG.log(Level.SEVERE, "Matcher thread dying due to unhandled exception.", e);
     }
@@ -74,6 +75,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
     this.matcherThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler());
   }
 
+  @Override
   public void start() {
     matcherThread.start();
 
@@ -108,6 +110,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
    * @param session The session to terminate
    * @param reason  the reason for termination
    */
+  @Override
   public void terminate(final TestSession session, final SessionTerminationReason reason) {
     // Thread safety reviewed
     new Thread(() -> _release(session.getSlot(), reason)).start();
@@ -147,6 +150,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#removeIfPresent(RemoteProxy)
    */
+  @Override
   public void removeIfPresent(RemoteProxy proxy) {
     // Find the original proxy. While the supplied one is logically equivalent, it may be a fresh object with
     // an empty TestSlot list, which doesn't figure into the proxy equivalence check.  Since we want to free up
@@ -164,6 +168,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#forceRelease(TestSlot, SessionTerminationReason)
    */
+  @Override
   public void forceRelease(TestSlot testSlot, SessionTerminationReason reason) {
     if (testSlot.getSession() == null) {
       return;
@@ -200,6 +205,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#stop()
    */
+  @Override
   public void stop() {
     stop = true;
     matcherThread.interrupt();
@@ -210,6 +216,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#addNewSessionRequest(RequestHandler)
    */
+  @Override
   public void addNewSessionRequest(RequestHandler handler) {
     try {
       lock.lock();
@@ -292,6 +299,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#add(RemoteProxy)
    */
+  @Override
   public void add(RemoteProxy proxy) {
     if (proxy == null) {
       return;
@@ -351,6 +359,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#setThrowOnCapabilityNotPresent(boolean)
    */
+  @Override
   public void setThrowOnCapabilityNotPresent(boolean throwOnCapabilityNotPresent) {
     proxies.setThrowOnCapabilityNotPresent(throwOnCapabilityNotPresent);
   }
@@ -362,6 +371,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#getAllProxies()
    */
+  @Override
   public ProxySet getAllProxies() {
     return proxies;
   }
@@ -369,6 +379,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#getUsedProxies()
    */
+  @Override
   public List<RemoteProxy> getUsedProxies() {
     return proxies.getBusyProxies();
   }
@@ -376,6 +387,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#getSession(ExternalSessionKey)
    */
+  @Override
   public TestSession getSession(ExternalSessionKey externalKey) {
     return activeTestSessions.findSessionByExternalKey(externalKey);
   }
@@ -383,6 +395,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#getExistingSession(ExternalSessionKey)
    */
+  @Override
   public TestSession getExistingSession(ExternalSessionKey externalKey) {
     return activeTestSessions.getExistingSession(externalKey);
   }
@@ -390,6 +403,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#getNewSessionRequestCount()
    */
+  @Override
   public int getNewSessionRequestCount() {
     // may race
     return newSessionQueue.getNewSessionRequestCount();
@@ -398,6 +412,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#clearNewSessionRequests()
    */
+  @Override
   public void clearNewSessionRequests() {
     newSessionQueue.clearNewSessionRequests();
   }
@@ -405,6 +420,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#removeNewSessionRequest(RequestHandler)
    */
+  @Override
   public boolean removeNewSessionRequest(RequestHandler request) {
     return newSessionQueue.removeNewSessionRequest(request);
   }
@@ -412,6 +428,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#getDesiredCapabilities()
    */
+  @Override
   public Iterable<DesiredCapabilities> getDesiredCapabilities() {
     return newSessionQueue.getDesiredCapabilities();
   }
@@ -419,6 +436,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#getActiveSessions()
    */
+  @Override
   public Set<TestSession> getActiveSessions() {
     return activeTestSessions.unmodifiableSet();
   }
@@ -426,6 +444,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
   /**
    * @see GridRegistry#getProxyById(String)
    */
+  @Override
   public RemoteProxy getProxyById(String id) {
     return proxies.getProxyById(id);
   }

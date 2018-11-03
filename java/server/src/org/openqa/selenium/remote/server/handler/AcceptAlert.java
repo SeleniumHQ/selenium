@@ -24,6 +24,7 @@ public class AcceptAlert extends WebDriverHandler<Void> {
     super(session);
   }
 
+  @Override
   public Void call() throws Exception {
     getDriver().switchTo().alert().accept();
     return null;

@@ -106,14 +106,17 @@ public class SafariDriverService extends DriverService {
       return this;
     }
 
+    @Override
     protected File findDefaultExecutable() {
       return SAFARI_DRIVER_EXECUTABLE;
     }
 
+    @Override
     protected ImmutableList<String> createArgs() {
       return ImmutableList.of("--port", String.valueOf(getPort()));
     }
 
+    @Override
     protected SafariDriverService createDriverService(
         File exe,
         int port,

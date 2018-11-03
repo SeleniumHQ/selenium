@@ -63,6 +63,7 @@ public class SessionTimesOutTest {
       super(request, registry);
     }
 
+    @Override
     public void beforeRelease(TestSession session) {
     }
   }
@@ -104,6 +105,7 @@ public class SessionTimesOutTest {
       super(request, registry);
     }
 
+    @Override
     public void beforeRelease(TestSession session) {
       try {
         Thread.sleep(1000);
@@ -161,6 +163,7 @@ public class SessionTimesOutTest {
       super(request, registry);
     }
 
+    @Override
     public void beforeRelease(TestSession session) {
       throw new NullPointerException();
     }
@@ -183,6 +186,7 @@ public class SessionTimesOutTest {
       final RequestHandler newSessionRequest2 =
           GridHelper.createNewSessionHandler(registry, app1);
       new Thread(new Runnable() {  // Thread safety reviewed
+        @Override
         public void run() {
           // the request should never be processed because the
           // resource is not released by the buggy proxy
@@ -205,6 +209,7 @@ public class SessionTimesOutTest {
       super(request, registry);
     }
 
+    @Override
     public void beforeRelease(TestSession session) {
       session.put("FLAG", true);
       session.put("MustSupportNullValue", null);

@@ -216,6 +216,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
     return response;
   }
 
+  @Override
   public int compareTo(RequestHandler o) {
     GridHubConfiguration configuration = getRegistry().getHub().getConfiguration();
     if (configuration.prioritizer != null) {

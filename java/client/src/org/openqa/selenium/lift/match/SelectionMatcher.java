@@ -33,6 +33,7 @@ public class SelectionMatcher extends TypeSafeMatcher<WebElement> {
     return item.isSelected();
   }
 
+  @Override
   public void describeTo(Description description) {
     description.appendText("should be selected");
   }

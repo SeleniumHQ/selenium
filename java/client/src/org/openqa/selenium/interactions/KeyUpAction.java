@@ -39,6 +39,7 @@ public class KeyUpAction extends SingleKeyAction implements Action {
     super(keyboard, mouse, key);
   }
 
+  @Override
   public void perform() {
     focusOnElement();
 

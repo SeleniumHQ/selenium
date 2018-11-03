@@ -68,6 +68,7 @@ public class WebDriverPriorityDemo {
     // assigning a priority rule where requests with the flag "important" go first.
     GridHubConfiguration hubConfiguration = new GridHubConfiguration();
     hubConfiguration.prioritizer = new Prioritizer() {
+      @Override
       public int compareTo(Map<String, Object> a, Map<String, Object> b) {
         boolean aImportant =
             a.get("grid:important") == null ? false : Boolean.parseBoolean(a.get("grid:important")
@@ -127,6 +128,7 @@ public class WebDriverPriorityDemo {
     // queuing 5 requests on the grid.
     for (int i = 0; i < 5; i++) {
       new Thread(new Runnable() { // Thread safety reviewed
+        @Override
         public void run() {
           try {
             new RemoteWebDriver(driverURL, browser);
@@ -145,6 +147,7 @@ public class WebDriverPriorityDemo {
 
     // adding a request with high priority at the end of the queue
     new Thread(new Runnable() { // Thread safety reviewed
+      @Override
       public void run() {
         try {
           importantOne = new RemoteWebDriver(driverURL, important_browser);
@@ -164,6 +167,7 @@ public class WebDriverPriorityDemo {
     // then 5 more non-important requests
     for (int i = 0; i < 5; i++) {
       new Thread(new Runnable() { // Thread safety reviewed
+        @Override
         public void run() {
           try {
             new RemoteWebDriver(driverURL, browser);

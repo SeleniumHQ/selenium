@@ -362,6 +362,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
         this.url = url;
       }
 
+      @Override
       public void run() {
         myDriver = new FirefoxDriver();
         myDriver.get(url);

@@ -237,8 +237,10 @@ public class ProxySettingTest extends JUnit4TestBase {
 
       proxyServer = DefaultHttpProxyServer.bootstrap().withAllowLocalOnly(false).withPort(port)
           .withFiltersSource(new HttpFiltersSourceAdapter() {
+            @Override
             public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
               return new HttpFiltersAdapter(originalRequest) {
+                @Override
                 public HttpResponse clientToProxyRequest(HttpObject httpObject) {
                   String uri = originalRequest.uri();
                   String[] parts = uri.split("/");

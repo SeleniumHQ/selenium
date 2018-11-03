@@ -78,6 +78,7 @@ public class ConcurrencyLockTest {
     List<Thread> threads = new ArrayList<>();
     for (final Map<String, Object> cap : caps) {
       Thread t = new Thread(new Runnable() { // Thread safety reviewed
+        @Override
         public void run() {
           try {
             runTests2(cap);

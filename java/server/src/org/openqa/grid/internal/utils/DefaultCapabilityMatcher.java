@@ -168,6 +168,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     validators.add(new SimplePropertyValidator(capabilityName));
   }
 
+  @Override
   public boolean matches(Map<String, Object> providedCapabilities, Map<String, Object> requestedCapabilities) {
     return providedCapabilities != null && requestedCapabilities != null
            && validators.stream().allMatch(v -> v.apply(providedCapabilities, requestedCapabilities));
