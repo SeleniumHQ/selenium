@@ -282,7 +282,7 @@ public class NewSessionPayload implements Closeable {
 
           default:
             out.name(name);
-            out.write(input.<Object>read(Object.class));
+            out.write(input.read(Object.class));
             break;
         }
       }
