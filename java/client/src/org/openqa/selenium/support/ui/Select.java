@@ -20,6 +20,7 @@ package org.openqa.selenium.support.ui;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsElement;
 
 import java.util.List;
 import java.util.StringTokenizer;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * Models a SELECT tag, providing helper methods to select and deselect options.
  */
-public class Select implements ISelect {
+public class Select implements ISelect, WrapsElement {
 
   private final WebElement element;
   private final boolean isMulti;
@@ -53,6 +54,11 @@ public class Select implements ISelect {
 
     // The atoms normalize the returned value, but check for "false"
     isMulti = (value != null && !"false".equals(value));
+  }
+
+  @Override
+  public WebElement getWrappedElement() {
+    return element;
   }
 
   /**
