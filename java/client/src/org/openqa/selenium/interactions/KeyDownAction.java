@@ -48,9 +48,8 @@ public class KeyDownAction extends SingleKeyAction implements Action {
 
   @Override
   public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
-    ArrayList<Interaction> interactions = new ArrayList<>();
 
-    interactions.addAll(optionallyClickElement(mouse));
+    ArrayList<Interaction> interactions = new ArrayList<>(optionallyClickElement(mouse));
     interactions.add(keyboard.createKeyDown(key.getCodePoint()));
 
     return Collections.unmodifiableList(interactions);

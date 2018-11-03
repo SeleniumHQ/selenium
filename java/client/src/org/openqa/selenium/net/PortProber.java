@@ -28,7 +28,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -134,8 +133,6 @@ public class PortProber {
         return true;
       } catch (ConnectException e) {
         // Ignore this
-      } catch (UnknownHostException e) {
-        throw new RuntimeException(e);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -152,9 +149,7 @@ public class PortProber {
         socket.connect(new InetSocketAddress("localhost", port), 1000);
         socket.close();
         return;
-      } catch (ConnectException e) {
-        // Ignore this
-      } catch (SocketTimeoutException e) {
+      } catch (ConnectException | SocketTimeoutException e) {
         // Ignore this
       } catch (IOException e) {
         throw new RuntimeException(e);

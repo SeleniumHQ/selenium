@@ -307,14 +307,14 @@ public class XpiDriverService extends FirefoxDriverService {
   static XpiDriverService createDefaultService(Capabilities caps) {
     Builder builder = new Builder().usingAnyFreePort();
 
-    FirefoxProfile profile = Stream.<Supplier<FirefoxProfile>>of(
+    Stream.<Supplier<FirefoxProfile>>of(
         () -> (FirefoxProfile) caps.getCapability(FirefoxDriver.PROFILE),
         () -> { try {
           return FirefoxProfile.fromJson((String) caps.getCapability(FirefoxDriver.PROFILE));
         } catch (IOException ex) {
           throw new RuntimeException(ex);
         }},
-        () -> ((FirefoxOptions) caps).getProfile(),
+        ((FirefoxOptions) caps)::getProfile,
         () -> (FirefoxProfile) ((Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS)).get("profile"),
         () -> { try {
           return FirefoxProfile.fromJson(
@@ -341,11 +341,7 @@ public class XpiDriverService extends FirefoxDriverService {
         })
         .filter(Objects::nonNull)
         .findFirst()
-        .orElse(null);
-
-    if (profile != null) {
-      builder.withProfile(profile);
-    }
+        .ifPresent(builder::withProfile);
 
     Object binary = caps.getCapability(FirefoxDriver.BINARY);
     if (binary != null) {

@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class Page {
 
   private String title = "";
@@ -60,24 +57,23 @@ public class Page {
   }
 
   public String toString() {
-    return Stream.of(
+    return String.join("\n",
         "<html>",
         "<head>",
         String.format("<title>%s</title>", title),
         "</head>",
         "<script type='text/javascript'>",
-        Stream.of(scripts).collect(Collectors.joining("\n")),
+        String.join("\n", scripts),
         "</script>",
         "<style>",
-        Stream.of(styles).collect(Collectors.joining("\n")),
+        String.join("\n", styles),
         "</style>",
         String.format(
             "<body %s %s>",
             onLoad == null ? "" : String.format("onload='%s'", onLoad),
             onBeforeUnload ==  null ? "" : String.format("onbeforeunload='%s'", onBeforeUnload)),
-        Stream.of(bodyParts).collect(Collectors.joining("\n")),
+        String.join("\n", bodyParts),
         "</body>",
-        "</html>")
-        .collect(Collectors.joining("\n"));
+        "</html>");
   }
 }

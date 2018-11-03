@@ -57,29 +57,26 @@ public class JavascriptLibrary {
 
   public void callEmbeddedSelenium(WebDriver driver, String functionName,
                                    WebElement element, Object... values) {
-    StringBuilder builder = new StringBuilder(readScript(injectableSelenium));
-    builder.append("return browserbot.").append(functionName)
-        .append(".apply(browserbot, arguments);");
 
     List<Object> args = new ArrayList<>();
     args.add(element);
     args.addAll(Arrays.asList(values));
 
-    ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
+    String script = readScript(injectableSelenium) + "return browserbot." + functionName
+                    + ".apply(browserbot, arguments);";
+    ((JavascriptExecutor) driver).executeScript(script, args.toArray());
   }
 
   public Object callEmbeddedHtmlUtils(WebDriver driver, String functionName, WebElement element,
                                       Object... values) {
-    StringBuilder builder = new StringBuilder(readScript(htmlUtils));
-
-    builder.append("return htmlutils.").append(functionName)
-        .append(".apply(htmlutils, arguments);");
 
     List<Object> args = new ArrayList<>();
     args.add(element);
     args.addAll(Arrays.asList(values));
 
-    return ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
+    String script = readScript(htmlUtils) + "return htmlutils." + functionName
+                    + ".apply(htmlutils, arguments);";
+    return ((JavascriptExecutor) driver).executeScript(script, args.toArray());
   }
 
   public Object executeScript(WebDriver driver, String script, Object... args) {

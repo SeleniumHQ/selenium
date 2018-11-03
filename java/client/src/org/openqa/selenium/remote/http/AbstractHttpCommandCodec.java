@@ -343,9 +343,8 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     SessionId sessionId,
     Map<String, ?> parameters) {
     if ("sessionId".equals(parameterName)) {
-      SessionId id = sessionId;
-      checkArgument(id != null, "Session ID may not be null for command %s", commandName);
-      return id.toString();
+      checkArgument(sessionId != null, "Session ID may not be null for command %s", commandName);
+      return sessionId.toString();
     }
 
     Object value = parameters.get(parameterName);

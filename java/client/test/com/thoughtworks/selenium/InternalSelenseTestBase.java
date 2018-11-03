@@ -190,7 +190,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
   public ExternalResource addNecessaryJavascriptCommands = new ExternalResource() {
     @Override
     protected void before() {
-      if (selenium == null || !(selenium instanceof WebDriverBackedSelenium)) {
+      if (!(selenium instanceof WebDriverBackedSelenium)) {
         return;
       }
 

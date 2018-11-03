@@ -109,10 +109,7 @@ public class DeviceRotation {
     }
 
     DeviceRotation obj = (DeviceRotation) o;
-    if (obj.getX() != this.getX() || obj.getY() != this.getY() || obj.getZ() != this.getZ()) {
-      return false;
-    }
-    return true;
+    return obj.getX() == this.getX() && obj.getY() == this.getY() && obj.getZ() == this.getZ();
   }
 
   @Override

@@ -61,11 +61,9 @@ public abstract class Condition {
     int vers = Integer.parseInt(System.getProperty("java.class.version").substring(0, 2));
     if (vers >= 49) {
       try {
-        Method format =
-            String.class.getMethod("format", new Class[] {String.class, Object[].class});
+        Method format = String.class.getMethod("format", String.class, Object[].class);
         return (String) format.invoke(null, new Object[] {message, args});
-      } catch (NoSuchMethodException e) {
-      } catch (IllegalAccessException e) {
+      } catch (NoSuchMethodException | IllegalAccessException e) {
       } catch (InvocationTargetException e) {
         Throwable throwable = e.getCause();
         if (throwable instanceof RuntimeException) {

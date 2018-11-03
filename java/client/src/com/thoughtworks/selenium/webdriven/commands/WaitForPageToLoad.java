@@ -98,7 +98,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
           Object result = ((JavascriptExecutor) driver).executeScript(
               "return 'complete' == document.readyState;");
 
-          if (result != null && result instanceof Boolean && (Boolean) result) {
+          if (result instanceof Boolean && (Boolean) result) {
             return true;
           }
         } catch (Exception e) {
@@ -132,8 +132,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
           }
 
           return System.currentTimeMillis() - seenAt > 1000;
-        } catch (NoSuchElementException ignored) {
-        } catch (NullPointerException ignored) {
+        } catch (NoSuchElementException | NullPointerException ignored) {
         }
 
         return false;

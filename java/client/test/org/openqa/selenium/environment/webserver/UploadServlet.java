@@ -21,6 +21,7 @@ import org.seleniumhq.jetty9.server.Request;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
@@ -49,16 +50,10 @@ public class UploadServlet extends HttpServlet {
     Part upload = request.getPart("upload");
 
     byte[] buffer = new byte[(int) upload.getSize()];
-    InputStream in = null;
     String content;
-    try {
-      in = upload.getInputStream();
+    try (InputStream in = upload.getInputStream()) {
       in.read(buffer, 0, (int) upload.getSize());
-      content = new String(buffer, "UTF-8");
-    } finally {
-      if (in != null) {
-        in.close();
-      }
+      content = new String(buffer, StandardCharsets.UTF_8);
     }
 
     // Slow down the upload so we can verify WebDriver waits.
