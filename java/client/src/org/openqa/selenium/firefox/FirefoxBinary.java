@@ -25,30 +25,21 @@ import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ExecutableFinder;
-import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -88,15 +79,8 @@ public class FirefoxBinary {
     }
   }
 
-  private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";
-  private static final String PATH_PREFIX = "/" +
-      FirefoxBinary.class.getPackage().getName().replace(".", "/") + "/";
-
-  private final Map<String, String> extraEnv = new HashMap<>();
   private final List<String> extraOptions = new ArrayList<>();
   private final Executable executable;
-  private CommandLine process;
-  private OutputStream stream;
   private long timeout = SECONDS.toMillis(45);
 
   public FirefoxBinary() {
@@ -139,26 +123,6 @@ public class FirefoxBinary {
     executable = new Executable(pathToFirefoxBinary);
   }
 
-  /**
-   * deprecated Use {@link DriverService.Builder#withEnvironment(Map)} instead:
-   * <p>
-   * new FirefoxDriver(
-   *   new GeckoDriverService.Builder()
-   *     .usingDriverExecutable(new File("path/to/geckodriver.exe"))
-   *     .usingFirefoxBinary(new FirefoxBinary(new File("path/to/firefox.exe")))
-   *     .withEnvironment(ImmutableMap.of("DISPLAY", "0:0"))
-   *     .build());
-   */
-  @Deprecated
-  public void setEnvironmentProperty(String propertyName, String value) {
-    if (propertyName == null || value == null) {
-      throw new WebDriverException(
-          String.format("You must set both the property name and value: %s, %s", propertyName,
-              value));
-    }
-    extraEnv.put(propertyName, value);
-  }
-
   public void addCommandLineOptions(String... options) {
     Collections.addAll(extraOptions, options);
   }
@@ -167,156 +131,12 @@ public class FirefoxBinary {
     options.addArguments(extraOptions);
   }
 
-  protected boolean isOnLinux() {
-    return Platform.getCurrent().is(Platform.LINUX);
-  }
-
-  public void startProfile(FirefoxProfile profile, File profileDir, String... commandLineFlags)
-      throws IOException {
-    String profileAbsPath = profileDir.getAbsolutePath();
-    setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
-    setEnvironmentProperty("MOZ_NO_REMOTE", "1");
-    setEnvironmentProperty("MOZ_CRASHREPORTER_DISABLE", "1"); // Disable Breakpad
-    setEnvironmentProperty("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the
-                                                  // console
-    if (isOnLinux() && profile.shouldLoadNoFocusLib()) {
-      modifyLinkLibraryPath(profileDir);
-    }
-
-    List<String> cmdArray = new ArrayList<>();
-    cmdArray.addAll(extraOptions);
-    Collections.addAll(cmdArray, commandLineFlags);
-    CommandLine command = new CommandLine(getPath(), Iterables.toArray(cmdArray, String.class));
-    command.setEnvironmentVariables(getExtraEnv());
-    command.updateDynamicLibraryPath(getExtraEnv().get(CommandLine.getLibraryPathPropertyName()));
-    // On Snow Leopard, beware of problems the sqlite library
-    if (! (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5)) {
-      String firefoxLibraryPath = System.getProperty(
-        FirefoxDriver.SystemProperty.BROWSER_LIBRARY_PATH,
-        getFile().getAbsoluteFile().getParentFile().getAbsolutePath());
-      command.updateDynamicLibraryPath(firefoxLibraryPath);
-    }
-
-    if (stream == null) {
-      stream = getDefaultOutputStream();
-    }
-    command.copyOutputTo(stream);
-
-    startFirefoxProcess(command);
-  }
-
-  protected void startFirefoxProcess(CommandLine command) {
-    process = command;
-    command.executeAsync();
-  }
-
   protected File getFile() {
     return executable.getFile();
   }
 
   protected String getPath() {
     return executable.getPath();
-  }
-
-  /**
-   * @deprecated No replacement. Environment should be configured in {@link DriverService} instance.
-   */
-  @Deprecated
-  public Map<String, String> getExtraEnv() {
-    return Collections.unmodifiableMap(extraEnv);
-  }
-
-  protected void modifyLinkLibraryPath(File profileDir) {
-    // Extract x_ignore_nofocus.so from x86, amd64 directories inside
-    // the jar into a real place in the filesystem and change LD_LIBRARY_PATH
-    // to reflect that.
-
-    String existingLdLibPath = System.getenv("LD_LIBRARY_PATH");
-    // The returned new ld lib path is terminated with ':'
-    String newLdLibPath =
-        extractAndCheck(profileDir, NO_FOCUS_LIBRARY_NAME, PATH_PREFIX + "x86", PATH_PREFIX +
-            "amd64");
-    if (existingLdLibPath != null && !existingLdLibPath.equals("")) {
-      newLdLibPath += existingLdLibPath;
-    }
-
-    setEnvironmentProperty("LD_LIBRARY_PATH", newLdLibPath);
-    // Set LD_PRELOAD to x_ignore_nofocus.so - this will be taken automagically
-    // from the LD_LIBRARY_PATH
-    setEnvironmentProperty("LD_PRELOAD", NO_FOCUS_LIBRARY_NAME);
-  }
-
-  protected String extractAndCheck(File profileDir, String noFocusSoName,
-      String jarPath32Bit, String jarPath64Bit) {
-
-    // 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
-    // 2. Extract amd64/x_ignore_nofocus.so to profile.getLibsDir64bit
-    // 3. Create a new LD_LIB_PATH string to contain:
-    // profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
-
-    Set<String> pathsSet = new HashSet<>();
-    pathsSet.add(jarPath32Bit);
-    pathsSet.add(jarPath64Bit);
-
-    StringBuilder builtPath = new StringBuilder();
-
-    for (String path : pathsSet) {
-      try {
-
-        FileHandler.copyResource(profileDir, getClass(), path + File.separator + noFocusSoName);
-
-      } catch (IOException e) {
-        if (Boolean.getBoolean("webdriver.development")) {
-          System.err.println(
-              "Exception unpacking required library, but in development mode. Continuing");
-        } else {
-          throw new WebDriverException(e);
-        }
-      } // End catch.
-
-      String outSoPath = profileDir.getAbsolutePath() + File.separator + path;
-
-      File file = new File(outSoPath, noFocusSoName);
-      if (!file.exists()) {
-        throw new WebDriverException("Could not locate " + path + ": "
-            + "native events will not work.");
-      }
-
-      builtPath.append(outSoPath).append(":");
-    }
-
-    return builtPath.toString();
-  }
-
-  /**
-   * Waits for the process to execute, returning the command output taken from the profile's
-   * execution.
-   */
-  public void waitFor() {
-    process.waitFor();
-  }
-
-  /**
-   * Waits for the process to execute, returning the command output taken from the profile's
-   * execution.
-   *
-   * @param timeout the maximum time to wait in milliseconds
-   */
-
-  public void waitFor(long timeout) {
-	  process.waitFor(timeout);
-  }
-
-  /**
-   * Gets all console output of the binary. Output retrieval is non-destructive and non-blocking.
-   *
-   * @return the console output of the executed binary.
-   */
-  public String getConsoleOutput() {
-    if (process == null) {
-      return null;
-    }
-    return process.getStdOut();
   }
 
   public long getTimeout() {
@@ -334,27 +154,6 @@ public class FirefoxBinary {
 
   public String toJson() {
     return executable.getPath();
-  }
-
-  public void setOutputWatcher(OutputStream stream) {
-    this.stream = stream;
-  }
-
-  public void quit() {
-    if (process != null) {
-      process.destroy();
-    }
-  }
-
-  private OutputStream getDefaultOutputStream() throws FileNotFoundException {
-    String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
-    if (firefoxLogFile != null) {
-      if ("/dev/stdout".equals(firefoxLogFile)) {
-        return System.out;
-      }
-      return new FileOutputStream(firefoxLogFile);
-    }
-    return null;
   }
 
   /**
@@ -485,5 +284,45 @@ public class FirefoxBinary {
     return System.getenv().entrySet().stream()
         .filter(e -> e.getKey().equalsIgnoreCase(var))
         .findFirst().map(Map.Entry::getValue);
+  }
+
+  //------------------------
+
+  /**
+   * @deprecated DriverService is responsible for process management
+   */
+  @Deprecated
+  public void waitFor() {
+
+  }
+
+  /**
+   * @deprecated DriverSerrice is responsible for process management
+   */
+  @Deprecated
+  public void waitFor(long timeout) {
+
+  }
+
+  /**
+   * @deprecated DriverService is responsible for process management
+   */
+  @Deprecated
+  public String getConsoleOutput() {
+    return null;
+  }
+
+  /**
+   * @deprecated DriverService is responsible for process management
+   */
+  @Deprecated
+  public void setOutputWatcher(OutputStream stream) {
+  }
+
+  /**
+   * @deprecated DriverService is responsible for process management
+   */
+  @Deprecated
+  public void quit() {
   }
 }
