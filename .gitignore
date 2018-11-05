@@ -101,3 +101,11 @@ third_party/py/googlestorage/client_secrets.json
 venv
 venv3
 py/.idea
+
+# Bazel stuff
+bazel-bin
+bazel-genfiles
+bazel-out
+bazel-selenium
+bazel-testlogs
+
