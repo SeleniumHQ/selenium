@@ -4,6 +4,9 @@
     <output url="file://$MODULE_DIR$/build/production" />
     <output-test url="file://$MODULE_DIR$/build/test" />
     <exclude-output />
+    <content url="file://$MODULE_DIR$/../../buck-out/gen">
+      <sourceFolder url="file://$MODULE_DIR$/../../buck-out/gen/java/client/src" type="java-test-resource" />
+    </content>
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
