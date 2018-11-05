@@ -48,7 +48,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -141,8 +140,8 @@ public class XpiDriverService extends DriverService {
 
       List<String> cmdArray = new ArrayList<>(getArgs());
       cmdArray.add("-foreground");
-
       process = new CommandLine(binary.getPath(), Iterables.toArray(cmdArray, String.class));
+      process.setEnvironmentVariables(env);
       process.updateDynamicLibraryPath(env.get(CommandLine.getLibraryPathPropertyName()));
       // On Snow Leopard, beware of problems the sqlite library
       if (! (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5)) {
