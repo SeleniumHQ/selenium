@@ -20,9 +20,7 @@ package org.openqa.selenium.firefox;
 import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
@@ -75,7 +73,6 @@ public class MarionetteTest extends JUnit4TestBase {
 
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
-    verify(binary, never()).startFirefoxProcess(any());
   }
 
   @Test
@@ -103,7 +100,6 @@ public class MarionetteTest extends JUnit4TestBase {
 
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
-    verify(binary, never()).startFirefoxProcess(any());
   }
 
   @Test
@@ -192,7 +188,6 @@ public class MarionetteTest extends JUnit4TestBase {
 
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
-    verify(binary, never()).startFirefoxProcess(any());
     assertThat(localDriver.getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
   }
 

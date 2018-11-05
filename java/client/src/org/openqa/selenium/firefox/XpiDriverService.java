@@ -26,30 +26,45 @@ import com.google.auto.service.AutoService;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class XpiDriverService extends DriverService {
+
+  private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";
+  private static final String PATH_PREFIX =
+      "/" + XpiDriverService.class.getPackage().getName().replace(".", "/") + "/";
 
   private final Lock lock = new ReentrantLock();
 
@@ -112,12 +127,112 @@ public class XpiDriverService extends DriverService {
 
       binary.setOutputWatcher(getOutputStream());
 
-      binary.startProfile(profile, profileDir, "-foreground");
+      ImmutableMap.Builder<String, String> envBuilder = new ImmutableMap.Builder<String, String>()
+          .putAll(getEnvironment())
+          .put("XRE_PROFILE_PATH", profileDir.getAbsolutePath())
+          .put("MOZ_NO_REMOTE", "1")
+          .put("MOZ_CRASHREPORTER_DISABLE", "1") // Disable Breakpad
+          .put("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the console
+
+      if (Platform.getCurrent().is(Platform.LINUX) && profile.shouldLoadNoFocusLib()) {
+        modifyLinkLibraryPath(envBuilder, profileDir);
+      }
+      Map<String, String> env = envBuilder.build();
+
+      List<String> cmdArray = new ArrayList<>(getArgs());
+      cmdArray.add("-foreground");
+
+      process = new CommandLine(binary.getPath(), Iterables.toArray(cmdArray, String.class));
+      process.updateDynamicLibraryPath(env.get(CommandLine.getLibraryPathPropertyName()));
+      // On Snow Leopard, beware of problems the sqlite library
+      if (! (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5)) {
+        String firefoxLibraryPath = System.getProperty(
+            FirefoxDriver.SystemProperty.BROWSER_LIBRARY_PATH,
+            binary.getFile().getAbsoluteFile().getParentFile().getAbsolutePath());
+        process.updateDynamicLibraryPath(firefoxLibraryPath);
+      }
+
+      process.copyOutputTo(getActualOutputStream());
+
+      process.executeAsync();
 
       waitUntilAvailable();
     } finally {
       lock.unlock();
     }
+  }
+
+  private void modifyLinkLibraryPath(ImmutableMap.Builder<String, String> envBuilder, File profileDir) {
+    // Extract x_ignore_nofocus.so from x86, amd64 directories inside
+    // the jar into a real place in the filesystem and change LD_LIBRARY_PATH
+    // to reflect that.
+
+    String existingLdLibPath = System.getenv("LD_LIBRARY_PATH");
+    // The returned new ld lib path is terminated with ':'
+    String newLdLibPath =
+        extractAndCheck(profileDir, NO_FOCUS_LIBRARY_NAME, PATH_PREFIX + "x86", PATH_PREFIX +
+                                                                                "amd64");
+    if (existingLdLibPath != null && !existingLdLibPath.equals("")) {
+      newLdLibPath += existingLdLibPath;
+    }
+
+    envBuilder.put("LD_LIBRARY_PATH", newLdLibPath);
+    // Set LD_PRELOAD to x_ignore_nofocus.so - this will be taken automagically
+    // from the LD_LIBRARY_PATH
+    envBuilder.put("LD_PRELOAD", NO_FOCUS_LIBRARY_NAME);
+  }
+
+  private String extractAndCheck(File profileDir, String noFocusSoName,
+                                   String jarPath32Bit, String jarPath64Bit) {
+
+    // 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
+    // 2. Extract amd64/x_ignore_nofocus.so to profile.getLibsDir64bit
+    // 3. Create a new LD_LIB_PATH string to contain:
+    // profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
+
+    Set<String> pathsSet = new HashSet<>();
+    pathsSet.add(jarPath32Bit);
+    pathsSet.add(jarPath64Bit);
+
+    StringBuilder builtPath = new StringBuilder();
+
+    for (String path : pathsSet) {
+      try {
+
+        FileHandler.copyResource(profileDir, getClass(), path + File.separator + noFocusSoName);
+
+      } catch (IOException e) {
+        if (Boolean.getBoolean("webdriver.development")) {
+          System.err.println(
+              "Exception unpacking required library, but in development mode. Continuing");
+        } else {
+          throw new WebDriverException(e);
+        }
+      } // End catch.
+
+      String outSoPath = profileDir.getAbsolutePath() + File.separator + path;
+
+      File file = new File(outSoPath, noFocusSoName);
+      if (!file.exists()) {
+        throw new WebDriverException("Could not locate " + path + ": "
+                                     + "native events will not work.");
+      }
+
+      builtPath.append(outSoPath).append(":");
+    }
+
+    return builtPath.toString();
+  }
+
+  private OutputStream getActualOutputStream() throws FileNotFoundException {
+    String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
+    if (firefoxLogFile != null) {
+      if ("/dev/stdout".equals(firefoxLogFile)) {
+        return System.out;
+      }
+      return new FileOutputStream(firefoxLogFile);
+    }
+    return getOutputStream();
   }
 
   @Override
@@ -137,7 +252,9 @@ public class XpiDriverService extends DriverService {
   public void stop() {
     lock.lock();
     try {
-      binary.quit();
+      if (process != null) {
+        process.destroy();
+      }
       profile.cleanTemporaryModel();
       profile.clean(profileDir);
     } finally {
