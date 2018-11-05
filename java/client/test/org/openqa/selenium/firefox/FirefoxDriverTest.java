@@ -293,6 +293,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 60000)
+  @Ignore(MARIONETTE)
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     FirefoxBinary binary = new FirefoxBinary();
     XpiDriverService service = new XpiDriverService.Builder()
