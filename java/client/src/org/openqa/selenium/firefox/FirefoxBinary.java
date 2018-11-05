@@ -139,6 +139,10 @@ public class FirefoxBinary {
     return executable.getPath();
   }
 
+  protected List<String> getExtraOptions() {
+    return extraOptions;
+  }
+
   public long getTimeout() {
     return timeout;
   }

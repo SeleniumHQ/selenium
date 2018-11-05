@@ -139,6 +139,7 @@ public class XpiDriverService extends DriverService {
       Map<String, String> env = envBuilder.build();
 
       List<String> cmdArray = new ArrayList<>(getArgs());
+      cmdArray.addAll(binary.getExtraOptions());
       cmdArray.add("-foreground");
       process = new CommandLine(binary.getPath(), Iterables.toArray(cmdArray, String.class));
       process.setEnvironmentVariables(env);
