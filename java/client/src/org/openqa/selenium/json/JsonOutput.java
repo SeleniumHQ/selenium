@@ -37,7 +37,6 @@ import java.util.Deque;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -262,7 +261,7 @@ public class JsonOutput implements Closeable {
         .findFirst()
         .map(Map.Entry::getValue)
         .orElseThrow(() -> new JsonException("Unable to write " + input))
-        .accept(input, depthRemaining);
+        .consume(input, depthRemaining);
 
     return this;
   }
@@ -416,16 +415,7 @@ public class JsonOutput implements Closeable {
   }
 
   @FunctionalInterface
-  private interface SafeBiConsumer<T, U> extends BiConsumer<T, U> {
-    void consume(T t, U u) throws IOException;
-
-    @Override
-    default void accept(T t, U u) {
-      try {
-        consume(t, u);
-      } catch (IOException e) {
-        throw new JsonException(e);
-      }
-    }
+  private interface SafeBiConsumer<T, U> {
+    void consume(T t, U u);
   }
 }
