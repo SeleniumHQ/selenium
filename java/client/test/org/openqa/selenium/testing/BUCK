@@ -38,6 +38,7 @@ java_library(name = 'test-base',
   srcs = [
     'JUnit4TestBase.java',
     'SeleniumTestRunner.java',
+    'StaticResources.java',
     'TestUtilities.java',
   ],
   exported_deps = [

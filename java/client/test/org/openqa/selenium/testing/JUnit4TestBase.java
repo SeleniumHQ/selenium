@@ -210,6 +210,7 @@ public abstract class JUnit4TestBase {
 
     if (driver == null ||
         (driver instanceof RemoteWebDriver && ((RemoteWebDriver)driver).getSessionId() == null)) {
+      StaticResources.ensureAvailable();
       driver = new WebDriverBuilder().get();
       storedDriver.set(driver);
     }
@@ -221,6 +222,7 @@ public abstract class JUnit4TestBase {
 
     if (driver == null ||
         (driver instanceof RemoteWebDriver && ((RemoteWebDriver)driver).getSessionId() == null)) {
+      StaticResources.ensureAvailable();
       driver = new WebDriverBuilder().get(capabilities);
       storedDriver.set(driver);
     }

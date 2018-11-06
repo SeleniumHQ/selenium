@@ -72,7 +72,7 @@ public class BuckBuild {
     commandLine.execute();
 
     if (!commandLine.isSuccessful()) {
-      throw new WebDriverException("Build failed! " + target);
+      throw new WebDriverException("Build failed! " + target + "\n" + commandLine.getStdOut());
     }
 
     return findOutput(projectRoot);
