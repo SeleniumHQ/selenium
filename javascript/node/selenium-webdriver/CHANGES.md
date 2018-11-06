@@ -1,5 +1,9 @@
 ## v.next
 
+### Changes
+
+* add `pollTimeout` argument to the `wait()` method. Default value is `200`ms
+
 ### API Changes
 
 *  Export `lib/input.Origin` from the top level `selenium-webdriver` module.
