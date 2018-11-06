@@ -1,3 +1,9 @@
+v3.141.5
+========
+
+* Default the number of threads assigned to the server to 200, 
+  which is what it was in 3.13.0
+
 v3.141.0
 ========
 

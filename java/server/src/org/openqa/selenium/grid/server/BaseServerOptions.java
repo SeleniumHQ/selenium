@@ -58,7 +58,7 @@ public class BaseServerOptions {
 
   public int getMaxServerThreads() {
     int count = config.getInt("server", "max-threads")
-        .orElse(Runtime.getRuntime().availableProcessors() * 3);
+        .orElse(200);
 
     if (count < 0) {
       throw new ConfigException("Maximum number of server threads cannot be less than 0: " + count);
