@@ -124,6 +124,24 @@ public class BaseRemoteProxyTest {
   }
 
   @Test
+  public void remoteHostParameterIsTakenInProxyAndRegistry() {
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+
+    GridNodeConfiguration nodeConfiguration = parseCliOptions("-remoteHost", "http://machine1:5555");
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    req.getConfiguration().proxy = null;
+
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
+    registry.add(p);
+
+    // values which are present in both the registration request and the registry need to
+    // come from the registration request
+    assertEquals("http://machine1:5555", p.getConfig().getRemoteHost());
+    assertEquals("http://machine1:5555",
+                 registry.getProxyById(p.getId()).getRemoteHost().toExternalForm());
+  }
+
+  @Test
   public void proxyTakesRemoteAsIdIfIdNotSpecified() {
     String remoteHost ="http://machine1:5555";
     GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
