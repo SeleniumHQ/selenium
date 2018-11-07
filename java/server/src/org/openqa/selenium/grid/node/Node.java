@@ -17,15 +17,18 @@
 
 package org.openqa.selenium.grid.node;
 
-import static org.openqa.selenium.grid.server.Server.get;
-
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.grid.web.Routes.combine;
+import static org.openqa.selenium.grid.web.Routes.delete;
+import static org.openqa.selenium.grid.web.Routes.get;
+import static org.openqa.selenium.grid.web.Routes.matching;
+import static org.openqa.selenium.grid.web.Routes.post;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.CompoundHandler;
+import org.openqa.selenium.grid.web.HandlerNotFoundException;
+import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
@@ -36,7 +39,6 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 /**
@@ -88,33 +90,39 @@ import java.util.function.Predicate;
  */
 public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
-  private final CompoundHandler handler;
   private final UUID id;
+  private final Injector injector;
+  private final Routes routes;
 
   protected Node(UUID id) {
     this.id = Objects.requireNonNull(id);
 
     Json json = new Json();
+    injector = Injector.builder()
+        .register(this)
+        .register(json)
+        .build();
 
-    NewNodeSession create = new NewNodeSession(this, json);
-    IsSessionOwner owner = new IsSessionOwner(this, json);
-    ForwardWebDriverCommand execute = new ForwardWebDriverCommand(this, json);
-    GetNodeSession read = new GetNodeSession(this, json);
-    StopNodeSession destroy = new StopNodeSession(this);
+    routes = combine(
+        get("/se/grid/node/owner/{sessionId}").using(IsSessionOwner.class)
+            .map("sessionId", SessionId::new),
+        delete("/se/grid/node/session/{sessionId}").using(StopNodeSession.class)
+            .map("sessionId", SessionId::new),
+        get("/se/grid/node/session/{sessionId}").using(GetNodeSession.class)
+            .map("sessionId", SessionId::new),
+        post("/se/grid/node/session").using(NewNodeSession.class),
+        get("/status").using(StatusHandler.class),
+        matching(req -> {
+          if (!req.getUri().startsWith("/session/")) {
+            return false;
+          }
 
-    handler = new CompoundHandler(
-        Injector.builder()
-            .register(this)
-            .register(new Json())
-            .build(),
-        ImmutableMap.<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>>builder()
-            .put(create, (inj, req) -> create)
-            .put(owner, (inj, req) -> owner)
-            .put(execute, (inj, req) -> execute)
-            .put(read, (inj, req) -> read)
-            .put(destroy, (inj, req) -> destroy)
-            .put(get("/status"), (inj, req) -> inj.newInstance(StatusHandler.class))
-            .build());
+          String[] split = req.getUri().split("/", 4);
+          SessionId sessionId = new SessionId(split[2]);
+
+          return isSessionOwner(sessionId);
+        }).using(ForwardWebDriverCommand.class)
+    ).build();
   }
 
   public UUID getId() {
@@ -137,11 +145,15 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
   @Override
   public boolean test(HttpRequest req) {
-    return handler.test(req);
+    return routes.match(injector, req).isPresent();
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    handler.execute(req, resp);
+    Optional<CommandHandler> handler = routes.match(injector, req);
+    if (!handler.isPresent()) {
+      throw new HandlerNotFoundException(req);
+    }
+    handler.get().execute(req, resp);
   }
 }

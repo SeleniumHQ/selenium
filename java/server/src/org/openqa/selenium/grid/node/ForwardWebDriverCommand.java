@@ -18,35 +18,18 @@
 package org.openqa.selenium.grid.node;
 
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.function.Predicate;
 
-class ForwardWebDriverCommand implements Predicate<HttpRequest>, CommandHandler {
+class ForwardWebDriverCommand implements CommandHandler {
 
   private final Node node;
-  private final Json json;
 
-  public ForwardWebDriverCommand(Node node, Json json) {
+  public ForwardWebDriverCommand(Node node) {
     this.node = Objects.requireNonNull(node);
-    this.json = Objects.requireNonNull(json);
-  }
-
-  @Override
-  public boolean test(HttpRequest req) {
-    if (!req.getUri().startsWith("/session/")) {
-      return false;
-    }
-
-    String[] split = req.getUri().split("/", 4);
-    SessionId id = new SessionId(split[2]);
-
-    return node.isSessionOwner(id);
   }
 
   @Override
