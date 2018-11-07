@@ -17,18 +17,21 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.grid.web.Routes.combine;
+import static org.openqa.selenium.grid.web.Routes.matching;
 
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.CompoundHandler;
+import org.openqa.selenium.grid.web.HandlerNotFoundException;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.injector.Injector;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -37,26 +40,33 @@ import java.util.function.Predicate;
 public class Router implements Predicate<HttpRequest>, CommandHandler {
 
   private final Injector injector;
-  private final Routes handlerFactory;
+  private final Routes routes;
 
   public Router(SessionMap sessions, Distributor distributor) {
-    HandleSession activeSession = new HandleSession(sessions);
+    injector = Injector.builder()
+        .register(sessions)
+        .register(distributor)
+        .register(new Json())
+        .build();
 
-    handler = new CompoundHandler(
-        Injector.builder().build(),
-        ImmutableMap.of(
-            activeSession, (inj, req) -> activeSession,
-            sessions, (inj, req) -> sessions,
-            distributor, (inj, req) -> distributor));
+    routes = combine(
+        matching(sessions).using(sessions),
+        matching(distributor).using(distributor),
+        matching(req -> req.getUri().startsWith("/session/")).using(HandleSession.class))
+        .build();
   }
 
   @Override
   public boolean test(HttpRequest req) {
-    return handler.test(req);
+    return routes.match(injector, req).isPresent();
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    handler.execute(req, resp);
+    Optional<CommandHandler> handler = routes.match(injector, req);
+    if (!handler.isPresent()) {
+      throw new HandlerNotFoundException(req);
+    }
+    handler.get().execute(req, resp);
   }
 }
