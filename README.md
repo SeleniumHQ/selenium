@@ -120,6 +120,7 @@ from https://github.com/facebook/watchman
 * `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE)
 * [Python 2.7](https://www.python.org/)
 * `python` on the PATH (make sure it's Python 2.7, as buck build tool is not Python 3 compatible)
+* [The Requests Library](http://python-requests.org) for Python: `pip install requests`
 * MacOS users should have XCode installed
 
 Although the build system is based on rake, it's **strongly advised**
