@@ -21,7 +21,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
@@ -34,9 +33,8 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Predicate;
 
-class HandleSession implements Predicate<HttpRequest>, CommandHandler {
+class HandleSession implements CommandHandler {
 
   private final LoadingCache<SessionId, CommandHandler> knownSessions;
 
@@ -58,17 +56,7 @@ class HandleSession implements Predicate<HttpRequest>, CommandHandler {
   }
 
   @Override
-  public boolean test(HttpRequest req) {
-    return req.getUri().startsWith("/session/");
-  }
-
-  @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    if (!test(req)) {
-      throw new UnsupportedCommandException(
-          String.format("(%s) %s", req.getMethod(), req.getUri()));
-    }
-
     String[] split = req.getUri().split("/", 4);
     SessionId id = new SessionId(split[2]);
 
@@ -81,6 +69,5 @@ class HandleSession implements Predicate<HttpRequest>, CommandHandler {
       }
       throw new RuntimeException(cause);
     }
-
   }
 }

@@ -39,10 +39,10 @@ public class RoutesTest {
 
   @Test
   public void canCreateAHandlerWithNoDependencies() {
-    Routes factory = get("/hello").using(SimpleHandler.class).build();
+    Routes routes = get("/hello").using(SimpleHandler.class).build();
 
     Injector injector = Injector.builder().build();
-    CommandHandler handler = factory.match(injector, new HttpRequest(GET, "/hello")).get();
+    CommandHandler handler = routes.match(injector, new HttpRequest(GET, "/hello")).get();
 
     assertThat(handler).isInstanceOf(SimpleHandler.class);
   }
@@ -56,11 +56,11 @@ public class RoutesTest {
 
   @Test
   public void canCreateAHandlerWithADependencyInTheInjector() {
-    Routes factory = get("/hello").using(DependencyHandler.class).build();
+    Routes routes = get("/hello").using(DependencyHandler.class).build();
 
     SessionId id = new SessionId(UUID.randomUUID());
     Injector injector = Injector.builder().register(id).build();
-    CommandHandler handler = factory.match(injector, new HttpRequest(GET, "/hello")).get();
+    CommandHandler handler = routes.match(injector, new HttpRequest(GET, "/hello")).get();
 
     assertThat(handler).isInstanceOf(DependencyHandler.class);
     assertThat(((DependencyHandler) handler).id).isEqualTo(id);
@@ -82,13 +82,13 @@ public class RoutesTest {
 
   @Test
   public void canCreateAHandlerWithAStringDependencyThatIsAUrlTemplateParameter() {
-    Routes factory = get("/hello/{cheese}")
+    Routes routes = get("/hello/{cheese}")
         .using(StringDepHandler.class)
         .map("cheese", Function.identity())
         .build();
 
     Injector injector = Injector.builder().build();
-    CommandHandler handler = factory.match(injector, new HttpRequest(GET, "/hello/cheddar"))
+    CommandHandler handler = routes.match(injector, new HttpRequest(GET, "/hello/cheddar"))
         .get();
 
     assertThat(handler).isInstanceOf(StringDepHandler.class);
@@ -111,14 +111,14 @@ public class RoutesTest {
 
   @Test
   public void shouldAllowAMappingFunctionToBeSetForEachParameter() {
-    Routes factory = get("/hello/{sessionId}")
+    Routes routes = get("/hello/{sessionId}")
         .using(DependencyHandler.class)
         .map("sessionId", SessionId::new)
         .build();
 
     SessionId id = new SessionId(UUID.randomUUID());
     Injector injector = Injector.builder().build();
-    CommandHandler handler = factory.match(injector, new HttpRequest(GET, "/hello/" + id))
+    CommandHandler handler = routes.match(injector, new HttpRequest(GET, "/hello/" + id))
         .get();
 
     assertThat(handler).isInstanceOf(DependencyHandler.class);
@@ -127,13 +127,13 @@ public class RoutesTest {
 
   @Test
   public void canDecorateSpecificHandlers() throws IOException {
-    Routes factory = get("/foo")
+    Routes routes = get("/foo")
         .using(SimpleHandler.class)
         .decorateWith(ResponseDecorator.class)
         .build();
 
     HttpRequest request = new HttpRequest(GET, "/foo");
-    CommandHandler handler = factory.match(Injector.builder().build(), request).get();
+    CommandHandler handler = routes.match(Injector.builder().build(), request).get();
     HttpResponse response = new HttpResponse();
 
     handler.execute(request, response);
@@ -160,7 +160,7 @@ public class RoutesTest {
 
   @Test
   public void canDecorateAllHandlers() throws IOException {
-    Routes factory = get("/session/{sessionId}")
+    Routes routes = get("/session/{sessionId}")
         .using(SimpleHandler.class)
         .map("sessionId", SessionId::new)
         .decorateWith(ResponseDecorator.class)
@@ -168,7 +168,7 @@ public class RoutesTest {
 
     SessionId id = new SessionId(UUID.randomUUID());
     HttpRequest request = new HttpRequest(GET, "/session/" + id);
-    CommandHandler handler = factory.match(Injector.builder().build(), request).get();
+    CommandHandler handler = routes.match(Injector.builder().build(), request).get();
     HttpResponse response = new HttpResponse();
 
     handler.execute(request, response);
@@ -179,12 +179,12 @@ public class RoutesTest {
 
   @Test
   public void shouldAllowFallbackHandlerToBeSpecified() {
-    Routes factory = post("/something")
+    Routes routes = post("/something")
         .using(SimpleHandler.class)
         .fallbackTo(SimpleHandler.class)
         .build();
 
-    CommandHandler handler = factory.match(
+    CommandHandler handler = routes.match(
         Injector.builder().build(),
         new HttpRequest(GET, "/status"))
         .get();

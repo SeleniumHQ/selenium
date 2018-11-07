@@ -74,7 +74,7 @@ public class Routes {
   }
 
   public  Optional<CommandHandler> match(Injector injector, HttpRequest request) {
-    return Optional.of(handlerFunc.apply(injector, request));
+    return Optional.ofNullable(handlerFunc.apply(injector, request));
   }
 
 }
