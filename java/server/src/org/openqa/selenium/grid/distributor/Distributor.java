@@ -17,15 +17,16 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.openqa.selenium.grid.server.Server.get;
-
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.grid.web.Routes.delete;
+import static org.openqa.selenium.grid.web.Routes.get;
+import static org.openqa.selenium.grid.web.Routes.post;
 
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.CompoundHandler;
+import org.openqa.selenium.grid.web.HandlerNotFoundException;
+import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.NewSessionPayload;
@@ -34,8 +35,8 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 /**
@@ -71,23 +72,22 @@ import java.util.function.Predicate;
  */
 public abstract class Distributor implements Predicate<HttpRequest>, CommandHandler {
 
-  private final CompoundHandler handler;
+  private final Routes routes;
+  private final Injector injector;
 
   protected Distributor() {
-    Json json = new Json();
+    injector = Injector.builder()
+        .register(this)
+        .register(new Json())
+        .register(HttpClient.Factory.createDefault())
+        .build();
 
-    CreateSession create = new CreateSession(this, json);
-    AddNode addNode = new AddNode(this, json, HttpClient.Factory.createDefault());
-    RemoveNode removeNode = new RemoveNode(this);
-
-    handler = new CompoundHandler(
-        Injector.builder().register(this).register(json).build(),
-        ImmutableMap.<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>>builder()
-            .put(create, (inj, req) -> create)
-            .put(addNode, (inj, req) -> addNode)
-            .put(removeNode, (inj, req) -> removeNode)
-            .put(get("/status"), (Injector inj, HttpRequest req) -> inj.newInstance(StatusHandler.class))
-            .build());
+    routes = Routes.combine(
+        post("/session").using(CreateSession.class),
+        post("/se/grid/distributor/node").using(AddNode.class),
+        delete("/se/grid/distributor/node/{nodeId}").using(RemoveNode.class).map("nodeId", UUID::fromString),
+        get("/status").using(StatusHandler.class)
+    ).build();
   }
 
   public abstract Session newSession(NewSessionPayload payload) throws SessionNotCreatedException;
@@ -100,11 +100,15 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
 
   @Override
   public boolean test(HttpRequest req) {
-    return handler.test(req);
+    return routes.match(injector, req).isPresent();
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    handler.execute(req, resp);
+    Optional<CommandHandler> handler = routes.match(injector, req);
+    if (!handler.isPresent()) {
+      throw new HandlerNotFoundException(req);
+    }
+    handler.get().execute(req, resp);
   }
 }

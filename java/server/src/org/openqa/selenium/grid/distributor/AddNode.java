@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.distributor;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -39,10 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class AddNode implements Predicate<HttpRequest>, CommandHandler {
+public class AddNode implements CommandHandler {
 
   private final Distributor distributor;
   private final Json json;
@@ -52,11 +50,6 @@ public class AddNode implements Predicate<HttpRequest>, CommandHandler {
     this.distributor = Objects.requireNonNull(distributor);
     this.json = Objects.requireNonNull(json);
     this.httpFactory = Objects.requireNonNull(httpFactory);
-  }
-
-  @Override
-  public boolean test(HttpRequest req) {
-    return req.getMethod() == POST && "/se/grid/distributor/node".equals(req.getUri());
   }
 
   @Override
