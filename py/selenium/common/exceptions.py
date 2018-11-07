@@ -133,10 +133,10 @@ class InvalidElementStateException(WebDriverException):
 
 class UnexpectedAlertPresentException(WebDriverException):
     """
-    Thrown when an unexpected alert is appeared.
+    Thrown when an unexpected alert has appeared.
 
-    Usually raised when when an expected modal is blocking webdriver form executing any
-    more commands.
+    Usually raised when  an unexpected modal is blocking the webdriver from executing
+    commands.
     """
     def __init__(self, msg=None, screen=None, stacktrace=None, alert_text=None):
         super(UnexpectedAlertPresentException, self).__init__(msg, screen, stacktrace)
