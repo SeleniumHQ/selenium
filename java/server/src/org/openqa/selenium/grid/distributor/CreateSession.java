@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.distributor;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -33,9 +32,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Objects;
-import java.util.function.Predicate;
 
-class CreateSession implements Predicate<HttpRequest>, CommandHandler {
+class CreateSession implements CommandHandler {
 
   private final Distributor distributor;
   private final Json json;
@@ -43,11 +41,6 @@ class CreateSession implements Predicate<HttpRequest>, CommandHandler {
   public CreateSession(Distributor distributor, Json json) {
     this.distributor = Objects.requireNonNull(distributor);
     this.json = Objects.requireNonNull(json);
-  }
-
-  @Override
-  public boolean test(HttpRequest req) {
-    return req.getMethod() == POST && "/session".equals(req.getUri());
   }
 
   @Override

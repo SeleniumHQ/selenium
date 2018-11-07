@@ -17,42 +17,26 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Predicate;
 
-class RemoveNode implements Predicate<HttpRequest>, CommandHandler {
-
-  public static final UrlTemplate TEMPLATE = new UrlTemplate("/se/grid/distributor/node/{nodeId}");
+class RemoveNode implements CommandHandler {
 
   private final Distributor distributor;
+  private final UUID nodeId;
 
-  public RemoveNode(Distributor distributor) {
+  public RemoveNode(Distributor distributor, UUID nodeId) {
     this.distributor = Objects.requireNonNull(distributor);
-  }
-
-  @Override
-  public boolean test(HttpRequest req) {
-    return req.getMethod() == DELETE && TEMPLATE.match(req.getUri()) != null;
+    this.nodeId = Objects.requireNonNull(nodeId);
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    UrlTemplate.Match match = TEMPLATE.match(req.getUri());
-    if (match == null || match.getParameters().get("nodeId") == null) {
-      throw new WebDriverException("Node ID not found in URL: " + req.getUri());
-    }
-
-    UUID nodeId = UUID.fromString(match.getParameters().get("nodeId"));
     distributor.remove(nodeId);
   }
 }
