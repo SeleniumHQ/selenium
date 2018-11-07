@@ -213,6 +213,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     ofNullable(cliConfig.getProxy()).ifPresent(v -> proxy = v);
     ofNullable(cliConfig.getEnablePlatformVerification()).ifPresent(v -> enablePlatformVerification = v);
     ofNullable(cliConfig.getId()).ifPresent(v -> id = v);
+    ofNullable(cliConfig.getRemoteHost()).ifPresent(v -> remoteHost = v);
     if (cliConfig.getHub() != null) {
       hub = cliConfig.getHub();
     } else if (cliConfig.getHubHost() != null || cliConfig.getHubPort() != null) {
