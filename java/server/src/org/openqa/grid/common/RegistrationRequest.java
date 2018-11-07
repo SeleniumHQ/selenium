@@ -203,6 +203,9 @@ public class RegistrationRequest {
     if (pendingConfiguration.port != null) {
       pendingRequest.configuration.port = pendingConfiguration.port;
     }
+    if (pendingConfiguration.remoteHost != null) {
+      pendingRequest.configuration.remoteHost = pendingConfiguration.remoteHost;
+    }
 
     // make sure we have a valid host
     pendingRequest.configuration.fixUpHost();

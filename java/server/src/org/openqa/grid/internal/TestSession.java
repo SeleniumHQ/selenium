@@ -77,7 +77,9 @@ public class TestSession {
 
   private static final Logger log = Logger.getLogger(TestSession.class.getName());
   static final int MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED = 5000;
-
+  private static final String PROXY_HOST_HEADER_NAME = "Proxy-Host";
+  private static final String HOST_HEADER_NAME = "Host";
+  
   private final String internalKey;
   private final TestSlot slot;
   private volatile ExternalSessionKey externalKey = null;
@@ -452,10 +454,20 @@ public class TestSession {
       proxyRequest = new HttpRequest(HttpMethod.valueOf(request.getMethod()), uri);
     }
 
+    String host = request.getHeader(HOST_HEADER_NAME);
+    String proxyHost = request.getHeader(PROXY_HOST_HEADER_NAME);
+    if (proxyHost == null || proxyHost.isEmpty()) {
+      proxyRequest.setHeader(PROXY_HOST_HEADER_NAME, host);
+    } else {
+      proxyRequest.setHeader(HOST_HEADER_NAME, remoteURL.getHost());
+    }
     for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements(); ) {
       String headerName = (String) e.nextElement();
 
       if ("Content-Length".equalsIgnoreCase(headerName)) {
+        continue; // already set
+      }
+      if (HOST_HEADER_NAME.equalsIgnoreCase(headerName) || PROXY_HOST_HEADER_NAME.equalsIgnoreCase(headerName)) {
         continue; // already set
       }
 
