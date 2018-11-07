@@ -18,24 +18,19 @@
 package org.openqa.selenium.grid.sessionmap;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
-import java.util.function.Predicate;
 
-class AddToSessionMap implements Predicate<HttpRequest>, CommandHandler {
+class AddToSessionMap implements CommandHandler {
 
-  private static final UrlTemplate TEMPLATE = new UrlTemplate("/se/grid/session");
   private final Json json;
   private final SessionMap sessions;
 
@@ -45,16 +40,7 @@ class AddToSessionMap implements Predicate<HttpRequest>, CommandHandler {
   }
 
   @Override
-  public boolean test(HttpRequest req) {
-    return req.getMethod() == POST && TEMPLATE.match(req.getUri()) != null;
-  }
-
-  @Override
   public void execute(HttpRequest req, HttpResponse resp) {
-    if (!test(req)) {
-      throw new NoSuchSessionException("Session ID not found in URL: " + req.getUri());
-    }
-
     Session session = json.toType(req.getContentString(), Session.class);
     Objects.requireNonNull(session, "Session to add must be set");
 

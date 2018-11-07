@@ -17,12 +17,15 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.grid.web.Routes.combine;
+import static org.openqa.selenium.grid.web.Routes.delete;
+import static org.openqa.selenium.grid.web.Routes.post;
 
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.CompoundHandler;
+import org.openqa.selenium.grid.web.HandlerNotFoundException;
+import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
@@ -31,6 +34,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -67,7 +71,8 @@ import java.util.function.Predicate;
  */
 public abstract class SessionMap implements Predicate<HttpRequest>, CommandHandler {
 
-  private final CompoundHandler handler;
+  private final Routes routes;
+  private final Injector injector;
 
   public abstract boolean add(Session session);
 
@@ -78,25 +83,31 @@ public abstract class SessionMap implements Predicate<HttpRequest>, CommandHandl
   public SessionMap() {
     Json json = new Json();
 
-    AddToSessionMap add = new AddToSessionMap(json, this);
-    GetFromSessionMap get = new GetFromSessionMap(json, this);
-    RemoveFromSession remove = new RemoveFromSession(json, this);
+    injector = Injector.builder()
+        .register(this)
+        .register(new Json())
+        .build();
 
-    handler = new CompoundHandler(
-        Injector.builder().build(),
-        ImmutableMap.of(
-            get, (inj, req) -> get,   // List "get" first because it's most commonly called
-            add, (inj, req) -> add,
-            remove, (inj, req) -> remove));
+    routes = combine(
+        post("/se/grid/session").using(AddToSessionMap.class),
+        Routes.get("/se/grid/session/{sessionId}").using(GetFromSessionMap.class)
+            .map("sessionId", SessionId::new),
+        delete("/se/grid/session/{sessionId}").using(RemoveFromSession.class)
+            .map("sessionId", SessionId::new))
+        .build();
   }
 
   @Override
   public boolean test(HttpRequest req) {
-    return handler.test(req);
+    return routes.match(injector, req).isPresent();
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    handler.execute(req, resp);
+    Optional<CommandHandler> handler = routes.match(injector, req);
+    if (!handler.isPresent()) {
+      throw new HandlerNotFoundException(req);
+    }
+    handler.get().execute(req, resp);
   }
 }

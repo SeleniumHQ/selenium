@@ -18,14 +18,11 @@
 package org.openqa.selenium.grid.sessionmap;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -33,33 +30,21 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.function.Predicate;
 
-class GetFromSessionMap implements Predicate<HttpRequest>, CommandHandler {
+class GetFromSessionMap implements CommandHandler {
 
-  private static final UrlTemplate TEMPLATE = new UrlTemplate("/se/grid/session/{sessionId}");
   private final Json json;
   private final SessionMap sessions;
+  private SessionId id;
 
-  public GetFromSessionMap(Json json, SessionMap sessions) {
+  public GetFromSessionMap(Json json, SessionMap sessions, SessionId id) {
     this.json = Objects.requireNonNull(json);
     this.sessions = Objects.requireNonNull(sessions);
-  }
-
-  @Override
-  public boolean test(HttpRequest request) {
-    return request.getMethod() == GET && TEMPLATE.match(request.getUri()) != null;
+    this.id = Objects.requireNonNull(id);
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    UrlTemplate.Match match = TEMPLATE.match(req.getUri());
-    if (match == null || match.getParameters().get("sessionId") == null) {
-      throw new NoSuchSessionException("Session ID not found in URL: " + req.getUri());
-    }
-
-    SessionId id = new SessionId(match.getParameters().get("sessionId"));
-
     Session session = sessions.get(id);
 
     resp.setContent(json.toJson(ImmutableMap.of("value", session)).getBytes(UTF_8));
