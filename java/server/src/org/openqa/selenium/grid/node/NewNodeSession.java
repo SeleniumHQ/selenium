@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.node;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.Session;
@@ -31,9 +30,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
-class NewNodeSession implements Predicate<HttpRequest>, CommandHandler {
+class NewNodeSession implements CommandHandler {
 
   private final BiConsumer<HttpResponse, Object> encodeJson;
   private final Node node;
@@ -46,11 +44,6 @@ class NewNodeSession implements Predicate<HttpRequest>, CommandHandler {
     this.encodeJson = (res, obj) -> {
       res.setContent(json.toJson(obj).getBytes(UTF_8));
     };
-  }
-
-  @Override
-  public boolean test(HttpRequest req) {
-    return req.getMethod() == POST && "/se/grid/node/session".equals(req.getUri());
   }
 
   @Override
