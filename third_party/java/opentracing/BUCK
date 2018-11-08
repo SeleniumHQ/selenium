@@ -6,6 +6,7 @@ prebuilt_jar(
   visibility = [
     '//third_party/java/contrib:opentracing-concurrent',
     '//third_party/java/contrib:opentracing-okhttp3'
+    '//java/client/src/org/openqa/selenium/remote/tracing/opentracing:',
   ],
 )
 
@@ -19,7 +20,8 @@ prebuilt_jar(
   ],
   visibility = [
     '//third_party/java/contrib:opentracing-concurrent',
-    '//third_party/java/contrib:opentracing-okhttp3'
+    '//third_party/java/contrib:opentracing-okhttp3',
+    '//java/client/src/org/openqa/selenium/remote/tracing/opentracing:',
   ],
 )
 

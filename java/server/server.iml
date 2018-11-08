@@ -21,6 +21,8 @@
     <orderEntry type="library" scope="TEST" name="jetty-orig" level="project" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="library" name="objenesis" level="project" />
+    <orderEntry type="library" name="okhttp" level="project" />
+    <orderEntry type="library" name="opencensus" level="project" />
     <orderEntry type="library" name="opentracing" level="project" />
     <orderEntry type="library" name="mockito-core" level="project" />
     <orderEntry type="library" name="servlet-api" level="project" />

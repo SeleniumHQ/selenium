@@ -1,0 +1,10 @@
+prebuilt_jar(
+  name = 'grpc-context',
+  maven_coords = 'io.grpc:grpc-context:jar:1.14.0',
+  binary_jar = 'grpc-context-1.14.0.jar',
+  source_jar = 'grpc-context-1.14.0-sources.jar',
+  visibility = [
+    '//third_party/java/opencensus:opencensus-api'
+  ],
+)
+

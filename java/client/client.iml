@@ -37,6 +37,7 @@
     <orderEntry type="library" name="netty" level="project" />
     <orderEntry type="library" name="objenesis" level="project" />
     <orderEntry type="library" name="okhttp" level="project" />
+    <orderEntry type="library" name="opencensus" level="project" />
     <orderEntry type="library" name="opentracing" level="project" />
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" scope="TEST" name="slf4j" level="project" />
