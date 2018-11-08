@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="junit">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-4.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-vintage-engine-5.3.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-4.12-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-vintage-engine-5.3.1-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

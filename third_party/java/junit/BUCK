@@ -1,8 +1,8 @@
 prebuilt_jar(
   name = 'junit',
-  maven_coords = 'junit:junit:jar:4.12',
-  binary_jar = 'junit-4.12.jar',
-  source_jar = 'junit-4.12-sources.jar',
+  maven_coords = 'org.junit.vintage:junit-vintage-engine:jar:5.3.1',
+  binary_jar = 'junit-vintage-engine-5.3.1.jar',
+  source_jar = 'junit-vintage-engine-5.3.1-sources.jar',
   deps = [
     '//third_party/java/hamcrest:hamcrest-core'
   ],
