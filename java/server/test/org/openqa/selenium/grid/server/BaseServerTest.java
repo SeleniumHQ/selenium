@@ -20,7 +20,7 @@ package org.openqa.selenium.grid.server;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.grid.server.Server.get;
+import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableMap;
@@ -58,9 +58,7 @@ public class BaseServerTest {
   @Test
   public void shouldAllowAHandlerToBeRegistered() throws IOException {
     Server<?> server = new BaseServer<>(emptyOptions);
-    server.addHandler(
-        get("/cheese"),
-        (inj, ignored) -> (req, res) -> res.setContent("cheddar".getBytes(UTF_8)));
+    server.addRoute(get("/cheese").using((req, res) -> res.setContent("cheddar".getBytes(UTF_8))));
 
     server.start();
     URL url = server.getUrl();
@@ -73,12 +71,8 @@ public class BaseServerTest {
   @Test
   public void ifTwoHandlersRespondToTheSameRequestTheLastOneAddedWillBeUsed() throws IOException {
     Server<?> server = new BaseServer<>(emptyOptions);
-    server.addHandler(
-        get("/status"),
-        (inj, ignored) -> (req, res) -> res.setContent("one".getBytes(UTF_8)));
-    server.addHandler(
-        get("/status"),
-        (inj, ignored) -> (req, res) -> res.setContent("two".getBytes(UTF_8)));
+    server.addRoute(get("/status").using((req, res) -> res.setContent("one".getBytes(UTF_8))));
+    server.addRoute(get("/status").using((req, res) -> res.setContent("two".getBytes(UTF_8))));
 
     server.start();
     URL url = server.getUrl();
@@ -95,7 +89,7 @@ public class BaseServerTest {
     server.start();
 
     Assertions.assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-        () -> server.addHandler(get("/foo"), (inj, ignored) -> (req, res) -> {}));
+        () -> server.addRoute(get("/foo").using((req, res) -> {})));
   }
 
 }

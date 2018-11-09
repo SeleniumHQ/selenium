@@ -36,6 +36,7 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
+import org.openqa.selenium.grid.web.Routes;
 
 @AutoService(CliCommand.class)
 public class DistributorServer implements CliCommand {
@@ -86,7 +87,10 @@ public class DistributorServer implements CliCommand {
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addHandler(distributor, (inj, req) -> new W3CCommandHandler(distributor));
+      server.addRoute(
+          Routes.matching(distributor)
+              .using(distributor)
+              .decorateWith(W3CCommandHandler.class));
       server.start();
     };
   }

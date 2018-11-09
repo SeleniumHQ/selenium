@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.sessionmap.httpd;
 
+import static org.openqa.selenium.grid.web.Routes.matching;
+
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.JCommander;
@@ -36,6 +38,7 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.web.Routes;
 
 @AutoService(CliCommand.class)
 public class SessionMapServer implements CliCommand {
@@ -86,7 +89,7 @@ public class SessionMapServer implements CliCommand {
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addHandler(sessions, (inj, req) -> new W3CCommandHandler(sessions));
+      server.addRoute(matching(sessions).using(sessions).decorateWith(W3CCommandHandler.class));
       server.start();
     };
   }

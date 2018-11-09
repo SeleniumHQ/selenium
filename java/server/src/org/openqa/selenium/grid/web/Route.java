@@ -27,11 +27,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public abstract class Route<T extends Route> {
 
   private final List<Class<? extends CommandHandler>> decorators = new ArrayList<>();
-  private Class<? extends CommandHandler> fallback;
+  private Function<Injector, CommandHandler> fallback;
 
   protected Route() {
     // no-op
@@ -74,7 +75,19 @@ public abstract class Route<T extends Route> {
   }
 
   public T fallbackTo(Class<? extends CommandHandler> fallback) {
-    this.fallback = Objects.requireNonNull(fallback);
+    Objects.requireNonNull(fallback);
+
+    this.fallback = inj -> inj.newInstance(fallback);
+
+    //noinspection unchecked
+    return (T) this;
+  }
+
+  public T fallbackTo(CommandHandler fallback) {
+    Objects.requireNonNull(fallback);
+
+    this.fallback = inj -> fallback;
+
     //noinspection unchecked
     return (T) this;
   }
@@ -101,6 +114,6 @@ public abstract class Route<T extends Route> {
   }
 
   protected CommandHandler getFallback(Injector injector) {
-    return fallback == null ? null : injector.newInstance(fallback);
+    return fallback == null ? null : fallback.apply(injector);
   }
 }

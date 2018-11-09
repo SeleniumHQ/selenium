@@ -17,12 +17,19 @@
 
 package org.openqa.selenium.grid.server;
 
+import static org.openqa.selenium.grid.web.Routes.combine;
+
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.injector.Injector;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,10 +37,19 @@ import javax.servlet.http.HttpServletResponse;
 
 class CommandHandlerServlet extends HttpServlet {
 
-  private final CommandHandler handler;
+  private final Routes routes;
+  private final Injector injector;
 
-  public CommandHandlerServlet(CommandHandler handler) {
-    this.handler = Objects.requireNonNull(handler);
+  public CommandHandlerServlet(Routes routes) {
+    Objects.requireNonNull(routes);
+    this.routes = combine(routes)
+        .fallbackTo(
+            new W3CCommandHandler(
+                (req, res) -> {
+                  throw new UnsupportedCommandException(String.format(
+                      "Unknown command: (%s) %s", req.getMethod(), req.getUri()));
+                })).build();
+    this.injector = Injector.builder().register(new Json()).build();
   }
 
   @Override
@@ -42,6 +58,11 @@ class CommandHandlerServlet extends HttpServlet {
     HttpRequest request = new ServletRequestWrappingHttpRequest(req);
     HttpResponse response = new ServletResponseWrappingHttpResponse(resp);
 
-    handler.execute(request, response);
+    Optional<CommandHandler> possibleMatch = routes.match(injector, request);
+    if (possibleMatch.isPresent()) {
+      possibleMatch.get().execute(request, response);
+    } else {
+      throw new IllegalStateException("It should not be possible to get here");
+    }
   }
 }

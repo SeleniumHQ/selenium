@@ -36,6 +36,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
@@ -66,7 +67,7 @@ public class EndToEndTest {
     Router router = new Router(sessions, distributor);
 
     Server<?> server = createServer();
-    server.addHandler(router, (inj, req) -> router);
+    server.addRoute(Routes.matching(router).using(router));
     server.start();
 
     exerciseDriver(server);
@@ -85,14 +86,14 @@ public class EndToEndTest {
 
     LocalSessionMap localSessions = new LocalSessionMap();
     Server<?> sessionServer = createServer();
-    sessionServer.addHandler(localSessions, (inj, req) -> localSessions);
+    sessionServer.addRoute(Routes.matching(localSessions).using(localSessions));
     sessionServer.start();
 
     SessionMap sessions = new RemoteSessionMap(getClient(sessionServer));
 
     LocalDistributor localDistributor = new LocalDistributor();
     Server<?> distributorServer = createServer();
-    distributorServer.addHandler(localDistributor, (inj, req) -> localDistributor);
+    distributorServer.addRoute(Routes.matching(localDistributor).using(localDistributor));
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(getClient(distributorServer));
@@ -104,14 +105,14 @@ public class EndToEndTest {
         .build();
     Server<?> nodeServer = new BaseServer<>(new BaseServerOptions(
         new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
-    nodeServer.addHandler(localNode, (inj, req) -> localNode);
+    nodeServer.addRoute(Routes.matching(localNode).using(localNode));
     nodeServer.start();
 
     distributor.add(localNode);
 
     Router router = new Router(sessions, distributor);
     Server<?> routerServer = createServer();
-    routerServer.addHandler(router, (inj, req) -> router);
+    routerServer.addRoute(Routes.matching(router).using(router));
     routerServer.start();
 
     exerciseDriver(routerServer);

@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.server;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.grid.web.Routes.matching;
 
 import com.beust.jcommander.JCommander;
 
@@ -35,6 +36,7 @@ import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -122,14 +124,11 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
     addServlet(driverServlet, "/wd/hub/*");
     addServlet(driverServlet, "/webdriver/*");
 
-    addHandler(req -> true, new BiFunction<Injector, HttpRequest, CommandHandler>() {
-      @Override
-      public CommandHandler apply(Injector inj, HttpRequest ignored) {
-        Json json = inj.newInstance(Json.class);
-
-        return new DisplayHelpHandler(json, GridRole.get(configuration.role), "/wd/hub");
-      }
-    });
+    addRoute(
+        matching(req -> true).using(new DisplayHelpHandler(
+            new Json(),
+            GridRole.get(configuration.role),
+            "/wd/hub")));
 
     addRcSupport();
     addExtraServlets();
