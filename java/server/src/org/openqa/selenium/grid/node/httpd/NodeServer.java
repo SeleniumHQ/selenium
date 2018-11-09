@@ -43,6 +43,7 @@ import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.SessionMapOptions;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
+import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URL;
@@ -116,7 +117,7 @@ public class NodeServer implements CliCommand {
           HttpClient.Factory.createDefault().createClient(distributorUrl));
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addHandler(node, (inj, req) -> new W3CCommandHandler(node));
+      server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler.class));
       server.start();
 
       Regularly regularly = new Regularly(

@@ -40,6 +40,7 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.web.Routes;
 
 @AutoService(CliCommand.class)
 public class Hub implements CliCommand {
@@ -91,7 +92,7 @@ public class Hub implements CliCommand {
       Router router = new Router(sessions, distributor);
 
       Server<?> server = new BaseServer<>(new BaseServerOptions(config));
-      server.addHandler(router, (inj, req) -> new W3CCommandHandler(router));
+      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();
     };
   }

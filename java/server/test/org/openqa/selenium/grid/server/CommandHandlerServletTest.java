@@ -24,12 +24,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.junit.Test;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.grid.web.CompoundHandler;
+import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorHandler;
@@ -73,10 +71,8 @@ public class CommandHandlerServletTest {
   public void shouldReturnValueFromHandlerIfUrlMatches() throws IOException {
     String cheerfulGreeting = "Hello, world!";
 
-    Injector injector = Injector.builder().register(new Json()).build();
-
     CommandHandlerServlet servlet = new CommandHandlerServlet(
-        (req, res) -> res.setContent(cheerfulGreeting.getBytes(UTF_8)));
+        Routes.matching(req -> true).using((req, res) -> res.setContent(cheerfulGreeting.getBytes(UTF_8))).build());
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/hello-world"));
     FakeHttpServletResponse response = new FakeHttpServletResponse();
@@ -89,10 +85,8 @@ public class CommandHandlerServletTest {
 
   @Test
   public void shouldCorrectlyReturnAnUnknownCommandExceptionForUnmappableUrls() throws IOException {
-    Injector injector = Injector.builder().register(new Json()).build();
-
     CommandHandlerServlet servlet = new CommandHandlerServlet(
-        new W3CCommandHandler(new CompoundHandler(injector, ImmutableMap.of())));
+        Routes.matching(req -> false).using((req, res) -> {}).decorateWith(W3CCommandHandler.class).build());
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/missing"));
     FakeHttpServletResponse response = new FakeHttpServletResponse();
@@ -108,14 +102,9 @@ public class CommandHandlerServletTest {
     Injector injector = Injector.builder().register(new Json()).build();
 
     CommandHandlerServlet servlet = new CommandHandlerServlet(
-        new W3CCommandHandler(
-            new CompoundHandler(
-                injector,
-                ImmutableMap.of(
-                    req -> true,
-                    (inj, ignored) -> (req, res) -> {
-                      throw new UnableToSetCookieException("Yowza");
-                    }))));
+        Routes.matching(req -> true).using((req, res) -> {
+          throw new UnableToSetCookieException("Yowza");
+        }).decorateWith(W3CCommandHandler.class).build());
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/exceptional"));
     FakeHttpServletResponse response = new FakeHttpServletResponse();
