@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/java/client/client.iml" filepath="$PROJECT_DIR$/java/client/client.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-web.iml" filepath="$PROJECT_DIR$/common/common-web.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ide/ide.iml" filepath="$PROJECT_DIR$/ide/ide.iml" />
       <module fileurl="file://$PROJECT_DIR$/javascript/javascript.iml" filepath="$PROJECT_DIR$/javascript/javascript.iml" />
       <module fileurl="file://$PROJECT_DIR$/py/python.iml" filepath="$PROJECT_DIR$/py/python.iml" />
       <module fileurl="file://$PROJECT_DIR$/rake-tasks/rake-tasks.iml" filepath="$PROJECT_DIR$/rake-tasks/rake-tasks.iml" />

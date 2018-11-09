@@ -33,7 +33,6 @@ require 'rake-tasks/task-gen'
 require 'rake-tasks/checks'
 require 'rake-tasks/c'
 require 'rake-tasks/selenium'
-require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/ci'
 require 'rake-tasks/copyright'
@@ -51,8 +50,6 @@ end
 def version
   "#{release_version}.5"
 end
-
-ide_version = "2.9.1"
 
 # The build system used by webdriver is layered on top of rake, and we call it
 # "crazy fun" for no readily apparent reason.
@@ -89,7 +86,7 @@ VisualStudioMappings.new.add_all(crazy_fun)
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
 # a directory structure identical to that used in the "build" folder, but
 # rooted at one of the following locations:
-["cpp/prebuilt", "ide/main/prebuilt", "javascript/firefox-driver/prebuilt"].each do |pre|
+["cpp/prebuilt", "javascript/firefox-driver/prebuilt"].each do |pre|
   crazy_fun.prebuilt_roots << pre
 end
 
@@ -98,7 +95,6 @@ end
 # from rake.
 crazy_fun.create_tasks(Dir["common/**/build.desc"])
 crazy_fun.create_tasks(Dir["cpp/**/build.desc"])
-crazy_fun.create_tasks(Dir["ide/**/build.desc"])
 crazy_fun.create_tasks(Dir["javascript/**/build.desc"])
 crazy_fun.create_tasks(Dir["py/**/build.desc"])
 crazy_fun.create_tasks(Dir["rake-tasks/**/build.desc"])
@@ -173,11 +169,6 @@ task :support => [
 
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium'
-
-task :ide => [ "//ide:selenium-ide-multi" ]
-task :ide_proxy_setup => [ "//javascript/selenium-atoms", "se_ide:setup_proxy" ]
-task :ide_proxy_remove => [ "se_ide:remove_proxy" ]
-task :ide_bamboo => ["se_ide:assemble_ide_in_bamboo"]
 
 task :test_javascript => [
   'calcdeps',
@@ -523,11 +514,6 @@ end
 
 desc 'Build the selenium client jars'
 task 'selenium-java' => '//java/client/src/org/openqa/selenium:selenium'
-
-desc 'Build and package Selenium IDE'
-task :release_ide  => [:ide] do
-  cp 'build/ide/selenium-ide.xpi', "build/ide/selenium-ide-#{ide_version}.xpi"
-end
 
 namespace :node do
   task :atoms => [
