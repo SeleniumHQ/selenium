@@ -54,9 +54,10 @@ class CommandHandlerServlet extends HttpServlet {
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
     HttpRequest request = new ServletRequestWrappingHttpRequest(req);
     HttpResponse response = new ServletResponseWrappingHttpResponse(resp);
+
+    System.out.println(String.format("(%s) %s", request.getMethod(), request.getUri()));
 
     Optional<CommandHandler> possibleMatch = routes.match(injector, request);
     if (possibleMatch.isPresent()) {

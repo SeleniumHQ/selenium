@@ -40,10 +40,6 @@ public class DisplayHelpServlet extends HttpServlet {
   private static final long serialVersionUID = 8484071790930378855L;
   public static final String HELPER_TYPE_PARAMETER = "webdriver.server.displayhelpservlet.type";
 
-  private static final String HELPER_SERVLET_TEMPLATE = "displayhelpservlet.html";
-  private static final String HELPER_SERVLET_ASSET_PATH_PREFIX = "/assets/";
-  private static final String HELPER_SERVLET_RESOURCE_PATH = "org/openqa/grid/images/";
-  private static final String HELPER_SERVLET_TEMPLATE_CONFIG_JSON_VAR = "${servletConfigJson}";
   private CommandHandler handler;
 
   @Override
