@@ -24,6 +24,7 @@ import static org.openqa.selenium.remote.DriverCommand.QUIT;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -36,6 +37,8 @@ import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -127,30 +130,35 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
     }
 
+    DistributedTracer tracer = DistributedTracer.getInstance();
+
     if (NEW_SESSION.equals(command.getName())) {
       if (commandCodec != null) {
         throw new SessionNotCreatedException("Session already exists");
       }
-      ProtocolHandshake handshake = new ProtocolHandshake();
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
-      ProtocolHandshake.Result result = handshake.createSession(client, command);
-      Dialect dialect = result.getDialect();
-      commandCodec = dialect.getCommandCodec();
-      for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
-        defineCommand(entry.getKey(), entry.getValue());
+      try (Span span = tracer.createSpan("new-session", tracer.getActiveSpan())) {
+        ProtocolHandshake handshake = new ProtocolHandshake();
+        log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
+        ProtocolHandshake.Result result = handshake.createSession(client, command);
+        Dialect dialect = result.getDialect();
+        commandCodec = dialect.getCommandCodec();
+        for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
+          defineCommand(entry.getKey(), entry.getValue());
+        }
+        responseCodec = dialect.getResponseCodec();
+        log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
+        return result.createResponse();
       }
-      responseCodec = dialect.getResponseCodec();
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
-      return result.createResponse();
     }
 
     if (commandCodec == null || responseCodec == null) {
       throw new WebDriverException(
-        "No command or response codec has been defined. Unable to proceed");
+          "No command or response codec has been defined. Unable to proceed");
     }
 
     HttpRequest httpRequest = commandCodec.encode(command);
-    try {
+    try (Span span = tracer.createSpan(command.getName(), tracer.getActiveSpan())) {
+      span.addTag("selenium-sessionid", String.valueOf(command.getSessionId()));
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
       HttpResponse httpResponse = client.execute(httpRequest);
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
