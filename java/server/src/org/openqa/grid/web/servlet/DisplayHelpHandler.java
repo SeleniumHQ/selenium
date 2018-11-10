@@ -17,8 +17,16 @@
 
 package org.openqa.grid.web.servlet;
 
+import static com.google.common.net.MediaType.CSS_UTF_8;
+import static com.google.common.net.MediaType.HTML_UTF_8;
+import static com.google.common.net.MediaType.ICO;
+import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
+import static com.google.common.net.MediaType.JPEG;
+import static com.google.common.net.MediaType.PNG;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
 
@@ -34,18 +42,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Displays a somewhat useful help signpost page. Expects {@link #HELPER_TYPE_PARAMETER} to be
- * set as a servlet context init parameter with a value of "hub", "node", or "standalone"
+ * Displays a somewhat useful help signpost page.
  */
 public class DisplayHelpHandler implements CommandHandler {
 
-  public static final String HELPER_TYPE_PARAMETER = "webdriver.server.displayhelpservlet.type";
+  private static Map<String, MediaType> TYPES = ImmutableMap.of(
+      ".js", JAVASCRIPT_UTF_8,
+      ".css", CSS_UTF_8,
+      ".png", PNG,
+      ".jpg", JPEG,
+      ".ico", ICO);
 
   private static final String HELPER_SERVLET_TEMPLATE = "displayhelpservlet.html";
   private static final String HELPER_SERVLET_ASSET_PATH_PREFIX = "/assets/";
@@ -54,13 +67,11 @@ public class DisplayHelpHandler implements CommandHandler {
 
   private final Json json;
   private final GridRole role;
-  private final String consolePath;
   private final DisplayHelpServletConfig servletConfig;
 
   public DisplayHelpHandler(Json json, GridRole role, String consolePath) {
     this.json = Objects.requireNonNull(json);
     this.role = Objects.requireNonNull(role);
-    this.consolePath = Objects.requireNonNull(consolePath);
 
     this.servletConfig = new DisplayHelpServletConfig(
         new BuildInfo().getReleaseLabel(),
@@ -76,6 +87,15 @@ public class DisplayHelpHandler implements CommandHandler {
         !resource.replace(HELPER_SERVLET_ASSET_PATH_PREFIX, "").equals("")) {
       // request is for an asset of the help page
       resource = resource.replace(HELPER_SERVLET_ASSET_PATH_PREFIX, "");
+      int index = resource.lastIndexOf('.');
+      MediaType type = HTML_UTF_8;
+      if (index != -1) {
+        String extension = resource.substring(index);
+        type = TYPES.getOrDefault(extension, HTML_UTF_8);
+      }
+
+      resp.setHeader("Content-Type", type.toString());
+
       try (InputStream in = getResourceInputStream(resource)) {
         if (in == null) {
           resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -111,14 +131,15 @@ public class DisplayHelpHandler implements CommandHandler {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
           }
 
-          resp.setHeader("Content-Type", MediaType.HTML_UTF_8.toString());
+          resp.setHeader("Content-Type", HTML_UTF_8.toString());
           resp.setContent(updatedTemplate.getBytes(UTF_8));
         }
       }
     }
   }
 
-  private String getHelperType() {
+  @VisibleForTesting
+  String getHelperType() {
     switch (role) {
       case HUB: {
         return "Grid Hub";
