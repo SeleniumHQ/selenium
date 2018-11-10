@@ -43,6 +43,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -103,8 +104,10 @@ public class EndToEndTest {
     LocalNode localNode = LocalNode.builder(nodeUri, sessions)
         .add(driverCaps, createFactory(nodeUri))
         .build();
-    Server<?> nodeServer = new BaseServer<>(new BaseServerOptions(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
+    Server<?> nodeServer = new BaseServer<>(
+        DistributedTracer.builder().build(),
+        new BaseServerOptions(
+            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
     nodeServer.addRoute(Routes.matching(localNode).using(localNode));
     nodeServer.start();
 
@@ -124,7 +127,7 @@ public class EndToEndTest {
 
   private Server<?> createServer() {
     int port = PortProber.findFreePort();
-    return new BaseServer<>(new BaseServerOptions(
+    return new BaseServer<>(DistributedTracer.builder().build(), new BaseServerOptions(
         new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
   }
 

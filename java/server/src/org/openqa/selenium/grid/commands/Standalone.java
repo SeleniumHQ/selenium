@@ -44,6 +44,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -119,7 +120,9 @@ public class Standalone implements CliCommand {
 
       distributor.add(node.build());
 
-      Server<?> server = new BaseServer<>(new BaseServerOptions(config));
+      Server<?> server = new BaseServer<>(
+          DistributedTracer.getInstance(),
+          new BaseServerOptions(config));
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();
     };

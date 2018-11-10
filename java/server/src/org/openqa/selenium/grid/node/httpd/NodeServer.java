@@ -45,6 +45,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMapOptions;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.net.URL;
 import java.time.Duration;
@@ -116,7 +117,7 @@ public class NodeServer implements CliCommand {
       Distributor distributor = new RemoteDistributor(
           HttpClient.Factory.createDefault().createClient(distributorUrl));
 
-      Server<?> server = new BaseServer<>(serverOptions);
+      Server<?> server = new BaseServer<>(DistributedTracer.getInstance(), serverOptions);
       server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler.class));
       server.start();
 
