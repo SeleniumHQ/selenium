@@ -41,6 +41,7 @@ import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 @AutoService(CliCommand.class)
 public class Hub implements CliCommand {
@@ -91,7 +92,9 @@ public class Hub implements CliCommand {
       Distributor distributor = new LocalDistributor();
       Router router = new Router(sessions, distributor);
 
-      Server<?> server = new BaseServer<>(new BaseServerOptions(config));
+      Server<?> server = new BaseServer<>(
+          DistributedTracer.getInstance(),
+          new BaseServerOptions(config));
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();
     };
