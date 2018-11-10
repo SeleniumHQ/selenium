@@ -39,7 +39,6 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.BufferedInputStream;
@@ -100,9 +99,8 @@ public class ProtocolHandshake {
 
     HttpResponse response;
     long start = System.currentTimeMillis();
-    try (Span span = DistributedTracer.getInstance().getActiveSpan()) {
-      HttpTracing.inject(span, request);
-
+    DistributedTracer tracer = DistributedTracer.getInstance();
+    try (Span span = tracer.createSpan("NEW_SESSION", tracer.getActiveSpan())) {
       request.setHeader(CONTENT_LENGTH, String.valueOf(size));
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
       request.setContent(newSessionBlob);

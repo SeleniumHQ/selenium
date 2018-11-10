@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+
+import io.opentracing.tag.Tags;
 
 import java.util.Objects;
 
@@ -33,6 +37,8 @@ public class HttpTracing {
       return;
     }
 
+    span.addTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
+    span.addTag(Tags.HTTP_URL.getKey(), request.getUri());
     span.inject(request);
   }
 
@@ -43,6 +49,27 @@ public class HttpTracing {
     }
 
     intoSpan.extract(request);
+  }
+
+  public static HttpClient decorate(HttpClient existing) {
+
+    return request -> {
+      Span span = DistributedTracer.getInstance().getActiveSpan();
+      inject(span, request);
+
+      try {
+        HttpResponse response = existing.execute(request);
+
+        if (span != null) {
+          span.addTag(Tags.HTTP_STATUS.getKey(), response.getStatus());
+        }
+
+        return response;
+      } catch (Throwable throwable) {
+        throw throwable;
+      }
+    };
+
   }
 
 }
