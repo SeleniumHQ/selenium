@@ -30,6 +30,8 @@ public abstract class Span implements Closeable {
    */
   public abstract Span activate();
 
+  public abstract Span setName(String name);
+
   /**
    * Add a tag that will be transmitted across the wire to allow remote traces
    * to also have the value. This is equivalent to OpenTracing's concept of

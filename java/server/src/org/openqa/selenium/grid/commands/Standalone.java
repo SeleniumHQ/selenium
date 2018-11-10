@@ -114,15 +114,15 @@ public class Standalone implements CliCommand {
         throw new RuntimeException(e);
       }
 
-      LocalNode.Builder node = LocalNode.builder(localhost, sessions)
+      DistributedTracer tracer = DistributedTracer.getInstance();
+
+      LocalNode.Builder node = LocalNode.builder(tracer, localhost, sessions)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
       nodeFlags.configure(node);
 
       distributor.add(node.build());
 
-      Server<?> server = new BaseServer<>(
-          DistributedTracer.getInstance(),
-          new BaseServerOptions(config));
+      Server<?> server = new BaseServer<>(tracer, new BaseServerOptions(config));
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();
     };

@@ -53,6 +53,7 @@ import java.util.function.Function;
 public class EndToEndTest {
 
   private final Capabilities driverCaps = new ImmutableCapabilities("browserName", "cheese");
+  private final DistributedTracer tracer = DistributedTracer.builder().build();
 
   @Test
   public void inMemory() throws URISyntaxException {
@@ -60,7 +61,7 @@ public class EndToEndTest {
     SessionMap sessions = new LocalSessionMap();
     Distributor distributor = new LocalDistributor();
     URI nodeUri = new URI("http://localhost:4444");
-    LocalNode node = LocalNode.builder(nodeUri, sessions)
+    LocalNode node = LocalNode.builder(tracer, nodeUri, sessions)
         .add(driverCaps, createFactory(nodeUri))
         .build();
     distributor.add(node);
@@ -101,7 +102,7 @@ public class EndToEndTest {
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(nodeUri, sessions)
+    LocalNode localNode = LocalNode.builder(tracer, nodeUri, sessions)
         .add(driverCaps, createFactory(nodeUri))
         .build();
     Server<?> nodeServer = new BaseServer<>(

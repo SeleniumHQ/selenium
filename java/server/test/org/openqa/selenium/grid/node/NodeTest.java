@@ -40,6 +40,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
 import java.net.URI;
@@ -55,6 +56,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class NodeTest {
 
+  private DistributedTracer tracer;
   private LocalNode local;
   private Node node;
   private ImmutableCapabilities caps;
@@ -63,6 +65,8 @@ public class NodeTest {
 
   @Before
   public void setUp() throws URISyntaxException {
+    tracer = DistributedTracer.builder().build();
+
     caps = new ImmutableCapabilities("browserName", "cheese");
 
     uri = new URI("http://localhost:1234");
@@ -81,7 +85,7 @@ public class NodeTest {
       }
     }
 
-    local = LocalNode.builder(uri, sessions)
+    local = LocalNode.builder(tracer, uri, sessions)
         .add(caps, c -> new Handler(c))
         .add(caps, c -> new Handler(c))
         .add(caps, c -> new Handler(c))
@@ -90,6 +94,7 @@ public class NodeTest {
 
     HttpClient client = new PassthroughHttpClient<>(local);
     node = new RemoteNode(
+        tracer,
         UUID.randomUUID(),
         uri,
         ImmutableSet.of(caps),
@@ -98,9 +103,9 @@ public class NodeTest {
 
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
-    Node local = LocalNode.builder(uri, sessions).build();
+    Node local = LocalNode.builder(tracer, uri, sessions).build();
     HttpClient client = new PassthroughHttpClient<>(local);
-    Node node = new RemoteNode(UUID.randomUUID(), uri, ImmutableSet.of(), client);
+    Node node = new RemoteNode(tracer, UUID.randomUUID(), uri, ImmutableSet.of(), client);
 
     Optional<Session> session = node.newSession(caps);
 
@@ -116,7 +121,7 @@ public class NodeTest {
 
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
-    Node node = LocalNode.builder(uri, sessions)
+    Node node = LocalNode.builder(tracer, uri, sessions)
         .add(caps, (c) -> new Session(new SessionId(UUID.randomUUID()), uri, c))
         .build();
 
@@ -227,10 +232,11 @@ public class NodeTest {
       }
     }
 
-    Node local = LocalNode.builder(uri, sessions)
+    Node local = LocalNode.builder(tracer, uri, sessions)
         .add(caps, c -> new Recording())
         .build();
     Node remote = new RemoteNode(
+        tracer,
         UUID.randomUUID(),
         uri,
         ImmutableSet.of(caps),
@@ -264,7 +270,7 @@ public class NodeTest {
     AtomicReference<Instant> now = new AtomicReference<>(Instant.now());
 
     Clock clock = new MyClock(now);
-    Node node = LocalNode.builder(uri, sessions)
+    Node node = LocalNode.builder(tracer, uri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), uri, c))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
@@ -281,7 +287,7 @@ public class NodeTest {
 
   @Test
   public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
-    Node local = LocalNode.builder(uri, sessions)
+    Node local = LocalNode.builder(tracer, uri, sessions)
         .add(caps, c -> {
           throw new SessionNotCreatedException("eeek");
         })

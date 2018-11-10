@@ -35,6 +35,8 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -58,12 +60,13 @@ public class LocalNode extends Node {
   private final Cache<SessionId, SessionAndHandler> currentSessions;
 
   private LocalNode(
+      DistributedTracer tracer,
       URI uri,
       int maxSessionCount,
       Ticker ticker,
       Duration sessionTimeout,
       List<SessionFactory> factories) {
-    super(UUID.randomUUID());
+    super(tracer, UUID.randomUUID());
 
     Preconditions.checkArgument(
         maxSessionCount > 0,
@@ -92,65 +95,78 @@ public class LocalNode extends Node {
 
   @Override
   public Optional<Session> newSession(Capabilities capabilities) {
-    if (getCurrentSessionCount() >= maxSessionCount) {
-      return Optional.empty();
+    try (Span span = createSpan("node-new-session")) {
+      span.addTag("capabilities", capabilities.toString());
+      if (getCurrentSessionCount() >= maxSessionCount) {
+        return Optional.empty();
+      }
+
+      Optional<SessionAndHandler> possibleSession = factories.stream()
+          .filter(factory -> factory.test(capabilities))
+          .map(factory -> factory.apply(capabilities))
+          .filter(Optional::isPresent)
+          .findFirst()
+          .map(Optional::get);
+
+      if (!possibleSession.isPresent()) {
+        return Optional.empty();
+      }
+
+      SessionAndHandler session = possibleSession.get();
+      currentSessions.put(session.getId(), session);
+
+      // The session we return has to look like it came from the node, since we might be dealing
+      // with a webdriver implementation that only accepts connections from localhost
+      return Optional.of(new Session(session.getId(), externalUri, session.getCapabilities()));
     }
-
-    Optional<SessionAndHandler> possibleSession = factories.stream()
-        .filter(factory -> factory.test(capabilities))
-        .map(factory -> factory.apply(capabilities))
-        .filter(Optional::isPresent)
-        .findFirst()
-        .map(Optional::get);
-
-    if (!possibleSession.isPresent()) {
-      return Optional.empty();
-    }
-
-    SessionAndHandler session = possibleSession.get();
-    currentSessions.put(session.getId(), session);
-
-    // The session we return has to look like it came from the node, since we might be dealing
-    // with a webdriver implementation that only accepts connections from localhost
-    return Optional.of(new Session(session.getId(), externalUri, session.getCapabilities()));
   }
 
   @Override
   protected boolean isSessionOwner(SessionId id) {
-    Objects.requireNonNull(id, "Session ID has not been set");
-    return currentSessions.getIfPresent(id) != null;
+    try (Span span = createSpan("node-is-session-owner")) {
+      span.addTag("session-id", String.valueOf(id));
+      Objects.requireNonNull(id, "Session ID has not been set");
+      return currentSessions.getIfPresent(id) != null;
+    }
   }
 
   @Override
   public Session getSession(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
-    SessionAndHandler session = currentSessions.getIfPresent(id);
-    if (session == null) {
-      throw new NoSuchSessionException("Cannot find session with id: " + id);
-    }
+    try (Span span = createSpan("node-get-session")) {
+      span.addTag("session-id", String.valueOf(id));
+      Objects.requireNonNull(id, "Session ID has not been set");
+      SessionAndHandler session = currentSessions.getIfPresent(id);
+      if (session == null) {
+        throw new NoSuchSessionException("Cannot find session with id: " + id);
+      }
 
-    return new Session(session.getId(), externalUri, session.getCapabilities());
+      return new Session(session.getId(), externalUri, session.getCapabilities());
+    }
   }
 
   @Override
   public void executeWebDriverCommand(HttpRequest req, HttpResponse resp) {
-    // True enough to be good enough
-    if (!req.getUri().startsWith("/session/")) {
-      throw new UnsupportedCommandException(String.format(
-          "Unsupported command: (%s) %s", req.getMethod(), req.getMethod()));
-    }
+    try (Span span = createSpan("node-execute-webdriver-command")) {
+      // True enough to be good enough
+      if (!req.getUri().startsWith("/session/")) {
+        throw new UnsupportedCommandException(String.format(
+            "Unsupported command: (%s) %s", req.getMethod(), req.getMethod()));
+      }
 
-    String[] split = req.getUri().split("/", 4);
-    SessionId id = new SessionId(split[2]);
+      String[] split = req.getUri().split("/", 4);
+      SessionId id = new SessionId(split[2]);
 
-    SessionAndHandler session = currentSessions.getIfPresent(id);
-    if (session == null) {
-      throw new NoSuchSessionException("Cannot find session with id: " + id);
-    }
-    try {
-      session.getHandler().execute(req, resp);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      span.addTag("session-id", String.valueOf(id));
+
+      SessionAndHandler session = currentSessions.getIfPresent(id);
+      if (session == null) {
+        throw new NoSuchSessionException("Cannot find session with id: " + id);
+      }
+      try {
+        session.getHandler().execute(req, resp);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
     }
   }
 
@@ -195,12 +211,13 @@ public class LocalNode extends Node {
             .collect(Collectors.toSet()));
   }
 
-  public static Builder builder(URI uri, SessionMap sessions) {
-    return new Builder(uri, sessions);
+  public static Builder builder(DistributedTracer tracer, URI uri, SessionMap sessions) {
+    return new Builder(tracer, uri, sessions);
   }
 
   public static class Builder {
 
+    private final DistributedTracer tracer;
     private final URI uri;
     private final SessionMap sessions;
     private final ImmutableList.Builder<SessionFactory> factories;
@@ -208,7 +225,8 @@ public class LocalNode extends Node {
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofMinutes(5);
 
-    public Builder(URI uri, SessionMap sessions) {
+    public Builder(DistributedTracer tracer, URI uri, SessionMap sessions) {
+      this.tracer = Objects.requireNonNull(tracer);
       this.uri = Objects.requireNonNull(uri);
       this.sessions = Objects.requireNonNull(sessions);
       this.factories = ImmutableList.builder();
@@ -238,7 +256,7 @@ public class LocalNode extends Node {
     }
 
     public LocalNode build() {
-      return new LocalNode(uri, maxCount, ticker, sessionTimeout, factories.build());
+      return new LocalNode(tracer, uri, maxCount, ticker, sessionTimeout, factories.build());
     }
 
     public Advanced advanced() {

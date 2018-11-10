@@ -108,7 +108,10 @@ public class NodeServer implements CliCommand {
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      LocalNode.Builder builder = LocalNode.builder(serverOptions.getExternalUri(), sessions);
+      LocalNode.Builder builder = LocalNode.builder(
+          DistributedTracer.getInstance(),
+          serverOptions.getExternalUri(),
+          sessions);
       nodeFlags.configure(builder);
       LocalNode node = builder.build();
 

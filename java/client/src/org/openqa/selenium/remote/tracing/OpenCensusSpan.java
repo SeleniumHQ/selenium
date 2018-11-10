@@ -49,6 +49,15 @@ class OpenCensusSpan extends Span {
   }
 
   @Override
+  public Span setName(String name) {
+    Objects.requireNonNull(name, "Name must be set.");
+
+    // TODO: Actually change the name of the span
+
+    return this;
+  }
+
+  @Override
   public Span addTraceTag(String key, String value) {
     span.putAttribute(Objects.requireNonNull(key), AttributeValue.stringAttributeValue(value));
     return this;

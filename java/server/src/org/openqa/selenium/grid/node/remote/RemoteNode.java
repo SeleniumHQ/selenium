@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -56,11 +57,12 @@ public class RemoteNode extends Node {
   private final Set<Capabilities> capabilities;
 
   public RemoteNode(
+      DistributedTracer tracer,
       UUID id,
       URI externalUri,
       Collection<Capabilities> capabilities,
       HttpClient client) {
-    super(id);
+    super(tracer, id);
     this.externalUri = Objects.requireNonNull(externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 

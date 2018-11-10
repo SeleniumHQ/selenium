@@ -33,6 +33,7 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.PassthroughHttpClient;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,12 +41,14 @@ import java.util.UUID;
 
 public class DistributorTest {
 
+  private DistributedTracer tracer;
   private Distributor local;
   private Distributor distributor;
   private ImmutableCapabilities caps;
 
   @Before
   public void setUp() {
+    tracer = DistributedTracer.builder().build();
     local = new LocalDistributor();
     distributor = new RemoteDistributor(new PassthroughHttpClient<>(local));
 
@@ -66,7 +69,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     LocalSessionMap sessions = new LocalSessionMap();
-    LocalNode node = LocalNode.builder(routableUri, sessions)
+    LocalNode node = LocalNode.builder(tracer, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
@@ -89,7 +92,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     LocalSessionMap sessions = new LocalSessionMap();
-    LocalNode node = LocalNode.builder(routableUri, sessions)
+    LocalNode node = LocalNode.builder(tracer, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
@@ -111,7 +114,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     LocalSessionMap sessions = new LocalSessionMap();
-    LocalNode node = LocalNode.builder(routableUri, sessions)
+    LocalNode node = LocalNode.builder(tracer, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
