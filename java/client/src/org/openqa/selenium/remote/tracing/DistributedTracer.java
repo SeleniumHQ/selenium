@@ -48,7 +48,7 @@ public class DistributedTracer {
     return INSTANCE;
   }
 
-  public synchronized void setInstance(DistributedTracer distributedTracer) {
+  public synchronized static void setInstance(DistributedTracer distributedTracer) {
     INSTANCE = distributedTracer;
   }
 

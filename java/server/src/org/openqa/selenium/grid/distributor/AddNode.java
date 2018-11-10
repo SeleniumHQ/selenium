@@ -29,6 +29,7 @@ import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
 import java.net.URI;
@@ -42,11 +43,17 @@ import java.util.stream.Collectors;
 
 public class AddNode implements CommandHandler {
 
+  private final DistributedTracer tracer;
   private final Distributor distributor;
   private final Json json;
   private final HttpClient.Factory httpFactory;
 
-  public AddNode(Distributor distributor, Json json, HttpClient.Factory httpFactory) {
+  public AddNode(
+      DistributedTracer tracer,
+      Distributor distributor,
+      Json json,
+      HttpClient.Factory httpFactory) {
+    this.tracer = Objects.requireNonNull(tracer);
     this.distributor = Objects.requireNonNull(distributor);
     this.json = Objects.requireNonNull(json);
     this.httpFactory = Objects.requireNonNull(httpFactory);
@@ -57,7 +64,7 @@ public class AddNode implements CommandHandler {
     Map<String, Object> raw = json.toType(req.getContentString(), MAP_TYPE);
 
     UUID id = UUID.fromString((String) raw.get("id"));
-    URI uri = null;
+    URI uri;
     try {
       uri = new URI((String) raw.get("uri"));
     } catch (URISyntaxException e) {
@@ -71,7 +78,12 @@ public class AddNode implements CommandHandler {
         .map(ImmutableCapabilities::new)
         .collect(Collectors.toList());
 
-    Node node = new RemoteNode(id, uri, capabilities, httpFactory.createClient(uri.toURL()));
+    Node node = new RemoteNode(
+        tracer,
+        id,
+        uri,
+        capabilities,
+        httpFactory.createClient(uri.toURL()));
 
     distributor.add(node);
   }

@@ -53,6 +53,12 @@ class CompoundSpan extends Span {
   }
 
   @Override
+  public Span setName(String name) {
+    allSpans.forEach(span -> span.setName(name));
+    return this;
+  }
+
+  @Override
   public Span addTraceTag(String key, String value) {
     Objects.requireNonNull(key, "Key must be set");
     allSpans.forEach(span -> span.addTraceTag(key, value));

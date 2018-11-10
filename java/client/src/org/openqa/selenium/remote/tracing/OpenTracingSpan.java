@@ -60,6 +60,13 @@ class OpenTracingSpan extends Span {
   }
 
   @Override
+  public Span setName(String name) {
+    Objects.requireNonNull(name, "Name must be set.");
+    span.setOperationName(name);
+    return this;
+  }
+
+  @Override
   public Span addTraceTag(String key, String value) {
     span.setBaggageItem(Objects.requireNonNull(key), value);
     return this;

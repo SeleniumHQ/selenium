@@ -34,6 +34,8 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -90,17 +92,20 @@ import java.util.function.Predicate;
  */
 public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
+  private final DistributedTracer tracer;
   private final UUID id;
   private final Injector injector;
   private final Routes routes;
 
-  protected Node(UUID id) {
+  protected Node(DistributedTracer tracer, UUID id) {
+    this.tracer = Objects.requireNonNull(tracer);
     this.id = Objects.requireNonNull(id);
 
     Json json = new Json();
     injector = Injector.builder()
         .register(this)
         .register(json)
+        .register(tracer)
         .build();
 
     routes = combine(
@@ -155,5 +160,10 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
       throw new HandlerNotFoundException(req);
     }
     handler.get().execute(req, resp);
+  }
+
+  protected Span createSpan(String operationName) {
+    Objects.requireNonNull(operationName);
+    return tracer.createSpan(operationName, tracer.getActiveSpan());
   }
 }
