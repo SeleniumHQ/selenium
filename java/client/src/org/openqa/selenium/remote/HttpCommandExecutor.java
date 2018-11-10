@@ -158,7 +158,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     try (Span span = tracer.createSpan(command.getName(), tracer.getActiveSpan())) {
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
       span.addTag("selenium-sessionid", String.valueOf(command.getSessionId()));
-      HttpTracing.inject(span, httpRequest);
       HttpResponse httpResponse = client.execute(httpRequest);
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
 
