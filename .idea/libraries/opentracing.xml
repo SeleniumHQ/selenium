@@ -5,6 +5,8 @@
       <root url="jar://$PROJECT_DIR$/third_party/java/opentracing/opentracing-api-0.31.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/contrib/opentracing-okhttp3-0.1.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/contrib/opentracing-concurrent-0.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/contrib/opentracing-tracerresolver-0.1.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/opentracing/opentracing-util-0.31.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
@@ -12,6 +14,8 @@
       <root url="jar://$PROJECT_DIR$/third_party/java/opentracing/opentracing-api-0.31.0-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/contrib/opentracing-okhttp3-0.1.0-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/contrib/opentracing-concurrent-0.1.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/contrib/opentracing-tracerresolver-0.1.5-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/opentracing/opentracing-util-0.31.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

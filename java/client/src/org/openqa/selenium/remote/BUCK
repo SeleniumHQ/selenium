@@ -138,6 +138,7 @@ java_library(name = 'remote-lib',
   deps = [
     ':http-session-id',
     '//java/client/src/org/openqa/selenium:selenium',
+    '//third_party/java/contrib:opentracing-tracerresolver',
     '//third_party/java/opencensus:opencensus-api',
     '//third_party/java/opentracing:opentracing-noop',
     '//third_party/java/guava:guava',

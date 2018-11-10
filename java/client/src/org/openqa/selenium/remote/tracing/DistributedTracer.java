@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.BuildInfo;
 
+import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.noop.NoopTracerFactory;
 
 import java.util.LinkedList;
@@ -31,7 +32,9 @@ import java.util.Objects;
  */
 public class DistributedTracer {
 
-  private static volatile DistributedTracer INSTANCE = DistributedTracer.builder().build();
+  private static volatile DistributedTracer INSTANCE = DistributedTracer.builder()
+      .registerDetectedTracers()
+      .build();
   private static final ThreadLocal<LinkedList<Span>> ACTIVE_SPANS =
       ThreadLocal.withInitial(LinkedList::new);
   private final ImmutableSet<io.opencensus.trace.Tracer> ocTracers;
@@ -123,6 +126,15 @@ public class DistributedTracer {
 
       // Make sure we have at least one tracer, but make it one that does nothing.
       register(NoopTracerFactory.create());
+    }
+
+    public Builder registerDetectedTracers() {
+      io.opentracing.Tracer tracer = TracerResolver.resolveTracer();
+      if (tracer != null) {
+        register(tracer);
+      }
+
+      return this;
     }
 
     public Builder register(io.opentracing.Tracer openTracingTracer) {
