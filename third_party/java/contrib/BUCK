@@ -22,3 +22,16 @@ prebuilt_jar(
   ],
 )
 
+prebuilt_jar(
+  name = 'opentracing-tracerresolver',
+  maven_coords = 'io.opentracing.contrib:opentracing-tracerresolver:jar:0.1.5',
+  binary_jar = 'opentracing-tracerresolver-0.1.5.jar',
+  source_jar = 'opentracing-tracerresolver-0.1.5-sources.jar',
+  deps = [
+    '//third_party/java/opentracing:opentracing-api',
+    '//third_party/java/opentracing:opentracing-util'
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/remote:',
+  ],
+)
