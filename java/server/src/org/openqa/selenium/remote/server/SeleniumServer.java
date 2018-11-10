@@ -35,16 +35,11 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
