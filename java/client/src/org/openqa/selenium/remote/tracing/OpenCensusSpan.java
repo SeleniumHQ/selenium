@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.remote.http.HttpRequest;
+
 import io.opencensus.trace.AttributeValue;
 import io.opencensus.trace.Tracer;
 
 import java.util.Objects;
 
-class OpenCensusSpan implements Span {
+class OpenCensusSpan extends Span {
 
   private final io.opencensus.trace.Span span;
   private final DistributedTracer distributedTracer;
@@ -74,6 +76,16 @@ class OpenCensusSpan implements Span {
   public Span createChild(String operation) {
     Span child = new OpenCensusSpan(distributedTracer, tracer, span, operation);
     return child.activate();
+  }
+
+  @Override
+  void inject(HttpRequest request) {
+    throw new UnsupportedOperationException("inject");
+  }
+
+  @Override
+  void extract(HttpRequest request) {
+    throw new UnsupportedOperationException("extract");
   }
 
   @Override

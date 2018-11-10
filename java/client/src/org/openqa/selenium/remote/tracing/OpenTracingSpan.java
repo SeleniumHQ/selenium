@@ -17,11 +17,24 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import com.google.common.collect.ImmutableSet;
+
+import org.openqa.selenium.remote.http.HttpRequest;
+
+import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
+import io.opentracing.propagation.Format;
+import io.opentracing.propagation.TextMap;
 
+import java.util.AbstractMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.StreamSupport;
 
-class OpenTracingSpan implements Span {
+class OpenTracingSpan extends Span {
 
   private final DistributedTracer distributedTracer;
   private final Tracer tracer;
@@ -77,8 +90,61 @@ class OpenTracingSpan implements Span {
   }
 
   @Override
+  void inject(HttpRequest request) {
+    tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, new HttpRequestInjector(request));
+  }
+
+  @Override
+  void extract(HttpRequest request) {
+    SpanContext context = tracer.extract(Format.Builtin.HTTP_HEADERS, new HttpRequestInjector(request));
+    for (Map.Entry<String, String> item : context.baggageItems()) {
+      addTraceTag(item.getKey(), item.getValue());
+    }
+  }
+
+  @Override
   public void close() {
     span.finish();
     distributedTracer.remove(this);
+  }
+
+  private class HttpRequestInjector implements TextMap {
+
+    private final Set<String> names = ImmutableSet.<String>builder()
+        .add("cache-control")
+        .add("connection")
+        .add("content-length")
+        .add("content-type")
+        .add("date")
+        .add("keep-alive")
+        .add("proxy-authorization")
+        .add("proxy-authenticate")
+        .add("proxy-connection")
+        .add("referer")
+        .add("te")
+        .add("trailer")
+        .add("transfer-encoding")
+        .add("upgrade")
+        .add("user-agent")
+        .build();
+    private final HttpRequest request;
+
+    HttpRequestInjector(HttpRequest request) {
+      this.request = request;
+    }
+
+    @Override
+    public Iterator<Map.Entry<String, String>> iterator() {
+      return StreamSupport.stream(request.getHeaderNames().spliterator(), false)
+          .filter(name -> names.contains(name.toLowerCase(Locale.US)))
+          .map(name -> (Map.Entry<String, String>) new AbstractMap.SimpleImmutableEntry<>(
+              name, request.getHeader(name)))
+          .iterator();
+    }
+
+    @Override
+    public void put(String key, String value) {
+      request.setHeader(key, value);
+    }
   }
 }

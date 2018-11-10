@@ -17,35 +17,40 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.remote.http.HttpRequest;
+
 import java.io.Closeable;
 
-public interface Span extends Closeable {
+public abstract class Span implements Closeable {
 
-  Span createChild(String operation);
+  public abstract Span createChild(String operation);
 
   /**
    * Allows subclasses to indicate that this is the currently active span
    */
-  Span activate();
+  public abstract Span activate();
 
   /**
    * Add a tag that will be transmitted across the wire to allow remote traces
    * to also have the value. This is equivalent to OpenTracing's concept of
    * &quot;baggage&quot;.
    */
-  Span addTraceTag(String key, String value);
+  public abstract Span addTraceTag(String key, String value);
 
   /**
    * Add a piece of metadata to the span, which allows high cardinality data to
    * be added to the span. This data will not be propogated to other spans.
    */
-  Span addTag(String key, String value);
+  public abstract Span addTag(String key, String value);
 
-  Span addTag(String key, boolean value);
+  public abstract Span addTag(String key, boolean value);
 
-  Span addTag(String key, long value);
+  public abstract Span addTag(String key, long value);
 
   @Override
-  void close();
+  public abstract void close();
 
+  abstract void inject(HttpRequest request);
+
+  abstract void extract(HttpRequest request);
 }

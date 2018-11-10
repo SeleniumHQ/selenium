@@ -19,9 +19,11 @@ package org.openqa.selenium.remote.tracing;
 
 import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.remote.http.HttpRequest;
+
 import java.util.Objects;
 
-class CompoundSpan implements Span {
+class CompoundSpan extends Span {
 
   private final DistributedTracer tracer;
   private final ImmutableSet<Span> allSpans;
@@ -82,5 +84,17 @@ class CompoundSpan implements Span {
   public void close() {
     allSpans.forEach(Span::close);
     tracer.remove(this);
+  }
+
+  @Override
+  void inject(HttpRequest request) {
+    Objects.requireNonNull(request);
+    allSpans.forEach(span -> span.inject(request));
+  }
+
+  @Override
+  void extract(HttpRequest request) {
+    Objects.requireNonNull(request);
+    allSpans.forEach(span -> span.extract(request));
   }
 }
