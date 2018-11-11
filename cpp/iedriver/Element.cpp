@@ -347,7 +347,6 @@ bool Element::IsObscured(LocationInfo* click_location,
     }
   }
 
-  bool is_obscured = false;
   CComPtr<IHTMLDocument8> elements_doc;
   hr = doc.QueryInterface<IHTMLDocument8>(&elements_doc);
   if (FAILED(hr)) {
@@ -358,7 +357,7 @@ bool Element::IsObscured(LocationInfo* click_location,
     return false;
   }
 
-  long top_most_element_index = -1;
+  bool is_obscured = false;
   CComPtr<IHTMLDOMChildrenCollection> elements_hit;
   hr = elements_doc->elementsFromPoint(static_cast<float>(x),
                                        static_cast<float>(y),
@@ -409,13 +408,11 @@ bool Element::IsObscured(LocationInfo* click_location,
               // it with the pointer device has no effect, so it is effectively
               // not obscuring this element.
               is_obscured = true;
-              break;
             }
           } else {
             // We were unable to retrieve the computed style, so we must assume
             // the other element is obscuring this one.
             is_obscured = true;
-            break;
           }
         } else {
           // Repeating the immediate-child-of-inline-element hack from above for
