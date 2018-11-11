@@ -9,6 +9,23 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.0.1
+==========
+ * Updated error message return from unserializable JavaScript results. In
+   the case where a user JavaScript execution completes successfully, but
+   the resulting option is not serializable via JSON (because of cyclical
+   references or similar), the error message that the execution errored due
+   to the failed serialization was being suppressed.
+ * Added support for strictFileInteractability capability. The latest
+   editors' drafts of the W3C WebDriver Specification as a living  document
+   have introduce the "strictFileInteractability" capability for handling
+   <input type='file'> elements. This change makes the driver aware of that
+   capability.
+ * Removed premature break statements in obscured element check. When
+   looping through the elements returned by elementsFromPoint, the driver
+   was calling a break statement early, preventing clear error messages for
+   which element is obscuring the element to be clicked.
+
 v3.141.0.0
 ==========
  * Release to synchronize with release of Selenium project.
