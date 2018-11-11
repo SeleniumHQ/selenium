@@ -49,8 +49,8 @@ public class DistributorTest {
   @Before
   public void setUp() {
     tracer = DistributedTracer.builder().build();
-    local = new LocalDistributor();
-    distributor = new RemoteDistributor(new PassthroughHttpClient<>(local));
+    local = new LocalDistributor(tracer);
+    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient<>(local));
 
     caps = new ImmutableCapabilities("browserName", "cheese");
   }
@@ -73,7 +73,7 @@ public class DistributorTest {
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
-    Distributor distributor = new LocalDistributor();
+    Distributor distributor = new LocalDistributor(tracer);
     distributor.add(node);
 
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
@@ -96,8 +96,8 @@ public class DistributorTest {
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
-    Distributor local = new LocalDistributor();
-    distributor = new RemoteDistributor(new PassthroughHttpClient<>(local));
+    Distributor local = new LocalDistributor(tracer);
+    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient<>(local));
     distributor.add(node);
     distributor.remove(node.getId());
 

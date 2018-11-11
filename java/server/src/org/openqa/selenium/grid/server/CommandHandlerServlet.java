@@ -62,6 +62,8 @@ class CommandHandlerServlet extends HttpServlet {
     HttpRequest request = new ServletRequestWrappingHttpRequest(req);
     HttpResponse response = new ServletResponseWrappingHttpResponse(resp);
 
+    log(String.format("(%s) %s", request.getMethod(), request.getUri()));
+
     try (Span span = tracer.createSpan("handler-servlet", tracer.getActiveSpan())) {
       HttpTracing.extract(request, span);
 

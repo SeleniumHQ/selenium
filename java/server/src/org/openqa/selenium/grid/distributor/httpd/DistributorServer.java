@@ -39,6 +39,7 @@ import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
+
 @AutoService(CliCommand.class)
 public class DistributorServer implements CliCommand {
 
@@ -83,11 +84,15 @@ public class DistributorServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("distributor", '.', System.getProperties()));
 
-      Distributor distributor = new LocalDistributor();
+      DistributedTracer tracer = DistributedTracer.builder()
+          .registerDetectedTracers()
+          .build();
+
+      Distributor distributor = new LocalDistributor(tracer);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      Server<?> server = new BaseServer<>(DistributedTracer.getInstance(), serverOptions);
+      Server<?> server = new BaseServer<>(tracer, serverOptions);
       server.addRoute(
           Routes.matching(distributor)
               .using(distributor)

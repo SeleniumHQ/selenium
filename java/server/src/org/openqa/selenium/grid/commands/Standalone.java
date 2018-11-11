@@ -94,8 +94,10 @@ public class Standalone implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("selenium", '.', System.getProperties()));
 
+      DistributedTracer tracer = DistributedTracer.getInstance();
+
       SessionMap sessions = new LocalSessionMap();
-      Distributor distributor = new LocalDistributor();
+      Distributor distributor = new LocalDistributor(tracer);
       Router router = new Router(sessions, distributor);
 
       String hostName;
@@ -113,8 +115,6 @@ public class Standalone implements CliCommand {
       } catch (URISyntaxException e) {
         throw new RuntimeException(e);
       }
-
-      DistributedTracer tracer = DistributedTracer.getInstance();
 
       LocalNode.Builder node = LocalNode.builder(tracer, localhost, sessions)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);

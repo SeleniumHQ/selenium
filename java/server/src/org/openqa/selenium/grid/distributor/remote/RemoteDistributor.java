@@ -33,6 +33,7 @@ import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -45,7 +46,9 @@ public class RemoteDistributor extends Distributor {
   public static final Json JSON = new Json();
   private final Function<HttpRequest, HttpResponse> client;
 
-  public RemoteDistributor(HttpClient client) {
+  public RemoteDistributor(DistributedTracer tracer, HttpClient client) {
+    super(tracer);
+
     Objects.requireNonNull(client);
     this.client = req -> {
       try {

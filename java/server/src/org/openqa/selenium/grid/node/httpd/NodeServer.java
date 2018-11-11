@@ -108,8 +108,12 @@ public class NodeServer implements CliCommand {
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
+      DistributedTracer tracer = DistributedTracer.builder()
+          .registerDetectedTracers()
+          .build();
+
       LocalNode.Builder builder = LocalNode.builder(
-          DistributedTracer.getInstance(),
+          tracer,
           serverOptions.getExternalUri(),
           sessions);
       nodeFlags.configure(builder);
@@ -118,9 +122,10 @@ public class NodeServer implements CliCommand {
       DistributorOptions distributorOptions = new DistributorOptions(config);
       URL distributorUrl = distributorOptions.getDistributorUri().toURL();
       Distributor distributor = new RemoteDistributor(
+          tracer,
           HttpClient.Factory.createDefault().createClient(distributorUrl));
 
-      Server<?> server = new BaseServer<>(DistributedTracer.getInstance(), serverOptions);
+      Server<?> server = new BaseServer<>(tracer, serverOptions);
       server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler.class));
       server.start();
 

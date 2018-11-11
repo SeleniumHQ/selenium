@@ -29,6 +29,7 @@ import org.openqa.selenium.grid.distributor.DistributorStatus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.NodeStatus;
 import org.openqa.selenium.remote.NewSessionPayload;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -39,7 +40,8 @@ public class LocalDistributor extends Distributor {
 
   private final Set<Node> nodes = new HashSet<>();
 
-  public LocalDistributor() {
+  public LocalDistributor(DistributedTracer tracer) {
+    super(tracer);
   }
 
   @Override
