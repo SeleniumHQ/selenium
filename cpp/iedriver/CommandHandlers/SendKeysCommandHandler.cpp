@@ -118,11 +118,12 @@ void SendKeysCommandHandler::ExecuteInternal(
                                                        &frame_locations);
 
       if (this->IsFileUploadElement(element_wrapper)) {
+        // TODO: If strict file interactability is set on, check element
+        // interactability before uploading the file.
+        bool use_strict_file_interactability = executor.use_strict_file_interactability();
         this->UploadFile(browser_wrapper, element_wrapper, executor, keys, response);
         return;
       }
-
-      Json::Value actions = this->CreateActionSequencePayload(executor, &keys);
 
       bool displayed;
       status_code = element_wrapper->IsDisplayed(true, &displayed);
@@ -150,6 +151,8 @@ void SendKeysCommandHandler::ExecuteInternal(
       if (!this->WaitUntilElementFocused(element_wrapper->element())) {
         LOG(WARN) << "Specified element is not the active element. Keystrokes may go to an unexpected DOM element.";
       }
+
+      Json::Value actions = this->CreateActionSequencePayload(executor, &keys);
 
       std::string error_info = "";
       status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions, &error_info);

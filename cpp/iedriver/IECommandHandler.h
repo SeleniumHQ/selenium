@@ -35,6 +35,7 @@
 #define SET_WINDOW_RECT_CAPABILITY "setWindowRect"
 #define TIMEOUTS_CAPABILITY "timeouts"
 #define UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY "unhandledPromptBehavior"
+#define STRICT_FILE_INTERACTABILITY_CAPABILITY "strictFileInteractability"
 #define IE_DRIVER_EXTENSIONS_CAPABILITY "se:ieOptions"
 
 #define NATIVE_EVENTS_CAPABILITY "nativeEvents"
