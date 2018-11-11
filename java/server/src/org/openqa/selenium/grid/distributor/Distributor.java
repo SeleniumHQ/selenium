@@ -33,8 +33,10 @@ import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -75,9 +77,11 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
   private final Routes routes;
   private final Injector injector;
 
-  protected Distributor() {
+  protected Distributor(DistributedTracer tracer) {
+    Objects.requireNonNull(tracer);
     injector = Injector.builder()
         .register(this)
+        .register(tracer)
         .register(new Json())
         .register(HttpClient.Factory.createDefault())
         .build();

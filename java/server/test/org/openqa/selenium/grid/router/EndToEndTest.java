@@ -59,7 +59,7 @@ public class EndToEndTest {
   public void inMemory() throws URISyntaxException {
 
     SessionMap sessions = new LocalSessionMap();
-    Distributor distributor = new LocalDistributor();
+    Distributor distributor = new LocalDistributor(tracer);
     URI nodeUri = new URI("http://localhost:4444");
     LocalNode node = LocalNode.builder(tracer, nodeUri, sessions)
         .add(driverCaps, createFactory(nodeUri))
@@ -93,12 +93,12 @@ public class EndToEndTest {
 
     SessionMap sessions = new RemoteSessionMap(getClient(sessionServer));
 
-    LocalDistributor localDistributor = new LocalDistributor();
+    LocalDistributor localDistributor = new LocalDistributor(tracer);
     Server<?> distributorServer = createServer();
     distributorServer.addRoute(Routes.matching(localDistributor).using(localDistributor));
     distributorServer.start();
 
-    Distributor distributor = new RemoteDistributor(getClient(distributorServer));
+    Distributor distributor = new RemoteDistributor(tracer, getClient(distributorServer));
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);

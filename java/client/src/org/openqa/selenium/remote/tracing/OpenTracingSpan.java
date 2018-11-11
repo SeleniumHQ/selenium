@@ -104,6 +104,9 @@ class OpenTracingSpan extends Span {
   @Override
   void extract(HttpRequest request) {
     SpanContext context = tracer.extract(Format.Builtin.HTTP_HEADERS, new HttpRequestInjector(request));
+    if (context == null) {
+      return;
+    }
     for (Map.Entry<String, String> item : context.baggageItems()) {
       addTraceTag(item.getKey(), item.getValue());
     }

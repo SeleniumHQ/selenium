@@ -33,7 +33,7 @@ import java.util.Objects;
 public class DistributedTracer {
 
   private static volatile DistributedTracer INSTANCE = DistributedTracer.builder()
-      .registerDetectedTracers()
+//      .registerDetectedTracers()
       .build();
   private static final ThreadLocal<LinkedList<Span>> ACTIVE_SPANS =
       ThreadLocal.withInitial(LinkedList::new);
@@ -129,11 +129,14 @@ public class DistributedTracer {
     }
 
     public Builder registerDetectedTracers() {
-      io.opentracing.Tracer tracer = TracerResolver.resolveTracer();
-      if (tracer != null) {
-        register(tracer);
+      try {
+        io.opentracing.Tracer tracer = TracerResolver.resolveTracer();
+        if (tracer != null) {
+          register(tracer);
+        }
+      } catch (Exception e) {
+        // Carry on. This is fine.
       }
-
       return this;
     }
 

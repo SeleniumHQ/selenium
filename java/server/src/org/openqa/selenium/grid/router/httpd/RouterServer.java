@@ -95,6 +95,10 @@ public class RouterServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("router", '.', System.getProperties()));
 
+      DistributedTracer tracer = DistributedTracer.builder()
+          .registerDetectedTracers()
+          .build();
+
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
       SessionMap sessions = new RemoteSessionMap(
@@ -105,11 +109,12 @@ public class RouterServer implements CliCommand {
       DistributorOptions distributorOptions = new DistributorOptions(config);
       URL distributorUrl = distributorOptions.getDistributorUri().toURL();
       Distributor distributor = new RemoteDistributor(
+          tracer,
           HttpClient.Factory.createDefault().createClient(distributorUrl));
 
       Router router = new Router(sessions, distributor);
 
-      Server<?> server = new BaseServer<>(DistributedTracer.getInstance(), serverOptions);
+      Server<?> server = new BaseServer<>(tracer, serverOptions);
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();
     };
