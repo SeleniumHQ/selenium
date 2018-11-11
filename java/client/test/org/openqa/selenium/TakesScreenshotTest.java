@@ -19,9 +19,7 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
@@ -30,8 +28,6 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import com.google.common.collect.Sets;
 
@@ -42,7 +38,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -120,10 +115,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   public void testShouldCaptureScreenshotOfCurrentViewport() {
-    // Fails on Sauce for whatever reason; probably display or window manager.
-    assumeFalse(SauceDriver.shouldUseSauce()
-        && getEffectivePlatform(driver).is(LINUX)
-        && isChrome(driver));
     driver.get(appServer.whereIs("screen/screen.html"));
 
     BufferedImage screenshot = getImage();
@@ -276,10 +267,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   public void testShouldCaptureScreenshotAtFramePage() {
-    // Fails on Sauce for whatever reason; probably display or window manager.
-    assumeFalse(SauceDriver.shouldUseSauce()
-        && getEffectivePlatform(driver).is(LINUX)
-        && isChrome(driver));
     driver.get(appServer.whereIs("screen/screen_frames.html"));
     wait.until(frameToBeAvailableAndSwitchToIt(By.id("frame1")));
     wait.until(visibilityOfAllElementsLocatedBy(By.id("content")));
@@ -339,10 +326,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() {
-    // Fails on Sauce for whatever reason; probably display or window manager.
-    assumeFalse(SauceDriver.shouldUseSauce()
-        && getEffectivePlatform(driver).is(LINUX)
-        && isChrome(driver));
     driver.get(appServer.whereIs("screen/screen_frames.html"));
 
     driver.switchTo().frame(driver.findElement(By.id("frame2")));

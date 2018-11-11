@@ -107,12 +107,9 @@ public class AlertsTest extends JUnit4TestBase {
 
     driver.findElement(By.id("alert")).click();
     Alert alert = wait.until(alertIsPresent());
-    try {
-      assertThatExceptionOfType(IllegalArgumentException.class)
-          .isThrownBy(() -> alert.sendKeys(null));
-    } finally {
-      alert.accept();
-    }
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> alert.sendKeys(null));
   }
 
   @Test
@@ -138,11 +135,8 @@ public class AlertsTest extends JUnit4TestBase {
 
     driver.findElement(By.id("slow-alert")).click();
     Alert alert = wait.until(alertIsPresent());
-    try {
-      assertThat(alert.getText()).isEqualTo("Slow");
-    } finally {
-      alert.accept();
-    }
+
+    assertThat(alert.getText()).isEqualTo("Slow");
   }
 
   @Test
@@ -201,12 +195,8 @@ public class AlertsTest extends JUnit4TestBase {
     driver.findElement(By.id("alert")).click();
 
     Alert alert = wait.until(alertIsPresent());
-    try {
-      assertThatExceptionOfType(ElementNotInteractableException.class)
-          .isThrownBy(() -> alert.sendKeys("cheese"));
-    } finally {
-      alert.accept();
-    }
+    assertThatExceptionOfType(ElementNotInteractableException.class)
+        .isThrownBy(() -> alert.sendKeys("cheese"));
   }
 
   @Test
@@ -317,7 +307,7 @@ public class AlertsTest extends JUnit4TestBase {
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
     driver.get(promptPage("This is a default value"));
 
-    driver.findElement(By.id("prompt")).click();
+    wait.until(presenceOfElementLocated(By.id("prompt"))).click();
     Alert alert = wait.until(alertIsPresent());
     alert.accept();
 
@@ -384,7 +374,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   public void testShouldHandleAlertOnPageLoadUsingGet() {
     driver.get(appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
@@ -456,7 +445,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(SAFARI)
   @Ignore(value = FIREFOX, reason = "Non W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Non W3C conformant")
   @Ignore(value = CHROME, reason = "Non W3C conformant")
@@ -511,7 +499,6 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
   @NotYetImplemented(value = MARIONETTE,
       reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
-  @Ignore(SAFARI)
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.get(alertPage("cheese"));
 
@@ -537,7 +524,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1487705")
+  //@Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1487705")
   public void shouldHandleAlertOnFormSubmit() {
     driver.get(appServer.create(new Page().withTitle("Testing Alerts").withBody(
         "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",

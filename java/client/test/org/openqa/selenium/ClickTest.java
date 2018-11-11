@@ -237,7 +237,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502636")
   @NotYetImplemented(SAFARI)
   public void testCanClickAnImageMapArea() {
     driver.get(appServer.whereIs("click_tests/google_map.html"));

@@ -35,7 +35,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -203,9 +202,8 @@ public class GridNodeConfiguration extends GridConfiguration {
   public GridNodeConfiguration(GridNodeCliOptions cliConfig) {
     this(ofNullable(cliConfig.getConfigFile()).map(NodeJsonConfiguration::loadFromResourceOrFile)
              .orElse(DEFAULT_CONFIG_FROM_JSON));
-    super.merge(cliConfig);
+    super.merge(cliConfig.getCommonGridOptions());
     ofNullable(cliConfig.getCapabilities()).ifPresent(v -> capabilities = v);
-    ofNullable(cliConfig.getMaxSession()).ifPresent(v -> maxSession = v);
     ofNullable(cliConfig.getRegister()).ifPresent(v -> register = v);
     ofNullable(cliConfig.getRegisterCycle()).ifPresent(v -> registerCycle = v);
     ofNullable(cliConfig.getNodeStatusCheckTimeout()).ifPresent(v -> nodeStatusCheckTimeout = v);
@@ -215,6 +213,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     ofNullable(cliConfig.getProxy()).ifPresent(v -> proxy = v);
     ofNullable(cliConfig.getEnablePlatformVerification()).ifPresent(v -> enablePlatformVerification = v);
     ofNullable(cliConfig.getId()).ifPresent(v -> id = v);
+    ofNullable(cliConfig.getRemoteHost()).ifPresent(v -> remoteHost = v);
     if (cliConfig.getHub() != null) {
       hub = cliConfig.getHub();
     } else if (cliConfig.getHubHost() != null || cliConfig.getHubPort() != null) {

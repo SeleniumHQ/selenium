@@ -20,7 +20,7 @@ package org.openqa.selenium.firefox;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeNotNull;
-import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -30,6 +30,8 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.After;
 import org.junit.Test;
@@ -58,7 +60,6 @@ import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
@@ -95,7 +96,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     localDriver = new FirefoxDriver(options);
 
-    verify(binary).startFirefoxProcess(any());
+    verify(binary, atLeastOnce()).getPath();
   }
 
   @Test
@@ -159,7 +160,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     localDriver = new FirefoxDriver(caps);
 
-    verify(binary).startFirefoxProcess(any());
+    verify(binary, atLeastOnce()).getPath();
   }
 
   @Test
@@ -292,12 +293,16 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 60000)
+  @Ignore(MARIONETTE)
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     FirefoxBinary binary = new FirefoxBinary();
-    binary.setEnvironmentProperty("NSPR_LOG_MODULES", "all:5");
+    XpiDriverService service = new XpiDriverService.Builder()
+        .withBinary(binary)
+        .withEnvironment(ImmutableMap.of("NSPR_LOG_MODULES", "all:5"))
+        .build();
 
     // We will have an infinite hang if this driver does not start properly.
-    new FirefoxDriver(new FirefoxOptions().setBinary(binary)).quit();
+    new FirefoxDriver(service).quit();
   }
 
   @Test
@@ -409,12 +414,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void multipleFirefoxDriversRunningConcurrently() throws Exception {
-    int numThreads;
-    if (!SauceDriver.shouldUseSauce()) {
-      numThreads = 6;
-    } else {
-      numThreads = 2;
-    }
+    int numThreads = 6;
     final int numRoundsPerThread = 5;
     WebDriver[] drivers = new WebDriver[numThreads];
     List<Worker> workers = new ArrayList<>(numThreads);

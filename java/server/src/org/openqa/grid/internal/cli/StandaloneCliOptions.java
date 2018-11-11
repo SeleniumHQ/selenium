@@ -17,15 +17,16 @@
 
 package org.openqa.grid.internal.cli;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 
-public class StandaloneCliOptions extends CommonCliOptions {
+public class StandaloneCliOptions {
 
-  public JCommander parse(String... args) {
-    JCommander commander = JCommander.newBuilder().addObject(this).build();
-    commander.parse(args);
-    return commander;
+  @ParametersDelegate
+  private CommonCliOptions commonOptions = new CommonCliOptions();
+
+  public CommonCliOptions getCommonOptions() {
+    return commonOptions;
   }
 
   /**

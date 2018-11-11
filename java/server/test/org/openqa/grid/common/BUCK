@@ -19,7 +19,6 @@ java_library(name = 'tests',
     '//java/server/src/org/openqa/grid:grid',
     '//third_party/java/assertj:assertj',
     '//third_party/java/beust:jcommander',
-    '//third_party/java/gson:gson',
     '//third_party/java/junit:junit',
   ],
 )

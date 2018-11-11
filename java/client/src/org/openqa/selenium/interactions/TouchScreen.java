@@ -19,7 +19,10 @@ package org.openqa.selenium.interactions;
 
 /**
  * Interface representing basic touch screen operations.
+ *
+ * @deprecated Replaced by {@link Actions} and {@link PointerInput}.
  */
+@Deprecated
 public interface TouchScreen {
 
   /**

@@ -18,14 +18,14 @@
 package org.openqa.selenium.remote.server.commandhandler;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.web.CommandHandler;
 
 import java.io.File;
 import java.io.IOException;

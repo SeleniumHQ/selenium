@@ -25,10 +25,9 @@ import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.support.ui.TickingClock;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,11 +46,11 @@ public class TestSessionTest {
 
       final HashMap<String, Object> capabilities = new HashMap<>();
       TestSlot testSlot = new TestSlot(p1, SeleniumProtocol.Selenium, "", capabilities);
-      final TestClock timeSource = new TestClock();
+      final TickingClock timeSource = new TickingClock();
       TestSession testSession = new TestSession(testSlot, capabilities, timeSource);
       testSession.setExternalKey(new ExternalSessionKey("testKey"));
       assertFalse(testSession.isOrphaned());
-      timeSource.ensureElapsed(TestSession.MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED);
+      timeSource.sleep(Duration.ofSeconds(TestSession.MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED));
       assertTrue(testSession.isOrphaned());
 
     } finally {
@@ -73,40 +72,15 @@ public class TestSessionTest {
       final HashMap<String, Object> capabilities = new HashMap<>();
       TestSlot testSlot = new TestSlot(p1, SeleniumProtocol.WebDriver, "", capabilities
       );
-      final TestClock timeSource = new TestClock();
+      final TickingClock timeSource = new TickingClock();
       TestSession testSession = new TestSession(testSlot, capabilities, timeSource);
       testSession.setExternalKey(new ExternalSessionKey("testKey"));
       assertFalse(testSession.isOrphaned());
-      timeSource.ensureElapsed(TestSession.MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED);
+      timeSource.sleep(Duration.ofMillis(TestSession.MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED));
       assertFalse(testSession.isOrphaned());
 
     } finally {
       registry.stop();
-    }
-  }
-
-
-  public static class TestClock extends Clock {
-
-    private long time = 17;
-
-    public void ensureElapsed(long requiredElapsed) {
-      time += (requiredElapsed + 1);
-    }
-
-    @Override
-    public Instant instant() {
-      return Instant.ofEpochMilli(time);
-    }
-
-    @Override
-    public ZoneId getZone() {
-      return ZoneId.systemDefault();
-    }
-
-    @Override
-    public Clock withZone(ZoneId zone) {
-      return this;
     }
   }
 }

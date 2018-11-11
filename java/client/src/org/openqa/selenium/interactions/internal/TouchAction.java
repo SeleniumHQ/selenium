@@ -23,6 +23,7 @@ import org.openqa.selenium.interactions.TouchScreen;
 /**
  * Base class for all touch screen-related actions
  */
+@Deprecated
 public class TouchAction extends DisplayAction {
 
   protected final TouchScreen touchScreen;

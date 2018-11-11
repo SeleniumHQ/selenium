@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.openqa.grid.common.exception.GridException;
+import org.openqa.selenium.support.ui.TickingClock;
 
 import java.util.HashMap;
 
@@ -97,7 +98,7 @@ public class ActiveTestSessionsTest {
 
   private TestSession createTestSession() {
     final HashMap<String, Object> capabilities = new HashMap<>();
-    final TestSessionTest.TestClock timeSource = new TestSessionTest.TestClock();
+    final TickingClock timeSource = new TickingClock();
     // Luckily we can pass null for TestSlot
     TestSession testSession = new TestSession(null, capabilities, timeSource);
     testSession.setExternalKey(new ExternalSessionKey("w00t!"));

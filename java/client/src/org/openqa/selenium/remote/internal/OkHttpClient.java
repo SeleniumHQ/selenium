@@ -24,6 +24,7 @@ import com.google.common.base.Strings;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.HttpTracing;
 
 import okhttp3.ConnectionPool;
 import okhttp3.Credentials;
@@ -35,8 +36,6 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.Duration;
-import java.util.Objects;
 import java.util.Optional;
 
 public class OkHttpClient implements HttpClient {
@@ -54,18 +53,18 @@ public class OkHttpClient implements HttpClient {
     Request.Builder builder = new Request.Builder();
 
     HttpUrl.Builder url;
-    try {
-      String rawUrl;
-      if (request.getUri().startsWith("http:") || request.getUri().startsWith("https:")) {
-        rawUrl = request.getUri();
-      } else {
-        rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
-      }
+    String rawUrl;
+    if (request.getUri().startsWith("http:") || request.getUri().startsWith("https:")) {
+      rawUrl = request.getUri();
+    } else {
+      rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
+    }
 
-      url = HttpUrl.parse(rawUrl).newBuilder();
-    } catch (NullPointerException e) {
+    HttpUrl parsed = HttpUrl.parse(rawUrl);
+    if (parsed == null) {
       throw new IOException("Unable to parse URL: " + baseUrl.toString() + request.getUri());
     }
+    url = parsed.newBuilder();
 
     for (String name : request.getQueryParameterNames()) {
       for (String value : request.getQueryParameters(name)) {
@@ -157,7 +156,7 @@ public class OkHttpClient implements HttpClient {
                    : response;
           });
 
-          return new OkHttpClient(client.build(), url);
+          return HttpTracing.decorate(new OkHttpClient(client.build(), url));
         }
       };
     }

@@ -142,6 +142,21 @@ bot.userAgent.FIREFOX_EXTENSION = (function() {
   return true;
 })();
 
+/**
+ * Whether we are a WebExtension.
+ *
+ * @const
+ * @type {boolean}
+ */
+bot.userAgent.WEBEXTENSION = (function() {
+  // The content script global object is different than it's window
+  // Which requires accessing the chrome and browser objects through this
+  try {
+    return !!((goog.global.chrome || goog.global.browser)['extension']);
+  } catch (e) {
+    return false;
+  }
+})();
 
 /**
  * Whether we are on IOS.

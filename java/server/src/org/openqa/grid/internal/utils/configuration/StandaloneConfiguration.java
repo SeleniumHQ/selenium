@@ -141,7 +141,7 @@ public class StandaloneConfiguration {
   public StandaloneConfiguration(StandaloneCliOptions cliConfig) {
     this(ofNullable(cliConfig.getConfigFile()).map(StandaloneJsonConfiguration::loadFromResourceOrFile)
              .orElse(DEFAULT_CONFIG_FROM_JSON));
-    merge(cliConfig);
+    merge(cliConfig.getCommonOptions());
   }
 
   void merge(CommonCliOptions cliConfig) {

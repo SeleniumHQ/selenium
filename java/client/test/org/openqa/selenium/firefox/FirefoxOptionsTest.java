@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
-import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
 import static org.openqa.selenium.PageLoadStrategy.EAGER;
 import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
@@ -141,14 +141,14 @@ public class FirefoxOptionsTest {
 
   @Test
   public void stringBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
-    Map<String, ?> json = new FirefoxOptions().setBinary("/i/like/cheese").asMap();
+    Map<String, Object> json = new FirefoxOptions().setBinary("/i/like/cheese").asMap();
 
     assertThat(((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary")).isEqualTo("/i/like/cheese");
   }
 
   @Test
   public void pathBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
-    Map<String, ?> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).asMap();
+    Map<String, Object> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).asMap();
 
     assertThat(((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary")).isEqualTo("/i/like/cheese");
   }

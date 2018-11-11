@@ -20,7 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
-import static org.openqa.selenium.Platform.LINUX;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -28,7 +28,8 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.SauceDriver;
+
+import java.util.function.Consumer;
 
 public class WindowTest extends JUnit4TestBase {
 
@@ -45,9 +46,6 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
-        SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
-        && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     // resize relative to the initial size, since we don't know what it is
     changeSizeBy(-20, -20);
   }
@@ -58,9 +56,6 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
-        SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
-        && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     driver.get(pages.framesetPage);
     driver.switchTo().frame("fourth");
     // resize relative to the initial size, since we don't know what it is
@@ -73,9 +68,6 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
-        SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
-        && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1-name");
     // resize relative to the initial size, since we don't know what it is
@@ -101,9 +93,6 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeFalse("https://bugs.chromium.org/p/chromedriver/issues/detail?id=1129",
-        SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
-        && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     WebDriver.Window window = driver.manage().window();
     Point position = window.getPosition();
     Dimension originalSize = window.getSize();
@@ -116,8 +105,8 @@ public class WindowTest extends JUnit4TestBase {
       Point targetPosition = new Point(position.x + 10, position.y + 10);
       window.setPosition(targetPosition);
 
-      wait.until(xEqual(targetPosition));
-      wait.until(yEqual(targetPosition));
+      wait.until($ -> window.getPosition().x == targetPosition.x);
+      wait.until($ -> window.getPosition().y == targetPosition.y);
     } finally {
       window.setSize(originalSize);
     }
@@ -129,10 +118,9 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeNotLinuxAtSauce();
 
     changeSizeTo(new Dimension(640, 273));
-    maximize();
+    enlargeBy(WebDriver.Window::maximize);
   }
 
   @SwitchToTopAfterTest
@@ -142,13 +130,12 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeNotLinuxAtSauce();
 
     driver.get(pages.framesetPage);
     changeSizeTo(new Dimension(640, 274));
 
     driver.switchTo().frame("fourth");
-    maximize();
+    enlargeBy(WebDriver.Window::maximize);
   }
 
   @SwitchToTopAfterTest
@@ -158,13 +145,56 @@ public class WindowTest extends JUnit4TestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
-    assumeNotLinuxAtSauce();
 
     driver.get(pages.iframePage);
     changeSizeTo(new Dimension(640, 275));
 
     driver.switchTo().frame("iframe1-name");
-    maximize();
+    enlargeBy(WebDriver.Window::maximize);
+  }
+
+  @Test
+  @Ignore(travis = true)
+  @Ignore(SAFARI)
+  public void canFullscreenTheWindow() {
+    // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
+    // though others aren't defined in org.openqa.selenium.Platform).
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+
+    changeSizeTo(new Dimension(640, 273));
+    enlargeBy(WebDriver.Window::fullscreen);
+  }
+
+  @SwitchToTopAfterTest
+  @Test
+  @Ignore(travis = true)
+  @Ignore(SAFARI)
+  public void canFullscreenTheWindowFromFrame() {
+    // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
+    // though others aren't defined in org.openqa.selenium.Platform).
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+
+    driver.get(pages.framesetPage);
+    changeSizeTo(new Dimension(640, 274));
+
+    driver.switchTo().frame("fourth");
+    enlargeBy(WebDriver.Window::fullscreen);
+  }
+
+  @SwitchToTopAfterTest
+  @Test
+  @Ignore(travis = true)
+  @Ignore(SAFARI)
+  public void canFullscreenTheWindowFromIframe() {
+    // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
+    // though others aren't defined in org.openqa.selenium.Platform).
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+
+    driver.get(pages.iframePage);
+    changeSizeTo(new Dimension(640, 275));
+
+    driver.switchTo().frame("iframe1-name");
+    enlargeBy(WebDriver.Window::fullscreen);
   }
 
   private void changeSizeBy(int deltaX, int deltaY) {
@@ -181,14 +211,12 @@ public class WindowTest extends JUnit4TestBase {
     wait.until(windowSizeEqual(targetSize));
   }
 
-  private void maximize() {
+  private void enlargeBy(Consumer<WebDriver.Window> operation) {
     WebDriver.Window window = driver.manage().window();
-
     Dimension size = window.getSize();
-
-    window.maximize();
-    wait.until(windowWidthToBeGreaterThan(size));
-    wait.until(windowHeightToBeGreaterThan(size));
+    operation.accept(window);
+    wait.until($ -> window.getSize().width > size.width);
+    wait.until($ -> window.getSize().height > size.height);
   }
 
   private ExpectedCondition<Boolean> windowSizeEqual(final Dimension size) {
@@ -197,30 +225,4 @@ public class WindowTest extends JUnit4TestBase {
       return newSize.height == size.height && newSize.width == size.width;
     };
   }
-
-  private ExpectedCondition<Boolean> windowWidthToBeGreaterThan(final Dimension size) {
-    return driver -> driver.manage().window().getSize().width != size.width;
-  }
-
-  private ExpectedCondition<Boolean> windowHeightToBeGreaterThan(final Dimension size) {
-    return driver -> driver.manage().window().getSize().height != size.height;
-  }
-
-  private ExpectedCondition<Boolean> xEqual(final Point targetPosition) {
-    return driver -> driver.manage().window().getPosition().x == targetPosition.x;
-  }
-
-  private ExpectedCondition<Boolean> yEqual(final Point targetPosition) {
-    return driver -> driver.manage().window().getPosition().y == targetPosition.y;
-  }
-
-  private void assumeNotLinuxAtSauce() {
-    // Tests that maximize browser window used to fail when Sauce didn't run a window manager
-    // on Linux. 2015-07-16, they still fail although Sauce reportedly runs metacity.
-    // Chrome/Linux: simply fail.
-    // Firefox/Linux: FirefoxDriver finally report a changed window size 22 seconds after replying
-    // the maximize command, but video never shows the maximized window.
-    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && SauceDriver.shouldUseSauce());
-  }
-
 }

@@ -21,6 +21,7 @@ package org.openqa.selenium.interactions;
 /**
  * Interface implemented by each driver that allows access to the raw input devices.
  */
+@Deprecated
 public interface HasInputDevices {
   Keyboard getKeyboard();
 

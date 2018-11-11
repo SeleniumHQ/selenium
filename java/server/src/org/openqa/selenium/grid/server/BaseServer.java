@@ -20,18 +20,19 @@ package org.openqa.selenium.grid.server;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.grid.server.Server.get;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.seleniumhq.jetty9.security.ConstraintMapping;
 import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
 import org.seleniumhq.jetty9.server.Connector;
@@ -47,7 +48,9 @@ import java.io.UncheckedIOException;
 import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -64,11 +67,14 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
   private final org.seleniumhq.jetty9.server.Server server;
   private final Map<Predicate<HttpRequest>, BiFunction<Injector, HttpRequest, CommandHandler>>
       handlers;
+  private final List<Routes> routes = new ArrayList<>();
   private final ServletContextHandler servletContextHandler;
   private final Injector injector;
   private final URL url;
+  private final DistributedTracer tracer;
 
-  public BaseServer(BaseServerOptions options) {
+  public BaseServer(DistributedTracer tracer, BaseServerOptions options) {
+    this.tracer = Objects.requireNonNull(tracer);
     int port = options.getPort() == 0 ? PortProber.findFreePort() : options.getPort();
 
     String host = options.getHostname().orElseGet(() -> {
@@ -96,7 +102,8 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
         .register(json)
         .build();
 
-    addHandler(get("/status"), (injector, req) ->
+    addRoute(
+        Routes.get("/status").using(
         (in, out) -> {
           String value = json.toJson(ImmutableMap.of(
               "value", ImmutableMap.of(
@@ -108,7 +115,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
           out.setStatus(HTTP_OK);
 
           out.setContent(value.getBytes(UTF_8));
-        });
+        }).build());
 
     this.servletContextHandler = new ServletContextHandler(ServletContextHandler.SECURITY);
     ConstraintSecurityHandler
@@ -144,12 +151,14 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
     http.setIdleTimeout(500000);
 
     server.setConnectors(new Connector[]{http});
-
-    addServlet(new CommandHandlerServlet(injector, handlers), "/*");
   }
 
   @Override
   public void addServlet(Class<? extends Servlet> servlet, String pathSpec) {
+    if (server.isRunning()) {
+      throw new IllegalStateException("You may not add a servlet to a running server");
+    }
+
     servletContextHandler.addServlet(
         Objects.requireNonNull(servlet),
         Objects.requireNonNull(pathSpec));
@@ -157,19 +166,22 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
 
   @Override
   public void addServlet(Servlet servlet, String pathSpec) {
+    if (server.isRunning()) {
+      throw new IllegalStateException("You may not add a servlet to a running server");
+    }
+
     servletContextHandler.addServlet(
         new ServletHolder(Objects.requireNonNull(servlet)),
         Objects.requireNonNull(pathSpec));
   }
 
   @Override
-  public void addHandler(
-      Predicate<HttpRequest> selector,
-      BiFunction<Injector, HttpRequest, CommandHandler> handler) {
+  public void addRoute(Routes route) {
     if (server.isRunning()) {
-      throw new RuntimeException("You may not add a handler to a running server");
+      throw new IllegalStateException("You may not add a handler to a running server");
     }
-    handlers.put(Objects.requireNonNull(selector), Objects.requireNonNull(handler));
+
+    this.routes.add(route);
   }
 
   public boolean isStarted() {
@@ -179,6 +191,17 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
   @Override
   public T start() {
     try {
+      // If there are no routes, we've done something terribly wrong.
+      if (routes.isEmpty()) {
+        throw new IllegalStateException("There must be at least one route specified");
+      }
+      Routes first = routes.remove(0);
+      Routes routes = Routes.combine(first, this.routes.toArray(new Routes[0]))
+          .decorateWith(W3CCommandHandler.class)
+          .build();
+
+      addServlet(new CommandHandlerServlet(tracer, routes), "/*");
+
       server.start();
 
       PortProber.waitForPortUp(getUrl().getPort(), 10, SECONDS);

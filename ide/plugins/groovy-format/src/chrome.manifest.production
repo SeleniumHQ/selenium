@@ -1,4 +1,0 @@
-# chrome.manifest for production
-content groovy-formatters  chrome/content/
-
-overlay chrome://selenium-ide/content/selenium-ide-overlay.xul chrome://groovy-formatters/content/formats/format-loader.xul

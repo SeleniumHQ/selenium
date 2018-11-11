@@ -1,3 +1,15 @@
+﻿v3.141.0
+========
+ * Bump version to a better approximation of pi.
+ * Refined W3C-compliant ActionBuilder API for .NET.
+ * Updated .NET RemoteSessionSettings to properly return capabilities by index.
+ * Fixed RemoteWebElement.Equals to use remote call only if not W3C compliant.
+ * Added WebDriverException for mouse move out of bounds error.
+ * Modified the .NET test suite to properly ignore and unignore passing
+.  and failing tests.
+ * Adding method for executing Chrome DevTools command with result.
+ * Added ability to use chromedriver in spec-compliant mode.
+
 v3.14.0
 =======
  * Refactored .NET capability handling. This version introduces a large and

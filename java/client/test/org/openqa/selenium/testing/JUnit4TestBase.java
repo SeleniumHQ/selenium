@@ -19,9 +19,6 @@ package org.openqa.selenium.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.base.Throwables;
-
-import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.RuleChain;
@@ -31,25 +28,24 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.Browser;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 @RunWith(SeleniumTestRunner.class)
-public abstract class JUnit4TestBase implements WrapsDriver {
+public abstract class JUnit4TestBase {
 
   private static final Logger logger = Logger.getLogger(JUnit4TestBase.class.getName());
 
@@ -83,8 +79,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     .outerRule(new TraceMethodNameRule())
     .around(new ManageDriverRule())
     .around(new SwitchToTopRule())
-    .around(new NotYetImplementedRule())
-    .around(new CoveringUpSauceErrorsRule());
+    .around(new NotYetImplementedRule());
 
   private class TraceMethodNameRule extends TestWatcher {
     @Override
@@ -104,6 +99,12 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     @Override
     protected void starting(Description description) {
       super.starting(description);
+      NoDriverBeforeTest killSharedDriver = description.getAnnotation(NoDriverBeforeTest.class);
+      if (killSharedDriver != null && matches(browser, killSharedDriver.value())) {
+        System.out.println("Destroying driver before test " + description);
+        removeDriver();
+        return;
+      }
       NeedsFreshDriver annotation = description.getAnnotation(NeedsFreshDriver.class);
       if (annotation != null && matches(browser, annotation.value())) {
         System.out.println("Restarting driver before test " + description);
@@ -144,41 +145,6 @@ public abstract class JUnit4TestBase implements WrapsDriver {
       SwitchToTopAfterTest annotation = description.getAnnotation(SwitchToTopAfterTest.class);
       if (annotation != null) {
         driver.switchTo().defaultContent();
-      }
-    }
-  }
-
-  private class CoveringUpSauceErrorsRule implements TestRule {
-    @Override
-    public Statement apply(final Statement base, final Description description) {
-      return new Statement() {
-        @Override
-        public void evaluate() throws Throwable {
-          try {
-            base.evaluate();
-          } catch (Throwable t) {
-            dealWithSauceFailureIfNecessary(t);
-            // retry if we got a 'sauce' failure
-            base.evaluate();
-          }
-        }
-      };
-    }
-
-    private void dealWithSauceFailureIfNecessary(Throwable t) {
-      String message = t.getMessage();
-      if (!(t instanceof AssumptionViolatedException) && message != null
-          && (message.contains("sauce") || message.contains("Sauce"))) {
-        try {
-          removeDriver();
-          createDriver();
-        } catch (Exception e) {
-          t.addSuppressed(e);
-          throw new RuntimeException("Sauce-related failure. Tried re-creating the driver, but that failed too.", t);
-        }
-      } else {
-        Throwables.throwIfUnchecked(t);
-        throw new RuntimeException(t);
       }
     }
   }
@@ -226,22 +192,38 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     }
   }
 
-  public WebDriver getWrappedDriver() {
-    return storedDriver.get();
-  }
-
   private void createDriver() {
     driver = actuallyCreateDriver();
     wait = new WebDriverWait(driver, 10);
     shortWait = new WebDriverWait(driver, 5);
   }
 
-  public static WebDriver actuallyCreateDriver() {
+  public void createNewDriver(Capabilities capabilities) {
+    removeDriver();
+    driver = actuallyCreateDriver(capabilities);
+    wait = new WebDriverWait(driver, 10);
+    shortWait = new WebDriverWait(driver, 5);
+  }
+
+  private static WebDriver actuallyCreateDriver() {
     WebDriver driver = storedDriver.get();
 
     if (driver == null ||
         (driver instanceof RemoteWebDriver && ((RemoteWebDriver)driver).getSessionId() == null)) {
+      StaticResources.ensureAvailable();
       driver = new WebDriverBuilder().get();
+      storedDriver.set(driver);
+    }
+    return storedDriver.get();
+  }
+
+  private static WebDriver actuallyCreateDriver(Capabilities capabilities) {
+    WebDriver driver = storedDriver.get();
+
+    if (driver == null ||
+        (driver instanceof RemoteWebDriver && ((RemoteWebDriver)driver).getSessionId() == null)) {
+      StaticResources.ensureAvailable();
+      driver = new WebDriverBuilder().get(capabilities);
       storedDriver.set(driver);
     }
     return storedDriver.get();
@@ -265,11 +247,6 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     }
 
     storedDriver.remove();
-  }
-
-  protected boolean isIeDriverTimedOutException(IllegalStateException e) {
-    // The IE driver may throw a timed out exception
-    return e.getClass().getName().contains("TimedOutException");
   }
 
   private static boolean matches(Browser browser, Driver[] drivers) {
@@ -320,8 +297,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
 
         case REMOTE:
           if (Boolean.getBoolean("selenium.browser.grid") ||
-              Boolean.getBoolean("selenium.browser.remote") ||
-              SauceDriver.shouldUseSauce()) {
+              Boolean.getBoolean("selenium.browser.remote")) {
             return true;
           }
           break;

@@ -24,6 +24,7 @@ import org.openqa.selenium.interactions.internal.TouchAction;
 /**
  * Creates a move gesture.
  */
+@Deprecated
 public class MoveAction extends TouchAction implements Action {
 
   private final int x;

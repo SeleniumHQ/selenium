@@ -49,9 +49,6 @@ java_library(name = 'remote',
   srcs = [
     'Augmenter.java',
     'AugmenterProvider.java',
-    'AddFindsByCss.java',
-    'AddFindsChildByCss.java',
-    'AddRemoteTouchScreen.java',
     'AddRotatable.java',
     'BaseAugmenter.java',
     'InterfaceImplementation.java',
@@ -125,6 +122,7 @@ java_library(name = 'remote-lib',
     'mobile/RemoteNetworkConnection.java',
   ] + glob([
     'service/*.java',
+    'tracing/*.java',
   ]),
   resources = [
     ':get-attribute',
@@ -140,6 +138,9 @@ java_library(name = 'remote-lib',
   deps = [
     ':http-session-id',
     '//java/client/src/org/openqa/selenium:selenium',
+    '//third_party/java/contrib:opentracing-tracerresolver',
+    '//third_party/java/opencensus:opencensus-api',
+    '//third_party/java/opentracing:opentracing-noop',
     '//third_party/java/guava:guava',
   ],
 )

@@ -446,8 +446,11 @@ class IWebDriver {
    *           function(!WebDriver): T)} condition The condition to
    *     wait on, defined as a promise, condition object, or  a function to
    *     evaluate as a condition.
-   * @param {number=} timeout How long to wait for the condition to be true.
+   * @param {number=} timeout The duration in milliseconds, how long to wait
+   *     for the condition to be true.
    * @param {string=} message An optional message to use if the wait times out.
+   * @param {number=} pollTimeout The duration in milliseconds, how long to
+   *     wait between polling the condition.
    * @return {!(IThenable<T>|WebElementPromise)} A promise that will be
    *     resolved with the first truthy value returned by the condition
    *     function, or rejected if the condition times out. If the input
@@ -456,7 +459,7 @@ class IWebDriver {
    * @throws {TypeError} if the provided `condition` is not a valid type.
    * @template T
    */
-  wait(condition, timeout = undefined, message = undefined) {}
+  wait(condition, timeout = undefined, message = undefined, pollTimeout = undefined) {}
 
   /**
    * Makes the driver sleep for the given amount of time.
@@ -778,9 +781,13 @@ class WebDriver {
   }
 
   /** @override */
-  wait(condition, timeout = 0, message = undefined) {
+  wait(condition, timeout = 0, message = undefined, pollTimeout = 200) {
     if (typeof timeout !== 'number' || timeout < 0) {
       throw TypeError('timeout must be a number >= 0: ' + timeout);
+    }
+
+    if (typeof pollTimeout !== 'number' || pollTimeout < 0) {
+      throw TypeError('pollTimeout must be a number >= 0: ' + pollTimeout);
     }
 
     if (promise.isPromise(condition)) {
@@ -849,7 +856,7 @@ class WebDriver {
                   (message ? `${message}\n` : '')
                         + `Wait timed out after ${elapsed}ms`));
           } else {
-            setTimeout(pollCondition, 0);
+            setTimeout(pollCondition, pollTimeout);
           }
         }, reject);
       };

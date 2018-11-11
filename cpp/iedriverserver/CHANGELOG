@@ -9,6 +9,69 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.0.0
+==========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * Version number updated to continue with "digits of pi" theme.
+
+v3.14.0.15
+==========
+ * Fixed change in behavior recognizing closing of showModalDialog windows.
+   Fixes issue #6574.
+
+v3.14.0.14
+==========
+ * Fixed retrieval of CSS properties that return non-string values. Fixes
+   issue #6527.
+
+v3.14.0.13
+==========
+ * Fixed multiple file upload element detection.
+
+v3.14.0.12
+==========
+ * Allowed duration property of pause actions to be omitted.
+ * Cleaned up variant copying for getElementAttribute command.
+ * Expanded inline element detection for obscured elements. This commit
+   expands on the hack that was introduced in 3.14.0.11. It turns out
+   that <label> elements are not the only ones to suffer from issues
+   with elementsFromPoint. Rather, we now check for all types of inline
+   elements. This change also refactors the calculation of the hit-
+   testing point for calling elementsFromPoint in the first place, as
+   it only makes sense to call from within the context of the element's
+   document (omitting frames).
+
+v3.14.0.11
+==========
+ * Added hack to obscured element check for label elements. As per the
+   W3C WebDriver Specification, the IE driver uses elementsFromPoint to
+   determine whether an element being clicked on is obscured. However,
+   there is a bug in the IE implementation of elementsFromPoint that if
+   the element parent tree contains a <label> element, that element is
+   omitted from the list of elements returned by elementsFromPoint. This
+   change is to work around that bug. The solution implemented here is
+   to check if the top-most element as returned by elementFromPoint is
+   a direct descendent of the element we want to click on, and the 
+   element we want to click on is a <label>, we assume the element is
+   not obscured. Note carefully that this is a hack of the highest
+   order, and there's every likelihood that some page, somewhere will
+   fail this check. Upon receiving an issue report with a complete
+   reproduction case that includes a page clearly demonstrating the
+   issue, we will then revisit this algorithm.
+
+v3.14.0.10
+==========
+ * Partially reverted obscured element check. The updated obscured check
+   introduced in 3.14.0.8 assumed that there was a bug in IE's implementation
+   of elementsFromPoint. This is not the case. The actual bug is that the
+   driver did not take into account elements found outside the DOM tree of
+   the element being interacted with should not be flagged as obscuring the
+   target element if its pointer-events CSS property is "none". This is
+   because while the element may technically be rendered above the target
+   element in the DOM, it does not interfere with attempts to interact with
+   elements below it, since pointer events are not triggered.
+
 v3.14.0.9
 =========
  * Added ability to return text of JavaScript errors. Until this change,
@@ -19,12 +82,12 @@ v3.14.0.9
 
 v3.14.0.8
 =========
- * Updated obscured element check for IE. The W3C WebDriver Specification
-   dictates that checking for elements being obscured by other elements
-   should rely on calling elementsFromPoint. However, there is a bug in
-   IE's elementsFromPoint implementation. if two sibling elements have the
-   same z-index, the one specified second in the DOM order is usually on
-   top. The exception is if there is a child element that has a specified
+ * Updated obscured element check. The W3C WebDriver Specification dictates
+   that checking for elements being obscured by other elements should rely
+   on calling elementsFromPoint. However, there is a bug in IE's
+   elementsFromPoint implementation. if two sibling elements have the same
+   z-index, the one specified second in the DOM order is usually on top.
+   The exception is if there is a child element that has a specified
    z-index greater than the ancestor z-index. The IE elementsFromPoint
    implementation ignores the child element case, so we have to manually
    look for child elements that may be rendered on top of the element found

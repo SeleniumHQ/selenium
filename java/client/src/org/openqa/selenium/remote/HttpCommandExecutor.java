@@ -36,6 +36,9 @@ import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -127,6 +130,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
     }
 
+    DistributedTracer tracer = DistributedTracer.getInstance();
+
     if (NEW_SESSION.equals(command.getName())) {
       if (commandCodec != null) {
         throw new SessionNotCreatedException("Session already exists");
@@ -146,12 +151,13 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
     if (commandCodec == null || responseCodec == null) {
       throw new WebDriverException(
-        "No command or response codec has been defined. Unable to proceed");
+          "No command or response codec has been defined. Unable to proceed");
     }
 
     HttpRequest httpRequest = commandCodec.encode(command);
-    try {
+    try (Span span = tracer.createSpan(command.getName(), tracer.getActiveSpan())) {
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
+      span.addTag("selenium-sessionid", String.valueOf(command.getSessionId()));
       HttpResponse httpResponse = client.execute(httpRequest);
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
 

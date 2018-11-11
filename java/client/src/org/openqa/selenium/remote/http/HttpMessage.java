@@ -31,6 +31,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -126,6 +128,10 @@ class HttpMessage {
     this.content = toStreamFrom;
   }
 
+  /**
+   * @deprecated There is an expectation that this class caches all input, which leads to leaks.
+   */
+  @Deprecated
   public byte[] getContent() {
     if (readContent == null) {
       synchronized (this) {
@@ -144,6 +150,14 @@ class HttpMessage {
 
   public String getContentString() {
     return new String(getContent(), getContentEncoding());
+  }
+
+  public Reader getContentReader() {
+    return new InputStreamReader(getContentStream(), getContentEncoding());
+  }
+
+  public InputStream getContentStream() {
+    return new ByteArrayInputStream(getContent());
   }
 
   /**

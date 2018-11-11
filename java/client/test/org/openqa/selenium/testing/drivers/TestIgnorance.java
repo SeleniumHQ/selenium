@@ -18,8 +18,6 @@
 package org.openqa.selenium.testing.drivers;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.openqa.selenium.Platform.LINUX;
-import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.EDGE;
@@ -38,11 +36,8 @@ import static org.openqa.selenium.testing.drivers.Browser.opera;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.runner.Description;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreList;
-import org.openqa.selenium.testing.NativeEventsRequired;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -98,57 +93,13 @@ public class TestIgnorance {
       ignored = !ignored;
     }
 
-    ignored |= isIgnoredBecauseOfNativeEvents(method.getTestClass().getAnnotation(NativeEventsRequired.class));
-    ignored |= isIgnoredBecauseOfNativeEvents(method.getAnnotation(NativeEventsRequired.class));
-
     ignored |= isIgnoredDueToEnvironmentVariables(method);
-
-    ignored |= isIgnoredDueToBeingOnSauce(method);
 
     return ignored;
   }
 
   private boolean isIgnoredBecauseOfJUnit4Ignore(org.junit.Ignore annotation) {
     return annotation != null;
-  }
-
-  private boolean isIgnoredBecauseOfNativeEvents(NativeEventsRequired annotation) {
-    if (annotation == null) {
-      return false;
-    }
-
-    if (neverNativeEvents.contains(browser)) {
-      return true;
-    }
-
-    if (alwaysNativeEvents.contains(browser)) {
-      return false;
-    }
-
-    if (!Boolean.getBoolean("selenium.browser.native_events")) {
-      return true;
-    }
-
-    // We only have native events on Linux and Windows.
-    Platform platform = getEffectivePlatform();
-    return !(platform.is(LINUX) || platform.is(WINDOWS));
-  }
-
-  private static Platform getEffectivePlatform() {
-    if (SauceDriver.shouldUseSauce()) {
-      return SauceDriver.getEffectivePlatform();
-    }
-
-    return Platform.getCurrent();
-  }
-
-  private boolean isIgnoredDueToBeingOnSauce(Description method) {
-    boolean isLocal = method.getAnnotation(NeedsLocalEnvironment.class) != null
-                      || method.getTestClass().getAnnotation(NeedsLocalEnvironment.class) != null;
-    if (SauceDriver.shouldUseSauce()) {
-      return isLocal;
-    }
-    return Boolean.getBoolean("local_only") && !isLocal;
   }
 
   private boolean isIgnoredDueToEnvironmentVariables(Description method) {
@@ -167,8 +118,7 @@ public class TestIgnorance {
 
   private void addIgnoresForBrowser(Browser browser, IgnoreComparator comparator) {
     if (Boolean.getBoolean("selenium.browser.remote")
-        || Boolean.getBoolean("selenium.browser.grid")
-        || SauceDriver.shouldUseSauce()) {
+        || Boolean.getBoolean("selenium.browser.grid")) {
       comparator.addDriver(REMOTE);
     }
     if (Boolean.getBoolean("selenium.browser.grid")) {

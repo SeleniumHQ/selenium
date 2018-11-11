@@ -30,7 +30,7 @@ public class WebDriverException extends RuntimeException {
 
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
-  protected static final String BASE_SUPPORT_URL = "http://seleniumhq.org/exceptions/";
+  protected static final String BASE_SUPPORT_URL = "https://www.seleniumhq.org/exceptions/";
 
   private final static String HOST_NAME;
   private final static String HOST_ADDRESS;
@@ -55,6 +55,8 @@ public class WebDriverException extends RuntimeException {
 
         if (!process.waitFor(2, TimeUnit.SECONDS)) {
           process.destroyForcibly();
+          // According to the docs for `destroyForcibly` this is a good idea.
+          process.waitFor(2, TimeUnit.SECONDS);
         }
         if (process.exitValue() == 0) {
           try (InputStreamReader isr = new InputStreamReader(process.getInputStream());

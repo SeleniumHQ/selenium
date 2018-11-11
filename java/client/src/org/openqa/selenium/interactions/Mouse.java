@@ -19,7 +19,10 @@ package org.openqa.selenium.interactions;
 
 /**
  * Interface representing basic mouse operations.
+ *
+ * @deprecated Use {@link Actions} and the {@link PointerInput} instead.
  */
+@Deprecated
 public interface Mouse {
   void click(Coordinates where);
 

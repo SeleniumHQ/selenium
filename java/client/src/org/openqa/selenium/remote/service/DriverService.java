@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -67,7 +68,7 @@ public class DriverService {
    * A reference to the current child process. Will be {@code null} whenever this service is not
    * running. Protected by {@link #lock}.
    */
-  private CommandLine process = null;
+  protected CommandLine process = null;
 
   private final String executable;
   private final ImmutableList<String> args;
@@ -94,7 +95,15 @@ public class DriverService {
    this.url = getUrl(port);
  }
 
- protected URL getUrl(int port) throws IOException {
+  protected List<String> getArgs() {
+    return args;
+  }
+
+  protected Map<String, String> getEnvironment() {
+   return environment;
+ }
+
+  protected URL getUrl(int port) throws IOException {
    return new URL(String.format("http://localhost:%d", port));
  }
 

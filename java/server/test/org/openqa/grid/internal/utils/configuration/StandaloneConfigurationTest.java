@@ -25,6 +25,8 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
 
+import com.beust.jcommander.JCommander;
+
 import org.junit.Test;
 import org.openqa.grid.internal.cli.StandaloneCliOptions;
 import org.openqa.grid.internal.utils.configuration.json.StandaloneJsonConfiguration;
@@ -77,7 +79,7 @@ public class StandaloneConfigurationTest {
   public void commandLineParsing() {
     String[] args = "-timeout 32123 -browserTimeout 456".split(" ");
     StandaloneCliOptions options = new StandaloneCliOptions();
-    options.parse(args);
+    JCommander.newBuilder().addObject(options).build().parse(args);
     StandaloneConfiguration sc = new StandaloneConfiguration(options);
     assertEquals(32123, sc.timeout.intValue());
     assertEquals(456, sc.browserTimeout.intValue());

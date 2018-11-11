@@ -18,9 +18,9 @@
 package org.openqa.selenium;
 
 import static com.google.common.base.Throwables.getRootCause;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.By.id;
@@ -499,7 +499,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/904")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502656")
   public void shouldReturnDocumentElementIfDocumentIsReturned() {
     driver.get(pages.simpleTestPage);
 

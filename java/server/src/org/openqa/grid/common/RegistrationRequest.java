@@ -17,8 +17,6 @@
 
 package org.openqa.grid.common;
 
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.json.Json;

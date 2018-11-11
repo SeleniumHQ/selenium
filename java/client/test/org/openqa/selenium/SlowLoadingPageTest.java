@@ -18,8 +18,10 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.Driver.CHROME;
 
 import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class SlowLoadingPageTest extends JUnit4TestBase {
@@ -42,6 +44,7 @@ public class SlowLoadingPageTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, travis = true)
   public void testRefreshShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();
     driver.get(pages.sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);

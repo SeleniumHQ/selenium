@@ -290,7 +290,7 @@ module Selenium
         end
 
         it 'raises NoAlertOpenError if no alert is present' do
-          expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError, /alert|modal/i)
+          expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
         end
 
         # Safari - Raises wrong error

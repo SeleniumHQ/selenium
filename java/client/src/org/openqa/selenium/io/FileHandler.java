@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Utility methods for common filesystem activities
@@ -44,7 +45,7 @@ public class FileHandler {
 
   private static InputStream locateResource(Class<?> forClassLoader, String name)
       throws IOException {
-    String arch = System.getProperty("os.arch").toLowerCase() + "/";
+    String arch = Objects.requireNonNull(System.getProperty("os.arch")).toLowerCase() + "/";
     List<String> alternatives =
         Arrays.asList(name, "/" + name, arch + name, "/" + arch + name);
     if (Platform.getCurrent().is(Platform.MAC)) {

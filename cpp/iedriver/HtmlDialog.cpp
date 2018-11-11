@@ -22,6 +22,8 @@
 #include "BrowserFactory.h"
 #include "StringUtilities.h"
 
+#define HIDDEN_PARENT_WINDOW_CLASS "Internet Explorer_Hidden"
+
 namespace webdriver {
 
 HtmlDialog::HtmlDialog(IHTMLWindow2* window, HWND hwnd, HWND session_handle) : DocumentHost(hwnd, session_handle) {
@@ -186,7 +188,21 @@ std::string HtmlDialog::GetTitle() {
 
 HWND HtmlDialog::GetTopLevelWindowHandle(void) {
   LOG(TRACE) << "Entering HtmlDialog::GetTopLevelWindowHandle";
-  return ::GetParent(this->window_handle());
+  HWND parent_handle = ::GetParent(this->window_handle());
+
+  // "Internet Explorer_Hidden\0" == 25
+  std::vector<char> parent_class_buffer(25);
+  if (::GetClassNameA(parent_handle, &parent_class_buffer[0], 25)) {
+    if (strcmp(HIDDEN_PARENT_WINDOW_CLASS, &parent_class_buffer[0]) == 0) {
+      // Some versions of Internet Explorer re-parent a closing showModalDialog
+      // window to a hidden parent window. If that is what we see happening
+      // here, that will be equivalent to the parent window no longer being
+      // valid, and we can return an invalid handle, indicating the window is
+      // "closed."
+      return NULL;
+    }
+  }
+  return parent_handle;
 }
 
 HWND HtmlDialog::GetActiveDialogWindowHandle() {

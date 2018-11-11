@@ -76,10 +76,6 @@ public class SafariDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
     SafariDriverService, SafariDriverService.Builder> {
 
-    public Builder() {
-      usingTechnologyPreview(false);
-    }
-
     @Override
     public int score(Capabilities capabilites) {
       int score = 0;

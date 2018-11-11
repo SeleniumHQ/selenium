@@ -17,11 +17,14 @@
 
 package org.openqa.selenium.safari;
 
+import com.google.common.collect.ImmutableMap;
+
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.Response;
 
 /**
  * A WebDriver implementation that controls Safari using a browser extension
@@ -75,7 +78,7 @@ public class SafariDriver extends RemoteWebDriver {
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariDriverService safariServer, SafariOptions safariOptions) {
-    super(new DriverCommandExecutor(safariServer), safariOptions);
+    super(new SafariDriverCommandExecutor(safariServer), safariOptions);
   }
 
   @Override
@@ -83,5 +86,25 @@ public class SafariDriver extends RemoteWebDriver {
     throw new WebDriverException(
         "Setting the file detector only works on remote webdriver instances obtained " +
         "via RemoteWebDriver");
+  }
+
+  /**
+   * Open either a new tab or window, depending on what is requested, and return the window handle
+   * without switching to it.
+   *
+   * @return The handle of the new window.
+   */
+  @Beta
+  public String newWindow(WindowType type) {
+    Response response = execute(
+        "SAFARI_NEW_WINDOW",
+        ImmutableMap.of("newTab", type == WindowType.TAB));
+
+    return (String) response.getValue();
+  }
+
+  public enum WindowType {
+    TAB,
+    WINDOW,
   }
 }

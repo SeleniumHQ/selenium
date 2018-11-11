@@ -41,7 +41,6 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testTextInputShouldNotClearWhenDisabled() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textInputnotenabled"));
@@ -131,14 +130,10 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(IE)
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearRangeInput() {
-    shouldBeAbleToClearInput(By.name("range_input"), "42");
+    shouldBeAbleToClearInput(By.name("range_input"), "42", "50");
   }
 
   @Test
@@ -152,16 +147,12 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearColorInput() {
-    shouldBeAbleToClearInput(By.name("color_input"), "#00ffff");
+    shouldBeAbleToClearInput(By.name("color_input"), "#00ffff", "#000000");
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearDateInput() {
     shouldBeAbleToClearInput(By.name("date_input"), "2017-11-22");
@@ -173,39 +164,39 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearDatetimeLocalInput() {
     shouldBeAbleToClearInput(By.name("datetime_local_input"), "2017-11-22T11:22");
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearTimeInput() {
     shouldBeAbleToClearInput(By.name("time_input"), "11:22");
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearMonthInput() {
     shouldBeAbleToClearInput(By.name("month_input"), "2017-11");
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearWeekInput() {
     shouldBeAbleToClearInput(By.name("week_input"), "2017-W47");
   }
 
   private void shouldBeAbleToClearInput(By locator, String oldValue) {
+    shouldBeAbleToClearInput(locator, oldValue, "");
+  }
+
+  private void shouldBeAbleToClearInput(By locator, String oldValue, String clearedValue) {
     driver.get(appServer.whereIs("inputs.html"));
     WebElement element = driver.findElement(locator);
     assertThat(element.getAttribute("value")).isEqualTo(oldValue);
     element.clear();
-    assertThat(element.getAttribute("value")).isEqualTo("");
+    assertThat(element.getAttribute("value")).isEqualTo(clearedValue);
   }
 
 }

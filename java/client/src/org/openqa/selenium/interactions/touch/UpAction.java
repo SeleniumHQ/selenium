@@ -24,6 +24,7 @@ import org.openqa.selenium.interactions.internal.TouchAction;
 /**
  * Creates an up gesture.
  */
+@Deprecated
 public class UpAction extends TouchAction implements Action {
 
   private final int x;

@@ -109,11 +109,11 @@ public class Augmenter extends BaseAugmenter {
       RemoteWebDriver driver,
       Map<String, AugmenterProvider> augmentors,
       Object objectToAugment) {
-    Map<String, ?> capabilities = driver.getCapabilities().asMap();
+    Map<String, Object> capabilities = driver.getCapabilities().asMap();
 
     CompoundHandler handler = new CompoundHandler(driver, objectToAugment);
 
-    for (Map.Entry<String, ?> capabilityName : capabilities.entrySet()) {
+    for (Map.Entry<String, Object> capabilityName : capabilities.entrySet()) {
       AugmenterProvider augmenter = augmentors.get(capabilityName.getKey());
       if (augmenter == null) {
         continue;

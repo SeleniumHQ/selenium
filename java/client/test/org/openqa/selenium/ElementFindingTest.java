@@ -55,8 +55,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME,
-      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
   public void testShouldBeAbleToFindASingleElementByIdWithNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("white space"));
@@ -80,8 +78,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME,
-      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
   public void testShouldBeAbleToFindMultipleElementsByIdWithNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     List<WebElement> elements = driver.findElements(By.id("white space"));
@@ -114,7 +110,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @NotYetImplemented(SAFARI)
   public void testFindingMultipleElementsByEmptyIdShouldReturnEmptyList() {
     driver.get(pages.formPage);
@@ -346,7 +342,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(SAFARI)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -362,7 +358,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(SAFARI)
   public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -428,7 +424,7 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToFindElementByXPathWithNamespace() {
     driver.get(pages.svgPage);

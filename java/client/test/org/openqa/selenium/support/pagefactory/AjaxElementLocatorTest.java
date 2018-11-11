@@ -31,16 +31,17 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
-import org.openqa.selenium.support.ui.FakeClock;
+import org.openqa.selenium.support.ui.TickingClock;
 
 import java.lang.reflect.Field;
 import java.time.Clock;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AjaxElementLocatorTest {
 
-  private FakeClock clock = new FakeClock();
+  private TickingClock clock = new TickingClock();
 
   protected ElementLocator newLocator(WebDriver driver, Field field) {
     return new MonkeyedAjaxElementLocator(clock, driver, field, 10);
@@ -137,22 +138,25 @@ public class AjaxElementLocatorTest {
     };
 
     assertThatExceptionOfType(NullPointerException.class)
-        .isThrownBy(() ->new AjaxElementLocator(driver, 5, npeAnnotations));
+        .isThrownBy(() -> new AjaxElementLocator(driver, 5, npeAnnotations));
   }
 
   private class MonkeyedAjaxElementLocator extends AjaxElementLocator {
-    public MonkeyedAjaxElementLocator(Clock clock, WebDriver driver, Field field, int timeOutInSeconds) {
+
+    public MonkeyedAjaxElementLocator(Clock clock, WebDriver driver, Field field,
+                                      int timeOutInSeconds) {
       super(clock, driver, field, timeOutInSeconds);
     }
 
     @Override
     protected long sleepFor() {
-      clock.timePasses(1000);
+      clock.sleep(Duration.ofSeconds(1));
       return 0;
     }
   }
 
   private static class Page {
+
     @SuppressWarnings("unused")
     private WebElement first;
   }

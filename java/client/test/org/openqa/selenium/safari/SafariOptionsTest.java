@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.safari;
 
-import com.google.common.collect.ImmutableMap;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;

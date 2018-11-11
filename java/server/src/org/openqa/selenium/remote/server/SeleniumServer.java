@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.server;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.grid.web.Routes.matching;
 
 import com.beust.jcommander.JCommander;
 
@@ -34,15 +35,12 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -65,7 +63,9 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
   private ActiveSessions allSessions;
 
   public SeleniumServer(StandaloneConfiguration configuration) {
-    super(new BaseServerOptions(new AnnotatedConfig(configuration)));
+    super(
+        DistributedTracer.getInstance(),
+        new BaseServerOptions(new AnnotatedConfig(configuration)));
     this.configuration = configuration;
 
     objectName = new JMXHelper().register(this).getObjectName();
@@ -122,14 +122,11 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
     addServlet(driverServlet, "/wd/hub/*");
     addServlet(driverServlet, "/webdriver/*");
 
-    addHandler(req -> true, new BiFunction<Injector, HttpRequest, CommandHandler>() {
-      @Override
-      public CommandHandler apply(Injector inj, HttpRequest ignored) {
-        Json json = inj.newInstance(Json.class);
-
-        return new DisplayHelpHandler(json, GridRole.get(configuration.role), "/wd/hub");
-      }
-    });
+    addRoute(
+        matching(req -> true).using(new DisplayHelpHandler(
+            new Json(),
+            GridRole.get(configuration.role),
+            "/wd/hub")));
 
     addRcSupport();
     addExtraServlets();
@@ -190,9 +187,9 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
 
   public static void main(String[] args) {
     StandaloneCliOptions options = new StandaloneCliOptions();
-    options.parse(args);
+    JCommander.newBuilder().addObject(options).build().parse(args);
 
-    if (options.help) {
+    if (options.getCommonOptions().getHelp()) {
       StringBuilder message = new StringBuilder();
       new JCommander(options).usage(message);
       System.err.println(message.toString());
@@ -201,15 +198,5 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
 
     SeleniumServer server = new SeleniumServer(new StandaloneConfiguration(options));
     server.boot();
-  }
-
-  public static void usage(String msg) {
-    if (msg != null) {
-      System.out.println(msg);
-    }
-
-    StandaloneCliOptions options = new StandaloneCliOptions();
-    JCommander commander = options.parse();
-    commander.usage();
   }
 }

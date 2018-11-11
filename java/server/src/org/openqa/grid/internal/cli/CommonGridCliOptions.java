@@ -18,11 +18,19 @@
 package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 
 import java.util.List;
 import java.util.Map;
 
-public abstract class CommonGridCliOptions extends CommonCliOptions {
+public class CommonGridCliOptions {
+
+  @ParametersDelegate
+  private CommonCliOptions commonGridOptions = new CommonCliOptions();
+
+  public CommonCliOptions getCommonOptions() {
+    return commonGridOptions;
+  }
 
   /*
    * config parameters which serialize and deserialize to/from json

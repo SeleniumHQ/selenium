@@ -47,8 +47,7 @@ public class ChromeMutator implements Function<Capabilities, Capabilities> {
       return capabilities;
     }
 
-    Map<String, Object> toReturn = new HashMap<>();
-    toReturn.putAll(capabilities.asMap());
+    Map<String, Object> toReturn = new HashMap<>(capabilities.asMap());
 
     Map<String, Object> options = new HashMap<>();
     if (capabilities.getCapability(CAPABILITY) instanceof Map) {

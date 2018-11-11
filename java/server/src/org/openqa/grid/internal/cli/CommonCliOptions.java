@@ -19,7 +19,7 @@ package org.openqa.grid.internal.cli;
 
 import com.beust.jcommander.Parameter;
 
-public abstract class CommonCliOptions {
+public class CommonCliOptions {
 
   @Parameter(
       names = {"--version", "-version"},
@@ -101,14 +101,6 @@ public abstract class CommonCliOptions {
   )
   private Integer browserTimeout;
 
-  @Parameter(
-      names = {"-avoidProxy"},
-      description = "DO NOT USE: Hack to allow selenium 3.0 server run in SauceLabs",
-      hidden = true
-  )
-  // initially defaults to false from boolean primitive type
-  private Boolean avoidProxy;
-
   /**
    *   Max threads for Jetty. Defaults to {@code null}.
    */
@@ -117,22 +109,6 @@ public abstract class CommonCliOptions {
       description = "<Integer> : max number of threads for Jetty. An unspecified, zero, or negative value means the Jetty default value (200) will be used."
   )
   private Integer jettyMaxThreads;
-
-  @Parameter(
-      names = "-browserSideLog",
-      description = "DO NOT USE: Provided for compatibility with 2.0",
-      hidden = true
-  )
-  // initially defaults to false from boolean primitive type
-  private Boolean browserSideLog = false;
-
-  @Parameter(
-      names = "-captureLogsOnQuit",
-      description = "DO NOT USE: Provided for compatibility with 2.0",
-      hidden = true
-  )
-  // initially defaults to false from boolean primitive type
-  private Boolean captureLogsOnQuit = false;
 
   public Boolean getVersion() {
     return version;

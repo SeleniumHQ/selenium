@@ -337,8 +337,7 @@ public class FirefoxOptions extends MutableCapabilities {
 
   @Override
   public Map<String, Object> asMap() {
-    TreeMap<String, Object> toReturn = new TreeMap<>();
-    toReturn.putAll(super.asMap());
+    TreeMap<String, Object> toReturn = new TreeMap<>(super.asMap());
 
     ImmutableSortedMap.Builder<String, Object> w3cOptions = ImmutableSortedMap.naturalOrder();
     w3cOptions.put("args", args);

@@ -25,12 +25,12 @@ import org.hamcrest.StringDescription;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
-import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Sleeper;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Clock;
 import java.util.Collection;
 
 /**
@@ -39,22 +39,14 @@ import java.util.Collection;
 public class WebDriverTestContext implements TestContext {
 
   private WebDriver driver;
-  private final java.time.Clock clock;
+  private final Clock clock;
   private final Sleeper sleeper;
 
   public WebDriverTestContext(WebDriver driver) {
-    this(driver, java.time.Clock.systemDefaultZone(), Sleeper.SYSTEM_SLEEPER);
+    this(driver, Clock.systemDefaultZone(), Sleeper.SYSTEM_SLEEPER);
   }
 
-  /**
-   * @deprecated Use {@link #WebDriverTestContext(WebDriver, java.time.Clock, Sleeper)}.
-   */
-  @Deprecated
   WebDriverTestContext(WebDriver driver, Clock clock, Sleeper sleeper) {
-    this(driver, clock.asJreClock(), sleeper);
-  }
-
-  WebDriverTestContext(WebDriver driver, java.time.Clock clock, Sleeper sleeper) {
     this.driver = driver;
     this.clock = clock;
     this.sleeper = sleeper;
