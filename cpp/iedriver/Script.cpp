@@ -573,6 +573,12 @@ int Script::ConvertResultToJsonValue(IElementManager* element_manager,
                                                          this->result_,
                                                          value);
   if (status_code != WD_SUCCESS) {
+    // Attempting to convert the VARIANT script result to a JSON value
+    // has failed. As a last-ditch effort, attempt to use JSON.stringify()
+    // to accomplish the same thing.
+    // TODO: Check the return value for a cyclic reference error first, and
+    // if that's the reason for the failure to convert, we can bypass this
+    // script execution and just return that as the error reason.
     LOG(DEBUG) << "Script result could not be directly converted; "
                << "attempting to use JSON.stringify()";
     std::wstring json_stringify_script = ANONYMOUS_FUNCTION_START;
@@ -599,6 +605,14 @@ int Script::ConvertResultToJsonValue(IElementManager* element_manager,
         if (successful_parse) {
           *value = interim_value;
         }
+      }
+    } else {
+      // If the call to JSON.stringify() fails, log the description of the
+      // error thrown by that call as the reason for the script returning a
+      // JavaScript error.
+      if (stringify_script_wrapper.result().vt == VT_BSTR) {
+        std::wstring error = stringify_script_wrapper.result().bstrVal;
+        *value = StringUtilities::ToString(error);
       }
     }
   }
