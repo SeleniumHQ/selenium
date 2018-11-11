@@ -455,6 +455,9 @@ void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executo
     mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
   }
 
+  Json::Value use_strict_file_interactability = this->GetCapability(capabilities, STRICT_FILE_INTERACTABILITY_CAPABILITY, Json::booleanValue, false);
+  mutable_executor.set_use_strict_file_interactability(use_strict_file_interactability.asBool());
+
   Json::Value enable_persistent_hover = this->GetCapability(capabilities, ENABLE_PERSISTENT_HOVER_CAPABILITY, Json::booleanValue, true);
   if (require_window_focus.asBool() || !enable_native_events.asBool()) {
     // Setting "require_window_focus" implies SendInput() API, and does not therefore require
@@ -474,6 +477,7 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   capabilities[PLATFORM_NAME_CAPABILITY] = "windows";
   capabilities[ACCEPT_INSECURE_CERTS_CAPABILITY] = false;
   capabilities[PAGE_LOAD_STRATEGY_CAPABILITY] = executor.page_load_strategy();
+  capabilities[STRICT_FILE_INTERACTABILITY_CAPABILITY] = executor.use_strict_file_interactability();
   capabilities[SET_WINDOW_RECT_CAPABILITY] = true;
 
   if (executor.unexpected_alert_behavior().size() > 0) {
@@ -621,6 +625,20 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     if (capability_name == ACCEPT_INSECURE_CERTS_CAPABILITY) {
       LOG(DEBUG) << "Found " << ACCEPT_INSECURE_CERTS_CAPABILITY << " capability."
                  << " Validating value type is boolean.";
+      if (!this->ValidateCapabilityType(capabilities,
+                                        capability_name,
+                                        Json::ValueType::booleanValue,
+                                        &capability_error_message)) {
+        *error_message = "Invalid capabilities in " +
+                         capability_set_name + ": " + capability_error_message;
+        return false;
+      }
+      continue;
+    }
+
+    if (capability_name == STRICT_FILE_INTERACTABILITY_CAPABILITY) {
+      LOG(DEBUG) << "Found " << STRICT_FILE_INTERACTABILITY_CAPABILITY << " capability."
+        << " Validating value type is boolean.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
                                         Json::ValueType::booleanValue,
