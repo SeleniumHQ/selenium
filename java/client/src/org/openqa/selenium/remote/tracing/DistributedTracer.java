@@ -17,15 +17,24 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.BuildInfo;
 
+import io.opentracing.SpanContext;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.noop.NoopTracerFactory;
+import io.opentracing.propagation.Format;
+import io.opentracing.propagation.TextMap;
+import io.opentracing.propagation.TextMapExtractAdapter;
 
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * Represents an entry point for accessing all aspects of distributed tracing.
@@ -114,6 +123,59 @@ public class DistributedTracer {
     Objects.requireNonNull(span, "Span to remove must not be null");
 
     ACTIVE_SPANS.get().removeIf(span::equals);
+  }
+
+  public Span extract(String operationName, Iterator<Map.Entry<String, String>> traceTags) {
+    ImmutableMap.Builder<String, String> repeatableTags = ImmutableMap.builder();
+    traceTags.forEachRemaining(item -> repeatableTags.put(item.getKey(), item.getValue()));
+
+    ImmutableSet.Builder<Span> spans = ImmutableSet.builder();
+
+    TextMapExtractAdapter adapter = new TextMapExtractAdapter(repeatableTags.build());
+    for (io.opentracing.Tracer tracer : otTracers) {
+      SpanContext context = tracer.extract(Format.Builtin.TEXT_MAP, adapter);
+
+      spans.add(new OpenTracingSpan(this, tracer, context, operationName));
+    }
+
+    for (io.opencensus.trace.Tracer ocTracer : ocTracers) {
+      // TODO: implement for OpenCensus
+    }
+
+    return new CompoundSpan(this, spans.build()).activate();
+  }
+
+  private static class TextMapAdapter implements TextMap {
+
+    private final BiConsumer<String, String> setter;
+    private final Supplier<Iterator<Map.Entry<String, String>>> getter;
+
+    private TextMapAdapter(
+        BiConsumer<String, String> setter,
+        Supplier<Iterator<Map.Entry<String, String>>> getter) {
+
+      this.setter = setter;
+      this.getter = getter;
+    }
+
+    @Override
+    public Iterator<Map.Entry<String, String>> iterator() {
+      if (getter == null) {
+        throw new UnsupportedOperationException("iterator");
+      }
+      return getter.get();
+    }
+
+    @Override
+    public void put(String key, String value) {
+      if (setter == null) {
+        throw new UnsupportedOperationException("put");
+      }
+      if (key == null || value == null) {
+        return;
+      }
+      setter.accept(key, value);
+    }
   }
 
   public static class Builder {

@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
@@ -43,7 +42,7 @@ class OpenTracingSpan extends Span {
   OpenTracingSpan(
       DistributedTracer distributedTracer,
       Tracer tracer,
-      io.opentracing.Span parent,
+      io.opentracing.SpanContext parent,
       String operation) {
     this.distributedTracer = Objects.requireNonNull(distributedTracer);
     this.tracer = Objects.requireNonNull(tracer);
@@ -73,6 +72,11 @@ class OpenTracingSpan extends Span {
   }
 
   @Override
+  public String getTraceTag(String key) {
+    return span.getBaggageItem(key);
+  }
+
+  @Override
   public Span addTag(String key, String value) {
     span.setTag(key, value);
     return this;
@@ -92,24 +96,13 @@ class OpenTracingSpan extends Span {
 
   @Override
   public Span createChild(String operation) {
-    Span child = new OpenTracingSpan(distributedTracer, tracer, span, operation);
+    Span child = new OpenTracingSpan(distributedTracer, tracer, span.context(), operation);
     return child.activate();
   }
 
   @Override
   void inject(HttpRequest request) {
     tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, new HttpRequestInjector(request));
-  }
-
-  @Override
-  void extract(HttpRequest request) {
-    SpanContext context = tracer.extract(Format.Builtin.HTTP_HEADERS, new HttpRequestInjector(request));
-    if (context == null) {
-      return;
-    }
-    for (Map.Entry<String, String> item : context.baggageItems()) {
-      addTraceTag(item.getKey(), item.getValue());
-    }
   }
 
   @Override

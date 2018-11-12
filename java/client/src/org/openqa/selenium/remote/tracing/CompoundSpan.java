@@ -66,6 +66,16 @@ class CompoundSpan extends Span {
   }
 
   @Override
+  public String getTraceTag(String key) {
+    // We assume that all the values are the same. This may not actually be true.
+    return allSpans.stream()
+        .map(span -> span.getTraceTag(key))
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElse(null);
+  }
+
+  @Override
   public Span addTag(String key, String value) {
     Objects.requireNonNull(key, "Key must be set");
     allSpans.forEach(span -> span.addTag(key, value));
@@ -96,11 +106,5 @@ class CompoundSpan extends Span {
   void inject(HttpRequest request) {
     Objects.requireNonNull(request);
     allSpans.forEach(span -> span.inject(request));
-  }
-
-  @Override
-  void extract(HttpRequest request) {
-    Objects.requireNonNull(request);
-    allSpans.forEach(span -> span.extract(request));
   }
 }
