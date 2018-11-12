@@ -64,6 +64,11 @@ class OpenCensusSpan extends Span {
   }
 
   @Override
+  public String getTraceTag(String key) {
+    return span.getContext().getTracestate().get(key);
+  }
+
+  @Override
   public Span addTag(String key, String value) {
     span.putAttribute(Objects.requireNonNull(key), AttributeValue.stringAttributeValue(value));
     return this;
@@ -90,11 +95,6 @@ class OpenCensusSpan extends Span {
   @Override
   void inject(HttpRequest request) {
     throw new UnsupportedOperationException("inject");
-  }
-
-  @Override
-  void extract(HttpRequest request) {
-    throw new UnsupportedOperationException("extract");
   }
 
   @Override

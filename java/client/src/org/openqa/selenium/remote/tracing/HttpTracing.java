@@ -23,7 +23,11 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import io.opentracing.tag.Tags;
 
+import java.util.AbstractMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 public class HttpTracing {
 
@@ -42,13 +46,18 @@ public class HttpTracing {
     span.inject(request);
   }
 
-  public static void extract(HttpRequest request, Span intoSpan) {
+  public static Span extract(DistributedTracer tracer, String operationName, HttpRequest request) {
     Objects.requireNonNull(request, "Request must be set.");
-    if (intoSpan == null) {
-      return;
-    }
 
-    intoSpan.extract(request);
+    Iterator<Map.Entry<String, String>> iterator =
+        StreamSupport.stream(request.getHeaderNames().spliterator(), false)
+            .filter(name -> request.getHeader(name) != null)
+            .map(name -> (Map.Entry<String, String>) new AbstractMap.SimpleImmutableEntry<>(
+                name,
+                request.getHeader(name)))
+            .iterator();
+
+    return tracer.extract(operationName, iterator);
   }
 
   public static HttpClient decorate(HttpClient existing) {
@@ -69,7 +78,6 @@ public class HttpTracing {
         throw throwable;
       }
     };
-
   }
 
 }

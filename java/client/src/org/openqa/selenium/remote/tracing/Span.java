@@ -39,6 +39,8 @@ public abstract class Span implements Closeable {
    */
   public abstract Span addTraceTag(String key, String value);
 
+  public abstract String getTraceTag(String key);
+
   /**
    * Add a piece of metadata to the span, which allows high cardinality data to
    * be added to the span. This data will not be propogated to other spans.
@@ -53,6 +55,4 @@ public abstract class Span implements Closeable {
   public abstract void close();
 
   abstract void inject(HttpRequest request);
-
-  abstract void extract(HttpRequest request);
 }

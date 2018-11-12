@@ -35,5 +35,6 @@ prebuilt_jar(
   ],
   visibility = [
     '//third_party/java/contrib:opentracing-tracerresolver',
+    '//java/client/test/org/openqa/selenium/remote/tracing/simple:',
   ],
 )

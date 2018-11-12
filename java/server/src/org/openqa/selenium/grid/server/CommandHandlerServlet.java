@@ -62,11 +62,9 @@ class CommandHandlerServlet extends HttpServlet {
     HttpRequest request = new ServletRequestWrappingHttpRequest(req);
     HttpResponse response = new ServletResponseWrappingHttpResponse(resp);
 
-    log(String.format("(%s) %s", request.getMethod(), request.getUri()));
+//    log(String.format("(%s) %s", request.getMethod(), request.getUri()));
 
-    try (Span span = tracer.createSpan("handler-servlet", tracer.getActiveSpan())) {
-      HttpTracing.extract(request, span);
-
+    try (Span span = HttpTracing.extract(tracer, "selenium.httpservlet", request)) {
       Optional<CommandHandler> possibleMatch = routes.match(injector, request);
       if (possibleMatch.isPresent()) {
         possibleMatch.get().execute(request, response);
@@ -76,3 +74,4 @@ class CommandHandlerServlet extends HttpServlet {
     }
   }
 }
+
