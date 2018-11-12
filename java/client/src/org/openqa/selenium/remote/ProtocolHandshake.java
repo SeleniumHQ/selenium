@@ -38,8 +38,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -99,14 +97,12 @@ public class ProtocolHandshake {
 
     HttpResponse response;
     long start = System.currentTimeMillis();
-    DistributedTracer tracer = DistributedTracer.getInstance();
-    try (Span span = tracer.createSpan("NEW_SESSION", tracer.getActiveSpan())) {
-      request.setHeader(CONTENT_LENGTH, String.valueOf(size));
-      request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-      request.setContent(newSessionBlob);
 
-      response = client.execute(request);
-    }
+    request.setHeader(CONTENT_LENGTH, String.valueOf(size));
+    request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
+    request.setContent(newSessionBlob);
+
+    response = client.execute(request);
     long time = System.currentTimeMillis() - start;
 
     // Ignore the content type. It may not have been set. Strictly speaking we're not following the
