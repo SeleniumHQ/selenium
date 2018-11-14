@@ -22,7 +22,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 /**
- * A {@link WebDriver} implementation that controls a Edge browser running on the local machine.
+ * A {@link WebDriver} implementation that controls an Edge browser running on the local machine.
  * This class is provided as a convenience for easily testing the Edge browser. The control server
  * which each instance communicates with will live and die with the instance.
  *
@@ -109,7 +109,7 @@ public class EdgeDriver extends RemoteWebDriver {
 
 	  /**
 	   * Creates a new EdgeDriver instance. The {@code capabilities} will be passed to the
-	   * edgedriver service.
+	   * EdgeDriver service.
 	   *
 	   * @param capabilities The capabilities required from the EdgeDriver.
 	   * @see #EdgeDriver(EdgeDriverService, Capabilities)
