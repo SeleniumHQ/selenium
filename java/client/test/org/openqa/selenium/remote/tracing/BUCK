@@ -7,6 +7,8 @@ java_test(
     srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
+        "//java/client/test/org/openqa/selenium/remote/tracing/simple:simple",
         "//java/client/test/org/openqa/selenium/environment:environment",
         "//java/client/test/org/openqa/selenium/remote/tracing/simple:simple",
         "//third_party/java/assertj:assertj",

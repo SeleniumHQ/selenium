@@ -8,6 +8,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/data:data",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
         "//java/server/src/org/openqa/selenium/grid/server:server",
         "//java/server/src/org/openqa/selenium/grid/sessionmap:sessionmap",
         "//java/server/src/org/openqa/selenium/grid/web:web",

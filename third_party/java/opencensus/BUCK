@@ -7,7 +7,7 @@ prebuilt_jar(
     '//third_party/java/grpc:grpc-context'
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium/remote:',
+    '//java/client/src/org/openqa/selenium/remote/tracing:',
   ],
 )
 

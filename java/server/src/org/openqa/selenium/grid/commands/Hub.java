@@ -88,14 +88,16 @@ public class Hub implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("selenium", '.', System.getProperties()));
 
-      DistributedTracer tracer = DistributedTracer.getInstance();
+      DistributedTracer tracer = DistributedTracer.builder()
+          .registerDetectedTracers()
+          .build();
+      DistributedTracer.setInstance(tracer);
 
       SessionMap sessions = new LocalSessionMap();
       Distributor distributor = new LocalDistributor(tracer);
       Router router = new Router(sessions, distributor);
 
       Server<?> server = new BaseServer<>(
-          tracer,
           new BaseServerOptions(config));
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();

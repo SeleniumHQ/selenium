@@ -84,11 +84,16 @@ public class SessionMapServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("sessions", '.', System.getProperties()));
 
+      DistributedTracer tracer = DistributedTracer.builder()
+          .registerDetectedTracers()
+          .build();
+      DistributedTracer.setInstance(tracer);
+
       SessionMap sessions = new LocalSessionMap();
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      Server<?> server = new BaseServer<>(DistributedTracer.getInstance(), serverOptions);
+      Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(matching(sessions).using(sessions).decorateWith(W3CCommandHandler.class));
       server.start();
     };

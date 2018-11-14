@@ -26,9 +26,6 @@ import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.HttpTracing;
-import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -42,10 +39,8 @@ class CommandHandlerServlet extends HttpServlet {
 
   private final Routes routes;
   private final Injector injector;
-  private final DistributedTracer tracer;
 
-  public CommandHandlerServlet(DistributedTracer tracer, Routes routes) {
-    this.tracer = Objects.requireNonNull(tracer);
+  public CommandHandlerServlet(Routes routes) {
     Objects.requireNonNull(routes);
     this.routes = combine(routes)
         .fallbackTo(
@@ -62,15 +57,11 @@ class CommandHandlerServlet extends HttpServlet {
     HttpRequest request = new ServletRequestWrappingHttpRequest(req);
     HttpResponse response = new ServletResponseWrappingHttpResponse(resp);
 
-//    log(String.format("(%s) %s", request.getMethod(), request.getUri()));
-
-    try (Span span = HttpTracing.extract(tracer, "selenium.httpservlet", request)) {
-      Optional<CommandHandler> possibleMatch = routes.match(injector, request);
-      if (possibleMatch.isPresent()) {
-        possibleMatch.get().execute(request, response);
-      } else {
-        throw new IllegalStateException("It should not be possible to get here");
-      }
+    Optional<CommandHandler> possibleMatch = routes.match(injector, request);
+    if (possibleMatch.isPresent()) {
+      possibleMatch.get().execute(request, response);
+    } else {
+      throw new IllegalStateException("It should not be possible to get here");
     }
   }
 }

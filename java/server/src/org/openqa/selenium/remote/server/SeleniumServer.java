@@ -38,7 +38,6 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -63,9 +62,7 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
   private ActiveSessions allSessions;
 
   public SeleniumServer(StandaloneConfiguration configuration) {
-    super(
-        DistributedTracer.getInstance(),
-        new BaseServerOptions(new AnnotatedConfig(configuration)));
+    super(new BaseServerOptions(new AnnotatedConfig(configuration)));
     this.configuration = configuration;
 
     objectName = new JMXHelper().register(this).getObjectName();

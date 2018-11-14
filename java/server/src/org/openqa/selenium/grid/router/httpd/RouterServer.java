@@ -98,6 +98,7 @@ public class RouterServer implements CliCommand {
       DistributedTracer tracer = DistributedTracer.builder()
           .registerDetectedTracers()
           .build();
+      DistributedTracer.setInstance(tracer);
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
@@ -114,7 +115,7 @@ public class RouterServer implements CliCommand {
 
       Router router = new Router(sessions, distributor);
 
-      Server<?> server = new BaseServer<>(tracer, serverOptions);
+      Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();
     };
