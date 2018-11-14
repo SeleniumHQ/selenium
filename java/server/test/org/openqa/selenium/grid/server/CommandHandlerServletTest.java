@@ -33,7 +33,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorHandler;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.testing.FakeHttpServletRequest;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.openqa.testing.UrlInfo;
@@ -73,7 +72,6 @@ public class CommandHandlerServletTest {
     String cheerfulGreeting = "Hello, world!";
 
     CommandHandlerServlet servlet = new CommandHandlerServlet(
-        DistributedTracer.builder().build(),
         Routes.matching(req -> true).using((req, res) -> res.setContent(cheerfulGreeting.getBytes(UTF_8))).build());
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/hello-world"));
@@ -88,7 +86,6 @@ public class CommandHandlerServletTest {
   @Test
   public void shouldCorrectlyReturnAnUnknownCommandExceptionForUnmappableUrls() throws IOException {
     CommandHandlerServlet servlet = new CommandHandlerServlet(
-        DistributedTracer.builder().build(),
         Routes.matching(req -> false).using((req, res) -> {}).decorateWith(W3CCommandHandler.class).build());
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/missing"));
@@ -105,7 +102,6 @@ public class CommandHandlerServletTest {
     Injector injector = Injector.builder().register(new Json()).build();
 
     CommandHandlerServlet servlet = new CommandHandlerServlet(
-        DistributedTracer.builder().build(),
         Routes.matching(req -> true).using((req, res) -> {
           throw new UnableToSetCookieException("Yowza");
         }).decorateWith(W3CCommandHandler.class).build());

@@ -94,7 +94,10 @@ public class Standalone implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("selenium", '.', System.getProperties()));
 
-      DistributedTracer tracer = DistributedTracer.getInstance();
+      DistributedTracer tracer = DistributedTracer.builder()
+          .registerDetectedTracers()
+          .build();
+      DistributedTracer.setInstance(tracer);
 
       SessionMap sessions = new LocalSessionMap();
       Distributor distributor = new LocalDistributor(tracer);
@@ -122,7 +125,7 @@ public class Standalone implements CliCommand {
 
       distributor.add(node.build());
 
-      Server<?> server = new BaseServer<>(tracer, new BaseServerOptions(config));
+      Server<?> server = new BaseServer<>(new BaseServerOptions(config));
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();
     };

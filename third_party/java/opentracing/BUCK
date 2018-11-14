@@ -5,7 +5,7 @@ prebuilt_jar(
   source_jar = 'opentracing-api-0.31.0-sources.jar',
   visibility = [
     '//third_party/java/contrib:',
-    '//java/client/src/org/openqa/selenium/remote:',
+    '//java/client/src/org/openqa/selenium/remote/tracing:',
   ],
 )
 
@@ -18,9 +18,9 @@ prebuilt_jar(
     ':opentracing-api'
   ],
   visibility = [
+    '//java/client/src/org/openqa/selenium/remote/tracing:',
     '//third_party/java/contrib:opentracing-concurrent',
     '//third_party/java/contrib:opentracing-okhttp3',
-    '//java/client/src/org/openqa/selenium/remote:',
   ],
 )
 
@@ -34,7 +34,8 @@ prebuilt_jar(
     ':opentracing-noop'
   ],
   visibility = [
-    '//third_party/java/contrib:opentracing-tracerresolver',
+    '//java/client/src/org/openqa/selenium/remote/tracing:',
     '//java/client/test/org/openqa/selenium/remote/tracing/simple:',
+    '//third_party/java/contrib:opentracing-tracerresolver',
   ],
 )

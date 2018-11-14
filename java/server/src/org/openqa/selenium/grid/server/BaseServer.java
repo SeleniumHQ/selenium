@@ -32,7 +32,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.seleniumhq.jetty9.security.ConstraintMapping;
 import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
 import org.seleniumhq.jetty9.server.Connector;
@@ -71,10 +70,8 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
   private final ServletContextHandler servletContextHandler;
   private final Injector injector;
   private final URL url;
-  private final DistributedTracer tracer;
 
-  public BaseServer(DistributedTracer tracer, BaseServerOptions options) {
-    this.tracer = Objects.requireNonNull(tracer);
+  public BaseServer(BaseServerOptions options) {
     int port = options.getPort() == 0 ? PortProber.findFreePort() : options.getPort();
 
     String host = options.getHostname().orElseGet(() -> {
@@ -200,7 +197,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
           .decorateWith(W3CCommandHandler.class)
           .build();
 
-      addServlet(new CommandHandlerServlet(tracer, routes), "/*");
+      addServlet(new CommandHandlerServlet(routes), "/*");
 
       server.start();
 

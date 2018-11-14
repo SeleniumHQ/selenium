@@ -14,6 +14,7 @@ java_library(
         'com.google.auto.service.processor.AutoServiceProcessor',
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
         "//java/server/src/org/openqa/selenium/cli:cli",
         "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/distributor:distributor",

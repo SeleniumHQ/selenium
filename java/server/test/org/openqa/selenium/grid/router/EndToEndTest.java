@@ -106,7 +106,6 @@ public class EndToEndTest {
         .add(driverCaps, createFactory(nodeUri))
         .build();
     Server<?> nodeServer = new BaseServer<>(
-        DistributedTracer.builder().build(),
         new BaseServerOptions(
             new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
     nodeServer.addRoute(Routes.matching(localNode).using(localNode));
@@ -128,7 +127,7 @@ public class EndToEndTest {
 
   private Server<?> createServer() {
     int port = PortProber.findFreePort();
-    return new BaseServer<>(DistributedTracer.builder().build(), new BaseServerOptions(
+    return new BaseServer<>(new BaseServerOptions(
         new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
   }
 

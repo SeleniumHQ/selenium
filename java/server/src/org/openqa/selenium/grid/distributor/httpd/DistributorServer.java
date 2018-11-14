@@ -87,12 +87,13 @@ public class DistributorServer implements CliCommand {
       DistributedTracer tracer = DistributedTracer.builder()
           .registerDetectedTracers()
           .build();
+      DistributedTracer.setInstance(tracer);
 
       Distributor distributor = new LocalDistributor(tracer);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      Server<?> server = new BaseServer<>(tracer, serverOptions);
+      Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(
           Routes.matching(distributor)
               .using(distributor)

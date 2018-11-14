@@ -32,7 +32,6 @@ import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
 import java.net.URL;
@@ -40,11 +39,10 @@ import java.net.URL;
 public class BaseServerTest {
 
   private BaseServerOptions emptyOptions = new BaseServerOptions(new MapConfig(ImmutableMap.of()));
-  private DistributedTracer tracer = DistributedTracer.builder().build();
 
   @Test
   public void baseServerStartsAndDoesNothing() throws IOException {
-    Server<?> server = new BaseServer<>(tracer, emptyOptions).start();
+    Server<?> server = new BaseServer<>(emptyOptions).start();
 
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
@@ -59,7 +57,7 @@ public class BaseServerTest {
 
   @Test
   public void shouldAllowAHandlerToBeRegistered() throws IOException {
-    Server<?> server = new BaseServer<>(tracer, emptyOptions);
+    Server<?> server = new BaseServer<>(emptyOptions);
     server.addRoute(get("/cheese").using((req, res) -> res.setContent("cheddar".getBytes(UTF_8))));
 
     server.start();
@@ -72,7 +70,7 @@ public class BaseServerTest {
 
   @Test
   public void ifTwoHandlersRespondToTheSameRequestTheLastOneAddedWillBeUsed() throws IOException {
-    Server<?> server = new BaseServer<>(tracer, emptyOptions);
+    Server<?> server = new BaseServer<>(emptyOptions);
     server.addRoute(get("/status").using((req, res) -> res.setContent("one".getBytes(UTF_8))));
     server.addRoute(get("/status").using((req, res) -> res.setContent("two".getBytes(UTF_8))));
 
@@ -87,7 +85,7 @@ public class BaseServerTest {
 
   @Test
   public void addHandlersOnceServerIsStartedIsAnError() {
-    Server<BaseServer> server = new BaseServer<>(tracer, emptyOptions);
+    Server<BaseServer> server = new BaseServer<>(emptyOptions);
     server.start();
 
     Assertions.assertThatExceptionOfType(IllegalStateException.class).isThrownBy(

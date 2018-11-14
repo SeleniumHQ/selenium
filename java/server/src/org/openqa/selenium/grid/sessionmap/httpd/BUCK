@@ -3,6 +3,7 @@ java_library(
     name = "httpd",
     srcs = glob(["*.java"]),
     deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
         "//java/server/src/org/openqa/selenium/cli:cli",
         "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/server:server",

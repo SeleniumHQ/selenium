@@ -101,16 +101,17 @@ public class NodeServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("node", '.', System.getProperties()));
 
+      DistributedTracer tracer = DistributedTracer.builder()
+          .registerDetectedTracers()
+          .build();
+      DistributedTracer.setInstance(tracer);
+
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
       SessionMap sessions = new RemoteSessionMap(
           HttpClient.Factory.createDefault().createClient(sessionMapUrl));
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
-
-      DistributedTracer tracer = DistributedTracer.builder()
-          .registerDetectedTracers()
-          .build();
 
       LocalNode.Builder builder = LocalNode.builder(
           tracer,
@@ -125,7 +126,7 @@ public class NodeServer implements CliCommand {
           tracer,
           HttpClient.Factory.createDefault().createClient(distributorUrl));
 
-      Server<?> server = new BaseServer<>(tracer, serverOptions);
+      Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler.class));
       server.start();
 
