@@ -1,3 +1,14 @@
+v3.141.59
+=========
+
+* Restored remoteHost support
+* [Grid] Adding a test to check that remoteHost is properly read and
+  set.
+* Fix mime-types of displayed content in help servlet.
+* Encourage people to access help over https.
+* Implement `WrapsElement` by `Select` element wrapper (#6616)
+* Version number is an even better approximation of π.
+
 v3.141.5
 ========
 
