@@ -23,6 +23,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
@@ -310,5 +311,19 @@ public class Select implements ISelect, WrapsElement {
     if (option.isSelected() != select) {
       option.click();
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Select)) {
+      return false;
+    }
+    Select select = (Select) o;
+    return Objects.equals(element, select.element);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(element);
   }
 }
