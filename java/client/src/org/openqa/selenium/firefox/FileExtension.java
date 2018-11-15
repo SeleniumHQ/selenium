@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox.internal;
+package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
@@ -47,16 +47,12 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-/**
- * @deprecated Internal class. Visibility will be reduced and won't be exported from module.
- */
-@Deprecated
-public class FileExtension implements Extension {
+class FileExtension implements Extension {
   private static final String EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#";
 
   private final File toInstall;
 
-  public FileExtension(File toInstall) {
+  FileExtension(File toInstall) {
     this.toInstall = toInstall;
   }
 

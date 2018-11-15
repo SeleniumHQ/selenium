@@ -15,15 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox.internal;
+package org.openqa.selenium.firefox;
 
 import java.io.File;
 import java.io.IOException;
 
-/**
- * @deprecated Internal class. Visibility will be reduced and won't be exported from module.
- */
-@Deprecated
-public interface Extension {
+interface Extension {
   void writeTo(File parentDirectory) throws IOException;
 }
