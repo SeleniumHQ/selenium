@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox.internal;
+package org.openqa.selenium.firefox;
 
 import com.google.common.io.Resources;
 
@@ -28,15 +28,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
-/**
- * @deprecated Internal class. Visibility will be reduced and won't be exported from module.
- */
-@Deprecated
-public class ClasspathExtension implements Extension {
+class ClasspathExtension implements Extension {
   private final Class<?> loadResourcesUsing;
   private final String loadFrom;
 
-  public ClasspathExtension(Class<?> loadResourcesUsing, String loadFrom) {
+  ClasspathExtension(Class<?> loadResourcesUsing, String loadFrom) {
     this.loadResourcesUsing = loadResourcesUsing;
     this.loadFrom = loadFrom;
   }

@@ -22,9 +22,6 @@ import com.google.common.io.Resources;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.internal.ClasspathExtension;
-import org.openqa.selenium.firefox.internal.Extension;
-import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;

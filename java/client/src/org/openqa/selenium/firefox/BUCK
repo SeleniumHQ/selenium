@@ -5,7 +5,7 @@ java_library(name = 'firefox',
   maven_coords = 'org.seleniumhq.selenium:selenium-firefox-driver:jar:' + SE_VERSION,
   maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   module_info = "module-info.txt",
-  srcs = glob(['*.java', 'internal/*.java']),
+  srcs = glob(['*.java']),
   resources = [
     ':amd64',
     ':i386',
