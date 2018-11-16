@@ -1,3 +1,5 @@
+load("//java:version.bzl", "SE_VERSION")
+
 TYPE_SOURCES = [
     "Command.java",
     "ErrorCodes.java",
@@ -8,6 +10,9 @@ TYPE_SOURCES = [
 
 java_library(
     name = "remote",
+    tags = [
+      "maven_coordinates=org.seleniumhq.selenium:selenium-remote-driver:" + SE_VERSION,
+    ],
     srcs = glob([
         "*.java",
         "html5/*.java",
