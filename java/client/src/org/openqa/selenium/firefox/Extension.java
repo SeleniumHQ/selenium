@@ -20,6 +20,6 @@ package org.openqa.selenium.firefox;
 import java.io.File;
 import java.io.IOException;
 
-interface Extension {
+public interface Extension {
   void writeTo(File parentDirectory) throws IOException;
 }

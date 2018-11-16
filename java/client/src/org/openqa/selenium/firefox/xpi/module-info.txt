@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-module org.openqa.selenium.firefox {
+module org.openqa.selenium.firefox.xpi {
     requires java.xml;
 
     requires transitive com.google.common;
@@ -26,9 +26,9 @@ module org.openqa.selenium.firefox {
     exports org.openqa.selenium.firefox;
 
     provides org.openqa.selenium.remote.service.DriverService$Builder with
-        org.openqa.selenium.firefox.XpiDriverService$Builder;
+        org.openqa.selenium.firefox.xpi.XpiDriverService$Builder;
 
     provides org.openqa.selenium.WebDriverInfo with
-        org.openqa.selenium.firefox.XpiDriverInfo;
+        org.openqa.selenium.firefox.xpi.XpiDriverInfo;
 
 }

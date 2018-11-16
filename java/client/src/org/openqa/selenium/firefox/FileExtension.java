@@ -47,12 +47,12 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-class FileExtension implements Extension {
+public class FileExtension implements Extension {
   private static final String EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#";
 
   private final File toInstall;
 
-  FileExtension(File toInstall) {
+  public FileExtension(File toInstall) {
     this.toInstall = toInstall;
   }
 

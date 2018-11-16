@@ -83,7 +83,7 @@ public class ActiveSessionFactory implements SessionFactory {
 
                return marionette instanceof Boolean && !(Boolean) marionette;
              },
-             "org.openqa.selenium.firefox.XpiDriverService")
+             "org.openqa.selenium.firefox.xpi.XpiDriverService")
         .put(browserName(CHROME), "org.openqa.selenium.chrome.ChromeDriverService")
         .put(containsKey("chromeOptions"), "org.openqa.selenium.chrome.ChromeDriverService")
         .put(browserName(EDGE), "org.openqa.selenium.edge.EdgeDriverService")

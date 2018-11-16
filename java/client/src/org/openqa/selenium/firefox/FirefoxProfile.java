@@ -376,7 +376,7 @@ public class FirefoxProfile {
         "duplicated"));
   }
 
-  protected void cleanTemporaryModel() {
+  public void cleanTemporaryModel() {
     clean(model);
   }
 
