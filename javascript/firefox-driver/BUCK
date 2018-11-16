@@ -1,4 +1,5 @@
 
+
 export_file(name = 'webdriver_prefs',
   src = 'webdriver.json',
   visibility = [
@@ -36,7 +37,7 @@ mozilla_extension(name = 'webdriver',
   chrome = 'extension/chrome.manifest',
   install = 'extension/install.rdf',
   visibility = [
-    'PUBLIC',
+    '//java/client/src/org/openqa/selenium/firefox/xpi:webdriver.xpi',
   ]
 )
 

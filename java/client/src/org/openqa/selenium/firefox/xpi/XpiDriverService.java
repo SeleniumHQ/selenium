@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.firefox.xpi;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
@@ -31,6 +31,14 @@ import com.google.common.io.ByteStreams;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.ClasspathExtension;
+import org.openqa.selenium.firefox.Extension;
+import org.openqa.selenium.firefox.FileExtension;
+import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverService;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;

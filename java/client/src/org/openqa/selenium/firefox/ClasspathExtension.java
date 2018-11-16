@@ -28,11 +28,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
-class ClasspathExtension implements Extension {
+public class ClasspathExtension implements Extension {
   private final Class<?> loadResourcesUsing;
   private final String loadFrom;
 
-  ClasspathExtension(Class<?> loadResourcesUsing, String loadFrom) {
+  public ClasspathExtension(Class<?> loadResourcesUsing, String loadFrom) {
     this.loadResourcesUsing = loadResourcesUsing;
     this.loadFrom = loadFrom;
   }
