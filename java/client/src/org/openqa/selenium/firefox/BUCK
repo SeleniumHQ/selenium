@@ -1,16 +1,49 @@
 load("//:selenium-version.bzl", "SE_VERSION")
 load("//java:rules.bzl", "java_library")
 
+LEGACY_SOURCES = [
+    'XpiDriverInfo.java',
+    'XpiDriverService.java',
+]
+
+java_library(name = 'firefox-legacy',
+  maven_coords = 'org.seleniumhq.selenium:selenium-firefox-legacy-driver:jar:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
+  module_info = "module-info-legacy.txt",
+  srcs = LEGACY_SOURCES,
+  resources = [
+    ':amd64',
+    ':i386',
+    ':webdriver.xpi',
+  ],
+  exported_deps = [
+    '//java/client/src/org/openqa/selenium/remote:remote',
+  ],
+  provided_deps = [
+    '//third_party/java/service:auto-service',
+  ],
+  annotation_processor_deps = [
+    '//third_party/java/auto:auto-common',
+    '//third_party/java/service:auto-service',
+    '//third_party/java/guava:guava',
+  ],
+  annotation_processors = [
+    'com.google.auto.service.processor.AutoServiceProcessor',
+  ],
+  deps = [
+    ':firefox',
+    '//third_party/java/guava:guava',
+  ],
+  visibility = [ 'PUBLIC' ],
+)
+
 java_library(name = 'firefox',
   maven_coords = 'org.seleniumhq.selenium:selenium-firefox-driver:jar:' + SE_VERSION,
   maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   module_info = "module-info.txt",
-  srcs = glob(['*.java']),
+  srcs = glob(['*.java'], exclude = LEGACY_SOURCES),
   resources = [
-    ':amd64',
-    ':i386',
     ':prefs',
-    ':webdriver.xpi',
   ],
   exported_deps = [
     '//java/client/src/org/openqa/selenium/remote:remote',

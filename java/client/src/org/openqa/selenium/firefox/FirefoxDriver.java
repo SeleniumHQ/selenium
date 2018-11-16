@@ -43,7 +43,9 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -134,12 +136,12 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   }
 
   /**
-   * @deprecated Use {@link #FirefoxDriver(GeckoDriverService, FirefoxOptions)}.
+   * @deprecated Use {@link #FirefoxDriver(FirefoxDriverService, FirefoxOptions)}.
    */
   @Deprecated
-  public FirefoxDriver(GeckoDriverService service, Capabilities desiredCapabilities) {
+  public FirefoxDriver(FirefoxDriverService service, Capabilities desiredCapabilities) {
     this(
-        Objects.requireNonNull(service, "No geckodriver service provided"),
+        Objects.requireNonNull(service, "No driver service provided"),
         new FirefoxOptions(desiredCapabilities));
   }
 
@@ -148,46 +150,28 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
-  public FirefoxDriver(GeckoDriverService service) {
-    super(new FirefoxDriverCommandExecutor(service), new FirefoxOptions());
-    webStorage = new RemoteWebStorage(getExecuteMethod());
+  public FirefoxDriver(FirefoxDriverService service) {
+    this(service, new FirefoxOptions());
   }
 
-  public FirefoxDriver(XpiDriverService service) {
-    super(new FirefoxDriverCommandExecutor(service), new FirefoxOptions());
-    webStorage = new RemoteWebStorage(getExecuteMethod());
-  }
-
-  public FirefoxDriver(GeckoDriverService service, FirefoxOptions options) {
-    super(new FirefoxDriverCommandExecutor(service), dropCapabilities(options));
-    webStorage = new RemoteWebStorage(getExecuteMethod());
-  }
-
-  public FirefoxDriver(XpiDriverService service, FirefoxOptions options) {
+  public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options) {
     super(new FirefoxDriverCommandExecutor(service), dropCapabilities(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
     Objects.requireNonNull(options, "No options to construct executor from");
-    DriverService.Builder<?, ?> builder;
 
-    if (! Boolean.parseBoolean(System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE, "true"))
-        || options.isLegacy()) {
-      FirefoxProfile profile = options.getProfile();
-      if (profile == null) {
-        profile = new FirefoxProfile();
-        options.setCapability(FirefoxDriver.PROFILE, profile);
-      }
-      builder = XpiDriverService.builder()
-          .withBinary(options.getBinary())
-          .withProfile(profile);
-    } else {
-      builder = new GeckoDriverService.Builder()
-          .usingFirefoxBinary(options.getBinary());
-    }
+    String sysProperty = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
+    boolean isLegacy = (sysProperty != null && ! Boolean.parseBoolean(sysProperty))
+                       ||  options.isLegacy();
 
-    return new FirefoxDriverCommandExecutor(builder.build());
+    FirefoxDriverService.Builder<?, ?> builder =
+        StreamSupport.stream(ServiceLoader.load(FirefoxDriverService.Builder.class).spliterator(), false)
+            .filter(b -> b.isLegacy() == isLegacy)
+            .findFirst().orElseThrow(() -> new WebDriverException());
+
+    return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
   }
 
   @Override

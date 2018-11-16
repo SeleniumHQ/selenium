@@ -29,19 +29,16 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-//import org.apache.commons.io.output.NullOutputStream;
-
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.
  */
-public class GeckoDriverService extends DriverService {
+public class GeckoDriverService extends FirefoxDriverService {
 
   /**
    * System property that defines the location of the GeckoDriver executable
@@ -50,7 +47,6 @@ public class GeckoDriverService extends DriverService {
   public static final String GECKO_DRIVER_EXE_PROPERTY = "webdriver.gecko.driver";
 
   /**
-   *
    * @param executable The GeckoDriver executable.
    * @param port Which port to start the GeckoDriver on.
    * @param args The arguments to the launched server.
@@ -111,9 +107,9 @@ public class GeckoDriverService extends DriverService {
   /**
    * Builder used to configure new {@link GeckoDriverService} instances.
    */
-  @AutoService(DriverService.Builder.class)
-  public static class Builder extends DriverService.Builder<
-    GeckoDriverService, GeckoDriverService.Builder> {
+  @AutoService(FirefoxDriverService.Builder.class)
+  public static class Builder extends FirefoxDriverService.Builder<
+        GeckoDriverService, GeckoDriverService.Builder> {
 
     private FirefoxBinary firefoxBinary;
 
@@ -131,12 +127,18 @@ public class GeckoDriverService extends DriverService {
     }
 
     @Override
+    protected boolean isLegacy() {
+      return false;
+    }
+
+    @Override
     public int score(Capabilities capabilites) {
-      if (capabilites.is(FirefoxDriver.MARIONETTE)) {
-        return 0;  // We're not meant for this one.
+      if (capabilites.getCapability(FirefoxDriver.MARIONETTE) != null
+          && ! capabilites.is(FirefoxDriver.MARIONETTE)) {
+        return 0;
       }
 
-      int score = 0;
+      int score = 1;
 
       if (BrowserType.FIREFOX.equals(capabilites.getBrowserName())) {
         score++;
@@ -159,6 +161,12 @@ public class GeckoDriverService extends DriverService {
       checkNotNull(firefoxBinary);
       checkExecutable(firefoxBinary.getFile());
       this.firefoxBinary = firefoxBinary;
+      return this;
+    }
+
+    @Override
+    protected FirefoxDriverService.Builder withOptions(FirefoxOptions options) {
+      usingFirefoxBinary(options.getBinary());
       return this;
     }
 
