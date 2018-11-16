@@ -36,6 +36,7 @@ java_library(
         "//third_party/java/okhttp3:okhttp",
     ],
     visibility = [
+        "//visibility:public",
     ],
 )
 
