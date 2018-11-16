@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
@@ -35,7 +34,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,7 +54,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class XpiDriverService extends DriverService {
+public class XpiDriverService extends FirefoxDriverService {
 
   private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";
   private static final String PATH_PREFIX =
@@ -354,19 +352,24 @@ public class XpiDriverService extends DriverService {
     return new Builder();
   }
 
-  @AutoService(DriverService.Builder.class)
-  public static class Builder extends DriverService.Builder<XpiDriverService, XpiDriverService.Builder> {
+  @AutoService(FirefoxDriverService.Builder.class)
+  public static class Builder extends FirefoxDriverService.Builder<XpiDriverService, XpiDriverService.Builder> {
 
     private FirefoxBinary binary = null;
     private FirefoxProfile profile = null;
 
     @Override
+    protected boolean isLegacy() {
+      return true;
+    }
+
+    @Override
     public int score(Capabilities capabilites) {
-      if (!capabilites.is(FirefoxDriver.MARIONETTE)) {
+      if (capabilites.is(FirefoxDriver.MARIONETTE)) {
         return 0;
       }
 
-      int score = 1;
+      int score = 0;
 
       if (capabilites.getCapability(FirefoxDriver.BINARY) != null) {
         score++;
@@ -386,6 +389,18 @@ public class XpiDriverService extends DriverService {
 
     public Builder withProfile(FirefoxProfile profile) {
       this.profile = Preconditions.checkNotNull(profile);
+      return this;
+    }
+
+    @Override
+    protected FirefoxDriverService.Builder withOptions(FirefoxOptions options) {
+      FirefoxProfile profile = options.getProfile();
+      if (profile == null) {
+        profile = new FirefoxProfile();
+        options.setCapability(FirefoxDriver.PROFILE, profile);
+      }
+      withBinary(options.getBinary());
+      withProfile(profile);
       return this;
     }
 
