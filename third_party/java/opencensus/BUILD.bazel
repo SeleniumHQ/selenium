@@ -1,0 +1,17 @@
+java_import(
+    name = "opencensus-api",
+    tags = [
+        "maven_coordinates=io.opencensus:opencensus-api:jar:0.16.1",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["opencensus-api-0.16.1.jar"],
+    srcjar = "opencensus-api-0.16.1-sources.jar",
+    deps = [
+        "//third_party/java/grpc:grpc-context",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:__pkg__",
+    ],
+)

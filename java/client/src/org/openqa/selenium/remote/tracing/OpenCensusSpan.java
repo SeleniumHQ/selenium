@@ -43,9 +43,8 @@ class OpenCensusSpan extends Span {
 
   @Override
   public Span activate() {
-    tracer.withSpan(span);
-    distributedTracer.setActiveSpan(this);
-    return this;
+    // TODO: Figure out the right way to do this.
+    throw new UnsupportedOperationException("activate");
   }
 
   @Override

@@ -1,0 +1,17 @@
+
+java_library(
+    name = "tracing",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote",
+        "//third_party/java/guava",
+        "//third_party/java/contrib:opentracing-tracerresolver",
+        "//third_party/java/opencensus:opencensus-api",
+        "//third_party/java/opentracing:opentracing-api",
+        "//third_party/java/opentracing:opentracing-noop",
+        "//third_party/java/opentracing:opentracing-util",
+    ],
+    visibility = [
+
+    ],
+)
