@@ -1,0 +1,55 @@
+java_import(
+    name = "opentracing-api",
+    tags = [
+        "maven_coordinates=io.opentracing:opentracing-api:jar:0.31.0",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["opentracing-api-0.31.0.jar"],
+    srcjar = "opentracing-api-0.31.0-sources.jar",
+    visibility = [
+        "//third_party/java/contrib:__pkg__",
+        "//java/client/src/org/openqa/selenium/remote/tracing:__pkg__",
+    ],
+)
+
+java_import(
+    name = "opentracing-noop",
+    tags = [
+        "maven_coordinates=io.opentracing:opentracing-noop:jar:0.31.0",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["opentracing-noop-0.31.0.jar"],
+    srcjar = "opentracing-noop-0.31.0-sources.jar",
+    deps = [
+        ":opentracing-api",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:__pkg__",
+        "//third_party/java/contrib:__pkg__",
+    ],
+)
+
+java_import(
+    name = "opentracing-util",
+    tags = [
+        "maven_coordinates=io.opentracing:opentracing-util:jar:0.31.0",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["opentracing-util-0.31.0.jar"],
+    srcjar = "opentracing-util-0.31.0-sources.jar",
+    deps = [
+        ":opentracing-api",
+        ":opentracing-noop",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:__pkg__",
+        "//java/client/test/org/openqa/selenium/remote/tracing/simple:__pkg__",
+        "//third_party/java/contrib:__pkg__",
+    ],
+)
