@@ -204,7 +204,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, travis = true) // TODO: why???
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/653")
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     driver.findElement(By.id("embeddedBlock")).click();
     wait.until(titleIs("XHTML Test Page"));
