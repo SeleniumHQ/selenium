@@ -1,4 +1,4 @@
-load("//:selenium-version.bzl", "SE_VERSION")
+load("//java:version.bzl", "SE_VERSION")
 
 java_library(name = 'support',
   srcs = [

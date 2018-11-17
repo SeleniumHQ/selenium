@@ -1,4 +1,4 @@
-load("//:selenium-version.bzl", "SE_VERSION")
+load("//java:version.bzl", "SE_VERSION")
 load("//java:rules.bzl", "java_library")
 
 java_library(name = 'firefox',
