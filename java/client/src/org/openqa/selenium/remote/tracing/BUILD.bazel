@@ -12,6 +12,6 @@ java_library(
         "//third_party/java/opentracing:opentracing-util",
     ],
     visibility = [
-
+        "//java/server/src/org/openqa/selenium:__subpackages__",
     ],
 )

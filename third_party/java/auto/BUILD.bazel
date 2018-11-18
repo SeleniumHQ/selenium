@@ -1,0 +1,17 @@
+java_import(
+    name = "auto-common",
+    tags = [
+        "maven_coordinates=com.google.auto:auto-common:jar:0.8",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["auto-common-0.8.jar"],
+    srcjar = "auto-common-0.8-sources.jar",
+    deps = [
+        "//third_party/java/guava",
+    ],
+    visibility = [
+        "//third_party/java/service:__pkg__",
+    ],
+)
