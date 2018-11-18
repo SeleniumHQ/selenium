@@ -28,8 +28,6 @@ import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
-import com.google.common.io.Files;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -41,6 +39,7 @@ import org.openqa.selenium.testing.TestUtilities;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 
 /**
@@ -119,8 +118,7 @@ public class UploadTest extends JUnit4TestBase {
   private File createTmpFile(String content) throws IOException {
     File f = File.createTempFile("webdriver", "tmp");
     f.deleteOnExit();
-    Files.asCharSink(f, StandardCharsets.UTF_8).write(content);
+    Files.write(f.toPath(), content.getBytes(StandardCharsets.UTF_8));
     return f;
   }
-
 }
