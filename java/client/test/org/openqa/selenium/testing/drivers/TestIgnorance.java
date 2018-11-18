@@ -28,12 +28,6 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.drivers.Browser.chrome;
-import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
-import static org.openqa.selenium.testing.drivers.Browser.ie;
-import static org.openqa.selenium.testing.drivers.Browser.opera;
-
-import com.google.common.collect.ImmutableSet;
 
 import org.junit.runner.Description;
 import org.openqa.selenium.testing.Ignore;
@@ -48,14 +42,11 @@ import java.util.Set;
  */
 public class TestIgnorance {
 
-  private Set<Browser> alwaysNativeEvents = ImmutableSet.of(chrome, ie, opera);
-  private Set<Browser> neverNativeEvents = ImmutableSet.of(htmlunit);
   private IgnoreComparator ignoreComparator = new IgnoreComparator();
   private Set<String> methods = new HashSet<>();
   private Set<String> only = new HashSet<>();
   private Set<String> ignoreMethods = new HashSet<>();
   private Set<String> ignoreClasses = new HashSet<>();
-  private Browser browser;
 
   public TestIgnorance(Browser browser) {
     setBrowser(browser);
@@ -110,7 +101,7 @@ public class TestIgnorance {
   }
 
   public void setBrowser(Browser browser) {
-    this.browser = checkNotNull(
+    Browser browser1 = checkNotNull(
         browser,
         "Browser to use must be set. Do this by setting the 'selenium.browser' system property");
     addIgnoresForBrowser(browser, ignoreComparator);
