@@ -110,8 +110,9 @@ public class JettyAppServer implements AppServer {
 
     handlers = new ContextHandlerCollection();
 
+    Path webSrc = locate("common/src/web");
     ServletContextHandler defaultContext = addResourceHandler(
-        DEFAULT_CONTEXT_PATH, locate("common/src/web"));
+        DEFAULT_CONTEXT_PATH, webSrc);
     ServletContextHandler jsContext = addResourceHandler(
         JS_SRC_CONTEXT_PATH, locate("javascript"));
     addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
@@ -124,6 +125,7 @@ public class JettyAppServer implements AppServer {
     defaultContext.setInitParameter("hostname", hostName);
     defaultContext.setInitParameter("port", ""+port);
     defaultContext.setInitParameter("path", TEMP_SRC_CONTEXT_PATH);
+    defaultContext.setInitParameter("webSrc", webSrc.toAbsolutePath().toString());
 
     server.setHandler(handlers);
 
