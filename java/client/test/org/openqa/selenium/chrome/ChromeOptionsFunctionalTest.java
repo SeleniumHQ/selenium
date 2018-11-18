@@ -21,8 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
-import com.google.common.io.Files;
-
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -33,6 +31,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Base64;
 
 /**
@@ -104,7 +103,7 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     ChromeOptions options = new ChromeOptions();
     options.addEncodedExtensions(Base64.getEncoder().encodeToString(
-        Files.toByteArray(InProject.locate(EXT_PATH).toFile())));
+        Files.readAllBytes(InProject.locate(EXT_PATH))));
     driver = new ChromeDriver(options);
 
     driver.get(pages.clicksPage);
