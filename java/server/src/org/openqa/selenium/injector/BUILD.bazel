@@ -1,0 +1,10 @@
+java_library(
+    name = "injector",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//third_party/java/guava",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium:__subpackages__",
+    ],
+)

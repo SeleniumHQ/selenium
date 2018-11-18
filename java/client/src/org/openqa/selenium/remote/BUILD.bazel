@@ -11,7 +11,7 @@ TYPE_SOURCES = [
 java_library(
     name = "remote",
     tags = [
-      "maven_coordinates=org.seleniumhq.selenium:selenium-remote-driver:" + SE_VERSION,
+        "maven_coordinates=org.seleniumhq.selenium:selenium-remote-driver:" + SE_VERSION,
     ],
     srcs = glob([
         "*.java",
@@ -23,6 +23,7 @@ java_library(
         "session/*.java",
     ], exclude = TYPE_SOURCES),
     exports = [
+        ":types",
         "//java/client/src/org/openqa/selenium",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/io",

@@ -1,0 +1,43 @@
+java_library(
+    name = "service",
+    exports = [
+        ":auto-service",
+    ],
+    exported_plugins = [
+        ":plugin",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium:__subpackages__",
+    ],
+)
+
+java_plugin(
+    name = "plugin",
+    generates_api = 1,
+    processor_class = "com.google.auto.service.processor.AutoServiceProcessor",
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    deps = [
+        ":auto-service",
+    ],
+)
+
+java_import(
+    name = "auto-service",
+    tags = [
+        "maven_coordinates=com.google.auto.service:auto-service:jar:1.0-rc4",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["auto-service-1.0-rc4.jar"],
+    srcjar = "auto-service-1.0-rc4-sources.jar",
+    deps = [
+        "//third_party/java/auto:auto-common",
+        "//third_party/java/guava:guava",
+    ],
+)

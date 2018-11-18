@@ -1,0 +1,7 @@
+java_library(
+    name = "component",
+    srcs = glob(["*.java"]),
+    visibility = [
+      "//java/server/src/org/openqa/selenium/grid/server:__pkg__",
+    ],
+)
