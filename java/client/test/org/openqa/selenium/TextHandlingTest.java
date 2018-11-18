@@ -372,8 +372,6 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = ALL,
-      reason = "Hidden LTR Unicode marks are currently returned by WebDriver but shouldn't, issue 4473")
   public void testShouldNotReturnLtrMarks() {
     driver.get(pages.unicodeLtrPage);
     WebElement element = driver.findElement(By.id("EH")).findElement(By.tagName("nobr"));
