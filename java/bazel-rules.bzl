@@ -33,13 +33,13 @@ def _impl(ctx):
             size = ctx.attr.size,
             deps = ctx.attr.deps)
 
-def gen_java_tests(name, srcs=[], deps=[], **kwargs):
+def gen_java_tests(srcs=[], deps=[], **kwargs):
     native.java_library(
-        name = "%s-lib" % name,
+        name = "%s-lib" % native.package_name(),
         srcs = srcs,
 	deps = deps)
 
-    deps.append(":%s-lib" % name)
+    deps.append(":%s-lib" % native.package_name())
 
     for src in srcs:
         native.java_test(

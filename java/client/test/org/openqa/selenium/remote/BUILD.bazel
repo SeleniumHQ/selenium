@@ -9,7 +9,6 @@ SMALL_TESTS = [
 ]
 
 gen_java_tests(
-    name = "common-tests",
     srcs = SMALL_TESTS,
     size = "small",
     deps = [
