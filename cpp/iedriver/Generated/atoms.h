@@ -6924,7 +6924,7 @@ const wchar_t* const FIND_ELEMENTS[] = {
     NULL
 };
 
-const wchar_t* const IS_IN_PARENT_OVERFLOW[] = {
+const wchar_t* const IS_OFFSET_IN_PARENT_OVERFLOW[] = {
     L"function(){return function(){var k=this;function l(a){return void 0!==",
     L"a}function n(a){return\"string\"==typeof a}function aa(a,b){a=a.split(",
     L"\".\");var c=k;a[0]in c||!c.execScript||c.execScript(\"var \"+a[0]);fo",
@@ -7526,11 +7526,10 @@ const wchar_t* const IS_IN_PARENT_OVERFLOW[] = {
     L"&(b=b instanceof Z?b:new Z(b.x,b.y,1,1),a.a=Math.min(Math.max(a.a+b.a,",
     L"a.a),a.b),a.f=Math.min(Math.max(a.f+b.b,a.f),a.c),a.b=Math.min(Math.ma",
     L"x(a.a+b.width,a.a),a.b),a.c=Math.min(Math.max(a.f+b.height,a.f),a.c));",
-    L"return a};aa(\"_\",function(a){var b=mc(a);return kc(a,new x(Math.roun",
-    L"d(b.width/2),Math.round(b.height/2)))});; return this._.apply(null,arg",
-    L"uments);}.apply({navigator:typeof window!='undefined'?window.navigator",
-    L":null,document:typeof window!='undefined'?window.document:null}, argum",
-    L"ents);}",
+    L"return a};aa(\"_\",function(a,b,c){return kc(a,new x(b,c))});; return ",
+    L"this._.apply(null,arguments);}.apply({navigator:typeof window!='undefi",
+    L"ned'?window.navigator:null,document:typeof window!='undefined'?window.",
+    L"document:null}, arguments);}",
     NULL
 };
 
