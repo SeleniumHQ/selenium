@@ -1,7 +1,10 @@
 java_library(
-    name = "config",
+    name = "router",
     srcs = glob(["*.java"]),
     deps = [
+        "//java/server/src/org/openqa/selenium/grid/distributor",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap",
+        "//java/server/src/org/openqa/selenium/injector",
         "//third_party/java/guava",
     ],
     visibility = [
