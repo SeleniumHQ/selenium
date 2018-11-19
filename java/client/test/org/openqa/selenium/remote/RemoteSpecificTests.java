@@ -22,8 +22,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    RemoteWebDriverScreenshotTest.class,
-    StartingFirefoxRemotelyTest.class
+    RemoteWebDriverScreenshotTest.class
 })
 public class RemoteSpecificTests {
 }
