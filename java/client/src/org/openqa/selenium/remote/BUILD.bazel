@@ -54,5 +54,6 @@ java_library(
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium/json:__pkg__",
+        "//java/client/test:__subpackages__",
     ],
 )

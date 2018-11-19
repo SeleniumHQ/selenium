@@ -1,0 +1,13 @@
+java_import(
+  name = 'junit',
+  licenses = [
+    "notice",  # Eclipse Public License - v 1.0 
+  ],
+  jars = [
+    'junit-4.12.jar',
+  ],
+  srcjar = 'junit-4.12-sources.jar',
+  visibility = [
+    '//java/client/test:__subpackages__',
+  ],
+)

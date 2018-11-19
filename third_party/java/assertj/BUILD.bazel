@@ -1,0 +1,13 @@
+java_import(
+  name = 'assertj',
+  licenses = [
+    "notice",  # Apache 2
+  ],
+  jars = [
+    'assertj-core-3.11.1.jar',
+  ],
+  srcjar = 'assertj-core-3.11.1-sources.jar',
+  visibility = [
+    '//java/client/test:__subpackages__',
+  ],
+)

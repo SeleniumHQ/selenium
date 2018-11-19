@@ -1,0 +1,17 @@
+java_test(name = 'common-tests',
+  test_class = 'org.openqa.selenium.remote.RemoteCommonTests',
+  srcs = [
+    'DesiredCapabilitiesTest.java',
+    'RemoteCommonTests.java',
+    'http/JsonHttpCommandCodecTest.java',
+    'http/JsonHttpResponseCodecTest.java',
+    'http/W3CHttpResponseCodecTest.java',
+  ],
+  deps = [
+   '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/src/org/openqa/selenium/remote:types',
+    '//third_party/java/guava:guava',
+    '//third_party/java/assertj:assertj',
+    '//third_party/java/junit:junit',
+  ])
