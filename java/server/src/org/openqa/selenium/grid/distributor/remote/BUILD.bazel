@@ -1,13 +1,12 @@
 java_library(
-    name = "data",
+    name = "remote",
     srcs = glob(["*.java"]),
     exports = [
-        # From public API of Session
-        "//java/client/src/org/openqa/selenium/remote",
+        "//java/server/src/org/openqa/selenium/grid/distributor",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/guava",
+        "//java/server/src/org/openqa/selenium/grid/distributor",
+        "//java/client/src/org/openqa/selenium/remote/tracing",
     ],
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
