@@ -1,0 +1,33 @@
+java_import(
+    name = "hamcrest-core",
+    tags = [
+        "maven_coordinates=org.hamcrest:hamcrest-core:jar:1.3",
+    ],
+    licenses = [
+        "notice",  # BSD
+    ],
+    jars = ["hamcrest-core-1.3.jar"],
+    srcjar = "hamcrest-core-1.3-sources.jar",
+    visibility = [
+        "//third_party/java/junit:__pkg__",
+    ],
+)
+
+java_import(
+    name = "hamcrest-library",
+    tags = [
+        "maven_coordinates=org.hamcrest:hamcrest-library:jar:1.3",
+    ],
+    licenses = [
+        "notice",  # BSD
+    ],
+    jars = ["hamcrest-library-1.3.jar"],
+    srcjar = "hamcrest-library-1.3-sources.jar",
+    deps = [
+        ":hamcrest-core",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+)

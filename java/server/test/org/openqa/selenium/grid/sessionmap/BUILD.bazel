@@ -1,0 +1,15 @@
+load("//java:bazel-rules.bzl", "gen_java_tests")
+
+gen_java_tests(
+    name = "sessionmap",
+    srcs = glob(["*.java"]),
+    size = "small",
+    deps = [
+        "//java/server/src/org/openqa/selenium/grid/sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",
+        "//java/server/test/org/openqa/selenium/grid/web:utils",
+        "//third_party/java/assertj",
+        "//third_party/java/junit",
+    ],
+)

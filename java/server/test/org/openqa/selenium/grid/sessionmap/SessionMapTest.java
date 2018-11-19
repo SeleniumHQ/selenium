@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -77,8 +78,8 @@ public class SessionMapTest {
 
   @Test
   public void shouldThrowANoSuchSessionExceptionIfSessionCannotBeFound() {
-    catchThrowableOfType(() -> local.get(id), NoSuchSessionException.class);
-    catchThrowableOfType(() -> remote.get(id), NoSuchSessionException.class);
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> local.get(id));
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> remote.get(id));
   }
 
   @Test
@@ -89,8 +90,8 @@ public class SessionMapTest {
 
     remote.remove(id);
 
-    catchThrowableOfType(() -> local.get(id), NoSuchSessionException.class);
-    catchThrowableOfType(() -> remote.get(id), NoSuchSessionException.class);
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> local.get(id));
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> remote.get(id));
   }
 
   /**
