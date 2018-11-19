@@ -686,7 +686,7 @@ int Element::GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
 
   if (result != WD_SUCCESS ||
       !this->IsLocationInViewPort(click_location, document_contains_frames) ||
-      this->IsHiddenByOverflow() ||
+      this->IsHiddenByOverflow(element_location, click_location) ||
       !this->IsLocationVisibleInFrames(click_location, *frame_locations)) {
     // Scroll the element into view
     LOG(DEBUG) << "Will need to scroll element into view";
@@ -734,19 +734,25 @@ int Element::GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
   return status_code;
 }
 
-bool Element::IsHiddenByOverflow() {
+bool Element::IsHiddenByOverflow(const LocationInfo element_location,
+                                 const LocationInfo click_location) {
   LOG(TRACE) << "Entering Element::IsHiddenByOverflow";
 
   bool is_overflow = false;
 
+  int x_offset = click_location.x - element_location.x;
+  int y_offset = click_location.y - element_location.y;
+
   std::wstring script_source(L"(function() { return (");
-  script_source += atoms::asString(atoms::IS_IN_PARENT_OVERFLOW);
+  script_source += atoms::asString(atoms::IS_OFFSET_IN_PARENT_OVERFLOW);
   script_source += L")})();";
 
   CComPtr<IHTMLDocument2> doc;
   this->GetContainingDocument(false, &doc);
-  Script script_wrapper(doc, script_source, 1);
+  Script script_wrapper(doc, script_source, 3);
   script_wrapper.AddArgument(this->element_);
+  script_wrapper.AddArgument(x_offset);
+  script_wrapper.AddArgument(y_offset);
   int status_code = script_wrapper.Execute();
   if (status_code == WD_SUCCESS) {
     std::wstring raw_overflow_state(script_wrapper.result().bstrVal);
@@ -1222,10 +1228,10 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
   // Hurrah! Now we know what the visible area of the viewport is
   // N.B. There is an n-pixel sized area next to the client area border
   // where clicks are interpreted as a click on the window border, not
-  // within the client area. We are assuming n == 2, but that's strictly
-  // a wild guess, not based on any research.
-  location->width = window_width - 2;
-  location->height = window_height - 2;
+  // within the client area. Some clicks may fail if they are close enough
+  // to the border.
+  location->width = window_width;
+  location->height = window_height;
   return true;
 }
 
@@ -1238,20 +1244,29 @@ LocationInfo Element::CalculateClickPoint(const LocationInfo location, const boo
   LocationInfo clickable_viewport = {};
   bool result = this->GetClickableViewPortLocation(document_contains_frames, &clickable_viewport);
   if (result) {
-    // If GetClickableViewportLocation fails and this element is really big,
-    // then we will fail at another point and can trace that failure through
-    // the logs. If the element is not too big, then all will be normal.
-    if (corrected_width > (2 * clickable_viewport.width)) {
-      corrected_width = clickable_viewport.width;
-    }
-    if (corrected_height > (2 * clickable_viewport.height)) {
-      corrected_height = clickable_viewport.height;
+    RECT element_rect;
+    element_rect.left = location.x;
+    element_rect.top = location.y;
+    element_rect.right = location.x + location.width;
+    element_rect.bottom = location.y + location.height;
+
+    RECT viewport_rect;
+    viewport_rect.left = clickable_viewport.x;
+    viewport_rect.top = clickable_viewport.y;
+    viewport_rect.right = clickable_viewport.x + clickable_viewport.width;
+    viewport_rect.bottom = clickable_viewport.y + clickable_viewport.height;
+
+    RECT intersect_rect;
+    BOOL is_intersecting = ::IntersectRect(&intersect_rect, &element_rect, &viewport_rect);
+    if (is_intersecting) {
+      corrected_width = intersect_rect.right - intersect_rect.left;
+      corrected_height = intersect_rect.bottom - intersect_rect.top;
     }
   }
 
   LocationInfo click_location = {};  
-  click_location.x = location.x + (corrected_width / 2);
-  click_location.y = location.y + (corrected_height / 2);
+  click_location.x = location.x + floor(corrected_width / 2.0);
+  click_location.y = location.y + floor(corrected_height / 2.0);
   return click_location;
 }
 
