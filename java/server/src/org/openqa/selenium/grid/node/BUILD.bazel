@@ -1,0 +1,22 @@
+java_library(
+    name = "node",
+    srcs = glob(["*.java"]),
+    exports = [
+        # Exports Session from Node.getSession
+        "//java/server/src/org/openqa/selenium/grid/data",
+
+        # Export CommandHandler
+        "//java/server/src/org/openqa/selenium/grid/web",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/injector",
+        "//java/server/src/org/openqa/selenium/grid/data",
+        "//java/server/src/org/openqa/selenium/grid/web",
+        "//third_party/java/guava",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+)

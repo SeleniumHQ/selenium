@@ -1,0 +1,20 @@
+java_library(
+    name = "distributor",
+    srcs = glob(["*.java"]),
+    exports = [
+        # Exposes Node in the signature
+        "//java/server/src/org/openqa/selenium/grid/node",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/node",
+        "//java/server/src/org/openqa/selenium/grid/node/remote",
+        "//java/server/src/org/openqa/selenium/injector",
+        "//third_party/java/guava",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+)
