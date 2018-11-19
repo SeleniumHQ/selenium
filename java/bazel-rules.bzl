@@ -13,15 +13,16 @@ def _shortName(file):
 # We assume that package name matches directory structure, which may not
 # actually be true, but is for Selenium.
 def _className(file):
-    dir = native.package_name()
+    name = file.rpartition(".")[0]
+    className = native.package_name() + "/" + name
 
-    segments = dir.split('/')
+    segments = className.split('/')
     idx = len(segments) - 1
     for i, segment in enumerate(segments):
         if _contains(_PREFIXES, segment):
             idx = i
             break
-    return ".".join(segments[idx:]) + "." + _shortName(file)
+    return ".".join(segments[idx:])
 
 def _impl(ctx):
     for src in ctx.files.srcs:
@@ -31,7 +32,6 @@ def _impl(ctx):
             srcs = ctx.attr.srcs,
             size = ctx.attr.size,
             deps = ctx.attr.deps)
-        print(test)
 
 def gen_java_tests(name, srcs=[], deps=[], **kwargs):
     native.java_library(
