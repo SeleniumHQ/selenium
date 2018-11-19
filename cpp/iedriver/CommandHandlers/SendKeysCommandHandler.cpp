@@ -118,30 +118,25 @@ void SendKeysCommandHandler::ExecuteInternal(
                                                        &frame_locations);
 
       if (this->IsFileUploadElement(element_wrapper)) {
-        // TODO: If strict file interactability is set on, check element
-        // interactability before uploading the file.
-        bool use_strict_file_interactability = executor.use_strict_file_interactability();
+        if (executor.use_strict_file_interactability()) {
+          std::string upload_error_description = "";
+          if (!this->IsElementInteractable(element_wrapper,
+                                           &upload_error_description)) {
+            response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
+                                       upload_error_description);
+            return;
+          }
+        }
         this->UploadFile(browser_wrapper, element_wrapper, executor, keys, response);
         return;
       }
 
-      bool displayed;
-      status_code = element_wrapper->IsDisplayed(true, &displayed);
-      if (status_code != WD_SUCCESS || !displayed) {
+      std::string error_description = "";
+      bool is_interactable = IsElementInteractable(element_wrapper,
+                                                   &error_description);
+      if (!is_interactable) {
         response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
-                                   "Element cannot be interacted with via the keyboard because it is not displayed");
-        return;
-      }
-
-      if (!element_wrapper->IsEnabled()) {
-        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
-                                   "Element cannot be interacted with via the keyboard because it is not enabled");
-        return;
-      }
-
-      if (!element_wrapper->IsFocusable()) {
-        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
-                                   "Element cannot be interacted with via the keyboard because it is not focusable");
+                                   error_description);
         return;
       }
 
@@ -163,6 +158,27 @@ void SendKeysCommandHandler::ExecuteInternal(
       return;
     }
   }
+}
+
+bool SendKeysCommandHandler::IsElementInteractable(ElementHandle element_wrapper,
+                                                   std::string* error_description) {
+  bool displayed;
+  int status_code = element_wrapper->IsDisplayed(true, &displayed);
+  if (status_code != WD_SUCCESS || !displayed) {
+    *error_description = "Element cannot be interacted with via the keyboard because it is not displayed";
+    return false;
+  }
+
+  if (!element_wrapper->IsEnabled()) {
+    *error_description = "Element cannot be interacted with via the keyboard because it is not enabled";
+    return false;
+  }
+
+  if (!element_wrapper->IsFocusable()) {
+    *error_description = "Element cannot be interacted with via the keyboard because it is not focusable";
+    return false;
+  }
+  return true;
 }
 
 Json::Value SendKeysCommandHandler::CreateActionSequencePayload(const IECommandExecutor& executor,

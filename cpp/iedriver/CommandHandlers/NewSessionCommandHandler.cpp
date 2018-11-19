@@ -306,6 +306,9 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
       Json::Value page_load_strategy = this->GetCapability(merged_capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
       mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
 
+      Json::Value use_strict_file_interactability = this->GetCapability(merged_capabilities, STRICT_FILE_INTERACTABILITY_CAPABILITY, Json::booleanValue, false);
+      mutable_executor.set_use_strict_file_interactability(use_strict_file_interactability.asBool());
+
       Json::Value timeouts = this->GetCapability(merged_capabilities, TIMEOUTS_CAPABILITY, Json::objectValue, Json::Value());
       this->SetTimeoutSettings(executor, timeouts);
 
@@ -454,9 +457,6 @@ void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executo
   if (file_upload_dialog_timeout.asInt() > 0) {
     mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
   }
-
-  Json::Value use_strict_file_interactability = this->GetCapability(capabilities, STRICT_FILE_INTERACTABILITY_CAPABILITY, Json::booleanValue, false);
-  mutable_executor.set_use_strict_file_interactability(use_strict_file_interactability.asBool());
 
   Json::Value enable_persistent_hover = this->GetCapability(capabilities, ENABLE_PERSISTENT_HOVER_CAPABILITY, Json::booleanValue, true);
   if (require_window_focus.asBool() || !enable_native_events.asBool()) {
