@@ -1,7 +1,6 @@
 load("//java:bazel-rules.bzl", "gen_java_tests")
 
 gen_java_tests(
-    name = "node",
     srcs = glob(["*.java"]),
     size = "small",
     deps = [
