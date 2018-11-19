@@ -24,5 +24,6 @@ java_library(
     ],
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
 )

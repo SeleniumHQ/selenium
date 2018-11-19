@@ -1,0 +1,22 @@
+load("//java:bazel-rules.bzl", "gen_java_tests")
+
+gen_java_tests(
+    name = "router",
+    srcs = glob(["*.java"]),
+    size = "small",
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/distributor",
+        "//java/server/src/org/openqa/selenium/grid/distributor/local",
+        "//java/server/src/org/openqa/selenium/grid/distributor/remote",
+        "//java/server/src/org/openqa/selenium/grid/node/local",
+        "//java/server/src/org/openqa/selenium/grid/router",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)
