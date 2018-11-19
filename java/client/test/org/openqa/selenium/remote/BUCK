@@ -92,7 +92,6 @@ java_library(name = 'remote-driver-test-lib',
   srcs = [
     'RemoteSpecificTests.java',
     'RemoteWebDriverScreenshotTest.java',
-    'StartingFirefoxRemotelyTest.java',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
