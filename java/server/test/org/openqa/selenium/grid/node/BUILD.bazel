@@ -1,0 +1,19 @@
+load("//java:bazel-rules.bzl", "gen_java_tests")
+
+gen_java_tests(
+    name = "node",
+    srcs = glob(["*.java"]),
+    size = "small",
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/grid/node",
+        "//java/server/src/org/openqa/selenium/grid/node/local",
+        "//java/server/src/org/openqa/selenium/grid/node/remote",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
+        "//java/server/test/org/openqa/selenium/grid/web:utils",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)
