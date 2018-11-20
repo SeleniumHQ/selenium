@@ -498,6 +498,7 @@ namespace OpenQA.Selenium
 
         private class PageLoadStrategyOptions : DriverOptions
         {
+            [Obsolete]
             public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
             {
             }

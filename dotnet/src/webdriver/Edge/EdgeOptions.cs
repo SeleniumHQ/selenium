@@ -24,32 +24,6 @@ using OpenQA.Selenium.Remote;
 namespace OpenQA.Selenium.Edge
 {
     /// <summary>
-    /// Specifies the behavior of waiting for page loads in the Edge driver.
-    /// </summary>
-    public enum EdgePageLoadStrategy
-    {
-        /// <summary>
-        /// Indicates the behavior is not set.
-        /// </summary>
-        Default,
-
-        /// <summary>
-        /// Waits for pages to load and ready state to be 'complete'.
-        /// </summary>
-        Normal,
-
-        /// <summary>
-        /// Waits for pages to load and for ready state to be 'interactive' or 'complete'.
-        /// </summary>
-        Eager,
-
-        /// <summary>
-        /// Does not wait for pages to load, returning immediately.
-        /// </summary>
-        None
-    }
-
-    /// <summary>
     /// Class to manage options specific to <see cref="EdgeDriver"/>
     /// </summary>
     /// <example>
@@ -76,8 +50,6 @@ namespace OpenQA.Selenium.Edge
         private const string ExtensionPathsCapability = "ms:extensionPaths";
         private const string StartPageCapability = "ms:startPage";
 
-        private EdgePageLoadStrategy pageLoadStrategy = EdgePageLoadStrategy.Default;
-        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private bool useInPrivateBrowsing;
         private string startPage;
         private List<string> extensionPaths = new List<string>();
@@ -85,6 +57,9 @@ namespace OpenQA.Selenium.Edge
         public EdgeOptions() : base()
         {
             this.BrowserName = BrowserNameValue;
+            this.AddKnownCapabilityName(UseInPrivateBrowsingCapability, "UseInPrivateBrowsing property");
+            this.AddKnownCapabilityName(StartPageCapability, "StartPage property");
+            this.AddKnownCapabilityName(ExtensionPathsCapability, "AddExtensionPaths method");
         }
 
         /// <summary>
@@ -156,14 +131,10 @@ namespace OpenQA.Selenium.Edge
         /// </exception>
         /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
         /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method for adding additional options")]
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
-            if (string.IsNullOrEmpty(capabilityName))
-            {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
-            }
-
-            this.additionalCapabilities[capabilityName] = capabilityValue;
+            this.AddAdditionalOption(capabilityName, capabilityValue);
         }
 
         /// <summary>
@@ -174,7 +145,7 @@ namespace OpenQA.Selenium.Edge
         /// <returns>The DesiredCapabilities for Edge with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
+            IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(true);
 
             if (this.useInPrivateBrowsing)
             {
@@ -191,13 +162,7 @@ namespace OpenQA.Selenium.Edge
                 capabilities.SetCapability(ExtensionPathsCapability, this.extensionPaths);
             }
 
-            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
-            {
-                capabilities.SetCapability(pair.Key, pair.Value);
-            }
-
-            // Should return capabilities.AsReadOnly(), and will in a future release.
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
     }
 }

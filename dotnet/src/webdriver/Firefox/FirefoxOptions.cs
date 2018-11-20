@@ -65,7 +65,6 @@ namespace OpenQA.Selenium.Firefox
         private FirefoxProfile profile;
         private List<string> firefoxArguments = new List<string>();
         private Dictionary<string, object> profilePreferences = new Dictionary<string, object>();
-        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Dictionary<string, object> additionalFirefoxOptions = new Dictionary<string, object>();
 
         /// <summary>
@@ -152,7 +151,6 @@ namespace OpenQA.Selenium.Firefox
         /// Adds a list arguments to be used in launching the Firefox browser.
         /// </summary>
         /// <param name="argumentsToAdd">An array of arguments to add.</param>
-        /// <remarks>Each argument must be preceeded by two dashes ("--").</remarks>
         public void AddArguments(IEnumerable<string> argumentsToAdd)
         {
             if (argumentsToAdd == null)
@@ -217,6 +215,27 @@ namespace OpenQA.Selenium.Firefox
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Firefox driver.
         /// </summary>
+        /// <param name="optionName">The name of the capability to add.</param>
+        /// <param name="optionValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalFirefoxOption(string, object)"/>
+        /// where <paramref name="optionName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="optionValue"/>.
+        /// Calling this method adds capabilities to the Firefox-specific options object passed to
+        /// geckodriver.exe (property name 'moz:firefoxOptions').</remarks>
+        public void AddAdditionalFirefoxOption(string optionName, object optionValue)
+        {
+            this.ValidateCapabilityName(optionName);
+            this.additionalFirefoxOptions[optionName] = optionValue;
+        }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Firefox driver.
+        /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
         /// <exception cref="ArgumentException">
@@ -228,12 +247,13 @@ namespace OpenQA.Selenium.Firefox
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// Also, by default, calling this method adds capabilities to the options object passed to
         /// geckodriver.exe.</remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalFirefoxOption method for adding additional options")]
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
             // Add the capability to the FirefoxOptions object by default. This is to handle
             // the 80% case where the geckodriver team adds a new option in geckodriver.exe
             // and the bindings have not yet had a type safe option added.
-            this.AddAdditionalCapability(capabilityName, capabilityValue, false);
+            this.AddAdditionalFirefoxOption(capabilityName, capabilityValue);
         }
 
         /// <summary>
@@ -251,27 +271,16 @@ namespace OpenQA.Selenium.Firefox
         /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/>
         /// where <paramref name="capabilityName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalFirefoxOption method for adding additional options")]
         public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
-            if (this.IsKnownCapabilityName(capabilityName))
-            {
-                string typeSafeOptionName = this.GetTypeSafeOptionName(capabilityName);
-                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
-                throw new ArgumentException(message, "capabilityName");
-            }
-
-            if (string.IsNullOrEmpty(capabilityName))
-            {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
-            }
-
             if (isGlobalCapability)
             {
-                this.additionalCapabilities[capabilityName] = capabilityValue;
+                this.AddAdditionalOption(capabilityName, capabilityValue);
             }
             else
             {
-                this.additionalFirefoxOptions[capabilityName] = capabilityValue;
+                this.AddAdditionalFirefoxOption(capabilityName, capabilityValue);
             }
         }
 
@@ -283,17 +292,11 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>The DesiredCapabilities for Firefox with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = GenerateDesiredCapabilities(true);
+            IWritableCapabilities capabilities = GenerateDesiredCapabilities(true);
             Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
             capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
 
-            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
-            {
-                capabilities.SetCapability(pair.Key, pair.Value);
-            }
-
-            // Should return capabilities.AsReadOnly(), and will in a future release.
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
 
         private Dictionary<string, object> GenerateFirefoxOptionsDictionary()
@@ -302,8 +305,6 @@ namespace OpenQA.Selenium.Firefox
 
             if (this.profile != null)
             {
-                // Using Marionette/Geckodriver, so the legacy WebDriver extension
-                // is not required.
                 firefoxOptions[FirefoxProfileCapability] = this.profile.ToBase64String();
             }
 
@@ -351,79 +352,6 @@ namespace OpenQA.Selenium.Firefox
             }
 
             this.profilePreferences[preferenceName] = preferenceValue;
-        }
-
-        private void ImportCapabilities(DesiredCapabilities capabilities)
-        {
-            foreach (KeyValuePair<string, object> pair in capabilities.CapabilitiesDictionary)
-            {
-                if (pair.Key == CapabilityType.BrowserName)
-                {
-                }
-                else if (pair.Key == CapabilityType.BrowserVersion)
-                {
-                    this.BrowserVersion = pair.Value.ToString();
-                }
-                else if (pair.Key == CapabilityType.PlatformName)
-                {
-                    this.PlatformName = pair.Value.ToString();
-                }
-                else if (pair.Key == CapabilityType.Proxy)
-                {
-                    this.Proxy = new Proxy(pair.Value as Dictionary<string, object>);
-                }
-                else if (pair.Key == CapabilityType.UnhandledPromptBehavior)
-                {
-                    this.UnhandledPromptBehavior = (UnhandledPromptBehavior)Enum.Parse(typeof(UnhandledPromptBehavior), pair.Value.ToString(), true);
-                }
-                else if (pair.Key == CapabilityType.PageLoadStrategy)
-                {
-                    this.PageLoadStrategy = (PageLoadStrategy)Enum.Parse(typeof(PageLoadStrategy), pair.Value.ToString(), true);
-                }
-                else if (pair.Key == FirefoxOptionsCapability)
-                {
-                    Dictionary<string, object> mozFirefoxOptions = pair.Value as Dictionary<string, object>;
-                    foreach (KeyValuePair<string, object> option in mozFirefoxOptions)
-                    {
-                        if (option.Key == FirefoxArgumentsCapability)
-                        {
-                            object[] args = option.Value as object[];
-                            for (int i = 0; i < args.Length; i++)
-                            {
-                                this.firefoxArguments.Add(args[i].ToString());
-                            }
-                        }
-                        else if (option.Key == FirefoxPrefsCapability)
-                        {
-                            this.profilePreferences = option.Value as Dictionary<string, object>;
-                        }
-                        else if (option.Key == FirefoxLogCapability)
-                        {
-                            Dictionary<string, object> logDictionary = option.Value as Dictionary<string, object>;
-                            if (logDictionary.ContainsKey("level"))
-                            {
-                                this.logLevel = (FirefoxDriverLogLevel)Enum.Parse(typeof(FirefoxDriverLogLevel), logDictionary["level"].ToString(), true);
-                            }
-                        }
-                        else if (option.Key == FirefoxBinaryCapability)
-                        {
-                            this.browserBinaryLocation = option.Value.ToString();
-                        }
-                        else if (option.Key == FirefoxProfileCapability)
-                        {
-                            this.profile = FirefoxProfile.FromBase64String(option.Value.ToString());
-                        }
-                        else
-                        {
-                            this.AddAdditionalCapability(option.Key, option.Value);
-                        }
-                    }
-                }
-                else
-                {
-                    this.AddAdditionalCapability(pair.Key, pair.Value, true);
-                }
-            }
         }
     }
 }
