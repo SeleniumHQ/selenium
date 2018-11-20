@@ -20,7 +20,9 @@ package org.openqa.selenium.remote.tracing;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.noop.NoopTracerFactory;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Represents an entry point for accessing all aspects of distributed tracing.
@@ -41,6 +43,12 @@ public interface DistributedTracer {
    *               assumed to be independent.
    */
   Span createSpan(String operation, Span parent);
+
+  /**
+   * Create a span from a remote context of some type, which will generally be
+   * an {@link org.openqa.selenium.remote.http.HttpRequest}.
+   */
+  <C> Span createSpan(String operationName, C carrier, Function<C, Map<String, String>> extractor);
 
   /**
    * Get the currently active span, which may be {@code null}.

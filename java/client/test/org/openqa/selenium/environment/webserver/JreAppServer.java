@@ -98,15 +98,13 @@ public class JreAppServer implements AppServer {
   }
 
   protected JreAppServer emulateJettyAppServer() {
-    String javascript = locate("javascript").toAbsolutePath().toString();
     String common = locate("common/src/web").toAbsolutePath().toString();
     // Listed first, so considered last
     addHandler(
         GET,
         "/",
         new StaticContent(
-            path -> Paths.get(common + path),
-            path -> Paths.get(javascript + path.substring("/javascript".length()))));
+            path -> Paths.get(common + path)));
 
     addHandler(GET, "/encoding", new EncodingHandler());
     addHandler(GET, "/page", new PageHandler());
@@ -256,7 +254,7 @@ public class JreAppServer implements AppServer {
 
     @Override
     public Iterable<String> getHeaders(String name) {
-      return exchange.getResponseHeaders().get(name);
+      return exchange.getRequestHeaders().get(name);
     }
 
     @Override

@@ -27,6 +27,7 @@ import io.opentracing.propagation.TextMap;
 import io.opentracing.util.ThreadLocalScopeManager;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Unlike the default no-op {@link Tracer} that ships with opentracing's apis, this implementation
@@ -36,8 +37,8 @@ import java.util.Map;
  */
 public class SimpleTracer implements Tracer {
 
+  private final UUID traceId = UUID.randomUUID();
   private final ScopeManager scopeManager = new ThreadLocalScopeManager();
-  private final ThreadLocal<Span> activeSpan = new ThreadLocal<>();
 
   @Override
   public ScopeManager scopeManager() {
@@ -64,6 +65,7 @@ public class SimpleTracer implements Tracer {
 
     TextMap map = (TextMap) carrier;
     spanContext.baggageItems().forEach(entry -> map.put(entry.getKey(), entry.getValue()));
+    map.put("trace-id", traceId.toString());
   }
 
   @Override
@@ -79,6 +81,7 @@ public class SimpleTracer implements Tracer {
     for (Map.Entry<String, String> entry : map) {
       span.setBaggageItem(entry.getKey(), entry.getValue());
     }
+    span.setBaggageItem("trace-id", traceId.toString());
 
     return span.context();
   }
