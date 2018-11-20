@@ -173,12 +173,9 @@ genrule(
 genrule(
   name = 'webdriver_deps',
   srcs = [
-    '//javascript/firefox-driver:webdriver',
     '//javascript/firefox-driver:webdriver_prefs',
     '//javascript/webdriver/atoms:get-attribute',
-    '//javascript/atoms/fragments:is-displayed',
-    '//cpp/prebuilt:noblur32',
-    '//cpp/prebuilt:noblur64'
+    '//javascript/atoms/fragments:is-displayed'
   ],
   bash = 'echo "$SRCS" > $OUT',
   cmd_exe = 'echo "%SRCS%" > %OUT%',
