@@ -60,7 +60,6 @@ namespace OpenQA.Selenium.Firefox
         private const string FirefoxPrefsCapability = "prefs";
         private const string FirefoxOptionsCapability = "moz:firefoxOptions";
 
-        private bool isMarionette = true;
         private string browserBinaryLocation;
         private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel.Default;
         private FirefoxProfile profile;
@@ -88,37 +87,13 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxOptions"/> class for the given profile and binary.
-        /// </summary>
-        /// <param name="profile">The <see cref="FirefoxProfile"/> to use in the options.</param>
-        /// <param name="binary">The <see cref="FirefoxBinary"/> to use in the options.</param>
-        /// <param name="capabilities">The <see cref="DesiredCapabilities"/> to copy into the options.</param>
-        internal FirefoxOptions(FirefoxProfile profile, FirefoxBinary binary, DesiredCapabilities capabilities)
-        {
-            this.BrowserName = BrowserNameValue;
-            if (profile != null)
-            {
-                this.profile = profile;
-            }
-
-            if (binary != null)
-            {
-                this.browserBinaryLocation = binary.BinaryExecutable.ExecutablePath;
-            }
-
-            if (capabilities != null)
-            {
-                this.ImportCapabilities(capabilities);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether to use the legacy driver implementation.
         /// </summary>
+        [Obsolete(".NET bindings no longer support the legacy driver implementation. Setting this property no longer has any effect. .NET users should always be using geckodriver.")]
         public bool UseLegacyImplementation
         {
-            get { return !this.isMarionette; }
-            set { this.isMarionette = !value; }
+            get { return false; }
+            set { }
         }
 
         /// <summary>
@@ -308,37 +283,9 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>The DesiredCapabilities for Firefox with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = GenerateDesiredCapabilities(this.isMarionette);
-            if (this.isMarionette)
-            {
-                Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
-                capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
-            }
-            else
-            {
-                if (this.profile != null)
-                {
-                    if (this.Proxy != null)
-                    {
-                        this.profile.InternalSetProxyPreferences(this.Proxy);
-                    }
-
-                    capabilities.SetCapability(FirefoxProfileCapability, this.profile.ToBase64String());
-                }
-
-                if (!string.IsNullOrEmpty(this.browserBinaryLocation))
-                {
-                    capabilities.SetCapability(FirefoxBinaryCapability, this.browserBinaryLocation);
-                }
-                else
-                {
-                    using (FirefoxBinary executablePathBinary = new FirefoxBinary())
-                    {
-                        string executablePath = executablePathBinary.BinaryExecutable.ExecutablePath;
-                        capabilities.SetCapability(FirefoxBinaryCapability, executablePath);
-                    }
-                }
-            }
+            DesiredCapabilities capabilities = GenerateDesiredCapabilities(true);
+            Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
+            capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {
@@ -357,27 +304,12 @@ namespace OpenQA.Selenium.Firefox
             {
                 // Using Marionette/Geckodriver, so the legacy WebDriver extension
                 // is not required.
-                this.profile.RemoveWebDriverExtension();
                 firefoxOptions[FirefoxProfileCapability] = this.profile.ToBase64String();
             }
 
             if (!string.IsNullOrEmpty(this.browserBinaryLocation))
             {
                 firefoxOptions[FirefoxBinaryCapability] = this.browserBinaryLocation;
-            }
-            else
-            {
-                if (!this.isMarionette)
-                {
-                    using (FirefoxBinary executablePathBinary = new FirefoxBinary())
-                    {
-                        string executablePath = executablePathBinary.BinaryExecutable.ExecutablePath;
-                        if (!string.IsNullOrEmpty(executablePath))
-                        {
-                            firefoxOptions[FirefoxBinaryCapability] = executablePath;
-                        }
-                    }
-                }
             }
 
             if (this.logLevel != FirefoxDriverLogLevel.Default)
@@ -416,11 +348,6 @@ namespace OpenQA.Selenium.Firefox
             if (string.IsNullOrEmpty(preferenceName))
             {
                 throw new ArgumentException("Preference name may not be null an empty string.", "preferenceName");
-            }
-
-            if (!this.isMarionette)
-            {
-                throw new ArgumentException("Preferences cannot be set directly when using the legacy FirefoxDriver implementation. Set them in the profile.");
             }
 
             this.profilePreferences[preferenceName] = preferenceValue;

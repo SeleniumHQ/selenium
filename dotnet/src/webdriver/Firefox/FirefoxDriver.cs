@@ -68,41 +68,10 @@ namespace OpenQA.Selenium.Firefox
     public class FirefoxDriver : RemoteWebDriver
     {
         /// <summary>
-        /// The name of the ICapabilities setting to use to define a custom Firefox profile.
-        /// </summary>
-        public static readonly string ProfileCapabilityName = "firefox_profile";
-
-        /// <summary>
-        /// The name of the ICapabilities setting to use to define a custom location for the
-        /// Firefox executable.
-        /// </summary>
-        public static readonly string BinaryCapabilityName = "firefox_binary";
-
-        /// <summary>
-        /// The default port on which to communicate with the Firefox extension.
-        /// </summary>
-        public static readonly int DefaultPort = 7055;
-
-        /// <summary>
-        /// Indicates whether native events is enabled by default for this platform.
-        /// </summary>
-        public static readonly bool DefaultEnableNativeEvents = Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows);
-
-        /// <summary>
-        /// Indicates whether the driver will accept untrusted SSL certificates.
-        /// </summary>
-        public static readonly bool AcceptUntrustedCertificates = true;
-
-        /// <summary>
-        /// Indicates whether the driver assume the issuer of untrusted certificates is untrusted.
-        /// </summary>
-        public static readonly bool AssumeUntrustedCertificateIssuer = true;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class.
         /// </summary>
         public FirefoxDriver()
-            : this(new FirefoxOptions(null, null, null))
+            : this(new FirefoxOptions())
         {
         }
 
@@ -174,7 +143,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, TimeSpan commandTimeout)
-            : base(CreateExecutor(service, options, commandTimeout), ConvertOptionsToCapabilities(options))
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
 
@@ -195,70 +164,11 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets a value indicating whether the Firefox driver instance uses
-        /// Mozilla's Marionette implementation. This is a temporary property
-        /// and will be removed when Marionette is available for the release
-        /// channel of Firefox.
-        /// </summary>
-        public bool IsMarionette
-        {
-            get { return this.IsSpecificationCompliant; }
-        }
-
-        /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>
         protected virtual void PrepareEnvironment()
         {
             // Does nothing, but provides a hook for subclasses to do "stuff"
-        }
-
-        private static ICommandExecutor CreateExecutor(FirefoxDriverService service, FirefoxOptions options, TimeSpan commandTimeout)
-        {
-            ICommandExecutor executor = null;
-            if (options.UseLegacyImplementation)
-            {
-                // Note: If BrowserExecutableLocation is null or empty, the legacy driver
-                // will still do the right thing, and find Firefox in the default location.
-                FirefoxBinary binary = new FirefoxBinary(options.BrowserExecutableLocation);
-
-                FirefoxProfile profile = options.Profile;
-                if (profile == null)
-                {
-                    profile = new FirefoxProfile();
-                }
-
-                executor = CreateExtensionConnection(binary, profile, commandTimeout);
-            }
-            else
-            {
-                if (service == null)
-                {
-                    throw new ArgumentNullException("service", "You requested a service-based implementation, but passed in a null service object.");
-                }
-
-                return new DriverServiceCommandExecutor(service, commandTimeout);
-            }
-
-            return executor;
-        }
-
-        private static ICommandExecutor CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
-        {
-            FirefoxProfile profileToUse = profile;
-
-            string suggestedProfile = Environment.GetEnvironmentVariable("webdriver.firefox.profile");
-            if (profileToUse == null && suggestedProfile != null)
-            {
-                profileToUse = new FirefoxProfileManager().GetProfile(suggestedProfile);
-            }
-            else if (profileToUse == null)
-            {
-                profileToUse = new FirefoxProfile();
-            }
-
-            FirefoxDriverCommandExecutor executor = new FirefoxDriverCommandExecutor(binary, profileToUse, "localhost", commandTimeout);
-            return executor;
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(FirefoxOptions options)
@@ -268,104 +178,11 @@ namespace OpenQA.Selenium.Firefox
                 throw new ArgumentNullException("options", "options must not be null");
             }
 
-            ICapabilities capabilities = options.ToCapabilities();
-            if (options.UseLegacyImplementation)
-            {
-                capabilities = RemoveUnneededCapabilities(capabilities);
-            }
-
-            return capabilities;
-        }
-
-        private static ICapabilities RemoveUnneededCapabilities(ICapabilities capabilities)
-        {
-            DesiredCapabilities caps = capabilities as DesiredCapabilities;
-            caps.CapabilitiesDictionary.Remove(FirefoxDriver.ProfileCapabilityName);
-            caps.CapabilitiesDictionary.Remove(FirefoxDriver.BinaryCapabilityName);
-            return caps;
-        }
-
-        private static FirefoxOptions CreateOptionsFromCapabilities(ICapabilities capabilities)
-        {
-            // This is awkward and hacky. To be removed when the legacy driver is retired.
-            FirefoxBinary binary = ExtractBinary(capabilities);
-            FirefoxProfile profile = ExtractProfile(capabilities);
-            DesiredCapabilities desiredCaps = RemoveUnneededCapabilities(capabilities) as DesiredCapabilities;
-
-            FirefoxOptions options = new FirefoxOptions(profile, binary, desiredCaps);
-            return options;
-        }
-
-        private static FirefoxBinary ExtractBinary(ICapabilities capabilities)
-        {
-            if (capabilities.GetCapability(BinaryCapabilityName) != null)
-            {
-                string file = capabilities.GetCapability(BinaryCapabilityName).ToString();
-                return new FirefoxBinary(file);
-            }
-
-            return new FirefoxBinary();
-        }
-
-        private static FirefoxProfile ExtractProfile(ICapabilities capabilities)
-        {
-            FirefoxProfile profile = new FirefoxProfile();
-            if (capabilities.GetCapability(ProfileCapabilityName) != null)
-            {
-                object raw = capabilities.GetCapability(ProfileCapabilityName);
-                FirefoxProfile rawAsProfile = raw as FirefoxProfile;
-                string rawAsString = raw as string;
-                if (rawAsProfile != null)
-                {
-                    profile = rawAsProfile;
-                }
-                else if (rawAsString != null)
-                {
-                    try
-                    {
-                        profile = FirefoxProfile.FromBase64String(rawAsString);
-                    }
-                    catch (IOException e)
-                    {
-                        throw new WebDriverException("Unable to create profile from specified string", e);
-                    }
-                }
-            }
-
-            if (capabilities.GetCapability(CapabilityType.Proxy) != null)
-            {
-                Proxy proxy = null;
-                object raw = capabilities.GetCapability(CapabilityType.Proxy);
-                Proxy rawAsProxy = raw as Proxy;
-                Dictionary<string, object> rawAsMap = raw as Dictionary<string, object>;
-                if (rawAsProxy != null)
-                {
-                    proxy = rawAsProxy;
-                }
-                else if (rawAsMap != null)
-                {
-                    proxy = new Proxy(rawAsMap);
-                }
-
-                profile.SetProxyPreferences(proxy);
-            }
-
-            if (capabilities.GetCapability(CapabilityType.AcceptSslCertificates) != null)
-            {
-                bool acceptCerts = (bool)capabilities.GetCapability(CapabilityType.AcceptSslCertificates);
-                profile.AcceptUntrustedCertificates = acceptCerts;
-            }
-
-            return profile;
+            return options.ToCapabilities();
         }
 
         private static FirefoxDriverService CreateService(FirefoxOptions options)
         {
-            if (options != null && options.UseLegacyImplementation)
-            {
-                return null;
-            }
-
             return FirefoxDriverService.CreateDefaultService();
         }
     }
