@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace OpenQA.Selenium
 {
@@ -40,7 +40,7 @@ namespace OpenQA.Selenium
         {
             Firefox.FirefoxDriver firefoxDriver = driver as Firefox.FirefoxDriver;
 
-            return firefoxDriver != null && firefoxDriver.IsMarionette;
+            return firefoxDriver != null;
         }
 
         public static bool IsInternetExplorer(IWebDriver driver)
