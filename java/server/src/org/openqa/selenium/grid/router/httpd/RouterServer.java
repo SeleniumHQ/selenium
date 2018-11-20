@@ -37,6 +37,7 @@ import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.LoggingOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -45,6 +46,7 @@ import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 import java.net.URL;
 
@@ -95,10 +97,8 @@ public class RouterServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("router", '.', System.getProperties()));
 
-      DistributedTracer tracer = DistributedTracer.builder()
-          .registerDetectedTracers()
-          .build();
-      DistributedTracer.setInstance(tracer);
+      DistributedTracer tracer = new LoggingOptions(config).getTracer();
+      GlobalDistributedTracer.setInstance(tracer);
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();

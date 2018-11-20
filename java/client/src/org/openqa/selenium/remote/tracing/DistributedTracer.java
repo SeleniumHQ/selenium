@@ -17,54 +17,17 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-
-import org.openqa.selenium.BuildInfo;
-
-import io.opentracing.SpanContext;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.noop.NoopTracerFactory;
-import io.opentracing.propagation.Format;
-import io.opentracing.propagation.TextMap;
-import io.opentracing.propagation.TextMapExtractAdapter;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 /**
  * Represents an entry point for accessing all aspects of distributed tracing.
  */
-public class DistributedTracer {
+public interface DistributedTracer {
 
-  private static volatile DistributedTracer INSTANCE = DistributedTracer.builder()
-//      .registerDetectedTracers()
-      .build();
-  private static final ThreadLocal<LinkedList<Span>> ACTIVE_SPANS =
-      ThreadLocal.withInitial(LinkedList::new);
-  private final ImmutableSet<io.opencensus.trace.Tracer> ocTracers;
-  private final ImmutableSet<io.opentracing.Tracer> otTracers;
-
-  private DistributedTracer(
-      ImmutableSet<io.opencensus.trace.Tracer> ocTracers,
-      ImmutableSet<io.opentracing.Tracer> otTracers) {
-    this.ocTracers = Objects.requireNonNull(ocTracers);
-    this.otTracers = Objects.requireNonNull(otTracers);
-  }
-
-  public static DistributedTracer getInstance() {
-    return INSTANCE;
-  }
-
-  public synchronized static void setInstance(DistributedTracer distributedTracer) {
-    INSTANCE = distributedTracer;
-  }
-
-  public static Builder builder() {
+  static Builder builder() {
     return new Builder();
   }
 
@@ -77,143 +40,49 @@ public class DistributedTracer {
    * @param parent The parent span. If this is {@code null}, then the span is
    *               assumed to be independent.
    */
-  public Span createSpan(String operation, Span parent) {
-    if (parent != null) {
-      Span child = parent.createChild(operation);
-      setActiveSpan(child);
-      return child;
-    }
-
-    ImmutableSet.Builder<Span> spans = ImmutableSet.builder();
-
-    for (io.opencensus.trace.Tracer tracer : ocTracers) {
-      spans.add(new OpenCensusSpan(this, tracer, null, "root"));
-    }
-
-    for (io.opentracing.Tracer tracer : otTracers) {
-      spans.add(new OpenTracingSpan(this, tracer, null, "root"));
-    }
-
-    Span child = new CompoundSpan(this, spans.build());
-    child.addTraceTag("selenium-version", new BuildInfo().getReleaseLabel());
-    child.addTag("selenium-client", "java");
-    setActiveSpan(child);
-    return child;
-  }
+  Span createSpan(String operation, Span parent);
 
   /**
-   * Each thread can have one currently active span. This can be accessed via
-   * this method. If there is no currently active span, then a new one will
-   * be created. Should a new span be created, it will be set as the currently
-   * active span.
+   * Get the currently active span, which may be {@code null}.
    */
-  public Span getActiveSpan() {
-    if (ACTIVE_SPANS.get().isEmpty()) {
-      return null;
-    }
+  Span getActiveSpan();
 
-    return ACTIVE_SPANS.get().getLast().activate();
-  }
 
-  void setActiveSpan(Span span) {
-    ACTIVE_SPANS.get().add(span);
-  }
+  class Builder {
 
-  void remove(Span span) {
-    Objects.requireNonNull(span, "Span to remove must not be null");
-
-    ACTIVE_SPANS.get().removeIf(span::equals);
-  }
-
-  public Span extract(String operationName, Iterator<Map.Entry<String, String>> traceTags) {
-    ImmutableMap.Builder<String, String> repeatableTags = ImmutableMap.builder();
-    traceTags.forEachRemaining(item -> repeatableTags.put(item.getKey(), item.getValue()));
-
-    ImmutableSet.Builder<Span> spans = ImmutableSet.builder();
-
-    TextMapExtractAdapter adapter = new TextMapExtractAdapter(repeatableTags.build());
-    for (io.opentracing.Tracer tracer : otTracers) {
-      SpanContext context = tracer.extract(Format.Builtin.TEXT_MAP, adapter);
-
-      spans.add(new OpenTracingSpan(this, tracer, context, operationName));
-    }
-
-    for (io.opencensus.trace.Tracer ocTracer : ocTracers) {
-      // TODO: implement for OpenCensus
-    }
-
-    return new CompoundSpan(this, spans.build()).activate();
-  }
-
-  private static class TextMapAdapter implements TextMap {
-
-    private final BiConsumer<String, String> setter;
-    private final Supplier<Iterator<Map.Entry<String, String>>> getter;
-
-    private TextMapAdapter(
-        BiConsumer<String, String> setter,
-        Supplier<Iterator<Map.Entry<String, String>>> getter) {
-
-      this.setter = setter;
-      this.getter = getter;
-    }
-
-    @Override
-    public Iterator<Map.Entry<String, String>> iterator() {
-      if (getter == null) {
-        throw new UnsupportedOperationException("iterator");
-      }
-      return getter.get();
-    }
-
-    @Override
-    public void put(String key, String value) {
-      if (setter == null) {
-        throw new UnsupportedOperationException("put");
-      }
-      if (key == null || value == null) {
-        return;
-      }
-      setter.accept(key, value);
-    }
-  }
-
-  public static class Builder {
-
-    private ImmutableSet.Builder<io.opencensus.trace.Tracer> ocTracers = ImmutableSet.builder();
-    private ImmutableSet.Builder<io.opentracing.Tracer> otTracers = ImmutableSet.builder();
+    private DistributedTracer tracer;
 
     private Builder() {
       // Only accessible through the parent class
 
-      // Make sure we have at least one tracer, but make it one that does nothing.
-      register(NoopTracerFactory.create());
+      this.tracer = new OpenTracingTracer(NoopTracerFactory.create());
     }
 
-    public Builder registerDetectedTracers() {
+    public Builder use(io.opentracing.Tracer openTracingTracer) {
+      Objects.requireNonNull(openTracingTracer, "Tracer must be set.");
+      tracer = new OpenTracingTracer(openTracingTracer);
+      return this;
+    }
+
+    public Builder use(io.opencensus.trace.Tracer openCensusTracer) {
+      Objects.requireNonNull(openCensusTracer, "Tracer must be set.");
+      tracer = new OpenCensusTracer(openCensusTracer);
+      return this;
+    }
+
+    public Builder detect() {
+      // Checking the global tracer is futile --- it defaults to a no-op instance.
       try {
-        io.opentracing.Tracer tracer = TracerResolver.resolveTracer();
-        if (tracer != null) {
-          register(tracer);
-        }
-      } catch (Exception e) {
-        // Carry on. This is fine.
+        this.tracer = new OpenTracingTracer(TracerResolver.resolveTracer());
+      } catch (Throwable e) {
+        // Fine. Leave the tracer as it is.
       }
-      return this;
-    }
 
-    public Builder register(io.opentracing.Tracer openTracingTracer) {
-      otTracers.add(Objects.requireNonNull(openTracingTracer, "Tracer must be set."));
-      return this;
-    }
-
-    public Builder register(io.opencensus.trace.Tracer openCensusTracer) {
-      ocTracers.add(Objects.requireNonNull(openCensusTracer, "Tracer must be set."));
       return this;
     }
 
     public DistributedTracer build() {
-      return new DistributedTracer(ocTracers.build(), otTracers.build());
+      return tracer;
     }
   }
 }

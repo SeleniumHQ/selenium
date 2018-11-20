@@ -10,6 +10,7 @@ java_import(
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium/remote/tracing:__pkg__",
+        "//java/client/test/org/openqa/selenium/remote/tracing/simple:__pkg__",
         "//third_party/java/contrib:__pkg__",
     ],
 )
@@ -45,6 +46,7 @@ java_import(
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium/remote/tracing:__pkg__",
+        "//java/client/test/org/openqa/selenium/remote/tracing:__pkg__",
         "//java/client/test/org/openqa/selenium/remote/tracing/simple:__pkg__",
         "//third_party/java/contrib:__pkg__",
     ],

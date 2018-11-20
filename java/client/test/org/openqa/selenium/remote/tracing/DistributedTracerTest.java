@@ -19,14 +19,32 @@ package org.openqa.selenium.remote.tracing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import com.google.common.collect.ImmutableSet;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openqa.selenium.remote.tracing.simple.SimpleTracer;
+
+import io.opencensus.trace.Tracing;
+
+import java.util.Collection;
+
+@RunWith(Parameterized.class)
 public class DistributedTracerTest {
+
+  @Parameterized.Parameters(name = "Tracer {0}")
+  public static Collection<DistributedTracer> buildTracers() {
+    return ImmutableSet.of(
+        DistributedTracer.builder().use(new SimpleTracer()).build(),
+        DistributedTracer.builder().use(Tracing.getTracer()).build());
+  }
+
+  @Parameterized.Parameter
+  public DistributedTracer tracer;
 
   @Test
   public void creatingASpanImplicitlyMakesItActive() {
-    DistributedTracer tracer = DistributedTracer.builder().build();
-
     try (Span span = tracer.createSpan("welcome", null)) {
       assertThat(tracer.getActiveSpan()).isEqualTo(span);
     }
@@ -34,36 +52,18 @@ public class DistributedTracerTest {
 
   @Test
   public void shouldBeAbleToSetASpanAsActive() {
-    DistributedTracer tracer = DistributedTracer.builder().build();
-
     try (Span span = tracer.createSpan("welcome", null)) {
-      tracer.setActiveSpan(span);
-
+      span.activate();
       assertThat(tracer.getActiveSpan()).isEqualTo(span);
     }
   }
 
   @Test
   public void childSpansAutomaticallyBecomeActive() {
-    DistributedTracer tracer = DistributedTracer.builder().build();
-
     try (Span parent = tracer.createSpan("parent", null)) {
       try (Span child = tracer.createSpan("child", parent)) {
         assertThat(tracer.getActiveSpan()).isEqualTo(child);
       }
-    }
-  }
-
-  @Test
-  public void closingAChildSpanResultsInTheParentSpanBecomingActive() {
-    DistributedTracer tracer = DistributedTracer.builder().build();
-
-    try (Span parent = tracer.createSpan("parent", null)) {
-      try (Span child = tracer.createSpan("child", parent)) {
-        assertThat(tracer.getActiveSpan()).isEqualTo(child);
-      }
-
-      assertThat(tracer.getActiveSpan()).isEqualTo(parent);
     }
   }
 }
