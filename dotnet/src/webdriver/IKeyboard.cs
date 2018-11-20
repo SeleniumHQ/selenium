@@ -24,7 +24,7 @@ namespace OpenQA.Selenium
     /// Provides methods representing basic keyboard actions.
     /// </summary>
     [Obsolete("Use the Actions or ActionBuilder class to simulate keyboard input.")]
-    public interface IKeyboard
+    internal interface IKeyboard
     {
         /// <summary>
         /// Sends a sequence of keystrokes to the target.

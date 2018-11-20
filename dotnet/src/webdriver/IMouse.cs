@@ -25,7 +25,7 @@ namespace OpenQA.Selenium
     /// Provides methods representing basic mouse actions.
     /// </summary>
     [Obsolete("Use the Actions or ActionBuilder class to simulate mouse input.")]
-    public interface IMouse
+    internal interface IMouse
     {
         /// <summary>
         /// Clicks at a set of coordinates using the primary mouse button.
