@@ -11,6 +11,6 @@ java_import(
     deps = [
     ],
     visibility = [
-        "//third_party/java/mockito:mockito-core",
+        "//third_party/java/mockito:__pkg__",
     ],
 )

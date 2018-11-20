@@ -9,7 +9,7 @@ java_import(
   srcjar = 'byte-buddy-1.8.15-sources.jar',
   visibility = [
     '//java/client/src/org/openqa/selenium/remote:__pkg__',
-    "//third_party/java/mockito:mockito-core",
+    "//third_party/java/mockito:__pkg__",
   ],
 )
 
@@ -24,6 +24,6 @@ java_import(
   srcjar = 'byte-buddy-agent-1.8.15-sources.jar',
   visibility = [
     '//java/client/src/org/openqa/selenium/remote:__pkg__',
-    "//third_party/java/mockito:mockito-core",
+    "//third_party/java/mockito:__pkg__",
   ],
 )
