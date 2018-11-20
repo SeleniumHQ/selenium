@@ -45,32 +45,33 @@ class OpenTracingSpan implements Span {
   }
 
   @Override
-  public Span addTraceTag(String key, String value) {
-    span.setBaggageItem(Objects.requireNonNull(key), value);
-    return this;
-  }
+  public Span addTag(String key, Object value) {
+    Objects.requireNonNull(key, "Key must be set");
+    if (value == null) {
+      return this;
+    }
 
-  @Override
-  public Span addTag(String key, String value) {
-    span.setTag(key, value);
+    span.setTag(key, String.valueOf(value));
     return this;
   }
 
   @Override
   public Span addTag(String key, boolean value) {
-    span.setTag(Objects.requireNonNull(key), value);
+    Objects.requireNonNull(key, "Key must be set");
+    span.setTag(key, value);
     return this;
   }
 
   @Override
-  public Span addTag(String key, long value) {
-    span.setTag(Objects.requireNonNull(key), value);
+  public Span addTag(String key, Number value) {
+    Objects.requireNonNull(key, "Key must be set");
+    span.setTag(key, value);
     return this;
   }
 
   @Override
   public void inject(BiConsumer<String, String> forEachField) {
-    tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, new TextMap() {
+    TextMap maplike = new TextMap() {
       @Override
       public Iterator<Map.Entry<String, String>> iterator() {
         throw new UnsupportedOperationException("iterator");
@@ -82,7 +83,8 @@ class OpenTracingSpan implements Span {
           forEachField.accept(key, value);
         }
       }
-    });
+    };
+    tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, maplike);
   }
 
   @Override

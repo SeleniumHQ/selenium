@@ -92,7 +92,7 @@ import java.util.function.Predicate;
  */
 public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
-  private final DistributedTracer tracer;
+  protected final DistributedTracer tracer;
   private final UUID id;
   private final Injector injector;
   private final Routes routes;

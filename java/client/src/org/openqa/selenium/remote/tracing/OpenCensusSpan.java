@@ -23,33 +23,41 @@ public class OpenCensusSpan implements Span {
   }
 
   @Override
-  public Span addTraceTag(String key, String value) {
-    span.putAttribute(key, AttributeValue.stringAttributeValue(value));
-    return this;
-  }
-
-  @Override
-  public Span addTag(String key, String value) {
-    span.putAttribute(key, AttributeValue.stringAttributeValue(value));
+  public Span addTag(String key, Object value) {
+    Objects.requireNonNull(key, "Key must be set");
+    if (value == null) {
+      return this;
+    }
+    span.putAttribute(key, AttributeValue.stringAttributeValue(String.valueOf(value)));
     return this;
   }
 
   @Override
   public Span addTag(String key, boolean value) {
+    Objects.requireNonNull(key, "Key must be set");
     span.putAttribute(key, AttributeValue.booleanAttributeValue(value));
     return this;
   }
 
   @Override
-  public Span addTag(String key, long value) {
-    span.putAttribute(key, AttributeValue.longAttributeValue(value));
+  public Span addTag(String key, Number value) {
+    Objects.requireNonNull(key, "Key must be set");
+    if (value == null) {
+      return this;
+    }
+
+    if (value instanceof Double || value instanceof Float) {
+      span.putAttribute(key, AttributeValue.doubleAttributeValue(value.doubleValue()));
+    } else {
+      span.putAttribute(key, AttributeValue.longAttributeValue(value.longValue()));
+    }
     return this;
   }
 
   @Override
   public void inject(BiConsumer<String, String> forEachField) {
     TextFormat format = Tracing.getPropagationComponent().getB3Format();
-    format.inject(span.getContext(), null, new TextFormat.Setter<Object>() {
+    format.inject(span.getContext(), new Object(), new TextFormat.Setter<Object>() {
       @Override
       public void put(Object ignored, String key, String value) {
         if (key != null && value != null) {

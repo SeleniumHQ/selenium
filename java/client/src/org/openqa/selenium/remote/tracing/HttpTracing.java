@@ -17,17 +17,40 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import com.google.common.base.Strings;
+
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import io.opentracing.tag.Tags;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
+import java.util.function.Function;
 
 public class HttpTracing {
 
   private HttpTracing() {
     // Utility classes
   }
+
+  public static final Function<HttpRequest, Map<String, String>> AS_MAP = req -> {
+    Map<String, String> builder = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    for (String name : req.getHeaderNames()) {
+      if (Strings.isNullOrEmpty(name)) {
+        continue;
+      }
+
+      String value = req.getHeader(name);
+      if (Strings.isNullOrEmpty(value)) {
+        continue;
+      }
+
+      builder.put(name, value);
+    }
+    return Collections.unmodifiableMap(builder);
+  };
 
   public static void inject(Span span, HttpRequest request) {
     Objects.requireNonNull(request, "Request must be set.");

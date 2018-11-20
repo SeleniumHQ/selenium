@@ -17,38 +17,97 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.JreAppServer;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.simple.SimpleTracer;
 
-import java.io.IOException;
+import io.opencensus.trace.Tracing;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+@RunWith(Parameterized.class)
 public class TracePropagationTest {
 
-  private final DistributedTracer tracer = DistributedTracer.builder()
-      .use(new SimpleTracer())
-      .build();
+  @Parameterized.Parameters(name = "Tracer {0}")
+  public static Collection<DistributedTracer> buildTracers() {
+    return ImmutableSet.of(
+        DistributedTracer.builder().use(new SimpleTracer()).build(),
+        DistributedTracer.builder().use(Tracing.getTracer()).build());
+  }
+
+  @Parameterized.Parameter
+  public DistributedTracer tracer;
 
   @Test
   public void decoratedHttpClientShouldForwardTagsWithoutUserIntervention()
       throws IOException {
-//    AppServer server = new JreAppServer().addHandler(GET, "/one", (req, res) -> {
-//      try (Span parent = HttpTracing.extract(tracer, "test", req)) {
-//        res.setContent("".getBytes(UTF_8));
-//
-//        assertThat(parent).isNotNull();
-//        assertThat(parent.getTraceTag("cheese")).isEqualTo("gouda");
-//      }
-//    });
-//    server.start();
-//
-//    try (Span span = tracer.createSpan("one-hop", null)) {
-//      span.addTraceTag("cheese", "gouda");
-//
-//      URL url = new URL(server.whereIs("/"));
-//      HttpClient client = HttpClient.Factory.createDefault().createClient(url);
-//      client = HttpTracing.decorate(client);
-//
-//      client.execute(new HttpRequest(GET, "/one"));
-//    }
+    // The only way we can test trace propagation is to check for the trace id. Sadly, we can't
+    // know the traceid, since opentracing doesn't expose it. That's okay. We'll do something
+    // tricksy, since we're going to force all our injections to also inject in b3 mode.
+
+    Map<String, String> seen = new HashMap<>();
+
+    AppServer server = new JreAppServer().addHandler(GET, "/one", (req, res) -> {
+      try (Span span  = tracer.createSpan("child", req, HttpTracing.AS_MAP)) {
+        span.inject((key, value) -> seen.put(key.toLowerCase(), value));
+        assertThat(span).isNotNull();
+      }
+      res.setContent("Hello, World!".getBytes(UTF_8));
+    });
+    server.start();
+
+    Map<String, String> sent = new HashMap<>();
+    try (Span span = tracer.createSpan("one-hop", null)) {
+      span.inject((key, value) -> sent.put(key.toLowerCase(), value));
+
+      URL url = new URL(server.whereIs("/"));
+      HttpClient client = HttpClient.Factory.createDefault().createClient(url);
+
+      HttpRequest request = new HttpRequest(GET, "/one");
+      span.inject(request::setHeader);
+      HttpResponse response = client.execute(request);
+
+      assertThat(response.getContentString()).isEqualTo("Hello, World!");
+    }
+
+    Set<String> possibleTraceIdKeys = ImmutableSet.of(
+        // B3 encoding (used by opencensus)
+        "b3",
+        "x-b3-traceid",
+
+        // W3C trace context draft
+        "traceparent",
+        "tracestate",
+
+        // SimpleTracer
+        "trace-id");
+
+    Set<String> sentKeys = Sets.intersection(possibleTraceIdKeys, sent.keySet());
+    Set<String> seenKeys = Sets.intersection(possibleTraceIdKeys, seen.keySet());
+
+    Set<String> bothSeenAndSent = Sets.intersection(sentKeys, seenKeys);
+    assertThat(bothSeenAndSent.isEmpty()).isFalse();
+
+    bothSeenAndSent.forEach(key -> {
+      assertThat(sent.get(key)).isEqualTo(seen.get(key));
+    });
   }
 }

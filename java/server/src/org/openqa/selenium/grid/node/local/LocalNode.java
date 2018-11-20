@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -89,88 +90,134 @@ public class LocalNode extends Node {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return factories.parallelStream().anyMatch(factory -> factory.test(capabilities));
+    try (Span span = tracer.createSpan("node.is-supporting", tracer.getActiveSpan())) {
+      span.addTag("capabilities", capabilities);
+      boolean toReturn = factories.parallelStream().anyMatch(factory -> factory.test(capabilities));
+      span.addTag("match-made", toReturn);
+      return toReturn;
+    }
   }
 
   @Override
   public Optional<Session> newSession(Capabilities capabilities) {
-    if (getCurrentSessionCount() >= maxSessionCount) {
-      return Optional.empty();
+    try (Span span = tracer.createSpan("node.new-session", tracer.getActiveSpan())) {
+      span.addTag("capabilities", capabilities);
+
+      if (getCurrentSessionCount() >= maxSessionCount) {
+        span.addTag("result", "session count exceeded");
+        return Optional.empty();
+      }
+
+      Optional<SessionAndHandler> possibleSession = factories.stream()
+          .filter(factory -> factory.test(capabilities))
+          .map(factory -> factory.apply(capabilities))
+          .filter(Optional::isPresent)
+          .findFirst()
+          .map(Optional::get);
+
+      if (!possibleSession.isPresent()) {
+        span.addTag("result", "No possible session detected");
+        return Optional.empty();
+      }
+
+      SessionAndHandler session = possibleSession.get();
+      span.addTag("session.id", session.getId());
+      span.addTag("session.capabilities", session.getCapabilities());
+      span.addTag("session.uri", session.getUri());
+      currentSessions.put(session.getId(), session);
+
+      // The session we return has to look like it came from the node, since we might be dealing
+      // with a webdriver implementation that only accepts connections from localhost
+      return Optional.of(new Session(session.getId(), externalUri, session.getCapabilities()));
     }
-
-    Optional<SessionAndHandler> possibleSession = factories.stream()
-        .filter(factory -> factory.test(capabilities))
-        .map(factory -> factory.apply(capabilities))
-        .filter(Optional::isPresent)
-        .findFirst()
-        .map(Optional::get);
-
-    if (!possibleSession.isPresent()) {
-      return Optional.empty();
-    }
-
-    SessionAndHandler session = possibleSession.get();
-    currentSessions.put(session.getId(), session);
-
-    // The session we return has to look like it came from the node, since we might be dealing
-    // with a webdriver implementation that only accepts connections from localhost
-    return Optional.of(new Session(session.getId(), externalUri, session.getCapabilities()));
   }
 
   @Override
   protected boolean isSessionOwner(SessionId id) {
-    Objects.requireNonNull(id, "Session ID has not been set");
-    return currentSessions.getIfPresent(id) != null;
+    try (Span span = tracer.createSpan("node.is-session-owner", tracer.getActiveSpan())) {
+      Objects.requireNonNull(id, "Session ID has not been set");
+      span.addTag("session.id", id);
+      boolean toReturn = currentSessions.getIfPresent(id) != null;
+      span.addTag("result", toReturn);
+      return toReturn;
+    }
   }
 
   @Override
   public Session getSession(SessionId id) throws NoSuchSessionException {
     Objects.requireNonNull(id, "Session ID has not been set");
-    SessionAndHandler session = currentSessions.getIfPresent(id);
-    if (session == null) {
-      throw new NoSuchSessionException("Cannot find session with id: " + id);
-    }
 
-    return new Session(session.getId(), externalUri, session.getCapabilities());
+    try (Span span = tracer.createSpan("node.get-session", tracer.getActiveSpan())) {
+      span.addTag("session.id", id);
+      SessionAndHandler session = currentSessions.getIfPresent(id);
+      if (session == null) {
+        span.addTag("result", false);
+        throw new NoSuchSessionException("Cannot find session with id: " + id);
+      }
+
+      span.addTag("session.capabilities", session.getCapabilities());
+      span.addTag("session.uri", session.getUri());
+      return new Session(session.getId(), externalUri, session.getCapabilities());
+    }
   }
 
   @Override
   public void executeWebDriverCommand(HttpRequest req, HttpResponse resp) {
-    // True enough to be good enough
-    if (!req.getUri().startsWith("/session/")) {
-      throw new UnsupportedCommandException(String.format(
-          "Unsupported command: (%s) %s", req.getMethod(), req.getMethod()));
-    }
+    try (Span span = tracer.createSpan("node.webdriver-command", tracer.getActiveSpan())) {
 
-    String[] split = req.getUri().split("/", 4);
-    SessionId id = new SessionId(split[2]);
+      span.addTag("http.method", req.getMethod());
+      span.addTag("http.url", req.getUri());
 
-    SessionAndHandler session = currentSessions.getIfPresent(id);
-    if (session == null) {
-      throw new NoSuchSessionException("Cannot find session with id: " + id);
-    }
-    try {
-      session.getHandler().execute(req, resp);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      // True enough to be good enough
+      if (!req.getUri().startsWith("/session/")) {
+        throw new UnsupportedCommandException(String.format(
+            "Unsupported command: (%s) %s", req.getMethod(), req.getMethod()));
+      }
+
+      String[] split = req.getUri().split("/", 4);
+      SessionId id = new SessionId(split[2]);
+
+      span.addTag("session.id", id);
+
+      SessionAndHandler session = currentSessions.getIfPresent(id);
+      if (session == null) {
+        span.addTag("result", "Session not found");
+        throw new NoSuchSessionException("Cannot find session with id: " + id);
+      }
+
+      span.addTag("session.capabilities", session.getCapabilities());
+      span.addTag("session.uri", session.getUri());
+
+      try {
+        session.getHandler().execute(req, resp);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
     }
   }
 
   @Override
   public void stop(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
-    SessionAndHandler session = currentSessions.getIfPresent(id);
-    if (session == null) {
-      throw new NoSuchSessionException("Cannot find session with id: " + id);
-    }
+    try (Span span = tracer.createSpan("node.stop-session", tracer.getActiveSpan())) {
 
-    currentSessions.invalidate(id);
-    session.stop();
+      span.addTag("session.id", id);
+
+      Objects.requireNonNull(id, "Session ID has not been set");
+      SessionAndHandler session = currentSessions.getIfPresent(id);
+      if (session == null) {
+        throw new NoSuchSessionException("Cannot find session with id: " + id);
+      }
+
+      span.addTag("session.capabilities", session.getCapabilities());
+      span.addTag("session.uri", session.getUri());
+
+      currentSessions.invalidate(id);
+      session.stop();
+    }
   }
 
   @Override
   public NodeStatus getStatus() {
-
     Map<Capabilities, Integer> available = new ConcurrentHashMap<>();
     Map<Capabilities, Integer> used = new ConcurrentHashMap<>();
 

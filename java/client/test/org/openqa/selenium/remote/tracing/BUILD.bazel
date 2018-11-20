@@ -4,7 +4,9 @@ gen_java_tests(
     size = "small",
     srcs = glob(["*.java"]),
     deps = [
+        "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/remote/tracing/simple",
         "//third_party/java/assertj",
         "//third_party/java/guava",

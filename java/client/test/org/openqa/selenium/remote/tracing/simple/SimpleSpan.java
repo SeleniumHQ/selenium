@@ -22,11 +22,14 @@ import com.google.common.collect.ImmutableSet;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class SimpleSpan implements Span {
 
+  private final UUID spanId = UUID.randomUUID();
   private final Map<String, String> baggage = new HashMap<>();
   private final Map<String, Object> tags = new HashMap<>();
   private String operationName;
@@ -127,7 +130,10 @@ public class SimpleSpan implements Span {
 
     @Override
     public Iterable<Map.Entry<String, String>> baggageItems() {
-      return ImmutableSet.copyOf(baggage.entrySet());
+      return ImmutableSet.<Map.Entry<String, String>>builder()
+          .addAll(baggage.entrySet())
+          .add(new AbstractMap.SimpleImmutableEntry<>("span-id", spanId.toString()))
+          .build();
     }
   }
 }

@@ -28,21 +28,14 @@ public interface Span extends Closeable {
   Span activate();
 
   /**
-   * Add a tag that will be transmitted across the wire to allow remote traces
-   * to also have the value. This is equivalent to OpenTracing's concept of
-   * &quot;baggage&quot;.
-   */
-  Span addTraceTag(String key, String value);
-
-  /**
    * Add a piece of metadata to the span, which allows high cardinality data to
    * be added to the span. This data will not be propogated to other spans.
    */
-  Span addTag(String key, String value);
+  Span addTag(String key, Object value);
 
   Span addTag(String key, boolean value);
 
-  Span addTag(String key, long value);
+  Span addTag(String key, Number value);
 
   void inject(BiConsumer<String, String> forEachField);
 
