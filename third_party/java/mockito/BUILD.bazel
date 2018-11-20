@@ -1,0 +1,20 @@
+java_import(
+    name = "mockito-core",
+    tags = [
+        "maven_coordinates=org.mockito:mockito-core:jar:2.18.0",
+    ],
+    licenses = [
+        "notice",  # MIT
+    ],
+    jars = ["mockito-core-2.18.0.jar"],
+    srcjar = "mockito-core-2.18.0-sources.jar",
+    deps = [
+        "//third_party/java/bytebuddy:byte-buddy",
+        "//third_party/java/bytebuddy:byte-buddy-agent",
+        "//third_party/java/objenesis:objenesis",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+)

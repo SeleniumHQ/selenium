@@ -9,5 +9,21 @@ java_import(
   srcjar = 'byte-buddy-1.8.15-sources.jar',
   visibility = [
     '//java/client/src/org/openqa/selenium/remote:__pkg__',
+    "//third_party/java/mockito:mockito-core",
+  ],
+)
+
+java_import(
+  name = 'byte-buddy-agent',
+  jars = [
+    'byte-buddy-agent-1.8.15.jar',
+  ],
+  licenses = [
+    "notice",  # Apache 2
+  ],
+  srcjar = 'byte-buddy-agent-1.8.15-sources.jar',
+  visibility = [
+    '//java/client/src/org/openqa/selenium/remote:__pkg__',
+    "//third_party/java/mockito:mockito-core",
   ],
 )
