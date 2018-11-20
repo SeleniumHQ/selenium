@@ -23,8 +23,7 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Provides access to input devices for advanced user interactions.
     /// </summary>
-    [Obsolete("Use the Actions or ActionBuilder class to simulate mouse and keyboard input.")]
-    public interface IHasInputDevices
+    internal interface IHasInputDevices
     {
         /// <summary>
         /// Gets an <see cref="IKeyboard"/> object for sending keystrokes to the browser.
