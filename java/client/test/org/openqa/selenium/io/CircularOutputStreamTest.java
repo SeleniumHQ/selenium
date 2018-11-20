@@ -15,12 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.internal;
+package org.openqa.selenium.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
