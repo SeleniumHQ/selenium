@@ -127,7 +127,8 @@ bot.locators.findElement = function(target, opt_root) {
       return strategy.single(target[key], root);
     }
   }
-  throw Error('Unsupported locator strategy: ' + key);
+  throw new bot.Error(bot.ErrorCode.INVALID_ARGUMENT,
+                      'Unsupported locator strategy: ' + key);
 };
 
 
@@ -154,5 +155,6 @@ bot.locators.findElements = function(target, opt_root) {
       return strategy.many(target[key], root);
     }
   }
-  throw Error('Unsupported locator strategy: ' + key);
+  throw new bot.Error(bot.ErrorCode.INVALID_ARGUMENT,
+                      'Unsupported locator strategy: ' + key);
 };
