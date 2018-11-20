@@ -161,9 +161,4 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
     }
     handler.get().execute(req, resp);
   }
-
-  protected Span createSpan(String operationName) {
-    Objects.requireNonNull(operationName);
-    return tracer.createSpan(operationName, tracer.getActiveSpan());
-  }
 }

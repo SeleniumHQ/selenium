@@ -1,0 +1,14 @@
+java_import(
+    name = "disruptor",
+    jars = ["disruptor-3.4.2.jar"],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    srcjar = "disruptor-3.4.2-sources.jar",
+    tags = [
+        "maven_coordinates=com.lmax:disruptor:3.4.2",
+    ],
+    visibility = [
+        "//third_party/java/opencensus:__pkg__",
+    ],
+)

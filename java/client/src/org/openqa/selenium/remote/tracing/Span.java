@@ -17,42 +17,35 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import org.openqa.selenium.remote.http.HttpRequest;
-
 import java.io.Closeable;
+import java.util.function.BiConsumer;
 
-public abstract class Span implements Closeable {
-
-  public abstract Span createChild(String operation);
+public interface Span extends Closeable {
 
   /**
    * Allows subclasses to indicate that this is the currently active span
    */
-  public abstract Span activate();
-
-  public abstract Span setName(String name);
+  Span activate();
 
   /**
    * Add a tag that will be transmitted across the wire to allow remote traces
    * to also have the value. This is equivalent to OpenTracing's concept of
    * &quot;baggage&quot;.
    */
-  public abstract Span addTraceTag(String key, String value);
-
-  public abstract String getTraceTag(String key);
+  Span addTraceTag(String key, String value);
 
   /**
    * Add a piece of metadata to the span, which allows high cardinality data to
    * be added to the span. This data will not be propogated to other spans.
    */
-  public abstract Span addTag(String key, String value);
+  Span addTag(String key, String value);
 
-  public abstract Span addTag(String key, boolean value);
+  Span addTag(String key, boolean value);
 
-  public abstract Span addTag(String key, long value);
+  Span addTag(String key, long value);
+
+  void inject(BiConsumer<String, String> forEachField);
 
   @Override
-  public abstract void close();
-
-  abstract void inject(HttpRequest request);
+  void close();
 }

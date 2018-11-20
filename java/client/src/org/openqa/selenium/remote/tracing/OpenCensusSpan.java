@@ -1,105 +1,88 @@
-// Licensed to the Software Freedom Conservancy (SFC) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The SFC licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 package org.openqa.selenium.remote.tracing;
 
-import org.openqa.selenium.remote.http.HttpRequest;
-
 import io.opencensus.trace.AttributeValue;
-import io.opencensus.trace.Tracer;
+import io.opencensus.trace.Tracing;
+import io.opencensus.trace.propagation.TextFormat;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
-class OpenCensusSpan extends Span {
+public class OpenCensusSpan implements Span {
 
   private final io.opencensus.trace.Span span;
-  private final DistributedTracer distributedTracer;
-  private final Tracer tracer;
+  public static final ThreadLocal<Span> ACTIVE = new ThreadLocal<>();
 
-  OpenCensusSpan(
-      DistributedTracer distributedTracer,
-      Tracer tracer,
-      io.opencensus.trace.Span parent,
-      String operation) {
-    this.distributedTracer = Objects.requireNonNull(distributedTracer);
-    this.tracer = Objects.requireNonNull(tracer);
-    this.span = tracer.spanBuilderWithExplicitParent(operation, parent).startSpan();
-    activate();
+  public OpenCensusSpan(io.opencensus.trace.Span span) {
+    this.span = Objects.requireNonNull(span, "Span must be set.");
   }
 
   @Override
   public Span activate() {
-    // TODO: Figure out the right way to do this.
-    throw new UnsupportedOperationException("activate");
-  }
-
-  @Override
-  public Span setName(String name) {
-    Objects.requireNonNull(name, "Name must be set.");
-
-    // TODO: Actually change the name of the span
-
+    ACTIVE.set(this);
     return this;
   }
 
   @Override
   public Span addTraceTag(String key, String value) {
-    span.putAttribute(Objects.requireNonNull(key), AttributeValue.stringAttributeValue(value));
+    span.putAttribute(key, AttributeValue.stringAttributeValue(value));
     return this;
   }
 
   @Override
-  public String getTraceTag(String key) {
-    return span.getContext().getTracestate().get(key);
-  }
-
-  @Override
   public Span addTag(String key, String value) {
-    span.putAttribute(Objects.requireNonNull(key), AttributeValue.stringAttributeValue(value));
+    span.putAttribute(key, AttributeValue.stringAttributeValue(value));
     return this;
   }
 
   @Override
   public Span addTag(String key, boolean value) {
-    span.putAttribute(Objects.requireNonNull(key), AttributeValue.booleanAttributeValue(value));
+    span.putAttribute(key, AttributeValue.booleanAttributeValue(value));
     return this;
   }
 
   @Override
   public Span addTag(String key, long value) {
-    span.putAttribute(Objects.requireNonNull(key), AttributeValue.longAttributeValue(value));
+    span.putAttribute(key, AttributeValue.longAttributeValue(value));
     return this;
   }
 
   @Override
-  public Span createChild(String operation) {
-    Span child = new OpenCensusSpan(distributedTracer, tracer, span, operation);
-    return child.activate();
-  }
-
-  @Override
-  void inject(HttpRequest request) {
-    throw new UnsupportedOperationException("inject");
+  public void inject(BiConsumer<String, String> forEachField) {
+    TextFormat format = Tracing.getPropagationComponent().getB3Format();
+    format.inject(span.getContext(), null, new TextFormat.Setter<Object>() {
+      @Override
+      public void put(Object ignored, String key, String value) {
+        if (key != null && value != null) {
+          forEachField.accept(key, value);
+        }
+      }
+    });
   }
 
   @Override
   public void close() {
+    if (this.equals(ACTIVE.get())) {
+      ACTIVE.set(null);
+    }
     span.end();
-    distributedTracer.remove(this);
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof OpenCensusSpan)) {
+      return false;
+    }
+
+    OpenCensusSpan that = (OpenCensusSpan) o;
+    return Objects.equals(this.span, that.span);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(span);
+  }
+
+  io.opencensus.trace.Span getSpan() {
+    return span;
+  }
 }

@@ -36,7 +36,6 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -95,78 +94,65 @@ public class LocalNode extends Node {
 
   @Override
   public Optional<Session> newSession(Capabilities capabilities) {
-    try (Span span = createSpan("node-new-session")) {
-      span.addTag("capabilities", capabilities.toString());
-      if (getCurrentSessionCount() >= maxSessionCount) {
-        return Optional.empty();
-      }
-
-      Optional<SessionAndHandler> possibleSession = factories.stream()
-          .filter(factory -> factory.test(capabilities))
-          .map(factory -> factory.apply(capabilities))
-          .filter(Optional::isPresent)
-          .findFirst()
-          .map(Optional::get);
-
-      if (!possibleSession.isPresent()) {
-        return Optional.empty();
-      }
-
-      SessionAndHandler session = possibleSession.get();
-      currentSessions.put(session.getId(), session);
-
-      // The session we return has to look like it came from the node, since we might be dealing
-      // with a webdriver implementation that only accepts connections from localhost
-      return Optional.of(new Session(session.getId(), externalUri, session.getCapabilities()));
+    if (getCurrentSessionCount() >= maxSessionCount) {
+      return Optional.empty();
     }
+
+    Optional<SessionAndHandler> possibleSession = factories.stream()
+        .filter(factory -> factory.test(capabilities))
+        .map(factory -> factory.apply(capabilities))
+        .filter(Optional::isPresent)
+        .findFirst()
+        .map(Optional::get);
+
+    if (!possibleSession.isPresent()) {
+      return Optional.empty();
+    }
+
+    SessionAndHandler session = possibleSession.get();
+    currentSessions.put(session.getId(), session);
+
+    // The session we return has to look like it came from the node, since we might be dealing
+    // with a webdriver implementation that only accepts connections from localhost
+    return Optional.of(new Session(session.getId(), externalUri, session.getCapabilities()));
   }
 
   @Override
   protected boolean isSessionOwner(SessionId id) {
-    try (Span span = createSpan("node-is-session-owner")) {
-      span.addTag("session-id", String.valueOf(id));
-      Objects.requireNonNull(id, "Session ID has not been set");
-      return currentSessions.getIfPresent(id) != null;
-    }
+    Objects.requireNonNull(id, "Session ID has not been set");
+    return currentSessions.getIfPresent(id) != null;
   }
 
   @Override
   public Session getSession(SessionId id) throws NoSuchSessionException {
-    try (Span span = createSpan("node-get-session")) {
-      span.addTag("session-id", String.valueOf(id));
-      Objects.requireNonNull(id, "Session ID has not been set");
-      SessionAndHandler session = currentSessions.getIfPresent(id);
-      if (session == null) {
-        throw new NoSuchSessionException("Cannot find session with id: " + id);
-      }
-
-      return new Session(session.getId(), externalUri, session.getCapabilities());
+    Objects.requireNonNull(id, "Session ID has not been set");
+    SessionAndHandler session = currentSessions.getIfPresent(id);
+    if (session == null) {
+      throw new NoSuchSessionException("Cannot find session with id: " + id);
     }
+
+    return new Session(session.getId(), externalUri, session.getCapabilities());
   }
 
   @Override
   public void executeWebDriverCommand(HttpRequest req, HttpResponse resp) {
-    try (Span span = createSpan("node-execute-webdriver-command")) {
-      // True enough to be good enough
-      if (!req.getUri().startsWith("/session/")) {
-        throw new UnsupportedCommandException(String.format(
-            "Unsupported command: (%s) %s", req.getMethod(), req.getMethod()));
-      }
+    // True enough to be good enough
+    if (!req.getUri().startsWith("/session/")) {
+      throw new UnsupportedCommandException(String.format(
+          "Unsupported command: (%s) %s", req.getMethod(), req.getMethod()));
+    }
 
-      String[] split = req.getUri().split("/", 4);
-      SessionId id = new SessionId(split[2]);
+    String[] split = req.getUri().split("/", 4);
+    SessionId id = new SessionId(split[2]);
 
-      span.addTag("session-id", String.valueOf(id));
-
-      SessionAndHandler session = currentSessions.getIfPresent(id);
-      if (session == null) {
-        throw new NoSuchSessionException("Cannot find session with id: " + id);
-      }
-      try {
-        session.getHandler().execute(req, resp);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
+    SessionAndHandler session = currentSessions.getIfPresent(id);
+    if (session == null) {
+      throw new NoSuchSessionException("Cannot find session with id: " + id);
+    }
+    try {
+      session.getHandler().execute(req, resp);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
   }
 

@@ -1,0 +1,9 @@
+prebuilt_jar(
+    name = "disruptor",
+    maven_coords = "com.lmax:disruptor:3.4.2",
+    binary_jar = "disruptor-3.4.2.jar",
+    source_jar = "disruptor-3.4.2-sources.jar",
+    visibility = [
+        "//third_party/java/opencensus:",
+    ],
+)

@@ -17,17 +17,11 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
 import io.opentracing.tag.Tags;
 
-import java.util.AbstractMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.StreamSupport;
 
 public class HttpTracing {
 
@@ -43,41 +37,7 @@ public class HttpTracing {
 
     span.addTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
     span.addTag(Tags.HTTP_URL.getKey(), request.getUri());
-    span.inject(request);
+
+    span.inject(request::setHeader);
   }
-
-  public static Span extract(DistributedTracer tracer, String operationName, HttpRequest request) {
-    Objects.requireNonNull(request, "Request must be set.");
-
-    Iterator<Map.Entry<String, String>> iterator =
-        StreamSupport.stream(request.getHeaderNames().spliterator(), false)
-            .filter(name -> request.getHeader(name) != null)
-            .map(name -> (Map.Entry<String, String>) new AbstractMap.SimpleImmutableEntry<>(
-                name,
-                request.getHeader(name)))
-            .iterator();
-
-    return tracer.extract(operationName, iterator);
-  }
-
-  public static HttpClient decorate(HttpClient existing) {
-
-    return request -> {
-      Span span = DistributedTracer.getInstance().getActiveSpan();
-      inject(span, request);
-
-      try {
-        HttpResponse response = existing.execute(request);
-
-        if (span != null) {
-          span.addTag(Tags.HTTP_STATUS.getKey(), response.getStatus());
-        }
-
-        return response;
-      } catch (Throwable throwable) {
-        throw throwable;
-      }
-    };
-  }
-
 }
