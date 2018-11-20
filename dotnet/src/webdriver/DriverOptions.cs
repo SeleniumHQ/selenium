@@ -21,6 +21,7 @@ using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace OpenQA.Selenium
 {
@@ -184,6 +185,26 @@ namespace OpenQA.Selenium
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the specific browser driver.
         /// </summary>
+        /// <param name="optionName">The name of the capability to add.</param>
+        /// <param name="optionValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalOption(string, object)"/>
+        /// where <paramref name="optionName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="optionValue"/>.
+        /// </remarks>
+        public virtual void AddAdditionalOption(string optionName, object optionValue)
+        {
+            this.ValidateCapabilityName(optionName);
+            this.additionalCapabilities[optionName] = optionValue;
+        }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the specific browser driver.
+        /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
         /// <exception cref="ArgumentException">
@@ -194,6 +215,7 @@ namespace OpenQA.Selenium
         /// where <paramref name="capabilityName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// </remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the browser-specific method for adding additional options")]
         public abstract void AddAdditionalCapability(string capabilityName, object capabilityValue);
 
         /// <summary>
@@ -289,6 +311,30 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Validates the name of the capability to verify it is not a capability
+        /// for which a type-safe property or method already exists.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to validate.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        protected void ValidateCapabilityName(string capabilityName)
+        {
+            if (string.IsNullOrEmpty(capabilityName))
+            {
+                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
+            }
+
+            if (this.IsKnownCapabilityName(capabilityName))
+            {
+                string typeSafeOptionName = this.GetTypeSafeOptionName(capabilityName);
+                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
+                throw new ArgumentException(message, "capabilityName");
+            }
+        }
+
+        /// <summary>
         /// Adds a known capability to the list of known capabilities and associates it
         /// with the type-safe property name of the options class to be used instead.
         /// </summary>
@@ -348,8 +394,8 @@ namespace OpenQA.Selenium
         /// Generates the current options as a capabilities object for further processing.
         /// </summary>
         /// <param name="isSpecificationCompliant">A value indicating whether to generate capabilities compliant with the W3C WebDriver Specification.</param>
-        /// <returns>A <see cref="DesiredCapabilities"/> object representing the current options for further processing.</returns>
-        protected DesiredCapabilities GenerateDesiredCapabilities(bool isSpecificationCompliant)
+        /// <returns>A <see cref="IWritableCapabilities"/> object representing the current options for further processing.</returns>
+        protected IWritableCapabilities GenerateDesiredCapabilities(bool isSpecificationCompliant)
         {
             DesiredCapabilities capabilities = new DesiredCapabilities();
             if (!string.IsNullOrEmpty(this.browserName))
@@ -426,6 +472,11 @@ namespace OpenQA.Selenium
                 {
                     capabilities.SetCapability(CapabilityType.Proxy, proxyCapability);
                 }
+            }
+
+            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
+            {
+                capabilities.SetCapability(pair.Key, pair.Value);
             }
 
             return capabilities;
