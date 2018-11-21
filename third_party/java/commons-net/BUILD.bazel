@@ -1,0 +1,17 @@
+
+java_import(
+    name = "commons-net",
+    tags = [
+        "maven_coordinates=commons-net:commons-net:jar:3.6",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["commons-net-3.6.jar"],
+    srcjar = "commons-net-3.6-sources.jar",
+    deps = [
+    ],
+    visibility = [
+        "//third_party/java/htmlunit:__pkg__",
+    ],
+)

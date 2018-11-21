@@ -1,0 +1,68 @@
+java_import(
+    name = "htmlunit",
+    tags = [
+        "maven_coordinates=net.sourceforge.htmlunit:htmlunit:jar:2.33",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ], 
+    jars = ["htmlunit-2.33.jar"],
+    srcjar = "htmlunit-2.33-sources.jar",
+    deps = [
+        ":htmlunit-core-js",
+        ":neko-htmlunit",
+        ":htmlunit-cssparser",
+        "//third_party/java/commons:commons-lang3",
+        "//third_party/java/commons:commons-text",
+        "//third_party/java/commons-io:commons-io",
+        "//third_party/java/commons-logging:commons-logging",
+        "//third_party/java/commons-net:commons-net",
+        "//third_party/java/httpcomponents:httpmime",
+        "//third_party/java/websocket:websocket-client",
+        "//third_party/java/xalan:xalan"
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+        "//third_party/java/selenium:__pkg__",
+    ],
+)
+
+java_import(
+    name = "htmlunit-core-js",
+    tags = [
+        "maven_coordinates=net.sourceforge.htmlunit:htmlunit-core-js:jar:2.33",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["htmlunit-core-js-2.33.jar"],
+    srcjar = "htmlunit-core-js-2.33-sources.jar",
+)
+
+java_import(
+    name = "neko-htmlunit",
+    tags = [
+        "maven_coordinates=net.sourceforge.htmlunit:neko-htmlunit:jar:2.33",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["neko-htmlunit-2.33.jar"],
+    srcjar = "neko-htmlunit-2.33-sources.jar",
+    deps = [
+        "//third_party/java/xerces:xercesImpl"
+    ],
+)
+
+java_import(
+    name = "htmlunit-cssparser",
+    tags = [
+        "maven_coordinates=net.sourceforge.htmlunit:htmlunit-cssparser:jar:1.2.0",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["htmlunit-cssparser-1.2.0.jar"],
+    srcjar = "htmlunit-cssparser-1.2.0-sources.jar",
+)

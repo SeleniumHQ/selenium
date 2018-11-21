@@ -11,6 +11,7 @@ java_import(
     jars = ["javax.servlet-api-3.1.0.jar"],
     srcjar = "javax.servlet-api-3.1.0-sources.jar",
     visibility = [
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa:__subpackages__",
         "//third_party/java/jetty:__pkg__",
     ],

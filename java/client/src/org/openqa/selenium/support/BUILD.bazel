@@ -1,0 +1,52 @@
+load("//java:version.bzl", "SE_VERSION")
+
+java_library(
+    name = "support",
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-support:" + SE_VERSION,
+    ],
+    srcs = [
+        "Color.java",
+        "Colors.java",
+        "ThreadGuard.java",
+    ],
+    deps = [
+        ":page-factory",
+        "//java/client/src/org/openqa/selenium/support/events:events",
+        "//java/client/src/org/openqa/selenium/support/ui:clock",
+        "//java/client/src/org/openqa/selenium/support/ui:components",
+        "//java/client/src/org/openqa/selenium/support/ui:elements",
+        "//java/client/src/org/openqa/selenium/support/ui:wait",
+        "//java/client/src/org/openqa/selenium:selenium",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)
+
+java_library(
+    name = "page-factory",
+    srcs = [
+        "AbstractFindByBuilder.java",
+        "ByIdOrName.java",
+        "CacheLookup.java",
+        "FindAll.java",
+        "FindBy.java",
+        "FindBys.java",
+        "How.java",
+        "PageFactory.java",
+        "PageFactoryFinder.java",
+    ] + glob([
+        "pagefactory/*.java",
+        "pagefactory/internal/*.java",
+    ]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/support/ui:clock",
+        "//java/client/src/org/openqa/selenium/support/ui:components",
+        "//third_party/java/guava:guava",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)

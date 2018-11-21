@@ -1,0 +1,38 @@
+java_import(
+    name = "serializer",
+    tags = [
+        "maven_coordinates=xalan:serializer:jar:2.7.2",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["serializer-2.7.2.jar"],
+    srcjar = "serializer-2.7.2-sources.jar",
+    deps = [
+        "//third_party/java/xerces:xercesImpl",
+        "//third_party/java/xml-apis:xml-apis",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+)
+
+java_import(
+    name = "xalan",
+    tags = [
+        "maven_coordinates=xalan:xalan:jar:2.7.2",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["xalan-2.7.2.jar"],
+    srcjar = "xalan-2.7.2-sources.jar",
+    deps = [
+        ":serializer",
+        "//third_party/java/xerces:xercesImpl",
+    ],
+    visibility = [
+        "//third_party/java/htmlunit:__pkg__",
+    ],
+)

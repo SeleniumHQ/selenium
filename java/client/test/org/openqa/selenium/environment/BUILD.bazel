@@ -1,0 +1,19 @@
+java_library(
+    name = "environment",
+    srcs = glob([
+        "*.java",
+        "webserver/*.java"
+    ], exclude = ["**/*Test.java", "**/*TestBase.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/test/org/openqa/selenium/testing:helpers",
+        "//third_party/java/guava:guava",
+        "//third_party/java/jetty:jetty",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+)

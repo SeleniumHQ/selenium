@@ -1,0 +1,17 @@
+
+java_import(
+    name = "commons-codec",
+    tags = [
+        "maven_coordinates=commons-codec:commons-codec:jar:1.10",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["commons-codec-1.10.jar"],
+    srcjar = "commons-codec-1.10-sources.jar",
+    deps = [
+    ],
+    visibility = [
+        "//third_party/java/httpcomponents:__pkg__",
+    ],
+)

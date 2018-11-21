@@ -1,0 +1,21 @@
+java_import(
+    name = "htmlunit-driver",
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:htmlunit-driver:jar:2.32.2-SNAPSHOT",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+
+    ],
+    jars = ["htmlunit-driver-2.32.2-SNAPSHOT.jar"],
+    srcjar = "htmlunit-driver-2.32.2-SNAPSHOT-sources.jar",
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/src/org/openqa/selenium/support:support",
+        "//third_party/java/htmlunit:htmlunit",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+)

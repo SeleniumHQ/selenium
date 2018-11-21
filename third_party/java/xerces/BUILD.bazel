@@ -1,0 +1,19 @@
+
+java_import(
+    name = "xercesImpl",
+    tags = [
+        "maven_coordinates=xerces:xercesImpl:jar:2.11.0",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["xercesImpl-2.11.0.jar"],
+    srcjar = "xercesImpl-2.11.0-sources.jar",
+    deps = [
+        "//third_party/java/xml-apis:xml-apis",
+    ],
+    visibility = [
+        "//third_party/java/htmlunit:__pkg__",
+        "//third_party/java/xalan:__pkg__",
+    ],
+)
