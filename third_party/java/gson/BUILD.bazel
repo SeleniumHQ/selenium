@@ -1,0 +1,18 @@
+java_import(
+    name = "gson",
+    tags = [
+        "maven_coordinates=com.google.code.gson:gson:jar:2.8.4",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["gson-2.8.4.jar"],
+    srcjar = "gson-2.8.4-sources.jar",
+    deps = [
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+        "//third_party/java/github:__pkg__",
+    ],
+)

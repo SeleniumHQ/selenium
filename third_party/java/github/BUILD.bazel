@@ -1,0 +1,18 @@
+java_import(
+    name = "org.eclipse.egit.github.core",
+    tags = [
+        "maven_coordinates=org.eclipse.mylyn.github:org.eclipse.egit.github.core:jar:2.1.5",
+    ],
+    licenses = [
+        "reciprocal",  # EPL
+    ],
+    jars = ["org.eclipse.egit.github.core-2.1.5.jar"],
+    srcjar = "org.eclipse.egit.github.core-2.1.5.jar",
+    deps = [
+        "//third_party/java/gson:gson",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+)

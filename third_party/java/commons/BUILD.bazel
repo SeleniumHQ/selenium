@@ -1,13 +1,44 @@
 java_import(
-  name = 'commons-exec',
-  licenses = [
-    "notice",  # Apache 2
-  ],
-  jars = [
-    'commons-exec-1.3.jar',
-  ],
-  srcjar = 'commons-exec-1.3-sources.jar',
-  visibility = [
-    '//java/client/src/org/openqa/selenium/os:__pkg__',
-  ],
+    name = "commons-exec",
+    tags = [
+        "maven_coordinates=org.apache.commons:commons-exec:jar:1.3",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ['commons-exec-1.3.jar'],
+    srcjar = 'commons-exec-1.3-sources.jar',
+    visibility = [
+        "//java/client/src/org/openqa/selenium/os:__pkg__",
+    ],
+)
+
+java_import(
+    name = "commons-lang3",
+    tags = [
+        "maven_coordinates=org.apache.commons:commons-lang3:jar:3.7",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["commons-lang3-3.7.jar"],
+    srcjar = "commons-lang3-3.7-sources.jar",
+    visibility = [
+        "//third_party/java/htmlunit:__pkg__"
+    ],
+)
+
+java_import(
+    name = "commons-text",
+    tags = [
+        "maven_coordinates=org.apache.commons:commons-text:jar:1.1",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["commons-text-1.1.jar"],
+    srcjar = "commons-text-1.1-sources.jar",
+    visibility = [
+        "//third_party/java/htmlunit:__pkg__"
+    ],
 )

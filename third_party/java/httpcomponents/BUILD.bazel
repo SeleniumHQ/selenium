@@ -1,0 +1,52 @@
+java_import(
+    name = "httpclient",
+    tags = [
+        "maven_coordinates=org.apache.httpcomponents:httpclient:jar:4.5.5",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["httpclient-4.5.5.jar"],
+    srcjar = "httpclient-4.5.5-sources.jar",
+    deps = [
+        ":httpcore",
+        "//third_party/java/commons-codec:commons-codec",
+        "//third_party/java/commons-logging:commons-logging",
+    ],
+    visibility = [
+    ],
+)
+
+java_import(
+    name = "httpcore",
+    tags = [
+        "maven_coordinates=org.apache.httpcomponents:httpcore:jar:4.4.9",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["httpcore-4.4.9.jar"],
+    srcjar = "httpcore-4.4.9-sources.jar",
+    deps = [
+    ],
+    visibility = [
+    ],
+)
+
+java_import(
+    name = "httpmime",
+    tags = [
+        "maven_coordinates=org.apache.httpcomponents:httpmime:jar:4.5.5",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    jars = ["httpmime-4.5.5.jar"],
+    srcjar = "httpmime-4.5.5-sources.jar",
+    deps = [
+        ":httpclient",
+    ],
+    visibility = [
+        "//third_party/java/htmlunit:__pkg__",
+    ],
+)

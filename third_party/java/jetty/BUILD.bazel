@@ -24,6 +24,7 @@ java_library(
         ":jetty-xml-repacked",
     ],
     visibility = [
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa:__subpackages__",
     ],
 )
@@ -75,7 +76,7 @@ java_import(
         ":jetty-io",
     ],
     visibility = [
-        #        "//third_party/java/websocket:",
+        "//third_party/java/websocket:__pkg__",
     ],
 )
 
@@ -105,7 +106,7 @@ java_import(
         ":jetty-util",
     ],
     visibility = [
-        #        "//third_party/java/websocket:",
+        "//third_party/java/websocket:__pkg__",
     ],
 )
 
@@ -177,7 +178,7 @@ java_import(
         "//third_party/java/servlet:javax.servlet-api",
     ],
     visibility = [
-        #        "//third_party/java/websocket:",
+        "//third_party/java/websocket:__pkg__",
     ],
 )
 
@@ -193,6 +194,6 @@ java_import(
         ":jetty-util",
     ],
     visibility = [
-        #        "//third_party/java/websocket:",
+        "//third_party/java/websocket:__pkg__",
     ],
 )
