@@ -1,0 +1,17 @@
+load("//java:version.bzl", "SE_VERSION")
+
+java_library(
+    name = "edge",
+    tags = [
+      "maven_coordinates=org.seleniumhq.selenium:selenium-edge-driver:" + SE_VERSION,
+    ],
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//third_party/java/guava:guava",
+        "//third_party/java/service",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)

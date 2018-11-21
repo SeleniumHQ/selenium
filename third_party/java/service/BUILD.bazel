@@ -10,6 +10,7 @@ java_library(
         "notice",  # Apache 2
     ],
     visibility = [
+        "//java/client/src/org/openqa/selenium:__subpackages__",
         "//java/server/src/org/openqa/selenium:__subpackages__",
     ],
 )
