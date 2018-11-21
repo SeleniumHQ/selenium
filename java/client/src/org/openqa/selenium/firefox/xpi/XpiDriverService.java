@@ -284,7 +284,7 @@ public class XpiDriverService extends FirefoxDriverService {
   private static Extension loadDefaultExtension() {
     return new ClasspathExtension(
         FirefoxProfile.class,
-        "/" + FirefoxProfile.class.getPackage().getName().replace(".", "/") + "/webdriver.xpi");
+        "/" + XpiDriverService.class.getPackage().getName().replace(".", "/") + "/webdriver.xpi");
   }
 
   /**
