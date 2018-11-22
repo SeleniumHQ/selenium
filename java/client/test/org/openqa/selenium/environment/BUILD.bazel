@@ -10,6 +10,10 @@ java_library(
             "**/*TestBase.java",
         ],
     ),
+    data = [
+        "//common/src/web",
+        "//third_party/closure:goog",
+    ],
     visibility = [
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",
