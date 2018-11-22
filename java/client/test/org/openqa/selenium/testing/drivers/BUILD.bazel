@@ -1,15 +1,22 @@
+java_library(
+    name = "drivers",
+    exports = [
+        ":browser",
+        ":drivers-lib",
+    ],
+    visibility = [
+        "//java/client/test/org/openqa/selenium/testing:__pkg__",
+    ],
+)
+
 java_library(name = "browser",
     srcs = [
         "Browser.java",
     ],
-    visibility = [
-        "//java/client/test:__subpackages__",
-        "//java/server/test:__subpackages__",
-    ],
 )
 
 java_library(
-    name = "drivers",
+    name = "drivers-lib",
     srcs = glob([
         "*Driver.java",
         "*Supplier.java",
@@ -21,48 +28,19 @@ java_library(
     ],
     deps = [
         ":browser",
-        "//java/client/src/org/openqa/selenium:selenium",
-        "//java/client/src/org/openqa/selenium/chrome:chrome",
-        "//java/client/src/org/openqa/selenium/firefox:firefox",
-        "//java/client/src/org/openqa/selenium/ie:ie",
-        "//java/client/src/org/openqa/selenium/opera:opera",
-        "//java/client/src/org/openqa/selenium/safari:safari",
-        "//java/client/src/org/openqa/selenium/remote:remote",
-        "//java/client/src/org/openqa/selenium/support:support",
-        "//java/client/src/org/openqa/selenium/support/ui:wait",
-        "//java/client/test/org/openqa/selenium:helpers",
-        "//java/client/test/org/openqa/selenium/testing:annotations",
-        "//java/client/test/org/openqa/selenium/testing:helpers",
-        # "//java/server/src/org/openqa/grid/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/opera",
+        "//java/client/src/org/openqa/selenium/safari",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium",
+        "//java/client/test/org/openqa/selenium/testing",
         "//third_party/java/github:org.eclipse.egit.github.core",
-        "//third_party/java/guava:guava",
+        "//third_party/java/guava",
         "//third_party/java/selenium:htmlunit-driver",
-        "//third_party/java/junit:junit",
-    ],
-    visibility = [
-        "//java/client/test:__subpackages__",
-        "//java/server/test:__subpackages__",
+        "//third_party/java/junit",
     ],
 )
 
-#export_file(name = 'firebug',
-#  src = '//third_party/firebug:firebug',
-#  out = 'firebug-1.5.0-fx.xpi',
-#)
-#
-#java_library(name = 'small-tests',
-#  srcs = [
-#    'IgnoreComparatorUnitTest.java',
-#  ],
-#  deps = [
-#    ':drivers',
-#    '//java/client/src/org/openqa/selenium:selenium',
-#    '//java/client/test/org/openqa/selenium/testing:annotations',
-#    '//third_party/java/guava:guava',
-#    '//third_party/java/junit:junit',
-#    '//third_party/java/mockito:mockito-core',
-#  ],
-#  visibility = [
-#    '//java/client/test/org/openqa/selenium:small-tests',
-#  ]
-#)

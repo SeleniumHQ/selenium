@@ -24,7 +24,7 @@ java_library(
         ":jetty-xml-repacked",
     ],
     visibility = [
-        "//java/client/test:__subpackages__",
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa:__subpackages__",
     ],
 )

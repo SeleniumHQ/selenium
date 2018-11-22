@@ -10,10 +10,8 @@ java_import(
     srcjar = "httpclient-4.5.5-sources.jar",
     deps = [
         ":httpcore",
-        "//third_party/java/commons-codec:commons-codec",
-        "//third_party/java/commons-logging:commons-logging",
-    ],
-    visibility = [
+        "//third_party/java/commons-codec",
+        "//third_party/java/commons-logging",
     ],
 )
 
@@ -27,10 +25,6 @@ java_import(
     ],
     jars = ["httpcore-4.4.9.jar"],
     srcjar = "httpcore-4.4.9-sources.jar",
-    deps = [
-    ],
-    visibility = [
-    ],
 )
 
 java_import(
