@@ -38,6 +38,7 @@ public class InProject {
   public static Path locate(String path) {
     // Find the rakefile first
     Path dir = Paths.get(".").toAbsolutePath();
+    Path pwd = dir;
     while (dir != null && !dir.equals(dir.getParent())) {
       Path rakefile = dir.resolve("Rakefile");
       if (Files.exists(rakefile)) {
@@ -45,7 +46,7 @@ public class InProject {
       }
       dir = dir.getParent();
     }
-    Preconditions.checkNotNull(dir, "Unable to find root of project");
+    Preconditions.checkNotNull(dir, "Unable to find root of project in " + pwd);
     dir = dir.normalize();
 
     Path needle = dir.resolve(path);
