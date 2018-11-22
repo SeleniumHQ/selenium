@@ -1,3 +1,10 @@
+load("//java:bazel-rules.bzl", "gen_java_tests")
+
+TEST_SRCS = glob([
+    "**/*Test.java",
+    "**/*TestBase.java",
+])
+
 java_library(
     name = "environment",
     srcs = glob(
@@ -5,15 +12,13 @@ java_library(
             "*.java",
             "webserver/*.java",
         ],
-        exclude = [
-            "**/*Test.java",
-            "**/*TestBase.java",
-        ],
+        exclude = TEST_SRCS,
     ),
     data = [
+        "webserver/keystore",
         "//common/src/web",
         "//third_party/closure:goog",
-    ],
+    ] + glob(["webserver/*.java"]),
     visibility = [
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",
@@ -28,9 +33,25 @@ java_library(
 )
 
 java_binary(
-    name = "webserver",
+    name = "server",
     main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
     runtime_deps = [
         ":environment",
+    ],
+)
+
+gen_java_tests(
+    size = "large",
+    srcs = TEST_SRCS,
+    jvm_flags = [
+        "-Dselenium.browser=ff",
+    ],
+    deps = [
+        ":environment",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//third_party/java/junit",
     ],
 )
