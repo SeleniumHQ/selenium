@@ -1,3 +1,4 @@
+try-import .bazelrc.local
 
 # We target java 8 by default
 build --javacopt "-source 8"
