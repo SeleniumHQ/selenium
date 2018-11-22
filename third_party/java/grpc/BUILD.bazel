@@ -1,11 +1,11 @@
 java_import(
     name = "grpc-context",
-    tags = ["maven_coordinates=io.grpc:grpc-context:jar:1.14.0"],
+    jars = ["grpc-context-1.14.0.jar"],
     licenses = [
         "notice",  # Apache 2
     ],
-    jars = ["grpc-context-1.14.0.jar"],
     srcjar = "grpc-context-1.14.0-sources.jar",
+    tags = ["maven_coordinates=io.grpc:grpc-context:jar:1.14.0"],
     visibility = [
         "//third_party/java/opencensus:__pkg__",
     ],

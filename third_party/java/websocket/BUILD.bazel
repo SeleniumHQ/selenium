@@ -1,47 +1,47 @@
 java_import(
     name = "websocket-api",
-    tags = [
-        "maven_coordinates=org.eclipse.jetty.websocket:websocket-api:jar:9.4.8.v20180619",
-    ],
+    jars = ["websocket-api-9.4.8.v20180619.jar"],
     licenses = [
         "reciprocal",  # EPL
     ],
-    jars = ["websocket-api-9.4.8.v20180619.jar"],
     srcjar = "websocket-api-9.4.8.v20180619-sources.jar",
+    tags = [
+        "maven_coordinates=org.eclipse.jetty.websocket:websocket-api:jar:9.4.8.v20180619",
+    ],
 )
 
 java_import(
     name = "websocket-client",
-    tags = [
-        "maven_coordinates=org.eclipse.jetty.websocket:websocket-client:jar:9.4.8.v20180619",
-    ],
+    jars = ["websocket-client-9.4.8.v20180619.jar"],
     licenses = [
         "reciprocal",  # EPL
     ],
-    jars = ["websocket-client-9.4.8.v20180619.jar"],
     srcjar = "websocket-client-9.4.8.v20180619-sources.jar",
+    tags = [
+        "maven_coordinates=org.eclipse.jetty.websocket:websocket-client:jar:9.4.8.v20180619",
+    ],
+    visibility = [
+        "//third_party/java/htmlunit:__pkg__",
+    ],
     deps = [
         ":websocket-common",
         "//third_party/java/jetty:jetty-client",
         "//third_party/java/jetty:jetty-io",
         "//third_party/java/jetty:jetty-util",
-        "//third_party/java/jetty:jetty-xml"
-    ],
-    visibility = [
-        "//third_party/java/htmlunit:__pkg__",
+        "//third_party/java/jetty:jetty-xml",
     ],
 )
 
 java_import(
     name = "websocket-common",
-    tags = [
-        "maven_coordinates=org.eclipse.jetty.websocket:websocket-common:jar:9.4.8.v20180619",
-    ],
+    jars = ["websocket-common-9.4.8.v20180619.jar"],
     licenses = [
         "reciprocal",  # EPL
     ],
-    jars = ["websocket-common-9.4.8.v20180619.jar"],
     srcjar = "websocket-common-9.4.8.v20180619-sources.jar",
+    tags = [
+        "maven_coordinates=org.eclipse.jetty.websocket:websocket-common:jar:9.4.8.v20180619",
+    ],
     deps = [
         ":websocket-api",
         "//third_party/java/jetty:jetty-io",

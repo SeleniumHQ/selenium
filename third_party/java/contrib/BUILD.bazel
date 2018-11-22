@@ -1,18 +1,18 @@
 java_import(
     name = "opentracing-tracerresolver",
-    tags = [
-        "maven_coordinates=io.opentracing.contrib:opentracing-tracerresolver:jar:0.1.5",
-    ],
+    jars = ["opentracing-tracerresolver-0.1.5.jar"],
     licenses = [
         "notice",  # Apache 2
     ],
-    jars = ["opentracing-tracerresolver-0.1.5.jar"],
     srcjar = "opentracing-tracerresolver-0.1.5-sources.jar",
-    deps = [
-        "//third_party/java/opentracing:opentracing-api",
-        "//third_party/java/opentracing:opentracing-util",
+    tags = [
+        "maven_coordinates=io.opentracing.contrib:opentracing-tracerresolver:jar:0.1.5",
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium/remote/tracing:__pkg__",
+    ],
+    deps = [
+        "//third_party/java/opentracing:opentracing-api",
+        "//third_party/java/opentracing:opentracing-util",
     ],
 )

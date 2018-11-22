@@ -14,15 +14,15 @@ SMALL_TESTS = [
 ]
 
 gen_java_tests(
-    srcs = SMALL_TESTS,
     size = "small",
+    srcs = SMALL_TESTS,
     deps = [
         "//java/client/src/org/openqa/selenium",
         "//third_party/java/assertj",
         "//third_party/java/guava",
         "//third_party/java/junit",
         "//third_party/java/mockito:mockito-core",
-  ],
+    ],
 )
 
 java_library(
@@ -36,6 +36,10 @@ java_library(
         "WaitingConditions.java",
         "WrappedWebElement.java",
     ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
@@ -44,9 +48,4 @@ java_library(
         "//third_party/java/guava",
         "//third_party/java/junit",
     ],
-    visibility = [
-        "//java/client/test:__subpackages__",
-        "//java/server/test:__subpackages__",
-    ],
 )
-

@@ -1,6 +1,10 @@
 java_library(
     name = "web",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
     exports = [
         # Part of the CommandHandler API
         "//java/client/src/org/openqa/selenium/remote",
@@ -9,9 +13,5 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/injector",
         "//third_party/java/guava",
-    ],
-    visibility = [
-        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
 )

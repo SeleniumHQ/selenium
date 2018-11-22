@@ -1,15 +1,15 @@
 java_library(
     name = "remote",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
     exports = [
         "//java/server/src/org/openqa/selenium/grid/distributor",
     ],
     deps = [
-        "//java/server/src/org/openqa/selenium/grid/distributor",
         "//java/client/src/org/openqa/selenium/remote/tracing",
-    ],
-    visibility = [
-        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/src/org/openqa/selenium/grid/distributor",
     ],
 )

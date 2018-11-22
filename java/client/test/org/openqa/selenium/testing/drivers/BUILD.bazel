@@ -1,15 +1,16 @@
 java_library(
     name = "drivers",
+    visibility = [
+        "//java/client/test/org/openqa/selenium/testing:__pkg__",
+    ],
     exports = [
         ":browser",
         ":drivers-lib",
     ],
-    visibility = [
-        "//java/client/test/org/openqa/selenium/testing:__pkg__",
-    ],
 )
 
-java_library(name = "browser",
+java_library(
+    name = "browser",
     srcs = [
         "Browser.java",
     ],
@@ -32,15 +33,14 @@ java_library(
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/opera",
-        "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium",
         "//java/client/test/org/openqa/selenium/testing",
         "//third_party/java/github:org.eclipse.egit.github.core",
         "//third_party/java/guava",
-        "//third_party/java/selenium:htmlunit-driver",
         "//third_party/java/junit",
+        "//third_party/java/selenium:htmlunit-driver",
     ],
 )
-

@@ -1,6 +1,10 @@
 java_library(
     name = "data",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
     exports = [
         # From public API of Session
         "//java/client/src/org/openqa/selenium/remote",
@@ -8,9 +12,5 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium/remote",
         "//third_party/java/guava",
-    ],
-    visibility = [
-        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
 )

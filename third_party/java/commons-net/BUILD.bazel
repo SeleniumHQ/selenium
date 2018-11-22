@@ -1,14 +1,13 @@
-
 java_import(
     name = "commons-net",
-    tags = [
-        "maven_coordinates=commons-net:commons-net:jar:3.6",
-    ],
+    jars = ["commons-net-3.6.jar"],
     licenses = [
         "notice",  # Apache 2
     ],
-    jars = ["commons-net-3.6.jar"],
     srcjar = "commons-net-3.6-sources.jar",
+    tags = [
+        "maven_coordinates=commons-net:commons-net:jar:3.6",
+    ],
     visibility = [
         "//third_party/java/htmlunit:__pkg__",
     ],

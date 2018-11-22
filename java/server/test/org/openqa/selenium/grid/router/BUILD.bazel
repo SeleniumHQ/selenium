@@ -1,8 +1,8 @@
 load("//java:bazel-rules.bzl", "gen_java_tests")
 
 gen_java_tests(
-    srcs = glob(["*.java"]),
     size = "small",
+    srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing",
         "//java/server/src/org/openqa/selenium/grid/config",

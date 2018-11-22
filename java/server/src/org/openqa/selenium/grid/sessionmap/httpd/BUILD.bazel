@@ -1,6 +1,9 @@
 java_library(
     name = "httpd",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__pkg__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing",
         "//java/server/src/org/openqa/selenium/cli",
@@ -10,8 +13,5 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
         "//third_party/java/beust:jcommander",
         "//third_party/java/service",
-    ],
-    visibility = [
-        "//java/server/src/org/openqa/selenium/grid:__pkg__",
     ],
 )

@@ -1,18 +1,18 @@
 java_import(
     name = "junit",
-    tags = [
-        "maven_coordinates=junit:junit:jar:4.12",
-    ],
+    jars = ["junit-4.12.jar"],
     licenses = [
         "reciprocal",  # EPL
     ],
-    jars = ["junit-4.12.jar"],
     srcjar = "junit-4.12-sources.jar",
-    deps = [
-        "//third_party/java/hamcrest:hamcrest-core",
+    tags = [
+        "maven_coordinates=junit:junit:jar:4.12",
     ],
     visibility = [
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",
+    ],
+    deps = [
+        "//third_party/java/hamcrest:hamcrest-core",
     ],
 )

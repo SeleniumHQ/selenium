@@ -1,20 +1,20 @@
 java_binary(
     name = "selenium",
-    main_class = "org.openqa.selenium.grid.Main",
     srcs = glob(["*.java"]),
+    main_class = "org.openqa.selenium.grid.Main",
+    visibility = [
+    ],
     deps = [
         "//java/server/src/org/openqa/selenium/cli",
-#        "//java/client/src/org/openqa/selenium/chrome:chrome",
-#        "//java/client/src/org/openqa/selenium/edge:edge",
-#        "//java/client/src/org/openqa/selenium/firefox:firefox",
-#        "//java/client/src/org/openqa/selenium/ie:ie",
-#        "//java/client/src/org/openqa/selenium/safari:safari",
-#        "//java/server/src/org/openqa/selenium/grid/commands:commands",
-#        "//java/server/src/org/openqa/selenium/grid/distributor/httpd:httpd",
-#        "//java/server/src/org/openqa/selenium/grid/node/httpd:httpd",
-#        "//java/server/src/org/openqa/selenium/grid/router/httpd:httpd",
+        #        "//java/client/src/org/openqa/selenium/chrome:chrome",
+        #        "//java/client/src/org/openqa/selenium/edge:edge",
+        #        "//java/client/src/org/openqa/selenium/firefox:firefox",
+        #        "//java/client/src/org/openqa/selenium/ie:ie",
+        #        "//java/client/src/org/openqa/selenium/safari:safari",
+        #        "//java/server/src/org/openqa/selenium/grid/commands:commands",
+        #        "//java/server/src/org/openqa/selenium/grid/distributor/httpd:httpd",
+        #        "//java/server/src/org/openqa/selenium/grid/node/httpd:httpd",
+        #        "//java/server/src/org/openqa/selenium/grid/router/httpd:httpd",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd",
-    ],
-    visibility = [
     ],
 )
