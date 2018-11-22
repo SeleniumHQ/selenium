@@ -36,6 +36,11 @@ public class InProject {
    *         be found
    */
   public static Path locate(String path) {
+    Path actualPath = Paths.get(path);
+    if (Files.exists(actualPath)) {
+      return actualPath;
+    }
+
     // Find the rakefile first
     Path dir = Paths.get(".").toAbsolutePath();
     Path pwd = dir;
@@ -46,7 +51,7 @@ public class InProject {
       }
       dir = dir.getParent();
     }
-    Preconditions.checkNotNull(dir, "Unable to find root of project in " + pwd);
+    Preconditions.checkNotNull(dir, "Unable to find root of project in %s when looking for %s", pwd, path);
     dir = dir.normalize();
 
     Path needle = dir.resolve(path);

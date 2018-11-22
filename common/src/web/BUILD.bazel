@@ -1,0 +1,12 @@
+filegroup(
+    name = "web",
+    data = glob([
+        "**/*.css",
+        "**/*.html",
+        "**/*.jpg",
+        "**/*.png",
+    ]),
+    visibility = [
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
+    ],
+)
