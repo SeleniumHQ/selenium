@@ -2,6 +2,7 @@ java_library(
     name = "drivers",
     visibility = [
         "//java/client/test/org/openqa/selenium/testing:__pkg__",
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
     ],
     exports = [
         ":browser",
