@@ -7,11 +7,15 @@ JETTY_LICENCES = [
 
 java_library(
     name = "jetty",
+    licenses = JETTY_LICENCES,  # Use the ones from Jetty
     tags = [
         "maven_coordinates=org.seleniumhq.selenium:jetty-repacked:%s" % JETTY_VERSION,
         "maven_pom_template=jetty.pom",
     ],
-    licenses = JETTY_LICENCES,  # Use the ones from Jetty
+    visibility = [
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
+        "//java/server/src/org/openqa:__subpackages__",
+    ],
     exports = [
         ":jetty-client-repacked",
         ":jetty-http-repacked",
@@ -22,10 +26,6 @@ java_library(
         ":jetty-servlet-repacked",
         ":jetty-util-repacked",
         ":jetty-xml-repacked",
-    ],
-    visibility = [
-        "//java/client/test/org/openqa/selenium/environment:__pkg__",
-        "//java/server/src/org/openqa:__subpackages__",
     ],
 )
 
@@ -48,11 +48,11 @@ REPACK = [
     ],
     outs = ["%s-repacked.jar" % i],
     cmd = "$(location //third_party/java/pantsbuild:jarjar-links) process $(location jetty-repack-rules) $(location :%s) \"$@\"" % i,
+    licenses = JETTY_LICENCES,
     tools = [
         ":%s" % i,
         "//third_party/java/pantsbuild:jarjar-links",
     ],
-    licenses = JETTY_LICENCES,
 ) for i in REPACK]
 
 #[prebuilt_jar(
@@ -65,29 +65,29 @@ REPACK = [
 
 java_import(
     name = "jetty-client",
+    jars = ["jetty-client-%s.jar" % JETTY_VERSION],
+    licenses = JETTY_LICENCES,
+    srcjar = "jetty-client-%s-sources.jar" % JETTY_VERSION,
     tags = [
         "maven_coordinates=org.eclipse.jetty:jetty-client:jar:%s" % JETTY_VERSION,
     ],
-    licenses = JETTY_LICENCES,
-    jars = ["jetty-client-%s.jar" % JETTY_VERSION],
-    srcjar = "jetty-client-%s-sources.jar" % JETTY_VERSION,
+    visibility = [
+        "//third_party/java/websocket:__pkg__",
+    ],
     deps = [
         ":jetty-http",
         ":jetty-io",
-    ],
-    visibility = [
-        "//third_party/java/websocket:__pkg__",
     ],
 )
 
 java_import(
     name = "jetty-http",
+    jars = ["jetty-http-%s.jar" % JETTY_VERSION],
+    licenses = JETTY_LICENCES,
+    srcjar = "jetty-http-%s-sources.jar" % JETTY_VERSION,
     tags = [
         "maven_coordinates=org.eclipse.jetty:jetty-http:jar:%s" % JETTY_VERSION,
     ],
-    licenses = JETTY_LICENCES,
-    jars = ["jetty-http-%s.jar" % JETTY_VERSION],
-    srcjar = "jetty-http-%s-sources.jar" % JETTY_VERSION,
     deps = [
         ":jetty-io",
         ":jetty-util",
@@ -96,28 +96,28 @@ java_import(
 
 java_import(
     name = "jetty-io",
+    jars = ["jetty-io-%s.jar" % JETTY_VERSION],
+    licenses = JETTY_LICENCES,
+    srcjar = "jetty-io-%s-sources.jar" % JETTY_VERSION,
     tags = [
         "maven_coordinates=org.eclipse.jetty:jetty-io:jar:%s" % JETTY_VERSION,
     ],
-    licenses = JETTY_LICENCES,
-    jars = ["jetty-io-%s.jar" % JETTY_VERSION],
-    srcjar = "jetty-io-%s-sources.jar" % JETTY_VERSION,
-    deps = [
-        ":jetty-util",
-    ],
     visibility = [
         "//third_party/java/websocket:__pkg__",
+    ],
+    deps = [
+        ":jetty-util",
     ],
 )
 
 java_import(
     name = "jetty-jmx",
+    jars = ["jetty-jmx-%s.jar" % JETTY_VERSION],
+    licenses = JETTY_LICENCES,
+    srcjar = "jetty-jmx-%s-sources.jar" % JETTY_VERSION,
     tags = [
         "maven_coordinates=org.eclipse.jetty:jetty-jmx:jar:%s" % JETTY_VERSION,
     ],
-    licenses = JETTY_LICENCES,
-    jars = ["jetty-jmx-%s.jar" % JETTY_VERSION],
-    srcjar = "jetty-jmx-%s-sources.jar" % JETTY_VERSION,
     deps = [
         ":jetty-util",
     ],
@@ -125,12 +125,12 @@ java_import(
 
 java_import(
     name = "jetty-security",
+    jars = ["jetty-security-%s.jar" % JETTY_VERSION],
+    licenses = JETTY_LICENCES,
+    srcjar = "jetty-security-%s-sources.jar" % JETTY_VERSION,
     tags = [
         "maven_coordinates=org.eclipse.jetty:jetty-security:jar:%s" % JETTY_VERSION,
     ],
-    licenses = JETTY_LICENCES,
-    jars = ["jetty-security-%s.jar" % JETTY_VERSION],
-    srcjar = "jetty-security-%s-sources.jar" % JETTY_VERSION,
     deps = [
         ":jetty-server",
     ],
@@ -138,12 +138,12 @@ java_import(
 
 java_import(
     name = "jetty-server",
+    jars = ["jetty-server-%s.jar" % JETTY_VERSION],
+    licenses = JETTY_LICENCES,
+    srcjar = "jetty-server-%s-sources.jar" % JETTY_VERSION,
     tags = [
         "maven_coordinates=org.eclipse.jetty:jetty-server:jar:%s" % JETTY_VERSION,
     ],
-    licenses = JETTY_LICENCES,
-    jars = ["jetty-server-%s.jar" % JETTY_VERSION],
-    srcjar = "jetty-server-%s-sources.jar" % JETTY_VERSION,
     deps = [
         ":jetty-http",
         ":jetty-io",
@@ -154,12 +154,12 @@ java_import(
 
 java_import(
     name = "jetty-servlet",
+    jars = ["jetty-servlet-%s.jar" % JETTY_VERSION],
+    licenses = JETTY_LICENCES,
+    srcjar = "jetty-servlet-%s-sources.jar" % JETTY_VERSION,
     tags = [
         "maven_coordinates=org.eclipse.jetty:jetty-servlet:jar:%s" % JETTY_VERSION,
     ],
-    licenses = JETTY_LICENCES,
-    jars = ["jetty-servlet-%s.jar" % JETTY_VERSION],
-    srcjar = "jetty-servlet-%s-sources.jar" % JETTY_VERSION,
     deps = [
         #        ":jetty-jmx",
         ":jetty-security",
@@ -168,32 +168,32 @@ java_import(
 
 java_import(
     name = "jetty-util",
+    jars = ["jetty-util-%s.jar" % JETTY_VERSION],
+    licenses = JETTY_LICENCES,
+    srcjar = "jetty-util-%s-sources.jar" % JETTY_VERSION,
     tags = [
         "maven_coordinates=org.eclipse.jetty:jetty-util:jar:%s" % JETTY_VERSION,
     ],
-    licenses = JETTY_LICENCES,
-    jars = ["jetty-util-%s.jar" % JETTY_VERSION],
-    srcjar = "jetty-util-%s-sources.jar" % JETTY_VERSION,
-    deps = [
-        "//third_party/java/servlet:javax.servlet-api",
-    ],
     visibility = [
         "//third_party/java/websocket:__pkg__",
+    ],
+    deps = [
+        "//third_party/java/servlet:javax.servlet-api",
     ],
 )
 
 java_import(
     name = "jetty-xml",
+    jars = ["jetty-xml-%s.jar" % JETTY_VERSION],
+    licenses = JETTY_LICENCES,
+    srcjar = "jetty-xml-%s-sources.jar" % JETTY_VERSION,
     tags = [
         "maven_coordinates=org.eclipse.jetty:jetty-xml:jar:%s" % JETTY_VERSION,
     ],
-    licenses = JETTY_LICENCES,
-    jars = ["jetty-xml-%s.jar" % JETTY_VERSION],
-    srcjar = "jetty-xml-%s-sources.jar" % JETTY_VERSION,
-    deps = [
-        ":jetty-util",
-    ],
     visibility = [
         "//third_party/java/websocket:__pkg__",
+    ],
+    deps = [
+        ":jetty-util",
     ],
 )

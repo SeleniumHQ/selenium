@@ -1,14 +1,13 @@
-
 java_import(
     name = "commons-logging",
-    tags = [
-        "maven_coordinates=commons-logging:commons-logging:jar:1.2",
-    ],
+    jars = ["commons-logging-1.2.jar"],
     licenses = [
         "notice",  # Apache 2
     ],
-    jars = ["commons-logging-1.2.jar"],
     srcjar = "commons-logging-1.2-sources.jar",
+    tags = [
+        "maven_coordinates=commons-logging:commons-logging:jar:1.2",
+    ],
     visibility = [
         "//third_party/java/htmlunit:__pkg__",
         "//third_party/java/httpcomponents:__pkg__",

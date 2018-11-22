@@ -1,14 +1,13 @@
-
 java_import(
     name = "commons-io",
-    tags = [
-        "maven_coordinates=commons-io:commons-io:jar:2.6",
-    ],
+    jars = ["commons-io-2.6.jar"],
     licenses = [
         "notice",  # Apache 2
     ],
-    jars = ["commons-io-2.6.jar"],
     srcjar = "commons-io-2.6-sources.jar",
+    tags = [
+        "maven_coordinates=commons-io:commons-io:jar:2.6",
+    ],
     visibility = [
         "//third_party/java/htmlunit:__pkg__",
     ],

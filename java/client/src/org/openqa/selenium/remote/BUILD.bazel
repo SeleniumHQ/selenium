@@ -10,51 +10,54 @@ TYPE_SOURCES = [
 
 java_library(
     name = "remote",
+    srcs = glob(
+        [
+            "*.java",
+            "html5/*.java",
+            "http/*.java",
+            "internal/*.java",
+            "mobile/*.java",
+            "service/*.java",
+            "session/*.java",
+        ],
+        exclude = TYPE_SOURCES,
+    ),
     tags = [
         "maven_coordinates=org.seleniumhq.selenium:selenium-remote-driver:" + SE_VERSION,
     ],
-    srcs = glob([
-        "*.java",
-        "html5/*.java",
-        "http/*.java",
-        "internal/*.java",
-        "mobile/*.java",
-        "service/*.java",
-        "session/*.java",
-    ], exclude = TYPE_SOURCES),
+    visibility = [
+        "//visibility:public",
+    ],
     exports = [
         ":types",
         "//java/client/src/org/openqa/selenium",
-        "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/io",
+        "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/os",
     ],
     deps = [
         ":types",
         "//java/client/src/org/openqa/selenium",
-        "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/io",
+        "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/os",
         "//third_party/java/bytebuddy:byte-buddy",
         "//third_party/java/guava",
         "//third_party/java/okhttp3:okhttp",
     ],
-    visibility = [
-        "//visibility:public",
-    ],
 )
 
 java_library(
     name = "types",
     srcs = TYPE_SOURCES,
-    deps = [
-        "//java/client/src/org/openqa/selenium",
-        "//third_party/java/guava",
-    ],
     visibility = [
         "//java/client/src/org/openqa/selenium/json:__pkg__",
         "//java/client/test:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium",
+        "//third_party/java/guava",
     ],
 )

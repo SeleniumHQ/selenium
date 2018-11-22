@@ -1,8 +1,8 @@
 load("//java:bazel-rules.bzl", "gen_java_tests")
 
 gen_java_tests(
-    srcs = glob(["*.java"]),
     size = "small",
+    srcs = glob(["*.java"]),
     deps = [
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",

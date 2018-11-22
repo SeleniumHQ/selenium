@@ -1,13 +1,13 @@
 java_import(
     name = "asm",
-    tags = [
-        "maven_coordinates=org.ow2.asm:asm:jar:6.0",
-    ],
+    jars = ["asm-6.0.jar"],
     licenses = [
         "notice",  # BSD
     ],
-    jars = ["asm-6.0.jar"],
     srcjar = "asm-6.0-sources.jar",
+    tags = [
+        "maven_coordinates=org.ow2.asm:asm:jar:6.0",
+    ],
     visibility = [
         "//third_party/java/pantsbuild:__pkg__",
     ],
@@ -15,36 +15,36 @@ java_import(
 
 java_import(
     name = "asm-commons",
-    tags = [
-        "maven_coordinates=org.ow2.asm:asm-commons:jar:6.0",
-    ],
+    jars = ["asm-commons-6.0.jar"],
     licenses = [
         "notice",  # BSD
     ],
-    jars = ["asm-commons-6.0.jar"],
     srcjar = "asm-commons-6.0-sources.jar",
-    deps = [
-        ":asm-tree",
+    tags = [
+        "maven_coordinates=org.ow2.asm:asm-commons:jar:6.0",
     ],
     visibility = [
         "//third_party/java/pantsbuild:__pkg__",
+    ],
+    deps = [
+        ":asm-tree",
     ],
 )
 
 java_import(
     name = "asm-tree",
-    tags = [
-        "maven_coordinates=org.ow2.asm:asm-tree:jar:6.0",
-    ],
+    jars = ["asm-tree-6.0.jar"],
     licenses = [
         "notice",  # BSD
     ],
-    jars = ["asm-tree-6.0.jar"],
     srcjar = "asm-tree-6.0-sources.jar",
-    deps = [
-        ":asm",
+    tags = [
+        "maven_coordinates=org.ow2.asm:asm-tree:jar:6.0",
     ],
     visibility = [
         "//third_party/java/pantsbuild:__pkg__",
+    ],
+    deps = [
+        ":asm",
     ],
 )

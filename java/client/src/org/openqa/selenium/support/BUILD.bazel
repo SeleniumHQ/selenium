@@ -2,13 +2,16 @@ load("//java:version.bzl", "SE_VERSION")
 
 java_library(
     name = "support",
-    tags = [
-        "maven_coordinates=org.seleniumhq.selenium:selenium-support:" + SE_VERSION,
-    ],
     srcs = [
         "Color.java",
         "Colors.java",
         "ThreadGuard.java",
+    ],
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-support:" + SE_VERSION,
+    ],
+    visibility = [
+        "//visibility:public",
     ],
     exports = [
         ":page-factory",
@@ -20,9 +23,6 @@ java_library(
         "//java/client/src/org/openqa/selenium",
         "//java/client/src/org/openqa/selenium/support/events",
         "//java/client/src/org/openqa/selenium/support/ui",
-    ],
-    visibility = [
-        "//visibility:public",
     ],
 )
 
@@ -48,4 +48,3 @@ java_library(
         "//third_party/java/guava",
     ],
 )
-

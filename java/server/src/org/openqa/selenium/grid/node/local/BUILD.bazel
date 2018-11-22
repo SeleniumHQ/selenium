@@ -1,6 +1,10 @@
 java_library(
     name = "local",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
     exports = [
         "//java/server/src/org/openqa/selenium/grid/node",
     ],
@@ -11,9 +15,5 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//third_party/java/beust:jcommander",
         "//third_party/java/guava",
-    ],
-    visibility = [
-        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
 )

@@ -1,13 +1,13 @@
 java_import(
     name = "gson",
-    tags = [
-        "maven_coordinates=com.google.code.gson:gson:jar:2.8.4",
-    ],
+    jars = ["gson-2.8.4.jar"],
     licenses = [
         "notice",  # Apache 2
     ],
-    jars = ["gson-2.8.4.jar"],
     srcjar = "gson-2.8.4-sources.jar",
+    tags = [
+        "maven_coordinates=com.google.code.gson:gson:jar:2.8.4",
+    ],
     visibility = [
         "//third_party/java/github:__pkg__",
     ],

@@ -1,16 +1,16 @@
 java_import(
     name = "objenesis",
-    tags = [
-        "maven_coordinates=org.objenesis:objenesis:jar:2.6",
-    ],
+    jars = ["objenesis-2.6.jar"],
     licenses = [
         "notice",  # Apache 2
     ],
-    jars = ["objenesis-2.6.jar"],
     srcjar = "objenesis-2.6-sources.jar",
-    deps = [
+    tags = [
+        "maven_coordinates=org.objenesis:objenesis:jar:2.6",
     ],
     visibility = [
         "//third_party/java/mockito:__pkg__",
+    ],
+    deps = [
     ],
 )

@@ -1,13 +1,13 @@
 java_library(
     name = "ui",
-    exports = [
-      ":clock",
-      ":components",
-      ":elements",
-      ":wait",
-    ],
     visibility = [
         "//java/client/src/org/openqa/selenium/support:__pkg__",
+    ],
+    exports = [
+        ":clock",
+        ":components",
+        ":elements",
+        ":wait",
     ],
 )
 
@@ -36,8 +36,8 @@ java_library(
 java_library(
     name = "elements",
     srcs = [
-        "Quotes.java",
         "ISelect.java",
+        "Quotes.java",
         "Select.java",
         "UnexpectedTagNameException.java",
     ],
@@ -61,4 +61,3 @@ java_library(
         "//third_party/java/guava",
     ],
 )
-

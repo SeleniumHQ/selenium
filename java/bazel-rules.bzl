@@ -4,7 +4,7 @@ def _contains(list, value):
     for v in list:
         if v == value:
             return True
-    return False    
+    return False
 
 def _shortName(file):
     base = file.rpartition("/")[-1]
@@ -16,7 +16,7 @@ def _className(file):
     name = file.rpartition(".")[0]
     className = native.package_name() + "/" + name
 
-    segments = className.split('/')
+    segments = className.split("/")
     idx = len(segments) - 1
     for i, segment in enumerate(segments):
         if _contains(_PREFIXES, segment):
@@ -31,13 +31,15 @@ def _impl(ctx):
             test_class = _className(src),
             srcs = ctx.attr.srcs,
             size = ctx.attr.size,
-            deps = ctx.attr.deps)
+            deps = ctx.attr.deps,
+        )
 
-def gen_java_tests(srcs=[], deps=[], **kwargs):
+def gen_java_tests(srcs = [], deps = [], **kwargs):
     native.java_library(
         name = "%s-lib" % native.package_name(),
         srcs = srcs,
-	deps = deps)
+        deps = deps,
+    )
 
     deps.append(":%s-lib" % native.package_name())
 
@@ -45,5 +47,6 @@ def gen_java_tests(srcs=[], deps=[], **kwargs):
         native.java_test(
             name = _shortName(src),
             test_class = _className(src),
-	    runtime_deps = deps,
-            **kwargs)
+            runtime_deps = deps,
+            **kwargs
+        )

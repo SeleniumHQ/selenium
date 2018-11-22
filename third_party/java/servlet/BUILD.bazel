@@ -1,15 +1,15 @@
 java_import(
     name = "javax.servlet-api",
-    tags = [
-        "maven_coordinates=javax.servlet:javax.servlet-api:jar:3.1.0",
-    ],
+    jars = ["javax.servlet-api-3.1.0.jar"],
     licenses = [
         # The license agreement says we can use either licenese.
         "reciprocal",  # CDDL
         "restricted",  # GPLv2
     ],
-    jars = ["javax.servlet-api-3.1.0.jar"],
     srcjar = "javax.servlet-api-3.1.0-sources.jar",
+    tags = [
+        "maven_coordinates=javax.servlet:javax.servlet-api:jar:3.1.0",
+    ],
     visibility = [
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa/selenium/grid/server:__pkg__",

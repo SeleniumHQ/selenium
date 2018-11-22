@@ -1,6 +1,10 @@
 java_library(
     name = "server",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
     exports = [
         # Exported because Server implements HasLifecycle
         "//java/server/src/org/openqa/selenium/grid/component",
@@ -20,10 +24,6 @@ java_library(
         "//third_party/java/beust:jcommander",
         "//third_party/java/guava",
         "//third_party/java/jetty",
-        "//third_party/java/servlet:javax.servlet-api", # I think this is how to do this
-    ],
-    visibility = [
-        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+        "//third_party/java/servlet:javax.servlet-api",  # I think this is how to do this
     ],
 )

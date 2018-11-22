@@ -2,9 +2,6 @@ load("//java:version.bzl", "SE_VERSION")
 
 java_library(
     name = "selenium",
-    tags = [
-      "maven_coordinates=org.seleniumhq.selenium:selenium-api:" + SE_VERSION,
-    ],
     srcs = glob([
         "*.java",
         "html5/*.java",
@@ -13,10 +10,13 @@ java_library(
         "logging/**/*.java",
         "mobile/*.java",
     ]),
-    deps = [
-        # Deliberately left empty of third party deps
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-api:" + SE_VERSION,
     ],
     visibility = [
         "//visibility:public",
+    ],
+    deps = [
+        # Deliberately left empty of third party deps
     ],
 )

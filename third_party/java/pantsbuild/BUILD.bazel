@@ -1,25 +1,25 @@
 java_binary(
     name = "jarjar-links",
-    main_class = "org.pantsbuild.jarjar.Main",
     licenses = [
         "notice",  # Apache 2
     ],
-    runtime_deps = [
-        ":jarjar",
-    ],
+    main_class = "org.pantsbuild.jarjar.Main",
     visibility = [
         "//third_party/java/jetty:__pkg__",
+    ],
+    runtime_deps = [
+        ":jarjar",
     ],
 )
 
 java_import(
     name = "jarjar",
-    tags = ["maven_coordinates=org.pantsbuild:jarjar:jar:1.6.5"],
+    jars = ["jarjar-1.6.5.jar"],
     licenses = [
         "notice",  # Apache 2
     ],
-    jars = ["jarjar-1.6.5.jar"],
     srcjar = "jarjar-1.6.5-sources.jar",
+    tags = ["maven_coordinates=org.pantsbuild:jarjar:jar:1.6.5"],
     deps = [
         #    '//third_party/java/ant:ant',
         "//third_party/java/asm",
