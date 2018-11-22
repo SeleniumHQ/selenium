@@ -10,7 +10,7 @@ java_import(
     jars = ["xercesImpl-2.11.0.jar"],
     srcjar = "xercesImpl-2.11.0-sources.jar",
     deps = [
-        "//third_party/java/xml-apis:xml-apis",
+        "//third_party/java/xml-apis",
     ],
     visibility = [
         "//third_party/java/htmlunit:__pkg__",

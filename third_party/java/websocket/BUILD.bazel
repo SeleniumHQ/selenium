@@ -8,10 +8,6 @@ java_import(
     ],
     jars = ["websocket-api-9.4.8.v20180619.jar"],
     srcjar = "websocket-api-9.4.8.v20180619-sources.jar",
-    deps = [
-    ],
-    visibility = [
-    ],
 )
 
 java_import(
@@ -50,7 +46,5 @@ java_import(
         ":websocket-api",
         "//third_party/java/jetty:jetty-io",
         "//third_party/java/jetty:jetty-util",
-    ],
-    visibility = [
     ],
 )

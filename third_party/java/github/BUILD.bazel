@@ -9,10 +9,9 @@ java_import(
     jars = ["org.eclipse.egit.github.core-2.1.5.jar"],
     srcjar = "org.eclipse.egit.github.core-2.1.5.jar",
     deps = [
-        "//third_party/java/gson:gson",
+        "//third_party/java/gson",
     ],
     visibility = [
-        "//java/client/test:__subpackages__",
-        "//java/server/test:__subpackages__",
+        "//java/client/test/org/openqa/selenium/testing/drivers:__pkg__",
     ],
 )

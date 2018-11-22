@@ -9,8 +9,6 @@ java_import(
     ],
     jars = ["commons-codec-1.10.jar"],
     srcjar = "commons-codec-1.10-sources.jar",
-    deps = [
-    ],
     visibility = [
         "//third_party/java/httpcomponents:__pkg__",
     ],

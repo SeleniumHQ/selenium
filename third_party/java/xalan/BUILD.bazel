@@ -10,11 +10,9 @@ java_import(
     srcjar = "serializer-2.7.2-sources.jar",
     deps = [
         "//third_party/java/xerces:xercesImpl",
-        "//third_party/java/xml-apis:xml-apis",
+        "//third_party/java/xml-apis",
     ],
     visibility = [
-        "//java/client/test:__subpackages__",
-        "//java/server/test:__subpackages__",
     ],
 )
 

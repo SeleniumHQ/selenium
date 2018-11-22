@@ -9,8 +9,6 @@ java_import(
     ],
     jars = ["commons-net-3.6.jar"],
     srcjar = "commons-net-3.6-sources.jar",
-    deps = [
-    ],
     visibility = [
         "//third_party/java/htmlunit:__pkg__",
     ],

@@ -9,8 +9,6 @@ java_import(
     ],
     jars = ["commons-io-2.6.jar"],
     srcjar = "commons-io-2.6-sources.jar",
-    deps = [
-    ],
     visibility = [
         "//third_party/java/htmlunit:__pkg__",
     ],

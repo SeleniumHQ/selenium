@@ -14,16 +14,14 @@ java_import(
         ":htmlunit-cssparser",
         "//third_party/java/commons:commons-lang3",
         "//third_party/java/commons:commons-text",
-        "//third_party/java/commons-io:commons-io",
-        "//third_party/java/commons-logging:commons-logging",
-        "//third_party/java/commons-net:commons-net",
+        "//third_party/java/commons-io",
+        "//third_party/java/commons-logging",
+        "//third_party/java/commons-net",
         "//third_party/java/httpcomponents:httpmime",
         "//third_party/java/websocket:websocket-client",
-        "//third_party/java/xalan:xalan"
+        "//third_party/java/xalan"
     ],
     visibility = [
-        "//java/client/test:__subpackages__",
-        "//java/server/test:__subpackages__",
         "//third_party/java/selenium:__pkg__",
     ],
 )

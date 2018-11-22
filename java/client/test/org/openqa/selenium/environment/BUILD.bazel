@@ -5,11 +5,10 @@ java_library(
         "webserver/*.java"
     ], exclude = ["**/*Test.java", "**/*TestBase.java"]),
     deps = [
-        "//java/client/src/org/openqa/selenium:selenium",
-        "//java/client/src/org/openqa/selenium/remote:remote",
-        "//java/client/test/org/openqa/selenium/testing:helpers",
-        "//third_party/java/guava:guava",
-        "//third_party/java/jetty:jetty",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing",
+        "//third_party/java/guava",
+        "//third_party/java/jetty",
         "//third_party/java/servlet:javax.servlet-api",
     ],
     visibility = [

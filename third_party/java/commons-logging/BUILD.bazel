@@ -9,8 +9,6 @@ java_import(
     ],
     jars = ["commons-logging-1.2.jar"],
     srcjar = "commons-logging-1.2-sources.jar",
-    deps = [
-    ],
     visibility = [
         "//third_party/java/htmlunit:__pkg__",
         "//third_party/java/httpcomponents:__pkg__",
