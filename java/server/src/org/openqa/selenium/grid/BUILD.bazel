@@ -11,7 +11,7 @@ java_binary(
                 "//java/client/src/org/openqa/selenium/firefox:firefox",
                 "//java/client/src/org/openqa/selenium/ie:ie",
                 "//java/client/src/org/openqa/selenium/safari:safari",
-        #        "//java/server/src/org/openqa/selenium/grid/commands:commands",
+                "//java/server/src/org/openqa/selenium/grid/commands:commands",
                 "//java/server/src/org/openqa/selenium/grid/distributor/httpd:httpd",
                 "//java/server/src/org/openqa/selenium/grid/node/httpd:httpd",
                 "//java/server/src/org/openqa/selenium/grid/router/httpd:httpd",
