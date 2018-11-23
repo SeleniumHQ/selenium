@@ -1,0 +1,17 @@
+java_library(
+    name = "httpd",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/cli",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/distributor",
+        "//java/server/src/org/openqa/selenium/grid/distributor/local",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        "//third_party/java/beust:jcommander",
+        "//third_party/java/service",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__pkg__",
+    ],
+)
