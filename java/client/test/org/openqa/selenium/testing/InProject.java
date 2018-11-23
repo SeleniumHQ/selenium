@@ -38,7 +38,7 @@ public class InProject {
   public static Path locate(String path) {
     Path actualPath = Paths.get(path);
     if (Files.exists(actualPath)) {
-      return actualPath;
+      return actualPath.toAbsolutePath();
     }
 
     // Find the rakefile first
