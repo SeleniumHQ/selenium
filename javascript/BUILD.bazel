@@ -1,0 +1,9 @@
+filegroup(
+    name = "javascript",
+    data = glob([
+        "**/*.*",
+    ]),
+    visibility = [
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
+    ],
+)
