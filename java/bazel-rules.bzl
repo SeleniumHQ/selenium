@@ -34,7 +34,7 @@ def _impl(ctx):
             deps = ctx.attr.deps,
         )
 
-def gen_java_tests(srcs = [], deps = [], **kwargs):
+def gen_java_tests(size, srcs = [], tags = [], deps = [], **kwargs):
     native.java_library(
         name = "%s-lib" % native.package_name(),
         srcs = srcs,
@@ -43,10 +43,17 @@ def gen_java_tests(srcs = [], deps = [], **kwargs):
 
     deps.append(":%s-lib" % native.package_name())
 
+    actual_tags = []
+    actual_tags.extend(tags)
+    if "small" != size:
+        actual_tags.append("no-sandbox")
+
     for src in srcs:
         native.java_test(
             name = _shortName(src),
+	    size = size,
             test_class = _className(src),
+            tags = actual_tags,
             runtime_deps = deps,
             **kwargs
         )
