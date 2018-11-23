@@ -108,15 +108,24 @@ public class DesiredCapabilities extends MutableCapabilities {
     return this;
   }
 
+  @Deprecated
   public static DesiredCapabilities android() {
     return new DesiredCapabilities(BrowserType.ANDROID, "", Platform.ANDROID);
   }
 
+  /**
+   * @deprecated Use {@link org.openqa.selenium.chrome.ChromeOptions} instead.
+   */
+  @Deprecated
   public static DesiredCapabilities chrome() {
     LOG.info("Using `new ChromeOptions()` is preferred to `DesiredCapabilities.chrome()`");
     return new DesiredCapabilities(BrowserType.CHROME, "", Platform.ANY);
   }
 
+  /**
+   * @deprecated Use {@link org.openqa.selenium.firefox.FirefoxOptions} instead.
+   */
+  @Deprecated
   public static DesiredCapabilities firefox() {
     LOG.info("Using `new FirefoxOptions()` is preferred to `DesiredCapabilities.firefox()`");
     DesiredCapabilities capabilities = new DesiredCapabilities(
@@ -128,14 +137,24 @@ public class DesiredCapabilities extends MutableCapabilities {
     return capabilities;
   }
 
+  @Deprecated
   public static DesiredCapabilities htmlUnit() {
     return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
   }
 
+  /**
+   * @deprecated Use {@link org.openqa.selenium.edge.EdgeOptions} instead.
+   */
+  @Deprecated
   public static DesiredCapabilities edge() {
     LOG.info("Using `new EdgeOptions()` is preferred to `DesiredCapabilities.edge()`");
     return new DesiredCapabilities(BrowserType.EDGE, "", Platform.WINDOWS);
   }
+
+  /**
+   * @deprecated Use {@link org.openqa.selenium.ie.InternetExplorerOptions} instead.
+   */
+  @Deprecated
   public static DesiredCapabilities internetExplorer() {
     DesiredCapabilities capabilities = new DesiredCapabilities(
         BrowserType.IE, "", Platform.WINDOWS);
@@ -143,38 +162,39 @@ public class DesiredCapabilities extends MutableCapabilities {
     return capabilities;
   }
 
+  @Deprecated
   public static DesiredCapabilities iphone() {
     return new DesiredCapabilities(BrowserType.IPHONE, "", Platform.MAC);
   }
 
+  @Deprecated
   public static DesiredCapabilities ipad() {
     return new DesiredCapabilities(BrowserType.IPAD, "", Platform.MAC);
   }
 
   /**
-   * @return DesiredCapabilities for opera
-   * @deprecated Use #operaBlink
+   * @deprecated Use {@link org.openqa.selenium.opera.OperaOptions} instead.
    */
   @Deprecated
   public static DesiredCapabilities opera() {
-    return new DesiredCapabilities(BrowserType.OPERA, "", Platform.ANY);
-  }
-
-  public static DesiredCapabilities operaBlink() {
-    LOG.info("Using `new OperaOptions()` is preferred to `DesiredCapabilities.operaBlink()`");
+    LOG.info("Using `new OperaOptions()` is preferred to `DesiredCapabilities.opera()`");
     return new DesiredCapabilities(BrowserType.OPERA_BLINK, "", Platform.ANY);
   }
 
-  public static DesiredCapabilities safari() {
-    LOG.info("Using `new SafariOptions()` is preferred to `DesiredCapabilities.safari()`");
-    return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.MAC);
+  /**
+   * @deprecated Use {@link #opera()} instead.
+   */
+  @Deprecated
+  public static DesiredCapabilities operaBlink() {
+    return opera();
   }
 
   /**
-   * @deprecated PhantomJS is no longer actively developed, and support will eventually be dropped.
+   * @deprecated Use {@link org.openqa.selenium.safari.SafariOptions} instead.
    */
   @Deprecated
-  public static DesiredCapabilities phantomjs() {
-    return new DesiredCapabilities(BrowserType.PHANTOMJS, "", Platform.ANY);
+  public static DesiredCapabilities safari() {
+    LOG.info("Using `new SafariOptions()` is preferred to `DesiredCapabilities.safari()`");
+    return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.MAC);
   }
 }
