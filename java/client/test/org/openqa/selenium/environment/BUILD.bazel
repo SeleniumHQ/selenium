@@ -2,6 +2,9 @@ load("//java:bazel-rules.bzl", "gen_java_tests")
 
 TEST_SRCS = glob([
     "**/*Test.java",
+])
+
+TEST_BASE_SRCS = glob([
     "**/*TestBase.java",
 ])
 
@@ -12,11 +15,12 @@ java_library(
             "*.java",
             "webserver/*.java",
         ],
-        exclude = TEST_SRCS,
+        exclude = TEST_SRCS + TEST_BASE_SRCS,
     ),
     data = [
         "webserver/keystore",
         "//common/src/web",
+        "//javascript",
         "//third_party/closure:goog",
     ] + glob(["webserver/*.java"]),
     visibility = [
@@ -40,6 +44,18 @@ java_binary(
     ],
 )
 
+java_library(
+    name = "test-base",
+    srcs = TEST_BASE_SRCS,
+    deps = [
+        ":environment",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//third_party/java/junit",
+    ],
+)
+
 gen_java_tests(
     size = "large",
     srcs = TEST_SRCS,
@@ -48,6 +64,7 @@ gen_java_tests(
     ],
     deps = [
         ":environment",
+        ":test-base",
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/test/org/openqa/selenium/testing",
