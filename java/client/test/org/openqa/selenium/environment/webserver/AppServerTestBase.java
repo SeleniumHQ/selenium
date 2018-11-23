@@ -32,6 +32,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
@@ -141,8 +142,8 @@ public abstract class AppServerTestBase {
     Thread.sleep(50);
 
     driver.switchTo().frame("upload_target");
-    WebElement body = driver.findElement(By.xpath("//body"));
-    assertEquals(FILE_CONTENTS, body.getText());
+    new WebDriverWait(driver, 10).until(
+        d -> d.findElement(By.xpath("//body")).getText().equals(FILE_CONTENTS));
   }
 
   private void assertUrlHasContentType(String url, String appcacheMimeType) throws IOException {
