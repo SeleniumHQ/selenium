@@ -18,8 +18,6 @@
 package org.openqa.selenium.testing;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.openqa.selenium.testing.drivers.Browser.GRID;
-import static org.openqa.selenium.testing.drivers.Browser.REMOTE;
 
 import org.junit.runner.Description;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -40,7 +38,8 @@ public class TestIgnorance {
   private Set<String> ignoreClasses = new HashSet<>();
 
   public TestIgnorance(Browser driver) {
-    setBrowser(driver);
+    ignoreComparator.addDriver(checkNotNull(driver,
+        "Browser to use must be set. Do this by setting the 'selenium.browser' system property"));
 
     String onlyRun = System.getProperty("only_run");
     if (onlyRun != null) {
@@ -89,24 +88,6 @@ public class TestIgnorance {
            (!methods.isEmpty() && !methods.contains(method.getMethodName())) ||
            ignoreClasses.contains(method.getTestClass().getSimpleName()) ||
            ignoreMethods.contains(method.getMethodName());
-  }
-
-  public void setBrowser(Browser driver) {
-    checkNotNull(driver,
-        "Browser to use must be set. Do this by setting the 'selenium.browser' system property");
-    addIgnoresForBrowser(driver, ignoreComparator);
-  }
-
-  private void addIgnoresForBrowser(Browser driver, IgnoreComparator comparator) {
-    if (Boolean.getBoolean("selenium.browser.remote")
-        || Boolean.getBoolean("selenium.browser.grid")) {
-      comparator.addDriver(REMOTE);
-    }
-    if (Boolean.getBoolean("selenium.browser.grid")) {
-      comparator.addDriver(GRID);
-    }
-
-    comparator.addDriver(driver);
   }
 
 }
