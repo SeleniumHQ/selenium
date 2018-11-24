@@ -34,7 +34,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.nio.file.Path;

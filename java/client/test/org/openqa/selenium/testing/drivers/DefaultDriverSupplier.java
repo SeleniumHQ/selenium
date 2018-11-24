@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import static org.openqa.selenium.testing.DevMode.isInDevMode;
+import static org.openqa.selenium.build.DevMode.isInDevMode;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;

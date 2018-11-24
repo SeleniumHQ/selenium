@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.Zip;
-import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
 
 import java.io.BufferedReader;

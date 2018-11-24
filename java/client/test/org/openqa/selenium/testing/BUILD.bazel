@@ -5,8 +5,8 @@ java_library(
         "//java/server/test/org/openqa:__subpackages__",
     ],
     exports = [
+        ":test-base",
         ":annotations",
-        ":helpers",
     ],
 )
 
@@ -30,34 +30,25 @@ java_library(
 )
 
 java_library(
-    name = "helpers",
-    srcs = [
-        "DevMode.java",
-        "InProject.java",
-    ],
-    deps = [
-        "//java/client/src/org/openqa/selenium",
-        "//third_party/java/guava",
-    ],
-)
-
-java_library(
     name = "test-base",
     srcs = [
+        "IgnoreComparator.java",
         "JUnit4TestBase.java",
+        "Pages.java",
         "SeleniumTestRunner.java",
         "StaticResources.java",
+        "TestIgnorance.java",
         "TestUtilities.java",
     ],
     deps = [
         ":annotations",
-        ":helpers",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
-        "//java/client/test/org/openqa/selenium",
         "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/build",
         "//java/client/test/org/openqa/selenium/testing/drivers",
         "//third_party/java/assertj",
+        "//third_party/java/github:org.eclipse.egit.github.core",
         "//third_party/java/guava",
         "//third_party/java/junit",
         "//third_party/java/selenium:htmlunit-driver",

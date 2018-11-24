@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.testing.drivers;
+package org.openqa.selenium.testing;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -30,9 +30,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.testing.Driver;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.IgnoreList;
 
 import java.util.Collections;
 import java.util.Set;

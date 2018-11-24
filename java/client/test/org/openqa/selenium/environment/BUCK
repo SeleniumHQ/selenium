@@ -6,7 +6,7 @@ java_library(name = 'environment',
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
-    '//java/client/test/org/openqa/selenium/testing:helpers',
+    '//java/client/test/org/openqa/selenium/build:build',
     '//third_party/java/guava:guava',
     '//third_party/java/jetty:jetty',
   ],

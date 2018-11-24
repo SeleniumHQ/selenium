@@ -24,7 +24,7 @@ import static java.lang.System.getProperty;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 
-import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.build.InProject;
 
 import java.io.File;
 import java.io.IOException;

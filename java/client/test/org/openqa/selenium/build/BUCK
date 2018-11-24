@@ -1,0 +1,14 @@
+java_library(
+    name = "build",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/test/...",
+        "//java/server/test/...",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/os:os",
+        "//third_party/java/guava:guava",
+        "//third_party/java/junit:junit",
+    ],
+)

@@ -27,7 +27,7 @@ import com.thoughtworks.selenium.Selenium;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Pages;
+import org.openqa.selenium.testing.Pages;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;

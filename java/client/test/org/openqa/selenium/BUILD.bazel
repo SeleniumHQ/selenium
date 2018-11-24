@@ -13,24 +13,21 @@ SMALL_TESTS = [
     # "ProxyTest.java", # needs more dependencies
 ]
 
-gen_java_tests(
-    size = "small",
-    srcs = SMALL_TESTS,
-    deps = [
-        "//java/client/src/org/openqa/selenium",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/mockito:mockito-core",
-    ],
-)
+#gen_java_tests(
+#    size = "small",
+#    srcs = SMALL_TESTS,
+#    deps = [
+#        "//java/client/src/org/openqa/selenium",
+#        "//third_party/java/assertj",
+#        "//third_party/java/guava",
+#        "//third_party/java/junit",
+#        "//third_party/java/mockito:mockito-core",
+#    ],
+#)
 
 java_library(
     name = "selenium",
     srcs = [
-        "BuckBuild.java",
-        "Build.java",
-        "Pages.java",
         "ParallelTestRunner.java",
         "StubDriver.java",
         "WaitingConditions.java",
@@ -45,6 +42,26 @@ java_library(
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)
+
+gen_java_tests(
+    size = "large",
+    tags = [ "firefox" ],
+    srcs = glob([ "ClickTest.java" ], exclude = SMALL_TESTS),
+    jvm_flags = [
+        "-Dselenium.browser=ff",
+    ],
+    deps = [
+        ":selenium",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/testing",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//third_party/java/assertj",
         "//third_party/java/guava",
         "//third_party/java/junit",
     ],
