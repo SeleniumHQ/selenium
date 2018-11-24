@@ -29,10 +29,7 @@ public enum Browser {
   MARIONETTE,
   OPERA,
   OPERABLINK,
-  SAFARI,
-
-  REMOTE,
-  GRID;
+  SAFARI;
 
   private static final Logger log = Logger.getLogger(Browser.class.getName());
 

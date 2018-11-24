@@ -257,19 +257,6 @@ public abstract class JUnit4TestBase {
       if (item == current) {
         return true;
       }
-
-      if (item == Browser.REMOTE) {
-        if (Boolean.getBoolean("selenium.browser.grid") ||
-            Boolean.getBoolean("selenium.browser.remote")) {
-          return true;
-        }
-      }
-
-      if (item == Browser.GRID) {
-        if (Boolean.getBoolean("selenium.browser.grid")) {
-          return true;
-        }
-      }
     }
     return false;
   }
