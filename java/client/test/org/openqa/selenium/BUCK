@@ -62,12 +62,8 @@ java_library(name = 'tests',
     'net/*Test.java',
     'os/*Test.java',]) +
   [
-    'Messages.java',
     'interactions/touch/TouchTestBase.java',
     'net/StubNetworkInterfaceProvider.java',
-  ],
-  resources = [
-    'messages.properties',
   ],
   exported_deps = [
     '//java/client/test/org/openqa/selenium/support:tests',
