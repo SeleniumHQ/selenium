@@ -85,7 +85,6 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
       .build();
 
   public static Capabilities getStandardCapabilitiesFor(Browser toBuild) {
-    System.out.println("***** " + toBuild);
     return capabilitySuppliers.getOrDefault(toBuild, ImmutableCapabilities::new).get();
   }
 
