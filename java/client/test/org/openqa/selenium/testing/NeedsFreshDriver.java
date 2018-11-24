@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing;
 
+import org.openqa.selenium.testing.drivers.Browser;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,7 +28,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface NeedsFreshDriver {
 
-  Driver[] value() default {Driver.ALL};
+  Browser[] value() default {Browser.ALL};
 
   String reason() default ("For unknown reason");
 

@@ -19,11 +19,11 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.EDGE;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 

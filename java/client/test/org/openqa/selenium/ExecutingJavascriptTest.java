@@ -24,11 +24,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.By.id;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

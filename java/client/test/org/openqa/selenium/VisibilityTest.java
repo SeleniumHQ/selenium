@@ -23,7 +23,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;

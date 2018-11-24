@@ -21,8 +21,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Collections;
 import java.util.Set;
@@ -67,7 +68,7 @@ public class IgnoreComparatorUnitTest {
   @Test
   public void shouldIgnoreDriverAll() {
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-        Collections.singleton(Driver.ALL), CURRENT_PLATFORM_SET)));
+        Collections.singleton(Browser.ALL), CURRENT_PLATFORM_SET)));
   }
 
   @Test
@@ -113,7 +114,7 @@ public class IgnoreComparatorUnitTest {
         Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));
   }
 
-  private IgnoreList ignoreForDriver(final Set<Driver> drivers,
+  private IgnoreList ignoreForDriver(final Set<Browser> drivers,
                                     final Set<Platform> platforms) {
     final IgnoreList ignore = mock(IgnoreList.class, Mockito.RETURNS_SMART_NULLS);
     final Ignore[] list = drivers.stream().map(driver -> {

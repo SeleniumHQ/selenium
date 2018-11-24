@@ -52,7 +52,7 @@ gen_java_tests(
     tags = [ "firefox" ],
     srcs = glob([ "*Test.java" ], exclude = SMALL_TESTS),
     jvm_flags = [
-        "-Dselenium.browser=ff",
+        "-Dselenium.browser=firefox",
     ],
     deps = [
         ":selenium",

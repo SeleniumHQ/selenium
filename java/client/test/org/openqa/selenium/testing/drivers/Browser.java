@@ -20,16 +20,19 @@ package org.openqa.selenium.testing.drivers;
 import java.util.logging.Logger;
 
 public enum Browser {
+  ALL,
+  CHROME,
+  EDGE,
+  HTMLUNIT,
+  FIREFOX,
+  IE,
+  MARIONETTE,
+  OPERA,
+  OPERABLINK,
+  SAFARI,
 
-  chrome,
-  edge,
-  ff,
-  htmlunit,
-  ie,
-  none, // For those cases where you don't actually want a browser
-  opera,
-  operablink,
-  safari;
+  REMOTE,
+  GRID;
 
   private static final Logger log = Logger.getLogger(Browser.class.getName());
 
@@ -40,12 +43,20 @@ public enum Browser {
       return null;
     }
 
-    try {
-      return Browser.valueOf(browserName);
-    } catch (IllegalArgumentException e) {
-      log.severe("Cannot locate matching browser for: " + browserName);
-      return null;
+    if ("ff".equals(browserName.toLowerCase()) || "firefox".equals(browserName.toLowerCase())) {
+      if (System.getProperty("webdriver.firefox.marionette") == null ||
+          Boolean.getBoolean("webdriver.firefox.marionette")) {
+        return MARIONETTE;
+      } else {
+        return FIREFOX;
+      }
     }
-  }
 
+    try {
+      return Browser.valueOf(browserName.toUpperCase());
+    } catch (IllegalArgumentException e) {
+    }
+
+    throw new RuntimeException(String.format("Cannot determine driver from name %s", browserName));
+  }
 }

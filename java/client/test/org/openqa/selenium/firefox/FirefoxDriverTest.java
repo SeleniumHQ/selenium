@@ -29,7 +29,7 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 
 import com.google.common.collect.ImmutableMap;
 

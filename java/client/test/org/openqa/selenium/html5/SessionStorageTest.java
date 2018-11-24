@@ -19,7 +19,7 @@ package org.openqa.selenium.html5;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import org.junit.Before;
 import org.junit.Test;

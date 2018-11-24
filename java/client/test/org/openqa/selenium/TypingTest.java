@@ -22,9 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
@@ -246,7 +246,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(Browser.detect() == Browser.OPERA &&
                 getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
@@ -272,7 +272,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(Browser.detect() == Browser.OPERA &&
                 getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);

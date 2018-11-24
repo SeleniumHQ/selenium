@@ -25,9 +25,9 @@ import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isIe6;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 
@@ -79,7 +79,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NoDriverAfterTest(failedOnly = true)
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(Browser.detect() == Browser.OPERA &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
@@ -189,7 +189,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NotYetImplemented(SAFARI)
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
       throws Exception {
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(Browser.detect() == Browser.OPERA &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
@@ -219,7 +219,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(SAFARI)
   public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(Browser.detect() == Browser.OPERA &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);

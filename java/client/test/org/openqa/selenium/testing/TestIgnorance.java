@@ -18,10 +18,11 @@
 package org.openqa.selenium.testing;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.openqa.selenium.testing.Driver.GRID;
-import static org.openqa.selenium.testing.Driver.REMOTE;
+import static org.openqa.selenium.testing.drivers.Browser.GRID;
+import static org.openqa.selenium.testing.drivers.Browser.REMOTE;
 
 import org.junit.runner.Description;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,7 +39,7 @@ public class TestIgnorance {
   private Set<String> ignoreMethods = new HashSet<>();
   private Set<String> ignoreClasses = new HashSet<>();
 
-  public TestIgnorance(Driver driver) {
+  public TestIgnorance(Browser driver) {
     setBrowser(driver);
 
     String onlyRun = System.getProperty("only_run");
@@ -90,13 +91,13 @@ public class TestIgnorance {
            ignoreMethods.contains(method.getMethodName());
   }
 
-  public void setBrowser(Driver driver) {
+  public void setBrowser(Browser driver) {
     checkNotNull(driver,
         "Browser to use must be set. Do this by setting the 'selenium.browser' system property");
     addIgnoresForBrowser(driver, ignoreComparator);
   }
 
-  private void addIgnoresForBrowser(Driver driver, IgnoreComparator comparator) {
+  private void addIgnoresForBrowser(Browser driver, IgnoreComparator comparator) {
     if (Boolean.getBoolean("selenium.browser.remote")
         || Boolean.getBoolean("selenium.browser.grid")) {
       comparator.addDriver(REMOTE);

@@ -24,9 +24,9 @@ import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Before;
 import org.junit.Test;

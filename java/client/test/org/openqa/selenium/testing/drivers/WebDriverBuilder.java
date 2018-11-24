@@ -23,7 +23,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
@@ -57,11 +56,13 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   private static Map<Browser, Supplier<Capabilities>> capabilitySuppliers =
     new ImmutableMap.Builder<Browser, Supplier<Capabilities>>()
-      .put(Browser.chrome, ChromeOptions::new)
-      .put(Browser.ff, () -> new FirefoxOptions()
-          .setLegacy(!Boolean.parseBoolean(System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true")))
+      .put(Browser.CHROME, ChromeOptions::new)
+      .put(Browser.FIREFOX, () -> new FirefoxOptions()
+          .setLegacy(true)
           .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
-      .put(Browser.ie, () -> {
+      .put(Browser.MARIONETTE, () -> new FirefoxOptions()
+          .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
+      .put(Browser.IE, () -> {
         InternetExplorerOptions options = new InternetExplorerOptions();
         if (Boolean.getBoolean("selenium.ie.disable_native_events")) {
           options.disableNativeEvents();
@@ -71,9 +72,10 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         }
         return options;
       })
-      .put(Browser.htmlunit, DesiredCapabilities::htmlUnit)
-      .put(Browser.operablink, OperaOptions::new)
-      .put(Browser.safari, () -> {
+      .put(Browser.SAFARI, SafariOptions::new)
+      .put(Browser.HTMLUNIT, DesiredCapabilities::htmlUnit)
+      .put(Browser.OPERABLINK, OperaOptions::new)
+      .put(Browser.OPERA, () -> {
         SafariOptions options = new SafariOptions();
         if (Boolean.getBoolean("selenium.safari.tp")) {
           options.setUseTechnologyPreview(true);
@@ -82,18 +84,19 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
       })
       .build();
 
-  public static Capabilities getStandardCapabilitiesFor(Browser browser) {
-    return capabilitySuppliers.getOrDefault(browser, ImmutableCapabilities::new).get();
+  public static Capabilities getStandardCapabilitiesFor(Browser toBuild) {
+    System.out.println("***** " + toBuild);
+    return capabilitySuppliers.getOrDefault(toBuild, ImmutableCapabilities::new).get();
   }
 
-  private final Browser browser;
+  private final Browser toBuild;
 
   public WebDriverBuilder() {
     this(Browser.detect());
   }
 
-  public WebDriverBuilder(Browser browser) {
-    this.browser = Optional.ofNullable(browser).orElse(Browser.chrome);
+  public WebDriverBuilder(Browser toBuild) {
+    this.toBuild = Optional.ofNullable(toBuild).orElse(Browser.CHROME);
   }
 
   public WebDriver get() {
@@ -101,7 +104,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
   }
 
   public WebDriver get(Capabilities desiredCapabilities) {
-    Capabilities desiredCaps = getStandardCapabilitiesFor(browser).merge(desiredCapabilities);
+    Capabilities desiredCaps = getStandardCapabilitiesFor(toBuild).merge(desiredCapabilities);
 
     WebDriver driver =
         Stream.of(

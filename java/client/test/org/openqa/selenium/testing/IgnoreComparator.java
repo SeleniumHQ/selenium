@@ -20,9 +20,7 @@ package org.openqa.selenium.testing;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.testing.Driver;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.IgnoreList;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -32,11 +30,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class IgnoreComparator {
-  private Set<Driver> ignored = new HashSet<>();
+  private Set<Browser> ignored = new HashSet<>();
   private Platform currentPlatform = Platform.getCurrent();
 
   // TODO(simon): reduce visibility
-  public void addDriver(Driver driverToIgnore) {
+  public void addDriver(Browser driverToIgnore) {
     ignored.add(driverToIgnore);
   }
 
@@ -55,7 +53,7 @@ public class IgnoreComparator {
 
   private boolean shouldIgnore(Stream<Ignore> ignoreList) {
     return ignoreList.anyMatch(driver ->
-        (ignored.contains(driver.value()) || driver.value() == Driver.ALL)
+        (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
         && (!driver.travis() || isOnTravis())
         && isOpen(driver.issue()));
   }
