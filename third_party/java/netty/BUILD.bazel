@@ -1,0 +1,15 @@
+java_import(
+    name = "netty",
+    jars = [
+        "netty-all-4.1.25.Final.jar",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    srcjar = "netty-all-4.1.25.Final-sources.jar",
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+        "//third_party/java/littleshoot:__pkg__",
+    ],
+)

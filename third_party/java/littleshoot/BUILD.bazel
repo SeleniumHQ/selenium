@@ -1,0 +1,13 @@
+java_import(
+    name = "littleshoot",
+    jars = [
+        "littleproxy-1.1.3-SNAPSHOT.jar",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+)

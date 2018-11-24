@@ -13,6 +13,7 @@ java_library(
         "maven_pom_template=jetty.pom",
     ],
     visibility = [
+        "//java/client/test/org/openqa/selenium:__pkg__",
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa:__subpackages__",
     ],
