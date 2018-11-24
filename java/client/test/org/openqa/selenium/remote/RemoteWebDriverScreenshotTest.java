@@ -38,7 +38,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
 
   @Test
-  @Ignore(GRID)
+  @Ignore
   public void testShouldBeAbleToGrabASnapshotOnException() {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");
