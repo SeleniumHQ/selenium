@@ -1,5 +1,5 @@
 java_import(
-    name = "mockito",
+    name = "mockito-core",
     jars = ["mockito-core-2.18.0.jar"],
     licenses = [
         "notice",  # MIT

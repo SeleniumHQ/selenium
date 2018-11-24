@@ -17,6 +17,6 @@ gen_java_tests(
         "//third_party/java/assertj",
         "//third_party/java/guava",
         "//third_party/java/junit",
-        "//third_party/java/mockito",
+        "//third_party/java/mockito:mockito-core",
     ],
 )

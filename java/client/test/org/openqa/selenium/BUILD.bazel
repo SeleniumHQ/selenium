@@ -13,17 +13,17 @@ SMALL_TESTS = [
     # "ProxyTest.java", # needs more dependencies
 ]
 
-#gen_java_tests(
-#    size = "small",
-#    srcs = SMALL_TESTS,
-#    deps = [
-#        "//java/client/src/org/openqa/selenium",
-#        "//third_party/java/assertj",
-#        "//third_party/java/guava",
-#        "//third_party/java/junit",
-#        "//third_party/java/mockito:mockito-core",
-#    ],
-#)
+gen_java_tests(
+    size = "small",
+    srcs = SMALL_TESTS,
+    deps = [
+        "//java/client/src/org/openqa/selenium",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
+    ],
+)
 
 java_library(
     name = "selenium",
@@ -68,7 +68,7 @@ gen_java_tests(
         "//third_party/java/jetty",
         "//third_party/java/junit",
         "//third_party/java/littleshoot",
-        "//third_party/java/mockito",
+        "//third_party/java/mockito:mockito-core",
         "//third_party/java/netty",
         "//third_party/java/servlet:javax.servlet-api",
     ],

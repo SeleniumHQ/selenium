@@ -35,13 +35,16 @@ def _impl(ctx):
         )
 
 def gen_java_tests(size, srcs = [], tags = [], deps = [], **kwargs):
+    key = size + str(srcs) + str(tags) + str(deps) + native.package_name()
+    lib_name = "%s" % hash(key)
+
     native.java_library(
-        name = "%s-lib" % native.package_name(),
+        name = lib_name,
         srcs = srcs,
         deps = deps,
     )
 
-    deps.append(":%s-lib" % native.package_name())
+    deps.append(":%s" % lib_name)
 
     actual_tags = []
     actual_tags.extend(tags)
