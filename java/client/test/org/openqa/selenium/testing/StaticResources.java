@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.testing;
 
-import org.openqa.selenium.BuckBuild;
+import org.openqa.selenium.build.BuckBuild;
+import org.openqa.selenium.build.DevMode;
+import org.openqa.selenium.build.InProject;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

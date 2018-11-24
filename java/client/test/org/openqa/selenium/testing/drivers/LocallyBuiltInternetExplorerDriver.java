@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import org.openqa.selenium.Build;
+import org.openqa.selenium.build.Build;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerDriverLogLevel;
 import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.build.InProject;
 
 import java.io.File;
 

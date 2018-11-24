@@ -15,11 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.testing;
+package org.openqa.selenium.build;
 
 public class DevMode {
   public static boolean isInDevMode() {
-    return isInDevMode("/org/openqa/selenium/remote/isDisplayed.js");
+    return false;//isInDevMode("/org/openqa/selenium/remote/isDisplayed.js");
   }
 
   public static boolean isInDevMode(String nameOfRequiredResource) {

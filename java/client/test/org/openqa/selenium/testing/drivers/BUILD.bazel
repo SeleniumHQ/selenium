@@ -1,8 +1,7 @@
 java_library(
     name = "drivers",
     visibility = [
-        "//java/client/test/org/openqa/selenium/environment:__pkg__",
-        "//java/client/test/org/openqa/selenium/testing:__pkg__",
+        "//java/client/test/org/openqa/selenium:__subpackages__",
     ],
     exports = [
         ":browser",
@@ -23,9 +22,7 @@ java_library(
         "*Driver.java",
         "*Supplier.java",
     ]) + [
-        "IgnoreComparator.java",
         "OutOfProcessSeleniumServer.java",
-        "TestIgnorance.java",
         "WebDriverBuilder.java",
     ],
     deps = [
@@ -37,9 +34,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
-        "//java/client/test/org/openqa/selenium",
-        "//java/client/test/org/openqa/selenium/testing",
-        "//third_party/java/github:org.eclipse.egit.github.core",
+        "//java/client/test/org/openqa/selenium/build",
         "//third_party/java/guava",
         "//third_party/java/junit",
         "//third_party/java/selenium:htmlunit-driver",

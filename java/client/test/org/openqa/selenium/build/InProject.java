@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.testing;
+package org.openqa.selenium.build;
 
 import com.google.common.base.Preconditions;
 

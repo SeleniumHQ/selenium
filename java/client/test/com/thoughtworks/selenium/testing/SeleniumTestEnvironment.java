@@ -17,7 +17,7 @@
 
 package com.thoughtworks.selenium.testing;
 
-import org.openqa.selenium.BuckBuild;
+import org.openqa.selenium.build.BuckBuild;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Page;

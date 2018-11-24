@@ -26,7 +26,7 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.InProject.locate;
+import static org.openqa.selenium.build.InProject.locate;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;

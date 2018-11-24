@@ -15,23 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.testing.drivers;
+package org.openqa.selenium.testing;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.openqa.selenium.testing.Driver.ALL;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.EDGE;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.GRID;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.runner.Description;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.IgnoreList;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -48,8 +38,8 @@ public class TestIgnorance {
   private Set<String> ignoreMethods = new HashSet<>();
   private Set<String> ignoreClasses = new HashSet<>();
 
-  public TestIgnorance(Browser browser) {
-    setBrowser(browser);
+  public TestIgnorance(Driver driver) {
+    setBrowser(driver);
 
     String onlyRun = System.getProperty("only_run");
     if (onlyRun != null) {
@@ -100,14 +90,13 @@ public class TestIgnorance {
            ignoreMethods.contains(method.getMethodName());
   }
 
-  public void setBrowser(Browser browser) {
-    Browser browser1 = checkNotNull(
-        browser,
+  public void setBrowser(Driver driver) {
+    checkNotNull(driver,
         "Browser to use must be set. Do this by setting the 'selenium.browser' system property");
-    addIgnoresForBrowser(browser, ignoreComparator);
+    addIgnoresForBrowser(driver, ignoreComparator);
   }
 
-  private void addIgnoresForBrowser(Browser browser, IgnoreComparator comparator) {
+  private void addIgnoresForBrowser(Driver driver, IgnoreComparator comparator) {
     if (Boolean.getBoolean("selenium.browser.remote")
         || Boolean.getBoolean("selenium.browser.grid")) {
       comparator.addDriver(REMOTE);
@@ -116,50 +105,7 @@ public class TestIgnorance {
       comparator.addDriver(GRID);
     }
 
-    switch (browser) {
-      case chrome:
-        comparator.addDriver(CHROME);
-        break;
-
-      case edge:
-        comparator.addDriver(EDGE);
-        break;
-
-      case ff:
-        if (System.getProperty("webdriver.firefox.marionette") == null ||
-            Boolean.getBoolean("webdriver.firefox.marionette")) {
-          comparator.addDriver(MARIONETTE);
-        } else {
-          comparator.addDriver(FIREFOX);
-        }
-        break;
-
-      case htmlunit:
-        comparator.addDriver(HTMLUNIT);
-        break;
-
-      case ie:
-        comparator.addDriver(IE);
-        break;
-
-      case none:
-        comparator.addDriver(ALL);
-        break;
-
-      case opera:
-        break;
-
-      case operablink:
-        comparator.addDriver(CHROME);
-        break;
-
-      case safari:
-        comparator.addDriver(SAFARI);
-        break;
-
-      default:
-        throw new RuntimeException("Cannot determine which ignore to add ignores rules for");
-    }
+    comparator.addDriver(driver);
   }
 
 }

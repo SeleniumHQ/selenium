@@ -15,19 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+package org.openqa.selenium.build;
 
 import static com.google.common.base.StandardSystemProperty.LINE_SEPARATOR;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.testing.DevMode.isInDevMode;
+import static org.openqa.selenium.build.DevMode.isInDevMode;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.testing.InProject;
 
 import java.io.IOException;
 import java.nio.file.Files;

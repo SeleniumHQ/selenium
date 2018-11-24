@@ -9,7 +9,7 @@ java_import(
         "maven_coordinates=org.eclipse.mylyn.github:org.eclipse.egit.github.core:jar:2.1.5",
     ],
     visibility = [
-        "//java/client/test/org/openqa/selenium/testing/drivers:__pkg__",
+        "//java/client/test/org/openqa/selenium/testing:__pkg__",
     ],
     deps = [
         "//third_party/java/gson",

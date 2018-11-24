@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing;
 
+import java.util.logging.Logger;
+
 public enum Driver {
   ALL,
   CHROME,
@@ -25,8 +27,36 @@ public enum Driver {
   FIREFOX,
   IE,
   MARIONETTE,
+  OPERA,
+  OPERABLINK,
   SAFARI,
 
   REMOTE,
-  GRID
+  GRID;
+
+  private static final Logger log = Logger.getLogger(Driver.class.getName());
+
+  public static Driver detect() {
+    String browserName = System.getProperty("selenium.browser");
+    if (browserName == null) {
+      log.info("No browser detected, returning null");
+      return null;
+    }
+
+    if ("ff".equals(browserName.toLowerCase()) || "firefox".equals(browserName.toLowerCase())) {
+      if (System.getProperty("webdriver.firefox.marionette") == null ||
+          Boolean.getBoolean("webdriver.firefox.marionette")) {
+        return MARIONETTE;
+      } else {
+        return FIREFOX;
+      }
+    }
+
+    try {
+      return Driver.valueOf(browserName.toUpperCase());
+    } catch (IllegalArgumentException e) {
+    }
+
+    throw new RuntimeException(String.format("Cannot determine driver from name %s", browserName));
+  }
 }

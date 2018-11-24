@@ -18,17 +18,17 @@
 package org.openqa.selenium.testing.drivers;
 
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.DevMode.isInDevMode;
+import static org.openqa.selenium.build.DevMode.isInDevMode;
 
 import com.google.common.base.Throwables;
 
-import org.openqa.selenium.BuckBuild;
+import org.openqa.selenium.build.BuckBuild;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.testing.DevMode;
+import org.openqa.selenium.build.DevMode;
 
 import java.io.File;
 import java.io.IOException;
