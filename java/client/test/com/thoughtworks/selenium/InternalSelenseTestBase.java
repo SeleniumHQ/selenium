@@ -160,23 +160,24 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
     Browser browser = Browser.valueOf(property);
     switch (browser) {
-      case chrome:
+      case CHROME:
         return DesiredCapabilities.chrome();
 
-      case edge:
+      case EDGE:
         return DesiredCapabilities.edge();
 
-      case ie:
+      case IE:
         return DesiredCapabilities.internetExplorer();
 
-      case ff:
+      case FIREFOX:
+      case MARIONETTE:
         return DesiredCapabilities.firefox();
 
-      case opera:
-      case operablink:
+      case OPERA:
+      case OPERABLINK:
         return DesiredCapabilities.operaBlink();
 
-      case safari:
+      case SAFARI:
         return DesiredCapabilities.safari();
 
       default:

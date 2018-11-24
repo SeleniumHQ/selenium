@@ -22,13 +22,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.ALL;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.ALL;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
@@ -232,10 +232,10 @@ public class ClickScrollingTest extends JUnit4TestBase {
       toCheck.run();
       assumeFalse(
           "It appears https://github.com/mozilla/geckodriver/issues/" + mozIssue + " is fixed",
-          Platform.getCurrent() == Platform.MAC && Browser.detect() == Browser.ff);
+          Platform.getCurrent() == Platform.MAC && Browser.detect() == MARIONETTE);
     } catch (Throwable e) {
       // Swallow the exception, as this is expected for Firefox on OS X
-      if (!(Platform.getCurrent() == Platform.MAC && Browser.detect() == Browser.ff)) {
+      if (!(Platform.getCurrent() == Platform.MAC && Browser.detect() == MARIONETTE)) {
         throw e;
       }
     }

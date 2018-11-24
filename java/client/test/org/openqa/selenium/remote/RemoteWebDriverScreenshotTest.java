@@ -20,8 +20,8 @@ package org.openqa.selenium.remote;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.OutputType.BASE64;
-import static org.openqa.selenium.testing.Driver.GRID;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.GRID;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 
 import org.junit.Test;
 import org.openqa.selenium.By;

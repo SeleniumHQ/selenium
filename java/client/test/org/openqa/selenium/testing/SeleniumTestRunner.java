@@ -21,7 +21,6 @@ import org.junit.runner.Description;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
-import org.openqa.selenium.build.DevMode;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Optional;
@@ -39,7 +38,7 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
    */
   public SeleniumTestRunner(Class<?> klass) throws InitializationError {
     super(klass);
-    ignorance = new TestIgnorance(Optional.ofNullable(Driver.detect()).orElse(Driver.CHROME));
+    ignorance = new TestIgnorance(Optional.ofNullable(Browser.detect()).orElse(Browser.CHROME));
   }
 
   @Override

@@ -37,6 +37,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.logging.Logger;
@@ -47,7 +48,7 @@ public abstract class JUnit4TestBase {
 
   private static final Logger logger = Logger.getLogger(JUnit4TestBase.class.getName());
 
-  private Driver current = Driver.detect();
+  private Browser current = Browser.detect();
   protected TestEnvironment environment;
   protected AppServer appServer;
   protected Pages pages;
@@ -158,7 +159,7 @@ public abstract class JUnit4TestBase {
     }
 
     private boolean notImplemented(Stream<NotYetImplemented> nyi) {
-      return nyi.anyMatch(driver -> matches(current, new Driver[]{driver.value()}));
+      return nyi.anyMatch(driver -> matches(current, new Browser[]{driver.value()}));
     }
 
     @Override
@@ -247,9 +248,9 @@ public abstract class JUnit4TestBase {
     storedDriver.remove();
   }
 
-  private static boolean matches(Driver current, Driver[] drivers) {
-    for (Driver item : drivers) {
-      if (item == Driver.ALL) {
+  private static boolean matches(Browser current, Browser[] drivers) {
+    for (Browser item : drivers) {
+      if (item == Browser.ALL) {
         return true;
       }
 
@@ -257,14 +258,14 @@ public abstract class JUnit4TestBase {
         return true;
       }
 
-      if (item == Driver.REMOTE) {
+      if (item == Browser.REMOTE) {
         if (Boolean.getBoolean("selenium.browser.grid") ||
             Boolean.getBoolean("selenium.browser.remote")) {
           return true;
         }
       }
 
-      if (item == Driver.GRID) {
+      if (item == Browser.GRID) {
         if (Boolean.getBoolean("selenium.browser.grid")) {
           return true;
         }

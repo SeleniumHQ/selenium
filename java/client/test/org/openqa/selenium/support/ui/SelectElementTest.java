@@ -19,7 +19,7 @@ package org.openqa.selenium.support.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.Driver.ALL;
+import static org.openqa.selenium.testing.drivers.Browser.ALL;
 
 import com.google.common.collect.ImmutableList;
 

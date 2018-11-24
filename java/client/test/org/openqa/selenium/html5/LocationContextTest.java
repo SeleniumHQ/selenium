@@ -20,7 +20,7 @@ package org.openqa.selenium.html5;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
 import org.junit.Before;
 import org.junit.Test;
