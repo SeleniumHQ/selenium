@@ -54,10 +54,15 @@ public class I18nTest extends JUnit4TestBase {
    */
   private static final String tokyo = "\u6771\u4EAC";
 
+  /**
+   * Chinese for "The Voice of China"
+   */
+  private static final String theVoiceOfChina = "\u4E2D\u56FD\u4E4B\u58F0";
+
   @Test
   public void testCn() {
     driver.get(pages.chinesePage);
-    driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
+    driver.findElement(By.linkText(theVoiceOfChina)).click();
   }
 
   @Test

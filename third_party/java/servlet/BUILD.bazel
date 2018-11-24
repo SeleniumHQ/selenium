@@ -11,6 +11,7 @@ java_import(
         "maven_coordinates=javax.servlet:javax.servlet-api:jar:3.1.0",
     ],
     visibility = [
+        "//java/client/test/org/openqa/selenium:__pkg__",
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa/selenium/grid/server:__pkg__",
         "//third_party/java/jetty:__pkg__",

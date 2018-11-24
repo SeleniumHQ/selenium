@@ -50,7 +50,7 @@ java_library(
 gen_java_tests(
     size = "large",
     tags = [ "firefox" ],
-    srcs = glob([ "ClickTest.java" ], exclude = SMALL_TESTS),
+    srcs = glob([ "*Test.java" ], exclude = SMALL_TESTS),
     jvm_flags = [
         "-Dselenium.browser=ff",
     ],
@@ -59,10 +59,17 @@ gen_java_tests(
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing",
         "//java/client/test/org/openqa/selenium/testing/drivers",
         "//third_party/java/assertj",
         "//third_party/java/guava",
+        "//third_party/java/jetty",
         "//third_party/java/junit",
+        "//third_party/java/littleshoot",
+        "//third_party/java/mockito",
+        "//third_party/java/netty",
+        "//third_party/java/servlet:javax.servlet-api",
     ],
 )
