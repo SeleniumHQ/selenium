@@ -8,6 +8,24 @@ TYPE_SOURCES = [
     "SessionId.java",
 ]
 
+genrule(
+    name = "is-displayed",
+    outs = ["isDisplayed.js"],
+    cmd = "cp \"$(location //javascript/atoms:is-displayed.js)\" \"$@\"",
+    srcs = [
+        "//javascript/atoms:is-displayed.js",
+    ],
+)
+
+genrule(
+    name = "get-attribute",
+    outs = ["getAttribute.js"],
+    cmd = "cp \"$(location //javascript/webdriver/atoms:get-attribute.js)\" \"$@\"",
+    srcs = [
+        "//javascript/webdriver/atoms:get-attribute.js",
+    ],
+)
+
 java_library(
     name = "remote",
     srcs = glob(
@@ -22,6 +40,10 @@ java_library(
         ],
         exclude = TYPE_SOURCES,
     ),
+    resources = [
+        ":get-attribute",
+        ":is-displayed",
+    ],
     tags = [
         "maven_coordinates=org.seleniumhq.selenium:selenium-remote-driver:" + SE_VERSION,
     ],

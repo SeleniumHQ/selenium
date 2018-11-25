@@ -24,6 +24,7 @@ goog.provide('webdriver.Key');
  * http://www.google.com.au/search?&q=unicode+pua&btnK=Search
  *
  * @enum {string}
+ * @suppress {lintChecks}
  */
 webdriver.Key = {
   NULL:         '\uE000',

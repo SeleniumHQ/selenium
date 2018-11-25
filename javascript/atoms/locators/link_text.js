@@ -23,7 +23,6 @@ goog.require('bot.dom');
 goog.require('bot.locators.css');
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.dom.DomHelper');
 
 
 /**

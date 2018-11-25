@@ -67,18 +67,14 @@
 goog.module('webdriver.logging');
 goog.module.declareLegacyNamespace();
 
-goog.require('goog.debug.LogManager');
-goog.require('goog.debug.LogRecord');
-goog.require('goog.debug.Logger');
-goog.require('goog.object');
-goog.require('goog.string');
+var googDebug = goog.require('goog.debug');
+var googString = goog.require('goog.string');
 
 
-var LogManager = goog.debug.LogManager;
-var LogRecord = goog.debug.LogRecord;
-var Logger = goog.debug.Logger;
-var Objects = goog.object;
-var padNumber = goog.string.padNumber;
+var LogManager = googDebug.LogManager;
+var LogRecord = googDebug.LogRecord;
+var Logger = googDebug.Logger;
+var padNumber = googString.padNumber;
 
 
 /** @const */
@@ -325,7 +321,7 @@ var Entry = goog.defineClass(null, {
     /**
      * Converts a {@link goog.debug.LogRecord} into a
      * {@link webdriver.logging.Entry}.
-     * @param {!goog.debug.LogRecord} logRecord The record to convert.
+     * @param {!LogRecord} logRecord The record to convert.
      * @param {string=} opt_type The log type.
      * @return {!Entry} The converted entry.
      */

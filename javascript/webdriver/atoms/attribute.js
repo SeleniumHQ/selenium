@@ -18,9 +18,9 @@
 goog.module('webdriver.atoms.element.attribute');
 goog.module.declareLegacyNamespace();
 
-var domCore = goog.require('bot.dom.core');
-var array = goog.require('goog.array');
 var TagName = goog.require('goog.dom.TagName');
+var array = goog.require('goog.array');
+var domCore = goog.require('bot.dom.core');
 
 
 /**
@@ -104,6 +104,7 @@ var BOOLEAN_PROPERTIES = [
  * @param {!Element} element The element to use.
  * @param {string} attribute The name of the attribute to look up.
  * @return {?string} The string value of the attribute or property, or null.
+ * @suppress {reportUnknownTypes}
  */
 exports.get = function(element, attribute) {
   var value = null;

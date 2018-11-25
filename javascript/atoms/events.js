@@ -236,6 +236,7 @@ bot.events.EventFactory_.prototype.create = function(target, opt_args) {
  * and it allows event types to be mapped in JS objects without collisions.
  *
  * @return {string} String representation of the event type.
+ * @override
  */
 bot.events.EventFactory_.prototype.toString = function() {
   return this.type_;

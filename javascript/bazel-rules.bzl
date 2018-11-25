@@ -5,22 +5,19 @@ load(
 )
 
 def selenium_js_fragment(name, function, deps = [], visibility = []):
-    (module, _) = function.rsplit(".", 1)
+    (module, func) = function.rsplit(".", 1)
 
     # Write a file exposing the function
     native.genrule(
         name = "%s-fragment" % name,
         outs = ["%s-fragment.js" % name],
-        cmd = "echo \"goog.require('%s'); goog.exportSymbol('isEnabled', %s);\" > \"$@\"" % (module, function),
+        cmd = "echo \"goog.require('%s'); goog.exportSymbol('_', %s);\" > \"$@\"" % (module, function),
     )
 
     closure_js_library(
         name = "%s-fragment-lib" % name,
         srcs = ["%s-fragment" % name],
-        deps = deps + [
-            # "//third_party/closure",
-            "@io_bazel_rules_closure//closure/library",
-        ],
+        deps = deps,
     )
 
     # Wrap the output in two functions. The outer function ensures the
@@ -38,23 +35,17 @@ def selenium_js_fragment(name, function, deps = [], visibility = []):
                "}, arguments);}")
 
     closure_js_binary(
-        name = "get-attribute",
-        entry_points = [
-            "goog:" + function,
+        name = name,
+        output_wrapper = wrapper,
+        compilation_level = "ADVANCED",
+        defs = [
+            "--define=goog.NATIVE_ARRAY_PROTOTYPES=false",
+            "--define=bot.json.NATIVE_JSON=false",
+            "--generate_exports",
+            "--assume_function_wrapper",
         ],
-        # output_wrapper = wrapper,
-        compilation_level = "WHITESPACE_ONLY",
-        formatting = "PRETTY_PRINT",
-        #    defs = [
-        #        "--language_out=ECMASCRIPT6",
-        #        "--rewrite_polyfills=false",
-        #        "--define=goog.NATIVE_ARRAY_PROTOTYPES=false",
-        #        "--define=bot.json.NATIVE_JSON=false",
-        #        "--generate_exports",
-        #        "--assume_function_wrapper",
-        #    ],
         deps = [
             ":%s-fragment-lib" % name,
-        ] + deps,
+        ],
         visibility = visibility,
     )

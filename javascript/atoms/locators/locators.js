@@ -31,7 +31,6 @@ goog.require('bot.locators.name');
 goog.require('bot.locators.partialLinkText');
 goog.require('bot.locators.tagName');
 goog.require('bot.locators.xpath');
-goog.require('goog.object');
 
 
 /**

@@ -5,33 +5,19 @@ load(
 )
 load("//javascript:bazel-rules.bzl", "selenium_js_fragment")
 
-closure_js_deps(
-    name = "deps",
-    deps = [
-        ":everything",
-    ],
-)
-
 closure_js_library(
     name = "atoms",
-    srcs = glob(["**/*.js"], exclude = ["test/**"]),
-    suppress = [
-        "analyzerChecks",
-        "reportUnknownTypes",
-        "strictCheckTypes",
-    ],
+    srcs = glob(["**/*.js"]),
     deps = [
+        "//javascript/atoms",
+        "//javascript/webdriver",
         "@io_bazel_rules_closure//closure/library",
-        "//third_party/js/wgxpath:wgxpath",
-    ],
-    visibility = [
-        "//javascript/webdriver:__subpackages__",
     ],
 )
 
 selenium_js_fragment(
-    name = "is-displayed",
-    function = "bot.dom.isShown",
+    name = "get-attribute",
+    function = "webdriver.atoms.element.attribute.get",
     deps = [
         ":atoms",
     ],
