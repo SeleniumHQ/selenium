@@ -1,0 +1,14 @@
+java_import(
+    name = "slf4j",
+    jars = ["slf4j-api-1.7.25.jar"],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    srcjar = "slf4j-api-1.7.25-sources.jar",
+    tags = [
+        "maven_coordinates=org.slf4j:slf4j-api:jar:1.7.25",
+    ],
+    visibility = [
+        "//third_party/java/littleshoot:__pkg__",
+    ],
+)
