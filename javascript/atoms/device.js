@@ -219,7 +219,6 @@ bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
 
   function addTouch(identifier, coords) {
     // Android devices leave identifier to zero.
-    var id = goog.userAgent.product.ANDROID ? 0 : identifier;
     var touch = {
       identifier: identifier,
       screenX: coords.x,

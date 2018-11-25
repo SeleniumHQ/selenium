@@ -1,0 +1,17 @@
+load(
+    "@io_bazel_rules_closure//closure:defs.bzl",
+    "closure_js_deps",
+    "closure_js_library",
+)
+
+closure_js_library(
+    name = "webdriver",
+    srcs = glob(["*.js", "http/*.js"]),
+    deps = [
+        "//javascript/atoms",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+    visibility = [
+        "//javascript/webdriver/atoms:__pkg__",
+    ]
+)
