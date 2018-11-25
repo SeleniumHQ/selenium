@@ -5,13 +5,6 @@ load(
 )
 load("//javascript:bazel-rules.bzl", "selenium_js_fragment")
 
-closure_js_deps(
-    name = "deps",
-    deps = [
-        ":everything",
-    ],
-)
-
 closure_js_library(
     name = "atoms",
     srcs = glob(["**/*.js"], exclude = ["test/**"]),
@@ -25,6 +18,7 @@ closure_js_library(
         "//third_party/js/wgxpath:wgxpath",
     ],
     visibility = [
+        "//javascript:__pkg__",
         "//javascript/webdriver:__subpackages__",
     ],
 )

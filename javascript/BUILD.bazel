@@ -1,8 +1,26 @@
+load(
+    "@io_bazel_rules_closure//closure:defs.bzl",
+    "closure_js_deps",
+)
+
 filegroup(
     name = "javascript",
     data = glob([
         "**/*.*",
-    ]),
+    ]) + [
+        ":deps.js",
+    ],
+    visibility = [
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
+    ],
+)
+
+closure_js_deps(
+    name = "deps",
+    deps = [
+        "//javascript/atoms",
+        "//javascript/webdriver",
+    ],
     visibility = [
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
     ],
