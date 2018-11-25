@@ -21,7 +21,7 @@ java_library(
         "webserver/keystore",
         "//common/src/web",
         "//javascript",
-        "@io_bazel_rules_closure//closure/library",
+        "//javascript:deps.js",
     ] + glob(["webserver/*.java"]),
     visibility = [
         "//java/client/test:__subpackages__",
