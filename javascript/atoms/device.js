@@ -25,6 +25,7 @@ goog.provide('bot.Device.EventEmitter');
 
 goog.require('bot');
 goog.require('bot.dom');
+goog.require('bot.events');
 goog.require('bot.locators');
 goog.require('bot.userAgent');
 goog.require('goog.array');

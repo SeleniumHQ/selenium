@@ -1,0 +1,329 @@
+load(
+    "@io_bazel_rules_closure//closure:defs.bzl",
+    "closure_js_binary",
+    "closure_js_deps",
+    "closure_js_library",
+)
+load("//javascript:bazel-rules.bzl", "selenium_js_fragment")
+
+closure_js_deps(
+    name = "deps",
+    deps = [
+        ":everything",
+    ],
+)
+
+#closure_js_deps(
+#    name = "deps",
+#    deps = [
+#        ":action",
+#        ":bot",
+#        ":color",
+#        ":devices",
+#        ":domcore",
+#        ":dom",
+#        ":errors",
+#        ":events",
+#        ":html5",
+#        ":inject",
+#        ":json",
+#        ":locators",
+#        ":response",
+#        ":useragent",
+#        ":window",
+#        ":xpath",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "action",
+#    srcs = [
+#        "action.js",
+#    ],
+#    deps = [
+#        ":devices",
+#        ":dom",
+#        ":errors",
+#        ":events",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "bot",
+#    srcs = [
+#        "bot.js",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "color",
+#    srcs = [
+#        "color.js",
+#    ],
+#    deps = [
+#        "//third_party/closure",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "devices",
+#    srcs = [
+#        "device.js",
+#        "keyboard.js",
+#        "mouse.js",
+#        "touchscreen.js",
+#    ],
+#    deps = [
+#        ":dom",
+#        ":errors",
+#        ":events",
+#        ":locators",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "domcore",
+#    srcs = [
+#        "domcore.js",
+#    ],
+#    deps = [
+#        ":errors",
+#        ":useragent",
+#        "//third_party/closure",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "dom",
+#    srcs = [
+#        "dom.js",
+#    ],
+#    deps = [
+#        ":bot",
+#        ":domcore",
+#        ":color",
+#        ":json",
+#        ":xpath",
+#        "//third_party/closure",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "errors",
+#    srcs = [
+#        "error.js",
+#    ],
+#    suppress = [
+#        "JSC_DUPLICATE_ENUM_VALUE",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "events",
+#    srcs = [
+#        "events.js",
+#    ],
+#    deps = [
+#        ":bot",
+#        ":dom",
+#        ":errors",
+#        ":json",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "html5",
+#    srcs = glob(["html5/*.js"]),
+#    deps = [
+#        ":bot",
+#        ":errors",
+#        ":json",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "inject",
+#    srcs = [
+#        "inject.js",
+#    ],
+#    deps = [
+#        ":bot",
+#        ":errors",
+#        ":json",
+#        ":response",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "json",
+#    srcs = [
+#        "json.js",
+#        "userAgent.js",
+#    ],
+#    deps = [
+#        "//third_party/closure",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "locators",
+#    srcs = glob(["locators/*.js"], exclude = ["locators/xpath.js"]),
+#    deps = [
+#        ":dom",
+#        ":json",
+#        ":xpath",
+#        "//third_party/closure",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "response",
+#    srcs = [
+#        "response.js",
+#    ],
+#    deps = [
+#        ":errors",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "useragent",
+#    srcs = [
+#        "userAgent.js",
+#    ],
+#    deps = [
+#        "//third_party/closure",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "window",
+#    srcs = [
+#        "frame.js",
+#        "window.js",
+#    ],
+#    deps = [
+#        ":bot",
+#        ":errors",
+#        ":events",
+#        ":json",
+#        ":locators",
+#    ],
+#    visibility = [
+#        "//javascript:__subpackages__",
+#    ],
+#)
+#
+#closure_js_library(
+#    name = "xpath",
+#    srcs = [
+#        "locators/xpath.js",
+#    ],
+#    deps = [
+#        ":bot",
+#        ":errors",
+#        "//third_party/closure",
+#        "//third_party/js/wgxpath:wgxpath",
+#    ],
+#)
+
+closure_js_library(
+    name = "everything",
+    srcs = glob(["**/*.js"], exclude = ["test/**"]),
+    suppress = [
+        "analyzerChecks",
+        "reportUnknownTypes",
+        "strictCheckTypes",
+    ],
+    deps = [
+        "@io_bazel_rules_closure//closure/library",
+        "//third_party/js/wgxpath:wgxpath",
+    ],
+)
+
+# Wrap the output in two functions. The outer function ensures the
+# compiled fragment never pollutes the global scope by using its
+# own scope on each invocation. We must import window.navigator into
+# this unique scope since Closure's goog.userAgent package assumes
+# navigator and document are defined on goog.global. Normally, this
+# would be window, but we are explicitly defining the fragment so that
+# goog.global is _not_ window.
+#     See http://code.google.com/p/selenium/issues/detail?id=1333
+wrapper = "function(){%output%; return this._.apply(null,arguments);}"
+wrapper = ("function(){return %s.apply({" % wrapper +
+           "navigator:typeof window!='undefined'?window.navigator:null," +
+           "document:typeof window!='undefined'?window.document:null" +
+           "}, arguments);}")
+
+#        flags = []
+#        flags.push("--js_output_file=#{output}")
+#        flags.push("--output_wrapper=\"#{wrapper}\"")
+#        flags.push("--compilation_level=#{compilation_level(minify)}")
+#        flags.push("--define=goog.NATIVE_ARRAY_PROTOTYPES=false")
+#        flags.push("--define=bot.json.NATIVE_JSON=false")
+
+selenium_js_fragment(
+    name = "get-attribute",
+    function = "bot.dom.isEnabled",
+    deps = [
+        ":everything",
+    ]
+)
+
+#closure_js_binary(
+#    name = "get-attribute",
+#    entry_points = [
+#        "goog:bot.dom",
+#    ],
+#    output_wrapper = wrapper,
+#    #    compilation_level = "WHITESPACE",
+#    #    formatting = "PRETTY_PRINT",
+#    #    defs = [
+#    #        "--language_out=ECMASCRIPT6",
+#    #        "--rewrite_polyfills=false",
+#    #        "--define=goog.NATIVE_ARRAY_PROTOTYPES=false",
+#    #        "--define=bot.json.NATIVE_JSON=false",
+#    #        "--generate_exports",
+#    #        "--assume_function_wrapper",
+#    #    ],
+#    deps = [
+#        ":everything",
+#    ],
+#)
+

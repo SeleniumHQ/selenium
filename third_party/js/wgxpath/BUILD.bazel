@@ -1,0 +1,22 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+licenses([
+    "notice",  # MIT
+])
+
+closure_js_library(
+    name = "wgxpath",
+    srcs = glob(["*.js"]),
+    suppress = [
+        "analyzerChecks",
+        "lintChecks",
+        "missingOverride",
+        "reportUnknownTypes",
+        "strictCheckTypes",
+        "strictMissingRequire",
+    ],
+    deps = [
+        "@io_bazel_rules_closure//closure/library",
+    ],
+    visibility = ["//visibility:public"],
+)
