@@ -138,7 +138,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
         }
         resolver = function(prefix) {
           return namespaces[prefix] || null;
-        }
+        };
       }
 
       try {

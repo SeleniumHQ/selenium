@@ -23,7 +23,10 @@
 
 goog.provide('bot.frame');
 
+goog.require('bot');
 goog.require('bot.Error');
+goog.require('bot.ErrorCode');
+goog.require('bot.dom');
 goog.require('bot.locators');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -49,7 +52,7 @@ bot.frame.activeElement = function() {
  * Gets the parent frame of the specified frame.
  *
  * @param {!Window=} opt_root The window get the parent of.
- *     Defaults to {@code bot.getWindow()}.
+ *     Defaults to `bot.getWindow()`.
  * @return {Window} The frame if found, null otherwise.
  */
 bot.frame.parentFrame = function(opt_root) {
@@ -97,7 +100,7 @@ bot.frame.isFrame_ = function(element) {
  * @param {(string|number)} nameOrId The frame's name, the frame's id, or the
  *     index of the frame in the containing window.
  * @param {!Window=} opt_root The window to perform the search under.
- *     Defaults to {@code bot.getWindow()}.
+ *     Defaults to `bot.getWindow()`.
  * @return {Window} The window if found, null otherwise.
  */
 bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
@@ -136,7 +139,7 @@ bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
  *
  * @param {number} index The frame's index.
  * @param {!Window=} opt_root The window to perform
- *     the search under. Defaults to {@code bot.getWindow()}.
+ *     the search under. Defaults to `bot.getWindow()`.
  * @return {Window} The frame if found, null otherwise.
  */
 bot.frame.findFrameByIndex = function(index, opt_root) {
@@ -152,7 +155,7 @@ bot.frame.findFrameByIndex = function(index, opt_root) {
  * @param {!(HTMLIFrameElement|HTMLFrameElement)} element The iframe or frame
  *     element.
  * @param {!Window=} opt_root The window to perform the search under. Defaults
- *     to {@code bot.getWindow()}.
+ *     to `bot.getWindow()`.
  * @return {?number} The index of the frame if found, null otherwise.
  */
 bot.frame.getFrameIndex = function(element, opt_root) {

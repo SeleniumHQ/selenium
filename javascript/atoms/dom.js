@@ -48,9 +48,9 @@ bot.dom.IS_SHADOW_DOM_ENABLED = (typeof ShadowRoot === 'function');
 
 /**
  * Retrieves the active element for a node's owner document.
- * @param {!(Node|Window)} nodeOrWindow The node whose owner document to get
+ * @param {(!Node|!Window)} nodeOrWindow The node whose owner document to get
  *     the active element for.
- * @return {Element} The active element, if any.
+ * @return {?Element} The active element, if any.
  */
 bot.dom.getActiveElement = function(nodeOrWindow) {
   var active = goog.dom.getActiveElement(
@@ -166,7 +166,7 @@ bot.dom.getAttribute = bot.dom.core.getAttribute;
 /**
  * List of elements that support the "disabled" attribute, as defined by the
  * HTML 4.01 specification.
- * @private {!Array.<goog.dom.TagName>}
+ * @private {!Array.<!goog.dom.TagName>}
  * @const
  * @see http://www.w3.org/TR/html401/interact/forms.html#h-17.12.1
  */

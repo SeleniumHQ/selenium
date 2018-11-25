@@ -113,7 +113,7 @@ bot.locators.getOnlyKey = function(target) {
  *
  * @param {!Object} target The selector to search for.
  * @param {(Document|Element)=} opt_root The node from which to start the
- *     search. If not specified, will use {@code document} as the root.
+ *     search. If not specified, will use `document` as the root.
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
@@ -141,7 +141,7 @@ bot.locators.findElement = function(target, opt_root) {
  *
  * @param {!Object} target The selector to search for.
  * @param {(Document|Element)=} opt_root The node from which to start the
- *     search. If not specified, will use {@code document} as the root.
+ *     search. If not specified, will use `document` as the root.
  * @return {!IArrayLike.<Element>} All matching elements found in the
  *     DOM.
  */
