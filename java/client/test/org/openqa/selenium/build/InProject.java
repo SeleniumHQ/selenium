@@ -45,8 +45,8 @@ public class InProject {
     Path dir = Paths.get(".").toAbsolutePath();
     Path pwd = dir;
     while (dir != null && !dir.equals(dir.getParent())) {
-      Path rakefile = dir.resolve("third_party");
-      if (Files.exists(rakefile)) {
+      Path versionFile = dir.resolve("java/version.bzl");
+      if (Files.exists(versionFile)) {
         break;
       }
       dir = dir.getParent();
