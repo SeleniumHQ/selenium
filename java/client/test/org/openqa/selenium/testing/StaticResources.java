@@ -48,8 +48,8 @@ class StaticResources {
         "//javascript/firefox-driver:webdriver_prefs",
         "org/openqa/selenium/firefox/webdriver_prefs.json");
     copy(
-        "//java/client/src/org/openqa/selenium/firefox:webdriver.xpi",
-        "org/openqa/selenium/firefox/webdriver.xpi");
+        "//java/client/src/org/openqa/selenium/firefox/xpi:webdriver.xpi",
+        "org/openqa/selenium/firefox/xpi/webdriver.xpi");
   }
 
   private static void copy(String buildTarget, String copyTo) {
