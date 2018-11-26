@@ -4,6 +4,7 @@ gen_java_tests(
     size = "small",
     srcs = glob(["*.java"]),
     deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",

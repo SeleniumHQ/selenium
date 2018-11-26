@@ -71,7 +71,7 @@ public class NodeTest {
 
     uri = new URI("http://localhost:1234");
 
-    sessions = new LocalSessionMap();
+    sessions = new LocalSessionMap(tracer);
 
     class Handler extends Session implements CommandHandler {
 

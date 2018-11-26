@@ -68,7 +68,7 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalSessionMap sessions = new LocalSessionMap();
+    LocalSessionMap sessions = new LocalSessionMap(tracer);
     LocalNode node = LocalNode.builder(tracer, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
@@ -91,7 +91,7 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalSessionMap sessions = new LocalSessionMap();
+    LocalSessionMap sessions = new LocalSessionMap(tracer);
     LocalNode node = LocalNode.builder(tracer, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
@@ -113,7 +113,7 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalSessionMap sessions = new LocalSessionMap();
+    LocalSessionMap sessions = new LocalSessionMap(tracer);
     LocalNode node = LocalNode.builder(tracer, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();

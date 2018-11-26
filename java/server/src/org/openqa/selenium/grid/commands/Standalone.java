@@ -99,9 +99,9 @@ public class Standalone implements CliCommand {
       DistributedTracer tracer = new LoggingOptions(config).getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
-      SessionMap sessions = new LocalSessionMap();
+      SessionMap sessions = new LocalSessionMap(tracer);
       Distributor distributor = new LocalDistributor(tracer);
-      Router router = new Router(sessions, distributor);
+      Router router = new Router(tracer, sessions, distributor);
 
       String hostName;
       try {

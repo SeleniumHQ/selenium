@@ -89,7 +89,7 @@ public class SessionMapServer implements CliCommand {
       DistributedTracer tracer = new LoggingOptions(config).getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
-      SessionMap sessions = new LocalSessionMap();
+      SessionMap sessions = new LocalSessionMap(tracer);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
