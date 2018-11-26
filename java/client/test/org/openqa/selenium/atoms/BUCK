@@ -10,11 +10,13 @@ export_file(
   src = '//javascript/webdriver/atoms:inputs',
 )
 
-
 java_test(name = 'test',
   srcs = [ 'AtomsRhinoTests.java' ],
+  labels = [
+    "small",
+  ],
   resources = [
-     ':execute_script',
+    ':execute_script',
     ':atoms_inputs',
   ],
   deps = [
@@ -28,7 +30,7 @@ java_library(
   deps = [
     '//java/client/src/org/openqa/selenium/json:json',
     '//java/client/test/org/openqa/selenium:helpers',
-    '//java/client/test/org/openqa/selenium/testing:helpers',
+    '//java/client/test/org/openqa/selenium/build:build',
     '//third_party/java/assertj:assertj',
     '//third_party/java/guava:guava',
     '//third_party/java/htmlunit:htmlunit',
