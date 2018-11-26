@@ -67,15 +67,12 @@
 goog.module('webdriver.logging');
 goog.module.declareLegacyNamespace();
 
-var googDebug = goog.require('goog.debug');
+var LogManager = goog.require('goog.debug.LogManager');
+var LogRecord = goog.require('goog.debug.LogRecord');
+var Logger = goog.require('goog.debug.Logger');
 var googString = goog.require('goog.string');
 
-
-var LogManager = googDebug.LogManager;
-var LogRecord = googDebug.LogRecord;
-var Logger = googDebug.Logger;
 var padNumber = googString.padNumber;
-
 
 /** @const */
 exports.LogRecord = LogRecord;
