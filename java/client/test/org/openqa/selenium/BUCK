@@ -9,7 +9,7 @@ java_test(name = 'small-tests',
     ':tests',
     '//java/client/test/com/thoughtworks/selenium/webdriven:small-tests',
     '//java/client/test/org/openqa/selenium/support:small-tests',
-    '//java/client/test/org/openqa/selenium/testing/drivers:small-tests',
+    '//java/client/test/org/openqa/selenium/testing:small-tests',
     '//third_party/java/junit:junit',
   ],
 )

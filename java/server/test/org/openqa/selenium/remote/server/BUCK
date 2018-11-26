@@ -26,6 +26,7 @@ java_library(name = 'tests',
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/test/org/openqa/selenium:helpers',
     '//java/client/test/org/openqa/selenium/testing:test-base',
     '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
     '//java/server/src/org/openqa/selenium/grid/web:web',

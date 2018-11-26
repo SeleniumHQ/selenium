@@ -33,6 +33,7 @@ java_library(name = "webserver-test-base",
   deps = [
     ":environment",
     "//java/client/src/org/openqa/selenium/remote:remote",
+    "//java/client/src/org/openqa/selenium/support:support",
     "//third_party/java/junit:junit",
     '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
   ],

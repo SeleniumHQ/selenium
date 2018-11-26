@@ -34,9 +34,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 
-/**
- * Functional tests for {@link ChromeOptions}.
- */
 public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
 
   private static final String EXT_PATH = "third_party/chrome_ext/backspace.crx";
