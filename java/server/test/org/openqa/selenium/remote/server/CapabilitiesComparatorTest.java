@@ -122,7 +122,7 @@ public class CapabilitiesComparatorTest {
     desired.setBrowserName(BrowserType.FIREFOX);
     assertThat(getBestMatch(desired, list)).isEqualTo(firefox);
 
-    desired.setBrowserName(BrowserType.OPERA);
+    desired.setBrowserName(BrowserType.OPERA_BLINK);
     assertThat(getBestMatch(desired, list)).isEqualTo(opera);
   }
 
