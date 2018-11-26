@@ -360,7 +360,7 @@ public class XpiDriverService extends FirefoxDriverService {
     return new Builder();
   }
 
-  @AutoService(XpiDriverService.Builder.class)
+  @AutoService(FirefoxDriverService.Builder.class)
   public static class Builder extends FirefoxDriverService.Builder<XpiDriverService, XpiDriverService.Builder> {
 
     private FirefoxBinary binary = null;
