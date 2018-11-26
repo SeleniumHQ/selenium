@@ -273,7 +273,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("labelForCheckbox")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    assertThat(wait.until(elementTextToContain(result, "labelclick chboxclick"))).isNotNull();
+    wait.until(elementTextToContain(result, "labelclick chboxclick"));
   }
 
   @Test
