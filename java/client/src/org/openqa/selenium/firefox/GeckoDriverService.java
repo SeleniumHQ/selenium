@@ -107,7 +107,7 @@ public class GeckoDriverService extends FirefoxDriverService {
   /**
    * Builder used to configure new {@link GeckoDriverService} instances.
    */
-  @AutoService(FirefoxDriverService.Builder.class)
+  @AutoService(GeckoDriverService.Builder.class)
   public static class Builder extends FirefoxDriverService.Builder<
         GeckoDriverService, GeckoDriverService.Builder> {
 

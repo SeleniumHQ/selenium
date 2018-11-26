@@ -244,16 +244,6 @@ public class W3CRemoteDriverTest {
 
     if (caps == null) {
       try {
-        GeckoDriverService.createDefaultService();
-        caps = new FirefoxOptions();
-        expectedServiceClass = GeckoDriverService.class;
-      } catch (IllegalStateException e) {
-        // Fall through
-      }
-    }
-
-    if (caps == null) {
-      try {
         ChromeDriverService.createDefaultService();
         caps = new ChromeOptions();
         expectedServiceClass = ChromeDriverService.class;
@@ -262,9 +252,21 @@ public class W3CRemoteDriverTest {
       }
     }
 
+    if (caps == null) {
+      try {
+        GeckoDriverService.createDefaultService();
+        caps = new FirefoxOptions();
+        expectedServiceClass = GeckoDriverService.class;
+      } catch (IllegalStateException e) {
+        // Fall through
+      }
+    }
+
     assumeNotNull(caps, expectedServiceClass);
 
-    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder().addAlternative(caps).getPlan();
+    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder()
+        .addAlternative(caps)
+        .getPlan();
 
     assertThat(plan.isUsingDriverService()).isTrue();
     assertThat(plan.getDriverService().getClass()).isEqualTo(expectedServiceClass);
