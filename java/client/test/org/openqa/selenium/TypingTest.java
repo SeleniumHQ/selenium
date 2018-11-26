@@ -591,7 +591,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement result = driver.findElement(By.id("result"));
 
     silent.sendKeys("s");
-    assertThat(result.getText().trim()).isEqualTo("");
+    assertThat(result.getText().trim()).isIn("", "mouseover");
   }
 
   @Test
