@@ -28,20 +28,27 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.DistributorStatus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.NodeStatus;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.Span;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 public class LocalDistributor extends Distributor {
 
+  public static final Json JSON = new Json();
   private final Set<Node> nodes = new HashSet<>();
+  private final DistributedTracer tracer;
 
   public LocalDistributor(DistributedTracer tracer) {
     super(tracer);
+    this.tracer = Objects.requireNonNull(tracer);
   }
 
   @Override
@@ -63,12 +70,22 @@ public class LocalDistributor extends Distributor {
 
   @Override
   public void add(Node node) {
-    nodes.add(node);
+    StringBuilder sb = new StringBuilder();
+
+    try (Span span = tracer.createSpan("distributor.add", tracer.getActiveSpan());
+         JsonOutput out = JSON.newOutput(sb)) {
+      out.setPrettyPrint(false).write(node);
+      span.addTag("node", sb.toString());
+      nodes.add(node);
+    }
   }
 
   @Override
   public void remove(UUID nodeId) {
-    nodes.removeIf(node -> nodeId.equals(node.getId()));
+    try (Span span = tracer.createSpan("distributor.remove", tracer.getActiveSpan())) {
+      span.addTag("node.id", nodeId);
+      nodes.removeIf(node -> nodeId.equals(node.getId()));
+    }
   }
 
   @Override
