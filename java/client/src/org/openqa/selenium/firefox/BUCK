@@ -30,6 +30,6 @@ java_library(name = 'firefox',
 )
 
 export_file(name = 'prefs',
-  src = '//javascript/firefox-driver:webdriver_prefs',
+  src = '//third_party/js/selenium:webdriver_prefs',
   out = 'webdriver_prefs.json',
 )
