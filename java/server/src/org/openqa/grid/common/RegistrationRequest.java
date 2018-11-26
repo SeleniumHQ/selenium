@@ -135,6 +135,10 @@ public class RegistrationRequest {
       String converted = json.toJson(raw.get("configuration"));
       request.configuration = GridConfiguredJson.toType(converted, GridNodeConfiguration.class);
     }
+    
+    if (raw.get("configuration") instanceof GridNodeConfiguration) {
+      request.configuration = (GridNodeConfiguration)raw.get("configuration");
+    }
 
     return request;
   }
