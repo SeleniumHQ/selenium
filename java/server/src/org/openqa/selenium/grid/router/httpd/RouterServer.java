@@ -113,7 +113,7 @@ public class RouterServer implements CliCommand {
           tracer,
           HttpClient.Factory.createDefault().createClient(distributorUrl));
 
-      Router router = new Router(sessions, distributor);
+      Router router = new Router(tracer, sessions, distributor);
 
       Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));

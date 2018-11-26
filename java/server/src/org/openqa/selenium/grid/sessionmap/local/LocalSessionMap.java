@@ -21,6 +21,8 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.Span;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,38 +33,57 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class LocalSessionMap extends SessionMap {
 
-  private Map<SessionId, Session> knownSessions = new HashMap<>();
-  private ReadWriteLock lock = new ReentrantReadWriteLock(/* be fair */ true);
+  private final DistributedTracer tracer;
+  private final Map<SessionId, Session> knownSessions = new HashMap<>();
+  private final ReadWriteLock lock = new ReentrantReadWriteLock(/* be fair */ true);
+
+  public LocalSessionMap(DistributedTracer tracer) {
+    this.tracer = Objects.requireNonNull(tracer);
+  }
 
   @Override
   public boolean add(Session session) {
     Objects.requireNonNull(session, "Session has not been set");
 
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      knownSessions.put(session.getId(), session);
-    } finally {
-      writeLock.unlock();
-    }
+    try (Span span = tracer.createSpan("sessionmap.add", tracer.getActiveSpan())) {
+      span.addTag("session.id", session.getId());
+      span.addTag("session.capabilities", session.getCapabilities());
+      span.addTag("session.uri", session.getUri());
 
-    return true;
+      Lock writeLock = lock.writeLock();
+      writeLock.lock();
+      try {
+        knownSessions.put(session.getId(), session);
+      } finally {
+        writeLock.unlock();
+      }
+
+      return true;
+    }
   }
 
   @Override
   public Session get(SessionId id) {
     Objects.requireNonNull(id, "Session ID has not been set");
 
-    Lock readLock = lock.readLock();
-    readLock.lock();
-    try {
-      Session session = knownSessions.get(id);
-      if (session == null) {
-        throw new NoSuchSessionException("Unable to find session with ID: " + id);
+    try (Span span = tracer.createSpan("sessionmap.get", tracer.getActiveSpan())) {
+      span.addTag("session.id", id);
+
+      Lock readLock = lock.readLock();
+      readLock.lock();
+      try {
+        Session session = knownSessions.get(id);
+        if (session == null) {
+          throw new NoSuchSessionException("Unable to find session with ID: " + id);
+        }
+
+        span.addTag("session.capabilities", session.getCapabilities());
+        span.addTag("session.uri", session.getUri());
+
+        return session;
+      } finally {
+        readLock.unlock();
       }
-      return session;
-    } finally {
-      readLock.unlock();
     }
   }
 
@@ -70,12 +91,16 @@ public class LocalSessionMap extends SessionMap {
   public void remove(SessionId id) {
     Objects.requireNonNull(id, "Session ID has not been set");
 
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      knownSessions.remove(id);
-    } finally {
-      writeLock.unlock();
+    try (Span span = tracer.createSpan("sessionmap.remove", tracer.getActiveSpan())) {
+      span.addTag("session.id", id);
+
+      Lock writeLock = lock.writeLock();
+      writeLock.lock();
+      try {
+        knownSessions.remove(id);
+      } finally {
+        writeLock.unlock();
+      }
     }
   }
 }

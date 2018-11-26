@@ -28,6 +28,9 @@ import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -37,8 +40,10 @@ import java.util.concurrent.ExecutionException;
 class HandleSession implements CommandHandler {
 
   private final LoadingCache<SessionId, CommandHandler> knownSessions;
+  private final DistributedTracer tracer;
 
-  public HandleSession(SessionMap sessions) {
+  public HandleSession(DistributedTracer tracer, SessionMap sessions) {
+    this.tracer = Objects.requireNonNull(tracer);
     Objects.requireNonNull(sessions);
 
     this.knownSessions = CacheBuilder.newBuilder()
@@ -57,17 +62,27 @@ class HandleSession implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    String[] split = req.getUri().split("/", 4);
-    SessionId id = new SessionId(split[2]);
+    try (Span span = tracer.createSpan("router.webdriver-command", tracer.getActiveSpan())) {
+      span.addTag("http.method", req.getMethod());
+      span.addTag("http.url", req.getUri());
 
-    try {
-      knownSessions.get(id).execute(req, resp);
-    } catch (ExecutionException e) {
-      Throwable cause = e.getCause();
-      if (cause instanceof RuntimeException) {
-        throw (RuntimeException) cause;
+      String[] split = req.getUri().split("/", 4);
+      SessionId id = new SessionId(split[2]);
+
+      span.addTag("session.id", id);
+
+      try {
+        knownSessions.get(id).execute(req, resp);
+        span.addTag("http.status", resp.getStatus());
+      } catch (ExecutionException e) {
+        span.addTag("exception", e.getMessage());
+
+        Throwable cause = e.getCause();
+        if (cause instanceof RuntimeException) {
+          throw (RuntimeException) cause;
+        }
+        throw new RuntimeException(cause);
       }
-      throw new RuntimeException(cause);
     }
   }
 }

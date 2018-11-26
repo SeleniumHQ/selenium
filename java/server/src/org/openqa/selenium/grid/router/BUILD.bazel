@@ -6,6 +6,7 @@ java_library(
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing",
         "//java/server/src/org/openqa/selenium/grid/distributor",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/injector",

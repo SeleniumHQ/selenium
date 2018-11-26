@@ -58,7 +58,7 @@ public class EndToEndTest {
   @Test
   public void inMemory() throws URISyntaxException {
 
-    SessionMap sessions = new LocalSessionMap();
+    SessionMap sessions = new LocalSessionMap(tracer);
     Distributor distributor = new LocalDistributor(tracer);
     URI nodeUri = new URI("http://localhost:4444");
     LocalNode node = LocalNode.builder(tracer, nodeUri, sessions)
@@ -66,7 +66,7 @@ public class EndToEndTest {
         .build();
     distributor.add(node);
 
-    Router router = new Router(sessions, distributor);
+    Router router = new Router(tracer, sessions, distributor);
 
     Server<?> server = createServer();
     server.addRoute(Routes.matching(router).using(router));
@@ -86,7 +86,7 @@ public class EndToEndTest {
   @Test
   public void withServers() throws URISyntaxException {
 
-    LocalSessionMap localSessions = new LocalSessionMap();
+    LocalSessionMap localSessions = new LocalSessionMap(tracer);
     Server<?> sessionServer = createServer();
     sessionServer.addRoute(Routes.matching(localSessions).using(localSessions));
     sessionServer.start();
@@ -113,7 +113,7 @@ public class EndToEndTest {
 
     distributor.add(localNode);
 
-    Router router = new Router(sessions, distributor);
+    Router router = new Router(tracer, sessions, distributor);
     Server<?> routerServer = createServer();
     routerServer.addRoute(Routes.matching(router).using(router));
     routerServer.start();
