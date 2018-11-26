@@ -33,7 +33,7 @@ java_library(name = 'firefox-xpi',
 )
 
 export_file(name = 'webdriver.xpi',
-  src = '//javascript/firefox-driver:webdriver',
+  src = '//third_party/js/selenium:webdriver',
 )
 
 export_file(
