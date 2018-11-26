@@ -1,6 +1,6 @@
 export_file(
   name = "webdriver",
-  src = "webdriver-3.141.592.xpi",
+  src = "webdriver-3.141.59.xpi",
   out = "webdriver.xpi",
   visibility = [
     "//java/client/src/org/openqa/selenium/firefox/xpi:webdriver.xpi",
