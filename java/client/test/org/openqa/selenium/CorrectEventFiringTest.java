@@ -182,8 +182,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("mouseclick")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    wait.until(elementTextToEqual(result, "mouse click"));
-    assertThat(result.getText()).isEqualTo("mouse click");
+    wait.until($ -> result.getText().equals("mouse click"));
   }
 
   @Test
@@ -193,8 +192,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("mouseup")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    wait.until(elementTextToEqual(result, "mouse up"));
-    assertThat(result.getText()).isEqualTo("mouse up");
+    wait.until($ -> result.getText().equals("mouse up"));
   }
 
   @Test
@@ -204,8 +202,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("child")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    wait.until(elementTextToEqual(result, "mouse down"));
-    assertThat(result.getText()).isEqualTo("mouse down");
+    wait.until($ -> result.getText().equals("mouse down"));
   }
 
   @Test
