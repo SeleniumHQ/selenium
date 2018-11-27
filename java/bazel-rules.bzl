@@ -1,11 +1,26 @@
 _PREFIXES = ("com", "io", "net", "org")
 
 _BROWSERS = {
-    "chrome": ["-Dselenium.browser=chrome"],
-    "edge": ["-Dselenium.browser=edge"],
-    "firefox": ["-Dselenium.browser=ff"],
-    "ie": ["-Dselenium.browser=ie", "-Dselenium.browser.native_events=true"],
-    "safari": ["-Dselenium.browser=safari"],
+    "chrome": {
+        "jvm_flags": ["-Dselenium.browser=chrome"],
+        "deps": ["//java/client/src/org/openqa/selenium/chrome"],
+    },
+    "edge": {
+        "jvm_flags": ["-Dselenium.browser=edge"],
+        "deps": ["//java/client/src/org/openqa/selenium/edge"],
+    },
+    "firefox": {
+        "jvm_flags": ["-Dselenium.browser=ff"],
+        "deps": ["//java/client/src/org/openqa/selenium/firefox"],
+    },
+    "ie": {
+        "jvm_flags": ["-Dselenium.browser=ie", "-Dselenium.browser.native_events=true"],
+        "deps": ["//java/client/src/org/openqa/selenium/ie"],
+    },
+    "safari": {
+        "jvm_flags": ["-Dselenium.browser=safari"],
+        "deps": ["//java/client/src/org/openqa/selenium/safari"],
+    },
 }
 
 def _contains(list, value):
@@ -80,6 +95,9 @@ def gen_java_selenium_tests(srcs = [], deps = [], drivers = _BROWSERS.keys(), ta
     )
 
     deps.append(":%s" % lib_name)
+    base_deps = {}
+    for dep in deps:
+        base_deps[dep] = 1
 
     for driver in drivers:
         actual_tags = []
@@ -87,13 +105,20 @@ def gen_java_selenium_tests(srcs = [], deps = [], drivers = _BROWSERS.keys(), ta
         actual_tags.append("no-sandbox")
         actual_tags.append(driver)
 
+        info = _BROWSERS[driver]
+
+        actual_deps = {}
+        actual_deps.update(base_deps)
+        for dep in info["deps"]:
+            actual_deps[dep] = 1
+
         for src in srcs:
             native.java_test(
                 name = "%s-%s" % (_shortName(src), driver),
                 size = "large",
                 test_class = _className(src),
-                jvm_flags = _BROWSERS[driver],
+                jvm_flags = info["jvm_flags"],
                 tags = actual_tags,
-                runtime_deps = deps,
+                runtime_deps = actual_deps.keys(),
                 **kwargs
             )
