@@ -4,14 +4,14 @@
       <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.33.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.33.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/neko-htmlunit-2.33.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/selenium/htmlunit-driver-2.32.2-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/selenium/htmlunit-driver-2.33.3.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.33-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.33-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/neko-htmlunit-2.33-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/selenium/htmlunit-driver-2.32.2-SNAPSHOT-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/selenium/htmlunit-driver-2.33.3-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
