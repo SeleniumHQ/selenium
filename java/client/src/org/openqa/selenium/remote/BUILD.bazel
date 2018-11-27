@@ -10,20 +10,20 @@ TYPE_SOURCES = [
 
 genrule(
     name = "is-displayed",
-    outs = ["isDisplayed.js"],
-    cmd = "cp \"$(location //javascript/atoms:is-displayed.js)\" \"$@\"",
     srcs = [
         "//javascript/atoms:is-displayed.js",
     ],
+    outs = ["isDisplayed.js"],
+    cmd = "cp \"$(location //javascript/atoms:is-displayed.js)\" \"$@\"",
 )
 
 genrule(
     name = "get-attribute",
-    outs = ["getAttribute.js"],
-    cmd = "cp \"$(location //javascript/webdriver/atoms:get-attribute.js)\" \"$@\"",
     srcs = [
         "//javascript/webdriver/atoms:get-attribute.js",
     ],
+    outs = ["getAttribute.js"],
+    cmd = "cp \"$(location //javascript/webdriver/atoms:get-attribute.js)\" \"$@\"",
 )
 
 java_library(

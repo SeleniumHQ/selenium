@@ -12,4 +12,5 @@ java_import(
     ],
     deps = [
         "//third_party/java/slf4j",
-    ],)
+    ],
+)

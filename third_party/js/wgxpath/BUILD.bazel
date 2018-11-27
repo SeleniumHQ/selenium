@@ -15,8 +15,8 @@ closure_js_library(
         "strictCheckTypes",
         "strictMissingRequire",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "@io_bazel_rules_closure//closure/library",
     ],
-    visibility = ["//visibility:public"],
 )

@@ -18,10 +18,10 @@ closure_js_library(
 selenium_js_fragment(
     name = "get-attribute",
     function = "webdriver.atoms.element.attribute.get",
-    deps = [
-        ":atoms",
-    ],
     visibility = [
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
+    ],
+    deps = [
+        ":atoms",
     ],
 )

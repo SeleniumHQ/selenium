@@ -1,11 +1,11 @@
 _PREFIXES = ("com", "io", "net", "org")
 
 _BROWSERS = {
-    "chrome": [ "-Dselenium.browser=chrome" ],
-    "edge": [ "-Dselenium.browser=edge" ],
-    "firefox": [ "-Dselenium.browser=ff"],
-    "ie" : [ "-Dselenium.browser=ie", "-Dselenium.browser.native_events=true"],
-    "safari": [ "-Dselenium.browser=safari" ],
+    "chrome": ["-Dselenium.browser=chrome"],
+    "edge": ["-Dselenium.browser=edge"],
+    "firefox": ["-Dselenium.browser=ff"],
+    "ie": ["-Dselenium.browser=ie", "-Dselenium.browser.native_events=true"],
+    "safari": ["-Dselenium.browser=safari"],
 }
 
 def _contains(list, value):
@@ -62,7 +62,7 @@ def gen_java_tests(size, srcs = [], tags = [], deps = [], **kwargs):
     for src in srcs:
         native.java_test(
             name = _shortName(src),
-	    size = size,
+            size = size,
             test_class = _className(src),
             tags = actual_tags,
             runtime_deps = deps,
@@ -90,10 +90,10 @@ def gen_java_selenium_tests(srcs = [], deps = [], drivers = _BROWSERS.keys(), ta
         for src in srcs:
             native.java_test(
                 name = "%s-%s" % (_shortName(src), driver),
-	        size = "large",
+                size = "large",
                 test_class = _className(src),
                 jvm_flags = _BROWSERS[driver],
                 tags = actual_tags,
                 runtime_deps = deps,
-                **kwargs)
-        
+                **kwargs
+            )

@@ -5,13 +5,16 @@ load(
 
 closure_js_library(
     name = "webdriver",
-    srcs = glob(["*.js", "http/*.js"]),
+    srcs = glob([
+        "*.js",
+        "http/*.js",
+    ]),
+    visibility = [
+        "//javascript:__pkg__",
+        "//javascript/webdriver/atoms:__pkg__",
+    ],
     deps = [
         "//javascript/atoms",
         "@io_bazel_rules_closure//closure/library",
     ],
-    visibility = [
-        "//javascript:__pkg__",
-        "//javascript/webdriver/atoms:__pkg__",
-    ]
 )
