@@ -1,0 +1,13 @@
+java_library(
+    name = "log",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/grid/config",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa:__subpackages__",
+        "//java/server/test/org/openqa:__subpackages__",
+    ],
+)

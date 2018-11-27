@@ -9,6 +9,9 @@ java_library(
         # Exported because Server implements HasLifecycle
         "//java/server/src/org/openqa/selenium/grid/component",
 
+        # Used by the BaseServerOptions"
+        "//java/server/src/org/openqa/selenium/grid/log",
+
         # Exported because of Server.addRoute
         "//java/server/src/org/openqa/selenium/grid/web",
     ],
@@ -20,6 +23,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/tracing",
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/injector",
         "//third_party/java/beust:jcommander",

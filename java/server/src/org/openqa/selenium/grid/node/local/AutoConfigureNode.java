@@ -34,10 +34,13 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class AutoConfigureNode {
+
+  public static final Logger log = Logger.getLogger("selenium");
 
   public static void addSystemDrivers(LocalNode.Builder node) {
 
@@ -55,8 +58,7 @@ public class AutoConfigureNode {
       Capabilities caps = info.getCanonicalCapabilities();
       builders.stream()
           .filter(builder -> builder.score(caps) > 0)
-          .peek(builder -> System.err
-              .format("Adding %s %d times\n", caps, info.getMaximumSimultaneousSessions()))
+          .peek(builder -> log.info(String.format("Adding %s %d times", caps, info.getMaximumSimultaneousSessions())))
           .forEach(builder -> {
             for (int i = 0; i < info.getMaximumSimultaneousSessions(); i++) {
               node.add(caps, c -> {
