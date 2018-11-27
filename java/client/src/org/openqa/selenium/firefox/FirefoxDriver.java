@@ -167,9 +167,11 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
                        ||  options.isLegacy();
 
     FirefoxDriverService.Builder<?, ?> builder =
-        StreamSupport.stream(ServiceLoader.load(FirefoxDriverService.Builder.class).spliterator(), false)
+        StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
+            .filter(b -> b instanceof FirefoxDriverService.Builder)
+            .map(b -> (FirefoxDriverService.Builder) b)
             .filter(b -> b.isLegacy() == isLegacy)
-            .findFirst().orElseThrow(() -> new WebDriverException());
+            .findFirst().orElseThrow(WebDriverException::new);
 
     return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
   }

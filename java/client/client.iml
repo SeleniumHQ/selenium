@@ -44,6 +44,7 @@
     <orderEntry type="library" name="testng" level="project" />
     <orderEntry type="library" scope="TEST" name="websocket" level="project" />
     <orderEntry type="library" name="xml-apis" level="project" />
+    <orderEntry type="library" exported="" name="jaeger-client" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />

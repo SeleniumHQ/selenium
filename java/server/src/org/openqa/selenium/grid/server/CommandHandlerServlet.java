@@ -57,6 +57,8 @@ class CommandHandlerServlet extends HttpServlet {
     HttpRequest request = new ServletRequestWrappingHttpRequest(req);
     HttpResponse response = new ServletResponseWrappingHttpResponse(resp);
 
+    log(String.format("(%s) %s", req.getMethod(), req.getPathInfo()));
+
     Optional<CommandHandler> possibleMatch = routes.match(injector, request);
     if (possibleMatch.isPresent()) {
       possibleMatch.get().execute(request, response);
