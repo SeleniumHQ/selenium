@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server.log;
+package org.openqa.selenium.grid.log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

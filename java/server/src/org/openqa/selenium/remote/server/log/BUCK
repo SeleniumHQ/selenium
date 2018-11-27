@@ -3,6 +3,7 @@ java_library(name = 'log',
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/server/src/org/openqa/selenium/grid/log:log',
     '//third_party/java/guava:guava',
   ],
   visibility = [

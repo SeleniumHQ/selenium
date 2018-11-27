@@ -35,10 +35,10 @@ import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.Stoppable;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.grid.log.TerseFormatter;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
-import org.openqa.selenium.remote.server.log.TerseFormatter;
 
 import java.io.File;
 import java.io.IOException;

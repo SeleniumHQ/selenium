@@ -30,11 +30,11 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
-import org.openqa.selenium.grid.server.LoggingOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.web.Routes;
@@ -86,7 +86,9 @@ public class DistributorServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("distributor", '.', System.getProperties()));
 
-      DistributedTracer tracer = new LoggingOptions(config).getTracer();
+      LoggingOptions loggingOptions = new LoggingOptions(config);
+      loggingOptions.configureLogging();
+      DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
       Distributor distributor = new LocalDistributor(tracer);
