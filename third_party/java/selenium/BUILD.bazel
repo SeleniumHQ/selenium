@@ -1,10 +1,10 @@
 java_import(
     name = "htmlunit-driver",
-    jars = ["htmlunit-driver-2.32.2-SNAPSHOT.jar"],
+    jars = ["htmlunit-driver-2.33.3.jar"],
     licenses = [
         "notice",  # Apache 2
     ],
-    srcjar = "htmlunit-driver-2.32.2-SNAPSHOT-sources.jar",
+    srcjar = "htmlunit-driver-2.33.3-sources.jar",
     tags = [
         "maven_coordinates=org.seleniumhq.selenium:htmlunit-driver:jar:2.32.2-SNAPSHOT",
     ],
