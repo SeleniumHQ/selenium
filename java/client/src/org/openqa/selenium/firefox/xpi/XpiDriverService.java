@@ -42,6 +42,7 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -360,7 +361,7 @@ public class XpiDriverService extends FirefoxDriverService {
     return new Builder();
   }
 
-  @AutoService(FirefoxDriverService.Builder.class)
+  @AutoService(DriverService.Builder.class)
   public static class Builder extends FirefoxDriverService.Builder<XpiDriverService, XpiDriverService.Builder> {
 
     private FirefoxBinary binary = null;

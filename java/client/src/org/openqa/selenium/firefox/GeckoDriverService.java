@@ -29,6 +29,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -107,7 +108,7 @@ public class GeckoDriverService extends FirefoxDriverService {
   /**
    * Builder used to configure new {@link GeckoDriverService} instances.
    */
-  @AutoService(FirefoxDriverService.Builder.class)
+  @AutoService(DriverService.Builder.class)
   public static class Builder extends FirefoxDriverService.Builder<
         GeckoDriverService, GeckoDriverService.Builder> {
 
