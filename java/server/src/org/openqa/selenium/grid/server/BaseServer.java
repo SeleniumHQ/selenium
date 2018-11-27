@@ -40,6 +40,8 @@ import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
+import org.seleniumhq.jetty9.util.log.JavaUtilLog;
+import org.seleniumhq.jetty9.util.log.Log;
 import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
@@ -88,6 +90,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
       throw new UncheckedIOException(e);
     }
 
+    Log.setLog(new JavaUtilLog());
     this.server = new org.seleniumhq.jetty9.server.Server(
         new QueuedThreadPool(options.getMaxServerThreads()));
 
