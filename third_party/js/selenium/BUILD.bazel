@@ -1,0 +1,12 @@
+filegroup(
+    name = "webdriver_prefs",
+    srcs = [
+        "webdriver.json",
+    ],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/firefox:__pkg__",
+    ],
+)

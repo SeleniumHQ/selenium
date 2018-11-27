@@ -1,8 +1,20 @@
 load("//java:version.bzl", "SE_VERSION")
 
+genrule(
+    name = "webdriver_prefs",
+    srcs = [
+        "//third_party/js/selenium:webdriver_prefs",
+    ],
+    outs = ["webdriver_prefs.json"],
+    cmd = "cp \"$(location //third_party/js/selenium:webdriver_prefs)\" \"$@\"",
+)
+
 java_library(
     name = "firefox",
     srcs = glob(["*.java"]),
+    resources = [
+        ":webdriver_prefs",
+    ],
     tags = [
         "maven_coordinates=org.seleniumhq.selenium:selenium-firefox-driver:" + SE_VERSION,
     ],
