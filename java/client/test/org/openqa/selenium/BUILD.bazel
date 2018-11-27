@@ -54,7 +54,6 @@ gen_java_selenium_tests(
     ),
     deps = [
         ":selenium",
-        "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/build",
