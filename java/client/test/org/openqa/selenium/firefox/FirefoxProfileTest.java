@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 public class FirefoxProfileTest {
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
   private static final String FIREBUG_RESOURCE_PATH =
-      "/org/openqa/selenium/testing/drivers/firebug-1.5.0-fx.xpi";
+      "/org/openqa/selenium/firefox/firebug.xpi";
   private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
 
   private FirefoxProfile profile;
