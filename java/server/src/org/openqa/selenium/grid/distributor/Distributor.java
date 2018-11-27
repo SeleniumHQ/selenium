@@ -98,7 +98,7 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
 
   public abstract Session newSession(NewSessionPayload payload) throws SessionNotCreatedException;
 
-  public abstract void add(Node node);
+  public abstract Distributor add(Node node);
 
   public abstract void remove(UUID nodeId);
 

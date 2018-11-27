@@ -36,6 +36,7 @@ public class NodeStatusTest {
     NodeStatus status = new NodeStatus(
         UUID.randomUUID(),
         new URI("http://localhost:23456"),
+        100,
         ImmutableMap.of(new ImmutableCapabilities("cheese", "brie"), 1),
         ImmutableMap.of(new ImmutableCapabilities("cake", "cheese"), 1));
 

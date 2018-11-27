@@ -35,16 +35,19 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.Span;
 
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class LocalDistributor extends Distributor {
 
   public static final Json JSON = new Json();
-  private final Set<Node> nodes = new HashSet<>();
+  private final Set<Host> hosts = new HashSet<>();
   private final DistributedTracer tracer;
 
   public LocalDistributor(DistributedTracer tracer, HttpClient.Factory httpClientFactory) {
@@ -54,47 +57,63 @@ public class LocalDistributor extends Distributor {
 
   @Override
   public Session newSession(NewSessionPayload payload) throws SessionNotCreatedException {
-    // TODO: merge in the logic from the scheduler branch so we do something smarter
+    Iterator<Capabilities> allCaps = payload.stream().iterator();
+    if (!allCaps.hasNext()) {
+      throw new SessionNotCreatedException("No capabilities found");
+    }
 
-    Capabilities caps = payload.stream()
-        .findFirst()
-        .orElseThrow(() -> new SessionNotCreatedException("No capabilities found"));
+    Capabilities caps = allCaps.next();
+    Optional<Supplier<Session>> selected;
+    synchronized (hosts) {
+      selected = this.hosts.stream()
+          // Find a host that supports this kind of thing
+          .filter(host -> host.hasCapacity(caps))
+          .min(
+              // Now sort by node which has the lowest load (natural ordering)
+              Comparator.comparingDouble(Host::getLoad)
+                  // Then last session created (oldest first), so natural ordering again
+                  .thenComparingLong(Host::getLastSessionCreated)
+                  // And use the host id as a tie-breaker.
+                  .thenComparing(Host::getId))
+          // And reserve some space
+          .map(host -> host.reserve(caps));
+    }
 
-    return nodes.stream()
-        .filter(node -> node.isSupporting(caps))
-        .findFirst()
-        .map(host -> host.newSession(caps))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .orElseThrow(() -> new SessionNotCreatedException("Unable to create new session: " + caps));
+    return selected
+        .orElseThrow(
+            () -> new SessionNotCreatedException("Unable to find provider for session: " + allCaps))
+        .get();
   }
 
   @Override
-  public void add(Node node) {
+  public LocalDistributor add(Node node) {
     StringBuilder sb = new StringBuilder();
 
     try (Span span = tracer.createSpan("distributor.add", tracer.getActiveSpan());
          JsonOutput out = JSON.newOutput(sb)) {
       out.setPrettyPrint(false).write(node);
       span.addTag("node", sb.toString());
-      nodes.add(node);
+      hosts.add(new Host(node));
     }
+
+    return this;
   }
 
   @Override
   public void remove(UUID nodeId) {
     try (Span span = tracer.createSpan("distributor.remove", tracer.getActiveSpan())) {
       span.addTag("node.id", nodeId);
-      nodes.removeIf(node -> nodeId.equals(node.getId()));
+      hosts.removeIf(host -> nodeId.equals(host.getId()));
     }
   }
 
   @Override
   public DistributorStatus getStatus() {
-    ImmutableList<NodeStatus> nodesStatuses = this.nodes.stream()
-        .map(Node::getStatus)
+    ImmutableList<NodeStatus> nodesStatuses = this.hosts.stream()
+        .map(Host::getStatus)
         .collect(toImmutableList());
 
     return new DistributorStatus(nodesStatuses);
   }
+
 }

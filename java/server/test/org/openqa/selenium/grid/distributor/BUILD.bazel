@@ -10,6 +10,7 @@ gen_java_tests(
         "//java/server/src/org/openqa/selenium/grid/distributor/local",
         "//java/server/src/org/openqa/selenium/grid/distributor/remote",
         "//java/server/src/org/openqa/selenium/grid/node/local",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
         "//java/server/test/org/openqa/selenium/grid/web:utils",
         "//third_party/java/assertj",

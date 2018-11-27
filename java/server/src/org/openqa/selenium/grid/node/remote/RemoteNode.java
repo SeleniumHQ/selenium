@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.NodeStatus;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -39,6 +40,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.util.Collection;
@@ -148,7 +150,33 @@ public class RemoteNode extends Node {
 
     HttpResponse res = client.apply(req);
 
-    return Values.get(res, NodeStatus.class);
+    try (Reader reader = res.getContentReader();
+         JsonInput in = JSON.newInput(reader)) {
+      in.beginObject();
+
+      // Skip everything until we find "value"
+      while (in.hasNext()) {
+        if ("value".equals(in.nextName())) {
+          in.beginObject();
+
+          while (in.hasNext()) {
+            if ("node".equals(in.nextName())) {
+              return in.read(NodeStatus.class);
+            } else {
+              in.skipValue();
+            }
+          }
+
+          in.endObject();
+        } else {
+          in.skipValue();
+        }
+      }
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+    throw new IllegalStateException("Unable to read status");
   }
 
   private Map<String, Object> toJson() {
@@ -157,5 +185,4 @@ public class RemoteNode extends Node {
         "uri", externalUri,
         "capabilities", capabilities);
   }
-
 }

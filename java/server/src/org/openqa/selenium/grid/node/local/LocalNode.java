@@ -73,7 +73,7 @@ public class LocalNode extends Node {
         "Only a positive number of sessions can be run: " + maxSessionCount);
 
     this.externalUri = Objects.requireNonNull(uri);
-    this.maxSessionCount = maxSessionCount;
+    this.maxSessionCount = Math.min(maxSessionCount, factories.size());
     this.factories = ImmutableList.copyOf(factories);
 
     this.currentSessions = CacheBuilder.newBuilder()
@@ -231,6 +231,7 @@ public class LocalNode extends Node {
     return new NodeStatus(
         getId(),
         externalUri,
+        maxSessionCount,
         available,
         used);
   }
@@ -239,6 +240,7 @@ public class LocalNode extends Node {
     return ImmutableMap.of(
         "id", getId(),
         "uri", externalUri,
+        "maxSessions", maxSessionCount,
         "capabilities", factories.stream()
             .map(SessionFactory::getCapabilities)
             .collect(Collectors.toSet()));
