@@ -1,4 +1,4 @@
-load("//java:bazel-rules.bzl", "gen_java_tests")
+load("//java:bazel-rules.bzl", "gen_java_tests", "gen_java_selenium_tests")
 
 SMALL_TESTS = [
     "ArchitectureTest.java",
@@ -47,13 +47,8 @@ java_library(
     ],
 )
 
-gen_java_tests(
-    size = "large",
-    tags = [ "firefox" ],
+gen_java_selenium_tests(
     srcs = glob([ "*Test.java" ], exclude = SMALL_TESTS),
-    jvm_flags = [
-        "-Dselenium.browser=firefox",
-    ],
     deps = [
         ":selenium",
         "//java/client/src/org/openqa/selenium/firefox",
