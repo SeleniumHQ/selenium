@@ -81,13 +81,15 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  public void add(Node node) {
+  public RemoteDistributor add(Node node) {
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node");
     request.setContent(JSON.toJson(node).getBytes(UTF_8));
 
     HttpResponse response = client.apply(request);
 
     Values.get(response, Void.class);
+
+    return this;
   }
 
   @Override
