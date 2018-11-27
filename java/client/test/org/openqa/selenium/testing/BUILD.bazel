@@ -5,8 +5,8 @@ java_library(
         "//java/server/test/org/openqa:__subpackages__",
     ],
     exports = [
-        ":test-base",
         ":annotations",
+        ":test-base",
     ],
 )
 
@@ -44,8 +44,8 @@ java_library(
         ":annotations",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
-        "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing/drivers",
         "//third_party/java/assertj",
         "//third_party/java/github:org.eclipse.egit.github.core",
