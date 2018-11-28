@@ -25,22 +25,42 @@ import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class InProject {
   /**
    * Locates a file in the current project
    *
-   * @param path path to file to locate from root of project
+   * @param paths path to file to locate from root of project
    * @return file being sought, if it exists
    * @throws org.openqa.selenium.WebDriverException wrapped FileNotFoundException if file could not
    *         be found
    */
-  public static Path locate(String path) {
-    Path actualPath = Paths.get(path);
-    if (Files.exists(actualPath)) {
-      return actualPath.toAbsolutePath();
-    }
+  public static Path locate(String... paths) {
+    Preconditions.checkArgument(paths.length > 0);
+    return Stream.of(paths)
+        .map(path -> Paths.get(path))
+        .filter(path -> Files.exists(path))
+        .findFirst()
+        .map(path -> path.toAbsolutePath())
+        .orElseGet(() -> {
+          Path root = findProjectRoot();
+          return Stream.of(paths)
+              .map(path -> {
+                Path needle = root.resolve(path);
+                return Files.exists(needle) ? needle : null;
+              })
+              .filter(Objects::nonNull)
+              .findFirst().orElseThrow(() -> new WebDriverException(new FileNotFoundException(
+                  String.format("Could not find any of %s in the project",
+                                Stream.of(paths).collect(Collectors.joining(","))))));
+        });
+  }
 
+  private static Path findProjectRoot() {
     // Find the rakefile first
     Path dir = Paths.get(".").toAbsolutePath();
     Path pwd = dir;
@@ -51,15 +71,7 @@ public class InProject {
       }
       dir = dir.getParent();
     }
-    Preconditions.checkNotNull(dir, "Unable to find root of project in %s when looking for %s", pwd, path);
-    dir = dir.normalize();
-
-    Path needle = dir.resolve(path);
-    if (Files.exists(needle)) {
-      return needle;
-    }
-
-    throw new WebDriverException(new FileNotFoundException(
-        "Could not find " + path + " in the project"));
+    Preconditions.checkNotNull(dir, "Unable to find root of project in %s when looking", pwd);
+    return dir.normalize();
   }
 }
