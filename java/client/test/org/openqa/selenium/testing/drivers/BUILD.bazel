@@ -25,6 +25,9 @@ java_library(
         "OutOfProcessSeleniumServer.java",
         "WebDriverBuilder.java",
     ],
+    data = [
+        "//cpp/prebuilt",
+    ],
     deps = [
         ":browser",
         "//java/client/src/org/openqa/selenium/chrome",
