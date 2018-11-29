@@ -1,0 +1,33 @@
+load("//java:bazel-rules.bzl", "gen_java_tests")
+
+java_library(
+    name = "testbase",
+    srcs = [
+        "HttpClientTestBase.java",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/jetty",
+        "//third_party/java/junit",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+)
+
+gen_java_tests(
+    size = "small",
+    srcs = glob(
+        ["*Test.java"],
+    ),
+    deps = [
+        ":testbase",
+        "//java/client/src/org/openqa/selenium",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)

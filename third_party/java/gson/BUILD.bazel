@@ -9,6 +9,7 @@ java_import(
         "maven_coordinates=com.google.code.gson:gson:jar:2.8.4",
     ],
     visibility = [
+        "//java/client/test/org/openqa/selenium/json:__pkg__",
         "//third_party/java/github:__pkg__",
     ],
 )
