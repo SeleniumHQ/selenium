@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.net;
 
-import static java.lang.Math.max;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import org.openqa.selenium.Platform;
@@ -79,20 +78,9 @@ public class PortProber {
    */
   private static int createAcceptablePort() {
     synchronized (random) {
-      final int FIRST_PORT;
-      final int LAST_PORT;
-
-      int freeAbove = HIGHEST_PORT - ephemeralRangeDetector.getHighestEphemeralPort();
-      int freeBelow = max(0, ephemeralRangeDetector.getLowestEphemeralPort() - START_OF_USER_PORTS);
-
-      if (freeAbove > freeBelow) {
-        FIRST_PORT = ephemeralRangeDetector.getHighestEphemeralPort();
-        LAST_PORT = 65535;
-      } else {
-        FIRST_PORT = 1024;
-        LAST_PORT = ephemeralRangeDetector.getLowestEphemeralPort();
-      }
-
+      final int FIRST_PORT = Math.max(START_OF_USER_PORTS, ephemeralRangeDetector.getLowestEphemeralPort());
+      final int LAST_PORT = Math.min(HIGHEST_PORT, ephemeralRangeDetector.getHighestEphemeralPort());
+      
       if (FIRST_PORT == LAST_PORT) {
         return FIRST_PORT;
       }
