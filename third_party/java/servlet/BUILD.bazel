@@ -13,6 +13,7 @@ java_import(
     visibility = [
         "//java/client/test/org/openqa/selenium:__pkg__",
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
+        "//java/client/test/org/openqa/selenium/remote/internal:__pkg__",
         "//java/server/src/org/openqa/selenium/grid/server:__pkg__",
         "//third_party/java/jetty:__pkg__",
     ],

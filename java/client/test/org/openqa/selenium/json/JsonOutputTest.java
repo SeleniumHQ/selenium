@@ -55,7 +55,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 
-import java.awt.*;
+import java.awt.Point;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -70,9 +70,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Stream;
-
-//import com.google.gson.JsonPrimitive;
-
 
 public class JsonOutputTest {
 
@@ -353,8 +350,7 @@ public class JsonOutputTest {
                     "\"methodName\": \"" + e.getMethodName() + "\"");
 
       int posOfCurrStackTraceElement = json.indexOf(e.getMethodName());
-      assertThat(posOfCurrStackTraceElement).isGreaterThan(posOfLastStackTraceElement)
-          .describedAs("Mismatch in order of stack trace elements");
+      assertThat(posOfCurrStackTraceElement).isGreaterThan(posOfLastStackTraceElement);
     }
   }
 
