@@ -37,9 +37,9 @@ class Options(BaseOptions):
 
     def to_capabilities(self):
         """
-            Creates a capabilities with all the options that have been set and
+        Creates a capabilities with all the options that have been set and
 
-            returns a dictionary with everything
+        :Returns: A dictionary with everything
         """
         caps = self._caps
         caps['pageLoadStrategy'] = self._page_load_strategy
