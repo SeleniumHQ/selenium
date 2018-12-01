@@ -45,10 +45,12 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -804,8 +806,248 @@ public class RemoteWebDriverUnitTest {
         new CommandPayload(DriverCommand.IME_GET_AVAILABLE_ENGINES, ImmutableMap.of()));
   }
 
-  private class MultiCommandPayload extends CommandPayload {
+  @Test
+  public void canHandleElementClickCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
 
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    element.click();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementClearCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    element.clear();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.CLEAR_ELEMENT, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementSubmitCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    element.submit();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementSendKeysCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+    element.setFileDetector(mock(FileDetector.class));
+
+    element.sendKeys("test");
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of(
+            "id", element.getId(), "value", new CharSequence[]{"test"})));
+  }
+
+  @Test
+  public void canHandleElementGetAttributeCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder("test"));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    String attr = element.getAttribute("id");
+
+    assertThat(attr).isEqualTo("test");
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET_ELEMENT_ATTRIBUTE, ImmutableMap.of(
+            "id", element.getId(), "name", "id")));
+  }
+
+  @Test
+  public void canHandleElementIsSelectedCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(true));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    assertThat(element.isSelected()).isTrue();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.IS_ELEMENT_SELECTED, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementIsEnabledCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(true));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    assertThat(element.isEnabled()).isTrue();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.IS_ELEMENT_ENABLED, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementIsDisplayedCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(true));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    assertThat(element.isDisplayed()).isTrue();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementGeTextCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder("test"));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    String text = element.getText();
+
+    assertThat(text).isEqualTo("test");
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET_ELEMENT_TEXT, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementGeTagNameCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder("div"));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    String tag = element.getTagName();
+
+    assertThat(tag).isEqualTo("div");
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET_ELEMENT_TAG_NAME,
+                           ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementGeLocationCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(
+        echoCapabilities, valueResponder(ImmutableMap.of("x", 10, "y", 20)));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    Point location = element.getLocation();
+
+    assertThat(location).isEqualTo(new Point(10, 20));
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET_ELEMENT_LOCATION,
+                           ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementGeSizeCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(
+        echoCapabilities, valueResponder(ImmutableMap.of("width", 100, "height", 200)));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    Dimension size = element.getSize();
+
+    assertThat(size).isEqualTo(new Dimension(100, 200));
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementGeRectCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(
+        echoCapabilities,
+        valueResponder(ImmutableMap.of("x", 10, "y", 20, "width", 100, "height", 200)));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    Rectangle rect = element.getRect();
+
+    assertThat(rect).isEqualTo(new Rectangle(new Point(10, 20), new Dimension(100, 200)));
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleElementCssPropertyCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder("red"));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    element.setId(UUID.randomUUID().toString());
+
+    String color = element.getCssValue("color");
+
+    assertThat(color).isEqualTo("red");
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
+                           ImmutableMap.of("id", element.getId(), "propertyName", "color")));
+  }
+
+  private class MultiCommandPayload extends CommandPayload {
     private int times;
 
     MultiCommandPayload(int times, String name, Map<String, ?> parameters) {
@@ -828,9 +1070,42 @@ public class RemoteWebDriverUnitTest {
       inOrder.verify(executor, times(x)).execute(argThat(
           cmd -> cmd.getSessionId().equals(sid)
                  && cmd.getName().equals(target.getName())
-                 && cmd.getParameters().equals(target.getParameters())));
+                 && areEqual(cmd.getParameters(), target.getParameters())));
     }
     verifyNoMoreInteractions(executor);
+  }
+
+  private boolean areEqual(Map<String, ?> left, Map<String, ?> right) {
+    if (left.size() != right.size()) {
+      return false;
+    }
+    if (! left.keySet().equals(right.keySet())) {
+      return false;
+    }
+    for (String key : left.keySet()) {
+      if (! areEqual(left.get(key), right.get(key))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private boolean areEqual(Object left, Object right) {
+    if (left == null) {
+      return right == null;
+    }
+    if (! left.getClass().isArray()) {
+      return left.equals(right);
+    }
+    if (! right.getClass().isArray()) {
+      return false;
+    }
+    for(int i = 0; i < Array.getLength(left); i++) {
+      if (! Array.get(left, i).equals(Array.get(right, i))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private boolean isWebElement(Object value) {
