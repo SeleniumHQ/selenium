@@ -6,6 +6,7 @@ java_library(
   srcs = [
     'Augmentable.java',
     'Command.java',
+    'CommandPayload.java',
     'CommandExecutor.java',
     'ErrorCodes.java',
     'Response.java',
