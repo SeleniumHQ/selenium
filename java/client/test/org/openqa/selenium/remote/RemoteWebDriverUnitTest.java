@@ -49,6 +49,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -468,6 +470,32 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
+  public void canHandleSwitchToParentFrameCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    WebDriver driver2 = driver.switchTo().parentFrame();
+
+    assertThat(driver2).isSameAs(driver);
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.SWITCH_TO_PARENT_FRAME, ImmutableMap.of()));
+  }
+
+  @Test
+  public void canHandleSwitchToTopCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    WebDriver driver2 = driver.switchTo().defaultContent();
+
+    assertThat(driver2).isSameAs(driver);
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.SWITCH_TO_FRAME, Collections.singletonMap("id", null)));
+  }
+
+  @Test
   public void canHandleSwitchToAlertCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
         echoCapabilities, valueResponder("Alarm!"));
@@ -510,6 +538,20 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
+  public void canHandleAlertSendKeysCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(
+        echoCapabilities, valueResponder("Are you sure?"), nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    driver.switchTo().alert().sendKeys("no");
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET_ALERT_TEXT, ImmutableMap.of()),
+        new CommandPayload(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", "no")));
+  }
+
+  @Test
   public void canHandleRefreshCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
 
@@ -519,6 +561,42 @@ public class RemoteWebDriverUnitTest {
     verifyCommands(
         executor, driver.getSessionId(),
         new CommandPayload(DriverCommand.REFRESH, ImmutableMap.of()));
+  }
+
+  @Test
+  public void canHandleBackCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    driver.navigate().back();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GO_BACK, ImmutableMap.of()));
+  }
+
+  @Test
+  public void canHandleForwardCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    driver.navigate().forward();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GO_FORWARD, ImmutableMap.of()));
+  }
+
+  @Test
+  public void canHandleNavigateToCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    driver.navigate().to(new URL("http://www.test.com/"));
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET, ImmutableMap.of("url", "http://www.test.com/")));
   }
 
   @Test
@@ -538,6 +616,61 @@ public class RemoteWebDriverUnitTest {
     verifyCommands(
         executor, driver.getSessionId(),
         new CommandPayload(DriverCommand.GET_ALL_COOKIES, ImmutableMap.of()));
+  }
+
+  @Test
+  public void canHandleGetCookieNamedCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(
+        echoCapabilities,
+        valueResponder(ImmutableList.of(
+            ImmutableMap.of("name", "cookie1", "value", "value1"),
+            ImmutableMap.of("name", "cookie2", "value", "value2"))));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    Cookie found = driver.manage().getCookieNamed("cookie2");
+
+    assertThat(found).isEqualTo(new Cookie("cookie2", "value2"));
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET_ALL_COOKIES, ImmutableMap.of()));
+  }
+
+  @Test
+  public void canHandleAddCookieCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    Cookie cookie = new Cookie("x", "y");
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    driver.manage().addCookie(cookie);
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.ADD_COOKIE, ImmutableMap.of("cookie", cookie)));
+  }
+
+  @Test
+  public void canHandleDeleteCookieCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    Cookie cookie = new Cookie("x", "y");
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    driver.manage().deleteCookie(cookie);
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.DELETE_COOKIE, ImmutableMap.of("name", "x")));
+  }
+
+  @Test
+  public void canHandleDeleteAllCookiesCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    driver.manage().deleteAllCookies();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.DELETE_ALL_COOKIES, ImmutableMap.of()));
   }
 
   @Test
@@ -595,6 +728,30 @@ public class RemoteWebDriverUnitTest {
         executor, driver.getSessionId(),
         new CommandPayload(DriverCommand.SET_CURRENT_WINDOW_POSITION,
                            ImmutableMap.of("x", 100, "y", 200)));
+  }
+
+  @Test
+  public void canHandleMaximizeCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    driver.manage().window().maximize();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.MAXIMIZE_CURRENT_WINDOW, ImmutableMap.of()));
+  }
+
+  @Test
+  public void canHandleFullscreenCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    driver.manage().window().fullscreen();
+
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.FULLSCREEN_CURRENT_WINDOW, ImmutableMap.of()));
   }
 
   @Test
