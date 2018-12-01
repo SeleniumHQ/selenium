@@ -2,6 +2,7 @@ load("//java:version.bzl", "SE_VERSION")
 
 TYPE_SOURCES = [
     "Command.java",
+    "CommandPayload.java",
     "ErrorCodes.java",
     "Response.java",
     "ScreenshotException.java",

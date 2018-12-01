@@ -81,11 +81,11 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void click() {
-    execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", id));
+    execute(DriverCommand.CLICK_ELEMENT(id));
   }
 
   public void submit() {
-    execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
+    execute(DriverCommand.SUBMIT_ELEMENT(id));
   }
 
   public void sendKeys(CharSequence... keysToSend) {
@@ -103,7 +103,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       keysToSend = new CharSequence[]{remotePath};
     }
 
-    execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keysToSend));
+    execute(DriverCommand.SEND_KEYS_TO_ELEMENT(id, keysToSend));
   }
 
   private String upload(File localFile) {
@@ -113,7 +113,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
     try {
       String zip = Zip.zip(localFile);
-      Response response = execute(DriverCommand.UPLOAD_FILE, ImmutableMap.of("file", zip));
+      Response response = execute(DriverCommand.UPLOAD_FILE(zip));
       return (String) response.getValue();
     } catch (IOException e) {
       throw new WebDriverException("Cannot upload " + localFile, e);
@@ -121,17 +121,17 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void clear() {
-    execute(DriverCommand.CLEAR_ELEMENT, ImmutableMap.of("id", id));
+    execute(DriverCommand.CLEAR_ELEMENT(id));
   }
 
   public String getTagName() {
-    return (String) execute(DriverCommand.GET_ELEMENT_TAG_NAME, ImmutableMap.of("id", id))
+    return (String) execute(DriverCommand.GET_ELEMENT_TAG_NAME(id))
         .getValue();
   }
 
   public String getAttribute(String name) {
     return stringValueOf(
-        execute(DriverCommand.GET_ELEMENT_ATTRIBUTE, ImmutableMap.of("id", id, "name", name))
+        execute(DriverCommand.GET_ELEMENT_ATTRIBUTE(id, name))
         .getValue());
   }
 
@@ -143,7 +143,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public boolean isSelected() {
-    Object value = execute(DriverCommand.IS_ELEMENT_SELECTED, ImmutableMap.of("id", id))
+    Object value = execute(DriverCommand.IS_ELEMENT_SELECTED(id))
         .getValue();
     try {
       return (Boolean) value;
@@ -153,7 +153,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public boolean isEnabled() {
-    Object value = execute(DriverCommand.IS_ELEMENT_ENABLED, ImmutableMap.of("id", id))
+    Object value = execute(DriverCommand.IS_ELEMENT_ENABLED(id))
         .getValue();
     try {
       return (Boolean) value;
@@ -163,13 +163,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public String getText() {
-    Response response = execute(DriverCommand.GET_ELEMENT_TEXT, ImmutableMap.of("id", id));
+    Response response = execute(DriverCommand.GET_ELEMENT_TEXT(id));
     return (String) response.getValue();
   }
 
   public String getCssValue(String propertyName) {
-    Response response = execute(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-                                ImmutableMap.of("id", id, "propertyName", propertyName));
+    Response response = execute(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY(id, propertyName));
     return (String) response.getValue();
   }
 
@@ -182,8 +181,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   protected WebElement findElement(String using, String value) {
-    Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
-                                ImmutableMap.of("id", id, "using", using, "value", value));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENT(id, using, value));
 
     Object responseValue = response.getValue();
     if (responseValue == null) { // see https://github.com/SeleniumHQ/selenium/issues/5809
@@ -201,8 +199,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings("unchecked")
   protected List<WebElement> findElements(String using, String value) {
-    Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
-                                ImmutableMap.of("id", id, "using", using, "value", value));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS(id, using, value));
     Object responseValue = response.getValue();
     if (responseValue == null) { // see https://github.com/SeleniumHQ/selenium/issues/4555
       return Collections.emptyList();
@@ -281,6 +278,10 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return findElements("tag name", using);
   }
 
+  Response execute(CommandPayload payload) {
+    return parent.execute(payload);
+  }
+
   protected Response execute(String command, Map<String, ?> parameters) {
     return parent.execute(command, parameters);
   }
@@ -323,7 +324,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public boolean isDisplayed() {
-    Object value = execute(DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", id))
+    Object value = execute(DriverCommand.IS_ELEMENT_DISPLAYED(id))
         .getValue();
     try {
       return (Boolean) value;
@@ -334,7 +335,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings({"unchecked"})
   public Point getLocation() {
-    Response response = execute(DriverCommand.GET_ELEMENT_LOCATION, ImmutableMap.of("id", id));
+    Response response = execute(DriverCommand.GET_ELEMENT_LOCATION(id));
     Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
     int x = ((Number) rawPoint.get("x")).intValue();
     int y = ((Number) rawPoint.get("y")).intValue();
@@ -343,7 +344,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings({"unchecked"})
   public Dimension getSize() {
-    Response response = execute(DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
+    Response response = execute(DriverCommand.GET_ELEMENT_SIZE(id));
     Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
     int width = ((Number) rawSize.get("width")).intValue();
     int height = ((Number) rawSize.get("height")).intValue();
@@ -352,7 +353,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @SuppressWarnings({"unchecked"})
   public Rectangle getRect() {
-    Response response = execute(DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", id));
+    Response response = execute(DriverCommand.GET_ELEMENT_RECT(id));
     Map<String, Object> rawRect = (Map<String, Object>) response.getValue();
     int x = ((Number) rawRect.get("x")).intValue();
     int y = ((Number) rawRect.get("y")).intValue();
@@ -369,8 +370,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       }
 
       public Point inViewPort() {
-        Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-                                    ImmutableMap.of("id", getId()));
+        Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW(getId()));
 
         @SuppressWarnings("unchecked")
         Map<String, Number> mapped = (Map<String, Number>) response.getValue();
@@ -389,7 +389,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @Beta
   public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
-    Response response = execute(DriverCommand.ELEMENT_SCREENSHOT, ImmutableMap.of("id", id));
+    Response response = execute(DriverCommand.ELEMENT_SCREENSHOT(id));
     Object result = response.getValue();
     if (result instanceof String) {
       String base64EncodedPng = (String) result;
