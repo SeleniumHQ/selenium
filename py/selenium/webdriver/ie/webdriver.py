@@ -51,8 +51,6 @@ class WebDriver(RemoteWebDriver):
          - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
         """
         self.port = port
-        if self.port == 0:
-            self.port = utils.free_port()
         self.host = host
 
         # If both capabilities and desired capabilities are set, ignore desired capabilities.
