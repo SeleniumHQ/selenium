@@ -139,7 +139,7 @@ public class GeckoDriverService extends FirefoxDriverService {
         return 0;
       }
 
-      int score = 1;
+      int score = 0;
 
       if (BrowserType.FIREFOX.equals(capabilites.getBrowserName())) {
         score++;
