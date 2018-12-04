@@ -103,7 +103,7 @@ class WebDriver(object):
 
     :Attributes:
      - session_id - String ID of the browser session started and controlled by this WebDriver.
-     - capabilities - Dictionaty of effective capabilities of this browser session as returned
+     - capabilities - Dictionary of effective capabilities of this browser session as returned
          by the remote server. See https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities
      - command_executor - remote_connection.RemoteConnection object used to execute commands.
      - error_handler - errorhandler.ErrorHandler object used to handle errors.
