@@ -51,6 +51,7 @@ _W3C_CAPABILITY_NAMES = frozenset([
     'setWindowRect',
     'timeouts',
     'unhandledPromptBehavior',
+    'strictFileInteractability'
 ])
 
 _OSS_W3C_CONVERSION = {
