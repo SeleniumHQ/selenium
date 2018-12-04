@@ -38,6 +38,7 @@ import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
@@ -91,7 +92,7 @@ public class DistributorServer implements CliCommand {
       DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
-      Distributor distributor = new LocalDistributor(tracer);
+      Distributor distributor = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 

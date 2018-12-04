@@ -33,10 +33,13 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.PassthroughHttpClient;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.UUID;
 
 public class DistributorTest {
@@ -47,10 +50,13 @@ public class DistributorTest {
   private ImmutableCapabilities caps;
 
   @Before
-  public void setUp() {
+  public void setUp() throws MalformedURLException {
     tracer = DistributedTracer.builder().build();
-    local = new LocalDistributor(tracer);
-    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient<>(local));
+    local = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
+    distributor = new RemoteDistributor(
+        tracer,
+        new PassthroughHttpClient.Factory<>(local),
+        new URL("http://does.not.exist/"));
 
     caps = new ImmutableCapabilities("browserName", "cheese");
   }
@@ -64,7 +70,8 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldBeAbleToAddANodeAndCreateASession() throws URISyntaxException {
+  public void shouldBeAbleToAddANodeAndCreateASession()
+      throws URISyntaxException, MalformedURLException {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
@@ -73,7 +80,9 @@ public class DistributorTest {
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
-    Distributor distributor = new LocalDistributor(tracer);
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        new PassthroughHttpClient.Factory<>(node));
     distributor.add(node);
 
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
@@ -87,7 +96,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldBeAbleToRemoveANode() throws URISyntaxException {
+  public void shouldBeAbleToRemoveANode() throws URISyntaxException, MalformedURLException {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
@@ -96,8 +105,11 @@ public class DistributorTest {
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
-    Distributor local = new LocalDistributor(tracer);
-    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient<>(local));
+    Distributor local = new LocalDistributor(tracer, new PassthroughHttpClient.Factory<>(node));
+    distributor = new RemoteDistributor(
+        tracer,
+        new PassthroughHttpClient.Factory<>(local),
+        new URL("http://does.not.exist"));
     distributor.add(node);
     distributor.remove(node.getId());
 

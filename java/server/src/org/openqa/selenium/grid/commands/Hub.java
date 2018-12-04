@@ -42,6 +42,7 @@ import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
@@ -96,7 +97,7 @@ public class Hub implements CliCommand {
       GlobalDistributedTracer.setInstance(tracer);
 
       SessionMap sessions = new LocalSessionMap(tracer);
-      Distributor distributor = new LocalDistributor(tracer);
+      Distributor distributor = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
       Router router = new Router(tracer, sessions, distributor);
 
       Server<?> server = new BaseServer<>(
