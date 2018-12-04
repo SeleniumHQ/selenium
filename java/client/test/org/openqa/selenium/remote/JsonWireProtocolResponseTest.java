@@ -29,6 +29,8 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 
+import java.util.Map;
+
 public class JsonWireProtocolResponseTest {
 
   @Test
@@ -97,10 +99,11 @@ public class JsonWireProtocolResponseTest {
   @Test
   public void shouldProperlyPopulateAnError() {
     WebDriverException exception = new SessionNotCreatedException("me no likey");
+    Json json = new Json();
 
-    ImmutableMap<String, ?> payload = ImmutableMap.of(
-            "value", new Json().toType(new Json().toJson(exception), Json.MAP_TYPE),
-            "status", ErrorCodes.SESSION_NOT_CREATED);
+    ImmutableMap<String, Object> payload = ImmutableMap.of(
+        "value", json.toType(json.toJson(exception), Json.MAP_TYPE),
+        "status", ErrorCodes.SESSION_NOT_CREATED);
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
         0,
