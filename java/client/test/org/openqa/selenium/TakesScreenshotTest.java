@@ -132,8 +132,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME)
-  @Ignore(value = FIREFOX)
   public void testShouldCaptureScreenshotOfAnElement() throws Exception {
     driver.get(appServer.whereIs("screen/screen.html"));
     WebElement element = driver.findElement(By.id("cell11"));
