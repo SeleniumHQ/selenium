@@ -307,12 +307,21 @@ public class XpiDriverService extends FirefoxDriverService {
   static XpiDriverService createDefaultService(Capabilities caps) {
     Builder builder = new Builder().usingAnyFreePort();
 
-    FirefoxProfile profile = Stream.<ThrowingSupplier<FirefoxProfile>>of(
+    FirefoxProfile profile = Stream.<Supplier<FirefoxProfile>>of(
         () -> (FirefoxProfile) caps.getCapability(FirefoxDriver.PROFILE),
-        () -> FirefoxProfile.fromJson((String) caps.getCapability(FirefoxDriver.PROFILE)),
+        () -> { try {
+          return FirefoxProfile.fromJson((String) caps.getCapability(FirefoxDriver.PROFILE));
+        } catch (IOException ex) {
+          throw new RuntimeException(ex);
+        }},
         () -> ((FirefoxOptions) caps).getProfile(),
         () -> (FirefoxProfile) ((Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS)).get("profile"),
-        () -> FirefoxProfile.fromJson((String) ((Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS)).get("profile")),
+        () -> { try {
+          return FirefoxProfile.fromJson(
+              (String) ((Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS)).get("profile"));
+        } catch (IOException ex) {
+          throw new RuntimeException(ex);
+        }},
         () -> {
           Map<String, Object> options = (Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS);
           FirefoxProfile toReturn = new FirefoxProfile();
@@ -443,25 +452,6 @@ public class XpiDriverService extends FirefoxDriverService {
             getLogFile());
       } catch (IOException e) {
         throw new WebDriverException(e);
-      }
-    }
-  }
-
-  @FunctionalInterface
-  private interface ThrowingSupplier<V> extends Supplier<V> {
-
-    V throwingGet() throws Exception;
-
-    @Override
-    default V get() {
-      try {
-        return throwingGet();
-      } catch (Exception e) {
-        if (e instanceof RuntimeException) {
-          throw (RuntimeException) e;
-        } else {
-          throw new RuntimeException(e);
-        }
       }
     }
   }

@@ -8,5 +8,6 @@ filegroup(
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium/firefox:__pkg__",
+        "//java/client/src/org/openqa/selenium/firefox/xpi:__pkg__",
     ],
 )
