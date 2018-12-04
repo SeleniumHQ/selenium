@@ -32,6 +32,10 @@ java_library(
 gen_java_tests(
     size = "small",
     srcs = SMALL_TESTS,
+    data = [
+        "//third_party/firebug",
+        "//third_party/firebug:mooltipass",
+    ],
     deps = [
         ":resources",
         "//java/client/src/org/openqa/selenium/firefox",
