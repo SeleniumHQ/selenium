@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.node.NodeStatus;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.Span;
 
@@ -46,8 +47,8 @@ public class LocalDistributor extends Distributor {
   private final Set<Node> nodes = new HashSet<>();
   private final DistributedTracer tracer;
 
-  public LocalDistributor(DistributedTracer tracer) {
-    super(tracer);
+  public LocalDistributor(DistributedTracer tracer, HttpClient.Factory httpClientFactory) {
+    super(tracer, httpClientFactory);
     this.tracer = Objects.requireNonNull(tracer);
   }
 
