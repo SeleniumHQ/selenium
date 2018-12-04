@@ -10,3 +10,17 @@ filegroup(
         "//java/client/test/org/openqa/selenium/firefox:__pkg__",
     ],
 )
+
+filegroup(
+    name = "mooltipass",
+    srcs = [
+        "mooltipass-1.1.87.xpi",
+    ],
+    licenses = [
+        "reciprocal",  # CDDL
+    ],
+    visibility = [
+        "//java/client/test/org/openqa/selenium/firefox:__pkg__",
+    ],
+)
+
