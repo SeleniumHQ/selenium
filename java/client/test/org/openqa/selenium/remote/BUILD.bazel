@@ -6,8 +6,9 @@ LARGE_TESTS = [
 
 gen_java_tests(
     size = "small",
-    srcs = glob(["*Test.java"], exclude = LARGE_TESTS),
+    srcs = glob(["*Test.java"], exclude = LARGE_TESTS + ["BaseAugmenterTest.java"]),
     deps = [
+        ":lib",
         "//java/client/src/org/openqa/selenium",
         "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/firefox",
@@ -15,6 +16,19 @@ gen_java_tests(
         "//java/client/src/org/openqa/selenium/remote",
         "//third_party/java/assertj",
         "//third_party/java/guava",
+        "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
+    ],
+)
+
+java_library(
+    name = "lib",
+    srcs = [
+        "BaseAugmenterTest.java",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote",
+        "//third_party/java/assertj",
         "//third_party/java/junit",
         "//third_party/java/mockito:mockito-core",
     ],
