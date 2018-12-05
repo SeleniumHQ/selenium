@@ -99,6 +99,7 @@ namespace OpenQA.Selenium
         private string platformName;
         private Proxy proxy;
         private bool? acceptInsecureCertificates;
+        private bool useStrictFileInteractability;
         private UnhandledPromptBehavior unhandledPromptBehavior = UnhandledPromptBehavior.Default;
         private PageLoadStrategy pageLoadStrategy = PageLoadStrategy.Default;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
@@ -113,6 +114,7 @@ namespace OpenQA.Selenium
             this.AddKnownCapabilityName(CapabilityType.Proxy, "Proxy property");
             this.AddKnownCapabilityName(CapabilityType.UnhandledPromptBehavior, "UnhandledPromptBehavior property");
             this.AddKnownCapabilityName(CapabilityType.PageLoadStrategy, "PageLoadStrategy property");
+            this.AddKnownCapabilityName(CapabilityType.UseStrictFileInteractability, "UseStrictFileInteractability property");
         }
 
         /// <summary>
@@ -179,6 +181,16 @@ namespace OpenQA.Selenium
         {
             get { return this.proxy; }
             set { this.proxy = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether &lt;input type='file'/&gt; elements
+        /// must be visible to allow uploading of files.
+        /// </summary>
+        public bool UseStrictFileInteractability
+        {
+            get { return this.useStrictFileInteractability; }
+            set { this.useStrictFileInteractability = value; }
         }
 
         /// <summary>
@@ -416,6 +428,11 @@ namespace OpenQA.Selenium
             if (this.acceptInsecureCertificates.HasValue)
             {
                 capabilities.SetCapability(CapabilityType.AcceptInsecureCertificates, this.acceptInsecureCertificates);
+            }
+
+            if (this.useStrictFileInteractability)
+            {
+                capabilities.SetCapability(CapabilityType.UseStrictFileInteractability, true);
             }
 
             if (this.pageLoadStrategy != PageLoadStrategy.Default)
