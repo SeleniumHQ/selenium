@@ -63,8 +63,8 @@ class WebDriverWait(object):
         """Calls the method provided with the driver as an argument until the \
         return value does not evaluate to ``False``.
 
-        :arg method: callable(WebDriver)
-        :arg message: optional message for :exc:`TimeoutException`
+        :param method: callable(WebDriver)
+        :param message: optional message for :exc:`TimeoutException`
         :returns: the result of the last call to `method`
         :raises: :exc:`selenium.common.exceptions.TimeoutException` if timeout occurs
         """
@@ -89,8 +89,8 @@ class WebDriverWait(object):
         """Calls the method provided with the driver as an argument until the \
         return value evaluates to ``False``.
 
-        :arg method: callable(WebDriver)
-        :arg message: optional message for :exc:`TimeoutException`
+        :param method: callable(WebDriver)
+        :param message: optional message for :exc:`TimeoutException`
         :returns: the result of the last call to `method`, or
                   ``True`` if `method` has raised one of the ignored exceptions
         :raises: :exc:`selenium.common.exceptions.TimeoutException` if timeout occurs
