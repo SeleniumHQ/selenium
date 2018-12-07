@@ -10,5 +10,6 @@ java_import(
     ],
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//third_party/java/testng:__pkg__",
     ],
 )

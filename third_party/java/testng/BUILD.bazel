@@ -1,0 +1,20 @@
+java_import(
+    name = "testng",
+    jars = ["testng-6.13.1.jar"],
+    licenses = [
+        "notice",  # Apache 2
+    ],
+    srcjar = "testng-6.13.1-sources.jar",
+    tags = [
+        "maven_coordinates=org.testng:testng:jar:6.13.1",
+    ],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium:__pkg__",
+    ],
+    deps = [
+        "//third_party/java/ant",
+        "//third_party/java/beust:jcommander",
+        "//third_party/java/junit",
+        "//third_party/java/yaml:snakeyaml",
+    ],
+)

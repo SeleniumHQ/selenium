@@ -1,0 +1,14 @@
+java_import(
+    name = "snakeyaml",
+    jars = ["snakeyaml-1.19.jar"],
+    licenses = [
+        "notice",  # Apache2
+    ],
+    srcjar = "snakeyaml-1.19-sources.jar",
+    tags = [
+        "maven_coordinates=org.yaml:snakeyaml:jar:1.19",
+    ],
+    visibility = [
+        "//third_party/java/testng:__pkg__",
+    ],
+)

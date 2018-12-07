@@ -9,8 +9,10 @@ java_import(
         "maven_coordinates=junit:junit:jar:4.12",
     ],
     visibility = [
+        "//java/client/src/com/thoughtworks/selenium:__pkg__",
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",
+        "//third_party/java/testng:__pkg__",
     ],
     deps = [
         "//third_party/java/hamcrest:hamcrest-core",
