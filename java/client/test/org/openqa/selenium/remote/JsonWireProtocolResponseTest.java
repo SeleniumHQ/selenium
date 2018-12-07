@@ -29,8 +29,6 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 
-import java.util.Map;
-
 public class JsonWireProtocolResponseTest {
 
   @Test
