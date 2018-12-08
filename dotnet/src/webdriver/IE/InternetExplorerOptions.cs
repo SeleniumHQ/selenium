@@ -99,7 +99,6 @@ namespace OpenQA.Selenium.IE
         private bool forceShellWindowsApi;
         private bool usePerProcessProxy;
         private bool ensureCleanSession;
-        private bool validateCookieDocumentType = true;
         private bool enableFullPageScreenshot = true;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
         private TimeSpan fileUploadDialogTimeout = TimeSpan.MinValue;

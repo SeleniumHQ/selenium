@@ -81,7 +81,6 @@ namespace OpenQA.Selenium.Opera
         private Dictionary<string, object> additionalOperaOptions = new Dictionary<string, object>();
         private Dictionary<string, object> userProfilePreferences;
         private Dictionary<string, object> localStatePreferences;
-        private Proxy proxy;
 
         public OperaOptions() : base()
         {
