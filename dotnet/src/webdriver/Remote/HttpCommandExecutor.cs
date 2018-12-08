@@ -92,6 +92,10 @@ namespace OpenQA.Selenium.Remote
 
         }
 
+        /// <summary>
+        /// Occurs when the <see cref="HttpCommandExecutor"/> is sending an HTTP
+        /// request to the remote end WebDriver implementation.
+        /// </summary>
         public event EventHandler<SendingRemoteHttpRequestEventArgs> SendingRemoteHttpRequest;
 
         /// <summary>
