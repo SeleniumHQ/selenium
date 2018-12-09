@@ -133,23 +133,23 @@ public class NodeServer implements CliCommand {
       server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler.class));
       server.start();
 
-      Regularly regularly = new Regularly(
-          "Register Node with Distributor",
-          Duration.ofMinutes(5),
-          Duration.ofSeconds(30));
+      Regularly regularly = new Regularly("Register Node with Distributor");
 
       AtomicBoolean registered = new AtomicBoolean(false);
 
-      regularly.submit(() -> {
-        boolean previously = registered.get();
-        registered.set(false);
+      regularly.submit(
+          () -> {
+            boolean previously = registered.get();
+            registered.set(false);
 
-        distributor.add(node);
-        registered.set(true);
-        if (!previously) {
-          LOG.info("Successfully registered with distributor");
-        }
-      });
+            distributor.add(node);
+            registered.set(true);
+            if (!previously) {
+              LOG.info("Successfully registered with distributor");
+            }
+          },
+          Duration.ofMinutes(5),
+          Duration.ofSeconds(30));
     };
   }
 }
