@@ -1,12 +1,12 @@
 java_import(
     name = "htmlunit-driver",
-    jars = ["htmlunit-driver-2.33.3.jar"],
+    jars = ["htmlunit-driver-2.33.4-SNAPSHOT.jar"],
     licenses = [
         "notice",  # Apache 2
     ],
-    srcjar = "htmlunit-driver-2.33.3-sources.jar",
+    srcjar = "htmlunit-driver-2.33.4-SNAPSHOT-sources.jar",
     tags = [
-        "maven_coordinates=org.seleniumhq.selenium:htmlunit-driver:jar:2.32.2-SNAPSHOT",
+        "maven_coordinates=org.seleniumhq.selenium:htmlunit-driver:jar:2.33.4-SNAPSHOT",
     ],
     visibility = [
         "//java/client/test/org/openqa/selenium/testing:__pkg__",
