@@ -13,9 +13,6 @@ java_library(name = 'drivers',
     'OutOfProcessSeleniumServer.java',
     'WebDriverBuilder.java',
   ],
-  resources = [
-    ':firebug',
-  ],
   deps = [
     ':browser',
     '//java/client/src/org/openqa/selenium:selenium',
@@ -38,9 +35,4 @@ java_library(name = 'drivers',
     '//java/client/test/...',
     '//java/server/test/...',
   ],
-)
-
-export_file(name = 'firebug',
-  src = '//third_party/firebug:firebug',
-  out = 'firebug-1.5.0-fx.xpi',
 )
