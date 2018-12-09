@@ -36,6 +36,9 @@ java_library(name = 'tests',
   srcs = glob(['*Test.java']) + [
     'FirefoxSpecificTests.java',
   ],
+  resources = [
+    ':firebug',
+  ],
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/firefox:firefox',
@@ -52,4 +55,9 @@ java_library(name = 'tests',
     '//third_party/java/junit:junit',
     '//third_party/java/mockito:mockito-core',
   ],
+)
+
+export_file(name = 'firebug',
+  src = '//third_party/firebug:firebug',
+  out = 'firebug-1.5.0-fx.xpi',
 )
