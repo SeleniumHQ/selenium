@@ -26,25 +26,20 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class Regularly {
 
-  private final long successPeriod;
-  private final long retryPeriod;
   private final ScheduledExecutorService executor;
 
-  public Regularly(String name, Duration successPeriod, Duration retryPeriod) {
+  public Regularly(String name) {
     Objects.requireNonNull(name, "Name must be set");
-
-    this.successPeriod = Objects.requireNonNull(successPeriod, "Success period must be set.")
-        .toMillis();
-    this.retryPeriod = Objects.requireNonNull(retryPeriod, "Retry period must be set.")
-        .toMillis();
 
     this.executor = Executors.newScheduledThreadPool(1, r -> new Thread(r, name));
   }
 
-  public void submit(Runnable task) {
+  public void submit(Runnable task, Duration successPeriod, Duration retryPeriod) {
     Objects.requireNonNull(task, "Task to schedule must be set.");
+    Objects.requireNonNull(successPeriod, "Success period must be set.");
+    Objects.requireNonNull(retryPeriod, "Retry period must be set.");
 
-    executor.schedule(new RetryingRunnable(task), 0, MILLISECONDS);
+    executor.schedule(new RetryingRunnable(task, successPeriod.toMillis(), retryPeriod.toMillis()), 0, MILLISECONDS);
   }
 
   public void shutdown() {
@@ -54,9 +49,13 @@ public class Regularly {
   private class RetryingRunnable implements Runnable {
 
     private final Runnable delegate;
+    private final long successPeriod;
+    private final long retryPeriod;
 
-    public RetryingRunnable(Runnable delegate) {
+    public RetryingRunnable(Runnable delegate, long successPeriod, long retryPeriod) {
       this.delegate = delegate;
+      this.successPeriod = successPeriod;
+      this.retryPeriod = retryPeriod;
     }
 
     @Override
