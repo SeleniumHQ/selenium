@@ -40,6 +40,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
+import org.openqa.selenium.environment.webserver.JettyAppServer;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -412,7 +413,8 @@ public class ReferrerTest extends JUnit4TestBase {
       http.setIdleTimeout(500000);
 
       this.server.addConnector(http);
-      this.hostAndPort = HostAndPort.fromParts("localhost", port);
+
+      this.hostAndPort = HostAndPort.fromParts(JettyAppServer.detectHostname(), port);
     }
 
     void addHandler(Handler handler) {
