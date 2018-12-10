@@ -10,6 +10,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/concurrent",
         "//java/server/src/org/openqa/selenium/grid/distributor",
         "//third_party/java/guava",
     ],

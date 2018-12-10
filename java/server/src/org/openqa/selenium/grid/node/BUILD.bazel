@@ -6,6 +6,9 @@ java_library(
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     exports = [
+        # Nodes export their health checks
+        "//java/server/src/org/openqa/selenium/grid/component",
+
         # Exports Session from Node.getSession
         "//java/server/src/org/openqa/selenium/grid/data",
 
@@ -14,6 +17,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/injector",

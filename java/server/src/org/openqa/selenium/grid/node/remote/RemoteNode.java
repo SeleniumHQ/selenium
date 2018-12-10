@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.NodeStatus;
@@ -57,6 +58,7 @@ public class RemoteNode extends Node {
   private final Function<HttpRequest, HttpResponse> client;
   private final URI externalUri;
   private final Set<Capabilities> capabilities;
+  private final HealthCheck healthCheck;
 
   public RemoteNode(
       DistributedTracer tracer,
@@ -76,6 +78,8 @@ public class RemoteNode extends Node {
         throw new UncheckedIOException(e);
       }
     };
+
+    this.healthCheck = new RemoteCheck();
   }
 
   @Override
@@ -179,10 +183,40 @@ public class RemoteNode extends Node {
     throw new IllegalStateException("Unable to read status");
   }
 
+  @Override
+  public HealthCheck getHealthCheck() {
+    return healthCheck;
+  }
+
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
         "id", getId(),
         "uri", externalUri,
         "capabilities", capabilities);
+  }
+
+  private class RemoteCheck implements HealthCheck {
+    @Override
+    public Result check() {
+      HttpRequest req = new HttpRequest(GET, "/status");
+
+      try {
+        HttpResponse res = client.apply(req);
+
+        if (res.getStatus() == 200) {
+          return new Result(true, externalUri + " is ok");
+        }
+        return new Result(
+            false,
+            String.format(
+                "An error occurred reading the status of %s: %s",
+                externalUri,
+                res.getContentString()));
+      } catch (RuntimeException e) {
+        return new Result(
+            false,
+            "Unable to determine node status: " + e.getMessage());
+      }
+    }
   }
 }

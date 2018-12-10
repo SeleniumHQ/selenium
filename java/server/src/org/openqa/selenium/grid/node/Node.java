@@ -25,6 +25,7 @@ import static org.openqa.selenium.grid.web.Routes.post;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.HandlerNotFoundException;
@@ -147,6 +148,8 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
   public abstract boolean isSupporting(Capabilities capabilities);
 
   public abstract NodeStatus getStatus();
+
+  public abstract HealthCheck getHealthCheck();
 
   @Override
   public boolean test(HttpRequest req) {
