@@ -39,6 +39,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -200,12 +201,20 @@ public class RemoteNode extends Node {
     public Result check() {
       HttpRequest req = new HttpRequest(GET, "/status");
 
-      try {
+
+      try (Span span = tracer.createSpan("node.health-check", null)) {
+        span.addTag("http.url", req.getUri());
+        span.addTag("http.method", req.getMethod());
+        span.addTag("node.id", getId());
+
         HttpResponse res = client.apply(req);
+        span.addTag("http.code", res.getStatus());
 
         if (res.getStatus() == 200) {
+          span.addTag("health-check", true);
           return new Result(true, externalUri + " is ok");
         }
+        span.addTag("health-check", false);
         return new Result(
             false,
             String.format(
