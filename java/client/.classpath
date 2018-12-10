@@ -10,7 +10,7 @@
 	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-2.33.jar" sourcepath="/third-party/java/htmlunit/htmlunit-2.33-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/htmlunit/neko-htmlunit-2.33.jar" sourcepath="/third-party/java/htmlunit/neko-htmlunit-2.33-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-core-js-2.33.jar" sourcepath="/third-party/java/htmlunit/htmlunit-core-js-2.33-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/selenium/htmlunit-driver-2.33.3.jar" sourcepath="/third-party/java/selenium/htmlunit-driver-2.33.3-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/selenium/htmlunit-driver-2.33.4-SNAPSHOT.jar" sourcepath="/third-party/java/selenium/htmlunit-driver-2.33.4-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons/commons-exec-1.3.jar" sourcepath="/third-party/java/commons/commons-exec-1.3-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-repacked.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-util-9.4.12.v20180830.jar" sourcepath="/third-party/java/jetty/jetty-util-9.4.12.v20180830-sources.jar"/>
