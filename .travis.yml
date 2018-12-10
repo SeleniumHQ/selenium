@@ -6,6 +6,12 @@ env:
     - PYTEST_ADDOPTS="--verbose --instafail"
     - FF_ESR_BINARY=$HOME/firefox-52.9.0esr/firefox/firefox-bin
     - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
+    - HOSTNAME=host1.test.com
+    - ALTERNATIVE_HOSTNAME=host2.test.com
+addons:
+  hosts:
+    - host1.test.com
+    - host2.test.com
 git:
   depth: 10
 
