@@ -28,6 +28,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
@@ -55,6 +56,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 public class DistributorTest {
@@ -234,9 +236,45 @@ public class DistributorTest {
     }
   }
 
-  @Ignore("TODO: Add health checks to nodes")
   @Test
   public void shouldIncludeHostsThatAreUpInHostList() {
+    CombinedHandler handler = new CombinedHandler();
+
+    SessionMap sessions = new LocalSessionMap(tracer);
+    handler.addHandler(sessions);
+
+    URI uri = createUri();
+    Node alwaysDown = LocalNode.builder(tracer, uri, sessions)
+        .add(caps, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .advanced()
+        .healthCheck(() -> new HealthCheck.Result(false, "Boo!"))
+        .build();
+    handler.addHandler(alwaysDown);
+
+    UUID expected = UUID.randomUUID();
+    Node alwaysUp = LocalNode.builder(tracer, uri, sessions)
+        .add(caps, caps -> new Session(new SessionId(expected), uri, caps))
+        .advanced()
+        .healthCheck(() -> new HealthCheck.Result(true, "Yay!"))
+        .build();
+    handler.addHandler(alwaysUp);
+
+    LocalDistributor distributor = new LocalDistributor(
+        tracer,
+        new PassthroughHttpClient.Factory<>(handler));
+    handler.addHandler(distributor);
+    distributor.add(alwaysDown);
+
+    // Should be unable to create a session because the node is down.
+    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
+      assertThatExceptionOfType(SessionNotCreatedException.class)
+          .isThrownBy(() -> distributor.newSession(payload));
+    }
+
+    distributor.add(alwaysUp);
+    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
+      distributor.newSession(payload);
+    }
   }
 
   @Test
@@ -315,9 +353,44 @@ public class DistributorTest {
     assertThat(distributor.getStatus().hasCapacity()).isTrue();
   }
 
-  @Ignore("TODO: add health checks to nodes")
   @Test
-  public void selfHealingRemoteHostsAreRegisteredOnceTheyAreOkay() {
+  public void shouldReturnNodesThatWereDownToPoolOfNodesOnceTheyMarkTheirHealthCheckPasses() {
+    CombinedHandler handler = new CombinedHandler();
+
+    SessionMap sessions = new LocalSessionMap(tracer);
+    handler.addHandler(sessions);
+
+    AtomicBoolean isUp = new AtomicBoolean(false);
+
+    URI uri = createUri();
+    Node node = LocalNode.builder(tracer, uri, sessions)
+        .add(caps, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .advanced()
+        .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
+        .build();
+    handler.addHandler(node);
+
+    LocalDistributor distributor = new LocalDistributor(
+        tracer,
+        new PassthroughHttpClient.Factory<>(handler));
+    handler.addHandler(distributor);
+    distributor.add(node);
+
+    // Should be unable to create a session because the node is down.
+    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
+      assertThatExceptionOfType(SessionNotCreatedException.class)
+          .isThrownBy(() -> distributor.newSession(payload));
+    }
+
+    // Mark the node as being up
+    isUp.set(true);
+    // Kick the machinery to ensure that everything is fine.
+    distributor.refresh();
+
+    // Because the node is now up and running, we should now be able to create a session
+    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
+      distributor.newSession(payload);
+    }
   }
 
   @Test

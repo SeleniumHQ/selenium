@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.NodeStatus;
@@ -55,6 +56,7 @@ import java.util.stream.Collectors;
 public class LocalNode extends Node {
 
   private final URI externalUri;
+  private final HealthCheck healthCheck;
   private final int maxSessionCount;
   private final List<SessionFactory> factories;
   private final Cache<SessionId, SessionAndHandler> currentSessions;
@@ -62,6 +64,7 @@ public class LocalNode extends Node {
   private LocalNode(
       DistributedTracer tracer,
       URI uri,
+      HealthCheck healthCheck,
       int maxSessionCount,
       Ticker ticker,
       Duration sessionTimeout,
@@ -73,6 +76,7 @@ public class LocalNode extends Node {
         "Only a positive number of sessions can be run: " + maxSessionCount);
 
     this.externalUri = Objects.requireNonNull(uri);
+    this.healthCheck = Objects.requireNonNull(healthCheck);
     this.maxSessionCount = Math.min(maxSessionCount, factories.size());
     this.factories = ImmutableList.copyOf(factories);
 
@@ -236,6 +240,11 @@ public class LocalNode extends Node {
         used);
   }
 
+  @Override
+  public HealthCheck getHealthCheck() {
+    return healthCheck;
+  }
+
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
         "id", getId(),
@@ -259,6 +268,7 @@ public class LocalNode extends Node {
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofMinutes(5);
+    private HealthCheck healthCheck;
 
     public Builder(DistributedTracer tracer, URI uri, SessionMap sessions) {
       this.tracer = Objects.requireNonNull(tracer);
@@ -291,7 +301,12 @@ public class LocalNode extends Node {
     }
 
     public LocalNode build() {
-      return new LocalNode(tracer, uri, maxCount, ticker, sessionTimeout, factories.build());
+      HealthCheck check =
+          healthCheck == null ?
+          () -> new HealthCheck.Result(true, uri + " is ok") :
+          healthCheck;
+
+      return new LocalNode(tracer, uri, check, maxCount, ticker, sessionTimeout, factories.build());
     }
 
     public Advanced advanced() {
@@ -304,10 +319,14 @@ public class LocalNode extends Node {
         ticker = new Ticker() {
           @Override
           public long read() {
-
             return clock.instant().toEpochMilli() * Duration.ofMillis(1).toNanos();
           }
         };
+        return this;
+      }
+
+      public Advanced healthCheck(HealthCheck healthCheck) {
+        Builder.this.healthCheck = Objects.requireNonNull(healthCheck, "Health check must be set.");
         return this;
       }
 
