@@ -298,7 +298,6 @@ public class RemoteWebDriverBuilder {
                 try {
                   return bs.build();
                 } catch (Throwable e) {
-                  e.printStackTrace();
                   return null;
                 }
               })
