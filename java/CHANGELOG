@@ -18,6 +18,9 @@ v3.141.5
 v3.141.0
 ========
 
+* Removed HtmlUnit driver and all its dependencies (including HtmlUnit and
+  Apache HttpClient) from selenium-server-standalone. This drastically
+  reduced the size of selenium server distribution package.
 * Hub status should only count reachable proxies. Fixes #6494.
 * Deprecated the original Actions API in favour of the W3C approach.
 * Correct localisation of platform name (#6491)
