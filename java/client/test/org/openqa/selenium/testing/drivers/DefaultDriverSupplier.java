@@ -17,18 +17,15 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import static org.openqa.selenium.build.DevMode.isInDevMode;
-
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.safari.SafariDriver;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 
 public class DefaultDriverSupplier implements Supplier<WebDriver> {
@@ -43,13 +40,10 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     } else if (BrowserType.OPERA_BLINK.equals(browserName)) {
       driverSupplier = () -> new TestOperaBlinkDriver(capabilities);
     } else if (BrowserType.FIREFOX.equals(browserName)) {
-      if (isInDevMode() && ((FirefoxOptions) capabilities).isLegacy()) {
-        driverSupplier = () -> new SynthesizedFirefoxDriver(capabilities);
-      } else {
-        driverSupplier = () -> new FirefoxDriver(capabilities);
-      }
+      driverSupplier = () -> new FirefoxDriver(capabilities);
     } else if (BrowserType.HTMLUNIT.equals(browserName)) {
-      driverSupplier = () -> new HtmlUnitDriver(capabilities);
+      driverSupplier = () -> new HtmlUnitDriver(
+          capabilities == null ? new ImmutableCapabilities() : capabilities);
     } else if (BrowserType.IE.equals(browserName)) {
       driverSupplier = () -> new InternetExplorerDriver(capabilities);
     } else if (browserName.toLowerCase().contains(BrowserType.SAFARI)) {
@@ -61,16 +55,12 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
         try {
           Class<? extends WebDriver> driverClass = Class.forName(className).asSubclass(WebDriver.class);
           return driverClass.getConstructor(Capabilities.class).newInstance(capabilities);
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
           throw new RuntimeException(e);
         }
       };
     } else {
-      if (isInDevMode()) {
-        driverSupplier = () -> new SynthesizedFirefoxDriver(capabilities);
-      } else {
-        throw new RuntimeException("No driver can be provided for capabilities " + capabilities);
-      }
+      throw new RuntimeException("No driver can be provided for capabilities " + capabilities);
     }
   }
 
