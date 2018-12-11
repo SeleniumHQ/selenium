@@ -3,7 +3,10 @@ java_library(
     exports = [
         ":selenium-lib",
         "//java/client/src/com/thoughtworks/selenium/webdriven",
-    ]
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
 )
 
 java_library(
