@@ -7,6 +7,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
+        "//java/server/src/org/openqa/selenium/concurrent:concurrent",
         "//java/server/src/org/openqa/selenium/grid/web:web",
         "//java/server/src/org/openqa/selenium/grid/node:node",
         "//java/server/src/org/openqa/selenium/grid/node/remote:remote",
