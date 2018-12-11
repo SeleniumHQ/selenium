@@ -100,7 +100,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
         Files.copy(is, path);
       }
     } else if (runBuild) {
-      Path output = new BuckBuild().of("//javascript/firefox-driver:webdriver").go();
+      Path output = new BuckBuild().of("//third_party/js/selenium:webdriver").go();
       ext = output.toFile();
       cachedExt = ext;
       runBuild = false;
@@ -148,7 +148,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
       synchronized (CustomProfile.class) {
         if (prefs == null) {
           try {
-            prefs = new BuckBuild().of("//javascript/firefox-driver:webdriver_prefs").go();
+            prefs = new BuckBuild().of("//third_party/js/selenium:webdriver_prefs").go();
           } catch (IOException ioe) {
             throw new WebDriverException(ioe);
           }
