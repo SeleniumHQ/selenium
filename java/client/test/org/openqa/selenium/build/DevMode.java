@@ -17,9 +17,34 @@
 
 package org.openqa.selenium.build;
 
+import com.google.common.collect.ImmutableSet;
+
+import java.util.Set;
+import java.util.function.Supplier;
+
 public class DevMode {
+
+  // There is absolutely no way that this is going to be fragile. No way. Nada. Nope.
+  private static final Set<Supplier<Boolean>> DEV_MODE_CHECKS = ImmutableSet.of(
+      // Check for IntelliJ
+      () -> System.getProperty("java.class.path", "").contains("idea_rt.jar"),
+
+      // Check for Eclipse
+      () -> {
+        try {
+          Class.forName("org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader");
+          return true;
+        } catch (ReflectiveOperationException e) {
+          return false;
+        }
+      },
+
+      // Allow someone to set a system property
+      () -> Boolean.getBoolean("selenium.dev-mode")
+  );
+
   public static boolean isInDevMode() {
-    return false;//isInDevMode("/org/openqa/selenium/remote/isDisplayed.js");
+    return DEV_MODE_CHECKS.stream().map(Supplier::get).reduce(Boolean::logicalOr).orElse(false);
   }
 
   public static boolean isInDevMode(String nameOfRequiredResource) {
