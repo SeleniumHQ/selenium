@@ -1,0 +1,20 @@
+load("//java:bazel-rules.bzl", "gen_java_tests")
+
+SMALL_TESTS = [
+    "BrowserConfigurationOptionsTest.java",
+    "CSVTest.java",
+    "DefaultSeleniumStartErrorHandlingTest.java",
+    "DefaultSeleniumTest.java",
+    "HttpCommandProcessorUnitTest.java",
+    "WaitTest.java",
+]
+
+gen_java_tests(
+    srcs = SMALL_TESTS,
+    size = "small",
+    deps = [
+        "//java/client/src/com/thoughtworks/selenium",
+        "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
+    ]
+)
