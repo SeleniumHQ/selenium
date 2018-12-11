@@ -1,0 +1,3 @@
+buck-out
+java/client/build
+java/server/build
