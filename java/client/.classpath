@@ -54,5 +54,19 @@
 	<classpathentry kind="lib" path="/third-party/java/opentracing/opentracing-api-0.31.0.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/opentracing/opentracing-noop-0.31.0.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/assertj/assertj-core-3.11.1.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/contrib/opentracing-concurrent-0.1.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/contrib/opentracing-okhttp3-0.1.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/contrib/opentracing-tracerresolver-0.1.5-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/contrib/opentracing-tracerresolver-0.1.5.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opencensus/opencensus-api-0.17.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opencensus/opencensus-api-0.17.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opencensus/opencensus-impl-0.17.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opencensus/opencensus-impl-0.17.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opencensus/opencensus-impl-core-0.17.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opencensus/opencensus-impl-core-0.17.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opentracing/opentracing-api-0.31.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opentracing/opentracing-noop-0.31.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opentracing/opentracing-util-0.31.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opentracing/opentracing-util-0.31.0.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
