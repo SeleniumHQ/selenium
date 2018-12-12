@@ -1,4 +1,4 @@
-﻿// <copyright file="RemoteLogs.cs" company="WebDriver Committers">
+// <copyright file="RemoteLogs.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -45,13 +45,16 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 List<string> availableLogTypes = new List<string>();
-                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetAvailableLogTypes, null);
-                object[] responseValue = commandResponse.Value as object[];
-                if (responseValue != null)
+                if (!driver.IsSpecificationCompliant)
                 {
-                    foreach (object logKind in responseValue)
+                    Response commandResponse = this.driver.InternalExecute(DriverCommand.GetAvailableLogTypes, null);
+                    object[] responseValue = commandResponse.Value as object[];
+                    if (responseValue != null)
                     {
-                        availableLogTypes.Add(logKind.ToString());
+                        foreach (object logKind in responseValue)
+                        {
+                            availableLogTypes.Add(logKind.ToString());
+                        }
                     }
                 }
 
@@ -68,19 +71,22 @@ namespace OpenQA.Selenium.Remote
         public ReadOnlyCollection<LogEntry> GetLog(string logKind)
         {
             List<LogEntry> entries = new List<LogEntry>();
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("type", logKind);
-            Response commandResponse = this.driver.InternalExecute(DriverCommand.GetLog, parameters);
-
-            object[] responseValue = commandResponse.Value as object[];
-            if (responseValue != null)
+            if (!driver.IsSpecificationCompliant)
             {
-                foreach (object rawEntry in responseValue)
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("type", logKind);
+                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetLog, parameters);
+
+                object[] responseValue = commandResponse.Value as object[];
+                if (responseValue != null)
                 {
-                    Dictionary<string, object> entryDictionary = rawEntry as Dictionary<string, object>;
-                    if (entryDictionary != null)
+                    foreach (object rawEntry in responseValue)
                     {
-                        entries.Add(LogEntry.FromDictionary(entryDictionary));
+                        Dictionary<string, object> entryDictionary = rawEntry as Dictionary<string, object>;
+                        if (entryDictionary != null)
+                        {
+                            entries.Add(LogEntry.FromDictionary(entryDictionary));
+                        }
                     }
                 }
             }
