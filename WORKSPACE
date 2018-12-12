@@ -22,3 +22,42 @@ load("@windows_cc_config_init//:windows_toolchain.bzl", "windows_toolchain")
 windows_toolchain(
     name = "windows_cc_config"
 )
+
+git_repository(
+    name = "io_bazel_rules_dotnet",
+    remote = "https://github.com/bazelbuild/rules_dotnet",
+    commit = "bdfc24001b2463dbdb483b1fd9cd6420002adc7d"
+)
+
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "dotnet_register_toolchains", "dotnet_repositories", "dotnet_nuget_new")
+
+dotnet_repositories()
+dotnet_register_toolchains(net_version="4.5")
+
+dotnet_nuget_new(
+   name = "json.net",
+   package = "newtonsoft.json",
+   version = "11.0.2",
+   build_file_content = """
+package(default_visibility = [ "//visibility:public" ])
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "net_import_library", "core_import_library")
+
+net_import_library(
+    name = "net35",
+    src = "lib/net35/Newtonsoft.Json.dll"
+)
+net_import_library(
+    name = "net40",
+    src = "lib/net40/Newtonsoft.Json.dll"
+)
+net_import_library(
+    name = "net45",
+    src = "lib/net45/Newtonsoft.Json.dll"
+)
+core_import_library(
+    name = "netcore",
+    src = "lib/netstandard2.0/Newtonsoft.Json.dll"
+)
+    """
+)
+
