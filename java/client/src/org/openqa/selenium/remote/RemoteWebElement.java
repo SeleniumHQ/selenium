@@ -34,6 +34,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Coordinates;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -41,7 +42,6 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.HasIdentity;
 import org.openqa.selenium.io.Zip;
 
 import java.io.File;
@@ -52,9 +52,7 @@ import java.util.Map;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
                                          FindsByTagName, FindsByClassName, FindsByCssSelector,
-                                         FindsByXPath, WrapsDriver, HasIdentity,
-                                         TakesScreenshot,
-                                         org.openqa.selenium.interactions.Locatable {
+                                         FindsByXPath, WrapsDriver, TakesScreenshot, Locatable {
   private String foundBy;
   protected String id;
   protected RemoteWebDriver parent;
