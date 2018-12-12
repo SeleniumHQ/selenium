@@ -1,4 +1,4 @@
-workspace(name = "selenium")
+workspace(name = "seleniumhq")
 
 http_archive(
     name = "io_bazel_rules_closure",

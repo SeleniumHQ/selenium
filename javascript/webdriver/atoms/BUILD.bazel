@@ -20,6 +20,7 @@ selenium_js_fragment(
     function = "webdriver.atoms.element.attribute.get",
     visibility = [
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//python:__pkg__",
     ],
     deps = [
         ":atoms",

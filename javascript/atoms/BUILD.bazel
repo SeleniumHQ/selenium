@@ -31,6 +31,7 @@ selenium_js_fragment(
     function = "bot.dom.isShown",
     visibility = [
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//python:__pkg__",
     ],
     deps = [
         ":atoms",
