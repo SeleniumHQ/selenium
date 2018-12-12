@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.internal;
 
+/**
+ * @deprecated Use {@link org.openqa.selenium.WrapsElement} instead.
+ */
 public interface WrapsElement extends org.openqa.selenium.WrapsElement {
 
 }
