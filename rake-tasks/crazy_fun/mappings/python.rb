@@ -66,7 +66,7 @@ module Python
       task_name = "#{base_task_name}:run"
       task task_name => deps do
         python_version = ENV['pyversion'] || "py27"
-        tox_args = ['tox', '-c', 'python/tox.ini', '-r']
+        tox_args = ['tox', '-c', 'py/tox.ini', '-r']
         drivers.each do |driver|
           tox_args += ['-e', "#{python_version}-#{driver}".downcase]
         tox_args += ["--"]
@@ -83,7 +83,7 @@ module Python
   class GenerateDocs < Tasks
     def handle(fun, dir, args)
       task Tasks.new.task_name(dir, args[:name]) do
-        sh "tox -c python/tox.ini -e docs", :verbose => true
+        sh "tox -c py/tox.ini -e docs", :verbose => true
       end
     end
   end
@@ -125,7 +125,7 @@ module Python
   class Prep < Tasks
     def handle(fun, dir, args)
 	    task Tasks.new.task_name(dir, args[:name]) do
-	      py_home = "python/"
+	      py_home = "py/"
 	      remote_py_home = py_home + "selenium/webdriver/remote/"
 	      firefox_py_home = py_home + "selenium/webdriver/firefox/"
 	      x86 = firefox_py_home + "x86/"

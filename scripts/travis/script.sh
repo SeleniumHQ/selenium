@@ -9,7 +9,7 @@ if [[ $TOXENV == *"remote"* ]]; then
 fi
 
 if [[ ! -z $TOXENV ]]; then
-  tox -c python/tox.ini
+  tox -c py/tox.ini
 fi
 
 # Ordering matters here. We want rake tasks to run first
