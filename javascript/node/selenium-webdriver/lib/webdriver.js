@@ -1817,7 +1817,8 @@ class WebElement {
     if (a === b) {
       return true;
     }
-    return a.driver_.executeScript('arguments[0] === arguments[1]', a, b);
+    return a.driver_.executeScript(
+      'return arguments[0] === arguments[1]', a, b);
   }
 
   /** @return {!WebDriver} The parent driver for this instance. */
