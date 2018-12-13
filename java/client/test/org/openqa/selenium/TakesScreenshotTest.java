@@ -23,11 +23,11 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.collect.Sets;
 
@@ -131,9 +131,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
+  @Ignore(FIREFOX)
   @Test
-  @Ignore(value = CHROME)
-  @Ignore(value = FIREFOX)
   public void testShouldCaptureScreenshotOfAnElement() throws Exception {
     driver.get(appServer.whereIs("screen/screen.html"));
     WebElement element = driver.findElement(By.id("cell11"));

@@ -20,11 +20,12 @@ package org.openqa.selenium.environment.webserver;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
-import static org.openqa.selenium.testing.InProject.locate;
+import static org.openqa.selenium.build.InProject.locate;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -48,7 +49,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -73,10 +76,13 @@ public class JreAppServer implements AppServer {
             HttpRequest req = new SunHttpRequest(httpExchange);
             HttpResponse resp = new SunHttpResponse(httpExchange);
 
-            mappings.entrySet().stream()
-                .filter(entry -> entry.getKey().test(req))
+            List<Predicate<HttpRequest>> reversedKeys = new ArrayList<>(mappings.keySet());
+            Collections.reverse(reversedKeys);
+
+            reversedKeys.stream()
+                .filter(pred -> pred.test(req))
                 .findFirst()
-                .map(Map.Entry::getValue)
+                .map(mappings::get)
                 .orElseGet(() -> (in, out) -> {
                   out.setStatus(404);
                   out.setContent("".getBytes(UTF_8));
@@ -91,20 +97,19 @@ public class JreAppServer implements AppServer {
   }
 
   protected JreAppServer emulateJettyAppServer() {
+    String common = locate("common/src/web").toAbsolutePath().toString();
+    // Listed first, so considered last
+    addHandler(
+        GET,
+        "/",
+        new StaticContent(
+            path -> Paths.get(common + path)));
+
     addHandler(GET, "/encoding", new EncodingHandler());
     addHandler(GET, "/page", new PageHandler());
     addHandler(GET, "/redirect", new RedirectHandler(whereIs("/")));
     addHandler(GET, "/sleep", new SleepingHandler());
     addHandler(POST, "/upload", new UploadHandler());
-
-    String javascript = locate("javascript").toAbsolutePath().toString();
-    String common = locate("common/src/web").toAbsolutePath().toString();
-    addHandler(
-        GET,
-        "/",
-        new StaticContent(
-            path -> Paths.get(common + path),
-            path -> Paths.get(javascript + path.substring("/javascript".length()))));
 
     return this;
   }
@@ -119,6 +124,7 @@ public class JreAppServer implements AppServer {
 
   public void start() {
     server.start();
+    PortProber.waitForPortUp(server.getAddress().getPort(), 5, SECONDS);
   }
 
   public void stop() {
@@ -247,7 +253,7 @@ public class JreAppServer implements AppServer {
 
     @Override
     public Iterable<String> getHeaders(String name) {
-      return exchange.getResponseHeaders().get(name);
+      return exchange.getRequestHeaders().get(name);
     }
 
     @Override

@@ -92,6 +92,10 @@ namespace OpenQA.Selenium.Remote
 
         }
 
+        /// <summary>
+        /// Occurs when the <see cref="HttpCommandExecutor"/> is sending an HTTP
+        /// request to the remote end WebDriver implementation.
+        /// </summary>
         public event EventHandler<SendingRemoteHttpRequestEventArgs> SendingRemoteHttpRequest;
 
         /// <summary>
@@ -137,8 +141,12 @@ namespace OpenQA.Selenium.Remote
             }
 
             CommandInfo info = this.commandInfoRepository.GetCommandInfo(commandToExecute.Name);
-            HttpRequestInfo requestInfo = new HttpRequestInfo(this.remoteServerUri, commandToExecute, info);
+            if (info == null)
+            {
+                throw new NotImplementedException(string.Format("The command you are attempting to execute, {0}, does not exist in the protocol dialect used by the remote end.", commandToExecute.Name));
+            }
 
+            HttpRequestInfo requestInfo = new HttpRequestInfo(this.remoteServerUri, commandToExecute, info);
             HttpResponseInfo responseInfo = this.MakeHttpRequest(requestInfo);
 
             Response toReturn = this.CreateResponse(responseInfo);

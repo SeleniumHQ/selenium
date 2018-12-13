@@ -77,13 +77,15 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
   private final Routes routes;
   private final Injector injector;
 
-  protected Distributor(DistributedTracer tracer) {
+  protected Distributor(DistributedTracer tracer, HttpClient.Factory httpClientFactory) {
     Objects.requireNonNull(tracer);
+    Objects.requireNonNull(httpClientFactory);
+
     injector = Injector.builder()
         .register(this)
         .register(tracer)
         .register(new Json())
-        .register(HttpClient.Factory.createDefault())
+        .register(httpClientFactory)
         .build();
 
     routes = Routes.combine(
@@ -96,7 +98,7 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
 
   public abstract Session newSession(NewSessionPayload payload) throws SessionNotCreatedException;
 
-  public abstract void add(Node node);
+  public abstract Distributor add(Node node);
 
   public abstract void remove(UUID nodeId);
 

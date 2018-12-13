@@ -21,7 +21,7 @@ import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.testing.InProject.locate;
+import static org.openqa.selenium.build.InProject.locate;
 
 import com.google.common.collect.ImmutableList;
 
@@ -34,7 +34,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.build.InProject;
 import org.seleniumhq.jetty9.http.HttpVersion;
 import org.seleniumhq.jetty9.http.MimeTypes;
 import org.seleniumhq.jetty9.server.Connector;
@@ -110,8 +110,9 @@ public class JettyAppServer implements AppServer {
 
     handlers = new ContextHandlerCollection();
 
+    Path webSrc = locate("common/src/web");
     ServletContextHandler defaultContext = addResourceHandler(
-        DEFAULT_CONTEXT_PATH, locate("common/src/web"));
+        DEFAULT_CONTEXT_PATH, webSrc);
     ServletContextHandler jsContext = addResourceHandler(
         JS_SRC_CONTEXT_PATH, locate("javascript"));
     addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
@@ -124,6 +125,7 @@ public class JettyAppServer implements AppServer {
     defaultContext.setInitParameter("hostname", hostName);
     defaultContext.setInitParameter("port", ""+port);
     defaultContext.setInitParameter("path", TEMP_SRC_CONTEXT_PATH);
+    defaultContext.setInitParameter("webSrc", webSrc.toAbsolutePath().toString());
 
     server.setHandler(handlers);
 

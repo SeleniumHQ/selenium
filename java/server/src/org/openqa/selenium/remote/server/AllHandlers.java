@@ -33,7 +33,7 @@ import org.openqa.selenium.remote.server.commandhandler.BeginSession;
 import org.openqa.selenium.remote.server.commandhandler.GetAllSessions;
 import org.openqa.selenium.remote.server.commandhandler.GetLogTypes;
 import org.openqa.selenium.remote.server.commandhandler.GetLogsOfType;
-import org.openqa.selenium.remote.server.commandhandler.NoHandler;
+import org.openqa.selenium.grid.web.NoHandler;
 import org.openqa.selenium.remote.server.commandhandler.NoSessionHandler;
 import org.openqa.selenium.remote.server.commandhandler.Status;
 import org.openqa.selenium.remote.server.commandhandler.UploadFile;

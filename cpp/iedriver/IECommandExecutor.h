@@ -197,6 +197,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
     this->file_upload_dialog_timeout_ = file_upload_dialog_timeout;
   }
 
+  bool use_strict_file_interactability(void) const {
+    return this->use_strict_file_interactability_;
+  }
+  void set_use_strict_file_interactability(const bool use_strict_file_interactability) {
+    this->use_strict_file_interactability_ = use_strict_file_interactability;
+  }
+
   ElementFinder* element_finder(void) const { return this->element_finder_; }
   InputManager* input_manager(void) const { return this->input_manager_; }
   ProxyManager* proxy_manager(void) const { return this->proxy_manager_; }
@@ -254,6 +261,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   int file_upload_dialog_timeout_;
   bool use_legacy_file_upload_dialog_handling_;
   bool enable_full_page_screenshot_;
+  bool use_strict_file_interactability_;
 
   Command current_command_;
   std::string serialized_response_;

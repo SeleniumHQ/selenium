@@ -205,7 +205,6 @@ namespace OpenQA.Selenium.Firefox
         public void CanBlockInvalidSslCertificates()
         {
             FirefoxProfile profile = new FirefoxProfile();
-            profile.AcceptUntrustedCertificates = false;
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("simpleTest.html");
 
             IWebDriver secondDriver = null;
@@ -255,7 +254,7 @@ namespace OpenQA.Selenium.Firefox
 
         private static bool PlatformHasNativeEvents()
         {
-            return FirefoxDriver.DefaultEnableNativeEvents;
+            return true;
         }
 
         private void SleepBecauseWindowsTakeTimeToOpen()

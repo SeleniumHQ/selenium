@@ -86,7 +86,8 @@ class Element {
                             const bool document_contains_frames);
   bool IsLocationVisibleInFrames(const LocationInfo location,
                                  const std::vector<LocationInfo> frame_locations);
-  bool IsHiddenByOverflow();
+  bool IsHiddenByOverflow(const LocationInfo element_location,
+                          const LocationInfo click_location);
   bool AppendFrameDetails(std::vector<LocationInfo>* frame_locations);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetDocumentFromWindow(IHTMLWindow2* parent_window,

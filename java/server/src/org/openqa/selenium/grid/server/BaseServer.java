@@ -32,7 +32,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.seleniumhq.jetty9.security.ConstraintMapping;
 import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
 import org.seleniumhq.jetty9.server.Connector;
@@ -41,6 +40,8 @@ import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
+import org.seleniumhq.jetty9.util.log.JavaUtilLog;
+import org.seleniumhq.jetty9.util.log.Log;
 import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
@@ -71,10 +72,8 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
   private final ServletContextHandler servletContextHandler;
   private final Injector injector;
   private final URL url;
-  private final DistributedTracer tracer;
 
-  public BaseServer(DistributedTracer tracer, BaseServerOptions options) {
-    this.tracer = Objects.requireNonNull(tracer);
+  public BaseServer(BaseServerOptions options) {
     int port = options.getPort() == 0 ? PortProber.findFreePort() : options.getPort();
 
     String host = options.getHostname().orElseGet(() -> {
@@ -91,6 +90,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
       throw new UncheckedIOException(e);
     }
 
+    Log.setLog(new JavaUtilLog());
     this.server = new org.seleniumhq.jetty9.server.Server(
         new QueuedThreadPool(options.getMaxServerThreads()));
 
@@ -200,7 +200,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
           .decorateWith(W3CCommandHandler.class)
           .build();
 
-      addServlet(new CommandHandlerServlet(tracer, routes), "/*");
+      addServlet(new CommandHandlerServlet(routes), "/*");
 
       server.start();
 

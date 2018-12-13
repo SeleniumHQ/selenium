@@ -131,15 +131,15 @@ public class FirefoxBinary {
     options.addArguments(extraOptions);
   }
 
-  protected File getFile() {
+  public File getFile() {
     return executable.getFile();
   }
 
-  protected String getPath() {
+  public String getPath() {
     return executable.getPath();
   }
 
-  protected List<String> getExtraOptions() {
+  public List<String> getExtraOptions() {
     return extraOptions;
   }
 

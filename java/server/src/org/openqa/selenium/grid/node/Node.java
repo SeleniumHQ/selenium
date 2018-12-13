@@ -25,6 +25,7 @@ import static org.openqa.selenium.grid.web.Routes.post;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.HandlerNotFoundException;
@@ -92,7 +93,7 @@ import java.util.function.Predicate;
  */
 public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
-  private final DistributedTracer tracer;
+  protected final DistributedTracer tracer;
   private final UUID id;
   private final Injector injector;
   private final Routes routes;
@@ -148,6 +149,8 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
   public abstract NodeStatus getStatus();
 
+  public abstract HealthCheck getHealthCheck();
+
   @Override
   public boolean test(HttpRequest req) {
     return routes.match(injector, req).isPresent();
@@ -160,10 +163,5 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
       throw new HandlerNotFoundException(req);
     }
     handler.get().execute(req, resp);
-  }
-
-  protected Span createSpan(String operationName) {
-    Objects.requireNonNull(operationName);
-    return tracer.createSpan(operationName, tracer.getActiveSpan());
   }
 }

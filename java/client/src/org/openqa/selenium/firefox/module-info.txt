@@ -24,14 +24,11 @@ module org.openqa.selenium.firefox {
     requires transitive org.openqa.selenium.remote;
 
     exports org.openqa.selenium.firefox;
-    exports org.openqa.selenium.firefox.internal;
 
     provides org.openqa.selenium.remote.service.DriverService$Builder with
-        org.openqa.selenium.firefox.GeckoDriverService$Builder,
-        org.openqa.selenium.firefox.XpiDriverService$Builder;
+        org.openqa.selenium.firefox.GeckoDriverService$Builder;
 
     provides org.openqa.selenium.WebDriverInfo with
-        org.openqa.selenium.firefox.GeckoDriverInfo,
-        org.openqa.selenium.firefox.XpiDriverInfo;
+        org.openqa.selenium.firefox.GeckoDriverInfo;
 
 }

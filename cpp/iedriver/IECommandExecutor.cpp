@@ -94,6 +94,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->is_waiting_ = false;
   this->is_quitting_ = false;
   this->is_awaiting_new_window_ = false;
+  this->use_strict_file_interactability_ = false;
   this->page_load_strategy_ = "normal";
   this->file_upload_dialog_timeout_ = DEFAULT_FILE_UPLOAD_DIALOG_TIMEOUT_IN_MILLISECONDS;
 

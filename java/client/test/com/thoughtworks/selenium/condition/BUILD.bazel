@@ -1,0 +1,10 @@
+load("//java:bazel-rules.bzl", "gen_java_tests")
+
+gen_java_tests(
+    srcs = glob(["*Test.java"]),
+    size = "small",
+    deps = [
+        "//java/client/src/com/thoughtworks/selenium",
+        "//third_party/java/junit",
+    ],
+)

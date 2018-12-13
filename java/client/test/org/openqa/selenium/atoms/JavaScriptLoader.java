@@ -21,8 +21,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.io.Resources;
 
-import org.openqa.selenium.Build;
-import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.build.Build;
+import org.openqa.selenium.build.InProject;
 
 import java.io.IOException;
 import java.net.URL;

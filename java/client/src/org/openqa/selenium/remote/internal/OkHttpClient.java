@@ -24,7 +24,6 @@ import com.google.common.base.Strings;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.HttpTracing;
 
 import okhttp3.ConnectionPool;
 import okhttp3.Credentials;
@@ -156,7 +155,7 @@ public class OkHttpClient implements HttpClient {
                    : response;
           });
 
-          return HttpTracing.decorate(new OkHttpClient(client.build(), url));
+          return new OkHttpClient(client.build(), url);
         }
       };
     }

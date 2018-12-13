@@ -37,6 +37,7 @@ import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
@@ -46,10 +47,14 @@ public class RemoteDistributor extends Distributor {
   public static final Json JSON = new Json();
   private final Function<HttpRequest, HttpResponse> client;
 
-  public RemoteDistributor(DistributedTracer tracer, HttpClient client) {
-    super(tracer);
+  public RemoteDistributor(DistributedTracer tracer, HttpClient.Factory factory, URL url) {
+    super(tracer, factory);
 
-    Objects.requireNonNull(client);
+    Objects.requireNonNull(factory);
+    Objects.requireNonNull(url);
+
+    HttpClient client = factory.createClient(url);
+
     this.client = req -> {
       try {
         return client.execute(req);
@@ -76,13 +81,15 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  public void add(Node node) {
+  public RemoteDistributor add(Node node) {
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node");
     request.setContent(JSON.toJson(node).getBytes(UTF_8));
 
     HttpResponse response = client.apply(request);
 
     Values.get(response, Void.class);
+
+    return this;
   }
 
   @Override

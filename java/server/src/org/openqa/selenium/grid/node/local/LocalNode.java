@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.NodeStatus;
@@ -55,6 +56,7 @@ import java.util.stream.Collectors;
 public class LocalNode extends Node {
 
   private final URI externalUri;
+  private final HealthCheck healthCheck;
   private final int maxSessionCount;
   private final List<SessionFactory> factories;
   private final Cache<SessionId, SessionAndHandler> currentSessions;
@@ -62,6 +64,7 @@ public class LocalNode extends Node {
   private LocalNode(
       DistributedTracer tracer,
       URI uri,
+      HealthCheck healthCheck,
       int maxSessionCount,
       Ticker ticker,
       Duration sessionTimeout,
@@ -73,7 +76,8 @@ public class LocalNode extends Node {
         "Only a positive number of sessions can be run: " + maxSessionCount);
 
     this.externalUri = Objects.requireNonNull(uri);
-    this.maxSessionCount = maxSessionCount;
+    this.healthCheck = Objects.requireNonNull(healthCheck);
+    this.maxSessionCount = Math.min(maxSessionCount, factories.size());
     this.factories = ImmutableList.copyOf(factories);
 
     this.currentSessions = CacheBuilder.newBuilder()
@@ -90,14 +94,21 @@ public class LocalNode extends Node {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return factories.parallelStream().anyMatch(factory -> factory.test(capabilities));
+    try (Span span = tracer.createSpan("node.is-supporting", tracer.getActiveSpan())) {
+      span.addTag("capabilities", capabilities);
+      boolean toReturn = factories.parallelStream().anyMatch(factory -> factory.test(capabilities));
+      span.addTag("match-made", toReturn);
+      return toReturn;
+    }
   }
 
   @Override
   public Optional<Session> newSession(Capabilities capabilities) {
-    try (Span span = createSpan("node-new-session")) {
-      span.addTag("capabilities", capabilities.toString());
+    try (Span span = tracer.createSpan("node.new-session", tracer.getActiveSpan())) {
+      span.addTag("capabilities", capabilities);
+
       if (getCurrentSessionCount() >= maxSessionCount) {
+        span.addTag("result", "session count exceeded");
         return Optional.empty();
       }
 
@@ -109,10 +120,14 @@ public class LocalNode extends Node {
           .map(Optional::get);
 
       if (!possibleSession.isPresent()) {
+        span.addTag("result", "No possible session detected");
         return Optional.empty();
       }
 
       SessionAndHandler session = possibleSession.get();
+      span.addTag("session.id", session.getId());
+      span.addTag("session.capabilities", session.getCapabilities());
+      span.addTag("session.uri", session.getUri());
       currentSessions.put(session.getId(), session);
 
       // The session we return has to look like it came from the node, since we might be dealing
@@ -123,30 +138,40 @@ public class LocalNode extends Node {
 
   @Override
   protected boolean isSessionOwner(SessionId id) {
-    try (Span span = createSpan("node-is-session-owner")) {
-      span.addTag("session-id", String.valueOf(id));
+    try (Span span = tracer.createSpan("node.is-session-owner", tracer.getActiveSpan())) {
       Objects.requireNonNull(id, "Session ID has not been set");
-      return currentSessions.getIfPresent(id) != null;
+      span.addTag("session.id", id);
+      boolean toReturn = currentSessions.getIfPresent(id) != null;
+      span.addTag("result", toReturn);
+      return toReturn;
     }
   }
 
   @Override
   public Session getSession(SessionId id) throws NoSuchSessionException {
-    try (Span span = createSpan("node-get-session")) {
-      span.addTag("session-id", String.valueOf(id));
-      Objects.requireNonNull(id, "Session ID has not been set");
+    Objects.requireNonNull(id, "Session ID has not been set");
+
+    try (Span span = tracer.createSpan("node.get-session", tracer.getActiveSpan())) {
+      span.addTag("session.id", id);
       SessionAndHandler session = currentSessions.getIfPresent(id);
       if (session == null) {
+        span.addTag("result", false);
         throw new NoSuchSessionException("Cannot find session with id: " + id);
       }
 
+      span.addTag("session.capabilities", session.getCapabilities());
+      span.addTag("session.uri", session.getUri());
       return new Session(session.getId(), externalUri, session.getCapabilities());
     }
   }
 
   @Override
   public void executeWebDriverCommand(HttpRequest req, HttpResponse resp) {
-    try (Span span = createSpan("node-execute-webdriver-command")) {
+    try (Span span = tracer.createSpan("node.webdriver-command", tracer.getActiveSpan())) {
+
+      span.addTag("http.method", req.getMethod());
+      span.addTag("http.url", req.getUri());
+
       // True enough to be good enough
       if (!req.getUri().startsWith("/session/")) {
         throw new UnsupportedCommandException(String.format(
@@ -156,12 +181,17 @@ public class LocalNode extends Node {
       String[] split = req.getUri().split("/", 4);
       SessionId id = new SessionId(split[2]);
 
-      span.addTag("session-id", String.valueOf(id));
+      span.addTag("session.id", id);
 
       SessionAndHandler session = currentSessions.getIfPresent(id);
       if (session == null) {
+        span.addTag("result", "Session not found");
         throw new NoSuchSessionException("Cannot find session with id: " + id);
       }
+
+      span.addTag("session.capabilities", session.getCapabilities());
+      span.addTag("session.uri", session.getUri());
+
       try {
         session.getHandler().execute(req, resp);
       } catch (IOException e) {
@@ -172,19 +202,26 @@ public class LocalNode extends Node {
 
   @Override
   public void stop(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
-    SessionAndHandler session = currentSessions.getIfPresent(id);
-    if (session == null) {
-      throw new NoSuchSessionException("Cannot find session with id: " + id);
-    }
+    try (Span span = tracer.createSpan("node.stop-session", tracer.getActiveSpan())) {
 
-    currentSessions.invalidate(id);
-    session.stop();
+      span.addTag("session.id", id);
+
+      Objects.requireNonNull(id, "Session ID has not been set");
+      SessionAndHandler session = currentSessions.getIfPresent(id);
+      if (session == null) {
+        throw new NoSuchSessionException("Cannot find session with id: " + id);
+      }
+
+      span.addTag("session.capabilities", session.getCapabilities());
+      span.addTag("session.uri", session.getUri());
+
+      currentSessions.invalidate(id);
+      session.stop();
+    }
   }
 
   @Override
   public NodeStatus getStatus() {
-
     Map<Capabilities, Integer> available = new ConcurrentHashMap<>();
     Map<Capabilities, Integer> used = new ConcurrentHashMap<>();
 
@@ -198,14 +235,21 @@ public class LocalNode extends Node {
     return new NodeStatus(
         getId(),
         externalUri,
+        maxSessionCount,
         available,
         used);
+  }
+
+  @Override
+  public HealthCheck getHealthCheck() {
+    return healthCheck;
   }
 
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
         "id", getId(),
         "uri", externalUri,
+        "maxSessions", maxSessionCount,
         "capabilities", factories.stream()
             .map(SessionFactory::getCapabilities)
             .collect(Collectors.toSet()));
@@ -224,6 +268,7 @@ public class LocalNode extends Node {
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofMinutes(5);
+    private HealthCheck healthCheck;
 
     public Builder(DistributedTracer tracer, URI uri, SessionMap sessions) {
       this.tracer = Objects.requireNonNull(tracer);
@@ -256,7 +301,12 @@ public class LocalNode extends Node {
     }
 
     public LocalNode build() {
-      return new LocalNode(tracer, uri, maxCount, ticker, sessionTimeout, factories.build());
+      HealthCheck check =
+          healthCheck == null ?
+          () -> new HealthCheck.Result(true, uri + " is ok") :
+          healthCheck;
+
+      return new LocalNode(tracer, uri, check, maxCount, ticker, sessionTimeout, factories.build());
     }
 
     public Advanced advanced() {
@@ -269,10 +319,14 @@ public class LocalNode extends Node {
         ticker = new Ticker() {
           @Override
           public long read() {
-
             return clock.instant().toEpochMilli() * Duration.ofMillis(1).toNanos();
           }
         };
+        return this;
+      }
+
+      public Advanced healthCheck(HealthCheck healthCheck) {
+        Builder.this.healthCheck = Objects.requireNonNull(healthCheck, "Health check must be set.");
         return this;
       }
 

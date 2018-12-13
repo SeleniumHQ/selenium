@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import static org.openqa.selenium.testing.DevMode.isInDevMode;
-
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -27,49 +26,41 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.safari.SafariDriver;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 
 public class DefaultDriverSupplier implements Supplier<WebDriver> {
 
   private Supplier<WebDriver> driverSupplier;
 
-  public DefaultDriverSupplier(Capabilities desiredCapabilities) {
-    String browserName = desiredCapabilities == null ? "" : desiredCapabilities.getBrowserName();
+  public DefaultDriverSupplier(Capabilities capabilities) {
+    String browserName = capabilities == null ? "" : capabilities.getBrowserName();
 
     if (BrowserType.CHROME.equals(browserName)) {
-      driverSupplier = () -> new TestChromeDriver(desiredCapabilities);
+      driverSupplier = () -> new TestChromeDriver(capabilities);
     } else if (BrowserType.OPERA_BLINK.equals(browserName)) {
-      driverSupplier = () -> new TestOperaBlinkDriver(desiredCapabilities);
+      driverSupplier = () -> new TestOperaBlinkDriver(capabilities);
     } else if (BrowserType.FIREFOX.equals(browserName)) {
-      if (isInDevMode()) {
-        driverSupplier = () -> new SynthesizedFirefoxDriver(desiredCapabilities);
-      } else {
-        driverSupplier = () -> new FirefoxDriver(desiredCapabilities);
-      }
+      driverSupplier = () -> new FirefoxDriver(capabilities);
     } else if (BrowserType.HTMLUNIT.equals(browserName)) {
-      driverSupplier = () -> new HtmlUnitDriver(desiredCapabilities);
+      driverSupplier = () -> new HtmlUnitDriver(
+          capabilities == null ? new ImmutableCapabilities() : capabilities);
     } else if (BrowserType.IE.equals(browserName)) {
-      driverSupplier = () -> new InternetExplorerDriver(desiredCapabilities);
+      driverSupplier = () -> new InternetExplorerDriver(capabilities);
     } else if (browserName.toLowerCase().contains(BrowserType.SAFARI)) {
-      driverSupplier = () -> new SafariDriver(desiredCapabilities);
+      driverSupplier = () -> new SafariDriver(capabilities);
     } else if (System.getProperty("selenium.browser.class_name") != null) {
       // No browser name specified, let's try reflection
       String className = System.getProperty("selenium.browser.class_name");
       driverSupplier = () -> {
         try {
           Class<? extends WebDriver> driverClass = Class.forName(className).asSubclass(WebDriver.class);
-          return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapabilities);
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+          return driverClass.getConstructor(Capabilities.class).newInstance(capabilities);
+        } catch (ReflectiveOperationException e) {
           throw new RuntimeException(e);
         }
       };
     } else {
-      if (isInDevMode()) {
-        driverSupplier = () -> new SynthesizedFirefoxDriver(desiredCapabilities);
-      } else {
-        throw new RuntimeException("No driver can be provided for capabilities " + desiredCapabilities);
-      }
+      throw new RuntimeException("No driver can be provided for capabilities " + capabilities);
     }
   }
 

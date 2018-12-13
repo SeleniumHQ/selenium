@@ -150,6 +150,11 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public static readonly string Timeouts = "timeouts";
 
+        /// <summary>
+        /// Capability name used to get or set whether &lt;input type='file'/&gt; elements must be visible to upload files.
+        /// </summary>
+        public static readonly string UseStrictFileInteractability = "strictFileInteractability";
+
         private static readonly List<string> KnownSpecCompliantCapabilityNames = new List<string>() {
             BrowserName,
             BrowserVersion,
@@ -159,9 +164,17 @@ namespace OpenQA.Selenium.Remote
             Proxy,
             SetWindowRect,
             Timeouts,
-            UnhandledPromptBehavior
+            UnhandledPromptBehavior,
+            UseStrictFileInteractability
         };
 
+        /// <summary>
+        /// Gets a value indicating whether a given capability name is compliant with the
+        /// W3C WebDriver Specification.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to check for compliance.</param>
+        /// <returns><see langword="true"/> if the capability name is valid according to the rules
+        /// of the specification; otherwise, <see langword="false"/>.</returns>
         public static bool IsSpecCompliantCapabilityName(string capabilityName)
         {
             if (KnownSpecCompliantCapabilityNames.Contains(capabilityName) || capabilityName.Contains(":"))

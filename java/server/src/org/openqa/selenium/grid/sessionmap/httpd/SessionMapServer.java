@@ -34,11 +34,13 @@ import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 @AutoService(CliCommand.class)
 public class SessionMapServer implements CliCommand {
@@ -84,11 +86,16 @@ public class SessionMapServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("sessions", '.', System.getProperties()));
 
-      SessionMap sessions = new LocalSessionMap();
+      LoggingOptions loggingOptions = new LoggingOptions(config);
+      loggingOptions.configureLogging();
+      DistributedTracer tracer = loggingOptions.getTracer();
+      GlobalDistributedTracer.setInstance(tracer);
+
+      SessionMap sessions = new LocalSessionMap(tracer);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      Server<?> server = new BaseServer<>(DistributedTracer.getInstance(), serverOptions);
+      Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(matching(sessions).using(sessions).decorateWith(W3CCommandHandler.class));
       server.start();
     };

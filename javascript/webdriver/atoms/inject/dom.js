@@ -22,7 +22,9 @@
 goog.provide('webdriver.atoms.inject.dom');
 
 goog.require('bot.dom');
+goog.require('bot.inject');
 goog.require('bot.userAgent');
+goog.require('goog.json');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.atoms.inject');
 
@@ -157,6 +159,7 @@ webdriver.atoms.inject.dom.isDisplayed = function(element, opt_window) {
  * @param {{WINDOW: string}=} opt_window The window context for
  *     the execution of the function.
  * @return {string} The serialized JSON wire protocol result of the function.
+ * @private
  */
 webdriver.atoms.inject.dom.executeDomFunction_ =
     function(fn, args, opt_window) {

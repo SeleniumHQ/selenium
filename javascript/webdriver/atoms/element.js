@@ -26,7 +26,6 @@ goog.require('bot.Keyboard.Keys');
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('goog.array');
-goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
 goog.require('webdriver.Key');
@@ -60,7 +59,7 @@ webdriver.atoms.element.getAttribute = webdriver.atoms.element.attribute.get;
  * Get the location of the element in page space, if it's displayed.
  *
  * @param {!Element} element The element to get the location for.
- * @return {goog.math.Rect} The bounding rectangle of the element.
+ * @return {?goog.math.Rect} The bounding rectangle of the element.
  */
 webdriver.atoms.element.getLocation = function(element) {
   if (!bot.dom.isShown(element)) {
@@ -92,9 +91,10 @@ webdriver.atoms.element.getLocationInView = function(elem, opt_elemRegion) {
 
 
 /**
- * @param {Node} element The element to use.
+ * @param {?Node} element The element to use.
  * @return {boolean} Whether the element is in the HEAD tag.
  * @private
+ * @suppress {reportUnknownTypes}
  */
 webdriver.atoms.element.isInHead_ = function(element) {
   while (element) {
@@ -123,18 +123,19 @@ webdriver.atoms.element.getText = function(element) {
 
 
 /**
- * Types keys on the given {@code element} with a virtual keyboard. Converts
+ * Types keys on the given `element` with a virtual keyboard. Converts
  * special characters from the WebDriver JSON wire protocol to the appropriate
  * {@link bot.Keyboard.Key} value.
  *
  * @param {!Element} element The element to type upon.
  * @param {!Array.<string>} keys The keys to type on the element.
- * @param {bot.Keyboard=} opt_keyboard Keyboard to use; if not provided,
+ * @param {?bot.Keyboard=} opt_keyboard Keyboard to use; if not provided,
  *    constructs one.
  * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
  *     pressed when this function ends.
  * @see bot.action.type
  * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+ * @suppress {reportUnknownTypes}
  */
 webdriver.atoms.element.type = function(
     element, keys, opt_keyboard, opt_persistModifiers) {
@@ -203,6 +204,10 @@ webdriver.atoms.element.type = function(
         sequence.persist);
   });
 
+  /**
+   * @param {!string|!bot.Keyboard.Key} c
+   * @returns {!boolean}
+   */
   function isWebDriverKey(c) {
     return '\uE000' <= c && c <= '\uE03D';
   }
@@ -211,7 +216,7 @@ webdriver.atoms.element.type = function(
 
 /**
  * Maps JSON wire protocol values to their {@link bot.Keyboard.Key} counterpart.
- * @private {!Object.<bot.Keyboard.Key>}
+ * @private {!Object.<?bot.Keyboard.Key>}
  * @const
  */
 webdriver.atoms.element.type.JSON_TO_KEY_MAP_ = {};

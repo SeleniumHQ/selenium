@@ -48,7 +48,7 @@ def release_version
 end
 
 def version
-  "#{release_version}.5"
+  "#{release_version}.59"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -96,7 +96,7 @@ end
 crazy_fun.create_tasks(Dir["common/**/build.desc"])
 crazy_fun.create_tasks(Dir["cpp/**/build.desc"])
 crazy_fun.create_tasks(Dir["javascript/**/build.desc"])
-crazy_fun.create_tasks(Dir["py/**/build.desc"])
+crazy_fun.create_tasks(Dir["python/**/build.desc"])
 crazy_fun.create_tasks(Dir["rake-tasks/**/build.desc"])
 crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 crazy_fun.create_tasks(Dir["third_party/**/build.desc"])
@@ -117,6 +117,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/chrome:chrome',
   '//java/client/src/org/openqa/selenium/edge:edge',
   '//java/client/src/org/openqa/selenium/firefox:firefox',
+  '//java/client/src/org/openqa/selenium/firefox/xpi:firefox-xpi',
   '//java/client/src/org/openqa/selenium/ie:ie',
   '//java/client/src/org/openqa/selenium/lift:lift',
   '//java/client/src/org/openqa/selenium/opera:opera',
@@ -283,7 +284,7 @@ task :test_rb_remote => [
   ("//rb:remote-edge-test" if windows?)
 ].compact
 
-task :test_py => [ :py_prep_for_install_release, "//py:marionette_test:run" ]
+task :test_py => [ :py_prep_for_install_release, "//python:marionette_test:run" ]
 
 task :test => [ :test_javascript, :test_java, :test_rb ]
 if (python?)
@@ -359,12 +360,12 @@ end
 
 task :py_prep_for_install_release => [
   :chrome,
-  "//py:prep"
+  "//python:prep"
 ]
 
-task :py_docs => ["//py:init", "//py:docs"]
+task :py_docs => ["//python:init", "//python:docs"]
 
-task :py_install =>  "//py:install"
+task :py_install =>  "//python:install"
 
 task :py_release => :py_prep_for_install_release do
     sh "python setup.py sdist bdist_wheel upload"
@@ -586,7 +587,7 @@ namespace :copyright do
             "javascript/selenium-core/scripts/xmlextras.js",
             "javascript/selenium-core/xpath/**/*.js"))
     Copyright.Update(
-        FileList["py/**/*.py"],
+        FileList["python/**/*.py"],
         :style => "#")
     Copyright.Update(
       FileList["rb/**/*.rb"],

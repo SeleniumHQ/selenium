@@ -88,7 +88,6 @@ namespace OpenQA.Selenium.Chrome
         private List<string> encodedExtensions = new List<string>();
         private List<string> excludedSwitches = new List<string>();
         private List<string> windowTypes = new List<string>();
-        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Dictionary<string, object> additionalChromeOptions = new Dictionary<string, object>();
         private Dictionary<string, object> userProfilePreferences;
         private Dictionary<string, object> localStatePreferences;
@@ -496,6 +495,27 @@ namespace OpenQA.Selenium.Chrome
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Chrome driver.
         /// </summary>
+        /// <param name="optionName">The name of the capability to add.</param>
+        /// <param name="optionValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalChromeOption(string, object)"/>
+        /// where <paramref name="optionName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="optionValue"/>.
+        /// Calling this method adds capabilities to the Chrome-specific options object passed to
+        /// chromedriver.exe (property name 'goog:chromeOptions').</remarks>
+        public void AddAdditionalChromeOption(string optionName, object optionValue)
+        {
+            this.ValidateCapabilityName(optionName);
+            this.additionalChromeOptions[optionName] = optionValue;
+        }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Chrome driver.
+        /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
         /// <exception cref="ArgumentException">
@@ -507,6 +527,7 @@ namespace OpenQA.Selenium.Chrome
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// Also, by default, calling this method adds capabilities to the options object passed to
         /// chromedriver.exe.</remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalChromeOption method for adding additional options")]
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
             // Add the capability to the chromeOptions object by default. This is to handle
@@ -530,35 +551,16 @@ namespace OpenQA.Selenium.Chrome
         /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/>
         /// where <paramref name="capabilityName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalChromeOption method for adding additional options")]
         public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
-            if (this.IsKnownCapabilityName(capabilityName))
-            {
-                string typeSafeOptionName = this.GetTypeSafeOptionName(capabilityName);
-                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
-
-                // TODO: Remove this if block when chromedriver bug 2371 is fixed
-                // (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2371)
-                if (capabilityName == ForceAlwaysMatchCapabilityName)
-                {
-                    message = string.Format(CultureInfo.InvariantCulture, "The {0} capability is internal to the driver, and not intended to be set from users' code. Do not attempt to set this capability.", capabilityName);
-                }
-
-                throw new ArgumentException(message, "capabilityName");
-            }
-
-            if (string.IsNullOrEmpty(capabilityName))
-            {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
-            }
-
             if (isGlobalCapability)
             {
-                this.additionalCapabilities[capabilityName] = capabilityValue;
+                this.AddAdditionalOption(capabilityName, capabilityValue);
             }
             else
             {
-                this.additionalChromeOptions[capabilityName] = capabilityValue;
+                this.AddAdditionalChromeOption(capabilityName, capabilityValue);
             }
         }
 
@@ -572,18 +574,13 @@ namespace OpenQA.Selenium.Chrome
         {
             Dictionary<string, object> chromeOptions = this.BuildChromeOptionsDictionary();
 
-            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
+            IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(false);
             capabilities.SetCapability(ChromeOptions.Capability, chromeOptions);
 
             Dictionary<string, object> loggingPreferences = this.GenerateLoggingPreferencesDictionary();
             if (loggingPreferences != null)
             {
                 capabilities.SetCapability(CapabilityType.LoggingPreferences, loggingPreferences);
-            }
-
-            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
-            {
-                capabilities.SetCapability(pair.Key, pair.Value);
             }
 
             return capabilities.AsReadOnly();

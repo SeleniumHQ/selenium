@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -35,16 +36,21 @@ public class NodeStatus {
 
   private final UUID nodeId;
   private final URI externalUri;
+  private final int maxSessionCount;
   private final Map<Capabilities, Integer> available;
   private final Map<Capabilities, Integer> used;
 
   public NodeStatus(
       UUID nodeId,
       URI externalUri,
+      int maxSessionCount,
       Map<Capabilities, Integer> available,
       Map<Capabilities, Integer> used) {
     this.nodeId = Objects.requireNonNull(nodeId);
     this.externalUri = Objects.requireNonNull(externalUri);
+    Preconditions.checkArgument(maxSessionCount > 0, "Max session count must be greater than 0.");
+    this.maxSessionCount = maxSessionCount;
+
     this.available = ImmutableMap.copyOf(Objects.requireNonNull(available));
     this.used = ImmutableMap.copyOf(Objects.requireNonNull(used));
   }
@@ -52,6 +58,27 @@ public class NodeStatus {
   public boolean hasCapacity() {
     return !available.isEmpty();
   }
+
+  public boolean hasCapacity(Capabilities caps) {
+    return available.getOrDefault(caps, 0) > 0;
+  }
+
+  public URI getUri() {
+    return externalUri;
+  }
+
+  public int getMaxSessionCount() {
+    return maxSessionCount;
+  }
+
+  public Map<Capabilities, Integer> getAvailable() {
+    return available;
+  }
+
+  public Map<Capabilities, Integer> getUsed() {
+    return used;
+  }
+
 
   @Override
   public boolean equals(Object o) {
@@ -62,19 +89,21 @@ public class NodeStatus {
     NodeStatus that = (NodeStatus) o;
     return Objects.equals(this.nodeId, that.nodeId) &&
            Objects.equals(this.externalUri, that.externalUri) &&
+           this.maxSessionCount == that.maxSessionCount &&
            Objects.equals(this.available, that.available) &&
            Objects.equals(this.used, that.used);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nodeId, externalUri, available, used);
+    return Objects.hash(nodeId, externalUri, maxSessionCount, available, used);
   }
 
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
         "id", nodeId,
         "uri", externalUri,
+        "maxSessions", maxSessionCount,
         "capacity", ImmutableMap.of(
             "available", asCapacity(available),
             "used", asCapacity(used)));
@@ -90,12 +119,12 @@ public class NodeStatus {
     return toReturn.build();
   }
 
-
   public static NodeStatus fromJson(Map<String, Object> raw) {
     try {
       return new NodeStatus(
           UUID.fromString((String) raw.get("id")),
           new URI((String) raw.get("uri")),
+          ((Number) raw.get("maxSessions")).intValue(),
           readCapacityNamed(raw, "available"),
           readCapacityNamed(raw, "used"));
     } catch (URISyntaxException e) {

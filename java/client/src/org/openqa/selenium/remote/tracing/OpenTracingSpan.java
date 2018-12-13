@@ -17,144 +17,98 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import com.google.common.collect.ImmutableSet;
-
-import org.openqa.selenium.remote.http.HttpRequest;
-
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
 
-import java.util.AbstractMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.StreamSupport;
+import java.util.function.BiConsumer;
 
-class OpenTracingSpan extends Span {
+class OpenTracingSpan implements Span {
 
-  private final DistributedTracer distributedTracer;
   private final Tracer tracer;
   private final io.opentracing.Span span;
 
-  OpenTracingSpan(
-      DistributedTracer distributedTracer,
-      Tracer tracer,
-      io.opentracing.Span parent,
-      String operation) {
-    this.distributedTracer = Objects.requireNonNull(distributedTracer);
-    this.tracer = Objects.requireNonNull(tracer);
-
-    this.span = tracer.buildSpan(operation).asChildOf(parent).ignoreActiveSpan().start();
+  OpenTracingSpan(Tracer tracer, io.opentracing.Span span) {
+    this.tracer = Objects.requireNonNull(tracer, "Tracer must be set.");
+    this.span = Objects.requireNonNull(span, "Span must be set.");
     activate();
   }
 
   @Override
   public Span activate() {
     tracer.scopeManager().activate(span, false);
-    distributedTracer.setActiveSpan(this);
     return this;
   }
 
   @Override
-  public Span setName(String name) {
-    Objects.requireNonNull(name, "Name must be set.");
-    span.setOperationName(name);
-    return this;
-  }
+  public Span addTag(String key, Object value) {
+    Objects.requireNonNull(key, "Key must be set");
+    if (value == null) {
+      return this;
+    }
 
-  @Override
-  public Span addTraceTag(String key, String value) {
-    span.setBaggageItem(Objects.requireNonNull(key), value);
-    return this;
-  }
-
-  @Override
-  public Span addTag(String key, String value) {
-    span.setTag(key, value);
+    span.setTag(key, String.valueOf(value));
     return this;
   }
 
   @Override
   public Span addTag(String key, boolean value) {
-    span.setTag(Objects.requireNonNull(key), value);
+    Objects.requireNonNull(key, "Key must be set");
+    span.setTag(key, value);
     return this;
   }
 
   @Override
-  public Span addTag(String key, long value) {
-    span.setTag(Objects.requireNonNull(key), value);
+  public Span addTag(String key, Number value) {
+    Objects.requireNonNull(key, "Key must be set");
+    span.setTag(key, value);
     return this;
   }
 
   @Override
-  public Span createChild(String operation) {
-    Span child = new OpenTracingSpan(distributedTracer, tracer, span, operation);
-    return child.activate();
-  }
+  public void inject(BiConsumer<String, String> forEachField) {
+    TextMap maplike = new TextMap() {
+      @Override
+      public Iterator<Map.Entry<String, String>> iterator() {
+        throw new UnsupportedOperationException("iterator");
+      }
 
-  @Override
-  void inject(HttpRequest request) {
-    tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, new HttpRequestInjector(request));
-  }
-
-  @Override
-  void extract(HttpRequest request) {
-    SpanContext context = tracer.extract(Format.Builtin.HTTP_HEADERS, new HttpRequestInjector(request));
-    if (context == null) {
-      return;
-    }
-    for (Map.Entry<String, String> item : context.baggageItems()) {
-      addTraceTag(item.getKey(), item.getValue());
-    }
+      @Override
+      public void put(String key, String value) {
+        if (key != null && value != null) {
+          forEachField.accept(key, value);
+        }
+      }
+    };
+    tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, maplike);
   }
 
   @Override
   public void close() {
     span.finish();
-    distributedTracer.remove(this);
   }
 
-  private class HttpRequestInjector implements TextMap {
+  SpanContext getContext() {
+    return span.context();
+  }
 
-    private final Set<String> names = ImmutableSet.<String>builder()
-        .add("cache-control")
-        .add("connection")
-        .add("content-length")
-        .add("content-type")
-        .add("date")
-        .add("keep-alive")
-        .add("proxy-authorization")
-        .add("proxy-authenticate")
-        .add("proxy-connection")
-        .add("referer")
-        .add("te")
-        .add("trailer")
-        .add("transfer-encoding")
-        .add("upgrade")
-        .add("user-agent")
-        .build();
-    private final HttpRequest request;
-
-    HttpRequestInjector(HttpRequest request) {
-      this.request = request;
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof OpenTracingSpan)) {
+      return false;
     }
 
-    @Override
-    public Iterator<Map.Entry<String, String>> iterator() {
-      return StreamSupport.stream(request.getHeaderNames().spliterator(), false)
-          .filter(name -> names.contains(name.toLowerCase(Locale.US)))
-          .map(name -> (Map.Entry<String, String>) new AbstractMap.SimpleImmutableEntry<>(
-              name, request.getHeader(name)))
-          .iterator();
-    }
+    OpenTracingSpan that = (OpenTracingSpan) o;
+    return Objects.equals(this.tracer, that.tracer) &&
+           Objects.equals(this.span, that.span);
+  }
 
-    @Override
-    public void put(String key, String value) {
-      request.setHeader(key, value);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(tracer, span);
   }
 }

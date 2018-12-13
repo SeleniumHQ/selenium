@@ -1,4 +1,4 @@
-load("//:selenium-version.bzl", "SE_VERSION")
+load("//java:version.bzl", "SE_VERSION")
 load("//java:rules.bzl", "java_library")
 
 java_library(
@@ -6,6 +6,7 @@ java_library(
   srcs = [
     'Augmentable.java',
     'Command.java',
+    'CommandPayload.java',
     'CommandExecutor.java',
     'ErrorCodes.java',
     'Response.java',
@@ -115,14 +116,12 @@ java_library(name = 'remote-lib',
     'http/JsonHttpResponseCodec.java',
     'http/W3CHttpCommandCodec.java',
     'http/W3CHttpResponseCodec.java',
-    'internal/HttpUrlBuilder.java',
     'internal/OkHttpClient.java',
     'internal/JsonToWebElementConverter.java',
     'internal/WebElementToJsonConverter.java',
     'mobile/RemoteNetworkConnection.java',
   ] + glob([
     'service/*.java',
-    'tracing/*.java',
   ]),
   resources = [
     ':get-attribute',
@@ -138,9 +137,6 @@ java_library(name = 'remote-lib',
   deps = [
     ':http-session-id',
     '//java/client/src/org/openqa/selenium:selenium',
-    '//third_party/java/contrib:opentracing-tracerresolver',
-    '//third_party/java/opencensus:opencensus-api',
-    '//third_party/java/opentracing:opentracing-noop',
     '//third_party/java/guava:guava',
   ],
 )

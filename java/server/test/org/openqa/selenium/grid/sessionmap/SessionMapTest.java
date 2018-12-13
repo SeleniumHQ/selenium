@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.web.PassthroughHttpClient;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -56,7 +57,7 @@ public class SessionMapTest {
         new URI("http://localhost:1234"),
         new ImmutableCapabilities());
 
-    local = new LocalSessionMap();
+    local = new LocalSessionMap(DistributedTracer.builder().build());
     client = new PassthroughHttpClient<>(local);
     remote = new RemoteSessionMap(client);
   }
@@ -77,8 +78,8 @@ public class SessionMapTest {
 
   @Test
   public void shouldThrowANoSuchSessionExceptionIfSessionCannotBeFound() {
-    catchThrowableOfType(() -> local.get(id), NoSuchSessionException.class);
-    catchThrowableOfType(() -> remote.get(id), NoSuchSessionException.class);
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> local.get(id));
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> remote.get(id));
   }
 
   @Test
@@ -89,8 +90,8 @@ public class SessionMapTest {
 
     remote.remove(id);
 
-    catchThrowableOfType(() -> local.get(id), NoSuchSessionException.class);
-    catchThrowableOfType(() -> remote.get(id), NoSuchSessionException.class);
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> local.get(id));
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> remote.get(id));
   }
 
   /**

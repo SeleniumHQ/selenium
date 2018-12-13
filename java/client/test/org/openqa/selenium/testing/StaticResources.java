@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.testing;
 
-import org.openqa.selenium.BuckBuild;
+import org.openqa.selenium.build.BuckBuild;
+import org.openqa.selenium.build.DevMode;
+import org.openqa.selenium.build.InProject;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -46,8 +48,8 @@ class StaticResources {
         "//javascript/firefox-driver:webdriver_prefs",
         "org/openqa/selenium/firefox/webdriver_prefs.json");
     copy(
-        "//java/client/src/org/openqa/selenium/firefox:webdriver.xpi",
-        "org/openqa/selenium/firefox/webdriver.xpi");
+        "//java/client/src/org/openqa/selenium/firefox/xpi:webdriver.xpi",
+        "org/openqa/selenium/firefox/xpi/webdriver.xpi");
   }
 
   private static void copy(String buildTarget, String copyTo) {

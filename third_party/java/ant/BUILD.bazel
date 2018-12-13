@@ -1,0 +1,30 @@
+java_import(
+    name = "ant",
+    jars = ["ant-1.9.9.jar"],
+    licenses = [
+        "notice",  # Apache2
+    ],
+    srcjar = "ant-1.9.9-sources.jar",
+    tags = [
+        "maven_coordinates=org.apache.ant:ant:jar:1.9.9",
+    ],
+    visibility = [
+        "//third_party/java/pantsbuild:__pkg__",
+        "//third_party/java/testng:__pkg__",
+    ],
+    exports = [
+        ":ant-launcher",
+    ],
+)
+
+java_import(
+    name = "ant-launcher",
+    jars = ["ant-launcher-1.9.9.jar"],
+    licenses = [
+        "notice",  # Apache2
+    ],
+    srcjar = "ant-launcher-1.9.9-sources.jar",
+    tags = [
+        "maven_coordinates=org.apache.ant:ant-launcher:jar:1.9.9",
+    ],
+)

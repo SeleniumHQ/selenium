@@ -4,7 +4,7 @@ export_file(
   src = 'i386/libnoblur.so',
   visibility = [
     '//dotnet/src/webdriver:webdriver_deps',
-    '//java/client/src/org/openqa/selenium/firefox:i386',
+    '//java/client/src/org/openqa/selenium/firefox/xpi:i386',
   ],
 )
 
@@ -14,7 +14,7 @@ export_file(
   src = 'amd64/libnoblur64.so',
   visibility = [
     '//dotnet/src/webdriver:webdriver_deps',
-    '//java/client/src/org/openqa/selenium/firefox:amd64',
+    '//java/client/src/org/openqa/selenium/firefox/xpi:amd64',
   ],
 )
 

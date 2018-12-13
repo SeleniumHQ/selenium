@@ -99,6 +99,7 @@ webdriver.Command.prototype.getParameters = function() {
  * Enumeration of predefined names command names that all command processors
  * will support.
  * @enum {string}
+ * @suppress {lintChecks}
  */
 // TODO: Delete obsolete command names.
 webdriver.CommandName = {
@@ -236,7 +237,7 @@ webdriver.CommandExecutor = function() {};
 
 
 /**
- * Executes the given {@code command}. If there is an error executing the
+ * Executes the given `command`. If there is an error executing the
  * command, the provided callback will be invoked with the offending error.
  * Otherwise, the callback will be invoked with a null Error and non-null
  * {@link bot.response.ResponseObject} object.

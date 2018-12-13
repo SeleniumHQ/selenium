@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.DistributorOptions;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.local.NodeFlags;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServer;
@@ -45,6 +46,7 @@ import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 import java.net.URL;
 
@@ -95,9 +97,10 @@ public class RouterServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("router", '.', System.getProperties()));
 
-      DistributedTracer tracer = DistributedTracer.builder()
-          .registerDetectedTracers()
-          .build();
+      LoggingOptions loggingOptions = new LoggingOptions(config);
+      loggingOptions.configureLogging();
+      DistributedTracer tracer = loggingOptions.getTracer();
+      GlobalDistributedTracer.setInstance(tracer);
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
@@ -110,11 +113,12 @@ public class RouterServer implements CliCommand {
       URL distributorUrl = distributorOptions.getDistributorUri().toURL();
       Distributor distributor = new RemoteDistributor(
           tracer,
-          HttpClient.Factory.createDefault().createClient(distributorUrl));
+          HttpClient.Factory.createDefault(),
+          distributorUrl);
 
-      Router router = new Router(sessions, distributor);
+      Router router = new Router(tracer, sessions, distributor);
 
-      Server<?> server = new BaseServer<>(tracer, serverOptions);
+      Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();
     };

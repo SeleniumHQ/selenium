@@ -41,6 +41,7 @@ module Selenium
             :set_window_rect,
             :timeouts,
             :unhandled_prompt_behavior,
+            :strict_file_interactability,
 
             # remote-specific
             :remote_session_id,

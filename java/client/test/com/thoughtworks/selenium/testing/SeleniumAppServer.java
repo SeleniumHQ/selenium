@@ -18,7 +18,7 @@
 package com.thoughtworks.selenium.testing;
 
 import org.openqa.selenium.environment.webserver.JettyAppServer;
-import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.build.InProject;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 
 import java.nio.file.Path;

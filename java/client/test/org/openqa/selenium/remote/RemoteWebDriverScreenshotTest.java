@@ -20,8 +20,7 @@ package org.openqa.selenium.remote;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.OutputType.BASE64;
-import static org.openqa.selenium.testing.Driver.GRID;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -38,7 +37,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
 
   @Test
-  @Ignore(GRID)
+  @Ignore
   public void testShouldBeAbleToGrabASnapshotOnException() {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");

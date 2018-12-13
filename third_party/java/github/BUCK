@@ -7,7 +7,7 @@ prebuilt_jar(
     '//third_party/java/gson:gson'
   ],
   visibility = [
-    '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
   ],
 )
 

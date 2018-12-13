@@ -1,0 +1,136 @@
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "net_library", "core_library", "core_resource")
+
+net_library(
+  name = "net35",
+  srcs = glob([
+    "*.cs",
+    "Chrome/*.cs",
+    "Edge/*.cs",
+    "Firefox/**/*.cs",
+    "Html5/*.cs",
+    "IE/*.cs",
+    "Interactions/*.cs",
+    "Internal/*.cs",
+    "Opera/*.cs",
+    "Remote/**/*.cs",
+    "Safari/*.cs",
+    "Support/*.cs"
+  ]),
+  deps = [
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+    "@json.net//:net35"
+  ],
+  resources = [
+    ":isDisplayed",
+    ":getAttribute"
+  ],
+  visibility = ["//visibility:public"]
+)
+
+net_library(
+  name = "net40",
+  srcs = glob([
+    "*.cs",
+    "Chrome/*.cs",
+    "Edge/*.cs",
+    "Firefox/**/*.cs",
+    "Html5/*.cs",
+    "IE/*.cs",
+    "Interactions/*.cs",
+    "Internal/*.cs",
+    "Opera/*.cs",
+    "Remote/**/*.cs",
+    "Safari/*.cs",
+    "Support/*.cs"
+  ]),
+  deps = [
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+    "@json.net//:net40"
+  ],
+  resources = [
+    ":isDisplayed",
+    ":getAttribute"
+  ],
+  visibility = ["//visibility:public"]
+)
+
+net_library(
+  name = "net45",
+  srcs = glob([
+    "*.cs",
+    "Chrome/*.cs",
+    "Edge/*.cs",
+    "Firefox/**/*.cs",
+    "Html5/*.cs",
+    "IE/*.cs",
+    "Interactions/*.cs",
+    "Internal/*.cs",
+    "Opera/*.cs",
+    "Remote/**/*.cs",
+    "Safari/*.cs",
+    "Support/*.cs"
+  ]),
+  deps = [
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+    "@json.net//:net45"
+  ],
+  resources = [
+    ":isDisplayed",
+    ":getAttribute"
+  ],
+  visibility = ["//visibility:public"]
+)
+
+core_library(
+  name = "core",
+  srcs = glob([
+    "*.cs",
+    "Chrome/*.cs",
+    "Edge/*.cs",
+    "Firefox/**/*.cs",
+    "Html5/*.cs",
+    "IE/*.cs",
+    "Interactions/*.cs",
+    "Internal/*.cs",
+    "Opera/*.cs",
+    "Remote/**/*.cs",
+    "Safari/*.cs",
+    "Support/*.cs"
+  ]),
+  deps = [
+    "@io_bazel_rules_dotnet//dotnet/stdlib.core:netstandard.dll",
+    "@json.net//:netcore"
+  ],
+  resources = [
+    ":isDisplayed",
+    ":getAttribute"
+  ],
+  defines = [
+    "NETSTANDARD2_0"
+  ],
+  visibility = ["//visibility:public"]
+)
+
+core_resource(
+  name = "isDisplayed",
+  src = "//javascript/atoms:is-displayed",
+  identifier = "isDisplayed.js"
+)
+
+core_resource(
+  name = "getAttribute",
+  src = "//javascript/webdriver/atoms:get-attribute",
+  identifier = "getAttribute.js"
+)

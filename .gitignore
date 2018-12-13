@@ -6,6 +6,7 @@ projectFilesBackup/
 .buckconfig.local
 .nobuckcheck
 .credentials.dat
+.ijwb
 buck-out
 mockpiframe.log
 mockpiframe.log.lck
@@ -17,6 +18,7 @@ common/build
 /build/
 cpp/iedriver/IEReturnTypes.h
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
+java/server/test/org/openqa/selenium/example
 javascript/deps.js
 javascript/node/selenium-webdriver/lib/atoms/
 javascript/node/selenium-webdriver/node_modules/

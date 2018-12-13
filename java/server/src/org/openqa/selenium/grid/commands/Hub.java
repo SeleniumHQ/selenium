@@ -36,12 +36,15 @@ import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 @AutoService(CliCommand.class)
 public class Hub implements CliCommand {
@@ -88,14 +91,16 @@ public class Hub implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("selenium", '.', System.getProperties()));
 
-      DistributedTracer tracer = DistributedTracer.getInstance();
+      LoggingOptions loggingOptions = new LoggingOptions(config);
+      loggingOptions.configureLogging();
+      DistributedTracer tracer = loggingOptions.getTracer();
+      GlobalDistributedTracer.setInstance(tracer);
 
-      SessionMap sessions = new LocalSessionMap();
-      Distributor distributor = new LocalDistributor(tracer);
-      Router router = new Router(sessions, distributor);
+      SessionMap sessions = new LocalSessionMap(tracer);
+      Distributor distributor = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
+      Router router = new Router(tracer, sessions, distributor);
 
       Server<?> server = new BaseServer<>(
-          tracer,
           new BaseServerOptions(config));
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();

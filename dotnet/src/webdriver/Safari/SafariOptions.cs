@@ -53,7 +53,6 @@ namespace OpenQA.Selenium.Safari
         private bool enableAutomaticInspection = false;
         private bool enableAutomaticProfiling = false;
         private bool isTechnologyPreview = false;
-        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariOptions"/> class.
@@ -107,14 +106,10 @@ namespace OpenQA.Selenium.Safari
         /// </exception>
         /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
         /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method for adding additional options")]
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
-            if (string.IsNullOrEmpty(capabilityName))
-            {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
-            }
-
-            this.additionalCapabilities[capabilityName] = capabilityValue;
+            this.AddAdditionalOption(capabilityName, capabilityValue);
         }
 
         /// <summary>
@@ -130,7 +125,7 @@ namespace OpenQA.Selenium.Safari
                 this.BrowserName = TechPreviewBrowserNameValue;
             }
 
-            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(true);
+            IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(true);
             if (this.enableAutomaticInspection)
             {
                 capabilities.SetCapability(EnableAutomaticInspectionSafariOption, true);
@@ -141,13 +136,7 @@ namespace OpenQA.Selenium.Safari
                 capabilities.SetCapability(EnableAutomticProfilingSafariOption, true);
             }
 
-            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
-            {
-                capabilities.SetCapability(pair.Key, pair.Value);
-            }
-
-            // Should return capabilities.AsReadOnly(), and will in a future release.
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
     }
 }

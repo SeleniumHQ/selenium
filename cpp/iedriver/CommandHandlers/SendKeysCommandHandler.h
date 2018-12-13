@@ -78,6 +78,8 @@ class SendKeysCommandHandler : public IECommandHandler {
                   Response* response);
   bool IsFileUploadElement(ElementHandle element_wrapper);
   bool HasMultipleAttribute(ElementHandle element_wrapper);
+  bool IsElementInteractable(ElementHandle element_wrapper,
+                             std::string* error_description);
   bool VerifyPageHasFocus(BrowserHandle browser_wrapper);
   bool WaitUntilElementFocused(IHTMLElement* element);
   bool SetInsertionPoint(IHTMLElement* element);

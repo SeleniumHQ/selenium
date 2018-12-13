@@ -58,15 +58,15 @@ public class EndToEndTest {
   @Test
   public void inMemory() throws URISyntaxException {
 
-    SessionMap sessions = new LocalSessionMap();
-    Distributor distributor = new LocalDistributor(tracer);
+    SessionMap sessions = new LocalSessionMap(tracer);
+    Distributor distributor = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
     URI nodeUri = new URI("http://localhost:4444");
     LocalNode node = LocalNode.builder(tracer, nodeUri, sessions)
         .add(driverCaps, createFactory(nodeUri))
         .build();
     distributor.add(node);
 
-    Router router = new Router(sessions, distributor);
+    Router router = new Router(tracer, sessions, distributor);
 
     Server<?> server = createServer();
     server.addRoute(Routes.matching(router).using(router));
@@ -86,19 +86,24 @@ public class EndToEndTest {
   @Test
   public void withServers() throws URISyntaxException {
 
-    LocalSessionMap localSessions = new LocalSessionMap();
+    LocalSessionMap localSessions = new LocalSessionMap(tracer);
     Server<?> sessionServer = createServer();
     sessionServer.addRoute(Routes.matching(localSessions).using(localSessions));
     sessionServer.start();
 
     SessionMap sessions = new RemoteSessionMap(getClient(sessionServer));
 
-    LocalDistributor localDistributor = new LocalDistributor(tracer);
+    LocalDistributor localDistributor = new LocalDistributor(
+        tracer,
+        HttpClient.Factory.createDefault());
     Server<?> distributorServer = createServer();
     distributorServer.addRoute(Routes.matching(localDistributor).using(localDistributor));
     distributorServer.start();
 
-    Distributor distributor = new RemoteDistributor(tracer, getClient(distributorServer));
+    Distributor distributor = new RemoteDistributor(
+        tracer,
+        HttpClient.Factory.createDefault(),
+        distributorServer.getUrl());
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
@@ -106,7 +111,6 @@ public class EndToEndTest {
         .add(driverCaps, createFactory(nodeUri))
         .build();
     Server<?> nodeServer = new BaseServer<>(
-        DistributedTracer.builder().build(),
         new BaseServerOptions(
             new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
     nodeServer.addRoute(Routes.matching(localNode).using(localNode));
@@ -114,7 +118,7 @@ public class EndToEndTest {
 
     distributor.add(localNode);
 
-    Router router = new Router(sessions, distributor);
+    Router router = new Router(tracer, sessions, distributor);
     Server<?> routerServer = createServer();
     routerServer.addRoute(Routes.matching(router).using(router));
     routerServer.start();
@@ -128,7 +132,7 @@ public class EndToEndTest {
 
   private Server<?> createServer() {
     int port = PortProber.findFreePort();
-    return new BaseServer<>(DistributedTracer.builder().build(), new BaseServerOptions(
+    return new BaseServer<>(new BaseServerOptions(
         new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
   }
 

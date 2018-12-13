@@ -24,6 +24,7 @@ goog.provide('webdriver.atoms.inputs');
 goog.require('bot.Keyboard');
 goog.require('bot.Mouse');
 goog.require('bot.action');
+goog.require('bot.dom');
 goog.require('goog.dom');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
@@ -33,8 +34,8 @@ goog.require('webdriver.atoms.element');
 /**
  * Send keyboard input to a particular element.
  *
- * @param {Element} element The element to send the keyboard input to, or
- *     {@code null} to use the document's active element.
+ * @param {?Element} element The element to send the keyboard input to, or
+ *     `null` to use the document's active element.
  * @param {!Array.<string>} keys The keys to type on the element.
  * @param {bot.Keyboard.State=} opt_state The predefined keyboard state to use.
  * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
@@ -59,7 +60,7 @@ webdriver.atoms.inputs.sendKeys = function(
 /**
  * Click on an element.
  *
- * @param {Element} element The element to click.
+ * @param {?Element} element The element to click.
  * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
  * @return {!bot.Mouse.State} The mouse state.
  */
@@ -79,11 +80,12 @@ webdriver.atoms.inputs.click = function(element, opt_state) {
 /**
  * Move the mouse to a specific element and/or coordinate location.
  *
- * @param {Element} element The element to move the mouse to.
+ * @param {?Element} element The element to move the mouse to.
  * @param {?number} xOffset The x coordinate to use as an offset.
  * @param {?number} yOffset The y coordinate to use as an offset.
  * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
  * @return {!bot.Mouse.State} The mouse state.
+ * @suppress {reportUnknownTypes}
  */
 webdriver.atoms.inputs.mouseMove = function(element, xOffset, yOffset,
     opt_state) {
@@ -186,6 +188,7 @@ webdriver.atoms.inputs.rightClick = function(opt_state) {
  * @param {bot.Mouse.Button} button The button to press.
  * @param {bot.Mouse.State=} opt_state The state of the mouse.
  * @return {!bot.Mouse.State} The mouse state.
+ * @suppress {reportUnknownTypes}
  */
 webdriver.atoms.inputs.mouseClick = function(button, opt_state) {
   // If no target element is specified, try to find it from the

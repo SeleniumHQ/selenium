@@ -17,19 +17,40 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import org.openqa.selenium.remote.http.HttpClient;
+import com.google.common.base.Strings;
+
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
 import io.opentracing.tag.Tags;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
+import java.util.function.Function;
 
 public class HttpTracing {
 
   private HttpTracing() {
     // Utility classes
   }
+
+  public static final Function<HttpRequest, Map<String, String>> AS_MAP = req -> {
+    Map<String, String> builder = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    for (String name : req.getHeaderNames()) {
+      if (Strings.isNullOrEmpty(name)) {
+        continue;
+      }
+
+      String value = req.getHeader(name);
+      if (Strings.isNullOrEmpty(value)) {
+        continue;
+      }
+
+      builder.put(name, value);
+    }
+    return Collections.unmodifiableMap(builder);
+  };
 
   public static void inject(Span span, HttpRequest request) {
     Objects.requireNonNull(request, "Request must be set.");
@@ -39,37 +60,7 @@ public class HttpTracing {
 
     span.addTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
     span.addTag(Tags.HTTP_URL.getKey(), request.getUri());
-    span.inject(request);
+
+    span.inject(request::setHeader);
   }
-
-  public static void extract(HttpRequest request, Span intoSpan) {
-    Objects.requireNonNull(request, "Request must be set.");
-    if (intoSpan == null) {
-      return;
-    }
-
-    intoSpan.extract(request);
-  }
-
-  public static HttpClient decorate(HttpClient existing) {
-
-    return request -> {
-      Span span = DistributedTracer.getInstance().getActiveSpan();
-      inject(span, request);
-
-      try {
-        HttpResponse response = existing.execute(request);
-
-        if (span != null) {
-          span.addTag(Tags.HTTP_STATUS.getKey(), response.getStatus());
-        }
-
-        return response;
-      } catch (Throwable throwable) {
-        throw throwable;
-      }
-    };
-
-  }
-
 }

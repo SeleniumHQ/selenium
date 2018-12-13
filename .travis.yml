@@ -82,7 +82,7 @@ matrix:
     - env: MARIONETTE=1 BUCK="test firefox-test"
       <<: *java
       <<: *firefox-nightly
-    - env: BUCK="test --labels small --always-exclude //java/..."
+    - env: MARIONETTE=1 BUCK="test --labels small --always-exclude //java/..."
       <<: *java
     - env: BUCK="test internal-grid-test"
       <<: *java

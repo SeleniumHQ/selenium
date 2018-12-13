@@ -116,13 +116,13 @@ namespace OpenQA.Selenium
             if (TestUtilities.IsFirefox(driver))
             {
                 FirefoxOptions options = new FirefoxOptions();
-                options.AddAdditionalCapability(CapabilityType.EnableProfiling, true, true);
+                options.AddAdditionalOption(CapabilityType.EnableProfiling, true);
                 localDriver = new FirefoxDriver(options);
             }
             else if (TestUtilities.IsChrome(driver))
             {
                 ChromeOptions options = new ChromeOptions();
-                options.AddAdditionalCapability(CapabilityType.EnableProfiling, true, true);
+                options.AddAdditionalOption(CapabilityType.EnableProfiling, true);
                 localDriver = new ChromeDriver(options);
                 ICapabilities c = ((IHasCapabilities)localDriver).Capabilities;
             }

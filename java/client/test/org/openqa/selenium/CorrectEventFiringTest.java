@@ -25,12 +25,12 @@ import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import org.junit.Test;
@@ -182,8 +182,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("mouseclick")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    wait.until(elementTextToEqual(result, "mouse click"));
-    assertThat(result.getText()).isEqualTo("mouse click");
+    wait.until($ -> result.getText().equals("mouse click"));
   }
 
   @Test
@@ -193,8 +192,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("mouseup")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    wait.until(elementTextToEqual(result, "mouse up"));
-    assertThat(result.getText()).isEqualTo("mouse up");
+    wait.until($ -> result.getText().equals("mouse up"));
   }
 
   @Test
@@ -204,8 +202,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("child")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    wait.until(elementTextToEqual(result, "mouse down"));
-    assertThat(result.getText()).isEqualTo("mouse down");
+    wait.until($ -> result.getText().equals("mouse down"));
   }
 
   @Test
@@ -273,7 +270,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("labelForCheckbox")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    assertThat(wait.until(elementTextToContain(result, "labelclick chboxclick"))).isNotNull();
+    wait.until(elementTextToContain(result, "labelclick chboxclick"));
   }
 
   @Test

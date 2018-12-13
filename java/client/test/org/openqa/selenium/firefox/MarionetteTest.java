@@ -25,7 +25,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import org.junit.After;
 import org.junit.Test;
@@ -34,7 +34,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.nio.file.Path;

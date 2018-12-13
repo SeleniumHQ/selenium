@@ -114,15 +114,14 @@ webdriver.ie.findElements = function(mechanism, criteria, opt_root) {
  * element, is currently in the overflow region.
  *
  * @param {!Element} element The element to check.
+ * @param {number} x The horizontal offset from the top-left corner.
+ * @param {number} y The vertical offset from the top-left corner.
  * @return {bot.dom.OverflowState} Whether the coordinates specified, relative to the element,
  *     are scrolled in the parent overflow.
  */
-webdriver.ie.isInParentOverflow = function(element) {
-  var rect = bot.dom.getClientRect(element);
-  var x = Math.round(rect.width / 2);
-  var y = Math.round(rect.height / 2);
-  var center = new goog.math.Coordinate(x, y);
-  return bot.dom.getOverflowState(element, center);
+webdriver.ie.isOffsetInParentOverflow = function (element, x, y) {
+  var offsetPoint = new goog.math.Coordinate(x, y);
+  return bot.dom.getOverflowState(element, offsetPoint);
 };
 
 /**

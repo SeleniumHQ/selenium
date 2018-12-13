@@ -72,6 +72,8 @@ namespace OpenQA.Selenium
             this.driverServicePort = port;
         }
 
+        public event EventHandler<DriverProcessStartingEventArgs> DriverProcessStarting;
+
         /// <summary>
         /// Gets the Uri of the service.
         /// </summary>
@@ -250,6 +252,10 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;
+
+            DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
+            this.OnDriverProcessStarting(eventArgs);
+
             this.driverServiceProcess.Start();
             bool serviceAvailable = this.WaitForServiceInitialization();
 
@@ -294,6 +300,23 @@ namespace OpenQA.Selenium
                 }
 
                 this.isDisposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Raises the <see cref="DriverProcessStarting"/> event.
+        /// </summary>
+        /// <param name="eventArgs">A <see cref="DriverProcessStartingEventArgs"/> that contains the event data.</param>
+        protected void OnDriverProcessStarting(DriverProcessStartingEventArgs eventArgs)
+        {
+            if (eventArgs == null)
+            {
+                throw new ArgumentNullException("eventArgs", "eventArgs must not be null");
+            }
+
+            if (this.DriverProcessStarting != null)
+            {
+                this.DriverProcessStarting(this, eventArgs);
             }
         }
 

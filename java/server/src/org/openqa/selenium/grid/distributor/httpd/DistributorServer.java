@@ -30,6 +30,7 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -37,7 +38,9 @@ import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 
 @AutoService(CliCommand.class)
@@ -84,15 +87,16 @@ public class DistributorServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("distributor", '.', System.getProperties()));
 
-      DistributedTracer tracer = DistributedTracer.builder()
-          .registerDetectedTracers()
-          .build();
+      LoggingOptions loggingOptions = new LoggingOptions(config);
+      loggingOptions.configureLogging();
+      DistributedTracer tracer = loggingOptions.getTracer();
+      GlobalDistributedTracer.setInstance(tracer);
 
-      Distributor distributor = new LocalDistributor(tracer);
+      Distributor distributor = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      Server<?> server = new BaseServer<>(tracer, serverOptions);
+      Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(
           Routes.matching(distributor)
               .using(distributor)

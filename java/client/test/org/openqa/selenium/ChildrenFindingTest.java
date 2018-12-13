@@ -19,7 +19,7 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;

@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.DistributorOptions;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.local.NodeFlags;
 import org.openqa.selenium.grid.server.BaseServer;
@@ -46,6 +47,7 @@ import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 import java.net.URL;
 import java.time.Duration;
@@ -101,16 +103,17 @@ public class NodeServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("node", '.', System.getProperties()));
 
+      LoggingOptions loggingOptions = new LoggingOptions(config);
+      loggingOptions.configureLogging();
+      DistributedTracer tracer = loggingOptions.getTracer();
+      GlobalDistributedTracer.setInstance(tracer);
+
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
       SessionMap sessions = new RemoteSessionMap(
           HttpClient.Factory.createDefault().createClient(sessionMapUrl));
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
-
-      DistributedTracer tracer = DistributedTracer.builder()
-          .registerDetectedTracers()
-          .build();
 
       LocalNode.Builder builder = LocalNode.builder(
           tracer,
@@ -123,29 +126,30 @@ public class NodeServer implements CliCommand {
       URL distributorUrl = distributorOptions.getDistributorUri().toURL();
       Distributor distributor = new RemoteDistributor(
           tracer,
-          HttpClient.Factory.createDefault().createClient(distributorUrl));
+          HttpClient.Factory.createDefault(),
+          distributorUrl);
 
-      Server<?> server = new BaseServer<>(tracer, serverOptions);
+      Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler.class));
       server.start();
 
-      Regularly regularly = new Regularly(
-          "Register Node with Distributor",
-          Duration.ofMinutes(5),
-          Duration.ofSeconds(30));
+      Regularly regularly = new Regularly("Register Node with Distributor");
 
       AtomicBoolean registered = new AtomicBoolean(false);
 
-      regularly.submit(() -> {
-        boolean previously = registered.get();
-        registered.set(false);
+      regularly.submit(
+          () -> {
+            boolean previously = registered.get();
+            registered.set(false);
 
-        distributor.add(node);
-        registered.set(true);
-        if (!previously) {
-          LOG.info("Successfully registered with distributor");
-        }
-      });
+            distributor.add(node);
+            registered.set(true);
+            if (!previously) {
+              LOG.info("Successfully registered with distributor");
+            }
+          },
+          Duration.ofMinutes(5),
+          Duration.ofSeconds(30));
     };
   }
 }

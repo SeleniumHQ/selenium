@@ -20,11 +20,11 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -54,10 +54,15 @@ public class I18nTest extends JUnit4TestBase {
    */
   private static final String tokyo = "\u6771\u4EAC";
 
+  /**
+   * Chinese for "The Voice of China"
+   */
+  private static final String theVoiceOfChina = "\u4E2D\u56FD\u4E4B\u58F0";
+
   @Test
   public void testCn() {
     driver.get(pages.chinesePage);
-    driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
+    driver.findElement(By.linkText(theVoiceOfChina)).click();
   }
 
   @Test

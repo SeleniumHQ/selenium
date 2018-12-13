@@ -270,7 +270,13 @@ public class InternetExplorerOptions extends MutableCapabilities {
       streamFrom.entrySet().stream()
           .filter(e -> CAPABILITY_NAMES.contains(e.getKey()))
           .filter(e -> e.getValue() != null)
-          .forEach(e -> setCapability((String) e.getKey(), e.getValue()));
+          .forEach(e -> {
+            if (IE_SWITCHES.equals(e.getKey())) {
+              setCapability((String) e.getKey(), Arrays.asList(((String) e.getValue()).split(" ")));
+            } else {
+              setCapability((String) e.getKey(), e.getValue());
+            }
+          });
     }
   }
 }

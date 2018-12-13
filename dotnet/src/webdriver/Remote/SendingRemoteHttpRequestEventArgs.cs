@@ -21,22 +21,36 @@ using System.Net;
 
 namespace OpenQA.Selenium.Remote
 {
+    /// <summary>
+    /// Provides data for the SendingRemoteHttpRequest event of a <see cref="HttpCommandExecutor"/> object.
+    /// </summary>
     public class SendingRemoteHttpRequestEventArgs : EventArgs
     {
         private HttpWebRequest request;
         private string requestBody;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SendingRemoteHttpRequestEventArgs"/> class.
+        /// </summary>
+        /// <param name="request">The <see cref="HttpWebRequest"/> object being sent.</param>
+        /// <param name="requestBody">The body of the request.</param>
         public SendingRemoteHttpRequestEventArgs(HttpWebRequest request, string requestBody)
         {
             this.request = request;
             this.requestBody = requestBody;
         }
 
+        /// <summary>
+        /// Gets the <see cref="HttpWebRequest"/> object representing the HTTP request being sent.
+        /// </summary>
         public HttpWebRequest Request
         {
             get { return this.request; }
         }
 
+        /// <summary>
+        /// Gets the body of the HTTP request as a string.
+        /// </summary>
         public string RequestBody
         {
             get { return this.requestBody; }
