@@ -1,9 +1,0 @@
-filegroup(
-    name = "prebuilt",
-    data = glob([
-        "**/*.*",
-    ]),
-    visibility = [
-        "//java/client/test/org/openqa/selenium/testing/drivers:__pkg__",
-    ],
-)
