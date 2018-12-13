@@ -403,7 +403,7 @@ task :ios_driver => [
 
 file "build/javascript/deps.js" => FileList[
   "third_party/closure/goog/**/*.js",
-	"third_party/js/wgxpath/**/*.js",
+  "third_party/js/wgxpath/**/*.js",
   "javascript/*/**/*.js",  # Don't depend on js files directly in javascript/
   ] do
 
@@ -575,7 +575,6 @@ namespace :copyright do
     Copyright.Update(
         FileList["javascript/**/*.js"].exclude(
             "javascript/atoms/test/jquery.min.js",
-            "javascript/firefox-driver/extension/components/httpd.js",
             "javascript/jsunit/**/*.js",
             "javascript/node/selenium-webdriver/node_modules/**/*.js",
             "javascript/selenium-core/lib/**/*.js",
@@ -591,14 +590,7 @@ namespace :copyright do
       FileList["rb/**/*.rb"],
       :style => "#")
     Copyright.Update(
-        FileList["java/**/*.java"].exclude(
-            "java/client/src/org/openqa/selenium/internal/Base64Encoder.java",
-            "java/client/test/org/openqa/selenium/internal/Base64EncoderTest.java",
-            "java/server/src/cybervillains/**/*.java",
-            "java/server/src/org/openqa/selenium/server/FrameGroupCommandQueueSet.java",
-            "java/server/src/org/openqa/selenium/server/FutureFileResource.java",
-            "java/server/src/org/openqa/selenium/server/ProxyHandler.java"
-            ))
+        FileList["java/**/*.java"])
   end
 end
 
