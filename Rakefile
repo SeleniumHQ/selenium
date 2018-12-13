@@ -21,7 +21,6 @@ require 'rake-tasks/crazy_fun/mappings/folder'
 require 'rake-tasks/crazy_fun/mappings/gcc'
 require 'rake-tasks/crazy_fun/mappings/javascript'
 require 'rake-tasks/crazy_fun/mappings/jruby'
-require 'rake-tasks/crazy_fun/mappings/mozilla'
 require 'rake-tasks/crazy_fun/mappings/python'
 require 'rake-tasks/crazy_fun/mappings/rake'
 require 'rake-tasks/crazy_fun/mappings/rename'
@@ -73,7 +72,6 @@ FolderMappings.new.add_all(crazy_fun)
 GccMappings.new.add_all(crazy_fun)
 JavascriptMappings.new.add_all(crazy_fun)
 JRubyMappings.new.add_all(crazy_fun)
-MozillaMappings.new.add_all(crazy_fun)
 PythonMappings.new.add_all(crazy_fun)
 RakeMappings.new.add_all(crazy_fun)
 RenameMappings.new.add_all(crazy_fun)
