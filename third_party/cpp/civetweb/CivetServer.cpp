@@ -6,13 +6,18 @@
 
 #include "CivetServer.h"
 
-#include <stdlib.h>
-#include <string.h>
 #include <assert.h>
 #include <stdexcept>
+#include <stdlib.h>
+#include <string.h>
 
 #ifndef UNUSED_PARAMETER
 #define UNUSED_PARAMETER(x) (void)(x)
+#endif
+
+#ifndef MAX_PARAM_BODY_LENGTH
+// Set a default limit for parameters in a form body: 2 MB
+#define MAX_PARAM_BODY_LENGTH (1024 * 1024 * 2)
 #endif
 
 bool
@@ -461,6 +466,7 @@ CivetServer::getParam(struct mg_connection *conn,
                       size_t occurrence)
 {
 	const char *formParams = NULL;
+	const char *queryString = NULL;
 	const struct mg_request_info *ri = mg_get_request_info(conn);
 	assert(ri != NULL);
 	CivetServer *me = (CivetServer *)(ri->user_data);
@@ -471,12 +477,22 @@ CivetServer::getParam(struct mg_connection *conn,
 	mg_unlock_context(me->context);
 
 	if (conobj.postData != NULL) {
+		// check if form parameter are already stored
 		formParams = conobj.postData;
 	} else {
+		// otherwise, check if there is a request body
 		const char *con_len_str = mg_get_header(conn, "Content-Length");
 		if (con_len_str) {
-			unsigned long con_len = atoi(con_len_str);
-			if (con_len > 0) {
+			char *end = 0;
+			unsigned long con_len = strtoul(con_len_str, &end, 10);
+			if ((end == NULL) || (*end != 0)) {
+				// malformed header
+				return false;
+			}
+			if ((con_len > 0) && (con_len <= MAX_PARAM_BODY_LENGTH)) {
+				// Body is within a reasonable range
+
+				// Allocate memory:
 				// Add one extra character: in case the post-data is a text, it
 				// is required as 0-termination.
 				// Do not increment con_len, since the 0 terminating is not part
@@ -490,20 +506,32 @@ CivetServer::getParam(struct mg_connection *conn,
 					conobj.postDataLen = con_len;
 				}
 			}
+			if (conobj.postData == NULL) {
+				// we cannot store the body
+				return false;
+			}
 		}
 	}
-	if (formParams == NULL) {
+
+	if (ri->query_string != NULL) {
 		// get requests do store html <form> field values in the http
 		// query_string
-		formParams = ri->query_string;
+		queryString = ri->query_string;
 	}
+
 	mg_unlock_connection(conn);
 
-	if (formParams != NULL) {
-		return getParam(formParams, strlen(formParams), name, dst, occurrence);
+	bool get_param_success = false;
+	if (!get_param_success && formParams != NULL) {
+		get_param_success =
+		    getParam(formParams, strlen(formParams), name, dst, occurrence);
+	}
+	if (!get_param_success && queryString != NULL) {
+		get_param_success =
+		    getParam(queryString, strlen(queryString), name, dst, occurrence);
 	}
 
-	return false;
+	return get_param_success;
 }
 
 bool
@@ -544,6 +572,23 @@ CivetServer::getParam(const char *data,
 		}
 	}
 	return false;
+}
+
+std::string
+CivetServer::getPostData(struct mg_connection *conn)
+{
+	mg_lock_connection(conn);
+	std::string postdata;
+	char buf[2048];
+	int r = mg_read(conn, buf, sizeof(buf));
+	while (r > 0) {
+		std::string p = std::string(buf);
+		p.resize(r);
+		postdata += p;
+		r = mg_read(conn, buf, sizeof(buf));
+	}
+	mg_unlock_connection(conn);
+	return postdata;
 }
 
 void
