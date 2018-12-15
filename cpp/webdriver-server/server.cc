@@ -526,8 +526,7 @@ void Server::SendHttpOk(struct mg_connection* connection,
     << "Content-Type: " << content_type << "; charset=UTF-8\r\n"
     << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
-    << "Accept-Ranges: bytes\r\n"
-    << "Connection: close\r\n\r\n";
+    << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
     out << body << "\r\n";
   }
@@ -546,8 +545,7 @@ void Server::SendHttpBadRequest(struct mg_connection* const connection,
     << "Content-Type: application/json; charset=UTF-8\r\n"
     << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
-    << "Accept-Ranges: bytes\r\n"
-    << "Connection: close\r\n\r\n";
+    << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
     out << body << "\r\n";
   }
@@ -566,8 +564,7 @@ void Server::SendHttpInternalError(struct mg_connection* connection,
     << "Content-Type: application/json; charset=UTF-8\r\n"
     << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
-    << "Accept-Ranges: bytes\r\n"
-    << "Connection: close\r\n\r\n";
+    << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
     out << body << "\r\n";
   }
@@ -586,8 +583,7 @@ void Server::SendHttpNotFound(struct mg_connection* const connection,
     << "Content-Type: application/json; charset=UTF-8\r\n"
     << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
-    << "Accept-Ranges: bytes\r\n"
-    << "Connection: close\r\n\r\n";
+    << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
     out << body << "\r\n";
   }
@@ -621,8 +617,7 @@ void Server::SendHttpTimeout(struct mg_connection* connection,
     << "Content-Type: application/json; charset=UTF-8\r\n"
     << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
-    << "Accept-Ranges: bytes\r\n"
-    << "Connection: close\r\n\r\n";
+    << "Accept-Ranges: bytes\r\n\r\n";
 
   mg_write(connection, out.str().c_str(), out.str().size());
 }
