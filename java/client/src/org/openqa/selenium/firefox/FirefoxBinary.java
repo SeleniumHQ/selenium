@@ -96,8 +96,8 @@ public class FirefoxBinary {
       return;
     }
 
-    throw new WebDriverException("Cannot find firefox binary in PATH. " +
-                                 "Make sure firefox is installed. OS appears to be: " + Platform.getCurrent());
+    throw new WebDriverException("Cannot find Firefox binary in PATH. " +
+                                 "Make sure Firefox is installed. OS appears to be: " + Platform.getCurrent());
   }
 
   public FirefoxBinary(Channel channel) {
@@ -109,14 +109,14 @@ public class FirefoxBinary {
       } else {
         throw new WebDriverException(
           "Firefox executable specified by system property " + FirefoxDriver.SystemProperty.BROWSER_BINARY +
-          " does not belong to channel '" + channel + "', it appears to be '" + systemBinary.getChannel() + "'");
+          " does not belong to channel '" + channel + "'. It appears to be '" + systemBinary.getChannel() + "'");
       }
     }
 
     executable = locateFirefoxBinariesFromPlatform()
         .filter(e -> e.getChannel() == channel)
         .findFirst().orElseThrow(() -> new WebDriverException(
-            String.format("Cannot find firefox binary for channel '%s' in PATH", channel)));
+            String.format("Cannot find Firefox binary for channel '%s' in PATH", channel)));
   }
 
   public FirefoxBinary(File pathToFirefoxBinary) {
@@ -161,7 +161,7 @@ public class FirefoxBinary {
   }
 
   /**
-   * Locates the firefox binary from a system property. Will throw an exception if the binary cannot
+   * Locates the Firefox binary from a system property. Will throw an exception if the binary cannot
    * be found.
    */
   private static Executable locateFirefoxBinaryFromSystemProperty() {
@@ -196,7 +196,7 @@ public class FirefoxBinary {
   }
 
   /**
-   * Locates the firefox binary by platform.
+   * Locates the Firefox binary by platform.
    */
   private static Stream<Executable> locateFirefoxBinariesFromPlatform() {
     ImmutableList.Builder<Executable> executables = new ImmutableList.Builder<>();
@@ -218,7 +218,7 @@ public class FirefoxBinary {
         executables.add(new Executable(binary));
       }
 
-      // user home
+      // User home.
       binary = new File(System.getProperty("user.home") + binary.getAbsolutePath());
       if (binary.exists()) {
         executables.add(new Executable(binary));
@@ -247,7 +247,7 @@ public class FirefoxBinary {
             }
           }
         } catch (IOException e) {
-          // ignore this path
+          // Ignore this path.
         }
 
       } else {
@@ -301,7 +301,7 @@ public class FirefoxBinary {
   }
 
   /**
-   * @deprecated DriverSerrice is responsible for process management
+   * @deprecated DriverService is responsible for process management
    */
   @Deprecated
   public void waitFor(long timeout) {
