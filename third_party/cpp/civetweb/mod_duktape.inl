@@ -1,6 +1,6 @@
 /* This file is part of the CivetWeb web server.
  * See https://github.com/civetweb/civetweb/
- * (C) 2015-2017 by the CivetWeb authors, MIT license.
+ * (C) 2015-2018 by the CivetWeb authors, MIT license.
  */
 
 #include "duktape.h"
@@ -40,7 +40,6 @@ mg_duk_mem_free(void *udata, void *ptr)
 	mg_free(ptr);
 }
 
-
 static void
 mg_duk_fatal_handler(duk_context *duk_ctx, duk_errcode_t code, const char *msg)
 {
@@ -53,9 +52,59 @@ mg_duk_fatal_handler(duk_context *duk_ctx, duk_errcode_t code, const char *msg)
 	duk_get_prop_string(duk_ctx, -1, civetweb_conn_id);
 	conn = (struct mg_connection *)duk_to_pointer(duk_ctx, -1);
 
-	mg_cry(conn, "JavaScript fatal (%u): %s", (unsigned)code, msg);
+	mg_cry_internal(conn, "JavaScript fatal (%u): %s", (unsigned)code, msg);
 }
 
+#if DUK_VERSION >= 20000L
+/* Dropped from interface */
+duk_int_t duk_peval_file(duk_context *duk_ctx, const char *script);
+
+static void
+mg_duk_v2_fatal(void *udata, const char *msg)
+{
+	; /* TODO: How to get "conn" without duk_ctx */
+}
+
+static void
+push_file_as_string(duk_context *ctx, const char *filename)
+{
+	FILE *f;
+	struct stat fst;
+	void *buf;
+	size_t len;
+
+	if (0 != stat(filename, &fst)) {
+		duk_push_undefined(ctx);
+		return;
+	}
+
+	f = fopen(filename, "rb");
+	if (!f) {
+		duk_push_undefined(ctx);
+		return;
+	}
+
+	buf = mg_malloc(fst.st_size);
+	if (!f) {
+		fclose(f);
+		duk_push_undefined(ctx);
+		return;
+	}
+
+	len = fread(buf, 1, fst.st_size, f);
+	fclose(f);
+
+	duk_push_lstring(ctx, (const char *)buf, (duk_size_t)len);
+	mg_free(buf);
+}
+
+duk_int_t
+duk_peval_file(duk_context *duk_ctx, const char *script)
+{
+	push_file_as_string(duk_ctx, script);
+	return duk_peval(duk_ctx);
+}
+#endif
 
 static duk_ret_t
 duk_itf_write(duk_context *duk_ctx)
@@ -76,10 +125,9 @@ duk_itf_write(duk_context *duk_ctx)
 
 	if (!conn) {
 		duk_error(duk_ctx,
-		          DUK_ERR_INTERNAL_ERROR,
+		          DUK_ERR_ERROR,
 		          "function not available without connection object");
-		/* probably never reached, but satisfies static code analysis */
-		return DUK_RET_INTERNAL_ERROR;
+		return DUK_RET_ERROR;
 	}
 
 	ret = mg_write(conn, val, len);
@@ -96,16 +144,15 @@ duk_itf_read(duk_context *duk_ctx)
 	char buf[1024];
 	int len;
 
-	duk_push_global_stash(duk_ctx);
+	duk_push_current_function(duk_ctx);
 	duk_get_prop_string(duk_ctx, -1, civetweb_conn_id);
 	conn = (struct mg_connection *)duk_to_pointer(duk_ctx, -1);
 
 	if (!conn) {
 		duk_error(duk_ctx,
-		          DUK_ERR_INTERNAL_ERROR,
+		          DUK_ERR_ERROR,
 		          "function not available without connection object");
-		/* probably never reached, but satisfies static code analysis */
-		return DUK_RET_INTERNAL_ERROR;
+		return DUK_RET_ERROR;
 	}
 
 	len = mg_read(conn, buf, sizeof(buf));
@@ -118,24 +165,29 @@ duk_itf_read(duk_context *duk_ctx)
 static duk_ret_t
 duk_itf_getoption(duk_context *duk_ctx)
 {
-	struct mg_context *cv_ctx;
+	struct mg_connection *conn;
 	const char *ret;
+	int optidx;
 	duk_size_t len = 0;
 	const char *val = duk_require_lstring(duk_ctx, -1, &len);
 
 	duk_push_current_function(duk_ctx);
-	duk_get_prop_string(duk_ctx, -1, civetweb_ctx_id);
-	cv_ctx = (struct mg_context *)duk_to_pointer(duk_ctx, -1);
+	duk_get_prop_string(duk_ctx, -1, civetweb_conn_id);
+	conn = (struct mg_connection *)duk_to_pointer(duk_ctx, -1);
 
-	if (!cv_ctx) {
+	if (!conn) {
 		duk_error(duk_ctx,
-		          DUK_ERR_INTERNAL_ERROR,
-		          "function not available without connection object");
-		/* probably never reached, but satisfies static code analysis */
-		return DUK_RET_INTERNAL_ERROR;
+		          DUK_ERR_ERROR,
+		          "function not available without context object");
+		return DUK_RET_ERROR;
 	}
 
-	ret = mg_get_option(cv_ctx, val);
+	optidx = get_option_index(val);
+	if (optidx >= 0) {
+		ret = conn->dom_ctx->config[optidx];
+	} else {
+		ret = NULL;
+	}
 	if (ret) {
 		duk_push_string(duk_ctx, ret);
 	} else {
@@ -158,10 +210,15 @@ mg_exec_duktape_script(struct mg_connection *conn, const char *script_name)
 	duk_ctx = duk_create_heap(mg_duk_mem_alloc,
 	                          mg_duk_mem_realloc,
 	                          mg_duk_mem_free,
-	                          (void *)conn->ctx,
-	                          mg_duk_fatal_handler);
+	                          (void *)conn->phys_ctx,
+#if DUK_VERSION >= 20000L
+	                          mg_duk_v2_fatal
+#else
+	                          mg_duk_fatal_handler
+#endif
+	);
 	if (!duk_ctx) {
-		mg_cry(conn, "Failed to create a Duktape heap.");
+		mg_cry_internal(conn, "%s", "Failed to create a Duktape heap.");
 		goto exec_duktape_finished;
 	}
 
@@ -169,16 +226,19 @@ mg_exec_duktape_script(struct mg_connection *conn, const char *script_name)
 	duk_push_global_object(duk_ctx);
 	duk_push_object(duk_ctx); /* create a new table/object ("conn") */
 
+	/* add function conn.write */
 	duk_push_c_function(duk_ctx, duk_itf_write, 1 /* 1 = nargs */);
 	duk_push_pointer(duk_ctx, (void *)conn);
 	duk_put_prop_string(duk_ctx, -2, civetweb_conn_id);
-	duk_put_prop_string(duk_ctx, -2, "write"); /* add function conn.write */
+	duk_put_prop_string(duk_ctx, -2, "write");
 
+	/* add function conn.read */
 	duk_push_c_function(duk_ctx, duk_itf_read, 0 /* 0 = nargs */);
 	duk_push_pointer(duk_ctx, (void *)conn);
 	duk_put_prop_string(duk_ctx, -2, civetweb_conn_id);
-	duk_put_prop_string(duk_ctx, -2, "read"); /* add function conn.read */
+	duk_put_prop_string(duk_ctx, -2, "read");
 
+	/* add request_method object */
 	duk_push_string(duk_ctx, conn->request_info.request_method);
 	duk_put_prop_string(duk_ctx,
 	                    -2,
@@ -226,16 +286,16 @@ mg_exec_duktape_script(struct mg_connection *conn, const char *script_name)
 	duk_push_string(duk_ctx, script_name);
 	duk_put_prop_string(duk_ctx, -2, "script_name");
 
-	if (conn->ctx != NULL) {
-		duk_push_c_function(duk_ctx, duk_itf_getoption, 1 /* 1 = nargs */);
-		duk_push_pointer(duk_ctx, (void *)(conn->ctx));
-		duk_put_prop_string(duk_ctx, -2, civetweb_ctx_id);
-		duk_put_prop_string(duk_ctx,
-		                    -2,
-		                    "getoption"); /* add function conn.write */
+	/* add function civetweb.getoption */
+	duk_push_c_function(duk_ctx, duk_itf_getoption, 1 /* 1 = nargs */);
+	duk_push_pointer(duk_ctx, (void *)conn);
+	duk_put_prop_string(duk_ctx, -2, civetweb_conn_id);
+	duk_put_prop_string(duk_ctx, -2, "getoption");
 
-		if (conn->ctx->systemName != NULL) {
-			duk_push_string(duk_ctx, conn->ctx->systemName);
+	if (conn->phys_ctx != NULL) {
+		/* add system name */
+		if (conn->phys_ctx->systemName != NULL) {
+			duk_push_string(duk_ctx, conn->phys_ctx->systemName);
 			duk_put_prop_string(duk_ctx, -2, "system");
 		}
 	}
@@ -249,7 +309,7 @@ mg_exec_duktape_script(struct mg_connection *conn, const char *script_name)
 	duk_put_prop_string(duk_ctx, -2, civetweb_conn_id);
 
 	if (duk_peval_file(duk_ctx, script_name) != 0) {
-		mg_cry(conn, "%s", duk_safe_to_string(duk_ctx, -1));
+		mg_cry_internal(conn, "%s", duk_safe_to_string(duk_ctx, -1));
 		goto exec_duktape_finished;
 	}
 	duk_pop(duk_ctx); /* ignore result */

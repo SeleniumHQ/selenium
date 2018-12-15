@@ -10,9 +10,9 @@
 
 #include "civetweb.h"
 #include <map>
+#include <stdexcept>
 #include <string>
 #include <vector>
-#include <stdexcept>
 
 // forward declaration
 class CivetServer;
@@ -363,7 +363,7 @@ class CIVETWEB_API CivetServer
 	 * @param cookieName - cookie name to get the value from
 	 * @param cookieValue - cookie value is returned using thiis reference
 	 * @returns the size of the cookie value string read.
-	*/
+	 */
 	static int getCookie(struct mg_connection *conn,
 	                     const std::string &cookieName,
 	                     std::string &cookieValue);
@@ -372,16 +372,16 @@ class CIVETWEB_API CivetServer
 	 * getHeader(struct mg_connection *conn, const std::string &headerName)
 	 * @param conn - the connection information
 	 * @param headerName - header name to get the value from
-	 * @returns a char array whcih contains the header value as string
-	*/
+	 * @returns a char array which contains the header value as string
+	 */
 	static const char *getHeader(struct mg_connection *conn,
 	                             const std::string &headerName);
 
 	/**
 	 * getParam(struct mg_connection *conn, const char *, std::string &, size_t)
 	 *
-	 * Returns a query paramter contained in the supplied buffer.  The
-	 * occurance value is a zero-based index of a particular key name.  This
+	 * Returns a query which contained in the supplied buffer.  The
+	 * occurrence value is a zero-based index of a particular key name.  This
 	 * should not be confused with the index over all of the keys.  Note that
 	 *this
 	 * function assumes that parameters are sent as text in http query string
@@ -408,8 +408,8 @@ class CIVETWEB_API CivetServer
 	/**
 	 * getParam(const std::string &, const char *, std::string &, size_t)
 	 *
-	 * Returns a query paramter contained in the supplied buffer.  The
-	 * occurance value is a zero-based index of a particular key name.  This
+	 * Returns a query parameter contained in the supplied buffer.  The
+	 * occurrence value is a zero-based index of a particular key name.  This
 	 * should not be confused with the index over all of the keys.
 	 *
 	 * @param data - the query string (text)
@@ -431,8 +431,8 @@ class CIVETWEB_API CivetServer
 	/**
 	 * getParam(const char *, size_t, const char *, std::string &, size_t)
 	 *
-	 * Returns a query paramter contained in the supplied buffer.  The
-	 * occurance value is a zero-based index of a particular key name.  This
+	 * Returns a query parameter contained in the supplied buffer.  The
+	 * occurrence value is a zero-based index of a particular key name.  This
 	 * should not be confused with the index over all of the keys.
 	 *
 	 * @param data the - query string (text)
@@ -448,6 +448,18 @@ class CIVETWEB_API CivetServer
 	                     const char *name,
 	                     std::string &dst,
 	                     size_t occurrence = 0);
+
+	/**
+	 * getPostData(struct mg_connection *)
+	 *
+	 * Returns response body from a request made as POST. Since the
+	 * connections map is protected, it can't be directly accessed.
+	 * This uses string to store post data to handle big posts.
+	 *
+	 * @param conn - connection from which post data will be read
+	 * @return Post data (empty if not available).
+	 */
+	static std::string getPostData(struct mg_connection *conn);
 
 	/**
 	 * urlDecode(const std::string &, std::string &, bool)
@@ -563,7 +575,7 @@ class CIVETWEB_API CivetServer
 	/**
 	 * requestHandler(struct mg_connection *, void *cbdata)
 	 *
-	 * Handles the incomming request.
+	 * Handles the incoming request.
 	 *
 	 * @param conn - the connection information
 	 * @param cbdata - pointer to the CivetHandler instance.

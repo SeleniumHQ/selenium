@@ -86,8 +86,8 @@ A million repetitions of "a"
   34AA973C D4C4DAA4 F61EEB2B DBAD2731 6534016F
 */
 
-#include <string.h>
 #include <stdint.h>
+#include <string.h>
 
 typedef struct {
 	uint32_t state[5];
@@ -122,9 +122,10 @@ blk0(CHAR64LONG16 *block, int i)
 }
 
 #define blk(block, i)                                                          \
-	(block->l[i & 15] = rol(block->l[(i + 13) & 15] ^ block->l[(i + 8) & 15]   \
-	                            ^ block->l[(i + 2) & 15] ^ block->l[i & 15],   \
-	                        1))
+	((block)->l[(i)&15] =                                                      \
+	     rol((block)->l[((i) + 13) & 15] ^ (block)->l[((i) + 8) & 15]          \
+	             ^ (block)->l[((i) + 2) & 15] ^ (block)->l[(i)&15],            \
+	         1))
 
 /* (R0+R1), R2, R3, R4 are the different operations used in SHA1 */
 #define R0(v, w, x, y, z, i)                                                   \
