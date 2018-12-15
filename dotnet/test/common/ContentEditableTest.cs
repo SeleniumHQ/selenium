@@ -18,7 +18,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;
@@ -37,7 +37,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
         [IgnoreBrowser(Browser.Safari, "Non-printable characters do not navigate within element")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
@@ -63,9 +63,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Chrome, "Driver prepends text in contentEditable areas")]
+        [IgnoreBrowser(Browser.Firefox, "Driver prepends text in contentEditable areas")]
         [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
-        [IgnoreBrowser(Browser.Firefox, "Not yet implemented = https://github.com/mozilla/geckodriver/issues/667")]
         public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
         {
             driver.Url = readOnlyPage;
@@ -92,10 +92,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Prepends text")]
+        [IgnoreBrowser(Browser.Chrome, "Driver prepends text in contentEditable areas")]
+        [IgnoreBrowser(Browser.Firefox, "Driver prepends text in contentEditable areas")]
         [IgnoreBrowser(Browser.IE, "Prepends text")]
         [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
-        [IgnoreBrowser(Browser.Firefox, "Not yet implemented = https://github.com/mozilla/geckodriver/issues/667")]
         public void ShouldAppendToTinyMCE()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
@@ -110,8 +110,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Prepends text")]
-        [IgnoreBrowser(Browser.Firefox, "Doesn't write anything")]
+        [IgnoreBrowser(Browser.Chrome, "Driver prepends text in contentEditable areas")]
+        [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
         [IgnoreBrowser(Browser.Safari, "Driver prepends text to contentEditable areas")]
         public void AppendsTextToEndOfContentEditableWithMultipleTextNodes()
         {

@@ -29,7 +29,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Legacy behavior, not spec compliant")]
         [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanAcceptUnhandledAlert()
         {
@@ -37,7 +36,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Legacy behavior, not spec compliant")]
         [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanSilentlyAcceptUnhandledAlert()
         {
@@ -45,7 +43,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Unstable Chrome behavior")]
         [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanDismissUnhandledAlert()
         {
@@ -53,7 +50,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Legacy behavior, not spec compliant")]
         [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanSilentlyDismissUnhandledAlert()
         {
@@ -61,7 +57,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome uses IGNORE mode by default")]
         [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanDismissUnhandledAlertsByDefault()
         {
@@ -69,7 +64,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Unstable Chrome behavior")]
         [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanIgnoreUnhandledAlert()
         {

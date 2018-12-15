@@ -274,7 +274,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
 		public void ThrowsIfScriptTriggersAlert()
@@ -289,7 +288,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void ThrowsIfAlertHappensDuringScript()
@@ -304,7 +302,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void ThrowsIfScriptTriggersAlertWhichTimesOut()
@@ -320,7 +317,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
         [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void ThrowsIfAlertHappensDuringScriptWhichTimesOut()
@@ -335,7 +331,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Chrome, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Edge, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]

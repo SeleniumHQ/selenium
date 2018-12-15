@@ -153,7 +153,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome does not throw when setting the text of an alert")]
         public void SettingTheValueOfAnAlertThrows()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -525,7 +524,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome does not supply text in UnhandledAlertException")]
+        [IgnoreBrowser(Browser.Chrome, "Driver chooses not to return text from unhandled alert")]
+        [IgnoreBrowser(Browser.Edge, "Driver chooses not to return text from unhandled alert")]
+        [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not do unhandled alerts")]
         public void IncludesAlertTextInUnhandledAlertException()

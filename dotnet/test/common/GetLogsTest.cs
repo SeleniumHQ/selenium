@@ -9,8 +9,9 @@ using OpenQA.Selenium.Environment;
 namespace OpenQA.Selenium
 {
     [TestFixture]
-    [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
     [IgnoreBrowser(Browser.Edge, "Edge driver does not support logs API")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox driver (when using Marionette/Geckodriver) does not support logs API")]
+    [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
 	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
     public class GetLogsTest : DriverTestFixture
     {
@@ -29,11 +30,6 @@ namespace OpenQA.Selenium
         [Test]
         public void LogBufferShouldBeResetAfterEachGetLogCall()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
             foreach (string logType in logTypes)
             {
@@ -50,11 +46,6 @@ namespace OpenQA.Selenium
         [Test]
         public void DifferentLogsShouldNotContainTheSameLogEntries()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             driver.Url = simpleTestPage;
             Dictionary<string, ReadOnlyCollection<LogEntry>> logTypeToEntriesDictionary = new Dictionary<string, ReadOnlyCollection<LogEntry>>();
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
@@ -78,11 +69,6 @@ namespace OpenQA.Selenium
         [Test]
         public void TurningOffLogShouldMeanNoLogMessages()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
             foreach (string logType in logTypes)
             {

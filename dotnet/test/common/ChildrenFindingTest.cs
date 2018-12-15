@@ -172,7 +172,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Need to release atoms fix from #4351")]
         public void ShouldNotReturnRootElementWhenFindingChildrenById()
         {
             driver.Url = nestedPage;
