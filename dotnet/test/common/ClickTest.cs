@@ -252,7 +252,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Fails on Chrome")]
         [IgnoreBrowser(Browser.Opera, "Not Tested")]
         public void ShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports()
         {

@@ -7,9 +7,9 @@ using OpenQA.Selenium.Chrome;
 namespace OpenQA.Selenium
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.Edge, "Edge driver does not support logs API")]
     [IgnoreBrowser(Browser.Firefox, "Firefox driver (when using Marionette/Geckodriver) does not support logs API")]
     [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
-    [IgnoreBrowser(Browser.Edge, "Edge driver does not support logs API")]
 	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
 	public class AvailableLogsTest : DriverTestFixture
     {
@@ -28,11 +28,6 @@ namespace OpenQA.Selenium
         [Test]
         public void BrowserLogShouldBeEnabledByDefault()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
             Assert.That(logTypes, Contains.Item(LogType.Browser));
         }
@@ -42,11 +37,6 @@ namespace OpenQA.Selenium
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ClientLogShouldBeEnabledByDefault()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             // Do one action to have *something* in the client logs.
             driver.Url = formsPage;
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
@@ -66,11 +56,6 @@ namespace OpenQA.Selenium
         [Test]
         public void DriverLogShouldBeEnabledByDefault()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
             Assert.That(logTypes, Contains.Item(LogType.Driver), "Remote driver logs should be enabled by default");
         }
@@ -78,11 +63,6 @@ namespace OpenQA.Selenium
         [Test]
         public void ProfilerLogShouldBeDisabledByDefault()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
             Assert.That(logTypes, Has.No.Member(LogType.Profiler), "Profiler logs should not be enabled by default");
         }
@@ -91,11 +71,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Chrome does not support profiler logs")]
         public void ShouldBeAbleToEnableProfilerLog()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             CreateWebDriverWithProfiling();
             ReadOnlyCollection<string> logTypes = localDriver.Manage().Logs.AvailableLogTypes;
             Assert.That(logTypes, Contains.Item(LogType.Profiler), "Profiler log should be enabled");

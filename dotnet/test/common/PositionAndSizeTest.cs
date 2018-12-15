@@ -131,7 +131,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Chrome, "WebKit bug 28804")]
         public void ShouldHandleNonIntegerPositionAndSize()
         {
             driver.Url = rectanglesPage;

@@ -148,14 +148,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Browser doesn't see subsequent navigation to a fragment as a new navigation.")]
         public void ShouldBeAbleToGetAFragmentOnTheCurrentPage()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                // Don't run this test on Marionette.
-                Assert.Ignore("Marionette doesn't see subsequent navigation to a fragment as a new navigation.");
-            }
-
             driver.Url = xhtmlTestPage;
             driver.Url = xhtmlTestPage + "#text";
             driver.FindElement(By.Id("id1"));
