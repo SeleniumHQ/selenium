@@ -36,13 +36,6 @@ namespace OpenQA.Selenium
             return GetUserAgent(driver).Contains("Firefox");
         }
 
-        public static bool IsMarionette(IWebDriver driver)
-        {
-            Firefox.FirefoxDriver firefoxDriver = driver as Firefox.FirefoxDriver;
-
-            return firefoxDriver != null;
-        }
-
         public static bool IsInternetExplorer(IWebDriver driver)
         {
             string userAgent = GetUserAgent(driver);
