@@ -19,7 +19,7 @@ namespace OpenQA.Selenium.Firefox
 
         public static FirefoxOptions DefaultOptions
         {
-            get { return new FirefoxOptions() { BrowserExecutableLocation = @"C:\Program Files (x86)\Nightly\firefox.exe" }; }
+            get { return new FirefoxOptions() { BrowserExecutableLocation = @"C:\Program Files (x86)\Nightly\firefox.exe", AcceptInsecureCertificates = true }; }
         }
     }
 }
