@@ -50,8 +50,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,141,0,2
- PRODUCTVERSION 3,141,0,2
+ FILEVERSION 3,141,0,3
+ PRODUCTVERSION 3,141,0,3
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -68,12 +68,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Software Freedom Conservancy"
             VALUE "FileDescription", "Command line server for the IE driver"
-            VALUE "FileVersion", "3.141.0.2"
+            VALUE "FileVersion", "3.141.0.3"
             VALUE "InternalName", "IEDriverServer.exe"
             VALUE "LegalCopyright", "Copyright (C) 2018"
             VALUE "OriginalFilename", "IEDriverServer.exe"
             VALUE "ProductName", "Selenium WebDriver"
-            VALUE "ProductVersion", "3.141.0.2"
+            VALUE "ProductVersion", "3.141.0.3"
         END
     END
     BLOCK "VarFileInfo"
