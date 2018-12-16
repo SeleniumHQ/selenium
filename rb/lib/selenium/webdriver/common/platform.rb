@@ -50,8 +50,13 @@ module Selenium
       end
 
       def ci
-        return :travis if ENV['TRAVIS']
-        :jenkins if ENV['JENKINS']
+        if ENV['TRAVIS']
+          :travis
+        elsif ENV['JENKINS']
+          :jenkins
+        elsif ENV['APPVEYOR']
+          :appveyor
+        end
       end
 
       def bitsize
