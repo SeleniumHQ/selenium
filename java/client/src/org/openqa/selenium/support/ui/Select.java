@@ -145,7 +145,7 @@ public class Select implements ISelect, WrapsElement {
     }
 
     if (!matched) {
-      throw new NoSuchElementException("Cannot locate element with text: " + text);
+      throw new NoSuchElementException("Cannot locate option with text: " + text);
     }
   }
 
@@ -269,7 +269,7 @@ public class Select implements ISelect, WrapsElement {
     List<WebElement> options = element.findElements(By.xpath(
       ".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
     if (options.isEmpty()) {
-      throw new NoSuchElementException("Cannot locate element with text: " + text);
+      throw new NoSuchElementException("Cannot locate option with text: " + text);
     }
 
     for (WebElement option : options) {
