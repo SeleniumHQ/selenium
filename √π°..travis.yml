@@ -1,0 +1,25 @@
+language: php
+
+php:
+- 5.5
+- 5.6
+- 7.0
+- hhvm
+
+matrix:
+  allow_failures:
+    - php: hhvm
+
+before_script:
+  - travis_retry composer self-update
+  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
+
+script:
+  - phpunit --coverage-text --coverage-clover=coverage.clover
+
+after_script:
+  - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
+
+notifications:
+  slack:
+    secure: GLAz8cc60i+a7DiXrFqoThKPaSOpNbcCiqjSur8LuBPCtxWMfBFEKsmE7iweAe5fLUTffx4TbMbMd38LS/3hwpt5oYOoQBQ8IQDNtFJ7rbLkGtC6SI6lrPTWdBDfTyHevG4aOJZCiFe5+Tajvj2CWD+YAMcGaCn6s8IVLU5NoPw=
