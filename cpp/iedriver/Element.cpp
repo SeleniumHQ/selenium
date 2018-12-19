@@ -1257,7 +1257,9 @@ LocationInfo Element::CalculateClickPoint(const LocationInfo location, const boo
     viewport_rect.bottom = clickable_viewport.y + clickable_viewport.height;
 
     RECT intersect_rect;
-    BOOL is_intersecting = ::IntersectRect(&intersect_rect, &element_rect, &viewport_rect);
+    BOOL is_intersecting = ::IntersectRect(&intersect_rect,
+                                           &element_rect,
+                                           &viewport_rect);
     if (is_intersecting) {
       corrected_width = intersect_rect.right - intersect_rect.left;
       corrected_height = intersect_rect.bottom - intersect_rect.top;
@@ -1265,8 +1267,8 @@ LocationInfo Element::CalculateClickPoint(const LocationInfo location, const boo
   }
 
   LocationInfo click_location = {};  
-  click_location.x = location.x + floor(corrected_width / 2.0);
-  click_location.y = location.y + floor(corrected_height / 2.0);
+  click_location.x = location.x + static_cast<long>(floor(corrected_width / 2.0));
+  click_location.y = location.y + static_cast<long>(floor(corrected_height / 2.0));
   return click_location;
 }
 
