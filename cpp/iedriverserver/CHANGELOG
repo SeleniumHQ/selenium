@@ -9,10 +9,43 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.0.4
+==========
+ * Fixed to correctly set Content-length header for HTTP responses.
+   Not setting this header properly is a protocol violation, and strict
+   HTTP clients (like .NET's HttpWebRequest/HttpWebResponse) will reject
+   such an HTTP response for the 1.1 version of the HTTP protocol.
+ * Reduced JavaScript errors during findElement(s). In most cases, executing
+   JavaScript is an atomic action for the IE driver. However, in the off
+   chance that there is a page refresh during the execution of JavaScript,
+   converting the result of the script to a JSON object for serialization
+   might cause an error, in which case we should return the appropriate
+   error to the caller. One place, however, where this might be common is
+   executing findElement(s) across a page navigation. This change makes the
+   driver return the proper error in the post-processing of a script
+   execution. It also recognizes the findElement(s) case, ignoring
+   JavaScript errors in finding elements, and returning the proper structure
+   (an empty list or a "no such element" error) in its place. This lets
+   things like explicit waits retry the find, which may succeed once the
+   page navigation has completed and the DOM available for querying again.
+ * Tweaked obscured element algorithm. The algorithm used by the IE driver
+   to detect obscured elements checks the value of the pointer-events CSS
+   computed style property. This property can have valid values of "auto"
+   and "none" which affect whether to consider an element "obscured."
+   However, the property can also contain other values for SVG elements.
+   If the element in question is not an SVG element, then values other
+   than "none" and "auto" must be ignored, and the element considered not
+   to obscure the target element.
+ * Fixed compile warnings.
+
 v3.141.0.3
 ==========
  * Updated Civetweb dependency to version 1.11.
- * Modified IE driver to no longer always sent Connection: close header.
+ * Modified IE driver to no longer always send Connection: close header.
+   This is a potentially destablizing change, as the driver now should
+   correctly use keep-alive for HTTP requests and responses. While this
+   should not matter, the driver has not ever executed true with keep-
+   alive connections, so care should be used.
 
 v3.141.0.2
 ==========
