@@ -219,12 +219,21 @@ int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager
 
       long length = 0;
       status_code = GetArrayLength(variant_value.pdispVal, &length);
+      if (status_code != WD_SUCCESS) {
+        LOG(WARN) << "Did not successfully get array length.";
+        return EUNEXPECTEDJSERROR;
+      }
 
       for (long i = 0; i < length; ++i) {
         CComVariant array_item;
         int array_item_status = GetArrayItem(variant_value.pdispVal,
                                              i,
                                              &array_item);
+        if (array_item_status != WD_SUCCESS) {
+          LOG(WARN) << "Did not successfully get item with index "
+                    << i << " from array.";
+          return EUNEXPECTEDJSERROR;
+        }
         Json::Value array_item_result;
         ConvertVariantToJsonValue(element_manager,
                                   array_item,
@@ -239,15 +248,21 @@ int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager
         ConvertVariantToJsonValue(element_manager, json_serialized, &result_object);
       } else {
         std::vector<std::wstring> property_names;
-        status_code = GetPropertyNameList(variant_value.pdispVal,
-                                          &property_names);
+        GetPropertyNameList(variant_value.pdispVal, &property_names);
 
         for (size_t i = 0; i < property_names.size(); ++i) {
           CComVariant property_value_variant;
-          GetVariantObjectPropertyValue(variant_value.pdispVal,
-                                        property_names[i],
-                                        &property_value_variant);
-
+          bool property_value_retrieved =
+              GetVariantObjectPropertyValue(variant_value.pdispVal,
+                                            property_names[i],
+                                            &property_value_variant);
+          if (!property_value_retrieved) {
+            LOG(WARN) << "Did not successfully get value for property '"
+                      << StringUtilities::ToString(property_names[i])
+                      << "' from object.";
+            return EUNEXPECTEDJSERROR;
+          }
+          
           Json::Value property_value;
           ConvertVariantToJsonValue(element_manager,
                                     property_value_variant,
@@ -269,7 +284,7 @@ int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager
           // TODO: We need to track window objects and return a custom JSON
           // object according to the spec, but that will require a fair
           // amount of refactoring.
-          LOG(DEBUG) << "Returning window object from JavaScript is not supported";
+          LOG(WARN) << "Returning window object from JavaScript is not supported";
           return EUNEXPECTEDJSERROR;
         }
 
@@ -383,8 +398,11 @@ bool VariantUtilities::GetVariantObjectPropertyValue(IDispatch* variant_object_d
                                                       LOCALE_USER_DEFAULT,
                                                       &dispid_property);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Unable to get dispatch ID (dispid) for property "
-                    << StringUtilities::ToString(property_name);
+    // Only log failures to find dispid to debug level, not warn level.
+    // Querying for the existence of a property is a normal thing to
+    // want to accomplish.
+    LOGHR(DEBUG, hr) << "Unable to get dispatch ID (dispid) for property "
+                     << StringUtilities::ToString(property_name);
     return false;
   }
 
