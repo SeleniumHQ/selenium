@@ -520,15 +520,17 @@ void Server::SendHttpOk(struct mg_connection* connection,
                         const std::string& content_type) {
   LOG(TRACE) << "Entering Server::SendHttpOk";
 
+  std::string body_to_send = body + "\r\n";
+
   std::ostringstream out;
   out << "HTTP/1.1 200 OK\r\n"
-    << "Content-Length: " << strlen(body.c_str()) << "\r\n"
+    << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
     << "Content-Type: " << content_type << "; charset=UTF-8\r\n"
     << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
-    out << body << "\r\n";
+    out << body_to_send;
   }
 
   mg_write(connection, out.str().c_str(), out.str().size());
@@ -539,15 +541,17 @@ void Server::SendHttpBadRequest(struct mg_connection* const connection,
                                 const std::string& body) {
   LOG(TRACE) << "Entering Server::SendHttpBadRequest";
 
+  std::string body_to_send = body + "\r\n";
+
   std::ostringstream out;
   out << "HTTP/1.1 400 Bad Request\r\n"
-    << "Content-Length: " << strlen(body.c_str()) << "\r\n"
+    << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
     << "Content-Type: application/json; charset=UTF-8\r\n"
     << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
-    out << body << "\r\n";
+    out << body_to_send;
   }
 
   mg_printf(connection, "%s", out.str().c_str());
@@ -558,15 +562,17 @@ void Server::SendHttpInternalError(struct mg_connection* connection,
                                    const std::string& body) {
   LOG(TRACE) << "Entering Server::SendHttpInternalError";
 
+  std::string body_to_send = body + "\r\n";
+
   std::ostringstream out;
   out << "HTTP/1.1 500 Internal Server Error\r\n"
-    << "Content-Length: " << strlen(body.c_str()) << "\r\n"
+    << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
     << "Content-Type: application/json; charset=UTF-8\r\n"
     << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
-    out << body << "\r\n";
+    out << body_to_send;
   }
 
   mg_write(connection, out.str().c_str(), out.str().size());
@@ -577,15 +583,17 @@ void Server::SendHttpNotFound(struct mg_connection* const connection,
                               const std::string& body) {
   LOG(TRACE) << "Entering Server::SendHttpNotFound";
 
+  std::string body_to_send = body + "\r\n";
+
   std::ostringstream out;
   out << "HTTP/1.1 404 Not Found\r\n"
-    << "Content-Length: " << strlen(body.c_str()) << "\r\n"
+    << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
     << "Content-Type: application/json; charset=UTF-8\r\n"
     << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
-    out << body << "\r\n";
+    out << body_to_send;
   }
 
   mg_printf(connection, "%s", out.str().c_str());
