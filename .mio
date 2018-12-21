@@ -1,0 +1,84 @@
+sudo: required
+services:
+  - docker
+
+language: go
+
+go:
+- "1.10.3"
+
+env:
+  global:
+    - secure: "oQ5ZkuQJ3z/14dLFPhWqGvuTEY0CNydGMH495br71LQVkJlsM96Re5gmFXhSftkdAaMgcRRkDCPVxjOIl0NogLOt1tVT8w7byKEI8i7GkacQavrsW0ORiFkt4FbI+vwS0zkamG+M/eU0RkXl482/6QRs6QyvF6vEbFDogEOYw9M"
+    - secure: "H+lBfJo6b7KXFvM/PT6K90fcHgpjM1czTvG8zb+waeWfKSxO1zUFzhzSt2IJo0Je5hL2djUM7iME9xsIUNyY4Q4y5tjUavBuc16F+oSAeMNJuBg+V+JHIWCvEMs/CtmPGqTKm6ZNn34HN62j/oFGqZWmgXPbmN5IyFfJLIwllDc="
+    - secure: "bRj17E9wb/iElTncxbIUO3ph3vbSXsTeXL/+nGQM6djDDDwzElieEs92ZeatGS0aET7xgXcEYALCEdUsve8giNRBSN3p6Zwg3OP2fT4E9fV778rc+0lpH/goVphUzRRn5bsbmM6epVBO/XvhGQMWZ2RCWsE3mtFt+EoCywIRhcs="
+
+install:
+- go get github.com/golang/dep/cmd/dep
+- go get -t github.com/yinqiwen/gsnova
+script:
+- dep init -gopath 
+- echo "\n[metadata.heroku]\n  root-package = \"github.com/yinqiwen/gsnova\"\n  go-version = \"go1.10.3\"\n  ensure = \"false\"\n" >> Gopkg.toml
+- tar cf tmp-deploy.tar Gopkg.toml Gopkg.lock vendor local common remote main.go  server.json && tar uf tmp-deploy.tar -C remote Procfile manifest.yml  && bzip2 tmp-deploy.tar && mv tmp-deploy.tar.bz2 gsnova-paas-deploy-with-dependencies-${TRAVIS_TAG}.tar.bz2
+- export CGO_ENABLED=0
+- GOOS=windows GOARCH=386 go build -ldflags="-s -w" -o gsnova.exe github.com/yinqiwen/gsnova
+- tar cjf gsnova_windows_386-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova.exe
+- GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o gsnova.exe github.com/yinqiwen/gsnova
+- tar cjf gsnova_windows_amd64-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova.exe
+- GOOS=linux GOARCH=386 go build -ldflags="-s -w"  github.com/yinqiwen/gsnova
+- tar cjf gsnova_linux_386-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova
+- GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" github.com/yinqiwen/gsnova
+- tar cjf gsnova_linux_amd64-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova
+- GOOS=linux GOARCH=arm GOARM=5 go build -ldflags="-s -w" github.com/yinqiwen/gsnova
+- tar cjf gsnova_linux_armv5-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova
+- GOOS=linux GOARCH=arm GOARM=6 go build -ldflags="-s -w"  github.com/yinqiwen/gsnova
+- tar cjf gsnova_linux_armv6-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova
+- GOOS=linux GOARCH=arm GOARM=7 go build -ldflags="-s -w"  github.com/yinqiwen/gsnova
+- tar cjf gsnova_linux_armv7-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova
+- GOOS=linux GOARCH=arm64  go build -ldflags="-s -w"  github.com/yinqiwen/gsnova
+- tar cjf gsnova_linux_arm64-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova
+- GOOS=linux GOARCH=mipsle  go build -ldflags="-s -w"  github.com/yinqiwen/gsnova
+- tar cjf gsnova_linux_mipsle-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova
+- GOOS=linux GOARCH=mips  go build -ldflags="-s -w"  github.com/yinqiwen/gsnova
+- tar cjf gsnova_linux_mips-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova
+- GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w"  github.com/yinqiwen/gsnova
+- tar cjf gsnova_macos_amd64-${TRAVIS_TAG}.tar.bz2 client.json server.json hosts.json cnipset.txt gsnova
+
+
+deploy:
+  - provider: releases
+    api_key:
+      secure: YngDT2JlydCG+qb8Ww9wBFyWiLRQJczybNLeoFKluBXKoh1Vu+TZeReMK+rRUjOqOmYV8sNtOnEVSg4+ICeYDNp9fRRwcNKTkp0H+8pH0OynxdH2faCjx1H5U0WQuWqMLQoMSHZ90I0tL40kEJOChLY6WGvwY47YBqi/dsvmTfg=
+    file: 
+      - "gsnova-paas-deploy-with-dependencies-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_windows_386-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_windows_amd64-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_linux_386-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_linux_amd64-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_linux_armv5-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_linux_armv6-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_linux_armv7-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_linux_arm64-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_linux_mips-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_linux_mipsle-${TRAVIS_TAG}.tar.bz2"
+      - "gsnova_macos_amd64-${TRAVIS_TAG}.tar.bz2"
+    skip_cleanup: true
+    overwrite: true
+    on:
+      tags: true
+      repo: yinqiwen/gsnova
+  - provider: script
+    script: bash ./Docker/server/docker_push.sh
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: heroku
+    api_key:
+      secure: "PsICvdYk4eDTxFyS1j/DPAF6H7GCsNpkWcZHyFBROh60gxXGU+XHdUTQrrFHSPzLi6b8mDe4NOCtdrfA1xuluv6IbdbGQB+gM2lvRKse9x8sojh57rqvVAcaeCc/NsY7W/eAnk8Rd8TcW5nqrEg3qpUbl/Vio74ZQW/ZY+P0ZaQ="
+    app: $HEROKU_APP
+    skip_cleanup: true
+    on:
+      tags: true
+      condition: $TRAVIS_TAG = 'latest'
+       
+
