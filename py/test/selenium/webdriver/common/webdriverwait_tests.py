@@ -256,6 +256,16 @@ def testExpectedConditionElementToBeClickable(driver, pages):
     assert element.is_displayed() is False
 
 
+def testExpectedConditionElementToBeUnclickable(driver, pages):
+    pages.load("javascriptPage.html")
+    with pytest.raises(TimeoutException):
+        WebDriverWait(driver, 0.7).until(EC.element_to_be_unclickable((By.ID, 'clickToDisable')))
+    element = driver.find_element_by_id('clickToDisable')
+    element.click()
+    WebDriverWait(driver, 3.5).until(EC.element_to_be_unclickable((By.ID, 'clickToDisable')))
+    assert element.is_displayed() is True
+
+
 def testExpectedConditionStalenessOf(driver, pages):
     pages.load('dynamicallyModifiedPage.html')
     element = driver.find_element_by_id('element-to-remove')

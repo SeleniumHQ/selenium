@@ -31,6 +31,13 @@
             blackBox.style.display = show ? '' : 'none';
           }, delay);
         }
+
+	function delayedDisable(delay) {
+          var mybutton = document.getElementById('clickToDisable');
+          window.setTimeout(function() {
+            mybutton.disabled = true;
+          }, delay);
+	}
     </script>
     <script type="text/javascript">
         var startList = function() {
@@ -260,6 +267,9 @@
               background-color: black; color: white; display: none;">
     Click to hide black box
   </div>
+  <button id="clickToDisable" onclick="delayedDisable(3000);">
+    Click to disable button 
+  </button>
   <div style="clear: both"></div>
 </div>
 
