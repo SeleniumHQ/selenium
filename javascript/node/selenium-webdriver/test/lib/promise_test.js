@@ -56,8 +56,21 @@ describe('promise', function() {
     }
   });
 
-  const assertIsPromise = (p) => assert.ok(promise.isPromise(p));
-  const assertNotPromise = (v) => assert.ok(!promise.isPromise(v));
+  it('isPromise', () => {
+    const v = () => {};
+    const x = new Promise(v, v);
+    const p = createRejectedPromise('reject');
+    assert.equal(true, promise.isPromise(x));
+    assert.equal(true, promise.isPromise(p));
+    assert.equal(false, promise.isPromise(0));
+    assert.equal(false, promise.isPromise(false));
+    assert.equal(false, promise.isPromise(true));
+    assert.equal(false, promise.isPromise(null));
+    assert.equal(false, promise.isPromise(undefined));
+    assert.equal(false, promise.isPromise(''));
+    assert.equal(false, promise.isPromise('promise'));
+    assert.equal(false, promise.isPromise(v));
+  });
 
   function defer() {
     let d = {};
