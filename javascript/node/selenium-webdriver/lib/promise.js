@@ -35,7 +35,7 @@ function isPromise(value) {
   try {
     // Use array notation so the Closure compiler does not obfuscate away our
     // contract.
-    return value
+    return value != null
         && (typeof value === 'object' || typeof value === 'function')
         && typeof value['then'] === 'function';
   } catch (ex) {
