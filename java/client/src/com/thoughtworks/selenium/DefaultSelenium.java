@@ -690,10 +690,12 @@ public class DefaultSelenium implements Selenium {
   }
 
   @Override
-  public void dragAndDropToObject(String locatorOfObjectToBeDragged,
+  public void dragAndDropToObject(
+      String locatorOfObjectToBeDragged,
                                   String locatorOfDragDestinationObject) {
-    commandProcessor.doCommand("dragAndDropToObject", new String[] {locatorOfObjectToBeDragged,
-        locatorOfDragDestinationObject,});
+    commandProcessor.doCommand(
+        "dragAndDropToObject",
+        new String[] {locatorOfObjectToBeDragged, locatorOfDragDestinationObject,});
   }
 
   @Override

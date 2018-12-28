@@ -24,8 +24,9 @@ import java.util.Map;
 public class MyCapabilityMatcher implements CapabilityMatcher{
 
   @Override
-  public boolean matches(Map<String, Object> currentCapability,
-                         Map<String, Object> requestedCapability) {
+  public boolean matches(
+      Map<String, Object> currentCapability,
+      Map<String, Object> requestedCapability) {
     return false;
   }
 

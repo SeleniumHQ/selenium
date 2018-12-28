@@ -68,8 +68,9 @@ public class WebDriverTestContext implements TestContext {
   }
 
   @Override
-  public void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
-                               Finder<WebElement, WebDriver> finder) {
+  public void assertPresenceOf(
+      Matcher<Integer> cardinalityConstraint,
+      Finder<WebElement, WebDriver> finder) {
     Collection<WebElement> foundElements = finder.findFrom(driver);
     if (!cardinalityConstraint.matches(foundElements.size())) {
       Description description = new StringDescription();
