@@ -32,6 +32,7 @@ import java.util.List;
  */
 @Deprecated
 public class KeyDownAction extends SingleKeyAction implements Action {
+
   public KeyDownAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
     super(keyboard, mouse, locationProvider, key);
   }
@@ -48,8 +49,7 @@ public class KeyDownAction extends SingleKeyAction implements Action {
 
   @Override
   public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
-
-    ArrayList<Interaction> interactions = new ArrayList<>(optionallyClickElement(mouse));
+    List<Interaction> interactions = new ArrayList<>(optionallyClickElement(mouse));
     interactions.add(keyboard.createKeyDown(key.getCodePoint()));
 
     return Collections.unmodifiableList(interactions);

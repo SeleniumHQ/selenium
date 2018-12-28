@@ -25,7 +25,6 @@ import org.openqa.selenium.support.pagefactory.FieldDecorator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 
 
 /**
@@ -67,8 +66,8 @@ public class PageFactory {
   }
 
   /**
-   * As {@link org.openqa.selenium.support.PageFactory#initElements(org.openqa.selenium.WebDriver,
-   * Class)} but will only replace the fields of an already instantiated Page Object.
+   * As {@link #initElements(WebDriver, Class)} but will only replace the fields of an already
+   * instantiated Page Object.
    *
    * @param driver The driver that will be used to look up the elements
    * @param page   The object with WebElement and List&lt;WebElement&gt; fields that
@@ -128,7 +127,7 @@ public class PageFactory {
       } catch (NoSuchMethodException e) {
         return pageClassToProxy.newInstance();
       }
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+    } catch (ReflectiveOperationException e) {
       throw new RuntimeException(e);
     }
   }
