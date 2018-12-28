@@ -80,8 +80,8 @@ class SendKeysCommandHandler : public IECommandHandler {
   bool HasMultipleAttribute(ElementHandle element_wrapper);
   bool IsElementInteractable(ElementHandle element_wrapper,
                              std::string* error_description);
+  bool WaitUntilElementFocused(ElementHandle element_wrapper);
   bool VerifyPageHasFocus(BrowserHandle browser_wrapper);
-  bool WaitUntilElementFocused(IHTMLElement* element);
   bool SetInsertionPoint(IHTMLElement* element);
   bool IsContentEditable(IHTMLElement* element);
   void SetElementFocus(IHTMLElement* element);

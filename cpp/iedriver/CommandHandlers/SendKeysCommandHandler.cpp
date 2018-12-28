@@ -143,8 +143,11 @@ void SendKeysCommandHandler::ExecuteInternal(
       if (!this->VerifyPageHasFocus(browser_wrapper)) {
         LOG(WARN) << "HTML rendering pane does not have the focus. Keystrokes may go to an unexpected UI element.";
       }
-      if (!this->WaitUntilElementFocused(element_wrapper->element())) {
-        LOG(WARN) << "Specified element is not the active element. Keystrokes may go to an unexpected DOM element.";
+      if (!this->WaitUntilElementFocused(element_wrapper)) {
+        error_description = "Element cannot be interacted with via the keyboard because it is not focusable";
+        response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
+                                   error_description);
+        return;
       }
 
       Json::Value actions = this->CreateActionSequencePayload(executor, &keys);
@@ -174,10 +177,6 @@ bool SendKeysCommandHandler::IsElementInteractable(ElementHandle element_wrapper
     return false;
   }
 
-  if (!element_wrapper->IsFocusable()) {
-    *error_description = "Element cannot be interacted with via the keyboard because it is not focusable";
-    return false;
-  }
   return true;
 }
 
@@ -958,8 +957,13 @@ bool SendKeysCommandHandler::VerifyPageHasFocus(BrowserHandle browser_wrapper) {
   return info.hwndFocus == browser_pane_window_handle;
 }
 
-bool SendKeysCommandHandler::WaitUntilElementFocused(IHTMLElement* element) {
+bool SendKeysCommandHandler::WaitUntilElementFocused(ElementHandle element_wrapper) {
+  if (element_wrapper->IsFocusable()) {
+    return true;
+  }
+
   // Check we have focused the element.
+  CComPtr<IHTMLElement> element = element_wrapper->element();
   bool has_focus = false;
   CComPtr<IDispatch> dispatch;
   element->get_document(&dispatch);
