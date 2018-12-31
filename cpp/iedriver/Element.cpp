@@ -355,13 +355,6 @@ bool Element::IsObscured(LocationInfo* click_location,
         break;
       }
 
-      bool is_list_element_svg = false;
-      CComPtr<ISVGElement> list_svg_element;
-      hr = element_in_list->QueryInterface<ISVGElement>(&list_svg_element);
-      if (SUCCEEDED(hr) && list_svg_element) {
-        is_list_element_svg = true;
-      }
-
       bool is_list_element_displayed;
       Element list_element_wrapper(element_in_list,
                                    this->containing_window_handle_);
@@ -393,15 +386,7 @@ bool Element::IsObscured(LocationInfo* click_location,
               // may be technically obscuring this element, but manipulating
               // it with the pointer device has no effect, so it is effectively
               // not obscuring this element.
-              // It is possible for the pointer-events value to be set to
-              // values other than "none" or "auto" for SVG elements. Since
-              // we are currently throwing up our hands with SVG elements,
-              // if the value is anything other than "auto", assume the
-              // element is not obscured.
-              if (list_element_pointer_events_value == L"auto" &&
-                  !is_list_element_svg) {
-                is_obscured = true;
-              }
+              is_obscured = true;
             }
           } else {
             // We were unable to retrieve the computed style, so we must assume
