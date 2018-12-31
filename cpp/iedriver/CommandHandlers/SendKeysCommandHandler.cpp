@@ -958,10 +958,6 @@ bool SendKeysCommandHandler::VerifyPageHasFocus(BrowserHandle browser_wrapper) {
 }
 
 bool SendKeysCommandHandler::WaitUntilElementFocused(ElementHandle element_wrapper) {
-  if (element_wrapper->IsFocusable()) {
-    return true;
-  }
-
   // Check we have focused the element.
   CComPtr<IHTMLElement> element = element_wrapper->element();
   bool has_focus = false;
