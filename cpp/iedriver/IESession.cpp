@@ -196,10 +196,17 @@ bool IESession::ExecuteCommand(const std::string& serialized_command,
   // 3. Waiting for the response to be populated
   // 4. Retrieving the response
   // 5. Retrieving whether the command sent caused the session to be ready for shutdown
-  ::SendMessage(this->executor_window_handle_,
-                WD_SET_COMMAND,
-                NULL,
-                reinterpret_cast<LPARAM>(serialized_command.c_str()));
+  LRESULT set_command_result = ::SendMessage(this->executor_window_handle_,
+                                             WD_SET_COMMAND,
+                                             NULL,
+                                             reinterpret_cast<LPARAM>(serialized_command.c_str()));
+  while (set_command_result == 0) {
+    ::Sleep(500);
+    set_command_result = ::SendMessage(this->executor_window_handle_,
+                                       WD_SET_COMMAND,
+                                       NULL,
+                                       reinterpret_cast<LPARAM>(serialized_command.c_str()));
+  }
   ::PostMessage(this->executor_window_handle_,
                 WD_EXEC_COMMAND,
                 NULL,

@@ -108,4 +108,18 @@ std::string Command::Serialize() {
   return output;
 }
 
+void Command::Copy(const Command& source) {
+  this->command_type_ = source.command_type_;
+  this->command_parameters_ = source.command_parameters_;
+  this->is_valid_parameters_ = source.is_valid_parameters_;
+  this->session_id_ = source.session_id_;
+}
+
+void Command::Reset() {
+  this->command_type_ = CommandType::NoCommand;
+  this->session_id_ = "";
+  this->command_parameters_.clear();
+  this->is_valid_parameters_ = false;
+}
+
 }  // namespace webdriver

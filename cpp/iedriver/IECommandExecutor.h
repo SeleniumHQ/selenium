@@ -19,6 +19,7 @@
 
 #include <ctime>
 #include <map>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 
@@ -269,6 +270,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   bool is_valid_;
   bool is_quitting_;
   bool is_awaiting_new_window_;
+  std::mutex set_command_mutex_;
 
   BrowserFactory* factory_;
   InputManager* input_manager_;

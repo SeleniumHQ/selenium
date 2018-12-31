@@ -138,10 +138,21 @@ LRESULT IECommandExecutor::OnSetCommand(UINT uMsg,
                                         LPARAM lParam,
                                         BOOL& bHandled) {
   LOG(TRACE) << "Entering IECommandExecutor::OnSetCommand";
+  LRESULT set_command_result = 0;
 
   LPCSTR json_command = reinterpret_cast<LPCSTR>(lParam);
-  this->current_command_.Deserialize(json_command);
-  return 0;
+  Command requested_command;
+  requested_command.Deserialize(json_command);
+
+  this->set_command_mutex_.lock();
+  if (this->current_command_.command_type() == CommandType::NoCommand ||
+      requested_command.command_type() == CommandType::Quit) {
+    this->current_command_.Deserialize(json_command);
+    set_command_result = 1;
+  }
+  this->set_command_mutex_.unlock();
+
+  return set_command_result;
 }
 
 LRESULT IECommandExecutor::OnExecCommand(UINT uMsg,
@@ -180,6 +191,7 @@ LRESULT IECommandExecutor::OnGetResponse(UINT uMsg,
 
   // Reset the serialized response for the next command.
   this->serialized_response_ = "";
+  this->current_command_.Reset();
   return 0;
 }
 
