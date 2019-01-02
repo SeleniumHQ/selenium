@@ -72,6 +72,7 @@ class Element {
                   long* obscuring_element_index,
                   std::string* obscuring_element_description);
 
+
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }
 
@@ -92,6 +93,10 @@ class Element {
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetDocumentFromWindow(IHTMLWindow2* parent_window,
                             IHTMLDocument2** parent_doc);
+
+  std::string GetElementHtmlDescription(IHTMLElement* element);
+  bool HasShadowRoot(void);
+
   bool IsInline(void);
   static bool RectHasNonZeroDimensions(IHTMLRect* rect);
 

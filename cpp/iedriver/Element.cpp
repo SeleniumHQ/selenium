@@ -326,6 +326,17 @@ bool Element::IsObscured(LocationInfo* click_location,
     }
   }
 
+  bool has_shadow_root = this->HasShadowRoot();
+  CComPtr<IHTMLElement> shadow_root_parent;
+  if (has_shadow_root) {
+    // TODO: Walk up the DOM tree until we receive an ancestor that
+    // does not have a shadow root.
+    hr = this->element()->get_parentElement(&shadow_root_parent);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Element has shadow root, but cannot get parent";
+    }
+  }
+
   CComPtr<IHTMLDocument8> elements_doc;
   hr = doc.QueryInterface<IHTMLDocument8>(&elements_doc);
   if (FAILED(hr)) {
@@ -342,6 +353,7 @@ bool Element::IsObscured(LocationInfo* click_location,
                                        static_cast<float>(y),
                                        &elements_hit);
   if (SUCCEEDED(hr) && elements_hit != NULL) {
+    std::vector<std::string> element_descriptions;
     long element_count;
     elements_hit->get_length(&element_count);
     for (long index = 0; index < element_count; ++index) {
@@ -361,6 +373,19 @@ bool Element::IsObscured(LocationInfo* click_location,
       status_code = list_element_wrapper.IsDisplayed(false,
                                                      &is_list_element_displayed);
       if (is_list_element_displayed) {
+        if (has_shadow_root && shadow_root_parent) {
+          // Shadow DOM is problematic. Shadow DOM is only available in IE as a
+          // polyfill. If the element is part of a Shadow DOM (using a polyfill),
+          // elementsFromPoint will show the component elements, not necessarily
+          // the Web Component root element itself. If the direct parent of the
+          // Web Component host element is in this list, then it counts as a
+          // direct descendent, and won't be obscured.
+          bool is_shadow_root_parent = element_in_list.IsEqualObject(shadow_root_parent);
+          if (is_shadow_root_parent) {
+            break;
+          }
+        }
+
         VARIANT_BOOL is_child;
         hr = this->element_->contains(element_in_list, &is_child);
         VARIANT_BOOL is_ancestor;
@@ -411,15 +436,9 @@ bool Element::IsObscured(LocationInfo* click_location,
           // element in the tree between this element and the top-most one.
           // Note that since it's the top-most element, it will have no
           // descendants, so its outerHTML property will contain only itself.
-          CComBSTR outer_html_bstr;
-          hr = element_in_list->get_outerHTML(&outer_html_bstr);
-          std::wstring outer_html = outer_html_bstr;
-          size_t bracket_pos = outer_html.find(L'>');
-          if (bracket_pos != std::wstring::npos) {
-            outer_html = outer_html.substr(0, bracket_pos + 1);
-          }
+          std::string outer_html = this->GetElementHtmlDescription(element_in_list);
           *obscuring_element_index = index;
-          *obscuring_element_description = StringUtilities::ToString(outer_html);
+          *obscuring_element_description = outer_html;
           break;
         }
       }
@@ -427,6 +446,35 @@ bool Element::IsObscured(LocationInfo* click_location,
   }
 
   return is_obscured;
+}
+
+std::string Element::GetElementHtmlDescription(IHTMLElement* element) {
+  CComBSTR outer_html_bstr;
+  HRESULT hr = element->get_outerHTML(&outer_html_bstr);
+  std::wstring outer_html = outer_html_bstr;
+  size_t bracket_pos = outer_html.find(L'>');
+  if (bracket_pos != std::wstring::npos) {
+    outer_html = outer_html.substr(0, bracket_pos + 1);
+  }
+  return StringUtilities::ToString(outer_html);
+}
+
+bool Element::HasShadowRoot() {
+  std::wstring script_source(ANONYMOUS_FUNCTION_START);
+  script_source += L"return (function() { if (arguments[0].shadowRoot && arguments[0].shadowRoot !== null) { return true; } return false; })";
+  script_source += ANONYMOUS_FUNCTION_END;
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  Script script_wrapper(doc, script_source, 1);
+  script_wrapper.AddArgument(this->element_);
+  int status_code = script_wrapper.Execute();
+  if (status_code == WD_SUCCESS) {
+    if (script_wrapper.ResultIsBoolean()) {
+      return script_wrapper.result().boolVal == VARIANT_TRUE;
+    }
+  }
+  return false;
 }
 
 bool Element::GetComputedStyle(IHTMLCSSStyleDeclaration** computed_style) {
@@ -1172,34 +1220,36 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
   // port size by getting documentElement.clientHeight and .clientWidth.
   if (!document_contains_frames) {
     CComPtr<IHTMLDocument2> doc;
-    this->GetContainingDocument(false, &doc);
-    int document_mode = DocumentHost::GetDocumentMode(doc);
-    CComPtr<IHTMLDocument3> document_element_doc;		
-    CComPtr<IHTMLElement> document_element;
-    HRESULT hr = doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
-    if (SUCCEEDED(hr) && document_element_doc) { 
-      hr = document_element_doc->get_documentElement(&document_element);
-    }
-    if (SUCCEEDED(hr) && document_mode > 5 && document_element) {
-      CComPtr<IHTMLElement2> size_element;
-      hr = document_element->QueryInterface<IHTMLElement2>(&size_element);
-      size_element->get_clientHeight(&window_height);
-      size_element->get_clientWidth(&window_width);
-    } else {
-      // This branch is only included if getting documentElement fails.
-      LOG(WARN) << "Document containing element does not contains frames, "
-                << "but getting the documentElement property failed, or the "
-                << "doctype has thrown the browser into pre-IE6 rendering. "
-                << "The view port calculation may be inaccurate";
-      LocationInfo document_info;
-      DocumentHost::GetDocumentDimensions(doc, &document_info);
-      if (document_info.height > window_height) {
-        int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
-        window_width -= vertical_scrollbar_width;
+    int status_code = this->GetContainingDocument(false, &doc);
+    if (status_code == WD_SUCCESS) {
+      int document_mode = DocumentHost::GetDocumentMode(doc);
+      CComPtr<IHTMLDocument3> document_element_doc;
+      CComPtr<IHTMLElement> document_element;
+      HRESULT hr = doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
+      if (SUCCEEDED(hr) && document_element_doc) {
+        hr = document_element_doc->get_documentElement(&document_element);
       }
-      if (document_info.width > window_width) {
-        int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
-        window_height -= horizontal_scrollbar_height;
+      if (SUCCEEDED(hr) && document_mode > 5 && document_element) {
+        CComPtr<IHTMLElement2> size_element;
+        hr = document_element->QueryInterface<IHTMLElement2>(&size_element);
+        size_element->get_clientHeight(&window_height);
+        size_element->get_clientWidth(&window_width);
+      } else {
+        // This branch is only included if getting documentElement fails.
+        LOG(WARN) << "Document containing element does not contains frames, "
+                  << "but getting the documentElement property failed, or the "
+                  << "doctype has thrown the browser into pre-IE6 rendering. "
+                  << "The view port calculation may be inaccurate";
+        LocationInfo document_info;
+        DocumentHost::GetDocumentDimensions(doc, &document_info);
+        if (document_info.height > window_height) {
+          int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
+          window_width -= vertical_scrollbar_width;
+        }
+        if (document_info.width > window_width) {
+          int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
+          window_height -= horizontal_scrollbar_height;
+        }
       }
     }
   }
@@ -1301,7 +1351,6 @@ int Element::GetContainingDocument(const bool use_dom_node,
       LOGHR(WARN, hr) << "Unable to locate document property, call to IHTMLELement::get_document failed";
       return ENOSUCHDOCUMENT;
     }
-
   }
 
   try {
