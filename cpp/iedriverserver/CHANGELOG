@@ -9,6 +9,32 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.0.5
+==========
+ * Updated element obscured algorithm to handle shadow DOM polyfills. Shadow
+   DOM for IE is problematic. Shadow DOM is only available in IE as a
+   polyfill. If an element is part of a Shadow DOM (using a polyfill), IE's
+   elementsFromPoint implementation will show the component elements, not
+   necessarily the Web Component root element itself. If the direct parent
+   of the Web Component host element is in this list, then it counts as a
+   direct descendent, and won't be obscured. Note that a potential
+   enhancement to this change is to walk the DOM tree up until an ancestor
+   is found that does not have a shadow root, but that enhancement is not
+   implemented at present.
+ * Added synchronization code. The IE driver can only handle one command
+   at a time. Commands from multithreaded client libraries should block
+   on the second thread's command until the first thread's executing command
+   is complete.
+ * Reverted earlier change to the obscured element algorithm. The previous
+   changes were incorrect. Any value other than 'none' for the pointerEvents
+   CSS property on a non-SVG element will result in the element receiving
+   pointer events.
+ * Removed isFocusable atom from sendKeys command. The isFocusable atom
+   does not provide the correct information as to whether an element is
+   focusable according to the W3C and WHATWG DOM specifications. This
+   change removes the use of that atom, and relies instead on the abililty
+   to set focus to the element before sending the keystrokes.
+
 v3.141.0.4
 ==========
  * Fixed to correctly set Content-length header for HTTP responses.
