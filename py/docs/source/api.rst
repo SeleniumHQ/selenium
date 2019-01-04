@@ -131,6 +131,17 @@ Webdriver.safari
   selenium.webdriver.safari.service
   selenium.webdriver.safari.webdriver
 
+Webdriver.webkitgtk
+-------------------
+
+.. currentmodule:: selenium.webdriver.webkitgtk
+.. autosummary::
+  :toctree: webdriver_webkitgtk
+
+  selenium.webdriver.webkitgtk.options
+  selenium.webdriver.webkitgtk.service
+  selenium.webdriver.webkitgtk.webdriver
+
 Indices and tables
 
 * :ref:`genindex`
