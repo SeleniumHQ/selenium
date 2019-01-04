@@ -130,7 +130,7 @@ def test_unset_headless(options):
 
 def test_get_headless(options):
     options._arguments = ['--headless']
-    assert options.headless
+    assert options.headless is True
 
 
 def test_creates_capabilities(options):
@@ -147,3 +147,13 @@ def test_creates_capabilities(options):
     assert 'baz' in opts['extensions']
     assert opts['debuggerAddress'] == '/foo/bar'
     assert opts['foo'] == 'bar'
+
+
+def test_starts_with_default_capabilities(options):
+    from selenium.webdriver import DesiredCapabilities
+    assert options._caps == DesiredCapabilities.CHROME
+
+
+def test_is_a_baseoptions(options):
+    from selenium.webdriver.common.options import BaseOptions
+    assert isinstance(options, BaseOptions)
