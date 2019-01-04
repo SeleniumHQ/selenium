@@ -18,22 +18,21 @@
 import base64
 import os
 import platform
-import warnings
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.options import ArgOptions
 
 
-class Options(object):
+class Options(ArgOptions):
     KEY = "goog:chromeOptions"
 
     def __init__(self):
+        super(Options, self).__init__()
         self._binary_location = ''
-        self._arguments = []
         self._extension_files = []
         self._extensions = []
         self._experimental_options = {}
         self._debugger_address = None
-        self._caps = DesiredCapabilities.CHROME.copy()
 
     @property
     def binary_location(self):
@@ -53,14 +52,6 @@ class Options(object):
         self._binary_location = value
 
     @property
-    def capabilities(self):
-        return self._caps
-
-    def set_capability(self, name, value):
-        """Sets a capability."""
-        self._caps[name] = value
-
-    @property
     def debugger_address(self):
         """
         Returns the address of the remote devtools instance
@@ -78,25 +69,6 @@ class Options(object):
          - value: address of remote devtools instance if any (hostname[:port])
         """
         self._debugger_address = value
-
-    @property
-    def arguments(self):
-        """
-        Returns a list of arguments needed for the browser
-        """
-        return self._arguments
-
-    def add_argument(self, argument):
-        """
-        Adds an argument to the list
-
-        :Args:
-         - Sets the arguments
-        """
-        if argument:
-            self._arguments.append(argument)
-        else:
-            raise ValueError("argument can not be null")
 
     @property
     def extensions(self):
@@ -185,12 +157,6 @@ class Options(object):
         else:
             self._arguments = list(set(self._arguments) - args)
 
-    def set_headless(self, headless=True):
-        """ Deprecated, options.headless = True """
-        warnings.warn('use setter for headless property instead of set_headless',
-                      DeprecationWarning, stacklevel=2)
-        self.headless = headless
-
     def to_capabilities(self):
         """
             Creates a capabilities with all the options that have been set and
@@ -209,3 +175,7 @@ class Options(object):
         caps[self.KEY] = chrome_options
 
         return caps
+
+    @property
+    def default_capabilities(self):
+        return DesiredCapabilities.CHROME.copy()

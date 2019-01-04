@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.options import ArgOptions
 
 
 class ElementScrollBehavior(object):
@@ -22,7 +23,7 @@ class ElementScrollBehavior(object):
     BOTTOM = 1
 
 
-class Options(object):
+class Options(ArgOptions):
 
     KEY = 'se:ieOptions'
     SWITCHES = 'ie.browserCommandLineSwitches'
@@ -44,34 +45,14 @@ class Options(object):
     VALIDATE_COOKIE_DOCUMENT_TYPE = 'ie.validateCookieDocumentType'
 
     def __init__(self):
-        self._arguments = []
+        super(Options, self).__init__()
         self._options = {}
         self._additional = {}
-        self._caps = DesiredCapabilities.INTERNETEXPLORER.copy()
-
-    @property
-    def arguments(self):
-        """ Returns a list of browser process arguments """
-        return self._arguments
-
-    def add_argument(self, argument):
-        """ Add argument to be used for the browser process """
-        if argument is None:
-            raise ValueError()
-        self._arguments.append(argument)
 
     @property
     def options(self):
         """ Returns a dictionary of browser options """
         return self._options
-
-    @property
-    def capabilities(self):
-        return self._caps
-
-    def set_capability(self, name, value):
-        """Sets a capability."""
-        self._caps[name] = value
 
     @property
     def browser_attach_timeout(self):
@@ -349,3 +330,7 @@ class Options(object):
         if len(opts) > 0:
             caps[Options.KEY] = opts
         return caps
+
+    @property
+    def default_capabilities(self):
+        return DesiredCapabilities.INTERNETEXPLORER.copy()
