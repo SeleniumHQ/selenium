@@ -14,8 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import warnings
-
 try:
     basestring
 except NameError:  # Python 3.x
@@ -76,7 +74,7 @@ class WebDriver(RemoteWebDriver):
         In this case that would be `firefox_profile`.  This will result in
         `options.profile` to be ignored because it is considered
         a less specific setting than the top-level `firefox_profile`
-        keyword argument.  Similarily, if you had specified a
+        keyword argument.  Similarly, if you had specified a
         `capabilities["moz:firefoxOptions"]["profile"]` Base64 string,
         this would rank below `options.profile`.
 
@@ -96,23 +94,13 @@ class WebDriver(RemoteWebDriver):
             defaults to picking up the binary from the system path.
         :param options: Instance of ``options.Options``.
         :param service_log_path: Where to log information from the driver.
-        :param firefox_options: Deprecated argument for options
         :param service_args: List of args to pass to the driver service
         :param desired_capabilities: alias of capabilities. In future
             versions of this library, this will replace 'capabilities'.
             This will make the signature consistent with RemoteWebDriver.
-        :param log_path: Deprecated argument for service_log_path
         :param keep_alive: Whether to configure remote_connection.RemoteConnection to use
              HTTP keep-alive.
         """
-        if log_path:
-            warnings.warn('use service_log_path instead of log_path',
-                          DeprecationWarning, stacklevel=2)
-            service_log_path = log_path
-        if firefox_options:
-            warnings.warn('use options instead of firefox_options',
-                          DeprecationWarning, stacklevel=2)
-            options = firefox_options
         self.binary = None
         self.profile = None
         self.service = None

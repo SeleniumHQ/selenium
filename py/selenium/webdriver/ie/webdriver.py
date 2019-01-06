@@ -14,8 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import warnings
-
 from selenium.webdriver.common import utils
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
@@ -49,19 +47,9 @@ class WebDriver(RemoteWebDriver):
          - log_level - log level you would like the service to run.
          - service_log_path - target of logging of service, may be "stdout", "stderr" or file path.
          - options - IE Options instance, providing additional IE options
-         - ie_options - Deprecated argument for options
          - desired_capabilities - alias of capabilities; this will make the signature consistent with RemoteWebDriver.
-         - log_file - Deprecated argument for service_log_path
          - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
         """
-        if log_file:
-            warnings.warn('use service_log_path instead of log_file',
-                          DeprecationWarning, stacklevel=2)
-            service_log_path = log_file
-        if ie_options:
-            warnings.warn('use options instead of ie_options',
-                          DeprecationWarning, stacklevel=2)
-            options = ie_options
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()

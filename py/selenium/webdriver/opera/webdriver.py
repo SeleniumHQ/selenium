@@ -42,14 +42,8 @@ class OperaDriver(ChromiumDriver):
          - service_args - List of args to pass to the driver service
          - desired_capabilities: Dictionary object with non-browser specific
          - service_log_path - Where to log information from the driver.
-         - opera_options - Deprecated argument for options
            capabilities only, such as "proxy" or "loggingPref".
         """
-        if opera_options:
-            warnings.warn('use options instead of opera_options',
-                          DeprecationWarning, stacklevel=2)
-            options = opera_options
-
         executable_path = (executable_path if executable_path is not None
                            else "operadriver")
         ChromiumDriver.__init__(self,

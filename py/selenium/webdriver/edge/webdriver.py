@@ -14,8 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import warnings
-
 from selenium.webdriver.common import utils
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.remote.remote_connection import RemoteConnection
@@ -40,14 +38,8 @@ class WebDriver(RemoteWebDriver):
          - port - port you would like the service to run, if left as 0, a free port will be found.
          - verbose - whether to set verbose logging in the service
          - service_log_path - Where to log information from the driver.
-         - log_path: Deprecated argument for service_log_path
          - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
          """
-        if log_path:
-            warnings.warn('use service_log_path instead of log_path',
-                          DeprecationWarning, stacklevel=2)
-            service_log_path = log_path
-
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()

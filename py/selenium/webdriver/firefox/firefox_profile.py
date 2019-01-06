@@ -181,38 +181,6 @@ class FirefoxProfile(object):
         zipped.close()
         return base64.b64encode(fp.getvalue()).decode('UTF-8')
 
-    def set_proxy(self, proxy):
-        import warnings
-
-        warnings.warn(
-            "This method has been deprecated. Please pass in the proxy object to the Driver Object",
-            DeprecationWarning, stacklevel=2)
-        if proxy is None:
-            raise ValueError("proxy can not be None")
-
-        if proxy.proxy_type is ProxyType.UNSPECIFIED:
-            return
-
-        self.set_preference("network.proxy.type", proxy.proxy_type['ff_value'])
-
-        if proxy.proxy_type is ProxyType.MANUAL:
-            self.set_preference("network.proxy.no_proxies_on", proxy.no_proxy)
-            self._set_manual_proxy_preference("ftp", proxy.ftp_proxy)
-            self._set_manual_proxy_preference("http", proxy.http_proxy)
-            self._set_manual_proxy_preference("ssl", proxy.ssl_proxy)
-            self._set_manual_proxy_preference("socks", proxy.socks_proxy)
-        elif proxy.proxy_type is ProxyType.PAC:
-            self.set_preference("network.proxy.autoconfig_url", proxy.proxy_autoconfig_url)
-
-    def _set_manual_proxy_preference(self, key, setting):
-        if setting is None or setting is '':
-            return
-
-        host_details = setting.split(":")
-        self.set_preference("network.proxy.%s" % key, host_details[0])
-        if len(host_details) > 1:
-            self.set_preference("network.proxy.%s_port" % key, int(host_details[1]))
-
     def _create_tempfolder(self):
         """
         Creates a temp folder to store User.js and the extension
