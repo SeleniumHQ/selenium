@@ -14,8 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import warnings
-
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.proxy import Proxy
@@ -132,12 +130,6 @@ class Options(ArgOptions):
             self._arguments.append('-headless')
         elif '-headless' in self._arguments:
             self._arguments.remove('-headless')
-
-    def set_headless(self, headless=True):
-        """ Deprecated, options.headless = True """
-        warnings.warn('use setter for headless property instead of set_headless',
-                      DeprecationWarning, stacklevel=2)
-        self.headless = headless
 
     def to_capabilities(self):
         """Marshals the Firefox options to a `moz:firefoxOptions`
