@@ -19,7 +19,6 @@
 
 import base64
 import copy
-import warnings
 from contextlib import contextmanager
 
 from .command import Command
@@ -140,10 +139,6 @@ class WebDriver(object):
                 raise WebDriverException("Desired Capabilities must be a dictionary")
             else:
                 capabilities.update(desired_capabilities)
-        if proxy is not None:
-            warnings.warn("Please use FirefoxOptions to set proxy",
-                          DeprecationWarning, stacklevel=2)
-            proxy.add_to_capabilities(capabilities)
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
             self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
@@ -152,9 +147,6 @@ class WebDriver(object):
         self.capabilities = {}
         self.error_handler = ErrorHandler()
         self.start_client()
-        if browser_profile is not None:
-            warnings.warn("Please use FirefoxOptions to set browser profile",
-                          DeprecationWarning, stacklevel=2)
         self.start_session(capabilities, browser_profile)
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
@@ -766,42 +758,6 @@ class WebDriver(object):
             driver.switch_to.window('main')
         """
         return self._switch_to
-
-    # Target Locators
-    def switch_to_active_element(self):
-        """ Deprecated use driver.switch_to.active_element
-        """
-        warnings.warn("use driver.switch_to.active_element instead",
-                      DeprecationWarning, stacklevel=2)
-        return self._switch_to.active_element
-
-    def switch_to_window(self, window_name):
-        """ Deprecated use driver.switch_to.window
-        """
-        warnings.warn("use driver.switch_to.window instead",
-                      DeprecationWarning, stacklevel=2)
-        self._switch_to.window(window_name)
-
-    def switch_to_frame(self, frame_reference):
-        """ Deprecated use driver.switch_to.frame
-        """
-        warnings.warn("use driver.switch_to.frame instead",
-                      DeprecationWarning, stacklevel=2)
-        self._switch_to.frame(frame_reference)
-
-    def switch_to_default_content(self):
-        """ Deprecated use driver.switch_to.default_content
-        """
-        warnings.warn("use driver.switch_to.default_content instead",
-                      DeprecationWarning, stacklevel=2)
-        self._switch_to.default_content()
-
-    def switch_to_alert(self):
-        """ Deprecated use driver.switch_to.alert
-        """
-        warnings.warn("use driver.switch_to.alert instead",
-                      DeprecationWarning, stacklevel=2)
-        return self._switch_to.alert
 
     # Navigation
     def back(self):

@@ -14,8 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import warnings
-
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .remote_connection import ChromeRemoteConnection
 from .service import Service
@@ -47,7 +45,6 @@ class WebDriver(RemoteWebDriver):
          - desired_capabilities - Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
          - service_log_path - Where to log information from the driver.
-         - chrome_options - Deprecated argument for options
          - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
         if chrome_options:
