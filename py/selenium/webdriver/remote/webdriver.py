@@ -347,7 +347,7 @@ class WebDriver(object):
         """Finds an element by id.
 
         :Args:
-         - id\_ - The id of the element to be found.
+         - id\\_ - The id of the element to be found.
 
         :Returns:
          - WebElement - the element if it was found
@@ -365,7 +365,7 @@ class WebDriver(object):
         Finds multiple elements by id.
 
         :Args:
-         - id\_ - The id of the elements to be found.
+         - id\\_ - The id of the elements to be found.
 
         :Returns:
          - list of WebElement - a list with elements if any was found.  An
@@ -620,7 +620,7 @@ class WebDriver(object):
 
         :Args:
          - script: The JavaScript to execute.
-         - \*args: Any applicable arguments for your JavaScript.
+         - \\*args: Any applicable arguments for your JavaScript.
 
         :Usage:
             driver.execute_script('return document.title;')
@@ -642,10 +642,10 @@ class WebDriver(object):
 
         :Args:
          - script: The JavaScript to execute.
-         - \*args: Any applicable arguments for your JavaScript.
+         - \\*args: Any applicable arguments for your JavaScript.
 
         :Usage:
-            script = "var callback = arguments[arguments.length - 1]; " \
+            script = "var callback = arguments[arguments.length - 1]; " \\
                      "window.setTimeout(function(){ callback('timeout') }, 3000);"
             driver.execute_async_script(script)
         """
