@@ -38,7 +38,7 @@ class WebDriverWait(object):
            Example:
             from selenium.webdriver.support.ui import WebDriverWait \n
             element = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("someId")) \n
-            is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException)).\ \n
+            is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException)).\\ \n
                         until_not(lambda x: x.find_element_by_id("someId").is_displayed())
         """
         self._driver = driver

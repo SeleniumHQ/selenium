@@ -162,7 +162,7 @@ class WebElement(object):
         """Finds element within this element's children by ID.
 
         :Args:
-         - id\_ - ID of child element to locate.
+         - id\\_ - ID of child element to locate.
 
         :Returns:
          - WebElement - the element if it was found
@@ -180,7 +180,7 @@ class WebElement(object):
         Will return a list of webelements if found, or an empty list if not.
 
         :Args:
-         - id\_ - Id of child element to find.
+         - id\\_ - Id of child element to find.
 
         :Returns:
          - list of WebElement - a list with elements if any was found.  An
