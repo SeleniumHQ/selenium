@@ -93,7 +93,7 @@ class Options(ArgOptions):
         to the ChromeDriver
 
         :Args:
-         - extension: path to the \*.crx file
+         - extension: path to the \\*.crx file
         """
         if extension:
             extension_to_add = os.path.abspath(os.path.expanduser(extension))
