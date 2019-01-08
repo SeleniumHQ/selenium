@@ -115,17 +115,19 @@ module Selenium
     module Chrome
       describe Driver do
         let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
-        let(:bridge) { instance_double(Remote::W3C::Bridge, quit: nil, create_session: {}) }
+        let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
+
+        before do
+          allow(Remote::Bridge).to receive(:new).and_return(bridge)
+        end
 
         it 'is not created when :url is provided' do
-          expect(Remote::Bridge).to receive(:handshake).and_return(bridge)
           expect(Service).not_to receive(:new)
 
           described_class.new(url: 'http://example.com:4321')
         end
 
         it 'is created when :url is not provided' do
-          expect(Remote::Bridge).to receive(:handshake).and_return(bridge)
           expect(Service).to receive(:new).and_return(service)
 
           described_class.new
@@ -134,7 +136,6 @@ module Selenium
         it 'accepts :driver_path but throws deprecation notice' do
           driver_path = '/path/to/driver'
 
-          expect(Remote::Bridge).to receive(:handshake).and_return(bridge)
           expect(Service).to receive(:new).with(path: driver_path,
                                                 port: nil,
                                                 args: nil).and_return(service)
@@ -147,7 +148,6 @@ module Selenium
         it 'accepts :port but throws deprecation notice' do
           driver_port = 1234
 
-          expect(Remote::Bridge).to receive(:handshake).and_return(bridge)
           expect(Service).to receive(:new).with(path: nil,
                                                 port: driver_port,
                                                 args: nil).and_return(service)
@@ -161,7 +161,6 @@ module Selenium
           driver_opts = {foo: 'bar',
                          bar: ['--foo', '--bar']}
 
-          expect(Remote::Bridge).to receive(:handshake).and_return(bridge)
           expect(Service).to receive(:new).with(path: nil,
                                                 port: nil,
                                                 args: driver_opts).and_return(service)
@@ -172,7 +171,6 @@ module Selenium
         end
 
         it 'accepts :service without creating a new instance' do
-          expect(Remote::Bridge).to receive(:handshake).and_return(bridge)
           expect(Service).not_to receive(:new)
 
           described_class.new(service: service)

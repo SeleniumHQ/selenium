@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Chrome
       describe Driver do
-        let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.chrome.as_json} }
+        let(:resp)    { {'value' => {'sessionId' => 'foo', 'capabilities' => Remote::Capabilities.chrome.as_json}} }
         let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
         let(:caps)    { Remote::Capabilities.new }
         let(:http)    { instance_double(Remote::Http::Default, call: resp).as_null_object }
@@ -92,11 +92,6 @@ module Selenium
           profile_data = profile.as_json
           expect(caps['goog:chromeOptions'][:args].first).to include(profile_data[:directory])
           expect(caps['goog:chromeOptions'][:extensions]).to eq(profile_data[:extensions])
-        end
-
-        it 'handshakes protocol' do
-          expect(Remote::Bridge).to receive(:handshake)
-          Driver.new(http_client: http)
         end
 
         context 'with custom desired capabilities' do

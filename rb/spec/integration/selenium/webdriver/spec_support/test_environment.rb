@@ -251,6 +251,10 @@ module Selenium
           server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
           WebDriver::Chrome::Service.driver_path = server if server
 
+          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2536
+          # TODO: remove before Selenium 4 release
+          opt[:options] = WebDriver::Chrome::Options.new(options: {w3c: true}) unless opt[:options]
+
           WebDriver::Driver.for :chrome, opt
         end
 

@@ -61,36 +61,34 @@ Metrics/PerceivedComplexity:
   Max: 11
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/ClassLength:
   Max: 140
   Exclude:
     - 'lib/selenium/webdriver/firefox/profile.rb'
+    - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'lib/selenium/webdriver/remote/oss/bridge.rb'
-    - 'lib/selenium/webdriver/remote/w3c/bridge.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/AbcSize:
   Max: 33
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/support/color.rb'
 
 Metrics/LineLength:
   Max: 130
   Exclude:
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/ie/service.rb'
     - 'spec/unit/selenium/server_spec.rb'
