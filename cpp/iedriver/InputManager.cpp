@@ -553,7 +553,7 @@ int InputManager::KeyDown(BrowserHandle browser_wrapper,
   std::string key_value = down_action["value"].asString();
   std::wstring key = StringUtilities::ToWString(key_value);
 
-  if (!this->IsSingleKey(key)) {
+  if (!this->IsSingleKey(&key)) {
     return EINVALIDARGUMENT;
   }
 
@@ -584,7 +584,7 @@ int InputManager::KeyUp(BrowserHandle browser_wrapper,
   std::string key_value = up_action["value"].asString();
   std::wstring key = StringUtilities::ToWString(key_value);
 
-  if (!this->IsSingleKey(key)) {
+  if (!this->IsSingleKey(&key)) {
     return EINVALIDARGUMENT;
   }
 
@@ -595,14 +595,29 @@ int InputManager::KeyUp(BrowserHandle browser_wrapper,
   return status_code;
 }
 
-bool InputManager::IsSingleKey(const std::wstring& input) {
+bool InputManager::IsSingleKey(std::wstring* input) {
   bool is_single_key = true;
-  if (input.size() > 1) {
+  if (FALSE == ::IsNormalizedString(NormalizationC, input->c_str(), -1)) {
+    int required = ::NormalizeString(NormalizationC,
+                                     input->c_str(),
+                                     -1,
+                                     NULL,
+                                     0);
+    std::vector<wchar_t> buffer(required);
+    ::NormalizeString(NormalizationC,
+                      input->c_str(),
+                      -1,
+                      &buffer[0],
+                      static_cast<int>(buffer.size()));
+    *input = &buffer[0];
+  }
+
+  if (input->size() > 1) {
     WORD combining_bitmask = C3_NONSPACING | C3_DIACRITIC | C3_VOWELMARK;
-    std::vector<WORD> char_types(input.size());
+    std::vector<WORD> char_types(input->size());
     BOOL get_type_success = ::GetStringTypeW(CT_CTYPE3,
-                                             input.c_str(),
-                                             static_cast<int>(input.size()),
+                                             input->c_str(),
+                                             static_cast<int>(input->size()),
                                              &char_types[0]);
     if (get_type_success) {
       bool found_alpha = false;
