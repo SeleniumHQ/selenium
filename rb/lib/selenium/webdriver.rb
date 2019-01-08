@@ -39,7 +39,6 @@ module Selenium
     autoload :Edge,      'selenium/webdriver/edge'
     autoload :Firefox,   'selenium/webdriver/firefox'
     autoload :IE,        'selenium/webdriver/ie'
-    autoload :PhantomJS, 'selenium/webdriver/phantomjs'
     autoload :Remote,    'selenium/webdriver/remote'
     autoload :Safari,    'selenium/webdriver/safari'
     autoload :Support,   'selenium/webdriver/support'
@@ -54,10 +53,10 @@ module Selenium
     # Create a new Driver instance with the correct bridge for the given browser
     #
     # @overload for(browser)
-    #   @param [:ie, :internet_explorer, :edge, :remote, :chrome, :firefox, :ff, :phantomjs, :safari] browser The browser to
+    #   @param [:ie, :internet_explorer, :edge, :remote, :chrome, :firefox, :ff, :safari] browser The browser to
     #     create the driver for
     # @overload for(browser, opts)
-    #   @param [:ie, :internet_explorer, :edge, :remote, :chrome, :firefox, :ff, :phantomjs, :safari] browser The browser to
+    #   @param [:ie, :internet_explorer, :edge, :remote, :chrome, :firefox, :ff, :safari] browser The browser to
     #     create the driver for
     #   @param [Hash] opts Options passed to Driver.new
     #
@@ -68,7 +67,6 @@ module Selenium
     # @see Selenium::WebDriver::IE::Driver
     # @see Selenium::WebDriver::Edge::Driver
     # @see Selenium::WebDriver::Chrome::Driver
-    # @see Selenium::WebDriver::PhantomJS::Driver
     # @see Selenium::WebDriver::Safari::Driver
     #
     # @example
