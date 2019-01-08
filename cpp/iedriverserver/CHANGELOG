@@ -9,6 +9,20 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.0.6
+==========
+ * Modified to allow the driver to handle supplementary Unicode characters
+   in sendKeys. The IE driver lost the ability to check for surrogate
+   pairs after implementing spec compliance in 3.5. The driver will still
+   convert the keys being sent using sendKeys from UTF-8 to UTF-16 (Windows
+   development default for wide strings), but it will now properly
+   check for supplementary characters by checking for surrogate pairs.
+ * Moved normalization of Unicode strings to InputManager. Rather than
+   normalizing every conversion from UTF-8, it is more correct to only
+   perform the normalization when using the Unicode strings for keyboard
+   input. Accordingly, the normalization code is being moved from
+   StringUtilities to the InputManager class.
+
 v3.141.0.5
 ==========
  * Updated element obscured algorithm to handle shadow DOM polyfills. Shadow

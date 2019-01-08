@@ -191,6 +191,20 @@ Json::Value SendKeysCommandHandler::CreateActionSequencePayload(const IECommandE
   for (size_t i = 0; i < keys->size(); ++i) {
     std::wstring character = L"";
     character.push_back(keys->at(i));
+    if (IS_HIGH_SURROGATE(keys->at(i))) {
+      // We've converted the key string to a wstring, which contain
+      // wchar_t elements. On Windows, wchar_t is 16 bits, meaning
+      // the string has been encoded to UTF-16, which implies each
+      // Unicode code point will be either one wchar_t (where the
+      // value <= 0xFFFF), or two wchar_ts (where the code point is
+      // represented by a surrogate pair). In the latter case, we
+      // test for the first part of a surrogate pair, and if  it is
+      // one, we grab the next wchar_t, and use the two together to
+      // represent a single Unicode "character."
+      ++i;
+      character.push_back(keys->at(i));
+    }
+
     std::string single_key = StringUtilities::ToString(character);
 
     if (keys->at(i) == WD_KEY_SHIFT) {
