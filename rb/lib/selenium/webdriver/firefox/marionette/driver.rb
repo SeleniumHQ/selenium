@@ -38,12 +38,11 @@ module Selenium
             opts[:url] ||= service_url(opts)
 
             listener = opts.delete(:listener)
-            WebDriver.logger.info 'Skipping handshake as we know it is W3C.'
             desired_capabilities = opts.delete(:desired_capabilities)
-            bridge = Remote::Bridge.new(opts)
-            capabilities = bridge.create_session(desired_capabilities)
-            @bridge = Remote::W3C::Bridge.new(capabilities, bridge.session_id, opts)
+
+            @bridge = Remote::Bridge.new(opts)
             @bridge.extend Marionette::Bridge
+            @bridge.create_session(desired_capabilities)
 
             super(@bridge, listener: listener)
           end

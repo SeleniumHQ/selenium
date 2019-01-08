@@ -48,6 +48,18 @@ module Selenium
           expect(caps.browser_name).to eq('internet explorer')
         end
 
+        it 'converts noProxy from string to array' do
+          proxy = Proxy.new(no_proxy: 'proxy_url, localhost')
+          caps = Capabilities.new(proxy: proxy)
+          expect(caps.as_json['proxy']['noProxy']).to eq(%w[proxy_url localhost])
+        end
+
+        it 'does not convert noProxy if it is already array' do
+          proxy = Proxy.new(no_proxy: ['proxy_url'])
+          caps = Capabilities.new(proxy: proxy)
+          expect(caps.as_json['proxy']['noProxy']).to eq(['proxy_url'])
+        end
+
         it 'should default to no proxy' do
           expect(Capabilities.new.proxy).to be_nil
         end
@@ -58,8 +70,8 @@ module Selenium
           caps.browser_name = 'foo'
           expect(caps.browser_name).to eq('foo')
 
-          caps.native_events = true
-          expect(caps.native_events).to eq(true)
+          caps.page_load_strategy = :eager
+          expect(caps.page_load_strategy).to eq(:eager)
         end
 
         it 'can set and get arbitrary capabilities' do
@@ -69,10 +81,11 @@ module Selenium
         end
 
         it 'should set the given proxy' do
-          proxy = Proxy.new
+          proxy = Proxy.new(http: 'proxy_url')
           capabilities = Capabilities.new(proxy: proxy)
 
-          expect(capabilities.proxy).to eq(proxy)
+          expect(capabilities.as_json).to eq('proxy' => {'proxyType' => 'manual',
+                                                         'httpProxy' => 'proxy_url'})
         end
 
         it 'should accept a Hash' do
@@ -80,36 +93,21 @@ module Selenium
           expect(capabilities.proxy.http).to eq('foo:123')
         end
 
-        it 'should return a hash of the json properties to serialize' do
-          capabilities_hash = Capabilities.new(proxy: {http: 'some value'}).as_json
-          proxy_hash = capabilities_hash['proxy']
-
-          expect(capabilities_hash['proxy']).to be_kind_of(Hash)
-          expect(proxy_hash['httpProxy']).to eq('some value')
-          expect(proxy_hash['proxyType']).to eq('MANUAL')
-        end
-
         it 'should not contain proxy hash when no proxy settings' do
           capabilities_hash = Capabilities.new.as_json
           expect(capabilities_hash).not_to have_key('proxy')
         end
 
-        it 'should default to javascript enabled if it is not explicitly defined' do
-          capabilities = Capabilities.new(javascript_enabled: nil)
-          expect(capabilities.javascript_enabled).to eq(true)
-        end
-
         it 'can merge capabilities' do
           a = Capabilities.chrome
-          b = Capabilities.htmlunit
+          b = Capabilities.firefox
           a.merge!(b)
 
-          expect(a.browser_name).to eq('htmlunit')
-          expect(a.javascript_enabled).to be false
+          expect(a.browser_name).to eq('firefox')
         end
 
         it 'can be serialized and deserialized to JSON' do
-          caps = Capabilities.new(browser_name: 'firefox', custom_capability: true)
+          caps = Capabilities.new(browser_name: 'firefox', 'extension:customCapability': true)
           expect(caps).to eq(Capabilities.json_create(caps.as_json))
         end
 

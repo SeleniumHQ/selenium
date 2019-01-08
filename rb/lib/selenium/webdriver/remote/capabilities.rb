@@ -20,29 +20,46 @@
 module Selenium
   module WebDriver
     module Remote
+
       #
       # Specification of the desired and/or actual capabilities of the browser that the
       # server is being asked to create.
       #
-      class Capabilities
-        DEFAULTS = {
-          browser_name: '',
-          version: '',
-          platform: :any,
-          javascript_enabled: false,
-          css_selectors_enabled: false,
-          takes_screenshot: false,
-          native_events: false,
-          rotatable: false,
-          firefox_profile: nil,
-          proxy: nil
-        }.freeze
+      # @api private
+      #
 
-        DEFAULTS.each_key do |key|
-          if key != :javascript_enabled
-            define_method key do
-              @capabilities.fetch(key)
-            end
+      class Capabilities
+
+        EXTENSION_CAPABILITY_PATTERN = /\A[\w-]+:.*\z/.freeze
+
+        KNOWN = [
+          :browser_name,
+          :browser_version,
+          :platform_name,
+          :accept_insecure_certs,
+          :page_load_strategy,
+          :proxy,
+          :set_window_rect,
+          :timeouts,
+          :unhandled_prompt_behavior,
+          :strict_file_interactability,
+
+          # remote-specific
+          :remote_session_id,
+
+          # TODO: (AR) deprecate in favor of Firefox::Options?
+          :accessibility_checks,
+          :device,
+
+          # TODO: (AR) deprecate compatibility with OSS-capabilities
+          :implicit_timeout,
+          :page_load_timeout,
+          :script_timeout
+        ].freeze
+
+        KNOWN.each do |key|
+          define_method key do
+            @capabilities.fetch(key)
           end
 
           next if key == :proxy
@@ -53,19 +70,13 @@ module Selenium
         end
 
         #
-        # Returns javascript_enabled capability.
-        # It is true if not set explicitly.
+        # Backward compatibility
         #
-        def javascript_enabled
-          javascript_enabled = @capabilities.fetch(:javascript_enabled)
-          javascript_enabled.nil? ? true : javascript_enabled
-        end
 
-        alias_method :css_selectors_enabled?, :css_selectors_enabled
-        alias_method :javascript_enabled?, :javascript_enabled
-        alias_method :native_events?, :native_events
-        alias_method :takes_screenshot?, :takes_screenshot
-        alias_method :rotatable?, :rotatable
+        alias_method :version, :browser_version
+        alias_method :version=, :browser_version=
+        alias_method :platform, :platform_name
+        alias_method :platform=, :platform_name=
 
         #
         # Convenience methods for the common choices.
@@ -74,9 +85,7 @@ module Selenium
         class << self
           def chrome(opts = {})
             new({
-              browser_name: 'chrome',
-              javascript_enabled: true,
-              css_selectors_enabled: true
+              browser_name: 'chrome'
             }.merge(opts))
           end
 
@@ -97,12 +106,12 @@ module Selenium
             new({browser_name: 'firefox', marionette: true}.merge(opts))
           end
 
-          def firefox_legacy(opts = {})
+          alias_method :ff, :firefox
+
+          def safari(opts = {})
             new({
-              browser_name: 'firefox',
-              javascript_enabled: true,
-              takes_screenshot: true,
-              css_selectors_enabled: true
+              browser_name: 'safari',
+              platform: :mac
             }.merge(opts))
           end
 
@@ -122,10 +131,7 @@ module Selenium
           def internet_explorer(opts = {})
             new({
               browser_name: 'internet explorer',
-              platform: :windows,
-              takes_screenshot: true,
-              css_selectors_enabled: true,
-              native_events: true
+              platform: :windows
             }.merge(opts))
           end
           alias_method :ie, :internet_explorer
@@ -134,19 +140,6 @@ module Selenium
             WebDriver.logger.deprecate 'Selenium support for PhantomJS', 'headless Chrome/Firefox or HTMLUnit'
             new({
               browser_name: 'phantomjs',
-              javascript_enabled: true,
-              takes_screenshot: true,
-              css_selectors_enabled: true
-            }.merge(opts))
-          end
-
-          def safari(opts = {})
-            new({
-              browser_name: 'safari',
-              platform: :mac,
-              javascript_enabled: true,
-              takes_screenshot: true,
-              css_selectors_enabled: true
             }.merge(opts))
           end
 
@@ -158,39 +151,104 @@ module Selenium
             data = data.dup
 
             caps = new
-            caps.browser_name          = data.delete('browserName')
-            caps.version               = data.delete('version')
-            caps.platform              = data.delete('platform').downcase.tr(' ', '_').to_sym if data.key?('platform')
-            caps.javascript_enabled    = data.delete('javascriptEnabled')
-            caps.css_selectors_enabled = data.delete('cssSelectorsEnabled')
-            caps.takes_screenshot      = data.delete('takesScreenshot')
-            caps.native_events         = data.delete('nativeEvents')
-            caps.rotatable             = data.delete('rotatable')
-            caps.proxy                 = Proxy.json_create(data['proxy']) if data.key?('proxy') && !data['proxy'].empty?
+            caps.browser_name = data.delete('browserName') if data.key?('browserName')
+            caps.browser_version = data.delete('browserVersion') if data.key?('browserVersion')
+            caps.platform_name = data.delete('platformName') if data.key?('platformName')
+            caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
+            caps.page_load_strategy = data.delete('pageLoadStrategy') if data.key?('pageLoadStrategy')
+
+            if data.key?('timeouts')
+              timeouts = data.delete('timeouts')
+              caps.implicit_timeout = timeouts['implicit'] if timeouts
+              caps.page_load_timeout = timeouts['pageLoad'] if timeouts
+              caps.script_timeout = timeouts['script'] if timeouts
+            end
+
+            if data.key?('proxy')
+              proxy = data.delete('proxy')
+              caps.proxy = Proxy.json_create(proxy) unless proxy.nil? || proxy.empty?
+            end
+
+            # Remote Server Specific
+            caps[:remote_session_id] = data.delete('webdriver.remote.sessionid') if data.key?('webdriver.remote.sessionid')
+
+            # Marionette Specific
+            caps[:accessibility_checks] = data.delete('moz:accessibilityChecks') if data.key?('moz:accessibilityChecks')
+            caps[:profile] = data.delete('moz:profile') if data.key?('moz:profile')
+            caps[:rotatable] = data.delete('rotatable') if data.key?('rotatable')
+            caps[:device] = data.delete('device') if data.key?('device')
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
 
             caps
           end
+
+          #
+          # Creates W3C compliant capabilities from OSS ones.
+          # @param oss_capabilities [Hash, Remote::Capabilities]
+          #
+
+          def from_oss(oss_capabilities)
+            w3c_capabilities = new
+
+            # TODO: (AR) make capabilities enumerable?
+            oss_capabilities = oss_capabilities.__send__(:capabilities) unless oss_capabilities.is_a?(Hash)
+            oss_capabilities.each do |name, value|
+              next if value.nil?
+              next if value.is_a?(String) && value.empty?
+
+              capability_name = name.to_s
+
+              snake_cased_capability_names = KNOWN.map(&:to_s)
+              camel_cased_capability_names = snake_cased_capability_names.map(&w3c_capabilities.method(:camel_case))
+
+              next unless snake_cased_capability_names.include?(capability_name) ||
+                          camel_cased_capability_names.include?(capability_name) ||
+                          capability_name.match(EXTENSION_CAPABILITY_PATTERN)
+
+              w3c_capabilities[name] = value
+            end
+
+            # User can pass :firefox_options or :firefox_profile.
+            #
+            # TODO: (AR) Refactor this whole method into converter class.
+            firefox_options = oss_capabilities['firefoxOptions'] || oss_capabilities['firefox_options'] || oss_capabilities[:firefox_options]
+            firefox_profile = oss_capabilities['firefox_profile'] || oss_capabilities[:firefox_profile]
+            firefox_binary  = oss_capabilities['firefox_binary'] || oss_capabilities[:firefox_binary]
+
+            if firefox_profile && firefox_options
+              second_profile = firefox_options['profile'] || firefox_options[:profile]
+              if second_profile && firefox_profile != second_profile
+                raise Error::WebDriverError, 'You cannot pass 2 different Firefox profiles'
+              end
+            end
+
+            if firefox_options || firefox_profile || firefox_binary
+              options = WebDriver::Firefox::Options.new(firefox_options || {})
+              options.binary = firefox_binary if firefox_binary
+              options.profile = firefox_profile if firefox_profile
+              w3c_capabilities.merge!(options.as_json)
+            end
+
+            w3c_capabilities
+          end
         end
 
         #
-        # @option :browser_name           [String] required browser name
-        # @option :version                [String] required browser version number
-        # @option :platform               [Symbol] one of :any, :win, :mac, or :x
-        # @option :javascript_enabled     [Boolean] does the driver have javascript enabled?
-        # @option :css_selectors_enabled  [Boolean] does the driver support CSS selectors?
-        # @option :takes_screenshot       [Boolean] can this driver take screenshots?
-        # @option :native_events          [Boolean] does this driver use native events?
-        # @option :proxy                  [Selenium::WebDriver::Proxy, Hash] proxy configuration
+        # @param [Hash] opts
+        # @option :browser_name             [String] required browser name
+        # @option :browser_version          [String] required browser version number
+        # @option :platform_name            [Symbol] one of :any, :win, :mac, or :x
+        # @option :accept_insecure_certs    [Boolean] does the driver accept insecure SSL certifications?
+        # @option :proxy                    [Selenium::WebDriver::Proxy, Hash] proxy configuration
         #
         # @api public
         #
 
         def initialize(opts = {})
-          @capabilities = DEFAULTS.merge(opts)
-          self.proxy    = opts.delete(:proxy)
+          @capabilities = opts
+          self.proxy = opts.delete(:proxy)
         end
 
         #
@@ -237,13 +295,12 @@ module Selenium
             case key
             when :platform
               hash['platform'] = value.to_s.upcase
-            when :firefox_profile
-              if value
-                WebDriver.logger.deprecate(':firefox_profile capabilitiy', 'Selenium::WebDriver::Firefox::Options#profile')
-                hash['firefox_profile'] = value.as_json['zip']
-              end
             when :proxy
-              hash['proxy'] = value.as_json if value
+              if value
+                hash['proxy'] = value.as_json
+                hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
+                hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ') if hash['proxy']['noProxy'].is_a?(String)
+              end
             when String, :firefox_binary
               if key == :firefox_binary && value
                 WebDriver.logger.deprecate(':firefox_binary capabilitiy', 'Selenium::WebDriver::Firefox::Options#binary')
@@ -268,6 +325,7 @@ module Selenium
 
           as_json == other.as_json
         end
+
         alias_method :eql?, :==
 
         protected
@@ -279,6 +337,7 @@ module Selenium
         def camel_case(str)
           str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
         end
+
       end # Capabilities
     end # Remote
   end # WebDriver
