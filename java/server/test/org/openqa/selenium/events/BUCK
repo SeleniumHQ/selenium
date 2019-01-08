@@ -1,0 +1,17 @@
+java_test(
+    name = "events",
+    labels = [
+        "small",
+    ],
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/events:events",
+        "//java/server/src/org/openqa/selenium/events/local:local",
+        "//java/server/src/org/openqa/selenium/events/zeromq:zeromq",
+        "//third_party/java/assertj:assertj",
+        "//third_party/java/guava:guava",
+        "//third_party/java/junit:junit",
+        "//third_party/java/zeromq:jeromq",
+    ],
+)

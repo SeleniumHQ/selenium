@@ -1,0 +1,11 @@
+java_library(
+    name = "local",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/server/src/org/openqa/selenium/events:events",
+        "//third_party/java/guava:guava",
+    ],
+    visibility = [
+        "//java/server/test/org/openqa/selenium/events/...",
+    ],
+)
