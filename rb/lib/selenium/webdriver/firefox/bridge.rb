@@ -20,27 +20,28 @@
 module Selenium
   module WebDriver
     module Firefox
-      # @api private
-      module Util
-        module_function
+      module Bridge
 
-        def app_data_path
-          case Platform.os
-          when :windows
-            "#{ENV['APPDATA']}\\Mozilla\\Firefox"
-          when :macosx
-            "#{Platform.home}/Library/Application Support/Firefox"
-          when :unix, :linux
-            "#{Platform.home}/.mozilla/firefox"
-          else
-            raise "Unknown os: #{Platform.os}"
-          end
+        COMMANDS = {
+          install_addon: [:post, 'session/:session_id/moz/addon/install'],
+          uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall']
+        }.freeze
+
+        def commands(command)
+          COMMANDS[command] || super
         end
 
-        def stringified?(str)
-          str =~ /^".*"$/
+        def install_addon(path, temporary)
+          payload = {path: path}
+          payload[:temporary] = temporary unless temporary.nil?
+          execute :install_addon, {}, payload
         end
-      end # Util
+
+        def uninstall_addon(id)
+          execute :uninstall_addon, {}, {id: id}
+        end
+
+      end # Bridge
     end # Firefox
   end # WebDriver
 end # Selenium

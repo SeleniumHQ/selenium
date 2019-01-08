@@ -21,8 +21,8 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Firefox, only: {browser: %i[ff_esr firefox]} do
-      it 'creates default capabilities (W3C)', except: {browser: :ff_esr} do
+    describe Firefox, only: {browser: %i[firefox]} do
+      it 'creates default capabilities' do
         create_driver! do |driver|
           caps = driver.capabilities
           expect(caps.proxy).to be_nil
@@ -38,23 +38,7 @@ module Selenium
         end
       end
 
-      it 'creates default capabilities (OSS)', only: {browser: :ff_esr} do
-        create_driver! do |driver|
-          caps = driver.capabilities
-          expect(caps.proxy).to be_nil
-          expect(caps.browser_name).not_to be_nil
-          expect(caps.version).to match(/^\d\d\./)
-          expect(caps.platform).not_to be_nil
-
-          expect(caps.javascript_enabled).not_to be_nil
-          expect(caps.css_selectors_enabled).not_to be_nil
-          expect(caps.takes_screenshot).not_to be_nil
-          expect(caps.native_events).not_to be_nil
-          expect(caps.rotatable).not_to be_nil
-        end
-      end
-
-      it 'has remote session ID', only: {driver: :remote}, except: {browser: :ff_esr} do
+      it 'has remote session ID', only: {driver: :remote} do
         create_driver! do |driver|
           expect(driver.capabilities.remote_session_id).to be_truthy
         end

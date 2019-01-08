@@ -20,29 +20,67 @@
 module Selenium
   module WebDriver
     module Firefox
-      module Driver
-        class << self
 
-          #
-          # Instantiates correct Firefox driver implementation
-          # @return [Marionette::Driver, Legacy::Driver]
-          #
+      #
+      # Driver implementation for Firefox using GeckoDriver.
+      # @api private
+      #
 
-          def new(**opts)
-            if marionette?(opts)
-              Firefox::Marionette::Driver.new(opts)
-            else
-              Firefox::Legacy::Driver.new(opts)
+      class Driver < WebDriver::Driver
+        include DriverExtensions::HasAddons
+        include DriverExtensions::HasWebStorage
+        include DriverExtensions::TakesScreenshot
+
+        def initialize(opts = {})
+          opts[:desired_capabilities] = create_capabilities(opts)
+
+          opts[:url] ||= service_url(opts)
+
+          listener = opts.delete(:listener)
+          desired_capabilities = opts.delete(:desired_capabilities)
+
+          @bridge = Remote::Bridge.new(opts)
+          @bridge.extend Bridge
+          @bridge.create_session(desired_capabilities)
+
+          super(@bridge, listener: listener)
+        end
+
+        def browser
+          :firefox
+        end
+
+        def quit
+          super
+        ensure
+          @service&.stop
+        end
+
+        private
+
+        def create_capabilities(opts)
+          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.firefox }
+          options = opts.delete(:options) { Options.new }
+
+          firefox_options = opts.delete(:firefox_options)
+          if firefox_options
+            WebDriver.logger.deprecate ':firefox_options', 'Selenium::WebDriver::Firefox::Options'
+            firefox_options.each do |key, value|
+              options.add_option(key, value)
             end
           end
 
-          private
-
-          def marionette?(opts)
-            opts.delete(:marionette) != false && (opts.dig(:desired_capabilities, :marionette) != false)
+          profile = opts.delete(:profile)
+          if profile
+            WebDriver.logger.deprecate ':profile', 'Selenium::WebDriver::Firefox::Options#profile='
+            options.profile = profile
           end
-        end
 
+          options = options.as_json
+          caps.merge!(options) unless options.empty?
+
+          caps
+        end
       end # Driver
     end # Firefox
   end # WebDriver

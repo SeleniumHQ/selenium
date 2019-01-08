@@ -27,7 +27,7 @@ module Selenium
         driver.find_element(id: 'imageButton').click
       end
 
-      it 'should raise if different element receives click', only: {browser: %i[chrome ff_esr]} do
+      it 'should raise if different element receives click', only: {browser: %i[chrome]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
         element_error = 'Other element would receive the click: <div id="over"><\/div>'
         error = /is not clickable at point \(\d+, \d+\)\. #{element_error}/
@@ -35,7 +35,7 @@ module Selenium
           .to raise_error(Selenium::WebDriver::Error::UnknownError, error)
       end
 
-      it 'should not raise if element is only partially covered', only: {browser: %i[ff_esr safari]} do
+      it 'should not raise if element is only partially covered', only: {browser: %i[safari]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
         expect { driver.find_element(id: 'other_contents').click }.not_to raise_error
       end
