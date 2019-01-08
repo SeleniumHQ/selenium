@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Manager do
-      describe 'logs', only: {browser: %i[ff_esr chrome]} do
+      describe 'logs', only: {browser: %i[chrome]} do
         it 'can fetch remote log types', only: {driver: :remote} do
           expect(driver.manage.logs.available_types).to include(:server, :browser, :driver)
         end

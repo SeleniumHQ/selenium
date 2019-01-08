@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Profile, only: {browser: %i[ff_esr firefox]} do
+      describe Profile, only: {browser: %i[firefox]} do
         let(:profile) { Profile.new }
 
         def read_generated_prefs(from = nil)
@@ -168,7 +168,7 @@ module Selenium
           expect(Dir.exist?(extension_directory)).to eq(true)
         end
 
-        describe 'with browser', except: {driver: :ff_esr} do
+        describe 'with browser' do
           before do
             profile['browser.startup.homepage'] = url_for('simpleTest.html')
             profile['browser.startup.page'] = 1

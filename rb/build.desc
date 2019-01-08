@@ -6,7 +6,6 @@ rubygem(
     "//rb:support",
     "//rb:edge",
     "//rb:firefox",
-    "//rb:ff-esr",
     "//rb:ie",
     "//rb:remote",
     "//rb:safari"
@@ -89,29 +88,6 @@ ruby_test(name = "edge",
   deps = [ ":edge" ]
 )
 
-ruby_library(name = "ff-esr",
-  srcs = [
-    "lib/selenium/webdriver/firefox/**/*.rb",
-    "lib/selenium/webdriver/firefox.rb"
-  ],
-  resources = [
-    { "//third_party/js/selenium:webdriver" : "rb/lib/selenium/webdriver/firefox/extension/webdriver.xpi"},
-    { "//third_party/js/selenium:webdriver_prefs" : "rb/lib/selenium/webdriver/firefox/extension/prefs.json" },
-    { "//cpp:noblur"    : "rb/lib/selenium/webdriver/firefox/native/linux/x86/x_ignore_nofocus.so" },
-    { "//cpp:noblur64"  : "rb/lib/selenium/webdriver/firefox/native/linux/amd64/x_ignore_nofocus.so" }
-  ],
-  deps = [":common"]
-)
-
-ruby_test(name = "ff-esr",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":ff-esr"]
-)
-
 ruby_library(name = "firefox",
   srcs = [
     "lib/selenium/webdriver/firefox/**/*.rb",
@@ -179,19 +155,6 @@ ruby_test(name = "remote-chrome",
   deps = [
     ":remote",
     ":chrome"]
-)
-
-ruby_test(name = "remote-ff-esr",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":ff-esr"
-  ]
 )
 
 ruby_test(name = "remote-firefox",
