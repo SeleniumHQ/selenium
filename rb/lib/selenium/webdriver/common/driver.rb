@@ -104,8 +104,8 @@ module Selenium
       end
 
       #
-      # @return [ActionBuilder, W3CActionBuilder]
-      # @see ActionBuilder, W3CActionBuilder
+      # @return [ActionBuilder]
+      # @see ActionBuilder
       #
 
       def action

@@ -379,10 +379,10 @@ module Selenium
         #
 
         def action(async = false)
-          W3CActionBuilder.new self,
-                               Interactions.pointer(:mouse, name: 'mouse'),
-                               Interactions.key('keyboard'),
-                               async
+          ActionBuilder.new self,
+                            Interactions.pointer(:mouse, name: 'mouse'),
+                            Interactions.key('keyboard'),
+                            async
         end
         alias_method :actions, :action
 
