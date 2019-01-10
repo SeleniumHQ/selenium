@@ -22,110 +22,143 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe ActionBuilder do
-      let(:bridge)      { instance_double('Bridge').as_null_object }
-      let(:keyboard)    { instance_double(Selenium::WebDriver::Keyboard) }
-      let(:mouse)       { instance_double(Selenium::WebDriver::Mouse)    }
-      let(:element)     { Selenium::WebDriver::Element.new(bridge, 'element') }
-      let(:builder)     { Selenium::WebDriver::ActionBuilder.new(mouse, keyboard) }
+      let(:keyboard) do
+        instance_double(Interactions::KeyInput,
+                        actions: [1, 2, 3],
+                        name: 'keyboard',
+                        type: Interactions::KEY)
+      end
+      let(:mouse) do
+        instance_double(Interactions::PointerInput,
+                        actions: [1, 2, 3],
+                        name: 'mouse',
+                        type: Interactions::POINTER)
+      end
+      let(:bridge) { instance_double('Bridge').as_null_object }
+      let(:builder) { ActionBuilder.new(bridge, mouse, keyboard) }
+      let(:async_builder) { ActionBuilder.new(bridge, mouse, keyboard, true) }
 
-      it 'should create all keyboard actions' do
-        expect(keyboard).to receive(:press).with(:shift)
-        expect(keyboard).to receive(:send_keys).with('abc')
-        expect(keyboard).to receive(:release).with(:control)
+      context 'when adding an input device' do
+        let(:pointer_input) { Interactions.pointer(:touch, name: 'touch') }
 
-        builder.key_down(:shift)
-               .send_keys('abc')
-               .key_up(:control).perform
+        it 'should be able to add an input device' do
+          expect { async_builder.send('add_input', pointer_input) }.to change { async_builder.devices.length }.by(1)
+        end
+
+        it 'should add pauses to match the device with the most actions when synchronous' do
+          expect(builder).to receive(:pauses).with(pointer_input, 3)
+
+          builder.send('add_input', pointer_input)
+        end
+      end # when adding an input device
+
+      context 'when adding a pointer input' do
+        it 'should add a PointerInput' do
+          expect(Interactions::PointerInput).to receive(:new).with(:touch, name: 'touch').and_return(:device)
+          expect(builder).to receive(:add_input).with(:device)
+
+          expect(builder.add_pointer_input(:touch, 'touch')).to eq(:device)
+        end
+
+        it 'should not assign the pointer input as primary if not primary' do
+          expect(builder).to receive(:add_input)
+          expect(builder).not_to receive(:set_primary_pointer)
+
+          builder.add_pointer_input(:touch, 'touch')
+        end
+      end # when adding a pointer input
+
+      it 'should add a key input' do
+        expect(Interactions::KeyInput).to receive(:new).with('keyboard').and_return(:device)
+        expect(builder).to receive(:add_input).with(:device)
+
+        expect(builder.add_key_input('keyboard')).to eq(:device)
       end
 
-      it 'should pass an element to keyboard actions' do
-        expect(mouse).to receive(:click).with(element)
-        expect(keyboard).to receive(:press).with(:shift)
-
-        builder.key_down(element, :shift).perform
+      it 'should get a device by name' do
+        expect(builder.get_device('mouse')).to eq(mouse)
       end
 
-      it 'should allow supplying individual elements to keyboard actions' do
-        element2 = Selenium::WebDriver::Element.new(bridge, 'element2')
-        element3 = Selenium::WebDriver::Element.new(bridge, 'element3')
-
-        expect(mouse).to receive(:click).with(element)
-        expect(keyboard).to receive(:press).with(:shift)
-        expect(mouse).to receive(:click).with(element2)
-        expect(keyboard).to receive(:send_keys).with('abc')
-        expect(mouse).to receive(:click).with(element3)
-        expect(keyboard).to receive(:release).with(:control)
-
-        builder.key_down(element, :shift)
-               .send_keys(element2, 'abc')
-               .key_up(element3, :control).perform
+      it 'should return only pointer inputs' do
+        expect(builder.pointer_inputs).to eq([mouse])
       end
 
-      it 'should create all mouse actions' do
-        expect(mouse).to receive(:down).with(element)
-        expect(mouse).to receive(:up).with(element)
-        expect(mouse).to receive(:click).with(element)
-        expect(mouse).to receive(:double_click).with(element)
-        expect(mouse).to receive(:move_to).with(element)
-        expect(mouse).to receive(:context_click).with(element)
-
-        builder.click_and_hold(element)
-               .release(element)
-               .click(element)
-               .double_click(element)
-               .move_to(element)
-               .context_click(element).perform
+      it 'should return the key inputs' do
+        expect(builder.key_inputs).to eq([keyboard])
       end
 
-      it 'should move_to ignore floating point part of coordinate' do
-        expect(mouse).to receive(:move_to).with(element, -300, 400)
+      it 'should create a pause for the given device' do
+        duration = 5
+        expect(mouse).to receive(:create_pause).with(duration)
 
-        builder.move_to(element, -300.1, 400.1).perform
+        builder.pause(mouse, 5)
       end
 
-      it 'should move_by ignore floating point part of coordinate' do
-        expect(mouse).to receive(:move_by).with(-300, 400)
+      it 'should create multiple pauses for the given device' do
+        duration = 5
+        number = 3
+        expect(mouse).to receive(:create_pause).with(duration).exactly(number).times
 
-        builder.move_by(-300.1, 400.1).perform
+        builder.pauses(mouse, number, duration)
       end
 
-      it 'should drag and drop' do
-        source = element
-        target = Selenium::WebDriver::Element.new(bridge, 'element2')
+      context 'when performing actions' do
+        it 'should encode each device' do
+          expect(mouse).to receive(:encode)
+          expect(keyboard).to receive(:encode)
+          allow(builder).to receive(:clear_all_actions)
 
-        expect(mouse).to receive(:down).with(source)
-        expect(mouse).to receive(:move_to).with(target)
-        expect(mouse).to receive(:up)
+          builder.perform
+        end
 
-        builder.drag_and_drop(source, target).perform
+        it 'should call bridge#send_actions with encoded and compacted devices' do
+          expect(mouse).to receive(:encode).and_return(nil)
+          expect(keyboard).to receive(:encode).and_return('not_nil')
+          expect(bridge).to receive(:send_actions).with(['not_nil'])
+          allow(builder).to receive(:clear_all_actions)
+
+          builder.perform
+        end
+
+        it 'should clear all actions' do
+          allow(mouse).to receive(:encode)
+          allow(keyboard).to receive(:encode)
+          expect(builder).to receive(:clear_all_actions)
+
+          builder.perform
+        end
+      end # when performing actions
+
+      it 'should clear all actions from devices' do
+        expect(mouse).to receive(:clear_actions)
+        expect(keyboard).to receive(:clear_actions)
+
+        builder.clear_all_actions
       end
 
-      it 'should drag and drop with offsets' do
-        source = element
+      it 'should release actions' do
+        expect(bridge).to receive(:release_actions)
 
-        expect(mouse).to receive(:down).with(source)
-        expect(mouse).to receive(:move_by).with(-300, 400)
-        expect(mouse).to receive(:up)
-
-        builder.drag_and_drop_by(source, -300, 400).perform
+        builder.release_actions
       end
 
-      it 'can move the mouse by coordinates' do
-        expect(mouse).to receive(:down).with(element)
-        expect(mouse).to receive(:move_by).with(-300, 400)
-        expect(mouse).to receive(:up)
+      context 'when adding a tick' do
+        it 'should not create pauses for any devices when asynchronous' do
+          expect(mouse).not_to receive(:create_pause)
+          expect(keyboard).not_to receive(:create_pause)
 
-        builder.click_and_hold(element)
-               .move_by(-300, 400)
-               .release.perform
-      end
+          async_builder.send('tick', mouse)
+        end
 
-      it 'can click, hold and release at the current location' do
-        expect(mouse).to receive(:down).with(nil)
-        expect(mouse).to receive(:up)
+        it 'should create pauses for devices not passed when synchronous' do
+          touch = builder.add_pointer_input(:touch, 'touch')
+          expect(touch).to receive(:create_pause)
+          expect(keyboard).not_to receive(:create_pause)
+          expect(mouse).not_to receive(:create_pause)
 
-        builder.click_and_hold.release.perform
-      end
-    end
+          builder.send('tick', mouse, keyboard)
+        end
+      end # when adding a tick
+    end # ActionBuilder
   end # WebDriver
 end # Selenium

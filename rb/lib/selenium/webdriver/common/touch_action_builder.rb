@@ -19,6 +19,8 @@
 
 module Selenium
   module WebDriver
+    # TODO (AR): How this will work on W3C?
+    # https://bugs.chromium.org/p/chromedriver/issues/detail?id=1897#c19
     class TouchActionBuilder < ActionBuilder
       #
       # @api private

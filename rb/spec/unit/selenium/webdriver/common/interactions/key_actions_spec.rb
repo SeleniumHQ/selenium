@@ -24,8 +24,8 @@ module Selenium
     describe KeyActions do
       let(:keyboard) { instance_double(Interactions::KeyInput) }
       let(:mouse) { instance_double(Interactions::PointerInput) }
-      let(:bridge) { instance_double('W3CBridge').as_null_object }
-      let(:builder) { Selenium::WebDriver::W3CActionBuilder.new(bridge, mouse, keyboard) }
+      let(:bridge) { instance_double('Bridge').as_null_object }
+      let(:builder) { Selenium::WebDriver::ActionBuilder.new(bridge, mouse, keyboard) }
       let(:element) { Selenium::WebDriver::Element.new(bridge, 'element') }
       let(:key) { 'a' }
       let(:keys) { 'abc' }

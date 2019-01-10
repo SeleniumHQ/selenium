@@ -22,8 +22,16 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe ActionBuilder, except: {browser: :edge} do
+      after do
+        if driver.action.respond_to?(:clear_all_actions)
+          driver.action.clear_all_actions
+        else
+          driver.action.instance_variable_set(:@actions, [])
+        end
+      end
+
       describe 'Key actions' do
-        it 'sends keys to the active element', except: {browser: %i[safari safari_preview]} do
+        it 'sends keys to the active element', except: {browser: :safari} do
           driver.navigate.to url_for('bodyTypingTest.html')
           keylogger = driver.find_element(id: 'body_result')
 
@@ -36,7 +44,7 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'can send keys with shift pressed', except: {browser: %i[safari safari_preview]} do
+        it 'can send keys with shift pressed', except: {browser: :safari} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -79,7 +87,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcddcba')
         end
 
-        it 'can send non-ASCII keys', except: {browser: :safari} do
+        it 'can send non-ASCII keys' do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -100,7 +108,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcd')
         end
 
-        it 'can release pressed keys via release action', only: {browser: %i[firefox ie]} do
+        it 'can release pressed keys via release action' do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -118,7 +126,7 @@ module Selenium
         end
       end # Key actions
 
-      describe 'Pointer actions', except: {browser: :safari} do
+      describe 'Pointer actions' do
         it 'clicks an element' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
@@ -150,7 +158,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('DoubleClicked')
         end
 
-        it 'context clicks an element', except: {browser: %i[safari]} do
+        it 'context clicks an element' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
