@@ -62,7 +62,7 @@ module Selenium
       #
 
       def cookie_named(name)
-        all_cookies.find { |c| c[:name] == name }
+        convert_cookie(@bridge.cookie(name))
       end
 
       #

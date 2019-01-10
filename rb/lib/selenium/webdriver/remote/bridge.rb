@@ -350,8 +350,8 @@ module Selenium
         # cookies
         #
 
-        def options
-          @options ||= WebDriver::W3COptions.new(self)
+        def manage
+          @manage ||= WebDriver::Manager.new(self)
         end
 
         def add_cookie(cookie)
