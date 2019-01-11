@@ -62,6 +62,10 @@ module Selenium
           @service.stop if @service
         end
 
+        def execute_cdp(cmd, **params)
+          @bridge.send_command(cmd: cmd, params: params)
+        end
+
         private
 
         def create_capabilities(opts)
