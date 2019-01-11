@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server.commandhandler;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -43,6 +44,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.io.IOException;
 import java.util.Map;
 
@@ -85,6 +87,43 @@ public class UploadFileTest {
     String path = (String) res.getValue();
     assertTrue(new File(path).exists());
     assertTrue(path.endsWith(tempFile.getName()));
+  }
+
+  @Test
+  public void shouldWriteMultipleUploadedFilesToTheSameDirectory() throws Exception {
+    ActiveSession session = mock(ActiveSession.class);
+    when(session.getId()).thenReturn(new SessionId("1234567"));
+    when(session.getFileSystem()).thenReturn(tempFs);
+    when(session.getDownstreamDialect()).thenReturn(Dialect.OSS);
+
+    File tempFile1 = touch(null, "foo1");
+    File tempFile2 = touch(null, "foo2");
+    String encoded1 = Zip.zip(tempFile1);
+    String encoded2 = Zip.zip(tempFile2);
+
+    Json json = new Json();
+
+    UploadFile uploadFile1 = new UploadFile(new Json(), session);
+    Map<String, Object> args1 = ImmutableMap.of("file", encoded1);
+    HttpRequest request1 = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
+    request1.setContent(json.toJson(args1).getBytes(UTF_8));
+    HttpResponse response1 = new HttpResponse();
+    uploadFile1.execute(request1, response1);
+
+    UploadFile uploadFile2 = new UploadFile(new Json(), session);
+    Map<String, Object> args2 = ImmutableMap.of("file", encoded2);
+    HttpRequest request2 = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
+    request2.setContent(json.toJson(args2).getBytes(UTF_8));
+    HttpResponse response2 = new HttpResponse();
+    uploadFile2.execute(request2, response2);
+
+    Response res1 = new Json().toType(response1.getContentString(), Response.class);
+    String path1 = (String) res1.getValue();
+
+    Response res2 = new Json().toType(response2.getContentString(), Response.class);
+    String path2 = (String) res2.getValue();
+
+    assertEquals(Paths.get(path1).getParent(), Paths.get(path2).getParent());
   }
 
   @Test

@@ -31,6 +31,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 
 public class UploadFile implements CommandHandler {
 
@@ -60,8 +64,20 @@ public class UploadFile implements CommandHandler {
           "Expected there to be only 1 file. There were: " +
           (allFiles == null ? 0 : allFiles.length)));
     } else {
+      // IE requires multiple uploads to all be from the same directory - move files into one location
+      Path uploads_dir = Files.createDirectories(tempDir.toPath().getParent().resolve("remote_uploads"));
+      Path dest = uploads_dir.resolve(allFiles[0].getName());
+
+      if (Files.exists(dest)){
+        // IE maintains a lock on previously uploaded files so we can't delete/overwrite - move it instead
+        Path prevFileDir = session.getFileSystem().createTempDir("prevupload", "file").toPath();
+        Files.move(dest, prevFileDir.resolve(allFiles[0].getName()));
+      }
+
+      dest = Files.move(allFiles[0].toPath(), dest, REPLACE_EXISTING);
+
       response.setStatus(ErrorCodes.SUCCESS);
-      response.setValue(allFiles[0].getAbsolutePath());
+      response.setValue(dest.toAbsolutePath().toString());
     }
 
     session.getDownstreamDialect().getResponseCodec().encode(() -> resp, response);
