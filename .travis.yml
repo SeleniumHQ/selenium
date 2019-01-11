@@ -161,3 +161,11 @@ notifications:
     on_failure: always
     use_notice: true
     skip_join: true
+  webhooks:
+    urls:
+      - secure: "T889SmDnNCj0fJeWkiX0TumHCnjowxpj5VoauVdTXyXT2R3Grjc6WPReQKw8qzQLxyvHWAip23RlYo2+bM5+zUz11jhQej5W+rk7et6AhVaz3UJiWDIqqaWBgQaB5RsbWzdBJTGukqv88Y0iCT4XHaXvY2stV7OxvkVg7wtQVSQ="
+    on_success: always
+    on_failure: always
+    on_start: always
+    on_cancel: always
+    on_error: always
