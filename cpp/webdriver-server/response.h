@@ -36,6 +36,8 @@ class Response {
 
   std::string error(void) const { return this->error_; }
 
+  Json::Value additional_data(void) const { return this->additional_data_; }
+
   int GetHttpResponseCode(void);
   std::string GetSessionId(void);
   void SetResponse(const std::string& error, const Json::Value& response_value);

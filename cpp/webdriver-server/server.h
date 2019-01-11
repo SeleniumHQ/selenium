@@ -115,7 +115,8 @@ class Server {
                              const std::string& body);
   void SendHttpMethodNotAllowed(mg_connection* connection,
                                 const mg_request_info* request_info,
-                                const std::string& allowed_methods);
+                                const std::string& allowed_methods,
+                                const std::string& body);
   void SendHttpNotFound(mg_connection* connection,
                         const mg_request_info* request_info,
                         const std::string& body);
