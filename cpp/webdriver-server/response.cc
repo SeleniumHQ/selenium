@@ -44,6 +44,9 @@ void Response::Deserialize(const std::string& json) {
     if (value_object.isObject() && value_object.isMember("error")) {
       this->error_ = value_object["error"].asString();
       this->value_ = value_object["message"].asString();
+      if (value_object.isMember("data")) {
+        this->additional_data_ = value_object["data"];
+      }
     } else {
       this->error_ = "";
       this->value_ = value_object;
@@ -62,7 +65,7 @@ std::string Response::Serialize(void) {
     error_object["error"] = this->error_;
     error_object["message"] = this->value_.asString();
     error_object["stacktrace"] = "";
-    if (!this->value_.isNull()) {
+    if (!this->value_.isNull() && !this->additional_data_.isNull()) {
       error_object["data"] = this->additional_data_;
     }
     json_object["value"] = error_object;

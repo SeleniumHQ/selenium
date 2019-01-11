@@ -259,8 +259,8 @@ int Server::ProcessRequest(struct mg_connection* conn,
     this->ShutDown();
   } else {
     std::string serialized_response = this->DispatchCommand(request_info->local_uri,
-                                                             http_verb,
-                                                             request_body);
+                                                            http_verb,
+                                                            request_body);
     http_response_code = this->SendResponseToClient(conn,
                                                     request_info,
                                                     serialized_response);
@@ -338,14 +338,26 @@ std::string Server::DispatchCommand(const std::string& uri,
   LOG(DEBUG) << "Command: " << http_verb << " " << uri << " " << command_body;
 
   if (command == webdriver::CommandType::NoCommand) {
-    // Hand-code the response for an unknown URL
-    serialized_response.append("{ \"value\" : { ");
-    serialized_response.append("\"error\" : \"unknown method\", ");
-    serialized_response.append("\"message\" : \"Command not found: ");
-    serialized_response.append(http_verb);
-    serialized_response.append(" ");
-    serialized_response.append(uri);
-    serialized_response.append("\" }");
+    Response invalid_command_response;
+    if (locator_parameters.size() > 0) {
+      std::string unknown_method_body = "Invalid method requested: ";
+      unknown_method_body.append(http_verb);
+      unknown_method_body.append(" is not a valid HTTP verb for ");
+      unknown_method_body.append(uri);
+      unknown_method_body.append("; acceptable verbs are: ");
+      unknown_method_body.append(locator_parameters);
+      invalid_command_response.SetErrorResponse(ERROR_UNKNOWN_METHOD,
+                                                unknown_method_body);
+      invalid_command_response.AddAdditionalData("verbs", locator_parameters);
+    } else {
+      std::string unknown_command_body = "Command not found: ";
+      unknown_command_body.append(http_verb);
+      unknown_command_body.append(" ");
+      unknown_command_body.append(uri);
+      invalid_command_response.SetErrorResponse(ERROR_UNKNOWN_COMMAND,
+                                                unknown_command_body);
+    }
+    serialized_response = invalid_command_response.Serialize();
   } else if (command == webdriver::CommandType::Status) {
     // Status command must be handled by the server, not by the session.
     serialized_response = this->GetStatus();
@@ -363,29 +375,24 @@ std::string Server::DispatchCommand(const std::string& uri,
         // quit) session.
         serialized_response.append("{ \"value\" : null }");
       } else {
-        // Hand-code the response for an invalid session id
-        serialized_response.append("{ \"value\" : { ");
-        serialized_response.append("\"error\" : \"");
-        serialized_response.append(ERROR_INVALID_SESSION_ID).append("\", ");
-        serialized_response.append("\"message\" : \"session ");
-        serialized_response.append(session_id);
-        serialized_response.append(" does not exist\", ");
-        serialized_response.append("\"stacktrace\" : \"\" }");
-        serialized_response.append("}");
+        Response invalid_session_id_response;
+        std::string invalid_session_message = "session ";
+        invalid_session_message.append(session_id);
+        invalid_session_message.append(" does not exist");
+        invalid_session_id_response.SetErrorResponse(ERROR_INVALID_SESSION_ID,
+                                                     invalid_session_message);
+        serialized_response = invalid_session_id_response.Serialize();
       }
     } else {
       if (command == webdriver::CommandType::NewSession &&
           this->sessions_.size() > 0) {
-        // According to the W3C Specification, only a single session is
-        // allowed by a single driver instance.
-        serialized_response.append("{ \"value\" : { ");
-        serialized_response.append("\"error\" : \"");
-        serialized_response.append(ERROR_SESSION_NOT_CREATED).append("\", ");
-        serialized_response.append("\"message\" : \"only one session may ");
-        serialized_response.append("be created at a time, and a session ");
-        serialized_response.append("already exists\", ");
-        serialized_response.append("\"stacktrace\" : \"\" }");
-        serialized_response.append("}");
+        std::string session_exists_message = "Only one session may ";
+        session_exists_message.append("be created at a time, and a ");
+        session_exists_message.append("session already exists.");
+        Response session_exists_response;
+        session_exists_response.SetErrorResponse(ERROR_SESSION_NOT_CREATED,
+                                                 session_exists_message);
+        serialized_response = session_exists_response.Serialize();
       } else {
         // Compile the serialized JSON representation of the command by hand.
         std::string serialized_command = "{ \"name\" : \"" + command + "\"";
@@ -494,8 +501,15 @@ int Server::SendResponseToClient(struct mg_connection* conn,
       this->SendHttpNotFound(conn, request_info, serialized_response);
       return_code = 404;
     } else if (return_code == 405) {
-      std::string parameters = response.value().asString();
-      this->SendHttpMethodNotAllowed(conn, request_info, parameters);
+      std::string allowed_verbs = "";
+      Json::Value additional_data = response.additional_data();
+      if (additional_data.isObject() && additional_data.isMember("verbs")) {
+        allowed_verbs = additional_data["verbs"].asString();
+      }
+      this->SendHttpMethodNotAllowed(conn,
+                                     request_info,
+                                     allowed_verbs,
+                                     serialized_response);
       return_code = 405;
     } else if (return_code == 501) {
       this->SendHttpNotImplemented(conn,
@@ -524,11 +538,11 @@ void Server::SendHttpOk(struct mg_connection* connection,
 
   std::ostringstream out;
   out << "HTTP/1.1 200 OK\r\n"
-    << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-    << "Content-Type: " << content_type << "; charset=UTF-8\r\n"
-    << "Cache-Control: no-cache\r\n"
-    << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
-    << "Accept-Ranges: bytes\r\n\r\n";
+      << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
+      << "Content-Type: " << content_type << "; charset=UTF-8\r\n"
+      << "Cache-Control: no-cache\r\n"
+      << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
+      << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
     out << body_to_send;
   }
@@ -545,11 +559,11 @@ void Server::SendHttpBadRequest(struct mg_connection* const connection,
 
   std::ostringstream out;
   out << "HTTP/1.1 400 Bad Request\r\n"
-    << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-    << "Content-Type: application/json; charset=UTF-8\r\n"
-    << "Cache-Control: no-cache\r\n"
-    << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
-    << "Accept-Ranges: bytes\r\n\r\n";
+      << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
+      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Cache-Control: no-cache\r\n"
+      << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
+      << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
     out << body_to_send;
   }
@@ -566,11 +580,11 @@ void Server::SendHttpInternalError(struct mg_connection* connection,
 
   std::ostringstream out;
   out << "HTTP/1.1 500 Internal Server Error\r\n"
-    << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-    << "Content-Type: application/json; charset=UTF-8\r\n"
-    << "Cache-Control: no-cache\r\n"
-    << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
-    << "Accept-Ranges: bytes\r\n\r\n";
+      << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
+      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Cache-Control: no-cache\r\n"
+      << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
+      << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
     out << body_to_send;
   }
@@ -587,11 +601,11 @@ void Server::SendHttpNotFound(struct mg_connection* const connection,
 
   std::ostringstream out;
   out << "HTTP/1.1 404 Not Found\r\n"
-    << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-    << "Content-Type: application/json; charset=UTF-8\r\n"
-    << "Cache-Control: no-cache\r\n"
-    << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
-    << "Accept-Ranges: bytes\r\n\r\n";
+      << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
+      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Cache-Control: no-cache\r\n"
+      << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
+      << "Accept-Ranges: bytes\r\n\r\n";
   if (strcmp(request_info->request_method, "HEAD") != 0) {
     out << body_to_send;
   }
@@ -602,14 +616,20 @@ void Server::SendHttpNotFound(struct mg_connection* const connection,
 void Server::SendHttpMethodNotAllowed(
     struct mg_connection* connection,
     const struct mg_request_info* request_info,
-    const std::string& allowed_methods) {
+    const std::string& allowed_methods,
+    const std::string& body) {
   LOG(TRACE) << "Entering Server::SendHttpMethodNotAllowed";
+
+  std::string body_to_send = body + "\r\n";
 
   std::ostringstream out;
   out << "HTTP/1.1 405 Method Not Allowed\r\n"
-    << "Content-Type: text/html\r\n"
-    << "Content-Length: 0\r\n"
-    << "Allow: " << allowed_methods << "\r\n\r\n";
+      << "Content-Type: text/html\r\n"
+      << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
+      << "Allow: " << allowed_methods << "\r\n\r\n";
+  if (strcmp(request_info->request_method, "HEAD") != 0) {
+    out << body_to_send;
+  }
 
   mg_write(connection, out.str().c_str(), out.str().size());
 }
@@ -621,11 +641,11 @@ void Server::SendHttpTimeout(struct mg_connection* connection,
 
   std::ostringstream out;
   out << "HTTP/1.1 408 Timeout\r\n\r\n"
-    << "Content-Length: " << strlen(body.c_str()) << "\r\n"
-    << "Content-Type: application/json; charset=UTF-8\r\n"
-    << "Cache-Control: no-cache\r\n"
-    << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
-    << "Accept-Ranges: bytes\r\n\r\n";
+      << "Content-Length: " << strlen(body.c_str()) << "\r\n"
+      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Cache-Control: no-cache\r\n"
+      << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
+      << "Accept-Ranges: bytes\r\n\r\n";
 
   mg_write(connection, out.str().c_str(), out.str().size());
 }
@@ -648,9 +668,9 @@ void Server::SendHttpSeeOther(struct mg_connection* connection,
 
   std::ostringstream out;
   out << "HTTP/1.1 303 See Other\r\n"
-    << "Location: " << location << "\r\n"
-    << "Content-Type: text/html\r\n"
-    << "Content-Length: 0\r\n\r\n";
+      << "Location: " << location << "\r\n"
+      << "Content-Type: text/html\r\n"
+      << "Content-Length: 0\r\n\r\n";
 
   mg_write(connection, out.str().c_str(), out.str().size());
 }
