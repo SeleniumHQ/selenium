@@ -247,7 +247,9 @@ class WebDriver(RemoteWebDriver):
         :param path: Absolute path to the addon that will be installed.
 
         :Usage:
-            driver.install_addon('/path/to/firebug.xpi')
+            ::
+
+                driver.install_addon('/path/to/firebug.xpi')
         """
         payload = {"path": path}
         if temporary is not None:
@@ -259,6 +261,8 @@ class WebDriver(RemoteWebDriver):
         Uninstalls Firefox addon using its identifier.
 
         :Usage:
-            driver.uninstall_addon('addon@foo.com')
+            ::
+
+                driver.uninstall_addon('addon@foo.com')
         """
         self.execute("UNINSTALL_ADDON", {"id": identifier})
