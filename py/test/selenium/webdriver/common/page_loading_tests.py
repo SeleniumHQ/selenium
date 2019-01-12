@@ -40,7 +40,6 @@ def testShouldWaitForDocumentToBeLoaded(driver, pages):
 #    assert driver.title == "We Arrive Here"
 
 
-@pytest.mark.xfail_chrome(reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=2239')
 def testShouldBeAbleToGetAFragmentOnTheCurrentPage(driver, pages):
     pages.load("xhtmlTest.html")
     location = driver.current_url

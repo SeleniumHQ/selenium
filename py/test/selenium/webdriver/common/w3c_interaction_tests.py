@@ -73,7 +73,6 @@ def test_can_create_pause_action_on_keyboard(driver, pages):
     actions2.perform()
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_can_create_pause_action_on_pointer(driver, pages):
     # If we don't get an error and takes less than 3 seconds to run, we are good
@@ -93,7 +92,6 @@ def test_can_create_pause_action_on_pointer(driver, pages):
     actions2.perform()
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_can_clear_actions(driver, pages):
     actions = ActionBuilder(driver)

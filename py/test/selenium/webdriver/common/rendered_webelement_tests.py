@@ -50,9 +50,6 @@ def testShouldCorrectlyIdentifyThatAnElementHasWidth(driver, pages):
     assert size["height"] > 0
 
 
-@pytest.mark.xfail_chrome(
-    reason='Get Element Rect command not implemented',
-    raises=WebDriverException)
 @pytest.mark.xfail_safari(
     reason='Get Element Rect command not implemented',
     raises=WebDriverException)
