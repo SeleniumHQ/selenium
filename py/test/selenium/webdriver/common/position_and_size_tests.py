@@ -60,7 +60,7 @@ def testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort(driver, 
 @pytest.mark.xfail_remote
 def testShouldGetCoordinatesOfAnElementInAFrame(driver, pages):
     pages.load("coordinates_tests/element_in_frame.html")
-    driver.switch_to_frame(driver.find_element(By.NAME, "ifr"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "ifr"))
     element = driver.find_element(By.ID, "box")
     _check_location(element.location_once_scrolled_into_view, x=25, y=25)
     _check_location(element.location, x=10, y=10)
@@ -70,8 +70,8 @@ def testShouldGetCoordinatesOfAnElementInAFrame(driver, pages):
 @pytest.mark.xfail_remote
 def testShouldGetCoordinatesOfAnElementInANestedFrame(driver, pages):
     pages.load("coordinates_tests/element_in_nested_frame.html")
-    driver.switch_to_frame(driver.find_element(By.NAME, "ifr"))
-    driver.switch_to_frame(driver.find_element(By.NAME, "ifr"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "ifr"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "ifr"))
     element = driver.find_element(By.ID, "box")
     _check_location(element.location_once_scrolled_into_view, x=40, y=40)
     _check_location(element.location, x=10, y=10)
