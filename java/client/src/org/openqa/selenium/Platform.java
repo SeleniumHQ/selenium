@@ -199,7 +199,7 @@ public enum Platform {
   ANDROID("android", "dalvik") {
     @Override
     public Platform family() {
-      return LINUX;
+      return null;
     }
   },
 

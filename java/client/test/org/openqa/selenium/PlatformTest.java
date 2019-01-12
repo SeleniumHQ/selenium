@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.Platform.ANY;
+import static org.openqa.selenium.Platform.IOS;
 import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
@@ -61,11 +62,6 @@ public class PlatformTest {
   @Test
   public void testUnixIsNotLinux() {
     assertThat(UNIX.is(LINUX)).isFalse();
-  }
-
-  @Test
-  public void androidIsAUnixVariant() {
-    assertThat(ANDROID.is(UNIX)).isTrue();
   }
 
   @Test
@@ -137,6 +133,16 @@ public class PlatformTest {
   @Test
   public void unixIsUnix() {
     assertThat(UNIX.is(UNIX)).isTrue();
+  }
+
+  @Test
+  public void androidIAndroid() {
+    assertThat(ANDROID.is(ANDROID)).isTrue();
+  }
+
+  @Test
+  public void iosIsIos() {
+    assertThat(IOS.is(IOS)).isTrue();
   }
 
   @Test
