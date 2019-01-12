@@ -33,7 +33,6 @@ except ImportError:
     from io import BytesIO
 
 from xml.dom import minidom
-from selenium.webdriver.common.proxy import ProxyType
 from selenium.common.exceptions import WebDriverException
 
 
