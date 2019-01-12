@@ -101,9 +101,10 @@ class WebElement(object):
         :Args:
             - name - Name of the property to retrieve.
 
-        Example::
+        :Usage:
+            ::
 
-            text_length = target_element.get_property("text_length")
+                text_length = target_element.get_property("text_length")
         """
         try:
             return self._execute(Command.GET_ELEMENT_PROPERTY, {"name": name})["value"]
@@ -171,7 +172,9 @@ class WebElement(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            foo_element = element.find_element_by_id('foo')
+            ::
+
+                foo_element = element.find_element_by_id('foo')
         """
         return self.find_element(by=By.ID, value=id_)
 
@@ -187,7 +190,9 @@ class WebElement(object):
            empty list if not
 
         :Usage:
-            elements = element.find_elements_by_id('foo')
+            ::
+
+                elements = element.find_elements_by_id('foo')
         """
         return self.find_elements(by=By.ID, value=id_)
 
@@ -204,7 +209,9 @@ class WebElement(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = element.find_element_by_name('foo')
+            ::
+
+                element = element.find_element_by_name('foo')
         """
         return self.find_element(by=By.NAME, value=name)
 
@@ -219,7 +226,9 @@ class WebElement(object):
            empty list if not
 
         :Usage:
-            elements = element.find_elements_by_name('foo')
+            ::
+
+                elements = element.find_elements_by_name('foo')
         """
         return self.find_elements(by=By.NAME, value=name)
 
@@ -236,7 +245,9 @@ class WebElement(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = element.find_element_by_link_text('Sign In')
+            ::
+
+                element = element.find_element_by_link_text('Sign In')
         """
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
@@ -251,7 +262,9 @@ class WebElement(object):
            empty list if not
 
         :Usage:
-            elements = element.find_elements_by_link_text('Sign In')
+            ::
+
+                elements = element.find_elements_by_link_text('Sign In')
         """
         return self.find_elements(by=By.LINK_TEXT, value=link_text)
 
@@ -268,7 +281,9 @@ class WebElement(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = element.find_element_by_partial_link_text('Sign')
+            ::
+
+                element = element.find_element_by_partial_link_text('Sign')
         """
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
@@ -283,7 +298,9 @@ class WebElement(object):
            empty list if not
 
         :Usage:
-            elements = element.find_elements_by_partial_link_text('Sign')
+            ::
+
+                elements = element.find_elements_by_partial_link_text('Sign')
         """
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
@@ -300,7 +317,9 @@ class WebElement(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = element.find_element_by_tag_name('h1')
+            ::
+
+                element = element.find_element_by_tag_name('h1')
         """
         return self.find_element(by=By.TAG_NAME, value=name)
 
@@ -315,7 +334,9 @@ class WebElement(object):
            empty list if not
 
         :Usage:
-            elements = element.find_elements_by_tag_name('h1')
+            ::
+
+                elements = element.find_elements_by_tag_name('h1')
         """
         return self.find_elements(by=By.TAG_NAME, value=name)
 
@@ -346,7 +367,9 @@ class WebElement(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = element.find_element_by_xpath('//div/td[1]')
+            ::
+
+                element = element.find_element_by_xpath('//div/td[1]')
         """
         return self.find_element(by=By.XPATH, value=xpath)
 
@@ -375,7 +398,9 @@ class WebElement(object):
            empty list if not
 
         :Usage:
-            elements = element.find_elements_by_xpath("//div[contains(@class, 'foo')]")
+            ::
+
+                elements = element.find_elements_by_xpath("//div[contains(@class, 'foo')]")
 
         """
         return self.find_elements(by=By.XPATH, value=xpath)
@@ -393,7 +418,9 @@ class WebElement(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = element.find_element_by_class_name('foo')
+            ::
+
+                element = element.find_element_by_class_name('foo')
         """
         return self.find_element(by=By.CLASS_NAME, value=name)
 
@@ -408,7 +435,9 @@ class WebElement(object):
            empty list if not
 
         :Usage:
-            elements = element.find_elements_by_class_name('foo')
+            ::
+
+                elements = element.find_elements_by_class_name('foo')
         """
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
@@ -425,7 +454,9 @@ class WebElement(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = element.find_element_by_css_selector('#foo')
+            ::
+
+                element = element.find_element_by_css_selector('#foo')
         """
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
@@ -440,7 +471,9 @@ class WebElement(object):
            empty list if not
 
         :Usage:
-            elements = element.find_elements_by_css_selector('.foo')
+            ::
+
+                elements = element.find_elements_by_css_selector('.foo')
         """
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
@@ -552,7 +585,9 @@ class WebElement(object):
         Gets the screenshot of the current element as a base64 encoded string.
 
         :Usage:
-            img_b64 = element.screenshot_as_base64
+            ::
+
+                img_b64 = element.screenshot_as_base64
         """
         return self._execute(Command.ELEMENT_SCREENSHOT)['value']
 
@@ -562,7 +597,9 @@ class WebElement(object):
         Gets the screenshot of the current element as a binary data.
 
         :Usage:
-            element_png = element.screenshot_as_png
+            ::
+
+                element_png = element.screenshot_as_png
         """
         return base64.b64decode(self.screenshot_as_base64.encode('ascii'))
 
@@ -577,7 +614,9 @@ class WebElement(object):
            should end with a `.png` extension.
 
         :Usage:
-            element.screenshot('/Screenshots/foo.png')
+            ::
+
+                element.screenshot('/Screenshots/foo.png')
         """
         if not filename.lower().endswith('.png'):
             warnings.warn("name used for saved screenshot does not match file "
@@ -638,7 +677,9 @@ class WebElement(object):
         possible.
 
         :Usage:
-            element = element.find_element(By.ID, 'foo')
+            ::
+
+                element = element.find_element(By.ID, 'foo')
 
         :rtype: WebElement
         """
@@ -664,7 +705,9 @@ class WebElement(object):
         possible.
 
         :Usage:
-            element = element.find_elements(By.CLASS_NAME, 'foo')
+            ::
+
+                element = element.find_elements(By.CLASS_NAME, 'foo')
 
         :rtype: list of WebElement
         """
