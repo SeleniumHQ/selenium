@@ -20,6 +20,7 @@
 import base64
 import copy
 from contextlib import contextmanager
+import warnings
 
 from .command import Command
 from .webelement import WebElement
