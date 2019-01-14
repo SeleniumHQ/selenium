@@ -9,6 +9,22 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.5.0
+==========
+ * Added logging of JavaScript errors when executing scripts.
+ * Fixed incorrect error response format for invalid commands in IE.
+   Previously, when an invalid command was sent to the IE driver, the
+   response was not completely valid for the W3C dialect of the wire
+   protocol. In particular, the distinction was lost between an unknown
+   URL and an invalid HTTP verb, and this code was not properly converted
+   when the driver was updated to implement the specification. This change
+   fixes that. Correct responses are now sent back for both invalid
+   command cases. Additionally, the driver no longer hand-codes JSON for
+   these responses, instead creating a valid Response object, and using
+   the common serialization mechanism for transmission. Finally, this
+   commit includes some minor code formatting cleanup, which does not
+   affect the functionality of the driver. Fixes issue #6828.
+
 v3.141.0.6
 ==========
  * Modified to allow the driver to handle supplementary Unicode characters
