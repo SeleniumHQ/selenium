@@ -272,6 +272,7 @@ int Script::Execute() {
         CComBSTR script_message = L"";
         custom_exception->GetDescription(&script_message);
         error_description.Append(script_message);
+        LOG(DEBUG) << script_message;
       } else {
         LOGHR(DEBUG, hr) << "Failed to execute anonymous function, no exception information retrieved";
       }
