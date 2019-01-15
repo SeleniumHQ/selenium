@@ -268,11 +268,12 @@ namespace OpenQA.Selenium
             IWebElement checkbox = driver.FindElement(By.XPath("//input[@name='checky']"));
             checkbox.Click();
             checkbox.Submit();
-
-            Assert.AreEqual("Success!", driver.FindElement(By.XPath("//p")).Text);
+            IWebElement result = WaitFor<IWebElement>(() => driver.FindElement(By.XPath("//p")), "result element not found");
+            Assert.AreEqual("Success!", result.Text);
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Marionette throws 'Cannot access dead object' in subsequent tests when frame is deleted")]
         public void ShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
         {
             driver.Url = framesetPage;
@@ -447,6 +448,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver throws NoSuchElementException, spec is unclear")]
+        [IgnoreBrowser(Browser.Firefox, "Marionette throws 'Cannot access dead object' in subsequent tests when frame is deleted")]
         [IgnoreBrowser(Browser.IE, "IE driver throws NoSuchElementException, spec is unclear")]
         public void ShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs()
         {
