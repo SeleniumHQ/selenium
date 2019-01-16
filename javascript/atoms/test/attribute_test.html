@@ -91,6 +91,13 @@ limitations under the License.
       assertAttributeEquals(bot.dom.getAttribute(e, 'name'), e, 'NaMe');
     }
 
+    function testUndefinedGetAttributeAndGetAttributeNode() {
+      var e = bot.locators.findElement({id: 'checky'});
+      e.getAttribute = null;
+      e.getAttributeNode = null;
+      assertAttributeEquals(null, e, 'id');
+    }
+
     function assertAttributeEquals(expected, elem, attr) {
       assertEquals('Expected attribute "' + attr + '" to equal "' +
           expected + '"', expected, bot.dom.getAttribute(elem, attr));
