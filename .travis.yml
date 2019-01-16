@@ -16,6 +16,7 @@ _bindings:
   python: &python
     language: python
     python: "2.7"
+    jdk: oraclejdk8
   ruby: &ruby
     language: ruby
     rvm: 2.0.0-p648
@@ -147,7 +148,6 @@ matrix:
       <<: *ruby
     - env: TASK=//rb:lint
       <<: *ruby
-before_install: ./scripts/travis/before_install.sh
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
 script: travis_wait ./scripts/travis/script.sh
