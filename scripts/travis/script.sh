@@ -1,9 +1,5 @@
 set -ex
 
-if [[ ! -z $TOXENV ]]; then
-  . jdk_switcher.sh && jdk_switcher use oraclejdk8
-fi
-
 if [[ $TOXENV == *"remote"* ]]; then
   ./go selenium-server-standalone
 fi
