@@ -78,13 +78,15 @@ bot.dom.core.getAttribute = function(element, attributeName) {
   // to boolean attributes whose reflected property names are all lowercase
   // (as attributeName is by this point), like "selected". We have not
   // found a boolean attribute for which this does not work.
-  if (bot.userAgent.IE_DOC_PRE9 && element[attributeName] === true) {
+  if (bot.userAgent.IE_DOC_PRE9 && element[attributeName] === true &&
+      element.getAttribute) {
     return String(element.getAttribute(attributeName));
   }
 
   // When the attribute is not present, either attr will be null or
   // attr.specified will be false.
-  var attr = element.getAttributeNode(attributeName);
+  var attr = 
+      element.getAttributeNode ? element.getAttributeNode(attributeName) : null;
   return (attr && attr.specified) ? attr.value : null;
 };
 
