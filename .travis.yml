@@ -66,6 +66,12 @@ matrix:
     - env: MARIONETTE=1 TOXENV=py27-marionette
       <<: *python
       <<: *firefox-nightly
+    - env: TASK=//rb:ff-esr-test
+      <<: *ruby
+      <<: *firefox-esr
+    - env: TASK=//rb:remote-ff-esr-test
+      <<: *ruby
+      <<: *firefox-esr
   include:
     - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests //java/client/test/org/openqa/selenium/testing/drivers/..."
       <<: *java
