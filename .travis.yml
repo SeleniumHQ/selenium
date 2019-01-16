@@ -138,18 +138,12 @@ matrix:
     - env: MARIONETTE=1 TASK=//rb:firefox-test
       <<: *ruby
       <<: *firefox-latest
-    - env: TASK=//rb:ff-esr-test
-      <<: *ruby
-      <<: *firefox-esr
     - env: CHROME=1 TASK=//rb:remote-chrome-test
       <<: *ruby
       <<: *chrome
     - env: MARIONETTE=1 TASK=//rb:remote-firefox-test
       <<: *ruby
       <<: *firefox-latest
-    - env: TASK=//rb:remote-ff-esr-test
-      <<: *ruby
-      <<: *firefox-esr
     - env: TASK=//rb:docs
       <<: *ruby
     - env: TASK=//rb:lint
