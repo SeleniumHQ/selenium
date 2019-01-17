@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.grid.web.CommandHandler;
@@ -46,6 +48,7 @@ class StatusHandler implements CommandHandler {
             "ready", status.hasCapacity(),
             "message", status.hasCapacity() ? "Ready" : "No free slots available",
             "node", status));
-;
+
+    resp.setContent(json.toJson(report).getBytes(UTF_8));
   }
 }
