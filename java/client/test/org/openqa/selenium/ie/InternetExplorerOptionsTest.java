@@ -88,7 +88,6 @@ public class InternetExplorerOptionsTest {
         .addCommandSwitches("--cake");
 
     String json = new Json().toJson(options);
-    System.out.println("json = " + json);
     Capabilities capabilities = new Json().toType(json, Capabilities.class);
 
     assertThat(capabilities).isEqualTo(options);
