@@ -23,8 +23,6 @@
 
 #include "LocationInfo.h"
 
-#define EELEMENTCLICKPOINTNOTSCROLLED 100
-
 namespace webdriver {
 
 // Forward declaration of classes.

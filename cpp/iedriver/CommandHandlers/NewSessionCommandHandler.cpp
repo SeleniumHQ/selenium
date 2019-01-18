@@ -23,6 +23,7 @@
 #include "../IECommandExecutor.h"
 #include "../InputManager.h"
 #include "../ProxyManager.h"
+#include "../WebDriverConstants.h"
 
 namespace webdriver {
 
@@ -348,14 +349,14 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
 void NewSessionCommandHandler::SetTimeoutSettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
   LOG(TRACE) << "Entering NewSessionCommandHandler::SetTimeoutSettings";
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-  if (capabilities.isMember("implicit")) {
-    mutable_executor.set_implicit_wait_timeout(capabilities["implicit"].asUInt64());
+  if (capabilities.isMember(IMPLICIT_WAIT_TIMEOUT_NAME)) {
+    mutable_executor.set_implicit_wait_timeout(capabilities[IMPLICIT_WAIT_TIMEOUT_NAME].asUInt64());
   }
-  if (capabilities.isMember("pageLoad")) {
-    mutable_executor.set_page_load_timeout(capabilities["pageLoad"].asUInt64());
+  if (capabilities.isMember(PAGE_LOAD_TIMEOUT_NAME)) {
+    mutable_executor.set_page_load_timeout(capabilities[PAGE_LOAD_TIMEOUT_NAME].asUInt64());
   }
-  if (capabilities.isMember("script")) {
-    mutable_executor.set_async_script_timeout(capabilities["script"].asUInt64());
+  if (capabilities.isMember(SCRIPT_TIMEOUT_NAME)) {
+    mutable_executor.set_async_script_timeout(capabilities[SCRIPT_TIMEOUT_NAME].asUInt64());
   }
 }
 
@@ -487,9 +488,9 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   }
 
   Json::Value timeouts;
-  timeouts["implicit"] = executor.implicit_wait_timeout();
-  timeouts["pageLoad"] = executor.page_load_timeout();
-  timeouts["script"] = executor.async_script_timeout();
+  timeouts[IMPLICIT_WAIT_TIMEOUT_NAME] = executor.implicit_wait_timeout();
+  timeouts[PAGE_LOAD_TIMEOUT_NAME] = executor.page_load_timeout();
+  timeouts[SCRIPT_TIMEOUT_NAME] = executor.async_script_timeout();
   capabilities[TIMEOUTS_CAPABILITY] = timeouts;
 
   Json::Value ie_options;
@@ -770,9 +771,9 @@ bool NewSessionCommandHandler::ValidateCapabilities(
         std::vector<std::string>::const_iterator timeout_name_iterator = timeout_names.begin();
         for (; timeout_name_iterator != timeout_names.end(); ++timeout_name_iterator) {
           std::string timeout_name = *timeout_name_iterator;
-          if (timeout_name != "pageLoad" &&
-              timeout_name != "implicit" &&
-              timeout_name != "script") {
+          if (timeout_name != PAGE_LOAD_TIMEOUT_NAME &&
+              timeout_name != IMPLICIT_WAIT_TIMEOUT_NAME &&
+              timeout_name != SCRIPT_TIMEOUT_NAME) {
             *error_message = "Invalid capabilities in " +
                              capability_set_name + ": " +
                              "a timeout named " + timeout_name +

@@ -23,8 +23,6 @@
 #include "messages.h"
 #include "json.h"
 
-#define ASYNC_SCRIPT_EVENT_NAME L"WD_ASYNC_SCRIPT_START_EVENT"
-
 namespace webdriver {
 
 // Structure to be used for comunication between threads

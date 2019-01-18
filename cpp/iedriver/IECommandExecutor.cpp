@@ -41,6 +41,11 @@
 #include "ProxyManager.h"
 #include "StringUtilities.h"
 #include "Script.h"
+#include "WebDriverConstants.h"
+
+#define MAX_HTML_DIALOG_RETRIES 5
+#define WAIT_TIME_IN_MILLISECONDS 50
+#define DEFAULT_FILE_UPLOAD_DIALOG_TIMEOUT_IN_MILLISECONDS 3000
 
 namespace webdriver {
 
@@ -695,7 +700,7 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
   // Return the HWND back through lpParameter, and signal that the
   // window is ready for messages.
   thread_context->hwnd = session_window_handle;
-  HANDLE event_handle = ::OpenEvent(EVENT_ALL_ACCESS, FALSE, EVENT_NAME);
+  HANDLE event_handle = ::OpenEvent(EVENT_ALL_ACCESS, FALSE, WEBDRIVER_START_EVENT_NAME);
   if (event_handle != NULL) {
     ::SetEvent(event_handle);
     ::CloseHandle(event_handle);

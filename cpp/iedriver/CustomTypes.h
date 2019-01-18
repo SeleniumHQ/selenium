@@ -19,15 +19,6 @@
 
 #include <memory>
 
-#define IGNORE_UNEXPECTED_ALERTS "ignore"
-#define ACCEPT_UNEXPECTED_ALERTS "accept"
-#define DISMISS_UNEXPECTED_ALERTS "dismiss"
-#define ACCEPT_AND_NOTIFY_UNEXPECTED_ALERTS "accept and notify"
-#define DISMISS_AND_NOTIFY_UNEXPECTED_ALERTS "dismiss and notify"
-#define NORMAL_PAGE_LOAD_STRATEGY "normal"
-#define EAGER_PAGE_LOAD_STRATEGY "eager"
-#define NONE_PAGE_LOAD_STRATEGY "none"
-
 namespace webdriver {
 
 class Element;

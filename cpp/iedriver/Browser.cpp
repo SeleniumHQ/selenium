@@ -27,6 +27,7 @@
 #include "CustomTypes.h"
 #include "messages.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
 
 namespace webdriver {
 

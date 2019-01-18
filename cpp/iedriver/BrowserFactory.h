@@ -19,9 +19,6 @@
 
 #include <string>
 
-#define ALERT_WINDOW_CLASS "#32770"
-#define HTML_DIALOG_WINDOW_CLASS "Internet Explorer_TridentDlgFrame"
-
 namespace webdriver {
 
 struct ProcessWindowInfo {

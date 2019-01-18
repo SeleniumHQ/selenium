@@ -20,6 +20,8 @@
 #include "DocumentHost.h"
 #include "StringUtilities.h"
 
+#define INVALID_CONTROL_ID -1
+
 namespace webdriver {
 
 Alert::Alert(std::shared_ptr<DocumentHost> browser, HWND handle) {

@@ -18,6 +18,7 @@
 #include "errorcodes.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
+#include "../WebDriverConstants.h"
 
 namespace webdriver {
 
@@ -36,27 +37,28 @@ void SetTimeoutsCommandHandler::ExecuteInternal(
   ParametersMap::const_iterator timeout_parameter_iterator = command_parameters.begin();
   for (; timeout_parameter_iterator != command_parameters.end(); ++timeout_parameter_iterator) {
     std::string timeout_type = timeout_parameter_iterator->first;
-    if (timeout_type != "implicit" &&
-        timeout_type != "script" &&
-        timeout_type != "pageLoad") {
+    Json::Value timeout_value = timeout_parameter_iterator->second;
+    if (timeout_type != IMPLICIT_WAIT_TIMEOUT_NAME &&
+        timeout_type != SCRIPT_TIMEOUT_NAME &&
+        timeout_type != PAGE_LOAD_TIMEOUT_NAME) {
       response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Invalid timeout type specified: " + timeout_type);
       return;
     }
-    if (!timeout_parameter_iterator->second.isNumeric() ||
-        !timeout_parameter_iterator->second.isIntegral()) {
+    if (!timeout_value.isNumeric() ||
+        !timeout_value.isIntegral()) {
       response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Timeout value for timeout type " + timeout_type + " must be an integer");
       return;
     }
-    timeout = timeout_parameter_iterator->second.asInt64();
+    timeout = timeout_value.asInt64();
     if (timeout < 0 || timeout > MAX_SAFE_INTEGER) {
       response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Timeout value for timeout type " + timeout_type + " must be an integer between 0 and 2^53 - 1");
       return;
     }
-    if (timeout_type == "implicit") {
+    if (timeout_type == IMPLICIT_WAIT_TIMEOUT_NAME) {
       mutable_executor.set_implicit_wait_timeout(timeout);
-    } else if (timeout_type == "script") {
+    } else if (timeout_type == SCRIPT_TIMEOUT_NAME) {
       mutable_executor.set_async_script_timeout(timeout);
-    } else if (timeout_type == "pageLoad") {
+    } else if (timeout_type == PAGE_LOAD_TIMEOUT_NAME) {
       mutable_executor.set_page_load_timeout(timeout);
     }
   }

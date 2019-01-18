@@ -25,6 +25,7 @@
 #include "ScriptException.h"
 #include "StringUtilities.h"
 #include "VariantUtilities.h"
+#include "WebDriverConstants.h"
 
 namespace webdriver {
 

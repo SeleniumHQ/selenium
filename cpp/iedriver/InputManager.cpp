@@ -34,6 +34,7 @@
 #include "IElementManager.h"
 #include "Script.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
 #include "Generated/atoms.h"
 
 #define USER_INTERACTION_MUTEX_NAME L"WebDriverUserInteractionMutex"

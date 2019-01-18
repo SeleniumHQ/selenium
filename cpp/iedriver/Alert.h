@@ -21,8 +21,6 @@
 #include <string>
 #include <vector>
 
-#define INVALID_CONTROL_ID -1
-
 namespace webdriver {
 
 // Forward declaration of classes.

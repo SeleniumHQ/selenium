@@ -365,6 +365,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="VariantUtilities.h" />
     <ClInclude Include="WebDriver.h" />
+    <ClInclude Include="WebDriverConstants.h" />
     <ClInclude Include="WindowUtilities.h" />
   </ItemGroup>
   <ItemGroup>

@@ -31,6 +31,7 @@
 #include "FileUtilities.h"
 #include "RegistryUtilities.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
 
 #define HTML_GETOBJECT_MSG L"WM_HTML_GETOBJECT"
 #define OLEACC_LIBRARY_NAME L"OLEACC.DLL"
