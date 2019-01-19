@@ -45,10 +45,10 @@ class StaticResources {
 
     // Firefox XPI
     copy(
-        "//javascript/firefox-driver:webdriver_prefs",
+        "//third_party/js/selenium:webdriver_prefs",
         "org/openqa/selenium/firefox/webdriver_prefs.json");
     copy(
-        "//java/client/src/org/openqa/selenium/firefox/xpi:webdriver.xpi",
+        "//third_party/js/selenium:webdriver",
         "org/openqa/selenium/firefox/xpi/webdriver.xpi");
   }
 
