@@ -39,7 +39,6 @@ import org.openqa.selenium.testing.TestUtilities;
 public class PositionAndSizeTest extends JUnit4TestBase {
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
     driver.get(pages.xhtmlTestPage);
 
@@ -51,7 +50,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldGetCoordinatesOfAnElement() {
     driver.get(appServer.whereIs("coordinates_tests/simple_page.html"));
     assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
@@ -59,7 +57,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldGetCoordinatesOfAnEmptyElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_empty_element.html"));
     assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
@@ -67,7 +64,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldGetCoordinatesOfATransparentElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_transparent_element.html"));
     assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
@@ -75,7 +71,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldGetCoordinatesOfAHiddenElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_hidden_element.html"));
     assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
@@ -83,7 +78,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldGetCoordinatesOfAnInvisibleElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_invisible_element.html"));
     assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(0, 0));
@@ -91,7 +85,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_element_out_of_view.html"));
     int windowHeight = driver.manage().window().getSize().getHeight();
@@ -138,7 +131,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
 
   @Test
   @Ignore(FIREFOX)
-  @NotYetImplemented(SAFARI)
   public void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
     assumeFalse("Ignoring fixed-position elements in IE6", TestUtilities.isIe6(driver));
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));

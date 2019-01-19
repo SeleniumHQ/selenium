@@ -72,10 +72,9 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         }
         return options;
       })
-      .put(Browser.SAFARI, SafariOptions::new)
       .put(Browser.HTMLUNIT, DesiredCapabilities::htmlUnit)
       .put(Browser.OPERABLINK, OperaOptions::new)
-      .put(Browser.OPERA, () -> {
+      .put(Browser.SAFARI, () -> {
         SafariOptions options = new SafariOptions();
         if (Boolean.getBoolean("selenium.safari.tp")) {
           options.setUseTechnologyPreview(true);

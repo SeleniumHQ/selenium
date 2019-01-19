@@ -47,7 +47,6 @@ import org.openqa.selenium.testing.drivers.Browser;
 public class DragAndDropTest extends JUnit4TestBase {
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testDragAndDropRelative() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
@@ -66,7 +65,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
     WebElement img1 = driver.findElement(By.id("test1"));
@@ -77,7 +75,6 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
   public void testDragAndDropToElementInIframe() {
     driver.get(pages.iframePage);
     final WebElement iframe = driver.findElement(By.tagName("iframe"));
@@ -92,7 +89,6 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
   public void testDragAndDropElementWithOffsetInIframeAtBottom() {
     driver.get(appServer.whereIs("iframeAtBottom.html"));
 
@@ -123,7 +119,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testElementInDiv() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
@@ -180,6 +175,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 
