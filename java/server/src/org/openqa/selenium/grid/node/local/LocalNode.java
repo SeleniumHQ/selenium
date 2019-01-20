@@ -22,12 +22,14 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
@@ -61,6 +63,7 @@ public class LocalNode extends Node {
   private final int maxSessionCount;
   private final List<SessionFactory> factories;
   private final Cache<SessionId, SessionAndHandler> currentSessions;
+  private final Regularly cleanUp;
 
   private LocalNode(
       DistributedTracer tracer,
@@ -84,7 +87,14 @@ public class LocalNode extends Node {
     this.currentSessions = CacheBuilder.newBuilder()
         .expireAfterAccess(sessionTimeout)
         .ticker(ticker)
+        .removalListener((RemovalListener<SessionId, SessionAndHandler>) notification -> {
+          // Attempt to stop the session
+          notification.getValue().stop();
+        })
         .build();
+
+    this.cleanUp = new Regularly("Node cleanup: " + externalUri);
+    cleanUp.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
   }
 
   @VisibleForTesting
@@ -317,7 +327,14 @@ public class LocalNode extends Node {
           () -> new HealthCheck.Result(true, uri + " is ok") :
           healthCheck;
 
-      return new LocalNode(tracer, uri, check, maxCount, ticker, sessionTimeout, factories.build());
+      return new LocalNode(
+          tracer,
+          uri,
+          check,
+          maxCount,
+          ticker,
+          sessionTimeout,
+          factories.build());
     }
 
     public Advanced advanced() {

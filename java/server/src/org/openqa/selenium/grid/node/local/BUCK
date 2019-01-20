@@ -4,6 +4,7 @@ java_library(
     srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
+        "//java/server/src/org/openqa/selenium/concurrent:concurrent",
         "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/node:node",
         "//java/server/src/org/openqa/selenium/grid/sessionmap:sessionmap",
