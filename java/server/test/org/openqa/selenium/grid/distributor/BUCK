@@ -2,6 +2,9 @@
 java_test(
     name = "distributor",
     srcs = glob(["*.java"]),
+    labels = [
+        "small",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
         "//java/server/src/org/openqa/selenium/grid/distributor:distributor",
