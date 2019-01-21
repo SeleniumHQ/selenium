@@ -34,6 +34,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.NodeStatus;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -255,13 +256,18 @@ public class LocalNode extends Node {
             .collect(Collectors.toSet()));
   }
 
-  public static Builder builder(DistributedTracer tracer, URI uri, SessionMap sessions) {
-    return new Builder(tracer, uri, sessions);
+  public static Builder builder(
+      DistributedTracer tracer,
+      HttpClient.Factory httpClientFactory,
+      URI uri,
+      SessionMap sessions) {
+    return new Builder(tracer, httpClientFactory, uri, sessions);
   }
 
   public static class Builder {
 
     private final DistributedTracer tracer;
+    private final HttpClient.Factory httpClientFactory;
     private final URI uri;
     private final SessionMap sessions;
     private final ImmutableList.Builder<SessionFactory> factories;
@@ -270,8 +276,13 @@ public class LocalNode extends Node {
     private Duration sessionTimeout = Duration.ofMinutes(5);
     private HealthCheck healthCheck;
 
-    public Builder(DistributedTracer tracer, URI uri, SessionMap sessions) {
+    public Builder(
+        DistributedTracer tracer,
+        HttpClient.Factory httpClientFactory,
+        URI uri,
+        SessionMap sessions) {
       this.tracer = Objects.requireNonNull(tracer);
+      this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
       this.uri = Objects.requireNonNull(uri);
       this.sessions = Objects.requireNonNull(sessions);
       this.factories = ImmutableList.builder();
@@ -281,7 +292,7 @@ public class LocalNode extends Node {
       Objects.requireNonNull(stereotype, "Capabilities must be set.");
       Objects.requireNonNull(factory, "Session factory must be set.");
 
-      factories.add(new SessionFactory(sessions, stereotype, factory));
+      factories.add(new SessionFactory(httpClientFactory, sessions, stereotype, factory));
 
       return this;
     }

@@ -62,6 +62,7 @@ import java.util.function.Predicate;
 public class DistributorTest {
 
   private DistributedTracer tracer;
+  private HttpClient.Factory clientFactory;
   private Distributor local;
   private Distributor distributor;
   private ImmutableCapabilities caps;
@@ -69,6 +70,7 @@ public class DistributorTest {
   @Before
   public void setUp() throws MalformedURLException {
     tracer = DistributedTracer.builder().build();
+    clientFactory = HttpClient.Factory.createDefault();
     local = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
     distributor = new RemoteDistributor(
         tracer,
@@ -93,7 +95,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     LocalSessionMap sessions = new LocalSessionMap(tracer);
-    LocalNode node = LocalNode.builder(tracer, routableUri, sessions)
+    LocalNode node = LocalNode.builder(tracer, clientFactory, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
@@ -118,7 +120,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     LocalSessionMap sessions = new LocalSessionMap(tracer);
-    LocalNode node = LocalNode.builder(tracer, routableUri, sessions)
+    LocalNode node = LocalNode.builder(tracer, clientFactory, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
@@ -143,7 +145,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     LocalSessionMap sessions = new LocalSessionMap(tracer);
-    LocalNode node = LocalNode.builder(tracer, routableUri, sessions)
+    LocalNode node = LocalNode.builder(tracer, clientFactory, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
@@ -244,7 +246,7 @@ public class DistributorTest {
     handler.addHandler(sessions);
 
     URI uri = createUri();
-    Node alwaysDown = LocalNode.builder(tracer, uri, sessions)
+    Node alwaysDown = LocalNode.builder(tracer, clientFactory, uri, sessions)
         .add(caps, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(false, "Boo!"))
@@ -252,7 +254,7 @@ public class DistributorTest {
     handler.addHandler(alwaysDown);
 
     UUID expected = UUID.randomUUID();
-    Node alwaysUp = LocalNode.builder(tracer, uri, sessions)
+    Node alwaysUp = LocalNode.builder(tracer, clientFactory, uri, sessions)
         .add(caps, caps -> new Session(new SessionId(expected), uri, caps))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(true, "Yay!"))
@@ -334,7 +336,7 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer);
     handler.addHandler(sessions);
 
-    Node node = LocalNode.builder(tracer, createUri(), sessions)
+    Node node = LocalNode.builder(tracer, clientFactory, createUri(), sessions)
         .add(caps, caps -> {
           throw new SessionNotCreatedException("OMG");
         })
@@ -363,7 +365,7 @@ public class DistributorTest {
     AtomicBoolean isUp = new AtomicBoolean(false);
 
     URI uri = createUri();
-    Node node = LocalNode.builder(tracer, uri, sessions)
+    Node node = LocalNode.builder(tracer, clientFactory, uri, sessions)
         .add(caps, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
@@ -405,7 +407,7 @@ public class DistributorTest {
 
   private Node createNode(SessionMap sessions, Capabilities stereotype, int count, int currentLoad) {
     URI uri = createUri();
-    LocalNode.Builder builder = LocalNode.builder(tracer, uri, sessions);
+    LocalNode.Builder builder = LocalNode.builder(tracer, clientFactory, uri, sessions);
     for (int i = 0; i < count; i++) {
       builder.add(stereotype, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps));
     }

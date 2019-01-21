@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.node.local;
 import com.beust.jcommander.Parameter;
 
 import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URI;
 
@@ -63,9 +64,9 @@ public class NodeFlags {
   @ConfigValue(section = "node", name = "detect-drivers")
   private boolean autoconfigure;
 
-  public void configure(LocalNode.Builder node) {
+  public void configure(HttpClient.Factory httpClientFactory, LocalNode.Builder node) {
     if (autoconfigure) {
-      AutoConfigureNode.addSystemDrivers(node);
+      AutoConfigureNode.addSystemDrivers(httpClientFactory, node);
     }
   }
 }

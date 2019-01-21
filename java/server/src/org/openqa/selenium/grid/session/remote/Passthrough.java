@@ -18,16 +18,18 @@
 package org.openqa.selenium.grid.session.remote;
 
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 
 class Passthrough extends ReverseProxyHandler implements SessionCodec {
 
-  public Passthrough(URL upstream) {
-    super(upstream);
+  public Passthrough(HttpClient client) {
+    super(Objects.requireNonNull(client));
   }
 
   @Override

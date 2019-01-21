@@ -150,7 +150,7 @@ public abstract class RemoteSession implements ActiveSession {
         Dialect upstream = result.getDialect();
         Dialect downstream;
         if (downstreamDialects.contains(result.getDialect())) {
-          codec = new Passthrough(url);
+          codec = new Passthrough(client);
           downstream = upstream;
         } else {
           downstream = downstreamDialects.isEmpty() ? OSS : downstreamDialects.iterator().next();

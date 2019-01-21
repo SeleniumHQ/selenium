@@ -57,6 +57,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class NodeTest {
 
   private DistributedTracer tracer;
+  private HttpClient.Factory clientFactory;
   private LocalNode local;
   private Node node;
   private ImmutableCapabilities caps;
@@ -66,6 +67,8 @@ public class NodeTest {
   @Before
   public void setUp() throws URISyntaxException {
     tracer = DistributedTracer.builder().build();
+
+    clientFactory = HttpClient.Factory.createDefault();
 
     caps = new ImmutableCapabilities("browserName", "cheese");
 
@@ -85,7 +88,7 @@ public class NodeTest {
       }
     }
 
-    local = LocalNode.builder(tracer, uri, sessions)
+    local = LocalNode.builder(tracer, clientFactory, uri, sessions)
         .add(caps, c -> new Handler(c))
         .add(caps, c -> new Handler(c))
         .add(caps, c -> new Handler(c))
@@ -103,7 +106,7 @@ public class NodeTest {
 
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
-    Node local = LocalNode.builder(tracer, uri, sessions).build();
+    Node local = LocalNode.builder(tracer, clientFactory, uri, sessions).build();
     HttpClient client = new PassthroughHttpClient<>(local);
     Node node = new RemoteNode(tracer, UUID.randomUUID(), uri, ImmutableSet.of(), client);
 
@@ -121,7 +124,7 @@ public class NodeTest {
 
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
-    Node node = LocalNode.builder(tracer, uri, sessions)
+    Node node = LocalNode.builder(tracer, clientFactory, uri, sessions)
         .add(caps, (c) -> new Session(new SessionId(UUID.randomUUID()), uri, c))
         .build();
 
@@ -232,7 +235,7 @@ public class NodeTest {
       }
     }
 
-    Node local = LocalNode.builder(tracer, uri, sessions)
+    Node local = LocalNode.builder(tracer, clientFactory, uri, sessions)
         .add(caps, c -> new Recording())
         .build();
     Node remote = new RemoteNode(
@@ -270,7 +273,7 @@ public class NodeTest {
     AtomicReference<Instant> now = new AtomicReference<>(Instant.now());
 
     Clock clock = new MyClock(now);
-    Node node = LocalNode.builder(tracer, uri, sessions)
+    Node node = LocalNode.builder(tracer, clientFactory, uri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), uri, c))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
@@ -287,7 +290,7 @@ public class NodeTest {
 
   @Test
   public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
-    Node local = LocalNode.builder(tracer, uri, sessions)
+    Node local = LocalNode.builder(tracer, clientFactory, uri, sessions)
         .add(caps, c -> {
           throw new SessionNotCreatedException("eeek");
         })

@@ -107,26 +107,27 @@ public class NodeServer implements CliCommand {
       loggingOptions.configureLogging();
       DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
+      HttpClient.Factory httpClientFactory = HttpClient.Factory.createDefault();
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
-      SessionMap sessions = new RemoteSessionMap(
-          HttpClient.Factory.createDefault().createClient(sessionMapUrl));
+      SessionMap sessions = new RemoteSessionMap(httpClientFactory.createClient(sessionMapUrl));
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       LocalNode.Builder builder = LocalNode.builder(
           tracer,
+          httpClientFactory,
           serverOptions.getExternalUri(),
           sessions);
-      nodeFlags.configure(builder);
+      nodeFlags.configure(httpClientFactory, builder);
       LocalNode node = builder.build();
 
       DistributorOptions distributorOptions = new DistributorOptions(config);
       URL distributorUrl = distributorOptions.getDistributorUri().toURL();
       Distributor distributor = new RemoteDistributor(
           tracer,
-          HttpClient.Factory.createDefault(),
+          httpClientFactory,
           distributorUrl);
 
       Server<?> server = new BaseServer<>(serverOptions);

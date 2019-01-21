@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -47,6 +48,7 @@ import java.util.Map;
 public class ReverseProxyHandlerTest {
 
   private Server server;
+  private HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
   @Before
   public void startServer() throws IOException {
@@ -60,7 +62,7 @@ public class ReverseProxyHandlerTest {
 
   @Test
   public void shouldForwardRequestsToEndPoint() throws IOException {
-    CommandHandler handler = new ReverseProxyHandler(server.url);
+    CommandHandler handler = new ReverseProxyHandler(factory.createClient(server.url));
     HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
     req.addHeader("X-Cheese", "Cake");
     HttpResponse resp = new HttpResponse();

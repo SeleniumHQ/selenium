@@ -25,6 +25,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.remote.http.HttpClient;
 
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
@@ -36,15 +37,18 @@ import java.util.function.Predicate;
 class SessionFactory
     implements Predicate<Capabilities>, Function<Capabilities, Optional<SessionAndHandler>> {
 
+  private final HttpClient.Factory httpClientFactory;
   private final SessionMap sessions;
   private final Capabilities capabilities;
   private final Function<Capabilities, Session> generator;
   private volatile boolean available = true;
 
   SessionFactory(
+      HttpClient.Factory httpClientFactory,
       SessionMap sessions,
       Capabilities capabilities,
       Function<Capabilities, Session> generator) {
+    this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
     this.sessions = Objects.requireNonNull(sessions);
     this.capabilities = Objects.requireNonNull(ImmutableCapabilities.copyOf(capabilities));
     this.generator = Objects.requireNonNull(generator);
@@ -91,7 +95,8 @@ class SessionFactory
       handler = (CommandHandler) session;
     } else {
       try {
-        handler = new ReverseProxyHandler(session.getUri().toURL());
+        HttpClient client = httpClientFactory.createClient(session.getUri().toURL());
+        handler = new ReverseProxyHandler(client);
       } catch (MalformedURLException e) {
         throw new UncheckedIOException(e);
       }

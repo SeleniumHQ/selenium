@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.local.NodeFlags;
 import org.openqa.selenium.grid.router.Router;
@@ -38,7 +39,6 @@ import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
-import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -106,8 +106,10 @@ public class Standalone implements CliCommand {
       DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
+      HttpClient.Factory httpClientFactory = HttpClient.Factory.createDefault();
+
       SessionMap sessions = new LocalSessionMap(tracer);
-      Distributor distributor = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
+      Distributor distributor = new LocalDistributor(tracer, httpClientFactory);
       Router router = new Router(tracer, sessions, distributor);
 
       String hostName;
@@ -126,9 +128,9 @@ public class Standalone implements CliCommand {
         throw new RuntimeException(e);
       }
 
-      LocalNode.Builder node = LocalNode.builder(tracer, localhost, sessions)
+      LocalNode.Builder node = LocalNode.builder(tracer, httpClientFactory, localhost, sessions)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
-      nodeFlags.configure(node);
+      nodeFlags.configure(httpClientFactory, node);
 
       distributor.add(node.build());
 

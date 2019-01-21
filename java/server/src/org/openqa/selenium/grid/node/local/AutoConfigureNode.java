@@ -25,6 +25,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
@@ -42,7 +43,9 @@ public class AutoConfigureNode {
 
   public static final Logger log = Logger.getLogger("selenium");
 
-  public static void addSystemDrivers(LocalNode.Builder node) {
+  public static void addSystemDrivers(
+      HttpClient.Factory httpClientFactory,
+      LocalNode.Builder node) {
 
     // We don't expect duplicates, but they're fine
     List<WebDriverInfo> infos =
@@ -68,7 +71,7 @@ public class AutoConfigureNode {
 
                   RemoteWebDriver driver = new RemoteWebDriver(service.getUrl(), c);
 
-                  return new SessionSpy(service, driver);
+                  return new SessionSpy(httpClientFactory, service, driver);
                 } catch (IOException | URISyntaxException e) {
                   throw new RuntimeException(e);
                 }
@@ -84,9 +87,12 @@ public class AutoConfigureNode {
     private final DriverService service;
     private final String stop;
 
-    public SessionSpy(DriverService service, RemoteWebDriver driver) throws URISyntaxException {
+    public SessionSpy(
+        HttpClient.Factory httpClientFactory,
+        DriverService service,
+        RemoteWebDriver driver) throws URISyntaxException {
       super(driver.getSessionId(), service.getUrl().toURI(), driver.getCapabilities());
-      handler = new ReverseProxyHandler(service.getUrl());
+      handler = new ReverseProxyHandler(httpClientFactory.createClient(service.getUrl()));
       this.service = service;
 
       stop = "/session/" + driver.getSessionId();
