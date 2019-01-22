@@ -21,6 +21,7 @@ except NameError:  # Python 3.x
 
 import shutil
 import sys
+import warnings
 from contextlib import contextmanager
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -35,6 +36,8 @@ from .service import Service
 from .webelement import FirefoxWebElement
 
 
+DEFAULT_SERVICE_LOG_PATH = None
+
 class WebDriver(RemoteWebDriver):
 
     CONTEXT_CHROME = "chrome"
@@ -46,7 +49,7 @@ class WebDriver(RemoteWebDriver):
                  timeout=30, capabilities=None, proxy=None,
                  executable_path="geckodriver", options=None,
                  service_log_path="geckodriver.log", firefox_options=None,
-                 service_args=None, desired_capabilities=None, log_path=None,
+                 service_args=None, service=None, desired_capabilities=None, log_path=None,
                  keep_alive=True):
         """Starts a new local session of Firefox.
 
@@ -98,9 +101,27 @@ class WebDriver(RemoteWebDriver):
         :param keep_alive: Whether to configure remote_connection.RemoteConnection to use
              HTTP keep-alive.
         """
+
+        if executable_path != 'geckodriver':
+            warnings.warn('executable_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if capabilities is not None:
+            warnings.warn('capabilities has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if firefox_binary is not None:
+            warnings.warn('firefox_binary has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
         self.binary = None
+        if firefox_profile is not None:
+            warnings.warn('firefox_profile has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
         self.profile = None
-        self.service = None
+
+        if log_path != DEFAULT_SERVICE_LOG_PATH:
+            warnings.warn('log_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+
+        self.service = service
 
         # If desired capabilities is set, alias it to capabilities.
         # If both are set ignore desired capabilities.
@@ -138,10 +159,11 @@ class WebDriver(RemoteWebDriver):
             options.profile = firefox_profile
 
 
-        self.service = Service(
-            executable_path,
-            service_args=service_args,
-            log_path=service_log_path)
+        if self.service is None:
+            self.service = Service(
+                executable_path,
+                service_args=service_args,
+                log_path=service_log_path)
         self.service.start()
 
         capabilities.update(options.to_capabilities())
