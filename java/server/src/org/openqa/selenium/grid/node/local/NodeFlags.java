@@ -42,7 +42,7 @@ public class NodeFlags {
   @ConfigValue(section = "distributor", name = "hostname")
   private String distributorServerHost;
 
-  @Parameter(names = {"--sessions", "-s"}, description = "Address of the distributor.")
+  @Parameter(names = {"--sessions", "-s"}, description = "Address of the session map server.")
   @ConfigValue(section = "sessions", name = "host")
   private URI sessionServer;
 
