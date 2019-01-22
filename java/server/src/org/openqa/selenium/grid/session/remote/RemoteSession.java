@@ -176,7 +176,10 @@ public abstract class RemoteSession implements ActiveSession {
         return activeSession;
       } catch (IOException | IllegalStateException | NullPointerException e) {
         log.log(Level.WARNING, e.getMessage(), e);
-        return Optional.empty();
+        // Rethrow wrapped in IllegalStateException, which is a subclass of RuntimeException, which
+        // is caught by the callsite in ServicedSession. Without this, there's no call to
+        // service.stop()
+        throw new IllegalStateException(e);
       }
     }
 
