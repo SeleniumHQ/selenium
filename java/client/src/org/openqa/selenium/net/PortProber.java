@@ -67,20 +67,24 @@ public class PortProber {
   }
 
   /**
-   * Returns a port that is within a probable free range. <p/> Based on the ports in
-   * http://en.wikipedia.org/wiki/Ephemeral_ports, this method stays away from all well-known
-   * ephemeral port ranges, since they can arbitrarily race with the operating system in
-   * allocations. Due to the port-greedy nature of selenium this happens fairly frequently.
-   * Staying within the known safe range increases the probability tests will run green quite
-   * significantly.
+   * Returns a random port within the systems ephemeral port range <p/>
+   * See https://en.wikipedia.org/wiki/Ephemeral_ports for more information. <p/>
+   * If the system provides a too short range (mostly on old windows systems)
+   * the port range suggested from Internet Assigned Numbers Authority will be used.
    *
    * @return a random port number
    */
   private static int createAcceptablePort() {
     synchronized (random) {
-      final int FIRST_PORT = Math.max(START_OF_USER_PORTS, ephemeralRangeDetector.getLowestEphemeralPort());
-      final int LAST_PORT = Math.min(HIGHEST_PORT, ephemeralRangeDetector.getHighestEphemeralPort());
-      
+      int FIRST_PORT = Math.max(START_OF_USER_PORTS, ephemeralRangeDetector.getLowestEphemeralPort());
+      int LAST_PORT = Math.min(HIGHEST_PORT, ephemeralRangeDetector.getHighestEphemeralPort());
+
+      if (LAST_PORT - FIRST_PORT < 5000) {
+        EphemeralPortRangeDetector ianaRange = new FixedIANAPortRange();
+        FIRST_PORT = ianaRange.getLowestEphemeralPort();
+        LAST_PORT = ianaRange.getHighestEphemeralPort();
+      }
+
       if (FIRST_PORT == LAST_PORT) {
         return FIRST_PORT;
       }
