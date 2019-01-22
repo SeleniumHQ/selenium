@@ -82,7 +82,7 @@ public abstract class Node3Proxy implements Predicate<HttpRequest>, CommandHandl
 
     routes = Routes.combine(
         post("/grid/register").using(ForwardAddNode.class),
-        post("/session").using(ForwardCreateSession.class),
+        post("/se/grid/node/session").using(ForwardCreateSession.class),
         get("/status").using(NodeStatusHandler.class),
         get("/grid/api/hub").using(HubConfigurationHandler.class),
         get("/grid/api/proxy").using(HubRegistrationCheckHandler.class)

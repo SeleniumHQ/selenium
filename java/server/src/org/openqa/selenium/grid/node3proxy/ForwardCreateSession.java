@@ -36,24 +36,19 @@ import java.util.Objects;
 
 class ForwardCreateSession implements CommandHandler {
 
-  private final Distributor distributor;
+  private final Node3Proxy proxy;
   private final Json json;
 
-  public ForwardCreateSession(Distributor distributor, Json json) {
-    this.distributor = Objects.requireNonNull(distributor);
+  public ForwardCreateSession(Node3Proxy proxy, Json json) {
+    this.proxy = Objects.requireNonNull(proxy);
     this.json = Objects.requireNonNull(json);
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    // convert new session request from v3 to v4
-    // send to the distributor
-    // convert response from v4 to v3
-    // return it to the node
     try (Reader reader = new StringReader(req.getContentString());
          NewSessionPayload payload = NewSessionPayload.create(reader)) {
-      Session session = distributor.newSession(payload);
-
+      Session session = proxy.newSession(payload);
       resp.setContent(json.toJson(ImmutableMap.of("value", session)).getBytes(UTF_8));
     }
   }

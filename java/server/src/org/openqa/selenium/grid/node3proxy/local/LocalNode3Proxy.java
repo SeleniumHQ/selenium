@@ -74,6 +74,11 @@ public class LocalNode3Proxy extends Node3Proxy {
       throw new SessionNotCreatedException("No capabilities found");
     }
 
+    // convert new session request from v4 to v3
+    // send to the node
+    // convert response from v3 to v4
+    // return it to the distributor
+
     Capabilities caps = allCaps.next();
     Optional<Supplier<Session>> selected;
 //    Lock writeLock = this.lock.writeLock();
