@@ -598,21 +598,7 @@ int InputManager::KeyUp(BrowserHandle browser_wrapper,
 
 bool InputManager::IsSingleKey(std::wstring* input) {
   bool is_single_key = true;
-  if (FALSE == ::IsNormalizedString(NormalizationC, input->c_str(), -1)) {
-    int required = ::NormalizeString(NormalizationC,
-                                     input->c_str(),
-                                     -1,
-                                     NULL,
-                                     0);
-    std::vector<wchar_t> buffer(required);
-    ::NormalizeString(NormalizationC,
-                      input->c_str(),
-                      -1,
-                      &buffer[0],
-                      static_cast<int>(buffer.size()));
-    *input = &buffer[0];
-  }
-
+  StringUtilities::ComposeUnicodeString(input);
   if (input->size() > 1) {
     WORD combining_bitmask = C3_NONSPACING | C3_DIACRITIC | C3_VOWELMARK;
     std::vector<WORD> char_types(input->size());

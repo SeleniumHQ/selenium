@@ -237,4 +237,30 @@ std::wstring StringUtilities::CreateGuid() {
   return returned_guid;
 }
 
+void StringUtilities::ComposeUnicodeString(std::wstring* input) {
+  StringUtilities::NormalizeUnicodeString(NormalizationC, input);
+}
+
+void StringUtilities::DecomposeUnicodeString(std::wstring* input) {
+  StringUtilities::NormalizeUnicodeString(NormalizationD, input);
+}
+
+void StringUtilities::NormalizeUnicodeString(NORM_FORM normalization_form,
+                                             std::wstring* input) {
+  if (FALSE == ::IsNormalizedString(normalization_form, input->c_str(), -1)) {
+    int required = ::NormalizeString(normalization_form,
+                                     input->c_str(),
+                                     -1,
+                                     NULL,
+                                     0);
+    std::vector<wchar_t> buffer(required);
+    ::NormalizeString(normalization_form,
+                      input->c_str(),
+                      -1,
+                      &buffer[0],
+                      static_cast<int>(buffer.size()));
+    *input = &buffer[0];
+  }
+}
+
 } // namespace webdriver
