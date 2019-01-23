@@ -1270,9 +1270,12 @@ LocationInfo Element::CalculateClickPoint(const LocationInfo location, const boo
 
   long corrected_width = location.width;
   long corrected_height = location.height;
+  long corrected_x = location.x;
+  long corrected_y = location.y;
 
   LocationInfo clickable_viewport = {};
-  bool result = this->GetClickableViewPortLocation(document_contains_frames, &clickable_viewport);
+  bool result = this->GetClickableViewPortLocation(document_contains_frames,
+                                                   &clickable_viewport);
   if (result) {
     RECT element_rect;
     element_rect.left = location.x;
@@ -1293,12 +1296,21 @@ LocationInfo Element::CalculateClickPoint(const LocationInfo location, const boo
     if (is_intersecting) {
       corrected_width = intersect_rect.right - intersect_rect.left;
       corrected_height = intersect_rect.bottom - intersect_rect.top;
+      // If the x or y coordinate is greater than or equal to zero, the
+      // initial location will already be correct, and not need to be
+      // adjusted.
+      if (location.x < 0) {
+        corrected_x = 0;
+      }
+      if (location.y < 0) {
+        corrected_y = 0;
+      }
     }
   }
 
   LocationInfo click_location = {};  
-  click_location.x = location.x + static_cast<long>(floor(corrected_width / 2.0));
-  click_location.y = location.y + static_cast<long>(floor(corrected_height / 2.0));
+  click_location.x = corrected_x + static_cast<long>(floor(corrected_width / 2.0));
+  click_location.y = corrected_y + static_cast<long>(floor(corrected_height / 2.0));
   return click_location;
 }
 
