@@ -41,17 +41,25 @@ void SetTimeoutsCommandHandler::ExecuteInternal(
     if (timeout_type != IMPLICIT_WAIT_TIMEOUT_NAME &&
         timeout_type != SCRIPT_TIMEOUT_NAME &&
         timeout_type != PAGE_LOAD_TIMEOUT_NAME) {
-      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Invalid timeout type specified: " + timeout_type);
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                 "Invalid timeout type specified: " + timeout_type);
+      return;
+    }
+    if (timeout_type == SCRIPT_TIMEOUT_NAME && timeout_value.isNull()) {
+      // Special case for the script timeout, which is nullable.
+      mutable_executor.set_async_script_timeout(-1);
       return;
     }
     if (!timeout_value.isNumeric() ||
         !timeout_value.isIntegral()) {
-      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Timeout value for timeout type " + timeout_type + " must be an integer");
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                 "Timeout value for timeout type " + timeout_type + " must be an integer");
       return;
     }
     timeout = timeout_value.asInt64();
     if (timeout < 0 || timeout > MAX_SAFE_INTEGER) {
-      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Timeout value for timeout type " + timeout_type + " must be an integer between 0 and 2^53 - 1");
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                 "Timeout value for timeout type " + timeout_type + " must be an integer between 0 and 2^53 - 1");
       return;
     }
     if (timeout_type == IMPLICIT_WAIT_TIMEOUT_NAME) {

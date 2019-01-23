@@ -356,7 +356,11 @@ void NewSessionCommandHandler::SetTimeoutSettings(const IECommandExecutor& execu
     mutable_executor.set_page_load_timeout(capabilities[PAGE_LOAD_TIMEOUT_NAME].asUInt64());
   }
   if (capabilities.isMember(SCRIPT_TIMEOUT_NAME)) {
-    mutable_executor.set_async_script_timeout(capabilities[SCRIPT_TIMEOUT_NAME].asUInt64());
+    if (capabilities[SCRIPT_TIMEOUT_NAME].isNull()) {
+      mutable_executor.set_async_script_timeout(-1);
+    } else {
+      mutable_executor.set_async_script_timeout(capabilities[SCRIPT_TIMEOUT_NAME].asInt64());
+    }
   }
 }
 
@@ -490,7 +494,12 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   Json::Value timeouts;
   timeouts[IMPLICIT_WAIT_TIMEOUT_NAME] = executor.implicit_wait_timeout();
   timeouts[PAGE_LOAD_TIMEOUT_NAME] = executor.page_load_timeout();
-  timeouts[SCRIPT_TIMEOUT_NAME] = executor.async_script_timeout();
+  long long script_timeout = executor.async_script_timeout();
+  if (script_timeout < 0) {
+    timeouts[SCRIPT_TIMEOUT_NAME] = Json::Value::null;
+  } else {
+    timeouts[SCRIPT_TIMEOUT_NAME] = script_timeout;
+  }
   capabilities[TIMEOUTS_CAPABILITY] = timeouts;
 
   Json::Value ie_options;
@@ -783,27 +792,30 @@ bool NewSessionCommandHandler::ValidateCapabilities(
           }
           std::string timeout_error = "";
           Json::Value timeout_value = timeouts[timeout_name];
-          if (!timeout_value.isNumeric() || !timeout_value.isIntegral()) {
-            *error_message = "Invalid capabilities in " +
-                             capability_set_name + ": " +
-                             "timeout " + timeout_name +
-                             "must be an integer";
-            return false;
-          }
-          if (!timeout_value.isInt64()) {
-            *error_message = "Invalid capabilities in " +
-                             capability_set_name + ": " +
-                             "timeout " + timeout_name +
-                             "must be an integer between 0 and 2^53 - 1";
-            return false;
-          }
-          long long timeout = timeout_value.asInt64();
-          if (timeout < 0 || timeout > MAX_SAFE_INTEGER) {
-            *error_message = "Invalid capabilities in " +
-                             capability_set_name + ": " +
-                             "timeout " + timeout_name +
-                             "must be an integer between 0 and 2^53 - 1";
-            return false;
+          // Special case: script timeout may be null.
+          if (timeout_name != SCRIPT_TIMEOUT_NAME || !timeout_value.isNull()) {
+            if (!timeout_value.isNumeric() || !timeout_value.isIntegral()) {
+              *error_message = "Invalid capabilities in " +
+                               capability_set_name + ": " +
+                               "timeout " + timeout_name +
+                               "must be an integer";
+              return false;
+            }
+            if (!timeout_value.isInt64()) {
+              *error_message = "Invalid capabilities in " +
+                               capability_set_name + ": " +
+                               "timeout " + timeout_name +
+                               "must be an integer between 0 and 2^53 - 1";
+              return false;
+            }
+            long long timeout = timeout_value.asInt64();
+            if (timeout < 0 || timeout > MAX_SAFE_INTEGER) {
+              *error_message = "Invalid capabilities in " +
+                               capability_set_name + ": " +
+                               "timeout " + timeout_name +
+                               "must be an integer between 0 and 2^53 - 1";
+              return false;
+            }
           }
         }
       }

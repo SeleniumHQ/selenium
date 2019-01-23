@@ -34,7 +34,11 @@ void GetTimeoutsCommandHandler::ExecuteInternal(
     Response* response) {
   Json::Value response_value;
   response_value[IMPLICIT_WAIT_TIMEOUT_NAME] = executor.implicit_wait_timeout();
-  response_value[SCRIPT_TIMEOUT_NAME] = executor.async_script_timeout();
+  if (executor.async_script_timeout() < 0) {
+    response_value[SCRIPT_TIMEOUT_NAME] = Json::Value::null;
+  } else {
+    response_value[SCRIPT_TIMEOUT_NAME] = executor.async_script_timeout();
+  }
   response_value[PAGE_LOAD_TIMEOUT_NAME] = executor.page_load_timeout();
   response->SetSuccessResponse(response_value);
 }

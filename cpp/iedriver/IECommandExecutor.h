@@ -142,8 +142,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
     this->implicit_wait_timeout_ = timeout; 
   }
 
-  unsigned long long  async_script_timeout(void) const { return this->async_script_timeout_;  }
-  void set_async_script_timeout(const unsigned long long timeout) {
+  long long  async_script_timeout(void) const { return this->async_script_timeout_;  }
+  void set_async_script_timeout(const long long timeout) {
     this->async_script_timeout_ = timeout;
   }
 
