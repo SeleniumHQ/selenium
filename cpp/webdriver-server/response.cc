@@ -190,6 +190,8 @@ std::string Response::ConvertErrorCode(const int error_code) {
     return ERROR_MOVE_TARGET_OUT_OF_BOUNDS;
   } else if (error_code == EINVALIDARGUMENT) {
     return ERROR_INVALID_ARGUMENT;
+  } else if (error_code == ENOSUCHELEMENT) {
+    return ERROR_NO_SUCH_ELEMENT;
   }
 
   return "";
