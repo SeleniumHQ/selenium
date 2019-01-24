@@ -64,6 +64,8 @@ class DocumentHost {
   virtual bool SetFullScreen(bool is_full_screen) = 0;
   void Restore(void);
 
+  virtual IWebBrowser2* browser(void) = 0;
+
   std::string GetCurrentUrl(void);
   std::string GetPageSource(void);
 

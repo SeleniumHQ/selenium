@@ -9,6 +9,55 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.5.1
+==========
+ * Implemented create new window commmand. The W3C WebDriver
+   Specification recently added the ability to create a new top-level
+   browsing context, or what appears to the user to be a new tab or
+   window. This change implements that command. Though the command
+   payload contains a hint argument as to what type of new top-level
+   browsing context the user desires (tab or window), the driver
+   implementation is free to ignore this type hint if it does not
+   support the type being requested. Since the IE driver has never
+   supported, and still does not support, creation of new top-level
+   browsing contexts using a new tab, in accordance with the spec, the
+   driver will create the new context in a new window, even if a new
+   tab is requested. Please note this is not a bug; it is as designed,
+   and is still fully compliant with the specification with this
+   behavior.
+ * Fixed edge case for clicking element. In the case of a fixed element
+   where the top-left corner of the element is outside the view port,
+   the click point calculation was not taking the offset of the top-
+   left when looking for the in-view center of the element. This change
+   fixes that issue.
+ * Updatws Unicode character processing for combining characters. In a
+   previous revision, the IE driver was modified to normalize Unicode
+   strings that used combining characters to compose a single glyph when
+   sending keystrokes. This commit implements the reverse of that
+   operation when reading text data, decomposing the glyph into its
+   combining characters if required. This is a potential destablizing
+   change for text sequences that use combining characters, and care
+   should be taken by users to understand the potential differences if
+   handling text using such character combinations causes unexpected
+   results.
+ * Corrected error statuses returned for switching frames. The IE
+   driver now returns the correct status as specified by the W3C
+   WebDriver Specification for error conditions encountered when
+   attempting to switch frames.
+ * Modified to allow null value for script timeout. The W3C WebDriver
+   Specification has contradictory language regarding the script
+   timeout. On the one hand, it specifies that the value of the script
+   timeout can be `null`, indicating an indefinite timeout. On the
+   other hand, it specifies that when setting or getting timeouts, the
+   value of any timeout must be an integer between 0 and 2^53 - 1.
+   Since geckodriver has made the assumption that the former condition
+   is the correct interpretation, and the maintainers of geckodriver
+   have added a test to the W3C Web Platform Tests for WebDriver that
+   expects this interpretation, the IE driver is being modified to
+   follow that decision. It is the opinion of the developers of the IE
+   driver that this is the incorrect interpretation, but there is no
+   recourse to have the geckodriver maintainers revisit their decision.
+
 v3.141.5.0
 ==========
  * Added logging of JavaScript errors when executing scripts.

@@ -747,6 +747,7 @@ void Server::PopulateCommandRepository() {
   this->AddCommand("/session/:sessionid/window", "POST",  webdriver::CommandType::SwitchToWindow);
   this->AddCommand("/session/:sessionid/window", "DELETE",  webdriver::CommandType::CloseWindow);
   this->AddCommand("/session/:sessionid/window/handles", "GET",  webdriver::CommandType::GetWindowHandles);
+  this->AddCommand("/session/:sessionid/window/new", "POST",  webdriver::CommandType::NewWindow);
   this->AddCommand("/session/:sessionid/frame", "POST",  webdriver::CommandType::SwitchToFrame);
   this->AddCommand("/session/:sessionid/frame/parent", "POST",  webdriver::CommandType::SwitchToParentFrame);
   this->AddCommand("/session/:sessionid/window/rect", "GET", webdriver::CommandType::GetWindowRect);

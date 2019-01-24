@@ -288,30 +288,33 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
                                               LPARAM lParam,
                                               BOOL& bHandled) {
   LOG(TRACE) << "Entering IECommandExecutor::OnBrowserNewWindow";
-
-  IWebBrowser2* browser = this->factory_->CreateBrowser();
-  if (browser == NULL) {
-    // No browser was created, so we have to bail early.
-    // Check the log for the HRESULT why.
-    return 1;
-  }
-  LOG(DEBUG) << "New browser window was opened.";
-  BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
-  // It is acceptable to set the proxy settings here, as the newly-created
-  // browser window has not yet been navigated to any page. Only after the
-  // interface has been marshaled back across the thread boundary to the
-  // NewWindow3 event handler will the navigation begin, which ensures that
-  // even the initial navigation will get captured by the proxy, if one is
-  // set. Likewise, the cookie manager needs to have its window handle
-  // properly set to a non-NULL value so that windows messages are routed
-  // to the correct window.
-  // N.B. DocumentHost::GetBrowserWindowHandle returns the tab window handle
-  // for IE 7 and above, and the top-level window for IE6. This is the window
-  // required for setting the proxy settings.
-  HWND new_window_handle = new_window_wrapper->GetBrowserWindowHandle();
-  this->proxy_manager_->SetProxySettings(new_window_handle);
-  new_window_wrapper->cookie_manager()->Initialize(new_window_handle);
-  this->AddManagedBrowser(new_window_wrapper);
+  std::string new_browser_id = this->OpenNewBrowserWindow();
+  BrowserHandle new_window_wrapper;
+  this->GetManagedBrowser(new_browser_id, &new_window_wrapper);
+  IWebBrowser2* browser = new_window_wrapper->browser();
+  //IWebBrowser2* browser = this->factory_->CreateBrowser();
+  //if (browser == NULL) {
+  //  // No browser was created, so we have to bail early.
+  //  // Check the log for the HRESULT why.
+  //  return 1;
+  //}
+  //LOG(DEBUG) << "New browser window was opened.";
+  //BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
+  //// It is acceptable to set the proxy settings here, as the newly-created
+  //// browser window has not yet been navigated to any page. Only after the
+  //// interface has been marshaled back across the thread boundary to the
+  //// NewWindow3 event handler will the navigation begin, which ensures that
+  //// even the initial navigation will get captured by the proxy, if one is
+  //// set. Likewise, the cookie manager needs to have its window handle
+  //// properly set to a non-NULL value so that windows messages are routed
+  //// to the correct window.
+  //// N.B. DocumentHost::GetBrowserWindowHandle returns the tab window handle
+  //// for IE 7 and above, and the top-level window for IE6. This is the window
+  //// required for setting the proxy settings.
+  //HWND new_window_handle = new_window_wrapper->GetBrowserWindowHandle();
+  //this->proxy_manager_->SetProxySettings(new_window_handle);
+  //new_window_wrapper->cookie_manager()->Initialize(new_window_handle);
+  //this->AddManagedBrowser(new_window_wrapper);
   LOG(DEBUG) << "Attempting to marshal interface pointer to requesting thread.";
   LPSTREAM* stream = reinterpret_cast<LPSTREAM*>(lParam);
   HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2,
@@ -1053,6 +1056,33 @@ void IECommandExecutor::AddManagedBrowser(BrowserHandle browser_wrapper) {
     LOG(TRACE) << "Setting current browser id to " << browser_wrapper->browser_id();
     this->current_browser_id_ = browser_wrapper->browser_id();
   }
+}
+
+std::string IECommandExecutor::OpenNewBrowserWindow() {
+  CComPtr<IWebBrowser2> browser = this->factory_->CreateBrowser();
+  if (browser == NULL) {
+    // No browser was created, so we have to bail early.
+    // Check the log for the HRESULT why.
+    return "";
+  }
+  LOG(DEBUG) << "New browser window was opened.";
+  BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
+  // It is acceptable to set the proxy settings here, as the newly-created
+  // browser window has not yet been navigated to any page. Only after the
+  // interface has been marshaled back across the thread boundary to the
+  // NewWindow3 event handler will the navigation begin, which ensures that
+  // even the initial navigation will get captured by the proxy, if one is
+  // set. Likewise, the cookie manager needs to have its window handle
+  // properly set to a non-NULL value so that windows messages are routed
+  // to the correct window.
+  // N.B. DocumentHost::GetBrowserWindowHandle returns the tab window handle
+  // for IE 7 and above, and the top-level window for IE6. This is the window
+  // required for setting the proxy settings.
+  HWND new_window_handle = new_window_wrapper->GetBrowserWindowHandle();
+  this->proxy_manager_->SetProxySettings(new_window_handle);
+  new_window_wrapper->cookie_manager()->Initialize(new_window_handle);
+  this->AddManagedBrowser(new_window_wrapper);
+  return new_window_wrapper->browser_id();
 }
 
 int IECommandExecutor::CreateNewBrowser(std::string* error_message) {

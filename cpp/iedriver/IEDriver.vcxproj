@@ -181,6 +181,7 @@
     <ClCompile Include="CommandHandlers\ClearElementCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\ClickElementCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\CloseWindowCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\CreateNewWindowCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\DeleteAllCookiesCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\DeleteCookieCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\DismissAlertCommandHandler.cpp" />
@@ -281,6 +282,7 @@
     <ClInclude Include="CommandHandlers\ClearElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\ClickElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\CloseWindowCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\CreateNewWindowCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DeleteAllCookiesCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DeleteCookieCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DismissAlertCommandHandler.h" />
