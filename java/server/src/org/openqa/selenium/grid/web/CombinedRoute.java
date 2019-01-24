@@ -25,9 +25,11 @@ import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class CombinedRoute extends Route<CombinedRoute> {
 
+  public static final Logger LOG = Logger.getLogger(Route.class.getName());
   private final List<Routes> factories;
 
   CombinedRoute(List<Routes> factories) {
@@ -48,6 +50,7 @@ public class CombinedRoute extends Route<CombinedRoute> {
           return handler.get();
         }
       } catch (IllegalArgumentException | UnableToInstaniateInstanceException e) {
+        LOG.warning(e.getMessage());
         // ignore and carry on
       }
     }
