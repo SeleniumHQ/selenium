@@ -424,6 +424,21 @@ namespace OpenQA.Selenium
             Assert.That(handles, Contains.Item(handle1), "Valid handle not in handle list");
         }
 
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Driver does not yet support new window command")]
+        [IgnoreBrowser(Browser.Edge, "Driver does not yet support new window command")]
+        public void ShouldBeAbleToCreateANewWindow()
+        {
+            driver.Url = xhtmlTestPage;
+            string originalHandle = driver.CurrentWindowHandle;
+            driver.SwitchTo().NewWindow(WindowType.Tab);
+            WaitFor(WindowCountToBe(2), "Window count was not 2");
+            string newWindowHandle = driver.CurrentWindowHandle;
+            driver.Close();
+            driver.SwitchTo().Window(originalHandle);
+            Assert.That(newWindowHandle, Is.Not.EqualTo(originalHandle));
+        }
+
         private void SleepBecauseWindowsTakeTimeToOpen()
         {
             try
