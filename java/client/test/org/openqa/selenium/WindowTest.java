@@ -119,7 +119,7 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
-    changeSizeTo(new Dimension(640, 273));
+    changeSizeTo(new Dimension(640, 323));
     enlargeBy(WebDriver.Window::maximize);
   }
 
@@ -132,7 +132,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(640, 274));
+    changeSizeTo(new Dimension(640, 324));
 
     driver.switchTo().frame("fourth");
     enlargeBy(WebDriver.Window::maximize);
@@ -147,7 +147,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(640, 275));
+    changeSizeTo(new Dimension(640, 325));
 
     driver.switchTo().frame("iframe1-name");
     enlargeBy(WebDriver.Window::maximize);
@@ -161,7 +161,7 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
-    changeSizeTo(new Dimension(640, 273));
+    changeSizeTo(new Dimension(640, 323));
     enlargeBy(WebDriver.Window::fullscreen);
   }
 
@@ -175,7 +175,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(640, 274));
+    changeSizeTo(new Dimension(640, 324));
 
     driver.switchTo().frame("fourth");
     enlargeBy(WebDriver.Window::fullscreen);
@@ -191,7 +191,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(640, 275));
+    changeSizeTo(new Dimension(640, 325));
 
     driver.switchTo().frame("iframe1-name");
     enlargeBy(WebDriver.Window::fullscreen);
