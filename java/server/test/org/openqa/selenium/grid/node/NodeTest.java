@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.node;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableSet;
@@ -45,6 +46,7 @@ import org.openqa.selenium.remote.tracing.DistributedTracer;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -299,6 +301,60 @@ public class NodeTest {
     Optional<Session> session = local.newSession(caps);
 
     assertThat(session.isPresent()).isFalse();
+  }
+
+  @Test
+  public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
+    URI sessionUri = new URI("http://cheese:42/peas");
+    Node node = LocalNode.builder(tracer, clientFactory, uri, sessions)
+        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
+        .build();
+    Optional<Session> session = node.newSession(caps);
+    assertThat(session.isPresent()).isTrue();
+    assertThat(session.get().getUri()).isEqualTo(uri);
+  }
+
+  @Test
+  public void sendingAMessageToASessionGetsItRoutedToTheCorrectActualHandler()
+      throws URISyntaxException {
+    URI sessionUri = new URI("http://cheese:42/peas");
+
+    AtomicBoolean called = new AtomicBoolean(false);
+    AtomicReference<URL> clientUrl = new AtomicReference<>();
+
+    HttpClient.Factory factory = new HttpClient.Factory() {
+      @Override
+      public HttpClient.Builder builder() {
+        return new HttpClient.Builder() {
+          @Override
+          public HttpClient createClient(URL url) {
+            clientUrl.set(url);
+            return request -> {
+              called.set(true);
+              return new HttpResponse();
+            };
+          }
+        };
+      }
+
+      @Override
+      public void cleanupIdleClients() {
+        // no-op
+      }
+    };
+
+    Node node = LocalNode.builder(tracer, factory, uri, sessions)
+        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
+        .build();
+
+    Session session = node.newSession(caps).orElseThrow(() -> new AssertionError("No session"));
+
+    node.executeWebDriverCommand(
+        new HttpRequest(GET, String.format("/session/%s/url", session.getId())),
+        new HttpResponse());
+
+    assertThat(clientUrl.get().toURI()).isEqualTo(sessionUri);
+    assertThat(called.get()).isTrue();
   }
 
   private static class MyClock extends Clock {
