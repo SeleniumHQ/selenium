@@ -14,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from selenium.webdriver.common import utils
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
 from .options import Options
