@@ -102,9 +102,12 @@ class HttpClient {
     let data;
 
     let headers = {};
-    httpRequest.headers.forEach(function(value, name) {
-      headers[name] = value;
-    });
+
+    if (httpRequest.headers) {
+      httpRequest.headers.forEach(function(value, name) {
+        headers[name] = value;
+      });
+    }
 
     headers['User-Agent'] = USER_AGENT;
     headers['Content-Length'] = 0;
