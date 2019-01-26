@@ -16,3 +16,8 @@ fi
 if [[ ! -z "$BUCK" ]]; then
   ./buckw $BUCK
 fi
+
+if [[ ! -z "$NPM" ]]; then
+  ./go node:atoms
+  cd javascript/node/selenium-webdriver; npm run $NPM
+fi
