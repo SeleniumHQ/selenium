@@ -290,7 +290,7 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Sets the amount of time to wait for a page load to complete before throwing an error.
-     * The timeout value specified should be a positive value.
+     * The timeout value specified should be a positive number.
      *
      * @param time The timeout value.
      * @param unit The unit of time.
