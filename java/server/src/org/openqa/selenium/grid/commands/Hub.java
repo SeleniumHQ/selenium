@@ -86,10 +86,10 @@ public class Hub implements CliCommand {
       }
 
       Config config = new CompoundConfig(
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(baseFlags),
           new EnvConfig(),
-          new ConcatenatingConfig("selenium", '.', System.getProperties()));
+          new ConcatenatingConfig("selenium", '.', System.getProperties()),
+          new AnnotatedConfig(help),
+          new AnnotatedConfig(baseFlags));
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();

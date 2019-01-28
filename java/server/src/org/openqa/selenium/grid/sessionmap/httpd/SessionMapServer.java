@@ -81,10 +81,10 @@ public class SessionMapServer implements CliCommand {
       }
 
       Config config = new CompoundConfig(
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(serverFlags),
           new EnvConfig(),
-          new ConcatenatingConfig("sessions", '.', System.getProperties()));
+          new ConcatenatingConfig("sessions", '.', System.getProperties()),
+          new AnnotatedConfig(help),
+          new AnnotatedConfig(serverFlags));
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();

@@ -91,11 +91,11 @@ public class RouterServer implements CliCommand {
       }
 
       Config config = new CompoundConfig(
+          new EnvConfig(),
+          new ConcatenatingConfig("router", '.', System.getProperties()),
           new AnnotatedConfig(help),
           new AnnotatedConfig(serverFlags),
-          new AnnotatedConfig(nodeFlags),
-          new EnvConfig(),
-          new ConcatenatingConfig("router", '.', System.getProperties()));
+          new AnnotatedConfig(nodeFlags));
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
