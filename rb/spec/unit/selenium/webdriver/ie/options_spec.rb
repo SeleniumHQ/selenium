@@ -20,7 +20,7 @@ require File.expand_path('../../spec_helper', __FILE__)
 module Selenium
   module WebDriver
     module IE
-      describe Options do
+      fdescribe Options do
 
         describe '#initialize' do
           it 'sets passed args' do
@@ -79,8 +79,8 @@ module Selenium
           end
 
           it 'sets passed native_events' do
-            opt = Options.new(native_events: true)
-            expect(opt.native_events).to eq(true)
+            opt = Options.new(native_events: false)
+            expect(opt.native_events).to eq(false)
           end
 
           it 'sets passed persistent_hover' do
@@ -150,7 +150,7 @@ module Selenium
             expect(json['ignoreProtectedModeSettings']).to eq(false)
             expect(json['ignoreZoomSetting']).to eq(false)
             expect(json['initialBrowserUrl']).to eq('http://google.com')
-            expect(json['nativeEvents']).to eq(true)
+            expect(json['nativeEvents']).to eq(false)
             expect(json['enablePersistentHover']).to eq(false)
             expect(json['requireWindowFocus']).to eq(true)
             expect(json['ie.usePerProcessProxy']).to eq(true)
