@@ -30,6 +30,8 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -42,6 +44,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.zeromq.ZContext;
 
 import java.io.IOException;
 import java.net.URI;
@@ -59,6 +62,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class NodeTest {
 
   private DistributedTracer tracer;
+  private EventBus bus;
   private HttpClient.Factory clientFactory;
   private LocalNode local;
   private Node node;
@@ -70,13 +74,15 @@ public class NodeTest {
   public void setUp() throws URISyntaxException {
     tracer = DistributedTracer.builder().build();
 
+    bus = ZeroMqEventBus.create(new ZContext(), "inproc://node-test", true);
+
     clientFactory = HttpClient.Factory.createDefault();
 
     caps = new ImmutableCapabilities("browserName", "cheese");
 
     uri = new URI("http://localhost:1234");
 
-    sessions = new LocalSessionMap(tracer);
+    sessions = new LocalSessionMap(tracer, bus);
 
     class Handler extends Session implements CommandHandler {
 
@@ -90,7 +96,7 @@ public class NodeTest {
       }
     }
 
-    local = LocalNode.builder(tracer, clientFactory, uri, sessions)
+    local = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
         .add(caps, c -> new Handler(c))
         .add(caps, c -> new Handler(c))
         .add(caps, c -> new Handler(c))
@@ -108,7 +114,7 @@ public class NodeTest {
 
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
-    Node local = LocalNode.builder(tracer, clientFactory, uri, sessions).build();
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri, sessions).build();
     HttpClient client = new PassthroughHttpClient<>(local);
     Node node = new RemoteNode(tracer, UUID.randomUUID(), uri, ImmutableSet.of(), client);
 
@@ -126,7 +132,7 @@ public class NodeTest {
 
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
-    Node node = LocalNode.builder(tracer, clientFactory, uri, sessions)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
         .add(caps, (c) -> new Session(new SessionId(UUID.randomUUID()), uri, c))
         .build();
 
@@ -237,7 +243,7 @@ public class NodeTest {
       }
     }
 
-    Node local = LocalNode.builder(tracer, clientFactory, uri, sessions)
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
         .add(caps, c -> new Recording())
         .build();
     Node remote = new RemoteNode(
@@ -275,7 +281,7 @@ public class NodeTest {
     AtomicReference<Instant> now = new AtomicReference<>(Instant.now());
 
     Clock clock = new MyClock(now);
-    Node node = LocalNode.builder(tracer, clientFactory, uri, sessions)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), uri, c))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
@@ -292,7 +298,7 @@ public class NodeTest {
 
   @Test
   public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
-    Node local = LocalNode.builder(tracer, clientFactory, uri, sessions)
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
         .add(caps, c -> {
           throw new SessionNotCreatedException("eeek");
         })
@@ -306,7 +312,7 @@ public class NodeTest {
   @Test
   public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
-    Node node = LocalNode.builder(tracer, clientFactory, uri, sessions)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
         .build();
     Optional<Session> session = node.newSession(caps);
@@ -343,7 +349,7 @@ public class NodeTest {
       }
     };
 
-    Node node = LocalNode.builder(tracer, factory, uri, sessions)
+    Node node = LocalNode.builder(tracer, bus, factory, uri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
         .build();
 

@@ -28,6 +28,8 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -47,6 +49,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.zeromq.ZContext;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -62,6 +65,7 @@ import java.util.function.Predicate;
 public class DistributorTest {
 
   private DistributedTracer tracer;
+  private EventBus bus;
   private HttpClient.Factory clientFactory;
   private Distributor local;
   private Distributor distributor;
@@ -70,8 +74,9 @@ public class DistributorTest {
   @Before
   public void setUp() throws MalformedURLException {
     tracer = DistributedTracer.builder().build();
+    bus = ZeroMqEventBus.create(new ZContext(), "inproc://distributor-test", true);
     clientFactory = HttpClient.Factory.createDefault();
-    local = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
+    local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault());
     distributor = new RemoteDistributor(
         tracer,
         new PassthroughHttpClient.Factory<>(local),
@@ -94,13 +99,14 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalSessionMap sessions = new LocalSessionMap(tracer);
-    LocalNode node = LocalNode.builder(tracer, clientFactory, routableUri, sessions)
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
     Distributor distributor = new LocalDistributor(
         tracer,
+        bus,
         new PassthroughHttpClient.Factory<>(node));
     distributor.add(node);
 
@@ -119,12 +125,15 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalSessionMap sessions = new LocalSessionMap(tracer);
-    LocalNode node = LocalNode.builder(tracer, clientFactory, routableUri, sessions)
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
-    Distributor local = new LocalDistributor(tracer, new PassthroughHttpClient.Factory<>(node));
+    Distributor local = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory<>(node));
     distributor = new RemoteDistributor(
         tracer,
         new PassthroughHttpClient.Factory<>(local),
@@ -144,8 +153,8 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalSessionMap sessions = new LocalSessionMap(tracer);
-    LocalNode node = LocalNode.builder(tracer, clientFactory, routableUri, sessions)
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri, sessions)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
 
@@ -163,7 +172,7 @@ public class DistributorTest {
     // * insertion order
     // * reverse insertion order
     // * sorted with most heavily used first
-    SessionMap sessions = new LocalSessionMap(tracer);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
 
     Node lightest = createNode(sessions, caps, 10, 0);
     Node medium = createNode(sessions, caps, 10, 4);
@@ -175,7 +184,10 @@ public class DistributorTest {
     handler.addHandler(medium);
     handler.addHandler(heavy);
     handler.addHandler(massive);
-    Distributor distributor = new LocalDistributor(tracer, new PassthroughHttpClient.Factory<>(handler))
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory<>(handler))
         .add(heavy)
         .add(medium)
         .add(lightest)
@@ -190,14 +202,17 @@ public class DistributorTest {
 
   @Test
   public void shouldUseLastSessionCreatedTimeAsTieBreaker() {
-    SessionMap sessions = new LocalSessionMap(tracer);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     Node leastRecent = createNode(sessions, caps, 5, 0);
 
     CombinedHandler handler = new CombinedHandler();
     handler.addHandler(sessions);
     handler.addHandler(leastRecent);
 
-    Distributor distributor = new LocalDistributor(tracer, new PassthroughHttpClient.Factory<>(handler))
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory<>(handler))
         .add(leastRecent);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       distributor.newSession(payload);
@@ -242,11 +257,11 @@ public class DistributorTest {
   public void shouldIncludeHostsThatAreUpInHostList() {
     CombinedHandler handler = new CombinedHandler();
 
-    SessionMap sessions = new LocalSessionMap(tracer);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
     URI uri = createUri();
-    Node alwaysDown = LocalNode.builder(tracer, clientFactory, uri, sessions)
+    Node alwaysDown = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
         .add(caps, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(false, "Boo!"))
@@ -254,7 +269,7 @@ public class DistributorTest {
     handler.addHandler(alwaysDown);
 
     UUID expected = UUID.randomUUID();
-    Node alwaysUp = LocalNode.builder(tracer, clientFactory, uri, sessions)
+    Node alwaysUp = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
         .add(caps, caps -> new Session(new SessionId(expected), uri, caps))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(true, "Yay!"))
@@ -263,6 +278,7 @@ public class DistributorTest {
 
     LocalDistributor distributor = new LocalDistributor(
         tracer,
+        bus,
         new PassthroughHttpClient.Factory<>(handler));
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
@@ -281,10 +297,13 @@ public class DistributorTest {
 
   @Test
   public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
-    SessionMap sessions = new LocalSessionMap(tracer);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
 
     CombinedHandler handler = new CombinedHandler();
-    Distributor distributor = new LocalDistributor(tracer, new PassthroughHttpClient.Factory<>(handler));
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory<>(handler));
     handler.addHandler(distributor);
 
     Node node = createNode(sessions, caps, 1, 0);
@@ -312,10 +331,13 @@ public class DistributorTest {
   public void shuldNotStartASessionIfTheCapabilitiesAreNotSupported() {
     CombinedHandler handler = new CombinedHandler();
 
-    LocalSessionMap sessions = new LocalSessionMap(tracer);
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(handler);
 
-    Distributor distributor = new LocalDistributor(tracer, new PassthroughHttpClient.Factory<>(handler));
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory<>(handler));
     handler.addHandler(distributor);
 
     Node node = createNode(sessions, caps, 1, 0);
@@ -333,17 +355,20 @@ public class DistributorTest {
   public void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() {
     CombinedHandler handler = new CombinedHandler();
 
-    SessionMap sessions = new LocalSessionMap(tracer);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    Node node = LocalNode.builder(tracer, clientFactory, createUri(), sessions)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, createUri(), sessions)
         .add(caps, caps -> {
           throw new SessionNotCreatedException("OMG");
         })
         .build();
     handler.addHandler(node);
 
-    Distributor distributor = new LocalDistributor(tracer, new PassthroughHttpClient.Factory<>(handler));
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory<>(handler));
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -359,13 +384,13 @@ public class DistributorTest {
   public void shouldReturnNodesThatWereDownToPoolOfNodesOnceTheyMarkTheirHealthCheckPasses() {
     CombinedHandler handler = new CombinedHandler();
 
-    SessionMap sessions = new LocalSessionMap(tracer);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
     AtomicBoolean isUp = new AtomicBoolean(false);
 
     URI uri = createUri();
-    Node node = LocalNode.builder(tracer, clientFactory, uri, sessions)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
         .add(caps, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
@@ -374,6 +399,7 @@ public class DistributorTest {
 
     LocalDistributor distributor = new LocalDistributor(
         tracer,
+        bus,
         new PassthroughHttpClient.Factory<>(handler));
     handler.addHandler(distributor);
     distributor.add(node);
@@ -407,7 +433,7 @@ public class DistributorTest {
 
   private Node createNode(SessionMap sessions, Capabilities stereotype, int count, int currentLoad) {
     URI uri = createUri();
-    LocalNode.Builder builder = LocalNode.builder(tracer, clientFactory, uri, sessions);
+    LocalNode.Builder builder = LocalNode.builder(tracer, bus, clientFactory, uri, sessions);
     for (int i = 0; i < count; i++) {
       builder.add(stereotype, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps));
     }

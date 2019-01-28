@@ -27,6 +27,7 @@ import org.openqa.selenium.grid.web.HandlerNotFoundException;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -43,9 +44,14 @@ public class Router implements Predicate<HttpRequest>, CommandHandler {
   private final Injector injector;
   private final Routes routes;
 
-  public Router(DistributedTracer tracer, SessionMap sessions, Distributor distributor) {
+  public Router(
+      DistributedTracer tracer,
+      HttpClient.Factory clientFactory,
+      SessionMap sessions,
+      Distributor distributor) {
     injector = Injector.builder()
         .register(tracer)
+        .register(clientFactory)
         .register(sessions)
         .register(distributor)
         .register(new Json())

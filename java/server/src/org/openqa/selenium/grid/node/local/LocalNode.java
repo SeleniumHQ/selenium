@@ -30,6 +30,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.concurrent.Regularly;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
@@ -58,6 +59,7 @@ import java.util.stream.Collectors;
 
 public class LocalNode extends Node {
 
+  private final EventBus bus;
   private final URI externalUri;
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
@@ -67,6 +69,7 @@ public class LocalNode extends Node {
 
   private LocalNode(
       DistributedTracer tracer,
+      EventBus bus,
       URI uri,
       HealthCheck healthCheck,
       int maxSessionCount,
@@ -79,6 +82,7 @@ public class LocalNode extends Node {
         maxSessionCount > 0,
         "Only a positive number of sessions can be run: " + maxSessionCount);
 
+    this.bus = Objects.requireNonNull(bus);
     this.externalUri = Objects.requireNonNull(uri);
     this.healthCheck = Objects.requireNonNull(healthCheck);
     this.maxSessionCount = Math.min(maxSessionCount, factories.size());
@@ -268,15 +272,17 @@ public class LocalNode extends Node {
 
   public static Builder builder(
       DistributedTracer tracer,
+      EventBus bus,
       HttpClient.Factory httpClientFactory,
       URI uri,
       SessionMap sessions) {
-    return new Builder(tracer, httpClientFactory, uri, sessions);
+    return new Builder(tracer, bus, httpClientFactory, uri, sessions);
   }
 
   public static class Builder {
 
     private final DistributedTracer tracer;
+    private final EventBus bus;
     private final HttpClient.Factory httpClientFactory;
     private final URI uri;
     private final SessionMap sessions;
@@ -288,10 +294,12 @@ public class LocalNode extends Node {
 
     public Builder(
         DistributedTracer tracer,
+        EventBus bus,
         HttpClient.Factory httpClientFactory,
         URI uri,
         SessionMap sessions) {
       this.tracer = Objects.requireNonNull(tracer);
+      this.bus = Objects.requireNonNull(bus);
       this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
       this.uri = Objects.requireNonNull(uri);
       this.sessions = Objects.requireNonNull(sessions);
@@ -329,6 +337,7 @@ public class LocalNode extends Node {
 
       return new LocalNode(
           tracer,
+          bus,
           uri,
           check,
           maxCount,

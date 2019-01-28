@@ -2,8 +2,12 @@
 java_test(
     name = "router",
     srcs = glob(["*.java"]),
+    labels = [
+        "small",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
+        "//java/server/src/org/openqa/selenium/events/zeromq:zeromq",
         "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/distributor:distributor",
         "//java/server/src/org/openqa/selenium/grid/distributor/local:local",

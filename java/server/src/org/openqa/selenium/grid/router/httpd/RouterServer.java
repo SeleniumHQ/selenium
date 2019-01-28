@@ -104,8 +104,11 @@ public class RouterServer implements CliCommand {
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
+
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
       SessionMap sessions = new RemoteSessionMap(
-          HttpClient.Factory.createDefault().createClient(sessionMapUrl));
+          clientFactory.createClient(sessionMapUrl));
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
@@ -113,10 +116,10 @@ public class RouterServer implements CliCommand {
       URL distributorUrl = distributorOptions.getDistributorUri().toURL();
       Distributor distributor = new RemoteDistributor(
           tracer,
-          HttpClient.Factory.createDefault(),
+          clientFactory,
           distributorUrl);
 
-      Router router = new Router(tracer, sessions, distributor);
+      Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));

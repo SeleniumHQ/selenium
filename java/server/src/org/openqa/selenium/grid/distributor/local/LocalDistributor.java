@@ -27,6 +27,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.DistributorStatus;
@@ -64,12 +65,17 @@ public class LocalDistributor extends Distributor {
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final Set<Host> hosts = new HashSet<>();
   private final DistributedTracer tracer;
+  private final EventBus bus;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
 
-  public LocalDistributor(DistributedTracer tracer, HttpClient.Factory httpClientFactory) {
+  public LocalDistributor(
+      DistributedTracer tracer,
+      EventBus bus,
+      HttpClient.Factory httpClientFactory) {
     super(tracer, httpClientFactory);
     this.tracer = Objects.requireNonNull(tracer);
+    this.bus = Objects.requireNonNull(bus);
   }
 
   @Override

@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -44,6 +46,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.zeromq.ZContext;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -58,16 +61,19 @@ public class EndToEndTest {
 
   @Test
   public void inMemory() throws URISyntaxException {
-    SessionMap sessions = new LocalSessionMap(tracer);
+    EventBus bus = ZeroMqEventBus.create(new ZContext(), "inproc://end-to-end", true);
+
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+
     clientFactory = HttpClient.Factory.createDefault();
-    Distributor distributor = new LocalDistributor(tracer, clientFactory);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory);
     URI nodeUri = new URI("http://localhost:4444");
-    LocalNode node = LocalNode.builder(tracer, clientFactory, nodeUri, sessions)
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri, sessions)
         .add(driverCaps, createFactory(nodeUri))
         .build();
     distributor.add(node);
 
-    Router router = new Router(tracer, sessions, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, distributor);
 
     Server<?> server = createServer();
     server.addRoute(Routes.matching(router).using(router));
@@ -86,7 +92,15 @@ public class EndToEndTest {
 
   @Test
   public void withServers() throws URISyntaxException {
-    LocalSessionMap localSessions = new LocalSessionMap(tracer);
+    EventBus bus = ZeroMqEventBus.create(
+        new ZContext(),
+        "tcp://localhost:" + PortProber.findFreePort(),
+        true);
+
+    LocalSessionMap localSessions = new LocalSessionMap(tracer, bus);
+
+    clientFactory = HttpClient.Factory.createDefault();
+
     Server<?> sessionServer = createServer();
     sessionServer.addRoute(Routes.matching(localSessions).using(localSessions));
     sessionServer.start();
@@ -95,7 +109,8 @@ public class EndToEndTest {
 
     LocalDistributor localDistributor = new LocalDistributor(
         tracer,
-        HttpClient.Factory.createDefault());
+        bus,
+        clientFactory);
     Server<?> distributorServer = createServer();
     distributorServer.addRoute(Routes.matching(localDistributor).using(localDistributor));
     distributorServer.start();
@@ -107,7 +122,7 @@ public class EndToEndTest {
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, clientFactory, nodeUri, sessions)
+    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri, sessions)
         .add(driverCaps, createFactory(nodeUri))
         .build();
     Server<?> nodeServer = new BaseServer<>(
@@ -118,7 +133,7 @@ public class EndToEndTest {
 
     distributor.add(localNode);
 
-    Router router = new Router(tracer, sessions, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, distributor);
     Server<?> routerServer = createServer();
     routerServer.addRoute(Routes.matching(router).using(router));
     routerServer.start();

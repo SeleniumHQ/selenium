@@ -7,6 +7,7 @@ java_test(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
+        "//java/server/src/org/openqa/selenium/events/zeromq:zeromq",
         "//java/server/src/org/openqa/selenium/grid/node:node",
         "//java/server/src/org/openqa/selenium/grid/node/local:local",
         "//java/server/src/org/openqa/selenium/grid/node/remote:remote",

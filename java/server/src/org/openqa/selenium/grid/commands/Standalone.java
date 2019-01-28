@@ -24,6 +24,7 @@ import com.beust.jcommander.ParameterException;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
@@ -38,6 +39,8 @@ import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.EventBusConfig;
+import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
@@ -70,12 +73,14 @@ public class Standalone implements CliCommand {
   public Executable configure(String... args) {
     HelpFlags help = new HelpFlags();
     BaseServerFlags baseFlags = new BaseServerFlags(4444);
+    EventBusFlags eventFlags = new EventBusFlags(4443);
     NodeFlags nodeFlags = new NodeFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName("standalone")
         .addObject(baseFlags)
         .addObject(help)
+        .addObject(eventFlags)
         .addObject(nodeFlags)
         .build();
 
@@ -96,7 +101,8 @@ public class Standalone implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("selenium", '.', System.getProperties()),
           new AnnotatedConfig(help),
-          new AnnotatedConfig(baseFlags));
+          new AnnotatedConfig(baseFlags),
+          new AnnotatedConfig(eventFlags));
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
@@ -106,11 +112,14 @@ public class Standalone implements CliCommand {
       DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
-      HttpClient.Factory httpClientFactory = HttpClient.Factory.createDefault();
+      EventBusConfig events = new EventBusConfig(config);
+      EventBus bus = events.getEventBus();
 
-      SessionMap sessions = new LocalSessionMap(tracer);
-      Distributor distributor = new LocalDistributor(tracer, httpClientFactory);
-      Router router = new Router(tracer, sessions, distributor);
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
+      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      Distributor distributor = new LocalDistributor(tracer, bus, clientFactory);
+      Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       String hostName;
       try {
@@ -128,9 +137,14 @@ public class Standalone implements CliCommand {
         throw new RuntimeException(e);
       }
 
-      LocalNode.Builder node = LocalNode.builder(tracer, httpClientFactory, localhost, sessions)
+      LocalNode.Builder node = LocalNode.builder(
+          tracer,
+          bus,
+          clientFactory,
+          localhost,
+          sessions)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
-      nodeFlags.configure(httpClientFactory, node);
+      nodeFlags.configure(clientFactory, node);
 
       distributor.add(node.build());
 

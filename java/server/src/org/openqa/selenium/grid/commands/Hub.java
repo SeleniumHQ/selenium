@@ -23,6 +23,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
 import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
@@ -35,6 +36,7 @@ import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -93,12 +95,22 @@ public class Hub implements CliCommand {
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
+
       DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
-      SessionMap sessions = new LocalSessionMap(tracer);
-      Distributor distributor = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
-      Router router = new Router(tracer, sessions, distributor);
+      EventBusConfig events = new EventBusConfig(config);
+      EventBus bus = events.getEventBus();
+
+      SessionMap sessions = new LocalSessionMap(tracer, bus);
+
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
+      Distributor distributor = new LocalDistributor(
+          tracer,
+          bus,
+          clientFactory);
+      Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       Server<?> server = new BaseServer<>(
           new BaseServerOptions(config));
