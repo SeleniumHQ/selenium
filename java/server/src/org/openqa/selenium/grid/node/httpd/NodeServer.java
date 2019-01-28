@@ -133,7 +133,7 @@ public class NodeServer implements CliCommand {
           httpClientFactory,
           serverOptions.getExternalUri(),
           sessions);
-      nodeFlags.configure(httpClientFactory, builder);
+      nodeFlags.configure(config, httpClientFactory, builder);
       LocalNode node = builder.build();
 
       DistributorOptions distributorOptions = new DistributorOptions(config);

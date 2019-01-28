@@ -145,7 +145,7 @@ public class Standalone implements CliCommand {
           localhost,
           sessions)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
-      nodeFlags.configure(clientFactory, node);
+      nodeFlags.configure(config, clientFactory, node);
 
       distributor.add(node.build());
 

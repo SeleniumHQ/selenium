@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.node.local;
 
 import com.beust.jcommander.Parameter;
 
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.remote.http.HttpClient;
 
@@ -62,11 +63,16 @@ public class NodeFlags {
       names = {"--detect-drivers"},
       description = "Autodetect which drivers are available on the current system, and add them to the node.")
   @ConfigValue(section = "node", name = "detect-drivers")
-  private boolean autoconfigure;
+  private Boolean autoconfigure;
 
-  public void configure(HttpClient.Factory httpClientFactory, LocalNode.Builder node) {
-    if (autoconfigure) {
-      AutoConfigureNode.addSystemDrivers(httpClientFactory, node);
+  public void configure(
+      Config config,
+      HttpClient.Factory httpClientFactory,
+      LocalNode.Builder node) {
+    if (!config.getBool("node", "detect-drivers").orElse(false)) {
+      return;
     }
+
+    AutoConfigureNode.addSystemDrivers(httpClientFactory, node);
   }
 }
