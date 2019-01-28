@@ -107,7 +107,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   }
 
   int CreateNewBrowser(std::string* error_message);
-  std::string OpenNewBrowserWindow(void);
+  std::string OpenNewBrowsingContext(const std::string& window_type);
 
   int GetManagedBrowser(const std::string& browser_id,
                         BrowserHandle* browser_wrapper) const;
@@ -231,6 +231,10 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
                              HWND alert_handle,
                              bool force_use_dismiss,
                              std::string* alert_text);
+
+  std::string OpenNewBrowserWindow(void);
+  std::string OpenNewBrowserTab(const std::wstring& url);
+  static BOOL CALLBACK FindAllBrowserHandles(HWND hwnd, LPARAM arg);
 
   BrowserMap managed_browsers_;
   ElementRepository* managed_elements_;

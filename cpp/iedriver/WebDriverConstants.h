@@ -65,6 +65,10 @@
 #define USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING_CAPABILITY "ie.useLegacyFileUploadDialogHandling"
 #define ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY "ie.enableFullPageScreenshot"
 
+// New top-level browsing context types
+#define WINDOW_WINDOW_TYPE "window"
+#define TAB_WINDOW_TYPE "tab"
+
 // Window classes
 #define ALERT_WINDOW_CLASS "#32770"
 #define HTML_DIALOG_WINDOW_CLASS "Internet Explorer_TridentDlgFrame"

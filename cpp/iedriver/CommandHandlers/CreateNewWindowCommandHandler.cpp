@@ -18,9 +18,7 @@
 #include "errorcodes.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
-
-#define WINDOW_WINDOW_TYPE "window"
-#define TAB_WINDOW_TYPE "tab"
+#include "../WebDriverConstants.h"
 
 namespace webdriver {
 
@@ -45,6 +43,14 @@ void CreateNewWindowCommandHandler::ExecuteInternal(
     return;
   }
 
+  std::string window_type = WINDOW_WINDOW_TYPE;
+  if (type_parameter_iterator->second.isString()) {
+    std::string parameter_value = type_parameter_iterator->second.asString();
+    if (parameter_value == TAB_WINDOW_TYPE) {
+      window_type = TAB_WINDOW_TYPE;
+    }
+  }
+
   BrowserHandle browser_wrapper;
   int status_code = executor.GetCurrentBrowser(&browser_wrapper);
   if (status_code != WD_SUCCESS) {
@@ -54,17 +60,19 @@ void CreateNewWindowCommandHandler::ExecuteInternal(
   }
 
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-  std::string new_window_handle = mutable_executor.OpenNewBrowserWindow();
-  BrowserHandle tmp_browser;
-  executor.GetManagedBrowser(new_window_handle, &tmp_browser);
-  tmp_browser->NavigateToUrl("about:blank");
+  std::string new_window_handle = mutable_executor.OpenNewBrowsingContext(window_type);
   if (new_window_handle.size() == 0) {
     response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "New window not created");
     return;
   }
+  if (window_type == WINDOW_WINDOW_TYPE) {
+    BrowserHandle tmp_browser;
+    executor.GetManagedBrowser(new_window_handle, &tmp_browser);
+    tmp_browser->NavigateToUrl("about:blank");
+  }
   Json::Value result;
   result["handle"] = new_window_handle;
-  result["type"] = WINDOW_WINDOW_TYPE;
+  result["type"] = window_type;
   response->SetSuccessResponse(result);
 }
 

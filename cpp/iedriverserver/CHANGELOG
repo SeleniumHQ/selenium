@@ -9,6 +9,28 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.5.2
+==========
+ * Enabled create new window command to create tabs. This change
+   overcomes the limitation of only creating top-level browser
+   contexts in new top-level windows. The IE driver can now open
+   new tabs when using the create new window command, as in the
+   .NET language bindings:
+
+       driver.SwitchTo().NewWindow(WindowType.Tab);
+
+   Note carefully that this change is only valid when explicitly
+   using the create new window command. It does not affect clicking
+   on links that open new top-level browsing contexts; those will
+   continue to open in new top-level windows. Furthermore, it is
+   imperative to note that this feature will absolutely not work
+   when Protected Mode properties are misconfigured. In other words,
+   if your code uses the .NET InternetExplorerOptions
+   `IntroduceInstabilityByIgnoringProtectedModeSettings` property
+   (or its equivalent in any other language bindings), this feature
+   will not work. Issue reports submitted regarding this will be
+   summarily closed.
+
 v3.141.5.1
 ==========
  * Implemented create new window commmand. The W3C WebDriver
