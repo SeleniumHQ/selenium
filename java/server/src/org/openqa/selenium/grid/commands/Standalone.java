@@ -73,7 +73,7 @@ public class Standalone implements CliCommand {
   public Executable configure(String... args) {
     HelpFlags help = new HelpFlags();
     BaseServerFlags baseFlags = new BaseServerFlags(4444);
-    EventBusFlags eventFlags = new EventBusFlags(4443);
+    EventBusFlags eventFlags = new EventBusFlags();
     NodeFlags nodeFlags = new NodeFlags();
 
     JCommander commander = JCommander.newBuilder()
@@ -102,7 +102,8 @@ public class Standalone implements CliCommand {
           new ConcatenatingConfig("selenium", '.', System.getProperties()),
           new AnnotatedConfig(help),
           new AnnotatedConfig(baseFlags),
-          new AnnotatedConfig(eventFlags));
+          new AnnotatedConfig(eventFlags),
+          new DefaultStandaloneConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();

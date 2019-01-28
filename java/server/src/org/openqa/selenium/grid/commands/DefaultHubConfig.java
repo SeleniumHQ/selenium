@@ -15,25 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.server;
+package org.openqa.selenium.grid.commands;
 
-import com.beust.jcommander.Parameter;
+import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.grid.config.MapConfig;
 
-public class EventBusFlags {
+class DefaultHubConfig extends MapConfig {
 
-  @Parameter(
-      names = {"--bus"},
-      description =  "Connection string for the event bus")
-  @ConfigValue(section = "events", name = "address")
-  private String connectionString;
-
-  @Parameter(
-      names = {"--bind-bus"},
-      description = "Whether the connection string should be bound or connected")
-  @ConfigValue(section = "events", name = "bind")
-  // We use the Boolean here so we can differentiate between there being no option, and a default
-  // false value.
-  private boolean bind;
+  DefaultHubConfig() {
+    super(ImmutableMap.of(
+        "events", ImmutableMap.of(
+            "address", "tcp://*:4443",
+            "bind", true)));
+  }
 }

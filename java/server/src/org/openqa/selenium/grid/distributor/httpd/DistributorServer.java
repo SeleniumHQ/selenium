@@ -36,6 +36,7 @@ import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
+import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
@@ -63,6 +64,7 @@ public class DistributorServer implements CliCommand {
 
     HelpFlags help = new HelpFlags();
     BaseServerFlags serverFlags = new BaseServerFlags(5553);
+    EventBusFlags eventBusFlags = new EventBusFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName(getName())
@@ -87,7 +89,9 @@ public class DistributorServer implements CliCommand {
           new EnvConfig(),
           new ConcatenatingConfig("distributor", '.', System.getProperties()),
           new AnnotatedConfig(help),
-          new AnnotatedConfig(serverFlags));
+          new AnnotatedConfig(eventBusFlags),
+          new AnnotatedConfig(serverFlags),
+          new DefaultDistributorConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();

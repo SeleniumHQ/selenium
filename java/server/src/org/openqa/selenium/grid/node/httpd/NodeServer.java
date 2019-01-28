@@ -40,6 +40,7 @@ import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
+import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
@@ -76,12 +77,14 @@ public class NodeServer implements CliCommand {
 
     HelpFlags help = new HelpFlags();
     BaseServerFlags serverFlags = new BaseServerFlags(5555);
+    EventBusFlags eventBusFlags = new EventBusFlags();
     NodeFlags nodeFlags = new NodeFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName(getName())
         .addObject(help)
         .addObject(serverFlags)
+        .addObject(eventBusFlags)
         .addObject(nodeFlags)
         .build();
 
@@ -103,7 +106,9 @@ public class NodeServer implements CliCommand {
           new ConcatenatingConfig("node", '.', System.getProperties()),
           new AnnotatedConfig(help),
           new AnnotatedConfig(serverFlags),
-          new AnnotatedConfig(nodeFlags));
+          new AnnotatedConfig(eventBusFlags),
+          new AnnotatedConfig(nodeFlags),
+          new DefaultNodeConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();

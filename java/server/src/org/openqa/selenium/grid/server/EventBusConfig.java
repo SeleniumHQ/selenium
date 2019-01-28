@@ -23,9 +23,11 @@ import org.openqa.selenium.grid.config.Config;
 import org.zeromq.ZContext;
 
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class EventBusConfig {
 
+  public static final Logger LOG = Logger.getLogger(EventBus.class.getName());
   private final Config config;
   private EventBus bus;
 
@@ -37,13 +39,18 @@ public class EventBusConfig {
     String connection = config.get("events", "address")
         .orElseThrow(() -> new IllegalArgumentException(
             "Unable to determine event bus connection string"));
-    Boolean bind = config.getBool("events", "bind").orElse(false);
+    boolean bind = config.getBool("events", "bind").orElse(false);
 
     if (bus == null) {
       synchronized (this) {
         if (bus == null) {
+          LOG.fine("Creating new event bus");
           ZContext context = new ZContext();
           bus = ZeroMqEventBus.create(context, connection, bind);
+          LOG.info(String.format(
+              "Started event bus. %s to %s",
+              (bind ? "Bound" : "Connected"),
+              connection));
         }
       }
     }
