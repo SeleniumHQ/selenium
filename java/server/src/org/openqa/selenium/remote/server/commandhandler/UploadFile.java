@@ -65,8 +65,8 @@ public class UploadFile implements CommandHandler {
           (allFiles == null ? 0 : allFiles.length)));
     } else {
       // IE requires multiple uploads to all be from the same directory - move files into one location
-      Path uploads_dir = Files.createDirectories(tempDir.toPath().getParent().resolve("remote_uploads"));
-      Path dest = uploads_dir.resolve(allFiles[0].getName());
+      Path uploadsDir = Files.createDirectories(tempDir.toPath().getParent().resolve("remote_uploads"));
+      Path dest = uploadsDir.resolve(allFiles[0].getName());
 
       if (Files.exists(dest)){
         // IE maintains a lock on previously uploaded files so we can't delete/overwrite - move it instead
