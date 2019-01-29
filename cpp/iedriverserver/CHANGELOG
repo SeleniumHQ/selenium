@@ -9,6 +9,25 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.5.3
+==========
+ * Again updated Unicode character processing for composition. The
+   previous change in 3.141.5.1 for using composed Unicode character
+   sequences on send and decomposed on retrieve was disturbingly
+   naive, and entirely incorrect. This revision mostly reverts that
+   change, with the difference of checking for "single-character"
+   encoding sequences when sending. The IE driver will no longer
+   produce the same input for some key combinations as other
+   drivers (see some Hangul sequences for concrete examples). The
+   mitigating factor of this difference in behavior, however, is
+   that the driver should now produce identical input and output
+   between sending keys and reading the text via either getting an
+   element's text or its attributes. Hopefully. There are likely
+   to continue to be corner cases where use of Unicode characters,
+   does not entirely match up to expectations. This is particularly
+   so in languages where individual code points can be combined to
+   form other glyphs identical to other individual code points.
+
 v3.141.5.2
 ==========
  * Enabled create new window command to create tabs. This change
@@ -52,7 +71,7 @@ v3.141.5.1
    the click point calculation was not taking the offset of the top-
    left when looking for the in-view center of the element. This change
    fixes that issue.
- * Updatws Unicode character processing for combining characters. In a
+ * Updated Unicode character processing for combining characters. In a
    previous revision, the IE driver was modified to normalize Unicode
    strings that used combining characters to compose a single glyph when
    sending keystrokes. This commit implements the reverse of that

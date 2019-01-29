@@ -189,7 +189,6 @@ int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager
     std::string string_value = "";
     if (variant_value.bstrVal) {
       std::wstring bstr_value = variant_value.bstrVal;
-      StringUtilities::DecomposeUnicodeString(&bstr_value);
       string_value = StringUtilities::ToString(bstr_value);
     }
     *value = string_value;
