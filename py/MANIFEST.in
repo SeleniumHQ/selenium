@@ -8,8 +8,6 @@ recursive-include selenium/webdriver/chrome *.py
 recursive-include selenium/webdriver/opera *.py
 recursive-include selenium/webdriver/phantomjs *.py
 recursive-include selenium/webdriver/firefox *.py *.xpi *.json
-recursive-include selenium/webdriver/firefox/x86 *.so
-recursive-include selenium/webdriver/firefox/amd64 *.so
 recursive-include selenium/webdriver/ie *.py
 recursive-include selenium/webdriver/edge *.py
 recursive-include selenium/webdriver/remote *.py *.js

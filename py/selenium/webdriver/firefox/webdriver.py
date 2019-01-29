@@ -37,9 +37,6 @@ from .webelement import FirefoxWebElement
 
 class WebDriver(RemoteWebDriver):
 
-    # There is no native event support on Mac
-    NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
-
     CONTEXT_CHROME = "chrome"
     CONTEXT_CONTENT = "content"
 
@@ -133,55 +130,29 @@ class WebDriver(RemoteWebDriver):
             if isinstance(firefox_binary, basestring):
                 firefox_binary = FirefoxBinary(firefox_binary)
             self.binary = firefox_binary
-            options.binary = firefox_binary
+            options.binary = firefox_binar
         if firefox_profile is not None:
             if isinstance(firefox_profile, basestring):
                 firefox_profile = FirefoxProfile(firefox_profile)
             self.profile = firefox_profile
             options.profile = firefox_profile
 
-        # W3C remote
-        # TODO(ato): Perform conformance negotiation
 
-        if capabilities.get("marionette"):
-            capabilities.pop("marionette")
-            self.service = Service(
-                executable_path,
-                service_args=service_args,
-                log_path=service_log_path)
-            self.service.start()
+        self.service = Service(
+            executable_path,
+            service_args=service_args,
+            log_path=service_log_path)
+        self.service.start()
 
-            capabilities.update(options.to_capabilities())
+        capabilities.update(options.to_capabilities())
 
-            executor = FirefoxRemoteConnection(
-                remote_server_addr=self.service.service_url)
-            RemoteWebDriver.__init__(
-                self,
-                command_executor=executor,
-                desired_capabilities=capabilities,
-                keep_alive=True)
-
-        # Selenium remote
-        else:
-            if self.binary is None:
-                self.binary = FirefoxBinary()
-            if self.profile is None:
-                self.profile = FirefoxProfile()
-
-            # disable native events if globally disabled
-            self.profile.native_events_enabled = (
-                self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled)
-
-            if proxy is not None:
-                proxy.add_to_capabilities(capabilities)
-
-            executor = ExtensionConnection("127.0.0.1", self.profile,
-                                           self.binary, timeout)
-            RemoteWebDriver.__init__(
-                self,
-                command_executor=executor,
-                desired_capabilities=capabilities,
-                keep_alive=keep_alive)
+        executor = FirefoxRemoteConnection(
+            remote_server_addr=self.service.service_url)
+        RemoteWebDriver.__init__(
+            self,
+            command_executor=executor,
+            desired_capabilities=capabilities,
+            keep_alive=True)
 
         self._is_remote = False
 
