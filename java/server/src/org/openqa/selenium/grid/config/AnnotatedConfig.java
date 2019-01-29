@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Primitives;
 
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -69,6 +70,21 @@ public class AnnotatedConfig implements Config {
 
       if (value == null) {
         continue;
+      }
+
+      if (boolean.class.isAssignableFrom(field.getType()) && !(boolean) value) {
+        continue;
+      }
+
+      if (field.getType().isPrimitive()) {
+        Class<?> wrapped = Primitives.wrap(field.getType());
+        if (Number.class.isAssignableFrom(wrapped) && ((Number) value).floatValue() == 0) {
+          continue;
+        }
+      }
+
+      if (Number.class.isAssignableFrom(field.getType()) && ((Number) value).floatValue() == 0f) {
+
       }
 
       ConfigValue annotation = field.getAnnotation(ConfigValue.class);

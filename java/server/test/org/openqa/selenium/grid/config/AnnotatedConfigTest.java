@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -111,4 +112,25 @@ public class AnnotatedConfigTest {
 
   }
 
+  @Test
+  public void defaultValuesForPrimitivesAreIgnored() {
+    // There's no way to tell the difference between the default values and the value having been
+    // set to the default. Best not worry about it.
+    class Defaults {
+      @ConfigValue(section = "default", name = "bool")
+      private boolean bool;
+      @ConfigValue(section = "default", name = "int")
+      private int integer;
+      @ConfigValue(section = "default", name = "string")
+      private String string;
+    }
+
+    Config config = new AnnotatedConfig(new Defaults());
+
+    assertFalse(config.get("default", "bool").isPresent());
+    assertFalse(config.getBool("default", "bool").isPresent());
+    assertFalse(config.get("default", "int").isPresent());
+    assertFalse(config.getInt("default", "int").isPresent());
+    assertFalse(config.get("default", "string").isPresent());
+  }
 }
