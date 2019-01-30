@@ -218,6 +218,7 @@ class RemoteConnection(object):
             Command.SWITCH_TO_FRAME: ('POST', '/session/$sessionId/frame'),
             Command.SWITCH_TO_PARENT_FRAME: ('POST', '/session/$sessionId/frame/parent'),
             Command.SWITCH_TO_WINDOW: ('POST', '/session/$sessionId/window'),
+            Command.NEW_WINDOW: ('POST', '/session/$sessionId/window/new'),
             Command.CLOSE: ('DELETE', '/session/$sessionId/window'),
             Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
                 ('GET', '/session/$sessionId/element/$id/css/$propertyName'),
