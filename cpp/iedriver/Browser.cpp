@@ -26,6 +26,7 @@
 #include "BrowserFactory.h"
 #include "CustomTypes.h"
 #include "messages.h"
+#include "Script.h"
 #include "StringUtilities.h"
 #include "WebDriverConstants.h"
 
@@ -722,11 +723,27 @@ HWND Browser::GetBrowserWindowHandle() {
 }
 
 bool Browser::SetFullScreen(bool is_full_screen) {
-  if (is_full_screen) {
-    this->browser_->put_FullScreen(VARIANT_TRUE);
-  } else {
-    this->browser_->put_FullScreen(VARIANT_FALSE);
+  VARIANT_BOOL full_screen_value = VARIANT_TRUE;
+  std::wstring full_screen_script = L"window.fullScreen = true;";
+  if (!is_full_screen) {
+    full_screen_value = VARIANT_FALSE;
+    full_screen_script = L"delete window.fullScreen;";
   }
+  this->browser_->put_FullScreen(full_screen_value);
+
+  // IE does not support the W3C Fullscreen API (and likely never will).
+  // The prefixed version cannot be triggered via JavaScript outside of
+  // a user interaction, so we're going to cheat here and manually set
+  // the fullScreen property of the window object to the appropriate
+  // value. This may interfere with polyfills in use, and if that's
+  // the case, we'll revisit this hack.
+  CComPtr<IHTMLDocument2> doc;
+  this->GetDocument(true, &doc);
+  std::wstring script = ANONYMOUS_FUNCTION_START;
+  script += full_screen_script;
+  script += ANONYMOUS_FUNCTION_END;
+  Script script_wrapper(doc, script, 0);
+  script_wrapper.Execute();
   return true;
 }
 

@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.5.4
+==========
+ * Added hack for detection of IE in full screen mode.
+
 v3.141.5.3
 ==========
  * Again updated Unicode character processing for composition. The
