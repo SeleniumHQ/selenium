@@ -71,20 +71,6 @@ class Condition {
   description() {
     return this.description_;
   }
-
-  /**
-   * Allows for lenient instanceof checks
-   * @param {!(IThenable<T>|
-   *           Condition<T>|
-   *           function(!WebDriver): T)} condition - the condition instance
-   * @return {boolean}
-   */
-  static [Symbol.hasInstance](condition) {
-    return !!condition
-      && typeof condition === 'object'
-      && typeof condition.description === 'function'
-      && typeof condition.fn === 'function';
-  }
 }
 
 
