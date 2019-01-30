@@ -9,6 +9,17 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.5.5
+==========
+ * Added hack for handling cases where document.designMode is on.
+   In IE, when document.designMode is turned on, the browser is put
+   into a state where anonymous JavaScript functions cannot be run.
+   Obviously, this breaks a huge portion of the driver, so the driver
+   will now force documents out of designMode when attempting to
+   execute script. There should be vanishingly few real-world cases
+   where this has an adverse effect, with most sites using the
+   contentEditable attribute instead.
+
 v3.141.5.4
 ==========
  * Added hack for detection of IE in full screen mode.

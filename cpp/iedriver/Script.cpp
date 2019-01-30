@@ -189,6 +189,15 @@ int Script::Execute() {
     LOG(WARN) << "Script engine host is NULL";
     return ENOSUCHDOCUMENT;
   }
+
+  CComBSTR design_mode = L"";
+  this->script_engine_host_->get_designMode(&design_mode);
+  design_mode.ToLower();
+  if (design_mode == "on") {
+    CComBSTR set_design_mode = "off";
+    this->script_engine_host_->put_designMode(set_design_mode);
+  }
+
   CComVariant temp_function;
   if (!this->CreateAnonymousFunction(&temp_function)) {
     LOG(WARN) << "Cannot create anonymous function";
