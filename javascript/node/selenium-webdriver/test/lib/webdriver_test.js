@@ -1038,7 +1038,7 @@ describe('WebDriver', function() {
           .then(() => assert.equal(3, count));
     });
 
-    it('on a condition that returns a promise', function() {
+    it('on a condition that returns a promise that resolves to true after a short timeout', function() {
       let executor = new FakeExecutor();
       let driver = executor.createDriver();
 
@@ -1066,7 +1066,7 @@ describe('WebDriver', function() {
         });
       }
 
-      return driver.wait(condition, 100)
+      return driver.wait(condition, 100, null, 25)
           .then(() => assert.equal(3, count));
     });
 
@@ -1198,7 +1198,7 @@ describe('WebDriver', function() {
         var driver = executor.createDriver();
         return driver.wait(function() {
           return driver.findElements(By.id('foo')).then(els => els.length > 0);
-        }, 200);
+        }, 200, null, 25);
       });
 
       it('waitTimesout_timeoutCaught', function() {
@@ -1232,7 +1232,7 @@ describe('WebDriver', function() {
             .end();
 
         let driver = executor.createDriver();
-        return driver.wait(until.elementLocated(By.id('foo')), 200);
+        return driver.wait(until.elementLocated(By.id('foo')), 200, null, 25);
       });
 
       it('wait times out', function() {
