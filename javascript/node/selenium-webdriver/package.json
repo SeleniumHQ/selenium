@@ -33,7 +33,6 @@
     "jasmine": "^3.3.1",
     "mocha": "^5.2.0",
     "multer": "^1.4.1",
-    "promises-aplus-tests": "^2.1.2",
     "serve-index": "^1.9.1",
     "sinon": "^7.2.3"
   },
