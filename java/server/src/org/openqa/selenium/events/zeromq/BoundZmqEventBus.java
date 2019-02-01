@@ -136,7 +136,7 @@ class BoundZmqEventBus implements EventBus {
 
     @Override
     public String toString() {
-      return advertise;
+      return String.format("[binding to %s, advertising as %s]", bindTo, advertise);
     }
   }
 }

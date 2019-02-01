@@ -69,6 +69,7 @@ public class DistributorServer implements CliCommand {
     JCommander commander = JCommander.newBuilder()
         .programName(getName())
         .addObject(help)
+        .addObject(eventBusFlags)
         .addObject(serverFlags)
         .build();
 
