@@ -79,6 +79,9 @@ matrix:
     - env: CHROME=1 SELENIUM_BROWSER=chrome NPM=test
       <<: *node
       <<: *chrome
+    - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
+      <<: *node
+      <<: *firefox-latest
     - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests //java/client/test/org/openqa/selenium/testing/drivers/..."
       <<: *java
     - env: BUCK="test //java/client/test/org/openqa/selenium/atoms:test"
