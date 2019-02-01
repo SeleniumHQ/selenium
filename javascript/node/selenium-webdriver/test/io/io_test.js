@@ -351,8 +351,8 @@ describe('io', function() {
               seen,
               [{path: 'file1', dir: false},
                {path: 'sub', dir: true},
-               {path: 'sub/folder', dir: true},
-               {path: 'sub/folder/file2', dir: false}]);
+               {path: path.join('sub', 'folder'), dir: true},
+               {path: path.join('sub', 'folder', 'file2'), dir: false}]);
         });
       });
     });
