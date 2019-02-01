@@ -25,8 +25,6 @@ import org.openqa.selenium.net.PortProber;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

@@ -63,7 +63,7 @@ public class NodeFlags {
       names = {"--detect-drivers"},
       description = "Autodetect which drivers are available on the current system, and add them to the node.")
   @ConfigValue(section = "node", name = "detect-drivers")
-  private Boolean autoconfigure;
+  private boolean autoconfigure;
 
   public void configure(
       Config config,
