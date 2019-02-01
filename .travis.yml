@@ -75,10 +75,10 @@ matrix:
     - env: TASK=//rb:remote-ff-esr-test
       <<: *ruby
       <<: *firefox-esr
-  include:
     - env: CHROME=1 SELENIUM_BROWSER=chrome NPM=test
       <<: *node
       <<: *chrome
+  include:
     - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
       <<: *node
       <<: *firefox-latest
