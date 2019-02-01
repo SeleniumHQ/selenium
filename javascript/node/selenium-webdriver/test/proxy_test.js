@@ -146,7 +146,7 @@ test.suite(function(env) {
 
   // PhantomJS does not support PAC file proxy configuration.
   // Safari does not support proxies.
-  test.ignore(env.browsers(Browser.IE, Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.IE, Browser.SAFARI, Browser.CHROME, Browser.FIREFOX)).
   describe('pac proxy settings', function() {
     it('can configure proxy through PAC file', async function() {
       await createDriver(proxy.pac(proxyServer.url('/proxy.pac')));
