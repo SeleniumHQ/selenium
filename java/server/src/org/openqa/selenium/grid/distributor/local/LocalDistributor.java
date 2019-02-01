@@ -18,8 +18,6 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.DOWN;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.DRAINING;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -29,7 +27,6 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
-import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.DistributorStatus;

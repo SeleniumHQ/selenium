@@ -58,7 +58,6 @@ public class EndToEndTest {
 
   @Test
   public void inMemory() throws URISyntaxException {
-
     SessionMap sessions = new LocalSessionMap(tracer);
     clientFactory = HttpClient.Factory.createDefault();
     Distributor distributor = new LocalDistributor(tracer, clientFactory);
@@ -87,7 +86,6 @@ public class EndToEndTest {
 
   @Test
   public void withServers() throws URISyntaxException {
-
     LocalSessionMap localSessions = new LocalSessionMap(tracer);
     Server<?> sessionServer = createServer();
     sessionServer.addRoute(Routes.matching(localSessions).using(localSessions));

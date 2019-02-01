@@ -18,6 +18,7 @@
 package org.openqa.selenium.events;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 public class Event {
@@ -46,5 +47,31 @@ public class Event {
 
   public Object getData() {
     return data;
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", Event.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("type=" + type)
+        .add("data=" + data)
+        .toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Event)) {
+      return false;
+    }
+
+    Event that = (Event) o;
+    return Objects.equals(this.getId(), that.getId()) &&
+           Objects.equals(this.getType(), that.getType()) &&
+           Objects.equals(this.getData(), that.getData());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId(), getType(), getData());
   }
 }
