@@ -79,7 +79,7 @@ module Selenium
           begin
             sock.connect_nonblock sockaddr
           rescue Errno::EINPROGRESS
-            retry if IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
+            retry if socket_writable?(sock) && conn_completed?(sock)
             raise Errno::ECONNREFUSED
           rescue *CONNECTED_ERRORS
             # yay!
@@ -91,6 +91,14 @@ module Selenium
           sock.close if sock
           WebDriver.logger.debug("polling for socket on #{[@host, @port].inspect}")
           false
+        end
+
+        def socket_writable?(sock)
+          IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
+        end
+
+        def conn_completed?(sock)
+          sock.getsockopt(Socket::SOL_SOCKET, Socket::SO_ERROR).int.zero?
         end
       end
 
