@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.5.6
+==========
+ * Fixed proper keyboard event values for extended keys.
+
 v3.141.5.5
 ==========
  * Added hack for handling cases where document.designMode is on.
