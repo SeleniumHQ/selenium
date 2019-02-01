@@ -92,14 +92,6 @@ test.suite(function(env) {
     });
 
     it('doubleClick(element)', async function() {
-      // This test requires Firefox 59+.
-      if (env.browser.name === Browser.FIREFOX) {
-        await driver.quit();
-        driver = await env.builder()
-            .setFirefoxOptions(
-                new firefox.Options().setBinary(firefox.Channel.NIGHTLY))
-            .build();
-      }
       await driver.get(fileServer.whereIs('/data/actions/click.html'));
 
       let box = await driver.findElement(By.id('box'));
