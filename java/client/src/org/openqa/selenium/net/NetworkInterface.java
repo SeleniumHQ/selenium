@@ -25,6 +25,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -132,5 +133,15 @@ public class NetworkInterface {
 
   public String getName() {
     return name;
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", NetworkInterface.class.getSimpleName() + "[", "]")
+        .add("name='" + name + "'")
+        .add("networkInterface=" + networkInterface)
+        .add("inetAddresses=" + inetAddresses)
+        .add("isLoopback=" + isLoopback)
+        .toString();
   }
 }
