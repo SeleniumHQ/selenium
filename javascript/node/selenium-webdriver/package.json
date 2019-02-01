@@ -23,10 +23,10 @@
     "node": ">= 8.9.0"
   },
   "dependencies": {
-    "jszip": "^3.1.3",
-    "rimraf": "^2.5.4",
+    "jszip": "^3.1.5",
+    "rimraf": "^2.6.3",
     "tmp": "0.0.30",
-    "xml2js": "^0.4.17"
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "express": "^4.16.4",
