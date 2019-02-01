@@ -94,7 +94,7 @@ class FirefoxBinary(object):
             command, stdout=self._log_file, stderr=STDOUT,
             env=self._firefox_env)
 
-    def _wait_until_connectable(self, timeout=30):
+    def _wait_until_connectable(self, timeout=30, interval=0.2):
         """Blocks until the extension is connectable in the firefox."""
         count = 0
         while not utils.is_connectable(self.profile.port):
@@ -104,7 +104,7 @@ class FirefoxBinary(object):
                     "The browser appears to have exited "
                     "before we could connect. If you specified a log_file in "
                     "the FirefoxBinary constructor, check it for details.")
-            if count >= timeout:
+            if count >= timeout / interval:
                 self.kill()
                 raise WebDriverException(
                     "Can't load the profile. Possible firefox version mismatch. "
@@ -113,7 +113,7 @@ class FirefoxBinary(object):
                     "FirefoxBinary constructor, check it for details."
                     % (self.profile.path))
             count += 1
-            time.sleep(1)
+            time.sleep(interval)
         return True
 
     def _find_exe_in_registry(self):
