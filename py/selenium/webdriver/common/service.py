@@ -99,8 +99,8 @@ class Service(object):
             if self.is_connectable():
                 break
             count += 1
-            time.sleep(1)
-            if count == 30:
+            time.sleep(0.2)
+            if count == 150:
                 raise WebDriverException("Can not connect to the Service %s" % self.path)
 
     def assert_process_still_running(self):
@@ -128,11 +128,11 @@ class Service(object):
         except URLError:
             return
 
-        for x in range(30):
+        for x in range(150):
             if not self.is_connectable():
                 break
             else:
-                time.sleep(1)
+                time.sleep(0.2)
 
     def stop(self):
         """
