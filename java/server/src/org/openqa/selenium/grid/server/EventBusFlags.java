@@ -24,10 +24,17 @@ import org.openqa.selenium.grid.config.ConfigValue;
 public class EventBusFlags {
 
   @Parameter(
-      names = {"--bus"},
-      description =  "Connection string for the event bus")
-  @ConfigValue(section = "events", name = "address")
-  private String connectionString;
+      names = {"--publish-events"},
+      description =  "Connection string for publishing events to the event bus")
+  @ConfigValue(section = "events", name = "publish")
+  private String publishString;
+
+  @Parameter(
+      names = {"--subscribe-events"},
+      description =  "Connection string for subscribing to events from the event bus")
+  @ConfigValue(section = "events", name = "subscribe")
+  private String subscribeString;
+
 
   @Parameter(
       names = {"--bind-bus"},
