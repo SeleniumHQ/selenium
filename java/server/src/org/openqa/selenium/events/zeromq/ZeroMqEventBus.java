@@ -29,11 +29,11 @@ public class ZeroMqEventBus {
     // Use the create method.
   }
 
-  public static EventBus create(ZContext context, String connection, boolean bind) {
+  public static EventBus create(ZContext context, String publish, String subscribe, boolean bind) {
     if (bind) {
-      return new BoundZmqEventBus(context, connection);
+      return new BoundZmqEventBus(context, publish, subscribe);
     }
-    return new UnboundZmqEventBus(context, connection);
+    return new UnboundZmqEventBus(context, publish, subscribe);
   }
 
 }

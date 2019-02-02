@@ -42,13 +42,19 @@ public class EventBusTest {
   @Parameterized.Parameters(name = "EventBus {0}")
   public static Collection<Supplier<EventBus>> buildEventBuses() {
     return ImmutableSet.of(
-        () -> ZeroMqEventBus.create(new ZContext(), "inproc://bus", true),
         () -> ZeroMqEventBus.create(
             new ZContext(),
+            "inproc://bus-pub",
+            "inproc://bus-sub",
+            true),
+        () -> ZeroMqEventBus.create(
+            new ZContext(),
+            "tcp://*:" + PortProber.findFreePort(),
             "tcp://*:" + PortProber.findFreePort(),
             true),
         () -> ZeroMqEventBus.create(
             new ZContext(),
+            "tcp://localhost:" + PortProber.findFreePort(),
             "tcp://localhost:" + PortProber.findFreePort(),
             true));
   }

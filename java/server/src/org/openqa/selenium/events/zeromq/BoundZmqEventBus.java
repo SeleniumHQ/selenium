@@ -39,39 +39,30 @@ class BoundZmqEventBus implements EventBus {
   private final ZMQ.Socket xsub;
   private final ExecutorService executor;
 
-  BoundZmqEventBus(ZContext context, String connection) {
-    LOG.info("Binding event bus to " + connection);
-    ZMQ.Socket rep = context.createSocket(ZMQ.REP);
-    rep.bind(connection);
-
-    xpub = context.createSocket(ZMQ.XPUB);
-    xsub = context.createSocket(ZMQ.XSUB);
-
+  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection) {
     String address = new NetworkUtils().getHostAddress();
-    Addresses xpubAddr = deriveAddresses(address, connection);
-    Addresses xsubAddr = deriveAddresses(address, connection);
+    Addresses xpubAddr = deriveAddresses(address, publishConnection);
+    Addresses xsubAddr = deriveAddresses(address, subscribeConnection);
 
     LOG.info(String.format("XPUB binding to %s, XSUB binding to %s", xpubAddr, xsubAddr));
 
+    xpub = context.createSocket(ZMQ.XPUB);
+    xpub.setImmediate(true);
     xpub.bind(xpubAddr.bindTo);
+
+    xsub = context.createSocket(ZMQ.XSUB);
+    xsub.setImmediate(true);
     xsub.bind(xsubAddr.bindTo);
 
-    executor = Executors.newFixedThreadPool(2, r -> {
+    executor = Executors.newCachedThreadPool(r -> {
       Thread thread = new Thread(r, "Message Bus Proxy");
       thread.setDaemon(true);
       return thread;
     });
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
 
-    executor.submit(() -> {
-      while (!Thread.currentThread().isInterrupted()) {
-        rep.recvStr();
-        rep.sendMore(xpubAddr.advertise);
-        rep.send(xsubAddr.advertise);
-      }
-    });
+    delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise);
 
-    delegate = new UnboundZmqEventBus(context, connection);
     LOG.info("Event bus ready");
   }
 
@@ -97,11 +88,7 @@ class BoundZmqEventBus implements EventBus {
 
   private Addresses deriveAddresses(String host, String connection) {
     if (connection.startsWith("inproc:")) {
-      String address = String.format(
-          "%s-%s",
-          connection,
-          Long.toHexString(UUID.randomUUID().getMostSignificantBits()).substring(0, 8));
-      return new Addresses(address, address);
+      return new Addresses(connection, connection);
     }
 
     if (!connection.startsWith("tcp://")) {
@@ -115,13 +102,14 @@ class BoundZmqEventBus implements EventBus {
     }
     String hostName = connection.substring(length, colon);
 
+    int port = Integer.parseInt(connection.substring(colon + 1));
+
     if (!"*".equals(hostName)) {
       host = hostName;
     }
 
-    int port = PortProber.findFreePort();
     return new Addresses(
-        String.format("tcp://%s:%d", hostName, port),
+        connection,
         String.format("tcp://%s:%d", host, port));
   }
 

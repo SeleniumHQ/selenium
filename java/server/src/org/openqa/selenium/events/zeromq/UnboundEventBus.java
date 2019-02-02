@@ -37,6 +37,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
@@ -51,82 +52,73 @@ class UnboundZmqEventBus implements EventBus {
   private ZMQ.Socket pub;
   private ZMQ.Socket sub;
 
-  UnboundZmqEventBus(ZContext context, String connection) {
-    executor = Executors.newScheduledThreadPool(2, r -> {
+  UnboundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection) {
+    executor = Executors.newCachedThreadPool(r -> {
       Thread thread = new Thread(r);
       thread.setName("Event Bus");
       thread.setDaemon(true);
       return thread;
     });
 
-    pub = context.createSocket(ZMQ.PUB);
-    pub.setImmediate(true);
+    LOG.info(String.format("Connecting to %s and %s", publishConnection, subscribeConnection));
+
     sub = context.createSocket(ZMQ.SUB);
-    sub.setImmediate(true);
+    sub.connect(publishConnection);
     sub.subscribe(new byte[0]);
 
+    pub = context.createSocket(ZMQ.PUB);
+    pub.connect(subscribeConnection);
+
+    ZMQ.Poller poller = context.createPoller(1);
+    poller.register(sub, ZMQ.Poller.POLLIN);
+
+    LOG.info("Sockets created");
+
+    AtomicBoolean pollingStarted = new AtomicBoolean(false);
+
     executor.submit(() -> {
-      LOG.info("Obtaining end points");
-      ZMQ.Socket req = context.createSocket(ZMQ.REQ);
-      req.connect(connection);
-      req.send("");
-      String xpubConn = req.recvStr();
-      String xsubConn = req.recvStr();
-      req.close();
+      LOG.info("Bus started");
+      while (!Thread.currentThread().isInterrupted()) {
+        try {
+          poller.poll(150);
+          pollingStarted.lazySet(true);
 
-      LOG.info(String.format("Connecting to %s and %s", xpubConn, xsubConn));
+          if (poller.pollin(0)) {
+            ZMQ.Socket socket = poller.getSocket(0);
 
-      sub.connect(xpubConn);
-      pub.connect(xsubConn);
+            Type type = new Type(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
+            UUID id = UUID.fromString(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
+            String data = new String(socket.recv(ZMQ.DONTWAIT), UTF_8);
 
-      ZMQ.Poller poller = context.createPoller(1);
-      poller.register(sub, ZMQ.Poller.POLLIN);
+            Object converted = JSON.toType(data, Object.class);
+            Event event = new Event(id, type, converted);
 
-      LOG.info("Sockets created");
-
-      executor.submit(() -> {
-        LOG.info("Bus started");
-        while (!Thread.currentThread().isInterrupted()) {
-          try {
-            poller.poll(150);
-            if (poller.pollin(0)) {
-              ZMQ.Socket socket = poller.getSocket(0);
-
-              Type type = new Type(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
-              UUID id = UUID.fromString(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
-              String data = new String(socket.recv(ZMQ.DONTWAIT), UTF_8);
-
-              Object converted = JSON.toType(data, Object.class);
-              Event event = new Event(id, type, converted);
-
-              if (recentMessages.contains(id)) {
-                continue;
-              }
-              recentMessages.add(id);
-
-              List<Consumer<Event>> typeListeners = listeners.get(type);
-              if (typeListeners == null) {
-                continue;
-              }
-
-              typeListeners.parallelStream().forEach(listener -> listener.accept(event));
+            if (recentMessages.contains(id)) {
+              continue;
             }
-          } catch (Throwable e) {
-            if (e.getCause() != null && e.getCause() instanceof AssertionError) {
-              // Do nothing.
-            } else {
-              throw e;
+            recentMessages.add(id);
+
+            List<Consumer<Event>> typeListeners = listeners.get(type);
+            if (typeListeners == null) {
+              continue;
             }
+
+            typeListeners.parallelStream().forEach(listener -> listener.accept(event));
+          }
+        } catch (Throwable e) {
+          if (e.getCause() != null && e.getCause() instanceof AssertionError) {
+            // Do nothing.
+          } else {
+            throw e;
           }
         }
-      });
+      }
     });
 
     // Give ourselves up to a second to connect, using The World's Worst heuristic. If we don't
     // manage to connect, it's not the end of the world, as the socket we're connecting to may not
     // be up yet.
-    long end = System.currentTimeMillis() + 1000;
-    while (pub.getLastEndpoint() == null && System.currentTimeMillis() < end) {
+    while (!pollingStarted.get()) {
       try {
         Thread.sleep(100);
       } catch (InterruptedException e) {

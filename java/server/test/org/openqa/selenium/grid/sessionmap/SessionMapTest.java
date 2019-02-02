@@ -61,7 +61,11 @@ public class SessionMapTest {
 
     local = new LocalSessionMap(
         DistributedTracer.builder().build(),
-        ZeroMqEventBus.create(new ZContext(), "inproc://session-map-test", true));
+        ZeroMqEventBus.create(
+            new ZContext(),
+            "inproc://session-map-test-pub",
+            "inproc://session-map-test-sub",
+            true));
     client = new PassthroughHttpClient<>(local);
     remote = new RemoteSessionMap(client);
   }

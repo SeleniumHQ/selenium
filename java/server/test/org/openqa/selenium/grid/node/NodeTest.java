@@ -74,7 +74,11 @@ public class NodeTest {
   public void setUp() throws URISyntaxException {
     tracer = DistributedTracer.builder().build();
 
-    bus = ZeroMqEventBus.create(new ZContext(), "inproc://node-test", true);
+    bus = ZeroMqEventBus.create(
+        new ZContext(),
+        "inproc://node-test-pub",
+        "inproc://node-test-sub",
+        true);
 
     clientFactory = HttpClient.Factory.createDefault();
 

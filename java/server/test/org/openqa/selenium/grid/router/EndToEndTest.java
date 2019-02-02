@@ -61,7 +61,11 @@ public class EndToEndTest {
 
   @Test
   public void inMemory() throws URISyntaxException {
-    EventBus bus = ZeroMqEventBus.create(new ZContext(), "inproc://end-to-end", true);
+    EventBus bus = ZeroMqEventBus.create(
+        new ZContext(),
+        "inproc://end-to-end-pub",
+        "inproc://end-to-end-sub",
+        true);
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
 
@@ -94,6 +98,7 @@ public class EndToEndTest {
   public void withServers() throws URISyntaxException {
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
+        "tcp://localhost:" + PortProber.findFreePort(),
         "tcp://localhost:" + PortProber.findFreePort(),
         true);
 

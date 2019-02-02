@@ -36,9 +36,21 @@ public class EventBusConfig {
   }
 
   public EventBus getEventBus() {
-    String connection = config.get("events", "address")
+    String publish = config.get("events", "publish")
         .orElseThrow(() -> new IllegalArgumentException(
-            "Unable to determine event bus connection string"));
+            "Unable to determine event bus publishing connection string"));
+
+    String subscribe = config.get("events", "subscribe")
+        .orElseThrow(() -> new IllegalArgumentException(
+            "Unable to determine event bus subscription connection string"));
+
+    if (subscribe.equals(publish)) {
+      throw new IllegalArgumentException(String.format(
+          "Publish (%s) and subscribe (%s) connections must not be the same.",
+          publish,
+          subscribe));
+    }
+
     boolean bind = config.getBool("events", "bind").orElse(false);
 
     if (bus == null) {
@@ -46,11 +58,7 @@ public class EventBusConfig {
         if (bus == null) {
           LOG.fine("Creating new event bus");
           ZContext context = new ZContext();
-          bus = ZeroMqEventBus.create(context, connection, bind);
-          LOG.info(String.format(
-              "Started event bus. %s to %s",
-              (bind ? "Bound" : "Connected"),
-              connection));
+          bus = ZeroMqEventBus.create(context, publish, subscribe, bind);
         }
       }
     }

@@ -74,7 +74,11 @@ public class DistributorTest {
   @Before
   public void setUp() throws MalformedURLException {
     tracer = DistributedTracer.builder().build();
-    bus = ZeroMqEventBus.create(new ZContext(), "inproc://distributor-test", true);
+    bus = ZeroMqEventBus.create(
+        new ZContext(),
+        "inproc://distributor-test-pub",
+        "inproc://distributor-test-sub",
+        true);
     clientFactory = HttpClient.Factory.createDefault();
     local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault());
     distributor = new RemoteDistributor(
