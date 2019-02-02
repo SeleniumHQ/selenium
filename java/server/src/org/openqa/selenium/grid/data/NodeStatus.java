@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node;
+package org.openqa.selenium.grid.data;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -61,6 +61,10 @@ public class NodeStatus {
 
   public boolean hasCapacity(Capabilities caps) {
     return available.getOrDefault(caps, 0) > 0;
+  }
+
+  public UUID getNodeId() {
+    return nodeId;
   }
 
   public URI getUri() {

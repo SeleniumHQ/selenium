@@ -22,7 +22,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.grid.node.NodeStatus;
+import org.openqa.selenium.grid.data.NodeStatus;
 
 import java.util.Collection;
 import java.util.List;

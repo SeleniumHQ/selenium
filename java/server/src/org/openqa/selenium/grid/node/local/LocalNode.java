@@ -32,9 +32,9 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.NodeStatus;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -65,7 +65,7 @@ public class LocalNode extends Node {
   private final int maxSessionCount;
   private final List<SessionFactory> factories;
   private final Cache<SessionId, SessionAndHandler> currentSessions;
-  private final Regularly cleanUp;
+  private final Regularly regularly;
 
   private LocalNode(
       DistributedTracer tracer,
@@ -97,8 +97,8 @@ public class LocalNode extends Node {
         })
         .build();
 
-    this.cleanUp = new Regularly("Node cleanup: " + externalUri);
-    cleanUp.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
+    this.regularly = new Regularly("Local Node: " + externalUri);
+    regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
   }
 
   @VisibleForTesting

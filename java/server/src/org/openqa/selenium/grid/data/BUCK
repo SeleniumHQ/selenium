@@ -4,6 +4,7 @@ java_library(
     srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/events:events",
         "//third_party/java/guava:guava",
     ],
     visibility = [
