@@ -26,7 +26,8 @@ class DefaultHubConfig extends MapConfig {
   DefaultHubConfig() {
     super(ImmutableMap.of(
         "events", ImmutableMap.of(
-            "address", "tcp://*:4443",
+            "publish", "tcp://*:4442",
+            "subscribe", "tcp://*:4443",
             "bind", true)));
   }
 }
