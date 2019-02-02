@@ -143,7 +143,7 @@ class UnboundZmqEventBus implements EventBus {
 
     pub.sendMore(event.getType().getName().getBytes(UTF_8));
     pub.sendMore(event.getId().toString().getBytes(UTF_8));
-    pub.send(JSON.toJson(event.getData()).getBytes(UTF_8));
+    pub.send(event.getRawData().getBytes(UTF_8));
   }
 
   @Override
