@@ -84,7 +84,7 @@ class WebDriver(RemoteWebDriver):
         :param timeout: Time to wait for Firefox to launch when using
             the extension connection.
         :param capabilities: Dictionary of desired capabilities.
-        :param proxy: The proxy settings to us when communicating with
+        :param proxy: The proxy settings to use when communicating with
             Firefox via the extension connection.
         :param executable_path: Full path to override which geckodriver
             binary to use for Firefox 47.0.1 and greater, which
