@@ -16,6 +16,7 @@
 # under the License.
 
 import time
+import asyncio as aio
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 
@@ -109,7 +110,7 @@ class WebDriverWait(object):
         raise TimeoutException(message)
 
 class AsyncWebDriverWait(WebDriverWait):
-    
+
     async def until(self, method, message=''):
         """Calls the method provided with the driver as an argument until the \
         return value is not False."""
