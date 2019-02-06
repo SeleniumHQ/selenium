@@ -55,6 +55,8 @@ int SendInputActionSimulator::SimulateActions(BrowserHandle browser_wrapper,
   HookProcessor mouse_hook;
   mouse_hook.Initialize("MouseHookProc", WH_MOUSE);
 
+  bool is_button_swapped = ::GetSystemMetrics(SM_SWAPBUTTON) != 0;
+
   HWND window_handle = browser_wrapper->GetContentWindowHandle();
   // Loop through all of the input items, and find all of the sleeps.
   std::vector<size_t> sleep_indexes;
@@ -75,6 +77,15 @@ int SendInputActionSimulator::SimulateActions(BrowserHandle browser_wrapper,
                                      &normalized_y);
       current_input.mi.dx = normalized_x;
       current_input.mi.dy = normalized_y;
+
+      // If the buttons are swapped on the mouse (most often referred to
+      // as "left-handed"), where the right button is primary and the
+      // left button is secondary, we need to swap those when using
+      // SendInput.
+      unsigned long normalized_flags = this->NormalizeButtons(is_button_swapped,
+                                                              current_input.mi.dwFlags);
+           
+      current_input.mi.dwFlags = normalized_flags;
       inputs[i] = current_input;
     }
   }
@@ -146,6 +157,30 @@ void SendInputActionSimulator::GetNormalizedCoordinates(HWND window_handle,
   int screen_height = ::GetSystemMetrics(SM_CYSCREEN) - 1;
   *normalized_x = static_cast<int>(cursor_position.x * (65535.0f / screen_width));
   *normalized_y = static_cast<int>(cursor_position.y * (65535.0f / screen_height));
+}
+
+unsigned long SendInputActionSimulator::NormalizeButtons(bool is_button_swapped,
+                                                         unsigned long input_flags) {
+  unsigned long flags = input_flags;
+  if (is_button_swapped) {
+    if (flags & MOUSEEVENTF_LEFTDOWN) {
+      flags &= ~(MOUSEEVENTF_LEFTDOWN);
+      flags |= MOUSEEVENTF_RIGHTDOWN;
+    }
+    else if (flags & MOUSEEVENTF_LEFTUP) {
+      flags &= ~(MOUSEEVENTF_LEFTUP);
+      flags |= MOUSEEVENTF_RIGHTUP;
+    }
+    else if (flags & MOUSEEVENTF_RIGHTDOWN) {
+      flags &= ~(MOUSEEVENTF_RIGHTDOWN);
+      flags |= MOUSEEVENTF_LEFTDOWN;
+    }
+    else if (flags & MOUSEEVENTF_RIGHTUP) {
+      flags &= ~(MOUSEEVENTF_RIGHTUP);
+      flags |= MOUSEEVENTF_LEFTUP;
+    }
+  }
+  return flags;
 }
 
 bool SendInputActionSimulator::WaitForInputEventProcessing(int input_count) {
