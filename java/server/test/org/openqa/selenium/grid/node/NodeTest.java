@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.grid.node;
 
+import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -44,6 +46,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.zeromq.ZContext;
 
 import java.io.IOException;
@@ -365,6 +369,24 @@ public class NodeTest {
 
     assertThat(clientUrl.get().toURI()).isEqualTo(sessionUri);
     assertThat(called.get()).isTrue();
+  }
+
+  @Test
+  public void quitingASessionShouldCauseASessionClosedEventToBeFired() {
+    AtomicReference<Object> obj = new AtomicReference<>();
+    bus.addListener(SESSION_CLOSED, event -> {
+      obj.set(event.getData(Object.class));
+    });
+
+    Session session = node.newSession(caps)
+        .orElseThrow(() -> new AssertionError("Cannot create session"));
+    node.stop(session.getId());
+
+    // Because we're using the event bus, we can't expect the event to fire instantly. We're using
+    // an inproc bus, so in reality it's reasonable to expect the event to fire synchronously, but
+    // let's play it safe.
+    Wait<AtomicReference<Object>> wait = new FluentWait<>(obj).withTimeout(ofSeconds(2));
+    wait.until(ref -> ref.get() != null);
   }
 
   private static class MyClock extends Clock {

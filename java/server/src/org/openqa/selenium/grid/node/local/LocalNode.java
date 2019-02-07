@@ -34,6 +34,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
@@ -94,6 +95,7 @@ public class LocalNode extends Node {
         .removalListener((RemovalListener<SessionId, SessionAndHandler>) notification -> {
           // Attempt to stop the session
           notification.getValue().stop();
+          bus.fire(new SessionClosedEvent(notification.getKey()));
         })
         .build();
 
