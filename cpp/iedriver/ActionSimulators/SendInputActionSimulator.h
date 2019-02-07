@@ -36,6 +36,8 @@ class SendInputActionSimulator : public ActionSimulator {
                                 int y,
                                 int* normalized_x,
                                 int* normalized_y);
+  unsigned long NormalizeButtons(bool is_button_swapped,
+                                 unsigned long input_flags);
 
   bool WaitForInputEventProcessing(int input_count);
   bool SetFocusToBrowser(BrowserHandle browser_wrapper);
