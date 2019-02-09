@@ -220,7 +220,7 @@ module Selenium
           expect(driver.execute_script('return true;')).to eq(true)
         end
 
-        it 'should raise if the script is bad', except: {browser: %i[chrome edge]} do
+        it 'should raise if the script is bad', except: {browser: %i[edge]} do
           driver.navigate.to url_for('xhtmlTest.html')
           expect { driver.execute_script('return squiggle();') }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
         end
