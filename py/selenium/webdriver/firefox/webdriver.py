@@ -20,13 +20,11 @@ except NameError:  # Python 3.x
     basestring = str
 
 import shutil
-import sys
 from contextlib import contextmanager
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
-from .extension_connection import ExtensionConnection
 from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
 from .options import Options
@@ -130,13 +128,12 @@ class WebDriver(RemoteWebDriver):
             if isinstance(firefox_binary, basestring):
                 firefox_binary = FirefoxBinary(firefox_binary)
             self.binary = firefox_binary
-            options.binary = firefox_binar
+            options.binary = firefox_binary
         if firefox_profile is not None:
             if isinstance(firefox_profile, basestring):
                 firefox_profile = FirefoxProfile(firefox_profile)
             self.profile = firefox_profile
             options.profile = firefox_profile
-
 
         self.service = Service(
             executable_path,
