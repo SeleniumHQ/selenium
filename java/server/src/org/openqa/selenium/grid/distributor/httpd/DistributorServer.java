@@ -106,7 +106,8 @@ public class DistributorServer implements CliCommand {
       Distributor distributor = new LocalDistributor(
           tracer,
           bus,
-          HttpClient.Factory.createDefault());
+          HttpClient.Factory.createDefault(),
+          null);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 

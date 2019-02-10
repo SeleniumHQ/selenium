@@ -33,6 +33,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.DistributorStatus;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
@@ -66,16 +67,19 @@ public class LocalDistributor extends Distributor {
   private final Set<Host> hosts = new HashSet<>();
   private final DistributedTracer tracer;
   private final EventBus bus;
+  private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
 
   public LocalDistributor(
       DistributedTracer tracer,
       EventBus bus,
-      HttpClient.Factory httpClientFactory) {
+      HttpClient.Factory httpClientFactory,
+      SessionMap sessions) {
     super(tracer, httpClientFactory);
     this.tracer = Objects.requireNonNull(tracer);
     this.bus = Objects.requireNonNull(bus);
+    this.sessions = Objects.requireNonNull(sessions);
   }
 
   @Override
@@ -107,10 +111,14 @@ public class LocalDistributor extends Distributor {
       writeLock.unlock();
     }
 
-    return selected
+    Session session = selected
         .orElseThrow(
             () -> new SessionNotCreatedException("Unable to find provider for session: " + allCaps))
         .get();
+
+    sessions.add(session);
+
+    return session;
   }
 
   @Override

@@ -36,7 +36,7 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -154,7 +154,7 @@ public class LocalNode extends Node {
 
       // The session we return has to look like it came from the node, since we might be dealing
       // with a webdriver implementation that only accepts connections from localhost
-      return Optional.of(new Session(session.getId(), externalUri, session.getCapabilities()));
+      return Optional.of(createExternalSession(session, externalUri));
     }
   }
 
@@ -183,7 +183,7 @@ public class LocalNode extends Node {
 
       span.addTag("session.capabilities", session.getCapabilities());
       span.addTag("session.uri", session.getUri());
-      return new Session(session.getId(), externalUri, session.getCapabilities());
+      return createExternalSession(session, externalUri);
     }
   }
 
@@ -237,13 +237,20 @@ public class LocalNode extends Node {
     }
   }
 
+  private Session createExternalSession(SessionAndHandler other, URI externalUri) {
+    return new HandledSession(
+      other.getId(),
+      externalUri,
+      other.getCapabilities(),
+      other.getHandler());
+  }
+
   private void killSession(Span span, SessionAndHandler session) {
     span.addTag("session.id", session.getId());
     span.addTag("session.capabilities", session.getCapabilities());
     span.addTag("session.uri", session.getUri());
 
     currentSessions.invalidate(session.getId());
-    session.stop();
     // Attempt to stop the session
     session.stop();
     bus.fire(new SessionClosedEvent(session.getId()));
@@ -289,9 +296,8 @@ public class LocalNode extends Node {
       DistributedTracer tracer,
       EventBus bus,
       HttpClient.Factory httpClientFactory,
-      URI uri,
-      SessionMap sessions) {
-    return new Builder(tracer, bus, httpClientFactory, uri, sessions);
+      URI uri) {
+    return new Builder(tracer, bus, httpClientFactory, uri);
   }
 
   public static class Builder {
@@ -300,7 +306,6 @@ public class LocalNode extends Node {
     private final EventBus bus;
     private final HttpClient.Factory httpClientFactory;
     private final URI uri;
-    private final SessionMap sessions;
     private final ImmutableList.Builder<SessionFactory> factories;
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
     private Ticker ticker = Ticker.systemTicker();
@@ -311,13 +316,11 @@ public class LocalNode extends Node {
         DistributedTracer tracer,
         EventBus bus,
         HttpClient.Factory httpClientFactory,
-        URI uri,
-        SessionMap sessions) {
+        URI uri) {
       this.tracer = Objects.requireNonNull(tracer);
       this.bus = Objects.requireNonNull(bus);
       this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
       this.uri = Objects.requireNonNull(uri);
-      this.sessions = Objects.requireNonNull(sessions);
       this.factories = ImmutableList.builder();
     }
 
@@ -325,7 +328,7 @@ public class LocalNode extends Node {
       Objects.requireNonNull(stereotype, "Capabilities must be set.");
       Objects.requireNonNull(factory, "Session factory must be set.");
 
-      factories.add(new SessionFactory(httpClientFactory, sessions, stereotype, factory));
+      factories.add(new SessionFactory(httpClientFactory, stereotype, factory));
 
       return this;
     }
@@ -388,4 +391,18 @@ public class LocalNode extends Node {
     }
   }
 
+  class HandledSession extends Session implements CommandHandler {
+
+    private final CommandHandler handler;
+
+    public HandledSession(SessionId id, URI uri, Capabilities caps, CommandHandler handler) {
+      super(id, uri, caps);
+      this.handler = Objects.requireNonNull(handler);
+    }
+
+    @Override
+    public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+      handler.execute(req, resp);
+    }
+  }
 }

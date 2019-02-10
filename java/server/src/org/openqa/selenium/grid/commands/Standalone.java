@@ -119,7 +119,7 @@ public class Standalone implements CliCommand {
       HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
       SessionMap sessions = new LocalSessionMap(tracer, bus);
-      Distributor distributor = new LocalDistributor(tracer, bus, clientFactory);
+      Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
       Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       String hostName;
@@ -142,8 +142,7 @@ public class Standalone implements CliCommand {
           tracer,
           bus,
           clientFactory,
-          localhost,
-          sessions)
+          localhost)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
       nodeFlags.configure(config, clientFactory, node);
 

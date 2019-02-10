@@ -8,7 +8,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/events:events",
         "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/node:node",
-        "//java/server/src/org/openqa/selenium/grid/sessionmap:sessionmap",
         "//java/server/src/org/openqa/selenium/grid/web:web",
         "//third_party/java/beust:jcommander",
         "//third_party/java/guava:guava",

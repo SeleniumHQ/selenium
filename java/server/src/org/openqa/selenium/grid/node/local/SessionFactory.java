@@ -22,7 +22,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -38,18 +37,15 @@ class SessionFactory
     implements Predicate<Capabilities>, Function<Capabilities, Optional<SessionAndHandler>> {
 
   private final HttpClient.Factory httpClientFactory;
-  private final SessionMap sessions;
   private final Capabilities capabilities;
   private final Function<Capabilities, Session> generator;
   private volatile boolean available = true;
 
   SessionFactory(
       HttpClient.Factory httpClientFactory,
-      SessionMap sessions,
       Capabilities capabilities,
       Function<Capabilities, Session> generator) {
     this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
-    this.sessions = Objects.requireNonNull(sessions);
     this.capabilities = Objects.requireNonNull(ImmutableCapabilities.copyOf(capabilities));
     this.generator = Objects.requireNonNull(generator);
   }
@@ -88,7 +84,6 @@ class SessionFactory
       this.available = true;
       return Optional.empty();
     }
-    sessions.add(session);
 
     CommandHandler handler;
     if (session instanceof CommandHandler) {
@@ -104,14 +99,10 @@ class SessionFactory
 
     String killUrl = "/session/" + session.getId();
     CommandHandler killingHandler = (req, res) -> {
-      if (req.getMethod() == DELETE && killUrl.equals(req.getUri())) {
-        try {
-          sessions.remove(session.getId());
-        } finally {
-          available = true;
-        }
-      }
       handler.execute(req, res);
+      if (req.getMethod() == DELETE && killUrl.equals(req.getUri())) {
+        available = true;
+      }
     };
 
     return Optional.of(new SessionAndHandler(session, killingHandler));

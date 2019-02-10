@@ -70,9 +70,9 @@ public class EndToEndTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
 
     clientFactory = HttpClient.Factory.createDefault();
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
     URI nodeUri = new URI("http://localhost:4444");
-    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri, sessions)
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
         .add(driverCaps, createFactory(nodeUri))
         .build();
     distributor.add(node);
@@ -115,7 +115,8 @@ public class EndToEndTest {
     LocalDistributor localDistributor = new LocalDistributor(
         tracer,
         bus,
-        clientFactory);
+        clientFactory,
+        sessions);
     Server<?> distributorServer = createServer();
     distributorServer.addRoute(Routes.matching(localDistributor).using(localDistributor));
     distributorServer.start();
@@ -127,7 +128,7 @@ public class EndToEndTest {
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri, sessions)
+    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
         .add(driverCaps, createFactory(nodeUri))
         .build();
     Server<?> nodeServer = new BaseServer<>(

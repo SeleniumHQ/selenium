@@ -131,8 +131,7 @@ public class NodeServer implements CliCommand {
           tracer,
           bus,
           httpClientFactory,
-          serverOptions.getExternalUri(),
-          sessions);
+          serverOptions.getExternalUri());
       nodeFlags.configure(config, httpClientFactory, builder);
       LocalNode node = builder.build();
 

@@ -73,6 +73,7 @@ public class NodeTest {
   private ImmutableCapabilities caps;
   private URI uri;
   private SessionMap sessions;
+  private Wait<Object> wait;
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -92,6 +93,8 @@ public class NodeTest {
 
     sessions = new LocalSessionMap(tracer, bus);
 
+    wait = new FluentWait<>(new Object()).withTimeout(ofSeconds(2));
+
     class Handler extends Session implements CommandHandler {
 
       private Handler(Capabilities capabilities) {
@@ -104,7 +107,7 @@ public class NodeTest {
       }
     }
 
-    local = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
+    local = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, c -> new Handler(c))
         .add(caps, c -> new Handler(c))
         .add(caps, c -> new Handler(c))
@@ -122,7 +125,7 @@ public class NodeTest {
 
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
-    Node local = LocalNode.builder(tracer, bus, clientFactory, uri, sessions).build();
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri).build();
     HttpClient client = new PassthroughHttpClient<>(local);
     Node node = new RemoteNode(tracer, UUID.randomUUID(), uri, ImmutableSet.of(), client);
 
@@ -140,7 +143,7 @@ public class NodeTest {
 
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
-    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, (c) -> new Session(new SessionId(UUID.randomUUID()), uri, c))
         .build();
 
@@ -164,16 +167,6 @@ public class NodeTest {
   }
 
   @Test
-  public void newlyCreatedSessionsAreAddedToTheSessionMap() {
-    Session expected = node.newSession(caps)
-        .orElseThrow(() -> new RuntimeException("Session not created"));
-
-    Session seen = sessions.get(expected.getId());
-
-    assertThat(seen).isEqualTo(expected);
-  }
-
-  @Test
   public void stoppingASessionReducesTheNumberOfCurrentlyActiveSessions() {
     assertThat(local.getCurrentSessionCount()).isEqualTo(0);
 
@@ -193,8 +186,6 @@ public class NodeTest {
     Session expected = node.newSession(caps)
         .orElseThrow(() -> new RuntimeException("Session not created"));
 
-    assertThat(sessions.get(expected.getId())).isEqualTo(expected);
-
     node.stop(expected.getId());
 
     assertThatExceptionOfType(NoSuchSessionException.class)
@@ -202,19 +193,6 @@ public class NodeTest {
 
     assertThatExceptionOfType(NoSuchSessionException.class)
         .isThrownBy(() -> node.getSession(expected.getId()));
-  }
-
-  @Test
-  public void stoppingASessionWillRemoveItFromTheSessionMap() {
-    Session expected = node.newSession(caps)
-        .orElseThrow(() -> new RuntimeException("Session not created"));
-
-    assertThat(sessions.get(expected.getId())).isEqualTo(expected);
-
-    node.stop(expected.getId());
-
-    assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(() -> sessions.get(expected.getId()));
   }
 
   @Test
@@ -251,7 +229,7 @@ public class NodeTest {
       }
     }
 
-    Node local = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, c -> new Recording())
         .build();
     Node remote = new RemoteNode(
@@ -289,7 +267,7 @@ public class NodeTest {
     AtomicReference<Instant> now = new AtomicReference<>(Instant.now());
 
     Clock clock = new MyClock(now);
-    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), uri, c))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
@@ -306,7 +284,7 @@ public class NodeTest {
 
   @Test
   public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
-    Node local = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, c -> {
           throw new SessionNotCreatedException("eeek");
         })
@@ -320,7 +298,7 @@ public class NodeTest {
   @Test
   public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, sessions)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
         .build();
     Optional<Session> session = node.newSession(caps);
@@ -357,7 +335,7 @@ public class NodeTest {
       }
     };
 
-    Node node = LocalNode.builder(tracer, bus, factory, uri, sessions)
+    Node node = LocalNode.builder(tracer, bus, factory, uri)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
         .build();
 

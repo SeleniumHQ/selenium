@@ -114,7 +114,8 @@ public class Hub implements CliCommand {
       Distributor distributor = new LocalDistributor(
           tracer,
           bus,
-          clientFactory);
+          clientFactory,
+          sessions);
       Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       Server<?> server = new BaseServer<>(
