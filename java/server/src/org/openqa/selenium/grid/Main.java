@@ -20,7 +20,6 @@ package org.openqa.selenium.grid;
 import static java.util.Comparator.comparing;
 
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.cli.CliCommand.Executable;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 
 import java.io.PrintWriter;
@@ -35,34 +34,21 @@ public class Main {
     Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
     ServiceLoader.load(CliCommand.class).forEach(commands::add);
 
-    String commandName;
-    String[] remainingArgs;
+    if (args.length == 0) {
+      new Help(commands).configure().run();
 
-    switch (args.length) {
-      case 0:
-        commandName = "help";
-        remainingArgs = new String[0];
-        break;
+    } else {
+      String commandName = args[0];
+      String[] remainingArgs = new String[args.length - 1];
+      System.arraycopy(args, 1, remainingArgs, 0, args.length - 1);
 
-      case 1:
-        commandName = args[0];
-        remainingArgs = new String[0];
-        break;
+      CliCommand command = commands.parallelStream()
+          .filter(cmd -> commandName.equals(cmd.getName()))
+          .findFirst()
+          .orElse(new Help(commands));
 
-      default:
-        commandName = args[0];
-        remainingArgs = new String[args.length - 1];
-        System.arraycopy(args, 1, remainingArgs, 0, args.length - 1);
-        break;
+      command.configure(remainingArgs).run();
     }
-
-    CliCommand command = commands.parallelStream()
-        .filter(cmd -> commandName.equals(cmd.getName()))
-        .findFirst()
-        .orElse(new Help(commands));
-
-    Executable primed = command.configure(remainingArgs);
-    primed.run();
   }
 
   private static class Help implements CliCommand {
