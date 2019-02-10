@@ -43,22 +43,6 @@ public class NodeFlags {
   @ConfigValue(section = "distributor", name = "hostname")
   private String distributorServerHost;
 
-  @Parameter(names = {"--sessions", "-s"}, description = "Address of the session map server.")
-  @ConfigValue(section = "sessions", name = "host")
-  private URI sessionServer;
-
-  @Parameter(
-      names = "--sessions-port",
-      description = "Port on which the sesion map server is listening.")
-  @ConfigValue(section = "sessions", name = "port")
-  private int sessionServerPort;
-
-  @Parameter(
-      names = "--sessions-host",
-      description = "Port on which the sesion map server is listening.")
-  @ConfigValue(section = "sessions", name = "hostname")
-  private String sessionServerHost;
-
   @Parameter(
       names = {"--detect-drivers"},
       description = "Autodetect which drivers are available on the current system, and add them to the node.")

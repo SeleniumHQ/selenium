@@ -40,6 +40,7 @@ import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -64,12 +65,14 @@ public class DistributorServer implements CliCommand {
 
     HelpFlags help = new HelpFlags();
     BaseServerFlags serverFlags = new BaseServerFlags(5553);
+    SessionMapFlags sessionMapFlags = new SessionMapFlags();
     EventBusFlags eventBusFlags = new EventBusFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName(getName())
         .addObject(help)
         .addObject(eventBusFlags)
+        .addObject(sessionMapFlags)
         .addObject(serverFlags)
         .build();
 
@@ -92,6 +95,7 @@ public class DistributorServer implements CliCommand {
           new AnnotatedConfig(help),
           new AnnotatedConfig(eventBusFlags),
           new AnnotatedConfig(serverFlags),
+          new AnnotatedConfig(sessionMapFlags),
           new DefaultDistributorConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);

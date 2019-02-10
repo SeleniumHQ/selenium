@@ -41,8 +41,8 @@ import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.SessionMapOptions;
-import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -68,12 +68,14 @@ public class RouterServer implements CliCommand {
 
     HelpFlags help = new HelpFlags();
     BaseServerFlags serverFlags = new BaseServerFlags(4444);
+    SessionMapFlags sessionMapFlags = new SessionMapFlags();
     NodeFlags nodeFlags = new NodeFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName(getName())
         .addObject(help)
         .addObject(serverFlags)
+        .addObject(sessionMapFlags)
         .addObject(nodeFlags)
         .build();
 
@@ -95,6 +97,7 @@ public class RouterServer implements CliCommand {
           new ConcatenatingConfig("router", '.', System.getProperties()),
           new AnnotatedConfig(help),
           new AnnotatedConfig(serverFlags),
+          new AnnotatedConfig(sessionMapFlags),
           new AnnotatedConfig(nodeFlags));
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
@@ -102,13 +105,10 @@ public class RouterServer implements CliCommand {
       DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
-      SessionMapOptions sessionsOptions = new SessionMapOptions(config);
-      URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
-
       HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-      SessionMap sessions = new RemoteSessionMap(
-          clientFactory.createClient(sessionMapUrl));
+      SessionMapOptions sessionsOptions = new SessionMapOptions(config);
+      SessionMap sessions = sessionsOptions.getSessionMap(clientFactory);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 

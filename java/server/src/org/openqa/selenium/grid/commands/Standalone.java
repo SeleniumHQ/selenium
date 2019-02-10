@@ -102,6 +102,7 @@ public class Standalone implements CliCommand {
           new ConcatenatingConfig("selenium", '.', System.getProperties()),
           new AnnotatedConfig(help),
           new AnnotatedConfig(baseFlags),
+          new AnnotatedConfig(nodeFlags),
           new AnnotatedConfig(eventFlags),
           new DefaultStandaloneConfig());
 

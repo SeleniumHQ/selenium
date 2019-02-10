@@ -9,6 +9,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/distributor:distributor",
         "//java/server/src/org/openqa/selenium/grid/distributor/local:local",
         "//java/server/src/org/openqa/selenium/grid/server:server",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/config:config",
         "//java/server/src/org/openqa/selenium/grid/web:web",
         "//third_party/java/beust:jcommander",
     ],

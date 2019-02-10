@@ -15,13 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.sessionmap;
+package org.openqa.selenium.grid.sessionmap.config;
 
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
+import org.openqa.selenium.remote.http.HttpClient;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Optional;
 
 public class SessionMapOptions {
@@ -32,11 +37,16 @@ public class SessionMapOptions {
     this.config = config;
   }
 
-  public URI getSessionMapUri() {
-    Optional<URI> host = config.get("sessions", "host").map(str -> {
+  public SessionMap getSessionMap(HttpClient.Factory clientFactory) {
+    HttpClient client = clientFactory.createClient(getSessionMapUrl());
+    return new RemoteSessionMap(client);
+  }
+
+  private URL getSessionMapUrl() {
+    Optional<URL> host = config.get("sessions", "host").map(str -> {
       try {
-        return new URI(str);
-      } catch (URISyntaxException e) {
+        return new URL(str);
+      } catch (MalformedURLException e) {
         throw new ConfigException("Sesion map server URI is not a valid URI: " + str);
       }
     });
@@ -53,15 +63,12 @@ public class SessionMapOptions {
     }
 
     try {
-      return new URI(
+      return new URL(
           "http",
-          null,
           hostname.get(),
           port.get(),
-          null,
-          null,
-          null);
-    } catch (URISyntaxException e) {
+          "");
+    } catch (MalformedURLException e) {
       throw new ConfigException(
           "Session map server uri configured through host (%s) and port (%d) is not a valid URI",
           hostname.get(),
