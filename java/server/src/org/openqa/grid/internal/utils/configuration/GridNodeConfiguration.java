@@ -60,6 +60,12 @@ public class GridNodeConfiguration extends GridConfiguration {
       this.port = port;
     }
   }
+  
+  private static NodeJsonConfiguration getDefaultConfigFromJson() {
+	  synchronized(DEFAULT_CONFIG_FROM_JSON) {
+		  return new NodeJsonConfiguration(DEFAULT_CONFIG_FROM_JSON);
+	  }
+  }
 
   private HostPort hubHostPort;
 
@@ -161,47 +167,48 @@ public class GridNodeConfiguration extends GridConfiguration {
    * Creates a new configuration using the default values.
    */
   public GridNodeConfiguration() {
-    this(DEFAULT_CONFIG_FROM_JSON);
+    this(getDefaultConfigFromJson());
   }
 
   public GridNodeConfiguration(NodeJsonConfiguration jsonConfig) {
     super(jsonConfig);
+    NodeJsonConfiguration defaultConfig = getDefaultConfigFromJson();
     role = ROLE;
     capabilities = new ArrayList<>(ofNullable(jsonConfig.getCapabilities())
-                                       .orElse(DEFAULT_CONFIG_FROM_JSON.getCapabilities()));
+                                       .orElse(defaultConfig.getCapabilities()));
     maxSession = ofNullable(jsonConfig.getMaxSession())
-        .orElse(DEFAULT_CONFIG_FROM_JSON.getMaxSession());
+        .orElse(defaultConfig.getMaxSession());
     register = ofNullable(jsonConfig.getRegister())
-        .orElse(DEFAULT_CONFIG_FROM_JSON.getRegister());
+        .orElse(defaultConfig.getRegister());
     registerCycle = ofNullable(jsonConfig.getRegisterCycle())
-        .orElse(DEFAULT_CONFIG_FROM_JSON.getRegisterCycle());
+        .orElse(defaultConfig.getRegisterCycle());
     nodeStatusCheckTimeout = ofNullable(jsonConfig.getNodeStatusCheckTimeout())
-        .orElse(DEFAULT_CONFIG_FROM_JSON.getNodeStatusCheckTimeout());
+        .orElse(defaultConfig.getNodeStatusCheckTimeout());
     nodePolling = ofNullable(jsonConfig.getNodePolling())
-        .orElse(DEFAULT_CONFIG_FROM_JSON.getNodePolling());
+        .orElse(defaultConfig.getNodePolling());
     unregisterIfStillDownAfter = ofNullable(jsonConfig.getUnregisterIfStillDownAfter())
-        .orElse(DEFAULT_CONFIG_FROM_JSON.getUnregisterIfStillDownAfter());
+        .orElse(defaultConfig.getUnregisterIfStillDownAfter());
     downPollingLimit = ofNullable(jsonConfig.getDownPollingLimit())
-        .orElse(DEFAULT_CONFIG_FROM_JSON.getDownPollingLimit());
+        .orElse(defaultConfig.getDownPollingLimit());
     proxy = ofNullable(jsonConfig.getProxy())
-        .orElse(DEFAULT_CONFIG_FROM_JSON.getProxy());
+        .orElse(defaultConfig.getProxy());
     enablePlatformVerification = jsonConfig.isEnablePlatformVerification();
     if (jsonConfig.getHub() != null) {
       // -hub has precedence
       hub = jsonConfig.getHub();
 
     } else if (jsonConfig.getHubHost() != null && jsonConfig.getHubPort() != null) {
-      hubHost = ofNullable(jsonConfig.getHubHost()).orElse(DEFAULT_CONFIG_FROM_JSON.getHubHost());
-      hubPort = ofNullable(jsonConfig.getHubPort()).orElse(DEFAULT_CONFIG_FROM_JSON.getHubPort());
+      hubHost = ofNullable(jsonConfig.getHubHost()).orElse(defaultConfig.getHubHost());
+      hubPort = ofNullable(jsonConfig.getHubPort()).orElse(defaultConfig.getHubPort());
 
     } else {
-      hub = DEFAULT_CONFIG_FROM_JSON.getHub();
+      hub = defaultConfig.getHub();
     }
   }
 
   public GridNodeConfiguration(GridNodeCliOptions cliConfig) {
     this(ofNullable(cliConfig.getConfigFile()).map(NodeJsonConfiguration::loadFromResourceOrFile)
-             .orElse(DEFAULT_CONFIG_FROM_JSON));
+             .orElse(getDefaultConfigFromJson()));
     super.merge(cliConfig.getCommonGridOptions());
     ofNullable(cliConfig.getCapabilities()).ifPresent(v -> capabilities = v);
     ofNullable(cliConfig.getRegister()).ifPresent(v -> register = v);
@@ -242,8 +249,9 @@ public class GridNodeConfiguration extends GridConfiguration {
         throw new RuntimeException("-hub must be a valid url: " + hub, mURLe);
       }
     } else if (hubHost != null || hubPort != null) {
-      hubHostPort = new HostPort(ofNullable(hubHost).orElse(DEFAULT_CONFIG_FROM_JSON.getHubHost()),
-                                 ofNullable(hubPort).orElse(DEFAULT_CONFIG_FROM_JSON.getHubPort()));
+      NodeJsonConfiguration defaultConfig = getDefaultConfigFromJson();
+      hubHostPort = new HostPort(ofNullable(hubHost).orElse(defaultConfig.getHubHost()),
+                                 ofNullable(hubPort).orElse(defaultConfig.getHubPort()));
     }
     return hubHostPort;
   }
