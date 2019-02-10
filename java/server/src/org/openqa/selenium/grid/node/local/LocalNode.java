@@ -93,9 +93,14 @@ public class LocalNode extends Node {
         .expireAfterAccess(sessionTimeout)
         .ticker(ticker)
         .removalListener((RemovalListener<SessionId, SessionAndHandler>) notification -> {
-          // Attempt to stop the session
-          notification.getValue().stop();
-          bus.fire(new SessionClosedEvent(notification.getKey()));
+          // If we were invoked explicitly, then return: we know what we're doing.
+          if (!notification.wasEvicted()) {
+            return;
+          }
+
+          try (Span span = tracer.createSpan("node.evict-session", null)) {
+            killSession(span, notification.getValue());
+          }
         })
         .build();
 
@@ -221,21 +226,29 @@ public class LocalNode extends Node {
   public void stop(SessionId id) throws NoSuchSessionException {
     try (Span span = tracer.createSpan("node.stop-session", tracer.getActiveSpan())) {
 
-      span.addTag("session.id", id);
-
       Objects.requireNonNull(id, "Session ID has not been set");
+
       SessionAndHandler session = currentSessions.getIfPresent(id);
       if (session == null) {
         throw new NoSuchSessionException("Cannot find session with id: " + id);
       }
 
-      span.addTag("session.capabilities", session.getCapabilities());
-      span.addTag("session.uri", session.getUri());
-
-      currentSessions.invalidate(id);
-      session.stop();
+      killSession(span, session);
     }
   }
+
+  private void killSession(Span span, SessionAndHandler session) {
+    span.addTag("session.id", session.getId());
+    span.addTag("session.capabilities", session.getCapabilities());
+    span.addTag("session.uri", session.getUri());
+
+    currentSessions.invalidate(session.getId());
+    session.stop();
+    // Attempt to stop the session
+    session.stop();
+    bus.fire(new SessionClosedEvent(session.getId()));
+  }
+
 
   @Override
   public NodeStatus getStatus() {
