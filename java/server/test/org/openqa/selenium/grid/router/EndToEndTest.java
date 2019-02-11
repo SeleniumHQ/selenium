@@ -18,12 +18,13 @@
 package org.openqa.selenium.grid.router;
 
 import static java.time.Duration.ofSeconds;
-import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -63,6 +64,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
+@Ignore("The Distributor does not return test slots after a session closes")
 public class EndToEndTest {
 
   private final Capabilities driverCaps = new ImmutableCapabilities("browserName", "cheese");
