@@ -91,7 +91,12 @@ public class Proxy {
       setSocksProxy((String) raw.get("socksProxy"));
     }
     if (raw.containsKey("socksVersion") && raw.get("socksVersion") != null) {
-      setSocksVersion((Integer) raw.get("socksVersion"));
+      try {
+        setSocksVersion((Integer) raw.get("socksVersion"));
+      } catch (ClassCastException exc) {
+        Long l = (Long) raw.get("socksVersion");
+        setSocksVersion(l.intValue());
+      }
     }
     if (raw.containsKey("socksUsername") && raw.get("socksUsername") != null) {
       setSocksUsername((String) raw.get("socksUsername"));
