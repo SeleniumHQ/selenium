@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
+import static org.openqa.selenium.net.Urls.fromUri;
+
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.JCommander;
@@ -138,7 +140,7 @@ public class NodeServer implements CliCommand {
       LocalNode node = builder.build();
 
       DistributorOptions distributorOptions = new DistributorOptions(config);
-      URL distributorUrl = distributorOptions.getDistributorUri().toURL();
+      URL distributorUrl = fromUri(distributorOptions.getDistributorUri());
       Distributor distributor = new RemoteDistributor(
           tracer,
           clientFactory,

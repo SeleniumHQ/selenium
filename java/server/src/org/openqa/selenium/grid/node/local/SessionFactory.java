@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node.local;
 
+import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import org.openqa.selenium.Capabilities;
@@ -26,8 +27,6 @@ import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.remote.http.HttpClient;
 
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -89,12 +88,8 @@ class SessionFactory
     if (session instanceof CommandHandler) {
       handler = (CommandHandler) session;
     } else {
-      try {
-        HttpClient client = httpClientFactory.createClient(session.getUri().toURL());
-        handler = new ReverseProxyHandler(client);
-      } catch (MalformedURLException e) {
-        throw new UncheckedIOException(e);
-      }
+      HttpClient client = httpClientFactory.createClient(fromUri(session.getUri()));
+      handler = new ReverseProxyHandler(client);
     }
 
     String killUrl = "/session/" + session.getId();

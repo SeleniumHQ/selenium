@@ -25,6 +25,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -58,7 +59,7 @@ class HandleSession implements CommandHandler {
             if (session instanceof CommandHandler) {
               return (CommandHandler) session;
             }
-            HttpClient client = httpClientFactory.createClient(session.getUri().toURL());
+            HttpClient client = httpClientFactory.createClient(Urls.fromUri(session.getUri()));
             return new ReverseProxyHandler(client);
           }
         });

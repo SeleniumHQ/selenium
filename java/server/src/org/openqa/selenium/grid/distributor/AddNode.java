@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.net.Urls.fromUri;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -83,7 +84,7 @@ public class AddNode implements CommandHandler {
         id,
         uri,
         capabilities,
-        httpFactory.createClient(uri.toURL()));
+        httpFactory.createClient(fromUri(uri)));
 
     distributor.add(node);
   }
