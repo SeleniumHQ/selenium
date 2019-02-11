@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.node.remote;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -28,9 +29,9 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -63,15 +64,16 @@ public class RemoteNode extends Node {
 
   public RemoteNode(
       DistributedTracer tracer,
+      HttpClient.Factory clientFactory,
       UUID id,
       URI externalUri,
-      Collection<Capabilities> capabilities,
-      HttpClient client) {
+      Collection<Capabilities> capabilities) {
     super(tracer, id);
     this.externalUri = Objects.requireNonNull(externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
-    Objects.requireNonNull(client);
+    HttpClient client = Objects.requireNonNull(clientFactory).createClient(fromUri(externalUri));
+
     this.client = req -> {
       try {
         return client.execute(req);

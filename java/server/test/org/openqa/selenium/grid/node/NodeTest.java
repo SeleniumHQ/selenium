@@ -114,20 +114,19 @@ public class NodeTest {
         .maximumConcurrentSessions(2)
         .build();
 
-    HttpClient client = new PassthroughHttpClient<>(local);
     node = new RemoteNode(
         tracer,
+        new PassthroughHttpClient.Factory<>(local),
         UUID.randomUUID(),
         uri,
-        ImmutableSet.of(caps),
-        client);
+        ImmutableSet.of(caps));
   }
 
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
     Node local = LocalNode.builder(tracer, bus, clientFactory, uri).build();
-    HttpClient client = new PassthroughHttpClient<>(local);
-    Node node = new RemoteNode(tracer, UUID.randomUUID(), uri, ImmutableSet.of(), client);
+    HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory<>(local);
+    Node node = new RemoteNode(tracer, clientFactory, UUID.randomUUID(), uri, ImmutableSet.of());
 
     Optional<Session> session = node.newSession(caps);
 
@@ -234,10 +233,10 @@ public class NodeTest {
         .build();
     Node remote = new RemoteNode(
         tracer,
+        new PassthroughHttpClient.Factory<>(local),
         UUID.randomUUID(),
         uri,
-        ImmutableSet.of(caps),
-        new PassthroughHttpClient<>(local));
+        ImmutableSet.of(caps));
 
     Session session = remote.newSession(caps)
         .orElseThrow(() -> new RuntimeException("Session not created"));
