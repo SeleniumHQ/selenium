@@ -17,11 +17,17 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.time.Duration.ofSeconds;
+import static org.assertj.core.api.Assertions.fail;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
@@ -39,6 +45,7 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
@@ -46,10 +53,13 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.zeromq.ZContext;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -87,9 +97,37 @@ public class EndToEndTest {
   }
 
   private void exerciseDriver(Server<?> server) {
-    WebDriver driver = new RemoteWebDriver(
-        server.getUrl(),
-        new ImmutableCapabilities("browserName", "cheese", "type", "cheddar"));
+    // The node added only has a single node. Make sure we can start and stop sessions.
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
+    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
+    driver.get("http://www.google.com");
+
+    // The node is still open. Now create a second session. This should fail
+    try {
+      WebDriver disposable = new RemoteWebDriver(server.getUrl(), caps);
+      disposable.quit();
+      fail("Should not have been able to create driver");
+    } catch (SessionNotCreatedException expected) {
+      // Fall through
+    }
+
+    // Kill the session, and wait until the grid says it's ready
+    driver.quit();
+
+    HttpClient client = clientFactory.createClient(server.getUrl());
+    new FluentWait<>("").withTimeout(ofSeconds(2)).until(obj -> {
+      try {
+        HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
+        System.out.println(response.getContentString());
+        Map<String, Object> status = Values.get(response, MAP_TYPE);
+        return Boolean.TRUE.equals(status.get("ready"));
+      } catch (IOException e) {
+        return false;
+      }
+    });
+
+    // And now we're good to go.
+    driver = new RemoteWebDriver(server.getUrl(), caps);
     driver.get("http://www.google.com");
     driver.quit();
   }

@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
@@ -49,6 +50,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.zeromq.ZContext;
 
 import java.io.IOException;
@@ -56,6 +59,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -187,7 +191,6 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri)
         .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
         .build();
@@ -360,13 +363,52 @@ public class DistributorTest {
     }
   }
 
-  @Ignore("TODO: allow nodes to indicate that sessions are done")
   @Test
   public void shouldReleaseSlotOnceSessionEnds() {
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+
+    CombinedHandler handler = new CombinedHandler();
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory<>(handler),
+        sessions);
+    handler.addHandler(distributor);
+
+    Node node = createNode(caps, 1, 0);
+    handler.addHandler(node);
+    distributor.add(node);
+
+    // Use up the one slot available
+    Session session;
+    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
+       session = distributor.newSession(payload);
+    }
+
+    // Make sure the session map has the session
+    sessions.get(session.getId());
+
+    node.stop(session.getId());
+
+    // Now wait for the session map to say the session is gone.
+    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(2));
+    wait.until(obj -> {
+      try {
+        sessions.get(session.getId());
+        return false;
+      } catch (NoSuchSessionException e) {
+        return true;
+      }
+    });
+
+    // And we should now be able to create another session.
+    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
+      distributor.newSession(payload);
+    }
   }
 
   @Test
-  public void shuldNotStartASessionIfTheCapabilitiesAreNotSupported() {
+  public void shouldNotStartASessionIfTheCapabilitiesAreNotSupported() {
     CombinedHandler handler = new CombinedHandler();
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
@@ -476,7 +518,7 @@ public class DistributorTest {
     URI uri = createUri();
     LocalNode.Builder builder = LocalNode.builder(tracer, bus, clientFactory, uri);
     for (int i = 0; i < count; i++) {
-      builder.add(stereotype, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps));
+      builder.add(stereotype, caps -> new HandledSession(uri, caps));
     }
 
     LocalNode node = builder.build();
@@ -496,11 +538,23 @@ public class DistributorTest {
     }
   }
 
+  class HandledSession extends Session implements CommandHandler {
+
+    HandledSession(URI uri, Capabilities caps) {
+      super(new SessionId(UUID.randomUUID()), uri, caps);
+    }
+
+    @Override
+    public void execute(HttpRequest req, HttpResponse resp) {
+      // no-op
+    }
+  }
+
   private static class CombinedHandler implements Predicate<HttpRequest>, CommandHandler {
 
     private final Map<Predicate<HttpRequest>, CommandHandler> handlers = new HashMap<>();
 
-    public <X extends Predicate<HttpRequest> & CommandHandler> void addHandler(X handler) {
+    <X extends Predicate<HttpRequest> & CommandHandler> void addHandler(X handler) {
       handlers.put(handler, handler);
     }
 
