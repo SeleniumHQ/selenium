@@ -42,10 +42,10 @@
  * {@linkplain Options#headless Options.headless()}. Note, starting in headless
  * mode currently also disables GPU acceleration.
  *
- *     let chrome = require('selenium-webdriver/chrome');
- *     let {Builder} = require('selenium-webdriver');
+ *     const chrome = require('selenium-webdriver/chrome');
+ *     const {Builder} = require('selenium-webdriver');
  *
- *     let driver = new Builder()
+ *     const driver = new Builder()
  *         .forBrowser('chrome')
  *         .setChromeOptions(new chrome.Options().headless())
  *         .build();
@@ -63,17 +63,17 @@
  * You may also create a {@link Driver} with its own driver service. This is
  * useful if you need to capture the server's log output for a specific session:
  *
- *     let chrome = require('selenium-webdriver/chrome');
+ *     const chrome = require('selenium-webdriver/chrome');
  *
- *     let service = new chrome.ServiceBuilder()
+ *     const service = new chrome.ServiceBuilder()
  *         .loggingTo('/my/log/file.txt')
  *         .enableVerboseLogging()
  *         .build();
  *
- *     let options = new chrome.Options();
+ *     const options = new chrome.Options();
  *     // configure browser options ...
  *
- *     let driver = chrome.Driver.createSession(options, service);
+ *     const driver = chrome.Driver.createSession(options, service);
  *
  * Users should only instantiate the {@link Driver} class directly when they
  * need a custom driver service configuration (as shown above). For normal
@@ -92,7 +92,7 @@
  * will require configuring a [custom server](#custom-server) that will connect
  * to adb on the {@linkplain ServiceBuilder#setAdbPort correct port}:
  *
- *     let service = new chrome.ServiceBuilder()
+ *     const service = new chrome.ServiceBuilder()
  *         .setAdbPort(1234)
  *         build();
  *     // etc.
@@ -100,7 +100,7 @@
  * The ChromeDriver may be configured to launch Chrome on Android using
  * {@link Options#androidChrome()}:
  *
- *     let driver = new Builder()
+ *     const driver = new Builder()
  *         .forBrowser('chrome')
  *         .setChromeOptions(new chrome.Options().androidChrome())
  *         .build();
@@ -109,7 +109,7 @@
  * Chrome-WebView by setting the {@linkplain Options#androidActivity
  * androidActivity} option:
  *
- *     let driver = new Builder()
+ *     const driver = new Builder()
  *         .forBrowser('chrome')
  *         .setChromeOptions(new chrome.Options()
  *             .androidPackage('com.example')
@@ -128,21 +128,14 @@
 
 'use strict';
 
-const fs = require('fs');
-const util = require('util');
-
 const http = require('./http');
 const io = require('./io');
 const {Browser, Capabilities, Capability} = require('./lib/capabilities');
 const command = require('./lib/command');
 const error = require('./lib/error');
-const logging = require('./lib/logging');
-const promise = require('./lib/promise');
 const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
-const portprober = require('./net/portprober');
 const remote = require('./remote');
-
 
 /**
  * Name of the ChromeDriver executable.
@@ -151,7 +144,6 @@ const remote = require('./remote');
  */
 const CHROMEDRIVER_EXE =
     process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver';
-
 
 /**
  * Custom command names supported by ChromeDriver.
@@ -164,20 +156,16 @@ const Command = {
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
 };
 
-
 /**
  * Creates a command executor with support for ChromeDriver's custom commands.
  * @param {!Promise<string>} url The server's URL.
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  let agent = new http.Agent({ keepAlive: true });
-  let client = url.then(url => new http.HttpClient(url, agent));
-  let executor = new http.Executor(client);
-  configureExecutor(executor);
-  return executor;
+  const agent = new http.Agent({keepAlive: true});
+  const client = url.then((url) => new http.HttpClient(url, agent));
+  return new http.Executor(client);
 }
-
 
 /**
  * Configures the given executor with Chrome-specific commands.
@@ -186,22 +174,21 @@ function createExecutor(url) {
 function configureExecutor(executor) {
   executor.defineCommand(
       Command.LAUNCH_APP,
-      'POST',
-      '/session/:sessionId/chromium/launch_app');
+      'POST', '/session/:sessionId/chromium/launch_app'
+  );
   executor.defineCommand(
       Command.GET_NETWORK_CONDITIONS,
-      'GET',
-      '/session/:sessionId/chromium/network_conditions');
+      'GET', '/session/:sessionId/chromium/network_conditions'
+  );
   executor.defineCommand(
       Command.SET_NETWORK_CONDITIONS,
-      'POST',
-      '/session/:sessionId/chromium/network_conditions');
+      'POST', '/session/:sessionId/chromium/network_conditions'
+  );
   executor.defineCommand(
       Command.SEND_DEVTOOLS_COMMAND,
-      'POST',
-      '/session/:sessionId/chromium/send_command');
+      'POST', '/session/:sessionId/chromium/send_command'
+  );
 }
-
 
 /**
  * _Synchronously_ attempts to locate the chromedriver executable on the current
@@ -212,7 +199,6 @@ function configureExecutor(executor) {
 function locateSynchronously() {
   return io.findInPath(CHROMEDRIVER_EXE, true);
 }
-
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -228,17 +214,18 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously();
-    if (!exe) {
-      throw Error(
-          'The ChromeDriver could not be found on the current PATH. Please ' +
-          'download the latest version of the ChromeDriver from ' +
+    const exe = opt_exe || locateSynchronously();
+    if (exe) {
+      super(exe);
+      this.setLoopback(true);  // Required
+    } else {
+      throw new Error(
+          'The ChromeDriver could not be found on the current PATH. ' +
+          'Please download the latest version of the ChromeDriver from ' +
           'http://chromedriver.storage.googleapis.com/index.html and ensure ' +
-          'it can be found on your PATH.');
+          'it can be found on your PATH.'
+      );
     }
-
-    super(exe);
-    this.setLoopback(true);  // Required
   }
 
   /**
@@ -290,11 +277,8 @@ class ServiceBuilder extends remote.DriverService.Builder {
   }
 }
 
-
-
 /** @type {remote.DriverService} */
-let defaultService = null;
-
+let defaultService;
 
 /**
  * Sets the default service to use for new ChromeDriver instances.
@@ -303,13 +287,14 @@ let defaultService = null;
  */
 function setDefaultService(service) {
   if (defaultService && defaultService.isRunning()) {
-    throw Error(
-        'The previously configured ChromeDriver service is still running. ' +
-        'You must shut it down before you may adjust its configuration.');
+    throw new Error(
+        'The previously configured ChromeDriver service is still ' +
+        'running. Shut it down before adjusting its configuration.'
+    );
+  } else {
+    defaultService = service;
   }
-  defaultService = service;
 }
-
 
 /**
  * Returns the default ChromeDriver service. If such a service has not been
@@ -324,9 +309,7 @@ function getDefaultService() {
   return defaultService;
 }
 
-
 const OPTIONS_CAPABILITY_KEY = 'goog:chromeOptions';
-
 
 /**
  * Class for managing ChromeDriver specific options.
@@ -356,9 +339,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   addArguments(...args) {
-    let newArgs = (this.options_.args || []).concat(...args);
-    if (newArgs.length) {
-      this.options_.args = newArgs;
+    if (args.length) {
+      this.options_.args = (this.options_.args || []).concat(...args);
     }
     return this;
   }
@@ -379,8 +361,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   headless() {
-    // TODO(jleyba): Remove `disable-gpu` once head Chrome no longer requires
-    // that to be set.
+    // TODO(jleyba): Remove `disable-gpu` once headless Chrome no longer
+    //   requires that to be set.
     return this.addArguments('headless', 'disable-gpu');
   }
 
@@ -393,27 +375,27 @@ class Options extends Capabilities {
    *     less than or equal to 0.
    */
   windowSize({width, height}) {
-    function checkArg(arg) {
+    [width, height].forEach((arg) => {
       if (typeof arg !== 'number' || arg <= 0) {
-        throw TypeError('Arguments must be {width, height} with numbers > 0');
+        throw new TypeError(
+            'Arguments must be {width, height} with numbers > 0'
+        );
       }
-    }
-    checkArg(width);
-    checkArg(height);
+    });
     return this.addArguments(`window-size=${width},${height}`);
   }
 
   /**
-   * List of Chrome command line switches to exclude that ChromeDriver by default
+   * List of command line switches to exclude that ChromeDriver by default
    * passes when starting Chrome.  Do not prefix switches with "--".
    *
    * @param {...(string|!Array<string>)} args The switches to exclude.
    * @return {!Options} A self reference.
    */
   excludeSwitches(...args) {
-    let switches = (this.options_.excludeSwitches || []).concat(...args);
-    if (switches.length) {
-      this.options_.excludeSwitches = switches;
+    if (args.length) {
+      this.options_.excludeSwitches =
+          (this.options_.excludeSwitches || []).concat(...args);
     }
     return this;
   }
@@ -427,8 +409,10 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   addExtensions(...args) {
-    let current = this.options_.extensions || [];
-    this.options_.extensions = current.concat(...args);
+    if (args.length) {
+      this.options_.extensions =
+          (this.options_.extensions || []).concat(...args);
+    }
     return this;
   }
 
@@ -551,8 +535,8 @@ class Options extends Capabilities {
   /**
    * Sets the package name of the Chrome or WebView app.
    *
-   * @param {?string} pkg The package to connect to, or `null` to disable Android
-   *     and switch back to using desktop Chrome.
+   * @param {?string} pkg The package to connect to, or `null` to disable
+   *     Android and switch back to using desktop Chrome.
    * @return {!Options} A self reference.
    */
   androidPackage(pkg) {
@@ -620,20 +604,20 @@ class Options extends Capabilities {
    *
    * __Example 1: Using a Pre-configured Device__
    *
-   *     let options = new chrome.Options().setMobileEmulation(
+   *     const options = new chrome.Options().setMobileEmulation(
    *         {deviceName: 'Google Nexus 5'});
    *
-   *     let driver = chrome.Driver.createSession(options);
+   *     const driver = chrome.Driver.createSession(options);
    *
    * __Example 2: Using Custom Screen Configuration__
    *
-   *     let options = new chrome.Options().setMobileEmulation({
+   *     const options = new chrome.Options().setMobileEmulation({
    *         width: 360,
    *         height: 640,
    *         pixelRatio: 3.0
    *     });
    *
-   *     let driver = chrome.Driver.createSession(options);
+   *     const driver = chrome.Driver.createSession(options);
    *
    *
    * [em]: https://sites.google.com/a/chromium.org/chromedriver/mobile-emulation
@@ -657,20 +641,20 @@ class Options extends Capabilities {
    * @suppress {checkTypes} Suppress [] access on a struct.
    */
   [Symbols.serialize]() {
-    if (this.options_.extensions &&  this.options_.extensions.length) {
+    if (this.options_.extensions) {
       this.options_.extensions =
-          this.options_.extensions.map(function(extension) {
+          this.options_.extensions.map((extension) => {
             if (Buffer.isBuffer(extension)) {
               return extension.toString('base64');
+            } else {
+              return io.read(/** @type {string} */(extension))
+                  .then((buffer) => buffer.toString('base64'));
             }
-            return io.read(/** @type {string} */(extension))
-                .then(buffer => buffer.toString('base64'));
           });
     }
     return super[Symbols.serialize]();
   }
 }
-
 
 /**
  * Creates a new WebDriver client for Chrome.
@@ -692,22 +676,19 @@ class Driver extends webdriver.WebDriver {
     let executor;
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor;
-      configureExecutor(executor);
     } else {
-      let service = opt_serviceExecutor || getDefaultService();
+      const service = opt_serviceExecutor || getDefaultService();
       executor = createExecutor(service.start());
     }
+    configureExecutor(executor);
 
-    let caps = opt_config || Capabilities.chrome();
+    const caps = opt_config || new Options();
 
     // W3C spec requires noProxy value to be an array of strings, but Chrome
     // expects a single host as a string.
-    let proxy = caps.get(Capability.PROXY);
+    const proxy = caps.get(Capability.PROXY);
     if (proxy && Array.isArray(proxy.noProxy)) {
       proxy.noProxy = proxy.noProxy[0];
-      if (!proxy.noProxy) {
-        proxy.noProxy = undefined;
-      }
     }
 
     return /** @type {!Driver} */(super.createSession(executor, caps));
@@ -718,7 +699,8 @@ class Driver extends webdriver.WebDriver {
    * implementation.
    * @override
    */
-  setFileDetector() {}
+  setFileDetector() {
+  }
 
   /**
    * Schedules a command to launch Chrome App with given ID.
@@ -728,16 +710,19 @@ class Driver extends webdriver.WebDriver {
    */
   launchApp(id) {
     return this.execute(
-        new command.Command(Command.LAUNCH_APP).setParameter('id', id));
+        new command.Command(Command.LAUNCH_APP).setParameter('id', id)
+    );
   }
 
   /**
    * Schedules a command to get Chrome network emulation settings.
    * @return {!Promise} A promise that will be resolved when network
-   *     emulation settings are retrievied.
+   *     emulation settings are retrieved.
    */
   getNetworkConditions() {
-    return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS));
+    return this.execute(
+        new command.Command(Command.GET_NETWORK_CONDITIONS)
+    );
   }
 
   /**
@@ -748,8 +733,8 @@ class Driver extends webdriver.WebDriver {
    *  driver.setNetworkConditions({
    *    offline: false,
    *    latency: 5, // Additional latency (ms).
-   *    download_throughput: 500 * 1024, // Maximal aggregated download throughput.
-   *    upload_throughput: 500 * 1024 // Maximal aggregated upload throughput.
+   *    download_throughput: 500 * 1024, // Max aggregated download throughput.
+   *    upload_throughput: 500 * 1024 // Max aggregated upload throughput.
    * });
    *
    * @param {Object} spec Defines the network conditions to set
@@ -757,12 +742,16 @@ class Driver extends webdriver.WebDriver {
    *     emulation settings are set.
    */
   setNetworkConditions(spec) {
-    if (!spec || typeof spec !== 'object') {
-      throw TypeError('setNetworkConditions called with non-network-conditions parameter');
+    if (typeof spec === 'object') {
+      return this.execute(
+          new command.Command(Command.SET_NETWORK_CONDITIONS)
+              .setParameter('network_conditions', spec)
+      );
+    } else {
+      throw new TypeError(
+          'setNetworkConditions argument must be an object'
+      );
     }
-    return this.execute(
-        new command.Command(Command.SET_NETWORK_CONDITIONS)
-            .setParameter('network_conditions', spec));
   }
 
   /**
@@ -778,7 +767,8 @@ class Driver extends webdriver.WebDriver {
     return this.execute(
         new command.Command(Command.SEND_DEVTOOLS_COMMAND)
             .setParameter('cmd', cmd)
-            .setParameter('params', params));
+            .setParameter('params', params)
+    );
   }
 
   /**
@@ -790,23 +780,26 @@ class Driver extends webdriver.WebDriver {
    * @see #sendDevToolsCommand
    */
   async setDownloadPath(path) {
-    if (!path || typeof path !== 'string') {
-      throw new error.InvalidArgumentError('invalid download path');
+    if (typeof path === 'string') {
+      const stat = await io.stat(path);
+      if (stat.isDirectory()) {
+        return this.sendDevToolsCommand(
+            'Page.setDownloadBehavior',
+            {
+              'behavior': 'allow',
+              'downloadPath': path
+            }
+        );
+      } else {
+        throw new error.InvalidArgumentError('not a directory: ' + path);
+      }
+    } else {
+      throw new TypeError('invalid download path');
     }
-    const stat = await io.stat(path);
-    if (!stat.isDirectory()) {
-      throw new error.InvalidArgumentError('not a directory: ' + path);
-    }
-    return this.sendDevToolsCommand('Page.setDownloadBehavior', {
-      'behavior': 'allow',
-      'downloadPath': path
-    });
   }
 }
 
-
 // PUBLIC API
-
 
 exports.Driver = Driver;
 exports.Options = Options;
