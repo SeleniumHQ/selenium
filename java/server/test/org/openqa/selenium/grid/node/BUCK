@@ -1,4 +1,3 @@
-
 java_test(
     name = "node",
     srcs = glob(["*.java"]),

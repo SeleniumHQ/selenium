@@ -1,17 +1,16 @@
-
 java_library(
     name = "commands",
     srcs = glob(["*.java"]),
     provided_deps = [
-        '//third_party/java/service:auto-service',
+        "//third_party/java/service:auto-service",
     ],
     annotation_processor_deps = [
-        '//third_party/java/auto:auto-common',
-        '//third_party/java/service:auto-service',
-        '//third_party/java/guava:guava',
+        "//third_party/java/auto:auto-common",
+        "//third_party/java/service:auto-service",
+        "//third_party/java/guava:guava",
     ],
     annotation_processors = [
-        'com.google.auto.service.processor.AutoServiceProcessor',
+        "com.google.auto.service.processor.AutoServiceProcessor",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
@@ -30,6 +29,6 @@ java_library(
     ],
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:",
-        "//java/server/src/org/openqa/selenium/grid:"
+        "//java/server/src/org/openqa/selenium/grid:",
     ],
 )

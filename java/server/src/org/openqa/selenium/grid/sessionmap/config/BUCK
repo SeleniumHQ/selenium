@@ -11,6 +11,6 @@ java_library(
         "//third_party/java/beust:jcommander",
     ],
     visibility = [
-        '//java/server/src/org/openqa/selenium/grid/...',
+        "//java/server/src/org/openqa/selenium/grid/...",
     ],
 )

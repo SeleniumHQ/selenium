@@ -1,6 +1,6 @@
 java_test(
     name = "web",
-    labels = [ "small" ],
+    labels = ["small"],
     srcs = glob(["*Test.java"]),
     deps = [
         ":utils",

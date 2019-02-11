@@ -1,4 +1,3 @@
-
 java_library(
     name = "local",
     srcs = glob(["*.java"]),

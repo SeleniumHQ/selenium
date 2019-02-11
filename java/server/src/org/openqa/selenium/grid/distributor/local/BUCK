@@ -1,4 +1,3 @@
-
 java_library(
     name = "local",
     srcs = glob(["*.java"]),
@@ -18,5 +17,5 @@ java_library(
     visibility = [
         "//java/server/src/org/openqa/selenium/grid/...",
         "//java/server/test/org/openqa/selenium/grid/...",
-    ]
+    ],
 )
