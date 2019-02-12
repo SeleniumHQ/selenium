@@ -22,33 +22,101 @@ import static java.util.Comparator.comparing;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 
+import java.io.File;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 public class Main {
 
   public static void main(String[] args) throws Exception {
-    Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
-    ServiceLoader.load(CliCommand.class).forEach(commands::add);
-
     if (args.length == 0) {
-      new Help(commands).configure().run();
+      new Help(loadCommands(Main.class.getClassLoader())).configure().run();
 
     } else {
-      String commandName = args[0];
-      String[] remainingArgs = new String[args.length - 1];
-      System.arraycopy(args, 1, remainingArgs, 0, args.length - 1);
+      if ("--ext".equals(args[0])) {
+        if (args.length > 1) {
+          StringTokenizer tokenizer = new StringTokenizer(args[1], File.pathSeparator);
+          List<File> jars = new ArrayList<>();
+          while (tokenizer.hasMoreTokens()) {
+            File file = new File(tokenizer.nextToken());
+            if (file.exists()) {
+              if (file.isDirectory()) {
+                for (File subdirFile : file.listFiles()) {
+                  if (subdirFile.isFile() && subdirFile.getName().endsWith(".jar")) {
+                    jars.add(subdirFile);
+                  }
+                }
+              } else {
+                jars.add(file);
+              }
+            } else {
+              System.err.println("WARNING: Extension file or directory does not exist: " + file);
+            }
+          }
 
-      CliCommand command = commands.parallelStream()
-          .filter(cmd -> commandName.equals(cmd.getName()))
-          .findFirst()
-          .orElse(new Help(commands));
+          URL[] jarUrls = jars.stream().map(file -> {
+            try {
+              return file.toURI().toURL();
+            } catch (MalformedURLException e) {
+              e.printStackTrace();
+              return null;
+            }
+          }).filter(Objects::nonNull).toArray(URL[]::new);
 
-      command.configure(remainingArgs).run();
+          URLClassLoader loader = AccessController.doPrivileged(
+              (PrivilegedAction<URLClassLoader>) () ->
+                  new URLClassLoader(jarUrls, Main.class.getClassLoader()));
+
+          if (args.length > 2) {
+            String[] remainingArgs = new String[args.length - 2];
+            System.arraycopy(args, 2, remainingArgs, 0, args.length - 2);
+            launch(remainingArgs, loader);
+
+          } else {
+            new Help(loadCommands(loader)).configure().run();
+          }
+
+        } else {
+          new Help(loadCommands(Main.class.getClassLoader())).configure().run();
+        }
+
+      } else {
+        launch(args, Main.class.getClassLoader());
+      }
     }
+  }
+
+  private static Set<CliCommand> loadCommands(ClassLoader loader) {
+    Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
+    ServiceLoader.load(CliCommand.class, loader).forEach(commands::add);
+    return commands;
+  }
+
+  private static void launch(String[] args, ClassLoader loader) throws Exception {
+    String commandName = args[0];
+    String[] remainingArgs = new String[args.length - 1];
+    System.arraycopy(args, 1, remainingArgs, 0, args.length - 1);
+
+    Set<CliCommand> commands = loadCommands(loader);
+
+    CliCommand command = commands.parallelStream()
+        .filter(cmd -> commandName.equals(cmd.getName()))
+        .findFirst()
+        .orElse(new Help(commands));
+
+    command.configure(remainingArgs).run();
   }
 
   private static class Help implements CliCommand {
