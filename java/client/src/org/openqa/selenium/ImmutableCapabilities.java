@@ -72,8 +72,13 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
     this(other.asMap());
   }
 
-  public ImmutableCapabilities(Map<String, ?> capabilities) {
-    capabilities.forEach(this::setCapability);
+  public ImmutableCapabilities(Map<?, ?> capabilities) {
+    capabilities.forEach((key, value) -> {
+      if (!(key instanceof String)) {
+        throw new IllegalArgumentException("Key values must be strings");
+      }
+      setCapability(String.valueOf(key), value);
+    });
   }
 
   public static ImmutableCapabilities copyOf(Capabilities capabilities) {

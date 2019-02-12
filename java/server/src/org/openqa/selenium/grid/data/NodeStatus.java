@@ -145,9 +145,8 @@ public class NodeStatus {
     ImmutableMap.Builder<Capabilities, Integer> capacity = ImmutableMap.builder();
     kind.forEach(obj -> {
       Map<?, ?> cap = (Map<?, ?>) obj;
-      //noinspection unchecked
       capacity.put(
-          new ImmutableCapabilities((Map<String, Object>) cap.get("capabilities")),
+          new ImmutableCapabilities((Map<?, ?>) cap.get("capabilities")),
           ((Number) cap.get("count")).intValue());
     });
 
