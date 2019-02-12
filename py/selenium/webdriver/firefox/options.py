@@ -60,7 +60,9 @@ class Options(ArgOptions):
 
     @property
     def binary_location(self):
-        """Returns the location of the binary."""
+        """
+        :Returns: The location of the binary.
+        """
         return self.binary._start_cmd
 
     @binary_location.setter  # noqa
@@ -78,7 +80,7 @@ class Options(ArgOptions):
 
     @property
     def preferences(self):
-        """Returns a dict of preferences."""
+        """:Returns: A dict of preferences."""
         return self._preferences
 
     def set_preference(self, name, value):
@@ -87,7 +89,9 @@ class Options(ArgOptions):
 
     @property
     def proxy(self):
-        """ returns Proxy if set otherwise None."""
+        """
+        :Returns: Proxy if set, otherwise None.
+        """
         return self._proxy
 
     @proxy.setter
@@ -98,7 +102,9 @@ class Options(ArgOptions):
 
     @property
     def profile(self):
-        """Returns the Firefox profile to use."""
+        """
+        :Returns: The Firefox profile to use.
+        """
         return self._profile
 
     @profile.setter
@@ -114,7 +120,7 @@ class Options(ArgOptions):
     @property
     def headless(self):
         """
-        Returns whether or not the headless argument is set
+        :Returns: True if the headless argument is set, else False
         """
         return '-headless' in self._arguments
 
