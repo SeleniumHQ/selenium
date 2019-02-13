@@ -162,6 +162,12 @@ public class Main {
         });
 
         out.write("\nFor each command, run with `--help` for command-specific help\n");
+        out.write("\nUse the `--ext` flag before the command name to specify an additional " +
+                  "classpath to use with the server (for example, to provide additional " +
+                  "commands, or to provide additional driver implementations). For example:\n");
+        out.write(String.format(
+            "\n  java -jar selenium.jar --ext example.jar%sdir standalone --port 1234",
+            File.pathSeparator));
         System.out.println("\n");
       };
     }
