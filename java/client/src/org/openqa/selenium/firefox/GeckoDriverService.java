@@ -96,7 +96,7 @@ public class GeckoDriverService extends FirefoxDriverService {
   }
 
   @Override
-  protected void waitUntilAvailable() throws MalformedURLException {
+  protected void waitUntilAvailable() {
     PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
   }
 
@@ -205,12 +205,10 @@ public class GeckoDriverService extends FirefoxDriverService {
           } else if ("/dev/null".equals(firefoxLogFile)) {
             service.sendOutputTo(ByteStreams.nullOutputStream());
           } else {
-            // TODO: The stream is leaked.
             service.sendOutputTo(new FileOutputStream(firefoxLogFile));
           }
         } else {
           if (getLogFile() != null) {
-            // TODO: This stream is leaked.
             service.sendOutputTo(new FileOutputStream(getLogFile()));
           } else {
             service.sendOutputTo(System.err);
