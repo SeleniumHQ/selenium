@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -32,6 +33,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
@@ -39,10 +41,9 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.NoHandler;
 import org.openqa.selenium.grid.web.PassthroughHttpClient;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
@@ -54,17 +55,14 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.zeromq.ZContext;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 
 public class DistributorTest {
 
@@ -531,6 +529,30 @@ public class DistributorTest {
     return node;
   }
 
+  @Test
+  @Ignore
+  public void shouldCorrectlySetSessionCountsWhenStartedAfterNodeWithSession() {
+    fail("write me");
+  }
+
+  @Test
+  public void statusShouldIndicateThatDistributorIsNotAvailableIfNodesAreDown()
+      throws URISyntaxException {
+    Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
+    URI uri = new URI("http://exmaple.com");
+
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
+        .add(capabilities, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .advanced()
+        .healthCheck(() -> new HealthCheck.Result(false, "TL;DR"))
+        .build();
+
+    local.add(node);
+
+    DistributorStatus status = local.getStatus();
+    assertFalse(status.hasCapacity());
+  }
+
   private URI createUri() {
     try {
       return new URI("http://localhost:" + PortProber.findFreePort());
@@ -551,30 +573,4 @@ public class DistributorTest {
     }
   }
 
-  private static class CombinedHandler implements Predicate<HttpRequest>, CommandHandler {
-
-    private final Map<Predicate<HttpRequest>, CommandHandler> handlers = new HashMap<>();
-
-    <X extends Predicate<HttpRequest> & CommandHandler> void addHandler(X handler) {
-      handlers.put(handler, handler);
-    }
-
-    @Override
-    public boolean test(HttpRequest request) {
-      return handlers.keySet().stream()
-          .map(p -> p.test(request))
-          .reduce(Boolean::logicalAnd)
-          .orElse(false);
-    }
-
-    @Override
-    public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-      handlers.entrySet().stream()
-          .filter(entry -> entry.getKey().test(req))
-          .findFirst()
-          .map(Map.Entry::getValue)
-          .orElse(new NoHandler(new Json()))
-          .execute(req, resp);
-    }
-  }
 }

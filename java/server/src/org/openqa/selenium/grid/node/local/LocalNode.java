@@ -81,7 +81,7 @@ public class LocalNode extends Node {
       Ticker ticker,
       Duration sessionTimeout,
       List<SessionFactory> factories) {
-    super(tracer, UUID.randomUUID());
+    super(tracer, UUID.randomUUID(), uri);
 
     Preconditions.checkArgument(
         maxSessionCount > 0,

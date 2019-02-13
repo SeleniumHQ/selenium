@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.grid.web.Routes.combine;
 import static org.openqa.selenium.grid.web.Routes.delete;
 import static org.openqa.selenium.grid.web.Routes.get;
@@ -39,6 +40,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -95,12 +97,14 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
   protected final DistributedTracer tracer;
   private final UUID id;
+  private final URI uri;
   private final Injector injector;
   private final Routes routes;
 
-  protected Node(DistributedTracer tracer, UUID id) {
+  protected Node(DistributedTracer tracer, UUID id, URI uri) {
     this.tracer = Objects.requireNonNull(tracer);
     this.id = Objects.requireNonNull(id);
+    this.uri = Objects.requireNonNull(uri);
 
     Json json = new Json();
     injector = Injector.builder()
@@ -117,6 +121,13 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
         get("/se/grid/node/session/{sessionId}").using(GetNodeSession.class)
             .map("sessionId", SessionId::new),
         post("/se/grid/node/session").using(NewNodeSession.class),
+        get("/se/grid/node/status")
+            .using((req, res) -> {
+              System.out.println("Getting node status: " + req);
+              NodeStatus status = getStatus();
+              System.out.println("Status is: " + json.toJson(status));
+              res.setContent(json.toJson(status).getBytes(UTF_8));
+            }),
         get("/status").using(StatusHandler.class),
         matching(req -> {
           if (!req.getUri().startsWith("/session/")) {
@@ -133,6 +144,10 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
   public UUID getId() {
     return id;
+  }
+
+  public URI getUri() {
+    return uri;
   }
 
   public abstract Optional<Session> newSession(Capabilities capabilities);

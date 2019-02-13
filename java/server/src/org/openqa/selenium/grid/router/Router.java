@@ -18,9 +18,11 @@
 package org.openqa.selenium.grid.router;
 
 import static org.openqa.selenium.grid.web.Routes.combine;
+import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.matching;
 
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.HandlerNotFoundException;
@@ -58,6 +60,7 @@ public class Router implements Predicate<HttpRequest>, CommandHandler {
         .build();
 
     routes = combine(
+        get("/status").using(GridStatusHandler.class).decorateWith(W3CCommandHandler.class),
         matching(sessions).using(sessions),
         matching(distributor).using(distributor),
         matching(req -> req.getUri().startsWith("/session/")).using(HandleSession.class))

@@ -68,7 +68,7 @@ public class RemoteNode extends Node {
       UUID id,
       URI externalUri,
       Collection<Capabilities> capabilities) {
-    super(tracer, id);
+    super(tracer, id, externalUri);
     this.externalUri = Objects.requireNonNull(externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 

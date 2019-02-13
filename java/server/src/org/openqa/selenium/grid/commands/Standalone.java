@@ -33,9 +33,11 @@ import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.local.NodeFlags;
 import org.openqa.selenium.grid.router.Router;
+import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -46,6 +48,7 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -117,12 +120,6 @@ public class Standalone implements CliCommand {
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
-      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
-      Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
-      Router router = new Router(tracer, clientFactory, sessions, distributor);
-
       String hostName;
       try {
         hostName = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
@@ -139,15 +136,29 @@ public class Standalone implements CliCommand {
         throw new RuntimeException(e);
       }
 
-      LocalNode.Builder node = LocalNode.builder(
+      CombinedHandler combinedHandler = new CombinedHandler();
+      HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+        localhost.toURL(),
+        combinedHandler,
+        HttpClient.Factory.createDefault());
+
+      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      combinedHandler.addHandler(sessions);
+      Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
+      combinedHandler.addHandler(distributor);
+      Router router = new Router(tracer, clientFactory, sessions, distributor);
+
+      LocalNode.Builder nodeBuilder = LocalNode.builder(
           tracer,
           bus,
           clientFactory,
           localhost)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
-      nodeFlags.configure(config, clientFactory, node);
+      nodeFlags.configure(config, clientFactory, nodeBuilder);
 
-      distributor.add(node.build());
+      Node node = nodeBuilder.build();
+      combinedHandler.addHandler(node);
+      distributor.add(node);
 
       Server<?> server = new BaseServer<>(new BaseServerOptions(config));
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));

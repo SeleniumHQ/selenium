@@ -43,6 +43,10 @@ public class Slot {
     this.currentStatus = Objects.requireNonNull(status);
   }
 
+  public Capabilities getStereotype() {
+    return registeredCapabilities;
+  }
+
   public Status getStatus() {
     return currentStatus;
   }

@@ -15,35 +15,40 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor;
+package org.openqa.selenium.grid.web;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
 
-class GetDistributorStatus implements CommandHandler {
+public class CombinedHandler implements Predicate<HttpRequest>, CommandHandler {
 
-  private final Json json;
-  private final Distributor distributor;
+  private final Map<Predicate<HttpRequest>, CommandHandler> handlers = new HashMap<>();
 
-  public GetDistributorStatus(Json json, Distributor distributor) {
-    this.json = Objects.requireNonNull(json);
-    this.distributor = Objects.requireNonNull(distributor);
+  public <X extends Predicate<HttpRequest> & CommandHandler> void addHandler(X handler) {
+    handlers.put(handler, handler);
+  }
+
+  @Override
+  public boolean test(HttpRequest request) {
+    return handlers.keySet().stream()
+        .map(p -> p.test(request))
+        .reduce(Boolean::logicalOr)
+        .orElse(false);
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    DistributorStatus status = distributor.getStatus();
-
-    resp.setContent(json.toJson(ImmutableMap.of("value", status)).getBytes(UTF_8));
+    handlers.entrySet().stream()
+        .filter(entry -> entry.getKey().test(req))
+        .findFirst()
+        .map(Map.Entry::getValue)
+        .orElse(new NoHandler(new Json()))
+        .execute(req, resp);
   }
 }

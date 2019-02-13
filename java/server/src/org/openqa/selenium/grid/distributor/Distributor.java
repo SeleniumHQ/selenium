@@ -22,6 +22,7 @@ import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.post;
 
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.CommandHandler;
@@ -92,9 +93,7 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
         post("/session").using(CreateSession.class),
         post("/se/grid/distributor/node").using(AddNode.class),
         delete("/se/grid/distributor/node/{nodeId}").using(RemoveNode.class).map("nodeId", UUID::fromString),
-        get("/se/grid/distributor/status").using(GetDistributorStatus.class),
-        get("/status").using(StatusHandler.class)
-    ).build();
+        get("/se/grid/distributor/status").using(GetDistributorStatus.class)).build();
   }
 
   public abstract Session newSession(NewSessionPayload payload) throws SessionNotCreatedException;
