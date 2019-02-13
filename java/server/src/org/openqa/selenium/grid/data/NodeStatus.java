@@ -17,19 +17,25 @@
 
 package org.openqa.selenium.grid.data;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public class NodeStatus {
@@ -37,30 +43,30 @@ public class NodeStatus {
   private final UUID nodeId;
   private final URI externalUri;
   private final int maxSessionCount;
-  private final Map<Capabilities, Integer> available;
-  private final Map<Capabilities, Integer> used;
+  private final Map<Capabilities, Integer> stereotypes;
+  private final Set<Active> snapshot;
 
   public NodeStatus(
       UUID nodeId,
       URI externalUri,
       int maxSessionCount,
-      Map<Capabilities, Integer> available,
-      Map<Capabilities, Integer> used) {
+      Map<Capabilities, Integer> stereotypes,
+      Collection<Active> snapshot) {
     this.nodeId = Objects.requireNonNull(nodeId);
     this.externalUri = Objects.requireNonNull(externalUri);
     Preconditions.checkArgument(maxSessionCount > 0, "Max session count must be greater than 0.");
     this.maxSessionCount = maxSessionCount;
 
-    this.available = ImmutableMap.copyOf(Objects.requireNonNull(available));
-    this.used = ImmutableMap.copyOf(Objects.requireNonNull(used));
+    this.stereotypes = ImmutableMap.copyOf(Objects.requireNonNull(stereotypes));
+    this.snapshot = ImmutableSet.copyOf(Objects.requireNonNull(snapshot));
   }
 
   public boolean hasCapacity() {
-    return !available.isEmpty();
+    return !stereotypes.isEmpty();
   }
 
   public boolean hasCapacity(Capabilities caps) {
-    return available.getOrDefault(caps, 0) > 0;
+    return stereotypes.getOrDefault(caps, 0) > 0;
   }
 
   public UUID getNodeId() {
@@ -75,12 +81,12 @@ public class NodeStatus {
     return maxSessionCount;
   }
 
-  public Map<Capabilities, Integer> getAvailable() {
-    return available;
+  public Map<Capabilities, Integer> getStereotypes() {
+    return stereotypes;
   }
 
-  public Map<Capabilities, Integer> getUsed() {
-    return used;
+  public Set<Active> getCurrentSessions() {
+    return snapshot;
   }
 
 
@@ -94,13 +100,13 @@ public class NodeStatus {
     return Objects.equals(this.nodeId, that.nodeId) &&
            Objects.equals(this.externalUri, that.externalUri) &&
            this.maxSessionCount == that.maxSessionCount &&
-           Objects.equals(this.available, that.available) &&
-           Objects.equals(this.used, that.used);
+           Objects.equals(this.stereotypes, that.stereotypes) &&
+           Objects.equals(this.snapshot, that.snapshot);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nodeId, externalUri, maxSessionCount, available, used);
+    return Objects.hash(nodeId, externalUri, maxSessionCount, stereotypes, snapshot);
   }
 
   private Map<String, Object> toJson() {
@@ -108,9 +114,8 @@ public class NodeStatus {
         "id", nodeId,
         "uri", externalUri,
         "maxSessions", maxSessionCount,
-        "capacity", ImmutableMap.of(
-            "available", asCapacity(available),
-            "used", asCapacity(used)));
+        "stereotypes", asCapacity(stereotypes),
+        "sessions", snapshot);
   }
 
   private List<Map<String, Object>> asCapacity(Map<Capabilities, Integer> toConvert) {
@@ -124,13 +129,22 @@ public class NodeStatus {
   }
 
   public static NodeStatus fromJson(Map<String, Object> raw) {
+    List<Active> sessions = ((Collection<?>) raw.get("sessions")).stream()
+        .map(item -> {
+          @SuppressWarnings("unchecked")
+          Map<String, Object> converted = (Map<String, Object>) item;
+          return converted;
+        })
+        .map(Active::fromJson)
+        .collect(toImmutableList());
+
     try {
       return new NodeStatus(
           UUID.fromString((String) raw.get("id")),
           new URI((String) raw.get("uri")),
           ((Number) raw.get("maxSessions")).intValue(),
-          readCapacityNamed(raw, "available"),
-          readCapacityNamed(raw, "used"));
+          readCapacityNamed(raw, "stereotypes"),
+          sessions);
     } catch (URISyntaxException e) {
       throw new JsonException(e);
     }
@@ -139,11 +153,8 @@ public class NodeStatus {
   private static Map<Capabilities, Integer> readCapacityNamed(
       Map<String, Object> raw,
       String name) {
-    Map<?, ?> rawCapacity = (Map<?, ?>) raw.get("capacity");
-    List<?> kind = (List<?>) rawCapacity.get(name);
-
     ImmutableMap.Builder<Capabilities, Integer> capacity = ImmutableMap.builder();
-    kind.forEach(obj -> {
+    ((Collection<?>) raw.get(name)).forEach(obj -> {
       Map<?, ?> cap = (Map<?, ?>) obj;
       capacity.put(
           new ImmutableCapabilities((Map<?, ?>) cap.get("capabilities")),
@@ -151,5 +162,62 @@ public class NodeStatus {
     });
 
     return capacity.build();
+  }
+
+  public static class Active {
+
+    private final Capabilities stereotype;
+    private final SessionId id;
+    private final Capabilities currentCapabilities;
+
+    public Active(Capabilities stereotype, SessionId id, Capabilities currentCapabilities) {
+      this.stereotype = ImmutableCapabilities.copyOf(Objects.requireNonNull(stereotype));
+      this.id = Objects.requireNonNull(id);
+      this.currentCapabilities =
+          ImmutableCapabilities.copyOf(Objects.requireNonNull(currentCapabilities));
+    }
+
+    public Capabilities getStereotype() {
+      return stereotype;
+    }
+
+    public SessionId getSessionId() {
+      return id;
+    }
+
+    public Capabilities getCurrentCapabilities() {
+      return currentCapabilities;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (!(o instanceof Active)) {
+        return false;
+      }
+      Active that = (Active) o;
+      return Objects.equals(this.getStereotype(), that.getStereotype()) &&
+             Objects.equals(this.id, that.id) &&
+             Objects.equals(this.getCurrentCapabilities(), that.getCurrentCapabilities());
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(getStereotype(), id, getCurrentCapabilities());
+    }
+
+    private Map<String, Object> toJson() {
+      return ImmutableMap.of(
+          "sessionId", getSessionId(),
+          "stereotype", getStereotype(),
+          "currentCapabilities", getCurrentCapabilities());
+    }
+
+    private static Active fromJson(Map<String, Object> raw) {
+      SessionId id = new SessionId((String) raw.get("sessionId"));
+      Capabilities stereotype = new ImmutableCapabilities((Map<?, ?>) raw.get("stereotype"));
+      Capabilities current = new ImmutableCapabilities((Map<?, ?>) raw.get("currentCapabilities"));
+
+      return new Active(stereotype, id, current);
+    }
   }
 }

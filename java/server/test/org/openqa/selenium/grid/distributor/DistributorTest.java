@@ -280,9 +280,9 @@ public class DistributorTest {
     }
 
     // All the nodes should be equally loaded.
-    Map<Capabilities, Integer> expected = mostRecent.getStatus().getAvailable();
-    assertThat(leastRecent.getStatus().getAvailable()).isEqualTo(expected);
-    assertThat(middle.getStatus().getAvailable()).isEqualTo(expected);
+    Map<Capabilities, Integer> expected = mostRecent.getStatus().getStereotypes();
+    assertThat(leastRecent.getStatus().getStereotypes()).isEqualTo(expected);
+    assertThat(middle.getStatus().getStereotypes()).isEqualTo(expected);
 
     // All nodes are now equally loaded. We should be going in time order now
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {

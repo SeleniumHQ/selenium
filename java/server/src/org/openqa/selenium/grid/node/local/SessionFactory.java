@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 class SessionFactory
-    implements Predicate<Capabilities>, Function<Capabilities, Optional<SessionAndHandler>> {
+    implements Predicate<Capabilities>, Function<Capabilities, Optional<TrackedSession>> {
 
   private final HttpClient.Factory httpClientFactory;
   private final Capabilities capabilities;
@@ -70,7 +70,7 @@ class SessionFactory
   }
 
   @Override
-  public Optional<SessionAndHandler> apply(Capabilities capabilities) {
+  public Optional<TrackedSession> apply(Capabilities capabilities) {
     if (!test(capabilities)) {
       return Optional.empty();
     }
@@ -100,6 +100,6 @@ class SessionFactory
       }
     };
 
-    return Optional.of(new SessionAndHandler(session, killingHandler));
+    return Optional.of(new TrackedSession(this, session, killingHandler));
   }
 }
