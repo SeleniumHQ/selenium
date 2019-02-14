@@ -1,6 +1,7 @@
 import time
 import asyncio as aio
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 
 
 class AsyncWebDriverWait(WebDriverWait):
