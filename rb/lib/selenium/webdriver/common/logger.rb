@@ -122,7 +122,7 @@ module Selenium
         logger.progname = 'Selenium'
         logger.level = default_level
         logger.formatter = proc do |severity, time, progname, msg|
-          "#{time.strftime('%F %T')} #{severity} #{progname} #{msg}\n"
+          "#{time.strftime('%F %T')} #{severity} #{progname} #{msg.try(:force_encoding, 'UTF-8')}\n"
         end
 
         logger
