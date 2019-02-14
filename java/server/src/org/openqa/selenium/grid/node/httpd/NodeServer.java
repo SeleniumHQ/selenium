@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
+import static org.openqa.selenium.net.Urls.fromUri;
+
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.JCommander;
@@ -45,8 +47,8 @@ import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.SessionMapOptions;
-import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -78,6 +80,7 @@ public class NodeServer implements CliCommand {
     HelpFlags help = new HelpFlags();
     BaseServerFlags serverFlags = new BaseServerFlags(5555);
     EventBusFlags eventBusFlags = new EventBusFlags();
+    SessionMapFlags sessionMapFlags = new SessionMapFlags();
     NodeFlags nodeFlags = new NodeFlags();
 
     JCommander commander = JCommander.newBuilder()
@@ -85,6 +88,7 @@ public class NodeServer implements CliCommand {
         .addObject(help)
         .addObject(serverFlags)
         .addObject(eventBusFlags)
+        .addObject(sessionMapFlags)
         .addObject(nodeFlags)
         .build();
 
@@ -107,6 +111,7 @@ public class NodeServer implements CliCommand {
           new AnnotatedConfig(help),
           new AnnotatedConfig(serverFlags),
           new AnnotatedConfig(eventBusFlags),
+          new AnnotatedConfig(sessionMapFlags),
           new AnnotatedConfig(nodeFlags),
           new DefaultNodeConfig());
 
@@ -119,28 +124,26 @@ public class NodeServer implements CliCommand {
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
-      HttpClient.Factory httpClientFactory = HttpClient.Factory.createDefault();
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
-      URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
-      SessionMap sessions = new RemoteSessionMap(httpClientFactory.createClient(sessionMapUrl));
+      SessionMap sessions = sessionsOptions.getSessionMap(clientFactory);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       LocalNode.Builder builder = LocalNode.builder(
           tracer,
           bus,
-          httpClientFactory,
-          serverOptions.getExternalUri(),
-          sessions);
-      nodeFlags.configure(config, httpClientFactory, builder);
+          clientFactory,
+          serverOptions.getExternalUri());
+      nodeFlags.configure(config, clientFactory, builder);
       LocalNode node = builder.build();
 
       DistributorOptions distributorOptions = new DistributorOptions(config);
-      URL distributorUrl = distributorOptions.getDistributorUri().toURL();
+      URL distributorUrl = fromUri(distributorOptions.getDistributorUri());
       Distributor distributor = new RemoteDistributor(
           tracer,
-          httpClientFactory,
+          clientFactory,
           distributorUrl);
 
       Server<?> server = new BaseServer<>(serverOptions);

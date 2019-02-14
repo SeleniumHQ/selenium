@@ -80,10 +80,10 @@ public class AddNode implements CommandHandler {
 
     Node node = new RemoteNode(
         tracer,
+        httpFactory,
         id,
         uri,
-        capabilities,
-        httpFactory.createClient(uri.toURL()));
+        capabilities);
 
     distributor.add(node);
   }

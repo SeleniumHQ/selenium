@@ -65,4 +65,8 @@ public class HttpRequest extends HttpMessage {
   public Iterable<String> getQueryParameters(String name) {
     return queryParameters.get(name);
   }
+
+  public String toString() {
+    return "(" + getMethod() + ") " + getUri();
+  }
 }

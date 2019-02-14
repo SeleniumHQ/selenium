@@ -314,7 +314,8 @@ public class XpiDriverService extends FirefoxDriverService {
         } catch (IOException ex) {
           throw new RuntimeException(ex);
         }},
-        ((FirefoxOptions) caps)::getProfile,
+        // Don't believe IDEA, this lambda can't be replaced with a method reference!
+        () -> ((FirefoxOptions) caps).getProfile(),
         () -> (FirefoxProfile) ((Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS)).get("profile"),
         () -> { try {
           return FirefoxProfile.fromJson(

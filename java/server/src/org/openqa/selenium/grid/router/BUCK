@@ -1,4 +1,3 @@
-
 java_library(
     name = "router",
     srcs = glob(["*.java"]),

@@ -6,5 +6,5 @@ java_library(
     ],
     visibility = [
         "//java/server/...",
-    ]
+    ],
 )

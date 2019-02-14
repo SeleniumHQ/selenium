@@ -104,7 +104,7 @@ public class RemoteDistributor extends Distributor {
 
   @Override
   public DistributorStatus getStatus() {
-    HttpRequest request = new HttpRequest(GET, "/status");
+    HttpRequest request = new HttpRequest(GET, "/se/grid/distributor/status");
 
     HttpResponse response = client.apply(request);
 

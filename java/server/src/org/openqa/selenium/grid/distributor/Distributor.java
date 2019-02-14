@@ -92,6 +92,7 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
         post("/session").using(CreateSession.class),
         post("/se/grid/distributor/node").using(AddNode.class),
         delete("/se/grid/distributor/node/{nodeId}").using(RemoveNode.class).map("nodeId", UUID::fromString),
+        get("/se/grid/distributor/status").using(GetDistributorStatus.class),
         get("/status").using(StatusHandler.class)
     ).build();
   }

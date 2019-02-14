@@ -20,11 +20,13 @@ package org.openqa.selenium.grid.data;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,15 +36,19 @@ public class NodeStatusTest {
 
   @Test
   public void ensureRoundTripWorks() throws URISyntaxException {
+    ImmutableCapabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     NodeStatus status = new NodeStatus(
         UUID.randomUUID(),
         new URI("http://localhost:23456"),
         100,
-        ImmutableMap.of(new ImmutableCapabilities("cheese", "brie"), 1),
-        ImmutableMap.of(new ImmutableCapabilities("cake", "cheese"), 1));
+        ImmutableMap.of(stereotype, 1),
+        ImmutableSet.of(new NodeStatus.Active(stereotype, new SessionId(UUID.randomUUID()), new ImmutableCapabilities("peas", "sausages"))));
 
     Json json = new Json();
     String source = json.toJson(status);
+
+    System.out.println(source);
+
     Object seen = json.toType(source, NodeStatus.class);
 
     assertThat(seen).isEqualTo(status);

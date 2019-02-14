@@ -131,14 +131,7 @@ public class JsonOutput implements Closeable {
         .put(URL.class::isAssignableFrom, (obj, depth) -> append(asString(((URL) obj).toExternalForm())))
         .put(UUID.class::isAssignableFrom, (obj, depth) -> append(asString(((UUID) obj).toString())))
         .put(Level.class::isAssignableFrom, (obj, depth) -> append(asString(LogLevelMapping.getName((Level) obj))))
-        .put(
-            SessionId.class::isAssignableFrom,
-            (obj, depth) -> {
-              beginObject();
-              name("value");
-              write(obj.toString());
-              endObject();
-            })
+        .put(SessionId.class::isAssignableFrom, (obj, depth) -> append(asString(obj)))
         .put(
             GSON_ELEMENT,
             (obj, depth) -> {

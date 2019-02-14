@@ -32,12 +32,14 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.util.Objects;
 
-class SessionAndHandler {
+class TrackedSession {
 
+  private final SessionFactory factory;
   private final Session session;
   private final CommandHandler handler;
 
-  SessionAndHandler(Session session, CommandHandler handler) {
+  TrackedSession(SessionFactory createdBy, Session session, CommandHandler handler) {
+    this.factory = Objects.requireNonNull(createdBy);
     this.session = Objects.requireNonNull(session);
     this.handler = Objects.requireNonNull(handler);
   }
@@ -56,6 +58,10 @@ class SessionAndHandler {
 
   public Capabilities getCapabilities() {
     return session.getCapabilities();
+  }
+
+  public Capabilities getStereotype() {
+    return factory.getCapabilities();
   }
 
   public void stop() {

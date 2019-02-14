@@ -96,6 +96,20 @@ class SwitchTo:
 
         self._driver.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
 
+    def new_window(self, type_hint=None):
+        """Switches to a new top-level browsing context.
+
+        The type hint can be one of "tab" or "window". If not specified the
+        browser will automatically select it.
+
+        :Usage:
+            ::
+
+                driver.switch_to.new_window('tab')
+        """
+        value = self._driver.execute(Command.NEW_WINDOW, {'type': type_hint})['value']
+        self._w3c_window(value['handle'])
+
     def parent_frame(self):
         """
         Switches focus to the parent context. If the current context is the top

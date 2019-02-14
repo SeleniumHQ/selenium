@@ -1,4 +1,3 @@
-
 java_library(
     name = "concurrent",
     srcs = glob(["*.java"]),

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.DOWN;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.DRAINING;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
@@ -33,13 +35,16 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.data.NodeStatus;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 class Host {
 
@@ -57,16 +62,24 @@ class Host {
     this.node = Objects.requireNonNull(node);
     NodeStatus status = getStatus();
 
+    // This is grossly inefficient. But we're on a modern processor and we're expecting 10s to 100s
+    // of nodes, so this is probably ok.
+    Set<NodeStatus.Active> sessions = status.getCurrentSessions();
+    Map<Capabilities, Integer> actives = sessions.parallelStream().collect(
+        groupingBy(NodeStatus.Active::getStereotype, summingInt(active -> 1)));
+
     ImmutableList.Builder<Slot> slots = ImmutableList.builder();
-    status.getAvailable().forEach((caps, count) -> {
+    status.getStereotypes().forEach((caps, count) -> {
+      if (actives.containsKey(caps)) {
+        Integer activeCount = actives.get(caps);
+        for (int i = 0; i < activeCount; i++) {
+          slots.add(new Slot(node, caps, ACTIVE));
+        }
+        count -= activeCount;
+      }
+
       for (int i = 0; i < count; i++) {
         slots.add(new Slot(node, caps, AVAILABLE));
-      }
-    });
-    status.getUsed().forEach((caps, count) -> {
-      for (int i = 0; i < count; i++) {
-        Slot slot = new Slot(node, caps, ACTIVE);
-        slots.add(slot);
       }
     });
     this.slots = slots.build();

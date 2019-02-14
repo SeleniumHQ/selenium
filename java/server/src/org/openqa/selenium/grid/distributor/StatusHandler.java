@@ -47,7 +47,7 @@ class StatusHandler implements CommandHandler {
         "value", ImmutableMap.of(
             "ready", status.hasCapacity(),
             "message", status.hasCapacity() ? "Ready" : "No free slots available",
-            "node", status));
+            "grid", status));
 
     resp.setContent(json.toJson(report).getBytes(UTF_8));
   }

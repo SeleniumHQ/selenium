@@ -211,6 +211,13 @@ module Selenium
       class ElementNotInteractableError < WebDriverError; end
 
       #
+      # A command could not be completed because TLS certificate is expired
+      # or invalid.
+      #
+
+      class InsecureCertificateError < WebDriverError; end
+
+      #
       # The arguments passed to a command are either invalid or malformed.
       #
 

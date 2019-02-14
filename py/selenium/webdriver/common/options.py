@@ -54,7 +54,7 @@ class ArgOptions(BaseOptions):
     @property
     def arguments(self):
         """
-        Returns a list of arguments needed for the browser
+        :Returns: A list of arguments needed for the browser
         """
         return self._arguments
 

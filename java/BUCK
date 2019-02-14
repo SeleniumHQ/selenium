@@ -1,8 +1,8 @@
 export_file(
-  name = 'changelog',
-  out = "CHANGELOG",
-  src = "CHANGELOG",
-  visibility = [
-    "//java/...",
-  ],
+    name = "changelog",
+    out = "CHANGELOG",
+    src = "CHANGELOG",
+    visibility = [
+        "//java/...",
+    ],
 )
