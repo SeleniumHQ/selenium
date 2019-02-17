@@ -9,6 +9,55 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+
+v3.141.5.8
+==========
+ * Now, when the user does not set the Protected Mode settings of the
+   browser and sends the capability to bypass the checks for those
+   settings, the driver will attempt to predict when a Protected Mode
+   boundary will be crossed, and set in motion a process to reattach
+   itself to the newly created browser. This process is far from perfect.
+   It is subject to really challenging race conditions that are truly
+   impossible to eliminate entirely, because of the architecture of the
+   browser itself. Nevertheless, even in its flawed state, this is still
+   a better outcome than it was previously for users.
+
+   Please note that the advice and support policy of the IE driver will
+   continue to be that the user must set the Protected Mode settings of
+   the browser properly before using the driver. Any "issues" that arise
+   by not having the settings set, but that disappear when the settings
+   are corrected, are not considered by the project to be valid issues.
+   This will include, but not be limited to, issues like abandoned
+   browser instances not being closed, use of multiple instances of the
+   driver where the wrong browser window is connected to and automated,
+   and issues where the driver appears to hang upon navigation to a new
+   page. If the problem disappears when the browser is properly
+   configured, any issue reports will be immediately closed with a note
+   to properly configure the browser and remove the capability.
+
+   The following situations should be at least partially mitigated by the
+   change:
+
+   * Navigation to a new page
+   * Clicking on a link (specifically an <a> tag) that will lead to a
+     navigation to a new page
+   * Clicking a link that opens a new window
+
+   Other cases, like navigating backward and forward through the browser
+   history, clicking an element that submits a form, and so on, may not
+   be handled. In those cases, issue reports will be summarily closed,
+   unless a specific pull request fixing the issue is also provided.
+   Additionally, use of things like proxies to capture traffic between the
+   browser and web server may miss some traffic because of the race
+   conditions inherent in the mechanism used to reattach to a newly
+   created browser. Again, these race conditions are unavoidable, and
+   issue reports that are based on them will be immediately closed with a
+   note indicating that the browser must have its settings properly set.
+   These strict guidelines are not intended to be harsh, and are not put
+   in place with the intent to avoid investigating and fixing issues;
+   rather, they must be enforced because the underlying architecture of
+   the browser makes them unavoidable.
+
 v3.141.5.7
 ==========
  * Fixed uninitialized variable in driver.

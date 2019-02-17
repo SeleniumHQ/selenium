@@ -59,6 +59,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
     MESSAGE_HANDLER(WD_AFTER_NEW_WINDOW, OnAfterNewWindow)
     MESSAGE_HANDLER(WD_BROWSER_QUIT, OnBrowserQuit)
     MESSAGE_HANDLER(WD_BROWSER_CLOSE_WAIT, OnBrowserCloseWait)
+    MESSAGE_HANDLER(WD_BEFORE_BROWSER_REATTACH, OnBeforeBrowserReattach)
+    MESSAGE_HANDLER(WD_BROWSER_REATTACH, OnBrowserReattach)
     MESSAGE_HANDLER(WD_IS_SESSION_VALID, OnIsSessionValid)
     MESSAGE_HANDLER(WD_NEW_HTML_DIALOG, OnNewHtmlDialog)
     MESSAGE_HANDLER(WD_GET_QUIT_STATUS, OnGetQuitStatus)
@@ -82,6 +84,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   LRESULT OnAfterNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnBrowserCloseWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnBeforeBrowserReattach(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnBrowserReattach(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnIsSessionValid(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnGetQuitStatus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -232,7 +236,15 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
                              bool force_use_dismiss,
                              std::string* alert_text);
 
-  std::string OpenNewBrowserWindow(void);
+  void PostBrowserReattachMessage(const DWORD current_process_id,
+                                  const std::string& browser_id,
+                                  const std::vector<DWORD>& known_process_ids);
+  void GetNewBrowserProcessIds(std::vector<DWORD>* known_process_ids,
+                               std::vector<DWORD>* new_process_ids);
+
+  std::string OpenNewBrowsingContext(const std::string& window_type,
+                                     const std::string& url);
+  std::string OpenNewBrowserWindow(const std::wstring& url);
   std::string OpenNewBrowserTab(const std::wstring& url);
   static BOOL CALLBACK FindAllBrowserHandles(HWND hwnd, LPARAM arg);
 
@@ -246,9 +258,11 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   ElementFinder* element_finder_;
 
   unsigned long long implicit_wait_timeout_;
-  unsigned long long  async_script_timeout_;
-  unsigned long long  page_load_timeout_;
+  unsigned long long async_script_timeout_;
+  unsigned long long page_load_timeout_;
+  unsigned long long reattach_browser_timeout_;
   clock_t wait_timeout_;
+  clock_t reattach_wait_timeout_;
 
   std::string session_id_;
   int port_;

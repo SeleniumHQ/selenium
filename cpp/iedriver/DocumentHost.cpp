@@ -60,6 +60,7 @@ DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
   this->script_executor_handle_ = NULL;
   this->is_closing_ = false;
   this->wait_required_ = false;
+  this->is_awaiting_new_process_ = false;
   this->focused_frame_window_ = NULL;
   this->cookie_manager_ = new CookieManager();
   if (this->window_handle_ != NULL) {

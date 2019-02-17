@@ -77,6 +77,9 @@ void GoToUrlCommandHandler::ExecuteInternal(
       }
     }
 
+    if (browser_wrapper->IsCrossZoneUrl(url)) {
+      browser_wrapper->InitiateBrowserReattach();
+    }
     status_code = browser_wrapper->NavigateToUrl(url);
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(ERROR_UNKNOWN_ERROR, "Failed to navigate to "

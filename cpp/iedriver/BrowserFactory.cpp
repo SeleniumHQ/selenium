@@ -411,6 +411,16 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
   return attached;
 }
 
+bool BrowserFactory::IsBrowserProcessInitialized(DWORD process_id) {
+  ProcessWindowInfo info;
+  info.dwProcessId = process_id;
+  info.hwndBrowser = NULL;
+  info.pBrowser = NULL;
+  ::EnumWindows(&BrowserFactory::FindBrowserWindow,
+                reinterpret_cast<LPARAM>(&info));
+  return info.hwndBrowser != NULL;
+}
+
 bool BrowserFactory::AttachToBrowserUsingActiveAccessibility
                                     (ProcessWindowInfo* process_window_info,
                                      std::string* error_message) {
@@ -702,7 +712,7 @@ int BrowserFactory::GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window)
   return zoom;
 }
 
-IWebBrowser2* BrowserFactory::CreateBrowser() {
+IWebBrowser2* BrowserFactory::CreateBrowser(bool is_protected_mode) {
   LOG(TRACE) << "Entering BrowserFactory::CreateBrowser";
 
   IWebBrowser2* browser = NULL;
@@ -713,11 +723,20 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
     context = context | CLSCTX_ENABLE_CLOAKING;
   }
 
-  HRESULT hr = ::CoCreateInstance(CLSID_InternetExplorer,
-                                  NULL,
-                                  context,
-                                  IID_IWebBrowser2,
-                                  reinterpret_cast<void**>(&browser));
+  HRESULT hr = S_OK;
+  if (is_protected_mode) {
+    hr = ::CoCreateInstance(CLSID_InternetExplorer,
+                            NULL,
+                            context,
+                            IID_IWebBrowser2,
+                            reinterpret_cast<void**>(&browser));
+  } else {
+    hr = ::CoCreateInstance(CLSID_InternetExplorerMedium,
+                            NULL,
+                            context,
+                            IID_IWebBrowser2,
+                            reinterpret_cast<void**>(&browser));
+  }
   // When IWebBrowser2::Quit() is called, the wrapper process doesn't
   // exit right away. When that happens, CoCreateInstance can fail while
   // the abandoned iexplore.exe instance is still valid. The "right" way

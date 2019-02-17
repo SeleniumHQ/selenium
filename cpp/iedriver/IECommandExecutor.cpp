@@ -21,6 +21,8 @@
 #include <vector>
 #include <mutex>
 
+#include <iepmapi.h>
+
 #include "command_types.h"
 #include "errorcodes.h"
 #include "logging.h"
@@ -42,10 +44,14 @@
 #include "StringUtilities.h"
 #include "Script.h"
 #include "WebDriverConstants.h"
+#include "WindowUtilities.h"
 
 #define MAX_HTML_DIALOG_RETRIES 5
 #define WAIT_TIME_IN_MILLISECONDS 50
+#define DEFAULT_SCRIPT_TIMEOUT_IN_MILLISECONDS 30000
+#define DEFAULT_PAGE_LOAD_TIMEOUT_IN_MILLISECONDS 300000
 #define DEFAULT_FILE_UPLOAD_DIALOG_TIMEOUT_IN_MILLISECONDS 3000
+#define DEFAULT_BROWSER_REATTACH_TIMEOUT_IN_MILLISECONDS 10000
 
 namespace webdriver {
 
@@ -94,8 +100,9 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->serialized_response_ = "";
   this->unexpected_alert_behavior_ = "";
   this->implicit_wait_timeout_ = 0;
-  this->async_script_timeout_ = 30000;
-  this->page_load_timeout_ = 300000;
+  this->async_script_timeout_ = DEFAULT_SCRIPT_TIMEOUT_IN_MILLISECONDS;
+  this->page_load_timeout_ = DEFAULT_PAGE_LOAD_TIMEOUT_IN_MILLISECONDS;
+  this->reattach_browser_timeout_ = DEFAULT_BROWSER_REATTACH_TIMEOUT_IN_MILLISECONDS;
   this->is_waiting_ = false;
   this->is_quitting_ = false;
   this->is_awaiting_new_window_ = false;
@@ -222,29 +229,31 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
 
   BrowserHandle browser;
   int status_code = this->GetCurrentBrowser(&browser);
-  if (status_code == WD_SUCCESS && !browser->is_closing()) {
-    if (this->page_load_timeout_ >= 0 && this->wait_timeout_ < clock()) {
-      LOG(DEBUG) << "Page load timeout reached. Ending wait cycle.";
-      Response timeout_response;
-      timeout_response.SetErrorResponse(ERROR_WEBDRIVER_TIMEOUT,
-                                        "Timed out waiting for page to load.");
-      browser->set_wait_required(false);
-      this->serialized_response_ = timeout_response.Serialize();
-      this->is_waiting_ = false;
-      return 0;
-    } else {
-      LOG(DEBUG) << "Beginning wait.";
-      this->is_waiting_ = !(browser->Wait(this->page_load_strategy_));
-      if (is_single_wait) {
-        LOG(DEBUG) << "Single requested wait with no deferred "
-                   << "response complete. Ending wait cycle.";
+  if (status_code == WD_SUCCESS) {
+    if (!browser->is_closing()) {
+      if (this->page_load_timeout_ >= 0 && this->wait_timeout_ < clock()) {
+        LOG(DEBUG) << "Page load timeout reached. Ending wait cycle.";
+        Response timeout_response;
+        timeout_response.SetErrorResponse(ERROR_WEBDRIVER_TIMEOUT,
+                                          "Timed out waiting for page to load.");
+        browser->set_wait_required(false);
+        this->serialized_response_ = timeout_response.Serialize();
         this->is_waiting_ = false;
         return 0;
       } else {
-        if (this->is_waiting_) {
-          LOG(DEBUG) << "Wait not complete. Scheduling another wait cycle.";
-          this->CreateWaitThread(deferred_response);
+        LOG(DEBUG) << "Beginning wait.";
+        this->is_waiting_ = !(browser->Wait(this->page_load_strategy_));
+        if (is_single_wait) {
+          LOG(DEBUG) << "Single requested wait with no deferred "
+                     << "response complete. Ending wait cycle.";
+          this->is_waiting_ = false;
           return 0;
+        } else {
+          if (this->is_waiting_) {
+            LOG(DEBUG) << "Wait not complete. Scheduling another wait cycle.";
+            this->CreateWaitThread(deferred_response);
+            return 0;
+          }
         }
       }
     }
@@ -288,15 +297,21 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
                                               LPARAM lParam,
                                               BOOL& bHandled) {
   LOG(TRACE) << "Entering IECommandExecutor::OnBrowserNewWindow";
-  std::string new_browser_id = this->OpenNewBrowsingContext(WINDOW_WINDOW_TYPE);
+  NewWindowInfo* info = reinterpret_cast<NewWindowInfo*>(lParam);
+  std::string target_url = info->target_url;
+  std::string new_browser_id = this->OpenNewBrowsingContext(WINDOW_WINDOW_TYPE,
+                                                            target_url);
   BrowserHandle new_window_wrapper;
   this->GetManagedBrowser(new_browser_id, &new_window_wrapper);
-  IWebBrowser2* browser = new_window_wrapper->browser();
+  if (new_window_wrapper->IsCrossZoneUrl(target_url)) {
+    new_window_wrapper->InitiateBrowserReattach();
+  }
+
   LOG(DEBUG) << "Attempting to marshal interface pointer to requesting thread.";
-  LPSTREAM* stream = reinterpret_cast<LPSTREAM*>(lParam);
+  IWebBrowser2* browser = new_window_wrapper->browser();
   HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2,
                                                        browser,
-                                                       stream);
+                                                       &(info->browser_stream));
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Marshalling of interface pointer b/w threads is failed.";
   }
@@ -383,6 +398,84 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
   return 0;
 }
 
+LRESULT IECommandExecutor::OnBeforeBrowserReattach(UINT uMsg,
+                                                   WPARAM wParam,
+                                                   LPARAM lParam,
+                                                   BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnBeforeBrowserReattach";
+  if (this->factory_->ignore_protected_mode_settings()) {
+    this->reattach_wait_timeout_ = clock() + (static_cast<int>(this->reattach_browser_timeout_) / 1000 * CLOCKS_PER_SEC);
+  }
+  return 0;
+}
+
+LRESULT IECommandExecutor::OnBrowserReattach(UINT uMsg,
+                                             WPARAM wParam,
+                                             LPARAM lParam,
+                                             BOOL& bHandled) {
+  LOG(TRACE) << "Entering IECommandExecutor::OnBrowserReattach";
+  BrowserReattachInfo* info = reinterpret_cast<BrowserReattachInfo*>(lParam);
+  DWORD current_process_id = info->current_process_id;
+  std::string browser_id = info->browser_id;
+  std::vector<DWORD> known_process_ids = info->known_process_ids;
+  delete info;
+
+  if (!this->factory_->ignore_protected_mode_settings()) {
+    return 0;
+  }
+
+  if (this->reattach_wait_timeout_ < clock()) {
+    LOG(WARN) << "Reattach attempt has timed out";
+    return 0;
+  }
+
+  LOG(DEBUG) << "Starting browser reattach process";
+
+  std::vector<DWORD> new_process_ids;
+  this->GetNewBrowserProcessIds(&known_process_ids, &new_process_ids);
+  if (new_process_ids.size() == 0) {
+    LOG(DEBUG) << "No new process found, rescheduling reattach";
+    // If no new process IDs were found yet, repost the message
+    this->PostBrowserReattachMessage(current_process_id,
+                                     browser_id,
+                                     known_process_ids);
+  }
+  if (new_process_ids.size() > 1) {
+    LOG(WARN) << "Found more than one new iexplore.exe process. It is "
+              << "impossible to know which is the proper one. Choosing one "
+              << "at random.";
+  }
+
+  DWORD new_process_id = new_process_ids[0];
+  if (!this->factory_->IsBrowserProcessInitialized(new_process_id)) {
+    // If the browser for the new process ID is not yet ready,
+    // repost the message
+    LOG(DEBUG) << "Browser process " << new_process_id
+               << " not initialized, rescheduling reattach";
+    this->PostBrowserReattachMessage(current_process_id,
+                                     browser_id,
+                                     known_process_ids);
+    return 0;
+  }
+
+  std::string error_message = "";
+  ProcessWindowInfo process_window_info;
+  process_window_info.dwProcessId = new_process_id;
+  process_window_info.hwndBrowser = NULL;
+  process_window_info.pBrowser = NULL;
+  bool attached = this->factory_->AttachToBrowser(&process_window_info, &error_message);
+
+  BrowserMap::iterator found_iterator = this->managed_browsers_.find(browser_id);
+  if (found_iterator != this->managed_browsers_.end()) {
+    this->proxy_manager_->SetProxySettings(process_window_info.hwndBrowser);
+    found_iterator->second->cookie_manager()->Initialize(process_window_info.hwndBrowser);
+    found_iterator->second->ReattachBrowser(process_window_info.pBrowser);
+  } else {
+    LOG(WARN) << "The managed browser was not found to reattach to.";
+  }
+  return 0;
+}
+
 LRESULT IECommandExecutor::OnIsSessionValid(UINT uMsg,
                                             WPARAM wParam,
                                             LPARAM lParam,
@@ -443,7 +536,6 @@ LRESULT IECommandExecutor::OnQuit(UINT uMsg,
                                   WPARAM wParam,
                                   LPARAM lParam,
                                   BOOL& bHandled) {
-  //this->input_manager_->StopPersistentEvents();
   return 0;
 }
 
@@ -786,7 +878,7 @@ void IECommandExecutor::DispatchCommand() {
     LOG(DEBUG) << "Executing command: " << command_type;
     CommandHandlerHandle command_handler = this->command_handlers_->GetCommandHandler(command_type);
     command_handler->Execute(*this, this->current_command_, &response);
-    LOG(DEBUG) << "Command execution for " << command_type << "complete";
+    LOG(DEBUG) << "Command execution for " << command_type << " complete";
 
     status_code = this->GetCurrentBrowser(&browser);
     if (status_code == WD_SUCCESS) {
@@ -981,6 +1073,40 @@ bool IECommandExecutor::HandleUnexpectedAlert(BrowserHandle browser,
   return is_notify_unexpected_alert;
 }
 
+void IECommandExecutor::PostBrowserReattachMessage(const DWORD current_process_id,
+                                                   const std::string& browser_id,
+                                                   const std::vector<DWORD>& known_process_ids) {
+  LOG(TRACE) << "Entering IECommandExecutor::PostBrowserReattachMessage";
+  ::Sleep(100);
+  BrowserReattachInfo* repost_info = new BrowserReattachInfo;
+  repost_info->current_process_id = current_process_id;
+  repost_info->browser_id = browser_id;
+  repost_info->known_process_ids = known_process_ids;
+  ::PostMessage(this->m_hWnd,
+                WD_BROWSER_REATTACH,
+                NULL,
+                reinterpret_cast<LPARAM>(repost_info));
+}
+
+void IECommandExecutor::GetNewBrowserProcessIds(std::vector<DWORD>* known_process_ids,
+                                                std::vector<DWORD>* new_process_ids) {
+  LOG(TRACE) << "Entering IECommandExecutor::GetNewBrowserProcessIds";
+  std::vector<DWORD> all_ie_process_ids;
+  WindowUtilities::GetProcessesByName(L"iexplore.exe", &all_ie_process_ids);
+
+  // Maximum size of the new process list is if all IE processes are unknown.
+  std::vector<DWORD> temp_new_process_ids(all_ie_process_ids.size());
+  std::sort(known_process_ids->begin(), known_process_ids->end());
+  std::sort(all_ie_process_ids.begin(), all_ie_process_ids.end());
+  std::vector<DWORD>::iterator end_iterator = std::set_difference(all_ie_process_ids.begin(),
+                                                                  all_ie_process_ids.end(),
+                                                                  known_process_ids->begin(),
+                                                                  known_process_ids->end(),
+                                                                  temp_new_process_ids.begin());
+  temp_new_process_ids.resize(end_iterator - temp_new_process_ids.begin());
+  *new_process_ids = temp_new_process_ids;
+}
+
 int IECommandExecutor::GetCurrentBrowser(BrowserHandle* browser_wrapper) const {
   LOG(TRACE) << "Entering IECommandExecutor::GetCurrentBrowser";
   return this->GetManagedBrowser(this->current_browser_id_, browser_wrapper);
@@ -1036,11 +1162,18 @@ void IECommandExecutor::AddManagedBrowser(BrowserHandle browser_wrapper) {
 }
 
 std::string IECommandExecutor::OpenNewBrowsingContext(const std::string& window_type) {
+  return this->OpenNewBrowsingContext(window_type, "about:blank");
+}
+
+std::string IECommandExecutor::OpenNewBrowsingContext(const std::string& window_type,
+                                                      const std::string& url) {
+  LOG(TRACE) << "Entering IECommandExecutor::OpenNewBrowsingContext";
+  std::wstring target_url = StringUtilities::ToWString(url);
   std::string new_browser_id = "";
   if (window_type == TAB_WINDOW_TYPE) {
-    new_browser_id = this->OpenNewBrowserTab(L"about:blank");
+    new_browser_id = this->OpenNewBrowserTab(target_url);
   } else {
-    new_browser_id = this->OpenNewBrowserWindow();
+    new_browser_id = this->OpenNewBrowserWindow(target_url);
   }
 
   BrowserHandle new_window_wrapper;
@@ -1052,8 +1185,10 @@ std::string IECommandExecutor::OpenNewBrowsingContext(const std::string& window_
   return new_browser_id;
 }
 
-std::string IECommandExecutor::OpenNewBrowserWindow() {
-  CComPtr<IWebBrowser2> browser = this->factory_->CreateBrowser();
+std::string IECommandExecutor::OpenNewBrowserWindow(const std::wstring& url) {
+  LOG(TRACE) << "Entering IECommandExecutor::OpenNewBrowserWindow";
+  bool is_protected_mode_url = ::IEIsProtectedModeURL(url.c_str()) == S_OK;
+  CComPtr<IWebBrowser2> browser = this->factory_->CreateBrowser(is_protected_mode_url);
   if (browser == NULL) {
     // No browser was created, so we have to bail early.
     // Check the log for the HRESULT why.
@@ -1077,6 +1212,7 @@ std::string IECommandExecutor::OpenNewBrowserWindow() {
 }
 
 std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
+  LOG(TRACE) << "Entering IECommandExecutor::OpenNewBrowserTab";
   BrowserHandle browser_wrapper;
   this->GetCurrentBrowser(&browser_wrapper);
   HWND top_level_handle = browser_wrapper->GetTopLevelWindowHandle();
@@ -1188,7 +1324,8 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
 
   // Set persistent hover functionality in the interactions implementation. 
   //this->input_manager_->StartPersistentEvents();
-  LOG(INFO) << "Persistent hovering set to: " << this->input_manager_->use_persistent_hover();
+  LOG(INFO) << "Persistent hovering set to: "
+            << this->input_manager_->use_persistent_hover();
 
   this->proxy_manager_->SetProxySettings(process_window_info.hwndBrowser);
   BrowserHandle wrapper(new Browser(process_window_info.pBrowser,
