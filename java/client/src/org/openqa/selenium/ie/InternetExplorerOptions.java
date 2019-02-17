@@ -38,6 +38,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Streams;
 
+import org.openqa.selenium.AbstractDriverOptions;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -66,7 +67,7 @@ import java.util.stream.Stream;
  *new InternetExplorerDriver(options);</pre>
  */
 @Beta
-public class InternetExplorerOptions extends MutableCapabilities {
+public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplorerOptions> {
 
   final static String IE_OPTIONS = "se:ieOptions";
 
@@ -222,19 +223,6 @@ public class InternetExplorerOptions extends MutableCapabilities {
 
   public InternetExplorerOptions takeFullPageScreenshot() {
     return amend(FULL_PAGE_SCREENSHOT, true);
-  }
-
-  public InternetExplorerOptions setPageLoadStrategy(PageLoadStrategy strategy) {
-    return amend(PAGE_LOAD_STRATEGY, strategy);
-  }
-
-  public InternetExplorerOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
-    return amend(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
-  }
-
-  public InternetExplorerOptions setProxy(Proxy proxy) {
-    setCapability(CapabilityType.PROXY, proxy);
-    return this;
   }
 
   private InternetExplorerOptions amend(String optionName, Object value) {

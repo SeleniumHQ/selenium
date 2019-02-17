@@ -25,6 +25,7 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 
+import org.openqa.selenium.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
@@ -59,7 +60,7 @@ import java.util.TreeMap;
  *     new URL("http://localhost:4444/wd/hub"), options);
  * </code></pre>
  */
-public class OperaOptions extends MutableCapabilities {
+public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
 
   /**
    * Key used to store a set of OperaOptions in a {@link org.openqa.selenium.Capabilities}
@@ -206,11 +207,6 @@ public class OperaOptions extends MutableCapabilities {
    */
   public Object getExperimentalOption(String name) {
     return experimentalOptions.get(checkNotNull(name));
-  }
-
-  public OperaOptions setProxy(Proxy proxy) {
-    setCapability(CapabilityType.PROXY, proxy);
-    return this;
   }
 
   @Override
