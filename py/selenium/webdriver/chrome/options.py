@@ -149,8 +149,6 @@ class Options(ArgOptions):
           value: boolean value indicating to set the headless option
         """
         args = {'--headless'}
-        if platform.system().lower() == 'windows':
-            args.add('--disable-gpu')
         if value is True:
             self._arguments.extend(args)
         else:
