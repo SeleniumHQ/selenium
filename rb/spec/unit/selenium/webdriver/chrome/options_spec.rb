@@ -98,10 +98,7 @@ module Selenium
         describe '#headless!' do
           it 'should add necessary command-line arguments' do
             subject.headless!
-            if WebDriver::Platform.windows?
-              expect(subject.args.to_a).to eql(%w[--headless --disable-gpu])
-            else
-              expect(subject.args.to_a).to eql(['--headless'])
+            expect(subject.args.to_a).to eql(['--headless'])
             end
           end
         end
