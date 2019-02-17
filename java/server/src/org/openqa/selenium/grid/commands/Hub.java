@@ -44,6 +44,8 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.web.CombinedHandler;
+import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -108,19 +110,28 @@ public class Hub implements CliCommand {
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      CombinedHandler handler = new CombinedHandler();
 
-      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      handler.addHandler(sessions);
+
+      BaseServerOptions serverOptions = new BaseServerOptions(config);
+
+      HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+          serverOptions.getExternalUri().toURL(),
+          handler,
+          HttpClient.Factory.createDefault());
 
       Distributor distributor = new LocalDistributor(
           tracer,
           bus,
           clientFactory,
           sessions);
+      handler.addHandler(distributor);
       Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       Server<?> server = new BaseServer<>(
-          new BaseServerOptions(config));
+          serverOptions);
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
       server.start();
     };
