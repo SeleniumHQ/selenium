@@ -134,9 +134,6 @@ module Selenium
 
         def headless!
           add_argument '--headless'
-
-          # https://bugs.chromium.org/p/chromium/issues/detail?id=737678#c1
-          add_argument '--disable-gpu' if WebDriver::Platform.windows?
         end
 
         #
