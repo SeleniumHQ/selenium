@@ -40,7 +40,9 @@ import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
+import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -107,11 +109,15 @@ public class DistributorServer implements CliCommand {
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
+      SessionMap sessions = new SessionMapOptions(config).getSessionMap(clientFactory);
+
       Distributor distributor = new LocalDistributor(
           tracer,
           bus,
-          HttpClient.Factory.createDefault(),
-          null);
+          clientFactory,
+          sessions);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 

@@ -40,6 +40,7 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
@@ -105,7 +106,7 @@ public class EndToEndTest {
     server.addRoute(Routes.matching(router).using(router));
     server.start();
 
-    exerciseDriver(distributor, router, server);
+    exerciseDriver(server);
   }
 
   @Test
@@ -121,7 +122,10 @@ public class EndToEndTest {
     clientFactory = HttpClient.Factory.createDefault();
 
     Server<?> sessionServer = createServer();
-    sessionServer.addRoute(Routes.matching(localSessions).using(localSessions));
+    sessionServer.addRoute(
+        Routes.matching(localSessions)
+            .using(localSessions)
+            .decorateWith(W3CCommandHandler.class));
     sessionServer.start();
 
     SessionMap sessions = new RemoteSessionMap(getClient(sessionServer));
@@ -132,7 +136,10 @@ public class EndToEndTest {
         clientFactory,
         sessions);
     Server<?> distributorServer = createServer();
-    distributorServer.addRoute(Routes.matching(localDistributor).using(localDistributor));
+    distributorServer.addRoute(
+        Routes.matching(localDistributor)
+            .using(localDistributor)
+            .decorateWith(W3CCommandHandler.class));
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(
@@ -148,21 +155,26 @@ public class EndToEndTest {
     Server<?> nodeServer = new BaseServer<>(
         new BaseServerOptions(
             new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
-    nodeServer.addRoute(Routes.matching(localNode).using(localNode));
+    nodeServer.addRoute(
+        Routes.matching(localNode)
+            .using(localNode)
+            .decorateWith(W3CCommandHandler.class));
     nodeServer.start();
 
     distributor.add(localNode);
 
     Router router = new Router(tracer, clientFactory, sessions, distributor);
     Server<?> routerServer = createServer();
-    routerServer.addRoute(Routes.matching(router).using(router));
+    routerServer.addRoute(
+        Routes.matching(router)
+            .using(router)
+            .decorateWith(W3CCommandHandler.class));
     routerServer.start();
 
-    exerciseDriver(distributor, router, routerServer);
+    exerciseDriver(routerServer);
   }
 
-  private void exerciseDriver(Distributor distributor, Router router, Server<?> server) {
-    System.out.println(router);
+  private void exerciseDriver(Server<?> server) {
     // The node added only has a single node. Make sure we can start and stop sessions.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
@@ -184,7 +196,6 @@ public class EndToEndTest {
     new FluentWait<>("").withTimeout(ofSeconds(2)).until(obj -> {
       try {
         HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-        System.out.println(response.getContentString());
         Map<String, Object> status = Values.get(response, MAP_TYPE);
         return Boolean.TRUE.equals(status.get("ready"));
       } catch (IOException e) {
@@ -192,8 +203,6 @@ public class EndToEndTest {
         return false;
       }
     });
-
-    distributor.getStatus();
 
     // And now we're good to go.
     driver = new RemoteWebDriver(server.getUrl(), caps);

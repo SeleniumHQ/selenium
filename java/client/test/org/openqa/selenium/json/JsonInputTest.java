@@ -31,6 +31,8 @@ import static org.openqa.selenium.json.JsonType.START_MAP;
 import static org.openqa.selenium.json.JsonType.STRING;
 import static org.openqa.selenium.json.PropertySetting.BY_NAME;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.Test;
 
 import java.io.StringReader;
@@ -204,8 +206,41 @@ public class JsonInputTest {
     }
   }
 
+  @Test
+  public void shouldCallFromJsonWithJsonInputParameter() {
+    String raw = "{\"message\": \"Cheese!\"}";
+
+    try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer(), BY_NAME)) {
+      HasFromJsonWithJsonInputParameter obj = in.read(HasFromJsonWithJsonInputParameter.class);
+
+      assertThat(obj.getMessage()).isEqualTo("Cheese!");
+    }
+  }
+
   private JsonInput newInput(String raw) {
     StringReader reader = new StringReader(raw);
     return new JsonInput(reader, new JsonTypeCoercer(), BY_NAME);
+  }
+
+  public static class HasFromJsonWithJsonInputParameter {
+
+    private final String message;
+
+    public HasFromJsonWithJsonInputParameter(String message) {
+      this.message = message;
+    }
+
+    public String getMessage() {
+      return message;
+    }
+
+    private static HasFromJsonWithJsonInputParameter fromJson(JsonInput input) {
+      input.beginObject();
+      input.nextName();
+      String message = input.nextString();
+      input.endObject();
+
+      return new HasFromJsonWithJsonInputParameter(message);
+    }
   }
 }

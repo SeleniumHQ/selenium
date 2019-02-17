@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -57,6 +58,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class LocalDistributor extends Distributor {
 
@@ -112,7 +114,8 @@ public class LocalDistributor extends Distributor {
 
     Session session = selected
         .orElseThrow(
-            () -> new SessionNotCreatedException("Unable to find provider for session: " + allCaps))
+            () -> new SessionNotCreatedException(
+                "Unable to find provider for session: " + payload.stream().collect(toList())))
         .get();
 
     sessions.add(session);

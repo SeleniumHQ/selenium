@@ -80,7 +80,9 @@ class GridStatusHandler implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    DistributorStatus status = null;
+    long start = System.currentTimeMillis();
+
+    DistributorStatus status;
     try {
       status = EXECUTOR_SERVICE.submit(distributor::getStatus).get(2, SECONDS);
     } catch (ExecutionException | InterruptedException | TimeoutException e) {
@@ -91,7 +93,6 @@ class GridStatusHandler implements CommandHandler {
       return;
     }
 
-    long start = System.currentTimeMillis();
     boolean ready = status.hasCapacity();
     String message = ready ? "Selenium Grid ready." : "Selenium Grid not ready";
 
