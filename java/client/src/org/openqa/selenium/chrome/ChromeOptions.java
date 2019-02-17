@@ -216,7 +216,6 @@ public class ChromeOptions extends AbstractDriverOptions<ChromeOptions> {
     args.remove("--headless");
     if (headless) {
       args.add("--headless");
-      args.add("--disable-gpu");
     }
     return this;
   }
