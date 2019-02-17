@@ -25,12 +25,9 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 
-import org.openqa.selenium.AbstractDriverOptions;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.File;
 import java.io.IOException;

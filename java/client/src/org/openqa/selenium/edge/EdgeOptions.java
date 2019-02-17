@@ -17,16 +17,10 @@
 
 package org.openqa.selenium.edge;
 
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-
-import org.openqa.selenium.AbstractDriverOptions;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-
-import java.util.Objects;
 
 
 /**

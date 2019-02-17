@@ -74,6 +74,7 @@ java_library(
 java_library(
     name = "remote-lib",
     srcs = [
+        "AbstractDriverOptions.java",
         "AcceptedW3CCapabilityKeys.java",
         "CommandCodec.java",
         "CommandInfo.java",
