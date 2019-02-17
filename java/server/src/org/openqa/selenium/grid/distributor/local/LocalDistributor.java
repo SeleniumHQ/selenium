@@ -132,7 +132,7 @@ public class LocalDistributor extends Distributor {
       span.addTag("node", sb.toString());
 
       // TODO: We should check to see what happens for duplicate nodes.
-      Host host = new Host(node);
+      Host host = new Host(bus, node);
       hosts.add(host);
       LOG.info(String.format("Added node %s.", node.getId()));
       host.refresh();

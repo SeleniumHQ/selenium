@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.distributor.local;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.DOWN;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.DRAINING;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
@@ -29,11 +30,13 @@ import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -63,7 +66,7 @@ class Host {
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final List<Slot> slots;
 
-  public Host(Node node) {
+  public Host(EventBus bus, Node node) {
     this.node = Objects.requireNonNull(node);
 
     this.nodeId = node.getId();
@@ -119,6 +122,11 @@ class Host {
             result.getMessage()));
       }
     };
+
+    bus.addListener(SESSION_CLOSED, event -> {
+      SessionId id = event.getData(SessionId.class);
+      this.slots.forEach(slot -> slot.onEnd(id));
+    });
   }
 
   public UUID getId() {

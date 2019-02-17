@@ -362,7 +362,6 @@ public class DistributorTest {
   }
 
   @Test
-  @Ignore("Slot is not returned at the moment")
   public void shouldReleaseSlotOnceSessionEnds() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
 
@@ -399,6 +398,8 @@ public class DistributorTest {
         return true;
       }
     });
+
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     // And we should now be able to create another session.
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {

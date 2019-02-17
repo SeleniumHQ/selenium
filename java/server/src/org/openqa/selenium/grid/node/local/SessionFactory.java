@@ -22,7 +22,9 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -35,15 +37,18 @@ import java.util.function.Predicate;
 class SessionFactory
     implements Predicate<Capabilities>, Function<Capabilities, Optional<TrackedSession>> {
 
+  private final EventBus bus;
   private final HttpClient.Factory httpClientFactory;
   private final Capabilities capabilities;
   private final Function<Capabilities, Session> generator;
   private volatile boolean available = true;
 
   SessionFactory(
+      EventBus bus,
       HttpClient.Factory httpClientFactory,
       Capabilities capabilities,
       Function<Capabilities, Session> generator) {
+    this.bus = Objects.requireNonNull(bus);
     this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
     this.capabilities = Objects.requireNonNull(ImmutableCapabilities.copyOf(capabilities));
     this.generator = Objects.requireNonNull(generator);
@@ -97,6 +102,7 @@ class SessionFactory
       handler.execute(req, res);
       if (req.getMethod() == DELETE && killUrl.equals(req.getUri())) {
         available = true;
+        bus.fire(new SessionClosedEvent(session.getId()));
       }
     };
 

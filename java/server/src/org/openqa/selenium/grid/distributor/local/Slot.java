@@ -25,6 +25,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.remote.SessionId;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -35,7 +36,7 @@ public class Slot {
   private final Capabilities registeredCapabilities;
   private Status currentStatus;
   private long lastStartedNanos;
-  private Capabilities currentCapabilities;
+  private Session currentSession;
 
   public Slot(Node node, Capabilities capabilities, Status status) {
     this.node = Objects.requireNonNull(node);
@@ -76,28 +77,33 @@ public class Slot {
         Session session = node.newSession(caps)
             .orElseThrow(
                 () -> new SessionNotCreatedException("Unable to create session for " + caps));
-        onStart(caps);
+        onStart(session);
         return session;
       } catch (Throwable t) {
-        onEnd();
+        currentStatus = AVAILABLE;
+        currentSession = null;
         throw t;
       }
     };
   }
 
-  public void onStart(Capabilities capabilities) {
+  public void onStart(Session session) {
     if (getStatus() != RESERVED) {
       throw new IllegalStateException("Slot is not reserved");
     }
 
     this.lastStartedNanos = System.nanoTime();
     this.currentStatus = ACTIVE;
-    this.currentCapabilities = capabilities;
+    this.currentSession = Objects.requireNonNull(session);
   }
 
-  public void onEnd() {
+  public void onEnd(SessionId id) {
+    if (currentSession == null || !currentSession.getId().equals(id)) {
+      return;
+    }
+
     this.currentStatus = AVAILABLE;
-    this.currentCapabilities = null;
+    this.currentSession = null;
   }
 
   public enum Status {

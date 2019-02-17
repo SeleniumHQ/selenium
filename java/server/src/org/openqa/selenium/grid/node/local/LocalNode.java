@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.node.local;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -110,6 +112,10 @@ public class LocalNode extends Node {
 
     this.regularly = new Regularly("Local Node: " + externalUri);
     regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
+
+    bus.addListener(SESSION_CLOSED, event -> {
+      this.stop(event.getData(SessionId.class));
+    });
   }
 
   @VisibleForTesting
@@ -217,6 +223,11 @@ public class LocalNode extends Node {
 
       span.addTag("session.capabilities", session.getCapabilities());
       span.addTag("session.uri", session.getUri());
+
+      if (req.getMethod() == DELETE && req.getUri().equals("/session/" + id)) {
+        session.stop();
+        return;
+      }
 
       try {
         session.getHandler().execute(req, resp);
@@ -329,7 +340,7 @@ public class LocalNode extends Node {
       Objects.requireNonNull(stereotype, "Capabilities must be set.");
       Objects.requireNonNull(factory, "Session factory must be set.");
 
-      factories.add(new SessionFactory(httpClientFactory, stereotype, factory));
+      factories.add(new SessionFactory(bus, httpClientFactory, stereotype, factory));
 
       return this;
     }

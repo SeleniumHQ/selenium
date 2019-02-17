@@ -26,6 +26,6 @@ public class SessionClosedEvent extends Event {
   public static final Type SESSION_CLOSED = new Type("session-closed");
 
   public SessionClosedEvent(SessionId id) {
-    super(SESSION_CLOSED, id.toString());
+    super(SESSION_CLOSED, id);
   }
 }
