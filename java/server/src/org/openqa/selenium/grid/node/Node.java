@@ -123,10 +123,7 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
         post("/se/grid/node/session").using(NewNodeSession.class),
         get("/se/grid/node/status")
             .using((req, res) -> {
-              System.out.println("Getting node status: " + req);
-              NodeStatus status = getStatus();
-              System.out.println("Status is: " + json.toJson(status));
-              res.setContent(json.toJson(status).getBytes(UTF_8));
+              res.setContent(json.toJson(getStatus()).getBytes(UTF_8));
             }),
         get("/status").using(StatusHandler.class),
         matching(req -> {

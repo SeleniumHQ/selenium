@@ -98,7 +98,6 @@ class GridStatusHandler implements CommandHandler {
     long remaining = System.currentTimeMillis() + 2000 - start;
     List<Future<Map<String, Object>>> nodeResults = status.getNodes().stream()
         .map(summary -> {
-          System.out.println("Creating node summary for: " + summary.getUri());
           ImmutableMap<String, Object> defaultResponse = ImmutableMap.of(
               "id", summary.getNodeId(),
               "uri", summary.getUri(),
@@ -114,7 +113,6 @@ class GridStatusHandler implements CommandHandler {
                   HttpClient client = clientFactory.createClient(summary.getUri().toURL());
                   HttpResponse res = client.execute(new HttpRequest(GET, "/se/grid/node/status"));
 
-                  System.out.println("Read: " + res.getContentString());
                   if (res.getStatus() == 200) {
                     toReturn.complete(json.toType(res.getContentString(), MAP_TYPE));
                   } else {
