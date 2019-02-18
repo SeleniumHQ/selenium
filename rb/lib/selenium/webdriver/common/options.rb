@@ -106,6 +106,30 @@ module Selenium
       end
 
       #
+      # Create a new top-level browsing context
+      # https://w3c.github.io/webdriver/#new-window
+      # @param type [Symbol] Supports two values: :tab and :window.
+      #  Use :tab if you'd like the new window to share an OS-level window
+      #  with the current browsing context.
+      #  Use :window otherwise
+      # @return [String] The value of the window handle
+      #
+      def new_window(type = :tab)
+        case type
+        when :tab, :window
+          result = @bridge.new_window(type)
+          if !result.has_key?('handle')
+            raise UnknownError, "the driver did not return a handle. " +
+              "The returned result: #{result.inspect}"
+          end
+          return result['handle']
+        else
+          raise ArgumentError, "invalid argument for type. Got: '#{type.inspect}'." +
+            " Try :tab or :window"
+        end
+      end
+
+      #
       # @api beta This API may be changed or removed in a future release.
       #
 
