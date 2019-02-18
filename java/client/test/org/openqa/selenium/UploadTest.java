@@ -25,6 +25,7 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -135,6 +136,8 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(FIREFOX)
+  @Ignore(HTMLUNIT)
   public void testUploadingWithInvisibleFileInputWhenStringFileInteractabilityIsOn() {
     WebDriver driver2 = new WebDriverBuilder().get(
         new ImmutableCapabilities(CapabilityType.STRICT_FILE_INTERACTABILITY, true));
