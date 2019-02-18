@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.CapabilityType.STRICT_FILE_INTERACTABILITY;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
@@ -49,6 +50,11 @@ public class AbstractDriverOptions<DO extends AbstractDriverOptions> extends Mut
 
   public DO setAcceptInsecureCerts(boolean acceptInsecureCerts) {
     setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
+    return (DO) this;
+  }
+
+  public DO setStrictFileInteractability(boolean strictFileInteractability) {
+    setCapability(STRICT_FILE_INTERACTABILITY, strictFileInteractability);
     return (DO) this;
   }
 
