@@ -101,6 +101,30 @@ module Selenium
           expect(actual).to eq(expected)
         end
       end
+
+      describe 'new_window', only: {browser: %i[safari_preview firefox ie]} do
+        types = [:tab, :window] # Stores the valid type values for new_window
+        types.each do |type|
+          it "should be able to open a new #{type}" do
+            # Store the count of window handles before executing action
+            before_window_handles = driver.window_handles.length
+            # Open a new window
+            driver.manage.new_window(type)
+            # Store the count of window handles after executing action
+            after_window_handles = driver.window_handles.length
+            # 1 window handle should have been added
+            expect(after_window_handles).to eq(before_window_handles + 1)
+          end
+        end
+
+        it "returns an exception if an invalid type is provided" do
+          invalid_types = [:invalid, 'invalid', 'tab', 'window']
+          invalid_types.each do |type|
+            expect { driver.manage.new_window(type) }.to \
+              raise_error(ArgumentError, "invalid argument for type. Got: '#{type.inspect}'. Try :tab or :window")
+          end
+        end
+      end
     end # Options
   end # WebDriver
 end # Selenium
