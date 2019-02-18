@@ -63,6 +63,7 @@ class StaticResources {
 
       Path source = new BuckBuild().of(buildTarget).go();
 
+      Files.createDirectories(dest.getParent());
       Files.copy(source, dest);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
