@@ -99,7 +99,6 @@ module Selenium
           it 'should add necessary command-line arguments' do
             subject.headless!
             expect(subject.args.to_a).to eql(['--headless'])
-            end
           end
         end
 
