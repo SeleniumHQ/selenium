@@ -120,6 +120,7 @@ public class UploadTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "Hangs forever in sendKeys")
+  @Ignore(HTMLUNIT)
   public void testUploadingWithInvisibleFileInput() {
     driver.get(appServer.whereIs("upload_invisible.html"));
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
