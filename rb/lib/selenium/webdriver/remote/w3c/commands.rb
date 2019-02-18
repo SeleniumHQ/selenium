@@ -51,6 +51,7 @@ module Selenium
             #
 
             get_window_handle: [:get, 'session/:session_id/window'.freeze],
+            new_window: [:post, '/session/:session_id/window/new'.freeze],
             close_window: [:delete, 'session/:session_id/window'.freeze],
             switch_to_window: [:post, 'session/:session_id/window'.freeze],
             get_window_handles: [:get, 'session/:session_id/window/handles'.freeze],
