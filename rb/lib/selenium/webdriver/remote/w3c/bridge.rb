@@ -202,7 +202,7 @@ module Selenium
 
           def set_window_rect(x: nil, y: nil, width: nil, height: nil)
             params = {x: x, y: y, width: width, height: height}
-            params.update(params) { |k, v| Integer(v) unless v.nil? }
+            params.update(params) { |_k, v| Integer(v) unless v.nil? }
             execute :set_window_rect, {}, params
           end
 
@@ -570,7 +570,7 @@ module Selenium
             [how, what]
           end
 
-          ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]\(\)])/
+          ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]\(\)])/.freeze
           UNICODE_CODE_POINT = 30
 
           # Escapes invalid characters in CSS selector.
