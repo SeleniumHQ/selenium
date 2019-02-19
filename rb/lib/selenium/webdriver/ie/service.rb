@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -24,7 +26,7 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 5555
-        @executable = 'IEDriverServer'.freeze
+        @executable = 'IEDriverServer'
         @missing_text = <<-ERROR.gsub(/\n +| {2,}/, ' ').freeze
           Unable to find IEDriverServer. Please download the server from
           http://selenium-release.storage.googleapis.com/index.html and place it somewhere on your PATH.

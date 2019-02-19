@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -65,17 +67,17 @@ module Selenium
           @logger.level = severity
         else
           case severity.to_s.downcase
-          when 'debug'.freeze
+          when 'debug'
             @logger.level = DEBUG
-          when 'info'.freeze
+          when 'info'
             @logger.level = INFO
-          when 'warn'.freeze
+          when 'warn'
             @logger.level = WARN
-          when 'error'.freeze
+          when 'error'
             @logger.level = ERROR
-          when 'fatal'.freeze
+          when 'fatal'
             @logger.level = FATAL
-          when 'unknown'.freeze
+          when 'unknown'
             @logger.level = UNKNOWN
           else
             raise ArgumentError, "invalid log level: #{severity}"
@@ -105,7 +107,7 @@ module Selenium
       # @param [String, nil] new
       #
       def deprecate(old, new = nil)
-        message = "[DEPRECATION] #{old} is deprecated"
+        message = +"[DEPRECATION] #{old} is deprecated"
         message << if new
                      ". Use #{new} instead."
                    else
