@@ -35,7 +35,8 @@ module Selenium
                  auto_detect: 'autodetect',
                  socks: 'socksProxy',
                  socks_username: 'socksUsername',
-                 socks_password: 'socksPassword'}.freeze
+                 socks_password: 'socksPassword',
+                 socks_version: 'socksVersion'}.freeze
 
       ALLOWED.each_key { |t| attr_reader t }
 
@@ -117,6 +118,11 @@ module Selenium
         @socks_password = value
       end
 
+      def socks_version=(value)
+        self.type = :manual
+        @socks_version = value
+      end
+
       def type=(type)
         unless TYPES.key? type
           raise ArgumentError, "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}"
@@ -140,7 +146,8 @@ module Selenium
           'autodetect' => auto_detect,
           'socksProxy' => socks,
           'socksUsername' => socks_username,
-          'socksPassword' => socks_password
+          'socksPassword' => socks_password,
+          'socksVersion' => socks_version
         }.delete_if { |_k, v| v.nil? }
 
         json_result if json_result.length > 1

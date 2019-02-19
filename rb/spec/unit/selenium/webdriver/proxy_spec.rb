@@ -28,7 +28,8 @@ module Selenium
           ssl: 'mythicalsslproxy',
           socks: 'mythicalsocksproxy:65555',
           socks_username: 'test',
-          socks_password: 'test'
+          socks_password: 'test',
+          socks_version: 5
         }
       end
 
@@ -61,6 +62,7 @@ module Selenium
         expect(proxy.socks).to          eq(proxy_settings[:socks])
         expect(proxy.socks_username).to eq(proxy_settings[:socks_username])
         expect(proxy.socks_password).to eq(proxy_settings[:socks_password])
+        expect(proxy.socks_version).to  eq(proxy_settings[:socks_version])
       end
 
       it 'should return a hash of the json properties to serialize' do
@@ -74,6 +76,7 @@ module Selenium
         expect(proxy_json['socksProxy']).to    eq(proxy_settings[:socks])
         expect(proxy_json['socksUsername']).to eq(proxy_settings[:socks_username])
         expect(proxy_json['socksPassword']).to eq(proxy_settings[:socks_password])
+        expect(proxy_json['socksVersion']).to  eq(proxy_settings[:socks_version])
       end
 
       it 'should configure a PAC proxy' do
