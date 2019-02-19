@@ -62,7 +62,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Test
   @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
-  @Ignore(EDGE)
+  @Ignore(value = EDGE, reason = "Can't run two instances at once")
   public void testShouldFireFocusEventInNonTopmostWindow() {
     WebDriver driver2 = new WebDriverBuilder().get();
     try {
@@ -302,7 +302,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "Allows only one instance")
-  @Ignore(EDGE)
+  @Ignore(value = EDGE, reason = "Can't run two instances at once")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
 
