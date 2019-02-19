@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +22,7 @@ module Selenium
     module Remote
       # @api private
       class Response
-        STACKTRACE_KEY = 'stackTrace'.freeze
+        STACKTRACE_KEY = 'stackTrace'
 
         attr_reader :code, :payload
         attr_writer :payload

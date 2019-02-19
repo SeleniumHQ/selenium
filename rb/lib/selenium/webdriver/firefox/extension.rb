@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -23,7 +25,7 @@ module Selenium
       #
 
       class Extension
-        NAMESPACE = 'http://www.mozilla.org/2004/em-rdf#'.freeze
+        NAMESPACE = 'http://www.mozilla.org/2004/em-rdf#'
 
         def initialize(path)
           raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.exist?(path)

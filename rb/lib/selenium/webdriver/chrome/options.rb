@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,7 +24,7 @@ module Selenium
         attr_reader :args, :prefs, :options, :emulation, :extensions, :encoded_extensions
         attr_accessor :binary
 
-        KEY = 'goog:chromeOptions'.freeze
+        KEY = 'goog:chromeOptions'
 
         #
         # Create a new Options instance.
