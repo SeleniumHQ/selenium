@@ -24,7 +24,7 @@ module Selenium
         # @api private
         class Persistent < Default
           def close
-            @http.shutdown if @http
+            @http&.shutdown
           end
 
           private

@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../webdriver/spec_helper', __FILE__)
+require File.expand_path('webdriver/spec_helper', __dir__)
 require 'selenium/server'
 
 module Selenium

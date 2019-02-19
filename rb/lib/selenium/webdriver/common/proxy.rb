@@ -65,6 +65,7 @@ module Selenium
         end
 
         return if not_allowed.empty?
+
         raise ArgumentError, "unknown option#{'s' if not_allowed.size != 1}: #{not_allowed.inspect}"
       end
 
@@ -124,9 +125,7 @@ module Selenium
       end
 
       def type=(type)
-        unless TYPES.key? type
-          raise ArgumentError, "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}"
-        end
+        raise ArgumentError, "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}" unless TYPES.key? type
 
         if defined?(@type) && type != @type
           raise ArgumentError, "incompatible proxy type #{type.inspect} (already set to #{@type.inspect})"

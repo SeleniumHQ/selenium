@@ -571,6 +571,7 @@ module Selenium
 
           def assert_javascript_enabled
             return if capabilities.javascript_enabled?
+
             raise Error::UnsupportedOperationError, 'underlying webdriver instance does not support javascript'
           end
 

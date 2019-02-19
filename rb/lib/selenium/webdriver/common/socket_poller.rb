@@ -88,7 +88,7 @@ module Selenium
           sock.close
           true
         rescue *NOT_CONNECTED_ERRORS
-          sock.close if sock
+          sock&.close
           WebDriver.logger.debug("polling for socket on #{[@host, @port].inspect}")
           false
         end
@@ -99,6 +99,7 @@ module Selenium
 
         (
           return true if yield
+
           wait
         ) until time_now > max_time
 

@@ -46,6 +46,7 @@ module Selenium
             unless Capabilities.respond_to?(desired_capabilities)
               raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
             end
+
             desired_capabilities = Capabilities.__send__(desired_capabilities)
           end
 
@@ -112,9 +113,7 @@ module Selenium
             end
           end
 
-          unless @session_id
-            raise Error::WebDriverError, 'no sessionId in returned payload'
-          end
+          raise Error::WebDriverError, 'no sessionId in returned payload' unless @session_id
 
           if oss_status
             WebDriver.logger.info 'Detected OSS dialect.'
@@ -172,6 +171,7 @@ module Selenium
 
         def commands(command)
           raise NotImplementedError unless command == :new_session
+
           COMMANDS[command]
         end
 

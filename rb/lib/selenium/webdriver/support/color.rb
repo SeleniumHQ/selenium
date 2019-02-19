@@ -70,7 +70,7 @@ module Selenium
           end
         end
 
-        def self.from_hsl(h, s, l, a)
+        def self.from_hsl(h, s, l, a) # rubocop:disable Naming/UncommunicativeMethodParamName
           h = Float(h) / 360
           s = Float(s) / 100
           l = Float(l) / 100

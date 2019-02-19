@@ -63,7 +63,6 @@ module Selenium
           pid = fork do
             FileReaper.reap!
             exit
-            exit
           end
           Process.wait pid
 

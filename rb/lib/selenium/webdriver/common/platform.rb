@@ -97,6 +97,7 @@ module Selenium
 
       def wsl?
         return false unless linux?
+
         File.read('/proc/version').include?('Microsoft')
       end
 
@@ -130,6 +131,7 @@ module Selenium
 
       def assert_file(path)
         return if File.file? path
+
         raise Error::WebDriverError, "not a file: #{path.inspect}"
       end
 
@@ -137,6 +139,7 @@ module Selenium
         assert_file(path)
 
         return if File.executable? path
+
         raise Error::WebDriverError, "not executable: #{path.inspect}"
       end
 
@@ -187,6 +190,7 @@ module Selenium
         info = Socket.getaddrinfo 'localhost', 80, Socket::AF_INET, Socket::SOCK_STREAM
 
         return info[0][3] unless info.empty?
+
         raise Error::WebDriverError, "unable to translate 'localhost' for TCP + IPv4"
       end
 

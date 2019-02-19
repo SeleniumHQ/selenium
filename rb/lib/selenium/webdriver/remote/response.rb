@@ -49,6 +49,7 @@ module Selenium
           when Hash
             msg = val['message']
             return 'unknown error' unless msg
+
             msg << ": #{val['alert']['text'].inspect}" if val['alert'].is_a?(Hash) && val['alert']['text']
             msg << " (#{val['class']})" if val['class']
             msg
@@ -69,6 +70,7 @@ module Selenium
           e = error
           raise e if e
           return unless @code.nil? || @code >= 400
+
           raise Error::ServerError, self
         end
 
@@ -115,11 +117,13 @@ module Selenium
 
         def status
           return unless error_payload.is_a? Hash
+
           @status ||= error_payload['status'] || error_payload['error']
         end
 
         def value
           return unless error_payload.is_a? Hash
+
           @value ||= error_payload['value'] || error_payload['message']
         end
       end # Response

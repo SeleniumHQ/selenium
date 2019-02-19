@@ -42,6 +42,7 @@ module Selenium
           end
 
           return if SocketPoller.new(@host, @port, START_TIMEOUT).connected?
+
           raise "rack server not launched in #{START_TIMEOUT} seconds"
         end
 
@@ -136,6 +137,4 @@ module Selenium
   end # WebDriver
 end # Selenium
 
-if $PROGRAM_NAME == __FILE__
-  Selenium::WebDriver::SpecSupport::RackServer.new(ARGV[0], ARGV[1]).run
-end
+Selenium::WebDriver::SpecSupport::RackServer.new(ARGV[0], ARGV[1]).run if $PROGRAM_NAME == __FILE__

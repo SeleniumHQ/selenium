@@ -39,6 +39,7 @@ module Selenium
         def binary_path(path)
           path = self.class.executable if path.nil?
           raise Error::WebDriverError, self.class.missing_text unless path
+
           Platform.assert_executable path
           path
         end

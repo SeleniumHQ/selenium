@@ -55,6 +55,7 @@ module Selenium
 
         def add_extension_path(path)
           raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.directory?(path)
+
           @extension_paths << path
         end
 

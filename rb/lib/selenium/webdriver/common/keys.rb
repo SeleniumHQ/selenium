@@ -110,6 +110,7 @@ module Selenium
 
       def self.[](key)
         return KEYS[key] if KEYS[key]
+
         raise Error::UnsupportedOperationError, "no such key #{key.inspect}"
       end
 
