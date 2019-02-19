@@ -53,19 +53,19 @@ module Selenium
           private
 
           def http
-            @http ||= (
-            http = new_http_client
-            if server_url.scheme == 'https'
-              http.use_ssl = true
-              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+            @http ||= begin
+              http = new_http_client
+              if server_url.scheme == 'https'
+                http.use_ssl = true
+                http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+              end
+
+              # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
+              http.open_timeout = open_timeout
+              http.read_timeout = read_timeout if read_timeout
+
+              http
             end
-
-            # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
-            http.open_timeout = self.open_timeout
-            http.read_timeout = self.read_timeout if self.read_timeout
-
-            http
-          )
           end
 
           MAX_RETRIES = 3
@@ -140,15 +140,15 @@ module Selenium
           end
 
           def proxy
-            @proxy ||= (
-            proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-            no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+            @proxy ||= begin
+              proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+              no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
 
-            if proxy
-              proxy = "http://#{proxy}" unless proxy.start_with?('http://')
-              Proxy.new(http: proxy, no_proxy: no_proxy)
+              if proxy
+                proxy = "http://#{proxy}" unless proxy.start_with?('http://')
+                Proxy.new(http: proxy, no_proxy: no_proxy)
+              end
             end
-          )
           end
 
           def use_proxy?

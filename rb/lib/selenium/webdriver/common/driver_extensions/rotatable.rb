@@ -25,7 +25,7 @@ module Selenium
 
     module DriverExtensions
       module Rotatable
-        ORIENTATIONS = [:landscape, :portrait].freeze
+        ORIENTATIONS = %i[landscape portrait].freeze
 
         #
         # Change the screen orientation

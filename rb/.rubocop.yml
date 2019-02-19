@@ -44,11 +44,11 @@ Naming/UncommunicativeMethodParamName:
     - io
 
 # These need to be fixed
-Style/MutableConstant:
-  Exclude:
-    - 'lib/selenium/webdriver/common/socket_poller.rb'
-    - 'lib/selenium/webdriver/remote/legacy_bridge.rb'
-    - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
+# Style/MutableConstant:
+#   Exclude:
+#     - 'lib/selenium/webdriver/common/socket_poller.rb'
+#     - 'lib/selenium/webdriver/remote/legacy_bridge.rb'
+#     - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
 
 Style/CommentedKeyword:
   Enabled: false
@@ -57,16 +57,14 @@ Style/CommentedKeyword:
 Metrics/PerceivedComplexity:
   Max: 11
   Exclude:
-    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
     - 'lib/selenium/webdriver/chrome/driver.rb'
     - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
-    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
+    # - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
@@ -74,19 +72,16 @@ Metrics/ClassLength:
   Max: 140
   Exclude:
     - 'lib/selenium/webdriver/firefox/profile.rb'
-    - 'lib/selenium/webdriver/remote/legacy_bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/oss/bridge.rb'
-    - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
     - 'lib/selenium/webdriver/remote/w3c/bridge.rb'
+    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/AbcSize:
   Max: 33
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
     - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
     - 'lib/selenium/webdriver/support/color.rb'
 
@@ -108,7 +103,6 @@ Metrics/MethodLength:
   Max: 33
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
 
 Metrics/BlockLength:
   Exclude:
@@ -121,73 +115,13 @@ Metrics/ParameterLists:
 Layout/EmptyLineAfterMagicComment:
   Enabled: false
 
-Layout/EmptyLinesAroundBlockBody:
-  Exclude:
-    - 'spec/**/*'
-
 Layout/EmptyLinesAroundClassBody:
   Enabled: false
 
 Layout/EmptyLinesAroundModuleBody:
   Enabled: false
 
-Lint/UnusedBlockArgument:
-  Enabled: false
-
-Lint/UnusedMethodArgument:
-  Enabled: false
-
-Lint/UselessAssignment:
-  Exclude:
-    - 'spec/unit/selenium/webdriver/chrome/service_spec.rb'
-
-Performance/Caller:
-  Enabled: false
-
-Style/CommentAnnotation:
-  Enabled: false
-
-Style/FormatString:
-  Exclude:
-    - 'lib/selenium/webdriver/atoms.rb'
-
-Style/MethodMissingSuper:
-  Exclude:
-    - 'lib/selenium/webdriver/support/event_firing_bridge.rb'
-    - 'lib/selenium/webdriver/support/block_event_listener.rb'
-
-Style/MissingRespondToMissing:
-  Exclude:
-    - 'lib/selenium/webdriver/support/event_firing_bridge.rb'
-    - 'lib/selenium/webdriver/support/block_event_listener.rb'
-
-Layout/MultilineMethodCallIndentation:
-  Exclude:
-    - 'spec/unit/selenium/webdriver/chrome/profile_spec.rb'
-
-Style/MultilineMemoization:
-  Enabled: false
-
-Style/MutableConstant:
-  Enabled: false
-
-Style/RedundantBegin:
-  Exclude:
-    - 'spec/integration/selenium/webdriver/driver_spec.rb'
-
-Style/RedundantSelf:
-  Enabled: false
-
 Style/StringLiterals:
-  Enabled: false
-
-Style/SymbolArray:
-  Enabled: false
-
-Style/TrailingCommaInArrayLiteral:
-  Enabled: false
-
-Style/TrailingCommaInHashLiteral:
   Enabled: false
 
 Style/Dir:

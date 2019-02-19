@@ -85,13 +85,11 @@ module Selenium
         end
 
         def save_screenshot_and_assert(path)
-          begin
-            driver.save_screenshot path
-            expect(File.exist?(path)).to be true
-            expect(File.size(path)).to be > 0
-          ensure
-            File.delete(path) if File.exist?(path)
-          end
+          driver.save_screenshot path
+          expect(File.exist?(path)).to be true
+          expect(File.size(path)).to be > 0
+        ensure
+          File.delete(path) if File.exist?(path)
         end
       end
 

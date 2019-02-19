@@ -23,7 +23,6 @@ module Selenium
   module WebDriver
     module IE
       fdescribe Options do
-
         describe '#initialize' do
           it 'sets passed args' do
             opt = Options.new(args: %w[foo bar])
