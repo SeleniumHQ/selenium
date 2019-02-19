@@ -231,7 +231,7 @@ module Selenium
     end
 
     def process
-      @process ||= (
+      @process ||= begin
         # extract any additional_args that start with -D as options
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
         server_command = ['java'] + properties + ['-jar', @jar, '-port', @port.to_s] + @additional_args
@@ -250,7 +250,7 @@ module Selenium
         cp.detach = @background
 
         cp
-      )
+      end
     end
 
     def poll_for_service

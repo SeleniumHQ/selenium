@@ -48,9 +48,9 @@ module Selenium
         end
 
         it "raises an error if given an invalid 'by'" do
-          expect do
+          expect {
             search_context.find_element(foo: 'bar')
-          end.to raise_error(ArgumentError, 'cannot find element by :foo')
+          }.to raise_error(ArgumentError, 'cannot find element by :foo')
         end
 
         it 'does not modify the hash given' do
@@ -74,9 +74,9 @@ module Selenium
         end
 
         it "raises an error if given an invalid 'by'" do
-          expect do
+          expect {
             search_context.find_elements(foo: 'bar')
-          end.to raise_error(ArgumentError, 'cannot find elements by :foo')
+          }.to raise_error(ArgumentError, 'cannot find elements by :foo')
         end
       end
     end

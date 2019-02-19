@@ -77,7 +77,7 @@ module Selenium
 
           ss = driver.screenshot_as(:png)
           expect(ss).to be_kind_of(String)
-          expect(ss.size).to be > 0
+          expect(ss.size).to be_positive
         end
 
         it 'raises an error when given an unknown format' do
@@ -85,13 +85,11 @@ module Selenium
         end
 
         def save_screenshot_and_assert(path)
-          begin
-            driver.save_screenshot path
-            expect(File.exist?(path)).to be true
-            expect(File.size(path)).to be > 0
-          ensure
-            File.delete(path) if File.exist?(path)
-          end
+          driver.save_screenshot path
+          expect(File.exist?(path)).to be true
+          expect(File.size(path)).to be_positive
+        ensure
+          File.delete(path) if File.exist?(path)
         end
       end
 
@@ -295,10 +293,10 @@ module Selenium
 
         # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
         it 'times out if the callback is not invoked', except: [{browser: :edge}] do
-          expect do
+          expect {
             # Script is expected to be async and explicitly callback, so this should timeout.
             driver.execute_async_script 'return 1 + 2;'
-          end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
+          }.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
         end
       end
     end

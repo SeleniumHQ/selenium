@@ -79,12 +79,12 @@ module Selenium
         end
 
         def app_server
-          @app_server ||= (
+          @app_server ||= begin
             s = RackServer.new(root.join('common/src/web').to_s)
             s.start
 
             s
-          )
+          end
         end
 
         def remote_server

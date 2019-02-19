@@ -25,9 +25,9 @@ module Selenium
       it 'should raise an appropriate error' do
         driver.navigate.to url_for('xhtmlTest.html')
 
-        expect do
+        expect {
           driver.find_element(id: 'nonexistant')
-        end.to raise_error(WebDriver::Error::NoSuchElementError)
+        }.to raise_error(WebDriver::Error::NoSuchElementError)
       end
 
       it 'should show stack trace information', only: {browser: :ff_esr} do
