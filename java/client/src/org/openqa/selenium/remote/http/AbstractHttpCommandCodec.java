@@ -89,6 +89,7 @@ import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.STATUS;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_CONTEXT;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_NEW_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
@@ -139,6 +140,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     defineCommand(CLOSE, delete("/session/:sessionId/window"));
     defineCommand(SWITCH_TO_WINDOW, post("/session/:sessionId/window"));
+    defineCommand(SWITCH_TO_NEW_WINDOW, post("/session/:sessionId/window/new"));
 
     defineCommand(FULLSCREEN_CURRENT_WINDOW, post("/session/:sessionId/window/fullscreen"));
 
@@ -265,7 +267,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     String content = encodedCommand.getContentString();
     if (!content.isEmpty()) {
-      @SuppressWarnings("unchecked")
       Map<String, Object> tmp = json.toType(content, MAP_TYPE);
       parameters.putAll(tmp);
     }

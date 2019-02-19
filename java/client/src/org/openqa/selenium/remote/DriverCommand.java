@@ -23,12 +23,12 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Sequence;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -121,6 +121,11 @@ public interface DriverCommand {
   static CommandPayload SWITCH_TO_WINDOW(String windowHandleOrName) {
     return new CommandPayload(SWITCH_TO_WINDOW, ImmutableMap.of("handle", windowHandleOrName));
   }
+  String SWITCH_TO_NEW_WINDOW = "newWindow";
+  static CommandPayload SWITCH_TO_NEW_WINDOW(WindowType typeHint) {
+    return new CommandPayload(SWITCH_TO_NEW_WINDOW, ImmutableMap.of("type", typeHint.toString()));
+  }
+
   String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
   static CommandPayload SWITCH_TO_FRAME(Object frame) {

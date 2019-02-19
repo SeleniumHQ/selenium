@@ -25,8 +25,13 @@ import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.OPERA;
+import static org.openqa.selenium.testing.drivers.Browser.OPERABLINK;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isIe6;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
@@ -351,4 +356,27 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.findElement(By.name("myframe"));
   }
 
+  @NoDriverAfterTest(failedOnly = true)
+  @Test
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI) // actually not tested in this browser
+  @NotYetImplemented(OPERABLINK)
+  @Ignore(FIREFOX)
+  @Ignore(OPERA)
+  public void canOpenANewWindow() {
+    driver.get(pages.xhtmlTestPage);
+
+    String mainWindow = driver.getWindowHandle();
+    driver.switchTo().newWindow(WindowType.TAB);
+
+    assertThat(driver.getWindowHandles()).hasSize(2);
+
+    // no wait, the command should block until the new window is ready
+    String newHandle = driver.getWindowHandle();
+    assertThat(newHandle).isNotEqualTo(mainWindow);
+
+    driver.close();
+    driver.switchTo().window(mainWindow);
+  }
 }
