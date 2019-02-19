@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -63,7 +65,7 @@ module Selenium
         msg = if @message
                 @message.dup
               else
-                "timed out after #{@timeout} seconds"
+                +"timed out after #{@timeout} seconds"
               end
 
         msg << " (#{last_error.message})" if last_error

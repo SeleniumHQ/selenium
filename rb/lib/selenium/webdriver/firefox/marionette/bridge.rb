@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,8 +24,8 @@ module Selenium
         module Bridge
 
           COMMANDS = {
-            install_addon: [:post, 'session/:session_id/moz/addon/install'.freeze],
-            uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall'.freeze]
+            install_addon: [:post, 'session/:session_id/moz/addon/install'],
+            uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall']
           }.freeze
 
           def commands(command)

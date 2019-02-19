@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -136,7 +138,7 @@ module Selenium
 
     it 'should know what the latest version available is' do
       latest_version = '2.42.2'
-      example_xml = "<?xml version='1.0' encoding='UTF-8'?><ListBucketResult "
+      example_xml = +"<?xml version='1.0' encoding='UTF-8'?><ListBucketResult "
       example_xml << "xmlns='http://doc.s3.amazonaws.com/2006-03-01'><Name>"
       example_xml << 'selenium-release</Name><Contents><Key>2.39/'
       example_xml << 'selenium-server-2.39.0.zip</Key></Contents><Contents>'

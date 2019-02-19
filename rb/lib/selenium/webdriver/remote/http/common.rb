@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,7 +23,7 @@ module Selenium
       module Http
         class Common
           MAX_REDIRECTS   = 20 # same as chromium/gecko
-          CONTENT_TYPE    = 'application/json'.freeze
+          CONTENT_TYPE    = 'application/json'
           DEFAULT_HEADERS = {
             'Accept' => CONTENT_TYPE,
             'Content-Type' => "#{CONTENT_TYPE}; charset=UTF-8",

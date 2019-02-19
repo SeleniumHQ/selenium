@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -24,7 +26,7 @@ module Selenium
 
         PORT = 4444
         COMMANDS = {
-          new_session: [:post, 'session'.freeze]
+          new_session: [:post, 'session']
         }.freeze
 
         attr_accessor :context, :http, :file_detector
