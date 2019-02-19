@@ -73,7 +73,7 @@ module Selenium
       end
 
       def inspect
-        format '#<%s:0x%x browser=%s>', self.class, hash * 2, bridge.browser.inspect
+        format '#<%<class>s:0x%<hash>x browser=%<browser>s>', class: self.class, hash: hash * 2, browser: bridge.browser.inspect
       end
 
       #

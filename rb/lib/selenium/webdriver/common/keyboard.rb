@@ -60,6 +60,7 @@ module Selenium
 
       def assert_modifier(key)
         return if MODIFIERS.include? key
+
         raise ArgumentError, "#{key.inspect} is not a modifier key, expected one of #{MODIFIERS.inspect}"
       end
     end # Keyboard

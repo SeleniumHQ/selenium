@@ -50,9 +50,7 @@ module Selenium
         def zip(path)
           with_tmp_zip do |zip|
             ::Find.find(path) do |file|
-              unless File.directory?(file)
-                add_zip_entry zip, file, file.sub("#{path}/", '')
-              end
+              add_zip_entry zip, file, file.sub("#{path}/", '') unless File.directory?(file)
             end
 
             zip.commit

@@ -44,6 +44,7 @@ module Selenium
           end
 
           next if key == :proxy
+
           define_method "#{key}=" do |value|
             @capabilities[key] = value
           end
@@ -253,6 +254,7 @@ module Selenium
 
         def ==(other)
           return false unless other.is_a? self.class
+
           as_json == other.as_json
         end
         alias_method :eql?, :==

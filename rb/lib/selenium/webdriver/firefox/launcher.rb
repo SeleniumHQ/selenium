@@ -82,6 +82,7 @@ module Selenium
           poller = SocketPoller.new(@host, @port, STABLE_CONNECTION_TIMEOUT)
 
           return if poller.connected?
+
           @binary.quit
           error = "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds (#{@host}:#{@port})"
           raise Error::WebDriverError, error

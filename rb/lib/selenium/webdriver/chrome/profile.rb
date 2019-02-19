@@ -34,9 +34,7 @@ module Selenium
         end
 
         def add_extension(path)
-          unless File.file?(path)
-            raise Error::WebDriverError, "could not find extension at #{path.inspect}"
-          end
+          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
 
           @extensions << path
         end
@@ -97,6 +95,7 @@ module Selenium
 
         def read_model_prefs
           return {} unless @model
+
           JSON.parse File.read(prefs_file_for(@model))
         end
 

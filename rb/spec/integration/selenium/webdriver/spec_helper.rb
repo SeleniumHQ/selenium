@@ -22,7 +22,7 @@ require 'rspec'
 require 'selenium-webdriver'
 require_relative 'spec_support'
 
-include Selenium
+include Selenium # rubocop:disable Style/MixinUsage
 
 GlobalTestEnv = WebDriver::SpecSupport::TestEnvironment.new
 

@@ -90,15 +90,11 @@ module Selenium
         when 1
           arg = args.first
 
-          unless arg.respond_to?(:shift)
-            raise ArgumentError, "expected #{arg.inspect}:#{arg.class} to respond to #shift"
-          end
+          raise ArgumentError, "expected #{arg.inspect}:#{arg.class} to respond to #shift" unless arg.respond_to?(:shift)
 
           # this will be a single-entry hash, so use #shift over #first or #[]
           arr = arg.dup.shift
-          unless arr.size == 2
-            raise ArgumentError, "expected #{arr.inspect} to have 2 elements"
-          end
+          raise ArgumentError, "expected #{arr.inspect} to have 2 elements" unless arr.size == 2
 
           arr
         else

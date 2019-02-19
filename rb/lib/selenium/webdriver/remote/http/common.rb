@@ -66,6 +66,7 @@ module Selenium
 
           def server_url
             return @server_url if @server_url
+
             raise Error::WebDriverError, 'server_url not set'
           end
 
@@ -81,6 +82,7 @@ module Selenium
 
             if content_type.include? CONTENT_TYPE
               raise Error::WebDriverError, "empty body: #{content_type.inspect} (#{code})\n#{body}" if body.empty?
+
               Response.new(code, JSON.parse(body))
             elsif code == 204
               Response.new(code)

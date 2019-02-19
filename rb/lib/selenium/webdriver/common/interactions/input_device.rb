@@ -30,6 +30,7 @@ module Selenium
 
         def add_action(action)
           raise TypeError, "#{action.inspect} is not a valid action" unless action.class < Interaction
+
           @actions << action
         end
 

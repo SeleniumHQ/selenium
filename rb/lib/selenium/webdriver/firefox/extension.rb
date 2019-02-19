@@ -26,9 +26,7 @@ module Selenium
         NAMESPACE = 'http://www.mozilla.org/2004/em-rdf#'.freeze
 
         def initialize(path)
-          unless File.exist?(path)
-            raise Error::WebDriverError, "could not find extension at #{path.inspect}"
-          end
+          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.exist?(path)
 
           @path             = path
           @should_reap_root = false
