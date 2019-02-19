@@ -58,7 +58,7 @@ module Selenium
 
       private
 
-      MODIFIERS = [:control, :shift, :alt, :command, :meta].freeze
+      MODIFIERS = %i[control shift alt command meta].freeze
 
       def assert_modifier(key)
         return if MODIFIERS.include? key

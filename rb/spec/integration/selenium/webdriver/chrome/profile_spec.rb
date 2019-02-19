@@ -66,9 +66,9 @@ module Selenium
         end
 
         it "raises an error if the extension doesn't exist" do
-          expect do
+          expect {
             profile.add_extension('/not/likely/to/exist.crx')
-          end.to raise_error(Selenium::WebDriver::Error::WebDriverError)
+          }.to raise_error(Selenium::WebDriver::Error::WebDriverError)
         end
       end
     end # Chrome

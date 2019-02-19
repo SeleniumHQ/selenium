@@ -23,27 +23,27 @@ module Selenium
       class Color
         RGB_PATTERN = %r{^\s*rgb\(\s*(\d{1,3})\s*,
                           \s*(\d{1,3})\s*,
-                          \s*(\d{1,3})\s*\)\s*$}x
+                          \s*(\d{1,3})\s*\)\s*$}x.freeze
         RGB_PCT_PATTERN = %r{^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
                               \s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
-                              \s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$}x
+                              \s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$}x.freeze
         RGBA_PATTERN = %r{^\s*rgba\(\s*(\d{1,3})\s*,
                           \s*(\d{1,3})\s*,
                           \s*(\d{1,3})\s*,
-                          \s*(0|1|0\.\d+)\s*\)\s*$}x
+                          \s*(0|1|0\.\d+)\s*\)\s*$}x.freeze
         RGBA_PCT_PATTERN = %r{^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)
                               %\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
                               %\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
-                              %\s*,\s*(0|1|0\.\d+)\s*\)\s*$}x
-        HEX_PATTERN = /#(\h{2})(\h{2})(\h{2})/
-        HEX3_PATTERN = /#(\h)(\h)(\h)/
+                              %\s*,\s*(0|1|0\.\d+)\s*\)\s*$}x.freeze
+        HEX_PATTERN = /#(\h{2})(\h{2})(\h{2})/.freeze
+        HEX3_PATTERN = /#(\h)(\h)(\h)/.freeze
         HSL_PATTERN = %r{^\s*hsl\(\s*(\d{1,3})\s*,
                          \s*(\d{1,3})%\s*,
-                         \s*(\d{1,3})%\s*\)\s*$}x
+                         \s*(\d{1,3})%\s*\)\s*$}x.freeze
         HSLA_PATTERN = %r{^\s*hsla\(\s*(\d{1,3})\s*,
                           \s*(\d{1,3})%\s*,
                           \s*(\d{1,3})%\s*,
-                          \s*(0|1|0\.\d+)\s*\)\s*$}x
+                          \s*(0|1|0\.\d+)\s*\)\s*$}x.freeze
 
         attr_reader :red, :green, :blue, :alpha
 

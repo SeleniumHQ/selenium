@@ -91,9 +91,9 @@ module Selenium
           wait.until { driver.window_handles.size == 2 }
           expect(driver.title).to eq('XHTML Test Page')
 
-          expect do
+          expect {
             driver.switch_to.window(new_window) { raise 'foo' }
-          end.to raise_error(RuntimeError, 'foo')
+          }.to raise_error(RuntimeError, 'foo')
 
           expect(driver.title).to eq('XHTML Test Page')
         end

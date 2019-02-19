@@ -79,7 +79,7 @@ module Selenium
           end
 
           def client
-            @client ||= (
+            @client ||= begin
               c = Curl::Easy.new
 
               c.max_redirects   = MAX_REDIRECTS
@@ -88,7 +88,7 @@ module Selenium
               c.verbose         = WebDriver.logger.info?
 
               c
-            )
+            end
           end
         end # Curb
       end # Http
