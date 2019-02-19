@@ -23,6 +23,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
@@ -72,6 +73,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         }
         return options;
       })
+      .put(Browser.EDGE, EdgeOptions::new)
       .put(Browser.HTMLUNIT, DesiredCapabilities::htmlUnit)
       .put(Browser.OPERABLINK, OperaOptions::new)
       .put(Browser.SAFARI, () -> {
