@@ -28,9 +28,9 @@ module Selenium
 
       def as_json(*)
         {
-          'level'     => level,
+          'level' => level,
           'timestamp' => timestamp,
-          'message'   => message
+          'message' => message
         }
       end
 

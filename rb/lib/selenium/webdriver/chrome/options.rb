@@ -63,6 +63,7 @@ module Selenium
         def add_extension(path)
           raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
           raise Error::WebDriverError, "file was not an extension #{path.inspect}" unless File.extname(path) == '.crx'
+
           @extensions << path
         end
 

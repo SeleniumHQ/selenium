@@ -56,7 +56,7 @@ module Selenium
             begin
               super(@bridge, listener: listener)
             rescue
-              @launcher.quit if @launcher
+              @launcher&.quit
               raise
             end
           end

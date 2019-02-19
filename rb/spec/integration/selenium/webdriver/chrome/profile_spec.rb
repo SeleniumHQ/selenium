@@ -30,7 +30,7 @@ module Selenium
           # profile = Profile.new(directory)
           profile = Profile.new
           profile['browser.show_home_button'] = true
-          file = File.expand_path('../sample.crx', __FILE__)
+          file = File.expand_path('sample.crx', __dir__)
           profile.add_extension(file)
 
           create_driver!(profile: profile) do |driver|

@@ -32,7 +32,7 @@ module Selenium
       end
 
       def inspect
-        format '#<%s:0x%x id=%s>', self.class, hash * 2, @id.inspect
+        format '#<%<class>s:0x%<hash>x id=%<id>s>', class: self.class, hash: hash * 2, id: @id.inspect
       end
 
       def ==(other)

@@ -88,6 +88,7 @@ module Selenium
 
         (
           return true if yield
+
           wait
         ) until time_now > max_time
 

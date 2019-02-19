@@ -40,6 +40,7 @@ module Selenium
           end
 
           return if SocketPoller.new(@host, @port, START_TIMEOUT).connected?
+
           raise "rack server not launched in #{START_TIMEOUT} seconds"
         end
 

@@ -61,7 +61,7 @@ module Selenium
         def quit
           super
         ensure
-          @service.stop if @service
+          @service&.stop
         end
 
       end # Bridge

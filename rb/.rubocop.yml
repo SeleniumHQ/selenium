@@ -1,5 +1,9 @@
 AllCops:
-  TargetRubyVersion: 2.0
+  TargetRubyVersion: 2.3
+
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
@@ -34,12 +38,24 @@ Naming/FileName:
   Exclude:
     - 'lib/selenium-webdriver.rb'
 
+Naming/UncommunicativeMethodParamName:
+  AllowedNames:
+    - x
+    - y
+    - ex
+    - by
+    - id
+    - io
+
 # These need to be fixed
 Style/MutableConstant:
   Exclude:
     - 'lib/selenium/webdriver/common/socket_poller.rb'
     - 'lib/selenium/webdriver/remote/legacy_bridge.rb'
     - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
+
+Style/CommentedKeyword:
+  Enabled: false
 
 # TODO: Refactor Chrome::Bridge#create_capabilities
 Metrics/PerceivedComplexity:
@@ -139,7 +155,12 @@ Style/FormatString:
   Exclude:
     - 'lib/selenium/webdriver/atoms.rb'
 
-Style/MethodMissing:
+Style/MethodMissingSuper:
+  Exclude:
+    - 'lib/selenium/webdriver/support/event_firing_bridge.rb'
+    - 'lib/selenium/webdriver/support/block_event_listener.rb'
+
+Style/MissingRespondToMissing:
   Exclude:
     - 'lib/selenium/webdriver/support/event_firing_bridge.rb'
     - 'lib/selenium/webdriver/support/block_event_listener.rb'
@@ -167,12 +188,15 @@ Style/StringLiterals:
 Style/SymbolArray:
   Enabled: false
 
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
   Enabled: false
 
 Style/Dir:
   Exclude:
     - 'selenium-webdriver.gemspec'
 
-Lint/RescueWithoutErrorClass:
+Style/RescueStandardError:
   Enabled: false

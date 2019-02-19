@@ -44,15 +44,14 @@ module Selenium
           ENV['MOZ_CRASHREPORTER_DISABLE'] = '1' # disable breakpad
           ENV['NO_EM_RESTART'] = '1' # prevent the binary from detaching from the console
 
-          if Platform.linux? && (profile.native_events? || profile.load_no_focus_lib?)
-            modify_link_library_path profile_path
-          end
+          modify_link_library_path profile_path if Platform.linux? && (profile.native_events? || profile.load_no_focus_lib?)
 
           execute(*args)
         end
 
         def quit
           return unless @process
+
           @process.poll_for_exit QUIT_TIMEOUT
         rescue ChildProcess::TimeoutError
           # ok, force quit

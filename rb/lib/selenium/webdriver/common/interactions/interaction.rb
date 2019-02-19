@@ -25,6 +25,7 @@ module Selenium
 
         def initialize(source)
           raise TypeError, "#{source.type} is not a valid input type" unless Interactions::SOURCE_TYPES.include? source.type
+
           @source = source
         end
       end

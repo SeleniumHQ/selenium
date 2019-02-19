@@ -34,6 +34,7 @@ module Selenium
 
         def encode
           return nil if no_actions?
+
           output = {type: type, id: name, actions: @actions.map(&:encode)}
           output[:parameters] = {pointerType: kind}
           output
@@ -41,6 +42,7 @@ module Selenium
 
         def assert_kind(pointer)
           raise TypeError, "#{pointer.inspect} is not a valid pointer type" unless KIND.key? pointer
+
           KIND[pointer]
         end
 
@@ -78,14 +80,17 @@ module Selenium
         def assert_button(button)
           if button.is_a? Symbol
             raise TypeError, "#{button.inspect} is not a valid button!" unless BUTTONS.key? button
+
             button = BUTTONS[button]
           end
           raise ArgumentError, 'Button number cannot be negative!' unless button >= 0
+
           button
         end
 
         def assert_direction(direction)
           raise TypeError, "#{direction.inspect} is not a valid button direction" unless DIRECTIONS.key? direction
+
           DIRECTIONS[direction]
         end
 

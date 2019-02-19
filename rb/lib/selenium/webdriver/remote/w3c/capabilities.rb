@@ -62,6 +62,7 @@ module Selenium
             end
 
             next if key == :proxy
+
             define_method "#{key}=" do |value|
               @capabilities[key] = value
             end
@@ -251,9 +252,7 @@ module Selenium
                 if value
                   hash['proxy'] = value.as_json
                   hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
-                  if hash['proxy']['noProxy'].is_a?(String)
-                    hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ')
-                  end
+                  hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ') if hash['proxy']['noProxy'].is_a?(String)
                 end
               when String, :firefox_binary
                 hash[key.to_s] = value
@@ -273,6 +272,7 @@ module Selenium
 
           def ==(other)
             return false unless other.is_a? self.class
+
             as_json == other.as_json
           end
 
