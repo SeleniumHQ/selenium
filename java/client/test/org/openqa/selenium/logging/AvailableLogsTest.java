@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
@@ -40,6 +41,7 @@ import java.util.Set;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
+@Ignore(EDGE)
 @Ignore(MARIONETTE)
 @Ignore(SAFARI)
 public class AvailableLogsTest extends JUnit4TestBase {

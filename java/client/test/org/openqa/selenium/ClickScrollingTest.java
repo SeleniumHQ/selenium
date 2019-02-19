@@ -24,6 +24,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -134,6 +135,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(MARIONETTE)
+  @NotYetImplemented(EDGE)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
     driver.findElement(By.id("button1")).click();
@@ -152,6 +154,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = IE, reason = "IE has special overflow handling")
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView() {
     driver.get(appServer.whereIs("scroll5.html"));
     driver.findElement(By.id("inner")).click();

@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -112,6 +113,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testFindingMultipleElementsByEmptyIdShouldReturnEmptyList() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.id(""));
@@ -239,6 +241,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(EDGE)
   public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -328,6 +331,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(EDGE)
   public void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -344,6 +348,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -360,6 +365,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -426,6 +432,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Ignore(IE)
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldBeAbleToFindElementByXPathWithNamespace() {
     driver.get(pages.svgPage);
     WebElement element = driver.findElement(By.xpath("//svg:svg//svg:text"));
@@ -436,6 +443,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @Ignore(CHROME)
+  @NotYetImplemented(EDGE)
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);
     WebElement element = driver.findElement(By.xpath("//foo"));
@@ -599,6 +607,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(EDGE)
   public void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -613,6 +622,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(EDGE)
   public void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
     assumeFalse("Ignoring test for lack of error in CSS in IE6", isIe6(driver));
     driver.get(pages.xhtmlTestPage);
@@ -791,6 +801,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     driver.get(pages.missedJsReferencePage);
 

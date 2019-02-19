@@ -26,6 +26,7 @@ import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -223,6 +224,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @Ignore(EDGE)
   public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {
     assumeFalse(Browser.detect() == Browser.OPERA &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
@@ -362,6 +364,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI) // actually not tested in this browser
   @NotYetImplemented(OPERABLINK)
+  @NotYetImplemented(EDGE)
   @Ignore(FIREFOX)
   @Ignore(OPERA)
   public void canOpenANewWindow() {
