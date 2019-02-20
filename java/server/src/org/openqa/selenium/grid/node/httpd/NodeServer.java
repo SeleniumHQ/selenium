@@ -59,7 +59,7 @@ import java.util.logging.Logger;
 @AutoService(CliCommand.class)
 public class NodeServer implements CliCommand {
 
-  public static final Logger LOG = Logger.getLogger(NodeServer.class.getName());
+  private static final Logger LOG = Logger.getLogger(NodeServer.class.getName());
 
   @Override
   public String getName() {
