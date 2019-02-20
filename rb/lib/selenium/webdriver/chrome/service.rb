@@ -27,7 +27,7 @@ module Selenium
         @executable = 'chromedriver'.freeze
         @missing_text = <<-ERROR.gsub(/\n +| {2,}/, ' ').freeze
           Unable to find chromedriver. Please download the server from
-          http://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH.
+          https://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH.
           More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.
         ERROR
 
