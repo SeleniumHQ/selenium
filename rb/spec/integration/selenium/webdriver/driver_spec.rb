@@ -106,7 +106,13 @@ module Selenium
           expect(driver.find_element(name: 'x').attribute('value')).to eq('name')
         end
 
-        it 'should find by class name' do
+        it 'should find by class name' do # rubocop:disable RSpec/RepeatedExample
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
+        end
+
+        # TODO: Rewrite this test so it's not a duplicate of above or remove
+        it 'should find elements with a hash selector' do # rubocop:disable RSpec/RepeatedExample
           driver.navigate.to url_for('xhtmlTest.html')
           expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
         end
@@ -147,11 +153,6 @@ module Selenium
           child = element.find_element(tag_name: 'select')
 
           expect(child.attribute('id')).to eq('2')
-        end
-
-        it 'should find elements with a hash selector' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
         end
 
         it 'should find elements with the shortcut syntax' do

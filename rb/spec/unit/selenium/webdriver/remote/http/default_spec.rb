@@ -52,15 +52,14 @@ module Selenium
 
           describe '#timeout=' do
             let(:value_set) { 22 }
-            before do
-              expect { client.timeout = value_set }.to output.to_stdout_from_any_process
-            end
 
             it 'assigns value to #read_timeout' do
+              expect { client.timeout = value_set }.to output.to_stdout_from_any_process
               expect(client.read_timeout).to eq value_set
             end
 
             it 'assigns value to #open_timeout' do
+              expect { client.timeout = value_set }.to output.to_stdout_from_any_process
               expect(client.open_timeout).to eq value_set
             end
           end

@@ -80,7 +80,7 @@ module Selenium
         after { driver.manage.timeouts.page_load = 300000 }
 
         it 'should be able to set the page load timeout' do
-          expect { driver.manage.timeouts.page_load = 2 }.to_not raise_exception
+          expect { driver.manage.timeouts.page_load = 2 }.not_to raise_exception
         end
       end
     end

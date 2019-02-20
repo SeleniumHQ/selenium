@@ -35,8 +35,8 @@ module Selenium
           end
 
           it 'respects quit_errors' do
-            allow(bridge).to receive(:execute).with(:quit).and_raise(IOError)
-            expect { bridge.quit }.to_not raise_error
+            allow(bridge).to receive(:execute).with(:quit).and_raise(IOError) # rubocop:disable RSpec/SubjectStub
+            expect { bridge.quit }.not_to raise_error
           end
 
           context 'when using a deprecated method' do

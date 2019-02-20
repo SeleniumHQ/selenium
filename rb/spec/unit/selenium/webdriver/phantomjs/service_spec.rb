@@ -77,9 +77,9 @@ module Selenium
           args = ["--foo", "--bar"]
 
           allow(WebDriver.logger).to receive(:deprecate)
-          @driver = Driver.new(http_client: http, args: args)
+          driver = Driver.new(http_client: http, args: args)
           expect(WebDriver.logger).to have_received(:deprecate).with(':args', "driver_opts: {args: #{args}}")
-          expect(@driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
+          expect(driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
         end
       end
     end # PhantomJS
