@@ -22,8 +22,8 @@ require 'selenium/server'
 
 module Selenium
   describe Server do
-    let(:mock_process) { double(ChildProcess).as_null_object }
-    let(:mock_poller)  { double('SocketPoller', connected?: true, closed?: true) }
+    let(:mock_process) { instance_double(ChildProcess::AbstractProcess).as_null_object }
+    let(:mock_poller)  { instance_double('SocketPoller', connected?: true, closed?: true) }
 
     it 'raises an error if the jar file does not exist' do
       expect {
@@ -170,7 +170,7 @@ module Selenium
     it 'raises Selenium::Server::Error if the server is not launched within the timeout' do
       expect(File).to receive(:exist?).with('selenium-server-test.jar').and_return(true)
 
-      poller = double('SocketPoller')
+      poller = instance_double('SocketPoller')
       expect(poller).to receive(:connected?).and_return(false)
 
       server = Selenium::Server.new('selenium-server-test.jar', background: true)

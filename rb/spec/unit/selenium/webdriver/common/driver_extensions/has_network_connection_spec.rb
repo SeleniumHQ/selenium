@@ -31,17 +31,17 @@ module Selenium
           end
         end
 
-        let(:driver) { FakeDriver.new(double(Remote::Bridge)) }
+        let(:driver) { FakeDriver.new(instance_double(Remote::W3C::Bridge)) }
 
         describe '#network_connection' do
           it 'returns the correct connection type' do
-            allow(driver.bridge).to receive(:network_connection) { 1 }
+            allow(driver.bridge).to receive(:network_connection).and_return(1)
 
             expect(driver.network_connection_type).to eq :airplane_mode
           end
 
           it 'returns an unknown connection value' do
-            allow(driver.bridge).to receive(:network_connection) { 5 }
+            allow(driver.bridge).to receive(:network_connection).and_return(5)
 
             expect(driver.network_connection_type).to eq 5
           end
