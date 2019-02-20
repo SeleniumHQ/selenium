@@ -1699,6 +1699,23 @@ class TargetLocator {
   }
 
   /**
+   * Creates a new browser window and switches the focus for future
+   * commands of this driver to the new window.
+   *
+   * @param {string} typeHint 'window' or 'tab'. The created window is not
+   *     guaranteed to be of the requested type; if the driver does not support
+   *     the requested type, a new browser window will be created of whatever type
+   *     the driver does support.
+   * @return {!Promise<void>} A promise that will be resolved
+   *     when the driver has changed focus to the new window.
+   */
+  newWindow(typeHint) {
+    return this.driver_.execute(
+        new command.Command(command.Name.SWITCH_TO_NEW_WINDOW).
+            setParameter('type', typeHint));
+  }
+
+  /**
    * Changes focus to the active modal dialog, such as those opened by
    * `window.alert()`, `window.confirm()`, and `window.prompt()`. The returned
    * promise will be rejected with a
