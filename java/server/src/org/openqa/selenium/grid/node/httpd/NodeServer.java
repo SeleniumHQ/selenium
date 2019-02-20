@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
-import static org.openqa.selenium.net.Urls.fromUri;
-
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.JCommander;
@@ -27,14 +25,13 @@ import com.beust.jcommander.ParameterException;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
-import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.DistributorOptions;
-import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.local.NodeFlags;
@@ -51,9 +48,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
-import java.net.URL;
 import java.time.Duration;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 @AutoService(CliCommand.class)
@@ -130,31 +125,22 @@ public class NodeServer implements CliCommand {
       nodeFlags.configure(config, clientFactory, builder);
       LocalNode node = builder.build();
 
-      DistributorOptions distributorOptions = new DistributorOptions(config);
-      URL distributorUrl = fromUri(distributorOptions.getDistributorUri());
-      Distributor distributor = new RemoteDistributor(
-          tracer,
-          clientFactory,
-          distributorUrl);
-
       Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler.class));
       server.start();
 
       Regularly regularly = new Regularly("Register Node with Distributor");
 
-      AtomicBoolean registered = new AtomicBoolean(false);
-
       regularly.submit(
           () -> {
-            boolean previously = registered.get();
-            registered.set(false);
-
-            distributor.add(node);
-            registered.set(true);
-            if (!previously) {
-              LOG.info("Successfully registered with distributor");
+            HealthCheck.Result check = node.getHealthCheck().check();
+            if (!check.isAlive()) {
+              LOG.info("Node is not alive: " + check.getMessage());
+              // Throw an exception to force another check sooner.
+              throw new UnsupportedOperationException("Node cannot be registered");
             }
+
+            bus.fire(new NodeStatusEvent(node.getStatus()));
           },
           Duration.ofMinutes(5),
           Duration.ofSeconds(30));

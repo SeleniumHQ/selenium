@@ -17,8 +17,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/cli:cli",
         "//java/server/src/org/openqa/selenium/concurrent:concurrent",
         "//java/server/src/org/openqa/selenium/grid/config:config",
-        "//java/server/src/org/openqa/selenium/grid/distributor:distributor",
-        "//java/server/src/org/openqa/selenium/grid/distributor/remote:remote",
         "//java/server/src/org/openqa/selenium/grid/node:node",
         "//java/server/src/org/openqa/selenium/grid/node/local:local",
         "//java/server/src/org/openqa/selenium/grid/server:server",
