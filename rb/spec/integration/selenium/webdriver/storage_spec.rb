@@ -103,11 +103,13 @@ module Selenium
 
         context 'local storage' do
           let(:storage) { driver.local_storage }
+
           it_behaves_like 'web storage'
         end
 
         context 'session storage' do
           let(:storage) { driver.session_storage }
+
           it_behaves_like 'web storage'
         end
       end
