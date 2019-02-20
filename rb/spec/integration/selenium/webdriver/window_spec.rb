@@ -34,8 +34,8 @@ module Selenium
 
         expect(size).to be_a(Dimension)
 
-        expect(size.width).to be > 0
-        expect(size.height).to be > 0
+        expect(size.width).to be_positive
+        expect(size.height).to be_positive
       end
 
       it 'sets the size of the current window' do

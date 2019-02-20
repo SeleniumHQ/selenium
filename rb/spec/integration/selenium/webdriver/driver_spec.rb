@@ -77,7 +77,7 @@ module Selenium
 
           ss = driver.screenshot_as(:png)
           expect(ss).to be_kind_of(String)
-          expect(ss.size).to be > 0
+          expect(ss.size).to be_positive
         end
 
         it 'raises an error when given an unknown format' do
@@ -87,7 +87,7 @@ module Selenium
         def save_screenshot_and_assert(path)
           driver.save_screenshot path
           expect(File.exist?(path)).to be true
-          expect(File.size(path)).to be > 0
+          expect(File.size(path)).to be_positive
         ensure
           File.delete(path) if File.exist?(path)
         end
