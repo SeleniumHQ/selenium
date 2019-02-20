@@ -32,17 +32,18 @@ module Selenium
         end
       end
 
-      let(:element)        { double(:Element) }
-      let(:bridge)         { double(:Bridge).as_null_object }
+      let(:element)        { instance_double(Element) }
+      let(:bridge)         { instance_double('Bridge').as_null_object }
       let(:search_context) { TestSearchContext.new(bridge) }
 
       context 'finding a single element' do
-        it 'accepts a hash' do
+        it 'accepts a hash' do # rubocop:disable RSpec/RepeatedExample
           expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
           expect(search_context.find_element(id: 'bar')).to eq(element)
         end
 
-        it 'accepts two arguments' do
+        # TODO: Rewrite this test so it's not a duplicate of above or remove
+        it 'accepts two arguments' do # rubocop:disable RSpec/RepeatedExample
           expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
           expect(search_context.find_element(id: 'bar')).to eq(element)
         end
@@ -63,12 +64,13 @@ module Selenium
       end
 
       context 'finding multiple elements' do
-        it 'accepts a hash' do
+        it 'accepts a hash' do # rubocop:disable RSpec/RepeatedExample
           expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
           expect(search_context.find_elements(id: 'bar')).to eq([])
         end
 
-        it 'accepts two arguments' do
+        # TODO: Rewrite this test so it's not a duplicate of above or remove
+        it 'accepts two arguments' do # rubocop:disable RSpec/RepeatedExample
           expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
           expect(search_context.find_elements(id: 'bar')).to eq([])
         end

@@ -52,7 +52,7 @@ module Selenium
             Bridge.handshake(http_client: http, desired_capabilities: Capabilities.ie)
           end
 
-          it 'passes options as capabilities' do
+          it 'passes Chrome options as capabilities' do
             payload = JSON.generate(
               desiredCapabilities: {
                 browserName: '',
@@ -80,7 +80,7 @@ module Selenium
             Bridge.handshake(http_client: http, options: Chrome::Options.new(args: %w[foo bar]))
           end
 
-          it 'passes options as capabilities' do
+          it 'passes IE options as capabilities' do
             payload = JSON.generate(
               desiredCapabilities: {
                 browserName: 'internet explorer',

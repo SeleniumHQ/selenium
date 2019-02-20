@@ -1,3 +1,6 @@
+require:
+  - rubocop-rspec
+
 AllCops:
   TargetRubyVersion: 2.3
 
@@ -88,6 +91,9 @@ Metrics/LineLength:
     - 'lib/selenium/webdriver/ie/service.rb'
     - 'spec/unit/selenium/server_spec.rb'
     - 'spec/integration/selenium/webdriver/timeout_spec.rb'
+  IgnoredPatterns:
+      - '\s+# rubocop'
+      - '^\s*#'
 
 Metrics/ModuleLength:
   Exclude:
@@ -102,6 +108,7 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   Exclude:
     - "**/*_spec.rb"
+    - 'selenium-webdriver.gemspec'
 
 Metrics/ParameterLists:
   Exclude:
@@ -116,9 +123,33 @@ Layout/EmptyLinesAroundClassBody:
 Layout/EmptyLinesAroundModuleBody:
   Enabled: false
 
+Style/StringLiterals:
+  Enabled: false
+
 Style/Dir:
   Exclude:
     - 'selenium-webdriver.gemspec'
 
 Style/RescueStandardError:
+  Enabled: false
+
+RSpec/ExampleWording:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false
+
+RSpec/MessageSpies:
   Enabled: false

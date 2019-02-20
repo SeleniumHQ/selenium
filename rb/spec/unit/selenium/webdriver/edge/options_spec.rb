@@ -23,14 +23,16 @@ module Selenium
   module WebDriver
     module Edge
       describe Options do
+        subject(:options) { described_class.new }
+
         describe '#add_extension path' do
           it 'adds extension path to the list' do
-            subject.add_extension_path(__dir__)
-            expect(subject.extension_paths).to eq([__dir__])
+            options.add_extension_path(__dir__)
+            expect(options.extension_paths).to eq([__dir__])
           end
 
           it 'raises error if path is not a directory' do
-            expect { subject.add_extension_path(__FILE__) }.to raise_error(Error::WebDriverError)
+            expect { options.add_extension_path(__FILE__) }.to raise_error(Error::WebDriverError)
           end
         end
 

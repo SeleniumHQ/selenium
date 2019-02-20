@@ -37,8 +37,8 @@ module Selenium
 
           create_driver!(profile: profile) do |driver|
             driver.navigate.to url_for('xhtmlTest.html')
-            expect('verify manually - home button displayed')
-            expect('verify manually - make page red extension properly installed')
+            expect('verify manually - home button displayed') # rubocop:disable RSpec/ExpectActual,RSpec/VoidExpect
+            expect('verify manually - make page red extension properly installed') # rubocop:disable RSpec/ExpectActual,RSpec/VoidExpect
           end
         end
 
@@ -55,7 +55,7 @@ module Selenium
 
           profile.add_extension(ext_path)
 
-          ext_file = double('file')
+          ext_file = instance_double('file')
           expect(File).to receive(:open).with(ext_path, 'rb').and_yield ext_file
           expect(ext_file).to receive(:read).and_return 'test'
 

@@ -23,6 +23,8 @@ module Selenium
   module WebDriver
     module Firefox
       describe Options do
+        subject(:options) { described_class.new }
+
         describe '#initialize' do
           it 'sets passed args' do
             opt = Options.new(args: %w[foo bar])
@@ -57,51 +59,51 @@ module Selenium
 
         describe '#binary=' do
           it 'sets the binary path' do
-            subject.binary = '/foo/bar'
-            expect(subject.binary).to eq('/foo/bar')
+            options.binary = '/foo/bar'
+            expect(options.binary).to eq('/foo/bar')
           end
         end
 
         describe '#log_level=' do
           it 'sets the log level' do
-            subject.log_level = :debug
-            expect(subject.log_level).to eq(:debug)
+            options.log_level = :debug
+            expect(options.log_level).to eq(:debug)
           end
         end
 
         describe '#profile=' do
           it 'sets the profile' do
             profile = Profile.new
-            subject.profile = profile
-            expect(subject.profile).to eq(profile)
+            options.profile = profile
+            expect(options.profile).to eq(profile)
           end
         end
 
         describe '#headless!' do
           it 'adds the -headless command-line flag' do
-            subject.headless!
-            expect(subject.as_json['moz:firefoxOptions'][:args]).to include('-headless')
+            options.headless!
+            expect(options.as_json['moz:firefoxOptions'][:args]).to include('-headless')
           end
         end
 
         describe '#add_argument' do
           it 'adds a command-line argument' do
-            subject.add_argument('foo')
-            expect(subject.args.to_a).to eq(['foo'])
+            options.add_argument('foo')
+            expect(options.args.to_a).to eq(['foo'])
           end
         end
 
         describe '#add_option' do
           it 'adds an option' do
-            subject.add_option(:foo, 'bar')
-            expect(subject.options[:foo]).to eq('bar')
+            options.add_option(:foo, 'bar')
+            expect(options.options[:foo]).to eq('bar')
           end
         end
 
         describe '#add_preference' do
           it 'adds a preference' do
-            subject.add_preference(:foo, 'bar')
-            expect(subject.prefs[:foo]).to eq('bar')
+            options.add_preference(:foo, 'bar')
+            expect(options.prefs[:foo]).to eq('bar')
           end
         end
 

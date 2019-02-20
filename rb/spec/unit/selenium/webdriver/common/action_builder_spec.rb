@@ -22,9 +22,9 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe ActionBuilder do
-      let(:bridge)      { double('Bridge').as_null_object }
-      let(:keyboard)    { double(Selenium::WebDriver::Keyboard) }
-      let(:mouse)       { double(Selenium::WebDriver::Mouse)    }
+      let(:bridge)      { instance_double('Bridge').as_null_object }
+      let(:keyboard)    { instance_double(Selenium::WebDriver::Keyboard) }
+      let(:mouse)       { instance_double(Selenium::WebDriver::Mouse)    }
       let(:element)     { Selenium::WebDriver::Element.new(bridge, 'element') }
       let(:builder)     { Selenium::WebDriver::ActionBuilder.new(mouse, keyboard) }
 
