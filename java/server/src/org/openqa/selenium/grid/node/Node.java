@@ -23,6 +23,7 @@ import static org.openqa.selenium.grid.web.Routes.delete;
 import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.matching;
 import static org.openqa.selenium.grid.web.Routes.post;
+import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -126,16 +127,8 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
               res.setContent(json.toJson(getStatus()).getBytes(UTF_8));
             }),
         get("/status").using(StatusHandler.class),
-        matching(req -> {
-          if (!req.getUri().startsWith("/session/")) {
-            return false;
-          }
-
-          String[] split = req.getUri().split("/", 4);
-          SessionId sessionId = new SessionId(split[2]);
-
-          return isSessionOwner(sessionId);
-        }).using(ForwardWebDriverCommand.class)
+        matching(req -> getSessionId(req).map(this::isSessionOwner).orElse(false))
+            .using(ForwardWebDriverCommand.class)
     ).build();
   }
 
