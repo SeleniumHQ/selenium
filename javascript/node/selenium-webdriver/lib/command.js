@@ -130,6 +130,7 @@ const Name = {
   FULLSCREEN_WINDOW: 'fullscreenWindow',
 
   SWITCH_TO_WINDOW: 'switchToWindow',
+  SWITCH_TO_NEW_WINDOW: 'newWindow',
   SWITCH_TO_FRAME: 'switchToFrame',
   SWITCH_TO_FRAME_PARENT: 'switchToFrameParent',
   GET_PAGE_SOURCE: 'getPageSource',

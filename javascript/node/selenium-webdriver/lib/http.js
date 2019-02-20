@@ -274,6 +274,7 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.GET_CURRENT_WINDOW_HANDLE, get('/session/:sessionId/window')],
   [cmd.Name.CLOSE, del('/session/:sessionId/window')],
   [cmd.Name.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
+  [cmd.Name.SWITCH_TO_NEW_WINDOW, post('/session/:sessionId/window/new')],
   [cmd.Name.GET_WINDOW_HANDLES, get('/session/:sessionId/window/handles')],
   [cmd.Name.GET_WINDOW_RECT, get('/session/:sessionId/window/rect')],
   [cmd.Name.SET_WINDOW_RECT, post('/session/:sessionId/window/rect')],
