@@ -34,9 +34,9 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 2.0']
   s.add_runtime_dependency 'rubyzip', ['~> 1.2', '>= 1.2.2']
 
-  s.add_development_dependency 'rack', ['~> 1.0', '>= 1.6.11']
+  s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rspec', ['~> 3.0']
-  s.add_development_dependency 'rubocop', ['~> 0.50.0']
-  s.add_development_dependency 'webmock', ['~> 2.0']
+  s.add_development_dependency 'rubocop', ['~> 0.64.0']
+  s.add_development_dependency 'webmock', ['~> 3.5']
   s.add_development_dependency 'yard', ['~> 0.9.11']
 end
