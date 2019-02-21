@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_runtime_dependency 'rubyzip', ['~> 1.2', '>= 1.2.2']
-  s.add_runtime_dependency 'childprocess', ['~> 0.5']
+  s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 2.0']
 
   s.add_development_dependency 'rspec', ['~> 3.0']
   s.add_development_dependency 'rack', ['~> 1.0', '>= 1.6.11']
