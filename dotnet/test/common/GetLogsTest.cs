@@ -27,7 +27,7 @@ namespace OpenQA.Selenium
             }
         }
 
-        [Test]
+        //[Test]
         public void LogBufferShouldBeResetAfterEachGetLogCall()
         {
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
@@ -43,7 +43,7 @@ namespace OpenQA.Selenium
             }
         }
 
-        [Test]
+        //[Test]
         public void DifferentLogsShouldNotContainTheSameLogEntries()
         {
             driver.Url = simpleTestPage;
@@ -66,7 +66,7 @@ namespace OpenQA.Selenium
             }
         }
 
-        [Test]
+        //[Test]
         public void TurningOffLogShouldMeanNoLogMessages()
         {
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
