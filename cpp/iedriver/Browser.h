@@ -137,7 +137,6 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   bool IsFullScreen(void);
   bool SetFullScreen(bool is_full_screen);
 
-  bool IsCrossZoneUrl(std::string url);
   void InitiateBrowserReattach(void);
   void ReattachBrowser(IWebBrowser2* browser);
 
@@ -153,8 +152,6 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
                             IHTMLDocument2* doc);
   bool GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc);
   void CheckDialogType(HWND dialog_window_handle);
-
-  bool IsProtectedMode(void);
 
   static unsigned int WINAPI GoBackThreadProc(LPVOID param);
   static unsigned int WINAPI GoForwardThreadProc(LPVOID param);

@@ -77,7 +77,6 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
   bool IsFullScreen(void);
   bool SetFullScreen(bool is_full_screen);
 
-  bool IsCrossZoneUrl(std::string url) { return false; }
   void InitiateBrowserReattach(void) {};
   void ReattachBrowser(IWebBrowser2* browser) {};
 

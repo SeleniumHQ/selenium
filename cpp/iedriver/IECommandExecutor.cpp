@@ -1037,6 +1037,12 @@ bool IECommandExecutor::HandleUnexpectedAlert(BrowserHandle browser,
                                               bool force_use_dismiss,
                                               std::string* alert_text) {
   LOG(TRACE) << "Entering IECommandExecutor::HandleUnexpectedAlert";
+  clock_t end = clock() + 5 * CLOCKS_PER_SEC;
+  bool is_visible = (::IsWindowVisible(alert_handle) == TRUE);
+  while (!is_visible && clock() < end) {
+    ::Sleep(50);
+    is_visible = (::IsWindowVisible(alert_handle) == TRUE);
+  }
   Alert dialog(browser, alert_handle);
   *alert_text = dialog.GetText();
   if (!dialog.is_standard_alert()) {
@@ -1064,6 +1070,7 @@ bool IECommandExecutor::HandleUnexpectedAlert(BrowserHandle browser,
       dialog.Accept();
     }
   }
+
   bool is_notify_unexpected_alert =
     this->unexpected_alert_behavior_.size() == 0 ||
     this->unexpected_alert_behavior_ == IGNORE_UNEXPECTED_ALERTS ||
@@ -1188,6 +1195,14 @@ std::string IECommandExecutor::OpenNewBrowsingContext(const std::string& window_
 std::string IECommandExecutor::OpenNewBrowserWindow(const std::wstring& url) {
   LOG(TRACE) << "Entering IECommandExecutor::OpenNewBrowserWindow";
   bool is_protected_mode_url = ::IEIsProtectedModeURL(url.c_str()) == S_OK;
+  if (url.find(L"about:blank") == 0) {
+    // Special-case URLs starting with about:blank, so that the new window
+    // is in the same Protected Mode zone as the current window from which
+    // it's being opened.
+    BrowserHandle current_browser;
+    this->GetCurrentBrowser(&current_browser);
+    is_protected_mode_url = current_browser->IsProtectedMode();
+  }
   CComPtr<IWebBrowser2> browser = this->factory_->CreateBrowser(is_protected_mode_url);
   if (browser == NULL) {
     // No browser was created, so we have to bail early.
@@ -1219,7 +1234,7 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
 
   std::vector<HWND> original_handles;
   ::EnumChildWindows(top_level_handle,
-                     &FindAllBrowserHandles,
+                     &IECommandExecutor::FindAllBrowserHandles,
                      reinterpret_cast<LPARAM>(&original_handles));
   std::sort(original_handles.begin(), original_handles.end());
 
@@ -1239,7 +1254,7 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
   clock_t end_time = clock() + 5 * CLOCKS_PER_SEC;
   std::vector<HWND> new_handles;
   ::EnumChildWindows(top_level_handle,
-                     &FindAllBrowserHandles,
+                     &IECommandExecutor::FindAllBrowserHandles,
                      reinterpret_cast<LPARAM>(&new_handles));
   while (new_handles.size() <= original_handles.size() &&
          clock() < end_time) {
@@ -1265,10 +1280,29 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
                                                        original_handles.end(),
                                                        diff.begin());
   diff.resize(it - diff.begin());
+  if (diff.size() > 1) {
+    std::string handle_list = "";
+    std::vector<HWND>::const_iterator it = diff.begin();
+    for (; it != diff.end(); ++it) {
+      if (handle_list.size() > 0) {
+        handle_list.append(", ");
+      }
+      handle_list.append(StringUtilities::Format("0x%08x", *it));
+    }
+    LOG(DEBUG) << "Found more than one new window handles! Found "
+               << diff.size() << "windows [" << handle_list << "]";
+  }
   HWND new_tab_window = diff[0];
 
   DWORD process_id;
   ::GetWindowThreadProcessId(new_tab_window, &process_id);
+  clock_t end = clock() + (DEFAULT_BROWSER_REATTACH_TIMEOUT_IN_MILLISECONDS / 1000 * CLOCKS_PER_SEC);
+  bool is_ready = this->factory_->IsBrowserProcessInitialized(process_id);
+  while (!is_ready && clock() < end) {
+    ::Sleep(100);
+    is_ready = this->factory_->IsBrowserProcessInitialized(process_id);
+  }
+
   ProcessWindowInfo info;
   info.dwProcessId = process_id;
   info.hwndBrowser = new_tab_window;
@@ -1278,6 +1312,8 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
   BrowserHandle new_tab_wrapper(new Browser(info.pBrowser,
                                             NULL,
                                             this->m_hWnd));
+  // Force a wait cycle to make sure the browser is finished initializing.
+  new_tab_wrapper->Wait(NORMAL_PAGE_LOAD_STRATEGY);
   this->AddManagedBrowser(new_tab_wrapper);
   return new_tab_wrapper->browser_id();
 }

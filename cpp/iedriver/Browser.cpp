@@ -17,7 +17,6 @@
 #include "Browser.h"
 
 #include <comutil.h>
-#include <IEPMapi.h>
 #include <ShlGuid.h>
 
 #include "errorcodes.h"
@@ -86,15 +85,16 @@ void __stdcall Browser::OnQuit() {
                     reinterpret_cast<LPARAM>(info));
       return;
     } else {
-      LOG(WARN) << "This instance of Internet Explorer is exiting without an "
-                << "explicit request to close it. Unless you clicked a link "
-                << "that specifically attempts to close the page, that likely "
-                << "means a Protected Mode boundary has been crossed (either "
-                << "entering or exiting Protected Mode). It is highly likely "
-                << "that any subsequent commands to this driver instance will "
-                << "fail. THIS IS NOT A BUG IN THE IE DRIVER! Fix your code "
-                << "and/or browser configuration so that a Protected Mode "
-                << "boundary is not crossed.";
+      LOG(WARN) << "This instance of Internet Explorer (" << this->browser_id()
+                << ") is exiting without an explicit request to close it. "
+                << "Unless you clicked a link that specifically attempts to "
+                << "close the page, that likely means a Protected Mode "
+                << "boundary has been crossed (either entering or exiting "
+                << "Protected Mode). It is highly likely that any subsequent "
+                << "commands to this driver instance will fail. THIS IS NOT A "
+                << "BUG IN THE IE DRIVER! Fix your code and/or browser "
+                << "configuration so that a Protected Mode boundary is not "
+                << "crossed.";
     }
   }
   this->PostQuitMessage();
@@ -175,55 +175,6 @@ void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
       this->SetFocusedFrameByElement(NULL);
     }
   }
-}
-
-bool Browser::IsCrossZoneUrl(std::string url) {
-  LOG(TRACE) << "Entering Browser::IsCrossZoneUrl";
-  std::wstring target_url = StringUtilities::ToWString(url);
-  CComPtr<IUri> parsed_url;
-  HRESULT hr = ::CreateUri(target_url.c_str(),
-                           Uri_CREATE_IE_SETTINGS,
-                           0,
-                           &parsed_url);
-  if (FAILED(hr)) {
-    // If we can't parse the URL, assume that it's invalid, and
-    // therefore won't cross a Protected Mode boundary.
-    return false;
-  }
-  bool is_protected_mode_browser = this->IsProtectedMode();
-  bool is_protected_mode_url = is_protected_mode_browser;
-  if (url != "about:blank") {
-    is_protected_mode_url = ::IEIsProtectedModeURL(target_url.c_str()) == S_OK;
-  }
-  bool is_cross_zone = is_protected_mode_browser != is_protected_mode_url;
-  if (is_cross_zone) {
-    LOG(DEBUG) << "Navigation across Protected Mode zone detected. URL: " << url
-               << ", is URL Protected Mode: " << (is_protected_mode_url ? "true" : "false")
-               << ", is IE in Protected Mode: " << (is_protected_mode_browser ? "true" : "false");
-  }
-  return is_cross_zone;
-}
-
-bool Browser::IsProtectedMode() {
-  LOG(TRACE) << "Entering Browser::IsProtectedMode";
-  HWND window_handle = this->GetBrowserWindowHandle();
-  HookSettings hook_settings;
-  hook_settings.hook_procedure_name = "ProtectedModeWndProc";
-  hook_settings.hook_procedure_type = WH_CALLWNDPROC;
-  hook_settings.window_handle = window_handle;
-  hook_settings.communication_type = OneWay;
-
-  HookProcessor hook;
-  if (!hook.CanSetWindowsHook(window_handle)) {
-    LOG(WARN) << "Cannot check Protected Mode because driver and browser are "
-              << "not the same bit-ness.";
-    return false;
-  }
-  hook.Initialize(hook_settings);
-  HookProcessor::ResetFlag();
-  ::SendMessage(window_handle, WD_IS_BROWSER_PROTECTED_MODE, NULL, NULL);
-  bool is_protected_mode = HookProcessor::GetFlagValue();
-  return is_protected_mode;
 }
 
 void Browser::InitiateBrowserReattach() {
@@ -908,21 +859,3 @@ void Browser::CheckDialogType(HWND dialog_window_handle) {
 }
 
 } // namespace webdriver
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-LRESULT CALLBACK ProtectedModeWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  CWPSTRUCT* call_window_proc_struct = reinterpret_cast<CWPSTRUCT*>(lParam);
-  if (WD_IS_BROWSER_PROTECTED_MODE == call_window_proc_struct->message) {
-    BOOL is_protected_mode = FALSE;
-    HRESULT hr = ::IEIsProtectedModeProcess(&is_protected_mode);
-    webdriver::HookProcessor::SetFlagValue(is_protected_mode == TRUE);
-  }
-  return ::CallNextHookEx(NULL, nCode, wParam, lParam);
-}
-
-#ifdef __cplusplus
-}
-#endif

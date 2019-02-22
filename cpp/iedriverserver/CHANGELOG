@@ -10,17 +10,25 @@ private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
 
+v3.141.5.9
+==========
+ * Enabled serialization of the FileList object from file upload elements
+   (the return value of the files property in JavaScript).
+ * Improved recognition of Protected Mode boundary crossing on navigation,
+   particularly with URLs beginning with "about:blank"
+
 v3.141.5.8
 ==========
- * Now, when the user does not set the Protected Mode settings of the
-   browser and sends the capability to bypass the checks for those
-   settings, the driver will attempt to predict when a Protected Mode
-   boundary will be crossed, and set in motion a process to reattach
-   itself to the newly created browser. This process is far from perfect.
-   It is subject to really challenging race conditions that are truly
-   impossible to eliminate entirely, because of the architecture of the
-   browser itself. Nevertheless, even in its flawed state, this is still
-   a better outcome than it was previously for users.
+ * Improved driver use with invalid Protected Mode settings. Currently,
+   when the user does not set the Protected Mode settings of the browser
+   and sends the capability to bypass the checks for those settings,
+   the driver will attempt to predict when a Protected Mode boundary
+   will be crossed, and set in motion a process to reattach itself to
+   the newly created browser. This process is far from perfect. It is
+   subject to really challenging race conditions that are truly impossible
+   to eliminate entirely, because of the architecture of the browser
+   itself. Nevertheless, even in its flawed state, this is still a better
+   outcome than it was previously for users.
 
    Please note that the advice and support policy of the IE driver will
    continue to be that the user must set the Protected Mode settings of
