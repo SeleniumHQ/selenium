@@ -46,19 +46,6 @@ Naming/UncommunicativeMethodParamName:
     - id
     - io
 
-# These need to be fixed
-# Style/MutableConstant:
-#   Exclude:
-#     - 'lib/selenium/webdriver/common/socket_poller.rb'
-#     - 'lib/selenium/webdriver/remote/legacy_bridge.rb'
-#     - 'lib/selenium/webdriver/remote/w3c_bridge.rb'
-
-Style/CommentedKeyword:
-  Enabled: false
-
-Style/CommentedKeyword:
-  Enabled: false
-
 Style/CommentedKeyword:
   Enabled: false
 
