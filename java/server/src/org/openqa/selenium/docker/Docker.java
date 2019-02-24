@@ -93,7 +93,7 @@ public class Docker {
 
     LOG.info("Pull complete");
 
-    return findImage(image -> image.getTags().contains(name + ":" + tag));
+    return findImage(new ImageNamePredicate(name, tag));
   }
 
   public List<Image> listImages() {
@@ -138,4 +138,5 @@ public class Docker {
 
     return new Container(client, new ContainerId((String) toRead.get("Id")));
   }
+
 }
