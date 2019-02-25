@@ -9,6 +9,19 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.141.5.10
+===========
+ * (on behalf of Ben Kucera) Updated proxy settings to set proxy bypass
+   addresses. Fixes issue #6086.
+ * Updated to be able to close Windows 10 credentials dialog. When Microsoft
+   updated Windows 10's credentials prompt dialog, they made it a dialog
+   that is not a standard alert dialog and therefore not able to be
+   automated using standard Windows automation techniques. With a recent
+   preview release, it became possible to manipulate this dialog using
+   the UI Automation feature of Windows. The driver will now be able
+   to accept or dismiss this credentials dialog now. Please note that
+   there is still no supported solution for entering credentials, as
+   there is no support for that feature in the W3C WebDriver Specification.
 
 v3.141.5.9
 ==========

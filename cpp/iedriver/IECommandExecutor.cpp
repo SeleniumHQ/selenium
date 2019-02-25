@@ -1023,6 +1023,9 @@ bool IECommandExecutor::IsAlertActive(BrowserHandle browser, HWND* alert_handle)
     if (strcmp(ALERT_WINDOW_CLASS, &window_class_name[0]) == 0) {
       *alert_handle = dialog_handle;
       return true;
+    } else if (strcmp(SECURITY_DIALOG_WINDOW_CLASS, &window_class_name[0]) == 0) {
+      *alert_handle = dialog_handle;
+      return true;
     } else {
       LOG(WARN) << "Found alert handle does not have a window class consistent with an alert";
     }

@@ -49,6 +49,8 @@ class Alert {
     HWND button_handle;
     int button_control_id;
     bool button_exists;
+    std::string accessibility_id;
+    bool use_accessibility;
   };
 
   struct DialogButtonFindInfo {
@@ -78,10 +80,13 @@ class Alert {
 
   DialogButtonInfo GetDialogButton(BUTTON_TYPE button_type);
   int ClickAlertButton(DialogButtonInfo button_info);
+  int ClickAlertButtonUsingAccessibility(const std::string& automation_id);
   std::string GetStandardDialogText(void);
   std::string GetDirectUIDialogText(void);
   HWND GetDirectUIChild(void);
-  IAccessible* GetChildWithRole(IAccessible* parent, long expected_role, int index);
+  IAccessible* GetChildWithRole(IAccessible* parent,
+                                long expected_role,
+                                int index);
 
   static bool IsOKButton(HWND button_handle);
   static bool IsCancelButton(HWND button_handle);

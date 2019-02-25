@@ -150,6 +150,7 @@ int Response::GetHttpResponseCode(void) {
              this->error_ == ERROR_UNABLE_TO_CAPTURE_SCREEN ||
              this->error_ == ERROR_UNEXPECTED_ALERT_OPEN ||
              this->error_ == ERROR_UNKNOWN_ERROR ||
+             this->error_ == ERROR_UNSUPPORTED_OPERATION ||
              this->error_ == ERROR_WEBDRIVER_TIMEOUT) {
     response_code = 500;
   } else {
@@ -192,6 +193,8 @@ std::string Response::ConvertErrorCode(const int error_code) {
     return ERROR_INVALID_ARGUMENT;
   } else if (error_code == ENOSUCHELEMENT) {
     return ERROR_NO_SUCH_ELEMENT;
+  } else if (error_code == EUNSUPPORTEDOPERATION) {
+    return ERROR_UNSUPPORTED_OPERATION;
   }
 
   return "";
@@ -276,6 +279,10 @@ int Response::ConvertStatusToCode(const std::string& status_string) {
 
   if (status_string == "unknown error") {
     return EUNHANDLEDERROR;
+  }
+
+  if (status_string == "unsupported operation") {
+    return EUNSUPPORTEDOPERATION;
   }
 
   return EUNHANDLEDERROR;
