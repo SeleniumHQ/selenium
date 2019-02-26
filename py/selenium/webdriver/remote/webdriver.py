@@ -31,7 +31,8 @@ from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
-                                        NoSuchCookieException)
+                                        NoSuchCookieException,
+                                        UnknownMethodException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
@@ -1222,7 +1223,9 @@ class WebDriver(object):
     def set_window_rect(self, x=None, y=None, width=None, height=None):
         """
         Sets the x, y coordinates of the window as well as height and width of
-        the current window.
+        the current window. This method is only supported for W3C compatible
+        browsers; other browsers should use `set_window_position` and
+        `set_window_size`.
 
         :Usage:
             ::
@@ -1231,6 +1234,9 @@ class WebDriver(object):
                 driver.set_window_rect(width=100, height=200)
                 driver.set_window_rect(x=10, y=10, width=100, height=200)
         """
+        if not self.w3c:
+            raise UnknownMethodException("set_window_rect is only supported for W3C compatible browsers")
+
         if (x is None and y is None) and (height is None and width is None):
             raise InvalidArgumentException("x and y or height and width need values")
 
