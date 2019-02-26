@@ -15,22 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.commands;
+package org.openqa.selenium.grid.node.httpd;
 
-import com.google.common.collect.ImmutableMap;
+import com.beust.jcommander.Parameter;
 
-import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.ConfigValue;
 
-class DefaultStandaloneConfig extends MapConfig {
+class NodeFlags {
 
-  DefaultStandaloneConfig() {
-    super(ImmutableMap.of(
-        "events", ImmutableMap.of(
-            "publish", "inproc://standalone-pub",
-            "subscribe", "inproc://standalone-sub",
-            "bind", true)));
-//        "node", ImmutableMap.of(
-//            "detect-drivers", true)));
-  }
-
+  @Parameter(
+      names = {"--detect-drivers"},
+      description = "Autodetect which drivers are available on the current system, and add them to the node.")
+  @ConfigValue(section = "node", name = "detect-drivers")
+  public boolean autoconfigure;
 }

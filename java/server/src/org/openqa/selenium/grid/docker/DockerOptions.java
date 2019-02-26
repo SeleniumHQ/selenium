@@ -20,8 +20,12 @@ package org.openqa.selenium.grid.docker;
 import static java.util.logging.Level.WARNING;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import com.google.common.collect.ImmutableMap;
+
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.docker.Docker;
+import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.ImageNamePredicate;
 import org.openqa.selenium.grid.config.Config;
@@ -36,11 +40,10 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class DockerOptions {
 
@@ -79,53 +82,67 @@ public class DockerOptions {
 
       return true;
     } catch (IOException e) {
-      LOG.log(WARNING, "Unable to ping docker daemon: " + e.getMessage(), e);
+      LOG.log(WARNING, "Unable to ping docker daemon. Docker disabled: " + e.getMessage());
       return false;
     }
   }
 
   public void configure(HttpClient.Factory clientFactory, LocalNode.Builder node)
       throws IOException {
+    if (!isEnabled(clientFactory)) {
+      return;
+    }
+
     HttpClient client = clientFactory.createClient(new URL("http://localhost:2375"));
     Docker docker = new Docker(client);
 
-    loadImages(
-        docker,
-        "selenium/standalone-firefox:3.141.59",
-        "selenium/standalone-chrome:3.141.59");
+    ImmutableMap<String, Capabilities> kinds = ImmutableMap.of(
+        "selenium/standalone-firefox:3.141.59", new ImmutableCapabilities("browserName", "firefox"),
+        "selenium/standalone-chrome:3.141.59", new ImmutableCapabilities("browserName", "chrome"));
 
-    Image firefox = docker.findImage(new ImageNamePredicate("selenium/standalone-firefox:3.141.59"));
-    for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
-      node.add(new ImmutableCapabilities("browserName", "firefox"),
-               new DockerSessionFactory(clientFactory, docker, firefox));
-    }
+    loadImages(docker, kinds.keySet().toArray(new String[0]));
 
-    Image chrome = docker.findImage(new ImageNamePredicate("selenium/standalone-chrome:3.141.59"));
-    for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
-      node.add(new ImmutableCapabilities("browserName", "chrome"),
-               new DockerSessionFactory(clientFactory, docker, chrome));
-    }
+    int maxContainerCount = Runtime.getRuntime().availableProcessors();
+    kinds.forEach((name, caps) -> {
+      Image image = docker.findImage(new ImageNamePredicate(name))
+          .orElseThrow(() -> new DockerException(
+              String.format("Cannot find image matching: %s", name)));
+      for (int i = 0; i < maxContainerCount; i++) {
+        node.add(caps, new DockerSessionFactory(clientFactory, docker, image));
+      }
+      LOG.info(String.format(
+          "Mapping %s to docker image %s %d times",
+          caps,
+          name,
+          maxContainerCount));
+    });
   }
 
   private void loadImages(Docker docker, String... imageNames) {
-    List<CompletableFuture<Image>> allFutures = Arrays.stream(imageNames)
-        .map(entry -> {
-          int index = entry.lastIndexOf(':');
-          if (index == -1) {
-            throw new RuntimeException("Unable to determine tag from " + entry);
-          }
-          String name = entry.substring(0, index);
-          String version = entry.substring(index + 1);
+    CompletableFuture<Void> cd = CompletableFuture.allOf(
+        Arrays.stream(imageNames)
+            .map(entry -> {
+              int index = entry.lastIndexOf(':');
+              if (index == -1) {
+                throw new RuntimeException("Unable to determine tag from " + entry);
+              }
+              String name = entry.substring(0, index);
+              String version = entry.substring(index + 1);
 
-          return CompletableFuture.supplyAsync(() -> docker.pull(name, version));
-        })
-        .collect(Collectors.toList());
+              return CompletableFuture.supplyAsync(() -> docker.pull(name, version));
+            }).toArray(CompletableFuture[]::new));
 
-    CompletableFuture<Void>
-        cd =
-        CompletableFuture.allOf(allFutures.toArray(new CompletableFuture[0]));
-    cd.whenComplete((ignored, throwable) -> {
-
-    });
+    try {
+      cd.get();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
+    } catch (ExecutionException e) {
+      Throwable cause = e.getCause() != null ? e.getCause() : e;
+      if (cause instanceof RuntimeException) {
+        throw (RuntimeException) cause;
+      }
+      throw new RuntimeException(cause);
+    }
   }
 }

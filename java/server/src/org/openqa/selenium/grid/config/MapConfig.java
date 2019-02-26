@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.config;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class MapConfig implements Config {
@@ -30,6 +31,9 @@ public class MapConfig implements Config {
 
   @Override
   public Optional<String> get(String section, String option) {
+    Objects.requireNonNull(section, "Section name not set");
+    Objects.requireNonNull(option, "Option name not set");
+
     Object rawSection = raw.get(section);
     if (!(rawSection instanceof Map)) {
       return Optional.empty();

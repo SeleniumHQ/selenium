@@ -1,27 +1,12 @@
-// Licensed to the Software Freedom Conservancy (SFC) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The SFC licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-package org.openqa.selenium.grid.node.local;
+package org.openqa.selenium.grid.node.config;
 
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -34,16 +19,31 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class AutoConfigureNode {
+public class NodeOptions {
 
-  public static final Logger log = Logger.getLogger("selenium");
+  public static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
+  private final Config config;
 
-  public static void addSystemDrivers(
+  public NodeOptions(Config config) {
+    this.config = Objects.requireNonNull(config);
+  }
+
+  public void configure(HttpClient.Factory httpClientFactory, LocalNode.Builder node) {
+    if (!config.getBool("node", "detect-drivers").orElse(false)) {
+      return;
+    }
+
+    addSystemDrivers(httpClientFactory, node);
+  }
+
+
+  private void addSystemDrivers(
       HttpClient.Factory httpClientFactory,
       LocalNode.Builder node) {
 
@@ -61,7 +61,7 @@ public class AutoConfigureNode {
       Capabilities caps = info.getCanonicalCapabilities();
       builders.stream()
           .filter(builder -> builder.score(caps) > 0)
-          .peek(builder -> log.info(String.format("Adding %s %d times", caps, info.getMaximumSimultaneousSessions())))
+          .peek(builder -> LOG.info(String.format("Adding %s %d times", caps, info.getMaximumSimultaneousSessions())))
           .forEach(builder -> {
             for (int i = 0; i < info.getMaximumSimultaneousSessions(); i++) {
               node.add(caps, c -> {
@@ -82,7 +82,6 @@ public class AutoConfigureNode {
   }
 
   private static class SessionSpy extends Session implements CommandHandler {
-
     private final ReverseProxyHandler handler;
     private final DriverService service;
     private final String stop;
@@ -107,4 +106,6 @@ public class AutoConfigureNode {
       }
     }
   }
+
+
 }

@@ -15,32 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.local;
+package org.openqa.selenium.grid.commands;
 
 import com.beust.jcommander.Parameter;
 
-import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigValue;
-import org.openqa.selenium.remote.http.HttpClient;
 
-import java.net.URI;
-
-public class NodeFlags {
+public class StandaloneFlags {
 
   @Parameter(
       names = {"--detect-drivers"},
-      description = "Autodetect which drivers are available on the current system, and add them to the node.")
+      description = "Autodetect which drivers are available on the current system, and add them to the node.",
+      arity = 1)
   @ConfigValue(section = "node", name = "detect-drivers")
-  private boolean autoconfigure;
+  public boolean autoconfigure = true;
 
-  public void configure(
-      Config config,
-      HttpClient.Factory httpClientFactory,
-      LocalNode.Builder node) {
-    if (!config.getBool("node", "detect-drivers").orElse(false)) {
-      return;
-    }
-
-    AutoConfigureNode.addSystemDrivers(httpClientFactory, node);
-  }
 }

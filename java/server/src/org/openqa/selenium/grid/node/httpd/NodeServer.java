@@ -35,8 +35,8 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.node.local.NodeFlags;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -122,19 +122,15 @@ public class NodeServer implements CliCommand {
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      DockerOptions dockerOptions = new DockerOptions(config);
-
       LocalNode.Builder builder = LocalNode.builder(
           tracer,
           bus,
           clientFactory,
           serverOptions.getExternalUri());
-      nodeFlags.configure(config, clientFactory, builder);
 
-      LOG.info("Checking docker: " + dockerOptions.isEnabled(clientFactory));
-      if (dockerOptions.isEnabled(clientFactory)) {
-        dockerOptions.configure(clientFactory, builder);
-      }
+      new NodeOptions(config).configure(clientFactory, builder);
+      new DockerOptions(config).configure(clientFactory, builder);
+
       LocalNode node = builder.build();
 
       Server<?> server = new BaseServer<>(serverOptions);

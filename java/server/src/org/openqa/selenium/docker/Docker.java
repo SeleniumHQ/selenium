@@ -37,6 +37,7 @@ import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -83,6 +84,8 @@ public class Docker {
     Objects.requireNonNull(name);
     Objects.requireNonNull(tag);
 
+    findImage(new ImageNamePredicate(name, tag));
+
     LOG.info(String.format("Pulling %s:%s", name, tag));
 
     HttpRequest request = new HttpRequest(POST, "/images/create");
@@ -91,13 +94,15 @@ public class Docker {
 
     client.apply(request);
 
-    LOG.info("Pull complete");
+    LOG.info(String.format("Pull of %s:%s complete", name, tag));
 
-    return findImage(new ImageNamePredicate(name, tag));
+    return findImage(new ImageNamePredicate(name, tag))
+        .orElseThrow(() -> new DockerException(
+            String.format("Cannot find image matching: %s:%s", name, tag)));
   }
 
   public List<Image> listImages() {
-    LOG.info("Listing images");
+    LOG.fine("Listing images");
     HttpResponse response = client.apply(new HttpRequest(GET, "/images/json"));
 
     List<ImageSummary> images =
@@ -108,15 +113,14 @@ public class Docker {
         .collect(toImmutableList());
   }
 
-  public Image findImage(Predicate<Image> filter) {
+  public Optional<Image> findImage(Predicate<Image> filter) {
     Objects.requireNonNull(filter);
 
-    LOG.info("Finding image: " + filter);
+    LOG.fine("Finding image: " + filter);
 
     return listImages().stream()
         .filter(filter)
-        .findFirst()
-        .orElseThrow(() -> new DockerException("Cannot find image matching: " + filter));
+        .findFirst();
   }
 
   public Container create(ContainerInfo info) {

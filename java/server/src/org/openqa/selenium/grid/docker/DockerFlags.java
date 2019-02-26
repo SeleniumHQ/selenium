@@ -35,10 +35,9 @@ public class DockerFlags {
 
   @Parameter(
       names = {"--docker"},
-      description = "Whether docker integration is enabled",
-      arity = 1)
+      description = "Whether docker integration is enabled")
   @ConfigValue(section = "docker", name = "enabled")
-  private boolean isEnabled = true;
+  private boolean isEnabled;
 
   public DockerFlags() {
     try {
