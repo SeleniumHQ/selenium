@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Chrome
         private const string UseSpecCompliantProtocolOption = "w3c";
 
         private bool leaveBrowserRunning;
-        private bool useSpecCompliantProtocol;
+        private bool useSpecCompliantProtocol = true;
         private string binaryLocation;
         private string debuggerAddress;
         private string minidumpPath;
