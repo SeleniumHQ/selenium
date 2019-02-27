@@ -45,19 +45,6 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 List<string> availableLogTypes = new List<string>();
-                if (!driver.IsSpecificationCompliant)
-                {
-                    Response commandResponse = this.driver.InternalExecute(DriverCommand.GetAvailableLogTypes, null);
-                    object[] responseValue = commandResponse.Value as object[];
-                    if (responseValue != null)
-                    {
-                        foreach (object logKind in responseValue)
-                        {
-                            availableLogTypes.Add(logKind.ToString());
-                        }
-                    }
-                }
-
                 return availableLogTypes.AsReadOnly();
             }
         }
@@ -71,26 +58,6 @@ namespace OpenQA.Selenium.Remote
         public ReadOnlyCollection<LogEntry> GetLog(string logKind)
         {
             List<LogEntry> entries = new List<LogEntry>();
-            if (!driver.IsSpecificationCompliant)
-            {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("type", logKind);
-                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetLog, parameters);
-
-                object[] responseValue = commandResponse.Value as object[];
-                if (responseValue != null)
-                {
-                    foreach (object rawEntry in responseValue)
-                    {
-                        Dictionary<string, object> entryDictionary = rawEntry as Dictionary<string, object>;
-                        if (entryDictionary != null)
-                        {
-                            entries.Add(LogEntry.FromDictionary(entryDictionary));
-                        }
-                    }
-                }
-            }
-
             return entries.AsReadOnly();
         }
     }

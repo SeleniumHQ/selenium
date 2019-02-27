@@ -174,16 +174,6 @@ namespace OpenQA.Selenium.Remote
             }
 
             Response toReturn = this.CreateResponse(responseInfo);
-            if (commandToExecute.Name == DriverCommand.NewSession && !toReturn.IsSpecificationCompliant)
-            {
-                // If we are creating a new session, sniff the response to determine
-                // what protocol level we are using. If the response contains a
-                // field called "status", it's not a spec-compliant response.
-                // Each response is polled for this, and sets a property describing
-                // whether it's using the W3C protocol dialect.
-                this.commandInfoRepository = new WebDriverWireProtocolCommandInfoRepository();
-            }
-
             return toReturn;
         }
 

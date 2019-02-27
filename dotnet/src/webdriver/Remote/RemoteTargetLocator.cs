@@ -135,46 +135,39 @@ namespace OpenQA.Selenium.Remote
         public IWebDriver Window(string windowHandleOrName)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            if (this.driver.IsSpecificationCompliant)
+            parameters.Add("handle", windowHandleOrName);
+            try
             {
-                parameters.Add("handle", windowHandleOrName);
+                this.driver.InternalExecute(DriverCommand.SwitchToWindow, parameters);
+                return this.driver;
+            }
+            catch (NoSuchWindowException)
+            {
+                // simulate search by name
+                string original = null;
                 try
                 {
-                    this.driver.InternalExecute(DriverCommand.SwitchToWindow, parameters);
-                    return this.driver;
+                    original = this.driver.CurrentWindowHandle;
                 }
                 catch (NoSuchWindowException)
                 {
-                    // simulate search by name
-                    string original = null;
-                    try
-                    {
-                        original = this.driver.CurrentWindowHandle;
-                    }
-                    catch (NoSuchWindowException)
-                    {
-                    }
-
-                    foreach (string handle in this.driver.WindowHandles)
-                    {
-                        this.Window(handle);
-                        if (windowHandleOrName == this.driver.ExecuteScript("return window.name").ToString())
-                        {
-                            return this.driver; // found by name
-                        }
-                    }
-
-                    if (original != null)
-                    {
-                        this.Window(original);
-                    }
-
-                    throw;
                 }
-            }
-            else
-            {
-                parameters.Add("name", windowHandleOrName);
+
+                foreach (string handle in this.driver.WindowHandles)
+                {
+                    this.Window(handle);
+                    if (windowHandleOrName == this.driver.ExecuteScript("return window.name").ToString())
+                    {
+                        return this.driver; // found by name
+                    }
+                }
+
+                if (original != null)
+                {
+                    this.Window(original);
+                }
+
+                throw;
             }
 
             this.driver.InternalExecute(DriverCommand.SwitchToWindow, parameters);
