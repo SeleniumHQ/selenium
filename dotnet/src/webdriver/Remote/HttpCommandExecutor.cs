@@ -104,6 +104,7 @@ namespace OpenQA.Selenium.Remote
         public CommandInfoRepository CommandInfoRepository
         {
             get { return this.commandInfoRepository; }
+            protected set { this.commandInfoRepository = value; }
         }
 
         /// <summary>
