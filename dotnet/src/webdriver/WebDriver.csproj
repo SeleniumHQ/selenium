@@ -46,11 +46,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net47|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net40\WebDriver.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\build\cli\Release\net47\WebDriver.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net40\WebDriver.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\build\cli\Debug\net47\WebDriver.xml</DocumentationFile>
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
@@ -98,6 +98,10 @@
       <Visible>False</Visible>
       <LogicalName>isDisplayed.js</LogicalName>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildSystem)' == 'visual-studio' And '$(OS)' == 'Windows_NT'">
