@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId, IActionExecutor
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId, IActionExecutor
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -72,8 +72,6 @@ namespace OpenQA.Selenium.Remote
 
         private ICommandExecutor executor;
         private ICapabilities capabilities;
-        private IMouse mouse;
-        private IKeyboard keyboard;
         private SessionId sessionId;
         private IWebStorage storage;
         private IApplicationCache appCache;
@@ -140,8 +138,6 @@ namespace OpenQA.Selenium.Remote
             this.executor = commandExecutor;
             this.StartClient();
             this.StartSession(desiredCapabilities);
-            this.mouse = new RemoteMouse(this);
-            this.keyboard = new RemoteKeyboard(this);
             this.elementFactory = new RemoteWebElementFactory(this);
 
             if (this.capabilities.HasCapability(CapabilityType.SupportsApplicationCache))
@@ -374,22 +370,6 @@ namespace OpenQA.Selenium.Remote
         public bool IsActionExecutor
         {
             get { return true; }
-        }
-
-        /// <summary>
-        /// Gets an <see cref="IKeyboard"/> object for sending keystrokes to the browser.
-        /// </summary>
-        IKeyboard IHasInputDevices.Keyboard
-        {
-            get { return this.keyboard; }
-        }
-
-        /// <summary>
-        /// Gets an <see cref="IMouse"/> object for sending mouse commands to the browser.
-        /// </summary>
-        IMouse IHasInputDevices.Mouse
-        {
-            get { return this.mouse; }
         }
 
         /// <summary>
