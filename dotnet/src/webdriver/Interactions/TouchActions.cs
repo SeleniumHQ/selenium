@@ -1,4 +1,4 @@
-﻿// <copyright file="TouchActions.cs" company="WebDriver Committers">
+// <copyright file="TouchActions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -27,6 +27,7 @@ namespace OpenQA.Selenium.Interactions
     public class TouchActions : Actions
     {
         private ITouchScreen touchScreen;
+        private CompositeAction action = new CompositeAction();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TouchActions"/> class.
@@ -182,6 +183,15 @@ namespace OpenQA.Selenium.Interactions
             ILocatable locatable = GetLocatableFromElement(onElement);
             this.AddAction(new FlickAction(this.touchScreen, locatable, offsetX, offsetY, speed));
             return this;
+        }
+
+        /// <summary>
+        /// Adds an action to current list of actions to be performed.
+        /// </summary>
+        /// <param name="actionToAdd">The <see cref="IAction"/> to be added.</param>
+        protected void AddAction(IAction actionToAdd)
+        {
+            this.action.AddAction(actionToAdd);
         }
     }
 }
