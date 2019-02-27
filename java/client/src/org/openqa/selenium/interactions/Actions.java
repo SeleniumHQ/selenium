@@ -377,7 +377,7 @@ public class Actions {
 
   /**
    * Moves the mouse to the middle of the element. The element is scrolled into view and its
-   * location is calculated using getBoundingClientRect.
+   * location is calculated using getClientRects.
    * @param target element to move to.
    * @return A self reference.
    */
@@ -391,7 +391,7 @@ public class Actions {
 
   /**
    * Moves the mouse to an offset from the top-left corner of the element.
-   * The element is scrolled into view and its location is calculated using getBoundingClientRect.
+   * The element is scrolled into view and its location is calculated using getClientRects.
    * @param target element to move to.
    * @param xOffset Offset from the top-left corner. A negative value means coordinates left from
    * the element.
