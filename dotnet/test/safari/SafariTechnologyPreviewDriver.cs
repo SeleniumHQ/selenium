@@ -22,7 +22,7 @@ namespace OpenQA.Selenium.Safari
 
         public static SafariOptions DefaultOptions
         {
-            get { return new SafariOptions() { IsTechnologyPreview = true }; }
+            get { return new SafariOptions(); }
         }
     }
 }
