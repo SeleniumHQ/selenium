@@ -1,26 +1,26 @@
 load("//dotnet:selenium-dotnet-version.bzl", "ASSEMBLY_VERSION", "SE_VERSION")
 
 genrule(
-    name = "net35",
+    name = "net47",
     srcs = ["WebDriver.csproj"],
-    bash = "echo '$(location :webdriver_deps)' && dotnet build $SRCS --configuration Release --framework net35 --output $OUT /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=$OUT/../obj/ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
-    cmd_exe = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=%OUT%\..\obj\ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+    bash = "echo '$(location :webdriver_deps)' && dotnet build $SRCS --configuration Release --framework net47 --output $OUT /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=$OUT/../obj/ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+    cmd_exe = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net47 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=%OUT%\..\obj\ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
     out = "bin",
     visibility = [
-        "//dotnet/src/webdriverbackedselenium:net35",
-        "//dotnet/src/support:net35",
+        "//dotnet/src/webdriverbackedselenium:net47",
+        "//dotnet/src/support:net47",
     ],
 )
 
 genrule(
-    name = "net40",
+    name = "net46",
     srcs = ["WebDriver.csproj"],
-    bash = "echo '$(location :webdriver_deps)' && dotnet build $SRCS --configuration Release --framework net40 --output $OUT /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=$OUT/../obj/ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
-    cmd_exe = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=%OUT%\..\obj\ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+    bash = "echo '$(location :webdriver_deps)' && dotnet build $SRCS --configuration Release --framework net46 --output $OUT /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=$OUT/../obj/ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+    cmd_exe = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net46 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=%OUT%\..\obj\ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
     out = "bin",
     visibility = [
-        "//dotnet/src/webdriverbackedselenium:net40",
-        "//dotnet/src/support:net40",
+        "//dotnet/src/webdriverbackedselenium:net46",
+        "//dotnet/src/support:net46",
     ],
 )
 
@@ -52,8 +52,8 @@ genrule(
 genrule(
     name = "merge",
     srcs = [
-        ":net35",
-        ":net40",
+        ":net47",
+        ":net46",
         ":net45",
         ":netstandard2.0",
     ],
@@ -66,12 +66,11 @@ genrule(
         "for %%H in (!target_dir!) do (" +
         "for %%I in (!platform_dir!) do set platform_moniker=%%~nxI&& " +
         'if \"!platform_moniker!\"==\"netstandard2.0\" (' +
-        "(if not exist %OUT%\!platform_moniker! mkdir %OUT%\!platform_moniker!) && " +
-        "copy !target_dir!\WebDriver.dll %OUT%\!platform_moniker! &&" +
-        "copy !target_dir!\WebDriver.xml %OUT%\!platform_moniker!" +
+        "(if not exist %OUT%\\!platform_moniker! mkdir %OUT%\\!platform_moniker!) && " +
+        "copy !target_dir!\\WebDriver.dll %OUT%\\!platform_moniker! &&" +
+        "copy !target_dir!\\WebDriver.xml %OUT%\\!platform_moniker!" +
         ") else (" +
         "set merge_args=/v4 /xmldocs /internalize /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll&& " +
-        '(if \"!platform_moniker!\"==\"net35\" set merge_args=/v2 /xmldocs /internalize /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll)&& ' +
         "$(exe //third_party/dotnet/ilrepack:ilrepack) !merge_args!" +
         ")" +
         ")" +
@@ -80,24 +79,24 @@ genrule(
 )
 
 genrule(
-    name = "net35_strongnamed",
+    name = "net47_strongnamed",
     srcs = ["WebDriver.csproj"],
-    cmd = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=%OUT%\..\obj\ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+    cmd = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net47 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=%OUT%\..\obj\ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
     out = "bin",
     visibility = [
-        "//dotnet/src/webdriverbackedselenium:net35_strongnamed",
-        "//dotnet/src/support:net35_strongnamed",
+        "//dotnet/src/webdriverbackedselenium:net47_strongnamed",
+        "//dotnet/src/support:net47_strongnamed",
     ],
 )
 
 genrule(
-    name = "net40_strongnamed",
+    name = "net46_strongnamed",
     srcs = ["WebDriver.csproj"],
-    cmd = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=%OUT%\..\obj\ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+    cmd = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net46 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:IntermediateOutputPath=%OUT%\..\obj\ /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
     out = "bin",
     visibility = [
-        "//dotnet/src/webdriverbackedselenium:net40_strongnamed",
-        "//dotnet/src/support:net40_strongnamed",
+        "//dotnet/src/webdriverbackedselenium:net46_strongnamed",
+        "//dotnet/src/support:net46_strongnamed",
     ],
 )
 
@@ -126,8 +125,8 @@ genrule(
 genrule(
     name = "merge_strongnamed",
     srcs = [
-        ":net35_strongnamed",
-        ":net40_strongnamed",
+        ":net47_strongnamed",
+        ":net46_strongnamed",
         ":net45_strongnamed",
         ":netstandard2.0_strongnamed",
     ],
@@ -141,12 +140,11 @@ genrule(
         "for %%I in (!platform_dir!) do set full_platform_moniker=%%~nxI&& " +
         'for /f "delims=_" %%J in (\"!full_platform_moniker!\") do set platform_moniker=%%J&& ' +
         'if \"!platform_moniker!\"==\"netstandard2.0\" (' +
-        "(if not exist %OUT%\!platform_moniker! mkdir %OUT%\!platform_moniker!) && " +
-        "copy !target_dir!\WebDriver.dll %OUT%\!platform_moniker! &&" +
-        "copy !target_dir!\WebDriver.xml %OUT%\!platform_moniker!" +
+        "(if not exist %OUT%\\!platform_moniker! mkdir %OUT%\\!platform_moniker!) && " +
+        "copy !target_dir!\\WebDriver.dll %OUT%\\!platform_moniker! &&" +
+        "copy !target_dir!\\WebDriver.xml %OUT%\\!platform_moniker!" +
         ") else (" +
         "set merge_args=/v4 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll&& " +
-        '(if \"!platform_moniker!\"==\"net35\" set merge_args=/v2 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll)&& ' +
         "$(exe //third_party/dotnet/ilrepack:ilrepack) !merge_args!" +
         ")" +
         ")" +
